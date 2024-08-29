@@ -3,6 +3,17 @@ import styled from "styled-components"
 
 export const ProcurementLayout = styled.div`
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    & .ag-theme-alpine{
+        flex: 1;
+        margin-left: 2rem;
+    }
+    & div[data-testid="vf_pagination"]{
+        margin-left: 2rem !important;
+        padding: 0 !important;
+        margin-top: -20px;
+    }
 `
 
 export const ChildTableWrapper = styled.div`

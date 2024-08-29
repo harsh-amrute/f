@@ -79,6 +79,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
                     data-tooltip-id={item.name}
                     src={renderImg(item.img, item.status, item.id)}
                     alt="logo"
+                    style={{ zoom: item.id == `11` || item.id == `12` ? 1.2 : 1 }}
                     widthIcon={item.widthIcon}
                     onClick={() => { navigate(item.url) }}
 

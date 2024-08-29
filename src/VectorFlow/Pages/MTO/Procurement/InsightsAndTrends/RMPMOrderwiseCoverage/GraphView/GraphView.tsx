@@ -203,7 +203,8 @@ const GraphView = ({ shortageData }: any) => {
 
                             bottom: {
                                 label: {
-                                    fontSize: 8
+                                    fontSize: 8,
+
                                 }
                             }
                         }
@@ -212,7 +213,7 @@ const GraphView = ({ shortageData }: any) => {
                         highlightStyle: {
                             item: {
                                 fill: 'white',
-                                fillOpacity: 0.2
+                                fillOpacity: 0.2,
                             }
                         },
                         tooltip: {
@@ -220,6 +221,7 @@ const GraphView = ({ shortageData }: any) => {
                         },
                         strokeWidth: 1,
                         strokeOpacity: 0,
+
 
                     },
                     legend: {

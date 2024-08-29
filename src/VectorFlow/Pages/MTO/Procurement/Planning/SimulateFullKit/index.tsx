@@ -12,7 +12,7 @@ const SimulateFullKit = () => {
     const navigate = useNavigate();
     const themeUi = user.user.theme_ui
     return (
-        <>
+        <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingBottom: "2rem" }}>
 
             <ActionToolBar
                 isExcelExport
@@ -45,12 +45,10 @@ const SimulateFullKit = () => {
 
             </div>
             <ProcurementLayout>
-                <div>
-                    {renderView()}
-                </div>
+                {renderView()}
             </ProcurementLayout>
             {/* <text onClick={Save} style={{ fontSize: 34 }}>save</text> */}
-        </>
+        </div>
     )
 }
 

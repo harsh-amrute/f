@@ -25,7 +25,7 @@ import { useGetCCRGroupMaster, useGetFOLData } from '../../../../../VectorFlow/S
 import AvailabilityCellRenderer from './AvailabilityCellRenderer';
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
-//import AvailabilityToolTip from '../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip';
+import { AvailabilityToolTipWrapper } from '../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/styles';
 
 
 const APIFilterConfig = {
@@ -107,14 +107,21 @@ const FullKitAssignment = () => {
       }
     },
     OrderInFullKitToday: {
-      /*tooltipComponent: AvailabilityToolTip,
+      tooltipComponent: (params: any) => {
+        return (
+          <AvailabilityToolTipWrapper style={{ padding: "1rem", fontSize: "12px" }}>
+            {params.value}
+          </AvailabilityToolTipWrapper>
+
+        )
+      },
 
       tooltipValueGetter: (params: any) => {
-       
+
         const oq = params.data.oq;
         const fka = params.data.fka;
         return `${fka}/${oq} kits can be manufactured`;
-      },*/
+      },
       cellRenderer: AvailabilityCellRenderer,
     },
     ColorPriority: {
@@ -571,6 +578,9 @@ const FullKitAssignment = () => {
         rowData={orders}
         gridOptions={gridOptions}
         columnDefs={gridOptions.columnDefs}
+        tooltipHideDelay={100000}
+        tooltipShowDelay={0}
+        tooltipMouseTrack={true}
         onRowDataUpdated={(params) => {
           const selectedRowIds = Array.from(selectedRows.keys());
           const newCurrentPageSeleceted: any = []
