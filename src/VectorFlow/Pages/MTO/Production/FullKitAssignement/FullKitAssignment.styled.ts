@@ -7,9 +7,9 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  & .ag-header-container {
-    font-size: 18px;
-  }
+  // & .ag-header-container {
+  //   font-size: 18px;
+  // }
   & .ag-header-cell-text {
     text-align: center;
   }

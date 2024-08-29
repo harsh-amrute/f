@@ -19,7 +19,7 @@ export const BMDepWrapper = styled.div`
 `
 
 export const BMDepHeaderWraper = styled.div`
-  zoom:1;
+  zoom: 1.25;
  
 `
 export const BMDepSubHeaderWraper = styled.div`

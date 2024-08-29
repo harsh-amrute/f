@@ -623,13 +623,13 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
     }, [data])
 
     const findAgeRange = (): { minAge: number, maxAge: number } => {
-        if (highAgeingdata?.length === 0) {
-            throw new Error("The array of people is empty.");
-        }
+        // if (highAgeingdata?.length === 0) {
+        //     throw new Error("The array of people is empty.");
+        // }
 
         // Initialize minAge and maxAge with the age of the first person
-        let minAge = highAgeingdata[0].age;
-        let maxAge = highAgeingdata[0].age;
+        let minAge = highAgeingdata[0]?.age;
+        let maxAge = highAgeingdata[0]?.age;
 
         // Iterate through the array to find the min and max age
         for (const person of highAgeingdata) {

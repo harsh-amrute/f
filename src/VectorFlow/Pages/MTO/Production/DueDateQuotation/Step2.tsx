@@ -14,7 +14,7 @@ import { useGetRouteDetails, useUpdateBuffRouteCCREstDate } from '../../../../..
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import _ from 'lodash';
 import { add, format, max } from 'date-fns';
-import Tooltip from '../../../../../components/VectorFLOW/commons/MTO/Tooltip';
+import Tooltip from '../../Common/Tooltip';
 import { AgChartOptions } from 'ag-charts-community';
 import { notifyError, notifyErrorWithoutAutoClose, notifySuccess } from '../../../../../helpers/notify';
 import * as globalStyles from "../../../../../styles/global";
@@ -191,7 +191,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 }
                 return (
                     <div style={{ height: "100%", display: "flex", alignItems: "center" }}>
-                        <Tooltip content={<div style={{ padding: "1rem", maxWidth: "180px", textAlign: "center" }}>{params.data.isOptimalLeadTime ? "Optimal Lead Time" : "Exceeding market operating leadtime"}</div>} zoom={false} style={{ display: "flex" }}>
+                        <Tooltip content={<div style={{ padding: "1rem", maxWidth: "180px", textAlign: "center", fontSize: "14px" }}>{params.data.isOptimalLeadTime ? "Optimal Lead Time" : "Exceeding market operating leadtime"}</div>} zoom={false} style={{ display: "flex" }}>
                             {params.data.isOptimalLeadTime ?
                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 17.326 16.976">
                                     <g id="Component_237_99" data-name="Component 237 – 99" transform="translate(1.202 1.162)">
