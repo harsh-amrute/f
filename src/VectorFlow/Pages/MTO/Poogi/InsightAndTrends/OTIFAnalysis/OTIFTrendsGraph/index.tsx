@@ -7,16 +7,19 @@ import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VF
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { TooltipRenderer } from "../OTIFCommon";
-import { format } from "date-fns";
+import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
+import moment from "moment";
 
 const OTIFTrendsGraph = (props: any) => {
-  const { graphData } =props; 
-  const [startDate, setStartDate] = useState('-');
-  const [endDate, setEndDate] = useState('-');
+  const { graphData } = props;
+  // const [startDate, setStartDate] = useState('-');
+  // const [endDate, setEndDate] = useState('-');
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [rawData, setRawData] = useState([]);
+  const { data: apiResponseData } = useGetDate();
+
 
   function createSeriesData(val: number) {
     const seriesData: any = [];
@@ -131,7 +134,8 @@ const OTIFTrendsGraph = (props: any) => {
           }}
         >
           <span style={{ fontWeight: 500 }}>{`${Poogi.otif}  `}</span>
-          <span style={{ fontWeight: 300 }}>{`(${startDate} - ${endDate})`}</span>
+          <span style={{ fontWeight: 350 }}>{`(${moment(apiResponseData?.data.data || '-').subtract(90, 'days').format('D MMM YYYY')} - ${moment(apiResponseData?.data.data || '-').format('D MMM YYYY')})`}</span>
+
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
@@ -165,13 +169,13 @@ const OTIFTrendsGraph = (props: any) => {
     );
   };
 
-  useEffect(()=>{
-    if(graphData){
-      setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
-      setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
+  useEffect(() => {
+    if (graphData) {
+      // setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
+      // setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
       setRawData(graphData.data);
     }
-  },[graphData])
+  }, [graphData])
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "left", marginRight: '8px', paddingBottom: '10px' }}>

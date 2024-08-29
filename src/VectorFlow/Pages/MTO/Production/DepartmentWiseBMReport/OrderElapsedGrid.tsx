@@ -21,7 +21,7 @@ import {
 } from './styles'
 import { AgGridReactProps } from 'ag-grid-react';
 import { BPRViewTableGrid } from '../../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/styles';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 //import { /*orderStatus, orderStatusData, ElapsedTime, ElapsedTimeData, */AgieingTime, ageingData } from './DeptWiseBMReportData'
 import { ColorsMTO } from '../../Common/Colors';
 
@@ -40,7 +40,7 @@ type RowData = {
 
 
 const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgeingdata }: orderElapsedGridProps) => {
-      
+
     const { user } = useUserData()
     const themeUi = user.user.theme_ui
     const [isLeftPanelOrderStatusOpen, toggleLeftPanelOrderStatus] = useState<boolean>(false);
@@ -53,7 +53,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
     const [rowData, setRowData] = useState<any>();
     const [ElapsedTimeRowData, setElapsedTimeRowData] = useState<any>();
     const [elapsedOrderTotalDays, setElapsedOrderTotalDays] = useState<number>(0);
-    const [minMaxAge,setMinMaxAge]=useState<any>({min:'0',max:'0'})
+    const [minMaxAge, setMinMaxAge] = useState<any>({ min: '0', max: '0' })
 
     const sideBar = useMemo(() => {
         return {
@@ -581,7 +581,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
         //console.log('rowData', rowData)
         return rowData.reduce((total, row) => total + parseElapsedTime(row.et), 0);
     };
-    
+
 
     useEffect(() => {
         if (data) {
@@ -617,20 +617,20 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
             setElapsedTimeRowData(ElapsedTimeRowData)
 
             const { minAge, maxAge } = findAgeRange();
-            setMinMaxAge({min:minAge,max:maxAge})
+            setMinMaxAge({ min: minAge, max: maxAge })
 
         }
     }, [data])
 
     const findAgeRange = (): { minAge: number, maxAge: number } => {
-        if (highAgeingdata?.length === 0) {
-            throw new Error("The array of people is empty.");
-        }
-    
+        // if (highAgeingdata?.length === 0) {
+        //     throw new Error("The array of people is empty.");
+        // }
+
         // Initialize minAge and maxAge with the age of the first person
-        let minAge = highAgeingdata[0].age;
-        let maxAge = highAgeingdata[0].age;
-    
+        let minAge = highAgeingdata[0]?.age;
+        let maxAge = highAgeingdata[0]?.age;
+
         // Iterate through the array to find the min and max age
         for (const person of highAgeingdata) {
             if (person.age < minAge) {
@@ -640,12 +640,12 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
                 maxAge = person.age;
             }
         }
-    
+
         return { minAge, maxAge };
     };
 
-    
-   
+
+
     return (
         isTrue ?
             <div style={{ display: 'flex', gap: "2rem" }}>

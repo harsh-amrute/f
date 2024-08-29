@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../../Common/VFTable';
 import { mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../../helpers/utils';
 import GetSimulateHeaderChildren from './GetSimulateChildrenHeader.json';
 import ChildrenColor from "../../../Common/ChildrenColor/ChildrenColor";
@@ -37,7 +37,7 @@ const DetailCellRenderer = (params: any) => {
                     flex: 0,
                 }}
                 rowData={params.data.children}
-                height={'300px'}
+                height={'260px'}
                 pagination={true}
                 components={customChildrenCellRenderers}
                 masterDetail={true}

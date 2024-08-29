@@ -15,6 +15,7 @@ import { getColumnDefinations } from '../../../../../../helpers/utils'
 import ColorCellRenderer from '../../../Common/ColorCellRenderer'
 import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
 import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
+import { pagination } from '../../../Common/Enum'
 
 
 const RMPMOrderwiseCoverage = () => {
@@ -70,11 +71,12 @@ const RMPMOrderwiseCoverage = () => {
             enableRangeSelection: true,
 
             pagination: true,
+            paginationAutoPageSize: false,
+            paginationPageSize: pagination.mtoPageSize,
 
             defaultColDef: {
                 filter: "agTextColumnFilter",
                 floatingFilter: true,
-                floatingFilterComponentParams: { suppressFilterButton: true },
                 suppressMenu: true,
                 resizable: true,
 
@@ -257,7 +259,7 @@ const RMPMOrderwiseCoverage = () => {
 
     return (
         <>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: "100%" }}>
 
 
                 <ActionToolBar comp={"rmpm"} isGoBackButton={isGridView} handleGoBack={() => { (setIsGridView(false)) }} isAddFilterButton isChartGridToggle isGridView={isGridView} setIsGridView={setIsGridView} />

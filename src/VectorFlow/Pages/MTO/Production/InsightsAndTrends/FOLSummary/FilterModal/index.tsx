@@ -320,12 +320,15 @@ const FilterModal = (props: IFilterModalProps) => {
                     <FilterAccordianWrapper>
                         {
                             filters?.map((filter: { key: string, heading: string, options: string[] }) => {
-                                if (filter.key === "plnm" || filter.key === "FOL") return null
+                                console.log(filter.key)
+                                if (filter.key === "plnm" || filter.key === "FOL" || filter.key === "prdGrp") return null
                                 return (
                                     <AccordianContainer>
                                         <FilterCheckboxAccordian filterType={filter?.heading} filterKey={filter?.key} isOpen={activeAccordian === filter?.key} handleToggleAccordian={handleToggleAccordian}>
                                             <OptionsWrapper>
-                                                {filter?.options?.map((option: string, idx: number) => (
+                                                {filter?.options?.map((option: string, idx: number) =>
+
+                                                (
                                                     <Option>
                                                         <input
                                                             key={option}

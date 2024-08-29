@@ -7,17 +7,20 @@ import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VF
 import SplitGraphContainer from "../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer";
 import { getColumnDefinations } from "../../../../../../../helpers/utils";
 import { TooltipRenderer } from "../OTIFCommon";
-import { format } from "date-fns";
+import moment from "moment";
+import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 
 const OTAndIFTrendsGraph = (props: any) => {
-  const { graphData } =props; 
-  const [startDate, setStartDate] = useState('-');
-  const [endDate, setEndDate] = useState('-');
+  const { graphData } = props;
+  // const [startDate, setStartDate] = useState('-');
+  // const [endDate, setEndDate] = useState('-');
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   // const [rawData] = useState(APIMock.graph.ot_n_if_graph.data);
   const [rawData, setRawData] = useState([]);
+  const { data: apiResponseData } = useGetDate();
+
 
 
   function createSeriesData(val: number) {
@@ -134,7 +137,8 @@ const OTAndIFTrendsGraph = (props: any) => {
           }}
         >
           <span style={{ fontWeight: 500 }}>{`${Poogi.otNif}  `}</span>
-          <span style={{ fontWeight: 300 }}>{`(${startDate} - ${endDate})`}</span>
+          <span style={{ fontWeight: 350 }}>{`(${moment(apiResponseData?.data.data || '-').subtract(90, 'days').format('D MMM YYYY')} - ${moment(apiResponseData?.data.data || '-').format('D MMM YYYY')})`}</span>
+
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
@@ -168,15 +172,15 @@ const OTAndIFTrendsGraph = (props: any) => {
     );
   };
 
-  useEffect(()=>{
-    if(graphData){
-      setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
-      setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
-      const updatedData = graphData.data?.map((d: any) => ({ ...d, ot: Number(d.ot.toFixed(2)),if: Number(d.if.toFixed(2))}))
-      
+  useEffect(() => {
+    if (graphData) {
+      // setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
+      // setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
+      const updatedData = graphData.data?.map((d: any) => ({ ...d, ot: Number(d.ot.toFixed(2)), if: Number(d.if.toFixed(2)) }))
+
       setRawData(updatedData);
     }
-  },[graphData])
+  }, [graphData])
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '10px', paddingBottom: '10px' }}>

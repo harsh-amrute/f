@@ -5,26 +5,33 @@ export const ApplyZoomOut = styled.div`
     zoom: 0.7;
 `
 
+export const OrderReschedulingWrapper = styled.div`
+  & .toolbar-container{
+    margin: 0;
+    padding-top: 20px;
+  }
+`
+
 export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?: boolean }>`
-    height: 75vh;
-    zoom: 0.75;
-    margin-top: 20px;
+    // height: 75vh;
+    height: 100%;
+    // margin-top: 20px;
     padding-left: 20px;
     display: flex;
     flex-direction: column;
 
+    & div[data-testid="vf_pagination"]{
+      margin-top: 0 !important;
+    }
+
 
  
-    & .ag-theme-alpine {
-      flex: 1;
-        margin: 0 !important;
-      }
+    // & .ag-theme-alpine {
+    //   flex: 1;
+    //     margin: 0 !important;
+    //   }
     & .ag-theme-noir-fusion {
         margin: 0 !important;
-      }
-
-      & .ag-header-container {
-        font-size: 16px;
       }
     
 `
@@ -39,6 +46,7 @@ export const ETACellRendererWrapper = styled.div`
     align-items:center;
     height:100%;
     width:100%;
+    padding: 1rem;
 `
 
 export const ETACellValue = styled.p`

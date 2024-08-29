@@ -207,16 +207,29 @@ const ResourceUtilization = () => {
     const newWipUnderData: any = [];
     if (apiData && apiData.utilization) {
 
+      apiData.utilization.sort((a: any, b: any) => {
+        return b.aup - a.aup;
+      })
+
       apiData.utilization.forEach((e: any) => {
         newUtilData.push({ ccr: e.ccr, limit: e.aup })
       })
     }
     if (apiData && apiData.wiplimit) {
+
+      apiData.wiplimit.olimit.sort((a: any, b: any) => {
+        return b.us - a.us;
+      });
+
       apiData.wiplimit.olimit.forEach((e: any) => {
-        newWipOverData.push({ overLimit: Number(e.awip), limit: e.lm, ccr: e.ccr })
+        newWipOverData.push({ overLimit: Number(e.awip), limit: e.lm, ccr: e.ccr, us: e.us })
       })
+
+      apiData.wiplimit.ulimit.sort((a: any, b: any) => {
+        return b.us - a.us; // Ascending order, use b.awip - a.awip for descending
+      });
       apiData.wiplimit.ulimit.forEach((e: any) => {
-        newWipUnderData.push({ underLimit: e.awip, limit: e.lm, ccr: e.ccr })
+        newWipUnderData.push({ underLimit: e.awip, limit: e.lm, ccr: e.ccr, us: e.us })
 
       })
     }
@@ -244,6 +257,7 @@ const ResourceUtilization = () => {
   }, [wipOverData, wipUnderData])
 
   function TooltipRenderer({ datum }: any) {
+    console.log("datum.....", datum)
     return `
       <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
           Details
@@ -254,15 +268,30 @@ const ResourceUtilization = () => {
           <div style="display: flex; width: 100%;">
               
           ${selectedGraphState === "wipLimit"
-        ? `<div style="display: flex; width: 100%;">
-              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
+        ? `<div style="display: flex; flex-direction: column ;flexwidth: 100%;">
+          <div style="display: flex; align-items: center">
+              <div style="margin-right: 10px;  margin-top: 5px; height: 4px; width: 10px; background-color: #de6057"></div>
               <div style="display:flex; justify-content: space-between; width: 100%;">
-                  <div>Usage</div>
-                  <div>${actBtn?.label === "Over Limit"
-          ? datum?.overLimit
-          : datum?.underLimit
-        }</div>
+                  <div style="padding-right: 80px">Limit</div>
+                  <span>${actBtn?.label === "Over Limit" ? datum?.limit : datum?.limit}</span>
               </div>
+            </div>
+          <div style="display: flex">
+              <div style="margin-right: 10px;  margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
+              <div style="display:flex; justify-content: space-between; width: 100%;">
+                  <div>Usage (days)</div>
+                  <div>${actBtn?.label === "Over Limit" ? datum?.overLimit : datum?.underLimit}</div>
+              </div>
+            </div>
+          <div style="display: flex">
+              <div style="margin-right: 10px;  margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
+              <div style="display:flex; justify-content: space-between; width: 100%;">
+                  <div>Usage %</div>
+                  <div>${actBtn?.label === "Over Limit" ? datum?.us : datum?.us}</div>
+              </div>
+            </div>
+          
+           
           </div>`
         : ""
       }
@@ -385,11 +414,10 @@ const ResourceUtilization = () => {
               
          
                  <div style="display: flex; width: 100%;">
-              <div style="margin-right: 10px; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
+              <div style="margin-right: 10px; display: flex; flex-direction: column; margin-top: 5px; height: 10px; width: 10px; background-color: #000000"></div>
               <div style="display:flex; justify-content: space-between; width: 100%;">
                   <div>Usage</div>
-                  <div>${datum.datum?.limit} %
-                </div>
+                  <div>${datum.datum?.limit} %</div>
               </div>
           </div>
       </div>`;

@@ -12,22 +12,20 @@ const SimulateFullKit = () => {
     const navigate = useNavigate();
     const themeUi = user.user.theme_ui
     return (
-        <>
-            <div style={{ zoom: 1.25 }}>
+        <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingBottom: "2rem" }}>
 
-                <ActionToolBar
-                    isExcelExport
-                    isGoBackButton
-                    handleGoBack={() => {
-                        navigate('/procurement-planning/planning')
-                    }}
-                    themeUi={themeUi}
-                    comp={'Procurement Planning'}
-                    onDateChange={() => { console.log('') }}
-                    submitDate={() => { console.log('') }}
-                />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
+            <ActionToolBar
+                isExcelExport
+                isGoBackButton
+                handleGoBack={() => {
+                    navigate('/procurement-planning/planning')
+                }}
+                themeUi={themeUi}
+                comp={'Procurement Planning'}
+                onDateChange={() => { console.log('') }}
+                submitDate={() => { console.log('') }}
+            />
+            <div style={{ zoom: 0.75, display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 
                 <VFFloatingTab
                     handleClick={(tab) => toggleCurrentTab(tab)}
@@ -47,12 +45,10 @@ const SimulateFullKit = () => {
 
             </div>
             <ProcurementLayout>
-                <div>
-                    {renderView()}
-                </div>
+                {renderView()}
             </ProcurementLayout>
             {/* <text onClick={Save} style={{ fontSize: 34 }}>save</text> */}
-        </>
+        </div>
     )
 }
 

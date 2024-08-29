@@ -132,13 +132,13 @@ const RMPMBufferTrends = () => {
                     {
                         (isMTO) ?
                             (<Allotment vertical={false} separator={false}   >
-                                <Allotment.Pane minSize={450} preferredSize={'50%'}>
+                                <Allotment.Pane minSize={460} preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <BTMTO data={MTOData} isMTO={isMTO} />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
 
-                                <Allotment.Pane minSize={450} preferredSize={'50%'}>
+                                <Allotment.Pane minSize={460} preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <BTMTA data={MTAData} isMTO={isMTO} />
                                     </BTRAllomentSection>

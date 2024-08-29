@@ -7,22 +7,19 @@ import MaterialRequirementComponent from './MaterialRequirementComponent';
 const MaterialRequirement = () => {
     const { renderView, toggleCurrentTab, onDateChangeReq, onDateSubmitReq, date, currentTab } = useMaterialReq();
     return (
-        <>
-            <div style={{ zoom: 1.25 }}>
+        <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingBottom: "2rem" }}>
+            <ActionToolBar
+                isReleaseDate
+                isAddFilterButton
+                isExcelExport
+                comp={"MaterialRequirement"}
+                onDateChange={onDateChangeReq}
+                submitDate={() => onDateSubmitReq()}
+                date={date}
 
-                <ActionToolBar
-                    isReleaseDate
-                    isAddFilterButton
-                    isExcelExport
-                    comp={"MaterialRequirement"}
-                    onDateChange={onDateChangeReq}
-                    submitDate={() => onDateSubmitReq()}
-                    date={date}
-
-                />
-            </div>
-            <MaterialRequirementComponent currentTab={currentTab} renderView={renderView} toggleCurrentTab={toggleCurrentTab} date={date}/>
-        </>
+            />
+            <MaterialRequirementComponent currentTab={currentTab} renderView={renderView} toggleCurrentTab={toggleCurrentTab} date={date} />
+        </div>
     )
 }
 

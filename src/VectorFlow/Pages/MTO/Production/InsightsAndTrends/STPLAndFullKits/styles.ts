@@ -1,5 +1,18 @@
 import styled from 'styled-components'
 
+export const Wrapper = styled.div`
+    height: 85%;
+    margin-left: 2rem;
+    & .ag-theme-alpine{
+        height: 100%;
+    }
+    & div[data-testid="vf_pagination"]{
+        padding: 0 !important;
+        margin-top: -20px !important;
+    }
+
+`
+
 export const BTRTableWrapper = styled.div`
     display:flex;
     flex-direction:column;

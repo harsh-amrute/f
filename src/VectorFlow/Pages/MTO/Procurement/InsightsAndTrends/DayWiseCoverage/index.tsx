@@ -200,7 +200,7 @@ const DayWiseCoverage = () => {
                 }
             </TableContainer>
             <VFModalCard openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Material Coverage'} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'}>
-                <div style={{ zoom: 0.8, margin: "2rem", overflow: "auto", width: "600px" }}>
+                <div style={{ margin: "2rem", overflow: "auto", width: "80vw", height: "70vh", display: "flex", flexDirection: "column" }}>
                     <MaterialRequirementComponent renderView={renderView} currentTab={currentTab} date={date} toggleCurrentTab={toggleCurrentTab} />
                 </div>
             </VFModalCard>

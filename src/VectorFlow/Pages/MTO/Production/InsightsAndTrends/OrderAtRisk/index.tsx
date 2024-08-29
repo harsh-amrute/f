@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { HorizontalViewWrapper } from "./styles";
-import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../../Common/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import { reasonColConfig } from "./MockData";
@@ -280,9 +280,9 @@ const OrderAtRisk = () => {
         setIsGridView={setIsGridView}
       />
       {isLoading && <OverlayLoader />}
-      <HorizontalViewWrapper style={{ height: screenHeight - 180, display: 'flex', marginTop: "20px", paddingLeft: "25px" }}>
+      <HorizontalViewWrapper style={{ height: screenHeight - 200, display: 'flex', marginTop: "20px", paddingLeft: "25px" }}>
         {isGridView ? (
-          <div data-testid="grid-view" style={{ height: screenHeight - 300, width: '100%' }}>
+          <div data-testid="grid-view" style={{ height: screenHeight - 200, width: '100%' }}>
             <VFTable
               {...gridOptions}
               columnDefs={tableColDefs}
@@ -290,7 +290,6 @@ const OrderAtRisk = () => {
               tooltipHideDelay={100000}
               tooltipShowDelay={0}
               tooltipMouseTrack={true}
-              height={"95vh"}
               ref={gridRef}
               statusBar={{
                 statusPanels: [

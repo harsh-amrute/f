@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import VFFloatingTab from '../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
-import { ApplyZoomOut, PaginationWrapper, VFTableWrapper } from './styles';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import { ApplyZoomOut, OrderReschedulingWrapper, VFTableWrapper } from './styles';
+import VFTable from '../../Common/VFTable';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import ReasonCellRenderer from './ReasonCellRenderer';
 import DueDateCellRenderer from './DueDateCellRenderer';
@@ -17,6 +17,7 @@ import OverlayLoader from '../../Common/Loader';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import VFPagination from '../../Common/VFPagination';
+import { pagination } from '../../Common/Enum';
 
 const user = { user: { them_ui: 'pure' } };
 
@@ -39,6 +40,66 @@ const OrderRescheduling = () => {
     const getSelectedRowData = () => {
 
         const selectedData = refGraph1.current?.api.getSelectedRows();
+
+        //  logic to get the unselected row and set the default date to it
+
+        // const unselectedRows: any = [];
+        // const lastUpdateSelectedRows: any = [];
+
+        // rowData.forEach((e) => {
+        //     selectedRowData.forEach((el) => {
+        //         if (e.oid === el.oid) {
+        //             lastUpdateSelectedRows.push(e);
+        //         }
+        //     })
+        // })
+
+        // lastUpdateSelectedRows.forEach((e: any) => {
+        //     let isThere = false;
+        //     selectedData?.forEach((el) => {
+        //         if (e.oid === el.oid) {
+        //             isThere = true;
+        //         }
+        //     }
+        //     )
+
+
+        //     if (!isThere) {
+        //         unselectedRows.push(e);
+        //     }
+
+        // })
+
+
+        // console.log("unselected Row...", unselectedRows)
+
+        // unselectedRows.forEach((e: any) => {
+        //     rowData.forEach((el: any) => {
+        //         if (el.oid === e.oid) {
+        //             e.oid = el.oid;
+        //         }
+        //     })
+        // })
+
+
+        // unselectedRows.forEach((unSec: any) => {
+
+        //     refGraph1?.current?.api.forEachNode((node) => {
+        //         if (node.data && node.data.oid) {
+
+        //             if (node.data.oid === unSec.oid) {
+        //                 console.log("yes")
+        //                 node.data.dd = unSec.dd;
+        //             }
+        //         }
+        //     });
+
+        // })
+
+        // setRowData(rowData);
+
+        /////////////////
+
         if (selectedData) {
             let mergedData = [...selectedRowData]; // Start with the existing selected data
 
@@ -87,11 +148,10 @@ const OrderRescheduling = () => {
             suppressMenu: true,
             resizable: true,
             cellDataType: false,
-            minWidth: 140,
+            // minWidth: 140, 
             wrapHeaderText: true,
             autoHeaderHeight: true,
             cellStyle: {
-                'font-size': '16px',
                 "text-align": "center",
                 'text-overflow': 'ellipsis',
             },
@@ -419,13 +479,13 @@ const OrderRescheduling = () => {
 
     return (
         <>
-            <div style={{ width: "100%", position: 'relative', height: '85vh' }}>
+            <OrderReschedulingWrapper style={{ width: "100%", position: 'relative', height: '100%', display: "flex", flexDirection: "column" }}>
 
                 <MTOActionToolBar comp={'orderReschedule'} isExcelExport />
                 {isLoading && <OverlayLoader />}
 
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                    <div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+                    <div style={{ margin: "10px 0" }}>
                         <ApplyZoomOut>
                             <VFFloatingTab
                                 handleClick={(e) => setCurrTab(e.value)}
@@ -434,10 +494,9 @@ const OrderRescheduling = () => {
                             />
                         </ApplyZoomOut>
                     </div>
-                    <div style={{ width: '100%' }}>
+                    <div style={{ width: '100%', height: "100%" }}>
                         <VFTableWrapper >
                             <VFTable
-
                                 disableZoomScaling
                                 columnDefs={colDef}
                                 rowData={rowData}
@@ -460,37 +519,31 @@ const OrderRescheduling = () => {
                                 pagination={false}
                                 height={"100%"}
                             />
+                            <VFPagination
+                                selectedRows={0}
+                                rowsPerPage={pagination.mtoPageSize}
+                                totalRows={currData ? currData.data.data.count : 0}
+                                currentPage={currentPage}
+                                handleChangePage={handlePageChangeCumulative}
+                            />
 
-
-
-
-                            <PaginationWrapper>
-
-                                <VFPagination
-                                    selectedRows={0}
-                                    rowsPerPage={10}
-                                    totalRows={currData ? currData.data.data.count : 0}
-                                    currentPage={currentPage}
-                                    handleChangePage={handlePageChangeCumulative}
-                                />
-                            </PaginationWrapper>
+                            <div style={{ width: '100%' }}>
+                                <div style={{ width: '100%', height: '65px', padding: '20px 0', display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                                    <ApplyZoomOut>
+                                        {
+                                            currTab === 'Unschedule' ?
+                                                <VFButton disabled={(selectedRowData && selectedRowData[0]) ? false : true} style={{ width: '150px' }} themeUi={user.user.them_ui} onClick={unschedule}>Unschedule</VFButton>
+                                                :
+                                                <VFButton disabled={(selectedRowData && selectedRowData[0]) ? false : true} style={{ width: '200px' }} themeUi={user.user.them_ui} onClick={overwriteDD}>Overwrite Due Date</VFButton>
+                                        }
+                                    </ApplyZoomOut>
+                                </div>
+                            </div>
                         </VFTableWrapper>
-                    </div>
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%' }}>
-                        <div style={{ width: '100%', height: '65px', padding: '30px 30px', background: 'white', display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                            <ApplyZoomOut>
-                                {
-                                    currTab === 'Unschedule' ?
-                                        <VFButton disabled={(selectedRowData && selectedRowData[0]) ? false : true} style={{ width: '150px' }} themeUi={user.user.them_ui} onClick={unschedule}>Unschedule</VFButton>
-                                        :
-                                        <VFButton disabled={(selectedRowData && selectedRowData[0]) ? false : true} style={{ width: '200px' }} themeUi={user.user.them_ui} onClick={overwriteDD}>Overwrite Due Date</VFButton>
-                                }
-                            </ApplyZoomOut>
-                        </div>
                     </div>
                 </div>
                 {/* )} */}
-            </div>
+            </OrderReschedulingWrapper>
         </>
     );
 };

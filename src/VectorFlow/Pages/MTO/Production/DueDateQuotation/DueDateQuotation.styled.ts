@@ -7,16 +7,7 @@ export const Wrapper = styled.div`
     margin-left: 2rem;
     flex-direction: column;
     
-    & .ag-header-cell-text {
-        font-size: 18px;
-    }
-    & .ag-header-cell-text {
-        text-align: center;
-    }
-
-    & .ag-theme-alpine .ag-theme-alpine .ag-header-cell{
-        text-align: left;
-    }
+   
     & > .ag-theme-alpine{
         flex: 1;
         height: 100%;
@@ -30,11 +21,12 @@ export const Wrapper = styled.div`
         margin-top: 20px;
     }
     & > div[data-testid="vf_pagination"]{
-        margin-top:-8px;
-        margin-bottom: 20px;
         padding: 0;
-        margin-left: 8px;
-        margin-right: 8px;
+        // margin-top:-8px;
+        // margin-bottom: 20px;
+        // margin-left: 8px;
+        // margin-right: 8px;
+        margin: -10px 10px 20px;
     }
 `
 
@@ -73,7 +65,7 @@ export const BasketingLabel = styled.div`
     gap:1rem;
 `
 
-export const BasketingLabelText = styled.strong<{theme: string}>`
+export const BasketingLabelText = styled.strong<{ theme: string }>`
     display: flex; 
     align-items: center;
     gap: 0.5rem;
