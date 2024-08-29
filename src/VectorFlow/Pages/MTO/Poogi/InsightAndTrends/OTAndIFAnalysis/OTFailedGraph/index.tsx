@@ -20,7 +20,7 @@ const OTFailedGraph = (props: OTFailedGraphProps) => {
     const [hideChart1, toggleChart1] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
-    const { data: apiResponseData, isSuccess } = useGetDate();
+    const { data: apiResponseData } = useGetDate();
 
     const generateHeader = () => {
         return (

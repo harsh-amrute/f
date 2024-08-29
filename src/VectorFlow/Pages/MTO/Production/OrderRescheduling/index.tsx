@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import VFFloatingTab from '../../../../../components/VectorFLOW/commons/VFFloatingTab';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
-import { ApplyZoomOut, OrderReschedulingWrapper, PaginationWrapper, VFTableWrapper } from './styles';
+import { ApplyZoomOut, OrderReschedulingWrapper, VFTableWrapper } from './styles';
 import VFTable from '../../Common/VFTable';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import ReasonCellRenderer from './ReasonCellRenderer';

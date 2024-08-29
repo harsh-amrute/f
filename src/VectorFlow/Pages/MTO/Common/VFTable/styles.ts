@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import * as gridSystem from "../../../../../styles/gridSystem";
-
 
 export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?: boolean }>`
     height:${(props) => props.height ? props.height : 'auto'};

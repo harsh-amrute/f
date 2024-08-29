@@ -20,7 +20,7 @@ const IFFailedGraph = (props: IFFailedGraphProps) => {
     const [hideChart1, toggleChart1] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
     const [chartLoading, setChartLoading] = useState(false);
-    const { data: apiResponseData, isSuccess } = useGetDate();
+    const { data: apiResponseData,} = useGetDate();
 
 
     const generateHeader = () => {

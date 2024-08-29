@@ -13,8 +13,8 @@ import { format } from "date-fns";
 
 const OTAndIFTrendsGraph = (props: any) => {
   const { graphData } = props;
-  const [startDate, setStartDate] = useState('-');
-  const [endDate, setEndDate] = useState('-');
+  // const [startDate, setStartDate] = useState('-');
+  // const [endDate, setEndDate] = useState('-');
   const [hideChart1, toggleChart1] = useState(false);
   const [chartLoading, setChartLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -175,8 +175,8 @@ const OTAndIFTrendsGraph = (props: any) => {
 
   useEffect(() => {
     if (graphData) {
-      setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
-      setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
+      // setStartDate(format(new Date(graphData.start), 'dd MMM yyyy'));
+      // setEndDate(format(new Date(graphData.end), 'dd MMM yyyy'));
       const updatedData = graphData.data?.map((d: any) => ({ ...d, ot: Number(d.ot.toFixed(2)), if: Number(d.if.toFixed(2)) }))
 
       setRawData(updatedData);
