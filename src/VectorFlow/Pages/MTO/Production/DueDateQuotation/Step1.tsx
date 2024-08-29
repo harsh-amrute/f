@@ -3,7 +3,6 @@ import _ from 'lodash';
 import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../Common/VFTable';
-import { pagination } from '../../Common/Enum';
 
 interface IStep1Props {
   gridOptions: GridOptions,

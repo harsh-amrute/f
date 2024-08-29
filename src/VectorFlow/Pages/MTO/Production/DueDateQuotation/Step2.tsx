@@ -319,7 +319,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     const [rows, setRows] = useState<any>(null);
     const [newSelectedRows, setNewSelectedRows] = useState<any>({ rows: null, isAssignmentPossible: false });
     const [selectedRoute, setSelectedRoute] = useState<any>([]);
-    const [allSelectedRoutes, setAllSelectedRoutes] = useState([]);
 
     const [selectedPlant, setSelectedPlant] = useState<number | null>(null);
 
