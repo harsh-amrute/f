@@ -34,7 +34,7 @@
   zoom: 0.75;
 }
 
-.vfwrap .ag-status-bar{
+.vfwrap .ag-status-bar {
   font-size: 12px !important;
 }
 
@@ -43,7 +43,7 @@
   min-width: 40px !important;
 }
 
-.vfwrap .ag-popup{
+.vfwrap .ag-popup {
   flex: unset !important;
 }
 

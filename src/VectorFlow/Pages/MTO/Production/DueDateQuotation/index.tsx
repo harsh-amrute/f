@@ -20,9 +20,9 @@ import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/
 import useFilter from '../../../../../hooks/useFilter';
 
 const APIFilterConfig = {
-  filSecVisConfig :  {
-    "Prod_DDQ" : {
-      mjr : false,
+  filSecVisConfig: {
+    "Prod_DDQ": {
+      mjr: false,
       or: true,
       res: true,
       cus: true
@@ -51,7 +51,7 @@ const DueDateQuotation = () => {
   const totalRows = useRef(0);
   const currentPageSelectedRows = useRef<any>([]);
   const assignmentRef = useRef<any>();
-  const gridRef= useRef<any>();
+  const gridRef = useRef<any>();
 
   const { mutateAsync: getBufferMaster, } = useGetBufferMasterData();
   const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
@@ -64,16 +64,16 @@ const DueDateQuotation = () => {
   const { mutateAsync: getBOMExplosionData, } = useGetBOMExplosionData();
   const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
   const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
-    const { mutateAsync: getFilteredOrdersForDDQ, isLoading: isFilteredDataLoaded } = useGetFilteredOrdersForDDQ();
+  const { mutateAsync: getFilteredOrdersForDDQ, isLoading: isFilteredDataLoaded } = useGetFilteredOrdersForDDQ();
   const [filterData, setFilterData] = useState({});
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>({});
   const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
-  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
-    
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
+  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
+
+  const toggleFilter = (state: boolean) => {
+    setIsFilterOpen(state);
+  }
   const [loading, setLoading] = useState(false);
 
   const extras: any = [
@@ -202,62 +202,62 @@ const DueDateQuotation = () => {
 
   const getMastersData = async () => {
     try {
-        setLoading(true);
-        const bufferMaster = await getBufferMaster();
-        const allBufferMaster = bufferMaster?.data?.data;
-        const prodMaster: any = []
-        const procMaster: any = []
-        if (allBufferMaster) {
-          allBufferMaster.forEach((master: any) => {
-            if ("production".includes(master.buffer_type.buffer_type.toLowerCase())) {
-              prodMaster.push({ label: master.buffer_code, value: master.buffer_id, size: master.buffer_size })
-            }
-            else if ("procurement".includes(master.buffer_type.buffer_type.toLowerCase())) {
-              procMaster.push({ label: master.buffer_code, value: master.buffer_id, size: master.buffer_size })
-            }
-          })
-        }
-
-        const ccrGroupMaster = await getCCRGroupMaster();
-        const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
-        const ccrGroups: any = [];
-
-        const FOLData = await getFOLData();
-        const FOL = FOLData?.data?.data;
-
-        ccrGroupData.forEach((group: any) => {
-          const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] }
-          // let minFOL = Infinity
-          let minFol = Infinity;
-          let maxFol = -Infinity;
-          group.ccrs.forEach((ccr: any) => {
-            minFol = Math.min(minFol, FOL[ccr.ccr_id]?.fol || 0);
-            maxFol = Math.max(maxFol, FOL[ccr.ccr_id]?.fol || 0)
-          })
-          group.ccrs.forEach((ccr: any) => {
-            obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0, plant_id: ccr.plant });
-          })
-          ccrGroups.push(obj);
+      setLoading(true);
+      const bufferMaster = await getBufferMaster();
+      const allBufferMaster = bufferMaster?.data?.data;
+      const prodMaster: any = []
+      const procMaster: any = []
+      if (allBufferMaster) {
+        allBufferMaster.forEach((master: any) => {
+          if ("production".includes(master.buffer_type.buffer_type.toLowerCase())) {
+            prodMaster.push({ label: master.buffer_code, value: master.buffer_id, size: master.buffer_size })
+          }
+          else if ("procurement".includes(master.buffer_type.buffer_type.toLowerCase())) {
+            procMaster.push({ label: master.buffer_code, value: master.buffer_id, size: master.buffer_size })
+          }
         })
-        const CCRItemTypeMappingMasterData = await getCCRItemTypeMappingMaster();
+      }
 
-        const CCRItemTypeMappingMaster = CCRItemTypeMappingMasterData?.data?.data;
+      const ccrGroupMaster = await getCCRGroupMaster();
+      const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
+      const ccrGroups: any = [];
+
+      const FOLData = await getFOLData();
+      const FOL = FOLData?.data?.data;
+
+      ccrGroupData.forEach((group: any) => {
+        const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] }
+        // let minFOL = Infinity
+        let minFol = Infinity;
+        let maxFol = -Infinity;
+        group.ccrs.forEach((ccr: any) => {
+          minFol = Math.min(minFol, FOL[ccr.ccr_id]?.fol || 0);
+          maxFol = Math.max(maxFol, FOL[ccr.ccr_id]?.fol || 0)
+        })
+        group.ccrs.forEach((ccr: any) => {
+          obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0, plant_id: ccr.plant });
+        })
+        ccrGroups.push(obj);
+      })
+      const CCRItemTypeMappingMasterData = await getCCRItemTypeMappingMaster();
+
+      const CCRItemTypeMappingMaster = CCRItemTypeMappingMasterData?.data?.data;
 
 
-        const CCRMasterData = await getCCRMasterData();
-        const CCRMaster = CCRMasterData?.data?.data;
+      const CCRMasterData = await getCCRMasterData();
+      const CCRMaster = CCRMasterData?.data?.data;
 
-        const WorkingCalenderData = await getDailyWorkingCalendar();
-        const WorkingCalender = WorkingCalenderData.data.data;
+      const WorkingCalenderData = await getDailyWorkingCalendar();
+      const WorkingCalender = WorkingCalenderData.data.data;
 
-        const MarketLeadTimeMasterData = await getMarketOperatingLeadTimeMasterData();
-        const MarketLeadTimeMaster = MarketLeadTimeMasterData.data?.data;
-        
-        
-        const DBRSettingsData = await getDBRsettingsData();
-        const DBRSettings = DBRSettingsData.data?.data;
-        
-        setMasters({ procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender, MarketLeadTimeMaster, DBRSettings });
+      const MarketLeadTimeMasterData = await getMarketOperatingLeadTimeMasterData();
+      const MarketLeadTimeMaster = MarketLeadTimeMasterData.data?.data;
+
+
+      const DBRSettingsData = await getDBRsettingsData();
+      const DBRSettings = DBRSettingsData.data?.data;
+
+      setMasters({ procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender, MarketLeadTimeMaster, DBRSettings });
 
       const orders = Array.from(selectedRows.values()).map((row: any) => {
         return row.data.ok
@@ -353,17 +353,17 @@ const DueDateQuotation = () => {
     }
   }
 
-  const onApplyFilter = (filter:any)=>{
+  const onApplyFilter = (filter: any) => {
     console.log(filter);
     setAppliedFilters(filter);
     setIsFilterOpen(false)
   }
-  
-  const onAddFilter = ()=>{
-      setIsFilterOpen(true)
+
+  const onAddFilter = () => {
+    setIsFilterOpen(true)
   }
 
-  const getUpdatedFilterData = async() => {
+  const getUpdatedFilterData = async () => {
     try {
       const formatedFilters = formatFilterJSON(appliedFilters);
       const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
@@ -380,34 +380,34 @@ const DueDateQuotation = () => {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     setAppliedFilters(currFilter);
-  },[currFilter])
+  }, [currFilter])
 
   useEffect(() => {
-      getUpdatedFilterData();
-  }, [appliedFilters,currentPage, unScheduled]);
+    getUpdatedFilterData();
+  }, [appliedFilters, currentPage, unScheduled]);
 
   useEffect(() => {
-      setFilterData(filterResponse?.data.data)
+    setFilterData(filterResponse?.data.data)
   }, [filterResponse]);
 
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
-      {step != 3 && 
-        <MTOActionToolBar 
-          comp="DDQ" 
+      {step != 3 &&
+        <MTOActionToolBar
+          comp="DDQ"
           quickFilter={
             step === 1 ? <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
               <Checkbox checked={unScheduled} onChange={(e: any) => setUnScheduled(e.target.checked)} theme={themeUi} />
-               &nbsp;&nbsp; <strong>Show Only Unscheduled Orders</strong>
+              &nbsp;&nbsp; <strong>Show Only Unscheduled Orders</strong>
             </div> : null
-          } 
-          isAddFilterButton 
+          }
+          isAddFilterButton
           isFilterOpen={isFilterOpen}
           onAddFilter={onAddFilter}
           toggleFilter={toggleFilter}
-          onApplyFilter={onApplyFilter} 
+          onApplyFilter={onApplyFilter}
           multiFilter={currFilter}
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
@@ -436,7 +436,7 @@ const DueDateQuotation = () => {
           </div>
         </div>
       </VFModalCard>
-      <Footer style={(rowsSelectedForAssignment && step == 2) ? { position: "fixed", bottom: 0, background:"white", width:"100%", zIndex:"2", left: 0, padding:"1rem 55px", paddingBottom:"20px", margin: 0}:{}}>
+      <Footer style={(rowsSelectedForAssignment && step == 2) ? { position: "fixed", bottom: 0, background: "white", width: "92.6%", zIndex: "2", padding: "1rem 0", paddingBottom: "20px", margin: 0 } : {}}>
         {step != 1 && <VFButtonOutline
           themeUi={themeUi}
           onClick={() => {
@@ -453,13 +453,13 @@ const DueDateQuotation = () => {
           style={{ width: "50px", height: "40px" }}>
           <img src="/assets/img/mto/dueDateQuotation/back-btn.svg" />
         </VFButtonOutline>}
-        {step != 3 && <VFButtonOutline themeUi={themeUi} 
+        {step != 3 && <VFButtonOutline themeUi={themeUi}
           onClick={() => {
             console.log();
-            if(step == 1){
+            if (step == 1) {
               gridRef.current?.deselectAllForStep1()
             }
-            if(step == 2){
+            if (step == 2) {
               assignmentRef.current?.deselectAllForStep2()
             }
           }}
@@ -474,11 +474,11 @@ const DueDateQuotation = () => {
               setStep(step + 1);
             }
             else if (assignmentRef.current?.onConfirm && step == 2) {
-              const isDDQActiveFlag = masters.DBRSettings.find((setting: any)=> setting.flag == "IsDDQActive");
+              const isDDQActiveFlag = masters.DBRSettings.find((setting: any) => setting.flag == "IsDDQActive");
               // const isDDQActiveFlag = false;
-              assignmentRef.current.onConfirm().then((data: any)=>{
-                if (data && isDDQActiveFlag){ //TODO: what to do when the flag is false and no changes are made, what message to show
-                    setStep(step + 1);
+              assignmentRef.current.onConfirm().then((data: any) => {
+                if (data && isDDQActiveFlag) { //TODO: what to do when the flag is false and no changes are made, what message to show
+                  setStep(step + 1);
                 }
               });
             }
