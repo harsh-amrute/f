@@ -147,3 +147,11 @@ export const Text = styled.div`
   font-size: 14px;
   font-weight: 300;
 `;
+
+export const BTRAvailabiltyCellRendererWrapper = styled.div`
+    height:100%;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+`

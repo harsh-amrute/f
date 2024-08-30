@@ -34,19 +34,23 @@
   zoom: 0.75;
 }
 
-.vfwrap .ag-status-bar{
+.vfwrap .ag-status-bar {
   font-size: 12px !important;
 }
 
 .vfwrap .ag-popup-child {
-  font-size: 8px !important;
+  font-size: 10px !important;
   min-width: 40px !important;
+}
+
+.vfwrap .ag-popup {
+  flex: unset !important;
 }
 
 .vfwrap .ag-cell {
   height: 100% !important;
   display: flex;
-  /* justify-content: center; */
+  justify-content: center;
   align-items: center !important;
   font-family: 'Roboto' !important;
   font-size: 12px !important;

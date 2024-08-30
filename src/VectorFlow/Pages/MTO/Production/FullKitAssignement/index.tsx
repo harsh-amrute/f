@@ -129,7 +129,8 @@ const FullKitAssignment = () => {
     },
     Tags: {
       cellRenderer: ColorCellRenderer,
-      minWidth: 140
+      minWidth: 80,
+      maxWidth: 120,
     }
   })
 
@@ -547,6 +548,20 @@ const FullKitAssignment = () => {
     legend: {
       position: "top",
       item: {
+        label: {
+          formatter: (props) => {
+            if (props.value === "stpl_in_days") {
+              return "Released WIP in Days"
+
+            }
+            else if (props.value === 'allowed_full_kits') {
+              return 'Allocated Full Kits'
+            }
+            else {
+              return 'Cummulative WIP Limit'
+            }
+          }
+        },
         showSeriesStroke: true,
         marker: {
           size: 15,

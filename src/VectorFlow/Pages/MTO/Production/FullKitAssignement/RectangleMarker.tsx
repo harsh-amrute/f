@@ -3,7 +3,7 @@ import { Marker } from "ag-charts-community";
 export class Rectangle extends Marker {
     updatePath() {
         const { x, y, path, size } = this;
-        const width = size * 4;
+        const width = size * 2;
         const height = size / 2;
 
         path.clear();

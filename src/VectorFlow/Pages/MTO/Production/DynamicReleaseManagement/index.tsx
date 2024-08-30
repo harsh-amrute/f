@@ -303,6 +303,7 @@ const DynamicReleaseManagement = () => {
 
 
       // Create the main data entry
+      console.log('dfsfsdfsfsd===>', item)
       result.push({
         category: item.ccr_code,
         "Released WIP": item.wip !== null ? item.wip : "",
@@ -375,7 +376,7 @@ const DynamicReleaseManagement = () => {
         position: 'bottom',
         gridLine: {
           enabled: false
-        }
+        },
       },
       {
         type: 'number',

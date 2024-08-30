@@ -615,14 +615,14 @@ const EnquiryResponse = () => {
         <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
 
           <Allotment vertical separator   >
-            <Allotment.Pane preferredSize={'40%'}>
+            <Allotment.Pane preferredSize={'55%'}>
               <BTRAllomentSection>
                 <ResizableTable header={myColDefs} data={filterData} />
 
               </BTRAllomentSection>
             </Allotment.Pane>
 
-            <Allotment.Pane preferredSize={'60%'}>
+            <Allotment.Pane preferredSize={'45%'}>
               <BTRAllomentSection style={{ paddingTop: '10px' }}>
 
                 <EstimatedWrapper>

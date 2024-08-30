@@ -241,7 +241,7 @@ const useSimFullKit = () => {
                         <VFPagination
                             key={1}
                             selectedRows={0}
-                            rowsPerPage={Math.min(10, totalRows)}
+                            rowsPerPage={Math.min(500, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -271,7 +271,7 @@ const useSimFullKit = () => {
                         <VFPagination
                             key={1}
                             selectedRows={0}
-                            rowsPerPage={Math.min(15, totalRows)}
+                            rowsPerPage={Math.min(500, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}

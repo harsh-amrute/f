@@ -47,10 +47,10 @@ export const BTRTableHeader = styled.p`
 
 export const BTRAvailabiltyCellRendererWrapper = styled.div`
     height:100%;
-    width:100%;
+    width:150px;
     display:flex;
     align-items:center;
-    justify-content:center;
+    justify-content:right;
 `
 
 export const BTRAvailabiltyCellRenderer = styled.div<{ value: number }>`
@@ -139,7 +139,7 @@ export const CategoryToolTipSectionDescription = styled.div`
     margin-top:5px;
 `
 
-export  const LockBtnWrapper = styled.div`
+export const LockBtnWrapper = styled.div`
     position:relative;
     z-index:300;
 `
@@ -151,7 +151,7 @@ export const LockBtn = styled.img`
     cursor:pointer;
 `
 
-export  const HorizontalViewWrapper = styled.div`
+export const HorizontalViewWrapper = styled.div`
       display:flex;
       width:100%;
 `

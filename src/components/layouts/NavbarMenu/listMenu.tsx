@@ -640,7 +640,7 @@ export const listMenuParent: any = [
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
           },
           {
-            name: "Orders Balance",
+            name: "Order Balance",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/production-planning-scheduling/insight-and-trends/order-balance",
             role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
