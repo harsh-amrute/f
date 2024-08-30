@@ -20,7 +20,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles";
-import { pagination } from "../../Common/Enum";
+//import { pagination } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
 

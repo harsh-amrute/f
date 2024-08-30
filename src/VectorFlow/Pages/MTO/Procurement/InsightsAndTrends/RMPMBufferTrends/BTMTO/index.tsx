@@ -247,7 +247,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
             },
             {
                 title: {
-                    formatter: (props) => {
+                    formatter: () => {
                         if (actBtn.label === 'Absolute Value') {
                             return 'Total Procurement Orders'
                         }
