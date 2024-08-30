@@ -150,7 +150,10 @@ const RMPMOrderwiseCoverage = () => {
         },
         FullKitAvailable: {
             cellRenderer: FullkitCellRenderer,
-            minWidth: 100,
+            minWidth: 90,
+            cellStyle: {
+                paddingRight: '20px'
+            },
         }
 
 

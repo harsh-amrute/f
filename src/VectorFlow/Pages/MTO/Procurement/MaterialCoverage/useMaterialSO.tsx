@@ -25,6 +25,10 @@ const useMaterialSO = (data: any) => {
         },
         FullKitAvail: {
             minWidth: 100,
+            maxWidth: 100,
+            cellStyle: {
+                paddingRight: '25px'
+            },
             cellRenderer: "avlCellRenderer",
             tooltipComponent: 'availabilityToolTip',
             tooltipValueGetter: (params: any) => {

@@ -80,6 +80,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
         suppressDragLeaveHidesColumns={true}
         defaultColDef={
           {
+            ...props?.gridOptions?.defaultColDef,
             ...props?.defaultColDef,
             filter: "agTextColumnFilter",
             floatingFilterComponentParams: { suppressFilterButton: false },
