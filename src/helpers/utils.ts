@@ -305,7 +305,43 @@ export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
   return [...result,...RRRSpecificColumns]
 }
 
-export const handleDownload = async (reportName: string, nameFile: string) => {
+export const handleDownload = async (nameApi: string, nameFile: string) => {
+  try {
+    const token = await MainService.refreshToken();
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}${nameApi}`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`
+      }
+    })  
+    // Convert response to blob object
+    const blob = await response.blob()
+    // Create download URL for blob object
+    const url = URL.createObjectURL(blob)
+  
+    // Trigger download
+    const link = document.createElement('a')
+    link.href = url
+    if(nameFile===''){
+      const temp = response.headers.get('content-disposition')?.split('=');
+      if(temp) nameFile = temp[temp.length-1];
+      link.setAttribute('download', `${nameFile}`)
+    }
+    else{
+      link.setAttribute('download', `${nameFile}.csv`)
+    }
+    document.body.appendChild(link)
+    link.click()
+    // Clean up download URL
+    URL.revokeObjectURL(url);
+    return true;
+  } catch (error:any) {
+    notifyError(error);
+  }
+ 
+}
+
+
+export const handleDownloadVF = async (reportName: string, downloadName:string) => {
   try {
     const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
@@ -325,13 +361,10 @@ export const handleDownload = async (reportName: string, nameFile: string) => {
     // Trigger download
     const link = document.createElement('a')
     link.href = url
-    if(nameFile===''){
-      const temp = response.headers.get('content-disposition')?.split('=');
-      if(temp) nameFile = temp[temp.length-1];
-      link.setAttribute('download', `${reportName}`)
-    }
-    else{
-      link.setAttribute('download', `${reportName}.csv`)
+    if(downloadName.length!==0){
+      link.setAttribute('download', `${downloadName}`)
+    }else{
+      link.setAttribute('download', `ReportFile.zip`)
     }
     document.body.appendChild(link)
     link.click()

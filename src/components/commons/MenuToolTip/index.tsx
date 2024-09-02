@@ -9,7 +9,7 @@ import {
   TooltipContent,
   SCIcon,
 } from "./style";
-import {handleDownload,navigateWithPrompt} from "../../../helpers/utils";
+import {handleDownloadVF,navigateWithPrompt} from "../../../helpers/utils";
 import {useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
@@ -28,12 +28,12 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
   }
 
   
-  const handleTooltipClick = async (url:string) => {
+  const handleTooltipClick = async (url:string,downloadName?:any) => {
     
     if(reportUrls.includes(url)){
       setTempUrls([...tempUrls].concat(url));
       setIsLoading(true);
-      if(await handleDownload(url,'')) {
+      if(await handleDownloadVF(url,downloadName)) {
         setIsLoading(false);
         const tempArr = tempUrls.filter((tempUrl:string)=>tempUrl===url)
         setTempUrls([...tempArr]);
@@ -99,7 +99,7 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
                 key={index}
                 action={itemChild.url === location.pathname}
                 themeUi={themeUi}
-                onClick={() => handleTooltipClick(itemChild.url)}
+                onClick={() => handleTooltipClick(itemChild.url,itemChild.downloadName)}
               >
                 {t(itemChild.name) || itemChild.name}
                 {itemChild.url !== location.pathname && (

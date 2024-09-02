@@ -34,7 +34,8 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
       img: "/assets/img/nav/arrow_down.svg", 
       imgHover: "/assets/img/nav/DownloadReport-Icon.svg", 
       url: key, 
-      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"] 
+      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      downloadName: attributes.downloadName
     }));
     const extractedNewMenu = _.cloneDeep(listMenuParent)
     const targetObject = extractedNewMenu.find((item:any) => item.id === 8);
