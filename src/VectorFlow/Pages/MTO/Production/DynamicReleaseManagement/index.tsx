@@ -29,6 +29,7 @@ const DynamicReleaseManagement = () => {
       ccr_code: string;
       limit: number | null;
       wip: number | null;
+      ccr_n: string;
     };
   }
   interface OutputData {
@@ -37,6 +38,7 @@ const DynamicReleaseManagement = () => {
     Limit: number | string;
     "Incremental WIP": number;
     selected: boolean;
+    ccr_name: string;
   }
   const [HeaderData] = useState(fullKitAssignmentHeader);
   const refGrid = useRef<GridRef | any>(null)
@@ -292,18 +294,20 @@ const DynamicReleaseManagement = () => {
 
 
 
+
   function convertData(input: InputData): OutputData[] {
     const result: OutputData[] = [];
 
     // Convert the input object to an array of keys for iteration
     const keys = Object.keys(input);
+    let uniqueKey = "";
 
     keys.forEach((key, index) => {
+      uniqueKey += ' ';
       const item = input[key];
 
 
       // Create the main data entry
-      console.log('dfsfsdfsfsd===>', item)
       result.push({
         category: item.ccr_code,
         "Released WIP": item.wip !== null ? item.wip : "",
@@ -311,6 +315,7 @@ const DynamicReleaseManagement = () => {
         // "Incremental WIP": index % 2 === 0 ? 20 : "", // Just as an example
         "Incremental WIP": 0, // Just as an example
         selected: true,
+        ccr_name: item.ccr_n
       });
 
       // Create the empty separator entry
@@ -320,6 +325,7 @@ const DynamicReleaseManagement = () => {
         Limit: "",
         "Incremental WIP": 0,
         selected: true,
+        ccr_name: uniqueKey
       });
     });
 
@@ -332,7 +338,7 @@ const DynamicReleaseManagement = () => {
     series: [
       {
         type: 'bar',
-        xKey: 'category',
+        xKey: 'ccr_name',
         yKey: "Released WIP",
         stacked: true,
         strokeWidth: 0,
@@ -347,7 +353,7 @@ const DynamicReleaseManagement = () => {
 
       {
         type: 'bar',
-        xKey: 'category',
+        xKey: 'ccr_name',
         yKey: "Incremental WIP",
         stacked: true,
         strokeWidth: 0,
@@ -360,7 +366,7 @@ const DynamicReleaseManagement = () => {
       },
       {
         type: 'scatter',
-        xKey: 'category',
+        xKey: 'ccr_name',
         yKey: 'Limit',
         marker: {
           size: 10,
@@ -640,7 +646,7 @@ const DynamicReleaseManagement = () => {
         <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
           <AgChartsReact ref={graph} options={chartoptions} />
         </div>
-        <EditRouteModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} graphData={finalGraphData} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
+        <EditRouteModal chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} graphData={finalGraphData} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
         <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
       </Wrapper >
     </>

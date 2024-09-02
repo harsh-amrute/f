@@ -10,7 +10,7 @@ import OverlayLoader from '../../Common/Loader'
 import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
 
-const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, graphData, themeUi }: any) => {
+const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, graphData, themeUi }: any) => {
 
     const { mutateAsync: saveRouteData, isLoading, isSuccess, isError } = useSaveRouteData();
 
@@ -122,83 +122,7 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, setRouteNum, lineCCRDetai
 
     }, []);
 
-    const chartoptions: AgChartOptions = {
-        data: graphData,
-        series: [
-            {
-                type: 'bar',
-                xKey: 'category',
-                yKey: "Released WIP",
-                stacked: true,
-                strokeWidth: 0,
-                fill: "#191919",
-                formatter: (params) => {
-                    return {
-                        fillOpacity: params.datum.selected ? 1 : 0.5,
-                        fill: params.datum.selected ? params.fill : "#191919"
-                    }
-                }
-            },
-            {
-                type: 'bar',
-                xKey: 'category',
-                yKey: "Incremental WIP",
-                stacked: true,
-                strokeWidth: 0,
-                fill: "#4BAAF7",
-                formatter: (params) => {
-                    return {
-                        fill: params.datum.selected ? params.fill : "#4BAA66"
-                    }
-                }
-            },
-            {
-                type: 'scatter',
-                xKey: 'category',
-                yKey: 'Limit',
-                marker: {
-                    size: 10,
-                    fill: '#E53F3F',
-                    shape: Rectangle,
-                    strokeWidth: 0
-                },
 
-            },
-        ],
-        axes: [
-            {
-                type: 'category',
-                position: 'bottom',
-                gridLine: {
-                    enabled: false
-                }
-            },
-            {
-                type: 'number',
-                position: 'left',
-                title: {
-                    text: "Days"
-                },
-                gridLine: {
-                    enabled: false
-                }
-            },
-
-        ],
-        legend: {
-            position: "top",
-
-            item: {
-                showSeriesStroke: true,
-                marker: {
-                    size: 15,
-                    strokeWidth: 0,
-                    shape: 'square',
-                },
-            },
-        },
-
-    }
 
     const SaveRoute = async () => {
         const data = convertToRequiredFormat(route, lineCCRDetails);
