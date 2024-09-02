@@ -305,14 +305,18 @@ export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
   return [...result,...RRRSpecificColumns]
 }
 
-export const handleDownload = async (nameApi: string, nameFile: string) => {
+export const handleDownload = async (reportName: string, nameFile: string) => {
   try {
     const token = await MainService.refreshToken();
-    const response = await fetch(`${process.env.REACT_APP_API_HOST}${nameApi}`, {
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
       headers: {
         Authorization: `Bearer ${token?.access}`
       }
     })  
+    if(!response.ok){
+      notifyError("Error while downloading")
+      return false;
+    }else{
     // Convert response to blob object
     const blob = await response.blob()
     // Create download URL for blob object
@@ -324,18 +328,20 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
     if(nameFile===''){
       const temp = response.headers.get('content-disposition')?.split('=');
       if(temp) nameFile = temp[temp.length-1];
-      link.setAttribute('download', `${nameFile}`)
+      link.setAttribute('download', `${reportName}`)
     }
     else{
-      link.setAttribute('download', `${nameFile}.csv`)
+      link.setAttribute('download', `${reportName}.csv`)
     }
     document.body.appendChild(link)
     link.click()
     // Clean up download URL
     URL.revokeObjectURL(url);
     return true;
+  }
   } catch (error:any) {
-    notifyError(error);
+    notifyError('Error while downloading');
+    return false;
   }
  
 }

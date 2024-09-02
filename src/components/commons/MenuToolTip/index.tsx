@@ -14,15 +14,12 @@ import {useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 
-const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading,setIsHide,setWidthResponsive }: any) => {
+const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading,setIsHide,setWidthResponsive , reportUrls }: any) => {
   const { t } = useTranslation();
   const { user,toggleSideBar } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const location = useLocation();
   const navigate = useNavigate();
-  //Add Report Urls to this Array
-  const reportUrls = ['/api/download-reports/bpr','/api/download-reports/fr','/api/download-reports/rosn','/api/download-reports/store_classification','/api/download-reports/ist'];
-
   const mdm = useSelector((state:RootState) => state.mdm);
   const dispatch = useDispatch();
 
@@ -37,6 +34,10 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
       setTempUrls([...tempUrls].concat(url));
       setIsLoading(true);
       if(await handleDownload(url,'')) {
+        setIsLoading(false);
+        const tempArr = tempUrls.filter((tempUrl:string)=>tempUrl===url)
+        setTempUrls([...tempArr]);
+      }else{
         setIsLoading(false);
         const tempArr = tempUrls.filter((tempUrl:string)=>tempUrl===url)
         setTempUrls([...tempArr]);
@@ -90,7 +91,7 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
           if (
             (user.url_permission.includes(itemChild.url) ||
             itemChild.url === "" ||
-            itemChild.url === "/profile" || reportUrls.includes(itemChild.url)) && checkRole
+            itemChild.url === "/profile" || reportUrls.includes(itemChild.url))  && checkRole
           ) {
             return (
               
