@@ -19,13 +19,13 @@ import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from "../../../Common/GridView";
 
 const APIFilterConfig = {
-  filSecVisConfig :  {
-      "Poogi_OTIF_Analysis" : {
-          mjr : true,
-          or: true,
-          res: true,
-          cus: true
-      },
+  filSecVisConfig: {
+    "Poogi_OTIF_Analysis": {
+      mjr: true,
+      or: true,
+      res: true,
+      cus: true
+    },
   }
 };
 
@@ -67,23 +67,23 @@ const OTIFAnalysis = () => {
   }
 
   useEffect(() => {
-    getGraphData({graphflag: 1});
+    getGraphData({ graphflag: 1 });
   }, []);
 
   useEffect(() => {
     setFilterData(filterResponse?.data.data)
   }, [filterResponse]);
 
-  const onApplyFilter = (filter:any)=>{
+  const onApplyFilter = (filter: any) => {
     console.log(filter)
     setIsFilterOpen(false)
   }
-  const onAddFilter = ()=>{
+  const onAddFilter = () => {
     setIsFilterOpen(true)
   }
 
-  const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
-  
+  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
+
   useEffect(() => {
     if (isSuccess) {
       notifySuccess("Fetched Data successfully!")
@@ -106,20 +106,20 @@ const OTIFAnalysis = () => {
         isFilterOpen={isFilterOpen}
         onAddFilter={onAddFilter}
         toggleFilter={toggleFilter}
-        onApplyFilter={onApplyFilter} 
+        onApplyFilter={onApplyFilter}
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
         onFilterRemove={onFilterRemove}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (
-          <GridView 
-              getData={getOTIFAnalysisData} 
-              reportName="OTIFAnalysis" 
-              isLoading={isLoading} 
-              isError={isError} 
-              isSuccess={isSuccess} 
-              colDefCustomizations={colDefCustomizations}
+          <GridView
+            getData={getOTIFAnalysisData}
+            reportName="OTIFAnalysis"
+            isLoading={isLoading}
+            isError={isError}
+            isSuccess={isSuccess}
+            colDefCustomizations={colDefCustomizations}
           />
 
         ) : (

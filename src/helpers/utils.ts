@@ -2492,6 +2492,10 @@ export const mapSimulateProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfi
         hide: !f.vs,
 
         cellRenderer: 'agGroupCellRenderer',
+        cellStyle:{
+          width: 50,
+          maxWidth: 50,
+        },
         initialWidth: 40,
       }
     }
