@@ -2354,7 +2354,81 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
         ...BTRDefaultColDefs
       }
     }
+    if(key=='age'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'Age',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='pc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'ParentWhCode',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='pn'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'ParentName',
+        ...BTRDefaultColDefs
+      }
+    }
     
+    if(key=='wc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'WhiteCount',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='bc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'BlackCount',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='blc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'BlueCount',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='rc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'RedCount',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='yc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'YellowCount',
+        ...BTRDefaultColDefs
+      }
+      
+    }
+     if(key=='gc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'GreenCount',
+        ...BTRDefaultColDefs
+      }
+    }
+
     if(key==='Availability'){
       return {
         field:key,

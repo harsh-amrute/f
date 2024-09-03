@@ -38,12 +38,12 @@ const VerticalSplitView = (props:SplitViewProps)=>{
 
     const staticTableColDefs = useMemo(()=>{
         if(!techTable.columnDefs) return []
-        return techTable.columnDefs.filter((col)=>col.headerName &&  ['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"].includes(col.headerName))
+        return techTable.columnDefs.filter((col)=>col.headerName &&  ['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN", "ParentWhCode", "ParentName"].includes(col.headerName))
     },[techTable.columnDefs])
 
     const techTableColDefs = useMemo(()=>{
         if(!techTable.columnDefs) return []
-        return techTable.columnDefs.filter((col)=>col.headerName &&  !['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"].includes(col.headerName))
+        return techTable.columnDefs.filter((col)=>col.headerName &&  !['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN", "ParentWhCode", "ParentName"].includes(col.headerName))
     },[techTable.columnDefs])
 
     const handleChange = (sizes:Array<number>)=>{
