@@ -1,6 +1,6 @@
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 import { GridOptions } from 'ag-grid-enterprise';
 import _ from 'lodash';
-import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../Common/VFTable';
 
@@ -13,28 +13,24 @@ interface IStep1Props {
   currentPage: number,
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
   scheduledOrders: any,
-  setSelectedRows: any
+  setSelectedRows: any,
+  setCurrentGridRef: any,
+  currentGridRef: any,
+  columnState: any
 }
 
-const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows }: IStep1Props, ref: any) => {
+const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState }: IStep1Props, ref: any) => {
 
-  const gridRef = useRef<any>()
+  const gridRef = useRef<any>();
+
   const handlePageChange = async (currPage: number) => {
-    setCurrentPage(currPage)
-  }
-
-  // useEffect(()=>{
-  //   const newMap = new Map(selectedRows)
-  //   scheduledOrders.forEach((order: any)=>{
-  //     newMap.delete(order);
-  //   })
-  //   setSelectedRows(newMap)
-  // }, [scheduledOrders])
+    setCurrentPage(currPage);
+  };
 
   const deselectAllForStep1 = () => {
     gridRef.current?.api.deselectAll();
     setSelectedRows(new Map());
-  }
+  };
 
   useImperativeHandle(ref, () => ({
     deselectAllForStep1: deselectAllForStep1
@@ -43,6 +39,37 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
   const isRowSelectable = useCallback((params: any) => {
     return (params.data.dd == null || params.data.dd == undefined);
   }, []);
+
+  useEffect(() => {
+    if (gridRef.current && columnState.length) {
+      console.log('Applying column state:', columnState);
+      const result = gridRef.current.columnApi.applyColumnState({
+        state: columnState,
+        applyOrder: true, // Ensure order is applied
+      });
+      console.log(result, "RESULT")
+      if (!result) {
+        console.error('Failed to apply column state');
+      }
+    }
+  }, [columnState, currentGridRef]); // Reapply column state whenever it changes
+
+  // useEffect(()=>{
+  //   if(currentGridRef){
+
+  //     if (currentGridRef?.current && columnState?.length) {
+
+  //       const result = currentGridRef.current.columnApi.applyColumnState({
+  //         state: columnState,
+  //         applyOrder: true, // Ensure order is applied
+  //       });
+  //       console.log(result, 'RESLUT')
+  //       if (!result) {
+  //         console.error('Failed to apply column state');
+  //       }
+  //     }
+  //   }
+  // },[])
 
   return (
     <>
@@ -53,35 +80,31 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
         columnDefs={gridOptions.columnDefs}
         rowData={rows}
         isRowSelectable={isRowSelectable}
-        // domLayout="autoHeight"
         rowSelection="multiple"
         onGridReady={(params: any) => {
           params.columnApi.autoSizeAllColumns();
+          setCurrentGridRef(gridRef);
         }}
         onRowDataUpdated={(params) => {
           const selectedRowIds = Array.from(selectedRows.keys());
-          const newCurrentPageSeleceted: any = []
+          const newCurrentPageSelected: any = [];
           params.api.forEachNode(node => {
             if (selectedRowIds.includes(node.data.ok)) {
-              newCurrentPageSeleceted.push(node)
+              newCurrentPageSelected.push(node);
             }
           });
-          currentPageSelectedRows.current = newCurrentPageSeleceted;
-          params.api.setNodesSelected({ nodes: newCurrentPageSeleceted, newValue: true });
+          currentPageSelectedRows.current = newCurrentPageSelected;
+          params.api.setNodesSelected({ nodes: newCurrentPageSelected, newValue: true });
         }}
         onSelectionChanged={(params: any) => {
           const newMap = new Map(selectedRows);
           _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
             newMap.delete(node.data.ok);
-          })
-          //to sort within the same page
-          // params.api.getSelectedNodes().forEach((node: any) => {
-          //   newMap.delete(node.data.ok);
-          // })
+          });
           params.api.getSelectedNodes().forEach((node: any) => {
             newMap.set(node.data.ok, node);
-          })
-          setSelectedRows(newMap)
+          });
+          setSelectedRows(newMap);
           currentPageSelectedRows.current = params.api.getSelectedNodes();
         }}
       />
@@ -93,7 +116,7 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
         handleChangePage={handlePageChange}
       />
     </>
-  )
-})
+  );
+});
 
-export default Step1
+export default Step1;

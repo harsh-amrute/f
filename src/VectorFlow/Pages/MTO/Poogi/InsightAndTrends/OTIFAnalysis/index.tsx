@@ -17,6 +17,7 @@ import { useGetOTIFAnalysisData } from "../../../../../../VectorFlow/Services/MT
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from "../../../Common/GridView";
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 
 const APIFilterConfig = {
   filSecVisConfig :  {
@@ -37,6 +38,11 @@ const OTIFAnalysis = () => {
   const [graphData, setGraphData] = useState<any>({});
   const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+
   const toggleFilter = (state: boolean) => {
     setIsFilterOpen(state);
   }
@@ -82,6 +88,48 @@ const OTIFAnalysis = () => {
     setIsFilterOpen(true)
   }
 
+  const getUserColumnConfig = async () => {
+    try {
+      const data = await getUserUIReportConfigData({
+        un: "rohan",
+        rn_id: 2
+      });
+
+      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+      setColumnState(newConfig);
+
+
+      if (!data) {
+        console.error('Failed to apply column state');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const handleSaveClick = async () => {
+    try {
+      const config = currentGridRef.current.columnApi.getColumnState();
+
+      const payload = {
+        un: "rohan",
+        rn_id: 2,
+        cs: JSON.stringify(config)
+      }
+
+      await updateUserUIReportConfigData([payload]);
+      await getUserColumnConfig();
+
+     
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(()=>{
+    getUserColumnConfig();
+  },[])
+
+
   const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
   
   useEffect(() => {
@@ -110,6 +158,7 @@ const OTIFAnalysis = () => {
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
         onFilterRemove={onFilterRemove}
+        handleSaveClick={handleSaveClick}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (
@@ -120,6 +169,9 @@ const OTIFAnalysis = () => {
               isError={isError} 
               isSuccess={isSuccess} 
               colDefCustomizations={colDefCustomizations}
+              setCurrentGridRef={setCurrentGridRef}
+              currentGridRef={currentGridRef}
+              columnState={columnState}
           />
 
         ) : (

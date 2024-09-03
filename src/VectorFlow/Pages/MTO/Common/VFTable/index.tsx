@@ -34,7 +34,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
     }
   }
 
-  console.log(props.gridOptions)
+  // console.log(props.gridOptions)
 
   return (
     <VFTableWrapper className={`${getClassName()} ag-theme-alpine vfwrap`} role={"table"} height={props.height} disableZoomScaling={props.disableZoomScaling}>

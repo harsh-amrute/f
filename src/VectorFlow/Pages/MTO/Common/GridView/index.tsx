@@ -17,14 +17,17 @@ interface IGridViewProps {
     isLoading: boolean,
     isError: boolean,
     isSuccess: boolean,
-    colDefCustomizations?: any
+    colDefCustomizations?: any,
+    setCurrentGridRef?: any,
+    currentGridRef?: any,
+    columnState?: any
 }
 
 const GridView = (props: IGridViewProps) => {
 
-    const { getData, reportName, isLoading, isError, isSuccess, colDefCustomizations = {} } = props;
+    const { getData, reportName, isLoading, isError, isSuccess, colDefCustomizations = {}, setCurrentGridRef, currentGridRef, columnState } = props;
 
-    const gridRef = useRef(null);
+    const gridRef = useRef<any>(null);
     const [colDef, setColDef] = useState([{}]);
     const [HeaderData, setHeaderData] = useState([]);
     const [gridData, setGridData] = useState([]);
@@ -113,6 +116,36 @@ const GridView = (props: IGridViewProps) => {
         }
     }, [isSuccess, isError])
 
+    useEffect(() => {
+        if (currentGridRef?.current && columnState?.length) {
+          console.log('Applying column state:', columnState);
+          const result = currentGridRef.current.columnApi.applyColumnState({
+            state: columnState,
+            applyOrder: true
+          });
+          console.log(result, 'RESS');
+          console.log(colDef, 'COLUMN def');
+          if (!result) {
+            console.error('Failed to apply column state');
+          }
+        }
+      }, [columnState, currentGridRef]); 
+    // 
+    useEffect(() => {
+        if (currentGridRef?.current && columnState?.length) {
+          console.log('Applying column state:', columnState);
+          const result = currentGridRef.current.columnApi.applyColumnState({
+            state: columnState,
+            applyOrder: true
+          });
+          console.log(result, 'RESS');
+          console.log(colDef, 'COLUMN def');
+          if (!result) {
+            console.error('Failed to apply column state');
+          }
+        }
+      }, [colDef]); 
+
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
@@ -130,6 +163,11 @@ const GridView = (props: IGridViewProps) => {
                 rowData={gridData}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
+                onGridReady={(params: any) => {
+                    params.columnApi.autoSizeAllColumns();
+
+                    setCurrentGridRef(gridRef);
+                }}
                 tooltipMouseTrack={true}
                 ref={gridRef}
                 statusBar={{
@@ -145,6 +183,12 @@ const GridView = (props: IGridViewProps) => {
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
             />
+            {/* <button onClick={()=> {
+                 const result = currentGridRef.current.columnApi.applyColumnState({
+                    state: columnState,
+                    applyOrder: true
+                  });
+            }}>UPDATE</button> */}
         </SCDynamicContainer>
 
     )
