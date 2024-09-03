@@ -9,20 +9,17 @@ import {
   TooltipContent,
   SCIcon,
 } from "./style";
-import {handleDownload,navigateWithPrompt} from "../../../helpers/utils";
+import {handleDownloadVF,navigateWithPrompt} from "../../../helpers/utils";
 import {useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 
-const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading,setIsHide,setWidthResponsive }: any) => {
+const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading,setIsHide,setWidthResponsive , reportUrls }: any) => {
   const { t } = useTranslation();
   const { user,toggleSideBar } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const location = useLocation();
   const navigate = useNavigate();
-  //Add Report Urls to this Array
-  const reportUrls = ['/api/download-reports/bpr','/api/download-reports/fr','/api/download-reports/rosn','/api/download-reports/store_classification','/api/download-reports/ist'];
-
   const mdm = useSelector((state:RootState) => state.mdm);
   const dispatch = useDispatch();
 
@@ -31,12 +28,16 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
   }
 
   
-  const handleTooltipClick = async (url:string) => {
+  const handleTooltipClick = async (url:string,downloadName?:any) => {
     
     if(reportUrls.includes(url)){
       setTempUrls([...tempUrls].concat(url));
       setIsLoading(true);
-      if(await handleDownload(url,'')) {
+      if(await handleDownloadVF(url,downloadName)) {
+        setIsLoading(false);
+        const tempArr = tempUrls.filter((tempUrl:string)=>tempUrl===url)
+        setTempUrls([...tempArr]);
+      }else{
         setIsLoading(false);
         const tempArr = tempUrls.filter((tempUrl:string)=>tempUrl===url)
         setTempUrls([...tempArr]);
@@ -90,7 +91,7 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
           if (
             (user.url_permission.includes(itemChild.url) ||
             itemChild.url === "" ||
-            itemChild.url === "/profile" || reportUrls.includes(itemChild.url)) && checkRole
+            itemChild.url === "/profile" || reportUrls.includes(itemChild.url))  && checkRole
           ) {
             return (
               
@@ -98,7 +99,7 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
                 key={index}
                 action={itemChild.url === location.pathname}
                 themeUi={themeUi}
-                onClick={() => handleTooltipClick(itemChild.url)}
+                onClick={() => handleTooltipClick(itemChild.url,itemChild.downloadName)}
               >
                 {t(itemChild.name) || itemChild.name}
                 {itemChild.url !== location.pathname && (

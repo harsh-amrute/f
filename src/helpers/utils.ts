@@ -340,6 +340,45 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
  
 }
 
+
+export const handleDownloadVF = async (reportName: string, downloadName:string) => {
+  try {
+    const token = await MainService.refreshToken();
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`
+      }
+    })  
+    if(!response.ok){
+      notifyError("Error while downloading")
+      return false;
+    }else{
+    // Convert response to blob object
+    const blob = await response.blob()
+    // Create download URL for blob object
+    const url = URL.createObjectURL(blob)
+  
+    // Trigger download
+    const link = document.createElement('a')
+    link.href = url
+    if(downloadName.length!==0){
+      link.setAttribute('download', `${downloadName}`)
+    }else{
+      link.setAttribute('download', `ReportFile.zip`)
+    }
+    document.body.appendChild(link)
+    link.click()
+    // Clean up download URL
+    URL.revokeObjectURL(url);
+    return true;
+  }
+  } catch (error:any) {
+    notifyError('Error while downloading');
+    return false;
+  }
+ 
+}
+
 export const handleDataProductFilter = (data: any) => {
   const filterDuplicateValues = (listData: any) => {
     const newListData = listData.filter((item: string, index: number) => {
