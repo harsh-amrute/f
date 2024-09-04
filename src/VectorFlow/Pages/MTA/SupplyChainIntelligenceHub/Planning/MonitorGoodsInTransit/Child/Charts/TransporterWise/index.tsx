@@ -10,7 +10,7 @@ import VFModalCard from "../../../../../../../../../components/VectorFLOW/common
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 import Chart from 'react-apexcharts';
-import {convertToInt} from '../../../../../../../../../helpers/utils';
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../../helpers/utils';
 
 interface MonitorGITChildTransporterWiseProps{
     data:any
@@ -66,6 +66,10 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+            if(customColdef) return customColdef;
+
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -119,6 +123,10 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+            if(customColdef) return customColdef;
+
             return {
                 field:column['colCode'],
                 colId:column['colCode'],

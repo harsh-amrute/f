@@ -177,5 +177,11 @@ export namespace MDMService {
     })
   }
 
+  export const getAllReports = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + '/GetAllReports',{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
 }
 

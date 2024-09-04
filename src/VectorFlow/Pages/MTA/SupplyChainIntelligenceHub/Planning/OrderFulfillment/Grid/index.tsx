@@ -2,7 +2,7 @@ import {useMemo, useState} from 'react';
 import GridViewTable from "../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import { createIconColumn } from '../../../../../../../helpers/utils';
+import { createIconColumn, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { OrderCoverageCellRenderer } from '../../../../../../../components/VectorFLOW/commons/OrderCoverageCellRenderer';
@@ -110,6 +110,8 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
                     minWidth: 250,
                 }
             }
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field: column['colCode'],
                 colId: column['colCode'],

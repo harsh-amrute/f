@@ -7,7 +7,7 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import {convertToInt} from '../../../../../../../../../helpers/utils';
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../../helpers/utils';
 
 interface CreateAvailabilityAtParentProps{
     data:any
@@ -50,6 +50,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+            if(customColdef) return customColdef
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -89,6 +92,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],

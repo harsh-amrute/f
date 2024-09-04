@@ -4,7 +4,7 @@ import { BPRTagsCellRenderer } from "../../../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
-import { createIconColumn } from '../../../../../../../../../helpers/utils';
+import { createIconColumn,getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { AgeingCellRenderer } from '../../../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
@@ -185,6 +185,11 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
             if(column.colCode === 't'){
                 return tagsColDef
             }
+
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+            if(customColdef) return customColdef
+            
             return {
                 field:column['colCode'],
                 colId:column['colCode'],

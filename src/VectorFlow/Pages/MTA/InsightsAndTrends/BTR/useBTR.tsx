@@ -376,7 +376,7 @@ const useBTR = ()=>{
 
     const ecoColDefs = useMemo(():Array<ColDef>=>{
         if(ecoRowData.length===0)return []
-        if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"])
+        if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN","pc","pn"])
         return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,["RN"])
     },[ecoRowData,currentTab,verticalView,dateLabels])
 

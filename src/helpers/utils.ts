@@ -340,6 +340,45 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
  
 }
 
+
+export const handleDownloadVF = async (reportName: string, downloadName:string) => {
+  try {
+    const token = await MainService.refreshToken();
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`
+      }
+    })  
+    if(!response.ok){
+      notifyError("Error while downloading")
+      return false;
+    }else{
+    // Convert response to blob object
+    const blob = await response.blob()
+    // Create download URL for blob object
+    const url = URL.createObjectURL(blob)
+  
+    // Trigger download
+    const link = document.createElement('a')
+    link.href = url
+    if(downloadName.length!==0){
+      link.setAttribute('download', `${downloadName}`)
+    }else{
+      link.setAttribute('download', `ReportFile.zip`)
+    }
+    document.body.appendChild(link)
+    link.click()
+    // Clean up download URL
+    URL.revokeObjectURL(url);
+    return true;
+  }
+  } catch (error:any) {
+    notifyError('Error while downloading');
+    return false;
+  }
+ 
+}
+
 export const handleDataProductFilter = (data: any) => {
   const filterDuplicateValues = (listData: any) => {
     const newListData = listData.filter((item: string, index: number) => {
@@ -2315,7 +2354,81 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
         ...BTRDefaultColDefs
       }
     }
+    if(key=='age'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'Age',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='pc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'ParentWhCode',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='pn'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'ParentName',
+        ...BTRDefaultColDefs
+      }
+    }
     
+    if(key=='wc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'WhiteCount',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='bc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'BlackCount',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='blc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'BlueCount',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='rc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'RedCount',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='yc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'YellowCount',
+        ...BTRDefaultColDefs
+      }
+      
+    }
+     if(key=='gc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'GreenCount',
+        ...BTRDefaultColDefs
+      }
+    }
+
     if(key==='Availability'){
       return {
         field:key,
@@ -2640,6 +2753,7 @@ export const floatingStoreColors: Record<string, { color: string; backgroundColo
   }
 };
 
+
 export const getMCGridStoreImgSrc = (status:string):string=>{
   if('surplus' === status)return '/assets/img/VectorFLOW/BPR/mc-grid-surplus.svg'
   if('incomplete' === status) return '/assets/img/VectorFLOW/BPR/mc-grid-deficit-incomplete.svg'
@@ -2650,4 +2764,59 @@ export const getMCGridStoreIconColor = (status:string):string=>{
   if('very-incomplete' === status)return '#F8416C'
   if('incomplete' === status) return '#ED8D3A'
   return 'rgb(105, 105, 105)'
+}
+
+
+export const getProductAndLocationHeirarchiesFromEnv = (column:any,extraProperties:any) => {
+    if(column.colCode === 'sl1'){
+      return {
+          field:column['colCode'],
+          colId:column['colCode'],
+          headerName:process.env.REACT_APP_PRODUCT_PERMISSION_L1,
+          ...extraProperties
+      }
+    }
+    if(column.colCode === 'sl2'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_PRODUCT_PERMISSION_L2,
+            ...extraProperties
+        }
+    }
+    if(column.colCode === 'sl3'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_PRODUCT_PERMISSION_L3,
+            ...extraProperties
+        }
+    }
+    if(column.colCode === 'll1'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_LOCATION_PERMISSION_L1,
+            ...extraProperties
+        }
+    }
+    if(column.colCode === 'll2'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_LOCATION_PERMISSION_L2,
+            ...extraProperties
+        }
+    }
+
+    if(column.colCode === 'll3'){
+      return {
+          field:column['colCode'],
+          colId:column['colCode'],
+          headerName:process.env.REACT_APP_LOCATION_PERMISSION_L3,
+          ...extraProperties
+      }
+  }
+
+  return undefined;
 }
