@@ -2583,3 +2583,71 @@ export const performNumericalOpertionsForBPRViewTableFilter =(num1:number,num2:n
 export const getFiltersArrayFromColDefs = (colDefs:Array<BPRViewTableColDef>):Array<any>=>{
  return  colDefs.filter((c)=>c.filter).map((f)=>({colId:f.colId,filterValue:'',dataType:f.dataType,query:null}))
 }
+
+export const storeCellColors: Record<string, { color: string; backgroundColor: string,border:string }> = {
+  surplus: {
+    color: '#585757',
+    backgroundColor: '#fafafaff',
+    border:'#d0d6ceff'
+  },
+  complete: {
+    color: '#306A0F',
+    backgroundColor: '#f7fff2ff',
+    border:'#dfedd8ff'
+  },
+  incomplete: {
+    color: '#816F08',
+    backgroundColor: '#fffcedff',
+    border:'#faf7deff'
+  },
+  'very-incomplete': {
+    color: '#C61C1C',
+    backgroundColor: '#fff2f2ff',
+    border:'#e8c1beff'
+  },
+  default: {
+    color: '#585757',
+    backgroundColor: '#EBE5E5',
+    border:'#d0d6ceff'
+  }
+};
+
+export const floatingStoreColors: Record<string, { color: string; backgroundColor: string,border:string }> = {
+  surplus: {
+    color: '#585757',
+    backgroundColor: '#fafafaff',
+    border:'#d0d6ceff'
+  },
+  complete: {
+    color: '#306A0F',
+    backgroundColor: '#f7fff2ff',
+    border:'#dfedd8ff'
+  },
+  incomplete: {
+    color: '#816F08',
+    backgroundColor: '#fffcedff',
+    border:'#faf7deff'
+  },
+  'very-incomplete': {
+    color: '#C61C1C',
+    backgroundColor: '#fff2f2ff',
+    border:'#e8c1beff'
+  },
+  default: {
+    color: '#585757',
+    backgroundColor: '#EBE5E5',
+    border:'#d0d6ceff'
+  }
+};
+
+export const getMCGridStoreImgSrc = (status:string):string=>{
+  if('surplus' === status)return '/assets/img/VectorFLOW/BPR/mc-grid-surplus.svg'
+  if('incomplete' === status) return '/assets/img/VectorFLOW/BPR/mc-grid-deficit-incomplete.svg'
+  return '/assets/img/VectorFLOW/BPR/mc-grid-deficit-very-incomplete.svg'
+}
+
+export const getMCGridStoreIconColor = (status:string):string=>{
+  if('very-incomplete' === status)return '#F8416C'
+  if('incomplete' === status) return '#ED8D3A'
+  return 'rgb(105, 105, 105)'
+}
