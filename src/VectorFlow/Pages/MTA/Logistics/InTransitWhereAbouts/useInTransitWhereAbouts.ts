@@ -133,6 +133,7 @@ const useInTransitWhereAbouts = ()=>{
     
 
     const agGridProps: AgGridReactProps = {
+      debug:true,
       readOnlyEdit:false,
       icons:{
         groupExpanded: `<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg"} style="width: 20px; height: 20px;">`,
