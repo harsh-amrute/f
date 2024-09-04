@@ -15,6 +15,12 @@ export const TooltipContainer = styled.div`
   color: ${globalStyles.black};
   text-align: left;
   cursor: pointer;
+  max-height:300px;
+  overflow-y:auto;
+  @media (min-width: ${gridSystem
+      .size.desktop}) {
+    max-height:550px;
+  }
 `;
 
 export const TooltipTitle = styled.div`

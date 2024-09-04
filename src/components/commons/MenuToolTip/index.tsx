@@ -129,7 +129,7 @@ const MenuToolTip = ({ item, tempUrls,setTempUrls, isLoading,isHide,setIsLoading
         noArrow
         isOpen
       >
-        <TooltipContainer>
+        <TooltipContainer className="custom-scrollbar">
           <TooltipTitle>{t(item.name)}</TooltipTitle>
          {renderToolTipContent(item)}
         </TooltipContainer>
