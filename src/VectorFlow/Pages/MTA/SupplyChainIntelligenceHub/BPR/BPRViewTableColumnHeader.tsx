@@ -32,12 +32,12 @@ const BPRViewTableColumnHeader = ({colDef,query}:{colDef:BPRViewTableColDef,quer
 
     useEffect(() => {
         if (isFilterOpen) {
-            document.addEventListener('click', handleClickAway)
+            document.addEventListener('mousedown', handleClickAway)
         } else {
-            document.removeEventListener('click', handleClickAway)
+            document.removeEventListener('mousedown', handleClickAway)
         }
         return () => {
-            document.removeEventListener('click', handleClickAway)
+            document.removeEventListener('mousedown', handleClickAway)
         }
     }, [isFilterOpen])
 

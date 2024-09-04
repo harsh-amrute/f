@@ -35,6 +35,7 @@ import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligen
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
 import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
+import MCGrid from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/MerchandisingGrid'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -81,7 +82,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/dbm/dbm-norm-suggestions',
     '/logistics/intransit-whereabouts',
     '/supply-chain-intelligence-hub/sdr',
-    '/master-data-management/data-modification-history'
+    '/master-data-management/data-modification-history',
+    '/supply-chain-intelligence-hub/merchandising-grid'
 
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -336,6 +338,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<OpenExpeditingRequests/>)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/merchandising-grid',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MCGrid />)
         },
         ...getStoreTransferModuleRoutes()
       ]
