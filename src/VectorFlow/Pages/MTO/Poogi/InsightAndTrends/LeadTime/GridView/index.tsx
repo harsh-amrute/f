@@ -1,5 +1,5 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import './styles.css'
@@ -123,4 +123,4 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState }: an
     )
 }
 
-export default GridView
+export default React.memo(GridView)

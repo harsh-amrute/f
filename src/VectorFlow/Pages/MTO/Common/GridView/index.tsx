@@ -1,5 +1,5 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
 import './style.css'
 import { SCDynamicContainer } from './styles';
@@ -154,4 +154,4 @@ const GridView = (props: IGridViewProps) => {
     )
 }
 
-export default GridView
+export default React.memo(GridView)

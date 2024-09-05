@@ -2779,7 +2779,7 @@ export function getColumnDefinations(
       rowGroupIndex: null,
       pivot: false,
       pivotIndex: null,
-      flex: null,
+      flex: 1,
       cellStyle: {
         justifyContent: data.cla
       }

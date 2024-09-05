@@ -31,7 +31,8 @@ import useViewPort from "../../../../../hooks/useViewPort";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../helpers/utils";
 import FullkitCellRenderer from "../../Common/FullkitCellRenderer";
-
+import { ReportNameID } from "../../Common/Enum";
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
 
@@ -43,6 +44,11 @@ const EnquiryResponse = () => {
   const [filterData, setFilterData] = useState<any>([]);
   const [selectedFilters, setSelectedFilters] = useState<any>([]);
   const [hasProductGroup, setHasProductGroup] = useState<any>(false);
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const [isReset, setIsReset] = useState(false);
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { data } = useGetEnquiryResData() || {};
 
   const [selectedOptions, setSelectedOptions] = useState<any>({
@@ -64,9 +70,6 @@ const EnquiryResponse = () => {
     }
     setActiveCapsule(tab);
   };
-
-
-
 
   const getTableSimData = (filterData: any): any => {
     const bufferData = filterData.length > 0 ? filterData : [];
@@ -97,6 +100,7 @@ const EnquiryResponse = () => {
 
     return simData;
   };
+
   function getWeekOfMonth(dateString: string): string {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -550,6 +554,54 @@ const EnquiryResponse = () => {
     });
   };
 
+  const getUserColumnConfig = async () => {
+    try {
+      const data = await getUserUIReportConfigData({
+        un: user.user.name,
+        rn_id: ReportNameID.EnquiryResponse
+      });
+
+      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+      setColumnState(newConfig);
+
+      if (!data) {
+        console.error('Failed to apply column state');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleSaveClick = async () => {
+    try {
+      const config = currentGridRef.current.columnApi.getColumnState();
+
+      const payload = {
+        un: user.user.name,
+        rn_id: ReportNameID.EnquiryResponse,
+        cs: JSON.stringify(config)
+      }
+      await updateUserUIReportConfigData([payload]);
+      await getUserColumnConfig();
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleResetClick = () => {
+    setIsReset(true);
+  }
+
+  useEffect(() => {
+    if (isReset) {
+      setColumnState(myColDefs);
+      setIsReset(false)
+    }else{
+      handleSaveClick();
+    }
+  }, [isReset]);
+
   useEffect(() => {
     notifyLoader("Loading Grid Data")
     if (data?.data?.data) {
@@ -559,7 +611,6 @@ const EnquiryResponse = () => {
   }, [data]);
 
   useEffect(() => {
-    console.log('data', data)
     setFilterData(data?.data?.data);
   }, [tableData]);
 
@@ -582,6 +633,7 @@ const EnquiryResponse = () => {
   }
 
   useEffect(() => {
+    getUserColumnConfig();
     setColumnDef();
   }, [])
 
@@ -607,6 +659,8 @@ const EnquiryResponse = () => {
           selectedFilters={selectedFilters}
           removeFilters={removeFilters}
           themeUi={themeUi}
+          handleSaveClick={handleSaveClick}
+          handleResetClick={handleResetClick}
         />
       </FilterWrapper>
       <div style={{ paddingLeft: '25px' }}>
@@ -617,8 +671,13 @@ const EnquiryResponse = () => {
           <Allotment vertical separator   >
             <Allotment.Pane preferredSize={'55%'}>
               <BTRAllomentSection>
-                <ResizableTable header={myColDefs} data={filterData} />
-
+                <ResizableTable 
+                  colDef={myColDefs} 
+                  data={filterData}
+                  setCurrentGridRef={setCurrentGridRef}
+                  currentGridRef={currentGridRef}
+                  columnState={columnState}
+                />
               </BTRAllomentSection>
             </Allotment.Pane>
 
