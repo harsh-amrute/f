@@ -33,6 +33,7 @@ import { getColumnDefinations } from "../../../../../helpers/utils";
 import FullkitCellRenderer from "../../Common/FullkitCellRenderer";
 import { ReportNameID } from "../../Common/Enum";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import OverlayLoader from "../../Common/Loader";
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
 
@@ -650,6 +651,7 @@ const EnquiryResponse = () => {
 
   return (
     <EnquiryWrapper>
+      {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       <FilterWrapper>
         <MTOActionToolBar
           comp={"EnquiryResponse"}

@@ -292,7 +292,7 @@ const OrderAtRisk = () => {
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
       />
-      {isLoading && <OverlayLoader />}
+      {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       <HorizontalViewWrapper style={{ height: screenHeight - 200, display: 'flex', marginTop: "20px", paddingLeft: "25px" }}>
         {isGridView ? (
          <GridView

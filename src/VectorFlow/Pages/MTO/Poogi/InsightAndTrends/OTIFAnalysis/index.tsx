@@ -180,7 +180,7 @@ const OTIFAnalysis = () => {
   return (
     <div>
       {
-        isLoading && <OverlayLoader />
+        (isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
       }
       <MTOActionToolBar
         isGridView={isGridView}

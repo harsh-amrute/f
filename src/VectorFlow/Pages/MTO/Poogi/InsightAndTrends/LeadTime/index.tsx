@@ -145,7 +145,7 @@ const LeadTime = () => {
                 setIsGridView={setIsGridView} 
                 isExcelExport 
             />
-            {isLoading && <OverlayLoader/>}
+            {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader/>}
             {
                 isGridView ?
                     <>

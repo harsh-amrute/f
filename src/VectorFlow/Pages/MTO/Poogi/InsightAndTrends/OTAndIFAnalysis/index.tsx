@@ -137,7 +137,7 @@ const OTAndIFAnalysis = () => {
     return (
         <>
             {
-                isError && <OverlayLoader />
+                (isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
             }
             <MTOActionToolBar
                 isAddFilterButton

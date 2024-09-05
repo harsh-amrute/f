@@ -20,7 +20,7 @@ import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCell
 
 const ElapsedTime = () => {
 
-    const [isGridView, setIsGridView] = useState(true);
+    const [isGridView, setIsGridView] = useState(false);
     const [deptwiseChartTableData, setDeptwiseChartTableData] = useState([]);
     const [deptwiseChartData, setDeptwiseChartData] = useState([]);
     const [alertData, setAlertData] = useState([]);
@@ -202,7 +202,7 @@ const ElapsedTime = () => {
             {
                 !isGridView ?
                     <>
-                        {(isLoading || isLoading2) && <OverlayLoader />}
+                        {(isLoading || isLoading2 || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
 
                         <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
                             <BTRTableWrapper style={{ flex: '1', margin: '0' }}>
