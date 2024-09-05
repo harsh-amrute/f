@@ -1,5 +1,5 @@
 import { Allotment } from 'allotment'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles'
 import GridView from './GridView'
