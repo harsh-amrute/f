@@ -77,7 +77,7 @@ interface MTOActionToolBarProps {
     isReleaseButtonDisabled?: boolean,
     utilityBtns?: ReactElement | null,
     handleSaveClick?: () => void
-    // handleResetClick?: () => void
+    handleResetClick?: () => void
     //// new props
 }
 
@@ -113,7 +113,7 @@ const MTOActionToolBar = ({
     utilityBtns,
     WIPFilter,
     handleSaveClick,
-    // handleResetClick
+    handleResetClick
     
 }: MTOActionToolBarProps) => {
 
@@ -418,7 +418,7 @@ const MTOActionToolBar = ({
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                             <p>Save</p>
                         </SCViewContainerWithBg>
-                        <SCViewContainerWithBg >
+                        <SCViewContainerWithBg onClick={() => {handleResetClick && handleResetClick()}}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" />
                             <p>Reset</p>
 

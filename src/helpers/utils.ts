@@ -2771,6 +2771,15 @@ export function getColumnDefinations(
       headerName: data.hd,
       field: data.scc,
       hide: !data.v,
+      pinned: null,
+      sort: null,
+      sortIndex: null,
+      aggFunc: null,
+      rowGroup: false,
+      rowGroupIndex: null,
+      pivot: false,
+      pivotIndex: null,
+      flex: null,
       cellStyle: {
         justifyContent: data.cla
       }

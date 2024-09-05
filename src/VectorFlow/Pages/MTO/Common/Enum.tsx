@@ -44,3 +44,24 @@ export enum InputTypes {
 export enum pagination {
     mtoPageSize = 15
 }
+
+export enum ReportNameID {
+    "DueDateQuotation" = 1,
+    "OTIFAnalysis" = 2,
+    "LeadTime" = 3, 
+    "TopFailureReasons" = 4,
+    "ReasonForDelayedOrders" = 5,
+    "DayWiseCoverage" = 6,
+    "RMPMOrderWiseCoverage" = 7,
+    "MaterialCoverageforOpenSalesOrder" = 8,
+    "MaterialRequirement" = 9,
+    "ProcurementPlanningShortage" = 10,
+    "EnquiryResponse" = 11,
+    "FullKitAssignment" = 12,
+    "Elapse Time" = 13,
+    "OrdersAtRisk" = 14,
+    "OrderBalance" = 15,
+    "STPLAndFullKits" = 16,
+    "OrderRescheduling" = 17,
+    "OTAndIFAnalysis" = 18,
+}

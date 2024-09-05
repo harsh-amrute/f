@@ -49,6 +49,7 @@ const DueDateQuotation = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
+  const [isReset, setIsReset] = useState(false);
   //Refs
   const totalRows = useRef(0);
   const currentPageSelectedRows = useRef<any>([]);
@@ -443,6 +444,10 @@ const DueDateQuotation = () => {
     }
   }
 
+  const handleResetClick = () => {
+    setIsReset(true);
+  }
+
   useEffect(()=>{
     getUserColumnConfig();
   },[])
@@ -467,6 +472,7 @@ const DueDateQuotation = () => {
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
           handleSaveClick={handleSaveClick}
+          handleResetClick={handleResetClick}
         />
       }
       {(isFilteredDataLoaded || loading) && <OverlayLoader />}

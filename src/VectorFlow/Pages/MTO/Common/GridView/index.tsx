@@ -1,8 +1,6 @@
 import { GridOptions } from 'ag-grid-enterprise';
 import { useEffect, useRef, useState } from 'react'
-import { getColumnDefinations } from '../../../../../helpers/utils';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
-import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
 import './style.css'
 import { SCDynamicContainer } from './styles';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
@@ -13,27 +11,23 @@ import { pagination } from '../Enum';
 
 interface IGridViewProps {
     getData: (isGraph: number) => any,
-    reportName: string,
+    colDef: any,
     isLoading: boolean,
     isError: boolean,
     isSuccess: boolean,
-    colDefCustomizations?: any,
-    setCurrentGridRef?: any,
-    currentGridRef?: any,
-    columnState?: any
+    setCurrentGridRef: any,
+    currentGridRef: any,
+    columnState: any,
 }
 
 const GridView = (props: IGridViewProps) => {
 
-    const { getData, reportName, isLoading, isError, isSuccess, colDefCustomizations = {}, setCurrentGridRef, currentGridRef, columnState } = props;
+    const { getData, isLoading, isError, isSuccess, setCurrentGridRef, currentGridRef, columnState, colDef } = props;
 
     const gridRef = useRef<any>(null);
-    const [colDef, setColDef] = useState([{}]);
-    const [HeaderData, setHeaderData] = useState([]);
     const [gridData, setGridData] = useState([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalRows, setTotalRows] = useState<number>(0);
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
     const defaultColDef = {
         autoHeaderHeight: true,
@@ -71,15 +65,7 @@ const GridView = (props: IGridViewProps) => {
         },
     };
 
-    const setColumnDef = async () => {
-        try {
-            const response = await getUIConfigData(reportName);
-            setHeaderData(response?.data?.data);
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
+
 
     const getGridData = async (params: any) => {
         try {
@@ -100,12 +86,10 @@ const GridView = (props: IGridViewProps) => {
 
     useEffect(() => {
         getGridData({ graphflag: 0, page: currentPage });
-        setColumnDef();
+        
     }, [])
 
-    useEffect(() => {
-        setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
-    }, [HeaderData])
+
 
     useEffect(() => {
         if (isSuccess) {
@@ -114,37 +98,19 @@ const GridView = (props: IGridViewProps) => {
         if (isError) {
             notifyError("Failed to load data!")
         }
-    }, [isSuccess, isError])
+    }, [isSuccess, isError]) 
 
-    useEffect(() => {
-        if (currentGridRef?.current && columnState?.length) {
-          console.log('Applying column state:', columnState);
-          const result = currentGridRef.current.columnApi.applyColumnState({
-            state: columnState,
-            applyOrder: true
-          });
-          console.log(result, 'RESS');
-          console.log(colDef, 'COLUMN def');
-          if (!result) {
-            console.error('Failed to apply column state');
-          }
+    useEffect(()=>{ 
+        if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+            const result = currentGridRef.current.columnApi.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
         }
-      }, [columnState, currentGridRef]); 
-    // 
-    useEffect(() => {
-        if (currentGridRef?.current && columnState?.length) {
-          console.log('Applying column state:', columnState);
-          const result = currentGridRef.current.columnApi.applyColumnState({
-            state: columnState,
-            applyOrder: true
-          });
-          console.log(result, 'RESS');
-          console.log(colDef, 'COLUMN def');
-          if (!result) {
-            console.error('Failed to apply column state');
-          }
-        }
-      }, [colDef]); 
+    });
 
     return (
 
@@ -183,12 +149,6 @@ const GridView = (props: IGridViewProps) => {
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
             />
-            {/* <button onClick={()=> {
-                 const result = currentGridRef.current.columnApi.applyColumnState({
-                    state: columnState,
-                    applyOrder: true
-                  });
-            }}>UPDATE</button> */}
         </SCDynamicContainer>
 
     )
