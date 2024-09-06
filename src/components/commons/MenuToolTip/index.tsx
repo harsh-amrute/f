@@ -121,21 +121,6 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
 
 
 
-  let maxHeight = 'fit-content';
-
-
-  if (item.name === "navbar.listMenuParent.prodAndPlanningScheduling.title") {
-    maxHeight = '250px';
-  }
-  else if (item.name === "navbar.listMenuParent.manufacturingHub.title") {
-    maxHeight = '160px';
-  }
-  else if (item.name === "navbar.listMenuParent.poogi.title") {
-    maxHeight = "200px";
-  }
-  else if (item.name === "Replenishment and Replacement") {
-    maxHeight = '340px';
-  }
 
   return (
     <WrapToolTip>

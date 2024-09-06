@@ -27,7 +27,6 @@ import OverlayLoader from '../../Common/Loader';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import BPPRenderer from '../../Common/BPPRenderer';
 import { IRowNode } from 'ag-grid-enterprise';
-import { FirstDataRenderedEvent } from 'ag-grid-community';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';

@@ -12,7 +12,6 @@ import { GridRef } from '../../../../types/MDM';
 import { notifySuccess, notifyError } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 import { IRowNode } from 'ag-grid-enterprise';
-import { FirstDataRenderedEvent } from 'ag-grid-community';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../helpers/utils';

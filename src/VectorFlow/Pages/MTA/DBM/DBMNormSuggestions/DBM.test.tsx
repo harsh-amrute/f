@@ -1,4 +1,3 @@
-import { render, act } from '@testing-library/react';
 import { useGetDBMApplySelectedNorm, useGetDBMData, useGetDBMDataCount, useGetDBMUIConfiguration, useGetDBMUpdateSleepTbl } from "../../../../Services/MTA/DBM"
 import { mockDBMApplySelectedNorm, mockDBMCountData, mockDBMData, mockDBMUIConfigData, mockDBMUpdateSleepTbl } from "../../../../../mock-data/DBM";
 

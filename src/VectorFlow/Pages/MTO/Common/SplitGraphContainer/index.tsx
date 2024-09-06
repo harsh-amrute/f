@@ -848,7 +848,7 @@ const SplitGraphContainer = ({
                   { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                   { statusPanel: 'agAggregationComponent', align: 'left' },
                 ],
-              }} onGridReady={() => { setTableLoading(false); generateChart(graphType) }}
+              }} onGridReady={() => { setTableLoading(false); generateChart(graphType), setChartLoading(false); }}
               chartToolPanelsDef={
                 {
                   panels: []

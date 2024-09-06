@@ -14,7 +14,6 @@ import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import _ from 'lodash';
 import { add, format, max } from 'date-fns';
 import Tooltip from '../../Common/Tooltip';
-import { AgChartOptions } from 'ag-charts-community';
 import { notifyError, notifyErrorWithoutAutoClose, notifySuccess } from '../../../../../helpers/notify';
 import * as globalStyles from "../../../../../styles/global";
 

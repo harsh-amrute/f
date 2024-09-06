@@ -1,4 +1,3 @@
-import { AgChartOptions } from 'ag-charts-community'
 import { AgCharts } from 'ag-charts-react'
 import { GridOptions } from 'ag-grid-enterprise';
 import { useEffect, useMemo, useRef, useState } from 'react'
