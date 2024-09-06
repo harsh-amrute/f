@@ -167,3 +167,8 @@ export interface GridState {
     charts:Array<any>
     columns:Array<any>
 }
+
+export interface MerchandisingGridPayload {
+    fulfillment:"incomplete",
+    itr:"high"
+}

@@ -33,7 +33,7 @@ const RetailActionToolBar = ({themeUi, onViewChange, onCallBack,view,handleSelec
    return (
    <>
     {view === "grid" && (
-   <div style={{ display:'flex', alignItems:'center', backgroundColor:'white', marginLeft:'23px', height:'80px', zoom:'0.8'}}>
+   <div style={{ display:'flex', alignItems:'center', backgroundColor:'white', marginLeft:'-23px', height:'80px', zoom:'0.6'}}>
    <CheckboxWrapper>
        <CheckboxConatiner>
          <input type="checkbox" style={{ zoom: 1.4, accentColor:'white' }}></input>

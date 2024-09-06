@@ -307,7 +307,13 @@ export const listMenuParent: any = [
             url: "/supply-chain-intelligence-hub/sdr",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
 
-          }
+          },
+          {
+            name: "MC Grid",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/mcgrid",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+          },
         ]
       },
       {
