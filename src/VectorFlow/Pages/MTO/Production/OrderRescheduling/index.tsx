@@ -455,10 +455,10 @@ const OrderRescheduling = () => {
     }
 
     const onFirstDataRendered =
-        (params: FirstDataRenderedEvent<any>) => {
+        (params: any) => {
             const nodesToSelect: IRowNode[] = [];
 
-            params.api.forEachNode((node) => {
+            params.api.forEachNode((node: any) => {
                 if (node.data && node.data.oid && existsInSelected(node.data.oid)) {
                     node.data.rs = selectedRowData[0].r;
                     for (let index = 0; index < selectedRowData.length; index++) {

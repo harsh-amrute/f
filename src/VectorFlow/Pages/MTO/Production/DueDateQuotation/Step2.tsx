@@ -1,5 +1,4 @@
-import { AgChartsReact } from 'ag-charts-react';
-import { GridReadyEvent } from 'ag-grid-community';
+import { AgCharts } from 'ag-charts-react';
 import { GridOptions } from 'ag-grid-enterprise';
 import { Allotment } from 'allotment';
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
@@ -112,7 +111,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     const customization = {
         OrderID: {
             cellRenderer: "agGroupCellRenderer",
-            cellStyle:{
+            cellStyle: {
                 minWidth: "30px",
             }
         },
@@ -229,20 +228,20 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         // getRowStyle:(params: any) => null
     }
 
-    
+
     const [chartData, setChartData] = useState<any>([])
     const [maxFolinDays, setMaxFolInDays] = useState(1);
 
-    const interval = useMemo(()=>{
+    const interval = useMemo(() => {
         let i = 2
-        if(maxFolinDays > 30){
+        if (maxFolinDays > 30) {
             i = Math.floor(maxFolinDays / 5)
         }
         return i
-     }, [maxFolinDays])
+    }, [maxFolinDays])
 
     console.log(chartData);
-    const chartOptions: AgChartOptions = {
+    const chartOptions: any = {
         data: chartData,
         series: [
             {
@@ -828,7 +827,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             });
 
             // console.log(JSON.parse(JSON.stringify(orderLoadOfCCRs)))
-            
+
             setMaxFolInDays(maxFol)
 
             setChartData(Object.values(orderLoadOfCCRs).map((order: any) => {
@@ -976,7 +975,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             gridOptions={options}
                             columnDefs={options.columnDefs}
                             rowData={rows}
-                            onSelectionChanged={async (params: GridReadyEvent) => {
+                            onSelectionChanged={async (params: any) => {
                                 try {
 
                                     setIsEditable(false);
@@ -1073,10 +1072,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                     notifyError("Something Went Wrong!");
                                 }
                             }}
-                            onColumnPinned={(params: GridReadyEvent) => {
+                            onColumnPinned={(params: any) => {
                                 params.columnApi.autoSizeAllColumns();
                             }}
-                            onGridReady={(params: GridReadyEvent) => {
+                            onGridReady={(params: any) => {
                                 params.columnApi.autoSizeAllColumns();
                             }}
 
@@ -1161,11 +1160,11 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 }
                 {rowsSelectedForAssignment &&
                     <Allotment.Pane preferredSize={'33%'} key={3}>
-                        <Wrapper style={{ padding: "20px 0 10px 0", margin: 0, paddingBottom:"75px" }}>
+                        <Wrapper style={{ padding: "20px 0 10px 0", margin: 0, paddingBottom: "75px" }}>
                             <div style={{ height: "100%", overflow: "hidden", display: "flex", width: "100%" }}>
                                 <div style={{ display: 'flex', flexDirection: "column", width: countOfExceedingLeadTime != 0 ? "80%" : "100%", background: "white", boxShadow: "rgba(0, 0, 0, 0.1) 0px 2px 10px 2px", margin: "0 1rem 1rem 1rem" }}>
                                     <h3 style={{ margin: "1rem", borderBottom: "1px dashed black" }}>CCR Load Chart</h3>
-                                    <AgChartsReact options={chartOptions} containerStyle={{ height: "80%" }} />
+                                    <AgCharts options={chartOptions} />
                                 </div>
                                 {countOfExceedingLeadTime != 0 && <div style={{ width: "20%", margin: "0 1rem" }}>
                                     <WarningContainer>

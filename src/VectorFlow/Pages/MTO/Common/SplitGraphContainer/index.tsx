@@ -1,5 +1,5 @@
-import { AgChartOptions, AgCharts } from 'ag-charts-community'
-import { AgChartsReact } from 'ag-charts-react'
+import { AgChartOptions } from 'ag-charts-community'
+import { AgCharts } from 'ag-charts-react'
 import { Dispatch, SetStateAction, useRef } from 'react'
 import { SCChartContainer, SCChartMainContainer, SCHorizontalDivider, ChartWrapper } from './styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
@@ -46,7 +46,7 @@ const SplitGraphContainer = ({
   columnsData,
   downloadFileName
 }: SplitGrpahContainerProps) => {
-  const chartRef = useRef<AgChartsReact>(null);
+  const chartRef = useRef<any>(null);
   const refGraph1 = useRef<GridRef>(null);
 
 
@@ -62,8 +62,8 @@ const SplitGraphContainer = ({
       case 12:
         return {
           palette: {
-            fills: columnsData?.map((column: any)=> column?.color),
-            strokes: columnsData?.map((column: any)=> column?.color),
+            fills: columnsData?.map((column: any) => column?.color),
+            strokes: columnsData?.map((column: any) => column?.color),
           },
         }
 
@@ -199,14 +199,14 @@ const SplitGraphContainer = ({
         refGraph1.current?.api.createRangeChart({
           chartType: 'line',
           cellRange: {
-            columns: columnsData.map((column: any)=>column.key),
+            columns: columnsData.map((column: any) => column.key),
           },
 
           chartThemeOverrides: {
             line: {
               series: {
                 tooltip: {
-                  renderer: (params: any) => TooltipRenderer({...params, labels: columnsData?.filter((column: any)=> column.key !== 'month')})
+                  renderer: (params: any) => TooltipRenderer({ ...params, labels: columnsData?.filter((column: any) => column.key !== 'month') })
                 },
                 strokeWidth: 3
 
@@ -218,10 +218,9 @@ const SplitGraphContainer = ({
                     strokeOpacity: 0,
                     stroke: 'white'
                   },
-                  gridStyle:
-                    [
-                      { stroke: 'white' },
-                    ],
+                  gridLine: {
+                    enabled: false,
+                  }
 
                 }
               },
@@ -314,11 +313,14 @@ const SplitGraphContainer = ({
                 }
               }
             },
-            column: {
+            bar: {
 
               axes: {
                 category: {
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: {
+                    enabled: false,
+                  },
+
 
                   bottom: {
                     label: {
@@ -353,13 +355,6 @@ const SplitGraphContainer = ({
                   marker: {
                     shape: "square",
                   },
-                },
-              },
-            },
-            bar: {
-              axes: {
-                category: {
-                  gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
                 },
               },
             },
@@ -373,10 +368,10 @@ const SplitGraphContainer = ({
             columns: ["ccr", "days"],
           },
           chartThemeOverrides: {
-            column: {
+            bar: {
               axes: {
                 category: {
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
 
                   bottom: {
                     label: {
@@ -407,13 +402,6 @@ const SplitGraphContainer = ({
                   marker: {
                     shape: "square",
                   },
-                },
-              },
-            },
-            bar: {
-              axes: {
-                category: {
-                  gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
                 },
               },
             },
@@ -431,7 +419,9 @@ const SplitGraphContainer = ({
               axes: {
                 category: {
                   position: 'left', // Position the category axis on the left
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: {
+                    enabled: false,
+                  },
                   label: {
                     fontSize: 8,
                     rotation: 0
@@ -444,7 +434,7 @@ const SplitGraphContainer = ({
                 },
                 number: {
                   position: 'bottom',
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
                   label: {
                     fontSize: 8,
                   },
@@ -485,10 +475,10 @@ const SplitGraphContainer = ({
             columns: ["trailDept", "b", 'r', 'y', 'g', 'bl', 'w'],
           },
           chartThemeOverrides: {
-            column: {
+            bar: {
               axes: {
                 category: {
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
 
                   bottom: {
                     label: {
@@ -519,13 +509,6 @@ const SplitGraphContainer = ({
                   marker: {
                     shape: "square",
                   },
-                },
-              },
-            },
-            bar: {
-              axes: {
-                category: {
-                  gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
                 },
               },
             },
@@ -539,10 +522,10 @@ const SplitGraphContainer = ({
             columns: ["m", "0_2_p", "20_40_p", "40_60_p", "60_80_p", "80_100_p"],
           },
           chartThemeOverrides: {
-            column: {
+            bar: {
               axes: {
                 category: {
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
 
                   bottom: {
                     label: {
@@ -573,13 +556,6 @@ const SplitGraphContainer = ({
                   marker: {
                     shape: "square",
                   },
-                },
-              },
-            },
-            bar: {
-              axes: {
-                category: {
-                  gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
                 },
               },
             },
@@ -594,10 +570,10 @@ const SplitGraphContainer = ({
             columns: ["m", "1_2_d", "3_7_d", "8_15_d", "16_30_d"],
           },
           chartThemeOverrides: {
-            column: {
+            bar: {
               axes: {
                 category: {
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
 
                   bottom: {
                     label: {
@@ -628,13 +604,6 @@ const SplitGraphContainer = ({
                   marker: {
                     shape: "square",
                   },
-                },
-              },
-            },
-            bar: {
-              axes: {
-                category: {
-                  gridStyle: [{ stroke: "transparent" }, { stroke: "transparent" }],
                 },
               },
             },
@@ -651,7 +620,7 @@ const SplitGraphContainer = ({
             line: { // This should be 'line' since you are creating a line chart
               axes: {
                 category: {
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
                   bottom: {
                     label: {
                       fontSize: 8,
@@ -659,7 +628,7 @@ const SplitGraphContainer = ({
                   },
                 },
                 number: {
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
                   label: {
                     fontSize: 10,
                     formatter: (params) => `${params.value}%`, // Format as percentage
@@ -708,7 +677,7 @@ const SplitGraphContainer = ({
             line: { // This should be 'line' since you are creating a line chart
               axes: {
                 category: {
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
                   bottom: {
                     label: {
                       fontSize: 8,
@@ -716,7 +685,7 @@ const SplitGraphContainer = ({
                   },
                 },
                 number: {
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
                   label: {
                     fontSize: 10,
                     formatter: (params) => `${params.value}%`, // Format as percentage
@@ -766,7 +735,7 @@ const SplitGraphContainer = ({
               axes: {
                 category: {
                   position: 'left', // Position the category axis on the left
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
                   label: {
                     fontSize: 8,
                     rotation: 0
@@ -779,7 +748,7 @@ const SplitGraphContainer = ({
                 },
                 number: {
                   position: 'bottom',
-                  gridStyle: [{ stroke: "transparent" }],
+                  gridLine: { enabled: false },
                   label: {
                     fontSize: 8,
                   },
@@ -841,8 +810,10 @@ const SplitGraphContainer = ({
               </div>
               <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
 
-                (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: downloadFileName ? downloadFileName : graphTitle });
-
+                chartRef?.current.download({
+                  type: 'png',
+                  filename: downloadFileName,
+                });
               }}>
                 <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
               </div>
@@ -898,7 +869,7 @@ const SplitGraphContainer = ({
           </div>
         </VFModalCard>
         <div style={{ flex: 1 }}>
-          <AgChartsReact suppressDragLeaveHidesColumns={true} ref={chartRef} options={{ ...options, data: data }} onChartReady={() => { setChartLoading(false) }} />
+          <AgCharts ref={chartRef} options={{ ...options, data: data }} />
         </div>
       </SCChartContainer>
     </div>

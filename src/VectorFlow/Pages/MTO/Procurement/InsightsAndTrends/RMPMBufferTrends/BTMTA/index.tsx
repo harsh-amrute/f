@@ -166,7 +166,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     }
 
 
-    const options: AgChartOptions = {
+    const options: any = {
         axes: [
             {
                 type: "category",
@@ -176,7 +176,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                     color: 'black',
                     avoidCollisions: true,
                     autoRotate: false,
-                    formatter: function (params) {
+                    formatter: function (params: any) {
                         const myDate = params.value.split('-')[1] + '-' + params.value.split('-')[0] + '-' + params.value.split('-')[2];
                         return convertDate(moment(myDate).format("MMM Do YY"))
                     }
@@ -198,7 +198,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 line: { enabled: true },
                 position: 'left',
                 label: {
-                    formatter: function (params) {
+                    formatter: function (params: any) {
                         return (params.value) + ((actBtn.label === 'Percentage') ? '%' : '');
                     },
                     fontSize: 8,
@@ -221,7 +221,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 marker: {
                     fill: "Black",
                     stroke: "Black",
-                    formatter: function (params) {
+                    formatter: function (params: any) {
                         if (params.datum.b === 0) return { size: 0 }
                     }
                 },
@@ -242,7 +242,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 marker: {
                     fill: "Red",
                     stroke: "Red",
-                    formatter: function (params) {
+                    formatter: function (params: any) {
                         if (params.datum.r === 0) return { size: 0 }
                     }
 
@@ -265,7 +265,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 marker: {
                     fill: "#FFBF00",
                     stroke: "#FFBF00",
-                    formatter: function (params) {
+                    formatter: function (params: any) {
                         if (params.datum.y === 0) return { size: 0 }
                     }
                 },
@@ -286,7 +286,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 marker: {
                     fill: "Green",
                     stroke: "Green",
-                    formatter: function (params) {
+                    formatter: function (params: any) {
                         if (params.datum.g === 0) return { size: 0 }
                     }
                 },
@@ -309,7 +309,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                 marker: {
                     fill: "grey",
                     stroke: "grey",
-                    formatter: function (params) {
+                    formatter: function (params: any) {
                         if (params.datum.w === 0) return { size: 0 }
                     }
                 },

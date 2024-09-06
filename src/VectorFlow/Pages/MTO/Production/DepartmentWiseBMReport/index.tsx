@@ -766,7 +766,7 @@ const DptWiseBMReport = () => {
         return false;
     }
 
-    const onFirstDataRendered = (params: FirstDataRenderedEvent<any>) => {
+    const onFirstDataRendered = (params: any) => {
         const nodesToSelect: IRowNode[] = [];
 
         params.api.forEachNode((node: any) => {

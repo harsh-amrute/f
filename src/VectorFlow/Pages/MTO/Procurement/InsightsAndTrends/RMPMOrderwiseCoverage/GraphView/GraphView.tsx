@@ -3,8 +3,8 @@ import "allotment/dist/style.css";
 import {
     SCChartContainer, SCHorizontalDivider
 } from '../styles';
-import { AgChartsReact } from "ag-charts-react";
-import { AgChartOptions, AgCharts } from "ag-charts-community";
+import { AgCharts } from "ag-charts-react";
+import { AgChartOptions } from "ag-charts-community";
 import { InsightsAndTrendsString } from "../../../../Common/String";
 import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../Common/Enum";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
@@ -150,7 +150,7 @@ const GraphView = ({ shortageData }: any) => {
 
     const refGraph1 = useRef<GridRef>(null);
 
-    const chartRef = useRef<AgChartsReact>(null);
+    const chartRef = useRef<any>(null);
     const [hideChart1, toggleChart1] = useState(false);
     const ColdDefs = [
         {
@@ -196,10 +196,10 @@ const GraphView = ({ shortageData }: any) => {
             },
 
             chartThemeOverrides: {
-                column: {
+                bar: {
                     axes: {
                         category: {
-                            gridStyle: [{ stroke: 'transparent' }],
+                            gridLine: { enabled: true },
 
                             bottom: {
                                 label: {
@@ -236,10 +236,8 @@ const GraphView = ({ shortageData }: any) => {
                             }
                         }
                     },
-                },
-                bar: {
-                    axes: { category: { gridStyle: [{ stroke: 'transparent' }, { stroke: 'transparent' }] } }
                 }
+
             }
         })
     }
@@ -270,7 +268,11 @@ const GraphView = ({ shortageData }: any) => {
 
                         <div style={{ paddingRight: '10px' }} onClick={() => {
 
-                            (chartRef && chartRef.current && chartRef.current.chart) && AgCharts.download(chartRef.current.chart, { fileName: "RM_PM_Orderwise_Coverage" });
+                            (chartRef && chartRef.current) && chartRef?.current.download({
+                                type: 'png',
+                                filename: 'RMPM Orderwise Coverage',
+
+                            });
                         }}> <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" /></div>
                     </div>
                     <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText={`RM / PM Orderwise Coverage ( ${date})`} headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
@@ -315,7 +317,7 @@ const GraphView = ({ shortageData }: any) => {
                             />
                         </div>
                     </VFModalCard>
-                    <AgChartsReact ref={chartRef} options={options} />
+                    <AgCharts ref={chartRef} options={options} />
 
                 </div>
 
