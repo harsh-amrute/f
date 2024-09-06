@@ -8,8 +8,7 @@ import ChartView from "../../InsightsAndTrends/BufferTrends/ChartView";
 import BPRViewTable, {
   BPRViewTableColDef,
 } from "../../SupplyChainIntelligenceHub/BPR/BPRViewTable";
-import { Allotment } from "allotment";
-import { SummaryTableColumn } from "./styles";
+import { AvailabilityContainer, AvailabilityContent, AvailabilityHeader, SummaryTableColumn } from "./styles";
 
 const BufferTrends = () => {
   const {
@@ -33,19 +32,17 @@ const BufferTrends = () => {
     multiFilterState,
     setMultiFilterState,
     onDeleteFilter,
+    themeUI
   } = useBufferTrends();
 
   const summaryColumnDefs: BPRViewTableColDef[] = [
     { headerName: "", colId: "category" },
     { headerName: <SummaryTableColumn color="black">Black</SummaryTableColumn>, colId: "sumB" },
     { headerName: <SummaryTableColumn color="red">Red</SummaryTableColumn>, colId: "sumR" },
-    { headerName: <SummaryTableColumn color="yellow">Yellow</SummaryTableColumn>, colId: "sumY" },
+    { headerName: <SummaryTableColumn color="#ffbf00ff">Yellow</SummaryTableColumn>, colId: "sumY" },
     { headerName: <SummaryTableColumn color="green">Green</SummaryTableColumn>, colId: "sumG" },
     { headerName: <SummaryTableColumn color="blue">Blue</SummaryTableColumn>, colId: "sumBU" },
     { headerName: <SummaryTableColumn color="gray">White</SummaryTableColumn>, colId: "sumW" },
-  ];
-  const availColumnDefs: BPRViewTableColDef[] = [
-    { headerName: "", colId: "avail" },
   ];
   const renderView = () => {
     switch (currentView) {
@@ -66,28 +63,32 @@ const BufferTrends = () => {
             />
 
             <div style={{height:'200px'}}>
-            <Allotment sizes={[400,150]}>
-              <Allotment.Pane minSize={200}>
-                <div style={{zoom:0.8,margin:'0px 20px 0px 10px'}}>
-                <BPRViewTable
-                  tableHeader="Summary"
-                  tablePrefixSrc=""
-                  rowData={summaryData}
-                  colDefs={summaryColumnDefs}
-                />
+            
+                <div style={{zoom:0.8,margin:'0px 10px 0px 25px',display:'flex'}}>
+                  <BPRViewTable
+                    tableHeader="Summary"
+                    tablePrefixSrc=""
+                    rowData={summaryData}
+                    colDefs={summaryColumnDefs}
+                  />
+                  <AvailabilityContainer>
+                    <AvailabilityHeader>
+                        Overall Availability
+                    </AvailabilityHeader>
+                    <AvailabilityContent themeUI={themeUI}>
+                        {availability} %
+                    </AvailabilityContent>
+                  </AvailabilityContainer>
                 </div>
-              </Allotment.Pane>
-              <Allotment.Pane minSize={200}>
-                <div style={{zoom:0.7,margin:'0px 0px 0px 40px'}}>
+ 
+                {/* <div style={{zoom:0.7,margin:'0px 0px 0px 40px'}}>
                 <BPRViewTable
                   tableHeader="Availability"
                   tablePrefixSrc="/assets/img/VectorFLOW/BTG/Availability-icon.svg"
                   rowData={[{ avail: availability + "%" }]}
                   colDefs={availColumnDefs}
                 />
-                </div>
-              </Allotment.Pane>
-            </Allotment>
+                </div> */}
             </div>
           </>
         );
