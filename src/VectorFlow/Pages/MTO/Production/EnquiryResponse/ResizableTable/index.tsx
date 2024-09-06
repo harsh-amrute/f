@@ -1,10 +1,9 @@
 import { ColDef } from "ag-grid-enterprise";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../Common/VFTable";
 import { VFTableWrapper } from "./styles";
-import React from "react";
 
 interface IResizeTableProps {
   colDef: ColDef[];
