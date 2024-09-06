@@ -8,7 +8,7 @@ import {UserDataContext} from '../../../../../../context'
 
 jest.mock("../../../../../Services/MTA/InsightsAndTrends");
 jest.mock("ag-charts-react", () => ({
-  AgChartsReact: jest.fn(() => null) 
+  AgCharts: jest.fn(() => null) 
 }));
 const useGetAvailabilityAgeingMock = useGetAvailabilityAgeing as jest.MockedFunction<
     typeof useGetAvailabilityAgeing
@@ -55,7 +55,7 @@ global.ResizeObserver = class MockedResizeObserver {
 
      it("Availability Ageing", () => {
        
-        render(contextWrapperWithCustomTheme(<AvailabilityAgeingTrend themeUi="REGALBLAZE"/>,"REGALBLAZE"))
+        render(contextWrapperWithCustomTheme(<AvailabilityAgeingTrend themeUi="REGALBLAZE" filter={"Product Filter"} horizon={10} setHorizon={jest.fn()} setAgeing={jest.fn()} ageing={1}/>,"REGALBLAZE", ))
 
     })
 })

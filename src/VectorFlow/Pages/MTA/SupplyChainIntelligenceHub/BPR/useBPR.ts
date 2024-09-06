@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBPRFieldsToColDefs, mapBPRRowData } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -14,6 +14,9 @@ import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions
 import { type DailyDataGraph } from "../../../../types/MTA";
 import useBPRFilter from "../../../../../hooks/useBPRFilter"
 import { useUserData } from "../../../../../context"
+
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+
 
 
 const useBPR =()=>{
@@ -35,6 +38,8 @@ const useBPR =()=>{
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
+    const [editedRows,setEditedRows] = useState<Array<any>>([])
+
     const [isSubGridOpen,toggleSubGrid] = useState<boolean>(true)
     const [currGridPage,setCurrGridPage] = useState<number>(1)
     const [recordCount,setRecordCount] = useState<number>(0)
@@ -49,10 +54,6 @@ const useBPR =()=>{
     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
    
     const [remark,setRemark] = useState<string>('')
-    const [submitRemarkData,setSubmitRemarkData] = useState({
-        skucode:'',
-        whcode:''
-    })
 
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
@@ -80,24 +81,6 @@ const useBPR =()=>{
     const [columnState,setColumnState] = useState<any>()
     const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
-
 
     useEffect(()=>{
         const getTableState = async()=>{
@@ -115,6 +98,8 @@ const useBPR =()=>{
         
         getInitialBPRRowData()
     },[])
+
+
   
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -132,8 +117,8 @@ const useBPR =()=>{
         tooltipTrigger:'focus',
         tooltipInteraction:true,
         // rowSelection:'single',
-        readOnlyEdit:true,
-        sideBar:sideBar,
+        readOnlyEdit:false,
+        sideBar:defaultAgGridSideBarForBPR,
         paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
         onRowClicked:(params:any)=>{
             if(params.data.intransit && params.data.intransit.length>0){
@@ -154,7 +139,7 @@ const useBPR =()=>{
         components:customCellRenderers,
         defaultColDef:{
             floatingFilter: true,
-            filter: "agMultiColumnFilter",
+            // filter: "agMultiColumnFilter",
             cellDataType:false,
             resizable:false,
             cellStyle:{
@@ -170,12 +155,14 @@ const useBPR =()=>{
                 'text-overflow':'ellipsis',
                 'white-space':'nowrap'
             },
-        }
+        },
+        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode")
     }
+
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport'});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:getColumnsForExcelExport(BPRColumns)});
         }
       };
 
@@ -203,6 +190,25 @@ const useBPR =()=>{
         setRecordCount(countData.data.recordCount)
     }
 
+    const onCellValueChanged = (newRow: any, primaryKey: string) => {
+        setEditedRows((prev) => {
+          let found = false; // Flag to track if the row has been updated
+          const updatedRows = prev.map((row) => {
+            if (row[primaryKey] === newRow[primaryKey]) {
+              found = true;
+              return { ...newRow }; // Return updated row
+            }
+            return row; // Return unchanged row
+          });
+      
+          if (!found) {
+            // If no existing row was found, add the new row
+            return [...updatedRows, {...newRow}];
+          }
+          return updatedRows;
+        });
+      };
+
     const getBPRRowData = async(filter:any,pageNo:number)=>{
         notifyLoader("Loading Grid Data")
         const rowData =await  getBPRData({
@@ -216,32 +222,54 @@ const useBPR =()=>{
             }
         })
         toast.dismiss()
-        setBPRRowData(rowData.data.data)
+        if(rowData.data.data && Array.isArray(rowData.data.data))setBPRRowData(mapBPRRowData(rowData.data.data))
+        else setBPRRowData([])
+        
     }
 
     const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
     
 
-    const onSubmitRemark = async()=>{
+    // const onSubmitRemark = async()=>{
         
-        try{
-            if(remark.length===0) throw new Error("Remark cannot be empty")
-            const toastId = notifyLoader("Submitting Remark")
-            const {data} = await submitRemark({
-                remark:remark,
-                whcode:submitRemarkData.whcode,
-                skucode:submitRemarkData.skucode
-            })
-            toast.dismiss(toastId)
-            // if(data.status!==200)notifyError('Something went wrong')
+    //     try{
+    //         if(remark.length===0) throw new Error("Remark cannot be empty")
+    //         const toastId = notifyLoader("Submitting Remark")
+    //         const {data} = await submitRemark({
+    //             remark:remark,
+    //             whcode:submitRemarkData.whcode,
+    //             skucode:submitRemarkData.skucode
+    //         })
+    //         toast.dismiss(toastId)
+    //         // if(data.status!==200)notifyError('Something went wrong')
             
-            notifySuccess(data.msg)
-            setRemark('')
+    //         notifySuccess(data.msg)
+    //         setRemark('')
             
-            setIsSubmitRemarkToolTipOpen(false)
-        }catch(err:any){
-            notifyError(err.message)
-        }
+    //         setIsSubmitRemarkToolTipOpen(false)
+    //     }catch(err:any){
+    //         notifyError(err.message)
+    //     }
+    // }
+
+    const onSubmitRemarks = async()=>{
+       try{
+        const toastId = notifyLoader("Submitting Remark")
+        const payload = editedRows.map((e)=>{
+            return {
+                remark:e.remarks,
+                whcode:e.WHCode,
+                skucode:e.SKUCode
+            }
+            
+        })
+        const {data} = await submitRemark({data:payload})
+        toast.dismiss(toastId)
+        notifySuccess(data.msg)
+        setEditedRows([])
+       }catch(err:any){
+        notifyError(err.message)
+       }
     }
     
 
@@ -251,13 +279,12 @@ const useBPR =()=>{
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
 
-    const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>,row:any)=>{
+    const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>)=>{
         const {top,left} = e.currentTarget.getBoundingClientRect()
         setSubmitRemarkToolipPosition({
             top: top * gridZoom * screenZoom,
             left: left * gridZoom * screenZoom,
         })
-        setSubmitRemarkData(row)
         setIsSubmitRemarkToolTipOpen(true)
 
     }
@@ -330,6 +357,11 @@ const useBPR =()=>{
         getBPRRowData(filter,1)
     }
 
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        onApplyFilter(updatedFilter)
+    }
+
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
     const BPRColumns =mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
@@ -353,7 +385,7 @@ const useBPR =()=>{
         setSubmitRemarkToolipPosition,
         toggleSubGrid,
         setActiveRow,
-        onSubmitRemark,
+        onSubmitRemarks,
         onCloseRemarkHistory,
         onCloseSubmitRemark,
         dailyData,
@@ -380,7 +412,9 @@ const useBPR =()=>{
         onDelete,
         setCurrFilter,
         onApplyFilter,
-        themeUi
+        themeUi,
+        editedRows,
+        onDeleteFilter,
     }
 }
 

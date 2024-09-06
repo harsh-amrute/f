@@ -35,110 +35,104 @@ const BuyerOrderReport = ()=>{
         dailyData,
         currFilter,
         setCurrFilter,
-        onDelete, 
+        onDeleteFilter, 
         onApplyFilter 
     } = useBOR()
 
 
     return(
-     <GridStateContext.Provider
-     value={{
-        ref:ref,
-        exportExcelColumns:exportExcelColumns,
-        setExportExcelColumns:setExportExcelColumns,
-        tempDownloadData:tempDownloadData,
-        setTempDownloadData:setTempDownloadData,
-        exportExcelRowData:exportExcelRowData,
-        setExportExcelRowData:setExportExcelRowData
 
-    }}
-     >
-      <div style={{zoom:'1'}}>
-        <ActionToolBar 
-            view={'grid'} 
-            setCurrentTab={''} 
-            currCategory={'BOR'} 
-            currentTab={''} 
-            tabsList={[]} 
-            onApplyFilter={(e)=>onApplyFilter(e)}
-            onFloatingTabChange={()=>console.log('')} 
-            onGoBack={()=>console.log('')} 
-            onViewChange={()=>console.log('')}
+     
+      <GridStateContext.Provider
+        value={{
+          ref: ref,
+          exportExcelColumns: exportExcelColumns,
+          setExportExcelColumns: setExportExcelColumns,
+          tempDownloadData: tempDownloadData,
+          setTempDownloadData: setTempDownloadData,
+          exportExcelRowData: exportExcelRowData,
+          setExportExcelRowData: setExportExcelRowData
+        }}
+      >
+        <div style={{ marginLeft: '10px' }}>
+          <ActionToolBar
+            view={'grid'}
+            setCurrentTab={''}
+            currCategory={'BOR'}
+            currentTab={''}
+            tabsList={[]}
+            onApplyFilter={(e) => onApplyFilter(e)}
+            onFloatingTabChange={() => console.log('')}
+            onGoBack={() => console.log('')}
+            onViewChange={() => console.log('')}
             genericRecordCount={recordCount}
             onExportToExcelCallBack={onExportToExcelCallBack}
             multiFilter={currFilter}
             setMultiFilter={setCurrFilter}
-            onDelete={onDelete}
-        />
-       </div> 
+            onDelete={onDeleteFilter} />
+        </div>
         <BORLayout>
-            {/* <BORTaskBar style={{width:'74%'}}>
-                <VFButtonOutline
-                    themeUi="NOIRFUSION"
-                    onClick={()=>console.log('')}
-                >
-                    Excel Export 
-                </VFButtonOutline>
-                <VFButton
-                    themeUi="NOIRFUSION"
-                    onClick={()=>console.log('')}
-                >
-                    Edit Filter
-                </VFButton>
-            </BORTaskBar> */}
-            {(isLoading || isSavedDataLoading)?(
-              <VFLoader/>
-            ):
+          {/* <BORTaskBar style={{width:'74%'}}>
+        <VFButtonOutline
+            themeUi="NOIRFUSION"
+            onClick={()=>console.log('')}
+        >
+            Excel Export
+        </VFButtonOutline>
+        <VFButton
+            themeUi="NOIRFUSION"
+            onClick={()=>console.log('')}
+        >
+            Edit Filter
+        </VFButton>
+    </BORTaskBar> */}
+          {(isLoading || isSavedDataLoading) ? (
+            <VFLoader />
+          ) :
             (
-              <div style={{height:'100vh'}}>
-              {
-                showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHDescription'} />
-              }
-              {
-                  showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
-              }
-           
-              <VFTable
-               {...agGridProps}
-                columnDefs={BORColumns}
-                rowData={rowData}
-                ref={ref}
-                onGridReady={(params)=>{
-                    if(columnState)params.columnApi.applyColumnState({state:columnState})
-                }}
-                enableRangeSelection={true} // Added property
-                rowSelection="multiple"
-                statusBar = {{
+              <div style={{ height: '100vh' }}>
+                {showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHDescription'} />}
+                {showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />}
+
+                <VFTable
+                  {...agGridProps}
+                  columnDefs={BORColumns}
+                  rowData={rowData}
+                  ref={ref}
+                  onGridReady={(params) => {
+                    if (columnState)
+                      params.api.applyColumnState({ state: columnState });
+                  } }
+                  enableRangeSelection={true} // Added property
+                  rowSelection="multiple"
+                  statusBar={{
                     statusPanels: [
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                      { statusPanel: 'agAggregationComponent', align:'left' },
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
                     ],
                   }}
-                height={"90%"}
-             />
-              <VFPagination 
-                selectedRows={0} 
-                totalRows={recordCount} 
-                currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')} 
-                handleChangePage={(e)=>handleChangePage(e)} 
-              />
-              
-             </div>
+                  height={"90%"} />
+                <VFPagination
+                  selectedRows={0}
+                  totalRows={recordCount}
+                  currentPage={currentPage}
+                  rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
+                  handleChangePage={(e) => handleChangePage(e)} />
+
+              </div>
             )}
-             <div style={{display:'none'}}>                
-                  <VFTable
-                    ref={tempRef}
-                    columnDefs={BORColumns}
-                    rowData={exportExcelRowData}
-                    {...tempAgGridProps}
-                  />
-                </div>
+          <div style={{ display: 'none' }}>
+            <VFTable
+              ref={tempRef}
+              columnDefs={BORColumns}
+              rowData={exportExcelRowData}
+              {...tempAgGridProps} />
+          </div>
         </BORLayout>
-    </GridStateContext.Provider>
+      </GridStateContext.Provider>
     )
 }
 

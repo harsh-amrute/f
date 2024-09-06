@@ -13,12 +13,13 @@ import {
   SCDynamicContainer,
   SCHorizontalAllignmentWrapper,
 } from "../../../styles";
-import { AgChartsReact } from "ag-charts-react";
-import { AgChartOptions } from "ag-charts-community";
+import { AgCharts } from "ag-charts-react";
+import { AgChartOptions} from "ag-charts-community";
 
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../../helpers/utils';
 
 interface ExpediteParentDispatchesProps {
   data: any;
@@ -31,7 +32,23 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
   const [hideChart1, toggleChart1] = useState<boolean>(false);
   const [hideChart2, toggleChart2] = useState<boolean>(false);
   const [hideChart3, toggleChart3] = useState<boolean>(false);
+  const chartRef = useRef<any>(null);
+
+  const [isHovered, setIsHovered] = useState(false);
+  const imgSrc = isHovered
+    ? '/assets/img/downlod-icon-hover.svg'
+    : '/assets/img/downlod-icon.svg';
   // const [hideChart3,toggleChart3] = useState<boolean>(false);
+
+
+  const download = () => {
+    console.log(chartRef);
+    chartRef?.current.download({
+      type: 'png',
+      filename: 'pie-chart',
+    });
+
+  };
 
   const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
     let colDefs = [];
@@ -44,7 +61,7 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
       },
       {
         field: "SKUCounts",
-        headerName: "Count of SKUs",
+        headerName: "Count Of SKUs",
         colId: "SKUCounts",
       },
       {
@@ -60,6 +77,9 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
     ];
     
     colDefs = columns.map((column:{header:string,colCode:string})=>{
+        const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+        if(customColdef) return customColdef
         return {
             field:column['colCode'],
             colId:column['colCode'],
@@ -83,6 +103,9 @@ const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) =>
     ];
     
     colDefs = columns.map((column:{header:string,colCode:string})=>{
+        const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+        if(customColdef) return customColdef;
         return {
             field:column['colCode'],
             colId:column['colCode'],
@@ -94,27 +117,20 @@ const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) =>
 
 const colDefs2 = mapUIConfigToColdefs2(data['maxPipelineInvBlackRedSKUWithRationedQuantityAvailableAtParentuiconfig']['uiconfig']);
 
-const convertToInt = (data:any)=>{
-    return data.map((row:any)=>{
-        const tempObj:any = {};
-        Object.keys(row).forEach((key:string)=>{
-            const value = parseFloat(row[key])
-            if(!isNaN(value)){
-                tempObj[key] = value
-            }
-            else{
-                tempObj[key] = row[key];
-            }
-        })
-        return {...tempObj}
-    })
-}
 
-const sortData = (data:any,key:string) => {
-    data.sort((row1:any,row2:any)=>{
-        return (row2[key]) - (row1[key])
-    })
-    return [...data];
+const sortData = (data:any,key:string|string[],) => {
+    
+  data.sort((row1:any,row2:any)=>{
+    if(typeof key === 'string') return (row2[key]) - (row1[key])
+
+    if(Array.isArray(key) && key.length > 0){
+      const row1Sum = key.reduce((accumulator,currentKey:string)=>accumulator + row1[currentKey],0);
+      const row2Sum = key.reduce((accumulator,currentKey:string)=>accumulator + row2[currentKey],0);
+      return row2Sum-row1Sum
+    }
+    
+  })
+  return [...data];
 }
 
   // const getMaxParentLocationLength = (data: any) => {
@@ -225,7 +241,7 @@ const colDefs3: ColDef[] = [
     // title: {
     //   text: "PRE",
     // },
-    data: convertToInt(data["prePostRationing"]),
+    data: convertToInt(data["prePostRationing"],['pre','post']),
     series: [
       {
         type: "pie",
@@ -379,6 +395,10 @@ const colDefs3: ColDef[] = [
               fontFamily:'Roboto'
             },
             label:{
+                formatter:(params:any)=>{
+                    if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                    return params.value;
+            },
               fontSize:8,
               fontFamily:'Roboto'
             }
@@ -386,7 +406,7 @@ const colDefs3: ColDef[] = [
           number: {
             title: {
               enabled: true,
-              text: "Count of SKUs",
+              text: "Count Of SKUs",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'
@@ -414,6 +434,10 @@ const colDefs3: ColDef[] = [
               fontFamily:'Roboto'
             },
             label:{
+                formatter:(params:any)=>{
+                    if(params.value.value.length > 6) return params.value.toString().slice(0,6) + '...';
+                    return params.value;
+                },
               fontSize:8,
               fontFamily:'Roboto'
             }
@@ -421,7 +445,7 @@ const colDefs3: ColDef[] = [
           number: {
             title: {
               enabled: true,
-              text: "Count of SKUs",
+              text: "Count Of SKUs",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'
@@ -471,7 +495,7 @@ const colDefs3: ColDef[] = [
             <Allotment vertical>
               <Allotment.Pane preferredSize={"50%"}>
                 <SCHorizontalAllignmentWrapper>
-                  <SCChartContainer height={"100%"}>
+                  <SCChartContainer height={"100%"} >
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                         <SCChartHeader style={{marginRight:10}}>
@@ -499,7 +523,7 @@ const colDefs3: ColDef[] = [
                           <VFTable
                             ref={refGraph1}
                             columnDefs={colDefs1}
-                            rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
+                            rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data'],['BlackCount','RedCount']),['BlackCount','RedCount'])}
                             enableCharts={true}
                             onGridReady={() => generateChart(1, true)}
                             enableRangeSelection={true} 
@@ -537,7 +561,7 @@ const colDefs3: ColDef[] = [
                       <VFTable
                         ref={refGraph1}
                         columnDefs={colDefs1}
-                        rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data']),'SKUCounts')}
+                        rowData={sortData(convertToInt(data['maxEcoBlackRedSKUWithAvailableRationedQtyAtReceivingLocationsuiconfig']['data'],['BlackCount','RedCount']),['BlackCount','RedCount'])}
                         enableCharts={true}
                         enableRangeSelection={true} 
                         rowSelection="multiple"
@@ -572,7 +596,7 @@ const colDefs3: ColDef[] = [
               </Allotment.Pane>
               <Allotment.Pane preferredSize={"50%"}>
                 <SCHorizontalAllignmentWrapper>
-                <SCChartContainer className="ag-theme-planning" style={{marginTop:'10px'}} height={"100%"}>
+                <SCChartContainer className="ag-theme-planning" style={{marginTop:'20px'}} height={"100%"}>
                   <SCChartHeaderContainer>
                     <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                       <SCChartHeader style={{marginRight:10}}>
@@ -705,12 +729,15 @@ const colDefs3: ColDef[] = [
                   </div>
                 </SCChartHeaderContainer>
                 <SCHorizontalDivider />
+                <div style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px'}}>
+                <img src={imgSrc}  height={13} width={13} onClick={()=>download()} style={{cursor:'pointer'}} onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)} ></img>                    </div>
                 <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{width:'1000px'}}>
                           <VFTable
                             ref={refGraph3}
                             columnDefs={colDefs3}
-                            rowData={convertToInt(data["prePostRationing"])}
+                            rowData={convertToInt(data["prePostRationing"],['pre','post'])}
                             enableCharts={true}
                             enableRangeSelection={true} 
                             rowSelection="multiple"
@@ -741,7 +768,7 @@ const colDefs3: ColDef[] = [
                         </div>
                 </VFModalCard>
                 <div id="ExpediteDispatchesG3" style={{height:'80%'}}>
-                  <AgChartsReact options={options} />
+                  <AgCharts options={options} ref={chartRef}/>
                 </div>
               </SCChartContainer>
               {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>

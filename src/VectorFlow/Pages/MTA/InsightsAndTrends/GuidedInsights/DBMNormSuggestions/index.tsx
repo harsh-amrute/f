@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Allotment } from "allotment";
 import {
   useGetDBMNormSuggestionLoc,
@@ -24,20 +24,43 @@ import {GraphSeriesOverrides} from '../../../../../../helpers/BPRConstants'
 
 //import 'ag-grid-enterprise';
 
-const DBMNormSuggestions = () => {
-  const { data: DBMNormSuggestionLoc, isLoading: isLoadingGraph1 } =
-    useGetDBMNormSuggestionLoc();
-  const { data: DBMNormSuggestionPie, isLoading: isLoadingGraph2 } =
+const DBMNormSuggestions = ({filter}:{filter:any}) => {
+  const { mutateAsync: DBMNormSuggestionLoc, isLoading:isLoadingGraph1 } =
+  useGetDBMNormSuggestionLoc();
+  // const { data: DBMNormSuggestionLoc, isLoading: isLoadingGraph1 } =
+  //   useGetDBMNormSuggestionLoc(filter);
+  const { mutateAsync: DBMNormSuggestionPie, isLoading: isLoadingGraph2 } =
     useGetDBMNormSuggestionPie();
-  const { data: DBMNormSuggestionSKUs, isLoading: isLoadingGraph3 } =
+  const { mutateAsync: DBMNormSuggestionSKUs, isLoading: isLoadingGraph3 } =
     useGetDBMNormSuggestionSKUs();
-  const { data: DBMNormSuggestionAgeing, isLoading: isLoadingGraph4 } =
+  const { mutateAsync: DBMNormSuggestionAgeing, isLoading: isLoadingGraph4 } =
     useGetDBMNormSuggestionAgeing();
 
-  const DBMSuggestionLocData = DBMNormSuggestionLoc?.data?.data;
-  const ActiveDBMSuggestionData = DBMNormSuggestionPie?.data?.data;
-  const DBMSuggestionSkuData = DBMNormSuggestionSKUs?.data?.data;
-  const DBMSuggestionAgeingData = DBMNormSuggestionAgeing?.data?.data;
+    const [DBMSuggestionLocData, SetDBMSuggestionLocData]=useState([]);
+    const [ActiveDBMSuggestionData, SetActiveDBMSuggestionData]=useState([]);
+    const [DBMSuggestionSkuData, SetDBMSuggestionSkuData]=useState([]);
+    const [DBMSuggestionAgeingData, SetDBMSuggestionAgeingData]=useState([]);
+    const param = {};
+
+    useEffect(() => {
+      const fetchDBMNormSuggestionData = async ()=>{
+        const DBMNormSuggestionLocD =  await  DBMNormSuggestionLoc(param);
+        SetDBMSuggestionLocData(DBMNormSuggestionLocD?.data?.data);
+        const ActiveDBMSuggestionDataD= await DBMNormSuggestionPie(param);
+        SetActiveDBMSuggestionData(ActiveDBMSuggestionDataD?.data?.data);
+        const DBMSuggestionSkuDataD= await DBMNormSuggestionSKUs(param);
+        SetDBMSuggestionSkuData(DBMSuggestionSkuDataD?.data?.data);
+        const DBMSuggestionAgeingDataD = await  DBMNormSuggestionAgeing(param)
+        SetDBMSuggestionAgeingData(DBMSuggestionAgeingDataD?.data?.data)
+      }
+      fetchDBMNormSuggestionData();
+     
+    }, [filter]);
+
+    
+
+  // const DBMSuggestionSkuData = DBMNormSuggestionSKUs?.data?.data;
+  // const DBMSuggestionAgeingData = DBMNormSuggestionAgeing?.data?.data;
   const totalCount = ActiveDBMSuggestionData?.reduce(
     (acc: any, curr: any) => acc + curr.count,
     0
@@ -510,7 +533,7 @@ const DBMNormSuggestions = () => {
             },   
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -521,14 +544,14 @@ const DBMNormSuggestions = () => {
             
             title: {
               enabled: true,
-              text: "No of Suggestions",
+              text: "No Of Suggestions",
               position: "left",
               fontSize:8,
               fontFamily:'Roboto',
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -571,7 +594,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -621,7 +644,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -631,7 +654,7 @@ const DBMNormSuggestions = () => {
           number: {
             title: {
               enabled: true,
-              text: "No of suggestions",
+              text: "No Of suggestions",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'
@@ -671,7 +694,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 8) return params.value.toString().slice(0,8) + '...';
+                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -681,7 +704,7 @@ const DBMNormSuggestions = () => {
           number: {
             title: {
               enabled: true,
-              text: "No of suggestions",
+              text: "No Of suggestions",
               position: "left",
               fontSize:10,
               fontFamily:'Roboto'
@@ -715,7 +738,7 @@ const DBMNormSuggestions = () => {
 
   if (
     isLoadingGraph1 ||
-    isLoadingGraph2 ||
+    isLoadingGraph2 || 
     isLoadingGraph3 ||
     isLoadingGraph4
   ) {
@@ -730,7 +753,7 @@ const DBMNormSuggestions = () => {
             {/* <SCHorizontalAllignmentWrapper> */}
               <Allotment>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={'98%'} >
+                  <SCChartContainer height={'98%'} style={{marginRight:'10px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -825,7 +848,7 @@ const DBMNormSuggestions = () => {
                   </div> */}
                 </Allotment.Pane>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={'98%'}>
+                  <SCChartContainer height={'98%'} style={{marginLeft:'18px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -916,7 +939,7 @@ const DBMNormSuggestions = () => {
             {/* <SCHorizontalAllignmentWrapper> */}
               <Allotment>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={'98%'}>
+                  <SCChartContainer height={'98%'} style={{marginRight:'10px',marginTop:'15px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>
@@ -1010,7 +1033,7 @@ const DBMNormSuggestions = () => {
                   </div> */}
                 </Allotment.Pane>
                 <Allotment.Pane preferredSize={"50%"}>
-                  <SCChartContainer height={'98%'}>
+                  <SCChartContainer height={'98%'} style={{marginLeft:'18px',marginTop:'15px'}}>
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center'}}>
                         <SCChartHeader>

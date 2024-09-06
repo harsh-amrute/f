@@ -4,7 +4,7 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark, useGetDailyData,useGetBPRDataCount, useGetState, useSaveState, useResetState } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark, useGetDailyData,useGetBPRDataCount, useGetState, useSaveState, useResetState,useGetLocationTypes } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 import { GetBPRDataMockResponse, GetBPRUIConfigurationMockResponse, GetDailyDataMockResponse, GetStateMockResponse, ResetStateMockResponse, SaveStateMockResponse } from '../../../../../mock-data/BPR';
 
 import { ReactNode } from "react";
@@ -59,6 +59,10 @@ const useSaveStateMock = useSaveState as jest.MockedFunction<
 
 const useResetStateMock = useResetState as jest.MockedFunction<
   typeof useResetState
+>
+
+const useGetLocationTypesMock = useGetLocationTypes as jest.MockedFunction<
+  typeof useGetLocationTypes
 >
 
 // const contextWrapper = (children:any) => {
@@ -228,6 +232,18 @@ describe('BPR Component', () => {
       
     })
 
+    useGetLocationTypesMock.mockImplementation(():any=>{
+      return {data: {data:{
+        "recordCount": null,
+        "data": "[{\"lt\":\"2013\"},{\"lt\":\"CWH\"},{\"lt\":\"Depot\"},{\"lt\":\"Inhouse\"},{\"lt\":\"plant\"},{\"lt\":\"Supplier\"},{\"lt\":\"WS01\"}]",
+        "status": 200,
+        "msg": null,
+        "errorCount": null,
+        "error": null,
+        "conflictErrorCount": null,
+        "conflictError": null
+      }},isLoading:false};
+    })
   });
   it('renders loader when isLoading is true', () => {
     useGetBPRUIConfigurationMock.mockImplementation(():any=>{
@@ -377,6 +393,19 @@ describe("It handles all interactions",()=>{
         }}
         }
       }
+    })
+
+    useGetLocationTypesMock.mockImplementation(():any=>{
+      return {data: {data:{
+        "recordCount": null,
+        "data": "[{\"lt\":\"2013\"},{\"lt\":\"CWH\"},{\"lt\":\"Depot\"},{\"lt\":\"Inhouse\"},{\"lt\":\"plant\"},{\"lt\":\"Supplier\"},{\"lt\":\"WS01\"}]",
+        "status": 200,
+        "msg": null,
+        "errorCount": null,
+        "error": null,
+        "conflictErrorCount": null,
+        "conflictError": null
+    }},isLoading:false};
     })
    
     render(contextWrapper(<BPR/>,store))

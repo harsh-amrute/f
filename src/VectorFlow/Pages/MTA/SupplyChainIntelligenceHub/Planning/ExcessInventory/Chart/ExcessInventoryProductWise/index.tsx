@@ -8,7 +8,7 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
 interface ExcessInventoryProps{
     data:any
 }
@@ -29,7 +29,8 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             {
                 field:'SKUDescription',
                 colId:'SKUDescription',
-                headerName:'Product Name'
+                headerName:'Product Name',
+                cellDataType: 'text',
             },
             {
                 field:'WHCount',
@@ -39,6 +40,8 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -57,7 +60,8 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             {
                 field:'SKUDescription',
                 colId:'SKUDescription',
-                headerName:'Product Name'
+                headerName:'Product Name',
+                cellDataType: false,
             },
             {
                 field:'SumAmount',
@@ -67,6 +71,8 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -77,22 +83,6 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
     }
 
     const colDefs2 = mapUIConfigToColdefs2(data['topTenProductsWithExcessInventoryNumberOfLocations']['uiconfig']);
-
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
 
     const sortData = (data:any,key:string) => {
         data.sort((row1:any,row2:any)=>{
@@ -194,7 +184,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,
@@ -205,7 +195,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Count of Locations",
+                            text:"Count Of Locations",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -239,7 +229,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,
@@ -249,7 +239,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Value in Lakhs",
+                            text:"Value In Lakhs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -290,7 +280,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"95%"}>
+                        <SCChartContainer height={"95%"} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: Number Of Locations</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -304,7 +294,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryNumberOfLocations']['data']),'WHCount')}
+                                        rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryNumberOfLocations']['data'],['WHCount']),'WHCount')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -341,7 +331,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                 <VFTable
                                     ref={refGraph1}
                                     columnDefs={colDefs1}
-                                    rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryNumberOfLocations']['data']),'WHCount')}
+                                    rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryNumberOfLocations']['data'],['WHCount']),'WHCount')}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"
@@ -376,7 +366,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={'95%'}>
+                        <SCChartContainer height={'95%'} style={{marginLeft:'18px'}}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -390,7 +380,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={scaleDown(sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data']),'SumAmount'),'SumAmount',100000)}
+                                        rowData={scaleDown(sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data'],['SumAmount']),'SumAmount'),'SumAmount',100000)}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -427,7 +417,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                             <VFTable
                                 ref={refGraph2}
                                 columnDefs={colDefs2}
-                                rowData={scaleDown(sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data']),'SumAmount'),'SumAmount',100000)}
+                                rowData={scaleDown(sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data'],['SumAmount']),'SumAmount'),'SumAmount',100000)}
                                 enableCharts={true}
                                 enableRangeSelection={true} 
                                 rowSelection="multiple"

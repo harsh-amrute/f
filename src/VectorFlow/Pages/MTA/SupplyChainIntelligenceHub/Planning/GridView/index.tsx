@@ -22,7 +22,7 @@ const GridView = ({category,currentTab,currentGridData,paginationProps,onOpenDai
             case 'GITFromParent':
                 return <MonitorGITParent data={currentGridData} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
             case 'GITToChild':
-                if(currentTab==='locationWise') return <MonitorGITChildLocationWiseGrid data={currentGridData ? currentGridData['locationWise'] : []} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
+                if(currentTab==='locationWise') return <MonitorGITChildLocationWiseGrid data={currentGridData ? currentGridData['locationWise'] : ['']} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
                 else return <MonitorGITChildTransporterWiseGrid data={currentGridData ? currentGridData['transporterWise'] : []} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>
             case 'ExpediteFromParent':
                 return <ExpediteParentGrid data={currentGridData ? currentGridData : []} paginationProps={paginationProps} onOpenDailyDataGraph = {onOpenDailyDataGraph} currentCategory={category} currentTab={currentTab}/>  

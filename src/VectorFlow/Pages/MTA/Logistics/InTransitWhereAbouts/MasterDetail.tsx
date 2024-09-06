@@ -35,7 +35,7 @@ const MasterDetail = (params:any)=>{
                 </VFButtonOutline>
             </MasterDetailHeaderWrapper>
 
-            <div  className="ag-theme-intranist"> 
+            <div  className="ag-theme-intranist" style={{height:'100%'}}> 
             <VFTable
                 height={"100%"}
                 disableZoomScaling

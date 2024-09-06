@@ -1,4 +1,5 @@
 import { ICellRendererParams } from "ag-grid-enterprise"
+import { notifyError } from "../../../../../helpers/notify"
 import { ActionRendererWrapper,ActionButtonWrapper } from "./styles"
 
 
@@ -9,7 +10,12 @@ interface TaskPendingActionRendererProps extends ICellRendererParams{
 
 const TaskPendingActionRenderer = (props:TaskPendingActionRendererProps)=>{
 
+    
+
     const onClick = (status:string)=>{
+        if(!props.data.isModified && status==="Approved"){
+            return notifyError("No Actions Available")
+        }
         if(props.data.status===status){
             props.node.setDataValue('status','')
             props.node.setSelected(false)

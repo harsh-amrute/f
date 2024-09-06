@@ -13,6 +13,7 @@ const useDataModificationHistory = () => {
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const [selectedSkuOption, setSelectedSkuOption] = useState<any>(null);
     const [selectedLocOption, setSelectedLocOption] = useState<any>(null);
+    // const [masterId, setMasterId]= useState<any>(null);
   
     const {mutateAsync:getSKULocations} = useGetSkuLoc();
     const {mutateAsync:masterUIConfiguration} = useGetMasterUIConfiguration();
@@ -32,61 +33,68 @@ const useDataModificationHistory = () => {
         }
         getMasterUIConfigurationData()
     },[])
+    
  
-    useEffect(()=>{
-        const fetchSKULocations = async()=>{
-            const {data} = await getSKULocations({masterId:1});
-            setSkuOptions(data.data.map((option: any)=>{
-                return {label:option.SKUCode, value:option.id, fields:option.fields}
-                }));
-            }
-        fetchSKULocations()
-    },[])
-
-
     // useEffect(()=>{
     //     const fetchSKULocations = async()=>{
     //         const {data} = await getSKULocations({masterId:1});
-    //         if(data.data.label==undefined || data.data.length===0){
-    //             setSkuOptions([])
-    //         } else{
     //         setSkuOptions(data.data.map((option: any)=>{
     //             return {label:option.SKUCode, value:option.id, fields:option.fields}
     //             }));
     //         }
-    //         }
     //     fetchSKULocations()
     // },[])
+
  
-    useEffect(()=>{
-        const fetchSKULocations = async()=>{
-            const {data} = await getSKULocations({masterId:1});
-            setLocOptions(data.data.map((option: any)=>{
-                return {label:option.whCode, value:option.id, fields:option.fields}
-                }));
-            }
-        fetchSKULocations()
-    },[])
+    const fetchSKULocations = async(masterId:any)=>{
+        const {data} = await getSKULocations({masterId:masterId});
+       
+        setSkuOptions(data.data.map((option: any)=>{
+            return {label:option.SKUCode, value:option.SKUCode, fields:option.fields}
+        }));
 
+        setLocOptions(data.data.map((option: any)=>{
+            return {label:option.WhCode, value:option.WhCode, fields:option.fields}
+        }));
+     }
+ 
 
-    useEffect(() => {
-        const fetchSKULocations = async () => {
-            const { data } = await getSKULocations({ masterId: 1 });
-                setLocOptions(data.data.map((option: any) => ({
-                    label: option.whCode,
-                    value: option.id,
-                    fields: option.fields
-                })));
-        }
+    // useEffect(() => {
+    //     const fetchSKULocations = async () => {
+    //         const { data } = await getSKULocations({ masterId: 1 });
+    //             setLocOptions(data.data.map((option: any) => ({
+    //                 label: option.whCode,
+    //                 value: option.id,
+    //                 fields: option.fields
+    //             })));
+    //     }
     
-        fetchSKULocations();
-    }, []);
+    //     fetchSKULocations();
+    // }, []);
+
+    const onMasterChange = (newValue: any) => {
+        console.log(newValue)
+        setSelectedOption(newValue)
+        fetchSKULocations(newValue.value)
+
+    }
 
    
     
     const handleChange = () => {
         const postTaskMasterHistory = async() =>{
-            const {data} = await getTaskMastersHistory({masterId:1,skuCode:'WMSDXEE16KDWT'});
+            const payload:any = {masterId:selectedOption.value}
+            if(isSkuDisabled()){
+                payload['whCode'] = selectedLocOption.value;
+            }
+            if(isLocDisabled()){
+                payload['skuCode'] = selectedSkuOption.value;
+            }
+            if(!isSkuDisabled() && !isLocDisabled()){
+                payload['whCode'] = selectedLocOption.value;
+                payload['skuCode'] = selectedSkuOption.value;
+            }
+            const {data} = await getTaskMastersHistory(payload);
             setRowData(data.data);
         }
         postTaskMasterHistory()
@@ -99,6 +107,7 @@ const useDataModificationHistory = () => {
         setRowData([]);
         setSkuOptions([]);
         setLocOptions([]);
+        setSelectedOption([])
  
         const fetchInitialData = async () => {
             try {
@@ -110,7 +119,7 @@ const useDataModificationHistory = () => {
                 })));
  
                 // Fetch skuOptions
-                const { data: skuOptionsData } = await getSKULocations({ masterId: 1 });
+                const { data: skuOptionsData } = await getSKULocations({ masterId: selectedOption.masterId });
                 setSkuOptions(skuOptionsData.data.map((option: any) => ({
                     label: option.SKUCode,
                     value: option.id,
@@ -118,7 +127,7 @@ const useDataModificationHistory = () => {
                     
                 })));
                
-                const { data: locOptionsData } = await getSKULocations({ masterId: 1 });
+                const { data: locOptionsData } = await getSKULocations({ masterId: selectedOption.masterId });
                 setLocOptions(locOptionsData.data.map((option: any) => ({
                     label: option.whCode,
                     value: option.id,
@@ -244,7 +253,8 @@ const useDataModificationHistory = () => {
         selectedSkuOption,
         selectedLocOption,
         isSkuDisabled,
-        isLocDisabled
+        isLocDisabled,
+        onMasterChange
        
     }
  

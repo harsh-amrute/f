@@ -1,6 +1,6 @@
 
 import { Dispatch,SetStateAction} from "react";
-import { Container, QuickFilterHeader,SCButtonContainer, SCLoaderContainer, SCCardContainer } from "./styles"
+import { Container, QuickFilterHeader,SCButtonContainer, SCCardContainer } from "./styles"
 
 import VFMasterCard from "../../commons/VFMasterCard";
 import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { notifyError } from "../../../../helpers/notify";
 import { RootState } from "../../../../redux/store/store";
 import { ADD_MASTER,FILL_SELECTED_OPTIONS,REMOVE_MASTER, RESET_STATE,UPDATE_MASTER_CHECKED_STATUS } from "../../../../redux/actions/MDM";
+import VFLoader from "../../commons/VFLoader";
 
 interface SelectMasterProps{
     data:MDMMasterState[],
@@ -38,6 +39,7 @@ const SelectMaster = (
     }:SelectMasterProps)=>{
 
 
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const masters = useSelector((state:RootState)=>state.mdm.masters);
@@ -50,9 +52,7 @@ const SelectMaster = (
     
     if(isLoading){
         return (
-            <SCLoaderContainer>
-                <img src="/assets/img/VectorFLOW/loaderBig.svg" data-testid="loader"/>
-            </SCLoaderContainer>
+            <VFLoader/>
         )
     }
 
@@ -130,7 +130,17 @@ const SelectMaster = (
             </Container>
             <SCCardContainer>
                 {(masters.length > 0 ? masters : data).map((item:MDMMasterState)=>{
-                    return <VFMasterCard themeUi={themeUi} isSelected={(item.isChecked) && (selectedOptions.length > 0)} onSelectCheckbox={()=>{if(toggledFromAddMaster())notifyError("You can add only new Masters!");else dispatch(UPDATE_MASTER_CHECKED_STATUS(item.id))}} data={item} key={item.id} selectedFields={selectedOptions.map((s:Option)=>s.label)} isCheckBoxDisabled={filterButtonStatus.length > 0 || masters.length===0}/>
+                    return (
+                        <VFMasterCard 
+                            themeUi={themeUi} 
+                            isSelected={(item.isChecked) && (selectedOptions.length > 0)} 
+                            onSelectCheckbox={()=>{if(toggledFromAddMaster())notifyError("You can add only new Masters!");else dispatch(UPDATE_MASTER_CHECKED_STATUS(item.id))}} 
+                            data={item} 
+                            key={item.id} 
+                            selectedFields={selectedOptions.map((s:Option)=>s.label)} 
+                            isCheckBoxDisabled={filterButtonStatus.length > 0 || masters.length===0}
+                        />
+                    )
                 })}
             </SCCardContainer>
             <SCButtonContainer>

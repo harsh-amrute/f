@@ -2,11 +2,12 @@ import {useMemo, useState} from 'react';
 import GridViewTable from "../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import { SideBarDef } from 'ag-grid-enterprise';
-import { createIconColumn } from '../../../../../../../helpers/utils';
+import { createIconColumn, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { OrderCoverageCellRenderer } from '../../../../../../../components/VectorFLOW/commons/OrderCoverageCellRenderer';
+import { BPRViewTableColDef } from '../../../BPR/BPRViewTable';
+import { defaultAgGridSideBarForBPR } from '../../../../../../../helpers/BPRConstants';
 
 const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, currentCategory, currentTab}:any) => {
 
@@ -20,22 +21,6 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
         orderCoverageCellRenderer: OrderCoverageCellRenderer
     }), []);
 
-    const sideBar: SideBarDef = {
-        toolPanels: [
-            {
-                id: "columns",
-                labelDefault: "Columns",
-                labelKey: "columns",
-                iconKey: "columns",
-                toolPanel: "agColumnsToolPanel",
-                toolPanelParams: {
-                    suppressPivots: true,
-                    suppressPivotMode: true,
-                },
-            },
-        ],
-        defaultToolPanel: '',
-    }
 
     const agGridProps: AgGridReactProps = {
         enableRangeSelection: true,
@@ -60,7 +45,7 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
                 toggleSubGrid(true);
             }
         },
-        sideBar: sideBar,
+        sideBar: defaultAgGridSideBarForBPR,
         suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {
@@ -125,6 +110,8 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
                     minWidth: 250,
                 }
             }
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field: column['colCode'],
                 colId: column['colCode'],
@@ -136,36 +123,45 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
 
     const colDefs = mapUIConfigToColdefs(data['uiConfig']);
 
-    const customGridColDef = [
+    const customGridColDef:Array<BPRViewTableColDef> = [
         {
             headerName: "Order No/Tracking No",
             colId: 'on',
-            field: 'on'
+            field: 'on',
+            filter:true,
+            dataType:'number'
         },
         {
             headerName: "Creation Date",
             colId: 'id',
-            field: 'id'
+            field: 'id',
+            filter:true
         },
         {
             headerName: "Pending Quantity",
             colId: 'pq',
-            field: 'pq'
+            field: 'pq',
+            dataType:"number",
+            filter:true
         },
         {
             headerName: "Due Date",
             colId: 'dd',
-            field: 'dd'
+            field: 'dd',
+            filter:true
         },
         {
             headerName: "Price",
             colId: 'p',
-            field: 'p'
+            field: 'p',
+            dataType:"number",
+            filter:true
         },
         {
             headerName: "Order Status",
             colId: 'os',
-            field: 'os'
+            field: 'os',
+            filter:true
         },
     ]
 

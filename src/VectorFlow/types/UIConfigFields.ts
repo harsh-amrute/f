@@ -6,4 +6,5 @@ export interface UiConfigField {
     Visible:boolean
     CellAlignment:string
     Value:string
+    DataType:"String" | "Boolean" | "Number"
 }

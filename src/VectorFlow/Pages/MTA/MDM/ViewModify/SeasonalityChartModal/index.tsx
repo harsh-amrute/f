@@ -19,6 +19,7 @@ import {
 //  import {enIN} from 'date-fns/locale';
  import { useRef, useState, useEffect } from "react";
 import { DailyData } from "../../../../../types/MDM";
+import { useUserData } from "../../../../../../context";
 
 
 
@@ -37,6 +38,9 @@ interface SeasonalityChartModalProps{
 
 
 const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,closeModal}:SeasonalityChartModalProps) => {
+
+  const {user} = useUserData()
+  const {theme_ui} = user.user
 
   const customTooltip = (context:any)=> {
     const getCurrentDate = () => {
@@ -294,13 +298,13 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
 
 
     return(
-        <VFModalCard openModal={isModalOpen} closeModal={closeModal} headerIcon='' headerText="Seasonality Graph" headerBgColor="#000000" headerTextColor="#FFFFFF" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-white.svg"}>
+        <VFModalCard openModal={isModalOpen} closeModal={closeModal} headerIcon='' headerText="Seasonality Graph" headerBgColor="white" headerTextColor="#000000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <SCSeasonalityContainer>
                 <SCChartContainer>
                     <Chart type="bar" data={chartData} options={chartOptions} ref={chartRef}/>
                 </SCChartContainer>
                 <SCSeasonalityStatusDetails>
-                  <SCSeasonalityDetailsTitle>
+                  <SCSeasonalityDetailsTitle themeUi={theme_ui}>
                     Seasonality Status Details
                   </SCSeasonalityDetailsTitle>
                   <SCSeasonalityDetailsBody>

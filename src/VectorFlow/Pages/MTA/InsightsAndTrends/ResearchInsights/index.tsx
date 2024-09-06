@@ -6,7 +6,7 @@ import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeS
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 
-import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper,ResearchInsightsTableTaskBar, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup, DefaultViewRendererWrapper, DefaultViewRendererHeader, DefaultViewRendererText } from "./styles"
+import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup, DefaultViewRendererWrapper, DefaultViewRendererHeader, DefaultViewRendererText } from "./styles"
 
 import CustomCalenderCaption from './CustomCalenderCaption'
 import CustomCalenderDay from './CustomCalenderDay'
@@ -15,7 +15,7 @@ import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader'
 
 import 'react-day-picker/dist/style.css';
 import './styles.css'
-import { AgChartsReact } from 'ag-charts-react'
+import { AgCharts } from 'ag-charts-react'
 import React from 'react'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
@@ -74,15 +74,19 @@ const ResearchInsights = ()=>{
         dailyData,
         handlePageChange,
         onApplyFilter,
-        onDelete,
+        onDeleteFilter,
         currentFilter,
-        setCurrentFilter
+        setCurrentFilter,
+        historicalAvailabilityData,
     } = useResearchInsights()
 
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
 
-    
+    const getFormattedPercentage = (number:number)=>{
+        return number.toFixed(2)
+    }
+
     return(
         <GridStateContext.Provider value={{
             ref:ref,
@@ -109,15 +113,13 @@ const ResearchInsights = ()=>{
             onApplyFilter={onApplyFilter}
             multiFilter={currentFilter}
             setMultiFilter={setCurrentFilter}
-            onDelete={onDelete}
+            onDelete={onDeleteFilter}
             onUpdateInsight={handleOnUpdateGraph}
             hideUpdateInsightsBtn={graphState==='default'}
         />
         </div>
         
-        {(isLoading || isSavedDataLoading)?(
-            <VFLoader/>
-        ):(
+        
             <ResearchInsightsLayout>
             {
                 showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
@@ -126,44 +128,51 @@ const ResearchInsights = ()=>{
                 showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
             }
             <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
-                <VFTable
-                    height={"100%"}
-                    {...agGridProps}
-                    ref={ref}
-                    columnDefs={ResearchInsightsColumns}
-                    rowData={ResearchInsightsData}
-                    onGridReady={(params)=>{
-                        if(columnState)params.columnApi.applyColumnState({state:columnState})
-                    }}
-                    enableRangeSelection={true} // Added property
-                    rowSelection="multiple"
-                    statusBar = {{
-                        statusPanels: [
-                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                          { statusPanel: 'agAggregationComponent', align:'left' },
-                        ],
-                      }}
-                />
-                <VFPagination
-                    selectedRows={0}
-                    totalRows={recordCount || 0}
-                    currentPage={currGridPage}
-                    rowsPerPage={rowsPerPage}
-                    handleChangePage={handlePageChange}
-                />
-                <ResearchInsightsTableTaskBar>
-                    {/* <VFButton
+                {(isLoading || isSavedDataLoading)?(
+                    <VFLoader/>
+                ):(
+                    <React.Fragment>
+                        <VFTable
+                            height={"100%"}
+                            {...agGridProps}
+                            ref={ref}
+                            columnDefs={ResearchInsightsColumns}
+                            rowData={ResearchInsightsData}
+                            onGridReady={(params)=>{
+                                if(columnState)params.api.applyColumnState({state:columnState})
+                            }}
+                            enableRangeSelection={true} // Added property
+                            rowSelection="multiple"
+                            statusBar = {{
+                                statusPanels: [
+                                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                                { statusPanel: 'agAggregationComponent', align:'left' },
+                                ],
+                            }}
+                        />
+                        <VFPagination
+                            selectedRows={0}
+                            totalRows={recordCount || 0}
+                            currentPage={currGridPage}
+                            rowsPerPage={rowsPerPage}
+                            handleChangePage={handlePageChange}
+                        />
+                    </React.Fragment>
+                )}
+                
+                {/* <ResearchInsightsTableTaskBar>
+                    <VFButton
                         themeUi={themeUi}
                         onClick={handleOnUpdateGraph}
                         // disabled={graphState==='default'}
                     >
                         Update Graph
-                    </VFButton> */}
+                    </VFButton>
 
-                </ResearchInsightsTableTaskBar>
+                </ResearchInsightsTableTaskBar> */}
             </ResearchInsightsTableWrapper>
             {
                 isUpdatedGraphDataLoading
@@ -173,7 +182,7 @@ const ResearchInsights = ()=>{
                 </AvailabilityTrendWrapper>
                 :
                 <AvailabilityTrendWrapper>
-                <AvailabilityTrendHeader>
+                <AvailabilityTrendHeader themeUi={themeUi}>
                     Availability Trend
                 </AvailabilityTrendHeader>
                 <AvailabilityTrendSection style={{borderBottom:'dashed 2px #B2B2B2'}}>
@@ -186,7 +195,7 @@ const ResearchInsights = ()=>{
                                 90-60 Days
                             </HistoricalAvailabiltyContentSectionHeader>
                             <HistoricalAvailabiltyContentSectionData>
-                                57.49%
+                                {getFormattedPercentage(historicalAvailabilityData.Availability_61_90)}%
                             </HistoricalAvailabiltyContentSectionData>
                         </HistoricalAvailabiltyContentSection>
                         <HistoricalAvailabiltyContentSection>
@@ -194,7 +203,7 @@ const ResearchInsights = ()=>{
                                 60-30 Days
                             </HistoricalAvailabiltyContentSectionHeader>
                             <HistoricalAvailabiltyContentSectionData>
-                                17.49%
+                                {getFormattedPercentage(historicalAvailabilityData.Availability_31_60)}%
                             </HistoricalAvailabiltyContentSectionData>
                         </HistoricalAvailabiltyContentSection>
                         <HistoricalAvailabiltyContentSection style={{border:"none"}}>
@@ -202,13 +211,13 @@ const ResearchInsights = ()=>{
                                 30-0 Days
                             </HistoricalAvailabiltyContentSectionHeader>
                             <HistoricalAvailabiltyContentSectionData>
-                                57.49%
+                                {getFormattedPercentage(historicalAvailabilityData.Availability_01_30)}%
                             </HistoricalAvailabiltyContentSectionData>
                         </HistoricalAvailabiltyContentSection>
                     </HistoricalAvailabiltyContent>
                 </AvailabilityTrendSection>
                 {(graphState==='default')?(
-                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0,height:'100%',borderBottom:'dashed 3px #B2B2B2'}}>
+                    <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0}}>
                         <DefaultViewRendererWrapper>
                             <Player src={themeUi==="REGALBLAZE"?'/assets/img/VectorFLOW/BPR/swipe pointer regal.json':'/assets/img/VectorFLOW/BPR/swipe pointer.json'} loop autoplay style={{transform:'rotate(-90deg)',height:70,width:70}}/>
                             <DefaultViewRendererHeader>
@@ -265,7 +274,7 @@ const ResearchInsights = ()=>{
                             </CapsuleWrapper>
                         </ChartHeader>
                         <CalenderWrapper>
-                            <CalenderHeader> Technical </CalenderHeader>
+                            <CalenderHeader> {calenderType === 'Tech' ? 'On-Hand' : 'Pipeline'}  </CalenderHeader>
                             <DayPicker
                                 style={{
                                     zoom:0.7
@@ -374,102 +383,109 @@ const ResearchInsights = ()=>{
                     </ChartHeader>
                     <ChartWrapper>
                         <ExpandChartIcon src='/assets/img/VectorFLOW/BPR/expand-graph.svg' onClick={()=>toggleGraphModal(true,1)}/>
-                        <AgChartsReact options={{
-                        height:200,
-                        width:300,
-                        data:selfGraphData,
-                        axes:[
-                            {
-                                
-                                type:"category",
-                                position:'bottom',
-                                label:{
-                                    fontSize:8
-                                }
-                            },
-                            {
-                                type:"number",
-                                position:'left',
-                                label:{
-                                    fontSize:8
-                                }
-                            }
-                        ],
-                        series: [
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Red",
-                                yName: "Red",
-                                
-                                marker:{
-                                    fill:'red',
-                                    size:2,
-                                    stroke:"red"
+                        <AgCharts
+                        options={{
+                            height:200,
+                            width:300,
+                            data:selfGraphData,
+                            axes:[
+                                {
+                                    
+                                    type:"category",
+                                    position:'bottom',
+                                    label:{
+                                        fontSize:8
+                                    }
                                 },
-                                stroke:'red'
-                                
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Green",
-                                yName: "Green",
-                                marker:{
-                                    fill:'green',
-                                    size:2,
+                                {
+                                    type:"number",
+                                    position:'left',
+                                    label:{
+                                        fontSize:8
+                                    }
+                                }
+                            ],
+                            series: [
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Red",
+                                    yName: "Red",
+                                    
+                                    marker:{
+                                        fill:'red',
+                                        size:2,
+                                        shape:'square',
+                                        stroke:"red"
+                                    },
+                                    stroke:'red'
+                                    
+                                },
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Green",
+                                    yName: "Green",
+                                    marker:{
+                                        fill:'green',
+                                        size:2,
+                                        shape:'square',
+                                        stroke:'green'
+                                    },
                                     stroke:'green'
                                 },
-                                stroke:'green'
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Yellow",
-                                yName: "Yellow",
-                                marker:{
-                                    fill:'#FFBF00',
-                                    size:2,
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Yellow",
+                                    yName: "Yellow",
+                                    marker:{
+                                        fill:'#FFBF00',
+                                        size:2,
+                                        shape:'square',
+                                        stroke:'#FFBF00'
+                                    },
                                     stroke:'#FFBF00'
                                 },
-                                stroke:'#FFBF00'
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Black",
-                                yName: "Black",
-                                marker:{
-                                    fill:'black',
-                                    size:2,
-                                    stroke:"black"
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Black",
+                                    yName: "Black",
+                                    marker:{
+                                        fill:'black',
+                                        size:2,
+                                        shape:'square',
+                                        stroke:"black"
+                                    },
+                                    stroke:'black'
                                 },
-                                stroke:'black'
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "Blue",
-                                yName: "Blue",
-                                marker:{
-                                    fill:'blue',
-                                    size:2,
-                                    stroke:"blue"
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "Blue",
+                                    yName: "Blue",
+                                    marker:{
+                                        fill:'blue',
+                                        size:2,
+                                        shape:'square',
+                                        stroke:"blue"
+                                    },
+                                    stroke:'blue'
                                 },
-                                stroke:'blue'
-                            },
-                            {
-                                type: "line",
-                                xKey: "date",
-                                yKey: "White",
-                                yName: "White",
-                                marker:{
-                                    fill:'gray',
-                                    size:2,
-                                    stroke:"gray"
-                                },
-                                stroke:'gray'
-                            }
+                                {
+                                    type: "line",
+                                    xKey: "date",
+                                    yKey: "White",
+                                    yName: "White",
+                                    marker:{
+                                        fill:'gray',
+                                        size:2,
+                                        shape:'square',
+                                        stroke:"gray"
+                                    },
+                                    stroke:'gray'
+                                }
                             ],
                         legend:{
                             position:'top',
@@ -523,7 +539,7 @@ const ResearchInsights = ()=>{
                     </ChartHeader>
                     <ChartWrapper>
                         <ExpandChartIcon src='/assets/img/VectorFLOW/BPR/expand-graph.svg' onClick={()=>toggleGraphModal(true,2)}/>
-                        <AgChartsReact options={{
+                        <AgCharts options={{
                             height:150,
                             width:300,
                             data:locationGraphData,
@@ -554,6 +570,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'red',
                                         size:2,
+                                        shape:'square',
                                         stroke:"red"
                                     },
                                     stroke:'red'
@@ -567,6 +584,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'green',
                                         size:2,
+                                        shape:'square',
                                         stroke:"green"
                                     },
                                     stroke:'green'
@@ -579,6 +597,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'#FFBF00',
                                         size:2,
+                                        shape:'square',
                                         stroke:"#FFBF00"
                                     },
                                     stroke:'#FFBF00'
@@ -591,6 +610,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'black',
                                         size:2,
+                                        shape:'square',
                                         stroke:"black"
                                     },
                                     stroke:'black',
@@ -604,6 +624,7 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'blue',
                                         size:2,
+                                        shape:'square',
                                         stroke:"blue"
                                     },
                                     stroke:'blue'
@@ -616,13 +637,27 @@ const ResearchInsights = ()=>{
                                     marker:{
                                         fill:'gray',
                                         size:2,
+                                        shape:'square',
                                         stroke:"gray"
                                     },
                                     stroke:'gray'
                                 }
                                 ],
                                 legend:{
-                                    position:'top'
+                                    position:'top',
+                                    item:{
+                                        label:{
+                                            fontSize:8,
+        
+                                        },
+                                        marker:{
+                                            size:10
+                                        },
+                                        line:{
+                                            strokeWidth:1
+                                        }
+                                    }
+                                    
                                 }
                         }}/>
                     </ChartWrapper>
@@ -652,7 +687,7 @@ const ResearchInsights = ()=>{
                   />
                 </div>
         </ResearchInsightsLayout>
-        )}
+        
         </GridStateContext.Provider>
     )
 }

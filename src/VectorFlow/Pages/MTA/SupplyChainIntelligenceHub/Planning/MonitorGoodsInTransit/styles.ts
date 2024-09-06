@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 // import * as globalStyles from "../../../../../../styles/global";
 import * as gridSystem from "../../../../../../styles/gridSystem";
-
+// import { createGlobalStyle } from 'styled-components';
 
 export const SCDynamicContainer = styled.div`
     margin-top:25px;
@@ -62,4 +62,22 @@ export const SCHorizontalDivider = styled.hr`
     border: none;
     border-top:1px solid #B2B2B2;
 `
+export const Xaxislegend = styled.div`
+font-size: 10px;
+font-family: Roboto;
+color:#6d6d6d;
+font-weight:900;
+text-align:center;
+justify-content:center;
+margin-bottom:30px;
+margin-top:-30px;
+`
+
+export const GlobalStyle = createGlobalStyle`
+  .apexcharts-menu-item.exportSVG,
+  .apexcharts-menu-item.exportCSV {
+    display: none;
+  }
+`;
+
 

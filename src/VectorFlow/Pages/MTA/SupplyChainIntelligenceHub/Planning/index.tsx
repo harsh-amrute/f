@@ -1,5 +1,3 @@
-import {useMemo} from 'react'
-
 import SelectCategory from "../../../../../components/VectorFLOW/layouts/SelectCategory";
 
 import usePlanning from "./usePlanning";
@@ -49,9 +47,11 @@ const Planning = () => {
         currentFilter,
         setCurrentFilter,
         onDeleteFilter,
-        isDataLoading
+        isDataLoading,
+        currentColDefs
     } = usePlanning();
 
+    console.log(currentCategory,currentTab)
 
 
     const renderView = () => {
@@ -69,34 +69,7 @@ const Planning = () => {
 
     
 
-    const currentColDefs = useMemo(()=>{
-        if(currentGridData){
-            let currUiConfig = []
-            if(currentCategory==="GITToChild"){
-                if(currentTab==="locationWise")currUiConfig=currentGridData['locationWise'].uiConfig
-                else currUiConfig=currentGridData['transporterWise'].uiConfig
-            }
-            else currUiConfig = currentGridData.uiConfig
-            let colDefs = [];
-        colDefs = currUiConfig.map((column:{header:string,colCode:string})=>{
-            if(['plp','pip'].includes(column.colCode)){
-                return {
-                    field:column['colCode'],
-                    colId:column['colCode'],
-                    headerName:column['header'],
-                    cellRenderer:'colorCellRenderer',
-                }
-            }
-            return {
-                field:column['colCode'],
-                colId:column['colCode'],
-                headerName:column['header']
-            }
-        })
-        return [...colDefs]
-        }
-        return []
-    },[currentGridData])
+   
 
     if(isDataLoading){
         return <VFLoader/>
@@ -117,7 +90,10 @@ const Planning = () => {
             {
                 isOverlayVisible && (
                 <VFOverlay>
-                    <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Loading....</h1>
+                    {/* <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Loading....</h1> */}
+                   <div style={{backgroundColor:'white',borderRadius:'6px'}}>
+                    <VFLoader/>
+                   </div>
                 </VFOverlay>
                 )
             }

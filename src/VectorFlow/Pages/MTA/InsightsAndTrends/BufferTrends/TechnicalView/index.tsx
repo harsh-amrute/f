@@ -10,10 +10,9 @@ import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 
 
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-
 
 
 interface TechnicalWiseProps {
@@ -33,7 +32,7 @@ interface TechnicalWiseProps {
 const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizondays, handleSubmitClick, horizonDays,themeUi }: TechnicalWiseProps) => {
 
 
-    const numericData = data.map((item: any) => ({
+    const numericData = data?.map((item: any) => ({
         ...item,
         b: parseFloat(item.b),
         bu: parseFloat(item.bu),
@@ -52,7 +51,9 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                 label: {
                     fontSize: 8,
                     fontWeight: 'bold',
-                    color: 'black'
+                    color: 'black',
+                    autoRotate:false,
+                    avoidCollisions:true
                 }
             },
             {
@@ -145,11 +146,16 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
             position: 'bottom',
             item: {
                 label: {
-                    fontSize: 8,
+                        formatter:(params:any)=>{
+                            if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                            return params.value;
+                        },
+                    fontSize: 12,
 
                 },
                 marker: {
-                    size: 8
+                    size: 12,
+                    shape:'square'
                 },
                 line: {
                     strokeWidth: 1
@@ -166,7 +172,7 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
 
     return (
         <>
-            <SCChartContainer height={"75%"}>
+            <SCChartContainer >
                 <SCChartMainContainer>
                     <SCChartSliderContainer>
                         <label style={{
@@ -237,7 +243,7 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                                 <VFInfoToolTip infoList={graph1} />
                             </div>
                         </div>
-                        <AgChartsReact options={{ ...options, data: numericData }} />
+                        <AgCharts options={{ ...options, data: numericData }} />
                     </div>
                 </ChartWrapper>
             </SCChartContainer>

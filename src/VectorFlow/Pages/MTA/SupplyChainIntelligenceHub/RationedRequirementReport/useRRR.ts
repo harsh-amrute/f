@@ -1,15 +1,15 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import { SideBarDef } from 'ag-grid-enterprise';
 
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import { mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 
 const useRRR =()=>{
@@ -38,26 +38,6 @@ const useRRR =()=>{
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
 
     const RRRColumns = mapRRRFieldsToColDefs(data?.data.data)
-
-
-
-    const sideBar:SideBarDef = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
 
   
     useEffect(()=>{       
@@ -127,26 +107,34 @@ const useRRR =()=>{
     }
 
     const onApplyFilter = async(filter:any)=>{
-        try{
-            await getDataCount(filter)
-        notifyLoader("Loading Grid Data")
-            const rowData =await getRRRData({
-                filters:filter ,
-                paginationParameter:{
-                    pageNumber:1,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
-                }
-            })
-            
-        
-        // setRecordCount(rowData.data.recordCount)
-        setCurrFilter(filter)
-            setCurrentPage(1)
-            setRRRRowData(rowData?.data?.data)
-            toast.dismiss()
-        }catch(err:any){
-            notifyError(err)
+        try {
+          await getDataCount(filter);
+          notifyLoader("Loading Grid Data");
+          const rowData = await getRRRData({
+            filters: filter,
+            paginationParameter: {
+              pageNumber: 1,
+              recordsPerPage: parseInt(
+                process.env.REACT_APP_RRR_ROWS_PER_PAGE || "100"
+              ),
+            },
+          });
+
+          // setRecordCount(rowData.data.recordCount)
+          setCurrFilter(filter);
+          setCurrentPage(1);
+          setRRRRowData(rowData?.data?.data);
+          toast.dismiss();
+        } catch (err: any) {
+          notifyError(err);
+          setRRRRowData([])
+          setRRRDataCount(0)
         }
+    }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        onApplyFilter(updatedFilter)
     }
 
     const customCellRenderers = useMemo(() => (   
@@ -171,7 +159,7 @@ const useRRR =()=>{
             },
         },
         pagination:false,
-        sideBar:sideBar,
+        sideBar:defaultAgGridSideBarForBPR,
         // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
         // rowSelection:'multiple',
         paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),
@@ -180,9 +168,8 @@ const useRRR =()=>{
         enableBrowserTooltips:true,
         defaultColDef:{
             floatingFilter: true,
-            filter: "agMultiColumnFilter",
+            // filter: "agMultiColumnFilter",
             // tooltipComponent:'remarksToolTipComponent',
-            cellDataType:false,
             cellStyle:{
                 'text-align':'center',
                 'height':'50px',
@@ -232,7 +219,7 @@ const useRRR =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport'});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport',columnKeys:getColumnsForExcelExport(RRRColumns)});
         }
       };
 
@@ -269,7 +256,7 @@ const useRRR =()=>{
         onApplyFilter,
         currFilter,
         setCurrFilter,
-        onDelete
+        onDeleteFilter
     }
 }
 

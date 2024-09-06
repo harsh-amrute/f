@@ -74,7 +74,7 @@ const useTaskPendingForReview = ()=>{
             
             setTaskActionType(taskData.Actiontype)
             
-            const tempToastId = notifyLoader('Laoding Data')
+            const tempToastId = notifyLoader('Loading Data')
             const res:any = await getTaskCount(taskData.TaskID);
 
             const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
@@ -91,7 +91,6 @@ const useTaskPendingForReview = ()=>{
             toast.dismiss(tempToastId)
             toastId = notifyLoader(`Downloading Data 0 / ${taskCount}`)
 
-
             if(taskCount <= chunkSize){
                 const result = await getTaskDetails(payload);
                 taskDataStore = result.data.data;
@@ -101,7 +100,11 @@ const useTaskPendingForReview = ()=>{
                 for(let i=1; i<=numberOfPages; i++){
                     payload.paginationParameter.pageNumber = i;
                     const result = await getTaskDetails(payload)
-                    taskDataStore.push(...result.data.data);
+                    if(i===1){
+                        taskDataStore.push(...result.data.data);
+                    }
+                    taskDataStore[0].data.push(...result.data.data[0].data);
+                    console.log(result.data.data)
                     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${taskCount} / ${taskCount}`})
                     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${taskCount}`})
                 }
@@ -113,7 +116,6 @@ const useTaskPendingForReview = ()=>{
             const currentTaskMasterId:number = currentTaskMaster.MasterId
             setCurrMasterId(currentTaskMasterId)
             
-            setDetailTableRowData(taskDataStore)
         
             const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
             
@@ -121,7 +123,12 @@ const useTaskPendingForReview = ()=>{
             const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
             if(currentMasterFields){
                 // console.log(currentTaskMaster.data[0].new)
-                const existingColumns = getExistingColumns(taskData.Actiontype==2 || currentTaskMasterId===13?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
+                const existingColumns = getExistingColumns(
+                    (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
+                    ? JSON.parse(currentTaskMaster.data[0].new)
+                    : currentTaskMaster.data[0]
+                );
+                               
                 const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
                 setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                 setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
@@ -152,6 +159,7 @@ const useTaskPendingForReview = ()=>{
        
         let toastId;
         const updatedRowData = createTaskPendingSubmitPayload(detailTableRowData,taskActionype || 0,currMasterId)
+        console.log(updatedRowData)
         
         try {
             const noActionPerformed = updatedRowData.find((row:any)=>row.status === '');
@@ -214,22 +222,38 @@ const useTaskPendingForReview = ()=>{
         const pageData = filteredData.slice(startIndex, endIndex);
         
     
-
-        
         switch (selectionType){
             case 'All':
                  ref.current?.api.forEachNode((rowNode)=>{
-                    rowNode.setDataValue('status',status)
-                    rowNode.setSelected(true)
+                    if(rowNode.data.isModified){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                    if(!rowNode.data.isModified && taskActionype===2 && status==="Rejected"){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                    else if(taskActionype!==2 || currMasterId===6){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
                 })
                 setActionStatus(status);
                 break;
             case 'Current':
                 ref.current?.api.forEachNode((rowNode)=>{
-                    if(pageData.includes(rowNode.id)){
+                    if(pageData.includes(rowNode.id) && rowNode.data.isModified){
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
                         
+                    }
+                    if(pageData.includes(rowNode.id) && !rowNode.data.isModified && taskActionype===2 && status==="Rejected"){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
+                    }
+                    else if(pageData.includes(rowNode.id) && (taskActionype!==2 || currMasterId===6)){
+                        rowNode.setDataValue('status',status)
+                        rowNode.setSelected(true)
                     }
                     
                 })

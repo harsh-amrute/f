@@ -1,4 +1,4 @@
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { useGetAvailabilityTrend } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import { useState, useEffect } from "react";
@@ -6,21 +6,20 @@ import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
 
 
-const AvailabilityTrend = ({themeUi}:{themeUi:string}) => {
+const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:string, filter:any, horizon:number, setHorizon:any}) => {
 
   const { mutateAsync: GetAvailabilityTrend, isLoading } =
   useGetAvailabilityTrend();
 
-  const [horizon, setHorizon] = useState<number>(9);
   const [options, setOptions] = useState({});
 
   useEffect(() => {
     OnHorizonChange(horizon);
-  }, []);
+  },[filter]);
   
   const OnHorizonChange = async (hvalue: any) => {
     setHorizon(hvalue);
-    const param = { horison: horizon };
+    const param = { horison: horizon, filters:filter };
     const AvailabilityTrend = await GetAvailabilityTrend(param);
     const AvailabilityTrendData = AvailabilityTrend?.data?.data;
    const greyShades = [
@@ -73,7 +72,11 @@ const AvailabilityTrend = ({themeUi}:{themeUi:string}) => {
           },
           label: {
             formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
+            fontSize: 10,
+            autoRotate:false,
+            avoidCollisions:true
           },
+          
         },
         {
           type: 'number',
@@ -89,7 +92,11 @@ const AvailabilityTrend = ({themeUi}:{themeUi:string}) => {
       ],
       legend: {
         position: 'bottom',
-
+        item:{
+          marker:{
+            shape:'square'
+          }
+        }
       },
     });
   };
@@ -157,7 +164,7 @@ const AvailabilityTrend = ({themeUi}:{themeUi:string}) => {
         </div>
       </div>
       <div style={{height:'85%'}}>
-        <AgChartsReact options={options} />
+        <AgCharts options={options} />
       </div>
     </div>
 
