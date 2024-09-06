@@ -1073,10 +1073,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                 }
                             }}
                             onColumnPinned={(params: any) => {
-                                params.columnApi.autoSizeAllColumns();
+                                params.columnApi?.autoSizeAllColumns();
                             }}
                             onGridReady={(params: any) => {
-                                params.columnApi.autoSizeAllColumns();
+                                params.columnApi?.autoSizeAllColumns();
                             }}
 
                         />

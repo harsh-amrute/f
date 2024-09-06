@@ -1,6 +1,5 @@
 import {
     GridApi,
-    ColumnApi,
     ColDef
 } from 'ag-grid-enterprise'
 import Joi from 'joi'
@@ -50,6 +49,7 @@ export interface Field {
     isDownload: boolean
     col_Position: string
     isApplicable: boolean
+    dataType: string
 }
 
 export interface Tab {
@@ -90,7 +90,7 @@ export interface VFtableProps {
 
 export interface GridRef {
     api: GridApi
-    columnApi: ColumnApi
+    columnApi: any
 }
 
 export interface AddRecordMaster {

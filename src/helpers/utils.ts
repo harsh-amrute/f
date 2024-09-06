@@ -1,3 +1,5 @@
+
+import { ColumnHeaderConfig } from '../VectorFlow/types/ColumnHeaderConfig';
 import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
@@ -20,8 +22,6 @@ import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
 // clear cached token and redirect to sso login
-import { ColumnHeaderConfig } from '../VectorFlow/types/ColumnHeaderConfig';
-
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -746,7 +746,7 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
   const tempFields = [...fields]
   tempFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
 
-  result = tempFields.map((f) => {
+  result = tempFields.map((f: any) => {
     return {
       field: f.key,
       colId: f.key,
@@ -2210,6 +2210,7 @@ export const mapBORFieldsToColDefs = (fields: UiConfigField[], onOpenDailyDataGr
   ]
 
 
+
   result = fields.map((f: UiConfigField) => {
 
 
@@ -2443,7 +2444,7 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
       }
     }
 
-    if (key === 'Availability') {
+    if (key === 'Category') {
       return {
         field: key,
         colId: key,
@@ -2479,6 +2480,7 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
   }
 
   fields.sort((a: DBMField, b: DBMField) => a.Col_Position - b.Col_Position);
+  // console.log(fields);
 
   let result: ColDef[] = []
 
@@ -2535,6 +2537,7 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     minWidth: 30,
     maxWidth: 30
   }
+
 
 
   result = fields.map((f: DBMField) => {
@@ -2614,8 +2617,210 @@ export const mapInTransitWhereAboutsRowData = (rowData: Array<any>): Array<any> 
 export const mapSubmitRemarkData = (row: any): any => {
   return {
 
+
+    OrderNo: row.OrderNo,
+    SKUCode: row.SKUCode,
+    WhCode: row.WhCode,
+    ParentWHCode: row.SenderLocation,
+    Remarks: row.action || "",
+    CurrentLocation: row.CurrentLoc,
+    ETA: row.ETA.replace(/-/g, '/')
+
+
+  }
+}
+
+
+export const convertToInt = (data: any, keys: string[]) => {
+  return data.map((row: any) => {
+    const tempObj: any = {};
+    Object.keys(row).forEach((key: string) => {
+      const value = parseFloat(row[key])
+      if (keys.includes(key) && !isNaN(value)) {
+        tempObj[key] = value
+      }
+      else {
+        tempObj[key] = row[key];
+      }
+    })
+    return { ...tempObj }
+  })
+}
+
+export const getColumnsForExcelExport = (columns: Array<ColDef>): any => {
+  const defaultColumnsToExclude = ['checkbox', 'dailydatagraph', 'sleep', 'tags', 'rh', 'remarks', 'AgeingOrder', 't']
+  return columns.filter((c: ColDef) => (c.colId !== undefined && !defaultColumnsToExclude.includes(c.colId))).map((c) => (c.colId && c.colId))
+
+}
+
+export const getBPRViewTableHeaderFilterOptions = (dataType: string | undefined): Array<{ value: string, label: string }> => {
+  if (dataType === 'number') {
+    return BPRViewTableHeaderFilterNumberoptions
   }
 
+  return BPRViewTableHeaderFilterStringoptions
+}
+
+export const performStringOpertionsForBPRViewTableFilter = (reference: string, value: string, operator: BPRViewTableFilterStringOperator): boolean => {
+  //String operations
+  switch (operator) {
+    case 'contains':
+      return reference.includes(value)
+    case 'doesNotContain':
+      return !reference.includes(value)
+    case 'equals':
+      return reference === value
+    case 'doesNotEqual':
+      return reference !== value
+    default:
+      return false
+  }
+
+}
+
+export const performNumericalOpertionsForBPRViewTableFilter = (num1: number, num2: number, operator: BPRViewTableFilterNumericalOperator): boolean => {
+
+  switch (operator) {
+    case 'equals':
+      return num1 === num2
+    case 'doesNotEqual':
+      return num1 !== num2
+    case 'greaterThan':
+      return num2 < num1
+    case 'lessThan':
+      return num2 > num1
+    default:
+      return false
+  }
+
+}
+
+export const getFiltersArrayFromColDefs = (colDefs: Array<BPRViewTableColDef>): Array<any> => {
+  return colDefs.filter((c) => c.filter).map((f) => ({ colId: f.colId, filterValue: '', dataType: f.dataType, query: null }))
+}
+
+export const storeCellColors: Record<string, { color: string; backgroundColor: string, border: string }> = {
+  surplus: {
+    color: '#585757',
+    backgroundColor: '#fafafaff',
+    border: '#d0d6ceff'
+  },
+  complete: {
+    color: '#306A0F',
+    backgroundColor: '#f7fff2ff',
+    border: '#dfedd8ff'
+  },
+  incomplete: {
+    color: '#816F08',
+    backgroundColor: '#fffcedff',
+    border: '#faf7deff'
+  },
+  'very-incomplete': {
+    color: '#C61C1C',
+    backgroundColor: '#fff2f2ff',
+    border: '#e8c1beff'
+  },
+  default: {
+    color: '#585757',
+    backgroundColor: '#EBE5E5',
+    border: '#d0d6ceff'
+  }
+};
+
+export const floatingStoreColors: Record<string, { color: string; backgroundColor: string, border: string }> = {
+  surplus: {
+    color: '#585757',
+    backgroundColor: '#fafafaff',
+    border: '#d0d6ceff'
+  },
+  complete: {
+    color: '#306A0F',
+    backgroundColor: '#f7fff2ff',
+    border: '#dfedd8ff'
+  },
+  incomplete: {
+    color: '#816F08',
+    backgroundColor: '#fffcedff',
+    border: '#faf7deff'
+  },
+  'very-incomplete': {
+    color: '#C61C1C',
+    backgroundColor: '#fff2f2ff',
+    border: '#e8c1beff'
+  },
+  default: {
+    color: '#585757',
+    backgroundColor: '#EBE5E5',
+    border: '#d0d6ceff'
+  }
+};
+
+
+export const getMCGridStoreImgSrc = (status: string): string => {
+  if ('surplus' === status) return '/assets/img/VectorFLOW/BPR/mc-grid-surplus.svg'
+  if ('incomplete' === status) return '/assets/img/VectorFLOW/BPR/mc-grid-deficit-incomplete.svg'
+  return '/assets/img/VectorFLOW/BPR/mc-grid-deficit-very-incomplete.svg'
+}
+
+export const getMCGridStoreIconColor = (status: string): string => {
+  if ('very-incomplete' === status) return '#F8416C'
+  if ('incomplete' === status) return '#ED8D3A'
+  return 'rgb(105, 105, 105)'
+}
+
+
+export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProperties: any) => {
+  if (column.colCode === 'sl1') {
+    return {
+      field: column['colCode'],
+      colId: column['colCode'],
+      headerName: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
+      ...extraProperties
+    }
+  }
+  if (column.colCode === 'sl2') {
+    return {
+      field: column['colCode'],
+      colId: column['colCode'],
+      headerName: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
+      ...extraProperties
+    }
+  }
+  if (column.colCode === 'sl3') {
+    return {
+      field: column['colCode'],
+      colId: column['colCode'],
+      headerName: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
+      ...extraProperties
+    }
+  }
+  if (column.colCode === 'll1') {
+    return {
+      field: column['colCode'],
+      colId: column['colCode'],
+      headerName: process.env.REACT_APP_LOCATION_PERMISSION_L1,
+      ...extraProperties
+    }
+  }
+  if (column.colCode === 'll2') {
+    return {
+      field: column['colCode'],
+      colId: column['colCode'],
+      headerName: process.env.REACT_APP_LOCATION_PERMISSION_L2,
+      ...extraProperties
+    }
+  }
+
+  if (column.colCode === 'll3') {
+    return {
+      field: column['colCode'],
+      colId: column['colCode'],
+      headerName: process.env.REACT_APP_LOCATION_PERMISSION_L3,
+      ...extraProperties
+    }
+  }
+
+  return undefined;
 }
 
 export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
