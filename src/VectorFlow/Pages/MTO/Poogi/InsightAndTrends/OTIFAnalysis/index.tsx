@@ -20,7 +20,7 @@ import GridView from "../../../Common/GridView";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../../helpers/utils';
-import { ReportNameID } from "../../../Common/Enum";
+import { UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 
 const APIFilterConfig = {
@@ -100,10 +100,10 @@ const OTIFAnalysis = () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: ReportNameID.OTIFAnalysis
+        rn_id: UIGridCode.PoogiOTIFAnalysis
       });
 
-      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
       setColumnState(newConfig);
 
       if (!data) {
@@ -126,15 +126,17 @@ const OTIFAnalysis = () => {
 
   const handleSaveClick = async () => {
     try {
-      const config = currentGridRef.current.columnApi.getColumnState();
-
-      const payload = {
-        un: user.user.name,
-        rn_id: ReportNameID.OTIFAnalysis,
-        cs: JSON.stringify(config)
+      if(currentGridRef?.current?.columnApi){
+        const config = currentGridRef.current.columnApi.getColumnState();
+  
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.PoogiOTIFAnalysis,
+          cs: JSON.stringify(config)
+        }
+        await updateUserUIReportConfigData([payload]);
+        await getUserColumnConfig();
       }
-      await updateUserUIReportConfigData([payload]);
-      await getUserColumnConfig();
 
     } catch (error) {
       console.error(error);

@@ -14,7 +14,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../../helpers/utils';
 import { useUserData } from "../../../../../../context/index";
-import { ReportNameID } from "../../../Common/Enum";
+import { UIGridCode } from "../../../Common/Enum";
 
 const OTAndIFAnalysis = () => {
 
@@ -60,10 +60,10 @@ const OTAndIFAnalysis = () => {
         try {
             const data = await getUserUIReportConfigData({
                 un: user.user.name,
-                rn_id: ReportNameID.OTAndIFAnalysis
+                rn_id: UIGridCode.PoogiOTAndIFAnalysis
             });
 
-            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setColumnState(newConfig);
 
             if (!data) {
@@ -86,16 +86,18 @@ const OTAndIFAnalysis = () => {
 
     const handleSaveClick = async () => {
         try {
-            const config = currentGridRef.current.columnApi.getColumnState();
-
-            const payload = {
-                un: user.user.name,
-                rn_id: ReportNameID.OTAndIFAnalysis,
-                cs: JSON.stringify(config)
+            if(currentGridRef?.current?.columnApi){
+                const config = currentGridRef.current.columnApi.getColumnState();
+    
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.PoogiOTAndIFAnalysis,
+                    cs: JSON.stringify(config)
+                }
+    
+                await updateUserUIReportConfigData([payload]);
+                await getUserColumnConfig();
             }
-
-            await updateUserUIReportConfigData([payload]);
-            await getUserColumnConfig();
 
         } catch (error) {
             console.error(error);

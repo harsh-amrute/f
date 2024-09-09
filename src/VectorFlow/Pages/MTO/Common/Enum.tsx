@@ -45,23 +45,36 @@ export enum pagination {
     mtoPageSize = 15
 }
 
-export enum ReportNameID {
-    "DueDateQuotation" = 1,
-    "OTIFAnalysis" = 2,
-    "LeadTime" = 3, 
-    "TopFailureReasons" = 4,    //code commented
-    "ReasonForDelayedOrders" = 5,  // pending
-    "DayWiseCoverage" = 6, // pending
-    "RMPMOrderWiseCoverage" = 7,  // pending
-    "MaterialCoverageforOpenSalesOrder" = 8,  // pending
-    "MaterialRequirement" = 9,  // pending
-    "ProcurementPlanningShortage" = 10,   // pending
-    "EnquiryResponse" = 11,
-    "FullKitAssignment" = 12,
-    "Elapse Time" = 13,
-    "OrdersAtRisk" = 14,
-    "OrderBalance" = 15,
-    "STPLAndFullKits" = 16,
-    "OrderRescheduling" = 17,
-    "OTAndIFAnalysis" = 18,
-}
+export enum UIGridCode {
+
+    // Procurement
+        "ProcMaterialCovOpenSales" = 100,  // pending
+        "ProcPlanning" = 101,  // pending
+        "ProcMaterialRequirement" = 102,  // pending
+        "ProcDayWiseCov" = 103,  // pending
+        "ProcRMPMOrderCov" = 104,// pending
+        "ProcRMPMBufferTrend" = 105,// pending
+        "ProcExpediteRMSupplies" = 106,// pending
+
+    // Production
+        "ProdEnquiryResponse" = 200,// pending
+        "ProdDDQScheduleOrder" = 201,// pending
+        "ProdDDQUnScheduleOrder" = 202,// pending
+        "ProdDDQThree" = 203,// pending
+        "ProdOrderRescheduling" = 204,// pending
+        "ProdFullkitAssignment" = 205,// pending
+        "ProdDynamicReleaseManagement" = 206,// pending
+        "ProdDeptWiseBMReport" = 207,// pending
+        "ProdOverallBMReport" = 208,// pending
+        "ProdFolSummary" = 209,// pending
+        "ProdStplAndFullKit" = 210,// pending
+        "ProdElapsedTime" = 211,// pending
+        "ProdOrderAtRisk" = 212,// pending
+        "ProdOrderBalance" = 213,// pending
+
+    // POOGI
+        "PoogiReasonForDelayedOrders" = 300,
+        "PoogiOTIFAnalysis" = 301,
+        "PoogiOTAndIFAnalysis" = 302,
+        "PoogiLeadTime" = 303,
+}       

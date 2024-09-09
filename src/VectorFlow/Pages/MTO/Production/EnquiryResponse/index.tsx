@@ -31,7 +31,7 @@ import useViewPort from "../../../../../hooks/useViewPort";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../helpers/utils";
 import FullkitCellRenderer from "../../Common/FullkitCellRenderer";
-import { ReportNameID } from "../../Common/Enum";
+import { UIGridCode } from "../../Common/Enum";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import OverlayLoader from "../../Common/Loader";
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
@@ -559,7 +559,7 @@ const EnquiryResponse = () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: ReportNameID.EnquiryResponse
+        rn_id: UIGridCode.ProdEnquiryResponse
       });
 
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
@@ -579,7 +579,7 @@ const EnquiryResponse = () => {
 
       const payload = {
         un: user.user.name,
-        rn_id: ReportNameID.EnquiryResponse,
+        rn_id: UIGridCode.ProdEnquiryResponse,
         cs: JSON.stringify(config)
       }
       await updateUserUIReportConfigData([payload]);

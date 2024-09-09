@@ -2780,6 +2780,7 @@ export function getColumnDefinations(
       pivot: false,
       pivotIndex: null,
       flex: 1,
+      minWidth: 150,
       cellStyle: {
         justifyContent: data.cla
       }

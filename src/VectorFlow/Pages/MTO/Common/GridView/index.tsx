@@ -70,8 +70,8 @@ const GridView = (props: IGridViewProps) => {
     const getGridData = async (params: any) => {
         try {
             const response = await getData(params);
-            setGridData(response.data.data.results);
-            setTotalRows(response.data.data.count)
+            setGridData(response?.data?.data?.results || []);
+            setTotalRows(response?.data?.data?.count || 0)
         }
         catch (e) {
             console.log(e);
@@ -102,7 +102,7 @@ const GridView = (props: IGridViewProps) => {
 
     useEffect(()=>{ 
         if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-            const result = currentGridRef.current.columnApi.applyColumnState({
+            const result = currentGridRef?.current?.columnApi.applyColumnState({
                 state: columnState,
                 applyOrder: true
             });

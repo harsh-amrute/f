@@ -23,7 +23,7 @@ import {
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { ReportNameID } from "../../../Common/Enum";
+import { UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 
 const APIFilterConfig = {
@@ -117,7 +117,7 @@ const OrderBalance = () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: ReportNameID.OrderBalance
+        rn_id: UIGridCode.ProdOrderBalance
       });
 
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
@@ -137,7 +137,7 @@ const OrderBalance = () => {
 
       const payload = {
         un: user.user.name,
-        rn_id: ReportNameID.OrderBalance,
+        rn_id: UIGridCode.ProdOrderBalance,
         cs: JSON.stringify(config)
       }
       await updateUserUIReportConfigData([payload]);

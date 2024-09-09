@@ -17,7 +17,7 @@ import OverlayLoader from '../../Common/Loader';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import VFPagination from '../../Common/VFPagination';
-import { pagination, ReportNameID } from '../../Common/Enum';
+import { pagination, UIGridCode } from '../../Common/Enum';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useUserData } from "../../../../../context/index";
 
@@ -439,7 +439,7 @@ const OrderRescheduling = () => {
         try {
             const data = await getUserUIReportConfigData({
             un: user.user.name,
-            rn_id: ReportNameID.OrderRescheduling
+            rn_id: UIGridCode.ProdOrderRescheduling
             });
     
             const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
@@ -460,7 +460,7 @@ const OrderRescheduling = () => {
 
         const payload = {
             un: user.user.name,
-            rn_id: ReportNameID.OrderRescheduling,
+            rn_id: UIGridCode.ProdOrderRescheduling,
             cs: JSON.stringify(config)
         }
         await updateUserUIReportConfigData([payload]);

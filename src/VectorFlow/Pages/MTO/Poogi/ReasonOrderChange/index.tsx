@@ -19,7 +19,7 @@ import VFPagination from '../../../../../components/VectorFLOW/commons/VFPaginat
 import BPPRenderer from '../../Common/BPPRenderer';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { pagination, ReportNameID } from '../../Common/Enum';
+import { pagination, UIGridCode } from '../../Common/Enum';
 
 type MyObject = {
     ok: string;
@@ -193,7 +193,7 @@ const ReasonForDelayOrder = () => {
         try {
           const data = await getUserUIReportConfigData({
             un: user.user.name,
-            rn_id: ReportNameID.ReasonForDelayedOrders
+            rn_id: UIGridCode.PoogiReasonForDelayedOrders
           });
     
           const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
@@ -214,7 +214,7 @@ const ReasonForDelayOrder = () => {
         
                 const payload = {
                     un: user.user.name,
-                    rn_id: ReportNameID.ReasonForDelayedOrders,
+                    rn_id: UIGridCode.PoogiReasonForDelayedOrders,
                     cs: JSON.stringify(config)
                 }
                 await updateUserUIReportConfigData([payload]);

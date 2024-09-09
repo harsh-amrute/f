@@ -15,7 +15,7 @@ import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types"
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import OverlayLoader from "../../../Common/Loader";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { ReportNameID } from "../../../Common/Enum";
+import { UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import GridView from "./GridView";
 
@@ -52,7 +52,7 @@ const OrderAtRisk = () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: ReportNameID.OrdersAtRisk
+        rn_id: UIGridCode.ProdOrderAtRisk
       });
 
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
@@ -72,7 +72,7 @@ const OrderAtRisk = () => {
 
       const payload = {
         un: user.user.name,
-        rn_id: ReportNameID.OrdersAtRisk,
+        rn_id: UIGridCode.ProdOrderAtRisk,
         cs: JSON.stringify(config)
       }
       await updateUserUIReportConfigData([payload]);

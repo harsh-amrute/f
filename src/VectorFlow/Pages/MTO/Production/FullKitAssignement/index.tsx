@@ -26,7 +26,8 @@ import AvailabilityCellRenderer from './AvailabilityCellRenderer';
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import { AvailabilityToolTipWrapper } from '../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/styles';
-
+import { UIGridCode } from '../../Common/Enum';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -75,6 +76,12 @@ const FullKitAssignment = () => {
   });
   const [selectedRows, setSelectedRows] = useState<any>(new Map());
   const [graphData, setGraphData] = useState([]);
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const [isReset, setIsReset] = useState(false);
+  const [colDef, setColDef] = useState([{}]);
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const graphDataOgFormat = useRef();
 
   const currentPageSelectedRows = useRef([]);
@@ -340,10 +347,50 @@ const FullKitAssignment = () => {
     return getColumnDefinations(HeaderData, colDefCustomizations, extra)
   }, [HeaderData, extra])
 
+  const getUserColumnConfig = async () => {
+    try {
+      const data = await getUserUIReportConfigData({
+        un: user.user.name,
+        rn_id: UIGridCode.ProdFullkitAssignment
+      });
 
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      setColumnState(newConfig);
+
+      if (!data) {
+        console.error('Failed to apply column state');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  const handleSaveClick = async () => {
+    try {
+      if(currentGridRef?.current?.columnApi){
+        const config = currentGridRef.current.columnApi.getColumnState();
+  
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdFullkitAssignment,
+          cs: JSON.stringify(config)
+        }
+        await updateUserUIReportConfigData([payload]);
+        await getUserColumnConfig();
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleResetClick = () => {
+    setIsReset(true);
+  }
 
   useEffect(() => {
     getMasterData();
+    getUserColumnConfig();
     setColumnDef();
   }, [])
 
@@ -590,6 +637,26 @@ const FullKitAssignment = () => {
     setFilterData(filterResponse?.data.data)
   }, [filterResponse]);
 
+  useEffect(() => {
+    if (isReset) {
+      setColumnState(colDef);
+      setIsReset(false)
+    }else{
+      handleSaveClick();
+    }
+  }, [isReset]);
+
+  useEffect(()=>{ 
+    if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+        const result = currentGridRef?.current?.columnApi.applyColumnState({
+            state: columnState,
+            applyOrder: true
+        });
+        if (!result) {
+            console.error('Failed to apply column state');
+        }
+    }
+  });
 
   return (
     <Wrapper>
@@ -605,10 +672,12 @@ const FullKitAssignment = () => {
         setMultiFilter={setCurrFilter}
         onFilterRemove={onFilterRemove}
         utilityBtns={renderUtilityBtns}
+        handleSaveClick={handleSaveClick}
+        handleResetClick={handleResetClick}
         quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}><Checkbox style={{ cursor: editMode != "View" ? "not-allowed" : "pointer" }} disabled={editMode != "View"} checked={loadDataParams.is_fullkit} onChange={(e: any) => setLoadDataParams({ ...loadDataParams, load_graph_data: true, is_fullkit: e.target.checked })} theme={themeUi} /> &nbsp;&nbsp; <strong>Show Orders with Full Kit Ready</strong></div>}
       />
       {/* <button onClick={() => setShowModal(true)}>Click</button> */}
-      {(isDataLoading || excludeOrdersLoading || simulationLoading || isSimulationResultsUpdating) && <OverlayLoader />}
+      {(isDataLoading || isUpdateUserConfig || isGetUserConfig || excludeOrdersLoading || simulationLoading || isSimulationResultsUpdating) && <OverlayLoader />}
       <VFTable
         ref={grid}
         rowData={orders}
@@ -617,10 +686,15 @@ const FullKitAssignment = () => {
         tooltipHideDelay={100000}
         tooltipShowDelay={0}
         tooltipMouseTrack={true}
-        onRowDataUpdated={(params) => {
+        onGridReady={(params: any) => {
+          params.columnApi.autoSizeAllColumns();
+
+          setCurrentGridRef(grid);
+        }}
+        onRowDataUpdated={(params: any) => {
           const selectedRowIds = Array.from(selectedRows.keys());
           const newCurrentPageSeleceted: any = []
-          params.api.forEachNode(node => {
+          params.api.forEachNode((node: any) => {
             if (selectedRowIds.includes(node.data.on)) {
               newCurrentPageSeleceted.push(node)
             }

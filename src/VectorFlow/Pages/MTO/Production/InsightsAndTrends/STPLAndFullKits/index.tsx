@@ -16,7 +16,7 @@ import GridView from "./GridView";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../../helpers/utils';
-import { ReportNameID } from "../../../Common/Enum";
+import { UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 
 const STPLAndFullKits = () => {
@@ -65,7 +65,7 @@ const STPLAndFullKits = () => {
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
-        rn_id: ReportNameID.STPLAndFullKits
+        rn_id: UIGridCode.ProdStplAndFullKit
       });
 
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
@@ -85,7 +85,7 @@ const STPLAndFullKits = () => {
 
       const payload = {
         un: user.user.name,
-        rn_id: ReportNameID.STPLAndFullKits,
+        rn_id: UIGridCode.ProdStplAndFullKit,
         cs: JSON.stringify(config)
       }
       await updateUserUIReportConfigData([payload]);

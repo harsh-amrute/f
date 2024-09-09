@@ -7,7 +7,7 @@ import { useGetLeadTimeData } from '../../../../../../VectorFlow/Services/MTO/Po
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
 import OverlayLoader from '../../../Common/Loader';
 import { useUserData } from "../../../../../../context/index";
-import { ReportNameID } from "../../../Common/Enum";
+import { UIGridCode } from "../../../Common/Enum";
 import { getColumnDefinations } from '../../../../../../helpers/utils';
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
@@ -44,7 +44,7 @@ const LeadTime = () => {
         try {
           const data = await getUserUIReportConfigData({
             un: user.user.name,
-            rn_id: ReportNameID.LeadTime
+            rn_id: UIGridCode.PoogiLeadTime
           });
     
           const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
@@ -65,7 +65,7 @@ const LeadTime = () => {
     
           const payload = {
             un: user.user.name,
-            rn_id: ReportNameID.LeadTime,
+            rn_id: UIGridCode.PoogiLeadTime,
             cs: JSON.stringify(config)
           }
           await updateUserUIReportConfigData([payload]);

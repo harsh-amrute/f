@@ -15,17 +15,28 @@ import { getColumnDefinations } from '../../../../../../helpers/utils'
 import ColorCellRenderer from '../../../Common/ColorCellRenderer'
 import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
 import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
-import { pagination } from '../../../Common/Enum'
-
+import { pagination, UIGridCode } from '../../../Common/Enum'
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { useUserData } from "../../../../../../context/index";
 
 const RMPMOrderwiseCoverage = () => {
 
     const [isGridView, setIsGridView] = useState(false);
-
-
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const [convertedData, setConvertedData] = useState([{}]);
+    const [GraphDatas, setGraphDatas] = useState([{}])
+    const [apiGraphData, setApiGraphData] = useState([{}]);
+    const [apiGridData, setApiGridData] = useState([{}]);
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [columnState, setColumnState] = useState<any>([]);
+    const [isReset, setIsReset] = useState(false);
+    const [colDef, setColDef] = useState([{}]);
+    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: getOrderwiseCoverageData } = useGetOrderwiseCoverageData();
-
-
+    const { user } = useUserData();
+    const reportName = "RMPMOrderWiseCoverage";
 
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
@@ -105,33 +116,11 @@ const RMPMOrderwiseCoverage = () => {
         }
     };
 
-    // const [ShortageColumns, setShortageColumns] = useState(columnData);
-    const [HeaderData, setHeaderData] = useState([{}]);
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
-    const reportName = "RMPMOrderWiseCoverage";
-
-    const customColumnDefs = {
-        BPP: {
-            cellRenderer: ColorCellRenderer,
-        }
-    }
-
-    const [ShortageColumns, setShortageColumns] = useState([{}]);
-    const setColumnDef = async () => {
-        try {
-            const response = await getUIConfigData(reportName);
-            setHeaderData(response.data.data);
-            setShortageColumns(getColumnDefinations(HeaderData, customColumnDefs, []));
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
-
-    useEffect(() => {
-        setColumnDef();
-    }, [])
+    // const customColumnDefs = {
+    //     BPP: {
+    //         cellRenderer: ColorCellRenderer,
+    //     }
+    // }
 
     const customHeader = {
         BPP: {
@@ -155,14 +144,17 @@ const RMPMOrderwiseCoverage = () => {
                 paddingRight: '20px'
             },
         }
-
-
     }
 
-
-    useEffect(() => {
-        setShortageColumns(getColumnDefinations(HeaderData, customHeader))
-    }, [HeaderData])
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setColDef(getColumnDefinations(response.data.data, customHeader, []));
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
 
     const mapDataToColumns = (data: any, columns: ColDef[]) => {
         return data.map((item: any) => {
@@ -193,10 +185,6 @@ const RMPMOrderwiseCoverage = () => {
         });
     };
 
-    const [convertedData, setConvertedData] = useState([{}]);
-    const [GraphDatas, setGraphDatas] = useState([{}])
-    const [apiGraphData, setApiGraphData] = useState([{}]);
-    const [apiGridData, setApiGridData] = useState([{}]);
     const GetData = async (graph: any, page: any) => {
         if (graph === 1) {
 
@@ -235,7 +223,50 @@ const RMPMOrderwiseCoverage = () => {
 
     }
 
+    const getUserColumnConfig = async () => {
+        try {
+          const data = await getUserUIReportConfigData({
+            un: user.user.name,
+            rn_id: UIGridCode.ProcRMPMOrderCov
+          });
+    
+          const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+          setColumnState(newConfig);
+    
+          if (!data) {
+            console.error('Failed to apply column state');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const handleSaveClick = async () => {
+        try {
+        if(currentGridRef?.current?.columnApi){
+            const config = currentGridRef.current.columnApi.getColumnState();
+    
+            const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.ProcRMPMOrderCov,
+            cs: JSON.stringify(config)
+            }
+            await updateUserUIReportConfigData([payload]);
+            await getUserColumnConfig();
+        }
+
+        } catch (error) {
+        console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
+
     useEffect(() => {
+        getUserColumnConfig();
+        setColumnDef();
         GetData(1, 1);
         GetData(0, 1);
     }, [])
@@ -248,19 +279,43 @@ const RMPMOrderwiseCoverage = () => {
         setGraphDatas(apiGraphData)
     }, [apiGraphData])
 
-
-
+    useEffect(() => {
+        if (isReset) {
+          setColumnState(colDef);
+          setIsReset(false)
+        }else{
+          handleSaveClick();
+        }
+    }, [isReset]);
 
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column', height: "100%" }}>
 
 
-                <ActionToolBar comp={"rmpm"} isGoBackButton={isGridView} handleGoBack={() => { (setIsGridView(false)) }} isAddFilterButton isChartGridToggle isGridView={isGridView} setIsGridView={setIsGridView} />
+                <ActionToolBar 
+                    comp={"rmpm"} 
+                    isGoBackButton={isGridView} 
+                    handleGoBack={() => { (setIsGridView(false)) }} 
+                    isAddFilterButton 
+                    isChartGridToggle 
+                    isGridView={isGridView} 
+                    setIsGridView={setIsGridView} 
+                    handleSaveClick={handleSaveClick}
+                    handleResetClick={handleResetClick}
+                />
 
                 <div style={{ flex: '1' }}>
 
-                    {(isGridView) ? <GridView agGridProps={agGridProps} ShortageColumns={ShortageColumns} ShortageDatas={convertedData} /> : <GraphView shortageData={GraphDatas} />}
+                    {(isGridView) ? 
+                        <GridView 
+                            agGridProps={agGridProps} 
+                            colDef={colDef} 
+                            ShortageDatas={convertedData} 
+                            setCurrentGridRef={setCurrentGridRef}
+                            currentGridRef={currentGridRef}
+                            columnState={columnState}
+                        /> : <GraphView shortageData={GraphDatas} />}
                 </div>
             </div>
         </>

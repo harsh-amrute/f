@@ -12,7 +12,7 @@ import _ from 'lodash'
 import OverlayLoader from '../../../Common/Loader'
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { getColumnDefinations } from '../../../../../../helpers/utils';
-import { ReportNameID } from "../../../Common/Enum";
+import { UIGridCode} from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import ColorRangeCellRenderer from '../../../../../../VectorFlow/Pages/MTO/Common/ColorRangeCellRenderer';
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
@@ -123,7 +123,7 @@ const ElapsedTime = () => {
         try {
             const data = await getUserUIReportConfigData({
                 un: user.user.name,
-                rn_id: ReportNameID['Elapse Time']
+                rn_id: UIGridCode.ProdElapsedTime
             });
 
             const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
@@ -143,7 +143,7 @@ const ElapsedTime = () => {
 
             const payload = {
                 un: user.user.name,
-                rn_id: ReportNameID['Elapse Time'],
+                rn_id: UIGridCode.ProdElapsedTime,
                 cs: JSON.stringify(config)
             }
             await updateUserUIReportConfigData([payload]);

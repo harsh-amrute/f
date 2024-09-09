@@ -18,11 +18,11 @@ import _ from "lodash";
 const GraphView = ({ shortageData }: any) => {
 
     const { data: apiResponseData, isSuccess } = useGetDate();
-    const [apiDate, setApiDate] = useState(apiResponseData?.data.data);
+    const [apiDate, setApiDate] = useState(apiResponseData?.data?.data);
     const [date, setDate] = useState('');
 
     React.useEffect(() => {
-        setApiDate(apiResponseData?.data.data);
+        setApiDate(apiResponseData?.data?.data);
     }, [apiResponseData]);
 
     React.useEffect(() => {
