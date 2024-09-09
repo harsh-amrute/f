@@ -1,5 +1,5 @@
 import {InsightsAndTrendsService} from './api';
-import { useQuery,useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 export const QUERY_KEYS = {
   useGetAvailabilityTrend: ['InsightsAndTrendsService.useGetAvailabilityTrend'],
 useGetChronicUnavailabilityLoc:['InsightsAndTrendsService.useGetChronicUnavailabilityLoc'],
@@ -19,13 +19,13 @@ export const useGetAvailabilityTrend = ()=>{
   })
 }
 export const useGetChronicUnavailabilityLoc = ()=>{
-  return useQuery(QUERY_KEYS.useGetChronicUnavailabilityLoc,async()=>{
-    return await InsightsAndTrendsService.getChronicUnavailabilityLoc()
+  return useMutation(async(body:any)=>{
+    return await InsightsAndTrendsService.getChronicUnavailabilityLoc(body)
   })
 }
 export const useGetChronicUnavailabilitySku = ()=>{
-  return useQuery(QUERY_KEYS.useGetChronicUnavailabilitySku,async()=>{
-    return await InsightsAndTrendsService.getChronicUnavailabilitySku()
+  return useMutation(async(body:any)=>{
+    return await InsightsAndTrendsService.getChronicUnavailabilitySku(body)
   })
 }
 // export const useGetAvailabilityAgeing = (horizon:number)=>{
@@ -40,23 +40,23 @@ export const useGetAvailabilityAgeing = () => {
   }
 
 export const useGetDBMNormSuggestionLoc= ()=>{
-  return useQuery(QUERY_KEYS.useGetDBMNormSuggestionLoc,async()=>{
-    return await InsightsAndTrendsService.getDBMNormSuggestionLoc()
+  return useMutation(async(body:any)=>{
+    return await InsightsAndTrendsService.getDBMNormSuggestionLoc(body)
   })
 }
 export const useGetDBMNormSuggestionPie= ()=>{
-  return useQuery(QUERY_KEYS.useGetDBMNormSuggestionPie,async()=>{
-    return await InsightsAndTrendsService.getDBMNormSuggestionPie()
+  return useMutation(async(body:any)=>{
+    return await InsightsAndTrendsService.getDBMNormSuggestionPie(body)
   })
 }
 export const useGetDBMNormSuggestionSKUs = ()=>{
-  return useQuery(QUERY_KEYS.useGetDBMNormSuggestionSKUs,async()=>{
-    return await InsightsAndTrendsService.getDBMNormSuggestionSKUs()
+  return useMutation(async(body:any)=>{
+    return await InsightsAndTrendsService.getDBMNormSuggestionSKUs(body)
   })
 }
 export const useGetDBMNormSuggestionAgeing = ()=>{
-  return useQuery(QUERY_KEYS.useGetDBMNormSuggestionAgeing,async()=>{
-    return await InsightsAndTrendsService.getDBMNormSuggestionAgeing()
+  return useMutation(async(body:any)=>{
+    return await InsightsAndTrendsService.getDBMNormSuggestionAgeing(body)
   })
 }
 export const useGetExcessInventorySku = ()=>{

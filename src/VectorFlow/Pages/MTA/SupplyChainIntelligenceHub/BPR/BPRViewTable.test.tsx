@@ -24,7 +24,7 @@ const contextWrapper = (children: ReactNode) => {
 
 describe('BPRViewTable Component', () => {
   const colDefs = [
-    { headerName: 'ID' },
+    { headerName: 'ID',colId: 'id'  },
     { headerName: 'Name', colId: 'name' },
     { headerName: 'Remarks', colId: 'remarks' },
   ];

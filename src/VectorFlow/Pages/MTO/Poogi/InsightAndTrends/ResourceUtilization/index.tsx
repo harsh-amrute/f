@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { AgChartOptions } from "ag-charts-community";
-import { AgChartsReact } from "ag-charts-react";
+// import { AgChartOptions } from "ag-charts-community";
+import { AgCharts } from "ag-charts-react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 // import { APIMock } from "./mockData";
 import { DayPicker } from "react-day-picker";
@@ -39,7 +39,7 @@ import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
 
 const ResourceUtilization = () => {
-  const chartRef = useRef<AgChartsReact>(null);
+  const chartRef = useRef<any>(null);
   const [horizonDays, setHorizonDays] = useState(90);
   const [selectedGraphState, setSelectedGraphState] = useState("wipLimit");
   const [actBtn, setActBtn] = useState({
@@ -114,10 +114,10 @@ const ResourceUtilization = () => {
     }
   }
 
-  const checkOptions = ( CCRarr: any, ccrName: string ) => {
+  const checkOptions = (CCRarr: any, ccrName: string) => {
 
-    for(let i = 0; i < CCRarr?.length; i++){
-      if(CCRarr[i].label === ccrName){
+    for (let i = 0; i < CCRarr?.length; i++) {
+      if (CCRarr[i].label === ccrName) {
         return true;
       }
     }
@@ -132,10 +132,10 @@ const ResourceUtilization = () => {
       const newMasterCCROpts: any = [];
       const oLimit = apiData?.wiplimit?.olimit?.map((l: any) => l.ccr) || [];
       const uLimit = apiData?.wiplimit?.ulimit?.map((l: any) => l.ccr) || [];
-      const apiOptions = [ ...oLimit, ...uLimit ] || [];
+      const apiOptions = [...oLimit, ...uLimit] || [];
       ccrs.forEach((e: any) => {
         newMasterCCROpts.push(e)
-        if(apiOptions.includes( e.ccr_name ) && !checkOptions( myCCROpts, e.ccr_name)){
+        if (apiOptions.includes(e.ccr_name) && !checkOptions(myCCROpts, e.ccr_name)) {
           myCCROpts.push({ value: e.ccr_id, label: e.ccr_name })
         }
       })
@@ -150,31 +150,31 @@ const ResourceUtilization = () => {
     const depts = masterDept;
     const myDeptOpts: any = [];
     const deptIds: any[] = [];
-    for(let i = 0; i < masterCCROptions?.length; i++){
+    for (let i = 0; i < masterCCROptions?.length; i++) {
       const ccr: any = masterCCROptions[i];
-      if(selectedPlant.value === ccr?.plant && !deptIds.includes(ccr.dept)){
+      if (selectedPlant.value === ccr?.plant && !deptIds.includes(ccr.dept)) {
         deptIds.push(ccr?.dept);
       }
     }
     depts.forEach((e: any) => {
-      if(deptIds?.includes(e.dept_id)){
+      if (deptIds?.includes(e.dept_id)) {
         myDeptOpts.push({ value: e.dept_id, label: e.dept_name })
       }
     })
     setDeptOpts(myDeptOpts);
   }
 
-  useEffect(()=>{
-    if(apiData){
+  useEffect(() => {
+    if (apiData) {
       getCCROptions(apiData)
     }
-  },[apiData])
+  }, [apiData])
 
-  useEffect(()=>{
-    if(selectedPlant?.value){
+  useEffect(() => {
+    if (selectedPlant?.value) {
       filterDepartment()
     }
-  },[selectedPlant, masterDept])
+  }, [selectedPlant, masterDept])
 
   useEffect(() => {
     GetData();
@@ -384,7 +384,7 @@ const ResourceUtilization = () => {
   const handleDeptChange = (option: any) => setSelectedDept(option);
 
 
-  const [utilizationOptions, setUtilizationOptions] = useState<AgChartOptions>({
+  const [utilizationOptions, setUtilizationOptions] = useState<any>({
     data: utilData,
     series: [
       {
@@ -459,7 +459,7 @@ const ResourceUtilization = () => {
           fontSize: 8,
           fontWeight: "bold",
           color: "black",
-          formatter(params) {
+          formatter(params: any) {
             return params?.value + "%";
           },
         },
@@ -484,7 +484,7 @@ const ResourceUtilization = () => {
     },
   })
 
-  const [wipOptions, setWipOptions] = useState<AgChartOptions | any>({
+  const [wipOptions, setWipOptions] = useState<any>({
     data: wipOverData,
 
     series: [
@@ -715,7 +715,7 @@ const ResourceUtilization = () => {
   };
 
   console.log(selectedDept)
-  console.log("selectedPlant",selectedPlant)
+  console.log("selectedPlant", selectedPlant)
 
   const WIPFilter: any =
     (
@@ -760,10 +760,10 @@ const ResourceUtilization = () => {
             Select Plant
           </div>
           <SelectGroup style={{ width: '130px', zoom: '1.25' }}>
-            <VFSelect 
-              themeUi={themeUi} 
-              placeholder={"Select Plant"} 
-              options={plantOpts} 
+            <VFSelect
+              themeUi={themeUi}
+              placeholder={"Select Plant"}
+              options={plantOpts}
               isSelected={selectedPlant.value}
               onChange={handlePlantChange}
             />
@@ -784,12 +784,12 @@ const ResourceUtilization = () => {
             Select Department
           </div>
           <SelectGroup style={{ width: '160px', zoom: '1.25' }}>
-            <VFSelect 
-              themeUi={themeUi} 
-              placeholder={"Select Department"} 
-              isSelected={selectedDept.value} 
-              options={deptOpts} 
-              onChange={handleDeptChange} 
+            <VFSelect
+              themeUi={themeUi}
+              placeholder={"Select Department"}
+              isSelected={selectedDept.value}
+              options={deptOpts}
+              onChange={handleDeptChange}
             />
           </SelectGroup>
         </div>
@@ -847,7 +847,7 @@ const ResourceUtilization = () => {
         WIPFilter={WIPFilter}
       />
       <HorizontalWrapper>
-        <div style={{ display: 'flex' , flexDirection: 'column', width:'100%'}}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
           {
             selectedGraphState === "wipLimit" && (
 
@@ -857,7 +857,7 @@ const ResourceUtilization = () => {
                   zoom: 1,
                   padding: "4px",
                   // position: "absolute",
-                  marginRight:"2rem",
+                  marginRight: "2rem",
                   right: "10px",
                   top: "10px",
                   zIndex: 8,
@@ -881,19 +881,18 @@ const ResourceUtilization = () => {
             )
 
           }
-        <GraphWrapper>
-          <div style={{ width: "90%", height: "100" }}>
-            <AgChartsReact
-              suppressDragLeaveHidesColumns={true}
-              ref={chartRef}
-              options={
-                (selectedGraphState === "wipLimit")
-                  ? wipOptions
-                  : utilizationOptions
-              }
-            />
-          </div>
-        </GraphWrapper>
+          <GraphWrapper>
+            <div style={{ width: "90%", height: "100" }}>
+              <AgCharts
+                ref={chartRef}
+                options={
+                  (selectedGraphState === "wipLimit")
+                    ? wipOptions
+                    : utilizationOptions
+                }
+              />
+            </div>
+          </GraphWrapper>
 
         </div>
         <VerticalWrapper>

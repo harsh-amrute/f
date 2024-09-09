@@ -200,7 +200,7 @@ const AddRecord = () => {
             uploadButtonStatus={false}
             radioButtons={getUploadModalRadioButtons(activeMaster.id)}
             handleRadioButton={handleRadioButton}
-            downloadFileText={'Download Sample Template'}
+            downloadFileText={'Download sample template'}
             />
         }
         {/* {isConflictModalOpen && 

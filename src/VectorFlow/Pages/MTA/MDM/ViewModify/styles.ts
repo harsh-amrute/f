@@ -294,40 +294,47 @@ export const SeasonalityQuickFilterText = styled.p`
 `
 
 export const SubmitDataTextContainer = styled.div`
-font-style:normal;
-font-variant:normal;
-font-weight:300;
-font-size:14px;
-line-height:12px;
-font-family:Roboto;
-color: #000000;
-opacity: 1;
-dispay:flex;
-text-align:center;
-justify-content:center;
-margin-top:26px;  //42
+    font-style:normal;
+    font-variant:normal;
+    font-weight:300;
+    font-size:14px;
+    line-height:12px;
+    font-family:Roboto;
+    color: #000000;
+    opacity: 1;
+    dispay:flex;
+    text-align:center;
+    justify-content:center;
+    margin-top:26px;  //42
 `
 
 export const SubmitDataButtonWrapper = styled.div`
-margin-bottom:59px; // 87
-margin-left:100px;  //192
-margin-right:100px;  //189
-display:flex;
-
-flex-direction:row;
-gap:28px;
+    // margin-bottom:59px; // 87
+    // margin-left:100px;  //192
+    // margin-right:100px;  //189
+    margin-left:-140px;
+    margin-right:-140px;
+    padding:15px 20px 0px 10px;
+    display:flex;
+    justify-content:flex-end;
+    border-top:dashed 1px gray;
+    flex-direction:row;
+    gap:28px;
+    transform:scale(0.8);
 `
 
 export const ConflictErrorToolTipWrapper = styled.div`
     position:fixed;
+    min-width:140px;
     background-color:white;
     display:flex;
     flex-direction:column;
     padding:5px;
-    min-width: 135px;
     z-index:10000;
+    border-radius:4px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     animation:${fadeIn} 0.2s ease-in;
+    transform:translateX(-50%);
    
 `
 export const ConflictErrorToolTipSection = styled.div`
@@ -342,13 +349,13 @@ export const ConflictErrorText = styled.p`
 
 `
 
+
 export const ToolTipTriangle = styled.div`
     position:absolute;
-    left:55px;
-    width: 0px;
+    left:45%;
     height: 0px;
     border-style: solid;
     border-width: 0 7.5px 13.0px 7.5px;
     border-color: transparent transparent white transparent;
-    transform: rotate(0deg);
+    // transform: rotate(0deg);
 ` 

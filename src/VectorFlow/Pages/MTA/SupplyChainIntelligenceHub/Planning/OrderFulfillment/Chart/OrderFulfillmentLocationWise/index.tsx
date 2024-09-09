@@ -10,7 +10,7 @@ import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/V
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
 
 interface OrderFulfillmentProps{
     data:any
@@ -53,6 +53,8 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -91,6 +93,8 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
         ];
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -101,22 +105,6 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
     }
 
     const colDefs2 = mapUIConfigToColdefs2(data['maxNumberOfLocationsWithGap']['uiconfig']);
-
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
 
     const sortData = (data:any,key1:string,key2:string,key3:string) => {
         data.sort((row1:any,row2:any)=>{
@@ -218,6 +206,10 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
 
                         },
                         label:{
+                                formatter:(params:any)=>{
+                                    if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                    return params.value;
+                                },
                             fontSize:8,
                             fontFamily:'Roboto'
                         }
@@ -225,7 +217,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"No of Orders",
+                            text:"No Of Orders",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -258,6 +250,10 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
 
                         },
                         label:{
+                                formatter:(params:any)=>{
+                                    if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                    return params.value;
+                                },
                             fontSize:8,
                             fontFamily:'Roboto'
                         }
@@ -266,7 +262,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"No of SKUs",
+                            text:"No Of SKUs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -309,7 +305,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"95%"}>
+                        <SCChartContainer height={"95%"} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Maximum Overdue Orders</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -323,7 +319,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['maximumOverdueOrders']['data']),'overdue','due','others')}
+                                        rowData={sortData(convertToInt(data['maximumOverdueOrders']['data'],['overdue','due','others']),'overdue','due','others')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -360,7 +356,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                 <VFTable
                                     ref={refGraph1}
                                     columnDefs={colDefs1}
-                                    rowData={sortData(convertToInt(data['maximumOverdueOrders']['data']),'overdue','due','others')}
+                                    rowData={sortData(convertToInt(data['maximumOverdueOrders']['data'],['overdue','due','others']),'overdue','due','others')}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"
@@ -394,9 +390,9 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={'95%'}>
+                        <SCChartContainer height={'95%'} style={{marginLeft:'18px'}}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Max SKUs With Gap &gt; 67% of Requirement</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Max SKUs With Gap &gt; 67% Of Requirement</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
                                     {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(2)}/>}
@@ -408,7 +404,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={sortData(convertToInt(data['maxSkuWithGap']['data']),'greater','between','smaller')}
+                                        rowData={sortData(convertToInt(data['maxSkuWithGap']['data'],['greater','between','smaller']),'greater','between','smaller')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -445,7 +441,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                                 <VFTable
                                     ref={refGraph2}
                                     columnDefs={colDefs2}
-                                    rowData={sortData(convertToInt(data['maxSkuWithGap']['data']),'greater','between','smaller')}
+                                    rowData={sortData(convertToInt(data['maxSkuWithGap']['data'],['greater','between','smaller']),'greater','between','smaller')}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"

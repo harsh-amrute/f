@@ -4,6 +4,7 @@ import * as globalStyles from  '../../../../../styles/global'
 
 export const RRRLayout = styled.div`
     margin-top:25px;
+    margin-left:15px;
 // margin-bottom:40px;
 `
 

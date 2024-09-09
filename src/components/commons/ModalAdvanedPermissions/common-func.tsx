@@ -15,12 +15,12 @@ export const formDataPermission = ({
       if (child?.length > 0) {
         for (const eleChild of child) {
           let isAddChild: any = false;
-          if (eleChild.value.includes(eleParent.value)) {
+          if (eleChild.value.split(" > ").includes(eleParent.value)) {
             const dataChild: any = eleChild.value.split(" > ");
   
             if (grandChild?.length > 0) {
               for (const eleGrandChild of grandChild) {
-                if (eleGrandChild.value.includes(eleChild.value)) {
+                if (eleGrandChild.value.split(" > ").includes(eleChild.value)) {
                   const dataGrandChild = eleGrandChild.value.split(" > ");
                   formData = {
                     [keyParent]: eleParent.value,

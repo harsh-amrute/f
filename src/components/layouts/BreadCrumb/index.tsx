@@ -23,6 +23,23 @@ const BreadCrumb = () => {
   if (location.pathname === '/supply-chain-intelligence-hub/buffer-trend-report') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> BTR</span>
   if (location.pathname === '/supply-chain-intelligence-hub/open-expediting-requests') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> OER</span>
   if (location.pathname === '/supply-chain-intelligence-hub/sdr') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> SDR</span>
+  if (location.pathname === '/supply-chain-intelligence-hub/planning') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Planning</span>
+  if (location.pathname === '/supply-chain-intelligence-hub/bpr') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> BPR</span>
+  if (location.pathname === '/supply-chain-intelligence-hub/rrr') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> RRR</span>
+  if (location.pathname === '/supply-chain-intelligence-hub/bor') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> BOR</span>
+  if (location.pathname === '/supply-chain-intelligence-hub/buffer-trend-report') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> BTR</span>
+  if (location.pathname === '/supply-chain-intelligence-hub/open-expediting-requests') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> OER</span>
+  if (location.pathname === '/supply-chain-intelligence-hub/sdr') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> SDR</span>
+  if (location.pathname === '/logistics/intransit-whereabouts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />In Transit whereabouts</span>
+
+
+
+  if (location.pathname === '/insights-and-trends/buffer-trend-report') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> BTR</span>
+  if (location.pathname === '/insights-and-trends/buffer-trends') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> BT</span>
+  if (location.pathname === '/insights-and-trends/guided-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> GI</span>
+  if (location.pathname === '/insights-and-trends/research-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> RI</span>
+
+  if (location.pathname === '/dbm/dbm-norm-suggestions') return <span>DBM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> DBM Norm Suggestion</span>
 
 
 
@@ -120,7 +137,7 @@ const BreadCrumb = () => {
 
 
   if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/lead-time') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Delivery Performance / Lead Time</BoldSpan></span>
-
+  if (location.pathname === '/logistics/intransit-whereabouts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />In Transit whereabouts</span>
 
 
 

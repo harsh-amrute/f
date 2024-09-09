@@ -54,6 +54,7 @@ export const MasterDetailWrapper = styled.div`
     height:100%;
     flex-direction:column;
     padding:10px 0px;
+    padding-bottom:40px;
 `
 
 export const MasterDetailHeaderWrapper = styled.div`

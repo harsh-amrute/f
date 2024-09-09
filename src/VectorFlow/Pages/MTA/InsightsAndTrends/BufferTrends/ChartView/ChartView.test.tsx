@@ -33,7 +33,7 @@ const mockContextValue = {
 
 jest.mock("../../../../../Services/MTA/InsightsAndTrends/BufferTrends")
 jest.mock("ag-charts-react", () => ({
-    AgChartsReact: jest.fn(() => null)
+    AgCharts: jest.fn(() => null)
   }));
 
 describe ("Buffer trends charts",()=>{

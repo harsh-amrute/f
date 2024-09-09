@@ -1,9 +1,9 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation,useQuery } from '@tanstack/react-query'
 import { ResearchInsightsService } from './api'
 
 
 export const QUERY_KEYS = {
-  
+    useGetHistroricalAvailabilityData:['ResearchInsightsService.useGetHistroricalAvailabilityData']
 }
 
 
@@ -13,4 +13,8 @@ export const useGetUpdatedGraphData = ()=>{
     })
 }
 
-
+export  const useGetHistroricalAvailabilityData = ()=>{
+    return useQuery(QUERY_KEYS.useGetHistroricalAvailabilityData,async()=>{
+        return await ResearchInsightsService.getHistoricalAvailabilityData()
+      })
+}

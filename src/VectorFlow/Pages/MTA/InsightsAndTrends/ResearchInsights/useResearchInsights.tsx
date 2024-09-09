@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { AgGridReactProps } from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-import { mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
+import { getColumnsForExcelExport, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
 
 import { BPRTagsCellRenderer, BPRTechColorCellRenderer, BPREcoColorCellRenderer } from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
@@ -9,9 +9,10 @@ import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphC
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRDataCount, useGetState, useGetDailyData } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { isSameDay, format, addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
-import { useGetUpdatedGraphData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
+import { useGetUpdatedGraphData, useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
 import { notifyError, notifyLoader } from '../../../../../helpers/notify'
 import { toast } from 'react-toastify'
+
 
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -19,6 +20,7 @@ import { RootState } from '../../../../../redux/store/store'
 import { type DailyDataGraph } from "../../../../types/MTA";
 import { TOGGLE_GRAPH_MODAL, UPDATE_DAILY_DATA } from '../../../../../redux/actions/MTA';
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
+import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants'
 
 const useResearchInsights = () => {
 
@@ -41,7 +43,7 @@ const useResearchInsights = () => {
     const [exportExcelRowData, setExportExcelRowData] = useState<Array<any>>([])
 
 
-    const {mutateAsync:getDailyData} = useGetDailyData();
+    const { mutateAsync: getDailyData } = useGetDailyData();
 
     const { mutateAsync: getUpdatedGraphData, isLoading: isUpdatedGraphDataLoading } = useGetUpdatedGraphData()
 
@@ -49,6 +51,10 @@ const useResearchInsights = () => {
     const { mutateAsync: getBPRData } = useGetBPRData()
 
     const { mutateAsync: getBPRDataCount, isLoading: isBPRDataCountLoading } = useGetBPRDataCount()
+
+
+    const { data: historicalAvailabilityResponse } = useGetHistroricalAvailabilityData()
+
 
     const [currGridPage, setCurrGridPage] = useState<number>(1)
     const [recordCount, setRecordCount] = useState<number>()
@@ -81,27 +87,6 @@ const useResearchInsights = () => {
 
 
     const [selectedRowsDates, setSelectedRowsDates] = useState<Array<any>>([])
-
-
-
-
-    const sideBar = {
-        toolPanels: [
-            {
-                id: "columns",
-                labelDefault: "Columns",
-                labelKey: "columns",
-                iconKey: "columns",
-                toolPanel: "agColumnsToolPanel",
-                toolPanelParams: {
-                    suppressPivots: true,
-                    suppressPivotMode: true,
-                },
-
-            },
-        ],
-        defaultToolPanel: '',
-    }
 
 
     useEffect(() => {
@@ -152,15 +137,13 @@ const useResearchInsights = () => {
                 return { background: "#F7F7F7" };
             },
         },
-        sideBar: sideBar,
+        sideBar: defaultAgGridSideBarForBPR,
         // paginationPageSize:25,
         paginationPageSize: parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
         suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {
             floatingFilter: true,
-            filter: "agMultiColumnFilter",
-            cellDataType: false,
             resizable: false,
             cellStyle: {
                 "flex": 1,
@@ -180,7 +163,7 @@ const useResearchInsights = () => {
 
     const tempAgGridProps: AgGridReactProps = {
         onRowDataUpdated: (event) => {
-            if (tempDownloadData) event.api.exportDataAsExcel({ fileName: 'ResearchInsights' });
+            if (tempDownloadData) event.api.exportDataAsExcel({ fileName: 'ResearchInsights', columnKeys: getColumnsForExcelExport(ResearchInsightsColumns) });
         }
     };
 
@@ -226,6 +209,11 @@ const useResearchInsights = () => {
             notifyError(err)
         }
 
+    }
+
+    const onDeleteFilter = async (parentId: any, filterId: any, value: any) => {
+        const updatedFilter = onDelete(parentId, filterId, value)
+        onApplyFilter(updatedFilter)
     }
 
     const handlePageChange = async (pageNo: number) => {
@@ -298,26 +286,26 @@ const useResearchInsights = () => {
 
         return result;
     }
-    
-    const getColorData = (array:Array<any>)=>{
-        const colorFrequencyArray:any = [];
-            for (let day = 1; day <= horizon; day++) {
-                const colorFrequency:any = {
-                    Red: 0,
-                    Blue: 0,
-                    Green: 0,
-                    Yellow: 0,
-                    Black: 0,
-                    White: 0
-                };
-                array.forEach((obj:any)=>{
-                    const color = obj[`D${day}`];
-                    if(color)colorFrequency[color]++
-                    else colorFrequency[color] = 0
-                })
-                colorFrequencyArray.push(colorFrequency)
-            }
-            return convertCustomObjToObjects(colorFrequencyArray)
+
+    const getColorData = (array: Array<any>) => {
+        const colorFrequencyArray: any = [];
+        for (let day = 1; day <= horizon; day++) {
+            const colorFrequency: any = {
+                Red: 0,
+                Blue: 0,
+                Green: 0,
+                Yellow: 0,
+                Black: 0,
+                White: 0
+            };
+            array.forEach((obj: any) => {
+                const color = obj[`D${day}`];
+                if (color) colorFrequency[color]++
+                else colorFrequency[color] = 0
+            })
+            colorFrequencyArray.push(colorFrequency)
+        }
+        return convertCustomObjToObjects(colorFrequencyArray)
     }
 
     const handleOnUpdateGraph = async () => {
@@ -468,13 +456,23 @@ const useResearchInsights = () => {
         }
     }, [selectedRowsDates, graphs])
 
+    const historicalAvailabilityData = useMemo(() => {
+        if (historicalAvailabilityResponse) {
+            return historicalAvailabilityResponse.data.data[0]
+        }
+        return {
+            Availability_01_30: 0,
+            Availability_31_60: 0,
+            Availability_61_90: 0
+        }
+    }, [historicalAvailabilityResponse])
+
 
     const onOpenDailyDataGraph = async (params: any) => {
         const payload: any = {
             SKUCode: params.data['SKUCode'],
             WHCode: params.data['WHCode']
         }
-        console.log(params)
         const result = await getDailyData(payload)
         const data = result.data.data[0];
         const dailyData: DailyDataGraph = {
@@ -560,9 +558,10 @@ const useResearchInsights = () => {
         dailyData,
         onApplyFilter,
         handlePageChange,
-        onDelete,
+        onDeleteFilter,
         currentFilter,
-        setCurrentFilter
+        setCurrentFilter,
+        historicalAvailabilityData
     }
 }
 

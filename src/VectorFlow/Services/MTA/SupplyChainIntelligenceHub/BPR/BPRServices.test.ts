@@ -59,9 +59,11 @@ describe('Testing the MDMService',  () => {
             "conflictError": null
         });
         const mockBody = {
+          data:[{
             remark:"Some remark",
             skucode:'4124',
             whcode:'dsaf'
+        }]
         }
         const response = await BPRService.submitRemark(mockBody);
         expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8082/AddRemark',mockBody,{
@@ -279,6 +281,25 @@ describe('Testing the MDMService',  () => {
       });
         const response = await BPRService.getOpenExpediteAnalytics();
         expect(mockedAxios.get).toHaveBeenCalledWith('http://10.8.1.10:8082/OpenExpediteAnalytics',{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+
+      it('should make a Get request to /LocationType', async () => {
+        mockedAxios.get.mockResolvedValueOnce({
+          "recordCount": null,
+          "data": "",
+          "status": 200,
+          "msg": null,
+          "errorCount": null,
+          "error": null,
+          "conflictErrorCount": null,
+          "conflictError": null
+      });
+        const response = await BPRService.getLocationTypes();
+        expect(mockedAxios.get).toHaveBeenCalledWith('http://10.8.1.10:8082/LocationType',{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);

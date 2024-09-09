@@ -32,10 +32,8 @@ const TaskPendingForReview = ()=>{
         onSelectionTypeSuccess,
         setSelectionType
     } = useTaskPendingForReview()
-    
-    if(showLoader){
-        return <VFLoader/>
-    }
+
+    if(showLoader) return <VFLoader/>
 
     if(isViewTableOpen){
         return(
@@ -72,10 +70,11 @@ const TaskPendingForReview = ()=>{
     return (
         <TaskPendingWrapper>
             <VFTable
-                height={"100%"}
+                height={"85%"}
                 ref={ref}
                 columnDefs={detailTableColDefs}
                 gridOptions={{
+                    readOnlyEdit:false,
                     getRowStyle: (params: any) => {
                         
                     if (params.node.rowIndex % 2 === 0) {
@@ -104,7 +103,6 @@ const TaskPendingForReview = ()=>{
                     }
                     
                 }}
-
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
                 // suppressPaginationPanel={true}
@@ -131,7 +129,7 @@ const TaskPendingForReview = ()=>{
             }
             <TaskPendingTaskBar
                 isSideBarOpen={isSideBarOpen}
-                disableSubmit={selectedRows==0}
+                disableSubmit={selectedRows!==detailTableRowData.length}
                 onCancel={onCancel}
                 onSubmit={onTaskSubmit}
             />

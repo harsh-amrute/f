@@ -34,7 +34,7 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/master_data",
     url: "/master-data-management/control-panel",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "MasterApprover"],
     child: [
       {
         name: "navbar.listMenuParent.masterDataManagement.controlPanel",
@@ -307,7 +307,13 @@ export const listMenuParent: any = [
             url: "/supply-chain-intelligence-hub/sdr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
 
-          }
+          },
+          {
+            name: "Merchandising Grid",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/merchandising-grid",
+            role: ["IST Admin", "IST Requestor", "Admin"],
+          },
         ]
       },
       {
@@ -411,41 +417,43 @@ export const listMenuParent: any = [
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
     child: [
-      {
-        name: "navbar.listMenuParent.miscellaneousReports.bufferPenetrationReport",
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/api/download-reports/bpr",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      },
-      {
-        name: "navbar.listMenuParent.miscellaneousReports.fashionRationedRequirement",
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/api/download-reports/fr",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      },
-      {
-        name: "navbar.listMenuParent.miscellaneousReports.rosn",
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/api/download-reports/rosn",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      },
-      {
-        name: "navbar.listMenuParent.miscellaneousReports.store_classification",
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/api/download-reports/store_classification",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      },
-      {
-        name: "navbar.listMenuParent.miscellaneousReports.ist",
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: "/api/download-reports/ist",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      },
+
+
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.bufferPenetrationReport",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/bpr",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.fashionRationedRequirement",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/fr",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.rosn",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/rosn",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.store_classification",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/store_classification",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.ist",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/ist",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
       // {
       //   name: "navbar.listMenuParent.miscellaneousReports.dailyDataUnavailibilityReport",
       //   img: "/assets/img/nav/arrow_down.svg",

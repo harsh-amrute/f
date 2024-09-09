@@ -131,12 +131,72 @@ export const BPRViewTableHeader = styled.div`
     text-overflow:ellipsis;
 `
 
+export const BPRViewTableHeaderFilterIcon = styled.img`
+    position:absolute;
+    right:10px;
+    top:13px;
+    height:17px;
+    width:17px;
+    cursor:pointer;
+`
+export const BPRViewTableHeaderFilterAlert = styled.div<{themeUi:string}>`
+    position:absolute;
+    right:10px;
+    top:14px;
+    background-color:${(props)=>globalStyles.chooseThemeColor[props.themeUi].color4};
+    height:6px;
+    width:6px;
+    border-radius:50%;
+`
+
+export const BPRViewTableColumnFilterWrapper = styled.div`
+    position:fixed;
+    z-index:100;
+    // transform:translateX(-150%);
+`
+
+export const BPRViewTableColumnFilterContainer = styled.div`
+    display:flex;
+    flex-direction:column;
+    padding:5px;
+    width:100px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    background-color:white;
+`
+
+export const BPRViewTableColumnFilterInput = styled.input`
+    height:15px;
+    font-size:10px;
+    &:focus{
+        outline:none;
+    };
+`
+
+export const BPRViewTableColumnFilterSelect = styled.select`
+    height:15px;
+    font-size:10px;
+    &:focus{
+        outline:none;
+    };
+    
+    margin-bottom:5px;
+    accent-color:red;
+`
+export const BPRViewTableColumnFilterSelectOption = styled.option`
+accent-color:inherit;
+`
+
+export const BPRViewTableColumnFilterButton = styled.button`
+
+`
+
+
 export const BPRViewTableRowContainer = styled.div`
 position:relative;
     width:100%;
     display:flex;
     flex-direction:column;
-    // max-height:250px;
+        // max-height:250px;
     // margin-top:20px;
     
 `
@@ -226,9 +286,14 @@ export const BPRRemarksCellRendererWrapper = styled.div`
     justify-content:center;
 `
 
-export const BPRSubmitRemarkInput = styled.input`
+export const BPRSubmitRemarkInput = styled.div`
     height:30px;
     width:90%;
+    background-color:white;
+    border:solid 1px black;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
 `
 
 export const BPRRemarkToolTipTextArea = styled.textarea`
@@ -610,4 +675,15 @@ export const BPRViewTableHeaderTab = styled.div<{
       transform: scale(1.2, 1.3) perspective(0.5em) rotateX(2.5deg);
       transform-origin: bottom left;
     }
+  `
+  export const BPRViewTableAvailabilityCellRenderer = styled.div`
+    background-color:#F8F8F8;
+    border:solid 1px #AFAFAF;
+    height:40px;
+    width:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-left:50px;
+    border-radius:4px;
   `

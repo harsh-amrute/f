@@ -21,6 +21,7 @@ import { useAddRemarkForExpedite, useGetOpenExpediteRequestData, useGetRemarkDet
 import SubmitRemarkCellRenderer from "./SubmitRemarkCellRenderer";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 const useOpenExpeditingRequests = () => {
 
@@ -77,23 +78,6 @@ const useOpenExpeditingRequests = () => {
     // const [columnState,setColumnState] = useState<any>()
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
 
       useEffect(()=>{
         const getRowData = async()=>{
@@ -140,7 +124,7 @@ const useOpenExpeditingRequests = () => {
                 return { background: "#F7F7F7" };
             },
         },
-        sideBar:sideBar,
+        sideBar:defaultAgGridSideBarForBPR,
         pagination: true,
         suppressRowClickSelection: true,
         components: customCellRenderers,
@@ -230,7 +214,7 @@ const useOpenExpeditingRequests = () => {
             })
             toast.dismiss(toastId)
             
-            notifySuccess('Remark has been submitted')
+            notifySuccess('Remark Has Been submitted')
             setRemark('')
             setActiveRow({
               sc:'',
@@ -280,6 +264,7 @@ const useOpenExpeditingRequests = () => {
       })
       await addRemark({data:payload})
       toast.dismiss()
+      setEditedRows([])
      }catch(err){
       console.log(err)
       notifyError("Something went wrong")

@@ -24,7 +24,7 @@ export namespace BPRService {
     });
   }
 
-  export const submitRemark = async (payload:SubmitBPRRemarkPayload) => {
+  export const submitRemark = async (payload:{data:Array<SubmitBPRRemarkPayload>}) => {
     return await axios.post(process.env.REACT_APP_VF_API_HOST + `/AddRemark`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     });
@@ -88,6 +88,12 @@ export namespace BPRService {
 
   export const getOpenExpediteAnalytics = async()=>{
     return await axios.get(process.env.REACT_APP_VF_API_HOST + '/OpenExpediteAnalytics',{
+      headers:{ 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getLocationTypes = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + '/LocationType',{
       headers:{ 'Content-Type': 'application/json' }
     })
   }

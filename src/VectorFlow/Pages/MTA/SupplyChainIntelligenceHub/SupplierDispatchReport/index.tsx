@@ -9,6 +9,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import ActionToolBar from "../Planning/ActionToolBar";
 import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR/index'
 import { notifyError } from "../../../../../helpers/notify";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 const SupplierDispatchReport = () => {
   
@@ -31,7 +32,7 @@ const SupplierDispatchReport = () => {
     customCellRenderers,
     currFilter,
     setCurrFilter,
-    onDelete,
+    onDeleteFilter,
     onExportToExcelCallBack,
     onApplyFilter
   } = useSupplierDispatchReport();
@@ -46,7 +47,7 @@ const SupplierDispatchReport = () => {
               const data =  await getState(`SDR`)
               const {columns} = JSON.parse(data.data.data)
             
-              ref.current.columnApi.applyColumnState({state:columns})
+              ref.current.api.applyColumnState({state:columns})
             }catch(err:any){
               notifyError(err)
             }
@@ -67,7 +68,7 @@ const SupplierDispatchReport = () => {
     readOnlyEdit: true,
     
     gridOptions: {
-      sideBar: "columns",
+      sideBar: defaultAgGridSideBarForBPR,
       rowHeight: 50,
       getRowStyle: (params: any) => {
         if (params.node.rowIndex % 2 === 0) {
@@ -93,9 +94,6 @@ const SupplierDispatchReport = () => {
 
     defaultColDef: {
       floatingFilter: true,
-      filter: "agMultiColumnFilter",
-
-      cellDataType: false,
       resizable: false,
       cellStyle: {
         flex: 1,
@@ -124,6 +122,7 @@ const SupplierDispatchReport = () => {
         setExportExcelRowData: setExportExcelRowData,
       }}
     >
+      <div style={{marginLeft:'10px'}}>
       <ActionToolBar 
         view={'grid'} 
         setCurrentTab={''} 
@@ -138,8 +137,9 @@ const SupplierDispatchReport = () => {
         onExportToExcelCallBack={onExportToExcelCallBack}
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
-        onDelete={onDelete}
+        onDelete={onDeleteFilter}
       />
+      </div>
       <VDRLayout>
       {(isLoading )?(
           <VFLoader/>

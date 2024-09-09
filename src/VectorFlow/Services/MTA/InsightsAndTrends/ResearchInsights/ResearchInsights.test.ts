@@ -228,6 +228,16 @@ describe('Testing the ResearchInsightsService',  () => {
   
     });
 
+    it('should make a get request to the /GetHistroricalAvailabilityBPRData', async () => {
+      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+   
+      const response = await ResearchInsightsService.getHistoricalAvailabilityData();
+      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/GetHistroricalAvailabilityBPRData',{"headers": {"Content-Type": "application/json"}})
+      expect(response.status).toBe(200);
+  
+    });
+
   
   });
 
+  

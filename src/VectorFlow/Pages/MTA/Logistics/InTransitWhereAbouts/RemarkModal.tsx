@@ -1,8 +1,8 @@
 import { useUserData } from "../../../../../context"
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "./styles"
 import UserIcon from "./UserIcon"
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 
 interface RemarkModalProps{
     isOpen:boolean
@@ -70,12 +70,12 @@ const RemarkModal = (props:RemarkModalProps)=>{
                     </RemarkModalTableRowContainer>
                 </RemarkModalTable>
                 <ButtonWrapper>
-                    <VFButtonOutline
+                    <VFButton
                         onClick={onClose}
                         themeUi={theme_ui}
                     >
                         Go Back!
-                    </VFButtonOutline>
+                    </VFButton>
                 </ButtonWrapper>
             </RemarkModalContentWrapper>
         </VFModalCard>

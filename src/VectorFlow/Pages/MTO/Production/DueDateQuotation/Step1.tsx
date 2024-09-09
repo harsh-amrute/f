@@ -56,7 +56,7 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
         // domLayout="autoHeight"
         rowSelection="multiple"
         onGridReady={(params: any) => {
-          params.columnApi.autoSizeAllColumns();
+          params?.columnApi?.autoSizeAllColumns();
         }}
         onRowDataUpdated={(params) => {
           const selectedRowIds = Array.from(selectedRows.keys());

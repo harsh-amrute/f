@@ -1,4 +1,4 @@
-import { ColDef } from 'ag-grid-enterprise';
+import { ColDef, ColGroupDef } from 'ag-grid-enterprise';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { AbsoluteValueSeasonalitySchema, AddPIPOSchema, AddPOSchema, AddTargetNormSchema, DeltaPercentageSeasonalitySchema, ForceNormChangeSchema, LocationSchema, MOQSchema, SeasonalityStatusSchema, SKULocationSchema, SKUSchema, SOBSchema, StopPIPOSchema } from '../validators/schemas/MTA/MDM/index';
 import {type Option, type MasterIdToSchema, SeasonalityQuickFilterType} from '../VectorFlow/types/MDM';
@@ -58,6 +58,11 @@ export const operators:Option[] = [
         value:'hasNoValue'
     }
   ]
+
+export const operatorDataTypeMapper:any = {
+    'String':['=','contains','startsWith','endsWith','hasValue','hasNoValue'],
+    'Number':['=','!=','>','>=','<','<=']
+}
 
 export const masterIdToSchemaMapper:MasterIdToSchema = {
     '1':SKUSchema,
@@ -285,9 +290,11 @@ export const TaskPendingAvoidColumnsMapper:any ={
     "3":['sc','wc'],
     "4":['sc','spc','wc'],
     "5":['sc'],
+    "6":['sc','wc'],
     "7":['sc','wc'],
     "8":['sc','wc','pi'],
     "9":['sc','wc'],
+    "10":['sc','wc','wd','skd'],
     "11":['sc','wc'],
     "12":['sc','wc'],
     "13":['sc','wc']
@@ -316,3 +323,80 @@ export const mdmRoutes = [
     '/master-data-management/control-panel/add',
     '/master-data-management/control-panel/delete'
 ]
+
+export const TaskPendingStopPIPOCustomColumns:Array<ColDef | ColGroupDef> = [
+    {
+        colId:"t",
+        headerName:"",
+        field:'t',
+        children:[
+            {
+              headerName:'Type',
+              field:'type',
+              colId:'type',
+              valueFormatter:()=>"Stop-PIPO",
+              cellStyle:{
+                'text-align':'center',
+                "border-right":"solid 1px #B9B9B9",
+              }
+            }
+            
+          ],
+        
+    },
+    {
+        colId:"norm",
+        headerName:"Norm",
+        field:'norm',
+        children:[
+            {
+                colId:"targetNorm",
+                headerName:"Target Norm",
+                field:'targetNorm',
+                cellStyle:{
+                    "border-left":"solid 1px #B9B9B9",
+                    'text-align':'center',
+                    fontWeight:500
+                }
+            },
+            {
+                colId:"originalNorm",
+                headerName:"Original Norm",
+                field:'originalNorm',
+                cellStyle:{
+                    "border-right":"solid 1px #B9B9B9",
+                    color:"Red",
+                    'text-align':'center',
+                    fontWeight:500
+                }
+            }
+        ]
+    },
+    {
+        colId:"r",
+        headerName:"",
+        field:'r',
+        children:[
+            {
+                colId:"requestFor",
+                headerName:"Request For",
+                field:'requestFor',
+                cellStyle:{
+                    color:"Red",
+                    fontWeight:500,
+                    'text-align':'center',
+                    "border-left":"solid 1px #B9B9B9",
+                    "border-right":"solid 1px #B9B9B9",
+                },
+                valueFormatter:()=>"Stop"
+            }
+        ]
+    },
+    
+]
+
+export const CellDataTypeMapper:any = {
+    "Boolean":"boolean",
+    "Number":"number",
+    "String":"text"
+}

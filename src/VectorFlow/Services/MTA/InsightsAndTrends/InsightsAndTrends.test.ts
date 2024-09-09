@@ -1,5 +1,6 @@
 import {InsightsAndTrendsService} from './api';
 import axios,{AxiosStatic} from 'axios';
+import { any } from 'joi';
 jest.mock('axios');
 const mockedAxios=axios as jest.Mocked<AxiosStatic>;
 describe('Testing the GuidedInsightsService',  () => {
@@ -27,10 +28,10 @@ describe('Testing the GuidedInsightsService',  () => {
     });
 
    it('should make a get request to the /ChronicUnavailabilityLoc', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
    
-      const response = await InsightsAndTrendsService.getChronicUnavailabilityLoc();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/ChronicUnavailabilityLoc',{
+      const response = await InsightsAndTrendsService.getChronicUnavailabilityLoc({body:any});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/ChronicUnavailabilityLoc',{body:any},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -38,10 +39,10 @@ describe('Testing the GuidedInsightsService',  () => {
     });
 
        it('should make a get request to the /ChronicUnavailabilitySku', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
    
-      const response = await InsightsAndTrendsService.getChronicUnavailabilitySku();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/ChronicUnavailabilitySku',{
+      const response = await InsightsAndTrendsService.getChronicUnavailabilitySku({body:any});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/ChronicUnavailabilitySku',{body:any},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -60,10 +61,10 @@ describe('Testing the GuidedInsightsService',  () => {
     });
 
     it('should make a get request to the /DBMNormSuggestionLoc', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
    
-      const response = await InsightsAndTrendsService.getDBMNormSuggestionLoc();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/DBMNormSuggestionLoc',{
+      const response = await InsightsAndTrendsService.getDBMNormSuggestionLoc({body:any});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/DBMNormSuggestionLoc',{body:any},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -71,10 +72,10 @@ describe('Testing the GuidedInsightsService',  () => {
     });
 
      it('should make a get request to the /DBMNormSuggestionPie', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
    
-      const response = await InsightsAndTrendsService.getDBMNormSuggestionPie();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/DBMNormSuggestionPie',{
+      const response = await InsightsAndTrendsService.getDBMNormSuggestionPie({body:any});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/DBMNormSuggestionPie',{body:any},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
@@ -82,20 +83,21 @@ describe('Testing the GuidedInsightsService',  () => {
     });
 
       it('should make a get request to the /DBMNormSuggestionSKUs', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
-   
-      const response = await InsightsAndTrendsService.getDBMNormSuggestionSKUs();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/DBMNormSuggestionSKUs',{
+        mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+
+      const response = await InsightsAndTrendsService.getDBMNormSuggestionSKUs({body:any});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/DBMNormSuggestionSKUs',{body:any},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);
   
     });
      it('should make a get request to the /DBMNormSuggestionAgeing', async () => {
-      mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+      mockedAxios.post.mockResolvedValueOnce({data:'test',status:200});
+
    
-      const response = await InsightsAndTrendsService.getDBMNormSuggestionAgeing();
-      expect(mockedAxios.get).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/DBMNormSuggestionAgeing',{
+      const response = await InsightsAndTrendsService.getDBMNormSuggestionAgeing({body:any});
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/DBMNormSuggestionAgeing',{body:any},{
         headers: { 'Content-Type': 'application/json' }
       })
       expect(response.status).toBe(200);

@@ -10,6 +10,7 @@ import { type RootState } from "../../../../../redux/store/store";
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA, UPDATE_PLANNING_DATA} from '../../../../../redux/actions/MTA';
 import { AgGridReactProps } from 'ag-grid-react';
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
+import { getColumnsForExcelExport } from "../../../../../helpers/utils";
 
 const usePlanning = ()=>{
 
@@ -98,7 +99,7 @@ const usePlanning = ()=>{
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
             
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`,columnKeys:getColumnsForExcelExport(currentColDefs)});
         }
       };
   
@@ -346,12 +347,12 @@ const usePlanning = ()=>{
                     const result = await getPlanningDataGraph(body);
                     setIsSelectCategoryOpen(false);
                     setCurrentGraphData(result.data.data.data)
+                    console.log(currentGraphData)
                     setCurrentTab('locationWise');
                     toast.dismiss(toastId);
                     notifySuccess("Graph Details Fetched Successfully");
                     break;
                 }
-
                 case 'ExpediteFromParent':{
                     const toastId = notifyLoader('Loading Graphs');
                     setCurrentCategory('ExpediteFromParent');
@@ -728,6 +729,35 @@ const usePlanning = ()=>{
         }
     },[currentCategory])
 
+    const currentColDefs = useMemo(()=>{
+        if(currentGridData){
+            let currUiConfig = []
+            if(currentCategory==="GITToChild"){
+                if(currentTab==="locationWise")currUiConfig=currentGridData['locationWise'].uiConfig
+                else currUiConfig=currentGridData['transporterWise'].uiConfig
+            }
+            else currUiConfig = currentGridData.uiConfig
+            let colDefs = [];
+        colDefs = currUiConfig.map((column:{header:string,colCode:string})=>{
+            if(['plp','pip'].includes(column.colCode)){
+                return {
+                    field:column['colCode'],
+                    colId:column['colCode'],
+                    headerName:column['header'],
+                    cellRenderer:'colorCellRenderer',
+                }
+            }
+            return {
+                field:column['colCode'],
+                colId:column['colCode'],
+                headerName:column['header']
+            }
+        })
+        return [...colDefs]
+        }
+        return []
+    },[currentGridData])
+
  
     return {
         planningCounts,
@@ -764,7 +794,8 @@ const usePlanning = ()=>{
         onDelete,
         onApplyFilter,
         onDeleteFilter,
-        isDataLoading
+        isDataLoading,
+        currentColDefs
     }
 
 

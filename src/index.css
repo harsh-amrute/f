@@ -1,3 +1,59 @@
+:root {
+    --separator-border: transparent;
+}
+
+.sash-module_sash__K-9lB.sash-module_hover__80W6I:before,
+.sash-module_sash__K-9lB.sash-module_active__bJspD:before {
+    background: none !important;
+}
+
+.sash-horizontal::after {
+    content: url(/public/assets/img/VectorFLOW/draggable.svg);
+    width: 12px;
+    display: block;
+    /* z-index: 100000; */
+    /* background: black; */
+    position: absolute;
+    height: 12px;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    transform: translate(-50%, -50%);
+    justify-content: center;
+}
+
+.sash-horizontal {
+    background-color: lightgrey;
+    border-radius: 4px;
+    z-index: 1 !important;
+    height: 15px !important;
+    width: 70% !important;
+    transform: translateX(20%);
+
+}
+
+.sash-vertical::after {
+    content: url(/public/assets/img/VectorFLOW/draggable-vertical.svg);
+    width: 12px;
+    display: block;
+    /* z-index: 100000; */
+    /* background: black; */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    transform: translate(-50%, -50%);
+    justify-content: center;
+}
+
+.sash-vertical {
+    border: 8px solid lightgrey;
+    border-radius: 4px;
+    z-index: 1 !important;
+    height: 60% !important;
+    transform: translateY(40%);
+}
+
 .custom-scrollbar {
     overflow-y: overlay;
 }
@@ -38,8 +94,12 @@
     padding: 10px;
 }
 
+.sub-grid-allotment:last-child {
+    padding-left: 20px;
+}
+
 .planning-grid-allotment {
-    padding-bottom: 40px;
+    padding-bottom: 60px;
 }
 
 .intransit_header {
@@ -52,50 +112,6 @@
     color: black !important;
 }
 
-:root {
-    --separator-border: transparent;
-}
-
-.sash-horizontal::after {
-    content: url(/public/assets/img/mto/dueDateQuotation/draggable.svg);
-    width: 12px;
-    display: block;
-    /* z-index: 100000; */
-    /* background: black; */
-    position: absolute;
-    height: 12px;
-    left: 50%;
-    top: 50%;
-    display: flex;
-    transform: translate(-50%, -50%);
-    justify-content: center;
-}
-
-.sash-horizontal {
-    border: 8px solid lightgrey;
-    border-radius: 4px;
-}
-
-.sash-vertical::after {
-    content: url(/public/assets/img/mto/dueDateQuotation/draggable.svg);
-    width: 12px;
-    display: block;
-    /* z-index: 100000; */
-    /* background: black; */
-    position: absolute;
-    height: 12px;
-    left: -6px;
-    top: 50%;
-    display: flex;
-    transform: translate(-50%, -50%);
-    transform: rotate(90deg);
-    justify-content: center;
-}
-
-
-.sash-vertical {
-    border: 6px solid #E8E8E8;
-    border-radius: 4px;
-    height: 92% !important;
-    top: 3% !important;
+.allotment-module_splitViewView__MGZ6O:not(:first-child)::before {
+    display: none !important;
 }

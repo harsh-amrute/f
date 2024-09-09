@@ -7,7 +7,7 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../../helpers/utils';
 
 interface CreateAvailabilityAtParentProps{
     data:any
@@ -34,7 +34,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             {
                 field:'Counts',
                 colId:'Counts',
-                headerName:'Count of SKU Locations'
+                headerName:'Count Of SKU Locations'
             },
             {
                 field:'BlackCount',
@@ -50,6 +50,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+            if(customColdef) return customColdef
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -74,7 +77,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             {
                 field:'SKUCounts',
                 colId:'SKUCounts',
-                headerName:'Count of SKU Locations'
+                headerName:'Count Of SKU Locations'
             },
             {
                 field:'BlackCount',
@@ -89,6 +92,9 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -100,28 +106,21 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
 
     const colDefs2 = mapUIConfigToColdefs2(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['uiconfig']);
 
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
 
-    const sortData = (data:any,key:string) => {
+    const sortData = (data:any,key:string|string[],) => {
+    
         data.sort((row1:any,row2:any)=>{
-            return (row2[key]) - (row1[key])
+          if(typeof key === 'string') return (row2[key]) - (row1[key])
+      
+          if(Array.isArray(key) && key.length > 0){
+            const row1Sum = key.reduce((accumulator,currentKey:string)=>accumulator + row1[currentKey],0);
+            const row2Sum = key.reduce((accumulator,currentKey:string)=>accumulator + row2[currentKey],0);
+            return row2Sum-row1Sum
+          }
+          
         })
         return [...data];
-    }
+      }
 
 
 
@@ -204,7 +203,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 15) return params.value.toString().slice(0,15) + '...';
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,
@@ -214,7 +213,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Count of SKUs",
+                            text:"Count Of SKUs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -256,17 +255,17 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
         }
       }
 
-      const splitDataIntoRandomPercentage = (data:any,key:string) => {
-        return data.map((row:any)=>{
-            const redPercentage = Math.random() * 100;
-            const blackPercentage = 100 - redPercentage;
+    //   const splitDataIntoRandomPercentage = (data:any,key:string) => {
+    //     return data.map((row:any)=>{
+    //         const redPercentage = Math.random() * 100;
+    //         const blackPercentage = 100 - redPercentage;
 
-            const red = (parseFloat(row[key]) * redPercentage) / 100;
-            const black = (parseFloat(row[key]) * blackPercentage) / 100;
-            return {...row,red:Math.round(red),black:Math.round(black)};
+    //         const red = (parseFloat(row[key]) * redPercentage) / 100;
+    //         const black = (parseFloat(row[key]) * blackPercentage) / 100;
+    //         return {...row,red:Math.round(red),black:Math.round(black)};
             
-        })
-      }
+    //     })
+    //   }
 
 
      
@@ -275,8 +274,8 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane>
-                        <SCChartContainer height={"100%"}>
-                            <SCChartHeaderContainer>
+                        <SCChartContainer height={"100%"} style={{marginRight:'10px'}}>
+                            <SCChartHeaderContainer >
                                 <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                     <SCChartHeader>Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock For Receiving Locations</SCChartHeader>
                                 </div>
@@ -292,7 +291,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <VFTable
                                             ref={refGraph1}
                                             columnDefs={colDefs1}
-                                            rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data']),'Counts'),'Counts')}
+                                            rowData={sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data'],['BlackCount','RedCount']),['BlackCount','RedCount'])}
                                             enableCharts={true}
                                             enableRangeSelection={true} 
                                             rowSelection="multiple"
@@ -329,7 +328,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                 <VFTable
                                     ref={refGraph1}
                                     columnDefs={colDefs1}
-                                    rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data']),'Counts'),'Counts')}
+                                    rowData={sortData(convertToInt(data['maxEcoBlackRedWithNilRationedStockForRecievingLocations']['data'],['BlackCount','RedCount']),['BlackCount','RedCount'])}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"
@@ -363,7 +362,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane>
-                        <SCChartContainer height={"100%"}>
+                        <SCChartContainer height={"100%"} style={{marginLeft:'18px'}}>
                                 <SCChartHeaderContainer>
                                     <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                         <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>   
@@ -379,7 +378,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                         <VFTable
                                                 ref={refGraph2}
                                                 columnDefs={colDefs2}
-                                                rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data']),'SKUCounts'),'SKUCounts')}
+                                                rowData={sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data'],['BlackCount','RedCount']),['BlackCount','RedCount'])}
                                                 enableCharts={true}
                                                 enableRangeSelection={true} 
                                                 rowSelection="multiple"
@@ -416,7 +415,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={splitDataIntoRandomPercentage(sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data']),'SKUCounts'),'SKUCounts')}
+                                        rowData={sortData(convertToInt(data['maxContinousEcoBlackRedWithNilRationedStockAvailableForRecievingLocations']['data'],['BlackCount','RedCount']),['BlackCount','RedCount'])}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"

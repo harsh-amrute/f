@@ -4,6 +4,7 @@ import * as globalStyles from '../../../../../styles/global'
 export const ResearchInsightsLayout = styled.div`
     // margin-top:10px
     margin-top:20px;
+    margin-left:20px;
     min-height:100vh;
     display:grid;
     grid-template-columns:3fr 1fr;
@@ -26,7 +27,7 @@ export const ResearchInsightsTableTaskBar = styled.div`
 
 export const AvailabilityTrendWrapper = styled.div`
     // height:calc(640px * 0.75);
-    height:600px;
+    height:100%;
     // overflow-y:auto;
     // &::-webkit-scrollbar{
     //    display:none;      
@@ -38,8 +39,8 @@ export const AvailabilityTrendWrapper = styled.div`
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     position:relative;
 `
-export const AvailabilityTrendHeader = styled.div`
-    background-color:black;
+export const AvailabilityTrendHeader = styled.div<{themeUi:string}>`
+    background-color:${(props)=>props.themeUi==="PUREELEGANCE"?'black':globalStyles.chooseThemeColor[props.themeUi].color1};
     padding:5px;
     color:white;
     width:100%;

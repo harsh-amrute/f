@@ -5,7 +5,9 @@ export const FilterBody = styled.div`
 margin:0px 47px 0px 47px;
 display:flex;
 justify-content:center;
+overflow-y:auto;
 gap:10px;  //25px
+
 }
 `
 export const FilterCardWrapper = styled.div`

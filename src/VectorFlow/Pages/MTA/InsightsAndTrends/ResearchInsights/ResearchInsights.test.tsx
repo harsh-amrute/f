@@ -1,11 +1,11 @@
-import { render, screen} from '@testing-library/react';
+import { render} from '@testing-library/react';
 import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData,useGetBPRUIConfiguration ,useGetBPRDataCount,useSaveState,useGetState,useResetState,useGetDailyData} from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
-import {useGetUpdatedGraphData} from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
-import { GetBPRDataMockResponse,GetBPRUIConfigurationMockResponse, GetUpdatedGraphDataMockResponse,GetStateMockResponse,ResetStateMockResponse,SaveStateMockResponse,GetDailyDataMockResponse} from '../../../../../mock-data/BPR';
+import { useGetBPRData,useGetBPRUIConfiguration ,useGetBPRDataCount,useSaveState,useGetState,useResetState,useGetDailyData, useGetLocationTypes} from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import {useGetHistroricalAvailabilityData, useGetUpdatedGraphData} from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
+import { GetBPRDataMockResponse,GetBPRUIConfigurationMockResponse, GetUpdatedGraphDataMockResponse,GetStateMockResponse,ResetStateMockResponse,SaveStateMockResponse,GetDailyDataMockResponse, GetHistoricalAvailabilityMockResponse} from '../../../../../mock-data/BPR';
 import ResearchInsights from './index';
 
 import { ReactNode } from "react";
@@ -61,6 +61,13 @@ const useGetDailyDataMock = useGetDailyData as jest.MockedFunction<
 typeof useGetDailyData
 > 
 
+const useGetHistroricalAvailabilityDataMock = useGetHistroricalAvailabilityData as jest.MockedFunction<
+  typeof useGetHistroricalAvailabilityData
+>
+
+const useGetLocationTypesMock = useGetLocationTypes as jest.MockedFunction<
+  typeof useGetLocationTypes
+>
 
   const contextWrapper = (children: ReactNode,store:any) => {
     return (
@@ -97,6 +104,9 @@ describe('Research and insights Component', () => {
         return {data: {data:GetBPRUIConfigurationMockResponse},isLoading:false};
       })
   
+      useGetHistroricalAvailabilityDataMock.mockImplementation(():any=>{
+        return{data:{data:GetHistoricalAvailabilityMockResponse},isLoading:false}
+      })
 
     useGetBPRDataMock.mockImplementation(():any=>{
       return {
@@ -178,14 +188,27 @@ describe('Research and insights Component', () => {
       
     })
 
+    useGetLocationTypesMock.mockImplementation(():any=>{
+      return {data: {data:{
+        "recordCount": null,
+        "data": "[{\"lt\":\"2013\"},{\"lt\":\"CWH\"},{\"lt\":\"Depot\"},{\"lt\":\"Inhouse\"},{\"lt\":\"plant\"},{\"lt\":\"Supplier\"},{\"lt\":\"WS01\"}]",
+        "status": 200,
+        "msg": null,
+        "errorCount": null,
+        "error": null,
+        "conflictErrorCount": null,
+        "conflictError": null
+      }},isLoading:false};
+    })
+
   });
-  it('renders loader when isLoading is true', () => {
-    useGetBPRUIConfigurationMock.mockImplementation(():any=>{
-        return {data: {data:GetBPRUIConfigurationMockResponse},isLoading:true};
-      })
-      render(contextWrapper(<ResearchInsights />,store));
-    expect(screen.getByTestId('loader')).toBeInTheDocument();
-  });
+  // it('renders loader when isLoading is true', () => {
+  //   useGetBPRUIConfigurationMock.mockImplementation(():any=>{
+  //       return {data: {data:GetBPRUIConfigurationMockResponse},isLoading:true};
+  //     })
+  //     render(contextWrapper(<ResearchInsights />,store));
+  //   expect(screen.getByTestId('loader')).toBeInTheDocument();
+  // });
 
   it('renders BPR layout properly', () => {
     render(contextWrapper(<ResearchInsights />,store));

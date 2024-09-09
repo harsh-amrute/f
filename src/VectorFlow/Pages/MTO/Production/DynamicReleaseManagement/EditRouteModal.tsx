@@ -1,4 +1,4 @@
-import { AgChartsReact } from 'ag-charts-react'
+import { AgCharts } from 'ag-charts-react'
 import { useEffect, } from 'react'
 import { useSaveRouteData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
@@ -164,7 +164,7 @@ const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum
                 }
                 <strong style={{ fontSize: "14px" }}>Route Load</strong>
                 <div style={{ height: "220px" }}>
-                    <AgChartsReact options={chartoptions} />
+                    <AgCharts options={chartoptions} />
                 </div>
             </RouteContentWrapper>
             <div style={{ zoom: '0.7', marginTop: '10px' }}>

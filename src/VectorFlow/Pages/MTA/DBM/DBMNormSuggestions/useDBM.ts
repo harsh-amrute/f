@@ -1,7 +1,7 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useGetDBMUIConfiguration,useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
-import { mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -75,7 +75,12 @@ const useDBM =()=>{
         dispatch(TOGGLE_GRAPH_MODAL(true));
 
     }
-    const DBMColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
+
+    const refetchAfter = ()=>{
+        getDataCount(currentFilter);
+        getDBMRowData(currentFilter,currentPage);
+    }
+    const DBMColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
 
     const showAllCheckbox = () => {
         const rows:any[] = []
@@ -121,7 +126,8 @@ const useDBM =()=>{
                 }
             })
         toast.dismiss()
-        notifySuccess("Submitte Successfully")
+        notifySuccess("Submitted Successfully")
+        refetchAfter()
         //console.log(rowData)
    }
 
@@ -131,9 +137,11 @@ const useDBM =()=>{
         getDBMRowData(currentFilter,currentPage);
     },[])
 
+   
+
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:getColumnsForExcelExport(DBMColumns)});
         }
       };
 
@@ -160,13 +168,18 @@ const useDBM =()=>{
         toast.dismiss()
         notifySuccess("Data Loaded Successfully")
         // console.log(rowData.data.data)
-        setDBMRowData(rowData?.data?.data)
+        setDBMRowData(rowData?.data?.data || [])
     }
 
     const handleApplyFilter = async(filter:any)=>{
         setCurrentFilter(filter)
         await getDataCount(filter)
         await getDBMRowData(filter,1)
+    }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        handleApplyFilter(updatedFilter)
     }
 
     const onExportToExcelCallBack= async(pageNo:any)=>{
@@ -202,8 +215,6 @@ const useDBM =()=>{
         pagination:false,
         defaultColDef:{
             floatingFilter: true,
-            filter: "agMultiColumnFilter",
-            cellDataType:false,
             cellStyle:{
                 'text-align':'center',
                 'height':'50px',
@@ -246,7 +257,7 @@ const useDBM =()=>{
         handleApplyFilter,
         currentFilter,
         setCurrentFilter,
-        onDelete,
+        onDeleteFilter,
         onExportToExcelCallBack,
     }
 }

@@ -77,7 +77,8 @@ const DeleteRecord = () => {
         isOverlayVisible,
         isDataAvailableLocally,
         enableEditOnlineReset,
-        errorCount
+        errorCount,
+        tempRecordCount
     } = useViewModify('remove');
     
 
@@ -173,7 +174,7 @@ const DeleteRecord = () => {
                               <SCFilterAddButtonWrapper>
                                 <SCFilterAddButton
                                   onClick={handleOnAddFilter}
-                                  src="/assets/img/VectorFLOw/NMS/add-filter.svg"
+                                  src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/add-filter-regal.svg":"/assets/img/VectorFLOW/NMS/add-filter.svg"}
                                   key={f.id}
                                   data-testid="add-filter"
                                 />
@@ -247,7 +248,7 @@ const DeleteRecord = () => {
           <WarningModal 
             rowsPerPage={rowsPerPage}
           showAll={isShowAll}
-            count={recordCount} 
+            count={tempRecordCount} 
             onCloseModal={onWarningModalClose} 
             onFailure={onWarningModalClose} 
             onSuccess={()=>onWarningModalSuccess()}

@@ -10,20 +10,20 @@ import { UserDataContext } from '../../../../../../../context';
 import { createStore } from '../../../../../../../redux/store/store';
 
 jest.mock('ag-charts-react', () => ({
-    AgChartsReact: () => <div>AgChartsReact Mock</div>,
+  AgCharts: () => <div>AgCharts Mock</div>,
 }));
 
 
 
 const queryClient = setupReactQuery();
 
-const dummyStore:any ={
-  AnalyticsData:{}
+const dummyStore: any = {
+  AnalyticsData: {}
 }
 
 const mockedStore = createStore(dummyStore)
 
-const contextWrapper = (children: ReactNode,store:any) => {
+const contextWrapper = (children: ReactNode, store: any) => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
@@ -34,7 +34,7 @@ const contextWrapper = (children: ReactNode,store:any) => {
               changeColorTheme: (color) => {
                 return color;
               },
-              isSideBarOpen:true,toggleSideBar:jest.fn
+              isSideBarOpen: true, toggleSideBar: jest.fn
             }}
           >
             {children}
@@ -46,28 +46,28 @@ const contextWrapper = (children: ReactNode,store:any) => {
 };
 
 describe('STPLGraph Component', () => {
-    global.ResizeObserver = class MockedResizeObserver {
-        observe = jest.fn();
-        unobserve = jest.fn();
-        disconnect = jest.fn();
-      };
-      
-    test('renders without crashing', () => {
-        render(contextWrapper(<STPLGraph />, mockedStore));
-        expect(screen.getByText('AgChartsReact Mock')).toBeInTheDocument();
-    });
+  global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+  };
 
-    test('displays the correct title', () => {
-        render(contextWrapper(<STPLGraph />, mockedStore));
-        const title = screen.queryByTestId('stpl-graph');
-        expect(title).toBeInTheDocument();
-    });
+  test('renders without crashing', () => {
+    render(contextWrapper(<STPLGraph />, mockedStore));
+    expect(screen.getByText('AgCharts Mock')).toBeInTheDocument();
+  });
 
-    test('chart is rendered with the correct options', () => {
-        render(contextWrapper(<STPLGraph />, mockedStore));
-        // Check if the AgChartsReact component mock is rendered
-        expect(screen.getByText('AgChartsReact Mock')).toBeInTheDocument();
-        // Ideally, here you would check if the AgChartsReact component is called with the correct props (options)
-        // But since it's a mock, we're checking the render only
-    });
+  test('displays the correct title', () => {
+    render(contextWrapper(<STPLGraph />, mockedStore));
+    const title = screen.queryByTestId('stpl-graph');
+    expect(title).toBeInTheDocument();
+  });
+
+  test('chart is rendered with the correct options', () => {
+    render(contextWrapper(<STPLGraph />, mockedStore));
+    // Check if the AgChartsReact component mock is rendered
+    expect(screen.getByText('AgCharts Mock')).toBeInTheDocument();
+    // Ideally, here you would check if the AgChartsReact component is called with the correct props (options)
+    // But since it's a mock, we're checking the render only
+  });
 });

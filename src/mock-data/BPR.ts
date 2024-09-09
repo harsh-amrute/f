@@ -87923,3 +87923,20 @@ export const GetTransporterDetailsMockResponse = {
     "conflictErrorCount": null,
     "conflictError": null
 }
+
+export const GetHistoricalAvailabilityMockResponse = {
+    "recordCount": null,
+    "data": [
+        {
+            "Availability_01_30": 79.920656,
+            "Availability_31_60": 73.692407,
+            "Availability_61_90": 65.943777
+        }
+    ],
+    "status": 200,
+    "msg": null,
+    "errorCount": null,
+    "error": null,
+    "conflictErrorCount": null,
+    "conflictError": null
+}

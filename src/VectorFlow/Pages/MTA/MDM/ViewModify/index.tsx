@@ -19,12 +19,15 @@ import SeasonalityChartModal from "./SeasonalityChartModal";
 import SubmitConflictModal from "./SubmitConflictModal";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import _ from "lodash";
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+
 
 
 
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
+
    
     // const disabled=true;
     // const dummyFn =()=>{return}
@@ -99,7 +102,8 @@ import _ from "lodash";
         enableEditOnlineReset,
         submittedDataCount,
         uploadProgress,
-        totalProgress
+        totalProgress,
+        tempRecordCount
 
     } = useViewModify('modify');
 
@@ -115,6 +119,7 @@ import _ from "lodash";
         }
       }
     },[isTableDataLoading])
+
 
     return (
       <>
@@ -189,7 +194,7 @@ import _ from "lodash";
                               <SCFilterAddButtonWrapper>
                                 <SCFilterAddButton
                                   onClick={handleOnAddFilter}
-                                  src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOw/NMS/add-filter-regal.svg":"/assets/img/VectorFLOw/NMS/add-filter.svg"}
+                                  src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/add-filter-regal.svg":"/assets/img/VectorFLOW/NMS/add-filter.svg"}
                                   key={f.id}
                                   data-testid="add-filter"
                                 />
@@ -269,7 +274,7 @@ import _ from "lodash";
         </SCContainer>
         {isWarningModalOpen && 
           <WarningModal 
-            count={recordCount} 
+            count={tempRecordCount} 
             onCloseModal={onWarningModalClose} 
             onFailure={onWarningModalClose} 
             onSuccess={()=>onWarningModalSuccess()}
@@ -316,7 +321,10 @@ import _ from "lodash";
         {
           isOverlayVisible && (
             <VFOverlay>
-             <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Validating Data. Please Wait this might take some time.... {((uploadProgress==='' || parseInt(uploadProgress)===0)) ? '' : 'Progress: ' + uploadProgress + ' / ' + totalProgress}</h1>
+               <div style={{backgroundColor:'white',borderRadius:'6px'}}>
+              <VFLoader/>
+              <h1 style={{backgroundColor:"white",padding:'15px',borderRadius:'8px'}}>Validating Data. Please Wait this might take some time.... {((uploadProgress==='' || parseInt(uploadProgress)===0)) ? '' : 'Progress: ' + uploadProgress + ' / ' + totalProgress}</h1>
+              </div>
             </VFOverlay>
           )
         }

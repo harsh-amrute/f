@@ -35,7 +35,7 @@ const DBM = () => {
   handleApplyFilter,
   currentFilter,
   setCurrentFilter,
-  onDelete,
+  onDeleteFilter,
   onExportToExcelCallBack
 } = useDBM();
 
@@ -46,6 +46,7 @@ const DBM = () => {
 }
 
   return (
+    <>
     <GridStateContext.Provider value={{
       ref:gridRef,
       exportExcelColumns:exportExcelColumns,
@@ -72,7 +73,7 @@ const DBM = () => {
         onApplyFilter={handleApplyFilter}
         multiFilter={currentFilter}
         setMultiFilter={setCurrentFilter}
-        onDelete={onDelete}
+        onDelete={onDeleteFilter}
       />
       <DBMLayout>
         <div style={{height:'90vh'}}>
@@ -119,6 +120,7 @@ const DBM = () => {
         </div>
       </DBMLayout>
       </GridStateContext.Provider>
+      </>
   )
 }
 

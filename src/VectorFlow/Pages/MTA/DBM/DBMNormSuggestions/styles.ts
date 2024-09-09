@@ -33,21 +33,21 @@ export const DBMTickCellRendererWrapper = styled.div`
 `
 
 export const DBMApplyNormButton = styled.div`
-display:flex;
-align-items:center;
-max-width: 401px;
-height: 49px;
-background: #FFFFFF 0% 0% no-repeat padding-box;
-box-shadow: 0px 6px 12px #86868629;
-border-radius: 6px;
-opacity: 1;
-padding: 13px;
-text-align: left;
-font-size:16px;
-font-weight:500;
-line-height:19px;
-letter-spacing: 0px;
-color: #000000;
+    display:flex;
+    align-items:center;
+    max-width: 401px;
+    height: 49px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 6px 12px #86868629;
+    border-radius: 6px;
+    opacity: 1;
+    padding: 13px;
+    text-align: left;
+    font-size:16px;
+    font-weight:500;
+    line-height:19px;
+    letter-spacing: 0px;
+    color: #000000;
 `
 
 

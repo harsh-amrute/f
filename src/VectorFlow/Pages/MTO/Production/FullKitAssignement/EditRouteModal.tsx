@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { AgChartOptions } from 'ag-charts-community'
-import { AgChartsReact } from 'ag-charts-react'
+import { AgCharts } from 'ag-charts-react'
 import { useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
@@ -32,7 +31,7 @@ type Route = {
 
 const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, routeId, plantId, orderKey, setOrderKey, loadDataParams, setLoadDataParams }: any) => {
 
-    const chartoptions: AgChartOptions = {
+    const chartoptions: any = {
         data: graphData,
         series: [
             {
@@ -108,7 +107,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
             position: "top",
             item: {
                 label: {
-                    formatter: (props) => {
+                    formatter: (props: any) => {
                         if (props.value === "stpl_in_days") {
                             return "Released WIP in Days"
 
@@ -264,7 +263,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
                 {/* <RouteAssignment theme={theme} /> */}
                 <strong style={{ fontSize: "14px" }}>Route Load</strong>
                 <div style={{ height: "300px" }}>
-                    <AgChartsReact options={chartoptions} />
+                    <AgCharts options={chartoptions} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "end", gap: "1rem" }}>
                     <VFButtonOutline

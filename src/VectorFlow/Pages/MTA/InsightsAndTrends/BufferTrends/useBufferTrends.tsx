@@ -8,7 +8,9 @@ import useBPRFilter from '../../../../../hooks/useBPRFilter';
 const initialGraphData  ={
     data: {
         absolute:[],
-        percentage:[]
+        percentage:[],
+        summary:[],
+        avail: 0,
     }
   };
 
@@ -21,6 +23,8 @@ const useBufferTrends = () => {
     const [graphData,setGraphData] = useState(initialGraphData);
     const [isSelectCategoryOpen,setIsSelectCategoryOpen] = useState(true);
     const [horizonDays,setHorizondays]=useState(30);
+    const [summaryData, setSummaryData]=useState([]);
+    const[availability, setAvailability]=useState(0.0);
    
     const {mutateAsync:getBufferTrendsGraph,isLoading} = useGetBufferTrendsGraph();
 
@@ -54,6 +58,8 @@ const useBufferTrends = () => {
             const result:any = await getBufferTrendsGraph(body)
             setIsSelectCategoryOpen(false);
             setCurrentGraphData(result.data?.data?.absolute);
+            setSummaryData(result.data?.data?.summary);
+            setAvailability(result.data?.data?.avail);
             setGraphData(result.data);
             notifySuccess("Graph Details Fetched Successfully")
 
@@ -82,9 +88,13 @@ const useBufferTrends = () => {
         switch(tab.value){
             case 'Absolute': 
                 setCurrentGraphData(graphData?.data?.absolute);
+                setSummaryData(graphData?.data?.summary);
+                setAvailability(graphData?.data?.avail);
                 break;
             case 'Percentage':
                 setCurrentGraphData(graphData?.data?.percentage);
+                setSummaryData(graphData?.data?.summary);
+                setAvailability(graphData?.data?.avail);
         }
     } 
 
@@ -146,11 +156,10 @@ const useBufferTrends = () => {
             const result:any = await getBufferTrendsGraph(body)
             setIsSelectCategoryOpen(false);
             setCurrentGraphData(result.data?.data?.absolute);
+            setSummaryData(result.data?.data?.summary);
+            setAvailability(result.data?.data?.avail);
             setGraphData(result.data);
             notifySuccess("Graph Details Fetched Successfully")
-    
-            console.log("no error")
-        
             
         } catch (error) {
             toast.dismiss();
@@ -159,6 +168,10 @@ const useBufferTrends = () => {
         }
        }
 
+       const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+        const updatedFilter = onDelete(parentId,filterId,value)
+        handleApplyFilter(updatedFilter)
+    }
 
     return {
         currentTab ,
@@ -166,6 +179,8 @@ const useBufferTrends = () => {
         currentView ,
         isSelectCategoryOpen ,
         currentGraphData ,
+        summaryData,
+        availability,
         BufferTrendsDataLoad,
         isLoading,
         onFloatingTabChangeOnPages,
@@ -178,7 +193,7 @@ const useBufferTrends = () => {
         handleApplyFilter,
         multiFilterState,
         setMultiFilterState,
-        onDelete,
+        onDeleteFilter,
         onGoBack
     }
   

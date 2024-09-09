@@ -6,6 +6,7 @@ export interface RRRField {
     Visible:boolean
     CellAlignment:string
     Value:string
+    DataType:"String" | "Number" | "Boolean"
 }
 
 export interface RRRDataPayload{

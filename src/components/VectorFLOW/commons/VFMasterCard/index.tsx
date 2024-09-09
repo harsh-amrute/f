@@ -30,7 +30,6 @@ const VFMasterCard = (props:VFMasterCardProps)=>{
 
     } = props
 
-    console.log(data.name,isSelected)
     return(
         <VFMasterCardContainer data-testid='master-card'>
             <VFMasterCardHeader>
@@ -43,7 +42,7 @@ const VFMasterCard = (props:VFMasterCardProps)=>{
             </VFMasterCardHeader>
             <VFMasterCardListContainer data-testid='list-container'>
                 {data.fields.map((title:Field,index)=>{
-                    return title.visible && <VFMasterCardListItem key={index} isSelected={selectedFields.includes(title.displayName)}>{title.displayName}</VFMasterCardListItem>
+                    return title.visible && <VFMasterCardListItem themeUi={themeUi} key={index} isSelected={selectedFields.includes(title.displayName)}>{title.displayName}</VFMasterCardListItem>
                 })}
             </VFMasterCardListContainer>
         </VFMasterCardContainer>

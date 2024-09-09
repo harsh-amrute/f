@@ -5,15 +5,14 @@ import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import useBPR from "./useBPR"
-import BPRSubmiRemarkToolTip from "./BPRSubmitRemarkToolTip"
 
 import "allotment/dist/style.css";
-import BPRRemarkHistoryToolTip from "./BPRRemarkHistoryToolTip"
 import ActionToolBar from "../Planning/ActionToolBar"
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import { GridStateContext } from "../../../../../context/GridStateContext"
+import BPRRemarkHistoryModal from "./BPRRemarkHistoryModal"
 
 
 
@@ -29,15 +28,9 @@ const BPR = ()=>{
         BPRColumns,
         BPRRowData,
         agGridProps,
-        submitRemarkToolTipPosition,
-        isSubmitRemarkToolTipOpen,
-        remark,
         isRemarkHistoryToolTipOpen,
-        remarkHistoryToolipPosition,
         remarkHistory,
-        updateRemark,
-        onCloseSubmitRemark,
-        onSubmitRemark,
+        onSubmitRemarks,
         onCloseRemarkHistory,
         dailyData,
         showDailyDataGraphModal,
@@ -59,10 +52,10 @@ const BPR = ()=>{
         setExportExcelColumns,
         onExportToExcelCallBack,
         currFilter,
-        onDelete,
         setCurrFilter,
         onApplyFilter,
-        themeUi
+        editedRows,
+        onDeleteFilter
     } = useBPR();
 
     
@@ -86,6 +79,7 @@ const BPR = ()=>{
     
             }}
         >
+        <div style={{marginLeft:'10px'}}>
         <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
@@ -99,9 +93,12 @@ const BPR = ()=>{
             genericRecordCount={recordCount}
             onExportToExcelCallBack={onExportToExcelCallBack}
             multiFilter={currFilter}
-            onDelete={onDelete}
+            onDelete={onDeleteFilter}
             setMultiFilter={setCurrFilter}
+            onSubmitEditedRows={onSubmitRemarks}
+            disableSubmitEditedRowsBtn={editedRows.length===0}
         />
+        </div>
         {
             showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
         }
@@ -129,7 +126,7 @@ const BPR = ()=>{
                     Edit Filter
                 </VFButton>
             </BPRTaskBar> */}
-            <div style={{height:'100vh',marginLeft:'45px'}}>
+            <div style={{height:'100vh',marginLeft:'15px'}}>
             <Allotment vertical defaultSizes={[300,150]}>
               <Allotment.Pane className="planning-grid-allotment">
               <VFTable
@@ -140,7 +137,7 @@ const BPR = ()=>{
                 rowData={BPRRowData}
                 onGridReady={(params)=>{
                    if(columnState){
-                    params.columnApi.applyColumnState({state:columnState})
+                    params.api.applyColumnState({state:columnState})
                    }
                 }}
                 enableRangeSelection={true} 
@@ -163,9 +160,11 @@ const BPR = ()=>{
                     handleChangePage={handleOnPageChange}
                 />
               </Allotment.Pane>
-              <Allotment.Pane maxSize={200} minSize={180}>
+              <Allotment.Pane maxSize={220} minSize={200}>
+              <div style={{marginTop:'20px'}}>
               {isSubGridOpen && (
-                <BPRViewTable
+                <div style={{marginLeft:'15px'}}>
+                    <BPRViewTable
                 tableHeader="In Transit/WIP"
                     tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
                     rowData={activeRow}
@@ -220,12 +219,14 @@ const BPR = ()=>{
 
                     
                 />
+                </div>
                
             )}
+              </div>
               </Allotment.Pane>
             </Allotment>
             </div>
-            {isSubmitRemarkToolTipOpen && (
+            {/* {isSubmitRemarkToolTipOpen && (
                 <BPRSubmiRemarkToolTip
                     remark={remark}
                     setRemark={updateRemark}
@@ -234,15 +235,13 @@ const BPR = ()=>{
                     onClose={onCloseSubmitRemark}
                     themeUi={themeUi}
                 />
-            )}
+            )} */}
 
-            {isRemarkHistoryToolTipOpen && (
-                <BPRRemarkHistoryToolTip
-                    remarkHistory={remarkHistory}
-                    onClose={onCloseRemarkHistory}
-                    style={remarkHistoryToolipPosition}
-                />
-            )}
+            <BPRRemarkHistoryModal
+                data={remarkHistory}
+                isOpen={isRemarkHistoryToolTipOpen}
+                onClose={onCloseRemarkHistory}
+            />
             <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}

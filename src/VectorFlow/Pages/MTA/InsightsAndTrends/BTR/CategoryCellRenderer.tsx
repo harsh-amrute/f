@@ -17,7 +17,8 @@ const CategoryCellRenderer = (props: ICellRendererParams) => {
             {categoryStringArray.map((c: string) => {
                 const categoryData = BTRCategoryMapper[c]
                 if (categoryData) {
-                    if (c === "3") {
+                    if (c === "BR") {
+
                         return <CategoryCellRendererChip style={{ background: categoryData.bgColor, color: categoryData.color }}>{categoryData.cellLabel}</CategoryCellRendererChip>
                     }
                     return <CategoryCellRendererChip style={{ backgroundColor: categoryData.bgColor, color: categoryData.color }}>{categoryData.cellLabel}</CategoryCellRendererChip>

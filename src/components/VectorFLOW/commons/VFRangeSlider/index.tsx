@@ -77,7 +77,7 @@ const VFRangeSlider: React.FC<VFRangeSliderProps> = ({ milestones,min,max,strict
         <ValueLabel left={((value / range) * multiplier) -3} top={showTriangle?32:20}>{valueFormatter()}</ValueLabel>
         {showTriangle && (
             <ToolTipTriangle 
-                style={{left:((value / range) * multiplier) + 6.5}}
+                style={{left:((value / range) * multiplier) + 1.5}}
             />
         )}
         {milestones && (

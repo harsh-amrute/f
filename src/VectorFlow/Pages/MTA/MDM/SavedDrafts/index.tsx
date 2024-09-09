@@ -43,7 +43,8 @@ const SavedDrafts = ()=>{
               isDownload:true,
               isEdit:true,
               "col_Position":'1',
-              "isApplicable":true
+              "isApplicable":true,
+              dataType:'String'
             },
             {
               displayName: "Last Modification Date",
@@ -53,7 +54,8 @@ const SavedDrafts = ()=>{
               isDownload:true,
               isEdit:true,
               "col_Position":'2',
-              "isApplicable":true
+              "isApplicable":true,
+              dataType:'String'
             },
             {
               displayName: "Instance Name",
@@ -63,7 +65,8 @@ const SavedDrafts = ()=>{
               isDownload:true,
               isEdit:true,
               "col_Position":'3',
-              "isApplicable":true
+              "isApplicable":true,
+              dataType:'String'
             },
             // {
             //   displayName: "Search Key",
@@ -83,7 +86,8 @@ const SavedDrafts = ()=>{
                 isDownload:true,
                 isEdit:true,
                 "col_Position":'5',
-                "isApplicable":true
+                "isApplicable":true,
+                dataType:'String'
             }
           ],{
             cellRendererParams:{
@@ -103,7 +107,7 @@ const SavedDrafts = ()=>{
               }
               return { background: "#F7F7F7" };
             },
-              enableRangeSelection:true,
+              enableRangeSelection:false,
               rowSelection:'multiple',
           }}
           statusBar={{
@@ -123,7 +127,7 @@ const SavedDrafts = ()=>{
         <p style={{textAlign:"center", color: "#313131", paddingTop:"36px", fontStyle:"normal", fontVariant:"normal",fontWeight:300,fontSize:"14px",fontFamily:"Roboto"}}>
           Are you sure you want to delete the draft ?
         </p> 
-        <div style={{display:"flex",gap:"28px", alignItems:"center", justifyContent:"center", paddingTop:"38px", paddingBottom:"36px"}}>
+        <div style={{zoom:0.9,display:"flex",gap:"28px", alignItems:"center", justifyContent:"flex-end",padding:'10px 20px 0px 30px',margin:'50px -80px 0px -80px',borderTop:'dashed 1px gray'}}>
           <VFButtonOutline color={"gray"} themeUi={user.user.theme_ui} onClick={closeDeleteModal}>No</VFButtonOutline>
           <VFButton themeUi={user.user.theme_ui} onClick={onDeleteDraft}>Yes</VFButton>
         </div>

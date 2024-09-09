@@ -11,6 +11,8 @@ import ContactDetailsModal from "./ContactDetailsModal"
 import RemarkModal from "./RemarkModal"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
+import { ButtonWrapper } from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/styles"
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 
 
 
@@ -55,7 +57,7 @@ const InTransitWhereAbouts = ()=>{
         currentPage,
         currentFilter,
         setCurrFilter,
-        onDelete,
+        onDeleteFilter,
         onApplyFilter,
         onExportToExcelCallBack,
         tempRef,
@@ -82,7 +84,7 @@ const InTransitWhereAbouts = ()=>{
 
       }}
         >
-            <div style={{zoom:'0.8'}}>
+            <div style={{marginLeft:'10px'}}>
                 <ActionToolBar 
                 view={'grid'} 
                 setCurrentTab={''} 
@@ -96,7 +98,7 @@ const InTransitWhereAbouts = ()=>{
                 onExportToExcelCallBack={onExportToExcelCallBack}
                 multiFilter={currentFilter}
                 setMultiFilter={setCurrFilter}
-                onDelete={onDelete}
+                onDelete={onDeleteFilter}
                 onApplyFilter={onApplyFilter}
                 onSubmitEditedRows={onSubmitEditedRows}
                 disableSubmitEditedRowsBtn={editedRows.length===0}
@@ -108,16 +110,16 @@ const InTransitWhereAbouts = ()=>{
             ?
             <VFLoader/>
             :
-            <>
+            <div style={{height:'70%',marginLeft:'15px'}}>
                 <VFTable
                     columnDefs={colDefs}
                     rowData={[...rowData]}
                     {...agGridProps}
                     ref={ref}
-                    height={"75%"}
+                    height={"100%"}
                     
                 />
-                <div style={{marginBottom:'40px'}}>
+                <div style={{marginBottom:'10px'}}>
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
@@ -126,7 +128,10 @@ const InTransitWhereAbouts = ()=>{
                     handleChangePage={handlePageChange}
                 />
                 </div>
-            </>
+                <ButtonWrapper>
+                    <VFButtonOutline disabled={editedRows.length===0} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
+                </ButtonWrapper>
+            </div>
         }
           
         
