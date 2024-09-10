@@ -49,7 +49,7 @@ const DueDateQuotation = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  // const [isReset, setIsReset] = useState(false);
   //Refs
   const totalRows = useRef(0);
   const currentPageSelectedRows = useRef<any>([]);
@@ -445,7 +445,7 @@ const DueDateQuotation = () => {
   }
 
   const handleResetClick = () => {
-    setIsReset(true);
+    // setIsReset(true);
   }
 
   useEffect(()=>{
@@ -475,7 +475,7 @@ const DueDateQuotation = () => {
           handleResetClick={handleResetClick}
         />
       }
-      {(isFilteredDataLoaded || loading) && <OverlayLoader />}
+      {(isFilteredDataLoaded || loading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       {getCurrentStep()}
       <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Warning'} headerIcon={'/assets/img/ist/warning.svg'} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
         <div style={{ margin: "0 2rem" }}>

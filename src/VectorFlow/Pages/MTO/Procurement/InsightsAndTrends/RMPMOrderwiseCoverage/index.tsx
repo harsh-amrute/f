@@ -12,17 +12,16 @@ import { toast } from 'react-toastify'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
 import { getColumnDefinations } from '../../../../../../helpers/utils'
-import ColorCellRenderer from '../../../Common/ColorCellRenderer'
 import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
 import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
 import { pagination, UIGridCode } from '../../../Common/Enum'
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useUserData } from "../../../../../../context/index";
+import OverlayLoader from '../../../Common/Loader'
 
 const RMPMOrderwiseCoverage = () => {
 
     const [isGridView, setIsGridView] = useState(false);
-    const [HeaderData, setHeaderData] = useState([{}]);
     const [convertedData, setConvertedData] = useState([{}]);
     const [GraphDatas, setGraphDatas] = useState([{}])
     const [apiGraphData, setApiGraphData] = useState([{}]);
@@ -290,6 +289,7 @@ const RMPMOrderwiseCoverage = () => {
 
     return (
         <>
+            {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
             <div style={{ display: 'flex', flexDirection: 'column', height: "100%" }}>
 
 

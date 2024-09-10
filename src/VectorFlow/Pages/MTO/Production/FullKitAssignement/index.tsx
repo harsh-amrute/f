@@ -343,8 +343,8 @@ const FullKitAssignment = () => {
     }
   }, [editMode, selectedRows])
 
-  const colDefs = useMemo(() => {
-    return getColumnDefinations(HeaderData, colDefCustomizations, extra)
+  useEffect(() => {
+     setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extra))
   }, [HeaderData, extra])
 
   const getUserColumnConfig = async () => {
@@ -501,7 +501,7 @@ const FullKitAssignment = () => {
       ],
     },
     rowHeight: 50,
-    columnDefs: colDefs,
+    columnDefs: colDef,
     defaultColDef: {
       resizable: true,
       suppressMenu: true,
