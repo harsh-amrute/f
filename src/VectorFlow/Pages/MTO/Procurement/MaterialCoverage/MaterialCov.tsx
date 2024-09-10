@@ -133,7 +133,7 @@ const MaterialCov = () => {
             onDateChange={() => { console.log('') }}
             submitDate={() => { console.log('') }}
           />
-          <div style={{ zoom: 0.75 }}>
+          <div>
 
             <BTRLayoutTabsWrapper>
               <VFFloatingTab
@@ -173,7 +173,7 @@ const MaterialCov = () => {
                   width: "85%",
                   border: "1px solid #000",
                   color: "#FFFFFF",
-                  marginBottom: '10px',
+                  marginBottom: '8px',
                   marginLeft: '5px'
                 }}>
                 </div>

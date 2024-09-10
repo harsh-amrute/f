@@ -75,7 +75,7 @@ export interface DetailsObj {
 
 export const getToolTipContent = (col: string, ToolTipdata: any) => {
     return (
-        <table style={{ padding: "0px 10px 0px 10px", fontSize: '14px', display: "table", width: '150px' }}>
+        <table style={{ padding: "2px 8px", fontSize: '10px', display: "table", width: '120px' }}>
             <tbody>
                 {col == 'Red' || col == 'Green' ?
                     <>
@@ -119,14 +119,14 @@ export const getToolTipContent = (col: string, ToolTipdata: any) => {
     )
 }
 
-export const formatNumber = (num:any) => {
+export const formatNumber = (num: any) => {
     if (num >= 10000000) {
-      return (num / 10000000).toFixed(1) + 'Cr'; // Crore
+        return (num / 10000000).toFixed(1) + 'Cr'; // Crore
     } else if (num >= 100000) {
-      return (num / 100000).toFixed(1) + 'L'; // Lakh
+        return (num / 100000).toFixed(1) + 'L'; // Lakh
     } else if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'K'; // Thousand
+        return (num / 1000).toFixed(1) + 'K'; // Thousand
     } else {
-      return num; // Numbers below 1000
+        return num; // Numbers below 1000
     }
-  };
+};

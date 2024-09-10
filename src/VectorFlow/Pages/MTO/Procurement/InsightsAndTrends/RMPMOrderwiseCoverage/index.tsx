@@ -121,7 +121,7 @@ const RMPMOrderwiseCoverage = () => {
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
-            setHeaderData(response.data.data);
+            setHeaderData(response?.data?.data);
             setShortageColumns(getColumnDefinations(HeaderData, customColumnDefs, []));
         }
         catch (e) {
@@ -165,9 +165,9 @@ const RMPMOrderwiseCoverage = () => {
     }, [HeaderData])
 
     const mapDataToColumns = (data: any, columns: ColDef[]) => {
-        return data.map((item: any) => {
+        return data?.map((item: any) => {
             const mappedItem: any = {};
-            columns.forEach(column => {
+            columns?.forEach(column => {
                 if (column.field) {
                     if (column.field === "rmpm") {
                         if (item['or'] > 0) {
@@ -207,7 +207,7 @@ const RMPMOrderwiseCoverage = () => {
                     toast.dismiss();
                     notifySuccess("Data Fetched Successfully!")
                 }
-                setApiGraphData(APIData.data.data);
+                setApiGraphData(APIData?.data?.data);
 
 
             } catch (e) {
@@ -223,7 +223,7 @@ const RMPMOrderwiseCoverage = () => {
                     toast.dismiss();
                     notifySuccess("Data Fetched Successfully!")
                 }
-                setApiGridData(APIData.data.data);
+                setApiGridData(APIData?.data?.data);
 
 
             } catch (e) {

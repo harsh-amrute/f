@@ -230,6 +230,7 @@ const MTOActionToolBar = ({
                                 opacity: 1,
                             }}>
                                 <input type="date"
+                                    required
                                     data-testid="datepicker"
                                     style={{
                                         top: '141px',
@@ -330,8 +331,8 @@ const MTOActionToolBar = ({
 
             </SCTaskFilterContainer>
             {/**New Selected Filter start */}
-            {newFilters && Object.keys(newFilters)?.length > 0 && 
-            <VFSelectedFiltersWrapper>
+            {newFilters && Object.keys(newFilters)?.length > 0 &&
+                <VFSelectedFiltersWrapper>
                     <VFSelectedFiltersPlaceHolder>
                         Selected Filters
                     </VFSelectedFiltersPlaceHolder>
@@ -372,12 +373,12 @@ const MTOActionToolBar = ({
                             ))
                         }
                     </VFFilterScrollBar>
-            </VFSelectedFiltersWrapper>}
-                {/**Selected Filter ends*/}
+                </VFSelectedFiltersWrapper>}
+            {/**Selected Filter ends*/}
 
             <SCCustomActionsContainer>
-                {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", gap: "1.5rem", marginRight: "10px"}}>
-                        {utilityBtns}
+                {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", gap: "1.5rem", marginRight: "10px" }}>
+                    {utilityBtns}
                 </div>}
                 {isAddFilterButton && (onAddFilter ?
                     <VFButton onClick={() => onAddFilter()}

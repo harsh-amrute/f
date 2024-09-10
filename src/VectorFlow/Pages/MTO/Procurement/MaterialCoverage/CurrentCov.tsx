@@ -321,7 +321,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Black.code, c2: ColorsMTO.Red.code, c3: ColorsMTO.Yellow.code }}
-                        height={"24px"}
+                        height={"18px"}
                         text={""}
                         orderCount={BRYNkOrdCunt}
                         cutCount={BRYNkCustCunt}
@@ -334,7 +334,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Black.code, c2: ColorsMTO.Red.code, c3: ColorsMTO.Yellow.code }}
-                        height={"24px"}
+                        height={"18px"}
                         text={""}
                         orderCount={secBlockOrdCnt}
                         cutCount={secBlockCustCnt}
@@ -347,7 +347,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     <MTOMaterialSO
                         kit={"Full  Kit"}
                         colors={{ c1: ColorsMTO.Black.code, c2: ColorsMTO.Red.code, c3: ColorsMTO.Yellow.code }}
-                        height={"24px"}
+                        height={"18px"}
                         text={""}
                         orderCount={thrdBlockOrdCnt}
                         cutCount={thrdBlockCustCnt}
@@ -366,7 +366,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Green.code, c2: null, c3: null }}
-                        height={"48px"}
+                        height={"36px"}
                         text={""}
                         orderCount={frthBlockOrdCnt}
                         cutCount={frthBlockCustCnt}
@@ -381,7 +381,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Green.code, c2: null, c3: null }}
-                        height={"48px"}
+                        height={"36px"}
                         text={""}
                         orderCount={fifthBlockOrdCnt}
                         cutCount={fifthBlockCustCnt}
@@ -396,7 +396,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Green.code, c2: null, c3: null }}
-                        height={"48px"}
+                        height={"36px"}
                         text={""}
                         orderCount={sxthBlockOrdCnt}
                         cutCount={sxthBlockCustCnt}
@@ -431,7 +431,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={formatDate(svthSrtDt, svthEndDt)}
                         orderCount={svthBlockOrdCnt}
                         cutCount={svthBlockCustCnt}
@@ -445,7 +445,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={formatDate(egthSrtDt, egthEndDt)}
                         orderCount={egthBlockOrdCnt}
                         cutCount={egthBlockCustCnt}
@@ -459,7 +459,7 @@ const CurrentCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: C
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={formatDate(nthSrtDt, nthEndDt)}
                         orderCount={nthBlockOrdCnt}
                         cutCount={nthBlockCustCnt}
