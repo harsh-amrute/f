@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace UIConfigService {
+export namespace UserUIConfigService {
 
     export const getUserUIReportConfigData = async ({un, rn_id}: {un: string, rn_id: number}) => {
     
