@@ -14,11 +14,12 @@ import ShowRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpedit
 import SubmitRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/SubmitRemarkCellRenderer";
 import MasterDetail from "./MasterDetail";
 import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } from "./CellRenderers";
-import { mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
+import { getColumnsForExcelExport, mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
 import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,useGetRemarkDetailsForInTransit, useGetTransporterDetails, useSubmitRemarksForInTransit } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { ColDef } from "ag-grid-enterprise";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 
 
@@ -108,25 +109,6 @@ const useInTransitWhereAbouts = ()=>{
     // const [columnState,setColumnState] = useState<any>()
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
-
-
     // useEffect(()=>{
     //     const getTableState = async()=>{
     //       try{
@@ -151,12 +133,14 @@ const useInTransitWhereAbouts = ()=>{
     
 
     const agGridProps: AgGridReactProps = {
+      debug:true,
       readOnlyEdit:false,
       icons:{
         groupExpanded: `<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg"} style="width: 20px; height: 20px;">`,
         groupContracted:`<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus.svg"} style="width: 20px; height: 20px;">`
       },
       masterDetail:true,
+      detailRowHeight:500,
       detailCellRenderer:MasterDetail,
       detailCellRendererParams:{
         onContactDetails:onOpenContactModal
@@ -188,7 +172,7 @@ const useInTransitWhereAbouts = ()=>{
             readOnlyEdit:true
         },
         
-        sideBar:sideBar,
+        sideBar:defaultAgGridSideBarForBPR,
         // suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {
@@ -223,7 +207,7 @@ const useInTransitWhereAbouts = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts'});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts',columnKeys:getColumnsForExcelExport(colDefs)});
         }
       };
 
@@ -279,6 +263,7 @@ const useInTransitWhereAbouts = ()=>{
       }
       const data = await getData(payload)
       setRowData(mapInTransitWhereAboutsRowData(data.data.data))
+      // setRowData(mapInTransitWhereAboutsRowData(GetInTransitWhereAboutsMockResponse.data))
     }
 
     const handlePageChange = async(pageNo:number)=>{
@@ -329,7 +314,6 @@ const useInTransitWhereAbouts = ()=>{
     setIsSubmitRemarkToolTipOpen(false)
     setIsSubmitETAToolTipOpen(false)
     setActiveRow(data)
-    console.log(data)
     setCurrentLocationValue(e.currentTarget.value)
     const { top, left } = e.currentTarget.getBoundingClientRect()
     setSubmitCurrentLocationToolipPosition({
@@ -402,12 +386,12 @@ const useInTransitWhereAbouts = ()=>{
 
     const onSubmitRemark = async()=>{
         try{
-            if(remark.length===0) throw new Error("Remark cannot be empty")
+            if(remark.length===0) throw new Error("Remark Cannot Be Empty")
             const toastId = notifyLoader("Submitting Remark")
             await submitRemark(mapSubmitRemarkData({...activeRow,remark:remark}))
             toast.dismiss(toastId)
             
-            notifySuccess('Remark has been submitted')
+            notifySuccess('Remark Has Been Submitted')
             setRemark('')
             setActiveRow({})
             
@@ -419,12 +403,12 @@ const useInTransitWhereAbouts = ()=>{
 
     const onSubmitCurrentLocation = async()=>{
         try{
-            if(currentLocationValue.length===0) throw new Error("Location cannot be empty")
-            const toastId = notifyLoader("Submitting data")
+            if(currentLocationValue.length===0) throw new Error("Location Cannot Be Empty")
+            const toastId = notifyLoader("Submitting Data")
             await submitRemark(mapSubmitRemarkData({...activeRow,CurrentLoc:currentLocationValue}))
             toast.dismiss(toastId)
             
-            notifySuccess('Data has been submitted')
+            notifySuccess('Data Has Been Submitted')
             setRemark('')
             setActiveRow({})
             
@@ -436,12 +420,12 @@ const useInTransitWhereAbouts = ()=>{
 
     const onSubmitETA = async()=>{
       try{
-          if(etaValue.length===0) throw new Error("ETA cannot be empty")
-          const toastId = notifyLoader("Submitting data")
+          if(etaValue.length===0) throw new Error("ETA Cannot Be Empty")
+          const toastId = notifyLoader("Submitting Data")
           await submitRemark(mapSubmitRemarkData({...activeRow,ETA:etaValue}))
           toast.dismiss(toastId)
           
-          notifySuccess('Data has been submitted')
+          notifySuccess('Data Has Been Submitted')
           setRemark('')
           setActiveRow({})
           
@@ -462,19 +446,20 @@ const useInTransitWhereAbouts = ()=>{
 
     const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
 
-    async function onOpenContactModal (data:any){
-      console.debug(data)
+    async function onOpenContactModal (params:any){
+      console.log(params)
+
      try{
       notifyLoader("Loading Details")
-      const contactData = await getTransporterDetails({orderNo:'VectorOrder_6662'})
+      const contactData = await getTransporterDetails({orderNo:params["OrderNo"]})
       if(contactData.data.data[0]){
         setCurrentUserDetails(contactData.data.data[0])
         toggleContactModal(true)
         
-        notifySuccess('Data loaded successfully')
+        notifySuccess('Data Loaded Successfully')
       }else{
         toast.dismiss()
-        notifyError("Contact details not found")
+        notifyError("Contact Details Not Found")
       }
      }catch(err:any){
       notifyError(err)
@@ -501,6 +486,11 @@ const useInTransitWhereAbouts = ()=>{
 
     }
 
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+      const updatedFilter = onDelete(parentId,filterId,value)
+      onApplyFilter(updatedFilter)
+  }
+
     const onExportToExcelCallBack = async(pageNo:number)=>{
       const payload = {
         "id": 0,
@@ -525,6 +515,7 @@ const useInTransitWhereAbouts = ()=>{
       })
       await submitRemark({data:payload})
       toast.dismiss()
+      setEditedRows([])
      }catch(err){
       notifyError("Something went wrong")
      }
@@ -596,12 +587,13 @@ const useInTransitWhereAbouts = ()=>{
           onClick:onOpenSubmitETA
         },
         floatingFilter:false,
-        editable:true
+        editable:true,
+        cellDataType:'dateString'
     },
       {
           headerName: "",
-          colId: 'history',
-          field: 'history',
+          colId: 'rh',
+          field: 'rh',
           cellRenderer:'remarksCellRenderer',
           cellRendererParams:{
               onClick:onOpenRemarkHistory
@@ -657,7 +649,7 @@ const useInTransitWhereAbouts = ()=>{
         getRowData,
         currentFilter,
         setCurrFilter,
-        onDelete,
+        onDeleteFilter,
         onApplyFilter,
         onExportToExcelCallBack,
         onSubmitCurrentLocation,

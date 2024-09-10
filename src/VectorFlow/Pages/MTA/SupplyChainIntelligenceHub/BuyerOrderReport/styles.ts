@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const BORLayout = styled.div`
     margin-top:25px;
-//    margin-bottom:40px;
+    margin-left:15px;
 `
 
 

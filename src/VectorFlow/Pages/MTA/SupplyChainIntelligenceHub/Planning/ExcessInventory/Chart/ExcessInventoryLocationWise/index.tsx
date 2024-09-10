@@ -9,6 +9,7 @@ import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/V
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
 interface ExcessInventoryProps{
     data:any
 }
@@ -34,11 +35,15 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             {
                 field:'SKUCounts',
                 colId:'SKUCounts',
-                headerName:'Count of SKUs'
+                headerName:'Count Of SKUs'
             }
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
+
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -67,6 +72,8 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -77,22 +84,6 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
     }
 
     const colDefs2 = mapUIConfigToColdefs2(data['topTenLocationsWithExcessInventoryValue']['uiconfig']);
-
-    const convertToInt = (data:any)=>{
-        return data.map((row:any)=>{
-            const tempObj:any = {};
-            Object.keys(row).forEach((key:string)=>{
-                const value = parseFloat(row[key])
-                if(!isNaN(value)){
-                    tempObj[key] = value
-                }
-                else{
-                    tempObj[key] = row[key];
-                }
-            })
-            return {...tempObj}
-        })
-    }
 
     const sortData = (data:any,key:string) => {
         data.sort((row1:any,row2:any)=>{
@@ -194,6 +185,10 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
 
                         },
                         label:{
+                            formatter:(params:any)=>{
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                return params.value;
+                            },
                             fontSize:8,
                             fontFamily:'Roboto'
                         }
@@ -201,7 +196,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Count of SKUs",
+                            text:"Count Of SKUs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -235,7 +230,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,
@@ -245,7 +240,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                     number:{
                         title:{
                             enabled:true,
-                            text:"Value in Lakhs",
+                            text:"Value In Lakhs",
                             position:"left",
                             fontSize:10,
                             fontFamily:'Roboto'
@@ -285,21 +280,21 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             <SCDynamicContainer>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"95%"}>
+                        <SCChartContainer height={"95%"} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations with Excess Inventory: Count Of SKUs</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations With Excess Inventory: Count Of SKUs</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                                     {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
                                 </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
-                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations with Excess Inventory: Count of SKUs" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations With Excess Inventory: Count Of SKUs" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
                                         ref={refGraph1}
                                         columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data']),'SKUCounts')}
+                                        rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data'],['SKUCounts']),'SKUCounts')}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -336,7 +331,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                 <VFTable
                                     ref={refGraph1}
                                     columnDefs={colDefs1}
-                                    rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data']),'SKUCounts')}
+                                    rowData={sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data'],['SKUCounts']),'SKUCounts')}
                                     enableCharts={true}
                                     enableRangeSelection={true} 
                                     rowSelection="multiple"
@@ -370,7 +365,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"95%"}>
+                        <SCChartContainer height={"95%"} style={{marginLeft:'18px'}}>
                             <SCChartHeaderContainer>
                                 <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -384,7 +379,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount'),'SumOfAmount',100000)}
+                                        rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data'],['SumOfAmount']),'SumOfAmount'),'SumOfAmount',100000)}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"
@@ -421,7 +416,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                                     <VFTable
                                         ref={refGraph2}
                                         columnDefs={colDefs2}
-                                        rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data']),'SumOfAmount'),'SumOfAmount',100000)}
+                                        rowData={scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data'],['SumOfAmount']),'SumOfAmount'),'SumOfAmount',100000)}
                                         enableCharts={true}
                                         enableRangeSelection={true} 
                                         rowSelection="multiple"

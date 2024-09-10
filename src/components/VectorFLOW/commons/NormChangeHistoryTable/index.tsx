@@ -31,11 +31,70 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
     //     { col1: '21 June', col2: '2', col3: '3', col4:'stockout has occured today.stockout done today and ready for the next stock to be delieverd,'},
     //     { col1: '22 June', col2: '3', col3: '4',col4:'stockout has occured today'},
     //   ];
-    const columnDefs:ColDef[] = [
-        { headerName: 'Change Date', field: 'nCD', colId:'nCD' , minWidth:150,flex:1, cellStyle: {fontSize: '14px',alignItems:'center', display:'flex', justifyContent:'center'},headerComponent: ()=> <CustomHeader headerName="Change Date"/>},
-        { headerName: 'Old Norm', field: 'olN', colId:'olN', minWidth:110,flex:1, cellStyle: {fontSize: '14px',alignItems:'center', display:'flex', justifyContent:'center'},headerComponent: ()=> <CustomHeader headerName="Old Norm"/> },
-        { headerName: 'New Norm', field: 'nN', colId:'nN',minWidth:120 ,flex:1, cellStyle: {fontSize: '14px',alignItems:'center', display:'flex', justifyContent:'center'}, headerComponent: ()=> <CustomHeader headerName="New Norm"/>},
-        { headerName: 'Reason', field: 'rsn', colId:'rsn',minWidth:290, flex:2,cellRenderer: 'wrapTextCellRenderer',autoHeight: true,resizable: false,sortable: true, wrapText: true , cellStyle: {wordBreak: "normal",fontSize: '14px', lineHeight:'20px', alignItems:'center', display:'flex', textAlign:'left'}, headerComponent: ()=> <CustomHeader headerName="Reason"/> },
+    const columnDefs: ColDef[] = [
+      {
+        headerName: "Change Date",
+        field: "nCD",
+        colId: "nCD",
+        minWidth: 150,
+        flex: 1,
+        cellStyle: {
+          fontSize: "14px",
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+        },
+        headerComponent: () => <CustomHeader headerName="Change Date" />,
+      },
+      {
+        headerName: "Old Norm",
+        field: "olN",
+        colId: "olN",
+        minWidth: 110,
+        flex: 1,
+        cellStyle: {
+          fontSize: "14px",
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+        },
+        headerComponent: () => <CustomHeader headerName="Old Norm" />,
+      },
+      {
+        headerName: "New Norm",
+        field: "nN",
+        colId: "nN",
+        minWidth: 110,
+        flex: 1,
+        cellStyle: {
+          fontSize: "14px",
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+        },
+        headerComponent: () => <CustomHeader headerName="New Norm" />,
+      },
+      {
+        headerName: "Reason",
+        field: "rsn",
+        colId: "rsn",
+        minWidth: 290,
+        flex: 2,
+        cellRenderer: "wrapTextCellRenderer",
+        autoHeight: true,
+        resizable: false,
+        sortable: true,
+        wrapText: true,
+        cellStyle: {
+          wordBreak: "normal",
+          fontSize: "14px",
+          lineHeight: "20px",
+          alignItems: "center",
+          display: "flex",
+          textAlign: "left",
+        },
+        headerComponent: () => <CustomHeader headerName="Reason" />,
+      },
     ];
 
     return(

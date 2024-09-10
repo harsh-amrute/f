@@ -47,7 +47,9 @@ import OrderRescheduling from './VectorFlow/Pages/MTO/Production/OrderRescheduli
 import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
 import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTrends'
 import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
+
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
+import MCGrid from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/MerchandisingGrid'
 import STPLAndFullKits from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/STPLAndFullKits'
 import OrderAtRisk from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderAtRisk'
 import DueDateQuotation from './VectorFlow/Pages/MTO/Production/DueDateQuotation'
@@ -126,6 +128,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/full-kit-assignment',
     '/supply-chain-intelligence-hub/sdr',
     '/master-data-management/data-modification-history',
+    '/supply-chain-intelligence-hub/merchandising-grid',
     '/production-planning-and-scheduling/due-date-quotation',
     '/production-planning-scheduling/insight-and-trends/order-at-risk',
     '/production-planning-scheduling/insight-and-trends/order-balance',
@@ -402,6 +405,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<OpenExpeditingRequests />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/merchandising-grid',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MCGrid />)
         },
         ...getStoreTransferModuleRoutes()
       ]

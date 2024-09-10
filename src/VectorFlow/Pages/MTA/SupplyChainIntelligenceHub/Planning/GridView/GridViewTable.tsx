@@ -5,7 +5,7 @@ import { GridViewLayout } from "./styles";
 import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
-import BPRViewTable from '../../BPR/BPRViewTable'
+import BPRViewTable, { BPRViewTableColDef } from '../../BPR/BPRViewTable'
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { GridStateContext } from "../../../../../../context/GridStateContext";
@@ -22,7 +22,7 @@ interface GridViewTableProps {
     agGridColDefs:ColDef[],
     agGridRowData:any,
     customGridRowData:any,
-    customGridColDef:Array<{headerName:string,colId:string,field:string}>
+    customGridColDef:Array<BPRViewTableColDef>
     isSubGridOpen:boolean
     showStockGrid?:boolean
     stockGridData?:Array<any>
@@ -42,7 +42,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
         const getTableState = async()=>{
           try{
             const data =  await getState(`${currentCategory}${currentTab}`)
-            ref.current.columnApi.applyColumnState({state:JSON.parse(data.data.data)})
+            ref.current.api.applyColumnState({state:JSON.parse(data.data.data)})
           }catch(err:any){
             notifyError(err)
           }
@@ -150,26 +150,28 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                     !(isSubGridOpen || showStockGrid ) && (
                         <Allotment.Pane >
                     
-                        <VFTable
-                            ref={ref}
-                            {...agGridProps}
-                            columnDefs={agGridColDefs}
-                            rowData={agGridRowData}
-                            height={gridHeight ? gridHeight : '380px'}
-                            // onGridReady={(params)=>{
-                            //     if(columnState){
-                            //         params.columnApi.applyColumnState({state:columnState})
-                            //     }
-                            // }}
-                        />
-                        {paginationProps && <VFPagination {...paginationProps}/>}
+                            <VFTable
+                                ref={ref}
+                                {...agGridProps}
+                                columnDefs={agGridColDefs}
+                                rowData={agGridRowData}
+                                height={gridHeight ? gridHeight : '380px'}
+                                // onGridReady={(params)=>{
+                                //     if(columnState){
+                                //         params.columnApi.applyColumnState({state:columnState})
+                                //     }
+                                // }}
+                            />
+                            {paginationProps && <VFPagination {...paginationProps}/>}
     
                         </Allotment.Pane>
                     ) 
                 }
                 {isSubGridOpen && (
-                    <Allotment.Pane minSize={180} maxSize={260}>
-                        {renderSubGrid()}
+                    <Allotment.Pane minSize={180} maxSize={350}>
+                        <div style={{marginTop:'20px',height:'100%'}}>
+                            {renderSubGrid()}
+                        </div>
                     </Allotment.Pane>
                 )}
                 </Allotment>

@@ -1,6 +1,6 @@
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { mapBORFieldsToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
@@ -16,6 +16,7 @@ import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 
 
@@ -89,24 +90,6 @@ export const useBOR =()=>{
       const [columnState,setColumnState] = useState<any>()
       const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ]
-      }
-
-
     useEffect(()=>{
         const getTableState = async()=>{
           try{
@@ -149,10 +132,12 @@ export const useBOR =()=>{
             paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
         }
         const result = await getBorData(payload);
-        setRowData(result?.data.data)
+        setRowData(result.data.data || [])
         toast.dismiss()
         }catch(err:any){
           notifyError(err)
+          setRecordCount(0)
+          setRowData([])
         }
 
     }
@@ -163,6 +148,11 @@ export const useBOR =()=>{
       setCurrFilter(filter)
       setCurrentPage(1)
     }
+
+    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
+      const updatedFilter = onDelete(parentId,filterId,value)
+      onApplyFilter(updatedFilter)
+  }
 
      const agGridProps:AgGridReactProps = {
         tooltipShowDelay:0,
@@ -182,12 +172,10 @@ export const useBOR =()=>{
             },
         },
          pagination:false,
-         sideBar:sideBar,
+         sideBar:defaultAgGridSideBarForBPR,
         // pivotMode:true,
          defaultColDef:{
             floatingFilter: true,
-            filter: "agMultiColumnFilter",
-            cellDataType:false,
             cellStyle:{
                 'text-align':'center',
                 'height':'50px',
@@ -221,7 +209,7 @@ export const useBOR =()=>{
 
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport'});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:getColumnsForExcelExport(BORColumns)});
         }
       };
       const onExportToExcelCallBack=async(pageNumber:number)=>{
@@ -265,6 +253,6 @@ export const useBOR =()=>{
         onApplyFilter,
         currFilter,
         setCurrFilter,
-        onDelete,
+        onDeleteFilter,
     }
 }

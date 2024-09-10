@@ -8,6 +8,7 @@ export interface BPRField {
     Visible:boolean
     CellAlignment:string
     Value:string
+    DataType:"Number" | "String" | "Boolean"
 }
 
 export interface BPRDataPayload{
@@ -166,3 +167,7 @@ export interface GridState {
     charts:Array<any>
     columns:Array<any>
 }
+
+export type BPRViewTableFilterNumericalOperator = 'equals' | 'doesNotEqual' | 'lessThan' | 'greaterThan'
+
+export type BPRViewTableFilterStringOperator = 'equals' | 'doesNotEqual' | 'contains' | 'doesNotContain'

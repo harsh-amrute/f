@@ -1,4 +1,7 @@
 import styled from "styled-components";
+
+import * as globalStyles from '../../../../styles/global'
+
 export const SCSeasonalityContainer = styled.div`
     padding-top:20px;
     padding-bottom:20px;
@@ -8,7 +11,7 @@ export const SCSeasonalityContainer = styled.div`
 
     @media (min-width:1024px) and (max-width:1688px){
         width:1100px;
-        height:520px;
+        height:500px;
     } 
     
 `
@@ -17,6 +20,7 @@ export const SCChartContainer = styled.div`
     margin-right:33px;
     //width:81%;
     width:76%;
+    height:300px
 `
 
 export const SCSeasonalityStatusDetails = styled.div`
@@ -28,8 +32,9 @@ export const SCSeasonalityStatusDetails = styled.div`
     }
     
 `
-export const SCSeasonalityDetailsTitle = styled.div`
-    background-color:#292C2E;
+export const SCSeasonalityDetailsTitle = styled.div<{themeUi:string}>`
+    background-color:${(props)=>props.themeUi==="PUREELEGANCE"?'black':globalStyles.chooseThemeColor[props.themeUi].color1};
+    // background-color:#292C2E;
     color:white;
     font-family:'Roboto';
     font-size:18px;

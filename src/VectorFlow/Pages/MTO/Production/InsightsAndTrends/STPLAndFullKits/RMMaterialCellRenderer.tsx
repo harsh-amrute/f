@@ -61,7 +61,7 @@ const RMMaterialCellRenderer = (params: any) => {
         height={"300px"}
         disableZoomScaling={true}
         onGridReady={(params: any) => {
-          params.columnApi.autoSizeAllColumns()
+          params.columnApi?.autoSizeAllColumns()
         }}
       />
     </div>

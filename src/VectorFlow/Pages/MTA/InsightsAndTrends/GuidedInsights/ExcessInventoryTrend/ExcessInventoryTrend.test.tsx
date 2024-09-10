@@ -7,7 +7,7 @@ import {UserDataContext} from '../../../../../../context'
 
 jest.mock("../../../../../Services/MTA/InsightsAndTrends");
 jest.mock("ag-charts-react", () => ({
-  AgChartsReact: jest.fn(() => null) // Replace null with a mock component if needed
+  AgCharts: jest.fn(() => null) // Replace null with a mock component if needed
 }));
 
 
@@ -67,7 +67,7 @@ global.ResizeObserver = class MockedResizeObserver {
       
      it("Renders Excess  Inventory", () => {
  
-        render(contextWrapperWithCustomTheme(<ExcessInventoryTrend themeUi="REGALBLAZE"/>,"REGALBLAZE"))
+        render(contextWrapperWithCustomTheme(<ExcessInventoryTrend themeUi="REGALBLAZE" filter={"Product Filter"} horizon={10} setHorizon={jest.fn()}/>,"REGALBLAZE"))
        
     })
 })

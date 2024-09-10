@@ -1,9 +1,9 @@
-import { AgChartsReact } from 'ag-charts-react';
+import { AgCharts } from 'ag-charts-react'
 import { GridOptions } from 'ag-grid-enterprise';
 import { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
 
-import { AgChartOptions } from 'ag-charts-community';
+// import { AgChartOptions } from 'ag-charts-community';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
@@ -520,7 +520,7 @@ const FullKitAssignment = () => {
     // },
   };
 
-  const chartoptions: AgChartOptions = {
+  const chartoptions: any = {
     data: graphData,
     series: [
       {
@@ -596,7 +596,7 @@ const FullKitAssignment = () => {
       position: "top",
       item: {
         label: {
-          formatter: (props) => {
+          formatter: (props: any) => {
             if (props.value === "stpl_in_days") {
               return "Released WIP in Days"
 
@@ -734,7 +734,7 @@ const FullKitAssignment = () => {
       <VFPagination currentPage={currentPage} rowsPerPage={15} selectedRows={1} totalRows={totalRows} handleChangePage={handlePageChange} />
       <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
       <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
-        <AgChartsReact ref={graph} options={chartoptions} />
+        <AgCharts ref={graph} options={chartoptions} />
       </div>
       <EditRouteModal orderKey={orderKey} plantId={selectedPlantId} routeId={selectedRouteId} graphData={graphData} showModal={showModal} ccrGroups={masters?.ccrGroups} setShowModal={setShowModal} theme={themeUi} setOrderKey={setOrderKey} loadDataParams={loadDataParams} setLoadDataParams={setLoadDataParams} />
     </Wrapper >

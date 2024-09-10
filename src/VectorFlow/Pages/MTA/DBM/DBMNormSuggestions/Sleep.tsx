@@ -42,6 +42,7 @@ export const DBMSleepCellRenderer = (params:any)=>{
         await getDBMUpdateSleepTbl({
             data:dataObject,
         })
+        params.callBack()
     }
 
     const enableIcon = () => {

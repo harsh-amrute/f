@@ -5,14 +5,13 @@ import { BTRCategoryMapper } from "../../../../../helpers/BPRConstants"
 
 const CategoryToolTip = (params:ITooltipParams)=>{
     const categories = params.value.split("|")
-    console.log(categories)
     
     return(
         <CategoryToolTipWrapper>
             {categories.map((c:string)=>{
                 const categoryData = BTRCategoryMapper[c]
                 if(categoryData){
-                    if(c==='3'){
+                    if(c==='BR'){
                         return (
                             <CategoryToolTipSection style={{background:'black',color:'white'}}>
                                 <CategoryToolTipSectionHeader>

@@ -13,7 +13,7 @@ const GuidedInsight = () => {
     const { onFloatingTabChange, onGoBack, onViewChange, currentView, currentTab, setCurrentTab, getFloatingTabsList,
         chroniceRowData, ref, currentFilter,
         setCurrentFilter,
-        onDelete, onApplyFilter,themeUi } = useGuidedInsights();
+        onDeleteFilter, onApplyFilter,themeUi,horizon, setHorizon, ageing, setAgeing,  } = useGuidedInsights();
 
     const renderView = () => {
 
@@ -21,20 +21,20 @@ const GuidedInsight = () => {
             switch (currentTab) {
 
                 case 'availabilitytrend':
-                    return <AvailabilityTrend themeUi={themeUi}/>
+                    return <AvailabilityTrend themeUi={themeUi} filter={currentFilter} horizon ={horizon} setHorizon ={setHorizon} />
                 case 'chronicunavailability':
-                    return <ChronicUnavailability />
+                    return <ChronicUnavailability filter={currentFilter} />
                 case 'availabilityageingtrend':
-                    return <AvailabilityAgeingTrend themeUi={themeUi}/>
+                    return <AvailabilityAgeingTrend themeUi={themeUi} filter={currentFilter} horizon = {horizon} setHorizon={setHorizon} ageing ={ageing} setAgeing={setAgeing} />
                 case 'dbmnormsuggestions':
-                    return <DBMNormSuggestions />
+                    return <DBMNormSuggestions  filter={currentFilter}/>
                 case 'excessinventorytrend':
-                    return <ExcessInventoryTrend themeUi={themeUi}/>
+                    return <ExcessInventoryTrend themeUi={themeUi} filter={currentFilter} horizon = {horizon} setHorizon={setHorizon} />
                 case 'customscreens':
                     return <CustomScreens />
 
                 default:
-                    return <AvailabilityTrend themeUi={themeUi} />
+                    return <AvailabilityTrend themeUi={themeUi} filter={currentFilter} horizon ={horizon} setHorizon ={setHorizon} />
 
 
             }
@@ -72,9 +72,8 @@ const GuidedInsight = () => {
                 currCategory={'GuidedInsight'}
                 multiFilter={currentFilter}
                 setMultiFilter={setCurrentFilter}
-                onDelete={onDelete}
+                onDelete={onDeleteFilter}
                 onApplyFilter={onApplyFilter}
-
             />
         </div>
         {renderView()}

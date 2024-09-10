@@ -9,7 +9,7 @@ export const SCChartContainer = styled.div<{height?:string}>`
     margin-right:5px;
     // margin-top:60px;
     margin-bottom:10px;
-    margin-left:5px;
+    margin-left:20px;
     // height:547px;
     height:${props => props.height ? props.height : 'auto'}
 `
@@ -67,3 +67,7 @@ export const SCHorizontalDivider = styled.hr`
     border-top:1px solid #B2B2B2;
 `
 
+export const SummaryTableColumn = styled.p<{color:string}>`
+    color:${(props)=>props.color};
+    font-weight:600;
+`

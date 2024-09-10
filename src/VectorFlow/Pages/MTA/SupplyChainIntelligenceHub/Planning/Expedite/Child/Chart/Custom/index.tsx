@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
 import { GridState } from "../../../../../../../../../VectorFlow/types/BPR";
-
+import { getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
 
 
 
@@ -33,15 +33,15 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
         let colDefs = [];
 
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{enablePivot:true, enableValue:true,enableRowGroup:true}); 
+            if(customColdef) return customColdef;
+
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
                 headerName:column['header'],
                 enablePivot:true,
                 enableValue:true,
-                // rowGroup:true,
-                // enableRowGroup:true,
-                // suppressDragLeaveHidesColumns:true,
                 enableRowGroup:true,
 
             }
@@ -141,8 +141,8 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 }}
                 onGridReady={(params)=>{
                     if(gridState){
-                        params.columnApi.applyColumnState({state:gridState.columns})
-                        params.api.setPivotMode(gridState.pivot)
+                        params.api.applyColumnState({state:gridState.columns})
+                        params.api.setGridOption('pivotMode',gridState.pivot)
                         if(gridState.charts && Array.isArray(gridState.charts) && gridState.charts.length>0){
                             gridState.charts.forEach((c:any)=>{
                                 params.api.restoreChart(c)

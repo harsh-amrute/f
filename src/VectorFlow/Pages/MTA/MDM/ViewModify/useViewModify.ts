@@ -16,6 +16,8 @@ import _ from 'lodash';
 import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
 import { v4 as uuidv4 } from 'uuid';
+import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
+
 
 const useViewModify = (pageType:string) => {
 
@@ -32,6 +34,8 @@ const useViewModify = (pageType:string) => {
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
     const isDataAvailableLocally = useSelector((state:RootState) => state.mdm.isDataAvailableLocally)
+
+    const [tempRecordCount,setTempRecordCount] = useState<number>(0)
 
     const [allMastersState,setAllMasterState] = useState<MDMMasterState[]>([])
     const [isWarningModalOpen,toggleWarningModal] = useState<boolean>(false)
@@ -154,6 +158,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const customCellRenderers = useMemo(() => ({
+      loadingOverlay:VFLoader,
       errorCell: ErrorCell,
       warningCell: WarningCell,
       seasonalityColorCellRenderer:SeasonalityColorCellRenderer,
@@ -266,7 +271,8 @@ const useViewModify = (pageType:string) => {
       paginationPageSize:rowsPerPage,
       // suppressPaginationPanel:true,
       onColumnVisible:onColumnChange,
-      overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
+      // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
+      loadingOverlayComponent:'loadingOverlay',
       onRowDataUpdated:(event:any)=>{
         const downloadableColumnKeys:string[] = [];
         activeMaster.fields.forEach((field:Field)=>{
@@ -277,7 +283,7 @@ const useViewModify = (pageType:string) => {
         
         if(downloadData){
           const currentMaster = masters.find((master:MDMMasterState)=>master.id === activeMaster.id);
-          const visibleColumns = ref.current?.columnApi.getAllDisplayedColumns();
+          const visibleColumns = ref.current?.api.getAllDisplayedColumns();
           const validColumnKeys:string[] = [];
           if(visibleColumns){
             visibleColumns.forEach((col:any)=>{
@@ -404,7 +410,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const getCurrentVisbileColumns = () => {
-      const columnData = ref.current?.columnApi.getAllDisplayedColumns();
+      const columnData = ref.current?.api.getAllDisplayedColumns();
       return columnData?.map((column:any) => ({key:column.colDef.field}));
     }
 
@@ -605,16 +611,20 @@ const useViewModify = (pageType:string) => {
       }
 
       setIsTableDataLoading(false);
-      if(!result.data.recordCount || result.data.recordCount==0 || result.data.recordCount=='')dispatch(SET_RECORD_COUNT(0))
+      // if(!result.data.recordCount || result.data.recordCount==0 || result.data.recordCount=='')dispatch(SET_RECORD_COUNT(0))
+      // else{
+      //   dispatch(SET_RECORD_COUNT(result.data.recordCount))
+      // }
+      if(!result.data.recordCount || result.data.recordCount==0 || result.data.recordCount=='')setTempRecordCount(0)
       else{
-        dispatch(SET_RECORD_COUNT(result.data.recordCount))
+        setTempRecordCount(result.data.recordCount)
       }
-      if(result.data.recordCount<=rowsPerPage){
-        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
-      }
-      else{
-        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
-      }
+      // if(result.data.recordCount<=rowsPerPage){
+      //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
+      // }
+      // else{
+      //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
+      // }
 
       toggleWarningModal(true);    
     }
@@ -622,9 +632,11 @@ const useViewModify = (pageType:string) => {
     const onWarningModalClose = ()=>{
       toggleWarningModal(false);
       setIsTableDataLoading(false);
+      setTempRecordCount(0)
     }
 
     const onWarningModalSuccess = async (refetch?:boolean)=>{
+     
       refetch = refetch?refetch:false
 
       const currMasterFilters = activeMaster.filters;
@@ -670,10 +682,18 @@ const useViewModify = (pageType:string) => {
             pending:"Loading Data"
           }); 
       }
-        
+     
       }
       
-      if(recordCount <= rowsPerPage){
+
+      if(tempRecordCount<=rowsPerPage){
+        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
+      }
+      else{
+        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
+      }
+      
+      if(tempRecordCount <= rowsPerPage){
         toggleEditOnline(true);
       }
       else{
@@ -682,12 +702,26 @@ const useViewModify = (pageType:string) => {
 
       
         setIsTableDataLoading(false);
-        if(recordCount == 0){
+        if(tempRecordCount == 0){
           toggleWarningModal(false);
           return;
         }
         
-        dispatch(UPDATE_ROW_DATA(result.data.data));
+        const tempRowData = result.data.data.map((row:any)=>{
+          const newRow = {...row};
+          
+          Object.keys(newRow).map((key)=>{
+            const currentColDef = activeMaster.colDefs.find((c)=>c.colId===key)
+            const cellDataType = currentColDef?.cellDataType
+            if(cellDataType==='number' && newRow[key]!== null){
+              newRow[key] = parseFloat(newRow[key])
+            }
+          })
+
+          return newRow
+        })
+
+        dispatch(UPDATE_ROW_DATA(tempRowData));
         if(refetch)return
         toggleWarningModal(false);
         if(pageType==='remove'){
@@ -703,6 +737,7 @@ const useViewModify = (pageType:string) => {
           }
           else  dispatch(UPDATE_PROGRESS_STATE('view')); 
         }
+        dispatch(SET_RECORD_COUNT(tempRecordCount))
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
 
@@ -727,7 +762,7 @@ const useViewModify = (pageType:string) => {
             notifyError('Please select a file to upload.');
             return
           }
-          const selectedColumns = ref.current?.columnApi.getAllDisplayedColumns();
+          const selectedColumns = ref.current?.api.getAllDisplayedColumns();
           // const toasId = notifyLoader("Reading File");
           setIsOverlayVisible(true)
   
@@ -900,7 +935,7 @@ const useViewModify = (pageType:string) => {
 
       const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean,actionStatus="") => {
         const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key)
-        if(([6,10].includes(parseInt(String(activeMaster.id),10)) === false)){
+        if(([6].includes(parseInt(String(activeMaster.id),10)) === false)){
           //CleanUp Row Data
           rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
         }
@@ -918,12 +953,11 @@ const useViewModify = (pageType:string) => {
           })
           return tempRow;
         });
-      
         let taskId:any = '';
         let toastId:any = '';
         let conflictCount = 0;
         let errorCount = 0;
-        const conflictData:any = [];
+        const tempConflictData:any = [];
         const errorData:any = [];
         try {
           let submitProgress = 0;
@@ -982,12 +1016,12 @@ const useViewModify = (pageType:string) => {
               
               if(conflictedRows instanceof Array) {
                 conflictedRows.forEach((row:any)=>{
-                  const userIndex = conflictData.findIndex((data:any)=>data.user === row.user);
+                  const userIndex = tempConflictData.findIndex((data:any)=>data.user === row.user);
                   if(userIndex >= 0){
-                    conflictData[userIndex].conflictdetails = [...conflictData[userIndex].conflictdetails,...row.conflictdetails]
+                    tempConflictData[userIndex].conflictdetails = [...tempConflictData[userIndex].conflictdetails,...row.conflictdetails]
                   }
                   else{
-                    conflictData.push({
+                    tempConflictData.push({
                       user:row.user,
                       conflictdetails:row.conflictdetails
                     })
@@ -1014,13 +1048,14 @@ const useViewModify = (pageType:string) => {
             
             const pureErrorCount = activeMaster.rowData.length + intersectionCount - conflictCount
             const pureConflictCount = activeMaster.rowData.length + intersectionCount - errorCount
+
             toast.dismiss(toastId);
-            setConflictCount(pureErrorCount);
+            setConflictCount(pureConflictCount);
             setErrorCount(pureErrorCount);
-            setConflictData(conflictData);
+            setConflictData(tempConflictData);
             setErrorData(errorData)
-            console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
-            return {isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} 
+            // console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
+            return {isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData:tempConflictData} 
             
           }
          catch (error) {
@@ -1033,7 +1068,6 @@ const useViewModify = (pageType:string) => {
         }
       }
           
-
       const onSubmit = async(isOverWrite?:boolean) => {
         
         if(activeMaster.rowData.length === 0) {
@@ -1159,6 +1193,7 @@ const useViewModify = (pageType:string) => {
           else{
             // console.time('That took ')
             // console.log('Calculating...')
+
             const tempCon = createConflictRowData(localConflictData,activeMaster.id)
             const tempError = createErrorRowData(localErrorData,activeMaster.id)
 
@@ -1504,14 +1539,18 @@ const useViewModify = (pageType:string) => {
     // }
     const onReviewConflicts = ()=>{
       
-    
-
       const newColDefs:ColDef[] = activeMaster.colDefs.map((colDef:ColDef)=>{
         return {
           ...colDef,
           // cellRenderer:'conflictErrorCellRenderer',
           // tooltipField:colDef.field,
           cellRenderer:'conflictErrorCellRenderer',
+          cellStyle:(params)=>{
+            return{
+              ...params.colDef.cellStyle,
+              padding:0
+            }
+          }
           // onCellClicked:(params:any)=>console.log(params)
           // tooltipField:colDef.field
 
@@ -1539,6 +1578,7 @@ const useViewModify = (pageType:string) => {
       
       setIsConflictModalOpen(false)
     }
+
 
     return {
         colDefs,
@@ -1618,7 +1658,8 @@ const useViewModify = (pageType:string) => {
         onPIPOStatusUpdate,
         enableEditOnlineReset,
         uploadProgress,
-        totalProgress
+        totalProgress,
+        tempRecordCount
     }
 }
 

@@ -6,7 +6,7 @@ import VFCapsule from "../../../../../../components/VectorFLOW/commons/VFCapsule
 import { BufferTrendsGraphState } from '../../../../../types/BPR'
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
@@ -50,7 +50,9 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                 label:{
                     fontSize:8,
                     fontWeight:'bold',
-                    color:'black'
+                    color:'black',
+                    autoRotate:false,
+                    avoidCollisions:true
                 }
             },
             {
@@ -144,11 +146,16 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
             position:'bottom',
             item:{
                 label:{
-                    fontSize:8,
+                        formatter:(params:any)=>{
+                            if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                            return params.value;
+                        },
+                    fontSize:12,
   
                 },
                 marker:{
-                    size:8
+                    size:12,
+                    shape:'square'
                 },
                 line:{
                     strokeWidth:1
@@ -162,7 +169,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
     
     return(
         <>
-            <SCChartContainer height={"75%"}>
+            <SCChartContainer >
                 <SCChartMainContainer>
                     <SCChartSliderContainer>                               
                     <label style={{fontStyle:"normal",
@@ -230,7 +237,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                             <VFInfoToolTip infoList={graph1} />
                         </div>
                     </div>
-                    <AgChartsReact options={{...options,data:numericData}}/>
+                    <AgCharts options={{...options,data:numericData}}/>
                 </div> 
                 {/* </ChartWrapper> */}
                     

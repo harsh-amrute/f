@@ -9,21 +9,17 @@ import {
   TooltipContent,
   SCIcon,
 } from "./style";
-import { useRef, useEffect } from 'react';
-import { handleDownload, navigateWithPrompt } from "../../../helpers/utils";
+import { handleDownloadVF, navigateWithPrompt } from "../../../helpers/utils";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 
-const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoading, setIsHide, setWidthResponsive }: any) => {
+const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoading, setIsHide, setWidthResponsive, reportUrls }: any) => {
   const { t } = useTranslation();
   const { user, toggleSideBar } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const location = useLocation();
   const navigate = useNavigate();
-  //Add Report Urls to this Array
-  const reportUrls = ['/api/download-reports/bpr', '/api/download-reports/fr', '/api/download-reports/rosn', '/api/download-reports/store_classification', '/api/download-reports/ist'];
-
   const mdm = useSelector((state: RootState) => state.mdm);
   const dispatch = useDispatch();
 
@@ -32,12 +28,16 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
   }
 
 
-  const handleTooltipClick = async (url: string) => {
+  const handleTooltipClick = async (url: string, downloadName?: any) => {
 
     if (reportUrls.includes(url)) {
       setTempUrls([...tempUrls].concat(url));
       setIsLoading(true);
-      if (await handleDownload(url, '')) {
+      if (await handleDownloadVF(url, downloadName)) {
+        setIsLoading(false);
+        const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
+        setTempUrls([...tempArr]);
+      } else {
         setIsLoading(false);
         const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
         setTempUrls([...tempArr]);
@@ -79,8 +79,6 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
   };
 
 
-  const tooltipRef = useRef<any>(null);
-
 
   const renderToolTipContent = (items: any): any => {
     const result = getNestedChildren(items.child)
@@ -100,7 +98,7 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
               key={index}
               action={itemChild.url === location.pathname}
               themeUi={themeUi}
-              onClick={() => handleTooltipClick(itemChild.url)}
+              onClick={() => handleTooltipClick(itemChild.url, itemChild.downloadName)}
             >
               {t(itemChild.name) || itemChild.name}
               {itemChild.url !== location.pathname && (
@@ -121,36 +119,8 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
     )
   }
 
-  useEffect(() => {
-    // Access the div's position when the component mounts
-    if (tooltipRef.current) {
-      const rect = tooltipRef.current?.getBoundingClientRect();
-      console.log('Div position:', rect); // You can log or use rect's properties here
-
-      // Example: Accessing specific properties
-      console.log('Top:', rect.top);
-      console.log('Left:', rect.left);
-      console.log('Width:', rect.width);
-      console.log('Height:', rect.height);
-    }
-  }, [tooltipRef]);
 
 
-  let maxHeight = 'fit-content';
-
-
-  if (item.name === "navbar.listMenuParent.prodAndPlanningScheduling.title") {
-    maxHeight = '250px';
-  }
-  else if (item.name === "navbar.listMenuParent.manufacturingHub.title") {
-    maxHeight = '160px';
-  }
-  else if (item.name === "navbar.listMenuParent.poogi.title") {
-    maxHeight = "200px";
-  }
-  else if (item.name === "Replenishment and Replacement") {
-    maxHeight = '340px';
-  }
 
   return (
     <WrapToolTip>
@@ -162,7 +132,7 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
         isOpen
 
       >
-        <TooltipContainer style={{ maxHeight }} ref={tooltipRef}>
+        <TooltipContainer className="custom-scrollbar">
           <TooltipTitle>{t(item.name)}</TooltipTitle>
           {renderToolTipContent(item)}
         </TooltipContainer>

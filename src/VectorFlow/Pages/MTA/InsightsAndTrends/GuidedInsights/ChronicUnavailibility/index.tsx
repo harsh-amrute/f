@@ -1,4 +1,4 @@
-import {useRef, useMemo, useState} from "react";
+import {useRef, useMemo, useState, useEffect} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
@@ -10,14 +10,37 @@ import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
-const ChronicUnavailabilityCharts = () => {
+const ChronicUnavailabilityCharts = ({filter}:{filter:any}) => {
 
 
-    const {data:ChronicUnavailabilityLoc, isLoading:isLoadingChronicLoc}=useGetChronicUnavailabilityLoc();
-    const {data:ChronicUnavailabilitySku, isLoading:isLoadingChronicSku}=useGetChronicUnavailabilitySku();
+    // const {data:ChronicUnavailabilityLoc, isLoading:isLoadingChronicLoc}=useGetChronicUnavailabilityLoc();
+    // const {data:ChronicUnavailabilitySku, isLoading:isLoadingChronicSku}=useGetChronicUnavailabilitySku();
 
-    const ChronicUnavailabilityLocData=ChronicUnavailabilityLoc?.data?.data;
-    const ChronicUnavailabilitySkuData=ChronicUnavailabilitySku?.data?.data;
+    // const ChronicUnavailabilityLocData=ChronicUnavailabilityLoc?.data?.data;
+    // const ChronicUnavailabilitySkuData=ChronicUnavailabilitySku?.data?.data;
+
+    const { mutateAsync: ChronicUnavailabilityLoc, isLoading: isLoadingChronicLoc } =
+    useGetChronicUnavailabilityLoc();
+    const { mutateAsync: ChronicUnavailabilitySku, isLoading: isLoadingChronicSku } =
+    useGetChronicUnavailabilitySku();
+    const param = {};
+
+    const [ChronicUnavailabilityLocData, SetChronicUnavailabilityLocD]=useState([]);
+    const [ChronicUnavailabilitySkuData, SetActiveDBMSuggestionData]=useState([]);
+
+    useEffect(() => {
+        const fetchDBMNormSuggestionData = async ()=>{
+          const ChronicUnavailabilityLocs =  await  ChronicUnavailabilityLoc(param);
+          SetChronicUnavailabilityLocD(ChronicUnavailabilityLocs?.data?.data);
+          const ChronicUnavailabilitySkus = await ChronicUnavailabilitySku(param);
+          SetActiveDBMSuggestionData(ChronicUnavailabilitySkus?.data?.data);
+         
+        }
+        fetchDBMNormSuggestionData();
+       
+      }, [filter]);
+
+
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
@@ -42,11 +65,14 @@ const ChronicUnavailabilityCharts = () => {
     }
 
     const sortData = (data:any,key:string) => {
-        data?.sort((row1:any,row2:any)=>{
-            return (row2[key]) - (row1[key])
-        })
-
-        return [...data];
+        if(data){
+            data?.sort((row1:any,row2:any)=>{
+                return (row2[key]) - (row1[key])
+            })
+    
+            return [...data]
+        }
+        return []
     }
 
     const coldefs1:ColDef[] = [
@@ -421,27 +447,30 @@ const ChronicUnavailabilityCharts = () => {
                     category:{
                         title:{
                             enabled:true,
-                            text:'Date',
+                            text:'Location Name',
                             position:'bottom',
                             fontSize:10,
                             fontFamily:'Roboto'
                         },
                         label:{
+                            formatter:(params:any)=>{
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                return params.value;
+                                
+                            },
                             fontSize:8,
-                            fontFamily:'Roboto'
+                            fontFamily:'Roboto',
                           }
                     },
                     number:{
                         title:{
                             enabled:true,
-                            text:'Count of SKUs',
+                            text:'Count Of SKUs',
                             position:'left',
                             fontSize:10,
                             fontFamily:'Roboto'
                         },
-                        label: {
-                            format: "#{.0f} %",
-                        },
+                       
                     },
                  },
              },
@@ -470,12 +499,16 @@ const ChronicUnavailabilityCharts = () => {
                     category:{
                         title:{
                             enabled:true,
-                            text:'Date',
+                            text:'SKU Code',
                             position:'bottom',
                             fontSize:10,
                             fontFamily:'Roboto'
                         },
                         label:{
+                            formatter:(params:any)=>{
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                return params.value;
+                            },
                             fontSize:8,
                             fontFamily:'Roboto'
                           }
@@ -483,13 +516,10 @@ const ChronicUnavailabilityCharts = () => {
                     number:{
                         title:{
                             enabled:true,
-                            text:'Count of Locations',
+                            text:'Count Of Locations',
                             position:'left',
                             fontSize:10,
                             fontFamily:'Roboto'
-                        },
-                        label: {
-                            format: "#{.0f} %",
                         },
                     },
                   },
@@ -520,7 +550,7 @@ const ChronicUnavailabilityCharts = () => {
             <SCDynamicContainer style={{marginTop:'10px'}}>
                 <Allotment>
                     <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"98%"}>
+                        <SCChartContainer height={"98%"} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer>
                                 <SCChartHeader>Top 10 Locations: Max SKUs In Continuous Pipeline Black Or Red Ageing Greater Than RLT</SCChartHeader>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -606,7 +636,7 @@ const ChronicUnavailabilityCharts = () => {
                         </div> */}
                     </Allotment.Pane>
                     <Allotment.Pane>
-                        <SCChartContainer height={"98%"}>
+                        <SCChartContainer height={"98%"} style={{marginLeft:'18px'}}>
                                 <SCChartHeaderContainer>
                                     <SCChartHeader>Top 10 SKUs: Max Number Of Locations Where The SKU Has Pipeline Black/Red Ageing Greater Than RLT</SCChartHeader>
                                     <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>

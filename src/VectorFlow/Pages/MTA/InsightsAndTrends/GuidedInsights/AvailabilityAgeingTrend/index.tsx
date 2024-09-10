@@ -1,4 +1,4 @@
-import { AgChartsReact } from "ag-charts-react";
+import { AgCharts } from "ag-charts-react";
 import { useGetAvailabilityAgeing } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import { useState, useEffect } from "react";
@@ -6,17 +6,19 @@ import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
-const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
-  const [horizon, setHorizon] = useState<number>(9);
-  const [minAgeing, setAgeing] = useState<number>(1);
+const AvailabilityAgeingTrend = ({themeUi,filter, ageing, setAgeing, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
+ 
+
+
   const { mutateAsync: GetAvailabilityAgeing, isLoading } =
     useGetAvailabilityAgeing();
   const [AvailabilityAgeingTrendData, setAgeingData] = useState();
   const OnHorizonChange = async (hvalue: any, age: any) => {
     setAgeing(age);
-
+console.log(age)
     setHorizon(hvalue);
-    const param = { horison: horizon, ageing: minAgeing };
+    const param = { horison: horizon, ageing: ageing,filters:filter};
+
 
     const AvailabilityAgeing = await GetAvailabilityAgeing(param);
 
@@ -29,8 +31,8 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
   };
 
   useEffect(() => {
-    OnHorizonChange(horizon, minAgeing);
-  }, []);
+    OnHorizonChange(horizon, ageing);
+  }, [filter]);
 
   const AvailabilityAgeingTrendOptions: AgChartOptions = {
     // title: {
@@ -81,6 +83,11 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
     ],
     legend: {
       position: "bottom",
+      item:{
+        marker:{
+          shape:'square'
+        }
+      }
     },
     axes: [
       {
@@ -94,13 +101,15 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
         label: {
           fontSize: 8,
           fontFamily: "Roboto",
+          autoRotate:false,
+          avoidCollisions:true
         },
       },
       {
         type: "number",
         position: "left",
         title: {
-          text: "No of SKU-Locations",
+          text: "No Of SKU-Locations",
           fontSize: 10,
           fontFamily: "Roboto",
         },
@@ -137,7 +146,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
               fontStyle: "normal",
               fontVariant: "normal",
               fontWeight: 300,
-              fontSize: 15,
+              fontSize: 14,
               fontFamily: "Roboto",
             }}
           >
@@ -145,7 +154,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
           </label>
           <select
             onChange={handleAgeChange}
-            value={minAgeing}
+            value={ageing}
             style={{
               marginLeft: "4px",
               textAlign: "center",
@@ -206,7 +215,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
             src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
             height={40} 
             width={50} 
-            onClick={() => OnHorizonChange(horizon, minAgeing)}
+            onClick={() => OnHorizonChange(horizon, ageing)}
             /> 
       </div>
       <div style={{ marginLeft: "10px", marginRight: "10px", height: "88%"}}>
@@ -230,7 +239,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
             <VFInfoToolTip infoList={graph1} />
           </div>
         </div>
-        <div style={{height:'85%'}}><AgChartsReact options={AvailabilityAgeingTrendOptions} /></div>
+        <div style={{height:'85%'}}><AgCharts options={AvailabilityAgeingTrendOptions} /></div>
       </div>
     </div>
   );
