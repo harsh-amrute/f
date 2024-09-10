@@ -3,9 +3,9 @@ import { render } from '@testing-library/react';
 import MTOMaterialSO from './MTOMaterialSO'; // Adjust the import path based on your file structure
 
 // Mock the Tooltip component since it's used within MTOMaterialSO
-jest.mock('../../../../../components/VectorFLOW/commons/MTO/Tooltip', () => {
+jest.mock('../../../../../VectorFLOW/Pages/MTO/Common/Tooltip', () => {
   return function MockedTooltip({ content }: { content: React.ReactNode }) {
-    return <div data-testid="mocked-tooltip">{content}</div>;
+    return <div data-testid="tooltip">{content}</div>;
   };
 });
 
@@ -41,8 +41,8 @@ describe('MTOMaterialSO Component', () => {
     );
 
     // Assert that Tooltip with 'Red' content is rendered
-    expect(getAllByTestId('mocked-tooltip')[0]).toHaveTextContent('Black');
-    expect(getAllByTestId('mocked-tooltip')[0]).toHaveTextContent('Red');
+    expect(getAllByTestId('tooltip')[0]).toHaveTextContent('Black');
+    expect(getAllByTestId('tooltip')[0]).toHaveTextContent('Red');
     expect(getByText('Black')).toBeInTheDocument();
     expect(getByText('Red')).toBeInTheDocument();
 
@@ -75,7 +75,7 @@ describe('MTOMaterialSO Component', () => {
     );
 
     // Assert that Tooltip with 'Green' content is rendered
-    expect(getAllByTestId('mocked-tooltip')[0]).toHaveTextContent('Green');
+    expect(getAllByTestId('tooltip')[0]).toHaveTextContent('Green');
     expect(getByText('Green')).toBeInTheDocument();
   });
 
@@ -104,7 +104,7 @@ describe('MTOMaterialSO Component', () => {
     );
 
     // Assert that Tooltip with 'Blue' content is rendered
-    expect(getAllByTestId('mocked-tooltip')[0]).toHaveTextContent('Blue');
+    expect(getAllByTestId('tooltip')[0]).toHaveTextContent('Blue');
     expect(getByText('Blue')).toBeInTheDocument();
   });
 

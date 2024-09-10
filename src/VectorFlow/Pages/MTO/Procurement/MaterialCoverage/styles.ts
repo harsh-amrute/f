@@ -1,19 +1,19 @@
 import styled from 'styled-components';
 
 export const Main = styled.div`
-    margin-top:15px;
+    margin-top:12px;
 `
 
 export const MainContainer = styled.div`
   display: flex;
-  gap: 100px;
-  margin-left:20px;
-  padding: 1rem;
+  gap: 75px;
+  margin-left:15px;
+  padding: 0.75rem;
 `
 
 export const Box = styled.div`
-    width: 280px;
-    min-height: 25vh;
+    width: 210px;
+    min-height: 12vh;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow:0px 6px 12px #74747429;
     //box-shadow: -5px 4px 20px #91919133;
@@ -68,7 +68,7 @@ export const Btns = styled.button`
 `
 
 export const TextXAxis = styled.h3`
-    font-size:16px;
+    font-size:12px;
     text-align:center;
     transform:rotate(-90deg);   
     width:max-content;
@@ -77,10 +77,10 @@ export const TextXAxis = styled.h3`
 `
 
 export const TextYAxis = styled.h3`
-    font-size:16px;
+    font-size:12px;
     text-align:center;
     //text-decoration:underline;
-    padding-bottom:5px;
+    padding-bottom:4px;
     
 `
 
@@ -150,6 +150,7 @@ export const Separator = styled.div<{ color: any }>`
 
 export const BTRLayoutTabsWrapper = styled.div`
     display:flex;
+    zoom: 0.75;
     justify-content:center;
     margin-bottom:15px;
 `

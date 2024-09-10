@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const PercentBorderContainer = styled.div`
     height: 100%;
     width: 100%;
+    font-size: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,8 +13,8 @@ export const Percentborder = styled.div`
     border: 3px solid #F0F0F0;
     border-radius: 50%;
     background-color:#CDCDCD;
-    height: 50px;
-    width: 50px;
+    height: 38px;
+    width: 38px;
     margin-left: auto;
     margin-right: auto;
     position: relative;
@@ -23,7 +24,7 @@ export const Percent = styled.h3`
     text-align: center;
 `
 export const BtnGroup = styled.div`
-    height: 80px;
+    height: 60px;
     width:100%;
     display: flex;
     //padding-top: 0;
@@ -36,17 +37,18 @@ export const Btns = styled.button`
     padding-top:5px;
     padding-right:5px;
     display: flex;
+    font-size: 10px;
     justify-content: center;
     align-items: center;
 `
 
 export const ViewOrder = styled.button`
-    font-size:10px;
+    font-size:8px;
     color:#BC3D81;
-    margin-bottom:30px;
+    margin-bottom:22px;
     background-color:#fcf0f7;
     width:70%;
-    padding:10px;
+    padding:7px;
     text-align:center;
     border-radius:8px;
 `
@@ -56,7 +58,9 @@ export const TextOnBox = styled.div`
     bottom:100%;
     left:0;
     background-color:#E0E0E0;
-    width:80px;
+    width:90px;
+    zoom: 0.8;
+    padding: 4px;
     border-radius:8px 8px 0 0;
     fontColor:#000;
     justify-content:'center';
@@ -79,7 +83,7 @@ export const ColorOnLeft = styled.div<{ color: string, height: string }>`
     right:100%;
     border-radius: 8px 0 0 8px;
     background-color: ${props => props.color};
-    width:20px;
+    width:15px;
     height:${props => props.height};
 
     &:nth-of-type(1){
@@ -87,12 +91,12 @@ export const ColorOnLeft = styled.div<{ color: string, height: string }>`
         z-index: 0;
     }
     &:nth-of-type(2){
-        top:15px;
+        top:11px;
         z-index:1;
 
     }
     &:nth-of-type(3){
-        top:25px;
+        top:21px;
         z-index:2;
     }
 `
@@ -113,7 +117,7 @@ export const BTRLayoutTabsWrapper = styled.div`
 export const ButtonImg = styled.img`
     justify-content:center;
     align-item:center;
-    margin-right:3px;
+    margin-right:2px;
     transition:0.3s ease-in-out;
     &:hover{
         transform:scale(1.3);
