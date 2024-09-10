@@ -320,7 +320,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={BRYSrtDt + "-" + BRYEndDt + " Days"}
                         orderCount={BRYNkOrdCunt}
                         cutCount={BRYNkCustCunt}
@@ -335,7 +335,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={secSrtDt + "-" + secEndDt + " Days"}
                         orderCount={secBlockOrdCnt}
                         cutCount={secBlockCustCnt}
@@ -350,7 +350,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={thrdSrtDt + "-" + thrdEndDt + " Days"}
                         orderCount={thrdBlockOrdCnt}
                         cutCount={thrdBlockCustCnt}
@@ -370,7 +370,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={frthSrtDt + "-" + frthEndDt + " Days"}
                         orderCount={frthBlockOrdCnt}
                         cutCount={frthBlockCustCnt}
@@ -387,7 +387,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={fifthSrtDt + "-" + fifthEndDt + " Days"}
                         orderCount={fifthBlockOrdCnt}
                         cutCount={fifthBlockCustCnt}
@@ -404,7 +404,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={sxthSrtDt + "-" + sxthEndDt + " Days"}
                         orderCount={sxthBlockOrdCnt}
                         cutCount={sxthBlockCustCnt}
@@ -423,7 +423,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                     <MTOMaterialSO
                         kit={"No Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={svthSrtDt + "-" + svthEndDt + " Days"}
                         orderCount={svthBlockOrdCnt}
                         cutCount={svthBlockCustCnt}
@@ -439,7 +439,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                     <MTOMaterialSO
                         kit={"Partial Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={egthSrtDt + "-" + egthEndDt + " Days"}
                         orderCount={egthBlockOrdCnt}
                         cutCount={egthBlockCustCnt}
@@ -455,7 +455,7 @@ const FutureCov = ({ data: SOData, handleToggleComponent, setDetailDataObj }: Fu
                     <MTOMaterialSO
                         kit={"Full Kit"}
                         colors={{ c1: ColorsMTO.Blue.code, c2: null, c3: null }}
-                        height={"96px"}
+                        height={"72px"}
                         text={nthSrtDt + "-" + nthEndDt + " Days"}
                         orderCount={nthBlockOrdCnt}
                         cutCount={nthBlockCustCnt}

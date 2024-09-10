@@ -30,11 +30,11 @@ const CustomGroupCellRenderer = (props: CustomCellRendererProps) => {
     return (
         node.group ?
             <button data-testid='collapsable' style={{ fontSize: "18px", background: "transparent", fontWeight: "bold" }} onClick={onClick}>
-                {DayWiseCoverageMap[value]? DayWiseCoverageMap[value] : value}&nbsp;({props.node.allChildrenCount})&nbsp;&nbsp;<Icon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
+                {DayWiseCoverageMap[value] ? DayWiseCoverageMap[value] : value}&nbsp;({props.node.allChildrenCount})&nbsp;&nbsp;<Icon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
             </button>
             :
             <button data-testid='collapsable' style={{ width: "100%", background: "transparent", textAlign: "right", height: "100%" }} onClick={onClick}>
-                <Icon src={expanded ? "/assets/img/mto/dayWiseCoverage/collapse.svg" : "/assets/img/mto/dayWiseCoverage/expand.svg"} />
+                <Icon height={20} width={20} src={expanded ? "/assets/img/mto/dayWiseCoverage/collapse.svg" : "/assets/img/mto/dayWiseCoverage/expand.svg"} />
             </button>
     )
 }

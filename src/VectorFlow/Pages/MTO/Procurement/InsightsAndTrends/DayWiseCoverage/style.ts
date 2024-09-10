@@ -4,6 +4,7 @@ export const DayWiseCoverageHeaderContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  zoom: 0.75;
 `;
 
 export const DayWiseCoverageStatus = styled.div<{ color?: string }>`
@@ -33,8 +34,8 @@ export const CalenderTitle = styled.h1`
   background: black;
   color: white;
   margin: 0;
-  padding: 8px 16px;
-  font-size: 16px;
+  padding: 5px 16px;
+  font-size: 12px;
 `;
 
 export const CalenderContent = styled.div`
@@ -50,7 +51,7 @@ export const CalenderMonth = styled.div`
   padding: 8px 18px;
   margin: 0.5rem;
   border: none;
-  font-size: 16px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   flex: 1;
@@ -91,7 +92,7 @@ export const Day = styled.td<{ color: string }>`
 `;
 
 export const Month = styled.tr`
-  border-bottom: 2px dashed lightgrey;
+  border-bottom: 1.5px dashed lightgrey;
   display: flex;
 `;
 

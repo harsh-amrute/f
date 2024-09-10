@@ -86,6 +86,20 @@
     border: none !important;
 }
 
+input[type=date]::-ms-clear {
+    display: none;
+}
+
+input[type="date"]::-webkit-clear-button {
+    display: none;
+}
+
+input::-ms-clear {
+    width: 0;
+    height: 0;
+}
+
+
 .react-calendar__navigation__label__labelText {
     font-weight: 600 !important;
 }

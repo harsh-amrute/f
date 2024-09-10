@@ -14,8 +14,8 @@ import {
     ColoronLeftWrapper
 } from '../MaterialSOBox/styles';
 import { MaterialCoverageString } from '../../../../../VectorFlow/Pages/MTO/Common/String';
-import Tooltip from '../../../../../components/VectorFLOW/commons/MTO/Tooltip';
-import { getToolTipContent ,formatNumber} from '../../../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/CommonFunc'
+import Tooltip from '../../../../../VectorFlow/Pages/MTO/Common/Tooltip';
+import { getToolTipContent, formatNumber } from '../../../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/CommonFunc'
 
 interface MaterialSOProps {
     kit: string,
@@ -33,20 +33,20 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
     const formatPercent = (percent: number): string => {
         // Check if percent is NaN or 0, and return "NA" if true
-      
+
         if (isNaN(percent) || percent === 0) {
             return 'NA';
         }
-        
+
         // Perform the rounding operation if percent is not NaN or 0
         return `${Math.round(percent * 100).toString()}%`;
     };
-    
+
     return (
         <>
             {
                 colors.c1 == '#000' || colors.c2 == '#E53F40' || colors.c3 == '#EBBF2B' ?
-                    <Tooltip content={getToolTipContent('Red', ToolTipdata)} >
+                    <Tooltip tooltipZoom={1} zoom="1" content={getToolTipContent('Red', ToolTipdata)} >
                         <ColoronLeftWrapper>
                             <ColorOnLeft
                                 color={colors.c1} height={height}>
@@ -61,7 +61,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                     </Tooltip>
                     :
                     colors.c1 == '#418D18' ?
-                        <Tooltip content={getToolTipContent('Green', ToolTipdata)} >
+                        <Tooltip tooltipZoom={1} content={getToolTipContent('Green', ToolTipdata)} >
                             <ColoronLeftWrapper>
                                 <ColorOnLeft
                                     color={colors.c1} height={height}>
@@ -70,12 +70,13 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
                         </Tooltip>
                         :
-                        <Tooltip content={getToolTipContent('Blue', ToolTipdata)}>
+                        <Tooltip tooltipZoom='1' content={getToolTipContent('Blue', ToolTipdata)}>
                             <ColorOnLeft
                                 color={colors.c1} height={height}>
                                 <TextOnColor style={{
                                     position: 'absolute',
                                     left: '50%',
+                                    fontSize: '8px',
                                     top: '50%',
                                     transform: 'translate(-50%, -50%) rotate(-90deg)',
                                     width: '100%',
@@ -120,38 +121,44 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
 
             <BtnGroup>
                 <Btns>
-                    <Tooltip content={<div style={{ padding: "10px 5px 10px 5px" }}>Order Count</div>} >
+                    <Tooltip tooltipZoom='1' content={<div style={{ fontSize: '10px', padding: "10px 5px 10px 5px" }}>Order Count</div>} >
                         <ButtonImg
                             src='/assets/img/order-tracking.png'
-                            height='20px' width='20px'
+                            height='15px' width='15px'
                         />
                     </Tooltip>
-                    {orderCount}
+                    <p style={{ paddingLeft: '4px' }}>
+                        {orderCount}
+                    </p>
                 </Btns>
 
                 <Separator color={'grey'} ></Separator>
                 <Btns>
-                    <Tooltip content={<div style={{ padding: "10px 5px 10px 5px" }}>No of Customer</div>} >
+                    <Tooltip tooltipZoom='1' content={<div style={{ fontSize: '10px', padding: "10px 5px 10px 5px" }}>No of Customer</div>} >
                         <ButtonImg
                             src='/assets/img/people.png'
-                            height='20px' width='20px'
+                            height='15px' width='15px'
                         >
                         </ButtonImg>
                     </Tooltip>
-                    {cutCount}
+                    <p style={{ paddingLeft: '4px' }}>
+                        {cutCount}
+                    </p>
                 </Btns>
 
                 <Separator color={'grey'} ></Separator>
 
                 <Btns>
-                    <Tooltip content={<div style={{ padding: "10px 5px 10px 5px" }}>Order Value</div>} >
+                    <Tooltip tooltipZoom='1' content={<div style={{ fontSize: '10px', padding: "10px 5px 10px 5px" }}>Order Value</div>} >
                         <ButtonImg
                             src='/assets/img/rupee.png'
-                            height='20px' width='20px'
+                            height='15px' width='15px'
                         >
                         </ButtonImg>
                     </Tooltip>
-                    {formatNumber(orderValue)}
+                    <p style={{ paddingLeft: '4px' }}>
+                        {formatNumber(orderValue)}
+                    </p>
                 </Btns>
             </BtnGroup>
         </>
