@@ -31,5 +31,19 @@ describe('UIConvfig Service', () => {
         const response = await UserUIConfigService.updateUserUIReportConfigData( {un: 'test', rn_id: 1, cs: 'test config'})
         expect(response.status).toBe(200);
     });
+    
+    it('should Update User uiconfig data', async () => {
+
+        const mockBody =  {un: 'test', rn_id: 1, cs: 'test config'};
+        const mockResponse = { data: { success: true } };
+        mockedAxios.put.mockResolvedValue(mockResponse);
+        const result = await UserUIConfigService.updateUserUIReportConfigData(mockBody);
+        expect(mockedAxios.put).toHaveBeenCalledWith(
+            `${process.env.REACT_APP_VF_API_HOST_MTO}/UpdateUserwiseUIReportConfigurationData/`,
+            mockBody,
+            { headers: { 'Content-Type': 'application/json' } }
+        );
+        expect(result).toEqual(mockResponse);
+    });
 
 });
