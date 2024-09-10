@@ -367,8 +367,8 @@ const FullKitAssignment = () => {
   
   const handleSaveClick = async () => {
     try {
-      if(currentGridRef?.current?.columnApi){
-        const config = currentGridRef.current.columnApi.getColumnState();
+      if(currentGridRef?.current?.api){
+        const config = currentGridRef.current.api.getColumnState();
   
         const payload = {
           un: user.user.name,
@@ -648,7 +648,7 @@ const FullKitAssignment = () => {
 
   useEffect(()=>{ 
     if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-        const result = currentGridRef?.current?.columnApi.applyColumnState({
+        const result = currentGridRef?.current?.api.applyColumnState({
             state: columnState,
             applyOrder: true
         });
@@ -687,7 +687,7 @@ const FullKitAssignment = () => {
         tooltipShowDelay={0}
         tooltipMouseTrack={true}
         onGridReady={(params: any) => {
-          params.columnApi.autoSizeAllColumns();
+          params.api.autoSizeAllColumns();
 
           setCurrentGridRef(grid);
         }}

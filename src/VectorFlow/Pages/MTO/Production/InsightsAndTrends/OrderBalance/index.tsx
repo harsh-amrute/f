@@ -133,7 +133,7 @@ const OrderBalance = () => {
   
   const handleSaveClick = async () => {
     try {
-      const config = currentGridRef.current.columnApi.getColumnState();
+      const config = currentGridRef.current.api.getColumnState();
 
       const payload = {
         un: user.user.name,

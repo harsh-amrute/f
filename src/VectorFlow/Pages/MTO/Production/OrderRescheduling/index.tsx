@@ -431,7 +431,7 @@ const OrderRescheduling = () => {
 
             });
             params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-            params.columnApi.autoSizeAllColumns();
+            params.api.autoSizeAllColumns();
             setCurrentGridRef(refGraph1);
     };
 
@@ -456,7 +456,7 @@ const OrderRescheduling = () => {
     
     const handleSaveClick = async () => {
         try {
-        const config = currentGridRef.current.columnApi.getColumnState();
+        const config = currentGridRef.current.api.getColumnState();
 
         const payload = {
             un: user.user.name,
@@ -477,7 +477,7 @@ const OrderRescheduling = () => {
 
     useEffect(()=>{ 
         if (currentGridRef?.current && columnState?.length) {
-            const result = currentGridRef.current.columnApi.applyColumnState({
+            const result = currentGridRef.current.api.applyColumnState({
                 state: columnState,
                 applyOrder: true
             });

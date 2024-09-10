@@ -43,7 +43,7 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
   useEffect(() => {
     if (gridRef.current && columnState.length) {
       console.log('Applying column state:', columnState);
-      const result = gridRef.current.columnApi.applyColumnState({
+      const result = gridRef.current.api.applyColumnState({
         state: columnState,
         applyOrder: true, // Ensure order is applied
       });
@@ -59,7 +59,7 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
 
   //     if (currentGridRef?.current && columnState?.length) {
 
-  //       const result = currentGridRef.current.columnApi.applyColumnState({
+  //       const result = currentGridRef.current.api.applyColumnState({
   //         state: columnState,
   //         applyOrder: true, // Ensure order is applied
   //       });
@@ -82,7 +82,7 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
         isRowSelectable={isRowSelectable}
         rowSelection="multiple"
         onGridReady={(params: any) => {
-          params.columnApi.autoSizeAllColumns();
+          params.api.autoSizeAllColumns();
           setCurrentGridRef(gridRef);
         }}
         onRowDataUpdated={(params) => {

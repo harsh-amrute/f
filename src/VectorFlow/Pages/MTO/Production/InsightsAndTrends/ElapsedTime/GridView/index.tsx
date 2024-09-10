@@ -79,7 +79,7 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState }: an
 
     useEffect(()=>{ 
         if (currentGridRef?.current && columnState?.length) {
-            const result = currentGridRef.current.columnApi.applyColumnState({
+            const result = currentGridRef.current.api.applyColumnState({
                 state: columnState,
                 applyOrder: true
             });
@@ -108,7 +108,7 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState }: an
                 tooltipMouseTrack={true}
                 ref={gridRef}
                 onGridReady={(params: any) => {
-                    params.columnApi.autoSizeAllColumns();
+                    params.api.autoSizeAllColumns();
 
                     setCurrentGridRef(gridRef);
                 }}

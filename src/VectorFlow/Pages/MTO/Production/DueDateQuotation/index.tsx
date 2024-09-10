@@ -412,7 +412,7 @@ const DueDateQuotation = () => {
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
       console.log(newConfig, 'NEW Config')
       setColumnState(newConfig);
-      // currentGridRef?.current?.columnApi?.applyColumnState({
+      // currentGridRef?.current?.api?.applyColumnState({
       //   state: newConfig,
       //   applyOrder: true,
       // });
@@ -426,7 +426,7 @@ const DueDateQuotation = () => {
   }
   const handleSaveClick = async () => {
     try {
-      const config = currentGridRef.current.columnApi.getColumnState();
+      const config = currentGridRef.current.api.getColumnState();
 
       const payload = {
         un: "rohan",

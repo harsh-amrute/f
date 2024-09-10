@@ -196,7 +196,7 @@ const ReasonForDelayOrder = () => {
             rn_id: UIGridCode.PoogiReasonForDelayedOrders
           });
     
-          const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+          const newConfig =  data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
           setColumnState(newConfig);
     
           if (!data) {
@@ -209,8 +209,8 @@ const ReasonForDelayOrder = () => {
 
     const handleSaveClick = async () => {
         try {
-            if(currentGridRef?.current?.columnApi){
-                const config = currentGridRef?.current?.columnApi?.getColumnState() || [];
+            if(currentGridRef?.current?.api){
+                const config = currentGridRef?.current?.api?.getColumnState() || [];
         
                 const payload = {
                     un: user.user.name,
@@ -306,7 +306,7 @@ const ReasonForDelayOrder = () => {
 
     useEffect(()=>{ 
         if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-            const result = currentGridRef?.current?.columnApi?.applyColumnState({
+            const result = currentGridRef?.current?.api?.applyColumnState({
                 state: columnState,
                 applyOrder: true
             });
@@ -355,11 +355,13 @@ const ReasonForDelayOrder = () => {
                         columnDefs={colDef}
                         rowData={rowData}
                         pagination={false}
+                        ref={tableRowRef}
                         onGridReady={(params: any) => {
-                            params.columnApi.autoSizeAllColumns();
+                            console.log(params, 'PARAMS');
+                            params?.api.autoSizeAllColumns();
+
                             setCurrentGridRef(tableRowRef);
                         }}
-                        ref={tableRowRef}
                     />
                     <VFPagination
                         selectedRows={0}

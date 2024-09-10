@@ -86,8 +86,8 @@ const OTAndIFAnalysis = () => {
 
     const handleSaveClick = async () => {
         try {
-            if(currentGridRef?.current?.columnApi){
-                const config = currentGridRef.current.columnApi.getColumnState();
+            if(currentGridRef?.current?.api){
+                const config = currentGridRef.current.api.getColumnState();
     
                 const payload = {
                     un: user.user.name,
