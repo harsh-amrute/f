@@ -75,7 +75,9 @@ interface MTOActionToolBarProps {
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
     isReleaseButtonDisabled?: boolean,
-    utilityBtns?: ReactElement | null
+    utilityBtns?: ReactElement | null,
+    handleSaveClick?: () => void
+    handleResetClick?: () => void
     //// new props
 }
 
@@ -109,7 +111,10 @@ const MTOActionToolBar = ({
     onCheckBoxToggle,
     isReleaseButtonDisabled,
     utilityBtns,
-    WIPFilter
+    WIPFilter,
+    handleSaveClick,
+    handleResetClick
+    
 }: MTOActionToolBarProps) => {
 
 
@@ -410,11 +415,11 @@ const MTOActionToolBar = ({
                     <>
                         <SCVerticalDividerGray />
 
-                        <SCViewContainerWithBg>
+                        <SCViewContainerWithBg onClick={() => {handleSaveClick && handleSaveClick()}}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                             <p>Save</p>
                         </SCViewContainerWithBg>
-                        <SCViewContainerWithBg >
+                        <SCViewContainerWithBg onClick={() => {handleResetClick && handleResetClick()}}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" />
                             <p>Reset</p>
 

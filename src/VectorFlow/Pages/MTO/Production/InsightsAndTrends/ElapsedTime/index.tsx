@@ -10,22 +10,38 @@ import { useGetElapsedDaysforDeptPlantData, useGetElapsedTimeData } from '../../
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
 import _ from 'lodash'
 import OverlayLoader from '../../../Common/Loader'
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { getColumnDefinations } from '../../../../../../helpers/utils';
+import { UIGridCode} from "../../../Common/Enum";
+import { useUserData } from "../../../../../../context/index";
+import ColorRangeCellRenderer from '../../../../../../VectorFlow/Pages/MTO/Common/ColorRangeCellRenderer';
+import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
+
 
 const ElapsedTime = () => {
 
     const [isGridView, setIsGridView] = useState(false);
-
-    
-    const reportName = "Elapse Time";
-
+    const [deptwiseChartTableData, setDeptwiseChartTableData] = useState([]);
+    const [deptwiseChartData, setDeptwiseChartData] = useState([]);
+    const [alertData, setAlertData] = useState([]);
+    const [weeklyChartTableData, setWeeklyChartTableData] = useState([]);
+    const [weeklyChartData, setWeeklyChartData] = useState([]);
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [columnState, setColumnState] = useState<any>([]);
+    const [isReset, setIsReset] = useState(false);
+    const [colDef, setColDef] = useState([{}]);
     const [HeaderData, setHeaderData] = useState();
     const [selectedPlant, setSelectedPlant] = useState<any>();
     const [selectedDept, setSelectedDept] = useState<any>();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: getElapsedTimeData, isLoading } = useGetElapsedTimeData()
     const { mutateAsync: getElapsedDaysforDeptPlantData, isLoading: isLoading2 } = useGetElapsedDaysforDeptPlantData()
+    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+    const { user } = useUserData();
+    const reportName = "Elapse Time";
 
-     const setColumnDef = async () => {
+    const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
             setHeaderData(response?.data?.data);
@@ -35,67 +51,56 @@ const ElapsedTime = () => {
         }
     }
 
-    const [deptwiseChartTableData, setDeptwiseChartTableData] = useState([]);
-    const [deptwiseChartData, setDeptwiseChartData] = useState([]);
-    const [alertData, setAlertData] = useState([]);
-
-
-    const [weeklyChartTableData, setWeeklyChartTableData] = useState([]);
-    const [weeklyChartData, setWeeklyChartData] = useState([]);
-
     const getDeptWiseChartData = async () => {
-        try{
-            const data = await getElapsedTimeData({graphFlag: 1});
+        try {
+            const data = await getElapsedTimeData({ graphFlag: 1 });
             const chartData: any = []
             const tableData: any = []
             const alertData: any = []
-            Object.entries(data.data.data).forEach((entry: any)=>{
+            Object.entries(data.data.data).forEach((entry: any) => {
                 const obj = _.cloneDeep(entry[1]);
-                if(obj.cl != "Grey"){
-                    alertData.push({x: entry[0], y: [obj.uw + 1]})
-                }else{
-                    alertData.push({x: entry[0], y: []})
+                if (obj.cl != "Grey") {
+                    alertData.push({ x: entry[0], y: [obj.uw + 1] })
+                } else {
+                    alertData.push({ x: entry[0], y: [] })
                 }
                 delete obj["cl"]
-                chartData.push({x: entry[0], y: Object.values(obj).sort((a: any,b: any)=> a - b)})
-                tableData.push({...entry[1], department: entry[0]})
+                chartData.push({ x: entry[0], y: Object.values(obj).sort((a: any, b: any) => a - b) })
+                tableData.push({ ...entry[1], department: entry[0] })
             })
             setDeptwiseChartTableData(tableData);
             setDeptwiseChartData(chartData)
             setAlertData(alertData)
             notifySuccess("Data Fetched Successfully!")
         }
-        catch(err: any){
+        catch (err: any) {
             console.log(err)
             notifyError("Something Went Wrong")
         }
-        
+
     }
 
     const getWeeklyChartData = async () => {
-        try{
-            const data = await getElapsedDaysforDeptPlantData({plant: selectedPlant.value, dept: selectedDept.value});
+        try {
+            const data = await getElapsedDaysforDeptPlantData({ plant: selectedPlant.value, dept: selectedDept.value });
             const chartData: any = []
             const tableData: any = []
-            Object.entries(data.data.data).forEach((entry: any)=>{
+            Object.entries(data.data.data).forEach((entry: any) => {
                 const obj = _.cloneDeep(entry[1]);
                 delete obj["cl"]
-                chartData.push({x: entry[0], y: Object.values(obj).sort((a: any,b: any)=> a - b)})
-                tableData.push({...entry[1], week: entry[0]})
+                chartData.push({ x: entry[0], y: Object.values(obj).sort((a: any, b: any) => a - b) })
+                tableData.push({ ...entry[1], week: entry[0] })
             })
             setWeeklyChartTableData(tableData);
             setWeeklyChartData(chartData)
             setAlertData(alertData)
             notifySuccess("Data Fetched Successfully!")
         }
-        catch(err: any){
+        catch (err: any) {
             console.log(err)
             notifyError("Something Went Wrong")
         }
     }
-
-
-
 
     const handleSelectionChange = (newPlant: any, newDept: any) => {
         setSelectedPlant(newPlant);
@@ -105,34 +110,111 @@ const ElapsedTime = () => {
     useEffect(() => {
         setColumnDef();
         getDeptWiseChartData();
+        getUserColumnConfig();
     }, [])
 
-    useEffect(()=>{
-        if(selectedDept?.value && selectedPlant?.value){
+    useEffect(() => {
+        if (selectedDept?.value && selectedPlant?.value) {
             getWeeklyChartData()
         }
     }, [selectedDept, selectedPlant])
 
+    const getUserColumnConfig = async () => {
+        try {
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProdElapsedTime
+            });
+
+            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            setColumnState(newConfig);
+
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleSaveClick = async () => {
+        try {
+            const config = currentGridRef.current.api.getColumnState();
+
+            const payload = {
+                un: user.user.name,
+                rn_id: UIGridCode.ProdElapsedTime,
+                cs: JSON.stringify(config)
+            }
+            await updateUserUIReportConfigData([payload]);
+            await getUserColumnConfig();
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
+
+    const colDefCustomizations = {
+        'Tags': {
+            tooltipValueGetter: (params: any) => params.value,
+            cellRenderer: TagCellToolTip,
+            cellStyle: {
+                display: 'flex',
+                justifyContent: "center",
+            }
+        },
+        'BPP': {
+            cellRenderer: ColorRangeCellRenderer ,
+        },
+    }
+
+    useEffect(() => {
+        setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+    }, [HeaderData])
+
+    // const colDef = useMemo(() => getColumnDefinations(HeaderData, colDefCustomizations), [])
+
+    useEffect(() => {
+        if (isReset) {
+            setColumnState(colDef);
+            setIsReset(false)
+        } else {
+            handleSaveClick();
+        }
+    }, [isReset]);
+
     return (
         <>
-            <MTOActionToolBar comp={"BTRMTO"} isAddFilterButton isChartGridToggle setIsGridView={setIsGridView} isGridView={isGridView} />
+            <MTOActionToolBar
+                comp={"BTRMTO"}
+                isAddFilterButton
+                isChartGridToggle
+                setIsGridView={setIsGridView}
+                isGridView={isGridView}
+                handleSaveClick={handleSaveClick}
+                handleResetClick={handleResetClick}
+            />
 
             {
                 !isGridView ?
                     <>
-                    {(isLoading || isLoading2) && <OverlayLoader/>}
+                        {(isLoading || isLoading2 || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
 
                         <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
                             <BTRTableWrapper style={{ flex: '1', margin: '0' }}>
                                 <Allotment vertical={false} separator={false}   >
                                     <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                         <BTRAllomentSection>
-                                            <DeptWiseGraph chartData={deptwiseChartData} chartTableData={deptwiseChartTableData} alertData={alertData}/>
+                                            <DeptWiseGraph chartData={deptwiseChartData} chartTableData={deptwiseChartTableData} alertData={alertData} />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
                                     <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                         <BTRAllomentSection>
-                                            <WeekWiseGraph handleSelectionChange={handleSelectionChange} chartTableData={weeklyChartTableData} chartData={weeklyChartData} plant={selectedPlant} dept={selectedDept}/>
+                                            <WeekWiseGraph handleSelectionChange={handleSelectionChange} chartTableData={weeklyChartTableData} chartData={weeklyChartData} plant={selectedPlant} dept={selectedDept} />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
                                 </Allotment>
@@ -145,7 +227,12 @@ const ElapsedTime = () => {
                     </>
                     :
                     <>
-                        <GridView uiConfig={HeaderData}/>
+                        <GridView 
+                            colDef={colDef}
+                            setCurrentGridRef={setCurrentGridRef}
+                            currentGridRef={currentGridRef}
+                            columnState={columnState}
+                        />
                     </>
             }
         </>

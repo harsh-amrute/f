@@ -14,7 +14,7 @@ enum SchedulingType {
     Basket
 }
 
-const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, setStep, setDisabled, setSelectedRows, setMasters }: any, ref: any) => {
+const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, setStep, setDisabled, setSelectedRows, setMasters, setCurrentGridRef }: any, ref: any) => {
     
     useEffect(()=>{
         setDisabled(true);
@@ -155,6 +155,7 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
                 rowData={confirmedRows}
                 onGridReady={(params)=>{
                     params.api.selectAll()
+                    setCurrentGridRef(gridRef)
                 }}
                 onRowSelected={(params: any) => {
                     const selected = params.api.getSelectedRows()

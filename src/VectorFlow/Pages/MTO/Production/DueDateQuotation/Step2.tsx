@@ -17,7 +17,7 @@ import Tooltip from '../../Common/Tooltip';
 import { notifyError, notifyErrorWithoutAutoClose, notifySuccess } from '../../../../../helpers/notify';
 import * as globalStyles from "../../../../../styles/global";
 
-const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, masters, getMastersData, rowsSelectedForAssignment, setRowsSelectedForAssignment, confirmedRows, setConfirmedRows, lineCCR, setDisabled }: any, ref) => {
+const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, masters, getMastersData, rowsSelectedForAssignment, setRowsSelectedForAssignment, confirmedRows, setConfirmedRows, lineCCR, setDisabled, setCurrentGridRef }: any, ref) => {
     useEffect(() => {
         getMastersData();
         setRowsSelectedForAssignment(false);
@@ -1072,10 +1072,11 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                 }
                             }}
                             onColumnPinned={(params: any) => {
-                                params.columnApi?.autoSizeAllColumns();
+                                params.api?.autoSizeAllColumns();
                             }}
                             onGridReady={(params: any) => {
-                                params.columnApi?.autoSizeAllColumns();
+                                params.api.autoSizeAllColumns();
+                                setCurrentGridRef(gridRef)
                             }}
 
                         />

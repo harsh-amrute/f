@@ -134,7 +134,7 @@ const DayWiseCoverageTable = ({
       rowData={rowData}
       // pagination={true}
       onGridReady={(params: any) => {
-        params?.columnApi?.autoSizeAllColumns();
+        params?.api?.autoSizeAllColumns();
       }}
     />
 

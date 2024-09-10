@@ -67,6 +67,8 @@ describe('MTOActionToolBar Component', () => {
   const mockOnApplyFilter = jest.fn();
   const mockSetCurrFilter = jest.fn();
   const mockOnFilterRemove = jest.fn();
+  const mockOnSaveClick = jest.fn();
+  const mockOnResetClick = jest.fn();
 
   global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -89,6 +91,18 @@ describe('MTOActionToolBar Component', () => {
     render(<MTOActionToolBar isGoBackButton handleGoBack={mockHandleGoBack} />);
     fireEvent.click(screen.getByText('Go Back'));
     expect(mockHandleGoBack).toHaveBeenCalled();
+  });
+
+  test('calls save Grid UI Config function when Save button is clicked', () => {
+    render(<MTOActionToolBar isGoBackButton handleSaveClick={mockOnSaveClick} />);
+    fireEvent.click(screen.getByText('Save'));
+    expect(mockOnSaveClick).toHaveBeenCalled();
+  });
+
+  test('calls reset Grid UI Config function when Reset button is clicked', () => {
+    render(<MTOActionToolBar isGoBackButton handleResetClick={mockOnResetClick} />);
+    fireEvent.click(screen.getByText('Reset'));
+    expect(mockOnResetClick).toHaveBeenCalled();
   });
 
   test('calls onDateChange function with selected date', () => {

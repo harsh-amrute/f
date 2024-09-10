@@ -137,7 +137,7 @@ const OTAndIFTrendsGraph = (props: any) => {
           }}
         >
           <span style={{ fontWeight: 500 }}>{`${Poogi.otNif}  `}</span>
-          <span style={{ fontWeight: 350 }}>{`(${moment(apiResponseData?.data.data || '-').subtract(90, 'days').format('D MMM YYYY')} - ${moment(apiResponseData?.data.data || '-').format('D MMM YYYY')})`}</span>
+          <span style={{ fontWeight: 350 }}>{`(${moment(apiResponseData?.data?.data || '-').subtract(90, 'days').format('D MMM YYYY')} - ${moment(apiResponseData?.data?.data || '-').format('D MMM YYYY')})`}</span>
 
         </div>
         <div style={{ display: "flex" }}>

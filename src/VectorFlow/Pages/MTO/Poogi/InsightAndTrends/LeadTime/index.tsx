@@ -6,6 +6,12 @@ import GridView from './GridView';
 import { useGetLeadTimeData } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime'
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
 import OverlayLoader from '../../../Common/Loader';
+import { useUserData } from "../../../../../../context/index";
+import { UIGridCode } from "../../../Common/Enum";
+import { getColumnDefinations } from '../../../../../../helpers/utils';
+import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
+import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 
 const LeadTime = () => {
     const [isGridView, setIsGridView] = useState(false);
@@ -14,11 +20,15 @@ const LeadTime = () => {
     const [chartTableData, setChartTableData] = useState([]);
     const [chartData, setChartData] = useState([]);
     const reportName = "LeadTime";
-
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [columnState, setColumnState] = useState<any>([]);
+    const [colDef, setColDef] = useState([{}]);
+    const [isReset, setIsReset] = useState(false);
+    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+    const { user } = useUserData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData();
     const { mutateAsync: getLeadTimeData, isLoading} = useGetLeadTimeData()
-
-
 
     const setColumnDef = async () => {
         try {
@@ -29,6 +39,46 @@ const LeadTime = () => {
             console.log(e);
         }
     }
+
+    const getUserColumnConfig = async () => {
+        try {
+          const data = await getUserUIReportConfigData({
+            un: user.user.name,
+            rn_id: UIGridCode.PoogiLeadTime
+          });
+    
+          const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+          console.log(newConfig, 'GET');
+          setColumnState(newConfig);
+    
+          if (!data) {
+            console.error('Failed to apply column state');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    
+    const handleSaveClick = async () => {
+        try {
+          const config = currentGridRef.current.api.getColumnState();
+    
+          const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.PoogiLeadTime,
+            cs: JSON.stringify(config)
+          }
+          await updateUserUIReportConfigData([payload]);
+          await getUserColumnConfig();
+    
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    
+      const handleResetClick = () => {
+        setIsReset(true);
+      }
     
     useEffect(() => {
         setColumnDef();
@@ -54,43 +104,57 @@ const LeadTime = () => {
             notifyError("Something Went Wrong")
         }
     }
+    
+    const colDefCustomizations = {
+        'Tag': {
+            tooltipValueGetter: (params: any) => params.value,
+            cellRenderer: TagCellToolTip,
+            cellStyle: {
+                display: 'flex',
+                justifyContent: "center",
+            }
+        },
+        'BPP': {
+            cellRenderer: ColorCellRenderer,
+        },
+    }
 
-    // Sample Data
+    useEffect(() => {
+        setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+      }, [HeaderData])
 
-    // const chartData: any = [
-    //     { x: "Feb 2024", y: [2, 5, 8, 11, 14] },
-    //     { x: "Mar 2024", y: [2, 3, 5, 6, 8] },
-    //     { x: "May 2024", y: [1, 3, 4, 5, 9] },
-    //     { x: "Jun 2024", y: [2, 4, 6, 8, 10] },
-    //     { x: "July 2024-WK 1", y: [3, 5, 7, 9, 11] },
-    //     { x: "July 2024-WK 2", y: [3, 5, 7, 9, 11] },
-    //     { x: "July 2024-WK 3", y: [3, 5, 7, 9, 11] },
-    //     { x: "July 2024-WK 4", y: [3, 5, 7, 9, 11] },
-    //     { x: "Aug 2024-WK 1", y: [3, 6, 9, 12, 15] },
-
-    // ];
-
-
-    // const GraphTableData = [
-    //     { 'week': 'Jul2024-Wk1', 'LW': 1, 'Q1': 3, 'Q2': 4, 'Q3': 7, 'HW': 9 },
-    //     { 'week': 'Jul2024-Wk2', 'LW': 2, 'Q1': 4, 'Q2': 5, 'Q3': 8, 'HW': 10 },
-    //     { 'week': 'Jul2024-Wk3', 'LW': 3, 'Q1': 5, 'Q2': 6, 'Q3': 9, 'HW': 11 },
-    //     { 'week': 'Jul2024-Wk4', 'LW': 4, 'Q1': 6, 'Q2': 7, 'Q3': 10, 'HW': 12 },
-    //     { 'week': 'Aug2024-Wk1', 'LW': 5, 'Q1': 7, 'Q2': 8, 'Q3': 11, 'HW': 13 },
-    //     { 'week': 'Aug2024-Wk2', 'LW': 6, 'Q1': 8, 'Q2': 9, 'Q3': 12, 'HW': 14 },
-    //     { 'week': 'Aug2024-Wk3', 'LW': 7, 'Q1': 9, 'Q2': 10, 'Q3': 13, 'HW': 15 },
-    // ]
-
+    useEffect(() => {
+        if (isReset) {
+          setColumnState(colDef);
+          setIsReset(false)
+        }else{
+          handleSaveClick();
+        }
+      }, [isReset]);
 
 
     return (
         <>
-            <MTOActionToolBar handleGoBack={() => { setIsGridView(false) }} isGoBackButton={isGridView} isChartGridToggle isGridView={isGridView} setIsGridView={setIsGridView} isExcelExport />
-            {isLoading && <OverlayLoader/>}
+            <MTOActionToolBar  
+                handleSaveClick={handleSaveClick}
+                handleResetClick={handleResetClick} 
+                handleGoBack={() => { setIsGridView(false) }} 
+                isGoBackButton={isGridView} 
+                isChartGridToggle 
+                isGridView={isGridView} 
+                setIsGridView={setIsGridView} 
+                isExcelExport 
+            />
+            {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader/>}
             {
                 isGridView ?
                     <>
-                        <GridView uiConfig={HeaderData}/>
+                        <GridView 
+                            colDef={colDef} 
+                            setCurrentGridRef={setCurrentGridRef} 
+                            currentGridRef={currentGridRef}
+                            columnState={columnState}
+                        />
                     </>
                     :
                     <>

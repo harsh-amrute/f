@@ -10,12 +10,26 @@ import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from '../../../Common/GridView'
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
+import { getColumnDefinations } from '../../../../../../helpers/utils';
+import { useUserData } from "../../../../../../context/index";
+import { UIGridCode } from "../../../Common/Enum";
 
 const OTAndIFAnalysis = () => {
 
     const [isGridView, setIsGridView] = useState(false);
-    const { mutateAsync: getOTAndIFAnalysisData, isLoading, isError, isSuccess }  = useGetOTAndIFAnalysisData();
+    const { mutateAsync: getOTAndIFAnalysisData, isLoading, isError, isSuccess } = useGetOTAndIFAnalysisData();
     const [graphData, setGraphData] = useState<any>({});
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [columnState, setColumnState] = useState<any>([]);
+    const [isReset, setIsReset] = useState(false);
+    const [colDef, setColDef] = useState([{}]);
+    const [HeaderData, setHeaderData] = useState([]);
+    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    const { user } = useUserData();
 
     const getGraphData = async (params: any) => {
         try {
@@ -42,9 +56,67 @@ const OTAndIFAnalysis = () => {
         },
     }
 
-    useEffect(()=>{
-        getGraphData({graphflag: 1});
-    },[])
+    const getUserColumnConfig = async () => {
+        try {
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.PoogiOTAndIFAnalysis
+            });
+
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+            setColumnState(newConfig);
+
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData('OTIFAnalysis');
+            setHeaderData(response?.data?.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    const handleSaveClick = async () => {
+        try {
+            if(currentGridRef?.current?.api){
+                const config = currentGridRef.current.api.getColumnState();
+    
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.PoogiOTAndIFAnalysis,
+                    cs: JSON.stringify(config)
+                }
+    
+                await updateUserUIReportConfigData([payload]);
+                await getUserColumnConfig();
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
+
+    useEffect(() => {
+        setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+    }, [HeaderData])
+
+    useEffect(() => {
+        getGraphData({ graphflag: 1 });
+        getUserColumnConfig();
+        setColumnDef();
+    }, [])
 
     useEffect(() => {
         if (isSuccess) {
@@ -54,13 +126,29 @@ const OTAndIFAnalysis = () => {
           notifyError("Failed to load data!")
         }
     }, [isSuccess, isError])
-    
+
+    useEffect(() => {
+        if (isReset) {
+          setColumnState(colDef);
+          setIsReset(false)
+        }else{
+          handleSaveClick();
+        }
+    }, [isReset]);
+
     return (
         <>
             {
-                isError && <OverlayLoader />
+                (isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
             }
-            <MTOActionToolBar isAddFilterButton isChartGridToggle setIsGridView={setIsGridView} isGridView={isGridView} />
+            <MTOActionToolBar
+                isAddFilterButton
+                isChartGridToggle
+                setIsGridView={setIsGridView}
+                isGridView={isGridView}
+                handleSaveClick={handleSaveClick}
+                handleResetClick={handleResetClick}
+            />
             {
                 !isGridView ?
                     <>
@@ -83,13 +171,15 @@ const OTAndIFAnalysis = () => {
                     </>
                     :
                     <>
-                        <GridView 
-                            getData={getOTAndIFAnalysisData} 
-                            reportName="OTIFAnalysis" 
-                            isLoading={isLoading} 
-                            isError={isError} 
-                            isSuccess={isSuccess} 
-                            colDefCustomizations={colDefCustomizations}
+                        <GridView
+                            getData={getOTAndIFAnalysisData}
+                            colDef={colDef}
+                            isLoading={isLoading}
+                            isError={isError}
+                            isSuccess={isSuccess}
+                            setCurrentGridRef={setCurrentGridRef}
+                            currentGridRef={currentGridRef}
+                            columnState={columnState}
                         />
                     </>
             }

@@ -1,8 +1,6 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import { useEffect, useRef, useState } from 'react'
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import React, { useEffect, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
-import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
 import './style.css'
 import { SCDynamicContainer } from './styles';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
@@ -13,24 +11,23 @@ import { pagination } from '../Enum';
 
 interface IGridViewProps {
     getData: (isGraph: number) => any,
-    reportName: string,
+    colDef: any,
     isLoading: boolean,
     isError: boolean,
     isSuccess: boolean,
-    colDefCustomizations?: any
+    setCurrentGridRef: any,
+    currentGridRef: any,
+    columnState: any,
 }
 
 const GridView = (props: IGridViewProps) => {
 
-    const { getData, reportName, isLoading, isError, isSuccess, colDefCustomizations = {} } = props;
+    const { getData, isLoading, isError, isSuccess, setCurrentGridRef, currentGridRef, columnState, colDef } = props;
 
-    const gridRef = useRef(null);
-    const [colDef, setColDef] = useState([{}]);
-    const [HeaderData, setHeaderData] = useState([]);
+    const gridRef = useRef<any>(null);
     const [gridData, setGridData] = useState([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalRows, setTotalRows] = useState<number>(0);
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
     const defaultColDef = {
         autoHeaderHeight: true,
@@ -68,21 +65,13 @@ const GridView = (props: IGridViewProps) => {
         },
     };
 
-    const setColumnDef = async () => {
-        try {
-            const response = await getUIConfigData(reportName);
-            setHeaderData(response?.data?.data);
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
+
 
     const getGridData = async (params: any) => {
         try {
             const response = await getData(params);
-            setGridData(response.data.data.results);
-            setTotalRows(response.data.data.count)
+            setGridData(response?.data?.data?.results || []);
+            setTotalRows(response?.data?.data?.count || 0)
         }
         catch (e) {
             console.log(e);
@@ -97,12 +86,10 @@ const GridView = (props: IGridViewProps) => {
 
     useEffect(() => {
         getGridData({ graphflag: 0, page: currentPage });
-        setColumnDef();
+        
     }, [])
 
-    useEffect(() => {
-        setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
-    }, [HeaderData])
+
 
     useEffect(() => {
         if (isSuccess) {
@@ -111,7 +98,19 @@ const GridView = (props: IGridViewProps) => {
         if (isError) {
             notifyError("Failed to load data!")
         }
-    }, [isSuccess, isError])
+    }, [isSuccess, isError]) 
+
+    useEffect(()=>{ 
+        if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+            const result = currentGridRef?.current?.api.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
+        }
+    });
 
     return (
 
@@ -130,6 +129,11 @@ const GridView = (props: IGridViewProps) => {
                 rowData={gridData}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
+                onGridReady={(params: any) => {
+                    params.api.autoSizeAllColumns();
+
+                    setCurrentGridRef(gridRef);
+                }}
                 tooltipMouseTrack={true}
                 ref={gridRef}
                 statusBar={{
@@ -150,4 +154,4 @@ const GridView = (props: IGridViewProps) => {
     )
 }
 
-export default GridView
+export default React.memo(GridView)

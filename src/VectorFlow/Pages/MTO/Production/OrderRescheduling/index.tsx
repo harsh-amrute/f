@@ -16,9 +16,11 @@ import OverlayLoader from '../../Common/Loader';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import VFPagination from '../../Common/VFPagination';
-import { pagination } from '../../Common/Enum';
+import { pagination, UIGridCode } from '../../Common/Enum';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { useUserData } from "../../../../../context/index";
 
-const user = { user: { them_ui: 'pure' } };
+// const user = { user: { them_ui: 'pure' } };
 
 interface RowDataType {
     oid: string;
@@ -30,12 +32,21 @@ const OrderRescheduling = () => {
     const { mutateAsync: putUpdateOrderDueDate } = usePutUpdateOrderDueDate();
     const { mutateAsync: getOrderSchedulingData } = useGetOrderSchedulingData();
     const { mutateAsync: getOrderSchedulingPageData } = useGetOrderSchedulingPageData();
-
+    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+  
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const refGraph1 = useRef<GridRef>(null);
     const [selectedRowData, setSelectedRowData] = useState<RowDataType[]>([]);
-
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [columnState, setColumnState] = useState<any>([]);
+    const [isReset, setIsReset] = useState(false);
+    const [colDef, setColDef] = useState([{}]);
+    const [HeaderData, setHeaderData] = useState([{}]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    const { user } = useUserData();
+    
     const getSelectedRowData = () => {
 
         const selectedData = refGraph1.current?.api.getSelectedRows();
@@ -165,11 +176,6 @@ const OrderRescheduling = () => {
         { label: 'Overwrite Due Date', value: 'Overwrite Due Date', id: 'Overwrite Due Date' }
     ];
 
-    const [colDef, setColDef] = useState([{}]);
-
-    const [HeaderData, setHeaderData] = useState([{}]);
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
     const reportName = "OrderRescheduling";
 
     const setColumnDef = async () => {
@@ -183,7 +189,9 @@ const OrderRescheduling = () => {
     }
 
     useEffect(() => {
+        GetData();
         setColumnDef();
+        getUserColumnConfig();
     }, [])
 
 
@@ -195,6 +203,7 @@ const OrderRescheduling = () => {
             headerCheckboxSelection: false,
             checkboxSelection: true,
             maxWidth: 50,
+            flex: 1,
             suppressMenu: true,
             floatingFilter: false,
         }
@@ -219,8 +228,9 @@ const OrderRescheduling = () => {
                     addChangeDate: addChangeDate,
                 }
             },
-            initialWidth: 200,
-            width: 200,
+            flex: 1,
+            // initialWidth: 200,
+            // width: 200,
             filter: "agMultiColumnFilter",
             floatingFilter: true
         },
@@ -231,8 +241,9 @@ const OrderRescheduling = () => {
             hide: false,
             autoHeaderHeight: true,
             wrapHeaderText: true,
-            initialWidth: 210,
-            width: 210,
+            flex: 1,
+            // initialWidth: 210,
+            // width: 210,
             filter: "agMultiColumnFilter",
             cellRenderer: ReasonCellRenderer,
             floatingFilter: true
@@ -242,56 +253,9 @@ const OrderRescheduling = () => {
     useEffect(() => {
         const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
         setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
-    }, [HeaderData, customHeader]);
-
-
+    }, [HeaderData]);
 
     const [rowData, setRowData] = useState<RowDataType[]>([]);
-
-
-
-    // colDef = [
-    //     {
-    //         field: "",
-    //         headerCheckboxSelection: false,
-    //         checkboxSelection: true,
-    //         maxWidth: 50,
-    //         floatingFilter: false,
-    //     },
-    //     ...colDef,
-    //     {
-    //         colId: "dd",
-    //         field: "dd",
-    //         headerName: "Due Date",
-    //         hide: false,
-    //         autoHeaderHeight: true,
-    //         wrapHeaderText: true,
-    //         cellRenderer: currTab === 'Unschedule' ? "" : DueDateCellRenderer,
-    //         cellRendererParams: {
-    //             data: {
-    //                 addChangeDate: addChangeDate,
-
-    //             }
-    //         },
-    //         initialWidth: 200,
-    //         width: 200,
-    //         filter: "agMultiColumnFilter",
-    //         floatingFilter: true
-    //     },
-    //     {
-    //         colId: "rs",
-    //         field: "rs",
-    //         headerName: "Reason",
-    //         hide: false,
-    //         autoHeaderHeight: true,
-    //         wrapHeaderText: true,
-    //         initialWidth: 210,
-    //         width: 210,
-    //         filter: "agMultiColumnFilter",
-    //         cellRenderer: ReasonCellRenderer,
-    //         floatingFilter: true
-    //     }
-    // ];
 
     const [currData, setCurrData] = useState<any>(null);
 
@@ -381,7 +345,6 @@ const OrderRescheduling = () => {
         return true;
     }
 
-
     const PostData = async (data: any, message: string): Promise<boolean> => {
         if (reasonCheck(data.ordData)) {
 
@@ -417,10 +380,6 @@ const OrderRescheduling = () => {
         }
         return true;
     };
-
-    useEffect(() => {
-        GetData();
-    }, []);
 
     const unschedule = async () => {
         const finalData = convertJsonForUnschedule(selectedRowData, 'Admin', 1);
@@ -472,16 +431,82 @@ const OrderRescheduling = () => {
 
             });
             params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-        }
-        ;
+            params.api.autoSizeAllColumns();
+            setCurrentGridRef(refGraph1);
+    };
 
+    const getUserColumnConfig = async () => {
+        try {
+            const data = await getUserUIReportConfigData({
+            un: user.user.name,
+            rn_id: UIGridCode.ProdOrderRescheduling
+            });
+    
+            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            setColumnState(newConfig);
+    
+            if (!data) {
+            console.error('Failed to apply column state');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+        
+    
+    const handleSaveClick = async () => {
+        try {
+        const config = currentGridRef.current.api.getColumnState();
+
+        const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.ProdOrderRescheduling,
+            cs: JSON.stringify(config)
+        }
+        await updateUserUIReportConfigData([payload]);
+        await getUserColumnConfig();
+
+        } catch (error) {
+        console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
+
+    useEffect(()=>{ 
+        if (currentGridRef?.current && columnState?.length) {
+            const result = currentGridRef.current.api.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
+        }
+    });
+
+    useEffect(() => {
+        if (isReset) {
+            setColumnState(colDef);
+            setIsReset(false)
+        }else{
+            handleSaveClick();
+        }
+    }, [isReset]);
 
     return (
         <>
             <OrderReschedulingWrapper style={{ width: "100%", position: 'relative', height: '100%', display: "flex", flexDirection: "column" }}>
 
-                <MTOActionToolBar comp={'orderReschedule'} isExcelExport />
-                {isLoading && <OverlayLoader />}
+                <MTOActionToolBar 
+                    comp={'orderReschedule'} 
+                    isExcelExport 
+                    handleSaveClick={handleSaveClick}
+                    handleResetClick={handleResetClick}
+                />
+                {(isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
                     <div style={{ margin: "10px 0" }}>
@@ -531,9 +556,9 @@ const OrderRescheduling = () => {
                                     <ApplyZoomOut>
                                         {
                                             currTab === 'Unschedule' ?
-                                                <VFButton disabled={(selectedRowData && selectedRowData[0]) ? false : true} style={{ width: '150px' }} themeUi={user.user.them_ui} onClick={unschedule}>Unschedule</VFButton>
+                                                <VFButton disabled={(selectedRowData && selectedRowData[0]) ? false : true} style={{ width: '150px' }} themeUi={'pure'} onClick={unschedule}>Unschedule</VFButton>
                                                 :
-                                                <VFButton disabled={(selectedRowData && selectedRowData[0]) ? false : true} style={{ width: '200px' }} themeUi={user.user.them_ui} onClick={overwriteDD}>Overwrite Due Date</VFButton>
+                                                <VFButton disabled={(selectedRowData && selectedRowData[0]) ? false : true} style={{ width: '200px' }} themeUi={'pure'} onClick={overwriteDD}>Overwrite Due Date</VFButton>
                                         }
                                     </ApplyZoomOut>
                                 </div>
