@@ -20,7 +20,6 @@ import { TableWrapper } from "./styles";
 import { pagination,UIGridCode } from "../../Common/Enum";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { useUserData } from "../../../../../context"
-import OverlayLoader from "../../Common/Loader";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
