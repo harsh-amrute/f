@@ -23,6 +23,7 @@ import AnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/Material
 import ReasonsOrderAnalyticalScreen from "../../../VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/ReaonsOrderAnalyticalScreen";
 import DaywiseCoverageAnalytics from "../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/DayWiseCoverage/DayWiseCoverageAnalytics";
 import ProcAnalytics from "../../../VectorFlow/Pages/MTO/Procurement/Planning/ProcAnalytics";
+import SimAnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit/SimulateAnalytics";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -243,15 +244,19 @@ const NavbarItem = ({
           <InTransitAnalytics />
         )}
 
-        {isHide && pathname === '/procurement/material-coverage-open-sales' && menuItem.id ===  19 && (
-          <AnalyticalScreen/>
+        {isHide && pathname === '/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
+          <AnalyticalScreen />
         )}
 
-{isHide && pathname === '/procurement-planning/planning' && menuItem.id ===  19 && (
-          <ProcAnalytics/>
+        {isHide && pathname === '/planning/simulative-fullkit' && menuItem.id === 19 && (
+          <SimAnalyticalScreen />
         )}
-        
-         
+
+        {isHide && pathname === '/procurement-planning/planning' && menuItem.id === 19 && (
+          <ProcAnalytics />
+        )}
+
+
 
         {isHide && pathname === '/procurement/insights-and-trends/day-wise-coverage' && menuItem.id === 19 && (
           <DaywiseCoverageAnalytics />
@@ -290,7 +295,7 @@ const NavbarItem = ({
         )}
 
         {isHide && pathname === '/poogi/reasons-for-delayed-orders' && menuItem.id === 11 && (
-          <ReasonsOrderAnalyticalScreen/>
+          <ReasonsOrderAnalyticalScreen />
         )}
 
 
