@@ -17,7 +17,10 @@ import moment from "moment";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
 import { TableWrapper } from "./styles";
-import { pagination } from "../../Common/Enum";
+import { pagination,UIGridCode } from "../../Common/Enum";
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
+import { useUserData } from "../../../../../context"
+import OverlayLoader from "../../Common/Loader";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -72,7 +75,14 @@ const useMaterialReq = (forDate?: string) => {
     const d = forDate ? new Date(forDate) : new Date();
     const datetime = moment(d).format(format2);
     const [HeaderData, setHeaderData] = useState([{}]);
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [columnState, setColumnState] = useState<any>([]);
+    const [isReset, setIsReset] = useState(false);
+    const [colDef, setColDef] = useState([{}]);
+    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData(); 
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    const { user } = useUserData();
 
     const reportName = "MaterialRequirement";
 
@@ -86,7 +96,57 @@ const useMaterialReq = (forDate?: string) => {
         }
     }
 
+    const getUserColumnConfig = async () => {
+        try {
+          const data = await getUserUIReportConfigData({
+            un: user.user.name,
+            rn_id: UIGridCode.ProcMaterialRequirement
+          });
+    
+          const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+          setColumnState(newConfig);
+    
+          if (!data) {
+            console.error('Failed to apply column state');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const handleSaveClick = async () => {
+        try {
+          if(currentGridRef?.current?.api){
+            const config = currentGridRef.current.api.getColumnState();
+            const payload = {
+              un: user.user.name,
+              rn_id: UIGridCode.ProcMaterialRequirement,
+              cs: JSON.stringify(config)
+            }
+            await updateUserUIReportConfigData([payload]);
+            await getUserColumnConfig();
+          }
+    
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
+
     useEffect(() => {
+        if (isReset) {
+          setColumnState(colDef);
+          setIsReset(false)
+        }else{
+          handleSaveClick();
+        }
+    }, [isReset]);
+
+    useEffect(() => {
+        getUserColumnConfig();
         setColumnDef();
     }, [])
     const gridRef = useRef<AgGridReact>(null);
@@ -133,17 +193,25 @@ const useMaterialReq = (forDate?: string) => {
 
     }
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
-    const ShortageColumns = getColumnDefinations(HeaderData, customHeader)
-    const CompleteAvailableColumns = getColumnDefinations(HeaderData, customHeader)
     const [CumulativeData, SetCumulativeData] = useState<any[]>([]);
     const [DayWiseData, setDayWiseData] = useState<any[]>([]);
-    const { mutateAsync: getMaterialRequirementData } = useGetMaterialRequirementDetails();
-    const { mutateAsync: getMaterialRequirementDataDayWise } = useGetMaterialRequirementDetailsDatewise();
+    const { mutateAsync: getMaterialRequirementData, isLoading: isMatReqLoading } = useGetMaterialRequirementDetails();
+    const { mutateAsync: getMaterialRequirementDataDayWise,isLoading: isMatReqDayWiseLoading } = useGetMaterialRequirementDetailsDatewise();
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [currentCumPage, setcurrentCumPage] = useState<number>(1);
     const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
     const [cumulativeRecordCount, setcumulativeRecordCount] = useState<number>(0);
     const [date, setDate] = useState<string>(datetime);
+
+    useEffect(()=>{
+        if (currentTab.label === 'Shortage') {
+            setColDef(getColumnDefinations(HeaderData, customHeader))
+        }
+        else {
+            setColDef(getColumnDefinations(HeaderData, customHeader));
+        }
+    },[HeaderData])
+
 
     useEffect(() => {
         getInitialData()
@@ -323,21 +391,39 @@ const useMaterialReq = (forDate?: string) => {
             }
 
         };
+
+        useEffect(()=>{ 
+            if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+                const result = currentGridRef?.current?.api?.applyColumnState({
+                    state: columnState,
+                    applyOrder: true
+                });
+                if (!result) {
+                    console.error('Failed to apply column state');
+                }
+            }
+        });
+
         switch (currentTab.id) {
             case "sdv":
                 return (
                     <>
                         <TableWrapper>
-
+                        
                             <VFTable
                                 paginationPageSize={10}
                                 {...agGridProps}
-                                columnDefs={CompleteAvailableColumns}
+                                columnDefs={colDef}
                                 rowData={DayWiseData}
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
                                 tooltipMouseTrack={true}
                                 ref={gridRef}
+                                onGridReady={(params: any) => {
+                                    params.api.autoSizeAllColumns();
+                
+                                    setCurrentGridRef(gridRef);
+                                }}
                                 pagination={false}
                                 statusBar={{
                                     statusPanels: [
@@ -360,17 +446,22 @@ const useMaterialReq = (forDate?: string) => {
                 return (
                     <>
                         <TableWrapper>
-
+                           
                             <VFTable
                                 paginationPageSize={10}
                                 {...agGridProps}
-                                columnDefs={ShortageColumns}
+                                columnDefs={colDef}
                                 rowData={CumulativeData}
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
                                 tooltipMouseTrack={true}
                                 height={'550px'}
                                 ref={gridRef}
+                                onGridReady={(params: any) => {
+                                    params.api.autoSizeAllColumns();
+                
+                                    setCurrentGridRef(gridRef);
+                                }}
                                 statusBar={{
                                     statusPanels: [
                                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -404,7 +495,13 @@ const useMaterialReq = (forDate?: string) => {
         onDateChangeReq,
         onDateSubmitReq,
         date,
-        currentTab
+        currentTab,
+        isMatReqLoading,
+        isMatReqDayWiseLoading,
+        isUpdateUserConfig,
+        isGetUserConfig,
+        handleResetClick,
+        handleSaveClick,
         //excelDownload,
         //GetCount
     }
