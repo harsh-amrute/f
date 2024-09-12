@@ -205,7 +205,6 @@ const useSimFullKit = () => {
     }
 
     useEffect(() => {
-        console.log("header dataa", HeaderData)
         setSimulateColumns(getColumnDefinations(HeaderData, CustomDef, []))
     }, [HeaderData])
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);

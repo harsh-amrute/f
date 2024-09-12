@@ -25,10 +25,8 @@ import DaywiseCoverageAnalytics from "../../../VectorFlow/Pages/MTO/Procurement/
 import ProcAnalytics from "../../../VectorFlow/Pages/MTO/Procurement/Planning/ProcAnalytics";
 import SimAnalyticalScreen from "../../../VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit/SimulateAnalytics";
 import DDQAnalytics from "../../../VectorFlow/Pages/MTO/Production/DueDateQuotation/DDQAnalytics";
-import FullkitAnalytics from "../../../VectorFlow/Pages/MTO/Production/FullKitAssignement/FullkitAnalytics";
 import DRMAnalytics from "../../../VectorFlow/Pages/MTO/Production/DynamicReleaseManagement/DRMAnalytics";
 import DeptWiseAnalytics from "../../../VectorFlow/Pages/MTO/Production/DepartmentWiseBMReport/DeptWiseAnalytics";
-import OverallBMAnalytics from "../../../VectorFlow/Pages/MTO/Production/OverallBMReport/OverallBMAnalytics";
 import ResourceUtilAnalytics from "../../../VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization/ResourceUtilAnalytics";
 
 const NavbarItem = ({
@@ -251,7 +249,7 @@ const NavbarItem = ({
         )}
 
         {isHide && pathname === '/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
-          <AnalyticalScreen />
+          <AnalyticalScreen pageName="MaterialSO" />
         )}
 
         {isHide && pathname === '/production-planning-and-scheduling/due-date-quotation' && menuItem.id === 10 && (
@@ -259,11 +257,11 @@ const NavbarItem = ({
         )}
 
         {isHide && pathname === '/production-planning-scheduling/overall-bm-report' && menuItem.id === 10 && (
-          <OverallBMAnalytics />
+          <DeptWiseAnalytics />
         )}
 
         {isHide && pathname === '/production-planning-scheduling/full-kit-assignment' && menuItem.id === 10 && (
-          <FullkitAnalytics />
+          <AnalyticalScreen pageName="Fullkit assignment" />
         )}
         {isHide && pathname === '/production-planning-scheduling/dynamic-release-mangement' && menuItem.id === 10 && (
           <DRMAnalytics />

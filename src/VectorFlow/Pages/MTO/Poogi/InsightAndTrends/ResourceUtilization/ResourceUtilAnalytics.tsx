@@ -6,8 +6,6 @@ const ResourceUtilAnalytics = () => {
 
     const data = useSelector((state: any) => state.mto.ResourceUtilAnalytics)
 
-    console.log('here come the dat', data)
-
 
     if (data === null || data === undefined || data.type === undefined || data.type === null) {
         return null;

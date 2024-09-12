@@ -308,7 +308,6 @@ const ResourceUtilization = () => {
   }, [wipOverData, wipUnderData])
 
   function TooltipRenderer({ datum }: any) {
-    console.log("datum.....", datum)
     return `
       <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
           Details
@@ -765,8 +764,6 @@ const ResourceUtilization = () => {
     }
   };
 
-  console.log(selectedDept)
-  console.log("selectedPlant", selectedPlant)
 
   const WIPFilter: any =
     (
