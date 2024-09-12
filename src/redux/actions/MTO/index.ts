@@ -4,7 +4,8 @@ import { createAction } from '@reduxjs/toolkit';
 const actions = {
     SAVE_ANALYTICS_DATA: createAction<object>("SAVE_ANALYTICS_DATA"),
     DAYWISE_COVERAGE_ANALYTICS: createAction<object>("DAYWISE_COVERAGE_ANALYTICS"),
-    PROCPLANNING_ANALYTICS: createAction<object>("PROCPLANNING_ANALYTICS")
+    PROCPLANNING_ANALYTICS: createAction<object>("PROCPLANNING_ANALYTICS"),
+    RESOURCE_UTIL_ANALYTICS: createAction<object>("RESOURCE_UTIL_ANALYTICS"),
     // UPDATE_DAILY_DATA: createAction<DailyDataGraph>("UPDATE_DAILY_DATA"),
     // TOGGLE_GRAPH_MODAL: createAction<boolean>("TOGGLE_GRAPH_MODAL"),
     // TOGGLE_NORM_CHANGE_HISTORY_TABLE: createAction<boolean>("TOGGLE_NORM_CHANGE_HISTORY_TABLE"),
@@ -16,6 +17,7 @@ const actions = {
 export const {
     SAVE_ANALYTICS_DATA,
     DAYWISE_COVERAGE_ANALYTICS,
-    PROCPLANNING_ANALYTICS
+    PROCPLANNING_ANALYTICS,
+    RESOURCE_UTIL_ANALYTICS
 } = actions;
 //console.log('action=',actions.SAVE_ANALYTICS_DATA)

@@ -8,17 +8,18 @@ import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/
 import VFTable from "../../../Common/VFTable";
 import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
-import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
+import { getColumnDefinations, mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
 import { userGetProcAfterSimulationPlanningData } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
 import OverlayLoader from "../../../Common/Loader";
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import { toast } from "react-toastify";
+import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 
 
 const useSimFullKit = () => {
-    const { HeaderData } = GetSimulateFullKitHeader;
+    const [HeaderData, setHeaderData] = useState([]);
     const { isSideBarOpen } = useUserData()
     const [currentPage, setCurrentPage] = useState<any>(1);
     const location = useLocation();
@@ -27,6 +28,8 @@ const useSimFullKit = () => {
     const [data, setData] = useState([]);
     const [incOrderFullkitData, setIncOrderFullKitData] = useState<any[]>([]);
     const [cumulativeFullKitData, setCumulativeFullKitDara] = useState<any[]>([]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    const reportName = "SimulateFullkit";
     if (rowsData) {
         rowsData.forEach((item: any) => {
             if (Array.isArray(item.children)) {
@@ -53,6 +56,23 @@ const useSimFullKit = () => {
             }
         });
     }
+
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    useEffect(() => {
+        setColumnDef();
+    }, [])
+
+
+
     // const Save = () => {
     //     const newData: { sno: string; on: string; lid: string; item: string; easa: number }[] = [];
     //     if (rowsData) {
@@ -77,6 +97,8 @@ const useSimFullKit = () => {
 
 
     const [totalRows, setTotalRows] = useState(0);
+
+
 
 
     const { mutateAsync: userGetProcAfterSimulationData, isLoading, isSuccess, isError } = userGetProcAfterSimulationPlanningData();
@@ -147,7 +169,46 @@ const useSimFullKit = () => {
             value: 'cf'
         }
     ];
-    const SimulateColumns = mapSimulateProcPlanningFieldsToColDefs(HeaderData);
+
+    const [SimulateColumns, setSimulateColumns] = useState([]);
+
+    const CustomDef = {
+        ic: {
+            headerName: '',
+            cellRenderer: 'agGroupCellRenderer',
+            cellStyle: {
+                width: 50,
+                maxWidth: 50,
+            },
+            initialWidth: 40,
+        },
+        ColorPriority: {
+            cellRenderer: "colorCellRenderer",
+            initialWidth: 200,//160
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+        },
+        FullKitsAvail: {
+            cellRenderer: "avlCellRenderer",
+            tooltipComponent: 'availabilityToolTip',
+            tooltipValueGetter: (params: any) => {
+                const oq = params.data.oq;
+                const fka = params.data.fka;
+                return `${fka}/${oq} kits can be manufactured`;
+            },
+            initialWidth: 200,//160
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+            filter: 'agMultiColumnFilter',
+            floatingFilter: true,
+
+        }
+    }
+
+    useEffect(() => {
+        console.log("header dataa", HeaderData)
+        setSimulateColumns(getColumnDefinations(HeaderData, CustomDef, []))
+    }, [HeaderData])
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
 
     const icons = useMemo(() => {
