@@ -20,6 +20,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { ColDef } from "ag-grid-enterprise";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
 
 
@@ -31,6 +32,9 @@ const useInTransitWhereAbouts = ()=>{
 
     const {user} = useUserData()
 
+    const [internalRef,setInternalRef] = useState<any>()
+
+    const [gridState,setGridState] = useState<any>()
 
     const themeUi = user.user.theme_ui
 
@@ -105,7 +109,7 @@ const useInTransitWhereAbouts = ()=>{
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
-    // const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const {mutateAsync:getState} = useGetState()
     // const [columnState,setColumnState] = useState<any>()
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
@@ -130,80 +134,103 @@ const useInTransitWhereAbouts = ()=>{
       getInitialData()
     },[]) 
 
+    useEffect(()=>{
+      const getTableState = async()=>{
+        try{
+          const data =  await getState("InTransitWhereAbouts")
+          setGridState(JSON.parse(data.data.data))
+        }catch(err:any){
+          setGridState({
+              charts:[],
+              columns:[],
+              pivot:false
+          })
+        }
+      }
+      getTableState()
+  },[])
+
+  useEffect(()=>{
+      if(internalRef){
+          internalRef.api.applyColumnState({state:gridState.columns })
+      }
+  },[internalRef,gridState])
     
 
-    const agGridProps: AgGridReactProps = {
-      debug:true,
-      readOnlyEdit:false,
-      icons:{
-        groupExpanded: `<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg"} style="width: 20px; height: 20px;">`,
-        groupContracted:`<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus.svg"} style="width: 20px; height: 20px;">`
-      },
-      masterDetail:true,
-      detailRowHeight:500,
-      detailCellRenderer:MasterDetail,
-      detailCellRendererParams:{
-        onContactDetails:onOpenContactModal
-      },
-      // detailRowAutoHeight:true,
-      // detailCellRendererParams:{
-      //   detailGridOptions: {
-      //     columnDefs: [{ field: 'detailData' }],
-      //   },
-      //   getDetailRowData: function(params:any) {
-      //     params.successCallback([1,2,3,4,5,5,3,23,2,5,2,2]);
-      //   },
-      //   pagination: true
-      // },
-        suppressRowTransform: true,
-        tooltipShowDelay: 0.3,
-        tooltipTrigger: 'focus',
-        tooltipInteraction: true,
-        // rowSelection:'single',
-        gridOptions: {
-            animateRows:true,
-            rowHeight: 50,
-            getRowStyle: (params: any) => {
-                if (params.node.rowIndex % 2 === 0) {
-                    return { background: "#EBEBEB" };
-                }
-                return { background: "#F7F7F7" };
-            },
-            readOnlyEdit:true
+    const agGridProps: AgGridReactProps =useMemo(()=>{
+      return  {
+        readOnlyEdit:false,
+        icons:{
+          groupExpanded: `<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg"} style="width: 20px; height: 20px;">`,
+          groupContracted:`<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus.svg"} style="width: 20px; height: 20px;">`
         },
-        
-        sideBar:defaultAgGridSideBarForBPR,
-        // suppressRowClickSelection: true,
-        components: customCellRenderers,
-        defaultColDef: {
-          
-            floatingFilter: true,
-            filter: "agMultiColumnFilter",
-            cellDataType: false,
-            resizable: false,
-            minWidth:140,
-            cellStyle: {
-              "text-align": "center",
-              'text-overflow':'ellipsis',
-              'white-space':'nowrap'
-            },
-            flex: 1,
+        masterDetail:true,
+        detailRowHeight:500,
+        detailCellRenderer:MasterDetail,
+        detailCellRendererParams:{
+          onContactDetails:onOpenContactModal
         },
-        enableRangeSelection:true ,
-        rowSelection:"multiple",
-        // onPasteEnd:(params)=>console.log(params),
-        // enableGroupEdit:true,
-        statusBar : {
-            statusPanels: [
-              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-              { statusPanel: 'agTotalRowCountComponent', align:'left' },
-              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-              { statusPanel: 'agAggregationComponent', align:'left' },
-            ],
+        // detailRowAutoHeight:true,
+        // detailCellRendererParams:{
+        //   detailGridOptions: {
+        //     columnDefs: [{ field: 'detailData' }],
+        //   },
+        //   getDetailRowData: function(params:any) {
+        //     params.successCallback([1,2,3,4,5,5,3,23,2,5,2,2]);
+        //   },
+        //   pagination: true
+        // },
+          suppressRowTransform: true,
+          tooltipShowDelay: 0.3,
+          tooltipTrigger: 'focus',
+          tooltipInteraction: true,
+          // rowSelection:'single',
+          gridOptions: {
+              animateRows:true,
+              rowHeight: 50,
+              getRowStyle: (params: any) => {
+                  if (params.node.rowIndex % 2 === 0) {
+                      return { background: "#EBEBEB" };
+                  }
+                  return { background: "#F7F7F7" };
+              },
+              readOnlyEdit:true
           },
-          onCellValueChanged:(params)=>onCellValueChanged(params.data,"OrderNo")
-    }
+          
+          sideBar:defaultAgGridSideBarForBPR,
+          // suppressRowClickSelection: true,
+          components: customCellRenderers,
+          defaultColDef: {
+            
+              floatingFilter: true,
+              filter: "agMultiColumnFilter",
+              cellDataType: false,
+              resizable: false,
+              minWidth:140,
+              cellStyle: {
+                "text-align": "center",
+                'text-overflow':'ellipsis',
+                'white-space':'nowrap'
+              },
+              flex: 1,
+          },
+          enableRangeSelection:true ,
+          rowSelection:"multiple",
+          // onPasteEnd:(params)=>console.log(params),
+          // enableGroupEdit:true,
+          statusBar : {
+              statusPanels: [
+                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                { statusPanel: 'agAggregationComponent', align:'left' },
+              ],
+            },
+            onCellValueChanged:(params)=>onCellValueChanged(params.data,"OrderNo"),
+            onGridReady:(params)=>setInternalRef(params)
+      }
+    },[])
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{

@@ -59,7 +59,6 @@ const ResearchInsights = ()=>{
         rowsPerPage,
         currGridPage,
         isSavedDataLoading,
-        columnState,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
@@ -138,9 +137,6 @@ const ResearchInsights = ()=>{
                             ref={ref}
                             columnDefs={ResearchInsightsColumns}
                             rowData={ResearchInsightsData}
-                            onGridReady={(params)=>{
-                                if(columnState)params.api.applyColumnState({state:columnState})
-                            }}
                             enableRangeSelection={true} // Added property
                             rowSelection="multiple"
                             statusBar = {{

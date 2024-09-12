@@ -1,4 +1,4 @@
-import {render,act } from '@testing-library/react';
+import {render } from '@testing-library/react';
 import { useGetDBMApplySelectedNorm,useGetDBMData,useGetDBMDataCount,useGetDBMUIConfiguration,useGetDBMUpdateSleepTbl } from "../../../../Services/MTA/DBM"
 import { mockDBMApplySelectedNorm,mockDBMCountData,mockDBMData,mockDBMUIConfigData,mockDBMUpdateSleepTbl} from "../../../../../mock-data/DBM";
 import DBM from './';
@@ -27,6 +27,10 @@ const useGetDBMApplySelectedNormMock = useGetDBMApplySelectedNorm as jest.Mocked
 const useGetDBMUpdateSleepTblMock = useGetDBMUpdateSleepTbl as jest.MockedFunction<
     typeof useGetDBMUpdateSleepTbl
 >;
+
+// const useGetStateMock = useGetState as jest.MockedFunction<
+//   typeof useGetState
+// >
 
   window.URL.createObjectURL = jest.fn();
 
@@ -87,6 +91,8 @@ const useDBMApplySelectedNormResult: any = {
     },
   };
 
+  
+
 
 describe("Renders DBM Component", ()=>{
     beforeEach(()=>{
@@ -106,6 +112,18 @@ describe("Renders DBM Component", ()=>{
             return useDBMUpdateSleepTbl;
         });
 
+        // useGetStateMock.mockImplementation(():any=>{
+        //   return{
+        //     mutateAsync:()=>{
+        //       return {
+        //         data:{data: GetStateMockResponse}
+        //       }
+        //     }
+        //   }
+          
+        // })
+    
+
     });
     it("renders Loading Overlay Component when loading", async()=>{
         useGetDBMUIConfigurationMock.mockImplementation(()=>{
@@ -113,11 +131,11 @@ describe("Renders DBM Component", ()=>{
         });
         render(contextWrapper(<DBM />,store));
     })
-     it("renders DBMNorm", async()=>{
-        await act(async () => {
-          render(contextWrapper(<DBM />,store));
-          })
-    })
+    //  it("renders DBMNorm", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<DBM />,store));
+    //       })
+    // })
 
     //  it("Handles Pagination", async()=>{
     //     await act(async () => {

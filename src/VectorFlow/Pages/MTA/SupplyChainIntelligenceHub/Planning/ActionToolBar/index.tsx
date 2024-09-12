@@ -346,6 +346,7 @@ const ActionToolBar = ({
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
+              currentTab={currentTab}
               setMultiFilter={setMultiFilter}
               productFilterActive={true}
               supplyChainNodeFilterActive={true}

@@ -11,7 +11,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type RootState } from "../../../../../redux/store/store";
 import { DailyDataGraph } from "../../../../types/MTA"
-import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetDailyData, useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
@@ -25,6 +25,9 @@ const useDBM =()=>{
     const [DBMRowData,setDBMRowData] = useState<any[]>([])
     const [DBMDataCount, setDBMDataCount]=useState<any>();
     // const [recordCount,setRecordCount] = useState<number>(0)
+
+    const [internalRef,setInternalRef] = useState<any>()
+    const [gridState,setGridState] = useState<any>()
 
     const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
     const [currentPage,setCurrentPage] = useState<any>(1);
@@ -44,6 +47,8 @@ const useDBM =()=>{
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
+    const {mutateAsync:getState} = useGetState()
+
     const {mutateAsync:getDailyData} = useGetDailyData();
 
     const dispatch = useDispatch();
@@ -54,6 +59,28 @@ const useDBM =()=>{
         sleepCellRenderer:DBMSleepCellRenderer,
         suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
       }), []);
+
+      useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("DBMNorm")
+            setGridState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setGridState({
+                charts:[],
+                columns:[],
+                pivot:false
+            })
+          }
+        }
+        getTableState()
+    },[])
+  
+    useEffect(()=>{
+        if(internalRef){
+            internalRef.api.applyColumnState({state:gridState?.columns })
+        }
+    },[internalRef,gridState])
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -80,7 +107,7 @@ const useDBM =()=>{
         getDataCount(currentFilter);
         getDBMRowData(currentFilter,currentPage);
     }
-    const DBMColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
+    const DBMColumns = useMemo(()=>mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter),[data])
 
     const showAllCheckbox = () => {
         const rows:any[] = []
@@ -195,40 +222,43 @@ const useDBM =()=>{
     }
 
 
-    const agGridProps:AgGridReactProps = {
-        tooltipShowDelay:0,
-        tooltipTrigger:"focus",
-        readOnlyEdit:true,
-        suppressRowClickSelection:true,
-        components:customCellRenderers,
-        enableBrowserTooltips:true,
-        rowSelection:'multiple',
-        gridOptions:{
-            rowHeight:50,
-            getRowStyle: (params: any) => {
-            if (params.node.rowIndex % 2 === 0) {
-                return { background: "#EBEBEB" };
-            }
-            return { background: "#F7F7F7" };
+    const agGridProps:AgGridReactProps = useMemo(()=>{
+        return {
+            tooltipShowDelay:0,
+            tooltipTrigger:"focus",
+            readOnlyEdit:true,
+            suppressRowClickSelection:true,
+            components:customCellRenderers,
+            enableBrowserTooltips:true,
+            rowSelection:'multiple',
+            gridOptions:{
+                rowHeight:50,
+                getRowStyle: (params: any) => {
+                if (params.node.rowIndex % 2 === 0) {
+                    return { background: "#EBEBEB" };
+                }
+                return { background: "#F7F7F7" };
+                },
             },
-        },
-        pagination:false,
-        defaultColDef:{
-            floatingFilter: true,
-            cellStyle:{
-                'text-align':'center',
-                'height':'50px',
-                "font-style":"normal",
-            " font-variant":"normal",
-            " font-weight":"300",
-            " font-size":"20px",
-            " font-family":"Roboto",
-            "display":"block",
-            'text-overflow':'ellipsis',
-            'white-space':'nowrap'
-            }
+            pagination:false,
+            defaultColDef:{
+                floatingFilter: true,
+                cellStyle:{
+                    'text-align':'center',
+                    'height':'50px',
+                    "font-style":"normal",
+                " font-variant":"normal",
+                " font-weight":"300",
+                " font-size":"20px",
+                " font-family":"Roboto",
+                "display":"block",
+                'text-overflow':'ellipsis',
+                'white-space':'nowrap'
+                }
+            },
+            onGridReady:(params)=>setInternalRef(params)
         }
-    }
+    },[])
 
     
 

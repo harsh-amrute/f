@@ -19,6 +19,7 @@ interface GridViewProps {
 
 }
 const GridView = ({category,currentTab,currentGridData,paginationProps,onOpenDailyDataGraph}:GridViewProps) => {
+    console.log(currentGridData)
     const renderGrid = ()=>{
         switch(category){
             case 'GITFromParent':

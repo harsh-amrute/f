@@ -18,7 +18,6 @@ const BuyerOrderReport = ()=>{
         currentPage,
         recordCount,
         ref,
-        columnState,
         isSavedDataLoading,
         handleChangePage,
         tempRef,
@@ -99,10 +98,6 @@ const BuyerOrderReport = ()=>{
                   columnDefs={BORColumns}
                   rowData={rowData}
                   ref={ref}
-                  onGridReady={(params) => {
-                    if (columnState)
-                      params.api.applyColumnState({ state: columnState });
-                  } }
                   enableRangeSelection={true} // Added property
                   rowSelection="multiple"
                   statusBar={{
