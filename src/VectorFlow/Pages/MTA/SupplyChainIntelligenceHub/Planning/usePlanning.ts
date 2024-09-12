@@ -179,7 +179,18 @@ const usePlanning = ()=>{
                 ])
             }
             else{
-                return []
+                return ([
+                    {
+                        id:'expediteDispatches',
+                        label:'Expedite Dispatches',
+                        value:'expediteDispatches'
+                    },
+                    {
+                        id:'createAvailabilityAtParent',
+                        label:'Create Availability At Parent',
+                        value:'createAvailabilityAtParent'
+                    },
+                ])
             }
           
         }
@@ -199,7 +210,18 @@ const usePlanning = ()=>{
                 ])
             }
             else{
-                return []
+                return ([
+                    {
+                        id:'expediteDispatches',
+                        label:'Expedite Dispatches',
+                        value:'expediteDispatches'
+                    },
+                    {
+                        id:'createAvailabilityAtParent',
+                        label:'Create Availability At Parent',
+                        value:'createAvailabilityAtParent'
+                    },
+                ])
             }
           
         }
@@ -521,12 +543,23 @@ const usePlanning = ()=>{
                     }
                     if(!fromPagination){
                         const count = await getPlanningDataGridCount(body)
-                        setTotalRows(count.data.data)
-                        setPlanningCounts({...planningCounts,parentExpediteCount:count.data.data})
-                        // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
+                        const {createAvailabilityAtParent,expediteDispatches} = JSON.parse(count.data.data)[0]
+                        const tempTab =tab?tab:currentTab
+                        if(tempTab==="createAvailabilityAtParent"){
+                            setPlanningCounts({...planningCounts,parentExpediteCount:createAvailabilityAtParent})
+                            setTotalRows(createAvailabilityAtParent)
+                        }
+                        else {
+                            setPlanningCounts({...planningCounts,parentExpediteCount:expediteDispatches})
+                            setTotalRows(expediteDispatches)
+                        }
                     }
+                    
                     const result = await getPlanningDataGrid(body);
-                    setCurrentGridData(result.data.data);
+                    const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data[0];
+                    const uiConfig = result.data.data.uiConfig;
+                    const customData = {"createAvailabilityAtParent":{"data":createAvailabilityAtParent,"uiConfig":uiConfig},"expediteDispatches":{"data":expediteDispatches,"uiConfig":uiConfig}};
+                    setCurrentGridData(customData);
                     if(fromPagination)setTotalRows(planningCounts.parentExpediteCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
@@ -546,13 +579,23 @@ const usePlanning = ()=>{
                     if(!fromPagination){
                         body.paginationParameter.pageNumber  = 1
                         const count = await getPlanningDataGridCount(body)
-                        setTotalRows(count.data.data)
+                        const {createAvailabilityAtParent,expediteDispatches} = JSON.parse(count.data.data)[0]
+                        const tempTab =tab?tab:currentTab
+                        if(tempTab==="createAvailabilityAtParent"){
+                            setPlanningCounts({...planningCounts,parentExpediteCount:createAvailabilityAtParent})
+                            setTotalRows(createAvailabilityAtParent)
+                        }
+                        else {
+                            setPlanningCounts({...planningCounts,parentExpediteCount:expediteDispatches})
+                            setTotalRows(expediteDispatches)
+                        }
                         setCurrentPage(1)
-                        setPlanningCounts({...planningCounts,childExpediteCount:count.data.data})
-                        // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
                     }
                     const result = await getPlanningDataGrid(body);
-                    setCurrentGridData(result.data.data);
+                    const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data[0];
+                    const uiConfig = result.data.data.uiConfig;
+                    const customData = {"createAvailabilityAtParent":{"data":createAvailabilityAtParent,"uiConfig":uiConfig},"expediteDispatches":{"data":expediteDispatches,"uiConfig":uiConfig}};
+                    setCurrentGridData(customData);
                     if(fromPagination)setTotalRows(planningCounts.childExpediteCount)
                     toast.dismiss(toastId);
                     notifySuccess("Grid Details Fetched Successfully");
@@ -645,6 +688,14 @@ const usePlanning = ()=>{
             setCurrentPage(1)
             fetchAndUpdateGridData(1,false,currentFilter,tab.value)
         }
+        if(currentCategory==='ExpediteFromParent' && currentView==='grid'){
+            setCurrentPage(1)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+        }
+        if(currentCategory==='ExpediteToChild' && currentView==='grid'){
+            setCurrentPage(1)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+        }
     }
 
 
@@ -733,8 +784,16 @@ const usePlanning = ()=>{
         if(currentGridData){
             let currUiConfig = []
             if(currentCategory==="GITToChild"){
-                if(currentTab==="locationWise")currUiConfig=currentGridData['locationWise'].uiConfig
+                if(currentTab==="locationWise") currUiConfig=currentGridData['locationWise'].uiConfig
                 else currUiConfig=currentGridData['transporterWise'].uiConfig
+            }
+            else if(currentCategory==="ExpediteFromParent"){
+                if(currentTab==="createAvailabilityAtParent") currUiConfig=currentGridData['createAvailabilityAtParent'].uiConfig
+                else currUiConfig=currentGridData['expediteDispatches'].uiConfig
+            }
+            else if(currentCategory==="ExpediteToChild"){
+                if(currentTab==="createAvailabilityAtParent") currUiConfig=currentGridData['createAvailabilityAtParent'].uiConfig
+                else currUiConfig=currentGridData['expediteDispatches'].uiConfig
             }
             else currUiConfig = currentGridData.uiConfig
             let colDefs = [];

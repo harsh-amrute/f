@@ -1,18 +1,18 @@
 import {useState,useMemo}from 'react';
-import GridViewTable from "../../../GridView/GridViewTable";
-import { BPRTagsCellRenderer } from "../../../../BPR/BPRCellRenderers";
+import GridViewTable from "../../../../GridView/GridViewTable";
+import { BPRTagsCellRenderer } from "../../../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import { VFPaginationProps } from "../../../../../../../../components/VectorFLOW/commons/VFPagination";
+import { VFPaginationProps } from "../../../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
-import { createIconColumn, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../helpers/utils';
-import BPRGraphCellRenderer from '../../../../BPR/BPRGraphCellRenderer';
-import ColorCellRenderer from '../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
-import RequestExpeditingModal from '../../../../BPR/RequestExpeditingModal';
-import { useSubmitOpenExpediteRequest } from '../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
-import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../helpers/notify';
+import { createIconColumn, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
+import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
+import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
+import RequestExpeditingModal from '../../../../../BPR/RequestExpeditingModal';
+import { useSubmitOpenExpediteRequest } from '../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 
-const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
+const ExpediteParentCreateAvailabilityAtParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
     const [isExpeditingModalOpen,toggleExpeditingModal] =  useState<boolean>(false)
 
     const [activeRow,setActiveRow] = useState<any>();
@@ -249,4 +249,4 @@ const ExpediteParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCa
     )
 }
 
-export default ExpediteParentGrid
+export default ExpediteParentCreateAvailabilityAtParentGrid;

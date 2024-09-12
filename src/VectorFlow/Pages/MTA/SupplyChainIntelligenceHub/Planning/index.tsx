@@ -52,7 +52,6 @@ const Planning = () => {
     } = usePlanning();
 
 
-
     const renderView = () => {
 
         switch(currentView){
