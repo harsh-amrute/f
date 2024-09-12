@@ -3,7 +3,6 @@ import { GridOptions, IRowNode } from 'ag-grid-enterprise';
 import { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
 import { getColumnDefinations } from '../../../../../helpers/utils';
-import { fullKitAssignmentHeader } from './data';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './DynamicReleaseManagement.styled';
@@ -22,6 +21,8 @@ import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { pagination } from '../../Common/Enum';
+import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
+
 
 const DynamicReleaseManagement = () => {
   interface InputData {
@@ -40,7 +41,7 @@ const DynamicReleaseManagement = () => {
     selected: boolean;
     ccr_name: string;
   }
-  const [HeaderData] = useState(fullKitAssignmentHeader);
+  const reportName = "DynamicReleaseManagement";
   const refGrid = useRef<GridRef | any>(null)
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [rowRelease, setRowRelease] = useState(false);
@@ -59,6 +60,23 @@ const DynamicReleaseManagement = () => {
   const [showModal, setShowModal] = useState(false)
   const graph = useRef<any>();
   const [message, setMessage] = useState('');
+  const [HeaderData, setHeaderData] = useState([]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+
   const GetData = async (allOrders = 0, page = 1, graph = 1) => {
     if (allOrders) {
       try {
@@ -150,12 +168,10 @@ const DynamicReleaseManagement = () => {
     Tags: {
       cellRenderer: ColorCellRenderer,
       minWidth: 150
-    }
-  }
-
-  const extras = [
-    {
+    },
+    DropDown: {
       field: "",
+      headerName: '',
       position: 0,
       resizable: false,
       headerCheckboxSelection: false,
@@ -164,6 +180,10 @@ const DynamicReleaseManagement = () => {
       suppressMenu: true,
       floatingFilter: false,
     }
+  }
+
+  const extras: any = [
+
   ];
 
 
@@ -239,8 +259,8 @@ const DynamicReleaseManagement = () => {
 
 
   const colDefs = useMemo(() => {
-    return getColumnDefinations(HeaderData.data, colDefCustomizations, extras)
-  }, [])
+    return getColumnDefinations(HeaderData, colDefCustomizations, extras)
+  }, [HeaderData])
 
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {
@@ -651,7 +671,7 @@ const DynamicReleaseManagement = () => {
         </div>
         <EditRouteModal chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
         <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
-      </Wrapper >
+      </Wrapper>
     </>
   )
 }

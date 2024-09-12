@@ -37,6 +37,8 @@ import OverlayLoader from "../../../Common/Loader";
 import { toast } from "react-toastify";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
+import { useDispatch } from "react-redux";
+import { RESOURCE_UTIL_ANALYTICS } from "../../../../../../redux/actions/MTO";
 
 const ResourceUtilization = () => {
   const chartRef = useRef<any>(null);
@@ -70,6 +72,7 @@ const ResourceUtilization = () => {
   const [wipOverData, setWipOverData] = useState<any>();
   const [wipUnderData, setWipUnderData] = useState<any>();
   const defaultDepartment = { label: 'Select Department', value: '' };
+  const dispatch = useDispatch()
 
   const GetData = async () => {
     try {
@@ -146,6 +149,47 @@ const ResourceUtilization = () => {
     }
   }
 
+
+  const createAnalyticsData = (apiData: any) => {
+    console.log('firstAnalyticsData', apiData);
+    if (selectedGraphState === 'wipLimit') {
+      const newAnalyticsData = {
+        type: 'wip',
+        ol: apiData.wiplimit.olimit.length,
+        ul: apiData.wiplimit.ulimit.length,
+      }
+
+      dispatch(RESOURCE_UTIL_ANALYTICS(newAnalyticsData));
+
+    }
+    else {
+      let six = 0;
+      let sixeight = 0;
+      let eight = 0;
+
+      apiData.utilization.forEach((ele: any) => {
+        if (ele.aup < 60) {
+          six++;
+        }
+        else if (ele.aup >= 60 && ele.aup <= 80) {
+          sixeight++;
+        }
+        else {
+          eight++;
+        }
+      })
+      const newAnalyticsData = {
+        type: 'util',
+        sixty: six,
+        sixeight,
+        eight
+      }
+      dispatch(RESOURCE_UTIL_ANALYTICS(newAnalyticsData));
+
+
+    }
+  }
+
   const filterDepartment = () => {
     const depts = masterDept;
     const myDeptOpts: any = [];
@@ -168,7 +212,14 @@ const ResourceUtilization = () => {
     if (apiData) {
       getCCROptions(apiData)
     }
+
   }, [apiData])
+
+  useEffect(() => {
+    if (apiData) {
+      createAnalyticsData(apiData);
+    }
+  }, [selectedGraphState])
 
   useEffect(() => {
     if (selectedPlant?.value) {
@@ -257,7 +308,6 @@ const ResourceUtilization = () => {
   }, [wipOverData, wipUnderData])
 
   function TooltipRenderer({ datum }: any) {
-    console.log("datum.....", datum)
     return `
       <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
           Details
@@ -714,8 +764,6 @@ const ResourceUtilization = () => {
     }
   };
 
-  console.log(selectedDept)
-  console.log("selectedPlant", selectedPlant)
 
   const WIPFilter: any =
     (
