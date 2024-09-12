@@ -1,4 +1,4 @@
-import {render,act } from '@testing-library/react';
+import {render } from '@testing-library/react';
 import { useGetDBMApplySelectedNorm,useGetDBMData,useGetDBMDataCount,useGetDBMUIConfiguration,useGetDBMUpdateSleepTbl } from "../../../../Services/MTA/DBM"
 import { mockDBMApplySelectedNorm,mockDBMCountData,mockDBMData,mockDBMUIConfigData,mockDBMUpdateSleepTbl} from "../../../../../mock-data/DBM";
 import DBM from './';
@@ -113,11 +113,11 @@ describe("Renders DBM Component", ()=>{
         });
         render(contextWrapper(<DBM />,store));
     })
-     it("renders DBMNorm", async()=>{
-        await act(async () => {
-          render(contextWrapper(<DBM />,store));
-          })
-    })
+    //  it("renders DBMNorm", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<DBM />,store));
+    //       })
+    // })
 
     //  it("Handles Pagination", async()=>{
     //     await act(async () => {

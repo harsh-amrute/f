@@ -54,6 +54,7 @@ export interface BPRFilter{
     type?:string
     name:string
     attributeName:string
+    label:string
     operator:string
     value:string
 }
