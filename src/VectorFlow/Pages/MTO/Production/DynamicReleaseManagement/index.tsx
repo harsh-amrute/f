@@ -20,9 +20,9 @@ import { useGetCCRGroupMaster, useGetLineCCRDetails, useGetRouteDetails } from '
 import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
-import { pagination } from '../../Common/Enum';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
-
+import { pagination, UIGridCode } from '../../Common/Enum';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 
 const DynamicReleaseManagement = () => {
   interface InputData {
@@ -42,6 +42,10 @@ const DynamicReleaseManagement = () => {
     ccr_name: string;
   }
   const reportName = "DynamicReleaseManagement";
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const [isReset, setIsReset] = useState(false);
+  const [colDef, setColDef] = useState([{}]);
   const refGrid = useRef<GridRef | any>(null)
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [rowRelease, setRowRelease] = useState(false);
@@ -51,6 +55,8 @@ const DynamicReleaseManagement = () => {
   const [table1, setTable1] = useState(true);
   const [showReleaseModal, setShowReleaseModal] = useState(false)
   const { mutateAsync: getDynamicReleaseData, isLoading, isError, isSuccess } = useGetDynamicReleaseData();
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const [currData, setCurrData] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
   const [graphData, setGraphData] = useState<any>([]);
@@ -72,10 +78,6 @@ const DynamicReleaseManagement = () => {
       console.log(e);
     }
   }
-
-  useEffect(() => {
-    setColumnDef();
-  }, [])
 
   const GetData = async (allOrders = 0, page = 1, graph = 1) => {
     if (allOrders) {
@@ -113,7 +115,13 @@ const DynamicReleaseManagement = () => {
   useEffect(() => {
     getMastersData();
     GetData();
+    getUserColumnConfig();
+    setColumnDef();
   }, [])
+  
+  useEffect(()=>{
+    setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extras)) 
+  },[HeaderData])
 
 
   useEffect(() => {
@@ -256,12 +264,6 @@ const DynamicReleaseManagement = () => {
     }
   };
 
-
-
-  const colDefs = useMemo(() => {
-    return getColumnDefinations(HeaderData, colDefCustomizations, extras)
-  }, [HeaderData])
-
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {
       return {
@@ -288,7 +290,7 @@ const DynamicReleaseManagement = () => {
       ],
     },
 
-    columnDefs: colDefs,
+    columnDefs: colDef,
     defaultColDef: {
       resizable: true,
       suppressMenu: true,
@@ -617,16 +619,89 @@ const DynamicReleaseManagement = () => {
 
       });
       params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-
+      setCurrentGridRef(refGrid);
     }
+  
+    
+    const getUserColumnConfig = async () => {
+      try {
+          const data = await getUserUIReportConfigData({
+          un: user.user.name,
+          rn_id: UIGridCode.ProdDynamicReleaseManagement
+          });
+  
+          const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+          setColumnState(newConfig);
+  
+          if (!data) {
+          console.error('Failed to apply column state');
+          }
+      } catch (error) {
+          console.error(error);
+      }
+  }
+      
+  
+  const handleSaveClick = async () => {
+      try {
+          if(currentGridRef?.current?.api){
+              const config = currentGridRef.current.api.getColumnState();
+
+              const payload = {
+                  un: user.user.name,
+                  rn_id: UIGridCode.ProdDynamicReleaseManagement,
+                  cs: JSON.stringify(config)
+              }
+              await updateUserUIReportConfigData([payload]);
+              await getUserColumnConfig();
+          }
+      } catch (error) {
+      console.error(error);
+      }
+  }
+
+  const handleResetClick = () => {
+      setIsReset(true);
+  }
+
+  useEffect(()=>{ 
+      if (currentGridRef?.current && columnState?.length) {
+          const result = currentGridRef.current.api.applyColumnState({
+              state: columnState,
+              applyOrder: true
+          });
+          if (!result) {
+              console.error('Failed to apply column state');
+          }
+      }
+  });
+
+  useEffect(() => {
+      if (isReset) {
+          setColumnState(colDef);
+          setIsReset(false)
+      }else{
+          handleSaveClick();
+      }
+  }, [isReset]);
 
   return (
     <>
       <Wrapper>
         {
-          isLoading && <OverlayLoader />
+          (isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
         }
-        <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton isReleaseButton isReleaseButtonDisabled={isReleaseButtonDisabled} onOrderRelease={onOrderRelease} onCheckBoxToggle={setAllRows} />
+        <MTOActionToolBar 
+          comp="FullKitAssignment" 
+          isExcelExport 
+          isAddFilterButton 
+          isReleaseButton 
+          isReleaseButtonDisabled={isReleaseButtonDisabled} 
+          onOrderRelease={onOrderRelease} 
+          onCheckBoxToggle={setAllRows}
+          handleSaveClick={handleSaveClick}
+          handleResetClick={handleResetClick}
+        />
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 
