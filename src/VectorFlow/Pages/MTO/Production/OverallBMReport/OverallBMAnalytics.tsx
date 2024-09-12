@@ -19,14 +19,10 @@ import {
     BPRDailyAnalyticsTableCellHeader,
     BPRDailyAnalyticsTableCellText,
 } from './styles'
-import { useUserData } from '../../../../../context'
 
 
 const OverallBMAnalytics = () => {
 
-
-    const user = useUserData();
-    const themeUi = user.user.theme_ui;
     const [isLoading] = useState<boolean>(false);
 
 

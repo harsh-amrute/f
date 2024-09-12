@@ -17,10 +17,7 @@ import { formatNumber } from '../../Procurement/MaterialCoverage/CommonFunc';
 
 
 const DRMAnalytics = () => {
-    //AnalyticsData
-    let totalOrderCount = 0;
-    let totalCustCount = 0;
-    let totalOrderVal = 0;
+
     const options = {
         "Order": [
             {
@@ -65,11 +62,6 @@ const DRMAnalytics = () => {
         },
     ])
 
-    options?.Order?.map((o: any) => {
-        totalOrderCount += o.ccr;
-        totalCustCount += o.RMS;
-        totalOrderVal += (o.ccr + o.RMS);
-    })
 
     if (!options.Order) {
         return null

@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import * as gridSystem from "../../../../../styles/gridSystem";
-import * as globalStyles from "../../../../../styles/global";
 import * as globalstyles from '../../../../../styles/global'
 
 //export const BMDepWrapper = styled.div`
@@ -110,7 +109,7 @@ cursor: pointer;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   ${(props) => props.bgColor ? `background-color:${props.bgColor};` : `background: ${props.status === "active" ? props.themeUi === "REGALBLAZE"
-    ? globalStyles.chooseThemeColor[props.themeUi]?.color5
+    ? globalstyles.chooseThemeColor[props.themeUi]?.color5
     : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box" : 'white'};`}
   box-shadow: 0px 5px 25px #9d9d9d29;
   transform: scale(1.2, 1.3) perspective(0.5em) rotateX(2.5deg);

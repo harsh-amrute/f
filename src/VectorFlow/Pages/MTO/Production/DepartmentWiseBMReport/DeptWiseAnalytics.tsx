@@ -18,9 +18,7 @@ import {
     BPRDailyAnalyticStatusBarSection,
     BPRDailyAnalyticsTableCellHeader,
     BPRDailyAnalyticsTableCellText,
-    BPRDailyAnalyticsTableCellIcon
 } from './styles'
-import { useUserData } from '../../../../../context'
 
 
 const DeptWiseAnalytics = () => {
