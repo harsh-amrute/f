@@ -57,9 +57,9 @@ export enum UIGridCode {
 
     // Production
         "ProdEnquiryResponse" = 200,
-        "ProdDDQScheduleOrder" = 201,// pending
-        "ProdDDQUnScheduleOrder" = 202,// pending
-        "ProdDDQThree" = 203,// pending
+        "ProdDDQ" = 201,
+        // "ProdDDQUnScheduleOrder" = 202,// not required
+        // "ProdDDQThree" = 203,// not required
         "ProdOrderRescheduling" = 204,
         "ProdFullkitAssignment" = 205,
         "ProdDynamicReleaseManagement" = 206,// Blocked

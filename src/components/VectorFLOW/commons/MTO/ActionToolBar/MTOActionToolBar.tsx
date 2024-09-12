@@ -51,6 +51,7 @@ interface MTOActionToolBarProps {
     onAddFilter?: () => void;
     selectedFilters?: filterType[];
     removeFilters?: (category: string, name: string) => void;
+    disableRemoveFilter?: boolean | undefined;
     date?: string
     handleGoBack?: () => void;
     themeUi?: string;
@@ -88,6 +89,7 @@ const MTOActionToolBar = ({
     onAddFilter,
     selectedFilters,
     removeFilters,
+    disableRemoveFilter,
     submitDate,
     date,
     handleGoBack,
@@ -131,7 +133,7 @@ const MTOActionToolBar = ({
     const datetime = moment(d).format(format2);
 
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
-
+    console.log(disableRemoveFilter, 'Disable')
     return (
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer
@@ -309,10 +311,10 @@ const MTOActionToolBar = ({
                                                         <VFSelectedFiltersFilterValue>
                                                             <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
                                                         </VFSelectedFiltersFilterValue>
-                                                        <VFSelectedFiltersFilterCloseIcon
+                                                        {<VFSelectedFiltersFilterCloseIcon
                                                             onClick={() => handleRemoveFilter(filter?.label, value)}
                                                             src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
-                                                        />
+                                                        />}
                                                         {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
                                                     </VFSelectedFiltersFilterContent>
                                                 </div>
@@ -360,14 +362,13 @@ const MTOActionToolBar = ({
                                                         <VFSelectedFiltersFilterValue>
                                                             <p style={{ margin: '0px 5px 0px 5px', fontFamily: '500' }}> {f.label}</p>
                                                         </VFSelectedFiltersFilterValue>
-                                                        <VFSelectedFiltersFilterCloseIcon
+                                                        {disableRemoveFilter ? <div>-</div> : <VFSelectedFiltersFilterCloseIcon
                                                             onClick={() => {
                                                                 const filtervalue = f.id || f.value;
                                                                 onFilterRemove(key, filter.filterId, filtervalue)
                                                             }}
                                                             src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
-                                                        />
-                                                        {/* {filter?.value?.length > 1 && <SCFilterVerticalDivider />} */}
+                                                        />}
                                                     </VFSelectedFiltersFilterContent>
                                                 </div>
                                             ))}
@@ -412,22 +413,17 @@ const MTOActionToolBar = ({
                         </SCViewContainerWithBg>
                     </>}
 
-                    <>
+                    {handleSaveClick && handleResetClick && <>
                         <SCVerticalDividerGray />
-
-                        <SCViewContainerWithBg onClick={() => {handleSaveClick && handleSaveClick()}}>
+                        <SCViewContainerWithBg onClick={() => handleSaveClick()}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                             <p>Save</p>
                         </SCViewContainerWithBg>
-                        <SCViewContainerWithBg onClick={() => {handleResetClick && handleResetClick()}}>
+                        <SCViewContainerWithBg onClick={() => handleResetClick()}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" />
                             <p>Reset</p>
-
                         </SCViewContainerWithBg>
-                        {/* <SCVerticalDivider /> */}
-
-
-                    </>
+                    </>}
 
                     {/* Toggle button for chartview/ grid view */}
                     {isChartGridToggle &&
