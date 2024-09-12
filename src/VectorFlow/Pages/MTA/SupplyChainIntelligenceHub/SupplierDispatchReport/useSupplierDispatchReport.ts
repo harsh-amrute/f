@@ -7,10 +7,15 @@ import useBPRFilter from '../../../../../hooks/useBPRFilter';
 import { toast } from 'react-toastify';
 import { AgGridReactProps } from 'ag-grid-react';
 import {SDRDispatchColorCellRenderer} from './SDRCellRenderers'
+import { useGetState } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants';
 
 const useSupplierDispatchReport= ()=>{
 
+    const ref = useRef<any>();
 
+    const [internalRef,setInternalRef] = useState<any>()
+    const [gridState,setGridState] = useState<any>()
     const [SDRCount,setSDRCount]=useState<any>()
     const [RowData, setRowData]=useState<any[]>([])
     const [currentPage,setCurrentPage] = useState<any>(1);
@@ -25,6 +30,8 @@ const useSupplierDispatchReport= ()=>{
     const {mutateAsync:getSDRDataCount}=useGetSDRDataCount();
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
+    const {mutateAsync:getState} = useGetState()
+
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
 
     const customCellRenderers = useMemo(() => (   
@@ -35,16 +42,101 @@ const useSupplierDispatchReport= ()=>{
       }), []);
 
     
-    const VDRColumns=mapVDRFieldsToColDefs(data?.data.data);
+    const VDRColumns=useMemo(()=>mapVDRFieldsToColDefs(data?.data.data),[data])
+
+  
+ 
+  const agGridProps: AgGridReactProps = useMemo(()=>{
+    return{
+        paginationPageSize: parseInt(
+          process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
+        ),
+    
+        suppressRowTransform: true,
+        tooltipShowDelay: 0.3,
+        tooltipTrigger: "focus",
+        tooltipInteraction: true,
+        readOnlyEdit: true,
+        
+        gridOptions: {
+          sideBar: defaultAgGridSideBarForBPR,
+          rowHeight: 50,
+          getRowStyle: (params: any) => {
+            if (params.node.rowIndex % 2 === 0) {
+              return { background: "#EBEBEB" };
+            }
+            return { background: "#F7F7F7" };
+          },
+        },
+        enableRangeSelection: true,
+        components:customCellRenderers,
+        rowSelection: "multiple",
+        statusBar: {
+          statusPanels: [
+            { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
+            { statusPanel: "agTotalRowCountComponent", align: "left" },
+            { statusPanel: "agFilteredRowCountComponent", align: "left" },
+            { statusPanel: "agSelectedRowCountComponent", align: "left" },
+            { statusPanel: "agAggregationComponent", align: "left" },
+          ],
+        },
+        pagination: false,
+        suppressRowClickSelection: true,
+    
+        defaultColDef: {
+          floatingFilter: true,
+          resizable: false,
+          cellStyle: {
+            flex: 1,
+            "text-align": "center",
+            height: "50px",
+            "font-style": "normal",
+            " font-variant": "normal",
+            " font-weight": "300",
+            " font-size": "20px",
+            " font-family": "Roboto",
+            display: "block",
+            "text-overflow": "ellipsis",
+            "white-space": "nowrap",
+          },
+        },
+        onGridReady:(params)=>setInternalRef(params)
+      }
+  },[])
+
+
+  useEffect(()=>{
+    const fetchData= async()=>{
+        await GetDataCount()
+        await GetSDRData(currentPage);
+    }
+    fetchData();
+    
+},[])
 
     useEffect(()=>{
-        const fetchData= async()=>{
-            await GetDataCount()
-            await GetSDRData(currentPage);
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("SDR")
+            setGridState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setGridState({
+                charts:[],
+                columns:[],
+                pivot:false
+            })
+          }
         }
-        fetchData();
-        
+        getTableState()
     },[])
+  
+    useEffect(()=>{
+        if(internalRef){
+            internalRef.api.applyColumnState({state:gridState.columns })
+        }
+    },[internalRef,gridState])
+
+   
 
     const GetDataCount = async (filter?:any)=>{
         const DataCount= await getSDRDataCount({
@@ -159,8 +251,9 @@ const useSupplierDispatchReport= ()=>{
         setCurrFilter,
         onDeleteFilter,
         onExportToExcelCallBack,
-        onApplyFilter
-
+        onApplyFilter,
+        agGridProps,
+        ref
     }
     
 

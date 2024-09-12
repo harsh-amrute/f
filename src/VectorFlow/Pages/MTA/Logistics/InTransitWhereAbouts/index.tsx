@@ -88,7 +88,7 @@ const InTransitWhereAbouts = ()=>{
                 <ActionToolBar 
                 view={'grid'} 
                 setCurrentTab={''} 
-                currCategory={'InTransitWhereabouts'} 
+                currCategory={'InTransitWhereAbouts'} 
                 currentTab={''} 
                 tabsList={[]} 
                 onFloatingTabChange={()=>console.log('')} 

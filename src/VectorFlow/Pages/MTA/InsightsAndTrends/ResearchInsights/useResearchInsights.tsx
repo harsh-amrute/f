@@ -30,9 +30,10 @@ const useResearchInsights = ()=>{
     const ref = useRef<GridRef>();
     const tempRef = useRef()
 
+    const [internalRef,setInternalRef] = useState<any>()
+
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    const [gridState,setGridState] = useState<any>()
 
     const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
 
@@ -92,13 +93,23 @@ const useResearchInsights = ()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState("ResearchInsight")
-            setColumnState(JSON.parse(data.data.data))
+            setGridState(JSON.parse(data.data.data))
           }catch(err:any){
-            setColumnState(ResearchInsightsColumns)
+            setGridState({
+                charts:[],
+                columns:[],
+                pivot:false
+            })
           }
         }
         getTableState()
-    },[currentGridState])
+    },[])
+  
+    useEffect(()=>{
+        if(internalRef){
+            internalRef.api.applyColumnState({state:gridState.columns })
+        }
+    },[internalRef,gridState])
 
 
     useEffect(()=>{
@@ -122,43 +133,46 @@ const useResearchInsights = ()=>{
         tagsCellRenderer:BPRTagsCellRenderer
       }), []);
   
-    const agGridProps:AgGridReactProps = {
+    const agGridProps:AgGridReactProps = useMemo(()=>{
+        return {
         
-        suppressRowTransform:true,
-        readOnlyEdit:true,
-        rowSelection:'multiple',
-        gridOptions:{
-            rowHeight:50,
-            getRowStyle: (params: any) => {
-            if (params.node.rowIndex % 2 === 0) {
-                return { background: "#EBEBEB" };
-            }
-            return { background: "#F7F7F7" };
+            suppressRowTransform:true,
+            readOnlyEdit:true,
+            rowSelection:'multiple',
+            gridOptions:{
+                rowHeight:50,
+                getRowStyle: (params: any) => {
+                if (params.node.rowIndex % 2 === 0) {
+                    return { background: "#EBEBEB" };
+                }
+                return { background: "#F7F7F7" };
+                },
             },
-        },
-        sideBar:defaultAgGridSideBarForBPR,
-        // paginationPageSize:25,
-        paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
-        suppressRowClickSelection:true,
-        components:customCellRenderers,
-        defaultColDef:{
-            floatingFilter: true,
-            resizable:false,
-            cellStyle:{
-                "flex":1,
-                'text-align':'center',
-                'height':'50px',
-                "font-style":"normal",
-                " font-variant":"normal",
-                " font-weight":"300",
-                " font-size":"20px",
-                " font-family":"Roboto",
-                "display":"block",
-                'text-overflow':'ellipsis',
-                'white-space':'nowrap'
+            sideBar:defaultAgGridSideBarForBPR,
+            // paginationPageSize:25,
+            paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
+            suppressRowClickSelection:true,
+            components:customCellRenderers,
+            defaultColDef:{
+                floatingFilter: true,
+                resizable:false,
+                cellStyle:{
+                    "flex":1,
+                    'text-align':'center',
+                    'height':'50px',
+                    "font-style":"normal",
+                    " font-variant":"normal",
+                    " font-weight":"300",
+                    " font-size":"20px",
+                    " font-family":"Roboto",
+                    "display":"block",
+                    'text-overflow':'ellipsis',
+                    'white-space':'nowrap'
+                },
             },
+            onGridReady:(params)=>setInternalRef(params)
         }
-    }
+    },[])
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
@@ -540,7 +554,7 @@ const useResearchInsights = ()=>{
         rowsPerPage,
         recordCount,
         isSavedDataLoading,
-        columnState,
+        gridState,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
