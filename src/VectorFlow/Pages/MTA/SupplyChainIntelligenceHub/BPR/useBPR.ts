@@ -22,8 +22,10 @@ import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants"
 const useBPR =()=>{
 
 
-    const ref = useRef()
+    const ref = useRef<any>()
     const tempRef = useRef()
+
+    const [internalRef,setInternalRef] = useState<any>()
 
     const {getGridZoom,getScreenZoomValue} = useViewPort()
     const dispatch = useDispatch();
@@ -67,7 +69,7 @@ const useBPR =()=>{
   
     const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
     
-    const {mutateAsync:getBPRData} = useGetBPRData()
+    const {mutateAsync:getBPRData,isLoading:isRowDataLoading} = useGetBPRData()
 
     const {mutateAsync:submitRemark} = useSubmitBPRRemark()
 
@@ -78,28 +80,36 @@ const useBPR =()=>{
     const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
 
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    const [gridState,setGridState] = useState<any>()
 
 
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState("BPR")
-            setColumnState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setColumnState(BPRColumns)
-          }
-        }
-        getTableState()
-    },[currentGridState])
   
     useEffect(()=>{
         
         getInitialBPRRowData()
     },[])
 
+    useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("BPR")
+            setGridState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setGridState({
+                charts:[],
+                columns:BPRColumns,
+                pivot:false
+            })
+          }
+        }
+        getTableState()
+    },[])
 
+    useEffect(()=>{
+        if(internalRef){
+            internalRef.api.applyColumnState({state:gridState.columns})
+        }
+    },[internalRef,gridState])
   
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -109,55 +119,60 @@ const useBPR =()=>{
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
         remarksCellRenderer:BPRRemarksCellRenderer
       }), []);
+
   
-    const agGridProps:AgGridReactProps = {
+    const agGridProps:AgGridReactProps = useMemo(()=>{
+
+        return {
         
-        suppressRowTransform:true,
-        tooltipShowDelay:0.3,
-        tooltipTrigger:'focus',
-        tooltipInteraction:true,
-        // rowSelection:'single',
-        readOnlyEdit:false,
-        sideBar:defaultAgGridSideBarForBPR,
-        paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
-        onRowClicked:(params:any)=>{
-            if(params.data.intransit && params.data.intransit.length>0){
-                setActiveRow(params.data.intransit)
-                toggleSubGrid(true)
-            }
-        },
-        gridOptions:{
-            rowHeight:50,
-            getRowStyle: (params: any) => {
-            if (params.node.rowIndex % 2 === 0) {
-                return { background: "#EBEBEB" };
-            }
-            return { background: "#F7F7F7" };
+            suppressRowTransform:true,
+            tooltipShowDelay:0.3,
+            tooltipTrigger:'focus',
+            tooltipInteraction:true,
+            // rowSelection:'single',
+            readOnlyEdit:false,
+            sideBar:defaultAgGridSideBarForBPR,
+            paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
+            onRowClicked:(params:any)=>{
+                if(params.data.intransit && params.data.intransit.length>0){
+                    setActiveRow(params.data.intransit)
+                    toggleSubGrid(true)
+                }
             },
-        },
-        suppressRowClickSelection:true,
-        components:customCellRenderers,
-        defaultColDef:{
-            floatingFilter: true,
-            // filter: "agMultiColumnFilter",
-            cellDataType:false,
-            resizable:false,
-            cellStyle:{
-                "flex":1,
-                'text-align':'center',
-                'height':'50px',
-                "font-style":"normal",
-                " font-variant":"normal",
-                " font-weight":"300",
-                " font-size":"20px",
-                " font-family":"Roboto",
-                "display":"block",
-                'text-overflow':'ellipsis',
-                'white-space':'nowrap'
+            gridOptions:{
+                rowHeight:50,
+                getRowStyle: (params: any) => {
+                if (params.node.rowIndex % 2 === 0) {
+                    return { background: "#EBEBEB" };
+                }
+                return { background: "#F7F7F7" };
+                },
             },
-        },
-        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode")
-    }
+            suppressRowClickSelection:true,
+            components:customCellRenderers,
+            defaultColDef:{
+                floatingFilter: true,
+                // filter: "agMultiColumnFilter",
+                cellDataType:false,
+                resizable:false,
+                cellStyle:{
+                    "flex":1,
+                    'text-align':'center',
+                    'height':'50px',
+                    "font-style":"normal",
+                    " font-variant":"normal",
+                    " font-weight":"300",
+                    " font-size":"20px",
+                    " font-family":"Roboto",
+                    "display":"block",
+                    'text-overflow':'ellipsis',
+                    'white-space':'nowrap'
+                },
+            },
+            onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode"),
+            onGridReady:(params)=>setInternalRef(params)
+        }
+    },[])
 
 
     const tempAgGridProps:AgGridReactProps = {
@@ -272,6 +287,7 @@ const useBPR =()=>{
        }
     }
     
+    
 
     const onCloseSubmitRemark =()=>setIsSubmitRemarkToolTipOpen(false)
 
@@ -364,7 +380,7 @@ const useBPR =()=>{
 
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
-    const BPRColumns =mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
+    const BPRColumns =useMemo(()=>mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph),[data])
 
 
 
@@ -400,7 +416,6 @@ const useBPR =()=>{
         showNormChangeHistoryTable,
         ref,
         isSavedDataLoading,
-        columnState,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
@@ -418,6 +433,8 @@ const useBPR =()=>{
         themeUi,
         editedRows,
         onDeleteFilter,
+        isRowDataLoading,
+        gridState
     }
 }
 

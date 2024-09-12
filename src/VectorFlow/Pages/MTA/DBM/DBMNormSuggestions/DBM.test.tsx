@@ -28,6 +28,10 @@ const useGetDBMUpdateSleepTblMock = useGetDBMUpdateSleepTbl as jest.MockedFuncti
     typeof useGetDBMUpdateSleepTbl
 >;
 
+// const useGetStateMock = useGetState as jest.MockedFunction<
+//   typeof useGetState
+// >
+
   window.URL.createObjectURL = jest.fn();
 
   const queryClient = setupReactQuery();
@@ -87,6 +91,8 @@ const useDBMApplySelectedNormResult: any = {
     },
   };
 
+  
+
 
 describe("Renders DBM Component", ()=>{
     beforeEach(()=>{
@@ -105,6 +111,18 @@ describe("Renders DBM Component", ()=>{
         useGetDBMUpdateSleepTblMock.mockImplementation(()=>{
             return useDBMUpdateSleepTbl;
         });
+
+        // useGetStateMock.mockImplementation(():any=>{
+        //   return{
+        //     mutateAsync:()=>{
+        //       return {
+        //         data:{data: GetStateMockResponse}
+        //       }
+        //     }
+        //   }
+          
+        // })
+    
 
     });
     it("renders Loading Overlay Component when loading", async()=>{

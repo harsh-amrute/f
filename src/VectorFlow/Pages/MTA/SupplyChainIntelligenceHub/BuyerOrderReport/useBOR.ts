@@ -24,6 +24,8 @@ export const useBOR =()=>{
     const ref=  useRef()
     const tempRef = useRef()
 
+    const [internalRef,setInternalRef] = useState<any>()
+
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
      const {data,isLoading} = useGetBORUIConfiguration();
@@ -85,22 +87,32 @@ export const useBOR =()=>{
     }
 
       
-      const BORColumns = mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
+      const BORColumns = useMemo(()=>mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph),[data])
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-      const [columnState,setColumnState] = useState<any>()
-      const {currentGridState} = useSelector((state:RootState)=>state.mta)
+      const [gridState,setGridState] = useState<any>()
 
-    useEffect(()=>{
+      useEffect(()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState("BOR")
-            setColumnState(JSON.parse(data.data.data))
+            setGridState(JSON.parse(data.data.data))
           }catch(err:any){
-            setColumnState(BORColumns)
+            setGridState({
+                charts:[],
+                columns:[],
+                pivot:false
+            })
           }
         }
         getTableState()
-    },[currentGridState])
+    },[])
+  
+    useEffect(()=>{
+        if(internalRef){
+            console.log('in if')
+            internalRef.api.applyColumnState({state:gridState.columns })
+        }
+    },[internalRef,gridState])
 
       useEffect(()=>{       
         const fetchData = async () => {
@@ -154,7 +166,8 @@ export const useBOR =()=>{
       onApplyFilter(updatedFilter)
   }
 
-     const agGridProps:AgGridReactProps = {
+     const agGridProps:AgGridReactProps = useMemo(()=>{
+      return {
         tooltipShowDelay:0,
         tooltipTrigger:"focus",
         readOnlyEdit:true,
@@ -189,8 +202,10 @@ export const useBOR =()=>{
             'white-space':'nowrap'
             },
            
-        }
+        },
+        onGridReady:(params)=>setInternalRef(params)
       }
+     },[])
 
       const getBORRowData=async(filter:BPRFilterState)=>{
         if(filter)setCurrFilter(filter)
@@ -234,7 +249,7 @@ export const useBOR =()=>{
         currentPage,
         rowsPerPage,
         recordCount,
-        columnState,
+        gridState,
         isSavedDataLoading,
         handleChangePage,
         tempRef,

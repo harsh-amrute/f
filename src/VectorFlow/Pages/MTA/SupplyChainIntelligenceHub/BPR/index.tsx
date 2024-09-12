@@ -40,7 +40,6 @@ const BPR = ()=>{
         currGridPage,
         rowsPerPage,
         ref,
-        columnState,
         isSavedDataLoading,
         tempRef,
         tempDownloadData,
@@ -55,7 +54,7 @@ const BPR = ()=>{
         setCurrFilter,
         onApplyFilter,
         editedRows,
-        onDeleteFilter
+        onDeleteFilter,
     } = useBPR();
 
     
@@ -106,7 +105,7 @@ const BPR = ()=>{
             showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
         }
         
-        {(isLoading || isSavedDataLoading )?(
+        {(isLoading || isSavedDataLoading)?(
             <VFLoader/>
         )
         :
@@ -135,11 +134,6 @@ const BPR = ()=>{
                 {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}
-                onGridReady={(params)=>{
-                   if(columnState){
-                    params.api.applyColumnState({state:columnState})
-                   }
-                }}
                 enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {{
@@ -251,6 +245,7 @@ const BPR = ()=>{
                   />
                 </div>
         </BPRLayout>
+        
         )
     }
         </GridStateContext.Provider>
