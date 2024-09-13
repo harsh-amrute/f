@@ -212,3 +212,10 @@ export const useGetAllReports = () => {
   })
 }
 
+/**Adding the MTO Masters related calls */
+export const useGetMTOMasterUIConfiguration=()=>{
+  return useMutation(async()=>{
+    return await MDMService.getMTOMastersData()
+  })
+}
+

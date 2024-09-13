@@ -27,12 +27,14 @@ export interface MDMMasterState {
     filters: Filter[]
     progress: ViewModifyProgressState,
     fields: Field[],
-    isChecked: boolean
+    isChecked: boolean,
+    isMTO?:boolean
 }
 export interface Master {
     id: number,
     name: string,
     fields: Field[]
+    isMTO?:boolean
 }
 
 export interface Option {

@@ -183,5 +183,12 @@ export namespace MDMService {
     })
   }
 
+  /**This get the  MTO Masters Data*/
+  export const getMTOMastersData=async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetMasterManagementData',{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
 }
 
