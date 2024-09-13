@@ -353,7 +353,7 @@ const useSimFullKit = () => {
             case "iof":
                 return (
                     <>
-                        {isLoading && <OverlayLoader />}
+                        {(isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
                         <VFTable
                             {...agGridProps}
                             columnDefs={colDef}
@@ -389,7 +389,7 @@ const useSimFullKit = () => {
             case "cf":
                 return (
                     <>
-                        {isLoading && <OverlayLoader />}
+                        {(isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
                         <VFTable
                             {...agGridProps}
                             columnDefs={colDef}

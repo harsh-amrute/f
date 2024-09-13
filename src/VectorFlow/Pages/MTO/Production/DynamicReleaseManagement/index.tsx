@@ -1,6 +1,6 @@
 import { AgCharts } from 'ag-charts-react'
 import { GridOptions, IRowNode } from 'ag-grid-enterprise';
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
 import { getColumnDefinations } from '../../../../../helpers/utils';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
