@@ -45,12 +45,13 @@ const useMaterialSO = (data: any) => {
         {
             field: "",
             resizable: false,
+            minWidth: 80,
             position: 0,
             suppressHeaderFilterButton: true,
             suppressMenu: true,
             filter: false,
-            initialWidth: 50,
-            maxWidth: 50,
+            initialWidth: 80,
+            maxWidth: 80,
             cellRenderer: CustomGroupCellRenderer
         }
     ]
