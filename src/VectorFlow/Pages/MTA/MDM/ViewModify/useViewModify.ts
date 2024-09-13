@@ -17,7 +17,6 @@ import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
 import { v4 as uuidv4 } from 'uuid';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
-import { BooleanLiteral } from 'typescript';
 
 // Define TypeScript interfaces for the parameters
 interface mtaField {
@@ -49,7 +48,7 @@ interface ConcatenatedResult {
 
 const useViewModify = (pageType: string) => {
 
-  const MTOData: Parameter[] = [
+  /*const MTOData: Parameter[] = [
     {
       "id": "501",
       "name": "Buffer",
@@ -175,7 +174,7 @@ const useViewModify = (pageType: string) => {
 
       ]
     },
-  ]
+  ]*/
 
 
   const dispatch = useDispatch();
@@ -237,7 +236,7 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: masterUIConfiguration, isLoading } = useGetMasterUIConfiguration();
 
   /***Add the below line to fetch MTO Buffer */
-  const { mutateAsync: MTOMasterUIConfiguration, isLoading: MTOBufferLoading } = useGetMTOMasterUIConfiguration();
+  const { mutateAsync: MTOMasterUIConfiguration, /*isLoading: MTOBufferLoading*/ } = useGetMTOMasterUIConfiguration();
 
   const [TASK_ID, setTaskId] = useState<string>('');
 
