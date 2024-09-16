@@ -190,5 +190,11 @@ export namespace MDMService {
     })
   }
 
+  export const getBufferMasterData=async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetBufferMasterForMasterMgmt/?masterId=501',{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
 }
 

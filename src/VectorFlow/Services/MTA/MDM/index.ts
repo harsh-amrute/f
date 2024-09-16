@@ -219,3 +219,9 @@ export const useGetMTOMasterUIConfiguration=()=>{
   })
 }
 
+export const useGetBufferMasterData=()=>{
+  return useMutation(async()=>{
+    return await MDMService.getBufferMasterData()
+  })
+}
+

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress,useGetMTOMasterUIConfiguration } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -254,6 +254,8 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: getMasterData } = useGetMasterData();
 
+  const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
+
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
 
   const { mutateAsync: getCount } = useGetCount();
@@ -422,10 +424,10 @@ const useViewModify = (pageType: string) => {
   useEffect(() => {
     const getMasterUIConfigurationData = async () => {
       const { data } = await masterUIConfiguration(pageType);
-      const  MtoBufferdata  = await MTOMasterUIConfiguration()
+      const MtoBufferdata = await MTOMasterUIConfiguration()
       //console.log('MtoMtoBufferdata',MtoBufferdata?.data?.data)
       const concatenatedResult = concatenateFields(data.data, MtoBufferdata?.data?.data);
-      //console.log('<><>concatenatedResult<><><>', concatenatedResult)
+      console.log('<><>concatenatedResult<><><>', concatenatedResult)
       setAllMasterState(mapMasterToMasterState(concatenatedResult, onShowChart))
     }
 
@@ -669,19 +671,29 @@ const useViewModify = (pageType: string) => {
     }
     let resultData;
     if (count) {
-      if (activeMaster.id > 14) {
+      if (activeMaster.id > 14 && !activeMaster.isMTO) {
         resultData = await getRetailCount(payload);
+      }
+      else if (activeMaster.id > 14 && activeMaster.isMTO) {
+        resultData = await getBufferMasterData()
+        console.log('----', resultData)
       }
       else {
         resultData = await getCount(payload);
       }
     }
     else {
-      if (activeMaster.id > 14) {
+      if (activeMaster.id > 14 && !activeMaster.isMTO) {
         resultData = await getMasterDataRetail(payload);
+      }
+      else if (activeMaster.id > 14 && activeMaster.isMTO) {
+        console.log('function count master data')
+        resultData = await getBufferMasterData()
+        console.log('----', resultData?.data?.data?.results)
       }
       else {
         resultData = await getMasterData(payload);
+
       }
     }
 
@@ -817,10 +829,22 @@ const useViewModify = (pageType: string) => {
     // else{
     //   dispatch(SET_RECORD_COUNT(result.data.recordCount))
     // }
-    if (!result.data.recordCount || result.data.recordCount == 0 || result.data.recordCount == '') setTempRecordCount(0)
-    else {
-      setTempRecordCount(result.data.recordCount)
+    if (activeMaster.isMTO) {
+      if (!result?.data?.data?.count || result?.data?.data?.count == 0 || result?.data?.data?.count == '') {
+        setTempRecordCount(0)
+      }
+      else {
+        setTempRecordCount(result?.data?.data?.count)
+      }
+    } else {
+      if (!result.data.recordCount || result.data.recordCount == 0 || result.data.recordCount == '') {
+        setTempRecordCount(0)
+      }
+      else {
+        setTempRecordCount(result.data.recordCount)
+      }
     }
+
     // if(result.data.recordCount<=rowsPerPage){
     //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
     // }
@@ -858,6 +882,13 @@ const useViewModify = (pageType: string) => {
           pending: "Loading Data"
         });
         dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+      }
+      else if (activeMaster.isMTO) {
+        result = await notifyPromise(queryAllData({ filters: payloadFilters, fields: payloadFields, pagination: true, currentPage: 1, rowsPerPage }), {
+          success: "Data Fetched Successfully",
+          error: "Something Went Wrong",
+          pending: "Loading Data"
+        });
       }
       else {
         result = await notifyPromise(queryAllData({ filters: payloadFilters, fields: payloadFields, pagination: true, currentPage: 1, rowsPerPage }), {
@@ -909,19 +940,41 @@ const useViewModify = (pageType: string) => {
       return;
     }
 
-    const tempRowData = result.data.data.map((row: any) => {
-      const newRow = { ...row };
+    let tempRowData:any
+    if (activeMaster.isMTO) {
+      tempRowData = result?.data?.data?.results.map((row: any) => {
+        const newRow = { ...row };
+    
+        Object.keys(newRow).map((key) => {
+           console.log('line no 949',key)
+          console.log('isMTO line 951',activeMaster.colDefs)
+          const currentColDef = activeMaster.colDefs.find((c) => c.colId === key)
+          
+          const cellDataType = currentColDef?.cellDataType
+          if (cellDataType === 'number' && newRow[key] !== null) {
+            newRow[key] = parseFloat(newRow[key])
+          }
+        })
 
-      Object.keys(newRow).map((key) => {
-        const currentColDef = activeMaster.colDefs.find((c) => c.colId === key)
-        const cellDataType = currentColDef?.cellDataType
-        if (cellDataType === 'number' && newRow[key] !== null) {
-          newRow[key] = parseFloat(newRow[key])
-        }
+
+        return newRow
       })
+    }
+    else {
+       tempRowData = result.data.data.map((row: any) => {
+        const newRow = { ...row };
 
-      return newRow
-    })
+        Object.keys(newRow).map((key) => {
+          const currentColDef = activeMaster.colDefs.find((c) => c.colId === key)
+          const cellDataType = currentColDef?.cellDataType
+          if (cellDataType === 'number' && newRow[key] !== null) {
+            newRow[key] = parseFloat(newRow[key])
+          }
+        })
+
+        return newRow
+      })
+    }
 
     dispatch(UPDATE_ROW_DATA(tempRowData));
     if (refetch) return
