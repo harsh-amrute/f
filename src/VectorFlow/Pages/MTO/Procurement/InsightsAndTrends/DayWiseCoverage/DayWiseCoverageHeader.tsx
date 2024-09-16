@@ -3,6 +3,7 @@ import { useUserData } from '../../../../../../context'
 import DatePicker from '../../../../../../components/VectorFLOW/commons/MTO/DatePicker'
 import { DayWiseCoverageHeaderContainer, DayWiseCoverageStatus, Divider, Text } from './style'
 import { format } from 'date-fns'
+import { ColorsMTO } from '../../../Common/Colors'
 
 interface IDayWiseCoverageHeaderProps {
     startDate: string,
@@ -71,14 +72,35 @@ const DayWiseCoverageHeader = ({
             <Text>To</Text>
             <DatePicker type="month" date={end} setDate={setEnd} data-testid="end" min={format(minEndDate, "yyyy-MM")} max={format(max, "yyyy-MM")} />
             {/* <div style={{ display: 'flex', alignItems: 'center' }}> */}
-            <img
+            {/* <img
                 style={{ cursor: 'pointer', opacity: isDisabled ? '0.7' : '1' }}
                 src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
                 height={50}
                 width={60}
                 alt={"Submit"}
                 onClick={() => { (!isDisabled) && setDateRange(start, end) }}
-            />
+            /> */}
+            <div
+                style={{
+                    cursor: 'pointer',
+                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                    backgroundColor: ColorsMTO.darkPink.code,
+                    height: '43px',
+                    width: '59px',
+                    borderRadius: '4px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    display: 'flex'
+                }}
+                onClick={() => { (!isDisabled) && setDateRange(start, end) }}>
+                <img
+                    style={{}}
+                    src="/assets/img/rightArrowHorizontal.svg"
+                    height={13}
+                    width={7}
+                />
+            </div>
 
             {/* </div> */}
         </DayWiseCoverageHeaderContainer>

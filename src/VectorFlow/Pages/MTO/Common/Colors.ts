@@ -23,5 +23,8 @@ export const ColorsMTO = {
     Blue: { code: '#355FD3', label: 'Blue' },
     Pink: { code: '#BC3D81', label: 'Pink' },
     LightGrey: { code: '#C0C0C0', label: 'LightGrey' },
-   
+    darkPink:{
+        code:'#820f4c',
+        label:'dark Pink'
+    },   
 }

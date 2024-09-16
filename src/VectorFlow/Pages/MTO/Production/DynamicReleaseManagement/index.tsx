@@ -626,7 +626,15 @@ const DynamicReleaseManagement = () => {
         {
           isLoading && <OverlayLoader />
         }
-        <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton isReleaseButton isReleaseButtonDisabled={isReleaseButtonDisabled} onOrderRelease={onOrderRelease} onCheckBoxToggle={setAllRows} />
+        <MTOActionToolBar
+          comp="FullKitAssignment"
+          isExcelExport
+          isAddFilterButton
+          isReleaseButton
+          isReleaseButtonDisabled={isReleaseButtonDisabled}
+          onOrderRelease={onOrderRelease}
+          onCheckBoxToggle={setAllRows}
+        />
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 
