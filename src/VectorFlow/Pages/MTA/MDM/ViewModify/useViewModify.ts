@@ -946,7 +946,7 @@ const useViewModify = (pageType: string) => {
         const newRow = { ...row };
     
         Object.keys(newRow).map((key) => {
-           console.log('line no 949',key)
+             console.log('line no 949',key)
           console.log('isMTO line 951',activeMaster.colDefs)
           const currentColDef = activeMaster.colDefs.find((c) => c.colId === key)
           
