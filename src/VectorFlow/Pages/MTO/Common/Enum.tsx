@@ -48,33 +48,48 @@ export enum pagination {
 export enum UIGridCode {
 
     // Procurement
-        "ProcMaterialCovOpenSales" = 100,  // pending
-        "ProcPlanning" = 101,  // pending
-        "ProcMaterialRequirement" = 102,  // pending
-        "ProcDayWiseCov" = 103,  // pending
-        "ProcRMPMOrderCov" = 104,// pending
-        "ProcRMPMBufferTrend" = 105,// pending
-        "ProcExpediteRMSupplies" = 106,// pending
+        "ProcMaterialCovOpenSales" = 100,  
+        "ProcPlanning" = 101, 
+        "ProcMaterialRequirement" = 102,  
+        "ProcDayWiseCov" = 103,  
+        "ProcRMPMOrderCov" = 104,
+        "ProcPlanningSimulation" = 105,  // Blocked
 
     // Production
-        "ProdEnquiryResponse" = 200,// pending
-        "ProdDDQScheduleOrder" = 201,// pending
-        "ProdDDQUnScheduleOrder" = 202,// pending
-        "ProdDDQThree" = 203,// pending
-        "ProdOrderRescheduling" = 204,// pending
-        "ProdFullkitAssignment" = 205,// pending
-        "ProdDynamicReleaseManagement" = 206,// pending
+        "ProdEnquiryResponse" = 200,
+        "ProdDDQ" = 201,
+        // "ProdDDQUnScheduleOrder" = 202,// not required
+        // "ProdDDQThree" = 203,// not required
+        "ProdOrderRescheduling" = 204,
+        "ProdFullkitAssignment" = 205,
+        "ProdDynamicReleaseManagement" = 206,// Blocked
         "ProdDeptWiseBMReport" = 207,// pending
         "ProdOverallBMReport" = 208,// pending
-        "ProdFolSummary" = 209,// pending
-        "ProdStplAndFullKit" = 210,// pending
-        "ProdElapsedTime" = 211,// pending
-        "ProdOrderAtRisk" = 212,// pending
-        "ProdOrderBalance" = 213,// pending
+        "ProdFolSummary" = 209,
+        "ProdStplAndFullKit" = 210,
+        "ProdElapsedTime" = 211,
+        "ProdOrderAtRisk" = 212,
+        "ProdOrderBalance" = 213,
 
     // POOGI
         "PoogiReasonForDelayedOrders" = 300,
         "PoogiOTIFAnalysis" = 301,
         "PoogiOTAndIFAnalysis" = 302,
         "PoogiLeadTime" = 303,
-}       
+        "PoogiTopFailureReason" = 304,  // code commented pending
+}   
+
+export enum FilterPageName {
+    Proc_Material_Coverage_For_OpenSO= "Proc_Material_Coverage_For_OpenSO",
+    Proc_Procurement_Planning= "Proc_Procurement_Planning",
+    Proc_Material_Requirement="Proc_Material_Requirement",
+    Proc_Day_Wise_Coverage= "Proc_Day_Wise_Coverage",
+    Proc_RM_PM_OrderWise="Proc_RM_PM_OrderWise",
+    Proc_RM_PM_BufferTrend= "Proc_RM_PM_BufferTrend",
+    Proc_Expediting_RM_And_Suppliers= "Proc_Expediting_RM_And_Suppliers",
+    
+    Prod_DDQ= "Prod_DDQ",
+    Prod_Dept_Wise_BM_Report= "Prod_Dept_Wise_BM_Report",
+
+    Poogi_OTIF_Analysis= "Poogi_OTIF_Analysis",
+}

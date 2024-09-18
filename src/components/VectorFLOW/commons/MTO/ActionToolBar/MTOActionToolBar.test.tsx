@@ -94,13 +94,23 @@ describe('MTOActionToolBar Component', () => {
   });
 
   test('calls save Grid UI Config function when Save button is clicked', () => {
-    render(<MTOActionToolBar isGoBackButton handleSaveClick={mockOnSaveClick} />);
+    render(<MTOActionToolBar isGoBackButton handleResetClick={mockOnResetClick} handleSaveClick={mockOnSaveClick} />);
     fireEvent.click(screen.getByText('Save'));
     expect(mockOnSaveClick).toHaveBeenCalled();
   });
+ 
+  test('Donot renders save button', () => {
+    render(<MTOActionToolBar isGoBackButton />);
+    expect(screen.queryByText('Save')).not.toBeInTheDocument();
+  });
+  
+  test('Donot renders reset button', () => {
+    render(<MTOActionToolBar isGoBackButton />);
+    expect(screen.queryByText('Reset')).not.toBeInTheDocument();
+  });
 
   test('calls reset Grid UI Config function when Reset button is clicked', () => {
-    render(<MTOActionToolBar isGoBackButton handleResetClick={mockOnResetClick} />);
+    render(<MTOActionToolBar isGoBackButton handleResetClick={mockOnResetClick} handleSaveClick={mockOnSaveClick} />);
     fireEvent.click(screen.getByText('Reset'));
     expect(mockOnResetClick).toHaveBeenCalled();
   });
@@ -425,6 +435,11 @@ describe('MTOActionToolBar Component', () => {
       expect(mockOnFilterRemove).toHaveBeenCalled();
     })
 
+  });
+
+  test('donot renders cross btn with disable remove filters', () => {
+    render(<MTOActionToolBar multiFilter={multiFilterMock} disableRemoveFilter removeFilters={mockRemoveFilters} />);
+    expect(screen.queryByTestId('closeIcon-filter')).not.toBeInTheDocument();
   });
 
 });

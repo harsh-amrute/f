@@ -1,5 +1,5 @@
 import { ColDef } from "ag-grid-enterprise";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../../../../../VectorFlow/Pages/MTO/Common/VFTable";
@@ -7,17 +7,16 @@ import { VFTableWrapper } from './style'
 import { pagination } from "../../../../../../../VectorFlow/Pages/MTO/Common/Enum";
 
 interface IResizeTableProps {
-  header: ColDef[];
+  colDef: ColDef[];
   data: any;
+  setCurrentGridRef: any,
+  currentGridRef: any,
+  columnState: any,
 }
 
 const ResizableTable = (props: IResizeTableProps) => {
-  const { data, header } = props;
-  const tempRef = useRef();
-
-
-
-  const columnDefs = header;
+  const {data, colDef, setCurrentGridRef, currentGridRef, columnState} = props;
+  const gridRef = useRef();
 
   const getRowStyle = (params: any) => {
     if (params.node.rowIndex % 2 === 0) {
@@ -45,16 +44,33 @@ const ResizableTable = (props: IResizeTableProps) => {
     flex: 1,
   };
 
+  useEffect(()=>{ 
+    if (currentGridRef?.current && columnState?.length) {
+        const result = currentGridRef.current.api.applyColumnState({
+            state: columnState,
+            applyOrder: true
+        });
+        if (!result) {
+            console.error('Failed to apply column state');
+        }
+    }
+  });
+
   return (
     <VFTableWrapper>
 
       <VFTable
-        ref={tempRef}
-        columnDefs={columnDefs}
+        ref={gridRef}
+        columnDefs={colDef}
         rowData={data}
         defaultColDef={defaultColDef}
         getRowStyle={getRowStyle}
         pagination
+        onGridReady={(params: any) => {
+          params.api.autoSizeAllColumns();
+
+          setCurrentGridRef(gridRef);
+        }}
         paginationPageSize={pagination.mtoPageSize}
 
       />

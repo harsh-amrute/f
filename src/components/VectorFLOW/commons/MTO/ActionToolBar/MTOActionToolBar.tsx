@@ -32,7 +32,7 @@ import {
     VFSelectedFilterLabel,
 } from './styles';
 import moment from 'moment';
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
@@ -52,6 +52,7 @@ interface MTOActionToolBarProps {
     onAddFilter?: () => void;
     selectedFilters?: filterType[];
     removeFilters?: (category: string, name: string) => void;
+    disableRemoveFilter?: boolean | undefined;
     date?: string
     handleGoBack?: () => void;
     themeUi?: string;
@@ -72,6 +73,7 @@ interface MTOActionToolBarProps {
     setMultiFilter?: any
     onApplyFilter?: (params: any) => void;
     onFilterRemove?: any;
+    isMfgSelected?: boolean;
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
@@ -89,6 +91,8 @@ const MTOActionToolBar = ({
     onAddFilter,
     selectedFilters,
     removeFilters,
+    disableRemoveFilter,
+    isMfgSelected,
     submitDate,
     date,
     handleGoBack,
@@ -117,9 +121,6 @@ const MTOActionToolBar = ({
     handleResetClick
 
 }: MTOActionToolBarProps) => {
-
-
-    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
 
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
@@ -373,10 +374,10 @@ const MTOActionToolBar = ({
                                                         <VFSelectedFiltersFilterValue>
                                                             <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
                                                         </VFSelectedFiltersFilterValue>
-                                                        <VFSelectedFiltersFilterCloseIcon
+                                                        {<VFSelectedFiltersFilterCloseIcon
                                                             onClick={() => handleRemoveFilter(filter?.label, value)}
                                                             src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
-                                                        />
+                                                        />}
                                                         {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
                                                     </VFSelectedFiltersFilterContent>
                                                 </div>
@@ -424,14 +425,13 @@ const MTOActionToolBar = ({
                                                         <VFSelectedFiltersFilterValue>
                                                             <p style={{ margin: '0px 5px 0px 5px', fontFamily: '500' }}> {f.label}</p>
                                                         </VFSelectedFiltersFilterValue>
-                                                        <VFSelectedFiltersFilterCloseIcon
+                                                        {disableRemoveFilter ? <div>-</div> : <VFSelectedFiltersFilterCloseIcon
                                                             onClick={() => {
                                                                 const filtervalue = f.id || f.value;
                                                                 onFilterRemove(key, filter.filterId, filtervalue)
                                                             }}
                                                             src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
-                                                        />
-                                                        {/* {filter?.value?.length > 1 && <SCFilterVerticalDivider />} */}
+                                                        />}
                                                     </VFSelectedFiltersFilterContent>
                                                 </div>
                                             ))}
@@ -476,22 +476,17 @@ const MTOActionToolBar = ({
                         </SCViewContainerWithBg>
                     </>}
 
-                    <>
+                    {handleSaveClick && handleResetClick && <>
                         <SCVerticalDividerGray />
-
-                        <SCViewContainerWithBg onClick={() => { handleSaveClick && handleSaveClick() }}>
+                        <SCViewContainerWithBg onClick={() => handleSaveClick()}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                             <p>Save</p>
                         </SCViewContainerWithBg>
-                        <SCViewContainerWithBg onClick={() => { handleResetClick && handleResetClick() }}>
+                        <SCViewContainerWithBg onClick={() => handleResetClick()}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" />
                             <p>Reset</p>
-
                         </SCViewContainerWithBg>
-                        {/* <SCVerticalDivider /> */}
-
-
-                    </>
+                    </>}
 
                     {/* Toggle button for chartview/ grid view */}
                     {isChartGridToggle &&
@@ -523,7 +518,6 @@ const MTOActionToolBar = ({
                         multiFilter={multiFilter}
                         setMultiFilter={setMultiFilter}
                         isFilterOpen={isFilterOpen}
-                        setIsMfgSelected={setIsMfgSelected}
                     />
                 }
 

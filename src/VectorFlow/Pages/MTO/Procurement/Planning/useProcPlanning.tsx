@@ -23,6 +23,8 @@ import { TableWrapper } from "./styles";
 //import { pagination } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
+import { UIGridCode } from "../../Common/Enum";
 
 
 
@@ -75,8 +77,13 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 
 const useProcPlanning = (date: string) => {
     const [HeaderData, setHeaderData] = useState([{}]);
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [columnState, setColumnState] = useState<any>([]);
+    const [isReset, setIsReset] = useState(false);
+    const [colDef, setColDef] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
+    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();  
     const reportName = "ProcurementPlanningShortage";
 
     const setColumnDef = async () => {
@@ -89,7 +96,58 @@ const useProcPlanning = (date: string) => {
         }
     }
 
+    const getUserColumnConfig = async () => {
+        try {
+          const data = await getUserUIReportConfigData({
+            un: user.user.name,
+            rn_id: UIGridCode.ProcPlanning
+          });
+    
+          const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+          setColumnState(newConfig);
+    
+          if (!data) {
+            console.error('Failed to apply column state');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const handleSaveClick = async () => {
+        try {
+          if(currentGridRef?.current?.api){
+            const config = currentGridRef.current.api.getColumnState();
+            console.log(config, 'CONFIG')
+            const payload = {
+              un: user.user.name,
+              rn_id: UIGridCode.ProcPlanning,
+              cs: JSON.stringify(config)
+            }
+            await updateUserUIReportConfigData([payload]);
+            await getUserColumnConfig();
+          }
+    
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
+
     useEffect(() => {
+        if (isReset) {
+          setColumnState(colDef);
+          setIsReset(false)
+        }else{
+          handleSaveClick();
+        }
+    }, [isReset]);
+
+    useEffect(() => {
+        getUserColumnConfig();
         setColumnDef();
     }, [])
 
@@ -241,13 +299,19 @@ const useProcPlanning = (date: string) => {
             suppressMenu: true,
             filter: false,
             maxWidth: 35,
+            minWidth: 35,
             cellRenderer: 'agGroupCellRenderer'
         }
     ]
-    const ShortageColumns = getColumnDefinations(HeaderData, customHeader, extras)
 
-
-    const CompleteAvailableColumns = getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]);
+    useEffect(()=>{
+        if (currentTab.label === 'Shortage') {
+            setColDef(getColumnDefinations(HeaderData, customHeader, extras))
+        }
+        else {
+            setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
+        }
+    },[HeaderData])
 
     const icons = useMemo(() => {
         return {
@@ -264,13 +328,14 @@ const useProcPlanning = (date: string) => {
     useEffect(() => {
         if (currentTab) {
             if (currentTab.label === 'Shortage') {
+                setColDef(getColumnDefinations(HeaderData, customHeader, extras))
                 setCurrentPage(1);
                 fetchData(date, 1, '0')
             }
             else {
+                setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]))
                 setCurrentPage(1);
                 fetchData(date, 1, '1')
-
             }
         }
 
@@ -409,6 +474,18 @@ const useProcPlanning = (date: string) => {
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
 
+    useEffect(()=>{ 
+        if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+            const result = currentGridRef?.current?.api?.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
+        }
+    });
+
     const renderView = () => {
         switch (currentTab.id) {
             case "ca":
@@ -416,12 +493,17 @@ const useProcPlanning = (date: string) => {
                     <TableWrapper>
                         <VFTable
                             {...agGridProps}
-                            columnDefs={CompleteAvailableColumns}
+                            columnDefs={colDef}
                             rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
                             ref={gridRef}
+                            onGridReady={(params: any) => {
+                                params.api.autoSizeAllColumns();
+            
+                                setCurrentGridRef(gridRef);
+                            }}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -447,12 +529,17 @@ const useProcPlanning = (date: string) => {
                         <VFTable
                             key={2}
                             {...agGridProps}
-                            columnDefs={ShortageColumns}
+                            columnDefs={colDef}
                             rowData={ShortageDatas}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
                             ref={gridRef}
+                            onGridReady={(params: any) => {
+                                params.api.autoSizeAllColumns();
+            
+                                setCurrentGridRef(gridRef);
+                            }}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -548,8 +635,6 @@ const useProcPlanning = (date: string) => {
             enableBrowserTooltips: true,
             enableRangeSelection: true,
             icons: icons,
-
-
             defaultColDef: {
                 suppressMenu: true,
                 resizable: true,
@@ -626,6 +711,10 @@ const useProcPlanning = (date: string) => {
         fetchData,
         date,
         isLoading,
+        isUpdateUserConfig,
+        isGetUserConfig,
+        handleResetClick,
+        handleSaveClick,
         currentTab
     }
 }

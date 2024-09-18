@@ -18,6 +18,13 @@ import useFilter from "../../../../../hooks/useFilter";
 // import { APIResponseMock } from '../../Production/InsightsAndTrends/OrderBalance/OrderBalanceMockData';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import OverlayLoader from '../../Common/Loader';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { FilterPageName, UIGridCode } from "../../Common/Enum";
+import { useUserData } from "../../../../../context/index";
+import ColorCellRenderer from "../../Common/ColorCellRenderer";
+import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -37,15 +44,26 @@ const MaterialCov = () => {
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
   const [soData, setSOData] = useState<any>([]);
   const { data, isLoading, /*refetch*/ } = useGetSOSummaydetails();
-  const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData();
   const [filterData, setFilterData] = useState({});
-
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const [isReset, setIsReset] = useState(false);
+  const [colDef, setColDef] = useState([{}]);
+  const [HeaderData, setHeaderData] = useState([]);
+  const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { user } = useUserData();
+  
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
 
   const onApplyFilter = (filter: any) => {
-    console.log(filter)
+    console.log(formatFilterJSON(filter), 'APPLIED Filters');
+    setIsMfgSelected(true);
     setIsFilterOpen(false)
   }
   const onAddFilter = () => {
@@ -90,10 +108,6 @@ const MaterialCov = () => {
     setSOData(data?.data.data)
   }, [data])
 
-  useEffect(() => {
-    setFilterData(filterResponse?.data.data)
-  }, [filterResponse]);
-
   const tabs = [
     {
       id: "1",
@@ -108,6 +122,121 @@ const MaterialCov = () => {
   ]
 
   const defaultTab = tabs.findIndex(tab => tab.value === currTab)
+
+  const getUserColumnConfig = async () => {
+    try {
+      const data = await getUserUIReportConfigData({
+        un: user.user.name,
+        rn_id: UIGridCode.ProcMaterialCovOpenSales
+      });
+
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      setColumnState(newConfig);
+
+      if (!data) {
+        console.error('Failed to apply column state');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleSaveClick = async () => {
+    try {
+      if(currentGridRef?.current?.api){
+        const config = currentGridRef.current.api.getColumnState();
+  
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProcMaterialCovOpenSales,
+          cs: JSON.stringify(config)
+        }
+        await updateUserUIReportConfigData([payload]);
+        await getUserColumnConfig();
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleResetClick = () => {
+    setIsReset(true);
+  }
+
+  const reportName = 'MaterialCoverageforOpenSalesOrder';
+  const getHeaderData = async () => {
+      try {
+          const response = await getUIConfigData(reportName);
+          setHeaderData(response.data.data);
+      }
+      catch (e) {
+          console.log(e);
+      }
+  }
+  
+  const customHeader =
+  {
+      ColorPriority: {
+          cellRenderer: ColorCellRenderer
+      },
+      FullKitAvail: {
+          minWidth: 100,
+          maxWidth: 100,
+          cellStyle: {
+              paddingRight: '25px'
+          },
+          cellRenderer: "avlCellRenderer",
+          tooltipComponent: 'availabilityToolTip',
+          tooltipValueGetter: (params: any) => {
+              const oq = params.data.oq;
+              const fka = params.data.fka;
+              return `${fka}/${oq} kits can be manufactured`;
+          },
+      }
+  }
+
+  const extras = [
+      {
+          field: "",
+          resizable: false,
+          position: 0,
+          suppressHeaderFilterButton: true,
+          suppressMenu: true,
+          filter: false,
+          initialWidth: 50,
+          maxWidth: 50,
+          cellRenderer: CustomGroupCellRenderer
+      }
+  ]
+
+  const getFilterData = async () => {
+    try {
+      const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Material_Coverage_For_OpenSO});
+      setFilterData(response?.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    setColDef(getColumnDefinations(HeaderData, customHeader, extras))
+  }, [HeaderData])
+
+  useEffect(() => {
+    getUserColumnConfig();
+    getHeaderData();
+    getFilterData()
+  }, [])
+
+  useEffect(() => {
+    if (isReset) {
+      setColumnState(colDef);
+      setIsReset(false)
+    }else{
+      handleSaveClick();
+    }
+  }, [isReset]);
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
@@ -127,6 +256,7 @@ const MaterialCov = () => {
             onAddFilter={onAddFilter}
             toggleFilter={toggleFilter}
             onApplyFilter={onApplyFilter}
+            isMfgSelected={isMfgSelected}
             multiFilter={currFilter}
             setMultiFilter={setCurrFilter}
             onFilterRemove={onFilterRemove}
@@ -188,7 +318,6 @@ const MaterialCov = () => {
 
           <ActionToolBar
             isGoBackButton
-            isAddFilterButton
             isExcelExport
             comp={'MaterialCovDetailData'}
             onDateChange={() => { console.log('') }}
@@ -197,9 +326,22 @@ const MaterialCov = () => {
               handleToggleComponent(false);
               // setCurrTab("CurrentCoverage")
             }}
+            isMfgSelected={isMfgSelected}
+            multiFilter={currFilter}
+            disableRemoveFilter={true}
+            handleSaveClick={handleSaveClick}
+            handleResetClick={handleResetClick}
           />
 
-          <MaterialSODetailed parameterData={detailDataObj} />
+          <MaterialSODetailed 
+            isUpdateUserConfig={isUpdateUserConfig}
+            isGetUserConfig={isGetUserConfig}
+            parameterData={detailDataObj}
+            colDef={colDef}
+            setCurrentGridRef={setCurrentGridRef}
+            currentGridRef={currentGridRef}
+            columnState={columnState}
+          />
         </div>
 
       }
