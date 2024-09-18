@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useUserData } from '../../../../../../context'
+//import { useUserData } from '../../../../../../context'
 import DatePicker from '../../../../../../components/VectorFLOW/commons/MTO/DatePicker'
 import { DayWiseCoverageHeaderContainer, DayWiseCoverageStatus, Divider, Text } from './style'
 import { format } from 'date-fns'
@@ -20,8 +20,8 @@ const DayWiseCoverageHeader = ({
     max,
     min
 }: IDayWiseCoverageHeaderProps) => {
-    const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
+    //const { user } = useUserData();
+    //const themeUi = user?.user?.theme_ui;
     const [start, setStart] = useState(startDate);
     const [end, setEnd] = useState(endDate);
 
