@@ -23,6 +23,19 @@ import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { pagination, UIGridCode } from '../../Common/Enum';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import useFilter from "../../../../../hooks/useFilter";
+import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
+
+const APIFilterConfig = {
+  filSecVisConfig: {
+    "Prod_Dynamic_Release_Management" : {
+      mjr : false,
+      or: true,
+      res: true,
+      cus: true
+    },
+  }
+};
 
 const DynamicReleaseManagement = () => {
   interface InputData {
@@ -67,6 +80,18 @@ const DynamicReleaseManagement = () => {
   const graph = useRef<any>();
   const [message, setMessage] = useState('');
   const [HeaderData, setHeaderData] = useState([]);
+  const [filterData, setFilterData] = useState({});
+  const { 
+      state: currFilter, 
+      setState: setCurrFilter, 
+      onFilterRemove, 
+      isFilterOpen, 
+      isMfgSelected,
+      onAddFilter, 
+      onApplyFilter, 
+      toggleFilter 
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dynamic_Release_Management);
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
   const setColumnDef = async () => {
@@ -112,11 +137,21 @@ const DynamicReleaseManagement = () => {
     }
   };
 
+  const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({});
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   useEffect(() => {
     getMastersData();
     GetData();
     getUserColumnConfig();
     setColumnDef();
+    getFilterData()
   }, [])
   
   useEffect(()=>{
@@ -701,6 +736,14 @@ const DynamicReleaseManagement = () => {
           onCheckBoxToggle={setAllRows}
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
+          isFilterOpen={isFilterOpen}
+          onAddFilter={onAddFilter}
+          toggleFilter={toggleFilter}
+          onApplyFilter={onApplyFilter}
+          multiFilter={currFilter}
+          setMultiFilter={setCurrFilter}
+          onFilterRemove={onFilterRemove}
+          isMfgSelected={isMfgSelected}
         />
 
         <SCTabHeader style={{ marginTop: '5px' }}>

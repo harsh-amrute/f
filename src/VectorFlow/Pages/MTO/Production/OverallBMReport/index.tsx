@@ -120,10 +120,18 @@ const OverallBmReport = () => {
     const [deptName, setDeptName] = useState<any>([]);
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
     const [filterData, setFilterData] = useState({});
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [appliedFilters, setAppliedFilters] = useState<any>({});
-    const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
-    const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport);
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+        appliedFilters
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport);
     const [highAgeing, sethighAgeing] = useState<any>();
 
     // const { user } = useUserData();
@@ -755,11 +763,21 @@ const OverallBmReport = () => {
         }));
     }
 
+    const getFilterData = async () => {
+        try {
+            const response = await getPageWiseFilterData({});
+            setFilterData(response?.data.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
         const colDefs = mapApiResponseToColDefs(apiResponse);
         //console.log('coldefs', colDefs)
         setColdef(colDefs)
         getInitialGridData(1);
+        getFilterData();
     }, [])
 
     useEffect(() => {
@@ -915,7 +933,6 @@ const OverallBmReport = () => {
         params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
     }
 
-
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
@@ -1002,31 +1019,9 @@ const OverallBmReport = () => {
         },
     };
 
-    const onApplyFilter = (filter:any)=>{
-
-        setAppliedFilters(filter);
-        setIsFilterOpen(false)
-    }
-
-    const onAddFilter = ()=>{
-        setIsFilterOpen(true)
-    }
-
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
-      
-    useEffect(()=>{
-        setAppliedFilters(currFilter);
-    },[currFilter])
-
     useEffect(()=>{
         getInitialGridData(currentPage);
     },[currentPage, appliedFilters])
-
-    useEffect(() => {
-        setFilterData(filterResponse?.data.data)
-    }, [filterResponse]);
 
     return (
         <BMDepWrapper>
@@ -1042,6 +1037,7 @@ const OverallBmReport = () => {
                     multiFilter={currFilter}
                     setMultiFilter={setCurrFilter}
                     onFilterRemove={onFilterRemove}
+                    isMfgSelected={isMfgSelected}
                 />
             </BMDepHeaderWraper>
 
