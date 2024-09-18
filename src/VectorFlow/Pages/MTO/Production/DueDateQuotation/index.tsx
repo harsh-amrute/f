@@ -19,6 +19,7 @@ import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/C
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { UIGridCode } from '../../Common/Enum'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -49,7 +50,7 @@ const DueDateQuotation = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  // const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState(false);
   //Refs
   const totalRows = useRef(0);
   const currentPageSelectedRows = useRef<any>([]);
@@ -90,6 +91,7 @@ const DueDateQuotation = () => {
       showDisabledCheckboxes: true,
       suppressMenu: true,
       maxWidth: 30,
+      pinned: 'left',
       position: 0,
       filter: false
     },
@@ -290,6 +292,7 @@ const DueDateQuotation = () => {
           <Step1
             ref={gridRef}
             gridOptions={gridOptions}
+            colDef={columnDefs}
             rows={rows}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
@@ -320,7 +323,6 @@ const DueDateQuotation = () => {
             confirmedRows={confirmedRows}
             setConfirmedRows={setConfirmedRows}
             setDisabled={setDisabled}
-            setCurrentGridRef={setCurrentGridRef}
           />
         )
       }
@@ -340,7 +342,6 @@ const DueDateQuotation = () => {
             setDisabled={setDisabled}
             setSelectedRows={setSelectedRows}
             setMasters={setMasters}
-            setCurrentGridRef={setCurrentGridRef}
           />
         )
       }
@@ -405,17 +406,12 @@ const DueDateQuotation = () => {
   const getUserColumnConfig = async () => {
     try {
       const data = await getUserUIReportConfigData({
-        un: "rohan",
-        rn_id: 1
+        un: user.user.name,
+        rn_id: UIGridCode.ProdDDQ
       });
 
-      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      console.log(newConfig, 'NEW Config')
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
       setColumnState(newConfig);
-      // currentGridRef?.current?.api?.applyColumnState({
-      //   state: newConfig,
-      //   applyOrder: true,
-      // });
 
       if (!data) {
         console.error('Failed to apply column state');
@@ -424,37 +420,46 @@ const DueDateQuotation = () => {
       console.error(error);
     }
   }
+
   const handleSaveClick = async () => {
     try {
-      const config = currentGridRef.current.api.getColumnState();
-
-      const payload = {
-        un: "rohan",
-        rn_id: 1,
-        cs: JSON.stringify(config)
+      if(currentGridRef?.current?.api){
+        const config = currentGridRef.current.api.getColumnState();
+  
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdDDQ,
+          cs: JSON.stringify(config)
+        }
+        await updateUserUIReportConfigData([payload]);
+        await getUserColumnConfig();
       }
 
-      console.log(config, 'CURRENT STATE')
-
-      await updateUserUIReportConfigData([payload]);
-      await getUserColumnConfig();
-     
     } catch (error) {
       console.error(error);
     }
   }
 
   const handleResetClick = () => {
-    // setIsReset(true);
+    setIsReset(true);
   }
 
   useEffect(()=>{
     getUserColumnConfig();
   },[])
 
+  useEffect(() => {
+    if (isReset) {
+      setColumnState(columnDefs);
+      setIsReset(false)
+    }else{
+      handleSaveClick();
+    }
+  }, [isReset]);
+
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
-      {step != 3 &&
+      {step === 1 ?
         <MTOActionToolBar
           comp="DDQ"
           quickFilter={
@@ -473,6 +478,12 @@ const DueDateQuotation = () => {
           onFilterRemove={onFilterRemove}
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
+        />
+        :
+        <MTOActionToolBar 
+          comp="DDQ"
+          multiFilter={currFilter}
+          disableRemoveFilter={true}
         />
       }
       {(isFilteredDataLoaded || loading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}

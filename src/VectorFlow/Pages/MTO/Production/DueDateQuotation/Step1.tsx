@@ -16,10 +16,11 @@ interface IStep1Props {
   setSelectedRows: any,
   setCurrentGridRef: any,
   currentGridRef: any,
-  columnState: any
+  columnState: any,
+  colDef: any,
 }
 
-const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState }: IStep1Props, ref: any) => {
+const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState }: IStep1Props, ref: any) => {
 
   const gridRef = useRef<any>();
 
@@ -40,36 +41,17 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
     return (params.data.dd == null || params.data.dd == undefined);
   }, []);
 
-  useEffect(() => {
-    if (gridRef.current && columnState.length) {
-      console.log('Applying column state:', columnState);
-      const result = gridRef.current.api.applyColumnState({
-        state: columnState,
-        applyOrder: true, // Ensure order is applied
-      });
-      console.log(result, "RESULT")
-      if (!result) {
-        console.error('Failed to apply column state');
-      }
+  useEffect(()=>{ 
+    if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+        const result = currentGridRef?.current?.api.applyColumnState({
+            state: columnState,
+            applyOrder: true
+        });
+        if (!result) {
+            console.error('Failed to apply column state');
+        }
     }
-  }, [columnState, currentGridRef]); // Reapply column state whenever it changes
-
-  // useEffect(()=>{
-  //   if(currentGridRef){
-
-  //     if (currentGridRef?.current && columnState?.length) {
-
-  //       const result = currentGridRef.current.api.applyColumnState({
-  //         state: columnState,
-  //         applyOrder: true, // Ensure order is applied
-  //       });
-  //       console.log(result, 'RESLUT')
-  //       if (!result) {
-  //         console.error('Failed to apply column state');
-  //       }
-  //     }
-  //   }
-  // },[])
+  });
 
   return (
     <>
@@ -77,7 +59,7 @@ const Step1 = forwardRef(({ gridOptions, rows, selectedRows, currentPageSelected
         key="allRows"
         ref={gridRef}
         gridOptions={gridOptions}
-        columnDefs={gridOptions.columnDefs}
+        columnDefs={colDef}
         rowData={rows}
         isRowSelectable={isRowSelectable}
         rowSelection="multiple"

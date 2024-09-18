@@ -10,14 +10,23 @@ const ProcurementPlanning = () => {
     const d = new Date();
     const datetime = moment(d).format(format2);
     const [date, selectedDate] = useState<string>(datetime);
-    const { renderView, toggleCurrentTab, fetchData, isLoading, currentTab } = useProcPlanning(date);
+    const {
+        renderView, 
+        toggleCurrentTab, 
+        fetchData, isLoading, 
+        currentTab, 
+        isUpdateUserConfig,
+        isGetUserConfig,
+        handleResetClick,
+        handleSaveClick, 
+    } = useProcPlanning(date);
     const handleDateChange = (date: string) => {
         selectedDate(date);
     };
     return (
         <>
 
-            {isLoading && (
+            {(isLoading || isUpdateUserConfig || isGetUserConfig) && (
                 <OverlayLoader />
             )}
 
@@ -33,6 +42,8 @@ const ProcurementPlanning = () => {
                     isExcelExport
                     submitDate={() => { fetchData(date, 1, currentTab.label === 'Shortage' ? '0' : '1') }}
                     date={date}
+                    handleSaveClick={handleSaveClick}
+                    handleResetClick={handleResetClick}
                 />
                 <div style={{ zoom: 0.75 }}>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
