@@ -10,12 +10,12 @@ interface SelectSearchMultipleProps {
   placeholder: string;
   handleListChild: (e: object) => void;
   disabled: any;
-  icon?:any;
-  maxToShow?:number;
-  backgroundColor?:string;
-  borderRadius?:number;
-  boxShadow?:string,
-  
+  icon?: any;
+  maxToShow?: number;
+  backgroundColor?: string;
+  borderRadius?: number;
+  boxShadow?: string,
+
 }
 
 const SearchInputMultiple = ({
@@ -38,7 +38,7 @@ const SearchInputMultiple = ({
     handleListChild(e);
   };
 
-  const myBoxShadow = boxShadow ? boxShadow:'0px 6px 12px #95959529'
+  const myBoxShadow = boxShadow ? boxShadow : '0px 6px 12px #95959529'
 
   return (
     <Select
@@ -46,18 +46,18 @@ const SearchInputMultiple = ({
       tabSelectsValue={false}
       hideSelectedOptions={false}
       isMulti
-      components={{ 
-        IndicatorSeparator: null, MultiValue:(props)=>(
-          <MultiValue maxToShow={maxToShow} {...props}/>
+      components={{
+        IndicatorSeparator: null, MultiValue: (props) => (
+          <MultiValue maxToShow={maxToShow} {...props} />
         ),
-        DropdownIndicator:icon
-       }}
+        DropdownIndicator: icon
+      }}
       menuPosition="fixed"
       aria-label="Example Label"
       isDisabled={disabled}
       options={options}
       value={value}
-      styles={selectStyles(backgroundColor, borderRadius ? borderRadius : 6, myBoxShadow,themeUi)}
+      styles={selectStyles(backgroundColor, borderRadius ? borderRadius : 6, myBoxShadow, themeUi)}
       placeholder={placeholder}
       onChange={(e) => {
         handleSelect(e);
@@ -70,14 +70,14 @@ const SearchInputMultiple = ({
           primary25: "#F2F2F2",
           primary: chooseThemeColor[themeUi].color5,
         },
-        
+
       })}
     />
-  
+
   );
 };
 
-const MultiValue = ({ index, getValue,maxToShow, ...props }: any) => {
+const MultiValue = ({ index, getValue, maxToShow, ...props }: any) => {
   const overflow = getValue()
     .slice(maxToShow)
     .map((x: any) => x.label);

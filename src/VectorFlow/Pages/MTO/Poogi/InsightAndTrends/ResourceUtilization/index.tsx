@@ -39,6 +39,7 @@ import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
 import { useDispatch } from "react-redux";
 import { RESOURCE_UTIL_ANALYTICS } from "../../../../../../redux/actions/MTO";
+import { ColorsMTO } from "../../../Common/Colors";
 
 const ResourceUtilization = () => {
   const chartRef = useRef<any>(null);
@@ -151,7 +152,6 @@ const ResourceUtilization = () => {
 
 
   const createAnalyticsData = (apiData: any) => {
-    console.log('firstAnalyticsData', apiData);
     if (selectedGraphState === 'wipLimit') {
       const newAnalyticsData = {
         type: 'wip',
@@ -810,10 +810,11 @@ const ResourceUtilization = () => {
           <SelectGroup style={{ width: '130px', zoom: '1.25' }}>
             <VFSelect
               themeUi={themeUi}
-              placeholder={"Select Plant"}
+              placeholder={"Plant"}
               options={plantOpts}
               isSelected={selectedPlant.value}
               onChange={handlePlantChange}
+              icon={true}
             />
             {/* <CustomSelect placeholder="Select Plant" value={selectedPlant} onSelectionChanged={(e: any) => { console.log("selected this", e) }} selected={false} options={plantOpts} optionsWidth={"100%"} /> */}
           </SelectGroup>
@@ -834,10 +835,11 @@ const ResourceUtilization = () => {
           <SelectGroup style={{ width: '160px', zoom: '1.25' }}>
             <VFSelect
               themeUi={themeUi}
-              placeholder={"Select Department"}
+              placeholder={"Department"}
               isSelected={selectedDept.value}
               options={deptOpts}
               onChange={handleDeptChange}
+              icon={true}
             />
           </SelectGroup>
         </div>
@@ -871,14 +873,37 @@ const ResourceUtilization = () => {
               {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
                                     Submit
                                 </VFButtonOutline> */}
-              <img
+              {/* <img
                 data-testid='horizon-submit'
                 style={{ cursor: 'pointer' }}
                 src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
                 height={50}
                 width={60}
                 onClick={() => handleHorizonSubmit && handleHorizonSubmit()}
-              />
+              /> */}
+              <div
+                style={{
+                  cursor: 'pointer',
+                  background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                  backgroundColor: ColorsMTO.darkPink.code,
+                  height: '30px',
+                  width: '50px',
+                  borderRadius: '4px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                  display: 'flex'
+                }}
+                onClick={() => handleHorizonSubmit && handleHorizonSubmit()}
+              >
+                <img
+                  style={{}}
+                  src="/assets/img/rightArrowHorizontal.svg"
+                  height={13}
+                  width={7}
+                />
+              </div>
+
             </div>
           </SCChartSliderContainer>
         </div>

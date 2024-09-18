@@ -11,16 +11,19 @@ import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCaps
 import { CapsuleWrapper } from "../styles";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
 // <-------------- uncomment below code to enable dropdown for orderType    --------->
-// import Select from 'react-select'
+import VFSelect from "../../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
+import { useUserData } from "../../../../../../../context/index";
+
+
 
 
 const TrailDeptBalance = (props: any) => {
-  const { 
-    graphData, 
-  // <-------------- uncomment below code to enable dropdown for orderType    --------->
-    // orderOptions,
-    // handleChange,
-    // orderType
+  const {
+    graphData,
+    // <-------------- uncomment below code to enable dropdown for orderType    --------->
+    orderOptions,
+    handleChange,
+    //orderType
   } = props;
   const [date] = useState(format(new Date(), "d MMM yyyy"));
   const [hideChart1, toggleChart1] = useState(false);
@@ -31,7 +34,8 @@ const TrailDeptBalance = (props: any) => {
     label: "Bal To Mfg.",
     value: "Bal To Mfg.",
   });
-
+  const { user } = useUserData();
+  const themeUi = user.user.theme_ui;
   const options: AgChartOptions = {
     data: rawData,
     series: createSeriesData(),
@@ -93,33 +97,40 @@ const TrailDeptBalance = (props: any) => {
 
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
 
-  // const customStyles = {
-  //   control: (provided: any) => ({
-  //     ...provided,
-  //     width: 180,
-  //   }),
-  //   menu: (provided: any) => ({
-  //     ...provided,
-  //     width: 180,
-  //   }),
-  //   placeholder: (provided: any) => ({
-  //     ...provided,
-  //     color: 'gray', // Customize the placeholder color
-  //     fontSize: '15px', // Customize the font size
-  //   }),
-  //   option: (provided: any, state: any) => ({
-  //     ...provided,
-  //     backgroundColor: state.isSelected ? 'lightblue' : 'white',
-  //     color: 'black',
-  //     '&:hover': {
-  //       backgroundColor: 'lightgray',
-  //     },
-  //   }),
-  // };
+  /*const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      width: 180,
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      width: 180,
+    }),
+    placeholder: (provided: any) => ({
+      ...provided,
+      color: 'gray', // Customize the placeholder color
+      fontSize: '15px', // Customize the font size
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? 'lightblue' : 'white',
+      color: 'black',
+      '&:hover': {
+        backgroundColor: 'lightgray',
+      },
+    }),
+    dropdownIndicator: (provided: any) => ({
+      ...provided,
+      color: "grey",
+      padding: "5px",
+      margin: '5px'
+    }),
+  };*/
 
   const generateHeader = () => {
     // <-------------- uncomment below code to enable dropdown for orderType    --------->
-    // const options = orderOptions?.map((opt: any)=>({ label: opt.desc, value: opt.order_type }))
+    const options = orderOptions?.map((opt: any) => ({ label: opt.desc, value: opt.order_type }))
+
     return (
       <div
         className="title"
@@ -128,17 +139,77 @@ const TrailDeptBalance = (props: any) => {
           height: "40px",
           display: "flex",
           // <-------------- uncomment below code to enable dropdown for orderType    --------->
-          // justifyContent: "space-between", 
-          justifyContent: "end",   
+          justifyContent: "space-between",
+          //justifyContent: "end",
           alignItems: "center",
           width: "100%",
         }}
       >
         {/* <-------------- uncomment below code to enable dropdown for orderType    ---------> */}
-        {/* <div style={{ display: 'flex', alignItems: 'center', marginLeft: '30px' }}>
-            <p style={{ fontFamily: 'roboto', fontSize: '15px',fontWeight: '500', paddingRight: '5px' }}>Order Type </p>
-            <Select styles={customStyles} placeholder="Select Order Type" options={options} onChange={handleChange}/>
-        </div> */}
+        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '30px' }}>
+          <p style={{ fontFamily: 'roboto', fontSize: '15px', fontWeight: '500', paddingRight: '5px', zoom: 0.75 }}>Order Type</p>
+          <div >
+            <VFSelect
+              themeUi={themeUi}
+              placeholder={"Select Order Type"}
+              options={options}
+              onChange={handleChange}
+              icon={true}
+            />
+            {/* <Select
+              isSearchable={true}
+              components={{
+                IndicatorSeparator: () => null,
+                DropdownIndicator: SearchIcon
+              }}
+              styles={{
+                container: (base) => ({
+                  ...base,
+                  //width: "100%"
+                  width: 170
+                }),
+                control: (base: any, state: any) => ({
+                  ...base,
+                  minHeight: "25px",
+                  minWidth: "80px",
+                  boxShadow: state.isFocused ? 0 : 0,
+                  border: "1px solid hsl(0, 0%, 80%) !important",
+                  '&:hover': {
+                    border: "1px solid hsl(0, 0%, 80%)"
+                  }
+                }),
+                menu: (base) => ({
+                  ...base,
+                  zIndex: "100000000",
+                  minWidth: "100%",
+                  width: "max-content"
+                }),
+                menuList: (base) => ({
+                  ...base,
+                  maxHeight: "120px"
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  color: "grey",
+                  padding: "0"
+                }),
+                clearIndicator: (base) => ({
+                  ...base,
+                  color: "grey",
+                  padding: "0"
+                }),
+                indicatorsContainer: (base) => ({
+                  ...base,
+                  padding: "0 8px"
+                })
+              }}
+              placeholder="Select Order Type"
+              options={options}
+              onChange={handleChange}
+            /> */}
+          </div>
+
+        </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <CapsuleWrapper style={{ zoom: 1, padding: "4px" }}>
             <VFCapsule
@@ -192,23 +263,23 @@ const TrailDeptBalance = (props: any) => {
       ? ProductionInsightsAndTrendsString.trailDeptMfg
       : ProductionInsightsAndTrendsString.trailDeptDisp;
 
-  useEffect(()=>{
-    if(graphData?.mfg){
+  useEffect(() => {
+    if (graphData?.mfg) {
       const response: any = graphData?.mfg;
-      const data: any =  Object.keys(response)?.map((key: string) => ({
-        trailDept: key, 
-        b: response[key]?.Black || 0, 
-        r: response[key]?.Red || 0, 
-        y: response[key]?.Yellow || 0, 
-        g: response[key]?.Green || 0, 
-        bl: response[key]?.Blue || 0, 
-        w: response[key]?.White || 0, 
+      const data: any = Object.keys(response)?.map((key: string) => ({
+        trailDept: key,
+        b: response[key]?.Black || 0,
+        r: response[key]?.Red || 0,
+        y: response[key]?.Yellow || 0,
+        g: response[key]?.Green || 0,
+        bl: response[key]?.Blue || 0,
+        w: response[key]?.White || 0,
       }));
       setRawData(data);
     }
-  },[graphData])
+  }, [graphData])
 
-  useEffect(()=>{
+  useEffect(() => {
 
     let response: any = {};
     if (actBtn.label === "Bal To Mfg.") {
@@ -217,21 +288,21 @@ const TrailDeptBalance = (props: any) => {
       response = graphData?.disp || {};
     }
 
-    const data: any =  Object.keys(response)?.map((key: string) => ({
-      trailDept: key, 
-      b: response[key]?.Black || 0, 
-      r: response[key]?.Red || 0, 
-      y: response[key]?.Yellow || 0, 
-      g: response[key]?.Green || 0, 
-      bl: response[key]?.Blue || 0, 
-      w: response[key]?.White || 0, 
+    const data: any = Object.keys(response)?.map((key: string) => ({
+      trailDept: key,
+      b: response[key]?.Black || 0,
+      r: response[key]?.Red || 0,
+      y: response[key]?.Yellow || 0,
+      g: response[key]?.Green || 0,
+      bl: response[key]?.Blue || 0,
+      w: response[key]?.White || 0,
     }));
-    
+
     setRawData(data);
-    
-  },[actBtn])
-  
-  const graphTitleJSX =  <div
+
+  }, [actBtn])
+
+  const graphTitleJSX = <div
     data-testid="ot-if-graph"
     style={{
       fontSize: "13px",
@@ -241,11 +312,11 @@ const TrailDeptBalance = (props: any) => {
     }}
   >
     <span style={{ fontWeight: 500 }}>{`${actBtn.label === "Bal To Mfg."
-          ? ProductionInsightsAndTrendsString.trailDeptMfg
-          : ProductionInsightsAndTrendsString.trailDeptDisp}  `}</span>
+      ? ProductionInsightsAndTrendsString.trailDeptMfg
+      : ProductionInsightsAndTrendsString.trailDeptDisp}  `}</span>
     <span style={{ fontWeight: 300 }}>{`(${date})`}</span>
   </div>
-  
+
 
   return (
     <div

@@ -173,7 +173,7 @@ const RMPMOrderwiseCoverage = () => {
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
-            setColDef(getColumnDefinations(response.data.data, customHeader, []));
+            setColDef(getColumnDefinations(response?.data?.data, customHeader, []));
         }
         catch (e) {
             console.log(e);
@@ -211,17 +211,15 @@ const RMPMOrderwiseCoverage = () => {
 
     const GetData = async (graph: any, page: any) => {
         if (graph === 1) {
-
             try {
                 notifyLoader("Loading Data...")
                 const APIData = await getOrderwiseCoverageData({ graph, page });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
+                    setApiGraphData(APIData?.data?.data);
                     notifySuccess("Data Fetched Successfully!")
                 }
-                setApiGraphData(APIData?.data?.data);
-
-
+                
             } catch (e) {
                 toast.dismiss();
                 notifyError("Failed to fetch Data");
@@ -233,11 +231,10 @@ const RMPMOrderwiseCoverage = () => {
                 const APIData = await getOrderwiseCoverageData({ graph, page });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
+                    setApiGridData(APIData?.data?.data?.results);
                     notifySuccess("Data Fetched Successfully!")
                 }
-                setApiGridData(APIData?.data?.data);
-
-
+               
             } catch (e) {
                 toast.dismiss();
                 notifyError("Failed to fetch Data");
@@ -291,7 +288,7 @@ const RMPMOrderwiseCoverage = () => {
     const getFilterData = async () => {
     try {
         const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_RM_PM_OrderWise});
-        setFilterData(response?.data.data);
+        setFilterData(response?.data?.data);
     } catch (error) {
         console.error(error);
     }
