@@ -20,7 +20,7 @@ const TrailDeptBalance = (props: any) => {
     // <-------------- uncomment below code to enable dropdown for orderType    --------->
     orderOptions,
     handleChange,
-    orderType
+    //orderType
   } = props;
   const [date] = useState(format(new Date(), "d MMM yyyy"));
   const [hideChart1, toggleChart1] = useState(false);
@@ -93,7 +93,7 @@ const TrailDeptBalance = (props: any) => {
 
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
 
-  const customStyles = {
+  /*const customStyles = {
     control: (provided: any) => ({
       ...provided,
       width: 180,
@@ -121,7 +121,7 @@ const TrailDeptBalance = (props: any) => {
       padding: "5px",
       margin: '5px'
     }),
-  };
+  };*/
 
   const SearchIcon = () => {
     return (
