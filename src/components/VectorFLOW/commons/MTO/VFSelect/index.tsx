@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { chooseThemeColor } from '../../../../../styles/global';
 
 
-const VFSelect = ({ options, themeUi, icon, ...rest }: any) => {
+const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
 
     const SearchIcon = () => {
         return (
@@ -29,7 +29,7 @@ const VFSelect = ({ options, themeUi, icon, ...rest }: any) => {
             styles={{
                 container: (base) => ({
                     ...base,
-                    width: "100%"
+                    width: placeholder == "Select Order Type" ? 170 : "100%"
                 }),
                 control: (base: any, state: any) => ({
                     ...base,

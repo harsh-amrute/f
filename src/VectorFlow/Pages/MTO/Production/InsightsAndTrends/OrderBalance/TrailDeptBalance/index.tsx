@@ -11,7 +11,10 @@ import VFCapsule from "../../../../../../../components/VectorFLOW/commons/VFCaps
 import { CapsuleWrapper } from "../styles";
 import { createSeriesData, TooltipRenderer } from "../OrderBalanceCommon";
 // <-------------- uncomment below code to enable dropdown for orderType    --------->
-import Select from 'react-select'
+import VFSelect from "../../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
+import { useUserData } from "../../../../../../../context/index";
+
+
 
 
 const TrailDeptBalance = (props: any) => {
@@ -31,7 +34,8 @@ const TrailDeptBalance = (props: any) => {
     label: "Bal To Mfg.",
     value: "Bal To Mfg.",
   });
-
+  const { user } = useUserData();
+  const themeUi = user.user.theme_ui;
   const options: AgChartOptions = {
     data: rawData,
     series: createSeriesData(),
@@ -158,7 +162,14 @@ const TrailDeptBalance = (props: any) => {
         <div style={{ display: 'flex', alignItems: 'center', marginLeft: '30px' }}>
           <p style={{ fontFamily: 'roboto', fontSize: '15px', fontWeight: '500', paddingRight: '5px', zoom: 0.75 }}>Order Type</p>
           <div >
-            <Select
+            <VFSelect
+              themeUi={themeUi}
+              placeholder={"Select Order Type"}
+              options={options}
+              onChange={handleChange}
+              icon={true}
+            />
+            {/* <Select
               isSearchable={true}
               components={{
                 IndicatorSeparator: () => null,
@@ -168,7 +179,7 @@ const TrailDeptBalance = (props: any) => {
                 container: (base) => ({
                   ...base,
                   //width: "100%"
-                  width:170
+                  width: 170
                 }),
                 control: (base: any, state: any) => ({
                   ...base,
@@ -208,7 +219,7 @@ const TrailDeptBalance = (props: any) => {
               placeholder="Select Order Type"
               options={options}
               onChange={handleChange}
-            />
+            /> */}
           </div>
 
         </div>
