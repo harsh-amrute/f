@@ -152,7 +152,6 @@ const MTOActionToolBar = ({
                             </div>
                             {
                                 isReleaseButtonDisabled ?
-
                                     // <img
                                     //     style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
                                     //     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
@@ -174,6 +173,7 @@ const MTOActionToolBar = ({
                                             alignContent: 'center',
                                             display: 'flex'
                                         }}
+                                        data-testid={'isReleaseBtn'}
                                     >
                                         <img
                                             style={{}}
@@ -196,6 +196,7 @@ const MTOActionToolBar = ({
                                             alignContent: 'center',
                                             display: 'flex'
                                         }}
+                                        data-testid={'isReleaseBtn'}
                                         onClick={onOrderRelease}>
                                         <img
                                             style={{}}
@@ -329,9 +330,11 @@ const MTOActionToolBar = ({
                                     alignContent: 'center',
                                     display: 'flex'
                                 }}
-                                onClick={() => { if (submitDate) submitDate() }}>
+                                onClick={() => { if (submitDate) submitDate() }}
+                                data-testid={"Group 627"}
+                            >
                                 <img
-                                    style={{}}
+                                    // style={{}}
                                     src="/assets/img/rightArrowHorizontal.svg"
                                     height={13}
                                     width={7}
