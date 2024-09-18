@@ -20,8 +20,8 @@ import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
-import { getColumnDefinations } from '../../../../../helpers/utils';
-import { UIGridCode } from "../../Common/Enum";
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useUserData } from "../../../../../context/index";
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
@@ -44,13 +44,14 @@ const MaterialCov = () => {
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
   const [soData, setSOData] = useState<any>([]);
   const { data, isLoading, /*refetch*/ } = useGetSOSummaydetails();
-  const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData();
   const [filterData, setFilterData] = useState({});
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
   const [HeaderData, setHeaderData] = useState([]);
+  const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -61,7 +62,8 @@ const MaterialCov = () => {
   const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
 
   const onApplyFilter = (filter: any) => {
-    console.log(filter)
+    console.log(formatFilterJSON(filter), 'APPLIED Filters');
+    setIsMfgSelected(true);
     setIsFilterOpen(false)
   }
   const onAddFilter = () => {
@@ -105,10 +107,6 @@ const MaterialCov = () => {
   useEffect(() => {
     setSOData(data?.data.data)
   }, [data])
-
-  useEffect(() => {
-    setFilterData(filterResponse?.data.data)
-  }, [filterResponse]);
 
   const tabs = [
     {
@@ -212,6 +210,15 @@ const MaterialCov = () => {
       }
   ]
 
+  const getFilterData = async () => {
+    try {
+      const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Material_Coverage_For_OpenSO});
+      setFilterData(response?.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     setColDef(getColumnDefinations(HeaderData, customHeader, extras))
   }, [HeaderData])
@@ -219,6 +226,7 @@ const MaterialCov = () => {
   useEffect(() => {
     getUserColumnConfig();
     getHeaderData();
+    getFilterData()
   }, [])
 
   useEffect(() => {
@@ -248,6 +256,7 @@ const MaterialCov = () => {
             onAddFilter={onAddFilter}
             toggleFilter={toggleFilter}
             onApplyFilter={onApplyFilter}
+            isMfgSelected={isMfgSelected}
             multiFilter={currFilter}
             setMultiFilter={setCurrFilter}
             onFilterRemove={onFilterRemove}
@@ -309,7 +318,6 @@ const MaterialCov = () => {
 
           <ActionToolBar
             isGoBackButton
-            isAddFilterButton
             isExcelExport
             comp={'MaterialCovDetailData'}
             onDateChange={() => { console.log('') }}
@@ -318,6 +326,9 @@ const MaterialCov = () => {
               handleToggleComponent(false);
               // setCurrTab("CurrentCoverage")
             }}
+            isMfgSelected={isMfgSelected}
+            multiFilter={currFilter}
+            disableRemoveFilter={true}
             handleSaveClick={handleSaveClick}
             handleResetClick={handleResetClick}
           />

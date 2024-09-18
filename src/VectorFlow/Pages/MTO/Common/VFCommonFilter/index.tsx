@@ -30,11 +30,10 @@ interface VFCommonFilterProps {
   multiFilter: FilterState;
   setMultiFilter: any;
   isFilterOpen: boolean;
-  setIsMfgSelected: (mfgStrategy: boolean)=>void;
 }
 
 const VFCommonFilter = (props: VFCommonFilterProps) => {
-  const { onGoBack, multiFilter, setMultiFilter, onApplyFilter, isFilterOpen, setIsMfgSelected } = props;
+  const { onGoBack, multiFilter, setMultiFilter, onApplyFilter, isFilterOpen } = props;
   const [filterState, setFilterState] = useState<any>({});
   const [openStatus, setOpenStatus] = useState<any>({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -293,7 +292,6 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                   Go Back!
                 </VFButtonOutline>
                 <VFButton data-testid="applyFilter" themeUi={user.user.theme_ui} onClick={() =>{
-                  setIsMfgSelected(true);
                   setMultiFilter(filterState);
                   onApplyFilter(filterState);
                 }}>
