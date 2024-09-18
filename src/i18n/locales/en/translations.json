@@ -124,7 +124,7 @@
         "itr": "ITR"
       },
       "miscellaneousReports": {
-        "title": "Miscellaneous Reports",
+        "title": "Download Reports",
         "bufferPenetrationReport":"Buffer Penetration Report",
         "fashionRationedRequirement":"Fashion RationedRequirement",
         "rosn":"ROSN",
