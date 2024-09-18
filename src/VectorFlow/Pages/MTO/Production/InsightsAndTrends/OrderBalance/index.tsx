@@ -18,7 +18,7 @@ import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Comm
 import {
   useGetOrderBalanceData,
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
-  // useGetOrderTypeOptions 
+  useGetOrderTypeOptions 
 } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/OrderBalance";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
@@ -53,11 +53,11 @@ const OrderBalance = () => {
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getOrderBalanceData, isLoading, isError, isSuccess } = useGetOrderBalanceData();
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
-  // const {mutateAsync: getOrderTypeOptions, isLoading: isOptionsLoading, isError: isOptionsError, isSuccess: isOptionsSuccess } = useGetOrderTypeOptions();
+  const {mutateAsync: getOrderTypeOptions, /*isLoading: isOptionsLoading, isError: isOptionsError, isSuccess: isOptionsSuccess */} = useGetOrderTypeOptions();
   const [graphData, setGraphData] = useState<any>({});
   //  <-------------- uncomment below code to enable dropdown for orderType    --------->
-  // const [orderOptions, setOrderOptions] = useState([]); 
-  // const [orderType, setOrderType] = useState({}); 
+  const [orderOptions, setOrderOptions] = useState([]); 
+  const [orderType, setOrderType] = useState({}); 
   const reportName = "OrderBalance";
   const { user } = useUserData();
 
@@ -103,15 +103,15 @@ const OrderBalance = () => {
 
 
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
-  // const getOrderOptions = async () => {
-  //   const response = await getOrderTypeOptions();
-  //   setOrderOptions(response?.data?.data)
-  // }
+  const getOrderOptions = async () => {
+    const response = await getOrderTypeOptions();
+    setOrderOptions(response?.data?.data)
+  }
 
-  // const handleChange = (option: any) => {
-  //   setOrderType(option)
-  //    getGraphData({ graphflag: 1, ordertype: option?.value || 1 });
-  // };
+  const handleChange = (option: any) => {
+    setOrderType(option)
+     getGraphData({ graphflag: 1, ordertype: option?.value || 1 });
+  };
 
   const getUserColumnConfig = async () => {
     try {
@@ -157,7 +157,7 @@ const OrderBalance = () => {
     getUserColumnConfig();
     getGraphData({ graphflag: 1, ordertype: 1 });
     // <-------------- uncomment below code to enable dropdown for orderType    --------->  
-    // getOrderOptions()
+     getOrderOptions()
   }, [])
 
   useEffect(() => {
@@ -252,9 +252,9 @@ const OrderBalance = () => {
                   <TrailDeptBalance
                     graphData={graphData}
                   // <-------------- uncomment below code to enable dropdown for orderType    --------->
-                  // orderOptions={orderOptions}
-                  // handleChange={handleChange}
-                  // orderType={orderType}
+                  orderOptions={orderOptions}
+                  handleChange={handleChange}
+                  orderType={orderType}
                   />
                 </BTRAllomentSection>
               </Allotment.Pane>

@@ -36,6 +36,7 @@ import { ReactElement } from 'react';
 import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
+import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
 
 type filterType = {
     label: string,
@@ -118,7 +119,7 @@ const MTOActionToolBar = ({
     WIPFilter,
     handleSaveClick,
     handleResetClick
-    
+
 }: MTOActionToolBarProps) => {
 
     const handleRemoveFilter = (category: string, name: string) => {
@@ -151,24 +152,67 @@ const MTOActionToolBar = ({
                             </div>
                             {
                                 isReleaseButtonDisabled ?
-
-                                    <img
-                                        style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
-                                        src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
-                                        height={50}
-                                        width={60}
-                                        alt="Group 627"
-                                    // onClick={onOrderRelease}
-                                    />
+                                    // <img
+                                    //     style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
+                                    //     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                                    //     height={50}
+                                    //     width={60}
+                                    //     alt="Group 627"
+                                    // // onClick={onOrderRelease}
+                                    // />
+                                    <div
+                                        style={{
+                                            cursor: 'pointer',
+                                            background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                            backgroundColor: ColorsMTO.darkPink.code,
+                                            height: '43px',
+                                            width: '59px',
+                                            borderRadius: '4px',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            alignContent: 'center',
+                                            display: 'flex'
+                                        }}
+                                        data-testid={'isReleaseBtn'}
+                                    >
+                                        <img
+                                            style={{}}
+                                            src="/assets/img/rightArrowHorizontal.svg"
+                                            height={13}
+                                            width={7}
+                                        />
+                                    </div>
                                     :
-                                    <img
-                                        style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
-                                        src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
-                                        height={50}
-                                        width={60}
-                                        alt="Group 627"
-                                        onClick={onOrderRelease}
-                                    />
+                                    <div
+                                        style={{
+                                            cursor: 'pointer',
+                                            background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                            backgroundColor: ColorsMTO.darkPink.code,
+                                            height: '43px',
+                                            width: '59px',
+                                            borderRadius: '4px',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            alignContent: 'center',
+                                            display: 'flex'
+                                        }}
+                                        data-testid={'isReleaseBtn'}
+                                        onClick={onOrderRelease}>
+                                        <img
+                                            style={{}}
+                                            src="/assets/img/rightArrowHorizontal.svg"
+                                            height={13}
+                                            width={7}
+                                        />
+                                    </div>
+                                // <img
+                                //     style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
+                                //     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                                //     height={50}
+                                //     width={60}
+                                //     alt="Group 627"
+                                //     onClick={onOrderRelease}
+                                // />
                             }
 
                         </div>
@@ -262,7 +306,7 @@ const MTOActionToolBar = ({
                                 />
                             </div>
                             &nbsp;
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {/* <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <img
                                     style={{ cursor: 'pointer' }}
                                     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
@@ -272,6 +316,29 @@ const MTOActionToolBar = ({
                                     onClick={() => { if (submitDate) submitDate() }}
                                 />
 
+                            </div> */}
+                            <div
+                                style={{
+                                    cursor: 'pointer',
+                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    height: '43px',
+                                    width: '59px',
+                                    borderRadius: '4px',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignContent: 'center',
+                                    display: 'flex'
+                                }}
+                                onClick={() => { if (submitDate) submitDate() }}
+                                data-testid={"Group 627"}
+                            >
+                                <img
+                                    // style={{}}
+                                    src="/assets/img/rightArrowHorizontal.svg"
+                                    height={13}
+                                    width={7}
+                                />
                             </div>
                         </div>
 

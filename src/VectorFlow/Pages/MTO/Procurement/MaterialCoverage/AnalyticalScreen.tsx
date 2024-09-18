@@ -25,11 +25,7 @@ const AnalyticalScreen = ({ pageName }: { pageName: string }) => {
     let rowData: any = [];
 
     if (pageName === 'MaterialSO') {
-
-
         options = useSelector((state: RootState) => state.mto.AnalyticsData);
-
-
         rowData = ([
             {
                 headerName: '',
@@ -44,13 +40,11 @@ const AnalyticalScreen = ({ pageName }: { pageName: string }) => {
                 headerName: 'Total Order Value'
             },
         ])
-
         options?.Order?.map((o: any) => {
             totalOrderCount += o.ordCunt;
             totalCustCount += o.cusCunt;
             totalOrderVal += o.totalCunt;
         })
-
     }
     else if (pageName === 'Fullkit assignment') {
         rowData = ([
@@ -120,13 +114,12 @@ const AnalyticalScreen = ({ pageName }: { pageName: string }) => {
                 }
             ]
         }
+        options?.Order?.map((o: any) => {
+            totalOrderCount += o.currFull;
+            totalCustCount += o.incFull;
+            totalOrderVal += (o.currFull+o.incFull);
+        })
     }
-
-    options?.Order?.map((o: any) => {
-        totalOrderCount += o.ordCunt;
-        totalCustCount += o.cusCunt;
-        totalOrderVal += o.totalCunt;
-    })
 
     if (!options.Order) {
         return null

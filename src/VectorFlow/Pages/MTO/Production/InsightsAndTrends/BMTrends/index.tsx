@@ -14,11 +14,12 @@ import VFRangeSlider from '../../../Common/VFRangeSlider'
 import useViewPort from '../../../../../../hooks/useViewPort'
 import useFilter from "../../../../../../hooks/useFilter";
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import { ColorsMTO } from '../../../Common/Colors'
 
 export const APIFilterConfig = {
-    filSecVisConfig :  {
-        "Prod_BM_Trend" : {
-            mjr : false,
+    filSecVisConfig: {
+        "Prod_BM_Trend": {
+            mjr: false,
             or: true,
             res: true,
             cus: true
@@ -43,20 +44,20 @@ const BMTrends = () => {
     const [tableLoading, setTableLoading] = useState(true);
     const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
     const [filterData, setFilterData] = useState({});
-    const {state:currFilter,setState:setCurrFilter, onFilterRemove} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
+    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
 
-    const onApplyFilter = (filter:any)=>{
-      console.log(filter)
-      setIsFilterOpen(false)
+    const onApplyFilter = (filter: any) => {
+        console.log(filter)
+        setIsFilterOpen(false)
     }
-    const onAddFilter = ()=>{
-      setIsFilterOpen(true)
+    const onAddFilter = () => {
+        setIsFilterOpen(true)
     }
-  
+
     const toggleFilter = (state: boolean) => {
-      setIsFilterOpen(state);
+        setIsFilterOpen(state);
     }
-  
+
 
     const colors = [
         { label: 'Black', value: 'black', key: 'b' },
@@ -103,7 +104,6 @@ const BMTrends = () => {
         }
 
         const getToolTipValues = ({ countArr, perArr, actBtn }: TooltipValuesProps) => {
-            console.log("countArr", countArr)
             let values = '';
             for (let i = 0; i < colors?.length; i++) {
                 values += `<tr key=${i}>
@@ -163,7 +163,7 @@ const BMTrends = () => {
                     renderer: TooltipRenderer
 
                 }
-            },)
+            })
 
         }
         return series;
@@ -346,14 +346,36 @@ const BMTrends = () => {
                             {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
                                         Submit
                                     </VFButtonOutline> */}
-                            <img
+                            {/* <img
 
                                 style={{ cursor: 'pointer' }}
                                 src="/assets/img/Group 627.svg"
                                 height={40}
                                 width={50}
                                 onClick={() => handleSubmitClick()}
-                            />
+                            /> */}
+                            <div
+                                style={{
+                                    cursor: 'pointer',
+                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    height: '43px',
+                                    width: '59px',
+                                    borderRadius: '4px',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignContent: 'center',
+                                    display: 'flex'
+                                }}
+                                onClick={() => handleSubmitClick()}
+                            >
+                                <img
+                                    style={{}}
+                                    src="/assets/img/rightArrowHorizontal.svg"
+                                    height={13}
+                                    width={7}
+                                />
+                            </div>
                         </div>
 
 
@@ -407,7 +429,7 @@ const BMTrends = () => {
 
     useEffect(() => {
         setFilterData(filterResponse?.data.data)
-      }, [filterResponse]);
+    }, [filterResponse]);
 
 
 
@@ -417,13 +439,13 @@ const BMTrends = () => {
     const date = apiResponseData?.data?.data;
     const { screenHeight } = useViewPort();
 
-    const graphTitleJSX =  <div
+    const graphTitleJSX = <div
         data-testid="ot-if-graph"
         style={{
-        fontSize: "13px",
-        margin: "0 auto",
+            fontSize: "13px",
+            margin: "0 auto",
 
-        textAlign: "center",
+            textAlign: "center",
         }}
     >
         <span style={{ fontWeight: 500 }}>Overall BM Trend </span>
@@ -432,37 +454,37 @@ const BMTrends = () => {
 
     return (
         <BMTrendWrapper>
-            <MTOActionToolBar 
-                comp={'BMTrends'} 
+            <MTOActionToolBar
+                comp={'BMTrends'}
                 isAddFilterButton
                 isFilterOpen={isFilterOpen}
                 onAddFilter={onAddFilter}
                 toggleFilter={toggleFilter}
-                onApplyFilter={onApplyFilter} 
+                onApplyFilter={onApplyFilter}
                 multiFilter={currFilter}
                 setMultiFilter={setCurrFilter}
                 onFilterRemove={onFilterRemove}
             />
             <div style={{ paddingLeft: '25px', height: screenHeight - 180, display: 'flex' }}>
-                    <SplitGraphContainer
-                        tableLoading={tableLoading}
-                        chartLoading={chartLoading}
-                        setTableLoading={setTableLoading}
-                        setChartLoading={setChartLoading}
-                        data={numericData}
-                        rowData={rowData}
-                        // moment(d).format(format2)
-                        graphTitle={``}
-                        graphTitleJSX={graphTitleJSX}
-                        tableTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
-                        options={options}
-                        colDef={colDef}
-                        header={generateHeader}
-                        hideChart={hideChart1}
-                        toggleChart={toggleChart1}
-                        TooltipRenderer={TooltipRenderer}
-                        graphType={1}
-                    />
+                <SplitGraphContainer
+                    tableLoading={tableLoading}
+                    chartLoading={chartLoading}
+                    setTableLoading={setTableLoading}
+                    setChartLoading={setChartLoading}
+                    data={numericData}
+                    rowData={rowData}
+                    // moment(d).format(format2)
+                    graphTitle={``}
+                    graphTitleJSX={graphTitleJSX}
+                    tableTitle={`Overall BM Trend (${moment(date).subtract(horizonDays - 1, 'days').format('D MMM YYYY')} - ${moment(date).format('D MMM YYYY')})`}
+                    options={options}
+                    colDef={colDef}
+                    header={generateHeader}
+                    hideChart={hideChart1}
+                    toggleChart={toggleChart1}
+                    TooltipRenderer={TooltipRenderer}
+                    graphType={1}
+                />
             </div>
         </BMTrendWrapper>
     )

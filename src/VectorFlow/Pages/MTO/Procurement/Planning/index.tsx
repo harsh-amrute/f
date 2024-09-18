@@ -80,9 +80,6 @@ const ProcurementPlanning = () => {
             )}
 
             <div style={{ display: "flex", height: "100%", flexDirection: "column", paddingBottom: "2rem" }}>
-
-
-
                 <ActionToolBar
                     comp={'Procurement Planning'}
                     onDateChange={handleDateChange}
@@ -107,7 +104,6 @@ const ProcurementPlanning = () => {
                 />
                 <div style={{ zoom: 0.75 }}>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
-
                         <VFFloatingTab
                             handleClick={(tab) => toggleCurrentTab(tab)}
                             tabs={[

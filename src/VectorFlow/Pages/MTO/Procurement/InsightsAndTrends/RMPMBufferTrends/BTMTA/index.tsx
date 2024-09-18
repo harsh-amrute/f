@@ -7,6 +7,7 @@ import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import moment from 'moment'
+import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 
 
 const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
@@ -451,14 +452,27 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                             labelValueFormatter={(value: number) => value.toString()}
                         />
                         <div>
-                            <img
-
-                                style={{ cursor: 'pointer' }}
-                                src="/assets/img/Group 627.svg"
-                                height={40}
-                                width={50}
-                                onClick={() => handleSubmitClick()}
-                            />
+                            <div
+                                style={{
+                                    cursor: 'pointer',
+                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    height: '35px',
+                                    width: '55px',
+                                    borderRadius: '4px',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignContent: 'center',
+                                    display: 'flex'
+                                }}
+                                onClick={() => handleSubmitClick()}>
+                                <img
+                                    style={{}}
+                                    src="/assets/img/rightArrowHorizontal.svg"
+                                    height={13}
+                                    width={7}
+                                />
+                            </div>
                         </div>
 
 
