@@ -810,10 +810,11 @@ const ResourceUtilization = () => {
           <SelectGroup style={{ width: '130px', zoom: '1.25' }}>
             <VFSelect
               themeUi={themeUi}
-              placeholder={"Select Plant"}
+              placeholder={"Plant"}
               options={plantOpts}
               isSelected={selectedPlant.value}
               onChange={handlePlantChange}
+              icon={true}
             />
             {/* <CustomSelect placeholder="Select Plant" value={selectedPlant} onSelectionChanged={(e: any) => { console.log("selected this", e) }} selected={false} options={plantOpts} optionsWidth={"100%"} /> */}
           </SelectGroup>
@@ -834,10 +835,11 @@ const ResourceUtilization = () => {
           <SelectGroup style={{ width: '160px', zoom: '1.25' }}>
             <VFSelect
               themeUi={themeUi}
-              placeholder={"Select Department"}
+              placeholder={"Department"}
               isSelected={selectedDept.value}
               options={deptOpts}
               onChange={handleDeptChange}
+              icon={true}
             />
           </SelectGroup>
         </div>
