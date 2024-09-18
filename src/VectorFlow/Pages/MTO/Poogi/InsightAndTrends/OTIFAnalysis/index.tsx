@@ -19,8 +19,8 @@ import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from "../../../Common/GridView";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
-import { getColumnDefinations } from '../../../../../../helpers/utils';
-import { UIGridCode } from "../../../Common/Enum";
+import { formatFilterJSON, getColumnDefinations } from '../../../../../../helpers/utils';
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 
 const APIFilterConfig = {
@@ -40,8 +40,9 @@ const OTIFAnalysis = () => {
   const { screenHeight } = useViewPort();
   const { mutateAsync: getOTIFAnalysisData, isLoading, isError, isSuccess } = useGetOTIFAnalysisData()
   const [graphData, setGraphData] = useState<any>({});
-  const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
+  const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState(false);
@@ -80,16 +81,23 @@ const OTIFAnalysis = () => {
     }
   }
 
+  const getFilterData = async () => {
+    try {
+      const response = await getPageWiseFilterData({page_name: FilterPageName.Poogi_OTIF_Analysis});
+      setFilterData(response?.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     getGraphData({ graphflag: 1 });
+    getFilterData()
   }, []);
 
-  useEffect(() => {
-    setFilterData(filterResponse?.data.data)
-  }, [filterResponse]);
-
   const onApplyFilter = (filter: any) => {
-    console.log(filter)
+    console.log(formatFilterJSON(filter), 'APPLIED Filters');
+    setIsMfgSelected(true);
     setIsFilterOpen(false)
   }
   const onAddFilter = () => {
@@ -196,6 +204,7 @@ const OTIFAnalysis = () => {
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
         onFilterRemove={onFilterRemove}
+        isMfgSelected={isMfgSelected}
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
       />

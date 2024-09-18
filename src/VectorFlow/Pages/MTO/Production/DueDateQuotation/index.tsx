@@ -19,7 +19,7 @@ import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/C
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { UIGridCode } from '../../Common/Enum'
+import { FilterPageName, UIGridCode } from '../../Common/Enum'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -74,7 +74,8 @@ const DueDateQuotation = () => {
   const [filterData, setFilterData] = useState({});
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>({});
-  const { data: filterResponse, /*isLoading*/ } = useGetFilterData("Prod_DDQ")
+  const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
+  const {  mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
 
 
@@ -367,6 +368,7 @@ const DueDateQuotation = () => {
 
   const onApplyFilter = (filter: any) => {
     setAppliedFilters(filter);
+    setIsMfgSelected(true);
     setIsFilterOpen(false)
   }
 
@@ -399,9 +401,6 @@ const DueDateQuotation = () => {
     getUpdatedFilterData();
   }, [appliedFilters, currentPage, unScheduled]);
 
-  useEffect(() => {
-    setFilterData(filterResponse?.data.data)
-  }, [filterResponse]);
 
   const getUserColumnConfig = async () => {
     try {
@@ -444,8 +443,18 @@ const DueDateQuotation = () => {
     setIsReset(true);
   }
 
+  const getFilterData = async () => {
+    try {
+      const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_DDQ});
+      setFilterData(response?.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(()=>{
     getUserColumnConfig();
+    getFilterData()
   },[])
 
   useEffect(() => {
@@ -476,6 +485,7 @@ const DueDateQuotation = () => {
           multiFilter={currFilter}
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
+          isMfgSelected={isMfgSelected}
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
         />

@@ -32,7 +32,7 @@ import {
     VFSelectedFilterLabel,
 } from './styles';
 import moment from 'moment';
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
@@ -72,6 +72,7 @@ interface MTOActionToolBarProps {
     setMultiFilter?: any
     onApplyFilter?: (params: any) => void;
     onFilterRemove?: any;
+    isMfgSelected?: boolean;
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
@@ -90,6 +91,7 @@ const MTOActionToolBar = ({
     selectedFilters,
     removeFilters,
     disableRemoveFilter,
+    isMfgSelected,
     submitDate,
     date,
     handleGoBack,
@@ -119,9 +121,6 @@ const MTOActionToolBar = ({
     
 }: MTOActionToolBarProps) => {
 
-
-    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
-
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
             removeFilters(category, name);
@@ -133,7 +132,7 @@ const MTOActionToolBar = ({
     const datetime = moment(d).format(format2);
 
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
-    console.log(disableRemoveFilter, 'Disable')
+
     return (
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer
@@ -455,7 +454,6 @@ const MTOActionToolBar = ({
                         multiFilter={multiFilter}
                         setMultiFilter={setMultiFilter}
                         isFilterOpen={isFilterOpen}
-                        setIsMfgSelected={setIsMfgSelected}
                     />
                 }
 

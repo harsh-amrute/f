@@ -82,7 +82,7 @@ input:focus {
 `
 
 export const ButtonContainer = styled.div`
-margin-right:46px;
+padding: 0px 46px;
 gap:40px;
 display:flex;
 `

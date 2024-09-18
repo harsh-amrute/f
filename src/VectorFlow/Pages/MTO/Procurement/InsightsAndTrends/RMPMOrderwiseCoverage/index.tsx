@@ -11,13 +11,26 @@ import { useGetOrderwiseCoverageData } from '../../../../../../VectorFlow/Servic
 import { toast } from 'react-toastify'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
-import { getColumnDefinations } from '../../../../../../helpers/utils'
+import { formatFilterJSON, getColumnDefinations } from '../../../../../../helpers/utils'
 import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
 import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
-import { pagination, UIGridCode } from '../../../Common/Enum'
+import { FilterPageName, pagination, UIGridCode } from '../../../Common/Enum'
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useUserData } from "../../../../../../context/index";
 import OverlayLoader from '../../../Common/Loader'
+import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../../hooks/useFilter';
+
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Proc_RM_PM_OrderWise" : {
+            mjr : false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
 
 const RMPMOrderwiseCoverage = () => {
 
@@ -30,6 +43,11 @@ const RMPMOrderwiseCoverage = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([{}]);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [filterData, setFilterData] = useState({});
+    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_OrderWise);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -262,12 +280,36 @@ const RMPMOrderwiseCoverage = () => {
     const handleResetClick = () => {
         setIsReset(true);
     }
+    
+    const toggleFilter = (state: boolean) => {
+        setIsFilterOpen(state);
+    }
+
+    const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_RM_PM_OrderWise});
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+    }
+
+    const onApplyFilter = (filter: any) => {
+        console.log(formatFilterJSON(filter), 'APPLIED Filters');
+        setIsMfgSelected(true);
+        setIsFilterOpen(false)
+    }
+    const onAddFilter = () => {
+        setIsFilterOpen(true)
+    }
+
 
     useEffect(() => {
         getUserColumnConfig();
         setColumnDef();
         GetData(1, 1);
         GetData(0, 1);
+        getFilterData()
     }, [])
 
     useEffect(() => {
@@ -301,6 +343,14 @@ const RMPMOrderwiseCoverage = () => {
                     isChartGridToggle 
                     isGridView={isGridView} 
                     setIsGridView={setIsGridView} 
+                    isFilterOpen={isFilterOpen}
+                    onAddFilter={onAddFilter}
+                    toggleFilter={toggleFilter}
+                    onApplyFilter={onApplyFilter}
+                    multiFilter={currFilter}
+                    setMultiFilter={setCurrFilter}
+                    onFilterRemove={onFilterRemove}
+                    isMfgSelected={isMfgSelected}
                     handleSaveClick={handleSaveClick}
                     handleResetClick={handleResetClick}
                 />

@@ -77,4 +77,19 @@ export enum UIGridCode {
         "PoogiOTAndIFAnalysis" = 302,
         "PoogiLeadTime" = 303,
         "PoogiTopFailureReason" = 304,  // code commented pending
-}       
+}   
+
+export enum FilterPageName {
+    Proc_Material_Coverage_For_OpenSO= "Proc_Material_Coverage_For_OpenSO",
+    Proc_Procurement_Planning= "Proc_Procurement_Planning",
+    Proc_Material_Requirement="Proc_Material_Requirement",
+    Proc_Day_Wise_Coverage= "Proc_Day_Wise_Coverage",
+    Proc_RM_PM_OrderWise="Proc_RM_PM_OrderWise",
+    Proc_RM_PM_BufferTrend= "Proc_RM_PM_BufferTrend",
+    Proc_Expediting_RM_And_Suppliers= "Proc_Expediting_RM_And_Suppliers",
+    
+    Prod_DDQ= "Prod_DDQ",
+    Prod_Dept_Wise_BM_Report= "Prod_Dept_Wise_BM_Report",
+
+    Poogi_OTIF_Analysis= "Poogi_OTIF_Analysis",
+}
