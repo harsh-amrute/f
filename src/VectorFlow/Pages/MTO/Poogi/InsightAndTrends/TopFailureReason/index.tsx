@@ -20,7 +20,19 @@ import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig'
 import { getColumnDefinations } from '../../../../../../helpers/utils';
 import { UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
+import useFilter from '../../../../../../hooks/useFilter'
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 
+const APIFilterConfig = {
+    filSecVisConfig: {
+      "Poogi_Top_Failure_Reasons" : {
+        mjr : true,
+        or: true,
+        res: true,
+        cus: true
+      },
+    }
+};
 const TopFailureReasons = () => {
   const [isGridView, setIsGridView] = useState(false);
   const { screenHeight } = useViewPort();
@@ -31,6 +43,18 @@ const TopFailureReasons = () => {
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
   const [HeaderData, setHeaderData] = useState([]);
+  const [filterData, setFilterData] = useState({});
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  const { 
+      state: currFilter, 
+      setState: setCurrFilter, 
+      onFilterRemove, 
+      isFilterOpen, 
+      isMfgSelected,
+      onAddFilter, 
+      onApplyFilter, 
+      toggleFilter,
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Top_Failure_Reasons);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -127,6 +151,15 @@ const TopFailureReasons = () => {
     setIsReset(true);
   }
 
+  const getFilterData = async () => {
+    try {
+      const response = await getPageWiseFilterData({});
+      setFilterData(response?.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
   }, [HeaderData])
@@ -134,6 +167,7 @@ const TopFailureReasons = () => {
   useEffect(() => {
     getUserColumnConfig();
     setColumnDef();
+    getFilterData();
   }, [])
 
   useEffect(() => {
@@ -166,6 +200,14 @@ const TopFailureReasons = () => {
         isAddFilterButton
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter}
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
+        isMfgSelected={isMfgSelected}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (

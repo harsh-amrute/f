@@ -72,7 +72,6 @@ const DueDateQuotation = () => {
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const [filterData, setFilterData] = useState({});
-  const [appliedFilters, setAppliedFilters] = useState<any>({});
   const {  mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const  { 
     state: currFilter, 
@@ -82,7 +81,8 @@ const DueDateQuotation = () => {
     isMfgSelected,
     onAddFilter, 
     onApplyFilter, 
-    toggleFilter 
+    toggleFilter,
+    appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
 
   const [loading, setLoading] = useState(false);
@@ -385,10 +385,6 @@ const DueDateQuotation = () => {
       notifyError("Something Went Wrong!");
     }
   }
-
-  useEffect(() => {
-    setAppliedFilters(currFilter);
-  }, [currFilter])
 
   useEffect(() => {
     getUpdatedFilterData();

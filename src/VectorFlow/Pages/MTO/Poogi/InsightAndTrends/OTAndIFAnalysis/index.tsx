@@ -15,6 +15,19 @@ import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig'
 import { getColumnDefinations } from '../../../../../../helpers/utils';
 import { useUserData } from "../../../../../../context/index";
 import { UIGridCode } from "../../../Common/Enum";
+import useFilter from '../../../../../../hooks/useFilter'
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
+
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Poogi_OTIF_And_Analysis" : {
+            mjr : false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
 
 const OTAndIFAnalysis = () => {
 
@@ -26,6 +39,18 @@ const OTAndIFAnalysis = () => {
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([{}]);
     const [HeaderData, setHeaderData] = useState([]);
+    const [filterData, setFilterData] = useState({});
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_And_Analysis);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -108,6 +133,15 @@ const OTAndIFAnalysis = () => {
         setIsReset(true);
     }
 
+    const getFilterData = async () => {
+        try {
+          const response = await getPageWiseFilterData({});
+          setFilterData(response?.data.data);
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
     useEffect(() => {
         setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
     }, [HeaderData])
@@ -116,6 +150,7 @@ const OTAndIFAnalysis = () => {
         getGraphData({ graphflag: 1 });
         getUserColumnConfig();
         setColumnDef();
+        getFilterData();
     }, [])
 
     useEffect(() => {
@@ -148,6 +183,14 @@ const OTAndIFAnalysis = () => {
                 isGridView={isGridView}
                 handleSaveClick={handleSaveClick}
                 handleResetClick={handleResetClick}
+                isFilterOpen={isFilterOpen}
+                onAddFilter={onAddFilter}
+                toggleFilter={toggleFilter}
+                onApplyFilter={onApplyFilter}
+                multiFilter={currFilter}
+                setMultiFilter={setCurrFilter}
+                onFilterRemove={onFilterRemove}
+                isMfgSelected={isMfgSelected}
             />
             {
                 !isGridView ?
