@@ -115,9 +115,7 @@ export default forwardRef(({ ...props }: any, ref) => {
 
   const prdPermissions = [
     {
-      title: t(
-        "profile.tabContent.manageUsers.advancedPermission.locationPermission.locationRegion"
-      ),
+      title: process.env.REACT_APP_LOCATION_PERMISSION_L1 || '',
       placeholder: "",
       options: listLcRegion,
       value: lcRegion,
@@ -126,9 +124,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       disabled: false,
     },
     {
-      title: t(
-        "profile.tabContent.manageUsers.advancedPermission.locationPermission.locationType"
-      ),
+      title: process.env.REACT_APP_LOCATION_PERMISSION_L2 || '',
       placeholder: "",
       options: listLcType,
       value: lcType,
@@ -137,9 +133,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       disabled: false,
     },
     {
-      title: t(
-        "profile.tabContent.manageUsers.advancedPermission.locationPermission.locationCluster"
-      ),
+      title: process.env.REACT_APP_LOCATION_PERMISSION_L3 || '',
       placeholder: "",
       options: listLcCluster,
       value: lcCluster,
