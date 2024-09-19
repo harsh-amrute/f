@@ -138,14 +138,18 @@ const DptWiseBMReport = () => {
     const [gridDataCount, setGridDataCount] = useState<number>(0);
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
     const [filterData, setFilterData] = useState({});
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [appliedFilters, setAppliedFilters] = useState<any>({});
-    const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
-    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dept_Wise_BM_Report);
-
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+        appliedFilters
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dept_Wise_BM_Report);
 
     const customCellRenderers = useMemo(() => (
         {
@@ -599,9 +603,19 @@ const DptWiseBMReport = () => {
         }));
     }
 
+    const getFilterData = async () => {
+        try {
+            const response = await getPageWiseFilterData({});
+            setFilterData(response?.data.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
         const colDefs = mapApiResponseToColDefs(apiResponse);
         setColdef(colDefs)
+        getFilterData();
     }, [])
 
     useEffect(() => {
@@ -883,16 +897,6 @@ const DptWiseBMReport = () => {
         },
     };
 
-    const onApplyFilter = (filter: any) => {
-        console.log(filter);
-        setAppliedFilters(filter);
-        setIsFilterOpen(false)
-    }
-
-    const onAddFilter = () => {
-        setIsFilterOpen(true)
-    }
-
     const getUpdatedFilteredData = async () => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
@@ -906,16 +910,8 @@ const DptWiseBMReport = () => {
     }
 
     useEffect(() => {
-        setAppliedFilters(currFilter);
-    }, [currFilter])
-
-    useEffect(() => {
         getUpdatedFilteredData()
     }, [appliedFilters, isWIPChecked, currentPage]);
-
-    useEffect(() => {
-        setFilterData(filterResponse?.data.data)
-    }, [filterResponse]);
 
     return (
         <BMDepWrapper>
@@ -941,6 +937,7 @@ const DptWiseBMReport = () => {
                     multiFilter={currFilter}
                     setMultiFilter={setCurrFilter}
                     onFilterRemove={onFilterRemove}
+                    isMfgSelected={isMfgSelected}
                 />
             </BMDepHeaderWraper>
 

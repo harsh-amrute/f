@@ -18,6 +18,19 @@ import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig'
 import { getColumnDefinations } from '../../../../../../helpers/utils';
 import { UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../../hooks/useFilter';
+
+const APIFilterConfig = {
+  filSecVisConfig: {
+    "Prod_STPL_And_FullKits" : {
+      mjr : false,
+      or: false,
+      res: true,
+      cus: false
+    },
+  }
+};
 
 const STPLAndFullKits = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -27,6 +40,18 @@ const STPLAndFullKits = () => {
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
+  const [filterData, setFilterData] = useState({});
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  const { 
+      state: currFilter, 
+      setState: setCurrFilter, 
+      onFilterRemove, 
+      isFilterOpen, 
+      isMfgSelected,
+      onAddFilter, 
+      onApplyFilter, 
+      toggleFilter,
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_STPL_And_FullKits);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -100,10 +125,20 @@ const STPLAndFullKits = () => {
     setIsReset(true);
   }
 
+  const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({});
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   useEffect(() => {
     setColumnDef();
     getUserColumnConfig();
     getGraphData({ graphflag: 1 });
+    getFilterData();
   }, [])
 
   useEffect(() => {
@@ -137,6 +172,14 @@ const STPLAndFullKits = () => {
         isAddFilterButton
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter}
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
+        isMfgSelected={isMfgSelected}
       />
       <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (

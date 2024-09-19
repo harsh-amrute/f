@@ -3,7 +3,6 @@ import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/Acti
 import useMaterialReq from './useMaterialRequirements';
 import MaterialRequirementComponent from './MaterialRequirementComponent';
 import OverlayLoader from '../../Common/Loader';
-import { formatFilterJSON } from "../../../../../helpers/utils";
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { FilterPageName } from "../../Common/Enum";
@@ -20,10 +19,17 @@ const APIFilterConfig = {
 };
 
 const MaterialRequirement = () => {
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filterData, setFilterData] = useState({});
-    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
-    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Requirement);
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter 
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Requirement);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 
         renderView, 
@@ -39,20 +45,6 @@ const MaterialRequirement = () => {
         handleResetClick,
         handleSaveClick, 
     } = useMaterialReq();
-
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
-
-    const onApplyFilter = (filter: any) => {
-        console.log(formatFilterJSON(filter), 'APPLIED Filters');
-        setIsMfgSelected(true);
-        setIsFilterOpen(false)
-    }
-    
-    const onAddFilter = () => {
-        setIsFilterOpen(true)
-    }
 
     const getFilterData = async () => {
         try {

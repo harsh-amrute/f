@@ -14,7 +14,6 @@ import { notifyError, notifyLoader, notifySuccess } from "../../../../../../help
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import { FilterPageName } from "../../../Common/Enum";
-import { formatFilterJSON } from "../../../../../../helpers/utils";
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -29,11 +28,18 @@ const APIFilterConfig = {
 
 
 const RMPMBufferTrends = () => {
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filterData, setFilterData] = useState({});
-    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_BufferTrend);
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter 
+      } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_BufferTrend);
 
 
     const formatDate = (date: Date): string => {
@@ -132,10 +138,6 @@ const RMPMBufferTrends = () => {
         }
 
     }
-    
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
 
     const getFilterData = async () => {
     try {
@@ -144,15 +146,6 @@ const RMPMBufferTrends = () => {
     } catch (error) {
         console.error(error);
     }
-    }
-
-    const onApplyFilter = (filter: any) => {
-        console.log(formatFilterJSON(filter), 'APPLIED Filters');
-        setIsMfgSelected(true);
-        setIsFilterOpen(false)
-    }
-    const onAddFilter = () => {
-        setIsFilterOpen(true)
     }
 
     useEffect(() => {

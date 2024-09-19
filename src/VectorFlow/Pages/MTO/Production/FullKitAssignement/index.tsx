@@ -42,10 +42,9 @@ const APIFilterConfig = {
 
 const FullKitAssignment = () => {
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-  const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
 
   const [HeaderData, setHeaderData] = useState([{}]);
@@ -93,6 +92,16 @@ const FullKitAssignment = () => {
   const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
   const { mutateAsync: getFOLData, } = useGetFOLData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { 
+    state: currFilter, 
+    setState: setCurrFilter, 
+    onFilterRemove, 
+    isFilterOpen, 
+    isMfgSelected,
+    onAddFilter, 
+    onApplyFilter, 
+    toggleFilter 
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
 
   const reportName = "FullKitAssignment";
 
@@ -388,10 +397,20 @@ const FullKitAssignment = () => {
     setIsReset(true);
   }
 
+  const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({});
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   useEffect(() => {
     getMasterData();
     getUserColumnConfig();
     setColumnDef();
+    getFilterData();
   }, [])
 
   useEffect(() => {
@@ -620,23 +639,6 @@ const FullKitAssignment = () => {
 
   }
 
-  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
-
-  const onApplyFilter = () => {
-    setIsFilterOpen(false)
-  }
-  const onAddFilter = () => {
-    setIsFilterOpen(true)
-  }
-
-  const toggleFilter = (state: boolean) => {
-    setIsFilterOpen(state);
-  }
-
-  useEffect(() => {
-    setFilterData(filterResponse?.data.data)
-  }, [filterResponse]);
-
   useEffect(() => {
     if (isReset) {
       setColumnState(colDef);
@@ -665,6 +667,7 @@ const FullKitAssignment = () => {
         isExcelExport
         isAddFilterButton
         isFilterOpen={isFilterOpen}
+        isMfgSelected={isMfgSelected}
         onAddFilter={onAddFilter}
         toggleFilter={toggleFilter}
         onApplyFilter={onApplyFilter}

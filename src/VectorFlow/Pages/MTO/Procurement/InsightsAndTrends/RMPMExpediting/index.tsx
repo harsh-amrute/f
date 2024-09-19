@@ -10,7 +10,6 @@ import { useGetDate } from '../../../../../Services/MTO/Production/InsightsAndTr
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import { FilterPageName } from "../../../Common/Enum";
-import { formatFilterJSON } from "../../../../../../helpers/utils";
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -26,38 +25,31 @@ const APIFilterConfig = {
 
 const RMExpeditionSuppliers = () => {
     const [isMTO] = useState(true);
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filterData, setFilterData] = useState({});
-    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Expediting_RM_And_Suppliers);
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter 
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Expediting_RM_And_Suppliers);
 
     const { data, /*isLoading, refetch*/ } = useGetDate();
 
 
     const { screenHeight } = useViewPort()
 
-
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
-
     const getFilterData = async () => {
-    try {
-        const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Expediting_RM_And_Suppliers});
-        setFilterData(response?.data.data);
-    } catch (error) {
-        console.error(error);
-    }
-    }
-
-    const onApplyFilter = (filter: any) => {
-        console.log(formatFilterJSON(filter), 'APPLIED Filters');
-        setIsMfgSelected(true);
-        setIsFilterOpen(false)
-    }
-    const onAddFilter = () => {
-        setIsFilterOpen(true)
+        try {
+            const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Expediting_RM_And_Suppliers});
+            setFilterData(response?.data.data);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     useEffect(()=>{

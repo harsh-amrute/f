@@ -20,7 +20,7 @@ import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { getColumnDefinations } from '../../../../../helpers/utils';
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useUserData } from "../../../../../context/index";
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
@@ -51,29 +51,20 @@ const MaterialCov = () => {
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
   const [HeaderData, setHeaderData] = useState([]);
-  const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { user } = useUserData();
-  
-
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
-
-  const onApplyFilter = (filter: any) => {
-    console.log(formatFilterJSON(filter), 'APPLIED Filters');
-    setIsMfgSelected(true);
-    setIsFilterOpen(false)
-  }
-  const onAddFilter = () => {
-    setIsFilterOpen(true)
-  }
-
-  const toggleFilter = (state: boolean) => {
-    setIsFilterOpen(state);
-  }
-
+    const { 
+    state: currFilter, 
+    setState: setCurrFilter, 
+    onFilterRemove, 
+    isFilterOpen,
+    isMfgSelected, 
+    onAddFilter, 
+    onApplyFilter, 
+    toggleFilter  
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
 
   useEffect(() => {
     if (isLoading) {
