@@ -173,7 +173,7 @@ const OverallBmReport = () => {
 
     };
 
-    const apiResponse: ApiResponse[] =
+   /* const apiResponse: ApiResponse[] =
         [
             {
                 "cc": "",
@@ -567,7 +567,7 @@ const OverallBmReport = () => {
                     }
                 ]
             },
-        ]
+        ]*/
 
     /* const rowData = [
          {
