@@ -22,7 +22,7 @@ import { toast } from 'react-toastify';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
-import { useGetDeptWiseWipData,useGetHighAgeingData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
+import { useGetDeptWiseWipData, useGetHighAgeingData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
 import { IRowNode } from 'ag-grid-enterprise';
 import OverlayLoader from '../../Common/Loader';
@@ -30,6 +30,7 @@ import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 
 interface ApiResponse {
     cc: string;
@@ -87,10 +88,21 @@ interface DepartmentData {
     out: number;
 }
 
+interface ApiResponseItem {
+    cc: string;       // Main category code
+    v: boolean;       // Visibility flag
+    cp?: number;      // Main category property (optional since it will be added)
+    hd: string;       // Header description (will be set to the name of cc)
+    cla: string;      // Class alignment (fixed value)
+    scc: string;      // Sub-channel code (will be set to the name of cc)
+    ch?: ApiResponse[]; // Array of channel items
+}
+
+
 const APIFilterConfig = {
-    filSecVisConfig :  {
-        "Prod_OverAll_BMReport" : {
-            mjr : false,
+    filSecVisConfig: {
+        "Prod_OverAll_BMReport": {
+            mjr: false,
             or: true,
             res: true,
             cus: true
@@ -102,10 +114,10 @@ const OverallBmReport = () => {
     //console.log()
     const { mutateAsync: getOverallBMReportData, isLoading: OverAllBMLoading } = useGetOverAllBMReport();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
-    const { mutateAsync: getHighAgeingData}= useGetHighAgeingData();
+    const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
-
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { screenHeight } = useViewPort();
     const refGraph2 = useRef<any>(null);
 
@@ -121,14 +133,14 @@ const OverallBmReport = () => {
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { 
-        state: currFilter, 
-        setState: setCurrFilter, 
-        onFilterRemove, 
-        isFilterOpen, 
+    const {
+        state: currFilter,
+        setState: setCurrFilter,
+        onFilterRemove,
+        isFilterOpen,
         isMfgSelected,
-        onAddFilter, 
-        onApplyFilter, 
+        onAddFilter,
+        onApplyFilter,
         toggleFilter,
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport);
@@ -726,7 +738,129 @@ const OverallBmReport = () => {
      ];*/
 
 
-    const mapApiResponseToColDefs = (apiResponse: ApiResponse[]): ColDef[] => {
+
+    const setColumnDef = async () => {
+        try {
+            const reportName = "BMReport";
+            const response = await getUIConfigData(reportName);
+            const modifiedResponse = addDefaultAttributes(response?.data?.data)
+            const coldef = mapApiResponseToColDefs(modifiedResponse)
+            // console.log('modified Data', modifiedResponse)
+            setColdef(coldef)
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    
+    const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
+        const modifiedResponse: ApiResponseItem[] = [];
+        const cpMap: { [key: string]: number } = {};
+
+        // Create the specified default objects for the first item's ch array
+        const defaultFirstObject: any = {
+            cc: 'ec',
+            cp: 1,
+            hd: '',
+            v: true,
+            cla: 'centre',
+            scc: 'ec'
+        };
+
+        const defaultSecondObject: any = {
+            cc: 'ic',
+            cp: 2,
+            hd: '',
+            v: true,
+            cla: 'centre',
+            scc: 'ic'
+        };
+
+        apiResponse.forEach((item, index) => {
+            const modifiedItem = { ...item };
+
+            // Initialize cp for this cc if not already done
+            if (!(item.cc in cpMap)) {
+                cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
+            }
+
+            // Add new properties to the outer object
+            modifiedItem.cp = cpMap[item.cc]++;
+            modifiedItem.hd = item.cc; // Set hd to the name of cc
+            modifiedItem.cla = "Centre"; // Fixed value
+            modifiedItem.scc = item.cc; // Set scc to the name of cc
+
+            // If it's the first object, add default items to the ch array
+            if (index === 0) {
+                modifiedItem.ch = modifiedItem.ch || [];
+                modifiedItem.ch.unshift(defaultFirstObject, defaultSecondObject);
+            }
+
+            // Push the modified item to the response array
+            modifiedResponse.push(modifiedItem);
+        });
+
+        // Add a default object outside each main object
+        const defaultOuterObject: ApiResponseItem = {
+            cc: " ",
+            v: true,
+            cp: 0,
+            hd: " ",
+            cla: "Centre",
+            scc: "chckbx",
+        };
+
+        // Prepend the default outer object
+        modifiedResponse.unshift(defaultOuterObject);
+
+        // Calculate cp for the additional object based on existing cp values
+        const maxCp = Math.max(...modifiedResponse.map(item => item.cp||0));
+
+        // Create the additional object to be added at the end
+        const additionalObject: ApiResponseItem = {
+            cc: "",
+            cp: maxCp + 1, // Set cp based on the maximum cp value
+            hd: " ",
+            v: true,
+            cla: "Centre",
+            scc: "rmk",
+            ch: [
+                {
+                    cc: "Remark",
+                    cp: 28,
+                    hd: "Remark",
+                    v: true,
+                    cla: "Centre",
+                    scc: "r",
+                },
+                {
+                    cc: "lr",
+                    cp: 29,
+                    hd: "Latest Remark",
+                    v: true,
+                    cla: "Centre",
+                    scc: "lr",
+                },
+                {
+                    cc: "Remark History",
+                    cp: 30,
+                    hd: "Remark History",
+                    v: true,
+                    cla: "Centre",
+                    scc: "Remark History",
+                }
+            ]
+        };
+
+        // Add the additional object to the end of the modified response
+        modifiedResponse.push(additionalObject);
+
+        return modifiedResponse;
+    };
+
+
+    const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
         const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
             return children.map(child => ({
                 field: child.scc.trim(),
@@ -759,7 +893,7 @@ const OverallBmReport = () => {
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
             colId: section.hd,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
-            children: section.scc === "chckbx" ? undefined : mapChildren(section.children || [])
+            children: section.scc === "chckbx" ? undefined : mapChildren(section.ch || [])
         }));
     }
 
@@ -773,9 +907,10 @@ const OverallBmReport = () => {
     }
 
     useEffect(() => {
-        const colDefs = mapApiResponseToColDefs(apiResponse);
-        //console.log('coldefs', colDefs)
-        setColdef(colDefs)
+        setColumnDef();
+        // const colDefs = mapApiResponseToColDefs(apiResponse);
+        // //console.log('coldefs', colDefs)
+        // setColdef(colDefs)
         getInitialGridData(1);
         getFilterData();
     }, [])
@@ -807,7 +942,7 @@ const OverallBmReport = () => {
     const getInitialGridData = async (currentPage: number) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getOverallBMReportData({page: currentPage, appliedFilters: formatedFilters});
+            const gridData = await getOverallBMReportData({ page: currentPage, appliedFilters: formatedFilters });
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
         }
@@ -879,7 +1014,7 @@ const OverallBmReport = () => {
                 const fetchDeptWiseWiphData = async () => {
                     try {
                         const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
-                        const highAgeingData= await getHighAgeingData(selectedOrderKeys);
+                        const highAgeingData = await getHighAgeingData(selectedOrderKeys);
                         sethighAgeing(highAgeingData?.data?.data);
                         //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
                         setDeptWiseWipData(DeptWiseWipData?.data?.data);
@@ -1006,7 +1141,7 @@ const OverallBmReport = () => {
                         alignItems: "center"
                     }
                 },
-                
+
                 treeData: true,
                 getDataPath: (data: any) => {
                     return data.path;
@@ -1019,9 +1154,9 @@ const OverallBmReport = () => {
         },
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         getInitialGridData(currentPage);
-    },[currentPage, appliedFilters])
+    }, [currentPage, appliedFilters])
 
     return (
         <BMDepWrapper>
@@ -1033,7 +1168,7 @@ const OverallBmReport = () => {
                     isFilterOpen={isFilterOpen}
                     onAddFilter={onAddFilter}
                     toggleFilter={toggleFilter}
-                    onApplyFilter={onApplyFilter} 
+                    onApplyFilter={onApplyFilter}
                     multiFilter={currFilter}
                     setMultiFilter={setCurrFilter}
                     onFilterRemove={onFilterRemove}
