@@ -30,6 +30,7 @@ import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
+import { FilterPageName } from '../../Common/Enum';
 
 interface ApiResponse {
     cc: string;
@@ -765,7 +766,7 @@ const OverallBmReport = () => {
 
     const getFilterData = async () => {
         try {
-            const response = await getPageWiseFilterData({});
+            const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_OverAll_BMReport});
             setFilterData(response?.data.data);
         } catch (error) {
             console.error(error);

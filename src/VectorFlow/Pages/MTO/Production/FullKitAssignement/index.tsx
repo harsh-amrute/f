@@ -26,7 +26,7 @@ import AvailabilityCellRenderer from './AvailabilityCellRenderer';
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import { AvailabilityToolTipWrapper } from '../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/styles';
-import { UIGridCode } from '../../Common/Enum';
+import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 
 const APIFilterConfig = {
@@ -399,7 +399,7 @@ const FullKitAssignment = () => {
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({});
+        const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_FullKit_Assignment });
         setFilterData(response?.data.data);
     } catch (error) {
         console.error(error);
