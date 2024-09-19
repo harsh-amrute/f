@@ -7,8 +7,9 @@ import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../../../VectorFlow/Services/MTO/Common/Masters'
 import RadioSelect from '../../../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
 import { useUserData } from '../../../../../../../context'
+import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 
-const WeekWiseGraph = ({handleSelectionChange, chartTableData, chartData, plant, dept}: any) => {
+const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant, dept }: any) => {
 
     const { mutateAsync: getPlantMasterData } = useGetPlantMasterData();
     const { mutateAsync: getDeptMasterData } = useGetDeptMasterData();
@@ -108,21 +109,43 @@ const WeekWiseGraph = ({handleSelectionChange, chartTableData, chartData, plant,
                     >
                         <div style={{ display: 'flex', alignItems: 'center', marginLeft: '10px' }}>
                             <p style={{ fontWeight: 'bold', paddingRight: '5px' }}>Plant </p>
-                            <RadioSelect theme={themeUi} options={selectOptionsPlnt} value={selectedPlant} onChange={(newValue: any) => {setSelectedPlant(newValue)}}/>
+                            <RadioSelect theme={themeUi} options={selectOptionsPlnt} value={selectedPlant} onChange={(newValue: any) => { setSelectedPlant(newValue) }} />
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <p style={{ fontWeight: 'bold', paddingRight: '5px' }}>Department </p>
-                            <RadioSelect theme={themeUi} options={selectOptionsDep} value={selectedDept} onChange={(newValue: any) => {setSelectedDept(newValue)}}/>
+                            <RadioSelect theme={themeUi} options={selectOptionsDep} value={selectedDept} onChange={(newValue: any) => { setSelectedDept(newValue) }} />
                         </div>
                         <div>
-                            <img
+                            {/* <img
 
                                 style={{ cursor: 'pointer' }}
                                 src="/assets/img/Group 627.svg"
                                 height={40}
                                 width={50}
                                 onClick={() => handleSubmitClick()}
-                            />
+                            /> */}
+                            <div
+                                style={{
+                                    cursor: 'pointer',
+                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    height: '30px',
+                                    width: '50px',
+                                    borderRadius: '4px',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignContent: 'center',
+                                    display: 'flex'
+                                }}
+                                onClick={() => handleSubmitClick()}
+                            >
+                                <img
+                                    style={{}}
+                                    src="/assets/img/rightArrowHorizontal.svg"
+                                    height={13}
+                                    width={7}
+                                />
+                            </div>
                         </div>
 
 
@@ -169,15 +192,15 @@ const WeekWiseGraph = ({handleSelectionChange, chartTableData, chartData, plant,
             },
             export: {
                 csv: {
-                  filename: `Elapsed Time Trend: Statistical Distribution For The Selected Department`,
+                    filename: `Elapsed Time Trend: Statistical Distribution For The Selected Department`,
                 },
                 svg: {
-                  filename: `Elapsed Time Trend: Statistical Distribution For The Selected Department`,
+                    filename: `Elapsed Time Trend: Statistical Distribution For The Selected Department`,
                 },
                 png: {
-                  filename: `Elapsed Time Trend: Statistical Distribution For The Selected Department`,
+                    filename: `Elapsed Time Trend: Statistical Distribution For The Selected Department`,
                 }
-              },
+            },
         },
 
         grid: {
@@ -231,7 +254,7 @@ const WeekWiseGraph = ({handleSelectionChange, chartTableData, chartData, plant,
                 },
             },
             labels: {
-                formatter: (val:any)=>{
+                formatter: (val: any) => {
                     return parseFloat(val.toFixed(2))
                 },
                 style: {

@@ -1,32 +1,45 @@
-import { useState, useMemo, useCallback, useEffect } from "react"
-import { AgGridReactProps } from "ag-grid-react"
+import { useState, useMemo, useCallback, useEffect, useRef } from "react"
+import { AgGridReact, AgGridReactProps } from "ag-grid-react"
 import { useUserData } from "../../../../../../context"
-import GetSimulateFullKitHeader from './GetSimulateFullKitHeader.json';
 import AvlCellRenderer from "../../../Common/AvlCellRenderer";
 import AvailabilityToolTip from "../../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from "../../../Common/VFTable";
 import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
-import { mapSimulateProcPlanningFieldsToColDefs } from '../../../../../../helpers/utils';
+import { getColumnDefinations } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
 import { userGetProcAfterSimulationPlanningData } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
 import OverlayLoader from "../../../Common/Loader";
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import { toast } from "react-toastify";
+import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
+import { UIGridCode } from "../../../Common/Enum";
 
 
 const useSimFullKit = () => {
-    const { HeaderData } = GetSimulateFullKitHeader;
+    const [HeaderData, setHeaderData] = useState([]);
     const { isSideBarOpen } = useUserData()
     const [currentPage, setCurrentPage] = useState<any>(1);
     const location = useLocation();
     const rowsData = location.state?.ShortageDatas;
     const date = location.state?.date;
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [columnState, setColumnState] = useState<any>([]);
+    const [isReset, setIsReset] = useState(false);
+    const [colDef, setColDef] = useState([{}]);
+    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();  
     const [data, setData] = useState([]);
     const [incOrderFullkitData, setIncOrderFullKitData] = useState<any[]>([]);
     const [cumulativeFullKitData, setCumulativeFullKitDara] = useState<any[]>([]);
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    const reportName = "SimulateFullkit";
+    const gridRef = useRef<AgGridReact>(null);
+    const { user } = useUserData();
+    
     if (rowsData) {
         rowsData.forEach((item: any) => {
             if (Array.isArray(item.children)) {
@@ -53,6 +66,17 @@ const useSimFullKit = () => {
             }
         });
     }
+
+    const setColumnDef = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setHeaderData(response.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
     // const Save = () => {
     //     const newData: { sno: string; on: string; lid: string; item: string; easa: number }[] = [];
     //     if (rowsData) {
@@ -75,8 +99,64 @@ const useSimFullKit = () => {
     //     return newData;
     // };
 
+    const getUserColumnConfig = async () => {
+        try {
+          const data = await getUserUIReportConfigData({
+            un: user.user.name,
+            rn_id: UIGridCode.ProcPlanningSimulation
+          });
+    
+          const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+          setColumnState(newConfig);
+    
+          if (!data) {
+            console.error('Failed to apply column state');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const handleSaveClick = async () => {
+        try {
+          if(currentGridRef?.current?.api){
+            const config = currentGridRef.current.api.getColumnState();
+            console.log(config, 'CONFIG')
+            const payload = {
+              un: user.user.name,
+              rn_id: UIGridCode.ProcPlanningSimulation,
+              cs: JSON.stringify(config)
+            }
+            await updateUserUIReportConfigData([payload]);
+            await getUserColumnConfig();
+          }
+    
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
+
+    useEffect(() => {
+        if (isReset) {
+          setColumnState(colDef);
+          setIsReset(false)
+        }else{
+          handleSaveClick();
+        }
+    }, [isReset]);
+
+    useEffect(() => {
+        getUserColumnConfig();
+        setColumnDef();
+    }, [])
 
     const [totalRows, setTotalRows] = useState(0);
+
+
 
 
     const { mutateAsync: userGetProcAfterSimulationData, isLoading, isSuccess, isError } = userGetProcAfterSimulationPlanningData();
@@ -147,7 +227,44 @@ const useSimFullKit = () => {
             value: 'cf'
         }
     ];
-    const SimulateColumns = mapSimulateProcPlanningFieldsToColDefs(HeaderData);
+
+    const CustomDef = {
+        ic: {
+            headerName: '',
+            cellRenderer: 'agGroupCellRenderer',
+            cellStyle: {
+                width: 50,
+                maxWidth: 50,
+            },
+            initialWidth: 40,
+        },
+        ColorPriority: {
+            cellRenderer: "colorCellRenderer",
+            initialWidth: 200,//160
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+        },
+        FullKitsAvail: {
+            cellRenderer: "avlCellRenderer",
+            tooltipComponent: 'availabilityToolTip',
+            tooltipValueGetter: (params: any) => {
+                const oq = params.data.oq;
+                const fka = params.data.fka;
+                return `${fka}/${oq} kits can be manufactured`;
+            },
+            initialWidth: 200,//160
+            autoHeaderHeight: true,
+            wrapHeaderText: true,
+            filter: 'agMultiColumnFilter',
+            floatingFilter: true,
+
+        }
+    }
+
+    useEffect(() => {
+        setColDef(getColumnDefinations(HeaderData, CustomDef, []))
+    }, [HeaderData])
+
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
 
     const icons = useMemo(() => {
@@ -218,20 +335,39 @@ const useSimFullKit = () => {
     }, [currentTab])
 
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
+    
+    useEffect(()=>{ 
+        if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+            const result = currentGridRef?.current?.api?.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
+        }
+    });
+
     const renderView = () => {
         switch (currentTab.id) {
             case "iof":
                 return (
                     <>
-                        {isLoading && <OverlayLoader />}
+                        {(isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
                         <VFTable
                             {...agGridProps}
-                            columnDefs={SimulateColumns}
+                            columnDefs={colDef}
                             rowData={incOrderFullkitData}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
                             // height={'750px'}
+                            ref={gridRef}
+                            onGridReady={(params: any) => {
+                                params.api.autoSizeAllColumns();
+            
+                                setCurrentGridRef(gridRef);
+                            }}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -253,15 +389,21 @@ const useSimFullKit = () => {
             case "cf":
                 return (
                     <>
-                        {isLoading && <OverlayLoader />}
+                        {(isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
                         <VFTable
                             {...agGridProps}
-                            columnDefs={SimulateColumns}
+                            columnDefs={colDef}
                             rowData={cumulativeFullKitData}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
                             // height={'750px'}
+                            ref={gridRef}
+                            onGridReady={(params: any) => {
+                                params.api.autoSizeAllColumns();
+            
+                                setCurrentGridRef(gridRef);
+                            }}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -333,6 +475,8 @@ const useSimFullKit = () => {
         toggleCurrentTab,
         renderView,
         currentTab,
+        handleSaveClick,
+        handleResetClick
     }
 }
 

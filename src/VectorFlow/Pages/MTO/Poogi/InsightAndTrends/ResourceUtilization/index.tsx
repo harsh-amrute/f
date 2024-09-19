@@ -37,6 +37,9 @@ import OverlayLoader from "../../../Common/Loader";
 import { toast } from "react-toastify";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
+import { useDispatch } from "react-redux";
+import { RESOURCE_UTIL_ANALYTICS } from "../../../../../../redux/actions/MTO";
+import { ColorsMTO } from "../../../Common/Colors";
 
 const ResourceUtilization = () => {
   const chartRef = useRef<any>(null);
@@ -70,6 +73,7 @@ const ResourceUtilization = () => {
   const [wipOverData, setWipOverData] = useState<any>();
   const [wipUnderData, setWipUnderData] = useState<any>();
   const defaultDepartment = { label: 'Select Department', value: '' };
+  const dispatch = useDispatch()
 
   const GetData = async () => {
     try {
@@ -146,6 +150,46 @@ const ResourceUtilization = () => {
     }
   }
 
+
+  const createAnalyticsData = (apiData: any) => {
+    if (selectedGraphState === 'wipLimit') {
+      const newAnalyticsData = {
+        type: 'wip',
+        ol: apiData.wiplimit.olimit.length,
+        ul: apiData.wiplimit.ulimit.length,
+      }
+
+      dispatch(RESOURCE_UTIL_ANALYTICS(newAnalyticsData));
+
+    }
+    else {
+      let six = 0;
+      let sixeight = 0;
+      let eight = 0;
+
+      apiData.utilization.forEach((ele: any) => {
+        if (ele.aup < 60) {
+          six++;
+        }
+        else if (ele.aup >= 60 && ele.aup <= 80) {
+          sixeight++;
+        }
+        else {
+          eight++;
+        }
+      })
+      const newAnalyticsData = {
+        type: 'util',
+        sixty: six,
+        sixeight,
+        eight
+      }
+      dispatch(RESOURCE_UTIL_ANALYTICS(newAnalyticsData));
+
+
+    }
+  }
+
   const filterDepartment = () => {
     const depts = masterDept;
     const myDeptOpts: any = [];
@@ -168,7 +212,14 @@ const ResourceUtilization = () => {
     if (apiData) {
       getCCROptions(apiData)
     }
+
   }, [apiData])
+
+  useEffect(() => {
+    if (apiData) {
+      createAnalyticsData(apiData);
+    }
+  }, [selectedGraphState])
 
   useEffect(() => {
     if (selectedPlant?.value) {
@@ -257,7 +308,6 @@ const ResourceUtilization = () => {
   }, [wipOverData, wipUnderData])
 
   function TooltipRenderer({ datum }: any) {
-    console.log("datum.....", datum)
     return `
       <div class="ag-chart-tooltip-title" style="background-color: #2E2E2E; display: flex; justify-content: flex-start; align-items: center; min-width: 200px">
           Details
@@ -714,8 +764,6 @@ const ResourceUtilization = () => {
     }
   };
 
-  console.log(selectedDept)
-  console.log("selectedPlant", selectedPlant)
 
   const WIPFilter: any =
     (
@@ -762,10 +810,11 @@ const ResourceUtilization = () => {
           <SelectGroup style={{ width: '130px', zoom: '1.25' }}>
             <VFSelect
               themeUi={themeUi}
-              placeholder={"Select Plant"}
+              placeholder={"Plant"}
               options={plantOpts}
               isSelected={selectedPlant.value}
               onChange={handlePlantChange}
+              icon={true}
             />
             {/* <CustomSelect placeholder="Select Plant" value={selectedPlant} onSelectionChanged={(e: any) => { console.log("selected this", e) }} selected={false} options={plantOpts} optionsWidth={"100%"} /> */}
           </SelectGroup>
@@ -786,10 +835,11 @@ const ResourceUtilization = () => {
           <SelectGroup style={{ width: '160px', zoom: '1.25' }}>
             <VFSelect
               themeUi={themeUi}
-              placeholder={"Select Department"}
+              placeholder={"Department"}
               isSelected={selectedDept.value}
               options={deptOpts}
               onChange={handleDeptChange}
+              icon={true}
             />
           </SelectGroup>
         </div>
@@ -823,14 +873,37 @@ const ResourceUtilization = () => {
               {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
                                     Submit
                                 </VFButtonOutline> */}
-              <img
+              {/* <img
                 data-testid='horizon-submit'
                 style={{ cursor: 'pointer' }}
                 src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
                 height={50}
                 width={60}
                 onClick={() => handleHorizonSubmit && handleHorizonSubmit()}
-              />
+              /> */}
+              <div
+                style={{
+                  cursor: 'pointer',
+                  background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                  backgroundColor: ColorsMTO.darkPink.code,
+                  height: '30px',
+                  width: '50px',
+                  borderRadius: '4px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                  display: 'flex'
+                }}
+                onClick={() => handleHorizonSubmit && handleHorizonSubmit()}
+              >
+                <img
+                  style={{}}
+                  src="/assets/img/rightArrowHorizontal.svg"
+                  height={13}
+                  width={7}
+                />
+              </div>
+
             </div>
           </SCChartSliderContainer>
         </div>

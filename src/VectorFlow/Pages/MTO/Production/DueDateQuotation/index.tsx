@@ -18,6 +18,8 @@ import { notifyError } from '../../../../../helpers/notify'
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion'
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { FilterPageName, UIGridCode } from '../../Common/Enum'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -46,7 +48,9 @@ const DueDateQuotation = () => {
   const [confirmedRows, setConfirmedRows] = useState<any>(null);
   const [scheduledOrders, setScheduledOrders] = useState(new Set());
   const [showModal, setShowModal] = useState(false);
-
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const [isReset, setIsReset] = useState(false);
   //Refs
   const totalRows = useRef(0);
   const currentPageSelectedRows = useRef<any>([]);
@@ -65,11 +69,15 @@ const DueDateQuotation = () => {
   const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
   const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
   const { mutateAsync: getFilteredOrdersForDDQ, isLoading: isFilteredDataLoaded } = useGetFilteredOrdersForDDQ();
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const [filterData, setFilterData] = useState({});
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>({});
-  const { data: filterResponse, /*isLoading*/ } = useGetFilterData()
+  const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
+  const {  mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
+
 
   const toggleFilter = (state: boolean) => {
     setIsFilterOpen(state);
@@ -84,6 +92,7 @@ const DueDateQuotation = () => {
       showDisabledCheckboxes: true,
       suppressMenu: true,
       maxWidth: 30,
+      pinned: 'left',
       position: 0,
       filter: false
     },
@@ -262,7 +271,7 @@ const DueDateQuotation = () => {
       const orders = Array.from(selectedRows.values()).map((row: any) => {
         return row.data.ok
       })
-      console.log()
+
       if (Array.from(selectedRows.values()).length != 0) {
         const lineCCRData = await getLineCCRDetails(orders);
         setLineCCR(lineCCRData.data.data);
@@ -284,6 +293,7 @@ const DueDateQuotation = () => {
           <Step1
             ref={gridRef}
             gridOptions={gridOptions}
+            colDef={columnDefs}
             rows={rows}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
@@ -292,6 +302,9 @@ const DueDateQuotation = () => {
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             scheduledOrders={scheduledOrders}
+            setCurrentGridRef={setCurrentGridRef}
+            currentGridRef={currentGridRef}
+            columnState={columnState}
           />
         )
       }
@@ -354,8 +367,8 @@ const DueDateQuotation = () => {
   }
 
   const onApplyFilter = (filter: any) => {
-    console.log(filter);
     setAppliedFilters(filter);
+    setIsMfgSelected(true);
     setIsFilterOpen(false)
   }
 
@@ -388,13 +401,74 @@ const DueDateQuotation = () => {
     getUpdatedFilterData();
   }, [appliedFilters, currentPage, unScheduled]);
 
+
+  const getUserColumnConfig = async () => {
+    try {
+      const data = await getUserUIReportConfigData({
+        un: user.user.name,
+        rn_id: UIGridCode.ProdDDQ
+      });
+
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      setColumnState(newConfig);
+
+      if (!data) {
+        console.error('Failed to apply column state');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleSaveClick = async () => {
+    try {
+      if(currentGridRef?.current?.api){
+        const config = currentGridRef.current.api.getColumnState();
+  
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdDDQ,
+          cs: JSON.stringify(config)
+        }
+        await updateUserUIReportConfigData([payload]);
+        await getUserColumnConfig();
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleResetClick = () => {
+    setIsReset(true);
+  }
+
+  const getFilterData = async () => {
+    try {
+      const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_DDQ});
+      setFilterData(response?.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(()=>{
+    getUserColumnConfig();
+    getFilterData()
+  },[])
+
   useEffect(() => {
-    setFilterData(filterResponse?.data.data)
-  }, [filterResponse]);
+    if (isReset) {
+      setColumnState(columnDefs);
+      setIsReset(false)
+    }else{
+      handleSaveClick();
+    }
+  }, [isReset]);
 
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
-      {step != 3 &&
+      {step === 1 ?
         <MTOActionToolBar
           comp="DDQ"
           quickFilter={
@@ -411,9 +485,18 @@ const DueDateQuotation = () => {
           multiFilter={currFilter}
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
+          isMfgSelected={isMfgSelected}
+          handleSaveClick={handleSaveClick}
+          handleResetClick={handleResetClick}
+        />
+        :
+        <MTOActionToolBar 
+          comp="DDQ"
+          multiFilter={currFilter}
+          disableRemoveFilter={true}
         />
       }
-      {(isFilteredDataLoaded || loading) && <OverlayLoader />}
+      {(isFilteredDataLoaded || loading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       {getCurrentStep()}
       <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Warning'} headerIcon={'/assets/img/ist/warning.svg'} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
         <div style={{ margin: "0 2rem" }}>
@@ -455,7 +538,6 @@ const DueDateQuotation = () => {
         </VFButtonOutline>}
         {step != 3 && <VFButtonOutline themeUi={themeUi}
           onClick={() => {
-            console.log();
             if (step == 1) {
               gridRef.current?.deselectAllForStep1()
             }

@@ -6,6 +6,7 @@ import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
+import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 
 interface SupplierData {
     [key: string]: {
@@ -239,14 +240,27 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
                             labelValueFormatter={(value: number) => value.toString()}
                         />
                         <div>
-                            <img
-
-                                style={{ cursor: 'pointer' }}
-                                src="/assets/img/Group 627.svg"
-                                height={40}
-                                width={50}
-                                onClick={() => handleSubmitClick()}
-                            />
+                            <div
+                                style={{
+                                    cursor: 'pointer',
+                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    height: '35px',
+                                    width: '55px',
+                                    borderRadius: '4px',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignContent: 'center',
+                                    display: 'flex'
+                                }}
+                                onClick={() => handleSubmitClick()}>
+                                <img
+                                    style={{}}
+                                    src="/assets/img/rightArrowHorizontal.svg"
+                                    height={13}
+                                    width={7}
+                                />
+                            </div>
                         </div>
 
 
@@ -266,13 +280,13 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
         )
     }
 
-    const graphTitleJSX =  <div
+    const graphTitleJSX = <div
         data-testid="ot-if-graph"
         style={{
-        fontSize: "13px",
-        margin: "0 auto",
+            fontSize: "13px",
+            margin: "0 auto",
 
-        textAlign: "center",
+            textAlign: "center",
         }}
     >
         <span style={{ fontWeight: 500 }}>Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon </span>

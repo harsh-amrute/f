@@ -21,7 +21,7 @@ describe('Common Filter Data Service', () => {
     it('should fetch filter data', async () => {
 
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await FilterDataService.getFilterData()
+        const response = await FilterDataService.getFilterData("Prod_DDQ")
         expect(response.status).toBe(200);
     });
 

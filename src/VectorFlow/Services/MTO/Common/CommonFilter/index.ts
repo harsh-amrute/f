@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { FilterDataService } from './api'
 
 //useQuery for get 
@@ -7,8 +7,8 @@ export const QUERY_KEYS = {
 }
 
 export const useGetFilterData = ()=>{
-    return useQuery(QUERY_KEYS.useGetFilterData,async()=>{
-      return await FilterDataService.getFilterData()
+    return useMutation(async (params: any) => {
+      return await FilterDataService.getFilterData(params)
     })
 }
 

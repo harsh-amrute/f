@@ -18,7 +18,8 @@ import { ColorsMTO } from '../../Common/Colors';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import BPPRenderer from '../../Common/BPPRenderer';
 import OverlayLoader from '../../Common/Loader';
-import { pagination } from '../../Common/Enum';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { pagination, UIGridCode } from '../../Common/Enum';
 
 type MyObject = {
     ok: string;
@@ -31,7 +32,6 @@ const ReasonForDelayOrder = () => {
     const { mutateAsync: getPoogiReasonsDelayedOrder, isLoading } = useGetReasonForDelayOrder();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: updatePoogiRemarks } = usePutPoogiRemarks();
-    const [HeaderData, setHeaderData] = useState<any>([{}]);
     const [rowData, setRowData] = useState<any>();
     const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
     const [remarkHistory, setRemarkHistory] = useState<any>();
@@ -40,8 +40,16 @@ const ReasonForDelayOrder = () => {
     //const [disabled, setDisabled] = useState<boolean>(true);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [rowDataCount, setRowDataCount] = useState<number>(0);
+    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [columnState, setColumnState] = useState<any>([]);
+    const [isReset, setIsReset] = useState(false);
+    const [colDef, setColDef] = useState([{}]);
+    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();  
     const reportName = 'ReasonForDelayedOrders';
     const tableRowRef = useRef<any>(null);
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
 
     const sideBar = useMemo(() => {
         return {
@@ -90,54 +98,6 @@ const ReasonForDelayOrder = () => {
         pivotMode: false
     };
 
-    //to get the header data from api
-    const getHeaderData = async () => {
-        try {
-            const response = await getUIConfigData(reportName);
-            setHeaderData(response.data.data);
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
-
-    //to get the rowdata for Aggrid
-    const getInitialData = async (wipval: boolean, page: number) => {
-        try {
-            setCurrentPage(page);
-            setWIPCheck(wipval)
-            const apiResponse = await getPoogiReasonsDelayedOrder({ 'wip': wipval === true ? 0 : 1, 'curr': page });
-            setRowDataCount(apiResponse.data?.data?.count);
-            setRowData(apiResponse?.data?.data?.results)
-        }
-        catch (e) {
-            console.log(e)
-        }
-    }
-
-    //to handle the modal for remark
-    const handleModal = async (data: any) => {
-        try {
-            if (data.r.length === 0) {
-                const RemarkHistory = await getPoogIRemarks(data.ok)
-                if (RemarkHistory.data?.data === 'No remarks are present for the order') {
-                    data.r = []
-                }
-                else {
-                    data.r = RemarkHistory.data?.data;
-                }
-            }
-            setRemarkHistory(data.r)
-            setIsRemarkHistoryOpen(true)
-        }
-        catch (e) {
-            console.log(e);
-        }
-
-    }
-
-
-
     const customHeader = {
         RemarksHistory: {
             pinned: "right",
@@ -183,14 +143,98 @@ const ReasonForDelayOrder = () => {
         }
     }
 
-    const columnDef = getColumnDefinations(HeaderData, customHeader);
+    //to get the header data from api
+    const getHeaderData = async () => {
+        try {
+            const response = await getUIConfigData(reportName);
+            setColDef(getColumnDefinations(response.data.data, customHeader))
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    //to get the rowdata for Aggrid
+    const getInitialData = async (wipval: boolean, page: number) => {
+        try {
+            setCurrentPage(page);
+            setWIPCheck(wipval)
+            const apiResponse = await getPoogiReasonsDelayedOrder({ 'wip': wipval === true ? 0 : 1, 'curr': page });
+            setRowDataCount(apiResponse.data?.data?.count);
+            setRowData(apiResponse?.data?.data?.results)
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+
+    //to handle the modal for remark
+    const handleModal = async (data: any) => {
+        try {
+            if (data.r.length === 0) {
+                const RemarkHistory = await getPoogIRemarks(data.ok)
+                if (RemarkHistory.data?.data === 'No remarks are present for the order') {
+                    data.r = []
+                }
+                else {
+                    data.r = RemarkHistory.data?.data;
+                }
+            }
+            setRemarkHistory(data.r)
+            setIsRemarkHistoryOpen(true)
+        }
+        catch (e) {
+            console.log(e);
+        }
+
+    }
+
+    const getUserColumnConfig = async () => {
+        try {
+          const data = await getUserUIReportConfigData({
+            un: user.user.name,
+            rn_id: UIGridCode.PoogiReasonForDelayedOrders
+          });
+    
+          const newConfig =  data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+          setColumnState(newConfig);
+    
+          if (!data) {
+            console.error('Failed to apply column state');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const handleSaveClick = async () => {
+        try {
+            if(currentGridRef?.current?.api){
+                const config = currentGridRef?.current?.api?.getColumnState() || [];
+        
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.PoogiReasonForDelayedOrders,
+                    cs: JSON.stringify(config)
+                }
+                await updateUserUIReportConfigData([payload]);
+                await getUserColumnConfig();
+            }
+
+        } catch (error) {
+        console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
 
     useEffect(() => {
+        getUserColumnConfig();
         getHeaderData();
         getInitialData(true, 1);
-
     }, [])
-
 
     useEffect(() => {
         if (isLoading) {
@@ -255,19 +299,37 @@ const ReasonForDelayOrder = () => {
         }
     }
 
-
     const handlePageChange = (currPage: number) => {
         setCurrentPage(currPage);
         getInitialData(isWIPChecked ? true : false, currPage)
     }
 
+    useEffect(()=>{ 
+        if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+            const result = currentGridRef?.current?.api?.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
+        }
+    });
+
+    useEffect(() => {
+        if (isReset) {
+          setColumnState(colDef);
+          setIsReset(false)
+        }else{
+          handleSaveClick();
+        }
+    }, [isReset]);
+
+      
     if (!rowData) {
         return null;
     }
 
-    //console.log('index.ts', items)
-    const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
     return (
         <div style={{ zoom: 1.1 }}>
             <MTOActionToolBar
@@ -280,18 +342,26 @@ const ReasonForDelayOrder = () => {
                 }
                 isAddFilterButton
                 isExcelExport
+                handleSaveClick={handleSaveClick}
+                handleResetClick={handleResetClick}
             />
-            {isLoading ?
+            {(isLoading || isUpdateUserConfig || isGetUserConfig) ?
                 <OverlayLoader /> :
                 <>
                     <VFTable
                         {...agGridProps}
                         paginationPageSize={10}
                         height='650px'
-                        columnDefs={columnDef}
+                        columnDefs={colDef}
                         rowData={rowData}
                         pagination={false}
                         ref={tableRowRef}
+                        onGridReady={(params: any) => {
+                            console.log(params, 'PARAMS');
+                            params?.api.autoSizeAllColumns();
+
+                            setCurrentGridRef(tableRowRef);
+                        }}
                     />
                     <VFPagination
                         selectedRows={0}

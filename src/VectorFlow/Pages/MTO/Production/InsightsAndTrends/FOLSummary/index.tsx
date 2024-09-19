@@ -15,7 +15,9 @@ import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Co
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import FullkitCellRenderer from "../../../Common/FullkitCellRenderer";
 // import { valueContainerCSS } from "react-select/dist/declarations/src/components/containers";
-
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import OverlayLoader from "../../../Common/Loader";
+import { UIGridCode } from "../../../Common/Enum";
 
 
 const FOLSummary = () => {
@@ -23,6 +25,11 @@ const FOLSummary = () => {
   const [tableData, setTableData] = useState<any>([]);
   const [filterData, setFilterData] = useState<any>([]);
   const [selectedFilters, setSelectedFilters] = useState<any>([]);
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const [isReset, setIsReset] = useState(false);
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { data } = useGetEnquiryResData() || {};
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
@@ -455,6 +462,56 @@ const FOLSummary = () => {
     });
   };
 
+  
+  const getUserColumnConfig = async () => {
+    try {
+      const data = await getUserUIReportConfigData({
+        un: user.user.name,
+        rn_id: UIGridCode.ProdFolSummary
+      });
+
+      const newConfig =data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      setColumnState(newConfig);
+
+      if (!data) {
+        console.error('Failed to apply column state');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleSaveClick = async () => {
+    try {
+      if(currentGridRef?.current?.api){
+        const config = currentGridRef.current.api.getColumnState();
+
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdFolSummary,
+          cs: JSON.stringify(config)
+        }
+        await updateUserUIReportConfigData([payload]);
+        await getUserColumnConfig();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleResetClick = () => {
+    setIsReset(true);
+  }
+
+  useEffect(() => {
+    if (isReset) {
+      setColumnState(myColDefs);
+      setIsReset(false)
+    }else{
+      handleSaveClick();
+    }
+  }, [isReset]);
+
   useEffect(() => {
     notifyLoader("Loading Grid Data")
     if (data?.data?.data) {
@@ -485,6 +542,7 @@ const FOLSummary = () => {
   }
 
   useEffect(() => {
+    getUserColumnConfig();
     setColumnDef();
   }, [])
 
@@ -501,6 +559,7 @@ const FOLSummary = () => {
 
   return (
     <EnquiryWrapper>
+      {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       <FilterWrapper>
         <MTOActionToolBar
           comp={"EnquiryResponse"}
@@ -510,13 +569,21 @@ const FOLSummary = () => {
           selectedFilters={selectedFilters}
           removeFilters={removeFilters}
           themeUi={themeUi}
+          handleSaveClick={handleSaveClick}
+          handleResetClick={handleResetClick}
         />
       </FilterWrapper>
 
       <BTRAllomentSection style={{ height: '70vh' }}>
 
 
-        <ResizableTable header={myColDefs} data={filterData} />
+        <ResizableTable 
+          colDef={myColDefs} 
+          data={filterData}
+          setCurrentGridRef={setCurrentGridRef}
+          currentGridRef={currentGridRef}
+          columnState={columnState}
+        />
       </BTRAllomentSection>
 
 

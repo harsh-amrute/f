@@ -11,7 +11,29 @@ import { useGetRMPMBufferTrendsData } from "../../../../../../VectorFlow/Service
 import { BufferTrendData } from "../../../../../../types/MTO/types"
 import { toast } from "react-toastify"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../../helpers/notify"
+import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../../hooks/useFilter';
+import { FilterPageName } from "../../../Common/Enum";
+import { formatFilterJSON } from "../../../../../../helpers/utils";
+
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Proc_RM_PM_BufferTrend" : {
+            mjr : false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
+
+
 const RMPMBufferTrends = () => {
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [filterData, setFilterData] = useState({});
+    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_BufferTrend);
 
 
     const formatDate = (date: Date): string => {
@@ -110,6 +132,28 @@ const RMPMBufferTrends = () => {
         }
 
     }
+    
+    const toggleFilter = (state: boolean) => {
+        setIsFilterOpen(state);
+    }
+
+    const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_RM_PM_BufferTrend});
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+    }
+
+    const onApplyFilter = (filter: any) => {
+        console.log(formatFilterJSON(filter), 'APPLIED Filters');
+        setIsMfgSelected(true);
+        setIsFilterOpen(false)
+    }
+    const onAddFilter = () => {
+        setIsFilterOpen(true)
+    }
 
     useEffect(() => {
         console.log('MTA data', MTAData)
@@ -118,7 +162,7 @@ const RMPMBufferTrends = () => {
 
     useEffect(() => {
         GetData();
-
+        getFilterData()
     }, [])
 
 
@@ -126,7 +170,18 @@ const RMPMBufferTrends = () => {
         <div style={{ zoom: 1.33, marginLeft: '30px' }}>
 
 
-            <MTOActionToolBar comp={"BTRMTO"} isAddFilterButton />
+            <MTOActionToolBar 
+                comp={"BTRMTO"} 
+                isAddFilterButton 
+                isFilterOpen={isFilterOpen}
+                onAddFilter={onAddFilter}
+                toggleFilter={toggleFilter}
+                onApplyFilter={onApplyFilter}
+                multiFilter={currFilter}
+                setMultiFilter={setCurrFilter}
+                onFilterRemove={onFilterRemove}
+                isMfgSelected={isMfgSelected}
+            />
             <HorizontalViewWrapper style={{ marginTop: '20px' }}>
                 <BTRTableWrapper style={{ height: screenHeight - 165, margin: '0' }}>
                     {

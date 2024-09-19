@@ -88,7 +88,7 @@ const OrderDetailsCellRenderer = (params: any) => {
         height={"400px"}
         disableZoomScaling={true}
         onGridReady={(params: any) => {
-          params.columnApi?.autoSizeAllColumns()
+          params.api?.autoSizeAllColumns()
         }}
       />
     </div>

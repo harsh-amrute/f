@@ -1,9 +1,7 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { getColumnDefinations } from '../../../../../../../helpers/utils';
+import React, { useEffect, useRef, useState } from 'react'
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
-import TagCellToolTip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
 import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
@@ -11,8 +9,8 @@ import { notifyError, notifySuccess } from '../../../../../../../helpers/notify'
 import { useGetElapsedTimeData } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
-import ColorRangeCellRenderer from '../../../../../../../VectorFlow/Pages/MTO/Common/ColorRangeCellRenderer';
-const GridView = ({ uiConfig }: any) => {
+
+const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState }: any) => {
     const gridRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
@@ -60,22 +58,6 @@ const GridView = ({ uiConfig }: any) => {
         },
     };
 
-    const colDefCustomizations = {
-        'Tags': {
-            tooltipValueGetter: (params: any) => params.value,
-            cellRenderer: TagCellToolTip,
-            cellStyle: {
-                display: 'flex',
-                justifyContent: "center",
-            }
-        },
-        'BPP': {
-            cellRenderer: ColorRangeCellRenderer ,
-        },
-    }
-
-
-    const colDef = useMemo(() => getColumnDefinations(uiConfig, colDefCustomizations), [])
 
     const getGridData = async () => {
         try {
@@ -95,6 +77,18 @@ const GridView = ({ uiConfig }: any) => {
         setCurrentPage(currPage)
     }
 
+    useEffect(()=>{ 
+        if (currentGridRef?.current && columnState?.length) {
+            const result = currentGridRef.current.api.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
+        }
+    });
+
 
     return (
 
@@ -113,6 +107,11 @@ const GridView = ({ uiConfig }: any) => {
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
                 ref={gridRef}
+                onGridReady={(params: any) => {
+                    params.api.autoSizeAllColumns();
+
+                    setCurrentGridRef(gridRef);
+                }}
             // statusBar={{
             //     statusPanels: [
             //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -125,4 +124,4 @@ const GridView = ({ uiConfig }: any) => {
     )
 }
 
-export default GridView
+export default React.memo(GridView)

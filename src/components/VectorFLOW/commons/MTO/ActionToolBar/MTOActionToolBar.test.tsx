@@ -67,6 +67,8 @@ describe('MTOActionToolBar Component', () => {
   const mockOnApplyFilter = jest.fn();
   const mockSetCurrFilter = jest.fn();
   const mockOnFilterRemove = jest.fn();
+  const mockOnSaveClick = jest.fn();
+  const mockOnResetClick = jest.fn();
 
   global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -91,6 +93,28 @@ describe('MTOActionToolBar Component', () => {
     expect(mockHandleGoBack).toHaveBeenCalled();
   });
 
+  test('calls save Grid UI Config function when Save button is clicked', () => {
+    render(<MTOActionToolBar isGoBackButton handleResetClick={mockOnResetClick} handleSaveClick={mockOnSaveClick} />);
+    fireEvent.click(screen.getByText('Save'));
+    expect(mockOnSaveClick).toHaveBeenCalled();
+  });
+
+  test('Donot renders save button', () => {
+    render(<MTOActionToolBar isGoBackButton />);
+    expect(screen.queryByText('Save')).not.toBeInTheDocument();
+  });
+
+  test('Donot renders reset button', () => {
+    render(<MTOActionToolBar isGoBackButton />);
+    expect(screen.queryByText('Reset')).not.toBeInTheDocument();
+  });
+
+  test('calls reset Grid UI Config function when Reset button is clicked', () => {
+    render(<MTOActionToolBar isGoBackButton handleResetClick={mockOnResetClick} handleSaveClick={mockOnSaveClick} />);
+    fireEvent.click(screen.getByText('Reset'));
+    expect(mockOnResetClick).toHaveBeenCalled();
+  });
+
   test('calls onDateChange function with selected date', () => {
     render(<MTOActionToolBar isReleaseDate onDateChange={mockOnDateChange} date={date} />);
     const dateInput = screen.getByTestId('datepicker');
@@ -98,11 +122,24 @@ describe('MTOActionToolBar Component', () => {
     expect(mockOnDateChange).toHaveBeenCalledWith('2024-06-28');
   });
 
-  test('calls submitDate function when Submit button is clicked', () => {
-    render(<MTOActionToolBar isReleaseDate submitDate={mockSubmitDate} date={date} />);
-    const submitButton = screen.getByAltText(/Group 627/);
-    fireEvent.click(submitButton);
-    expect(mockSubmitDate).toHaveBeenCalled();
+
+  it('renders correctly and triggers submitDate on click', () => {
+    const submitDateMock = jest.fn(); // Mock function for submitDate
+    const { getByTestId } = render(<MTOActionToolBar isReleaseDate submitDate={submitDateMock} date={date} />
+    );
+    // Check if the component is rendered
+    const button = getByTestId('Group 627');
+    expect(button).toBeInTheDocument();
+
+    // Check if the image is rendered correctly
+    const arrowImage = button.querySelector('img');
+    expect(arrowImage).toBeInTheDocument();
+    expect(arrowImage).toHaveAttribute('src', '/assets/img/rightArrowHorizontal.svg');
+
+    // Simulate a click on the div
+    fireEvent.click(button);
+    // Assert that submitDate was called
+    expect(submitDateMock).toHaveBeenCalled();
   });
 
   test('calls setIsGridView function when Chart View or Grid View toggle button is clicked', () => {
@@ -122,16 +159,37 @@ describe('MTOActionToolBar Component', () => {
     expect(mockHandleGoBack).toHaveBeenCalled();
   });
 
-  test('renders date picker and submit button when isReleaseDate is true', () => {
-    render(<MTOActionToolBar isReleaseDate onDateChange={mockOnDateChange} submitDate={mockSubmitDate} date="2024-06-28" />);
-    const datePicker = screen.getByTestId('datepicker');
-    expect(datePicker).toBeInTheDocument();
-    fireEvent.change(datePicker, { target: { value: '2024-06-29' } });
-    expect(mockOnDateChange).toHaveBeenCalledWith('2024-06-29');
-    const submitButton = screen.getByAltText(/Group 627/);
-    fireEvent.click(submitButton);
-    expect(mockSubmitDate).toHaveBeenCalled();
-  });
+  // test('renders date picker and submit button when isReleaseDate is true', () => {
+  //   render(<MTOActionToolBar isReleaseDate onDateChange={mockOnDateChange} submitDate={mockSubmitDate} date="2024-06-28" />);
+  //   const datePicker = screen.getByTestId('datepicker');
+  //   expect(datePicker).toBeInTheDocument();
+  //   fireEvent.change(datePicker, { target: { value: '2024-06-29' } });
+  //   expect(mockOnDateChange).toHaveBeenCalledWith('2024-06-29');
+  //   const submitButton = screen.getByAltText(/Group 627/);
+  //   fireEvent.click(submitButton);
+  //   expect(mockSubmitDate).toHaveBeenCalled();
+  // });
+  /*it('renders correctly with the image and handles click event', () => {
+    const onOrderReleaseMock = jest.fn(); // Mock function for onOrderRelease
+        const { getByTestId } = render(<MTOActionToolBar onOrderRelease={onOrderReleaseMock} />);
+
+        // Check if the component div is rendered
+        const button = getByTestId('isReleaseBtn');
+        expect(button).toBeInTheDocument();
+
+        // Check if the image is rendered correctly
+        const arrowImage = button.querySelector('img');
+        expect(arrowImage).toBeInTheDocument();
+        expect(arrowImage).toHaveAttribute('src', '/assets/img/rightArrowHorizontal.svg');
+        expect(arrowImage).toHaveAttribute('height', '13');
+        expect(arrowImage).toHaveAttribute('width', '7');
+
+        // Simulate a click on the div
+        fireEvent.click(button);
+
+        // Assert that onOrderRelease was called
+        expect(onOrderReleaseMock).toHaveBeenCalled();
+});*/
 
   test('renders As on Date when isAsOnDate is true', () => {
     render(<MTOActionToolBar isAsOnDate />);
@@ -196,18 +254,29 @@ describe('MTOActionToolBar Component', () => {
     expect(excelExportButton).toBeInTheDocument();
   });
 
-  test('renders isReleaseButton button', () => {
-    render(<MTOActionToolBar isReleaseButton />);
-    const isReleaseButton = screen.getAllByAltText('Group 627');
-    expect(isReleaseButton[0]).toBeInTheDocument();
+
+  it('renders isReleaseButton button', () => {
+    const { getByTestId } = render(<MTOActionToolBar isReleaseButton />);
+    const button = getByTestId('isReleaseBtn');
+    expect(button).toBeInTheDocument();
+    const arrowImage = button.querySelector('img');
+    expect(arrowImage).toBeInTheDocument();
+    expect(arrowImage).toHaveAttribute('src', '/assets/img/rightArrowHorizontal.svg');
+    expect(arrowImage).toHaveAttribute('height', '13');
+    expect(arrowImage).toHaveAttribute('width', '7');
   });
 
 
-  test('renders with different themes', () => {
-    render(contextWrapperWithCustomTheme(<MTOActionToolBar isReleaseDate submitDate={mockSubmitDate} date={date} />, "REGALBLAZE"));
-    const submitButton = screen.getByAltText(/Group 627/);
-    fireEvent.click(submitButton);
-    expect(mockSubmitDate).toHaveBeenCalled();
+  it('renders with different themes', () => {
+    const submitDateMock = jest.fn(); // Mock function for submitDate
+    const { getByTestId } = render(contextWrapperWithCustomTheme(<MTOActionToolBar isReleaseDate submitDate={submitDateMock} date={date} />, "REGALBLAZE"));
+    const button = getByTestId('Group 627');
+    expect(button).toBeInTheDocument();
+    const arrowImage = button.querySelector('img');
+    expect(arrowImage).toBeInTheDocument();
+    expect(arrowImage).toHaveAttribute('src', '/assets/img/rightArrowHorizontal.svg');
+    fireEvent.click(button);
+    expect(submitDateMock).toHaveBeenCalled();
   });
 
   test('renders isReleaseDate', () => {
@@ -411,6 +480,11 @@ describe('MTOActionToolBar Component', () => {
       expect(mockOnFilterRemove).toHaveBeenCalled();
     })
 
+  });
+
+  test('donot renders cross btn with disable remove filters', () => {
+    render(<MTOActionToolBar multiFilter={multiFilterMock} disableRemoveFilter removeFilters={mockRemoveFilters} />);
+    expect(screen.queryByTestId('closeIcon-filter')).not.toBeInTheDocument();
   });
 
 });
