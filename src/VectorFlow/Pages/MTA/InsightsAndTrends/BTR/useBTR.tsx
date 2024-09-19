@@ -353,7 +353,7 @@ const useBTR = ()=>{
         const tempFilter = getPreparedFilter(currFilter)
         const payload = {
             id: 0,
-            name: '',
+            name: page==='on-hand'?'tech':'eco',
             fields: [],
             filters:tempFilter,
             paginationParameter:{
