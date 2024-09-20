@@ -46,49 +46,49 @@ describe('Dynamic Release Service', () => {
     });
 
     it('should get orders for DRM for Order for table', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 0, ao: 0, page: 1, appliedFilters });
         expect(response.status).toBe(200);
     });
 
     it('should get orders for DRM for Order for graph', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 1, ao: 0, page: 1, appliedFilters });
         expect(response.status).toBe(200);
     });
 
     it('should get orders for DRM for Order for graph with a different page', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 1, ao: 0, page: 2, appliedFilters });
         expect(response.status).toBe(200);
     });
 
     it('should get orders for DRM for All Orders for graph', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 1, ao: 1, page: 1, appliedFilters });
         expect(response.status).toBe(200);
     });
 
     it('should get orders for DRM when ao is not 0', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 0, ao: 1, page: 1, appliedFilters });
         expect(response.status).toBe(200);
     });
     it('should get orders for DRM when wrong values', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 3, ao: 3, page: 3, appliedFilters });
         expect(response.status).toBe(200);
     });
 
     it('should get orders for DRM when page is not 1', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 0, ao: 0, page: 2, appliedFilters });
         expect(response.status).toBe(200);
     });
 
 
     it('should handle a failed API request gracefully', async () => {
-        mockedAxios.get.mockRejectedValueOnce(new Error('Network Error'));
+        mockedAxios.put.mockRejectedValueOnce(new Error('Network Error'));
         await expect(DynamicReleaseManagementService.getDynamicReleaseData({ graph: 1, ao: 1, page: 1, appliedFilters })).rejects.toThrow('Network Error');
     });
 
@@ -105,11 +105,12 @@ describe('Dynamic Release Service', () => {
     });
 
     it('should get orders for DRM when page is not 1, graph is 0, and ao is not 0', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 0, ao: 1, page: 2, appliedFilters });
         expect(response.status).toBe(200);
-        expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect(mockedAxios.put).toHaveBeenCalledWith(
             'http://10.8.1.10:9000/getDynamicReleaseData/?graph=0&ao=1&page=2',
+            appliedFilters,
             {
                 headers: {
                     'Content-Type': 'application/json',
