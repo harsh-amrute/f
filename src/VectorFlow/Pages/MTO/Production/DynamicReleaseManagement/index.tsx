@@ -21,7 +21,7 @@ import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
-import { pagination, UIGridCode } from '../../Common/Enum';
+import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
@@ -139,7 +139,10 @@ const DynamicReleaseManagement = () => {
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({});
+        const response = await getPageWiseFilterData({
+          page_name: FilterPageName.Prod_Dynamic_Release_Management,
+          ao: table1 ? 0 : 1
+        });
         setFilterData(response?.data.data);
     } catch (error) {
         console.error(error);
@@ -153,6 +156,10 @@ const DynamicReleaseManagement = () => {
     setColumnDef();
     getFilterData()
   }, [])
+
+  useEffect(()=>{
+    getFilterData();
+  },[table1])
   
   useEffect(()=>{
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extras)) 

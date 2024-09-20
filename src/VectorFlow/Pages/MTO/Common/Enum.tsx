@@ -87,9 +87,13 @@ export enum FilterPageName {
     Proc_RM_PM_OrderWise="Proc_RM_PM_OrderWise",
     Proc_RM_PM_BufferTrend= "Proc_RM_PM_BufferTrend",
     Proc_Expediting_RM_And_Suppliers= "Proc_Expediting_RM_And_Suppliers",
-    
+
     Prod_DDQ= "Prod_DDQ",
+    Prod_FullKit_Assignment="Prod_FullKit_Assignment",
+    Prod_Dynamic_Release_Management="Prod_Dynamic_Release_Management",
+    Prod_OverAll_BMReport="Prod_OverAll_BMReport",
     Prod_Dept_Wise_BM_Report= "Prod_Dept_Wise_BM_Report",
+    Prod_STPL_And_FullKits="Prod_STPL_And_FullKits",
 
     Poogi_OTIF_Analysis= "Poogi_OTIF_Analysis",
 }
