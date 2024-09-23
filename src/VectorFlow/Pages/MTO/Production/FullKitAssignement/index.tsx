@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
 
 // import { AgChartOptions } from 'ag-charts-community';
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
 
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './FullKitAssignment.styled';
@@ -100,7 +100,8 @@ const FullKitAssignment = () => {
     isMfgSelected,
     onAddFilter, 
     onApplyFilter, 
-    toggleFilter 
+    toggleFilter,
+    appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
 
   const reportName = "FullKitAssignment";
@@ -216,7 +217,8 @@ const FullKitAssignment = () => {
     //   await saveOrCancelSimulaton("Delete");
     //   noOfCalls.current += 1;
     // }
-    const data = await getFullKitAssignmentDataWithGraphData(loadDataParams);
+    const formatedFilters = formatFilterJSON(appliedFilters);
+    const data = await getFullKitAssignmentDataWithGraphData({...loadDataParams, appliedFilters: formatedFilters});
     const griddata: any = data?.data?.data?.results?.griddata;
     if (loadDataParams.load_graph_data) {
       const graph: any = [];
@@ -417,7 +419,7 @@ const FullKitAssignment = () => {
     if (loadDataParams) {
       fetchOrders();
     }
-  }, [loadDataParams])
+  }, [loadDataParams, appliedFilters])
 
   useEffect(() => {
     setLoadDataParams({ ...loadDataParams, load_graph_data: false, page: currentPage })
