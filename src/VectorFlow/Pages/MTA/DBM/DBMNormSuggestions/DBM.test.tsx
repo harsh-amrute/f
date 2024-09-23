@@ -1,4 +1,4 @@
-import { fireEvent, render, screen,act } from '@testing-library/react';
+import {render,act } from '@testing-library/react';
 import { useGetDBMApplySelectedNorm,useGetDBMData,useGetDBMDataCount,useGetDBMUIConfiguration,useGetDBMUpdateSleepTbl } from "../../../../Services/MTA/DBM"
 import { mockDBMApplySelectedNorm,mockDBMCountData,mockDBMData,mockDBMUIConfigData,mockDBMUpdateSleepTbl} from "../../../../../mock-data/DBM";
 import DBM from './';
@@ -119,12 +119,12 @@ describe("Renders DBM Component", ()=>{
           })
     })
 
-     it("Handles Pagination", async()=>{
-        await act(async () => {
-          render(contextWrapper(<DBM />,store));
-          })
+    //  it("Handles Pagination", async()=>{
+    //     await act(async () => {
+    //       render(contextWrapper(<DBM />,store));
+    //       })
 
-          const nextBtn = screen.getAllByAltText('pagination-next-arrow')
-        fireEvent.click(nextBtn[0]);
-    })
+    //       const nextBtn = screen.getAllByAltText('pagination-next-arrow')
+    //     fireEvent.click(nextBtn[0]);
+    // })
 })

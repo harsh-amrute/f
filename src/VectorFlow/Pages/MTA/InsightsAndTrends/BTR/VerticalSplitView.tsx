@@ -38,12 +38,12 @@ const VerticalSplitView = (props:SplitViewProps)=>{
 
     const staticTableColDefs = useMemo(()=>{
         if(!techTable.columnDefs) return []
-        return techTable.columnDefs.filter((col)=>col.headerName &&  ['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"].includes(col.headerName))
+        return techTable.columnDefs.filter((col)=>col.headerName &&  ['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN", "ParentWhCode", "ParentName"].includes(col.headerName))
     },[techTable.columnDefs])
 
     const techTableColDefs = useMemo(()=>{
         if(!techTable.columnDefs) return []
-        return techTable.columnDefs.filter((col)=>col.headerName &&  !['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN"].includes(col.headerName))
+        return techTable.columnDefs.filter((col)=>col.headerName &&  !['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN", "ParentWhCode", "ParentName"].includes(col.headerName))
     },[techTable.columnDefs])
 
     const handleChange = (sizes:Array<number>)=>{
@@ -92,7 +92,7 @@ const VerticalSplitView = (props:SplitViewProps)=>{
         <BTRTableWrapper>
             <Allotment defaultSizes={[600,300]} vertical={false} onChange={handleChange}>
                 <Allotment.Pane >
-                    <BTRTableHeader style={{display:'flex',justifyContent:'center'}}>{techTable.header}</BTRTableHeader>
+                    <BTRTableHeader style={{display:'flex',justifyContent:'flex-start',marginLeft:'50%'}}>{techTable.header}</BTRTableHeader>
                     <VerticalViewLeftTableWrapper>
                     <div style={{marginTop:-10,height:'85%',width:'100%'}}>
                         <CustomVFTable

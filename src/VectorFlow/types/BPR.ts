@@ -172,3 +172,6 @@ export interface MerchandisingGridPayload {
     fulfillment:"incomplete",
     itr:"high"
 }
+export type BPRViewTableFilterNumericalOperator = 'equals' | 'doesNotEqual' | 'lessThan' | 'greaterThan'
+
+export type BPRViewTableFilterStringOperator = 'equals' | 'doesNotEqual' | 'contains' | 'doesNotContain'

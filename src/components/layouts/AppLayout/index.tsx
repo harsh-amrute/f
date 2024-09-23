@@ -20,10 +20,10 @@ const AppLayout = () => {
   const { t } = useTranslation();
 
   //URL arrays for excluding layout padding
-  const urlDisableZoomScaling = ['/supply-chain-intelligence-hub/planning','/insights-and-trends/research-insights','/insights-and-trends/buffer-trends','/insights-and-trends/buffer-trend-report',"/insights-and-trends/guided-insights",'/supply-chain-intelligence-hub/mcgrid'];
-  const urlExcludePadding = ['/insights-and-trends/buffer-trends','/logistics/intransit-whereabouts','/supply-chain-intelligence-hub/sdr','/supply-chain-intelligence-hub/bor','/supply-chain-intelligence-hub/rrr','/supply-chain-intelligence-hub/open-expediting-requests','/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/insights-and-trends/guided-insights',"/insights-and-trends/buffer-trend-report",'/insights-and-trends/research-insights'];
+  const urlDisableZoomScaling = ['/supply-chain-intelligence-hub/merchandising-grid','/supply-chain-intelligence-hub/planning','/insights-and-trends/research-insights','/insights-and-trends/buffer-trends','/insights-and-trends/buffer-trend-report',"/insights-and-trends/guided-insights"];
+  const urlExcludePadding = ['/supply-chain-intelligence-hub/merchandising-grid','/insights-and-trends/buffer-trends','/logistics/intransit-whereabouts','/supply-chain-intelligence-hub/sdr','/supply-chain-intelligence-hub/bor','/supply-chain-intelligence-hub/rrr','/supply-chain-intelligence-hub/open-expediting-requests','/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/insights-and-trends/guided-insights',"/insights-and-trends/buffer-trend-report",'/insights-and-trends/research-insights'];
   // const urlExclusdeHeader = ['/master-data-management/control-panel/view-modify','/master-data-management/task-pending','/master-data-management/control-panel/add','/master-data-management/control-panel/delete','/supply-chain-intelligence-hub/bpr','/master-data-management/task-status','/master-data-management/saved-drafts'];
-  const urlExclusdeHeader = ['/master-data-management/task-pending', '/master-data-management/task-status', '/master-data-management/saved-drafts'];
+  const urlExclusdeHeader = ['/supply-chain-intelligence-hub/merchandising-grid','/master-data-management/task-pending', '/master-data-management/task-status', '/master-data-management/saved-drafts'];
 
   const location = useLocation();
   

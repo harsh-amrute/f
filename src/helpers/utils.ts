@@ -13,10 +13,12 @@ import {formatMDMDate} from './format';
 import TaskPendingActionHeader from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionHeader';
 import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingForReview/TaskPendingActionRenderer';
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
-import { BPRField } from '../VectorFlow/types/BPR';
+import { BPRField, BPRViewTableFilterNumericalOperator, BPRViewTableFilterStringOperator } from '../VectorFlow/types/BPR';
 import {RRRField} from '../VectorFlow/types/RRR'
 import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
+import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
+import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -334,6 +336,45 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
     return true;
   } catch (error:any) {
     notifyError(error);
+  }
+ 
+}
+
+
+export const handleDownloadVF = async (reportName: string, downloadName:string) => {
+  try {
+    const token = await MainService.refreshToken();
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`
+      }
+    })  
+    if(!response.ok){
+      notifyError("Error while downloading")
+      return false;
+    }else{
+    // Convert response to blob object
+    const blob = await response.blob()
+    // Create download URL for blob object
+    const url = URL.createObjectURL(blob)
+  
+    // Trigger download
+    const link = document.createElement('a')
+    link.href = url
+    if(downloadName.length!==0){
+      link.setAttribute('download', `${downloadName}`)
+    }else{
+      link.setAttribute('download', `ReportFile.zip`)
+    }
+    document.body.appendChild(link)
+    link.click()
+    // Clean up download URL
+    URL.revokeObjectURL(url);
+    return true;
+  }
+  } catch (error:any) {
+    notifyError('Error while downloading');
+    return false;
   }
  
 }
@@ -961,7 +1002,7 @@ export const areValuesEqual = (a:any,b:any):boolean=>{
   return a===b
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,themeUi:string,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[]=>{
+export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterId:number,themeUi:string,tasktype?:string, showApproveAllModal?:any,showRejectAllModal?:any,actionStatus?:string):ColGroupDef[] | ColDef[] | Array<any>=>{
 
   const textColor =themeUi==="REGALBLAZE"? "#FCA311": "#BC3D81"
 
@@ -970,6 +1011,44 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
   })
 
   const colDefs =  sortedFields.map((f:Field)=>{
+
+    if(masterId===10){
+      if(f.key==='sts'){
+        return{
+          headerName:"Requested For",
+          field:f.key,
+          colId:f.key,
+          hide:!f.visible,
+          suppressSpanHeaderHeight: true,
+          valueFormatter:()=>'Stop',
+          ...defaultColDefs,
+          cellStyle:()=>{
+            return{
+              "color":textColor,
+              "text-align":"center",
+              "border-left":"solid 1px #B9B9B9",
+            }
+          }
+        }
+      }
+        return{
+          headerName:f.displayName,
+          field:f.key,
+          colId:f.key,
+          hide:!f.visible,
+          suppressSpanHeaderHeight: true,
+          pinned:TaskPendingAvoidColumnsMapper[masterId].includes(f.key)?'left':false,
+          ...defaultColDefs,
+          cellStyle:()=>{
+            return{
+              "color":!TaskPendingAvoidColumnsMapper[masterId].includes(f.key) ?textColor:'black',
+              "text-align":"center",
+              "border-left":"solid 1px #B9B9B9",
+            }
+          }
+        }
+      
+    }
 
     if(TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
       return{
@@ -1164,8 +1243,11 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields:Field[],masterI
         headerName:'Comments',
         suppressSpanHeaderHeight: true,
         editable:(params:any)=>{
-          console.log(params)
-          return true
+          if(tasktype!=='modify')return true
+          if(tasktype==='modify' && params.data.isModified){
+            return true
+          }
+          return false
         },
         ...defaultColDefs
     }
@@ -1208,6 +1290,22 @@ if(masterId===6){
   ]
 }
 
+  if(masterId===10){
+    return[
+      ...colDefs,
+      taskPendingCustomColDefs[0],
+      taskPendingCustomColDefs[1],
+      {
+        field:'comments',
+        colId:'comments',
+        headerName:'Comments',
+        suppressSpanHeaderHeight: true,
+        onCellClicked:(params:any)=>console.log(params.data),
+        editable:true,
+        ...defaultColDefs
+    }
+    ].filter((c)=>c.colId!=='cmt')
+  }
 
   return [
   //   {
@@ -1287,7 +1385,7 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields:Field
 export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],existingColumnFields:Field[],taskType:string,masterId:number)=>{
   const response  = dirtyRowData.map(entry => {
 
-    if(((taskType==='modify' && masterId!==6) || masterId===13)){
+    if(((taskType==='modify' && masterId!==6 && masterId!==10) || masterId===13)){
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
       
@@ -1337,18 +1435,26 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData:any[],exis
        }
       }
       else{
-       if(!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
-        dataPrefixed[`Delete${f.key}`] =String( data[f.key]!==undefined? data[f.key]:'')
-       }
+
+        if(masterId===10){
+          dataPrefixed[f.key] = data[f.key]
+        }
+        //delete
        else{
-        dataPrefixed[f.key] =String( data[f.key]!==undefined? data[f.key]:'')
+        if(!TaskPendingAvoidColumnsMapper[masterId].includes(f.key)){
+          dataPrefixed[`Delete${f.key}`] =String( data[f.key]!==undefined? data[f.key]:'')
+         }
+         else{
+          dataPrefixed[f.key] =String( data[f.key]!==undefined? data[f.key]:'')
+         }
        }
       }
     })
     return {
         ...dataPrefixed,
+        isModified:true,
         status:'',
-        comments:''
+        comments:data.cmt?data.cmt:''
     };
    
 });
@@ -1851,7 +1957,7 @@ export const createTaskPendingSubmitPayload = (rowData:any[],actionType:number,m
     });
 
     // Add the modified object to the result array
-    const tempRow = _.omit({...newItem},['isModified'])
+    const tempRow = _.omit({...newItem},['isModified','cmt'])
     result.push(tempRow);
     // }
   });
@@ -1984,6 +2090,19 @@ export const mapBPRFieldsToColDefs = (fields:BPRField[],onOpenSubmitRemark:(para
     }
   })
   return [{...createIconColumn({id:'dailydatagraph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result,...BPRSpecificColumns]
+}
+
+export const mapBPRRowData = (rowData:Array<any>)=>{
+  return rowData.map((r)=>{
+    const tempRow = {...r}
+      if(r.Norm===0){
+        tempRow.TechPen= null
+        tempRow.EcoPen =  null
+        tempRow.EcoColor = null
+        tempRow.TechColor = null
+      }
+      return tempRow
+  })
 }
 
 export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDailyDataGraph:any):ColDef[]=>{
@@ -2235,7 +2354,81 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
         ...BTRDefaultColDefs
       }
     }
+    if(key=='age'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'Age',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='pc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'ParentWhCode',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='pn'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'ParentName',
+        ...BTRDefaultColDefs
+      }
+    }
     
+    if(key=='wc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'WhiteCount',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='bc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'BlackCount',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='blc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'BlueCount',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='rc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'RedCount',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='yc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'YellowCount',
+        ...BTRDefaultColDefs
+      }
+      
+    }
+     if(key=='gc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'GreenCount',
+        ...BTRDefaultColDefs
+      }
+    }
+
     if(key==='Availability'){
       return {
         field:key,
@@ -2456,4 +2649,174 @@ export const getColumnsForExcelExport = (columns:Array<ColDef>):any=>{
   const defaultColumnsToExclude = ['checkbox','dailydatagraph','sleep','tags','rh','remarks','AgeingOrder','t']
   return columns.filter((c:ColDef)=>(c.colId!==undefined && !defaultColumnsToExclude.includes(c.colId))).map((c)=>(c.colId && c.colId))
 
+}
+
+export const getBPRViewTableHeaderFilterOptions = (dataType:string | undefined):Array<{value:string,label:string}>=>{
+  if(dataType==='number'){
+    return BPRViewTableHeaderFilterNumberoptions
+  }
+
+  return BPRViewTableHeaderFilterStringoptions
+}
+
+export const performStringOpertionsForBPRViewTableFilter =(reference:string,value:string,operator:BPRViewTableFilterStringOperator):boolean=>{
+  //String operations
+  switch(operator){
+    case 'contains':
+      return reference.includes(value)
+    case 'doesNotContain':
+      return !reference.includes(value)
+     case 'equals':
+      return reference === value
+    case 'doesNotEqual':
+      return reference !== value
+    default:
+      return false
+  }
+
+}
+
+export const performNumericalOpertionsForBPRViewTableFilter =(num1:number,num2:number,operator:BPRViewTableFilterNumericalOperator):boolean=>{
+  
+  switch(operator){
+    case 'equals':
+      return num1 === num2
+    case 'doesNotEqual':
+      return num1 !==num2
+     case 'greaterThan':
+      return num2 < num1
+    case 'lessThan':
+      return num2 > num1
+    default:
+      return false
+  }
+
+}
+
+export const getFiltersArrayFromColDefs = (colDefs:Array<BPRViewTableColDef>):Array<any>=>{
+ return  colDefs.filter((c)=>c.filter).map((f)=>({colId:f.colId,filterValue:'',dataType:f.dataType,query:null}))
+}
+
+export const storeCellColors: Record<string, { color: string; backgroundColor: string,border:string }> = {
+  surplus: {
+    color: '#585757',
+    backgroundColor: '#fafafaff',
+    border:'#d0d6ceff'
+  },
+  complete: {
+    color: '#306A0F',
+    backgroundColor: '#f7fff2ff',
+    border:'#dfedd8ff'
+  },
+  incomplete: {
+    color: '#816F08',
+    backgroundColor: '#fffcedff',
+    border:'#faf7deff'
+  },
+  'very-incomplete': {
+    color: '#C61C1C',
+    backgroundColor: '#fff2f2ff',
+    border:'#e8c1beff'
+  },
+  default: {
+    color: '#585757',
+    backgroundColor: '#EBE5E5',
+    border:'#d0d6ceff'
+  }
+};
+
+export const floatingStoreColors: Record<string, { color: string; backgroundColor: string,border:string }> = {
+  surplus: {
+    color: '#585757',
+    backgroundColor: '#fafafaff',
+    border:'#d0d6ceff'
+  },
+  complete: {
+    color: '#306A0F',
+    backgroundColor: '#f7fff2ff',
+    border:'#dfedd8ff'
+  },
+  incomplete: {
+    color: '#816F08',
+    backgroundColor: '#fffcedff',
+    border:'#faf7deff'
+  },
+  'very-incomplete': {
+    color: '#C61C1C',
+    backgroundColor: '#fff2f2ff',
+    border:'#e8c1beff'
+  },
+  default: {
+    color: '#585757',
+    backgroundColor: '#EBE5E5',
+    border:'#d0d6ceff'
+  }
+};
+
+
+export const getMCGridStoreImgSrc = (status:string):string=>{
+  if('surplus' === status)return '/assets/img/VectorFLOW/BPR/mc-grid-surplus.svg'
+  if('incomplete' === status) return '/assets/img/VectorFLOW/BPR/mc-grid-deficit-incomplete.svg'
+  return '/assets/img/VectorFLOW/BPR/mc-grid-deficit-very-incomplete.svg'
+}
+
+export const getMCGridStoreIconColor = (status:string):string=>{
+  if('very-incomplete' === status)return '#F8416C'
+  if('incomplete' === status) return '#ED8D3A'
+  return 'rgb(105, 105, 105)'
+}
+
+
+export const getProductAndLocationHeirarchiesFromEnv = (column:any,extraProperties:any) => {
+    if(column.colCode === 'sl1'){
+      return {
+          field:column['colCode'],
+          colId:column['colCode'],
+          headerName:process.env.REACT_APP_PRODUCT_PERMISSION_L1,
+          ...extraProperties
+      }
+    }
+    if(column.colCode === 'sl2'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_PRODUCT_PERMISSION_L2,
+            ...extraProperties
+        }
+    }
+    if(column.colCode === 'sl3'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_PRODUCT_PERMISSION_L3,
+            ...extraProperties
+        }
+    }
+    if(column.colCode === 'll1'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_LOCATION_PERMISSION_L1,
+            ...extraProperties
+        }
+    }
+    if(column.colCode === 'll2'){
+        return {
+            field:column['colCode'],
+            colId:column['colCode'],
+            headerName:process.env.REACT_APP_LOCATION_PERMISSION_L2,
+            ...extraProperties
+        }
+    }
+
+    if(column.colCode === 'll3'){
+      return {
+          field:column['colCode'],
+          colId:column['colCode'],
+          headerName:process.env.REACT_APP_LOCATION_PERMISSION_L3,
+          ...extraProperties
+      }
+  }
+
+  return undefined;
 }

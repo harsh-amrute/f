@@ -91,6 +91,12 @@ export namespace BPRService {
       headers:{ 'Content-Type': 'application/json' }
     })
   }
+
+  export const getLocationTypes = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + '/LocationType',{
+      headers:{ 'Content-Type': 'application/json' }
+    })
+  }
 }
 
 

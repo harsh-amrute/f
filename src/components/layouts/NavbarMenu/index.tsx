@@ -3,11 +3,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { MainService } from "../../../module-main/services/api";
 import { listMenuParent } from "./listMenu";
 import { MenuToolTip } from "../../../components/index";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { useUserData } from "../../../context";
 import { useNavigate } from "react-router";
+import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
+import _ from 'lodash'
 
 const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) => {
+  const {mutateAsync:getAllReports} = useGetAllReports();
   const [listMenu, setListMenu] = useState(listMenuParent);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
@@ -16,6 +19,33 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
   const [activeTooltip, setActiveTooltip] = useState<number>(0);
   const [isLoading,setIsLoading] = useState(false);
   const [tempUrls,setTempUrls] = useState([]);
+  const [reportUrls,setReportUrls] = useState<string[]>([]);
+
+  
+  useEffect(()=>{
+    getReportFields();
+  },[])
+
+  const getReportFields = async ()=>{
+    const reports = await getAllReports();
+    const rawDailyReport = reports.data.data
+    const transformedData = Object.entries(rawDailyReport).map(([key, attributes]:[string , any]) => ({
+      name: attributes.reportName,
+      img: "/assets/img/nav/arrow_down.svg", 
+      imgHover: "/assets/img/nav/DownloadReport-Icon.svg", 
+      url: key, 
+      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      downloadName: attributes.downloadName
+    }));
+    const extractedNewMenu = _.cloneDeep(listMenuParent)
+    const targetObject = extractedNewMenu.find((item:any) => item.id === 8);
+    if (targetObject) {
+      targetObject.child.push(...transformedData);
+      const reporturls = targetObject.child.map((child:any) => child.url).filter((url:string) => url);
+      setReportUrls(reporturls)
+    }
+    setListMenu(extractedNewMenu);
+  }
 
   const handleClickMenu = (item: any, index: number) => {
     if(item.name==='navbar.listMenuParent.miscellaneousReports.title') return;
@@ -84,10 +114,10 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
 
                   />
                   {!item.status && activeTooltip === item.id && (
-                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive}/>
+                    <MenuToolTip reportUrls={reportUrls} item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive}/>
                   )}
                   {item.status && !isHide && activeTooltip === item.id && (
-                    <MenuToolTip item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />
+                    <MenuToolTip reportUrls={reportUrls} item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />
                   )}
                 </NavStyle.SCNavMenu>
               </NavStyle.SCMenuItem>

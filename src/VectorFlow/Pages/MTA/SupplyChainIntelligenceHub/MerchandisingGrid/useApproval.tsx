@@ -1,21 +1,30 @@
-import { ColDef, ColGroupDef } from "ag-grid-enterprise";
-import OptionSelection from "./optionSelection";
+import { ColDef, ColGroupDef,IRichCellEditorParams,ICellEditorParams,ValueFormatterParams,ValueParserParams } from "ag-grid-enterprise";
 import { useGetRemovalData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/MerchandisingGrid";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
 import { useUserData } from "../../../../../context"
 import './styles.css'
+import {  } from "../../../../..";
+import { AgGridReactProps } from "ag-grid-react";
+
 
 
 const useApproval = () => {
   const [RemovalData, setRemovalData] = useState<any[]>([]);
   const { mutateAsync: getRemovalData } = useGetRemovalData();
+  const [selectedOption, setSelectedOption] = useState('');
+  const [rowDataOptions,setRowDataOptions]:any = useState([]);
+
+  const onSelectChange = (params: any) => {
+    console.log('Selection changed:', params.value);
+    setSelectedOption(params.value);
+
+  };
 
   const {user} = useUserData()
   const themeUi = user.user.theme_ui
 
- 
   const getRemovalRowData = async () => {
     notifyLoader("Loading grid data");
     const rowData = await getRemovalData({
@@ -24,37 +33,99 @@ const useApproval = () => {
     });
     toast.dismiss();
     notifySuccess("Data loaded successfully");
-    setRemovalData(rowData?.data.data || []);
+    let data = rowData?.data.data || [];
+    data = data.map((row:any)=>{
+      return {
+        ...row,
+        action:''
+      }
+    })
+    setRemovalData([...data]);
+    const options = data.map((row:any) => {
+      return {
+        gridId:row.gridId,
+        group:row.group,
+        optionSelection:[...row.optionSelection]
+      }
+    })
+    setRowDataOptions([...options]);
   };
 
   useEffect(() => {
     getRemovalRowData();
   }, []);
   
-  const ActionIcon = (params:any) => {
-    const [checkIcon, setCheckIcon] = useState('/assets/img/VectorFLOW/BPR/check-icon.svg')
-    const [clockIcon, setClockIcon] = useState ('/assets/img/VectorFLOW/BPR/clock-icon.svg')
+  const ActionIcon = (params: any) => {
+    console.log(params);
+    // const [activeIcon, setActiveIcon] = useState(null);
+    const handleIconClick = (action:string) => {
+    
+      const currentRow = RemovalData.find((item) => (item.gridId === params.data.gridId) && (item.group === params.data.group));
 
-    const handleCheckIcon = () => {
-      console.log('check clicked')
-      setCheckIcon(themeUi === "REGALBLAZE" ? '/assets/img/VectorFLOW/BPR/check-icon-yellow.svg' : '/assets/img/VectorFLOW/BPR/check-icon-purple.svg')
-    }
+      if(currentRow){
+        if(currentRow.action === action) currentRow.action = '';
+        else currentRow.action = action;
+      }
+      setRemovalData([...RemovalData])
+    };
 
-    const handleClockIcon = () => {
-      console.log('clock clicked')
-      setClockIcon(themeUi === "REGALBLAZE" ? '/assets/img/VectorFLOW/BPR/clock-icon-yellow.svg' : '/assets/img/VectorFLOW/BPR/clock-icon-purple.svg')
-    }
+    const getIconSrc = (icon: any,actionStatus:string,params:any) => {
+      const currentAction = params.data.action;
+      if(icon && actionStatus === currentAction) {
+        return themeUi === "REGALBLAZE"
+          ? `/assets/img/VectorFLOW/BPR/${icon}-icon-yellow.svg`
+          : `/assets/img/VectorFLOW/BPR/${icon}-icon-purple.svg`;
+      } else {
+        return `/assets/img/VectorFLOW/BPR/${icon}-icon.svg`;
+      }
+    };
+  
     return (
-      <div style={{justifyContent:'center', display:'flex',alignItems: 'center', height:'100%'}}>
-        <img src={checkIcon} height ={20} width={20} style={{ marginRight: '30px', cursor:'pointer' }} onClick={handleCheckIcon}></img>
-        <img src={clockIcon} height ={20} width={20} style={{ cursor:'pointer' }}  onClick={handleClockIcon}></img>
+      <div style={{ justifyContent: "center", display: "flex", alignItems: "center", height: "100%", }}>
+        <img src={getIconSrc("check","accept",params)} height={20} width={20} style={{ marginRight: "30px", cursor: "pointer" }} onClick={() => handleIconClick("accept")}/>
+        <img src={getIconSrc("clock","sleep",params)} height={20} width={20} style={{ cursor: "pointer" }} onClick={() => handleIconClick("sleep")}/>
         {/* {params.value} */}
       </div>
     );
   };
+ 
+  const optionsCellRenderer = (props:any) => {
+    return <div style={{}}>{props.value + ''}</div>
+  }
 
+  const getOptionsFromData = (params: ICellEditorParams)  => {
+    const gridId = params.data.gridId;
+    const group = params.data.group;
+    const row ={...rowDataOptions.find((data:any)=>(data.gridId === gridId) && (data.group === group))};
+    if(row) return row.optionSelection;
+    return [];
+  }
+
+  const valueFormatter = (params: ValueFormatterParams) => {
+    const { value } = params;
+    if (Array.isArray(value)) {
+      return value.join(", ");
+    }
+    return value;
+  };
+
+  const VerticalTextCellRenderer = (params:any) => {
+    if(params.node.rowIndex === 0){
+      return (
+        <div className="show-name"></div>
+      );
+    }
+    else{
+      return (
+        <div className="show-name">Aka</div>
+      );
+    }
+    return;
+    
+  };
   
   const MCGridColumnDefs: (ColDef<any, any> | ColGroupDef<any>)[] = [
+    
       {
           field: 'checkbox',
           colId: 'checkbox',
@@ -68,7 +139,8 @@ const useApproval = () => {
           pinned: 'left', 
           
       },
-      { field: 'group',colId:'group', headerName: 'group', rowGroup:true, hide:true },
+      { field: 'group',colId:'group', headerName: 'group', rowGroup:true, hide:true},
+
       { field: 'gridId', colId:'gridId', headerName: 'Grid Id', },
       { field: 'attribute1', colId:'attribute1', headerName: 'Attribute 1', },
       { field: 'attribute2', colId:'attribute2', headerName: 'Attribute 2', },
@@ -78,59 +150,86 @@ const useApproval = () => {
       { field: 'max', colId:'max', headerName: 'Max', },
       { field: 'totalOptions', colId:'totalOptions', headerName: 'Total Options', },
       { field: 'fullOptions', colId:'fulloptions', headerName: 'Full Options', },
-      { field: 'totalOptionsAfterIstAndRep', colId:'totalOptionsAfterIstAndRep', headerName: 'Total Options', },
+      { field: 'divider', colId:'divider', width: 40, resizable:false,cellDataType:false,
+        rowSpan:(params)=>{return 5},        
+      cellRenderer:VerticalTextCellRenderer,
+      cellStyle:{
+        borderLeft: '1px solid black',
+        borderRight: '1px solid black',
+      },
+      cellClassRules: {
+        "show-cell":"value !== undefined"
+      }
+      },
+      { field: 'totalOptionsAfterIstAndRep', colId:'totalOptionsAfterIstAndRep', headerName: 'Total Options',  },
       { field: 'fullOptionsAfterIstAndRep', colId:'fullOptionsAfterIstAndRep', headerName: 'Full Options', },
       { field: 'gap', colId:'gap', headerName: 'Gap', },
       { field: 'warehouseAvailability', colId:'warehouseAvailability', headerName: 'Warehouse Availability', },
-      // {
-      //     field: 'Option Selection',
-      //     headerName: 'Option Selection',
-      //     cellEditor: 'agSelectCellEditor',
-      //     editable: true,
-      //     cellEditorParams: {
-      //         values: ['Option 1', 'Option 2'],
-      //         // valueListMaxHeight:60
-      //     },
-         
-      // },
       {
-        field: 'optionSelection',
-        headerName: 'Option Selection',
-        colId:'optionSelection',
-        // cellRenderer:OptionSelection
-        cellRenderer: (params:any) => {
-          if (params.node.group === false) {
-            return OptionSelection(params);
-          }
-          return null; 
-        }   
+          field: 'optionSelection',
+          headerName: 'Option Selection',
+          // cellRenderer:optionsCellRenderer,
+          cellEditor: 'agRichSelectCellEditor',
+          editable: true,
+          valueFormatter:valueFormatter,
+          cellEditorParams: {
+            values: getOptionsFromData,
+            cellHeight:25,
+            cellRenderer: optionsCellRenderer,
+            multiSelect: true,
+            valueListMaxHeight: 220,
+            onChange:onSelectChange,
+            suppressDeselectAll:true,
+            suppressMultiSelectPillRenderer:true,
+            valuePlaceholder:'Please Select Atleast One Option'
+          } as IRichCellEditorParams  
       },
+      // {
+      //   field: 'optionSelection',
+      //   headerName: 'Option Selection',
+      //   colId:'optionSelection',
+       
+      //   // cellRenderer:OptionSelection
+      //   // cellRenderer: (params:any) => {
+      //   //   if (params.node.group === false) {
+      //   //     return <OptionSelection {...params}/>;
+      //   //   }
+      //   //   return null; 
+      //   // }   
+      // },
       { 
-      field: 'Action', 
+      field: 'action', 
       headerName: 'Action',
-      colId:'aption',
+      colId:'action',
       cellRenderer: (params:any) => {
         if (params.node.group === false) {
           return ActionIcon(params);
         }
         return null; 
       }
-    },
-    
+    },  
   ];
+
+  const gridOptions = {
+    rowHeight: 35,
+    columnDefs: MCGridColumnDefs,
+    suppressRowClickSelection:true
+  }
   
+  const agGridProps: AgGridReactProps = useMemo(() => {
+    return{
+      groupDefaultExpanded:1,   
+    }
+  },[])
 
-  const McGridRowData = RemovalData;
-  console.log(RemovalData)
+  const McGridRowData = [...RemovalData];
+  // console.log(RemovalData)
    
-
-
-
-
-
     return {
         MCGridColumnDefs,
         McGridRowData,
+        gridOptions,
+        agGridProps
         // GridRef
         
     }

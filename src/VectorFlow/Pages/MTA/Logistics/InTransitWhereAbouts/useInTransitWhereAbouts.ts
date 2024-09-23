@@ -19,6 +19,7 @@ import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,use
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { ColDef } from "ag-grid-enterprise";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 
 
@@ -108,25 +109,6 @@ const useInTransitWhereAbouts = ()=>{
     // const [columnState,setColumnState] = useState<any>()
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
-
-
     // useEffect(()=>{
     //     const getTableState = async()=>{
     //       try{
@@ -151,6 +133,7 @@ const useInTransitWhereAbouts = ()=>{
     
 
     const agGridProps: AgGridReactProps = {
+      debug:true,
       readOnlyEdit:false,
       icons:{
         groupExpanded: `<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg"} style="width: 20px; height: 20px;">`,
@@ -189,7 +172,7 @@ const useInTransitWhereAbouts = ()=>{
             readOnlyEdit:true
         },
         
-        sideBar:sideBar,
+        sideBar:defaultAgGridSideBarForBPR,
         // suppressRowClickSelection: true,
         components: customCellRenderers,
         defaultColDef: {

@@ -7,7 +7,7 @@
     --ag-header-background-color: rgb(0, 0, 0);
     --ag-header-height:43px;
     --ag-checkbox-checked-color:#BC3D81;
-    --ag-selected-row-background-color:rgb(188, 61, 129,0.2);
+    /* --ag-selected-row-background-color:rgb(188, 61, 129,0.2); */
     /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
     /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
     /* --ag-border-radius:32px; */
@@ -15,9 +15,15 @@
     --ag-grid-size:12px ;
     /* --ag-font-family: monospace; */
     height:'500px';
+    --ag-selected-row-background-color: #BC3D81;
 
 }
 
+
+
+/* .ag-theme-noir-fusion  .ag-rich-select-value .ag-picker-collapsed{
+    --ag-selected-row-background-color:red;
+} */
 
 .ag-theme-mcgrid .ag-header-cell {
     font-size: 13px;
@@ -35,75 +41,39 @@
     font-size: 12px;
 }
 
-/* .custom-option:hover {
-    background-color: purple;
-  }
- 
-.custom-select:active {
-    background-color: purple;
-  }
+/* .ag-theme-mcgrid .ag-select-list-item{
+  background-color: red;
+} */
 
-  .custom-select:hover {
-    background-color: purple;
-  }
- 
-.custom-option:active {
-    background-color: purple;
-  } */
+.hover-purple .ag-select-option:hover {
+  background-color: purple;
+  color: #fff; /* optional: change the text color to white */
+}
 
-  /* .options {
-    display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    left: 0;
-    z-index: 999;
-    margin: 0 0;
-    padding: 0 0;
-    list-style: none;
-    border: 1px solid #ccc;
-    background-color: white;
-    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  }
-  
-  .options li {
-    padding: 0 6px;
-    margin: 0 0;
-    padding: 0 10px;
-  }
-  
-  .options li:hover {
-    background-color:red;
+.ag-theme-mcgrid .ag-rich-select-row-selected {
     color: white;
+    font-size: 13px;
+}
 
-  } */
-  .custom-select {
-    position: relative;
-    font-family: Arial;
+.ag-theme-mcgrid .ag-rich-select-row {
+    font-size: 13px;
+}
+
+.show-cell {
+    background-color: #99999944;
+    border-left: 1px solid var(--ag-foreground-color) !important;
+    border-right: 1px solid var(--ag-foreground-color) !important;
+    border-bottom: 1px solid var(--ag-foreground-color) !important;
+    z-index: 5;
   }
   
-  .custom-select select {
-    display: none; /*hide original SELECT element:*/
+  .show-name {
+    font-weight: bold;
+    transform: rotate(180deg);
+    writing-mode: vertical-lr;
+    text-align: center;
+    z-index: 5;
   }
-  
-  .custom-select option {
-    background-color: white;
-    color:black;
-    padding: 8px 16px;
-    border: 1px solid transparent;
-    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
-    cursor: pointer;
-    user-select: none;
-  }
-  
-  .custom-select option:hover {
-    background-color: pink;
-  }
-
-
-
 
 
 

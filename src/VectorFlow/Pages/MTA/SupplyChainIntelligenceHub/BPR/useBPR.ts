@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { getColumnsForExcelExport, mapBPRFieldsToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBPRFieldsToColDefs, mapBPRRowData } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -14,6 +14,9 @@ import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions
 import { type DailyDataGraph } from "../../../../types/MTA";
 import useBPRFilter from "../../../../../hooks/useBPRFilter"
 import { useUserData } from "../../../../../context"
+
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+
 
 
 const useBPR =()=>{
@@ -78,24 +81,6 @@ const useBPR =()=>{
     const [columnState,setColumnState] = useState<any>()
     const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
-
 
     useEffect(()=>{
         const getTableState = async()=>{
@@ -133,7 +118,7 @@ const useBPR =()=>{
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:false,
-        sideBar:sideBar,
+        sideBar:defaultAgGridSideBarForBPR,
         paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
         onRowClicked:(params:any)=>{
             if(params.data.intransit && params.data.intransit.length>0){
@@ -237,7 +222,7 @@ const useBPR =()=>{
             }
         })
         toast.dismiss()
-        if(rowData.data.data && Array.isArray(rowData.data.data))setBPRRowData(rowData.data.data)
+        if(rowData.data.data && Array.isArray(rowData.data.data))setBPRRowData(mapBPRRowData(rowData.data.data))
         else setBPRRowData([])
         
     }
@@ -432,7 +417,7 @@ const useBPR =()=>{
         onApplyFilter,
         themeUi,
         editedRows,
-        onDeleteFilter
+        onDeleteFilter,
     }
 }
 

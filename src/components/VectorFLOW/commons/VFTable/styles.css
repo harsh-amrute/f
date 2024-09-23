@@ -15,6 +15,7 @@
   --ag-range-selection-background-color:  #bc3d814d;
   --ag-alpine-active-color:#BC3D81;
   --ag-input-focus-border-color:#BC3D81;
+  --ag-selected-row-background-color:rgba(188, 61, 129,0.5);
 }
 
 .ag-theme-regal-blaze {
@@ -34,6 +35,7 @@
     --ag-range-selection-background-color:rgb(252, 163, 17,0.3)  ;
     --ag-alpine-active-color:#C7810E;
     --ag-input-focus-border-color:#C7810E;
+    --ag-selected-row-background-color:rgba(199, 129, 14,0.5);;
   }
 
   .ag-theme-pure-elegance {
@@ -52,6 +54,7 @@
   --ag-range-selection-background-color:  #bc3d814d;
   --ag-alpine-active-color:#BC3D81;
   --ag-input-focus-border-color:#BC3D81;
+  --ag-selected-row-background-color:rgba(188, 61, 129,0.5);
   }
 
   .ag-theme-charcoal-chic{
@@ -70,6 +73,7 @@
   --ag-range-selection-background-color:  #bc3d814d;
   --ag-alpine-active-color:#BC3D81;
   --ag-input-focus-border-color:#BC3D81;
+  --ag-selected-row-background-color:rgba(188, 61, 129,0.5);
   }
 
 

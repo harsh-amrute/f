@@ -9,6 +9,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import ActionToolBar from "../Planning/ActionToolBar";
 import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR/index'
 import { notifyError } from "../../../../../helpers/notify";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 const SupplierDispatchReport = () => {
   
@@ -67,7 +68,7 @@ const SupplierDispatchReport = () => {
     readOnlyEdit: true,
     
     gridOptions: {
-      sideBar: "columns",
+      sideBar: defaultAgGridSideBarForBPR,
       rowHeight: 50,
       getRowStyle: (params: any) => {
         if (params.node.rowIndex % 2 === 0) {

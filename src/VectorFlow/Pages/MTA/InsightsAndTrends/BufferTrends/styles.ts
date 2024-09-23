@@ -67,3 +67,7 @@ export const SCHorizontalDivider = styled.hr`
     border-top:1px solid #B2B2B2;
 `
 
+export const SummaryTableColumn = styled.p<{color:string}>`
+    color:${(props)=>props.color};
+    font-weight:600;
+`

@@ -1,6 +1,11 @@
 :root{
     --separator-border: transparent;
 }
+
+.sash-module_sash__K-9lB.sash-module_hover__80W6I:before, .sash-module_sash__K-9lB.sash-module_active__bJspD:before{
+    background: none !important;
+}
+
 .sash-horizontal::after{
     content: url(/public/assets/img/VectorFLOW/draggable.svg);
     width: 12px;
@@ -27,7 +32,7 @@
 }
 
 .sash-vertical::after{
-    content: url(/public/assets/img/VectorFLOW/draggable.svg);
+    content: url(/public/assets/img/VectorFLOW/draggable-vertical.svg);
     width: 12px;
     display: block;
     /* z-index: 100000; */

@@ -5,13 +5,23 @@ import useApproval from "./useApproval";
 import OptionSelection from "./optionSelection";
 import "./styles.css";
 
+import ChartView from "./ChartView"
+import useMCGrid from "./useMCGrid"
 
 
-const MerchandisingGrid = () =>{
+
+
+const MCGrid = () =>{
     const {
         MCGridColumnDefs,
         McGridRowData,
+        gridOptions,
+        agGridProps
     } = useApproval()
+
+    const {
+      gridData:data
+  } = useMCGrid()
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
@@ -22,7 +32,7 @@ const MerchandisingGrid = () =>{
         themeUi={themeUi} 
         view={'grid'} 
         currentStatus={'Edit'}
-        handleGoButton={()=>console.log('')} 
+        handleSubmitButton={()=>console.log('')} 
         handleOnCancel={()=>console.log('')} 
         handleSelectChange={()=>console.log('')} 
         onViewChange={()=>console.log('')} 
@@ -33,11 +43,14 @@ const MerchandisingGrid = () =>{
    <div className="ag-theme-mcgrid">
 
    <VFTable
+          {...agGridProps}
             columnDefs={MCGridColumnDefs}
             rowData={McGridRowData}
            components={{
             optionSelection:OptionSelection,
            }}
+           suppressRowClickSelection={true}
+           gridOptions={gridOptions}
             enableRangeSelection={true} 
             pagination={true}
             rowSelection="multiple"
@@ -54,11 +67,21 @@ const MerchandisingGrid = () =>{
             disableZoomScaling={true}
               />
    </div>
-        
-        
+
+   <div style={{border:'1px solid #C2C2C2', width:'230px', height:'35px', borderRadius:'20px', marginLeft:'20px', display:'flex', alignItems:'center'}}>   
+   <img src={themeUi === "REGALBLAZE" ? '/assets/img/VectorFLOW/BPR/bulb_icon_yellow.svg' : '/assets/img/VectorFLOW/BPR/bulb_icon.svg'} style={{ paddingLeft: '10px' }} height={28} width={28}/>  
+    <p style={{paddingLeft:'10px', fontSize:'13px', fontWeight:500, fontFamily:'Roboto'}}>Loss Of Sale Prevented</p>
+    <p style={{color: themeUi === "REGALBLAZE" ? '#c7810e' : '#BC3D81',  fontSize:'13px', fontWeight:500, fontFamily:'Roboto', paddingLeft:'7px' }}> {} / {}</p>
+
+    </div>         
+   <ChartView data={data}/>
         
     </>
     )
 }
 
-export default MerchandisingGrid
+
+
+
+
+export default MCGrid

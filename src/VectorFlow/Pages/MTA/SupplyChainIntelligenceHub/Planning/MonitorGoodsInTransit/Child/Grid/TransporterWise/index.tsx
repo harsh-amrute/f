@@ -6,6 +6,7 @@ import { VFPaginationProps } from "../../../../../../../../../components/VectorF
 import { ColDef, SideBarDef } from 'ag-grid-enterprise';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { AgeingCellRenderer } from '../../../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
+import { getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
 
 const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -27,9 +28,11 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,currentCategor
             iconKey: "columns",
             toolPanel: "agColumnsToolPanel",
             toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
+                suppressPivots: true,
+                suppressPivotMode: true,
+                suppressRowGroups: true,
+                suppressValues: true,
+              },
           
           },
         ],
@@ -164,6 +167,9 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,currentCategor
             if(column.colCode === 't'){
                 return tagsColDef
             }
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+            if(customColdef) return customColdef
             return {
                 field:column['colCode'],
                 colId:column['colCode'],

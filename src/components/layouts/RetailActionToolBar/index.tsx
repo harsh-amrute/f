@@ -19,21 +19,21 @@ interface RetailActionToolBarProps {
    view: string;
    onCallBack:any
    handleSelectChange:any
-   handleGoButton:any
+   handleSubmitButton:any
    currentStatus:string
    handleOnCancel:any
 
 }
 
 
-const RetailActionToolBar = ({themeUi, onViewChange, onCallBack,view,handleSelectChange,handleGoButton, currentStatus,handleOnCancel}:RetailActionToolBarProps) =>{
+const RetailActionToolBar = ({themeUi, onViewChange, onCallBack,view,handleSelectChange,handleSubmitButton, currentStatus,handleOnCancel}:RetailActionToolBarProps) =>{
 
 
 
    return (
    <>
     {view === "grid" && (
-   <div style={{ display:'flex', alignItems:'center', backgroundColor:'white', marginLeft:'-23px', height:'80px', zoom:'0.6'}}>
+   <div style={{ display:'flex', alignItems:'center', backgroundColor:'white', marginLeft:'10px', height:'80px', zoom:'0.6'}}>
    <CheckboxWrapper>
        <CheckboxConatiner>
          <input type="checkbox" style={{ zoom: 1.4, accentColor:'white' }}></input>
@@ -77,7 +77,7 @@ const RetailActionToolBar = ({themeUi, onViewChange, onCallBack,view,handleSelec
        }
        height={50.02}
        width={76.83}
-       onClick={handleGoButton}
+       onClick={handleSubmitButton}
        />
  
    <SCVerticalDivider />
@@ -101,7 +101,7 @@ const RetailActionToolBar = ({themeUi, onViewChange, onCallBack,view,handleSelec
 {currentStatus === 'Save' ? (
   <ButtonWrapper>
    <button style={{backgroundColor:'white', height:'50px', width:'100px', fontSize:'20px', fontWeight:500, marginRight:'20px'}} onClick={handleOnCancel}>Cancel</button>
-      <VFButton onClick={() => console.log('')} themeUi={''} disabled={false}>Save Options</VFButton>
+      <VFButton onClick={()=>console.log('')} themeUi={themeUi} disabled={false}>Save Options</VFButton>
   <SCVerticalDivider />
   <SCViewBackground style={{zoom:'0.8'}} >
      <SCViewContainer>
@@ -129,7 +129,7 @@ const RetailActionToolBar = ({themeUi, onViewChange, onCallBack,view,handleSelec
    </ButtonWrapper> 
    ) : currentStatus === 'Edit' ? (
       <ButtonWrapper>
-        <VFButton onClick={() => console.log('')} themeUi={''} disabled={false}>
+        <VFButton onClick={() => console.log('')} themeUi={themeUi} disabled={false}>
           Edit Options
         </VFButton>
         <SCVerticalDivider />
