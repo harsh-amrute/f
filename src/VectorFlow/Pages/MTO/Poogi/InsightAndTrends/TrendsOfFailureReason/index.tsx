@@ -9,6 +9,7 @@ import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
+import { FilterPageName } from '../../../Common/Enum'
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -51,7 +52,7 @@ const TrendsOfFailureReason = () => {
 
     const getFilterData = async () => {
         try {
-          const response = await getPageWiseFilterData({});
+          const response = await getPageWiseFilterData({page_name: FilterPageName.Poogi_Trend_Of_Failure_Reasons});
           setFilterData(response?.data.data);
         } catch (error) {
           console.error(error);

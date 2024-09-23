@@ -14,7 +14,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../../helpers/utils';
 import { useUserData } from "../../../../../../context/index";
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 
@@ -135,7 +135,7 @@ const OTAndIFAnalysis = () => {
 
     const getFilterData = async () => {
         try {
-          const response = await getPageWiseFilterData({});
+          const response = await getPageWiseFilterData({ page_name: FilterPageName.Poogi_OTIF_And_Analysis });
           setFilterData(response?.data.data);
         } catch (error) {
           console.error(error);
