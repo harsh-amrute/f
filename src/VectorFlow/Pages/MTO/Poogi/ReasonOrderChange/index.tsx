@@ -19,7 +19,7 @@ import VFPagination from '../../../../../components/VectorFLOW/commons/VFPaginat
 import BPPRenderer from '../../Common/BPPRenderer';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { pagination, UIGridCode } from '../../Common/Enum';
+import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
 import useFilter from '../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 
@@ -257,7 +257,7 @@ const ReasonForDelayOrder = () => {
 
     const getFilterData = async () => {
         try {
-          const response = await getPageWiseFilterData({});
+          const response = await getPageWiseFilterData({ page_name: FilterPageName.Poogi_Reason_For_Delayed_Orders, isAssigned: isWIPChecked ? 0 : 1 });
           setFilterData(response?.data.data);
         } catch (error) {
           console.error(error);
@@ -268,8 +268,11 @@ const ReasonForDelayOrder = () => {
         getUserColumnConfig();
         getHeaderData();
         getInitialData(true, 1);
+    }, []);
+    
+    useEffect(()=>{
         getFilterData();
-    }, [])
+    },[isWIPChecked])
 
     useEffect(() => {
         if (isLoading) {
