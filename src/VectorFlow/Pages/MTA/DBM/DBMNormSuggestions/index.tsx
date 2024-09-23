@@ -36,7 +36,8 @@ const DBM = () => {
   currentFilter,
   setCurrentFilter,
   onDeleteFilter,
-  onExportToExcelCallBack
+  onExportToExcelCallBack,
+  recordsPerPage
 } = useDBM();
 
  if(isLoading){
@@ -106,7 +107,7 @@ const DBM = () => {
                 selectedRows={0} 
                 totalRows={DBMDataCount} 
                 currentPage={currentPage} 
-                rowsPerPage={50}
+                rowsPerPage={recordsPerPage}
                 handleChangePage={(e)=>handleChangePage(e)} 
               />  
         </div>

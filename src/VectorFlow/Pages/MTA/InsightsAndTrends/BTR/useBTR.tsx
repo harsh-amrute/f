@@ -157,7 +157,7 @@ const useBTR = ()=>{
     const getData = async(filter:any,pageNumber:number)=>{
         const payload = {
             id: 0,
-            name: '',
+            name: 'both',
             fields: [],
             filters:filter,
             paginationParameter:{
@@ -185,7 +185,7 @@ const useBTR = ()=>{
     useEffect(()=>{
         const payload = {
             id: 0,
-            name: '',
+            name: 'both',
             fields: [],
             filters:currFilter,
             paginationParameter:{
@@ -353,7 +353,7 @@ const useBTR = ()=>{
         const tempFilter = getPreparedFilter(currFilter)
         const payload = {
             id: 0,
-            name: '',
+            name: page==='on-hand'?'tech':'eco',
             fields: [],
             filters:tempFilter,
             paginationParameter:{

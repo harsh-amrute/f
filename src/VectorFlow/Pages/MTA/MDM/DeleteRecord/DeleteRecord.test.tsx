@@ -220,7 +220,8 @@ describe("DeleteRecord Component", () => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     useGetMasterUIConfigurationMock.mockImplementation(()=>{
@@ -442,7 +443,8 @@ describe("Handles all custom redux interactions",()=>{
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockedStore = createStore(mockState)
@@ -464,7 +466,8 @@ describe("Handles all custom redux interactions",()=>{
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockedStore = createStore(mockState)
@@ -486,7 +489,8 @@ describe("Handles all custom redux interactions",()=>{
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockedStore = createStore(mockState)
@@ -508,7 +512,8 @@ describe("Handles all custom redux interactions",()=>{
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockedStore = createStore(mockState)

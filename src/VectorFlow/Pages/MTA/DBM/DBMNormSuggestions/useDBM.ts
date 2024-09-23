@@ -53,6 +53,8 @@ const useDBM =()=>{
 
     const dispatch = useDispatch();
 
+    const recordsPerPage = parseInt(process.env.REACT_APP_DBM_ROWS_PER_PAGE || '50');
+
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
         grapCellRenderer:BPRGraphCellRenderer,
@@ -149,7 +151,7 @@ const useDBM =()=>{
                 filters:[],
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:50
+                    recordsPerPage:recordsPerPage
                 }
             })
         toast.dismiss()
@@ -168,6 +170,7 @@ const useDBM =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
+            console.log(event,'from tempGridProps',{tempDownloadData:tempDownloadData})
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:getColumnsForExcelExport(DBMColumns)});
         }
       };
@@ -177,7 +180,7 @@ const useDBM =()=>{
             filters:filter,
             paginationParameter:{
                 pageNumber:1,
-                recordsPerPage:50
+                recordsPerPage:recordsPerPage
             }
         })
         setDBMDataCount(rowDataCount?.data?.recordCount)
@@ -189,7 +192,7 @@ const useDBM =()=>{
             filters:filter,
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:50
+                recordsPerPage:recordsPerPage
             }
         })
         toast.dismiss()
@@ -214,7 +217,7 @@ const useDBM =()=>{
             filters:currentFilter,
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:50
+                recordsPerPage:5000
             }
         })
         // console.log(rowData.data.data)
@@ -289,6 +292,7 @@ const useDBM =()=>{
         setCurrentFilter,
         onDeleteFilter,
         onExportToExcelCallBack,
+        recordsPerPage
     }
 }
 

@@ -53,6 +53,7 @@ interface ActionToolBarProps {
   hideUpdateInsightsBtn?: boolean;
   onSubmitEditedRows?: () => void;
   disableSubmitEditedRowsBtn?: boolean;
+  lastRunDate?:string
 }
 
 const ActionToolBar = ({
@@ -78,6 +79,7 @@ const ActionToolBar = ({
   hideUpdateInsightsBtn,
   onSubmitEditedRows,
   disableSubmitEditedRowsBtn,
+  lastRunDate,
   onChangeHorizon,
 }: ActionToolBarProps) => {
   const { user } = useUserData();
@@ -824,6 +826,9 @@ const ActionToolBar = ({
               </>
             )}
           </SCTaskFilterContainer>
+          {(currCategory==='BPR' && lastRunDate) && (
+            <h2>{lastRunDate}</h2>
+          )}
           <SCCustomActionsContainer>
             <VFButton
               onClick={() => toggleFilter(true)}
