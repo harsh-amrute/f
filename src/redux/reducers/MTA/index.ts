@@ -3,7 +3,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import { DailyDataGraph, MTAStore } from '../../../VectorFlow/types/MTA';
-import {TOGGLE_GRAPH_MODAL,TOGGLE_NORM_CHANGE_HISTORY_TABLE,UPDATE_PLANNING_DATA,UPDATE_DAILY_DATA, UPDATE_GRID_STATE} from '../../actions/MTA';
+import {TOGGLE_GRAPH_MODAL,TOGGLE_NORM_CHANGE_HISTORY_TABLE,UPDATE_PLANNING_DATA,UPDATE_DAILY_DATA, UPDATE_GRID_STATE,UPDATE_LAST_RUN_DATE} from '../../actions/MTA';
 
 
 const toggleDailyDataGraphModal=(state:any,action:PayloadAction<boolean>)=>{
@@ -24,6 +24,10 @@ const updateGridState = (state:any,action:PayloadAction<any>)=>{
 
 const updatePlanningdata = (state:any,action:PayloadAction<any>)=>{
     state.planning = action.payload
+}
+
+const updateLastRunDate = (state:any,action:PayloadAction<string>)=>{
+    state.lastRunDate = action.payload
 }
 
 
@@ -49,7 +53,7 @@ const mtaReducer = (initialState:MTAStore) => createReducer(initialState, (build
       .addCase(UPDATE_DAILY_DATA,setDailyData)
       .addCase(UPDATE_GRID_STATE,updateGridState)
       .addCase(UPDATE_PLANNING_DATA,updatePlanningdata)
-     
+      .addCase(UPDATE_LAST_RUN_DATE,updateLastRunDate)
   })
 
 export default mtaReducer;

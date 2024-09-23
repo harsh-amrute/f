@@ -55,6 +55,7 @@ const BPR = ()=>{
         onApplyFilter,
         editedRows,
         onDeleteFilter,
+        lastRunDate
     } = useBPR();
 
     
@@ -96,6 +97,7 @@ const BPR = ()=>{
             setMultiFilter={setCurrFilter}
             onSubmitEditedRows={onSubmitRemarks}
             disableSubmitEditedRowsBtn={editedRows.length===0}
+            lastRunDate={lastRunDate}
         />
         </div>
         {

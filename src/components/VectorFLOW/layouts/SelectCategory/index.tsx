@@ -7,6 +7,7 @@ import { useUserData } from "../../../../context"
 import VFMultiFilter from "../../../../components/VectorFLOW/commons/VFMultiFilter";
 import * as globalStyles from '../../../../styles/global'
 import useGetLocation from "../../../../hooks/useGetLocation";
+import useGetlastRunData from "../../../../hooks/useGetLastRunData";
 
 
 
@@ -52,8 +53,7 @@ const SelectCategory = (props: CountProp) => {
     } = props;
 
 
-    const date = new Date();
-    const formattedDate = format(date, 'do MMMM yyyy');
+    const {date:formattedDate} = useGetlastRunData()
 
     const [isFilterOpen, toggleFilter] = useState<boolean>(false)
 

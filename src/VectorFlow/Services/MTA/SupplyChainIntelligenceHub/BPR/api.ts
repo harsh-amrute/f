@@ -97,6 +97,12 @@ export namespace BPRService {
       headers:{ 'Content-Type': 'application/json' }
     })
   }
+
+  export const getlastRunDate = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST + '/GetLastRunDate',{
+      headers:{ 'Content-Type': 'application/json' }
+    })
+  }
 }
 
 

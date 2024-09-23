@@ -25,21 +25,24 @@ const useSaveAllState = () => {
   const { mutateAsync: saveState } = useSaveState();
   const { mutateAsync: resetState } = useResetState();
 
-  useEffect(()=>{
-    if(tempDownloadData){
-      setTempDownloadData(false)
-    }
-  },[tempDownloadData])
+  // useEffect(()=>{
+  //   if(tempDownloadData){
+  //     setTempDownloadData(false)
+  //   }
+  // },[tempDownloadData])
 
 
   const onExportToExcel = async (params:exportToExcelParameters)=>{
     const {pagination,callBack} = params
+    console.log(params);
     const {recordCount,chunkSize} = pagination
+
     try {
       //buggy line below
       const numberOfPages = Math.ceil(recordCount/chunkSize);
       const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
       const rows = [];
+      console.log(numberOfPages);
       for(let i=1; i<=numberOfPages; i++){
       
         const result = await callBack(i);
@@ -55,14 +58,14 @@ const useSaveAllState = () => {
       }
       
       // setExportExcelColumns(exportExcelColumns)
-      setExportExcelRowData(rows)
+      setExportExcelRowData([...rows])
       setTempDownloadData(true);
       toast.dismiss(toastId);
       
 
       notifySuccess(`Data Exported Successfully`);
     } catch (error) {
-      
+      console.log(error)
       toast.dismiss();
       notifyError('Something Went Wrong');
     }

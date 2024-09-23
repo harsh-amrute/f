@@ -16,6 +16,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter"
 import { useUserData } from "../../../../../context"
 
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+import useGetlastRunData from "../../../../../hooks/useGetLastRunData"
 
 
 
@@ -68,6 +69,8 @@ const useBPR =()=>{
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
   
     const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
+
+    const {date:lastRunDate} = useGetlastRunData()
     
     const {mutateAsync:getBPRData,isLoading:isRowDataLoading} = useGetBPRData()
 
@@ -106,7 +109,7 @@ const useBPR =()=>{
     },[])
 
     useEffect(()=>{
-        if(internalRef){
+        if(internalRef && gridState.columns){
             internalRef.api.applyColumnState({state:gridState.columns})
         }
     },[internalRef,gridState])
@@ -434,7 +437,8 @@ const useBPR =()=>{
         editedRows,
         onDeleteFilter,
         isRowDataLoading,
-        gridState
+        gridState,
+        lastRunDate
     }
 }
 
