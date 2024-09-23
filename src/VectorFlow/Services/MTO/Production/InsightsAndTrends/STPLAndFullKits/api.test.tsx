@@ -23,4 +23,10 @@ describe('STPL and Fullkit Service', () => {
         expect(response.status).toBe(200);
     });
 
+    it('should fetch STPL and Full kit data', async () => {
+        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await STPLAndFullKitService.getSTPLandFullkitInDaysData({ graphflag: 1 })
+        expect(response.status).toBe(200);
+    });
+
 });

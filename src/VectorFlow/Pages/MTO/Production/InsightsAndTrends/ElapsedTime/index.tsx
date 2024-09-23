@@ -55,6 +55,7 @@ const ElapsedTime = () => {
         onAddFilter, 
         onApplyFilter, 
         toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Elapsed_Time);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -77,7 +78,7 @@ const ElapsedTime = () => {
 
     const getDeptWiseChartData = async () => {
         try {
-            const data = await getElapsedTimeData({ graphFlag: 1 });
+            const data = await getElapsedTimeData({ graphflag: 1 });
             const chartData: any = []
             const tableData: any = []
             const alertData: any = []
@@ -274,6 +275,7 @@ const ElapsedTime = () => {
                             setCurrentGridRef={setCurrentGridRef}
                             currentGridRef={currentGridRef}
                             columnState={columnState}
+                            appliedFilters={appliedFilters}
                         />
                     </>
             }
