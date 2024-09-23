@@ -20,6 +20,19 @@ import BPPRenderer from '../../Common/BPPRenderer';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { pagination, UIGridCode } from '../../Common/Enum';
+import useFilter from '../../../../../hooks/useFilter'
+import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
+
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Poogi_Reason_For_Delayed_Orders" : {
+            mjr : false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
 
 type MyObject = {
     ok: string;
@@ -44,6 +57,18 @@ const ReasonForDelayOrder = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([{}]);
+    const [filterData, setFilterData] = useState({});
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Reason_For_Delayed_Orders);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();  
     const reportName = 'ReasonForDelayedOrders';
@@ -230,10 +255,20 @@ const ReasonForDelayOrder = () => {
         setIsReset(true);
     }
 
+    const getFilterData = async () => {
+        try {
+          const response = await getPageWiseFilterData({});
+          setFilterData(response?.data.data);
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
     useEffect(() => {
         getUserColumnConfig();
         getHeaderData();
         getInitialData(true, 1);
+        getFilterData();
     }, [])
 
     useEffect(() => {
@@ -344,6 +379,14 @@ const ReasonForDelayOrder = () => {
                 isExcelExport
                 handleSaveClick={handleSaveClick}
                 handleResetClick={handleResetClick}
+                isFilterOpen={isFilterOpen}
+                onAddFilter={onAddFilter}
+                toggleFilter={toggleFilter}
+                onApplyFilter={onApplyFilter}
+                multiFilter={currFilter}
+                setMultiFilter={setCurrFilter}
+                onFilterRemove={onFilterRemove}
+                isMfgSelected={isMfgSelected}
             />
             {(isLoading || isUpdateUserConfig || isGetUserConfig) ?
                 <OverlayLoader /> :

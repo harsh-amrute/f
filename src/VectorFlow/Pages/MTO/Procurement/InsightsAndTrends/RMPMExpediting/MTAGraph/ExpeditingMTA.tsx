@@ -6,6 +6,7 @@ import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
+import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 
 interface SupplierData {
     [key: string]: {
@@ -23,11 +24,11 @@ interface Result {
     tt: Product[];  // Array of product objects with rn and c
 }
 
-const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
+const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: any, setSupplierHorizon: (days: any) => void, getFilterData: () => void  }) => {
+    const { date, supplierHorizon, setSupplierHorizon, getFilterData } = props;
     let RMPMExpeditionOBj = {}
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
-    const [horizonDays, setHorizondays] = useState(14);
 
     const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
     const [numericData, setNumericData] = useState<any>();
@@ -171,7 +172,7 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
     const getRMHorizonBasedData = async () => {
         //setNumericData(null)
         RMPMExpeditionOBj = {
-            'horizon': horizonDays,
+            'horizon': supplierHorizon,
             'val': 'supplier'
         }
         const someData = await getRMPMExpedition(RMPMExpeditionOBj);
@@ -181,11 +182,12 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
 
     const handleSubmitClick = () => {
         //setNumericData();
+        getFilterData();
         getRMHorizonBasedData();
     }
 
     const handleSliderChange = (val: any) => {
-        setHorizondays(val)
+        setSupplierHorizon(val)
     }
 
 
@@ -234,19 +236,32 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
                             milestones={[0, 30, 60, 90]}
                             strictMode={false}
                             width={200}
-                            defaultValue={horizonDays}
+                            defaultValue={supplierHorizon}
                             handleChange={(e) => handleSliderChange(e)}
                             labelValueFormatter={(value: number) => value.toString()}
                         />
                         <div>
-                            <img
-
-                                style={{ cursor: 'pointer' }}
-                                src="/assets/img/Group 627.svg"
-                                height={40}
-                                width={50}
-                                onClick={() => handleSubmitClick()}
-                            />
+                            <div
+                                style={{
+                                    cursor: 'pointer',
+                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    height: '35px',
+                                    width: '55px',
+                                    borderRadius: '4px',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignContent: 'center',
+                                    display: 'flex'
+                                }}
+                                onClick={() => handleSubmitClick()}>
+                                <img
+                                    style={{}}
+                                    src="/assets/img/rightArrowHorizontal.svg"
+                                    height={13}
+                                    width={7}
+                                />
+                            </div>
                         </div>
 
 
@@ -266,17 +281,17 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
         )
     }
 
-    const graphTitleJSX =  <div
+    const graphTitleJSX = <div
         data-testid="ot-if-graph"
         style={{
-        fontSize: "13px",
-        margin: "0 auto",
+            fontSize: "13px",
+            margin: "0 auto",
 
-        textAlign: "center",
+            textAlign: "center",
         }}
     >
         <span style={{ fontWeight: 500 }}>Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon </span>
-        <span style={{ fontWeight: 300 }}>{` ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')})`}</span>
+        <span style={{ fontWeight: 300 }}>{` ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(supplierHorizon, 'days').format('D MMM YYYY')})`}</span>
     </div>
 
     return (
@@ -293,7 +308,7 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
                 rowData={rowData}
                 graphTitle={''}
                 graphTitleJSX={graphTitleJSX}
-                tableTitle={`Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')})`}
+                tableTitle={`Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(supplierHorizon, 'days').format('D MMM YYYY')})`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}

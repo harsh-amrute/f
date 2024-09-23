@@ -456,16 +456,17 @@ const OrderRescheduling = () => {
     
     const handleSaveClick = async () => {
         try {
-        const config = currentGridRef.current.api.getColumnState();
+            if(currentGridRef?.current?.api){
+                const config = currentGridRef.current.api.getColumnState();
 
-        const payload = {
-            un: user.user.name,
-            rn_id: UIGridCode.ProdOrderRescheduling,
-            cs: JSON.stringify(config)
-        }
-        await updateUserUIReportConfigData([payload]);
-        await getUserColumnConfig();
-
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProdOrderRescheduling,
+                    cs: JSON.stringify(config)
+                }
+                await updateUserUIReportConfigData([payload]);
+                await getUserColumnConfig();
+            }
         } catch (error) {
         console.error(error);
         }

@@ -18,6 +18,19 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import GridView from "./GridView";
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../../hooks/useFilter';
+
+const APIFilterConfig = {
+  filSecVisConfig: {
+    "Prod_Order_At_Risk" : {
+      mjr : true,
+      or: true,
+      res: true,
+      cus: false
+    },
+  }
+};
 
 const OrderAtRisk = () => {
   const [isGridView, setIsGridView] = useState(false);
@@ -30,6 +43,18 @@ const OrderAtRisk = () => {
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
+  const [filterData, setFilterData] = useState({});
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  const { 
+    state: currFilter, 
+    setState: setCurrFilter, 
+    onFilterRemove, 
+    isFilterOpen, 
+    isMfgSelected,
+    onAddFilter, 
+    onApplyFilter, 
+    toggleFilter,
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_At_Risk);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { screenHeight } = useViewPort();
@@ -87,9 +112,19 @@ const OrderAtRisk = () => {
     setIsReset(true);
   }
 
+  const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({});
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   useEffect(() => {
     getUserColumnConfig();
     setColumnDef();
+    getFilterData();
   }, [])
 
   const colDefCustomizations = {
@@ -291,6 +326,14 @@ const OrderAtRisk = () => {
         setIsGridView={setIsGridView}
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter}
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
+        isMfgSelected={isMfgSelected}
       />
       {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       <HorizontalViewWrapper style={{ height: screenHeight - 200, display: 'flex', marginTop: "20px", paddingLeft: "25px" }}>

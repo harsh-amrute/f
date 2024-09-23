@@ -14,10 +14,23 @@ import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Co
 import { getColumnDefinations } from '../../../../../../helpers/utils'
 import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
 import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
-import { pagination, UIGridCode } from '../../../Common/Enum'
+import { FilterPageName, pagination, UIGridCode } from '../../../Common/Enum'
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useUserData } from "../../../../../../context/index";
 import OverlayLoader from '../../../Common/Loader'
+import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../../hooks/useFilter';
+
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Proc_RM_PM_OrderWise" : {
+            mjr : false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
 
 const RMPMOrderwiseCoverage = () => {
 
@@ -30,6 +43,18 @@ const RMPMOrderwiseCoverage = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([{}]);
+    const [filterData, setFilterData] = useState({});
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter 
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_OrderWise);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -148,7 +173,7 @@ const RMPMOrderwiseCoverage = () => {
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
-            setColDef(getColumnDefinations(response.data.data, customHeader, []));
+            setColDef(getColumnDefinations(response?.data?.data, customHeader, []));
         }
         catch (e) {
             console.log(e);
@@ -186,17 +211,15 @@ const RMPMOrderwiseCoverage = () => {
 
     const GetData = async (graph: any, page: any) => {
         if (graph === 1) {
-
             try {
                 notifyLoader("Loading Data...")
                 const APIData = await getOrderwiseCoverageData({ graph, page });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
+                    setApiGraphData(APIData?.data?.data);
                     notifySuccess("Data Fetched Successfully!")
                 }
-                setApiGraphData(APIData?.data?.data);
-
-
+                
             } catch (e) {
                 toast.dismiss();
                 notifyError("Failed to fetch Data");
@@ -208,11 +231,10 @@ const RMPMOrderwiseCoverage = () => {
                 const APIData = await getOrderwiseCoverageData({ graph, page });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
+                    setApiGridData(APIData?.data?.data?.results);
                     notifySuccess("Data Fetched Successfully!")
                 }
-                setApiGridData(APIData?.data?.data);
-
-
+               
             } catch (e) {
                 toast.dismiss();
                 notifyError("Failed to fetch Data");
@@ -262,12 +284,22 @@ const RMPMOrderwiseCoverage = () => {
     const handleResetClick = () => {
         setIsReset(true);
     }
+   
+    const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_RM_PM_OrderWise});
+        setFilterData(response?.data?.data);
+    } catch (error) {
+        console.error(error);
+    }
+    }
 
     useEffect(() => {
         getUserColumnConfig();
         setColumnDef();
         GetData(1, 1);
         GetData(0, 1);
+        getFilterData()
     }, [])
 
     useEffect(() => {
@@ -301,6 +333,14 @@ const RMPMOrderwiseCoverage = () => {
                     isChartGridToggle 
                     isGridView={isGridView} 
                     setIsGridView={setIsGridView} 
+                    isFilterOpen={isFilterOpen}
+                    onAddFilter={onAddFilter}
+                    toggleFilter={toggleFilter}
+                    onApplyFilter={onApplyFilter}
+                    multiFilter={currFilter}
+                    setMultiFilter={setCurrFilter}
+                    onFilterRemove={onFilterRemove}
+                    isMfgSelected={isMfgSelected}
                     handleSaveClick={handleSaveClick}
                     handleResetClick={handleResetClick}
                 />

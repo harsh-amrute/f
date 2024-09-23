@@ -12,7 +12,19 @@ import { getColumnDefinations } from '../../../../../../helpers/utils';
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import useFilter from '../../../../../../hooks/useFilter'
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 
+const APIFilterConfig = {
+    filSecVisConfig: {
+      "Poogi_Lead_Time" : {
+        mjr : false,
+        or: false,
+        res: true,
+        cus: true
+      },
+    }
+};
 const LeadTime = () => {
     const [isGridView, setIsGridView] = useState(false);
 
@@ -24,6 +36,18 @@ const LeadTime = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [colDef, setColDef] = useState([{}]);
     const [isReset, setIsReset] = useState(false);
+    const [filterData, setFilterData] = useState({});
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Lead_Time);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { user } = useUserData();
@@ -80,9 +104,19 @@ const LeadTime = () => {
         setIsReset(true);
       }
     
+    const getFilterData = async () => {
+        try {
+          const response = await getPageWiseFilterData({});
+          setFilterData(response?.data.data);
+        } catch (error) {
+          console.error(error);
+        }
+    }
+    
     useEffect(() => {
         setColumnDef();
         getGridData();
+        getFilterData();
     }, [])
 
     const getGridData = async () => {
@@ -144,6 +178,15 @@ const LeadTime = () => {
                 isGridView={isGridView} 
                 setIsGridView={setIsGridView} 
                 isExcelExport 
+                isAddFilterButton
+                isFilterOpen={isFilterOpen}
+                onAddFilter={onAddFilter}
+                toggleFilter={toggleFilter}
+                onApplyFilter={onApplyFilter}
+                multiFilter={currFilter}
+                setMultiFilter={setCurrFilter}
+                onFilterRemove={onFilterRemove}
+                isMfgSelected={isMfgSelected}
             />
             {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader/>}
             {

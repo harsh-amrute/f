@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 
 
 const SimulateFullKit = () => {
-    const { renderView, toggleCurrentTab } = useSimFullKit();
+    const { renderView, toggleCurrentTab, handleResetClick, handleSaveClick } = useSimFullKit();
     const { user } = useUserData()
     const navigate = useNavigate();
     const themeUi = user.user.theme_ui
@@ -24,6 +24,8 @@ const SimulateFullKit = () => {
                 comp={'Procurement Planning'}
                 onDateChange={() => { console.log('') }}
                 submitDate={() => { console.log('') }}
+                handleSaveClick={handleSaveClick}
+                handleResetClick={handleResetClick}
             />
             <div style={{ zoom: 0.75, display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
 

@@ -1709,7 +1709,7 @@ export const HeaderChildren =
             "rn": "MaterialReportChildren",
             "jf": "rmqty",
             "cp": 4,
-            "hdr": "RM RegdQty",
+            "hdr": "RM ReqdQty",
             "vs": true,
             "ca": "right",
             "val": "*Error*"

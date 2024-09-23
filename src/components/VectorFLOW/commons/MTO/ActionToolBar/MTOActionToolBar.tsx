@@ -32,10 +32,11 @@ import {
     VFSelectedFilterLabel,
 } from './styles';
 import moment from 'moment';
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
+import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
 
 type filterType = {
     label: string,
@@ -51,6 +52,7 @@ interface MTOActionToolBarProps {
     onAddFilter?: () => void;
     selectedFilters?: filterType[];
     removeFilters?: (category: string, name: string) => void;
+    disableRemoveFilter?: boolean | undefined;
     date?: string
     handleGoBack?: () => void;
     themeUi?: string;
@@ -71,6 +73,7 @@ interface MTOActionToolBarProps {
     setMultiFilter?: any
     onApplyFilter?: (params: any) => void;
     onFilterRemove?: any;
+    isMfgSelected?: boolean;
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
@@ -88,6 +91,8 @@ const MTOActionToolBar = ({
     onAddFilter,
     selectedFilters,
     removeFilters,
+    disableRemoveFilter,
+    isMfgSelected,
     submitDate,
     date,
     handleGoBack,
@@ -114,11 +119,8 @@ const MTOActionToolBar = ({
     WIPFilter,
     handleSaveClick,
     handleResetClick
-    
+
 }: MTOActionToolBarProps) => {
-
-
-    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
 
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
@@ -150,24 +152,67 @@ const MTOActionToolBar = ({
                             </div>
                             {
                                 isReleaseButtonDisabled ?
-
-                                    <img
-                                        style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
-                                        src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
-                                        height={50}
-                                        width={60}
-                                        alt="Group 627"
-                                    // onClick={onOrderRelease}
-                                    />
+                                    // <img
+                                    //     style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
+                                    //     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                                    //     height={50}
+                                    //     width={60}
+                                    //     alt="Group 627"
+                                    // // onClick={onOrderRelease}
+                                    // />
+                                    <div
+                                        style={{
+                                            cursor: 'pointer',
+                                            background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                            backgroundColor: ColorsMTO.darkPink.code,
+                                            height: '43px',
+                                            width: '59px',
+                                            borderRadius: '4px',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            alignContent: 'center',
+                                            display: 'flex'
+                                        }}
+                                        data-testid={'isReleaseBtn'}
+                                    >
+                                        <img
+                                            style={{}}
+                                            src="/assets/img/rightArrowHorizontal.svg"
+                                            height={13}
+                                            width={7}
+                                        />
+                                    </div>
                                     :
-                                    <img
-                                        style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
-                                        src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
-                                        height={50}
-                                        width={60}
-                                        alt="Group 627"
-                                        onClick={onOrderRelease}
-                                    />
+                                    <div
+                                        style={{
+                                            cursor: 'pointer',
+                                            background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                            backgroundColor: ColorsMTO.darkPink.code,
+                                            height: '43px',
+                                            width: '59px',
+                                            borderRadius: '4px',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            alignContent: 'center',
+                                            display: 'flex'
+                                        }}
+                                        data-testid={'isReleaseBtn'}
+                                        onClick={onOrderRelease}>
+                                        <img
+                                            style={{}}
+                                            src="/assets/img/rightArrowHorizontal.svg"
+                                            height={13}
+                                            width={7}
+                                        />
+                                    </div>
+                                // <img
+                                //     style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
+                                //     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
+                                //     height={50}
+                                //     width={60}
+                                //     alt="Group 627"
+                                //     onClick={onOrderRelease}
+                                // />
                             }
 
                         </div>
@@ -261,7 +306,7 @@ const MTOActionToolBar = ({
                                 />
                             </div>
                             &nbsp;
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                            {/* <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <img
                                     style={{ cursor: 'pointer' }}
                                     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
@@ -271,6 +316,29 @@ const MTOActionToolBar = ({
                                     onClick={() => { if (submitDate) submitDate() }}
                                 />
 
+                            </div> */}
+                            <div
+                                style={{
+                                    cursor: 'pointer',
+                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    height: '43px',
+                                    width: '59px',
+                                    borderRadius: '4px',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignContent: 'center',
+                                    display: 'flex'
+                                }}
+                                onClick={() => { if (submitDate) submitDate() }}
+                                data-testid={"Group 627"}
+                            >
+                                <img
+                                    // style={{}}
+                                    src="/assets/img/rightArrowHorizontal.svg"
+                                    height={13}
+                                    width={7}
+                                />
                             </div>
                         </div>
 
@@ -309,10 +377,10 @@ const MTOActionToolBar = ({
                                                         <VFSelectedFiltersFilterValue>
                                                             <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
                                                         </VFSelectedFiltersFilterValue>
-                                                        <VFSelectedFiltersFilterCloseIcon
+                                                        {<VFSelectedFiltersFilterCloseIcon
                                                             onClick={() => handleRemoveFilter(filter?.label, value)}
                                                             src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
-                                                        />
+                                                        />}
                                                         {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
                                                     </VFSelectedFiltersFilterContent>
                                                 </div>
@@ -360,14 +428,13 @@ const MTOActionToolBar = ({
                                                         <VFSelectedFiltersFilterValue>
                                                             <p style={{ margin: '0px 5px 0px 5px', fontFamily: '500' }}> {f.label}</p>
                                                         </VFSelectedFiltersFilterValue>
-                                                        <VFSelectedFiltersFilterCloseIcon
+                                                        {disableRemoveFilter ? <div>-</div> : <VFSelectedFiltersFilterCloseIcon
                                                             onClick={() => {
                                                                 const filtervalue = f.id || f.value;
                                                                 onFilterRemove(key, filter.filterId, filtervalue)
                                                             }}
                                                             src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
-                                                        />
-                                                        {/* {filter?.value?.length > 1 && <SCFilterVerticalDivider />} */}
+                                                        />}
                                                     </VFSelectedFiltersFilterContent>
                                                 </div>
                                             ))}
@@ -412,22 +479,17 @@ const MTOActionToolBar = ({
                         </SCViewContainerWithBg>
                     </>}
 
-                    <>
+                    {handleSaveClick && handleResetClick && <>
                         <SCVerticalDividerGray />
-
-                        <SCViewContainerWithBg onClick={() => {handleSaveClick && handleSaveClick()}}>
+                        <SCViewContainerWithBg onClick={() => handleSaveClick()}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
                             <p>Save</p>
                         </SCViewContainerWithBg>
-                        <SCViewContainerWithBg onClick={() => {handleResetClick && handleResetClick()}}>
+                        <SCViewContainerWithBg onClick={() => handleResetClick()}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" />
                             <p>Reset</p>
-
                         </SCViewContainerWithBg>
-                        {/* <SCVerticalDivider /> */}
-
-
-                    </>
+                    </>}
 
                     {/* Toggle button for chartview/ grid view */}
                     {isChartGridToggle &&
@@ -459,7 +521,6 @@ const MTOActionToolBar = ({
                         multiFilter={multiFilter}
                         setMultiFilter={setMultiFilter}
                         isFilterOpen={isFilterOpen}
-                        setIsMfgSelected={setIsMfgSelected}
                     />
                 }
 

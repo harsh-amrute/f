@@ -1,8 +1,8 @@
 import { AgCharts } from 'ag-charts-react'
 import { GridOptions, IRowNode } from 'ag-grid-enterprise';
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './DynamicReleaseManagement.styled';
@@ -20,9 +20,22 @@ import { useGetCCRGroupMaster, useGetLineCCRDetails, useGetRouteDetails } from '
 import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
-import { pagination } from '../../Common/Enum';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
+import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import useFilter from "../../../../../hooks/useFilter";
+import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 
+const APIFilterConfig = {
+  filSecVisConfig: {
+    "Prod_Dynamic_Release_Management" : {
+      mjr : false,
+      or: true,
+      res: true,
+      cus: true
+    },
+  }
+};
 
 const DynamicReleaseManagement = () => {
   interface InputData {
@@ -42,6 +55,10 @@ const DynamicReleaseManagement = () => {
     ccr_name: string;
   }
   const reportName = "DynamicReleaseManagement";
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const [isReset, setIsReset] = useState(false);
+  const [colDef, setColDef] = useState([{}]);
   const refGrid = useRef<GridRef | any>(null)
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [rowRelease, setRowRelease] = useState(false);
@@ -51,6 +68,8 @@ const DynamicReleaseManagement = () => {
   const [table1, setTable1] = useState(true);
   const [showReleaseModal, setShowReleaseModal] = useState(false)
   const { mutateAsync: getDynamicReleaseData, isLoading, isError, isSuccess } = useGetDynamicReleaseData();
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const [currData, setCurrData] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
   const [graphData, setGraphData] = useState<any>([]);
@@ -61,6 +80,19 @@ const DynamicReleaseManagement = () => {
   const graph = useRef<any>();
   const [message, setMessage] = useState('');
   const [HeaderData, setHeaderData] = useState([]);
+  const [filterData, setFilterData] = useState({});
+  const { 
+      state: currFilter, 
+      setState: setCurrFilter, 
+      onFilterRemove, 
+      isFilterOpen, 
+      isMfgSelected,
+      onAddFilter, 
+      onApplyFilter, 
+      toggleFilter,
+      appliedFilters
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dynamic_Release_Management);
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
   const setColumnDef = async () => {
@@ -73,14 +105,11 @@ const DynamicReleaseManagement = () => {
     }
   }
 
-  useEffect(() => {
-    setColumnDef();
-  }, [])
-
   const GetData = async (allOrders = 0, page = 1, graph = 1) => {
+    const formatedFilters = formatFilterJSON(appliedFilters);
     if (allOrders) {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -90,7 +119,7 @@ const DynamicReleaseManagement = () => {
     }
     else {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -101,7 +130,7 @@ const DynamicReleaseManagement = () => {
     }
     if (graph) {
       try {
-        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page });
+        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page, appliedFilters: formatedFilters });
         setGraphData(GraphAPIData.data.data);
       }
       catch (e) {
@@ -110,10 +139,37 @@ const DynamicReleaseManagement = () => {
     }
   };
 
+  const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({
+          page_name: FilterPageName.Prod_Dynamic_Release_Management,
+          ao: table1 ? 0 : 1
+        });
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   useEffect(() => {
     getMastersData();
     GetData();
+    getUserColumnConfig();
+    setColumnDef();
+    getFilterData()
   }, [])
+
+  useEffect(()=>{
+    GetData();
+  },[appliedFilters])
+
+  useEffect(()=>{
+    getFilterData();
+  },[table1])
+  
+  useEffect(()=>{
+    setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extras)) 
+  },[HeaderData])
 
 
   useEffect(() => {
@@ -256,12 +312,6 @@ const DynamicReleaseManagement = () => {
     }
   };
 
-
-
-  const colDefs = useMemo(() => {
-    return getColumnDefinations(HeaderData, colDefCustomizations, extras)
-  }, [HeaderData])
-
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {
       return {
@@ -288,7 +338,7 @@ const DynamicReleaseManagement = () => {
       ],
     },
 
-    columnDefs: colDefs,
+    columnDefs: colDef,
     defaultColDef: {
       resizable: true,
       suppressMenu: true,
@@ -617,16 +667,97 @@ const DynamicReleaseManagement = () => {
 
       });
       params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-
+      setCurrentGridRef(refGrid);
     }
+  
+    
+    const getUserColumnConfig = async () => {
+      try {
+          const data = await getUserUIReportConfigData({
+          un: user.user.name,
+          rn_id: UIGridCode.ProdDynamicReleaseManagement
+          });
+  
+          const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+          setColumnState(newConfig);
+  
+          if (!data) {
+          console.error('Failed to apply column state');
+          }
+      } catch (error) {
+          console.error(error);
+      }
+  }
+      
+  
+  const handleSaveClick = async () => {
+      try {
+          if(currentGridRef?.current?.api){
+              const config = currentGridRef.current.api.getColumnState();
+
+              const payload = {
+                  un: user.user.name,
+                  rn_id: UIGridCode.ProdDynamicReleaseManagement,
+                  cs: JSON.stringify(config)
+              }
+              await updateUserUIReportConfigData([payload]);
+              await getUserColumnConfig();
+          }
+      } catch (error) {
+      console.error(error);
+      }
+  }
+
+  const handleResetClick = () => {
+      setIsReset(true);
+  }
+
+  useEffect(()=>{ 
+      if (currentGridRef?.current && columnState?.length) {
+          const result = currentGridRef.current.api.applyColumnState({
+              state: columnState,
+              applyOrder: true
+          });
+          if (!result) {
+              console.error('Failed to apply column state');
+          }
+      }
+  });
+
+  useEffect(() => {
+      if (isReset) {
+          setColumnState(colDef);
+          setIsReset(false)
+      }else{
+          handleSaveClick();
+      }
+  }, [isReset]);
 
   return (
     <>
       <Wrapper>
         {
-          isLoading && <OverlayLoader />
+          (isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
         }
-        <MTOActionToolBar comp="FullKitAssignment" isExcelExport isAddFilterButton isReleaseButton isReleaseButtonDisabled={isReleaseButtonDisabled} onOrderRelease={onOrderRelease} onCheckBoxToggle={setAllRows} />
+        <MTOActionToolBar 
+          comp="FullKitAssignment" 
+          isExcelExport 
+          isAddFilterButton 
+          isReleaseButton 
+          isReleaseButtonDisabled={isReleaseButtonDisabled} 
+          onOrderRelease={onOrderRelease} 
+          onCheckBoxToggle={setAllRows}
+          handleSaveClick={handleSaveClick}
+          handleResetClick={handleResetClick}
+          isFilterOpen={isFilterOpen}
+          onAddFilter={onAddFilter}
+          toggleFilter={toggleFilter}
+          onApplyFilter={onApplyFilter}
+          multiFilter={currFilter}
+          setMultiFilter={setCurrFilter}
+          onFilterRemove={onFilterRemove}
+          isMfgSelected={isMfgSelected}
+        />
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 

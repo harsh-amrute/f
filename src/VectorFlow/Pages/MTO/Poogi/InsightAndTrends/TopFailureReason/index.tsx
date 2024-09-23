@@ -13,13 +13,52 @@ import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import TagCellToolTip from "../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer";
 import { useTopFailureData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/TopFailureReasons";
-import GridView from "./GridView";
+import GridView from "../../../Common/GridView";
 
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
+import { getColumnDefinations } from '../../../../../../helpers/utils';
+import { UIGridCode } from "../../../Common/Enum";
+import { useUserData } from "../../../../../../context/index";
+import useFilter from '../../../../../../hooks/useFilter'
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
+
+const APIFilterConfig = {
+    filSecVisConfig: {
+      "Poogi_Top_Failure_Reasons" : {
+        mjr : true,
+        or: true,
+        res: true,
+        cus: true
+      },
+    }
+};
 const TopFailureReasons = () => {
   const [isGridView, setIsGridView] = useState(false);
   const { screenHeight } = useViewPort();
   const { mutateAsync: getTopFailureData, isLoading, isError, isSuccess } = useTopFailureData();
   const [graphData, setGraphData] = useState<any>({});
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const [isReset, setIsReset] = useState(false);
+  const [colDef, setColDef] = useState([{}]);
+  const [HeaderData, setHeaderData] = useState([]);
+  const [filterData, setFilterData] = useState({});
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  const { 
+      state: currFilter, 
+      setState: setCurrFilter, 
+      onFilterRemove, 
+      isFilterOpen, 
+      isMfgSelected,
+      onAddFilter, 
+      onApplyFilter, 
+      toggleFilter,
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Top_Failure_Reasons);
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { user } = useUserData();
   const reportName = "TopFailureReasons";
 
   const colDefCustomizations = {
@@ -60,26 +99,127 @@ const TopFailureReasons = () => {
     }
   }, [isSuccess, isError])
 
+  
+  const getUserColumnConfig = async () => {
+    try {
+      const data = await getUserUIReportConfigData({
+        un: user.user.name,
+        rn_id: UIGridCode.PoogiTopFailureReason
+      });
+
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      setColumnState(newConfig);
+
+      if (!data) {
+        console.error('Failed to apply column state');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response?.data?.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  const handleSaveClick = async () => {
+    try {
+      if(currentGridRef?.current?.api){
+        const config = currentGridRef.current.api.getColumnState();
+  
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.PoogiTopFailureReason,
+          cs: JSON.stringify(config)
+        }
+        await updateUserUIReportConfigData([payload]);
+        await getUserColumnConfig();
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleResetClick = () => {
+    setIsReset(true);
+  }
+
+  const getFilterData = async () => {
+    try {
+      const response = await getPageWiseFilterData({});
+      setFilterData(response?.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+  }, [HeaderData])
+
+  useEffect(() => {
+    getUserColumnConfig();
+    setColumnDef();
+    getFilterData();
+  }, [])
+
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError])
+
+  useEffect(() => {
+    if (isReset) {
+      setColumnState(colDef);
+      setIsReset(false)
+    }else{
+      handleSaveClick();
+    }
+  }, [isReset]);
+
   return (
     <div>
       {
-        isLoading && <OverlayLoader />
+        (isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
       }
       <MTOActionToolBar
         isGridView={isGridView}
         setIsGridView={setIsGridView}
-        //isChartGridToggle /***commented it  */
+        // isChartGridToggle /***commented it  */
         isAddFilterButton
+        handleSaveClick={handleSaveClick}
+        handleResetClick={handleResetClick}
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter}
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
+        isMfgSelected={isMfgSelected}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (
           <GridView
             getData={getTopFailureData}
-            reportName={reportName}
             isLoading={isLoading}
             isError={isError}
             isSuccess={isSuccess}
-            colDefCustomizations={colDefCustomizations}
+            colDef={colDef}
+            setCurrentGridRef={setCurrentGridRef}
+            currentGridRef={currentGridRef}
+            columnState={columnState}
           />
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>

@@ -7,10 +7,7 @@ import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import moment from 'moment'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
-
-
-
-
+import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 
 
 const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
@@ -408,7 +405,6 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const handleSubmitClick = () => {
         setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label === 'Percentage')));
-        console.log("this is the converted numeric dat, ", numericData);
     }
 
     const updateGraphState = async () => {
@@ -422,7 +418,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
             setNumericData(data);
             setNumericData(filterDataByDaysGap(numericData, 0, horizonDays, true));
             setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label !== 'Percentage')));
-            console.log("absolute data", numericData)
+
         }
         else {
             setActBtn({
@@ -431,10 +427,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
             })
             setNumericData(convertToPercentage(data))
             setNumericData(filterDataByDaysGap(numericData, 0, horizonDays, false));
-
             setNumericData(filterDataByDaysGap(data, 0, horizonDays, (actBtn.label !== 'Percentage')));
-
-            console.log("percentage data", numericData)
         }
 
     }
@@ -523,17 +516,27 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                             labelValueFormatter={(value: number) => value.toString()}
                         />
                         <div>
-                            {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
-                                        Submit
-                                    </VFButtonOutline> */}
-                            <img
-
-                                style={{ cursor: 'pointer' }}
-                                src="/assets/img/Group 627.svg"
-                                height={40}
-                                width={50}
-                                onClick={() => handleSubmitClick()}
-                            />
+                            <div
+                                style={{
+                                    cursor: 'pointer',
+                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
+                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    height: '35px',
+                                    width: '55px',
+                                    borderRadius: '4px',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    alignContent: 'center',
+                                    display: 'flex'
+                                }}
+                                onClick={() => handleSubmitClick()}>
+                                <img
+                                    style={{}}
+                                    src="/assets/img/rightArrowHorizontal.svg"
+                                    height={13}
+                                    width={7}
+                                />
+                            </div>
                         </div>
 
 
