@@ -1,5 +1,5 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFRangeSlider from '../../../../../../../VectorFlow/Pages/MTO/Common/VFRangeSlider'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
@@ -8,25 +8,17 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
-const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, setRmHorizon: (day: any) => void, getFilterData: () => void }) => {
-    const { date, rmHorizon, setRmHorizon, getFilterData } = props;
+import { formatFilterJSON } from '../../../../../../../helpers/utils'
+
+const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, setRmHorizon: (day: any) => void, getFilterData: () => void, appliedFilters: any }) => {
+    const { date, rmHorizon, setRmHorizon, getFilterData, appliedFilters } = props;
     const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
     const [numericData, setNumericData] = useState<any>();
 
     let RMPMExpeditionOBj = {}
     useEffect(() => {
-        getOnLoadData();
-    }, [])
-
-    const getOnLoadData = async () => {
-        RMPMExpeditionOBj = {
-            'horizon': '14',
-            'val': 'all'
-        }
-        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
-        setNumericData(someData.data?.data?.rm)
-    }
-
+        getRMHorizonBasedData();
+    }, [appliedFilters])
 
     function TooltipRenderer({ datum }: any) {
         return ` 
@@ -121,7 +113,8 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
             'horizon': rmHorizon,
             'val': 'rm'
         }
-        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const someData = await getRMPMExpedition({...RMPMExpeditionOBj, appliedFilters: formatedFilters });
         setNumericData(someData.data?.data?.rm)
     }
 
@@ -280,4 +273,4 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
     )
 }
 
-export default ExpeditingMTO
+export default React.memo(ExpeditingMTO)

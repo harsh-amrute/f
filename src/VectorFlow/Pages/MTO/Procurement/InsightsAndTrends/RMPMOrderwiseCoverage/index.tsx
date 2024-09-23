@@ -11,7 +11,7 @@ import { useGetOrderwiseCoverageData } from '../../../../../../VectorFlow/Servic
 import { toast } from 'react-toastify'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
-import { getColumnDefinations } from '../../../../../../helpers/utils'
+import { formatFilterJSON, getColumnDefinations } from '../../../../../../helpers/utils'
 import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
 import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
 import { FilterPageName, pagination, UIGridCode } from '../../../Common/Enum'
@@ -53,7 +53,8 @@ const RMPMOrderwiseCoverage = () => {
         isMfgSelected,
         onAddFilter, 
         onApplyFilter, 
-        toggleFilter 
+        toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_OrderWise);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -213,7 +214,7 @@ const RMPMOrderwiseCoverage = () => {
         if (graph === 1) {
             try {
                 notifyLoader("Loading Data...")
-                const APIData = await getOrderwiseCoverageData({ graph, page });
+                const APIData = await getOrderwiseCoverageData({ graph });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
                     setApiGraphData(APIData?.data?.data);
@@ -228,7 +229,8 @@ const RMPMOrderwiseCoverage = () => {
         else {
             try {
                 notifyLoader("Loading Data...")
-                const APIData = await getOrderwiseCoverageData({ graph, page });
+                const formatedFilters = formatFilterJSON(appliedFilters);
+                const APIData = await getOrderwiseCoverageData({ graph, page, appliedFilters: formatedFilters });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
                     setApiGridData(APIData?.data?.data?.results);
@@ -298,9 +300,12 @@ const RMPMOrderwiseCoverage = () => {
         getUserColumnConfig();
         setColumnDef();
         GetData(1, 1);
-        GetData(0, 1);
         getFilterData()
     }, [])
+
+    useEffect(()=>{
+        GetData(0, 1);
+    },[appliedFilters]);
 
     useEffect(() => {
         setConvertedData(mapDataToColumns(apiGridData, columnData));

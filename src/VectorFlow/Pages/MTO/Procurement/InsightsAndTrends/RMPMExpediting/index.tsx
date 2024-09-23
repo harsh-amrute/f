@@ -37,7 +37,8 @@ const RMExpeditionSuppliers = () => {
         isMfgSelected,
         onAddFilter, 
         onApplyFilter, 
-        toggleFilter 
+        toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Expediting_RM_And_Suppliers);
 
     const { data, /*isLoading, refetch*/ } = useGetDate();
@@ -93,6 +94,7 @@ const RMExpeditionSuppliers = () => {
                                             setRmHorizon={setRmHorizon}
                                             isMTO={isMTO}
                                             date={data?.data?.data}
+                                            appliedFilters={appliedFilters}
                                         />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
@@ -107,7 +109,7 @@ const RMExpeditionSuppliers = () => {
                                             setSupplierHorizon={setSupplierHorizon}
                                             isMTO={isMTO}
                                             date={data?.data?.data}
-
+                                            appliedFilters={appliedFilters}
                                         />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
@@ -119,7 +121,7 @@ const RMExpeditionSuppliers = () => {
                                 setRmHorizon={setRmHorizon}
                                 isMTO={isMTO}
                                 date={data?.data?.data}
-
+                                appliedFilters={appliedFilters}
                             />
                     }
                 </BTRTableWrapper>

@@ -27,8 +27,8 @@ describe('MaterialRequirement', () => {
 
     it('should fetch Poogi Reason for Delayed Order', async () => {
 
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const data = { wip: true, curr: 1 };
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: true, curr: 1, appliedFilters: {}  };
         const response = await ReasonOrderChangeServices.getPoogiReasonsDelayedOrder(data);
         expect(response.status).toBe(200);
     });

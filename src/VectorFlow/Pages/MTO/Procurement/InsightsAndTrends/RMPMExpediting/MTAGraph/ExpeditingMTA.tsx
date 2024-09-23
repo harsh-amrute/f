@@ -1,5 +1,5 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFRangeSlider from '../../../../../../../VectorFlow/Pages/MTO/Common/VFRangeSlider'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
@@ -7,6 +7,7 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
+import { formatFilterJSON } from '../../../../../../../helpers/utils'
 
 interface SupplierData {
     [key: string]: {
@@ -24,8 +25,8 @@ interface Result {
     tt: Product[];  // Array of product objects with rn and c
 }
 
-const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: any, setSupplierHorizon: (days: any) => void, getFilterData: () => void  }) => {
-    const { date, supplierHorizon, setSupplierHorizon, getFilterData } = props;
+const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: any, setSupplierHorizon: (days: any) => void, getFilterData: () => void, appliedFilters: any  }) => {
+    const { date, supplierHorizon, setSupplierHorizon, getFilterData, appliedFilters } = props;
     let RMPMExpeditionOBj = {}
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
@@ -34,8 +35,8 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
     const [numericData, setNumericData] = useState<any>();
 
     useEffect(() => {
-        getOnLoadData();
-    }, [])
+        getRMHorizonBasedData();
+    }, [appliedFilters])
 
 
     const transformSupplierData = (data: SupplierData): Result[] => {
@@ -65,19 +66,6 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
 
         return result;
     };
-
-    const getOnLoadData = async () => {
-        RMPMExpeditionOBj = {
-            'horizon': '14',
-            'val': 'all'
-        }
-        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
-        const xAxisValue = transformSupplierData(someData?.data?.data?.supplier);
-        setNumericData(xAxisValue)
-    }
-
-
-
 
     const TooltipRenderer = ({ datum }: any) => {
 
@@ -175,7 +163,8 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
             'horizon': supplierHorizon,
             'val': 'supplier'
         }
-        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const someData = await getRMPMExpedition({...RMPMExpeditionOBj, appliedFilters: formatedFilters});
         const xAxisValue = transformSupplierData(someData?.data?.data?.supplier);
         setNumericData(xAxisValue)
     }
@@ -321,4 +310,4 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
     )
 }
 
-export default ExpeditingMTA
+export default React.memo(ExpeditingMTA)
