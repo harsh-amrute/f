@@ -18,8 +18,8 @@ describe('STPL and Fullkit Service', () => {
     });
 
     it('should fetch STPL and Full kit data', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await STPLAndFullKitService.getSTPLandFullkitInDaysData('0')
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await STPLAndFullKitService.getSTPLandFullkitInDaysData({ graphflag: 0, page: 1, appliedFilters: {} })
         expect(response.status).toBe(200);
     });
 
