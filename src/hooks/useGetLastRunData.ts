@@ -1,6 +1,3 @@
-import { useSelector } from "react-redux"
-import { RootState } from "../redux/store/store"
-import {format} from 'date-fns'
 
 import {useMemo} from 'react'
 import { useGetlastRunDate } from "../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
@@ -18,7 +15,9 @@ const useGetlastRunData = ()=>{
 
 
     return {
-        date:formattedLastRunDate
+        date:formattedLastRunDate,
+        isError,
+        isLoading
     }
         
 }

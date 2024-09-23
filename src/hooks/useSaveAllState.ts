@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import {
   useResetState,
   useSaveState,
@@ -18,7 +18,7 @@ interface exportToExcelParameters {
 }
 
 const useSaveAllState = () => {
-  const { ref,tempDownloadData,setTempDownloadData,setExportExcelRowData } = useContext(GridStateContext);
+  const { ref,setTempDownloadData,setExportExcelRowData } = useContext(GridStateContext);
 
 
 

@@ -1,5 +1,4 @@
 import { CategoryWrapper, DateContainer, DateWrapper, CardContainer,CardLayout,CardWrapper, TextWrapper, IconWrapper, CountWrapper, CountText, ButtonWrapper, Separator, ButtonComponent, PlanningTaskBar, ButtonFilterWrapper } from "./style";
-import { format } from "date-fns";
 import VFSelectedFilters from '../../../../components/VectorFLOW/commons/VFSelectedFilters';
 import { useState } from 'react'
 import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
