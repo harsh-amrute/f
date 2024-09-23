@@ -22,7 +22,7 @@ import { toast } from 'react-toastify';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
-import { useGetDeptWiseWipData,useGetHighAgeingData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
+import { useGetDeptWiseWipData, useGetHighAgeingData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
 import { FirstDataRenderedEvent } from 'ag-grid-community';
 import { IRowNode } from 'ag-grid-enterprise';
 import OverlayLoader from '../../Common/Loader';
@@ -89,9 +89,9 @@ interface DepartmentData {
 }
 
 const APIFilterConfig = {
-    filSecVisConfig :  {
-        "Prod_OverAll_BMReport" : {
-            mjr : false,
+    filSecVisConfig: {
+        "Prod_OverAll_BMReport": {
+            mjr: false,
             or: true,
             res: true,
             cus: true
@@ -103,7 +103,7 @@ const OverallBmReport = () => {
     //console.log()
     const { mutateAsync: getOverallBMReportData, isLoading: OverAllBMLoading } = useGetOverAllBMReport();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
-    const { mutateAsync: getHighAgeingData}= useGetHighAgeingData();
+    const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
 
@@ -122,14 +122,14 @@ const OverallBmReport = () => {
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { 
-        state: currFilter, 
-        setState: setCurrFilter, 
-        onFilterRemove, 
-        isFilterOpen, 
+    const {
+        state: currFilter,
+        setState: setCurrFilter,
+        onFilterRemove,
+        isFilterOpen,
         isMfgSelected,
-        onAddFilter, 
-        onApplyFilter, 
+        onAddFilter,
+        onApplyFilter,
         toggleFilter,
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport);
@@ -277,12 +277,12 @@ const OverallBmReport = () => {
                 "scc": "ddt1",
                 "children": [
                     {
-                        "cc": 'woh',
+                        "cc": 'ddtl.Dept1.mfg',
                         'cp': 1,
                         'hd': 'WIP on Hand',
                         'v': true,
                         'cla': 'centre',
-                        'scc': 'woh',
+                        'scc': 'ddtl.Dept1.mfg',
                     },
                     {
                         "cc": 'mfg',
@@ -766,7 +766,7 @@ const OverallBmReport = () => {
 
     const getFilterData = async () => {
         try {
-            const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_OverAll_BMReport});
+            const response = await getPageWiseFilterData({ page_name: FilterPageName.Prod_OverAll_BMReport });
             setFilterData(response?.data.data);
         } catch (error) {
             console.error(error);
@@ -805,10 +805,12 @@ const OverallBmReport = () => {
         };
     }, []);
 
+    console.log(gridData, "gridDara")
+
     const getInitialGridData = async (currentPage: number) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getOverallBMReportData({page: currentPage, appliedFilters: formatedFilters});
+            const gridData = await getOverallBMReportData({ page: currentPage, appliedFilters: formatedFilters });
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
         }
@@ -880,7 +882,7 @@ const OverallBmReport = () => {
                 const fetchDeptWiseWiphData = async () => {
                     try {
                         const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
-                        const highAgeingData= await getHighAgeingData(selectedOrderKeys);
+                        const highAgeingData = await getHighAgeingData(selectedOrderKeys);
                         sethighAgeing(highAgeingData?.data?.data);
                         //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
                         setDeptWiseWipData(DeptWiseWipData?.data?.data);
@@ -1007,7 +1009,7 @@ const OverallBmReport = () => {
                         alignItems: "center"
                     }
                 },
-                
+
                 treeData: true,
                 getDataPath: (data: any) => {
                     return data.path;
@@ -1020,9 +1022,9 @@ const OverallBmReport = () => {
         },
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         getInitialGridData(currentPage);
-    },[currentPage, appliedFilters])
+    }, [currentPage, appliedFilters])
 
     return (
         <BMDepWrapper>
@@ -1034,7 +1036,7 @@ const OverallBmReport = () => {
                     isFilterOpen={isFilterOpen}
                     onAddFilter={onAddFilter}
                     toggleFilter={toggleFilter}
-                    onApplyFilter={onApplyFilter} 
+                    onApplyFilter={onApplyFilter}
                     multiFilter={currFilter}
                     setMultiFilter={setCurrFilter}
                     onFilterRemove={onFilterRemove}

@@ -32,6 +32,7 @@ import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
+import { GridRef } from '../../../../../VectorFlow/types/MDM';
 
 interface ApiResponse {
     cc: string;
@@ -139,14 +140,14 @@ const DptWiseBMReport = () => {
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { 
-        state: currFilter, 
-        setState: setCurrFilter, 
-        onFilterRemove, 
-        isFilterOpen, 
+    const {
+        state: currFilter,
+        setState: setCurrFilter,
+        onFilterRemove,
+        isFilterOpen,
         isMfgSelected,
-        onAddFilter, 
-        onApplyFilter, 
+        onAddFilter,
+        onApplyFilter,
         toggleFilter,
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dept_Wise_BM_Report);
@@ -913,6 +914,12 @@ const DptWiseBMReport = () => {
         getUpdatedFilteredData()
     }, [appliedFilters, isWIPChecked, currentPage]);
 
+    const tempGraph = useRef<GridRef>(null);
+
+    const onExcelExport = () => {
+        tempGraph.current?.api?.exportDataAsExcel()
+    }
+
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -920,6 +927,7 @@ const DptWiseBMReport = () => {
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
                     isExcelExport
+                    onExcelExportClick={onExcelExport}
                     quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
                         <Checkbox
                             checked={isWIPChecked}
@@ -978,6 +986,19 @@ const DptWiseBMReport = () => {
                             </BTRTableWrapper>
                         </HorizontalViewWrapper>
                 }
+
+                <div style={{ display: 'none' }}>
+                    <GridView
+                        reference={tempGraph}
+                        agGridProps={agGridProps}
+                        columDef={colDeflatest}
+                        convercolumnDef={gridData}
+                        updateReason={() => handleUpdateReason()}
+                        handlePageChange={(cp) => handlePageChange(cp)}
+                        totalRow={gridDataCount}
+                        currentPage={currentPage}
+                    />
+                </div>
             </>
 
             <BPRRemarkHistoryModal
