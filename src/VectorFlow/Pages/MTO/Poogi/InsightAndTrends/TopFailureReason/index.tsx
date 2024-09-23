@@ -18,7 +18,7 @@ import GridView from "../../../Common/GridView";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../../helpers/utils';
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
@@ -153,7 +153,7 @@ const TopFailureReasons = () => {
 
   const getFilterData = async () => {
     try {
-      const response = await getPageWiseFilterData({});
+      const response = await getPageWiseFilterData({page_name: FilterPageName.Poogi_Top_Failure_Reasons});
       setFilterData(response?.data.data);
     } catch (error) {
       console.error(error);
