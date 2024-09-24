@@ -512,21 +512,11 @@ const OrderRescheduling = () => {
         }
     }
 
-    const onExcelExport = () => {
-        console.log("excel exported", tempRowData);
-
-        GetExcelData();
-
-
-    }
-
 
     const tempRef = useRef<any>(null);
 
     useEffect(() => {
         if (tempRowData) {
-            console.log(tempRowData, "tempRowData")
-            console.log(tempRef, 'temprReref')
             tempRef?.current?.api.exportDataAsExcel({ fileName: "OrderRescheduling" });
         }
     }, [tempRowData])
@@ -539,7 +529,7 @@ const OrderRescheduling = () => {
                 <MTOActionToolBar
                     comp={'orderReschedule'}
                     isExcelExport
-                    onExcelExportClick={onExcelExport}
+                    onExcelExportClick={GetExcelData}
                     handleSaveClick={handleSaveClick}
                     handleResetClick={handleResetClick}
                 />

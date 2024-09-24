@@ -151,7 +151,9 @@ const DptWiseBMReport = () => {
         toggleFilter,
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dept_Wise_BM_Report);
-
+    const [tempGridData, setTempGridData] = useState<any>(undefined);
+    const tempGraph = useRef<GridRef>(null);
+    const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
     const customCellRenderers = useMemo(() => (
         {
             "colorCellRenderer": BPPRenderer,
@@ -911,9 +913,6 @@ const DptWiseBMReport = () => {
     }
 
 
-    const [tempGridData, setTempGridData] = useState<any>(undefined);
-
-
     const getTempUpdatedFilteredData = async () => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
@@ -932,9 +931,6 @@ const DptWiseBMReport = () => {
         getUpdatedFilteredData()
     }, [appliedFilters, isWIPChecked, currentPage]);
 
-    const tempGraph = useRef<GridRef>(null);
-
-    const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
 
     const onExcelExport = () => {
         setIsExcelLoading(true);
