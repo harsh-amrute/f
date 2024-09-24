@@ -16,6 +16,43 @@ const useMaterialSO = (data: any) => {
 
     // const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
 
+    const customHeader =
+    {
+        ColorPriority: {
+            cellRenderer: ColorCellRenderer
+        },
+        FullKitAvail: {
+            minWidth: 100,
+            maxWidth: 100,
+            cellStyle: {
+                paddingRight: '25px'
+            },
+            cellRenderer: "avlCellRenderer",
+            tooltipComponent: 'availabilityToolTip',
+            tooltipValueGetter: (params: any) => {
+                const oq = params.data.oq;
+                const fka = params.data.fka;
+                return `${fka}/${oq} kits can be manufactured`;
+            },
+        }
+
+
+    }
+
+    const extras = [
+        {
+            field: "",
+            resizable: false,
+            position: 0,
+            suppressHeaderFilterButton: true,
+            suppressMenu: true,
+            filter: false,
+            initialWidth: 50,
+            maxWidth: 50,
+            cellRenderer: CustomGroupCellRenderer
+        }
+    ]
+
 
 
     const { mutateAsync: getOpenSODetailsData } = useGetOpenSODetailsData()
@@ -25,7 +62,7 @@ const useMaterialSO = (data: any) => {
     }, [])
 
     const [isLoading, setIsLoading] = useState(false);
-   
+
 
 
     const getInitialData = async (currPage: number) => {

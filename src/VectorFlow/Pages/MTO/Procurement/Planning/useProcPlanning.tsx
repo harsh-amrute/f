@@ -294,6 +294,7 @@ const useProcPlanning = (date: string) => {
     const extras = [
         {
             field: "",
+            minWidth: 100,
             position: 0,
             suppressHeaderFilterButton: true,
             suppressMenu: true,
