@@ -19,8 +19,8 @@ describe('MaterialRequirement', () => {
 
     it('should fetch Order At Risk data ', async () => {
 
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await OrderAtRiskService.getOrderAtRiskData();
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await OrderAtRiskService.getOrderAtRiskData({appliedFilters: {}});
         expect(response.status).toBe(200);
     });
 });

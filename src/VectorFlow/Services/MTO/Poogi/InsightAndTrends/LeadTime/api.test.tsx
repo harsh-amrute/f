@@ -21,5 +21,11 @@ describe('UIConvfig Service', () => {
         const response = await getLeadTimeData(1, 0)
         expect(response.status).toBe(200);
     });
+   
+    it('should fetch OTIF Analysis data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await getLeadTimeData(0, 1, {})
+        expect(response.status).toBe(200);
+    });
 
 });

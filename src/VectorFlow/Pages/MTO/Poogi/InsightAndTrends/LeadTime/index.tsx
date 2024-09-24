@@ -47,6 +47,7 @@ const LeadTime = () => {
         onAddFilter, 
         onApplyFilter, 
         toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Lead_Time);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -121,7 +122,7 @@ const LeadTime = () => {
 
     const getGridData = async () => {
         try{
-            const data = await getLeadTimeData({graphFlag: 1});
+            const data = await getLeadTimeData({graphflag: 1});
             const chartData: any = []
             const tableData: any = []
             Object.entries(data.data.data).forEach((entry: any)=>{
@@ -197,6 +198,7 @@ const LeadTime = () => {
                             setCurrentGridRef={setCurrentGridRef} 
                             currentGridRef={currentGridRef}
                             columnState={columnState}
+                            appliedFilters={appliedFilters}
                         />
                     </>
                     :

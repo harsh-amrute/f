@@ -51,6 +51,7 @@ const STPLAndFullKits = () => {
       onAddFilter, 
       onApplyFilter, 
       toggleFilter,
+      appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_STPL_And_FullKits);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -188,6 +189,7 @@ const STPLAndFullKits = () => {
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
+            appliedFilters={appliedFilters}
           />
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 200, paddingLeft: "20px" }}>

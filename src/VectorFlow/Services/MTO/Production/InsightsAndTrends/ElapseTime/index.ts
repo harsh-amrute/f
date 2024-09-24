@@ -3,8 +3,8 @@ import { getElapsedDaysforDeptPlantData, getElapsedTimeData } from './api';
 
 
 export const useGetElapsedTimeData = () => {
-    return useMutation(async (data: {graphFlag: any, page?: number}) => {
-        return getElapsedTimeData(data.graphFlag, data?.page);
+    return useMutation(async (params: {graphflag: any, page?: number, appliedFilters?: any}) => {
+        return getElapsedTimeData(params);
     })
 }
 

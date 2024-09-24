@@ -23,8 +23,14 @@ describe('UIConvfig Service', () => {
     });
 
     it('getElapsedTimeData', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await getElapsedTimeData({ page: 1, graphflag: 0, appliedFilters: {} })
+        expect(response.status).toBe(200);
+    });
+   
+    it('getElapsedTimeData', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await getElapsedTimeData(1)
+        const response = await getElapsedTimeData({ graphflag: 1})
         expect(response.status).toBe(200);
     });
 

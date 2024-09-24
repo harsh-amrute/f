@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import { SaveBtnWrapper, SaveBtn } from './styles';
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import { toast } from 'react-toastify';
@@ -68,6 +68,7 @@ const ReasonForDelayOrder = () => {
         onAddFilter, 
         onApplyFilter, 
         toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Reason_For_Delayed_Orders);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();  
@@ -183,8 +184,9 @@ const ReasonForDelayOrder = () => {
     const getInitialData = async (wipval: boolean, page: number) => {
         try {
             setCurrentPage(page);
-            setWIPCheck(wipval)
-            const apiResponse = await getPoogiReasonsDelayedOrder({ 'wip': wipval === true ? 0 : 1, 'curr': page });
+            setWIPCheck(wipval);
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const apiResponse = await getPoogiReasonsDelayedOrder({ 'wip': wipval === true ? 0 : 1, 'curr': page, appliedFilters: formatedFilters });
             setRowDataCount(apiResponse.data?.data?.count);
             setRowData(apiResponse?.data?.data?.results)
         }
@@ -267,8 +269,11 @@ const ReasonForDelayOrder = () => {
     useEffect(() => {
         getUserColumnConfig();
         getHeaderData();
-        getInitialData(true, 1);
     }, []);
+    
+    useEffect(()=>{
+        getInitialData(true, 1);
+    },[appliedFilters])
     
     useEffect(()=>{
         getFilterData();
