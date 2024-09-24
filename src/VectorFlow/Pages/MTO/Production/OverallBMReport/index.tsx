@@ -277,12 +277,12 @@ const OverallBmReport = () => {
                 "scc": "ddt1",
                 "children": [
                     {
-                        "cc": 'ddtl.Dept1.mfg',
+                        "cc": 'woh',
                         'cp': 1,
                         'hd': 'WIP on Hand',
                         'v': true,
                         'cla': 'centre',
-                        'scc': 'ddtl.Dept1.mfg',
+                        'scc': 'woh',
                     },
                     {
                         "cc": 'mfg',
@@ -805,7 +805,6 @@ const OverallBmReport = () => {
         };
     }, []);
 
-    console.log(gridData, "gridDara")
 
     const getInitialGridData = async (currentPage: number) => {
         try {
@@ -1026,6 +1025,42 @@ const OverallBmReport = () => {
         getInitialGridData(currentPage);
     }, [currentPage, appliedFilters])
 
+
+    const tempGridRef = useRef<any>(null);
+    const [tempGridData, setTempGridData] = useState<any>(undefined);
+    const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
+
+    const getTempGridData = async () => {
+        setIsExcelLoading(true);
+        try {
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const gridData = await getOverallBMReportData({ page: 1, appliedFilters: formatedFilters, page_size: gridDataCount });
+            setTempGridData(gridData?.data?.data?.results)
+        }
+        catch (e) {
+            console.log(e)
+        }
+        finally {
+            setIsExcelLoading(false);
+        }
+    }
+
+
+
+
+    const onExcelExport = () => {
+        getTempGridData();
+    }
+
+    useEffect(() => {
+        if (tempGridData) {
+            tempGridRef.current?.api?.exportDataAsExcel({ fileName: "OverallBMReport" })
+        }
+    }, [tempGridData])
+
+
+
+
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -1033,6 +1068,7 @@ const OverallBmReport = () => {
                     comp={'OverallBMReport'}
                     isAddFilterButton
                     isExcelExport
+                    onExcelExportClick={onExcelExport}
                     isFilterOpen={isFilterOpen}
                     onAddFilter={onAddFilter}
                     toggleFilter={toggleFilter}
@@ -1044,7 +1080,7 @@ const OverallBmReport = () => {
                 />
             </BMDepHeaderWraper>
 
-            {OverAllBMLoading ? <OverlayLoader /> :
+            {OverAllBMLoading && !isExcelLoading ? <OverlayLoader /> :
 
                 <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                     <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
@@ -1061,6 +1097,19 @@ const OverallBmReport = () => {
                                         totalRow={gridDataCount}
                                         currentPage={currentPage}
                                     />
+                                    {/* This Grid is only for the user to download the excel report */}
+                                    <div style={{ display: 'none' }}>
+                                        <GridView
+                                            reference={tempGridRef}
+                                            agGridProps={agGridProps}
+                                            columDef={coldefs}
+                                            convercolumnDef={tempGridData}
+                                            handlePageChange={(cp) => handlePageChange(cp)}
+                                            saveBtn={false}
+                                            totalRow={gridDataCount}
+                                            currentPage={currentPage}
+                                        />
+                                    </div>
                                 </BTRAllomentSection>
                             </Allotment.Pane>
 

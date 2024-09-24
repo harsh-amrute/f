@@ -906,7 +906,25 @@ const DptWiseBMReport = () => {
             setGridDataCount(gridData?.data?.data?.count)
         }
         catch (e) {
-            console.log('e');
+            console.log(e);
+        }
+    }
+
+
+    const [tempGridData, setTempGridData] = useState<any>(undefined);
+
+
+    const getTempUpdatedFilteredData = async () => {
+        try {
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': 1, appliedFilters: formatedFilters, page_size: gridDataCount });
+            setTempGridData(gridData?.data?.data?.results);
+        }
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            setIsExcelLoading(false);
         }
     }
 
@@ -916,9 +934,18 @@ const DptWiseBMReport = () => {
 
     const tempGraph = useRef<GridRef>(null);
 
+    const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
+
     const onExcelExport = () => {
-        tempGraph.current?.api?.exportDataAsExcel()
+        setIsExcelLoading(true);
+        getTempUpdatedFilteredData();
     }
+
+    useEffect(() => {
+        if (tempGridData) {
+            tempGraph.current?.api?.exportDataAsExcel({ fileName: "DepartmentWiseBMReport" })
+        }
+    }, [tempGridData])
 
     return (
         <BMDepWrapper>
@@ -951,7 +978,7 @@ const DptWiseBMReport = () => {
 
             <>
                 {
-                    (isFilteredDataLoaded) ? <OverlayLoader /> :
+                    (isFilteredDataLoaded && !isExcelLoading) ? <OverlayLoader /> :
 
                         <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                             <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
@@ -992,7 +1019,7 @@ const DptWiseBMReport = () => {
                         reference={tempGraph}
                         agGridProps={agGridProps}
                         columDef={colDeflatest}
-                        convercolumnDef={gridData}
+                        convercolumnDef={tempGridData}
                         updateReason={() => handleUpdateReason()}
                         handlePageChange={(cp) => handlePageChange(cp)}
                         totalRow={gridDataCount}
