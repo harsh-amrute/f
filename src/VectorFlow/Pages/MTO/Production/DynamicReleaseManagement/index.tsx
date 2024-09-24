@@ -2,7 +2,7 @@ import { AgCharts } from 'ag-charts-react'
 import { GridOptions, IRowNode } from 'ag-grid-enterprise';
 import { useEffect, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './DynamicReleaseManagement.styled';
@@ -89,7 +89,8 @@ const DynamicReleaseManagement = () => {
       isMfgSelected,
       onAddFilter, 
       onApplyFilter, 
-      toggleFilter 
+      toggleFilter,
+      appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dynamic_Release_Management);
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -105,9 +106,10 @@ const DynamicReleaseManagement = () => {
   }
 
   const GetData = async (allOrders = 0, page = 1, graph = 1) => {
+    const formatedFilters = formatFilterJSON(appliedFilters);
     if (allOrders) {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -117,7 +119,7 @@ const DynamicReleaseManagement = () => {
     }
     else {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -128,7 +130,7 @@ const DynamicReleaseManagement = () => {
     }
     if (graph) {
       try {
-        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page });
+        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page, appliedFilters: formatedFilters });
         setGraphData(GraphAPIData.data.data);
       }
       catch (e) {
@@ -156,6 +158,10 @@ const DynamicReleaseManagement = () => {
     setColumnDef();
     getFilterData()
   }, [])
+
+  useEffect(()=>{
+    GetData();
+  },[appliedFilters])
 
   useEffect(()=>{
     getFilterData();

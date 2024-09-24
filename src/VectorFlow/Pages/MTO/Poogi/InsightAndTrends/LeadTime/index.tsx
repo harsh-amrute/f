@@ -7,7 +7,7 @@ import { useGetLeadTimeData } from '../../../../../../VectorFlow/Services/MTO/Po
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
 import OverlayLoader from '../../../Common/Loader';
 import { useUserData } from "../../../../../../context/index";
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { getColumnDefinations } from '../../../../../../helpers/utils';
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
@@ -106,7 +106,7 @@ const LeadTime = () => {
     
     const getFilterData = async () => {
         try {
-          const response = await getPageWiseFilterData({});
+          const response = await getPageWiseFilterData({page_name: FilterPageName.Poogi_Lead_Time});
           setFilterData(response?.data.data);
         } catch (error) {
           console.error(error);
