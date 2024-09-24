@@ -160,7 +160,7 @@ const DeptWiseAnalytics = () => {
                     <BPRDailyAnalyticsTableHeaderContainer>
                         {
                             colHeaders.map((colDef: ColDef) => {
-                                if (colDef.colId === 'color') {
+                                if (colDef.headerName === 'color') {
                                     return (
                                         <BPRDailyAnalyticsTableHeader style={{ width: 25 }} />
                                     )
