@@ -2,7 +2,8 @@ import { useMutation } from '@tanstack/react-query'
 import { OverallBMReportService } from './api'
 type OverallBMReportInputType = {
     page: number,
-    appliedFilters: any
+    appliedFilters: any,
+    page_size?: number
 }
 
 export const useGetOverAllBMReport = () => {

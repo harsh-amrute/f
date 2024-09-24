@@ -260,6 +260,7 @@ export const BPRDailyAnalyticsTableContainer = styled.div`
 export const BPRDailyAnalyticsTableHeaderContainer = styled.div`
     display:flex;
     flex-direction:row;
+    justify-content:space-between;
     color:inherit;
 `
 

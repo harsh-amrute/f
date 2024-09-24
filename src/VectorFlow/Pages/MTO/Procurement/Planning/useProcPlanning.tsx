@@ -83,7 +83,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const [colDef, setColDef] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();  
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const reportName = "ProcurementPlanningShortage";
 
     const setColumnDef = async () => {
@@ -98,38 +98,38 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
     const getUserColumnConfig = async () => {
         try {
-          const data = await getUserUIReportConfigData({
-            un: user.user.name,
-            rn_id: UIGridCode.ProcPlanning
-          });
-    
-          const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-          setColumnState(newConfig);
-    
-          if (!data) {
-            console.error('Failed to apply column state');
-          }
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProcPlanning
+            });
+
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+            setColumnState(newConfig);
+
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
     const handleSaveClick = async () => {
         try {
-          if(currentGridRef?.current?.api){
-            const config = currentGridRef.current.api.getColumnState();
-            console.log(config, 'CONFIG')
-            const payload = {
-              un: user.user.name,
-              rn_id: UIGridCode.ProcPlanning,
-              cs: JSON.stringify(config)
+            if (currentGridRef?.current?.api) {
+                const config = currentGridRef.current.api.getColumnState();
+                console.log(config, 'CONFIG')
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcPlanning,
+                    cs: JSON.stringify(config)
+                }
+                await updateUserUIReportConfigData([payload]);
+                await getUserColumnConfig();
             }
-            await updateUserUIReportConfigData([payload]);
-            await getUserColumnConfig();
-          }
-    
+
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
@@ -139,10 +139,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
     useEffect(() => {
         if (isReset) {
-          setColumnState(colDef);
-          setIsReset(false)
-        }else{
-          handleSaveClick();
+            setColumnState(colDef);
+            setIsReset(false)
+        } else {
+            handleSaveClick();
         }
     }, [isReset]);
 
@@ -306,14 +306,14 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         }
     ]
 
-    useEffect(()=>{
+    useEffect(() => {
         if (currentTab.label === 'Shortage') {
             setColDef(getColumnDefinations(HeaderData, customHeader, extras))
         }
         else {
             setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
         }
-    },[HeaderData])
+    }, [HeaderData])
 
     const icons = useMemo(() => {
         return {
@@ -475,7 +475,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
 
-    useEffect(()=>{ 
+    useEffect(() => {
         if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
             const result = currentGridRef?.current?.api?.applyColumnState({
                 state: columnState,
@@ -502,7 +502,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             ref={gridRef}
                             onGridReady={(params: any) => {
                                 params.api.autoSizeAllColumns();
-            
+
                                 setCurrentGridRef(gridRef);
                             }}
                             statusBar={{
@@ -538,7 +538,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             ref={gridRef}
                             onGridReady={(params: any) => {
                                 params.api.autoSizeAllColumns();
-            
+
                                 setCurrentGridRef(gridRef);
                             }}
                             statusBar={{
