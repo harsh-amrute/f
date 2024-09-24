@@ -19,7 +19,13 @@ describe('OT and IF analysis Service', () => {
 
     it('should fetch OT and IF Analysis data', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await OTAndIFAanalysisService.getOTAndIFAnalysisData('0')
+        const response = await OTAndIFAanalysisService.getOTAndIFAnalysisData({graphflag: 1})
+        expect(response.status).toBe(200);
+    });
+
+    it('should fetch OT and IF Analysis data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await OTAndIFAanalysisService.getOTAndIFAnalysisData({graphflag: 0, page: 1 ,appliedFilters: {}})
         expect(response.status).toBe(200);
     });
 

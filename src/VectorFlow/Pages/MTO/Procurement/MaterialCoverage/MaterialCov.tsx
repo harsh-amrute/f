@@ -13,14 +13,14 @@ import MaterialSODetailed from './MaterialSODetailed';
 import { DetailsObj } from './CommonFunc';
 import { useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
 import { toast } from 'react-toastify';
-import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
+import { notifyError, notifyLoader } from '../../../../../helpers/notify';
 import useFilter from "../../../../../hooks/useFilter";
 // import { APIResponseMock } from '../../Production/InsightsAndTrends/OrderBalance/OrderBalanceMockData';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useUserData } from "../../../../../context/index";
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
@@ -43,7 +43,7 @@ const MaterialCov = () => {
   const [currTab, setCurrTab] = useState<string>("CurrentCoverage");
   const [toggleComponent, setToggleComponent] = useState<boolean>(false);
   const [soData, setSOData] = useState<any>([]);
-  const { data, isLoading, /*refetch*/ } = useGetSOSummaydetails();
+  const { mutateAsync: getSOSummaryData, isLoading, /*refetch*/ } = useGetSOSummaydetails();
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData();
   const [filterData, setFilterData] = useState({});
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
@@ -63,7 +63,8 @@ const MaterialCov = () => {
     isMfgSelected, 
     onAddFilter, 
     onApplyFilter, 
-    toggleFilter  
+    toggleFilter,
+    appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
 
   useEffect(() => {
@@ -73,16 +74,7 @@ const MaterialCov = () => {
       notifyLoader("Loading Data ...")
     }
     else {
-      if (data?.status === 200) {
-
-
-        toast.dismiss();
-        notifySuccess("Data Fetched Successfully!")
-      }
-      else {
-        toast.dismiss();
-        notifyError("Failed to fetch data!")
-      }
+      toast.dismiss();
     }
   }, [isLoading])
 
@@ -95,9 +87,20 @@ const MaterialCov = () => {
     setDetailDataObj(data)
   }
 
+  const getSOData = async () => {
+    try {
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const response = await getSOSummaryData({ appliedFilters: formatedFilters});
+      setSOData(response?.data?.data?.results || []);
+    } catch (error) {
+      console.log(error);
+      notifyError('Failed to fetch Grid data!');
+    }
+  }
+
   useEffect(() => {
-    setSOData(data?.data.data)
-  }, [data])
+    getSOData();
+  }, [appliedFilters])
 
   const tabs = [
     {

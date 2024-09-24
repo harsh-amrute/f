@@ -3,7 +3,7 @@ import { TableParticulars } from "../../../../../src/components/index";
 import { useTranslation } from "react-i18next";
 import useProcPlanning from "../../../../VectorFlow/Pages/MTO/Procurement/Planning/useProcPlanning";
 const ProcPlanningAnalytics = ({ themeUi }: any) => {
-    const { GetCount } = useProcPlanning("");
+    const { GetCount } = useProcPlanning("",{});
     const { t } = useTranslation();
     const [pcs, setPcs] = useState(false);
     const listTitle = [

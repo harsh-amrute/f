@@ -17,8 +17,8 @@ describe('Trends of Failure Reasons Service', () => {
     });
 
     it('should fetch Trends of Failure Reasons data', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await TrendsFailureReasonsService.getTrendsFailureData()
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await TrendsFailureReasonsService.getTrendsFailureData({appliedFilters: {}})
         expect(response.status).toBe(200);
     });
 

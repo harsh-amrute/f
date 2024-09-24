@@ -73,7 +73,7 @@ const DayWiseCoverage = () => {
         isMfgSelected,
         onAddFilter, 
         onApplyFilter, 
-        toggleFilter 
+        toggleFilter
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Day_Wise_Coverage);
     const { user } = useUserData();
     const reportName = "DayWiseCoverage";
@@ -205,7 +205,7 @@ const DayWiseCoverage = () => {
         }
     }
 
-    const { renderView, toggleCurrentTab, date, currentTab } = useMaterialReq(selectedDate);
+    const { renderView, toggleCurrentTab, date, currentTab } = useMaterialReq({}, selectedDate);
 
     useEffect(() => {
         toggleCurrentTab({

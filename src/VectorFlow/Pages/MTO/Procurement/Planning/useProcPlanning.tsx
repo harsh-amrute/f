@@ -10,7 +10,7 @@ import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { putUpdateProcurementSimulationData, userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
 import { toast } from "react-toastify";
@@ -22,7 +22,7 @@ import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles";
 //import { pagination } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
-import { PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
+import { APPLIED_FILTERS, PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { UIGridCode } from "../../Common/Enum";
 
@@ -75,7 +75,7 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
     };
 };
 
-const useProcPlanning = (date: string) => {
+const useProcPlanning = (date: string, appliedFilters: any) => {
     const [HeaderData, setHeaderData] = useState([{}]);
     const [currentGridRef, setCurrentGridRef] = useState<any>(null);
     const [columnState, setColumnState] = useState<any>([]);
@@ -178,6 +178,7 @@ const useProcPlanning = (date: string) => {
     ];
 
     dispatch(PROCPLANNING_ANALYTICS({ date }));
+    dispatch(APPLIED_FILTERS( {...formatFilterJSON(appliedFilters)} ));
 
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
@@ -188,7 +189,8 @@ const useProcPlanning = (date: string) => {
         try {
             toast.dismiss();
             notifyLoader("Loading data...")
-            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab });
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab, appliedFilters: formatedFilters });
             if (response.status === 200) {
                 setCurrentPage(pageNumber)
                 toast.dismiss();
@@ -207,7 +209,7 @@ const useProcPlanning = (date: string) => {
             notifyError("Failed to fetch data!");
             setIsLoading(false);
         }
-    }, [getProcPlanningData]);
+    }, [getProcPlanningData,appliedFilters]);
 
     useEffect(() => {
         if (datas.length && HeaderData.length) {
@@ -449,10 +451,9 @@ const useProcPlanning = (date: string) => {
 
     useEffect(() => {
         if (date) {
-
             fetchData(date);
         }
-    }, [])
+    }, [appliedFilters])
 
     const handlePageChangeCumulative = async (pageNumber: number) => {
         // setIsLoading(true);

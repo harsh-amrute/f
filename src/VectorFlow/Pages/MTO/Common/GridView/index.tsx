@@ -67,8 +67,6 @@ const GridView = (props: IGridViewProps) => {
         },
     };
 
-
-
     const getGridData = async (params: any) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
@@ -90,8 +88,6 @@ const GridView = (props: IGridViewProps) => {
     useEffect(() => {
         getGridData({ graphflag: 0, page: currentPage });
     }, [appliedFilters])
-
-
 
     useEffect(() => {
         if (isSuccess) {
