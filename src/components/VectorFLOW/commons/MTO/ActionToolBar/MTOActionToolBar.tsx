@@ -81,6 +81,7 @@ interface MTOActionToolBarProps {
     utilityBtns?: ReactElement | null,
     handleSaveClick?: () => void
     handleResetClick?: () => void
+    onExcelExportClick?: () => void
     //// new props
 }
 
@@ -118,7 +119,8 @@ const MTOActionToolBar = ({
     utilityBtns,
     WIPFilter,
     handleSaveClick,
-    handleResetClick
+    handleResetClick,
+    onExcelExportClick
 
 }: MTOActionToolBarProps) => {
 
@@ -470,7 +472,7 @@ const MTOActionToolBar = ({
                 <>
                     {isExcelExport && <>
                         <SCVerticalDivider />
-                        <SCViewContainerWithBg >
+                        <SCViewContainerWithBg onClick={onExcelExportClick} >
                             <>
                                 <SCViewImage
                                     src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
