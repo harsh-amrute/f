@@ -120,7 +120,7 @@ const OverallBmReport = () => {
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-    const { screenHeight } = useViewPort();
+    // const { screenHeight } = useViewPort();
     const refGraph2 = useRef<any>(null);
     const allotementRef = useRef<any>(null);
 

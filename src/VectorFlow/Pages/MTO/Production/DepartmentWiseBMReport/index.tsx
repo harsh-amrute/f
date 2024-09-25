@@ -145,7 +145,7 @@ const DptWiseBMReport = () => {
     const [editedRows, setEditedRows] = useState<Set<number>>(new Set());
     const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
     const [highAgeing, sethighAgeing] = useState<any>();
-    const { screenHeight } = useViewPort();
+    // const { screenHeight } = useViewPort();
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
