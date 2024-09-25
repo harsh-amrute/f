@@ -125,9 +125,10 @@ const ViewModify = () => {
 
   //console.log('<><>>>>><>activeMaster>><>>>>><>', activeMaster.colDefs)
   const [MtoGridData, setData] = useState<any>();
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [updatedColDef, setUpdatedColDef] = useState<any>();
   const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
+
   //const [isEditable, setIsEditable] = useState(false);
 
 
@@ -139,6 +140,7 @@ const ViewModify = () => {
         return {
           ...colDef,
           cellEditor: 'agSelectCellEditor',
+          valueFormatter: myFormatter,
           cellEditorParams: {
             values: bufferTypeMaster.map((item: any) => item.dsc), // Dropdown values
           },
@@ -147,10 +149,13 @@ const ViewModify = () => {
       }
 
       return {
+        valueFormatter: myFormatter,
+
         ...colDef,
         editable,
       };
     });
+
 
     // Create actions column with button rendering
     const actionsCol: any = {
@@ -159,7 +164,7 @@ const ViewModify = () => {
       //flex: 1,
       width: 100, // Set the width for the actions column
       cellRenderer: (params: any) => {
-        if (params.node.rowIndex === params.api.getDisplayedRowCount() - 1) {
+        if ((params.node.rowIndex === params.api.getDisplayedRowCount() - 1)) {
           return (
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
 
@@ -193,18 +198,70 @@ const ViewModify = () => {
     return [actionsCol, ...modifiedColDefs];
   };
 
+  function myFormatter(params: any) {
+    const currBuff = params.value;
+
+    let val = params.value;
+    bufferTypeMaster.forEach((ele: any) => {
+      console.log(ele.id, currBuff)
+      if (ele.id.toString() === currBuff.toString()) {
+
+        val = ele.dsc;
+      }
+    })
+    return val;
+
+  }
+
+  const setBufferInColDef = (colDefs: any) => {
+    const modifiedColDefs = colDefs.map((colDef: any) => {
+      // const editable = (params: any) => params.node.rowIndex === params.api.getDisplayedRowCount() - 1;
+      console.log("this sis called!!")
+      if (colDef.field === 'bt') {
+        return {
+          ...colDef,
+          valueFormatter: myFormatter
+        };
+      }
+
+      return {
+        ...colDef
+      }
+
+
+    });
+
+    setUpdatedColDef(modifiedColDefs);
+  }
+
+  useEffect(() => {
+    if (bufferTypeMaster) {
+      setBufferInColDef(activeMaster.colDefs)
+    }
+
+  }, [bufferTypeMaster])
+
+
   const addRow = () => {
-    setIsButtonDisabled(true)
+    setIsButtonDisabled(false);
+    setUpdatedColDef(activeMaster.colDefs);
+    setBufferInColDef(activeMaster.colDefs)
+    // TODO add to the local state
   }
 
   const handleCancel = (params: any) => {
-    setData((prevRowData:any) => {
+
+    setIsButtonDisabled(false);
+    setData((prevRowData: any) => {
       const newData = [...prevRowData];
       newData.pop(); // Remove the last row
       return newData;
-  });
+    });
+    setUpdatedColDef(activeMaster.colDefs);
+    setBufferInColDef(activeMaster.colDefs)
+
     // Optionally remove the last row
-   // setData(MtoGridData.slice(0, -1));
+    // setData(MtoGridData.slice(0, -1));
     //setRowData(rowData.slice(0, -1));
   };
 
@@ -440,10 +497,10 @@ const ViewModify = () => {
                     cursor: 'pointer',
                     background: '#fff'
                   }}
-                  onClick={addRowToMtoGrid}
-                  disabled={isButtonDisabled ? false : true}
+                  onClick={() => { (!isButtonDisabled) && (addRowToMtoGrid(), setIsButtonDisabled(true)) }}
+                  disabled={isButtonDisabled ? true : false}
                 >
-                  {isButtonDisabled ?
+                  {(!isButtonDisabled) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"

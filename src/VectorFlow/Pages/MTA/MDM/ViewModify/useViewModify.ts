@@ -232,7 +232,7 @@ const useViewModify = (pageType: string) => {
 
   const [filterButtonStatus, setFilterButtonStatus] = useState<Array<number>>([]);
   const [seasonalityRowData, setSeasonalityRowData] = useState<any>([]);
- 
+
 
   const { mutateAsync: masterUIConfiguration, isLoading } = useGetMasterUIConfiguration();
 
@@ -427,7 +427,7 @@ const useViewModify = (pageType: string) => {
     const getMasterUIConfigurationData = async () => {
       const { data } = await masterUIConfiguration(pageType);
       const MtoBufferdata = await MTOMasterUIConfiguration();
-      
+
       //console.log('MtoMtoBufferdata',MtoBufferdata?.data?.data)
       const concatenatedResult = concatenateFields(data.data, MtoBufferdata?.data?.data);
       //console.log('<><>concatenatedResult<><><>', concatenatedResult)
