@@ -5,7 +5,7 @@ export namespace DepartmentWiseBMReport {
 
     export const getFilteredDeptWiseBMReport = async ({ wip, curr, appliedFilters }: any) => {
 
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${wip}&page=${curr}`,
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${wip}&page=${curr}&page_size=500`,
             appliedFilters,
             {
                 headers: {

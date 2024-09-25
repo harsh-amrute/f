@@ -2,7 +2,8 @@ import { VFWrapper } from './styles';
 import { SaveBtnWrapper, SaveBtn } from '../../Poogi/ReasonOrderChange/styles';
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import { pagination } from '../../Common/Enum';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+// import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 interface GridProps {
     agGridProps: any
     columDef: any
@@ -27,7 +28,7 @@ const GridView = ({
     saveBtn = true }: GridProps) => {
     return (
         <>
-            <VFWrapper>
+            <VFWrapper className="wrapper-overall">
                 <VFTable
                     {...agGridProps}
                     pagination={false}
@@ -54,17 +55,17 @@ const GridView = ({
                     }}
                     ref={reference}
                 />
-            </VFWrapper>
             <VFPagination
                 selectedRows={0}
-                rowsPerPage={pagination.mtoPageSize}
+                rowsPerPage={500}
                 totalRows={totalRow}
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
             />
+            </VFWrapper>
             {
                 saveBtn && (
-                    <SaveBtnWrapper style={{ margin: '0px 5px 10px' }}>
+                    <SaveBtnWrapper style={{ margin: '1rem 0', padding: 0 }}>
                         <SaveBtn onClick={updateReason}>
                             Save Remark
                         </SaveBtn>

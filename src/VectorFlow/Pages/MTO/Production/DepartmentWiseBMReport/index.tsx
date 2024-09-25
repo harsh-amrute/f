@@ -55,6 +55,7 @@ interface ColDef {
     checkboxSelection?: boolean;
     maxWidth?: number;
     floatingFilter?: boolean;
+    cellRenderer: any;
 }
 
 interface ColDefChild {
@@ -134,6 +135,7 @@ const DptWiseBMReport = () => {
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const [colDeflatest, setColdef] = useState([{}])
+    const [areRowsSelected, setAreRowsSelected] = useState(false);
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [gridData, setGridData] = useState<any>();
     const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
@@ -593,14 +595,14 @@ const DptWiseBMReport = () => {
         const cpMap: { [key: string]: number } = {};
 
         // Create the specified default objects for the first item's ch array
-        const defaultFirstObject: any = {
-            cc: 'ec',
-            cp: 1,
-            hd: '',
-            v: true,
-            cla: 'centre',
-            scc: 'ec'
-        };
+        // const defaultFirstObject: any = {
+        //     cc: 'ec',
+        //     cp: 1,
+        //     hd: '',
+        //     v: true,
+        //     cla: 'centre',
+        //     scc: 'ec'
+        // };
 
         const defaultSecondObject: any = {
             cc: 'ic',
@@ -628,7 +630,7 @@ const DptWiseBMReport = () => {
             // If it's the first object, add default items to the ch array
             if (index === 0) {
                 modifiedItem.ch = modifiedItem.ch || [];
-                modifiedItem.ch.unshift(defaultFirstObject, defaultSecondObject);
+                modifiedItem.ch.unshift(defaultSecondObject);
             }
 
             // Push the modified item to the response array
@@ -697,13 +699,14 @@ const DptWiseBMReport = () => {
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
         const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
-            return children.map(child => ({
+            return children.map((child,index) => ({
                 field: child.scc.trim(),
+                suppressHeaderFilterButton: true,
                 headerName: child.hd,
                 colId: child.hd,
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
-                columnGroupShow: child.cgs,
+                columnGroupShow: index > 2 ? "closed" : undefined,
                 pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
@@ -726,14 +729,18 @@ const DptWiseBMReport = () => {
 
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+            floatingFilterComponentParams: section.scc === "chckbx" ? { suppressFilterButton: false }: undefined,
+            suppressHeaderFilterButton: section.scc === "chckbx"?  true : false,
+            suppressMenu:  section.scc === "chckbx"?  true: false,
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
-            maxWidth: section.scc === "chckbx" ? 80 : undefined,
+            maxWidth: section.scc === "chckbx" ? 50 : undefined,
             floatingFilter: section.scc === "chckbx" ? false : undefined,
             headerName: section.cc,
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
             colId: section.hd,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
-            children: section.scc === "chckbx" ? undefined : mapChildren(section.ch || [])
+            children: section.scc === "chckbx" ? undefined : mapChildren(section.ch || []),
+            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" ? "agGroupCellRenderer" : undefined,
         }));
     }
 
@@ -781,11 +788,22 @@ const DptWiseBMReport = () => {
         return Array.from(departmentNames);
     };
 
+    const allotementRef = useRef<any>();
 
+
+    useEffect(()=>{
+        if(allotementRef.current)
+            allotementRef.current.reset();
+    }, [areRowsSelected])
 
     const getSelectedRow = async () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
         // To persist the state
+        if(selectedData.length == 0){
+            setAreRowsSelected(false)
+        }else{
+            setAreRowsSelected(true);
+        }
         if (selectedData) {
             let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
             selectedData.forEach((newItem: any) => {
@@ -940,6 +958,8 @@ const DptWiseBMReport = () => {
         setCurrentPage(currPage)
     }
 
+    const cache = useRef<any>({});
+
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
@@ -1026,8 +1046,14 @@ const DptWiseBMReport = () => {
                 },
             },
             getDetailRowData: async (params: any) => {
+                if(cache.current[`${params.data.oid}-${params.data.lid}`]){
+                    params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
+                    return
+                }
                 const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
-                params.successCallback(data.data.data)
+                cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
+                params.successCallback(data?.data?.data) 
+                return 
             }
         },
     };
@@ -1081,9 +1107,9 @@ const DptWiseBMReport = () => {
                     (isFilteredDataLoaded) ? <OverlayLoader /> :
 
                         <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                            <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
-                                <Allotment vertical={true} separator={true} >
-                                    <Allotment.Pane preferredSize={'60%'}>
+                            <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>
+                                <Allotment vertical={true} separator={true} ref={allotementRef}>
+                                    <Allotment.Pane preferredSize={areRowsSelected ? "60%" :'70%'}>
                                         <BTRAllomentSection>
                                             <GridView
                                                 reference={refGraph1}
@@ -1098,7 +1124,7 @@ const DptWiseBMReport = () => {
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
 
-                                    <Allotment.Pane preferredSize={'40%'}>
+                                    <Allotment.Pane preferredSize={areRowsSelected ? "40%" :'30%'}>
                                         <BTRAllomentSection>
                                             <OrderElapsedGrid
                                                 isTrue={isOrderElapsedGrid}
