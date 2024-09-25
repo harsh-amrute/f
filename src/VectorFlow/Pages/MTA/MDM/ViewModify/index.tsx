@@ -12,7 +12,7 @@ import { SeasonalityQuickFilterType, type Filter } from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SeasonalityChartModal from "./SeasonalityChartModal";
@@ -20,14 +20,30 @@ import SubmitConflictModal from "./SubmitConflictModal";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import _ from "lodash";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
+import { useGetBufferTypeMaster } from '../../../../Services/MTA/MDM'
 
-
+type ColumnDef = {
+  field: string;
+  colId: string;
+  headerName: string;
+  hide?: boolean;
+  floatingFilter?: boolean;
+  filter?: string;
+  cellDataType?: string;
+  tooltipComponent?: string;
+  suppressColumnsToolPanel?: boolean;
+  minWidth?: number;
+  cellStyle?: React.CSSProperties;
+  flex?: number;
+  editable?: boolean | ((params: any) => boolean);
+};
 
 
 const ViewModify = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-
+  const { mutateAsync: GetBufferTypeMaster } = useGetBufferTypeMaster();
 
   // const disabled=true;
   // const dummyFn =()=>{return}
@@ -107,7 +123,105 @@ const ViewModify = () => {
 
   } = useViewModify('modify');
 
+  //console.log('<><>>>>><>activeMaster>><>>>>><>', activeMaster.colDefs)
+  const [MtoGridData, setData] = useState<any>();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [updatedColDef, setUpdatedColDef] = useState<any>();
+  const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
+  //const [isEditable, setIsEditable] = useState(false);
 
+
+  const addEditableToLastColumn = (colDefs: any): ColumnDef[] => {
+    const modifiedColDefs = colDefs.map((colDef: any) => {
+      const editable = (params: any) => params.node.rowIndex === params.api.getDisplayedRowCount() - 1;
+
+      if (colDef.field === 'bt') {
+        return {
+          ...colDef,
+          cellEditor: 'agSelectCellEditor',
+          cellEditorParams: {
+            values: bufferTypeMaster.map((item: any) => item.dsc), // Dropdown values
+          },
+          editable,
+        };
+      }
+
+      return {
+        ...colDef,
+        editable,
+      };
+    });
+
+    // Create actions column with button rendering
+    const actionsCol: any = {
+      field: 'actions',
+      headerName: 'Actions',
+      //flex: 1,
+      width: 100, // Set the width for the actions column
+      cellRenderer: (params: any) => {
+        if (params.node.rowIndex === params.api.getDisplayedRowCount() - 1) {
+          return (
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+
+              <div
+                onClick={() => addRow()}
+                style={{ cursor: 'pointer' }}>
+                <img
+                  src="/assets/img/MTOapprovalBuffer.svg"
+                  alt="ApproveMaster"
+                />
+              </div>
+
+              <div
+                onClick={() => handleCancel(params)}
+                style={{ cursor: 'pointer' }}
+              >
+                <img
+                  src="/assets/img/MTOcancelBuffer.svg"
+                  alt="CancelMaster"
+                />
+              </div>
+
+            </div>
+          );
+        }
+        return null; // No buttons for other rows
+      },
+    };
+
+    // Prepend the actions column
+    return [actionsCol, ...modifiedColDefs];
+  };
+
+  const addRow = () => {
+    setIsButtonDisabled(true)
+  }
+
+  const handleCancel = (params: any) => {
+    setData((prevRowData:any) => {
+      const newData = [...prevRowData];
+      newData.pop(); // Remove the last row
+      return newData;
+  });
+    // Optionally remove the last row
+   // setData(MtoGridData.slice(0, -1));
+    //setRowData(rowData.slice(0, -1));
+  };
+
+
+  const getBufferMasterDataType = async () => {
+    const BufferTypeMaster = await GetBufferTypeMaster();
+    setBufferTypeMaster(BufferTypeMaster?.data?.data);
+  }
+
+  useEffect(() => {
+    getBufferMasterDataType()
+    setData(activeMaster.rowData);
+  }, [activeMaster.rowData])
+
+  useEffect(() => {
+    setUpdatedColDef(activeMaster.colDefs)
+  }, [activeMaster.colDefs])
 
   useEffect(() => {
     if (ref.current && ref.current.api) {
@@ -120,7 +234,30 @@ const ViewModify = () => {
     }
   }, [isTableDataLoading])
 
-  //console.log('<><>>>>><>activeMaster>><>>>>><>', activeMaster)
+  //this will add new master only for MTO
+  const addRowToMtoGrid = () => {
+    const newRow: any = {
+      bcd: `PROD-Buff`,
+      bd: `BUFF-`,
+      bsz: '', // Example value; modify as needed
+      slt: '',
+      mlt: '',
+      ib: false,
+      bt: '',
+      editable: true,
+    };
+    setData((prevData: any) => [...prevData, newRow]);
+    //setIsButtonDisabled(false);
+    const latestcoldef = addEditableToLastColumn(activeMaster.colDefs);
+    setUpdatedColDef(latestcoldef)
+  }
+
+  const onGridReady = (params: any) => {
+    params.api.sizeColumnsToFit();
+  };
+
+
+
   return (
     <>
       <SCContainer>
@@ -170,21 +307,22 @@ const ViewModify = () => {
                 <SCFilterContainer>
                   <SCFilterControls>
                     <SCLegend>Filter</SCLegend>
-                    {activeMaster.filters.map((f: Filter) => {
-                      if (f.masterId == activeMaster?.id) {
-                        return (
-                          <VFFilter
-                            onDelete={() => handleOnDeleteFilter(f.id)}
-                            operators={operators}
-                            filters={activeMaster.filters}
-                            fields={generateOptions([activeMaster])}
-                            currFilter={f}
-                            key={f.id}
-                            isDisabled={false}
-                          />
-                        )
-                      }
-                    })}
+                    {
+                      activeMaster.filters.map((f: Filter) => {
+                        if (f.masterId == activeMaster?.id) {
+                          return (
+                            <VFFilter
+                              onDelete={() => handleOnDeleteFilter(f.id)}
+                              operators={operators}
+                              filters={activeMaster.filters}
+                              fields={generateOptions([activeMaster])}
+                              currFilter={f}
+                              key={f.id}
+                              isDisabled={false}
+                            />
+                          )
+                        }
+                      })}
 
                   </SCFilterControls>
                   <SCFilterAddControls>
@@ -225,10 +363,14 @@ const ViewModify = () => {
               }
               {activeMaster.isMTO ?
                 <VFTable
-                  ref={ref}
-                  columnDefs={activeMaster.colDefs}
-                  rowData={activeMaster.rowData}
                   {...agGridProps}
+                  readOnlyEdit={false}
+                  onCellEditingStopped={(params) => {
+                    console.log('onCellEditingStopped', params)
+                  }}
+                  ref={ref}
+                  columnDefs={updatedColDef}
+                  rowData={MtoGridData}
                   suppressPaginationPanel={!isDataAvailableLocally}
                   statusBar={{
                     statusPanels: isDataAvailableLocally ? [
@@ -241,6 +383,8 @@ const ViewModify = () => {
                       [],
                   }}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "65%" : "95%" : "75%"}
+                  editType="fullRow"
+                  onGridReady={onGridReady}
                 />
                 :
                 <VFTable
@@ -286,7 +430,38 @@ const ViewModify = () => {
                   {...tempAgGridProps}
                 />
               </div>
-
+              {activeMaster.isMTO && activeMaster.rowData.length > 0 &&
+                <button
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '130px',
+                    margin: '10px',
+                    cursor: 'pointer',
+                    background: '#fff'
+                  }}
+                  onClick={addRowToMtoGrid}
+                  disabled={isButtonDisabled ? false : true}
+                >
+                  {isButtonDisabled ?
+                    <>
+                      <img
+                        src="/assets/img/AddBufferMasterIcon.svg"
+                        alt="Add Master Button"
+                      />
+                      <p style={{ fontSize: '18px', color: ColorsMTO.Pink.code }}>Add Buffer</p>
+                    </>
+                    :
+                    <>
+                      <img
+                        src="/assets/img/AddBufferMasterIconGrey.svg"
+                        alt="Add Master Button"
+                      />
+                      <p style={{ fontSize: '18px', color: ColorsMTO.LightGrey.code }}>Add Buffer</p>
+                    </>
+                  }
+                </button>
+              }
             </VFTab>
           </React.Fragment>
         }

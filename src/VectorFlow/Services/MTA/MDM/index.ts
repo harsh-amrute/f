@@ -225,3 +225,9 @@ export const useGetBufferMasterData=()=>{
   })
 }
 
+export const useGetBufferTypeMaster=()=>{
+  return useMutation(async()=>{
+    return await MDMService.getBufferTypeMaster()
+  })
+}
+

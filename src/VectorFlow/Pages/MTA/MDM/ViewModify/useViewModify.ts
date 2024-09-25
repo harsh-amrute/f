@@ -232,11 +232,13 @@ const useViewModify = (pageType: string) => {
 
   const [filterButtonStatus, setFilterButtonStatus] = useState<Array<number>>([]);
   const [seasonalityRowData, setSeasonalityRowData] = useState<any>([]);
+ 
 
   const { mutateAsync: masterUIConfiguration, isLoading } = useGetMasterUIConfiguration();
 
   /***Add the below line to fetch MTO Buffer */
   const { mutateAsync: MTOMasterUIConfiguration, /*isLoading: MTOBufferLoading*/ } = useGetMTOMasterUIConfiguration();
+
 
   const [TASK_ID, setTaskId] = useState<string>('');
 
@@ -424,10 +426,11 @@ const useViewModify = (pageType: string) => {
   useEffect(() => {
     const getMasterUIConfigurationData = async () => {
       const { data } = await masterUIConfiguration(pageType);
-      const MtoBufferdata = await MTOMasterUIConfiguration()
+      const MtoBufferdata = await MTOMasterUIConfiguration();
+      
       //console.log('MtoMtoBufferdata',MtoBufferdata?.data?.data)
       const concatenatedResult = concatenateFields(data.data, MtoBufferdata?.data?.data);
-      console.log('<><>concatenatedResult<><><>', concatenatedResult)
+      //console.log('<><>concatenatedResult<><><>', concatenatedResult)
       setAllMasterState(mapMasterToMasterState(concatenatedResult, onShowChart))
     }
 
@@ -676,7 +679,7 @@ const useViewModify = (pageType: string) => {
       }
       else if (activeMaster.id > 14 && activeMaster.isMTO) {
         resultData = await getBufferMasterData()
-        console.log('----', resultData)
+        //console.log('----', resultData)
       }
       else {
         resultData = await getCount(payload);
@@ -687,9 +690,9 @@ const useViewModify = (pageType: string) => {
         resultData = await getMasterDataRetail(payload);
       }
       else if (activeMaster.id > 14 && activeMaster.isMTO) {
-        console.log('function count master data')
+        // console.log('function count master data')
         resultData = await getBufferMasterData()
-        console.log('----', resultData?.data?.data?.results)
+        // console.log('----', resultData?.data?.data?.results)
       }
       else {
         resultData = await getMasterData(payload);
@@ -940,16 +943,16 @@ const useViewModify = (pageType: string) => {
       return;
     }
 
-    let tempRowData:any
+    let tempRowData: any
     if (activeMaster.isMTO) {
       tempRowData = result?.data?.data?.results.map((row: any) => {
         const newRow = { ...row };
-    
+
         Object.keys(newRow).map((key) => {
-             console.log('line no 949',key)
-          console.log('isMTO line 951',activeMaster.colDefs)
+          // console.log('line no 949',key)
+          // console.log('isMTO line 951',activeMaster.colDefs)
           const currentColDef = activeMaster.colDefs.find((c) => c.colId === key)
-          
+
           const cellDataType = currentColDef?.cellDataType
           if (cellDataType === 'number' && newRow[key] !== null) {
             newRow[key] = parseFloat(newRow[key])
@@ -961,7 +964,7 @@ const useViewModify = (pageType: string) => {
       })
     }
     else {
-       tempRowData = result.data.data.map((row: any) => {
+      tempRowData = result.data.data.map((row: any) => {
         const newRow = { ...row };
 
         Object.keys(newRow).map((key) => {
