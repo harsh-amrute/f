@@ -21,7 +21,7 @@ describe('OrderRescheduling', () => {
     it('should fetch rm and supplier data', async () => {
 
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await OrderReschedulingService.getOrderReschedulingData();
+        const response = await OrderReschedulingService.getOrderReschedulingData(10);
         expect(response.status).toBe(200);
     });
 

@@ -6,9 +6,9 @@ export const QUERY_KEYS = {
 }
 
 export const useGetDynamicReleaseData = () => {
-    return useMutation(async ({ graph, ao = 0, page = 1 }: { graph: number, ao: number, page: number }) => {
+    return useMutation(async (data: { graph: number, ao: number, page: number, appliedFilters: any }) => {
 
-        return DynamicReleaseManagementService.getDynamicReleaseData({ graph, ao, page })
+        return DynamicReleaseManagementService.getDynamicReleaseData(data)
 
 
     })

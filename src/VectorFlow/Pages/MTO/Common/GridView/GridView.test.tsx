@@ -53,6 +53,7 @@ describe('GridView Component', () => {
         setCurrentGridRef: setCurrentGridRefMock,
         currentGridRef: null,
         columnState: [],
+        appliedFilters: {}
     };
 
     afterEach(() => {
@@ -63,7 +64,7 @@ describe('GridView Component', () => {
         render(contextWrapper(<GridView {...defaultProps} />, mockedStore));
 
         expect(getDataMock).toHaveBeenCalledTimes(1);
-        expect(getDataMock).toHaveBeenCalledWith({ graphflag: 0, page: 1 });
+        expect(getDataMock).toHaveBeenCalledWith({ graphflag: 0, page: 1, appliedFilters: {} });
     });
 
     test('should apply column state when grid is ready', async () => {

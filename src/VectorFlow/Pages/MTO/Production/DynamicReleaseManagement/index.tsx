@@ -2,7 +2,7 @@ import { AgCharts } from 'ag-charts-react'
 import { GridOptions, IRowNode } from 'ag-grid-enterprise';
 import { useEffect, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './DynamicReleaseManagement.styled';
@@ -21,7 +21,7 @@ import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
-import { pagination, UIGridCode } from '../../Common/Enum';
+import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
@@ -89,7 +89,8 @@ const DynamicReleaseManagement = () => {
       isMfgSelected,
       onAddFilter, 
       onApplyFilter, 
-      toggleFilter 
+      toggleFilter,
+      appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dynamic_Release_Management);
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -105,9 +106,10 @@ const DynamicReleaseManagement = () => {
   }
 
   const GetData = async (allOrders = 0, page = 1, graph = 1) => {
+    const formatedFilters = formatFilterJSON(appliedFilters);
     if (allOrders) {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -117,7 +119,7 @@ const DynamicReleaseManagement = () => {
     }
     else {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
         setRowData(APIData.data.data.results);
       }
@@ -128,7 +130,7 @@ const DynamicReleaseManagement = () => {
     }
     if (graph) {
       try {
-        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page });
+        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page, appliedFilters: formatedFilters });
         setGraphData(GraphAPIData.data.data);
       }
       catch (e) {
@@ -139,7 +141,10 @@ const DynamicReleaseManagement = () => {
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({});
+        const response = await getPageWiseFilterData({
+          page_name: FilterPageName.Prod_Dynamic_Release_Management,
+          ao: table1 ? 0 : 1
+        });
         setFilterData(response?.data.data);
     } catch (error) {
         console.error(error);
@@ -153,6 +158,14 @@ const DynamicReleaseManagement = () => {
     setColumnDef();
     getFilterData()
   }, [])
+
+  useEffect(()=>{
+    GetData();
+  },[appliedFilters])
+
+  useEffect(()=>{
+    getFilterData();
+  },[table1])
   
   useEffect(()=>{
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extras)) 

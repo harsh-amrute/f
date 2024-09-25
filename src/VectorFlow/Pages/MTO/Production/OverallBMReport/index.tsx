@@ -32,6 +32,7 @@ import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/
 import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { FilterPageName } from '../../Common/Enum';
 
 interface ApiResponse {
     cc: string;
@@ -922,7 +923,7 @@ const OverallBmReport = () => {
 
     const getFilterData = async () => {
         try {
-            const response = await getPageWiseFilterData({});
+            const response = await getPageWiseFilterData({ page_name: FilterPageName.Prod_OverAll_BMReport });
             setFilterData(response?.data.data);
         } catch (error) {
             console.error(error);
@@ -961,6 +962,7 @@ const OverallBmReport = () => {
             toolPanels: ['columns'],
         };
     }, []);
+
 
     const getInitialGridData = async (currentPage: number) => {
         try {
@@ -1200,6 +1202,42 @@ const OverallBmReport = () => {
         getInitialGridData(currentPage);
     }, [currentPage, appliedFilters])
 
+
+    const tempGridRef = useRef<any>(null);
+    const [tempGridData, setTempGridData] = useState<any>(undefined);
+    const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
+
+    const getTempGridData = async () => {
+        setIsExcelLoading(true);
+        try {
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const gridData = await getOverallBMReportData({ page: 1, appliedFilters: formatedFilters, page_size: gridDataCount });
+            setTempGridData(gridData?.data?.data?.results)
+        }
+        catch (e) {
+            console.log(e)
+        }
+        finally {
+            setIsExcelLoading(false);
+        }
+    }
+
+
+
+
+    const onExcelExport = () => {
+        getTempGridData();
+    }
+
+    useEffect(() => {
+        if (tempGridData) {
+            tempGridRef.current?.api?.exportDataAsExcel({ fileName: "OverallBMReport" })
+        }
+    }, [tempGridData])
+
+
+
+
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -1207,6 +1245,7 @@ const OverallBmReport = () => {
                     comp={'OverallBMReport'}
                     isAddFilterButton
                     isExcelExport
+                    onExcelExportClick={onExcelExport}
                     isFilterOpen={isFilterOpen}
                     onAddFilter={onAddFilter}
                     toggleFilter={toggleFilter}
@@ -1218,7 +1257,7 @@ const OverallBmReport = () => {
                 />
             </BMDepHeaderWraper>
 
-            {OverAllBMLoading ? <OverlayLoader /> :
+            {OverAllBMLoading && !isExcelLoading ? <OverlayLoader /> :
 
                 <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                     <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" :"80vh", margin: '0' }}>
@@ -1235,6 +1274,19 @@ const OverallBmReport = () => {
                                         totalRow={gridDataCount}
                                         currentPage={currentPage}
                                     />
+                                    {/* This Grid is only for the user to download the excel report */}
+                                    <div style={{ display: 'none' }}>
+                                        <GridView
+                                            reference={tempGridRef}
+                                            agGridProps={agGridProps}
+                                            columDef={coldefs}
+                                            convercolumnDef={tempGridData}
+                                            handlePageChange={(cp) => handlePageChange(cp)}
+                                            saveBtn={false}
+                                            totalRow={gridDataCount}
+                                            currentPage={currentPage}
+                                        />
+                                    </div>
                                 </BTRAllomentSection>
                             </Allotment.Pane>
 

@@ -16,7 +16,7 @@ import GridView from "./GridView";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../../helpers/utils';
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
@@ -51,6 +51,7 @@ const STPLAndFullKits = () => {
       onAddFilter, 
       onApplyFilter, 
       toggleFilter,
+      appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_STPL_And_FullKits);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -127,7 +128,7 @@ const STPLAndFullKits = () => {
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({});
+        const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_STPL_And_FullKits});
         setFilterData(response?.data.data);
     } catch (error) {
         console.error(error);
@@ -188,6 +189,7 @@ const STPLAndFullKits = () => {
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
+            appliedFilters={appliedFilters}
           />
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 200, paddingLeft: "20px" }}>

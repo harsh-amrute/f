@@ -3,7 +3,7 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace DepartmentWiseBMReport {
 
-    export const getFilteredDeptWiseBMReport = async ({ wip, curr, appliedFilters }: any) => {
+    export const getFilteredDeptWiseBMReport = async ({ wip, curr, appliedFilters, page_size }: any) => {
 
         return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${wip}&page=${curr}&page_size=500`,
             appliedFilters,

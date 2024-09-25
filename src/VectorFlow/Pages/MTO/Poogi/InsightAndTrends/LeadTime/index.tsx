@@ -7,12 +7,24 @@ import { useGetLeadTimeData } from '../../../../../../VectorFlow/Services/MTO/Po
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
 import OverlayLoader from '../../../Common/Loader';
 import { useUserData } from "../../../../../../context/index";
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { getColumnDefinations } from '../../../../../../helpers/utils';
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import useFilter from '../../../../../../hooks/useFilter'
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 
+const APIFilterConfig = {
+    filSecVisConfig: {
+      "Poogi_Lead_Time" : {
+        mjr : false,
+        or: false,
+        res: true,
+        cus: true
+      },
+    }
+};
 const LeadTime = () => {
     const [isGridView, setIsGridView] = useState(false);
 
@@ -24,6 +36,19 @@ const LeadTime = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [colDef, setColDef] = useState([{}]);
     const [isReset, setIsReset] = useState(false);
+    const [filterData, setFilterData] = useState({});
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+        appliedFilters
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Lead_Time);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { user } = useUserData();
@@ -80,14 +105,24 @@ const LeadTime = () => {
         setIsReset(true);
       }
     
+    const getFilterData = async () => {
+        try {
+          const response = await getPageWiseFilterData({page_name: FilterPageName.Poogi_Lead_Time});
+          setFilterData(response?.data.data);
+        } catch (error) {
+          console.error(error);
+        }
+    }
+    
     useEffect(() => {
         setColumnDef();
         getGridData();
+        getFilterData();
     }, [])
 
     const getGridData = async () => {
         try{
-            const data = await getLeadTimeData({graphFlag: 1});
+            const data = await getLeadTimeData({graphflag: 1});
             const chartData: any = []
             const tableData: any = []
             Object.entries(data.data.data).forEach((entry: any)=>{
@@ -144,6 +179,15 @@ const LeadTime = () => {
                 isGridView={isGridView} 
                 setIsGridView={setIsGridView} 
                 isExcelExport 
+                isAddFilterButton
+                isFilterOpen={isFilterOpen}
+                onAddFilter={onAddFilter}
+                toggleFilter={toggleFilter}
+                onApplyFilter={onApplyFilter}
+                multiFilter={currFilter}
+                setMultiFilter={setCurrFilter}
+                onFilterRemove={onFilterRemove}
+                isMfgSelected={isMfgSelected}
             />
             {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader/>}
             {
@@ -154,6 +198,7 @@ const LeadTime = () => {
                             setCurrentGridRef={setCurrentGridRef} 
                             currentGridRef={currentGridRef}
                             columnState={columnState}
+                            appliedFilters={appliedFilters}
                         />
                     </>
                     :

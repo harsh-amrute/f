@@ -23,7 +23,7 @@ import {
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 
 const APIFilterConfig = {
@@ -56,6 +56,7 @@ const OrderBalance = () => {
     onAddFilter, 
     onApplyFilter, 
     toggleFilter,
+    appliedFilters
 } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -150,7 +151,7 @@ const OrderBalance = () => {
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({});
+        const response = await getPageWiseFilterData({ page_name: FilterPageName.Prod_Order_Balance });
         setFilterData(response?.data.data);
     } catch (error) {
         console.error(error);
@@ -208,29 +209,6 @@ const OrderBalance = () => {
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: '25px' }}>
         {isGridView ? (
-          // <div data-testid="grid-view" style={{ height: screenHeight - 200 }}>
-          //   <VFTable
-          //     {...gridOptions}
-          //     columnDefs={tableColDefs}
-          //     rowData={gridData || []}
-          //     tooltipHideDelay={100000}
-          //     tooltipShowDelay={0}
-          //     tooltipMouseTrack={true}
-          //     ref={gridRef}
-          //     statusBar={{
-          //       statusPanels: [
-          //         { statusPanel: "agTotalRowCountComponent", align: "left" },
-          //       ],
-          //     }}
-          //   />
-          //   <VFPagination
-          //     selectedRows={0}
-          //     rowsPerPage={pagination.mtoPageSize}
-          //     totalRows={totalRows}
-          //     currentPage={currentPage}
-          //     handleChangePage={handlePageChange}
-          //   />
-          // </div>
           <GridView
             getData={getOrderBalanceData}
             colDef={colDef}
@@ -240,6 +218,7 @@ const OrderBalance = () => {
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
+            appliedFilters={appliedFilters}
           />
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>

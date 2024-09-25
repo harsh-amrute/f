@@ -21,7 +21,13 @@ describe('OrderwiseCoverage', () => {
 
     it('should get orderwisedata data', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await OrderwiseCoverageService.getOrderwiseCoverageData({ page: 1, graph: 1 });
+        const response = await OrderwiseCoverageService.getOrderwiseCoverageData({ graph: 1 });
+        expect(response.status).toBe(200);
+    });
+
+    it('should get orderwisedata data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await OrderwiseCoverageService.getOrderwiseCoverageData({ page: 1, graph: 0, appliedFilters: {} });
         expect(response.status).toBe(200);
     });
 

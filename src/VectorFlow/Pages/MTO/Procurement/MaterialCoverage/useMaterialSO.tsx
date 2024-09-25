@@ -15,9 +15,6 @@ const useMaterialSO = (data: any) => {
     const [currentPage, setCurrentPage] = useState<number>(1);
 
     // const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
-
-
-
     const { mutateAsync: getOpenSODetailsData } = useGetOpenSODetailsData()
 
     useEffect(() => {
@@ -25,7 +22,7 @@ const useMaterialSO = (data: any) => {
     }, [])
 
     const [isLoading, setIsLoading] = useState(false);
-   
+
 
 
     const getInitialData = async (currPage: number) => {

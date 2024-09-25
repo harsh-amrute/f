@@ -1,12 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { OrderAtRiskService } from './api';
 
-const QUERY_KEYS = {
-    useGetOrderATRiskData: ['MDMService.useGetOrderATRiskData']
-}
-
 export const useGetOrderRiskData = () => {
-    return useQuery(QUERY_KEYS.useGetOrderATRiskData, async() => {
-        return await OrderAtRiskService.getOrderAtRiskData();
+    return useMutation(async(params: any) => {
+        return await OrderAtRiskService.getOrderAtRiskData(params);
     });
 }

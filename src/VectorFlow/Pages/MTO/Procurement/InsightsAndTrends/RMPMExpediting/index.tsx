@@ -25,6 +25,8 @@ const APIFilterConfig = {
 
 const RMExpeditionSuppliers = () => {
     const [isMTO] = useState(true);
+    const [supplierHorizon, setSupplierHorizon] = useState(14);
+    const [rmHorizon, setRmHorizon] = useState(14);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 
@@ -35,7 +37,8 @@ const RMExpeditionSuppliers = () => {
         isMfgSelected,
         onAddFilter, 
         onApplyFilter, 
-        toggleFilter 
+        toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Expediting_RM_And_Suppliers);
 
     const { data, /*isLoading, refetch*/ } = useGetDate();
@@ -45,7 +48,11 @@ const RMExpeditionSuppliers = () => {
 
     const getFilterData = async () => {
         try {
-            const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Expediting_RM_And_Suppliers});
+            const response = await getPageWiseFilterData({
+                page_name: FilterPageName.Proc_Expediting_RM_And_Suppliers,
+                rm_horizon: rmHorizon,
+                supplier_horizon: supplierHorizon
+            });
             setFilterData(response?.data.data);
         } catch (error) {
             console.error(error);
@@ -82,8 +89,12 @@ const RMExpeditionSuppliers = () => {
                                     preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <ExpeditingMTO
+                                            getFilterData={getFilterData}
+                                            rmHorizon={rmHorizon}
+                                            setRmHorizon={setRmHorizon}
                                             isMTO={isMTO}
                                             date={data?.data?.data}
+                                            appliedFilters={appliedFilters}
                                         />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
@@ -93,18 +104,24 @@ const RMExpeditionSuppliers = () => {
                                     preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <ExpeditingMTA
+                                            getFilterData={getFilterData}
+                                            supplierHorizon={supplierHorizon}
+                                            setSupplierHorizon={setSupplierHorizon}
                                             isMTO={isMTO}
                                             date={data?.data?.data}
-
+                                            appliedFilters={appliedFilters}
                                         />
                                     </BTRAllomentSection>
                                 </Allotment.Pane>
                             </Allotment>)
                             :
                             <ExpeditingMTO
+                                getFilterData={getFilterData}
+                                rmHorizon={rmHorizon}
+                                setRmHorizon={setRmHorizon}
                                 isMTO={isMTO}
                                 date={data?.data?.data}
-
+                                appliedFilters={appliedFilters}
                             />
                     }
                 </BTRTableWrapper>

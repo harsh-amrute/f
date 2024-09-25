@@ -87,9 +87,20 @@ export enum FilterPageName {
     Proc_RM_PM_OrderWise="Proc_RM_PM_OrderWise",
     Proc_RM_PM_BufferTrend= "Proc_RM_PM_BufferTrend",
     Proc_Expediting_RM_And_Suppliers= "Proc_Expediting_RM_And_Suppliers",
-    
-    Prod_DDQ= "Prod_DDQ",
-    Prod_Dept_Wise_BM_Report= "Prod_Dept_Wise_BM_Report",
 
+    Prod_DDQ= "Prod_DDQ",
+    Prod_FullKit_Assignment="Prod_FullKit_Assignment",
+    Prod_Dynamic_Release_Management="Prod_Dynamic_Release_Management",
+    Prod_OverAll_BMReport="Prod_OverAll_BMReport",
+    Prod_Dept_Wise_BM_Report= "Prod_Dept_Wise_BM_Report",
+    Prod_STPL_And_FullKits="Prod_STPL_And_FullKits",
+    Prod_Order_Balance="Prod_Order_Balance",
+    Prod_Order_At_Risk="Prod_Order_At_Risk",
+
+    Poogi_Reason_For_Delayed_Orders="Poogi_Reason_For_Delayed_Orders",
     Poogi_OTIF_Analysis= "Poogi_OTIF_Analysis",
+    Poogi_OTIF_And_Analysis="Poogi_OTIF_And_Analysis",
+    Poogi_Lead_Time="Poogi_Lead_Time",
+    Poogi_Top_Failure_Reasons="Poogi_Top_Failure_Reasons",
+    Poogi_Trend_Of_Failure_Reasons="Poogi_Trend_Of_Failure_Reasons"
 }

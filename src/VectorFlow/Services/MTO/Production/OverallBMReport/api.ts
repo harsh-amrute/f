@@ -2,7 +2,8 @@ import axios from 'axios';
 
 type OverallBMReportInputType = {
     page: number,
-    appliedFilters: any
+    appliedFilters: any,
+    page_size?: number
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

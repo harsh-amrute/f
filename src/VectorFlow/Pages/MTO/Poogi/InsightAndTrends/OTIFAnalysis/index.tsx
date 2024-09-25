@@ -19,7 +19,7 @@ import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from "../../../Common/GridView";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../../helpers/utils';
+import { getColumnDefinations } from '../../../../../../helpers/utils';
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 
@@ -36,25 +36,32 @@ const APIFilterConfig = {
 
 const OTIFAnalysis = () => {
   const [isGridView, setIsGridView] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { screenHeight } = useViewPort();
   const { mutateAsync: getOTIFAnalysisData, isLoading, isError, isSuccess } = useGetOTIFAnalysisData()
   const [graphData, setGraphData] = useState<any>({});
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
-  const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
   const [HeaderData, setHeaderData] = useState([]);
+  const { 
+    state: currFilter, 
+    setState: setCurrFilter, 
+    onFilterRemove, 
+    isFilterOpen, 
+    isMfgSelected,
+    onAddFilter, 
+    onApplyFilter, 
+    toggleFilter,
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
+
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  
   const { user } = useUserData();
-  const toggleFilter = (state: boolean) => {
-    setIsFilterOpen(state);
-  }
 
   const colDefCustomizations = {
     Tags: {
@@ -94,15 +101,6 @@ const OTIFAnalysis = () => {
     getGraphData({ graphflag: 1 });
     getFilterData()
   }, []);
-
-  const onApplyFilter = (filter: any) => {
-    console.log(formatFilterJSON(filter), 'APPLIED Filters');
-    setIsMfgSelected(true);
-    setIsFilterOpen(false)
-  }
-  const onAddFilter = () => {
-    setIsFilterOpen(true)
-  }
 
   const getUserColumnConfig = async () => {
     try {
@@ -163,9 +161,6 @@ const OTIFAnalysis = () => {
     getUserColumnConfig();
     setColumnDef();
   }, [])
-
-
-  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
 
   useEffect(() => {
     if (isSuccess) {

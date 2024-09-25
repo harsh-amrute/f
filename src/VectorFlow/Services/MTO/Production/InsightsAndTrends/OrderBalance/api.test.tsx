@@ -19,9 +19,16 @@ describe('Order Balance Service', () => {
 
     it('should fetch Order Balance data', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await OrderBalanceService.getOrderBalanceData('0')
+        const response = await OrderBalanceService.getOrderBalanceData({graphflag: 1})
         expect(response.status).toBe(200);
     });
+    
+    it('should fetch Order Balance data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await OrderBalanceService.getOrderBalanceData({graphflag: 0, page: 1, appliedFilters: {}})
+        expect(response.status).toBe(200);
+    });
+
     it('should fetch Order Type Options', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await OrderBalanceService.getOrderTypeOptions()

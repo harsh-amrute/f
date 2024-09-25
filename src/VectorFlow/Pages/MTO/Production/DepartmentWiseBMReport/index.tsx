@@ -33,6 +33,7 @@ import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/
 import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+import { GridRef } from '../../../../../VectorFlow/types/MDM';
 
 interface ApiResponse {
     cc: string;
@@ -166,7 +167,9 @@ const DptWiseBMReport = () => {
         toggleFilter,
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dept_Wise_BM_Report);
-
+    const [tempGridData, setTempGridData] = useState<any>(undefined);
+    const tempGraph = useRef<GridRef>(null);
+    const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
     const customCellRenderers = useMemo(() => (
         {
             "colorCellRenderer": BPPRenderer,
@@ -1066,13 +1069,40 @@ const DptWiseBMReport = () => {
             setGridDataCount(gridData?.data?.data?.count)
         }
         catch (e) {
-            console.log('e');
+            console.log(e);
+        }
+    }
+
+
+    const getTempUpdatedFilteredData = async () => {
+        try {
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': 1, appliedFilters: formatedFilters, page_size: gridDataCount });
+            setTempGridData(gridData?.data?.data?.results);
+        }
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            setIsExcelLoading(false);
         }
     }
 
     useEffect(() => {
         getUpdatedFilteredData()
     }, [appliedFilters, isWIPChecked, currentPage]);
+
+
+    const onExcelExport = () => {
+        setIsExcelLoading(true);
+        getTempUpdatedFilteredData();
+    }
+
+    useEffect(() => {
+        if (tempGridData) {
+            tempGraph.current?.api?.exportDataAsExcel({ fileName: "DepartmentWiseBMReport" })
+        }
+    }, [tempGridData])
 
     return (
         <BMDepWrapper>
@@ -1081,6 +1111,7 @@ const DptWiseBMReport = () => {
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
                     isExcelExport
+                    onExcelExportClick={onExcelExport}
                     quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
                         <Checkbox
                             checked={isWIPChecked}
@@ -1104,7 +1135,7 @@ const DptWiseBMReport = () => {
 
             <>
                 {
-                    (isFilteredDataLoaded) ? <OverlayLoader /> :
+                    (isFilteredDataLoaded && !isExcelLoading) ? <OverlayLoader /> :
 
                         <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                             <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>
@@ -1139,6 +1170,19 @@ const DptWiseBMReport = () => {
                             </BTRTableWrapper>
                         </HorizontalViewWrapper>
                 }
+
+                <div style={{ display: 'none' }}>
+                    <GridView
+                        reference={tempGraph}
+                        agGridProps={agGridProps}
+                        columDef={colDeflatest}
+                        convercolumnDef={tempGridData}
+                        updateReason={() => handleUpdateReason()}
+                        handlePageChange={(cp) => handlePageChange(cp)}
+                        totalRow={gridDataCount}
+                        currentPage={currentPage}
+                    />
+                </div>
             </>
 
             <BPRRemarkHistoryModal

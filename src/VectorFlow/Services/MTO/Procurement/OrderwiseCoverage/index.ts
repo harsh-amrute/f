@@ -6,7 +6,7 @@ export const QUERY_KEYS = {
 }
 
 export const useGetOrderwiseCoverageData = () => {
-    return useMutation(async (props: { page: number, graph: number }) => {
+    return useMutation(async (props: { page?: number, graph: number, appliedFilters?: any }) => {
         return OrderwiseCoverageService.getOrderwiseCoverageData(props)
     })
 }

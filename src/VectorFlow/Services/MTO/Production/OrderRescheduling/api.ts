@@ -2,9 +2,9 @@ import axios from 'axios';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OrderReschedulingService {
-    export const getOrderReschedulingData = async () => {
+    export const getOrderReschedulingData = async (pageSize: number) => {
 
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/`, {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?page_size=${pageSize}`, {
 
             headers: {
                 'Content-Type': 'application/json',

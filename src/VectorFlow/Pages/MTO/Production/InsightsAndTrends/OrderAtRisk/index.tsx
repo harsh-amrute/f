@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { HorizontalViewWrapper } from "./styles";
-import { getColumnDefinations } from "../../../../../../helpers/utils";
+import { formatFilterJSON, getColumnDefinations } from "../../../../../../helpers/utils";
 import { reasonColConfig } from "./MockData";
 import SplitGraphContainer from "../../../Common/SplitGraphContainer";
 import { AgChartOptions } from "ag-charts-community";
@@ -15,11 +15,12 @@ import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types"
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import OverlayLoader from "../../../Common/Loader";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import GridView from "./GridView";
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
+import { notifyError } from "../../../../../../helpers/notify";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -54,6 +55,7 @@ const OrderAtRisk = () => {
     onAddFilter, 
     onApplyFilter, 
     toggleFilter,
+    appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_At_Risk);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -61,7 +63,7 @@ const OrderAtRisk = () => {
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { user } = useUserData();
   const reportName = "OrdersAtRisk";
-  const { data, isLoading } = useGetOrderRiskData() || {};
+  const { mutateAsync: getOrderAtRiskData, isLoading } = useGetOrderRiskData() || {};
 
   const setColumnDef = async () => {
     try {
@@ -114,7 +116,7 @@ const OrderAtRisk = () => {
 
   const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({});
+        const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_Order_At_Risk });
         setFilterData(response?.data.data);
     } catch (error) {
         console.error(error);
@@ -300,12 +302,29 @@ const OrderAtRisk = () => {
     },
   };
 
-  useEffect(() => {
-    if (data?.data?.data?.r && data?.data?.data?.g) {
-      setRawData(data?.data?.data?.r);
-      setGridData(data?.data?.data?.g);
+  // useEffect(() => {
+  //   if (data?.data?.data?.r && data?.data?.data?.g) {
+  //     setRawData(data?.data?.data?.r);
+  //     setGridData(data?.data?.data?.g);
+  //   }
+  // }, [data]);
+
+  const getData = async () => {
+    try {
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const response = await getOrderAtRiskData({ appliedFilters: formatedFilters});
+      setRawData(response?.data?.r);
+      setGridData(response?.data?.g || []);
     }
-  }, [data]);
+    catch (e) {
+        console.log(e);
+        notifyError('Failed to fetch Grid data!');
+    }
+  }
+
+  useEffect(()=>{
+    getData();
+  },[appliedFilters])
 
   useEffect(() => {
     if (isReset) {
