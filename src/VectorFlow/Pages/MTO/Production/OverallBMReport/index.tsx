@@ -8,7 +8,7 @@ import {
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
 import { Allotment } from 'allotment';
 //import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
-import useViewPort from '../../../../../hooks/useViewPort';
+// import useViewPort from '../../../../../hooks/useViewPort';
 //import { useUserData } from '../../../../../context';
 import { AgGridReactProps } from 'ag-grid-react';
 import BPPRenderer from '../../Common/BPPRenderer';

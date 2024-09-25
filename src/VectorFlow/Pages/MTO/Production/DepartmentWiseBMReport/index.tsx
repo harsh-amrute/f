@@ -11,7 +11,7 @@ import { AgGridReactProps } from 'ag-grid-react';
 import GridView from './GridView';
 import { Allotment } from 'allotment';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
-import useViewPort from '../../../../../hooks/useViewPort';
+// import useViewPort from '../../../../../hooks/useViewPort';
 import OrderElapsedGrid from './OrderElapsedGrid';
 import AgeingCellRenderer from './AgeingIconCellRenderer';
 // import customCellRenderer from './CustomCellRenderer';
