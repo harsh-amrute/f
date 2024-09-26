@@ -2,12 +2,13 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import {
     BMDepWrapper,
-    BMDepHeaderWraper
+    BMDepHeaderWraper,
+    VFWrapper
 } from '../DepartmentWiseBMReport/styles';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
 import { Allotment } from 'allotment';
 //import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
-import useViewPort from '../../../../../hooks/useViewPort';
+// import useViewPort from '../../../../../hooks/useViewPort';
 //import { useUserData } from '../../../../../context';
 import { AgGridReactProps } from 'ag-grid-react';
 import BPPRenderer from '../../Common/BPPRenderer';
@@ -30,6 +31,7 @@ import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName } from '../../Common/Enum';
 
 interface ApiResponse {
@@ -88,6 +90,17 @@ interface DepartmentData {
     out: number;
 }
 
+interface ApiResponseItem {
+    cc: string;       // Main category code
+    v: boolean;       // Visibility flag
+    cp?: number;      // Main category property (optional since it will be added)
+    hd: string;       // Header description (will be set to the name of cc)
+    cla: string;      // Class alignment (fixed value)
+    scc: string;      // Sub-channel code (will be set to the name of cc)
+    ch?: ApiResponse[]; // Array of channel items
+}
+
+
 const APIFilterConfig = {
     filSecVisConfig: {
         "Prod_OverAll_BMReport": {
@@ -106,13 +119,15 @@ const OverallBmReport = () => {
     const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
-
-    const { screenHeight } = useViewPort();
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    // const { screenHeight } = useViewPort();
     const refGraph2 = useRef<any>(null);
+    const allotementRef = useRef<any>(null);
 
     const [coldefs, setColdef] = useState<any>();
     const [gridData, setGridData] = useState<any>();
     const [gridDataCount, setGridDataCount] = useState<number>(0);
+    const [areRowsSelected, setAreRowsSelected] = useState<boolean>(false);
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -162,7 +177,7 @@ const OverallBmReport = () => {
 
     };
 
-    const apiResponse: ApiResponse[] =
+   /* const apiResponse: ApiResponse[] =
         [
             {
                 "cc": "",
@@ -556,7 +571,7 @@ const OverallBmReport = () => {
                     }
                 ]
             },
-        ]
+        ]*/
 
     /* const rowData = [
          {
@@ -727,18 +742,144 @@ const OverallBmReport = () => {
      ];*/
 
 
-    const mapApiResponseToColDefs = (apiResponse: ApiResponse[]): ColDef[] => {
+
+    const setColumnDef = async () => {
+        try {
+            const reportName = "BMReport";
+            const response = await getUIConfigData(reportName);
+            const modifiedResponse = addDefaultAttributes(response?.data?.data)
+            // console.log("modifiedResponse", modifiedResponse)
+            const coldef = mapApiResponseToColDefs(modifiedResponse)
+            console.log("coldef", coldef);
+            // console.log('modified Data', modifiedResponse)
+            setColdef(coldef)
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    
+    const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
+        const modifiedResponse: ApiResponseItem[] = [];
+        const cpMap: { [key: string]: number } = {};
+
+        // Create the specified default objects for the first item's ch array
+        // const defaultFirstObject: any = {
+        //     cc: 'ec',
+        //     cp: 1,
+        //     hd: '',
+        //     v: true,
+        //     cla: 'centre',
+        //     scc: 'ec'
+        // };
+
+        const defaultSecondObject: any = {
+            cc: 'ic',
+            cp: 2,
+            hd: '',
+            v: true,
+            cla: 'centre',
+            scc: 'ic'
+        };
+
+        apiResponse.forEach((item, index) => {
+            const modifiedItem = { ...item };
+            console.log("item",item)
+            // Initialize cp for this cc if not already done
+            if (!(item.cc in cpMap)) {
+                cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
+            }
+
+            // Add new properties to the outer object
+            modifiedItem.cp = cpMap[item.cc]++;
+            modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
+            modifiedItem.cla = "Centre"; // Fixed value
+            modifiedItem.scc = item.scc; // Set scc to the name of cc
+            
+            // If it's the first object, add default items to the ch array
+
+            if (index === 0) {
+                modifiedItem.ch = modifiedItem.ch || [];
+                modifiedItem.ch.unshift(defaultSecondObject);
+            }
+
+            // Push the modified item to the response array
+            modifiedResponse.push(modifiedItem);
+        });
+
+        // Add a default object outside each main object
+        const defaultOuterObject: ApiResponseItem = {
+            cc: " ",
+            v: true,
+            cp: 0,
+            hd: " ",
+            cla: "Centre",
+            scc: "chckbx",
+        };
+
+        // Prepend the default outer object
+        modifiedResponse.unshift(defaultOuterObject);
+
+        // Calculate cp for the additional object based on existing cp values
+        const maxCp = Math.max(...modifiedResponse.map(item => item.cp||0));
+
+        // Create the additional object to be added at the end
+        const additionalObject: ApiResponseItem = {
+            cc: "",
+            cp: maxCp + 1, // Set cp based on the maximum cp value
+            hd: " ",
+            v: true,
+            cla: "Centre",
+            scc: "rmk",
+            ch: [
+                // {
+                //     cc: "Remark",
+                //     cp: 28,
+                //     hd: "Remark",
+                //     v: true,
+                //     cla: "Centre",
+                //     scc: "r",
+                // },
+                // {
+                //     cc: "lr",
+                //     cp: 29,
+                //     hd: "Latest Remark",
+                //     v: true,
+                //     cla: "Centre",
+                //     scc: "lr",
+                // },
+                // {
+                //     cc: "Remark History",
+                //     cp: 30,
+                //     hd: "Remark History",
+                //     v: true,
+                //     cla: "Centre",
+                //     scc: "Remark History",
+                // }
+            ]
+        };
+
+        // Add the additional object to the end of the modified response
+        modifiedResponse.push(additionalObject);
+
+        return modifiedResponse;
+    };
+
+
+    const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
         const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
-            return children.map(child => ({
+            return children.map((child: ApiResponse, index: any) => ({
                 field: child.scc.trim(),
                 headerName: child.hd,
                 colId: child.hd,
-                cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
-                maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
-                columnGroupShow: child.cgs,
+                suppressHeaderFilterButton: true,
+                cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
+                maxWidth: child.cc === 'ec' || child.cc === 'ic' || child.scc === 'bpp' ? 80 : undefined ,
+                columnGroupShow: index > 2 ? "closed" : undefined,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
-                    onClick: child.scc === 'rh' ? (data: string) => onOpenRemarkHistory(data) : undefined
+                    onClick: child.scc === 'rm' ? (data: string) => onOpenRemarkHistory(data) : undefined
                 } : undefined,
                 cellStyle: child.cc === 'Remark' ? {
                     backgroundColor: 'white',
@@ -751,16 +892,32 @@ const OverallBmReport = () => {
             }));
         };
 
+        console.log("apiResponse", apiResponse);
+
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+            floatingFilterComponentParams: section.scc === "chckbx" ? { suppressFilterButton: false }: undefined,
+            suppressHeaderFilterButton: section.scc === "chckbx"?  true : false,
+            suppressMenu:  section.scc === "chckbx"?  true: false,
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
-            maxWidth: section.scc === "chckbx" ? 80 : undefined,
+            maxWidth: section.scc === "chckbx" ? 60 : undefined,
             floatingFilter: section.scc === "chckbx" ? false : undefined,
             headerName: section.hd,
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
             colId: section.hd,
+            // field: section.scc ? section.scc.toLowerCase() : undefined,
+            // cellStyle: section.cc === 'Remark' ? {
+            //         backgroundColor: 'white',
+            //         border: '1px solid #b9bdba',
+            //         color: 'black',
+            //         padding: '1px'
+            //     } : section.cc === 'da' ? {
+            //         'color': ColorsMTO.Pink.code
+            //     } : undefined,
+            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" ? "agGroupCellRenderer" : undefined,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
-            children: section.scc === "chckbx" ? undefined : mapChildren(section.children || [])
+            children: section.scc === "chckbx" ? undefined : section.ch ? mapChildren(section.ch ): undefined,
+            
         }));
     }
 
@@ -774,9 +931,10 @@ const OverallBmReport = () => {
     }
 
     useEffect(() => {
-        const colDefs = mapApiResponseToColDefs(apiResponse);
-        //console.log('coldefs', colDefs)
-        setColdef(colDefs)
+        setColumnDef();
+        // const colDefs = mapApiResponseToColDefs(apiResponse);
+        // //console.log('coldefs', colDefs)
+        // setColdef(colDefs)
         getInitialGridData(1);
         getFilterData();
     }, [])
@@ -840,8 +998,18 @@ const OverallBmReport = () => {
         return Array.from(departmentNames);
     };
 
+    useEffect(()=>{
+        if(allotementRef.current)
+            allotementRef.current.reset();
+    }, [areRowsSelected])
+
     const getSelectedRow = async () => {
         const selectedData = refGraph2.current?.api.getSelectedRows();
+        if(selectedData.length == 0){
+            setAreRowsSelected(false)
+        }else{
+            setAreRowsSelected(true);
+        }
         /* To persist the state*/
         if (selectedData) {
             let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
@@ -935,6 +1103,8 @@ const OverallBmReport = () => {
         params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
     }
 
+    const cache = useRef<any>({});
+
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
@@ -1015,8 +1185,15 @@ const OverallBmReport = () => {
                 },
             },
             getDetailRowData: async (params: any) => {
+                console.log("params", params.data);
+                if(cache.current[`${params.data.oid}-${params.data.lid}`]){
+                    params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
+                    return
+                }
                 const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
-                params.successCallback(data.data.data)
+                cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
+                params.successCallback(data?.data?.data) 
+                return 
             }
         },
     };
@@ -1083,9 +1260,9 @@ const OverallBmReport = () => {
             {OverAllBMLoading && !isExcelLoading ? <OverlayLoader /> :
 
                 <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                    <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
-                        <Allotment vertical={true} separator={true} >
-                            <Allotment.Pane preferredSize={'60%'}>
+                    <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" :"80vh", margin: '0' }}>
+                        <Allotment vertical={true} separator={true} ref={allotementRef}>
+                            <Allotment.Pane preferredSize={areRowsSelected ? "45%" :'70%'}>
                                 <BTRAllomentSection>
                                     <GridView
                                         reference={refGraph2}
@@ -1113,7 +1290,8 @@ const OverallBmReport = () => {
                                 </BTRAllomentSection>
                             </Allotment.Pane>
 
-                            <Allotment.Pane preferredSize={'40%'}>
+                            <Allotment.Pane preferredSize={areRowsSelected ? "55%" :'30%'}>
+                                <VFWrapper>
                                 <BTRAllomentSection>
                                     <OrderElapsedGrid
                                         isTrue={isOrderElapsedGrid}
@@ -1123,6 +1301,7 @@ const OverallBmReport = () => {
                                         highAgeingdata={highAgeing}
                                     />
                                 </BTRAllomentSection>
+                                </VFWrapper>
                             </Allotment.Pane>
                         </Allotment>
                     </BTRTableWrapper>

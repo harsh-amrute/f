@@ -1,6 +1,7 @@
 
 import { ColDef } from 'ag-grid-enterprise'
 import React, { useState } from 'react'
+// import { useSelector } from 'react-redux';
 
 import {
     BPRDailyAnalyticsHeader,
@@ -28,7 +29,7 @@ const DeptWiseAnalytics = () => {
     // const themeUi = user.user.theme_ui;
     const [isLoading] = useState<boolean>(false);
 
-
+    // const data = useSelector((state: any)=> state.mto.bmReportAnalytics);
 
 
     const colHeaders: any = [

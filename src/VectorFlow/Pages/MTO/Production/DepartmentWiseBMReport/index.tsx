@@ -11,7 +11,7 @@ import { AgGridReactProps } from 'ag-grid-react';
 import GridView from './GridView';
 import { Allotment } from 'allotment';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../Common/SplitGraphContainer/styles';
-import useViewPort from '../../../../../hooks/useViewPort';
+// import useViewPort from '../../../../../hooks/useViewPort';
 import OrderElapsedGrid from './OrderElapsedGrid';
 import AgeingCellRenderer from './AgeingIconCellRenderer';
 // import customCellRenderer from './CustomCellRenderer';
@@ -32,6 +32,7 @@ import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 
 interface ApiResponse {
@@ -55,6 +56,7 @@ interface ColDef {
     checkboxSelection?: boolean;
     maxWidth?: number;
     floatingFilter?: boolean;
+    cellRenderer: any;
 }
 
 interface ColDefChild {
@@ -103,6 +105,17 @@ interface Orders {
     [key: string]: OrderItem; // Order ID as the key
 }
 
+interface ApiResponseItem {
+    cc: string;       // Main category code
+    v: boolean;       // Visibility flag
+    cp?: number;      // Main category property (optional since it will be added)
+    hd: string;       // Header description (will be set to the name of cc)
+    cla: string;      // Class alignment (fixed value)
+    scc: string;      // Sub-channel code (will be set to the name of cc)
+    ch?: ApiResponse[]; // Array of channel items
+}
+
+
 const APIFilterConfig = {
     filSecVisConfig: {
         "Prod_Dept_Wise_BM_Report": {
@@ -121,7 +134,9 @@ const DptWiseBMReport = () => {
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
+    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const [colDeflatest, setColdef] = useState([{}])
+    const [areRowsSelected, setAreRowsSelected] = useState(false);
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [gridData, setGridData] = useState<any>();
     const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
@@ -130,7 +145,7 @@ const DptWiseBMReport = () => {
     const [editedRows, setEditedRows] = useState<Set<number>>(new Set());
     const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
     const [highAgeing, sethighAgeing] = useState<any>();
-    const { screenHeight } = useViewPort();
+    // const { screenHeight } = useViewPort();
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
@@ -139,6 +154,7 @@ const DptWiseBMReport = () => {
     const [gridDataCount, setGridDataCount] = useState<number>(0);
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
     const [filterData, setFilterData] = useState({});
+
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
         state: currFilter,
@@ -170,7 +186,7 @@ const DptWiseBMReport = () => {
         };
     }, []);
 
-    const apiResponse: ApiResponse[] =
+   /* const apiResponse: ApiResponse[] =
         [
             {
                 "cc": "",
@@ -537,7 +553,7 @@ const DptWiseBMReport = () => {
 
                 ]
             }
-        ]
+        ]*/
 
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
@@ -563,16 +579,137 @@ const DptWiseBMReport = () => {
 
     };
 
+    const setColumnDef = async () => {
+        try {
+            const reportName = "BMReport";
+            const response = await getUIConfigData(reportName);
+            const modifiedResponse = addDefaultAttributes(response?.data?.data)
+            const coldef = mapApiResponseToColDefs(modifiedResponse)
+            // console.log('modified Data', modifiedResponse)
+            setColdef(coldef)
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
 
-    const mapApiResponseToColDefs = (apiResponse: ApiResponse[]): ColDef[] => {
+    const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
+        const modifiedResponse: ApiResponseItem[] = [];
+        const cpMap: { [key: string]: number } = {};
+
+        // Create the specified default objects for the first item's ch array
+        // const defaultFirstObject: any = {
+        //     cc: 'ec',
+        //     cp: 1,
+        //     hd: '',
+        //     v: true,
+        //     cla: 'centre',
+        //     scc: 'ec'
+        // };
+
+        const defaultSecondObject: any = {
+            cc: 'ic',
+            cp: 2,
+            hd: '',
+            v: true,
+            cla: 'centre',
+            scc: 'ic'
+        };
+
+        apiResponse.forEach((item, index) => {
+            const modifiedItem = { ...item };
+
+            // Initialize cp for this cc if not already done
+            if (!(item.cc in cpMap)) {
+                cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
+            }
+
+            // Add new properties to the outer object
+            modifiedItem.cp = cpMap[item.cc]++;
+            modifiedItem.hd = item.cc; // Set hd to the name of cc
+            modifiedItem.cla = "Centre"; // Fixed value
+            modifiedItem.scc = item.cc; // Set scc to the name of cc
+
+            // If it's the first object, add default items to the ch array
+            if (index === 0) {
+                modifiedItem.ch = modifiedItem.ch || [];
+                modifiedItem.ch.unshift(defaultSecondObject);
+            }
+
+            // Push the modified item to the response array
+            modifiedResponse.push(modifiedItem);
+        });
+
+        // Add a default object outside each main object
+        const defaultOuterObject: ApiResponseItem = {
+            cc: " ",
+            v: true,
+            cp: 0,
+            hd: " ",
+            cla: "Centre",
+            scc: "chckbx",
+        };
+
+        // Prepend the default outer object
+        modifiedResponse.unshift(defaultOuterObject);
+
+        // Calculate cp for the additional object based on existing cp values
+        const maxCp = Math.max(...modifiedResponse.map(item => item.cp||0));
+
+        // Create the additional object to be added at the end
+        const additionalObject: ApiResponseItem = {
+            cc: "",
+            cp: maxCp + 1, // Set cp based on the maximum cp value
+            hd: " ",
+            v: true,
+            cla: "Centre",
+            scc: "rmk",
+            ch: [
+                {
+                    cc: "Remark",
+                    cp: 28,
+                    hd: "Remark",
+                    v: true,
+                    cla: "Centre",
+                    scc: "r",
+                },
+                {
+                    cc: "lr",
+                    cp: 29,
+                    hd: "Latest Remark",
+                    v: true,
+                    cla: "Centre",
+                    scc: "lr",
+                },
+                {
+                    cc: "Remark History",
+                    cp: 30,
+                    hd: "Remark History",
+                    v: true,
+                    cla: "Centre",
+                    scc: "Remark History",
+                }
+            ]
+        };
+
+        // Add the additional object to the end of the modified response
+        modifiedResponse.push(additionalObject);
+
+        return modifiedResponse;
+    };
+
+
+
+    const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
         const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
-            return children.map(child => ({
+            return children.map((child,index) => ({
                 field: child.scc.trim(),
+                suppressHeaderFilterButton: true,
                 headerName: child.hd,
                 colId: child.hd,
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
-                columnGroupShow: child.cgs,
+                columnGroupShow: index > 2 ? "closed" : undefined,
                 pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
@@ -595,14 +732,18 @@ const DptWiseBMReport = () => {
 
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+            floatingFilterComponentParams: section.scc === "chckbx" ? { suppressFilterButton: false }: undefined,
+            suppressHeaderFilterButton: section.scc === "chckbx"?  true : false,
+            suppressMenu:  section.scc === "chckbx"?  true: false,
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
-            maxWidth: section.scc === "chckbx" ? 80 : undefined,
+            maxWidth: section.scc === "chckbx" ? 50 : undefined,
             floatingFilter: section.scc === "chckbx" ? false : undefined,
             headerName: section.cc,
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
             colId: section.hd,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
-            children: section.scc === "chckbx" ? undefined : mapChildren(section.children || [])
+            children: section.scc === "chckbx" ? undefined : mapChildren(section.ch || []),
+            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" ? "agGroupCellRenderer" : undefined,
         }));
     }
 
@@ -616,8 +757,9 @@ const DptWiseBMReport = () => {
     }
 
     useEffect(() => {
-        const colDefs = mapApiResponseToColDefs(apiResponse);
-        setColdef(colDefs)
+        setColumnDef();
+        // const colDefs = mapApiResponseToColDefs(apiResponse);
+        // setColdef(colDefs)
         getFilterData();
     }, [])
 
@@ -649,11 +791,22 @@ const DptWiseBMReport = () => {
         return Array.from(departmentNames);
     };
 
+    const allotementRef = useRef<any>();
 
+
+    useEffect(()=>{
+        if(allotementRef.current)
+            allotementRef.current.reset();
+    }, [areRowsSelected])
 
     const getSelectedRow = async () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
         // To persist the state
+        if(selectedData.length == 0){
+            setAreRowsSelected(false)
+        }else{
+            setAreRowsSelected(true);
+        }
         if (selectedData) {
             let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
             selectedData.forEach((newItem: any) => {
@@ -808,6 +961,8 @@ const DptWiseBMReport = () => {
         setCurrentPage(currPage)
     }
 
+    const cache = useRef<any>({});
+
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
@@ -894,8 +1049,14 @@ const DptWiseBMReport = () => {
                 },
             },
             getDetailRowData: async (params: any) => {
+                if(cache.current[`${params.data.oid}-${params.data.lid}`]){
+                    params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
+                    return
+                }
                 const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
-                params.successCallback(data.data.data)
+                cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
+                params.successCallback(data?.data?.data) 
+                return 
             }
         },
     };
@@ -977,9 +1138,9 @@ const DptWiseBMReport = () => {
                     (isFilteredDataLoaded && !isExcelLoading) ? <OverlayLoader /> :
 
                         <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                            <BTRTableWrapper style={{ height: screenHeight + 100, margin: '0' }}>
-                                <Allotment vertical={true} separator={true} >
-                                    <Allotment.Pane preferredSize={'60%'}>
+                            <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>
+                                <Allotment vertical={true} separator={true} ref={allotementRef}>
+                                    <Allotment.Pane preferredSize={areRowsSelected ? "60%" :'70%'}>
                                         <BTRAllomentSection>
                                             <GridView
                                                 reference={refGraph1}
@@ -994,7 +1155,7 @@ const DptWiseBMReport = () => {
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
 
-                                    <Allotment.Pane preferredSize={'40%'}>
+                                    <Allotment.Pane preferredSize={areRowsSelected ? "40%" :'30%'}>
                                         <BTRAllomentSection>
                                             <OrderElapsedGrid
                                                 isTrue={isOrderElapsedGrid}
