@@ -430,7 +430,7 @@ const useViewModify = (pageType: string) => {
 
       //console.log('MtoMtoBufferdata',MtoBufferdata?.data?.data)
       const concatenatedResult = concatenateFields(data.data, MtoBufferdata?.data?.data);
-      //console.log('<><>concatenatedResult<><><>', concatenatedResult)
+      console.log('<><>concatenatedResult<><><>', concatenatedResult)
       setAllMasterState(mapMasterToMasterState(concatenatedResult, onShowChart))
     }
 

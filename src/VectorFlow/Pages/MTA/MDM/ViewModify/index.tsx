@@ -246,6 +246,7 @@ const ViewModify = () => {
     console.log('added row params', params)
     const newRows = [...addedBufferMaster];
     newRows.push(params.data);
+    console.log("row added", addedBufferMaster, addedBufferMaster.length);
     setAddedBufferMaster(newRows);
     setIsButtonDisabled(false);
     // setUpdatedColDef(activeMaster.colDefs);
@@ -637,6 +638,9 @@ const ViewModify = () => {
           onDeleteOnlineSubmit={() => console.log('')}
           onDeleteOnline={() => console.log('')}
           masterId={activeMaster.id}
+          mtoSaveData={true}
+          onMTOSaveData={() => { console.log("Data saved for mto") }}
+          isMTOSaveDataDisabled={addedBufferMaster.length !== 0}
         />
       }
 
