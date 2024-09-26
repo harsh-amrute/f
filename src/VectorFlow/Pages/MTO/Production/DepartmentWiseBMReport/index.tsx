@@ -34,6 +34,11 @@ import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
+import { useGetOverAllBMReport } from '../../../../../VectorFlow/Services/MTO/Production/OverallBMReport';
+import { BM_REPORT_ANALYTICS } from '../../../../../redux/actions/MTO';
+import { modifyAnalyticsData } from './helper';
+import { useDispatch } from 'react-redux';
+import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 
 interface ApiResponse {
     cc: string;
@@ -129,6 +134,8 @@ const APIFilterConfig = {
 
 const DptWiseBMReport = () => {
     const { mutateAsync: getFilteredDeptWiseBMReportData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
+    const { mutateAsync: getOverallBMReportData } = useGetOverAllBMReport();
+    const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
@@ -136,6 +143,7 @@ const DptWiseBMReport = () => {
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const [colDeflatest, setColdef] = useState([{}])
+    const [systemType, setSystemType] = useState<any>()
     const [areRowsSelected, setAreRowsSelected] = useState(false);
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [gridData, setGridData] = useState<any>();
@@ -185,6 +193,22 @@ const DptWiseBMReport = () => {
             toolPanels: ['columns'],
         };
     }, []);
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        try{
+            getOverallBMReportData({page: 1, appliedFilters, analytics: 1}).then((data)=>{
+                const response: any = data?.data?.data;
+                const analytics = modifyAnalyticsData(response); 
+                dispatch(BM_REPORT_ANALYTICS(analytics))
+            })
+        }
+        catch(e){
+            dispatch(BM_REPORT_ANALYTICS([]))
+        }
+        
+    }, [])
 
    /* const apiResponse: ApiResponse[] =
         [
@@ -579,13 +603,25 @@ const DptWiseBMReport = () => {
 
     };
 
+    const getSystemType = async () => {
+        const DBRSettingsData: any = await getDBRsettingsData()
+           const DBRSettings = DBRSettingsData.data?.data;
+           const systemType = DBRSettings?.find((data: any)=>{
+               return data.flag == "SystemType"
+           })
+           setSystemType(Number(systemType.value))
+           setColumnDef()
+       ;
+    }
+
     const setColumnDef = async () => {
         try {
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
-            const modifiedResponse = addDefaultAttributes(response?.data?.data)
+            const modifiedResponse = addDefaultAttributes(response?.data?.data);
+            // console.log("modifiedResponse", modifiedResponse);
             const coldef = mapApiResponseToColDefs(modifiedResponse)
-            // console.log('modified Data', modifiedResponse)
+            // console.log('modified Data', colDef)
             setColdef(coldef)
         }
         catch (e) {
@@ -626,9 +662,9 @@ const DptWiseBMReport = () => {
 
             // Add new properties to the outer object
             modifiedItem.cp = cpMap[item.cc]++;
-            modifiedItem.hd = item.cc; // Set hd to the name of cc
-            modifiedItem.cla = "Centre"; // Fixed value
-            modifiedItem.scc = item.cc; // Set scc to the name of cc
+            modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
+            modifiedItem.cla = item.cla; // Fixed value
+            modifiedItem.scc = item.scc; // Set scc to the name of cc
 
             // If it's the first object, add default items to the ch array
             if (index === 0) {
@@ -707,6 +743,7 @@ const DptWiseBMReport = () => {
                 suppressHeaderFilterButton: true,
                 headerName: child.hd,
                 colId: child.hd,
+                hide: !child.v,
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 columnGroupShow: index > 2 ? "closed" : undefined,
@@ -743,7 +780,7 @@ const DptWiseBMReport = () => {
             colId: section.hd,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
             children: section.scc === "chckbx" ? undefined : mapChildren(section.ch || []),
-            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" ? "agGroupCellRenderer" : undefined,
+            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3  ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
         }));
     }
 
@@ -757,7 +794,8 @@ const DptWiseBMReport = () => {
     }
 
     useEffect(() => {
-        setColumnDef();
+        getSystemType()
+        // setColumnDef();
         // const colDefs = mapApiResponseToColDefs(apiResponse);
         // setColdef(colDefs)
         getFilterData();

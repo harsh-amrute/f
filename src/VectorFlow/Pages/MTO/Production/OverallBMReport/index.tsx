@@ -33,6 +33,10 @@ import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName } from '../../Common/Enum';
+import { useDispatch } from 'react-redux';
+import { BM_REPORT_ANALYTICS } from '../../../../../redux/actions/MTO';
+import { modifyAnalyticsData } from '../DepartmentWiseBMReport/helper';
+import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 
 interface ApiResponse {
     cc: string;
@@ -116,6 +120,7 @@ const OverallBmReport = () => {
     //console.log()
     const { mutateAsync: getOverallBMReportData, isLoading: OverAllBMLoading } = useGetOverAllBMReport();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
+    const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
     const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
@@ -136,6 +141,7 @@ const OverallBmReport = () => {
     const [deptName, setDeptName] = useState<any>([]);
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
     const [filterData, setFilterData] = useState({});
+    const [systemType, setSystemType] = useState<any>();
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
         state: currFilter,
@@ -152,6 +158,32 @@ const OverallBmReport = () => {
 
     // const { user } = useUserData();
     // const themeUi = user?.user?.theme_ui;
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        try{
+            getDBRsettingsData().then((DBRSettingsData)=>{
+                const DBRSettings = DBRSettingsData.data?.data;
+                const systemType = DBRSettings?.find((data: any)=>{
+                    return data.flag == "SystemType"
+                })
+                if(systemType){
+                    setSystemType(Number(systemType.value))
+                }
+            });
+            // setDBRSettings(DBRSettings)
+            getOverallBMReportData({page: 1, appliedFilters, analytics: 1}).then((data)=>{
+                const response: any = data?.data?.data;
+                const analytics = modifyAnalyticsData(response); 
+                dispatch(BM_REPORT_ANALYTICS(analytics))
+            })
+        }
+        catch(e){
+            dispatch(BM_REPORT_ANALYTICS([]))
+        }
+        
+    }, [])
 
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
@@ -742,9 +774,21 @@ const OverallBmReport = () => {
      ];*/
 
 
+     const getSystemType = async () => {
+         const DBRSettingsData: any = await getDBRsettingsData()
+            const DBRSettings = DBRSettingsData.data?.data;
+            const systemType = DBRSettings?.find((data: any)=>{
+                return data.flag == "SystemType"
+            })
+            setSystemType(Number(systemType.value))
+            setColumnDef()
+        ;
+     }
+
 
     const setColumnDef = async () => {
         try {
+            
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
             const modifiedResponse = addDefaultAttributes(response?.data?.data)
@@ -783,9 +827,9 @@ const OverallBmReport = () => {
             scc: 'ic'
         };
 
-        apiResponse.forEach((item, index) => {
+        apiResponse.forEach((item) => {
             const modifiedItem = { ...item };
-            console.log("item",item)
+            // console.log("item",item)
             // Initialize cp for this cc if not already done
             if (!(item.cc in cpMap)) {
                 cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
@@ -799,10 +843,10 @@ const OverallBmReport = () => {
             
             // If it's the first object, add default items to the ch array
 
-            if (index === 0) {
-                modifiedItem.ch = modifiedItem.ch || [];
-                modifiedItem.ch.unshift(defaultSecondObject);
-            }
+            // if (index === 0) {
+            //     modifiedItem.ch = modifiedItem.ch || [];
+            //     modifiedItem.ch.unshift(defaultSecondObject);
+            // }
 
             // Push the modified item to the response array
             modifiedResponse.push(modifiedItem);
@@ -819,7 +863,7 @@ const OverallBmReport = () => {
         };
 
         // Prepend the default outer object
-        modifiedResponse.unshift(defaultOuterObject);
+        modifiedResponse.unshift(defaultOuterObject, defaultSecondObject);
 
         // Calculate cp for the additional object based on existing cp values
         const maxCp = Math.max(...modifiedResponse.map(item => item.cp||0));
@@ -873,8 +917,9 @@ const OverallBmReport = () => {
                 field: child.scc.trim(),
                 headerName: child.hd,
                 colId: child.hd,
+                hide: !child.v,
                 suppressHeaderFilterButton: true,
-                cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
+                cellRenderer: (child.cc === 'ec' && systemType >= 3)  ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' || child.scc === 'bpp' ? 80 : undefined ,
                 columnGroupShow: index > 2 ? "closed" : undefined,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
@@ -882,17 +927,21 @@ const OverallBmReport = () => {
                     onClick: child.scc === 'rm' ? (data: string) => onOpenRemarkHistory(data) : undefined
                 } : undefined,
                 cellStyle: child.cc === 'Remark' ? {
+                    justifyContent: child.cla,
                     backgroundColor: 'white',
                     border: '1px solid #b9bdba',
                     color: 'black',
                     padding: '1px'
                 } : child.cc === 'da' ? {
+                    justifyContent: child.cla,
                     'color': ColorsMTO.Pink.code
-                } : undefined
+                } : {
+                    justifyContent: child.cla,
+                }
             }));
         };
 
-        console.log("apiResponse", apiResponse);
+        // console.log("apiResponse", apiResponse);
 
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
@@ -900,7 +949,7 @@ const OverallBmReport = () => {
             suppressHeaderFilterButton: section.scc === "chckbx"?  true : false,
             suppressMenu:  section.scc === "chckbx"?  true: false,
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
-            maxWidth: section.scc === "chckbx" ? 60 : undefined,
+            maxWidth: section.scc === "chckbx" || section.scc == "ic" ? 60 : undefined,
             floatingFilter: section.scc === "chckbx" ? false : undefined,
             headerName: section.hd,
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
@@ -914,7 +963,7 @@ const OverallBmReport = () => {
             //     } : section.cc === 'da' ? {
             //         'color': ColorsMTO.Pink.code
             //     } : undefined,
-            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" ? "agGroupCellRenderer" : undefined,
+            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3  ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer": undefined,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
             children: section.scc === "chckbx" ? undefined : section.ch ? mapChildren(section.ch ): undefined,
             
@@ -931,7 +980,8 @@ const OverallBmReport = () => {
     }
 
     useEffect(() => {
-        setColumnDef();
+        getSystemType();
+        // setColumnDef();
         // const colDefs = mapApiResponseToColDefs(apiResponse);
         // //console.log('coldefs', colDefs)
         // setColdef(colDefs)
@@ -1185,7 +1235,6 @@ const OverallBmReport = () => {
                 },
             },
             getDetailRowData: async (params: any) => {
-                console.log("params", params.data);
                 if(cache.current[`${params.data.oid}-${params.data.lid}`]){
                     params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
                     return
