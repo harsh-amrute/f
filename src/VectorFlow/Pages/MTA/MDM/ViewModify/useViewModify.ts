@@ -230,7 +230,6 @@ const useViewModify = (pageType:string) => {
           const {data} = await masterUIConfiguration(pageType);
           setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
          }
-  
          getMasterUIConfigurationData()
       },[])
 

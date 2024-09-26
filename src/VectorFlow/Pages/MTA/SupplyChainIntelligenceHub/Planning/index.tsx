@@ -139,6 +139,7 @@ const Planning = () => {
                         multiFilter={currentFilter}
                         setMultiFilter={setCurrentFilter}
                         onDelete={onDeleteFilter}
+                        isPlanning
                         />
                 </div>  
                     

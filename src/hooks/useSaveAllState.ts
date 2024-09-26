@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext,useEffect } from "react";
 import {
   useResetState,
   useSaveState,
@@ -9,6 +9,7 @@ import { notifyError, notifyLoader, notifySuccess } from "../helpers/notify";
 import {toast} from 'react-toastify'
 import { GridState } from "../VectorFlow/types/BPR";
 
+
 interface exportToExcelParameters {
   pagination:{
     recordCount:number
@@ -17,36 +18,35 @@ interface exportToExcelParameters {
   callBack:any
 }
 
-const useSaveAllState = () => {
-  const { ref,setTempDownloadData,setExportExcelRowData } = useContext(GridStateContext);
+const useSaveAllState = (isPlanning?:boolean) => {
+  const { ref,setTempDownloadData,setExportExcelRowData,tempDownloadData } = useContext(GridStateContext);
 
 
 
   const { mutateAsync: saveState } = useSaveState();
   const { mutateAsync: resetState } = useResetState();
 
-  // useEffect(()=>{
-  //   if(tempDownloadData){
-  //     setTempDownloadData(false)
-  //   }
-  // },[tempDownloadData])
+  useEffect(()=>{
+      if(isPlanning && tempDownloadData){
+        setTempDownloadData(false)
+      }
+    
+  },[tempDownloadData])
 
 
   const onExportToExcel = async (params:exportToExcelParameters)=>{
     const {pagination,callBack} = params
-    console.log(params);
     const {recordCount,chunkSize} = pagination
+    
 
     try {
       //buggy line below
       const numberOfPages = Math.ceil(recordCount/chunkSize);
       const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
       const rows = [];
-      console.log(numberOfPages);
       for(let i=1; i<=numberOfPages; i++){
       
         const result = await callBack(i);
-     
 
         if(result === null) {
           // throw new Error("Something Went Wrong")
@@ -62,10 +62,9 @@ const useSaveAllState = () => {
       setTempDownloadData(true);
       toast.dismiss(toastId);
       
-
       notifySuccess(`Data Exported Successfully`);
     } catch (error) {
-      console.log(error)
+      console.error(error)
       toast.dismiss();
       notifyError('Something Went Wrong');
     }
@@ -76,7 +75,6 @@ const useSaveAllState = () => {
     try {
       
       const columnState = ref.current.api.getColumnState();
-      console.log(columnState)
       const chartsState =  ref.current.api.getChartModels()
       const isPivot = ref.current.api.isPivotMode()
       const gridState:GridState = {
@@ -93,7 +91,7 @@ const useSaveAllState = () => {
       ref.api.restoreChart(chartsState)
       ref.api.setGridOption('pivotMode',isPivot)
     } catch (err: any) {
-        console.log(err)
+        console.error(err)
       notifyError(err);
     }
   };

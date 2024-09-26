@@ -54,6 +54,7 @@ interface ActionToolBarProps {
   onSubmitEditedRows?: () => void;
   disableSubmitEditedRowsBtn?: boolean;
   lastRunDate?:string
+  isPlanning?:boolean
 }
 
 const ActionToolBar = ({
@@ -80,6 +81,7 @@ const ActionToolBar = ({
   onSubmitEditedRows,
   disableSubmitEditedRowsBtn,
   lastRunDate,
+  isPlanning,
   onChangeHorizon,
 }: ActionToolBarProps) => {
   const { user } = useUserData();
@@ -87,7 +89,7 @@ const ActionToolBar = ({
 
   const {locations} = useGetLocation()
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-  const { onSaveState, onResetAllState, onExportToExcel } = useSaveAllState();
+  const { onSaveState, onResetAllState, onExportToExcel } = useSaveAllState(isPlanning);
   const { currentCategory } = useSelector(
     (state: RootState) => state.mta.planning
   );
@@ -137,7 +139,6 @@ const ActionToolBar = ({
   };
 
   const renderFilter = () => {
-    console.log(currCategory)
     switch (currCategory) {
       case "GITFromParent":
         return (

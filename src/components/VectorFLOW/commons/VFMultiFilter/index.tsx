@@ -871,19 +871,19 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             <p>Location Filter</p>
                         </FilterHeader>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                           <AvailabilityFilter placeholder={"L1"} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF1',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF1'}  filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF1',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF1'}  filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={"L1"}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF2',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF2'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF2',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF2'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={"L1"}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF3',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF3'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF3',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF3'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={"L1"}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF4',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF4'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF4',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF4'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={"L1"}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF5',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF5'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF5',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF5'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
                             <VFMasterFieldSearch 
@@ -908,19 +908,19 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         <p>Product Filter</p>
                     </FilterHeader>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any, key:string,updateLabel:boolean)=>onFilterChange('PF1',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF1'} ></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any, key:string,updateLabel:boolean)=>onFilterChange('PF1',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF1'} ></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF2',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF2'} ></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF2',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF2'} ></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF3',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF3'}></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF3',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF3'}></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF4',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF4'}></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF4',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF4'}></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF5',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF5'}></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF5',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF5'}></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
                         <VFMasterFieldSearch

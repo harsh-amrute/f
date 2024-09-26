@@ -309,6 +309,9 @@ const usePlanning = ()=>{
         
         setPlanningCounts(tempPlanningCount);
     }
+    
+   
+
 
     const onExportToExcelCallBack = async(pageNumber:number)=>{
         const data =  await getPlanningDataGrid({
@@ -320,11 +323,18 @@ const usePlanning = ()=>{
                 recordsPerPage:5000
             }
         })
+
         if(currentPageData.category==='git' && currentPageData.type==='child'){
             if(currentTab==='transporterWise'){
                 return data.data.data.transporterWise.data
             }
             return data.data.data.locationWise.data
+        }
+        if(currentPageData.category==='expedite' && currentPageData.type==='child'){
+            if(currentTab==='expediteDispatches'){
+                return data.data.data.data[0].expediteDispatches
+            }
+            return data.data.data.data[0].createAvailabilityAtParent
         }
         return data.data.data.data
     }
@@ -816,6 +826,8 @@ const usePlanning = ()=>{
         }
         return []
     },[currentGridData])
+
+    // console.log(currentPageData,currentTab)
 
  
     return {
