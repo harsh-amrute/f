@@ -34,7 +34,7 @@ const OrderRescheduling = () => {
     const { mutateAsync: getOrderSchedulingPageData } = useGetOrderSchedulingPageData();
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-  
+
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const refGraph1 = useRef<GridRef>(null);
@@ -46,7 +46,7 @@ const OrderRescheduling = () => {
     const [HeaderData, setHeaderData] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { user } = useUserData();
-    
+
     const getSelectedRowData = () => {
 
         const selectedData = refGraph1.current?.api.getSelectedRows();
@@ -253,7 +253,7 @@ const OrderRescheduling = () => {
     useEffect(() => {
         const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
         setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
-    }, [HeaderData]);
+    }, [HeaderData, currTab]);
 
     const [rowData, setRowData] = useState<RowDataType[]>([]);
 
@@ -433,30 +433,30 @@ const OrderRescheduling = () => {
             params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
             params.api.autoSizeAllColumns();
             setCurrentGridRef(refGraph1);
-    };
+        };
 
     const getUserColumnConfig = async () => {
         try {
             const data = await getUserUIReportConfigData({
-            un: user.user.name,
-            rn_id: UIGridCode.ProdOrderRescheduling
+                un: user.user.name,
+                rn_id: UIGridCode.ProdOrderRescheduling
             });
-    
+
             const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
             setColumnState(newConfig);
-    
+
             if (!data) {
-            console.error('Failed to apply column state');
+                console.error('Failed to apply column state');
             }
         } catch (error) {
             console.error(error);
         }
     }
-        
-    
+
+
     const handleSaveClick = async () => {
         try {
-            if(currentGridRef?.current?.api){
+            if (currentGridRef?.current?.api) {
                 const config = currentGridRef.current.api.getColumnState();
 
                 const payload = {
@@ -468,7 +468,7 @@ const OrderRescheduling = () => {
                 await getUserColumnConfig();
             }
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
     }
 
@@ -476,7 +476,7 @@ const OrderRescheduling = () => {
         setIsReset(true);
     }
 
-    useEffect(()=>{ 
+    useEffect(() => {
         if (currentGridRef?.current && columnState?.length) {
             const result = currentGridRef.current.api.applyColumnState({
                 state: columnState,
@@ -492,7 +492,7 @@ const OrderRescheduling = () => {
         if (isReset) {
             setColumnState(colDef);
             setIsReset(false)
-        }else{
+        } else {
             handleSaveClick();
         }
     }, [isReset]);
@@ -501,9 +501,9 @@ const OrderRescheduling = () => {
         <>
             <OrderReschedulingWrapper style={{ width: "100%", position: 'relative', height: '100%', display: "flex", flexDirection: "column" }}>
 
-                <MTOActionToolBar 
-                    comp={'orderReschedule'} 
-                    isExcelExport 
+                <MTOActionToolBar
+                    comp={'orderReschedule'}
+                    isExcelExport
                     handleSaveClick={handleSaveClick}
                     handleResetClick={handleResetClick}
                 />

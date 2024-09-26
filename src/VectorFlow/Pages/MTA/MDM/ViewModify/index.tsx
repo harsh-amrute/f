@@ -128,7 +128,7 @@ const ViewModify = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [updatedColDef, setUpdatedColDef] = useState<any>();
   const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
-
+  const [addedBufferMaster, setAddedBufferMaster] = useState<any>([]);
   //const [isEditable, setIsEditable] = useState(false);
 
 
@@ -169,7 +169,7 @@ const ViewModify = () => {
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' }}>
 
               <div
-                onClick={() => addRow()}
+                onClick={() => addRow(params)}
                 style={{ cursor: 'pointer' }}>
                 <img
                   src="/assets/img/MTOapprovalBuffer.svg"
@@ -242,10 +242,14 @@ const ViewModify = () => {
   }, [bufferTypeMaster])
 
 
-  const addRow = () => {
+  const addRow = (params: any) => {
+    console.log('added row params', params)
+    const newRows = [...addedBufferMaster];
+    newRows.push(params.data);
+    setAddedBufferMaster(newRows);
     setIsButtonDisabled(false);
-    setUpdatedColDef(activeMaster.colDefs);
-    // setBufferInColDef(activeMaster.colDefs)
+    // setUpdatedColDef(activeMaster.colDefs);
+    setBufferInColDef(activeMaster.colDefs)
     // TODO add to the local state
   }
 
@@ -489,7 +493,7 @@ const ViewModify = () => {
                   {...tempAgGridProps}
                 />
               </div>
-              {activeMaster.isMTO && activeMaster.rowData.length > 0 &&
+              {activeMaster.isMTO &&
                 <button
                   style={{
                     display: 'flex',
