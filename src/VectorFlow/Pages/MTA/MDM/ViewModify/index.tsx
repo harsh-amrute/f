@@ -134,7 +134,7 @@ const ViewModify = () => {
 
   const addEditableToLastColumn = (colDefs: any): ColumnDef[] => {
     const modifiedColDefs = colDefs.map((colDef: any) => {
-      const editable = (params: any) => params.node.rowIndex === params.api.getDisplayedRowCount() - 1;
+      const editable = (params: any) => params.node.rowIndex === 0;
 
       if (colDef.field === 'bt') {
         return {
@@ -164,9 +164,9 @@ const ViewModify = () => {
       //flex: 1,
       width: 100, // Set the width for the actions column
       cellRenderer: (params: any) => {
-        if ((params.node.rowIndex === params.api.getDisplayedRowCount() - 1)) {
+        if ((params.node.rowIndex === 0)) {
           return (
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' }}>
 
               <div
                 onClick={() => addRow()}
@@ -216,7 +216,7 @@ const ViewModify = () => {
   const setBufferInColDef = (colDefs: any) => {
     const modifiedColDefs = colDefs.map((colDef: any) => {
       // const editable = (params: any) => params.node.rowIndex === params.api.getDisplayedRowCount() - 1;
-      console.log("this sis called!!")
+
       if (colDef.field === 'bt') {
         return {
           ...colDef,
@@ -245,7 +245,7 @@ const ViewModify = () => {
   const addRow = () => {
     setIsButtonDisabled(false);
     setUpdatedColDef(activeMaster.colDefs);
-    setBufferInColDef(activeMaster.colDefs)
+    // setBufferInColDef(activeMaster.colDefs)
     // TODO add to the local state
   }
 
@@ -253,12 +253,14 @@ const ViewModify = () => {
 
     setIsButtonDisabled(false);
     setData((prevRowData: any) => {
+      // TODO remove the last row instead
       const newData = [...prevRowData];
-      newData.pop(); // Remove the last row
+
+      newData.splice(0, 1); // Remove the last row
       return newData;
     });
     setUpdatedColDef(activeMaster.colDefs);
-    setBufferInColDef(activeMaster.colDefs)
+    // setBufferInColDef(activeMaster.colDefs)
 
     // Optionally remove the last row
     // setData(MtoGridData.slice(0, -1));
@@ -303,7 +305,7 @@ const ViewModify = () => {
       bt: '',
       editable: true,
     };
-    setData((prevData: any) => [...prevData, newRow]);
+    setData((prevData: any) => [newRow, ...prevData]);
     //setIsButtonDisabled(false);
     const latestcoldef = addEditableToLastColumn(activeMaster.colDefs);
     setUpdatedColDef(latestcoldef)
