@@ -159,7 +159,9 @@ const useFilter=(filterData: any, page: any)=>{
     },[filterData])
 
     useEffect(()=>{
-        setAppliedFilters(multiFilter);
+        if(Object.keys(multiFilter).length){
+            setAppliedFilters(multiFilter);
+        }
     },[multiFilter])
            
     // console.log(defaultFilterState, 'DEFAULT');
