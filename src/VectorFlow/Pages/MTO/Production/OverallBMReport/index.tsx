@@ -162,8 +162,8 @@ const OverallBmReport = () => {
     const [highAgeing, sethighAgeing] = useState<any>();
     const [tempColdef, setTempColdef] = useState<any>();
 
-    const { mutateAsync: getUserUIConfigData } = useGetUserUIConfigData();
-    const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
+    const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
+    const { mutateAsync: updateUserUIConfigData, isLoading: isSetStateLoading } = useUpdateUserUIConfigData();
 
 
     const { user } = useUserData();
@@ -1401,7 +1401,7 @@ const OverallBmReport = () => {
                 />
             </BMDepHeaderWraper>
 
-            {isGridLoading && !isExcelLoading ? <OverlayLoader /> :
+            {(isGridLoading && !isExcelLoading) || (isGetStateLoading || isSetStateLoading) ? <OverlayLoader /> :
 
                 <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                     <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>
