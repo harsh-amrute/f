@@ -39,6 +39,9 @@ import { BM_REPORT_ANALYTICS } from '../../../../../redux/actions/MTO';
 import { modifyAnalyticsData } from './helper';
 import { useDispatch } from 'react-redux';
 import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import { UIGridCode } from '../../Common/Enum';
+import _ from 'lodash';
 
 interface ApiResponse {
     cc: string;
@@ -143,6 +146,7 @@ const DptWiseBMReport = () => {
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const [colDeflatest, setColdef] = useState([{}])
+    const [tempColdef, setTempColdef] = useState<any>([{}]);
     const [systemType, setSystemType] = useState<any>()
     const [areRowsSelected, setAreRowsSelected] = useState(false);
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
@@ -162,6 +166,10 @@ const DptWiseBMReport = () => {
     const [gridDataCount, setGridDataCount] = useState<number>(0);
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
     const [filterData, setFilterData] = useState({});
+
+    const { mutateAsync: getUserUIConfigData } = useGetUserUIConfigData();
+    const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
+
 
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
@@ -196,388 +204,388 @@ const DptWiseBMReport = () => {
 
     const dispatch = useDispatch();
 
-    useEffect(()=>{
-        try{
-            getOverallBMReportData({page: 1, appliedFilters, analytics: 1}).then((data)=>{
+    useEffect(() => {
+        try {
+            getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
                 const response: any = data?.data?.data;
-                const analytics = modifyAnalyticsData(response); 
+                const analytics = modifyAnalyticsData(response);
                 dispatch(BM_REPORT_ANALYTICS(analytics))
             })
         }
-        catch(e){
+        catch (e) {
             dispatch(BM_REPORT_ANALYTICS([]))
         }
-        
+
     }, [])
 
-   /* const apiResponse: ApiResponse[] =
-        [
-            {
-                "cc": "",
-                "cp": 0,
-                "hd": " ",
-                "v": true,
-                "cla": "Centre",
-                "scc": "chckbx",
-            },
-            {
-                "cc": "Default Attributes",
-                "cp": 2,
-                "hd": "Default Attributes",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Default Attributes",
-                "children": [
-                    {
-                        "cc": 'ec',
-                        'cp': 1,
-                        'hd': '',
-                        'v': true,
-                        'cla': 'centre',
-                        'scc': 'ec',
-                    },
-                    {
-                        "cc": 'ic',
-                        'cp': 2,
-                        'hd': '',
-                        'v': true,
-                        'cla': 'centre',
-                        'scc': 'ic',
-                    },
-                    {
-                        "cc": "BPP",
-                        "cp": 3,
-                        "hd": "BPP",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "bpp",
-                    },
-                    {
-                        "cc": "da",
-                        "cp": 4,
-                        "hd": "Dept Ageing",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "da",
-                    },
-                    {
-                        "cc": "OrderType",
-                        "cp": 5,
-                        "hd": "Order Type",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "ot",
-
-                    },
-                    {
-                        "cc": "OrderID",
-                        "cp": 6,
-                        "hd": "Order ID",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "oid",
-
-                    },
-                    {
-                        "cc": "LineItem",
-                        "cp": 7,
-                        "hd": "Line Item",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "lid",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "ItemCode",
-                        "cp": 8,
-                        "hd": "Item Code",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "ic",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "ItemDescription",
-                        "cp": 9,
-                        "hd": "Item Description",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "id",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "OrderQuantity",
-                        "cp": 10,
-                        "hd": "Order Quantity",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "oq",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "WIPOnHand",
-                        "cp": 11,
-                        "hd": "WIPOn Hand",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "woh",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Mfg.Balance",
-                        "cp": 12,
-                        "hd": "Mfg. Balance",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "mfg",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "DueDate",
-                        "cp": 13,
-                        "hd": "Due Date",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "dd",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "TrailingDepartment",
-                        "cp": 14,
-                        "hd": "Trailing Department",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "td",
-                        "cgs": "closed"
-                    },
-
-                    {
-                        "cc": "CRDD",
-                        "cp": 15,
-                        "hd": "CRDD",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "crdd",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "ccr",
-                        "cp": 16,
-                        "hd": "CCRName ",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "ccr",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "CustomerName",
-                        "cp": 17,
-                        "hd": "Customer Name",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "cn",
-                        "cgs": "closed"
-                    },
-                ],
-            },
-
-            {
-                "cc": "Calculate Attributes",
-                "cp": 3,
-                "hd": "Calculate Attributes",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Calculate Attributes",
-                "children": [
-                    {
-                        "cc": "ed",
-                        "cp": 18,
-                        "hd": "Elapsed Days",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "ed",
-
-                    },
-                    {
-                        "cc": "Attribute",
-                        "cp": 19,
-                        "hd": "Attribute ",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Attr",
-                        "cgs": "closed"
-                    },
-                ]
-            },
-            {
-                "cc": "Order Attribute",
-                "cp": 4,
-                "hd": "Order Attribute",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Order Attribute",
-                "children": [
-                    {
-                        "cc": "pn",
-                        "cp": 20,
-                        "hd": "Plant Name",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "pn",
-
-                    },
-                    {
-                        "cc": "PONo.",
-                        "cp": 21,
-                        "hd": "PO No.",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "PO_No.",
-                        "cgs": "closed"
-                    }
-                ]
-            },
-            {
-                "cc": "Product Attribute",
-                "cp": 5,
-                "hd": "Product Attribute",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Product Attribute",
-                "children": [
-                    {
-                        "cc": "Price",
-                        "cp": 22,
-                        "hd": "Price ",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Price",
-
-
-                    },
-                    {
-                        "cc": "ItemGroup",
-                        "cp": 23,
-                        "hd": "Item Group",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Itm_Grp",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Attribute1",
-                        "cp": 24,
-                        "hd": "Attribute 1",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Att_1",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Attribute2",
-                        "cp": 25,
-                        "hd": "Attribute 2",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Att_2",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Attribute3",
-                        "cp": 26,
-                        "hd": "Attribute 3",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Att_3",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Attribute4",
-                        "cp": 27,
-                        "hd": "Attribute 4",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Att_4",
-                        "cgs": "closed"
-                    },
-                ]
-            },
-            {
-                "cc": "Customer Attribute",
-                "cp": 4,
-                "hd": "Customer Attribute",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Customer Attribute",
-                "children": [
-
-                    {
-                        "cc": "CustCode",
-                        "cp": 26,
-                        "hd": "Cust Code",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Cust_Cd",
-                        //"cgs": "open"
-                    },
-                    {
-                        "cc": "Region",
-                        "cp": 27,
-                        "hd": "Region ",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Rgn",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Country",
-                        "cp": 28,
-                        "hd": "Country ",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Cntry",
-                        "cgs": "closed"
-                    }
-                ]
-            },
-            {
-                "cc": "",
-                "cp": 6,
-                "hd": " ",
-                "v": true,
-                "cla": "Centre",
-                "scc": "rmk",
-                "children": [
-                    {
-                        "cc": "Remark",
-                        "cp": 28,
-                        "hd": "Remark",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "r",
-
-                    },
-                    {
-                        "cc": "lr",
-                        "cp": 29,
-                        "hd": "Latest Remark",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "lr",
-                    },
-                    {
-
-                        "cc": "Remark History",
-                        "cp": 30,
-                        "hd": "Remark History",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Remark History",
-                    }
-
-                ]
-            }
-        ]*/
+    /* const apiResponse: ApiResponse[] =
+         [
+             {
+                 "cc": "",
+                 "cp": 0,
+                 "hd": " ",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "chckbx",
+             },
+             {
+                 "cc": "Default Attributes",
+                 "cp": 2,
+                 "hd": "Default Attributes",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Default Attributes",
+                 "children": [
+                     {
+                         "cc": 'ec',
+                         'cp': 1,
+                         'hd': '',
+                         'v': true,
+                         'cla': 'centre',
+                         'scc': 'ec',
+                     },
+                     {
+                         "cc": 'ic',
+                         'cp': 2,
+                         'hd': '',
+                         'v': true,
+                         'cla': 'centre',
+                         'scc': 'ic',
+                     },
+                     {
+                         "cc": "BPP",
+                         "cp": 3,
+                         "hd": "BPP",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "bpp",
+                     },
+                     {
+                         "cc": "da",
+                         "cp": 4,
+                         "hd": "Dept Ageing",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "da",
+                     },
+                     {
+                         "cc": "OrderType",
+                         "cp": 5,
+                         "hd": "Order Type",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "ot",
+ 
+                     },
+                     {
+                         "cc": "OrderID",
+                         "cp": 6,
+                         "hd": "Order ID",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "oid",
+ 
+                     },
+                     {
+                         "cc": "LineItem",
+                         "cp": 7,
+                         "hd": "Line Item",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "lid",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "ItemCode",
+                         "cp": 8,
+                         "hd": "Item Code",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "ic",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "ItemDescription",
+                         "cp": 9,
+                         "hd": "Item Description",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "id",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "OrderQuantity",
+                         "cp": 10,
+                         "hd": "Order Quantity",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "oq",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "WIPOnHand",
+                         "cp": 11,
+                         "hd": "WIPOn Hand",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "woh",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Mfg.Balance",
+                         "cp": 12,
+                         "hd": "Mfg. Balance",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "mfg",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "DueDate",
+                         "cp": 13,
+                         "hd": "Due Date",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "dd",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "TrailingDepartment",
+                         "cp": 14,
+                         "hd": "Trailing Department",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "td",
+                         "cgs": "closed"
+                     },
+ 
+                     {
+                         "cc": "CRDD",
+                         "cp": 15,
+                         "hd": "CRDD",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "crdd",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "ccr",
+                         "cp": 16,
+                         "hd": "CCRName ",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "ccr",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "CustomerName",
+                         "cp": 17,
+                         "hd": "Customer Name",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "cn",
+                         "cgs": "closed"
+                     },
+                 ],
+             },
+ 
+             {
+                 "cc": "Calculate Attributes",
+                 "cp": 3,
+                 "hd": "Calculate Attributes",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Calculate Attributes",
+                 "children": [
+                     {
+                         "cc": "ed",
+                         "cp": 18,
+                         "hd": "Elapsed Days",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "ed",
+ 
+                     },
+                     {
+                         "cc": "Attribute",
+                         "cp": 19,
+                         "hd": "Attribute ",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Attr",
+                         "cgs": "closed"
+                     },
+                 ]
+             },
+             {
+                 "cc": "Order Attribute",
+                 "cp": 4,
+                 "hd": "Order Attribute",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Order Attribute",
+                 "children": [
+                     {
+                         "cc": "pn",
+                         "cp": 20,
+                         "hd": "Plant Name",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "pn",
+ 
+                     },
+                     {
+                         "cc": "PONo.",
+                         "cp": 21,
+                         "hd": "PO No.",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "PO_No.",
+                         "cgs": "closed"
+                     }
+                 ]
+             },
+             {
+                 "cc": "Product Attribute",
+                 "cp": 5,
+                 "hd": "Product Attribute",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Product Attribute",
+                 "children": [
+                     {
+                         "cc": "Price",
+                         "cp": 22,
+                         "hd": "Price ",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Price",
+ 
+ 
+                     },
+                     {
+                         "cc": "ItemGroup",
+                         "cp": 23,
+                         "hd": "Item Group",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Itm_Grp",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Attribute1",
+                         "cp": 24,
+                         "hd": "Attribute 1",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Att_1",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Attribute2",
+                         "cp": 25,
+                         "hd": "Attribute 2",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Att_2",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Attribute3",
+                         "cp": 26,
+                         "hd": "Attribute 3",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Att_3",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Attribute4",
+                         "cp": 27,
+                         "hd": "Attribute 4",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Att_4",
+                         "cgs": "closed"
+                     },
+                 ]
+             },
+             {
+                 "cc": "Customer Attribute",
+                 "cp": 4,
+                 "hd": "Customer Attribute",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Customer Attribute",
+                 "children": [
+ 
+                     {
+                         "cc": "CustCode",
+                         "cp": 26,
+                         "hd": "Cust Code",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Cust_Cd",
+                         //"cgs": "open"
+                     },
+                     {
+                         "cc": "Region",
+                         "cp": 27,
+                         "hd": "Region ",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Rgn",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Country",
+                         "cp": 28,
+                         "hd": "Country ",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Cntry",
+                         "cgs": "closed"
+                     }
+                 ]
+             },
+             {
+                 "cc": "",
+                 "cp": 6,
+                 "hd": " ",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "rmk",
+                 "children": [
+                     {
+                         "cc": "Remark",
+                         "cp": 28,
+                         "hd": "Remark",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "r",
+ 
+                     },
+                     {
+                         "cc": "lr",
+                         "cp": 29,
+                         "hd": "Latest Remark",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "lr",
+                     },
+                     {
+ 
+                         "cc": "Remark History",
+                         "cp": 30,
+                         "hd": "Remark History",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Remark History",
+                     }
+ 
+                 ]
+             }
+         ]*/
 
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
@@ -600,19 +608,29 @@ const DptWiseBMReport = () => {
             console.log(e);
         }
         setIsRemarkHistoryOpen(true)
-
     };
 
     const getSystemType = async () => {
         const DBRSettingsData: any = await getDBRsettingsData()
-           const DBRSettings = DBRSettingsData.data?.data;
-           const systemType = DBRSettings?.find((data: any)=>{
-               return data.flag == "SystemType"
-           })
-           setSystemType(Number(systemType.value))
-           setColumnDef()
-       ;
+        const DBRSettings = DBRSettingsData.data?.data;
+        const systemType = DBRSettings?.find((data: any) => {
+            return data.flag == "SystemType"
+        })
+        setSystemType(Number(systemType.value))
+        setColumnDef()
+            ;
     }
+
+    const removeUtilcolumns = (incolDef: any) => {
+        console.log("inColdef", incolDef)
+        const newColDef = _.cloneDeep(incolDef);
+
+        newColDef.shift();
+
+        setTempColdef(newColDef);
+    }
+
+    const ogCOlDef = useRef<any>();
 
     const setColumnDef = async () => {
         try {
@@ -622,7 +640,9 @@ const DptWiseBMReport = () => {
             // console.log("modifiedResponse", modifiedResponse);
             const coldef = mapApiResponseToColDefs(modifiedResponse)
             // console.log('modified Data', colDef)
+            ogCOlDef.current = coldef;
             setColdef(coldef)
+            setTempColdef(removeUtilcolumns(coldef))
         }
         catch (e) {
             console.log(e);
@@ -672,6 +692,7 @@ const DptWiseBMReport = () => {
                 modifiedItem.ch.unshift(defaultSecondObject);
             }
 
+            console.log("modified Item", modifiedItem)
             // Push the modified item to the response array
             modifiedResponse.push(modifiedItem);
         });
@@ -690,7 +711,7 @@ const DptWiseBMReport = () => {
         modifiedResponse.unshift(defaultOuterObject);
 
         // Calculate cp for the additional object based on existing cp values
-        const maxCp = Math.max(...modifiedResponse.map(item => item.cp||0));
+        const maxCp = Math.max(...modifiedResponse.map(item => item.cp || 0));
 
         // Create the additional object to be added at the end
         const additionalObject: ApiResponseItem = {
@@ -738,7 +759,7 @@ const DptWiseBMReport = () => {
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
         const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
-            return children.map((child,index) => ({
+            return children.map((child, index) => ({
                 field: child.scc.trim(),
                 suppressHeaderFilterButton: true,
                 headerName: child.hd,
@@ -769,9 +790,9 @@ const DptWiseBMReport = () => {
 
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
-            floatingFilterComponentParams: section.scc === "chckbx" ? { suppressFilterButton: false }: undefined,
-            suppressHeaderFilterButton: section.scc === "chckbx"?  true : false,
-            suppressMenu:  section.scc === "chckbx"?  true: false,
+            floatingFilterComponentParams: section.scc === "chckbx" ? { suppressFilterButton: false } : undefined,
+            suppressHeaderFilterButton: section.scc === "chckbx" ? true : false,
+            suppressMenu: section.scc === "chckbx" ? true : false,
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
             maxWidth: section.scc === "chckbx" ? 50 : undefined,
             floatingFilter: section.scc === "chckbx" ? false : undefined,
@@ -780,7 +801,7 @@ const DptWiseBMReport = () => {
             colId: section.hd,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
             children: section.scc === "chckbx" ? undefined : mapChildren(section.ch || []),
-            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3  ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
+            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3 ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
         }));
     }
 
@@ -832,17 +853,17 @@ const DptWiseBMReport = () => {
     const allotementRef = useRef<any>();
 
 
-    useEffect(()=>{
-        if(allotementRef.current)
+    useEffect(() => {
+        if (allotementRef.current)
             allotementRef.current.reset();
     }, [areRowsSelected])
 
     const getSelectedRow = async () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
         // To persist the state
-        if(selectedData.length == 0){
+        if (selectedData.length == 0) {
             setAreRowsSelected(false)
-        }else{
+        } else {
             setAreRowsSelected(true);
         }
         if (selectedData) {
@@ -1087,14 +1108,14 @@ const DptWiseBMReport = () => {
                 },
             },
             getDetailRowData: async (params: any) => {
-                if(cache.current[`${params.data.oid}-${params.data.lid}`]){
+                if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
                     params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
                     return
                 }
                 const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
                 cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
-                params.successCallback(data?.data?.data) 
-                return 
+                params.successCallback(data?.data?.data)
+                return
             }
         },
     };
@@ -1137,10 +1158,95 @@ const DptWiseBMReport = () => {
     }
 
     useEffect(() => {
+
         if (tempGridData) {
+
             tempGraph.current?.api?.exportDataAsExcel({ fileName: "DepartmentWiseBMReport" })
         }
     }, [tempGridData])
+
+
+    useEffect(() => {
+        if (colDeflatest) {
+            const tempcoldeflatest = _.cloneDeep(colDeflatest);
+            tempcoldeflatest.shift();
+            tempcoldeflatest.shift();
+            setTempColdef(tempcoldeflatest);
+        }
+    }, [colDeflatest])
+
+    useEffect(() => {
+        getUserColumnConfig();
+    }, [])
+
+
+    const [isReset, setIsReset] = useState(false);
+    const [columnState, setColumnState] = useState<any>();
+
+
+    const getUserColumnConfig = async () => {
+        try {
+            const data = await getUserUIConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProdDeptWiseBMReport
+            });
+
+            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            setColumnState(newConfig);
+
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleSaveClick = async () => {
+        try {
+            if (refGraph1?.current?.api) {
+                const config = refGraph1.current.api.getColumnState();
+
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProdDeptWiseBMReport,
+                    cs: JSON.stringify(config)
+                }
+                await updateUserUIConfigData([payload]);
+                await getUserColumnConfig();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
+
+    useEffect(() => {
+        if (refGraph1?.current && columnState?.length) {
+            const result = refGraph1?.current?.api?.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
+        }
+    });
+
+    useEffect(() => {
+        if (isReset) {
+            setColumnState(colDeflatest);
+            setIsReset(false)
+        } else {
+            handleSaveClick();
+        }
+    }, [isReset]);
+
+
+
 
     return (
         <BMDepWrapper>
@@ -1148,6 +1254,7 @@ const DptWiseBMReport = () => {
                 <MTOActionToolBar
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
+
                     isExcelExport
                     onExcelExportClick={onExcelExport}
                     quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
@@ -1166,6 +1273,8 @@ const DptWiseBMReport = () => {
                     onApplyFilter={onApplyFilter}
                     multiFilter={currFilter}
                     setMultiFilter={setCurrFilter}
+                    handleSaveClick={handleSaveClick}
+                    handleResetClick={handleResetClick}
                     onFilterRemove={onFilterRemove}
                     isMfgSelected={isMfgSelected}
                 />
@@ -1178,7 +1287,7 @@ const DptWiseBMReport = () => {
                         <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                             <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>
                                 <Allotment vertical={true} separator={true} ref={allotementRef}>
-                                    <Allotment.Pane preferredSize={areRowsSelected ? "60%" :'70%'}>
+                                    <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
                                         <BTRAllomentSection>
                                             <GridView
                                                 reference={refGraph1}
@@ -1193,7 +1302,7 @@ const DptWiseBMReport = () => {
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
 
-                                    <Allotment.Pane preferredSize={areRowsSelected ? "40%" :'30%'}>
+                                    <Allotment.Pane preferredSize={areRowsSelected ? "40%" : '30%'}>
                                         <BTRAllomentSection>
                                             <OrderElapsedGrid
                                                 isTrue={isOrderElapsedGrid}
@@ -1213,7 +1322,7 @@ const DptWiseBMReport = () => {
                     <GridView
                         reference={tempGraph}
                         agGridProps={agGridProps}
-                        columDef={colDeflatest}
+                        columDef={tempColdef}
                         convercolumnDef={tempGridData}
                         updateReason={() => handleUpdateReason()}
                         handlePageChange={(cp) => handlePageChange(cp)}

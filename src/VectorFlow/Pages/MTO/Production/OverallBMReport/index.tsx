@@ -32,11 +32,15 @@ import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/
 import useFilter from '../../../../../hooks/useFilter';
 import { formatFilterJSON } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { FilterPageName } from '../../Common/Enum';
+import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import { useDispatch } from 'react-redux';
 import { BM_REPORT_ANALYTICS } from '../../../../../redux/actions/MTO';
 import { modifyAnalyticsData } from '../DepartmentWiseBMReport/helper';
 import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import _ from 'lodash';
+import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig';
+import { useUserData } from '../../../../../context';
+
 
 interface ApiResponse {
     cc: string;
@@ -142,7 +146,7 @@ const OverallBmReport = () => {
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
     const [filterData, setFilterData] = useState({});
     const [systemType, setSystemType] = useState<any>();
-    const [isGridLoading,  setIsGridLoading] = useState(false);
+    const [isGridLoading, setIsGridLoading] = useState(false);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
         state: currFilter,
@@ -156,25 +160,39 @@ const OverallBmReport = () => {
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport);
     const [highAgeing, sethighAgeing] = useState<any>();
+    const [tempColdef, setTempColdef] = useState<any>();
 
-    // const { user } = useUserData();
+    const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
+    const { mutateAsync: updateUserUIConfigData, isLoading: isSetStateLoading } = useUpdateUserUIConfigData();
+
+
+    const { user } = useUserData();
     // const themeUi = user?.user?.theme_ui;
 
     const dispatch = useDispatch();
 
-    useEffect(()=>{
-        try{
-            getOverallBMReportData({page: 1, appliedFilters, analytics: 1}).then((data)=>{
+    useEffect(() => {
+        try {
+            getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
                 const response: any = data?.data?.data;
-                const analytics = modifyAnalyticsData(response); 
+                const analytics = modifyAnalyticsData(response);
                 dispatch(BM_REPORT_ANALYTICS(analytics))
             })
         }
-        catch(e){
+        catch (e) {
             dispatch(BM_REPORT_ANALYTICS([]))
         }
-        
+
     }, [])
+
+    useEffect(() => {
+        if (coldefs) {
+            const tempcoldeflatest = _.cloneDeep(coldefs);
+            tempcoldeflatest.shift();
+            tempcoldeflatest.shift();
+            setTempColdef(tempcoldeflatest);
+        }
+    }, [coldefs])
 
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
@@ -200,401 +218,401 @@ const OverallBmReport = () => {
 
     };
 
-   /* const apiResponse: ApiResponse[] =
-        [
-            {
-                "cc": "",
-                "cp": 0,
-                "hd": " ",
-                "v": true,
-                "cla": "Centre",
-                "scc": "chckbx",
-            },
-            {
-                "cc": "Default Attributes",
-                "cp": 1,
-                "hd": "Default Attributes",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Default Attributes",
-                "children": [
-                    {
-                        "cc": 'ec',
-                        'cp': 1,
-                        'hd': '',
-                        'v': true,
-                        'cla': 'centre',
-                        'scc': 'ec',
-                    },
-                    {
-                        "cc": 'ic',
-                        'cp': 2,
-                        'hd': '',
-                        'v': true,
-                        'cla': 'centre',
-                        'scc': 'ic',
-                    },
-                    {
-                        "cc": "BPP",
-                        "cp": 3,
-                        "hd": "BPP",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "bpp",
-                    },
-                    {
-                        "cc": "da",
-                        "cp": 4,
-                        "hd": "Dept Ageing",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "da",
-                    },
-                    {
-                        "cc": "OrderType",
-                        "cp": 5,
-                        "hd": "Order Type",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "ot",
-
-                    },
-                    {
-                        "cc": "OrderID",
-                        "cp": 6,
-                        "hd": "Order ID",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "oid",
-
-                    },
-                    {
-                        "cc": "LineItem",
-                        "cp": 7,
-                        "hd": "Line Item",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "lid",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "ItemCode",
-                        "cp": 8,
-                        "hd": "Item Code",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "ic",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "ItemDescription",
-                        "cp": 9,
-                        "hd": "Item Description",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "id",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "OrderQuantity",
-                        "cp": 10,
-                        "hd": "Order Quantity",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "oq",
-                        "cgs": "closed"
-                    },
-                ],
-            },
-            {
-                "cc": "ddt1",
-                "cp": 2,
-                "hd": "Department 1",
-                "v": true,
-                "cla": "Centre",
-                "scc": "ddt1",
-                "children": [
-                    {
-                        "cc": 'woh',
-                        'cp': 1,
-                        'hd': 'WIP on Hand',
-                        'v': true,
-                        'cla': 'centre',
-                        'scc': 'woh',
-                    },
-                    {
-                        "cc": 'mfg',
-                        'cp': 2,
-                        'hd': 'Mfg. Balance',
-                        'v': true,
-                        'cla': 'centre',
-                        'scc': 'mfg',
-                        "cgs": "closed"
-                    },
-                ]
-            },
-            {
-                "cc": "ddt2",
-                "cp": 3,
-                "hd": "Department 2",
-                "v": true,
-                "cla": "Centre",
-                "scc": "ddt2",
-                "children": [
-                    {
-                        "cc": '2_woh',
-                        'cp': 1,
-                        'hd': 'WIP on Hand',
-                        'v': true,
-                        'cla': 'centre',
-                        'scc': '2_woh',
-                    },
-                    {
-                        "cc": '2_mfg',
-                        'cp': 2,
-                        'hd': 'Mfg. Balance',
-                        'v': true,
-                        'cla': 'centre',
-                        'scc': '2_mfg',
-                        "cgs": "closed"
-                    },
-                ]
-            },
-            {
-                "cc": "",
-                "cp": 2,
-                "hd": "",
-                "v": true,
-                "cla": "Centre",
-                "scc": "",
-                "children": [
-                    {
-                        "cc": "DueDate",
-                        "cp": 13,
-                        "hd": "Due Date",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "dd",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "TrailingDepartment",
-                        "cp": 14,
-                        "hd": "Trailing Department",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "td",
-                        "cgs": "closed"
-                    },
-
-                    {
-                        "cc": "CRDD",
-                        "cp": 15,
-                        "hd": "CRDD",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "crdd",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "ccr",
-                        "cp": 16,
-                        "hd": "CCRName",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "ccr",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "CustomerName",
-                        "cp": 17,
-                        "hd": "Customer Name",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "cn",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Release Date",
-                        "cp": 30,
-                        "hd": "Release Date",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "rd",
-                        "cgs": "closed"
-                    },
-                    {
-
-                        "cc": "Remark History",
-                        "cp": 30,
-                        "hd": "Remark History",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "rh",
-                        "cgs": "closed"
-                    },
-
-                ]
-            },
-
-            {
-                "cc": "Calculate Attributes",
-                "cp": 3,
-                "hd": "Calculate Attributes",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Calculate Attributes",
-                "children": [
-                    {
-                        "cc": "ElapsedDays",
-                        "cp": 18,
-                        "hd": "Elapsed Days",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "ed",
-
-                    },
-                    {
-                        "cc": "Attribute",
-                        "cp": 19,
-                        "hd": "Attribute ",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Attr",
-                        "cgs": "closed"
-                    },
-                ]
-            },
-            {
-                "cc": "Order Attribute",
-                "cp": 4,
-                "hd": "Order Attribute",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Order Attribute",
-                "children": [
-                    {
-                        "cc": "PlantName",
-                        "cp": 20,
-                        "hd": "Plant Name",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "pn",
-
-                    },
-                    {
-                        "cc": "PONo.",
-                        "cp": 21,
-                        "hd": "PO No.",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "PO_No.",
-                        "cgs": "closed"
-                    }
-                ]
-            },
-            {
-                "cc": "Product Attribute",
-                "cp": 5,
-                "hd": "Product Attribute",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Product Attribute",
-                "children": [
-                    {
-                        "cc": "Price",
-                        "cp": 22,
-                        "hd": "Price ",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Price",
-                    },
-                    {
-                        "cc": "ItemGroup",
-                        "cp": 23,
-                        "hd": "Item Group",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Itm_Grp",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Attribute1",
-                        "cp": 24,
-                        "hd": "Attribute 1",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Att_1",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Attribute2",
-                        "cp": 25,
-                        "hd": "Attribute 2",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Att_2",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Attribute3",
-                        "cp": 26,
-                        "hd": "Attribute 3",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Att_3",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Attribute4",
-                        "cp": 27,
-                        "hd": "Attribute 4",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Att_4",
-                        "cgs": "closed"
-                    },
-                ]
-            },
-            {
-                "cc": "Customer Attribute",
-                "cp": 4,
-                "hd": "Customer Attribute",
-                "v": true,
-                "cla": "Centre",
-                "scc": "Customer Attribute",
-                "children": [
-
-                    {
-                        "cc": "CustCode",
-                        "cp": 26,
-                        "hd": "Cust Code",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Cust_Cd",
-                        //"cgs": "open"
-                    },
-                    {
-                        "cc": "Region",
-                        "cp": 27,
-                        "hd": "Region ",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Rgn",
-                        "cgs": "closed"
-                    },
-                    {
-                        "cc": "Country",
-                        "cp": 28,
-                        "hd": "Country ",
-                        "v": true,
-                        "cla": "Centre",
-                        "scc": "Cntry",
-                        "cgs": "closed"
-                    }
-                ]
-            },
-        ]*/
+    /* const apiResponse: ApiResponse[] =
+         [
+             {
+                 "cc": "",
+                 "cp": 0,
+                 "hd": " ",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "chckbx",
+             },
+             {
+                 "cc": "Default Attributes",
+                 "cp": 1,
+                 "hd": "Default Attributes",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Default Attributes",
+                 "children": [
+                     {
+                         "cc": 'ec',
+                         'cp': 1,
+                         'hd': '',
+                         'v': true,
+                         'cla': 'centre',
+                         'scc': 'ec',
+                     },
+                     {
+                         "cc": 'ic',
+                         'cp': 2,
+                         'hd': '',
+                         'v': true,
+                         'cla': 'centre',
+                         'scc': 'ic',
+                     },
+                     {
+                         "cc": "BPP",
+                         "cp": 3,
+                         "hd": "BPP",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "bpp",
+                     },
+                     {
+                         "cc": "da",
+                         "cp": 4,
+                         "hd": "Dept Ageing",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "da",
+                     },
+                     {
+                         "cc": "OrderType",
+                         "cp": 5,
+                         "hd": "Order Type",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "ot",
+ 
+                     },
+                     {
+                         "cc": "OrderID",
+                         "cp": 6,
+                         "hd": "Order ID",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "oid",
+ 
+                     },
+                     {
+                         "cc": "LineItem",
+                         "cp": 7,
+                         "hd": "Line Item",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "lid",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "ItemCode",
+                         "cp": 8,
+                         "hd": "Item Code",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "ic",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "ItemDescription",
+                         "cp": 9,
+                         "hd": "Item Description",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "id",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "OrderQuantity",
+                         "cp": 10,
+                         "hd": "Order Quantity",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "oq",
+                         "cgs": "closed"
+                     },
+                 ],
+             },
+             {
+                 "cc": "ddt1",
+                 "cp": 2,
+                 "hd": "Department 1",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "ddt1",
+                 "children": [
+                     {
+                         "cc": 'woh',
+                         'cp': 1,
+                         'hd': 'WIP on Hand',
+                         'v': true,
+                         'cla': 'centre',
+                         'scc': 'woh',
+                     },
+                     {
+                         "cc": 'mfg',
+                         'cp': 2,
+                         'hd': 'Mfg. Balance',
+                         'v': true,
+                         'cla': 'centre',
+                         'scc': 'mfg',
+                         "cgs": "closed"
+                     },
+                 ]
+             },
+             {
+                 "cc": "ddt2",
+                 "cp": 3,
+                 "hd": "Department 2",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "ddt2",
+                 "children": [
+                     {
+                         "cc": '2_woh',
+                         'cp': 1,
+                         'hd': 'WIP on Hand',
+                         'v': true,
+                         'cla': 'centre',
+                         'scc': '2_woh',
+                     },
+                     {
+                         "cc": '2_mfg',
+                         'cp': 2,
+                         'hd': 'Mfg. Balance',
+                         'v': true,
+                         'cla': 'centre',
+                         'scc': '2_mfg',
+                         "cgs": "closed"
+                     },
+                 ]
+             },
+             {
+                 "cc": "",
+                 "cp": 2,
+                 "hd": "",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "",
+                 "children": [
+                     {
+                         "cc": "DueDate",
+                         "cp": 13,
+                         "hd": "Due Date",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "dd",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "TrailingDepartment",
+                         "cp": 14,
+                         "hd": "Trailing Department",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "td",
+                         "cgs": "closed"
+                     },
+ 
+                     {
+                         "cc": "CRDD",
+                         "cp": 15,
+                         "hd": "CRDD",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "crdd",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "ccr",
+                         "cp": 16,
+                         "hd": "CCRName",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "ccr",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "CustomerName",
+                         "cp": 17,
+                         "hd": "Customer Name",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "cn",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Release Date",
+                         "cp": 30,
+                         "hd": "Release Date",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "rd",
+                         "cgs": "closed"
+                     },
+                     {
+ 
+                         "cc": "Remark History",
+                         "cp": 30,
+                         "hd": "Remark History",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "rh",
+                         "cgs": "closed"
+                     },
+ 
+                 ]
+             },
+ 
+             {
+                 "cc": "Calculate Attributes",
+                 "cp": 3,
+                 "hd": "Calculate Attributes",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Calculate Attributes",
+                 "children": [
+                     {
+                         "cc": "ElapsedDays",
+                         "cp": 18,
+                         "hd": "Elapsed Days",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "ed",
+ 
+                     },
+                     {
+                         "cc": "Attribute",
+                         "cp": 19,
+                         "hd": "Attribute ",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Attr",
+                         "cgs": "closed"
+                     },
+                 ]
+             },
+             {
+                 "cc": "Order Attribute",
+                 "cp": 4,
+                 "hd": "Order Attribute",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Order Attribute",
+                 "children": [
+                     {
+                         "cc": "PlantName",
+                         "cp": 20,
+                         "hd": "Plant Name",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "pn",
+ 
+                     },
+                     {
+                         "cc": "PONo.",
+                         "cp": 21,
+                         "hd": "PO No.",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "PO_No.",
+                         "cgs": "closed"
+                     }
+                 ]
+             },
+             {
+                 "cc": "Product Attribute",
+                 "cp": 5,
+                 "hd": "Product Attribute",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Product Attribute",
+                 "children": [
+                     {
+                         "cc": "Price",
+                         "cp": 22,
+                         "hd": "Price ",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Price",
+                     },
+                     {
+                         "cc": "ItemGroup",
+                         "cp": 23,
+                         "hd": "Item Group",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Itm_Grp",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Attribute1",
+                         "cp": 24,
+                         "hd": "Attribute 1",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Att_1",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Attribute2",
+                         "cp": 25,
+                         "hd": "Attribute 2",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Att_2",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Attribute3",
+                         "cp": 26,
+                         "hd": "Attribute 3",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Att_3",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Attribute4",
+                         "cp": 27,
+                         "hd": "Attribute 4",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Att_4",
+                         "cgs": "closed"
+                     },
+                 ]
+             },
+             {
+                 "cc": "Customer Attribute",
+                 "cp": 4,
+                 "hd": "Customer Attribute",
+                 "v": true,
+                 "cla": "Centre",
+                 "scc": "Customer Attribute",
+                 "children": [
+ 
+                     {
+                         "cc": "CustCode",
+                         "cp": 26,
+                         "hd": "Cust Code",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Cust_Cd",
+                         //"cgs": "open"
+                     },
+                     {
+                         "cc": "Region",
+                         "cp": 27,
+                         "hd": "Region ",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Rgn",
+                         "cgs": "closed"
+                     },
+                     {
+                         "cc": "Country",
+                         "cp": 28,
+                         "hd": "Country ",
+                         "v": true,
+                         "cla": "Centre",
+                         "scc": "Cntry",
+                         "cgs": "closed"
+                     }
+                 ]
+             },
+         ]*/
 
     /* const rowData = [
          {
@@ -765,21 +783,21 @@ const OverallBmReport = () => {
      ];*/
 
 
-     const getSystemType = async () => {
-         const DBRSettingsData: any = await getDBRsettingsData()
-            const DBRSettings = DBRSettingsData.data?.data;
-            const systemType = DBRSettings?.find((data: any)=>{
-                return data.flag == "SystemType"
-            })
-            setSystemType(Number(systemType.value))
-            setColumnDef()
-        ;
-     }
+    const getSystemType = async () => {
+        const DBRSettingsData: any = await getDBRsettingsData()
+        const DBRSettings = DBRSettingsData.data?.data;
+        const systemType = DBRSettings?.find((data: any) => {
+            return data.flag == "SystemType"
+        })
+        setSystemType(Number(systemType.value))
+        setColumnDef()
+            ;
+    }
 
 
     const setColumnDef = async () => {
         try {
-            
+
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
             const modifiedResponse = addDefaultAttributes(response?.data?.data)
@@ -794,7 +812,7 @@ const OverallBmReport = () => {
         }
     }
 
-    
+
     const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
         const modifiedResponse: ApiResponseItem[] = [];
         const cpMap: { [key: string]: number } = {};
@@ -831,7 +849,7 @@ const OverallBmReport = () => {
             modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
             modifiedItem.cla = "Centre"; // Fixed value
             modifiedItem.scc = item.scc; // Set scc to the name of cc
-            
+
             // If it's the first object, add default items to the ch array
 
             // if (index === 0) {
@@ -857,7 +875,7 @@ const OverallBmReport = () => {
         modifiedResponse.unshift(defaultOuterObject, defaultSecondObject);
 
         // Calculate cp for the additional object based on existing cp values
-        const maxCp = Math.max(...modifiedResponse.map(item => item.cp||0));
+        const maxCp = Math.max(...modifiedResponse.map(item => item.cp || 0));
 
         // Create the additional object to be added at the end
         const additionalObject: ApiResponseItem = {
@@ -910,8 +928,8 @@ const OverallBmReport = () => {
                 colId: child.hd,
                 hide: !child.v,
                 suppressHeaderFilterButton: true,
-                cellRenderer: (child.cc === 'ec' && systemType >= 3)  ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
-                maxWidth: child.cc === 'ec' || child.cc === 'ic' || child.scc === 'bpp' ? 80 : undefined ,
+                cellRenderer: (child.cc === 'ec' && systemType >= 3) ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
+                maxWidth: child.cc === 'ec' || child.cc === 'ic' || child.scc === 'bpp' ? 80 : undefined,
                 columnGroupShow: index > 2 ? "closed" : undefined,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
@@ -928,8 +946,8 @@ const OverallBmReport = () => {
                     'color': ColorsMTO.Pink.code,
                 } : {
                     justifyContent: child.cla,
-                    paddingRight: child.cla == "right" ? "3rem" : undefined , 
-                    paddingLeft: child.cla == "left" ? "1rem" : undefined , 
+                    paddingRight: child.cla == "right" ? "3rem" : undefined,
+                    paddingLeft: child.cla == "left" ? "1rem" : undefined,
                 }
             }));
         };
@@ -938,10 +956,10 @@ const OverallBmReport = () => {
 
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
-            floatingFilterComponentParams: section.scc === "chckbx" || section.scc == "ic" ? { suppressFilterButton: false }: undefined,
-            suppressHeaderFilterButton: section.scc === "chckbx" || section.scc === "ic" ?  true : false,
-            suppressMenu:  section.scc === "chckbx" || section.scc === "ic" ?  true: false,
-            sortable:  section.scc === "chckbx" || section.scc === "ic" ? false: true,
+            floatingFilterComponentParams: section.scc === "chckbx" || section.scc == "ic" ? { suppressFilterButton: false } : undefined,
+            suppressHeaderFilterButton: section.scc === "chckbx" || section.scc === "ic" ? true : false,
+            suppressMenu: section.scc === "chckbx" || section.scc === "ic" ? true : false,
+            sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
             maxWidth: section.scc === "chckbx" || section.scc == "ic" ? 60 : undefined,
             floatingFilter: section.scc === "chckbx" || section.scc == "ic" ? false : undefined,
@@ -957,10 +975,10 @@ const OverallBmReport = () => {
             //     } : section.cc === 'da' ? {
             //         'color': ColorsMTO.Pink.code
             //     } : undefined,
-            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3  ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer": undefined,
+            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3 ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
-            children: section.scc === "chckbx" ? undefined : section.ch ? mapChildren(section.ch ): undefined,
-            
+            children: section.scc === "chckbx" ? undefined : section.ch ? mapChildren(section.ch) : undefined,
+
         }));
     }
 
@@ -1046,16 +1064,16 @@ const OverallBmReport = () => {
         return Array.from(departmentNames);
     };
 
-    useEffect(()=>{
-        if(allotementRef.current)
+    useEffect(() => {
+        if (allotementRef.current)
             allotementRef.current.reset();
     }, [areRowsSelected])
 
     const getSelectedRow = async () => {
         const selectedData = refGraph2.current?.api.getSelectedRows();
-        if(selectedData.length == 0){
+        if (selectedData.length == 0) {
             setAreRowsSelected(false)
-        }else{
+        } else {
             setAreRowsSelected(true);
         }
         /* To persist the state*/
@@ -1233,20 +1251,20 @@ const OverallBmReport = () => {
                 },
             },
             getDetailRowData: async (params: any) => {
-                if(cache.current[`${params.data.oid}-${params.data.lid}`]){
+                if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
                     params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
                     return
                 }
                 const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
                 cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
-                params.successCallback(data?.data?.data) 
-                return 
+                params.successCallback(data?.data?.data)
+                return
             }
         },
     };
 
     useEffect(() => {
-        if(Object.keys(appliedFilters).length){
+        if (Object.keys(appliedFilters).length) {
             getInitialGridData(currentPage);
         }
     }, [currentPage, appliedFilters])
@@ -1285,6 +1303,81 @@ const OverallBmReport = () => {
     }, [tempGridData])
 
 
+    // for save and reset
+
+    useEffect(() => {
+        getUserColumnConfig();
+    }, [])
+
+
+    const [isReset, setIsReset] = useState(false);
+    const [columnState, setColumnState] = useState<any>();
+
+
+    const getUserColumnConfig = async () => {
+        try {
+            const data = await getUserUIConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProdOverallBMReport
+            });
+
+            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            setColumnState(newConfig);
+
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleSaveClick = async () => {
+        try {
+            if (refGraph2?.current?.api) {
+                const config = refGraph2.current.api.getColumnState();
+
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProdOverallBMReport,
+                    cs: JSON.stringify(config)
+                }
+                await updateUserUIConfigData([payload]);
+                await getUserColumnConfig();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleResetClick = () => {
+        setIsReset(true);
+    }
+
+    useEffect(() => {
+        if (refGraph2?.current && columnState?.length) {
+            const result = refGraph2?.current?.api?.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            if (!result) {
+                console.error('Failed to apply column state');
+            }
+        }
+    });
+
+    useEffect(() => {
+        if (isReset) {
+            setColumnState(coldefs);
+            setIsReset(false)
+        } else {
+            handleSaveClick();
+        }
+    }, [isReset]);
+
+
+
+
 
 
     return (
@@ -1303,15 +1396,17 @@ const OverallBmReport = () => {
                     setMultiFilter={setCurrFilter}
                     onFilterRemove={onFilterRemove}
                     isMfgSelected={isMfgSelected}
+                    handleSaveClick={handleSaveClick}
+                    handleResetClick={handleResetClick}
                 />
             </BMDepHeaderWraper>
 
-            {isGridLoading && !isExcelLoading ? <OverlayLoader /> :
+            {(isGridLoading && !isExcelLoading) || (isGetStateLoading || isSetStateLoading) ? <OverlayLoader /> :
 
                 <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                    <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" :"80vh", margin: '0' }}>
+                    <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>
                         <Allotment vertical={true} separator={true} ref={allotementRef}>
-                            <Allotment.Pane preferredSize={areRowsSelected ? "45%" :'70%'}>
+                            <Allotment.Pane preferredSize={areRowsSelected ? "45%" : '70%'}>
                                 <BTRAllomentSection>
                                     <GridView
                                         reference={refGraph2}
@@ -1328,7 +1423,7 @@ const OverallBmReport = () => {
                                         <GridView
                                             reference={tempGridRef}
                                             agGridProps={agGridProps}
-                                            columDef={coldefs}
+                                            columDef={tempColdef}
                                             convercolumnDef={tempGridData}
                                             handlePageChange={(cp) => handlePageChange(cp)}
                                             saveBtn={false}
@@ -1339,17 +1434,17 @@ const OverallBmReport = () => {
                                 </BTRAllomentSection>
                             </Allotment.Pane>
 
-                            <Allotment.Pane preferredSize={areRowsSelected ? "55%" :'30%'}>
+                            <Allotment.Pane preferredSize={areRowsSelected ? "55%" : '30%'}>
                                 <VFWrapper>
-                                <BTRAllomentSection>
-                                    <OrderElapsedGrid
-                                        isTrue={isOrderElapsedGrid}
-                                        data={deptWiseWipData}
-                                        deptName={deptName}
-                                        selectedOrderCount={masterSelectedRowData.length}
-                                        highAgeingdata={highAgeing}
-                                    />
-                                </BTRAllomentSection>
+                                    <BTRAllomentSection>
+                                        <OrderElapsedGrid
+                                            isTrue={isOrderElapsedGrid}
+                                            data={deptWiseWipData}
+                                            deptName={deptName}
+                                            selectedOrderCount={masterSelectedRowData.length}
+                                            highAgeingdata={highAgeing}
+                                        />
+                                    </BTRAllomentSection>
                                 </VFWrapper>
                             </Allotment.Pane>
                         </Allotment>
