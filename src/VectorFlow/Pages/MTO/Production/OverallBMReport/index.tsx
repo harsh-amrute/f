@@ -925,9 +925,11 @@ const OverallBmReport = () => {
                     padding: '1px'
                 } : child.cc === 'da' ? {
                     justifyContent: child.cla,
-                    'color': ColorsMTO.Pink.code
+                    'color': ColorsMTO.Pink.code,
                 } : {
                     justifyContent: child.cla,
+                    paddingRight: child.cla == "right" ? "3rem" : undefined , 
+                    paddingLeft: child.cla == "left" ? "1rem" : undefined , 
                 }
             }));
         };
@@ -1244,7 +1246,7 @@ const OverallBmReport = () => {
     };
 
     useEffect(() => {
-        if(appliedFilters){
+        if(Object.keys(appliedFilters).length){
             getInitialGridData(currentPage);
         }
     }, [currentPage, appliedFilters])

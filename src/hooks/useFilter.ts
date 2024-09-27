@@ -5,10 +5,10 @@ import { filterAttributes, staticHeaderConfig } from '../VectorFlow/Pages/MTO/Co
 import { FilterState } from '../VectorFlow/types/MTO';
 
 const useFilter=(filterData: any, page: any)=>{
-    const [multiFilter, setMultiFilter]= useState<any>()
+    const [multiFilter, setMultiFilter]= useState<any>({})
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
-    const [appliedFilters, setAppliedFilters] = useState<any>();
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
     
     const onFilterRemove = (parentId:string, filterId:any, value:any) => {
         const updatedMultiFilter = { ...multiFilter };
@@ -159,7 +159,7 @@ const useFilter=(filterData: any, page: any)=>{
     },[filterData])
 
     useEffect(()=>{
-        if(multiFilter){
+        if(Object.keys(multiFilter).length){
             setAppliedFilters(multiFilter);
         }
     },[multiFilter])
