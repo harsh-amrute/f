@@ -122,7 +122,7 @@ const APIFilterConfig = {
 
 const OverallBmReport = () => {
     //console.log()
-    const { mutateAsync: getOverallBMReportData, isLoading: OverAllBMLoading } = useGetOverAllBMReport();
+    const { mutateAsync: getOverallBMReportData } = useGetOverAllBMReport();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
     const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
     const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
@@ -146,6 +146,7 @@ const OverallBmReport = () => {
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
     const [filterData, setFilterData] = useState({});
     const [systemType, setSystemType] = useState<any>();
+    const [isGridLoading, setIsGridLoading] = useState(false);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
         state: currFilter,
@@ -172,16 +173,6 @@ const OverallBmReport = () => {
 
     useEffect(() => {
         try {
-            getDBRsettingsData().then((DBRSettingsData) => {
-                const DBRSettings = DBRSettingsData.data?.data;
-                const systemType = DBRSettings?.find((data: any) => {
-                    return data.flag == "SystemType"
-                })
-                if (systemType) {
-                    setSystemType(Number(systemType.value))
-                }
-            });
-            // setDBRSettings(DBRSettings)
             getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
                 const response: any = data?.data?.data;
                 const analytics = modifyAnalyticsData(response);
@@ -952,9 +943,11 @@ const OverallBmReport = () => {
                     padding: '1px'
                 } : child.cc === 'da' ? {
                     justifyContent: child.cla,
-                    'color': ColorsMTO.Pink.code
+                    'color': ColorsMTO.Pink.code,
                 } : {
                     justifyContent: child.cla,
+                    paddingRight: child.cla == "right" ? "3rem" : undefined,
+                    paddingLeft: child.cla == "left" ? "1rem" : undefined,
                 }
             }));
         };
@@ -963,12 +956,13 @@ const OverallBmReport = () => {
 
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
-            floatingFilterComponentParams: section.scc === "chckbx" ? { suppressFilterButton: false } : undefined,
-            suppressHeaderFilterButton: section.scc === "chckbx" ? true : false,
-            suppressMenu: section.scc === "chckbx" ? true : false,
+            floatingFilterComponentParams: section.scc === "chckbx" || section.scc == "ic" ? { suppressFilterButton: false } : undefined,
+            suppressHeaderFilterButton: section.scc === "chckbx" || section.scc === "ic" ? true : false,
+            suppressMenu: section.scc === "chckbx" || section.scc === "ic" ? true : false,
+            sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
             maxWidth: section.scc === "chckbx" || section.scc == "ic" ? 60 : undefined,
-            floatingFilter: section.scc === "chckbx" ? false : undefined,
+            floatingFilter: section.scc === "chckbx" || section.scc == "ic" ? false : undefined,
             headerName: section.hd,
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
             colId: section.hd,
@@ -998,24 +992,24 @@ const OverallBmReport = () => {
     }
 
     useEffect(() => {
-        getSystemType();
+        getSystemType(); // analytics
         // setColumnDef();
         // const colDefs = mapApiResponseToColDefs(apiResponse);
         // //console.log('coldefs', colDefs)
         // setColdef(colDefs)
-        getInitialGridData(1);
+        // getInitialGridData(1);
         getFilterData();
     }, [])
 
     useEffect(() => {
-        if (OverAllBMLoading) {
+        if (isGridLoading) {
             toast.dismiss();
             notifyLoader("Loading Data ...")
         }
         else {
             toast.dismiss();
         }
-    }, [OverAllBMLoading])
+    }, [isGridLoading])
 
     const customCellRenderers = useMemo(() => (
         {
@@ -1034,12 +1028,16 @@ const OverallBmReport = () => {
 
     const getInitialGridData = async (currentPage: number) => {
         try {
+            setIsGridLoading(true)
             const formatedFilters = formatFilterJSON(appliedFilters);
             const gridData = await getOverallBMReportData({ page: currentPage, appliedFilters: formatedFilters });
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
+            setIsGridLoading(false)
+
         }
         catch (e) {
+            setIsGridLoading(false)
             console.log(e)
         }
     }
@@ -1266,7 +1264,9 @@ const OverallBmReport = () => {
     };
 
     useEffect(() => {
-        getInitialGridData(currentPage);
+        if (Object.keys(appliedFilters).length) {
+            getInitialGridData(currentPage);
+        }
     }, [currentPage, appliedFilters])
 
 
@@ -1401,7 +1401,7 @@ const OverallBmReport = () => {
                 />
             </BMDepHeaderWraper>
 
-            {OverAllBMLoading && !isExcelLoading ? <OverlayLoader /> :
+            {isGridLoading && !isExcelLoading ? <OverlayLoader /> :
 
                 <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                     <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>

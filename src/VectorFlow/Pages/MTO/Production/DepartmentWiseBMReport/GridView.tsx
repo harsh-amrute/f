@@ -41,6 +41,9 @@ const GridView = ({
                     detailRowAutoHeight
                     tooltipMouseTrack={true}
                     //defaultColDef={{maxWidth:150}}
+                    onGridReady = {(params)=>{
+                        params.api.autoSizeAllColumns();
+                    }}
                     statusBar={{
                         statusPanels: [
                             { statusPanel: 'agTotalRowCountComponent', align: 'left' },
