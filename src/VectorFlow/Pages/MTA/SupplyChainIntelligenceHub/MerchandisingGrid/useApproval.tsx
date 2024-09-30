@@ -1,5 +1,5 @@
-import { ColDef, ColGroupDef,IRichCellEditorParams,ICellEditorParams,ValueFormatterParams,ValueParserParams } from "ag-grid-enterprise";
-import { useGetRemovalData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/MerchandisingGrid";
+import { ColDef, ColGroupDef,IRichCellEditorParams,ICellEditorParams,ValueFormatterParams} from "ag-grid-enterprise";
+import { useGetRemovalData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/MCGrid";
 import { useEffect, useState, useMemo } from "react";
 import { notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
@@ -13,7 +13,8 @@ import { AgGridReactProps } from "ag-grid-react";
 const useApproval = () => {
   const [RemovalData, setRemovalData] = useState<any[]>([]);
   const { mutateAsync: getRemovalData } = useGetRemovalData();
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selected, setSelectedOption] = useState('');
+
   const [rowDataOptions,setRowDataOptions]:any = useState([]);
 
   const onSelectChange = (params: any) => {
@@ -57,7 +58,6 @@ const useApproval = () => {
   
   const ActionIcon = (params: any) => {
     console.log(params);
-    // const [activeIcon, setActiveIcon] = useState(null);
     const handleIconClick = (action:string) => {
     
       const currentRow = RemovalData.find((item) => (item.gridId === params.data.gridId) && (item.group === params.data.group));
@@ -84,7 +84,6 @@ const useApproval = () => {
       <div style={{ justifyContent: "center", display: "flex", alignItems: "center", height: "100%", }}>
         <img src={getIconSrc("check","accept",params)} height={20} width={20} style={{ marginRight: "30px", cursor: "pointer" }} onClick={() => handleIconClick("accept")}/>
         <img src={getIconSrc("clock","sleep",params)} height={20} width={20} style={{ cursor: "pointer" }} onClick={() => handleIconClick("sleep")}/>
-        {/* {params.value} */}
       </div>
     );
   };
@@ -151,7 +150,7 @@ const useApproval = () => {
       { field: 'totalOptions', colId:'totalOptions', headerName: 'Total Options', },
       { field: 'fullOptions', colId:'fulloptions', headerName: 'Full Options', },
       { field: 'divider', colId:'divider', width: 40, resizable:false,cellDataType:false,
-        rowSpan:(params)=>{return 5},        
+        rowSpan:()=>{return 5},        
       cellRenderer:VerticalTextCellRenderer,
       cellStyle:{
         borderLeft: '1px solid black',
@@ -168,7 +167,6 @@ const useApproval = () => {
       {
           field: 'optionSelection',
           headerName: 'Option Selection',
-          // cellRenderer:optionsCellRenderer,
           cellEditor: 'agRichSelectCellEditor',
           editable: true,
           valueFormatter:valueFormatter,
@@ -184,19 +182,6 @@ const useApproval = () => {
             valuePlaceholder:'Please Select Atleast One Option'
           } as IRichCellEditorParams  
       },
-      // {
-      //   field: 'optionSelection',
-      //   headerName: 'Option Selection',
-      //   colId:'optionSelection',
-       
-      //   // cellRenderer:OptionSelection
-      //   // cellRenderer: (params:any) => {
-      //   //   if (params.node.group === false) {
-      //   //     return <OptionSelection {...params}/>;
-      //   //   }
-      //   //   return null; 
-      //   // }   
-      // },
       { 
       field: 'action', 
       headerName: 'Action',
@@ -229,9 +214,8 @@ const useApproval = () => {
         MCGridColumnDefs,
         McGridRowData,
         gridOptions,
-        agGridProps
-        // GridRef
-        
+        agGridProps  ,
+        selected      
     }
 }
 export default  useApproval

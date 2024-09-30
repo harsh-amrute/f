@@ -2,7 +2,6 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import RetailActionToolBar from "../../../../../components/layouts/RetailActionToolBar"
 import { useUserData } from "../../../../../context"
 import useApproval from "./useApproval";
-import OptionSelection from "./optionSelection";
 import "./styles.css";
 
 import ChartView from "./ChartView"
@@ -46,9 +45,7 @@ const MCGrid = () =>{
           {...agGridProps}
             columnDefs={MCGridColumnDefs}
             rowData={McGridRowData}
-           components={{
-            optionSelection:OptionSelection,
-           }}
+           
            suppressRowClickSelection={true}
            gridOptions={gridOptions}
             enableRangeSelection={true} 
