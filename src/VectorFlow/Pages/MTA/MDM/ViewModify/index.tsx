@@ -21,7 +21,8 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import _ from "lodash";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
-import { useGetBufferTypeMaster } from '../../../../Services/MTA/MDM'
+import { useGetBufferTypeMaster, useSaveBufferMasterTask } from '../../../../Services/MTA/MDM'
+import { notifyError } from "../../../../../helpers/notify";
 
 type ColumnDef = {
   field: string;
@@ -125,10 +126,11 @@ const ViewModify = () => {
 
   //console.log('<><>>>>><>activeMaster>><>>>>><>', activeMaster.colDefs)
   const [MtoGridData, setData] = useState<any>();
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [updatedColDef, setUpdatedColDef] = useState<any>();
   const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
   const [addedBufferMaster, setAddedBufferMaster] = useState<any>([]);
+  const {mutateAsync: saveBufferMasterTask } = useSaveBufferMasterTask();
   //const [isEditable, setIsEditable] = useState(false);
 
 
@@ -136,22 +138,25 @@ const ViewModify = () => {
     const modifiedColDefs = colDefs.map((colDef: any) => {
       const editable = (params: any) => params.node.rowIndex === 0;
 
+      // console.log("Buffer type masters", bufferTypeMaster)
+
       if (colDef.field === 'bt') {
         return {
           ...colDef,
-          cellEditor: 'agSelectCellEditor',
+          cellEditor: 'agRichSelectCellEditor',
           valueFormatter: myFormatter,
           cellEditorParams: {
-            values: bufferTypeMaster.map((item: any) => item.dsc), // Dropdown values
+            values: bufferTypeMaster.map((item: any) =>  item.dsc), // Dropdown values
           },
           editable,
         };
       }
 
       return {
-        valueFormatter: myFormatter,
+        // valueFormatter: myFormatter,
 
         ...colDef,
+        // cellEditor: "agNumberCellEditor",
         editable,
       };
     });
@@ -203,7 +208,7 @@ const ViewModify = () => {
 
     let val = params.value;
     bufferTypeMaster.forEach((ele: any) => {
-      console.log(ele.id, currBuff)
+      // console.log(ele.id, currBuff)
       if (ele.id.toString() === currBuff.toString()) {
 
         val = ele.dsc;
@@ -234,6 +239,12 @@ const ViewModify = () => {
     setUpdatedColDef(modifiedColDefs);
   }
 
+  useEffect(()=>{
+    if(activeMaster.rowData.length>0 ){
+      setIsButtonDisabled(false);
+    }
+  },[activeMaster.rowData])
+
   useEffect(() => {
     if (bufferTypeMaster) {
       setBufferInColDef(activeMaster.colDefs)
@@ -243,18 +254,38 @@ const ViewModify = () => {
 
 
   const addRow = (params: any) => {
-    console.log('added row params', params)
-    const newRows = [...addedBufferMaster];
-    newRows.push(params.data);
-    console.log("row added", addedBufferMaster, addedBufferMaster.length);
-    setAddedBufferMaster(newRows);
-    setIsButtonDisabled(false);
-    // setUpdatedColDef(activeMaster.colDefs);
-    setBufferInColDef(activeMaster.colDefs)
-    // TODO add to the local state
-  }
+    // console.log('added row params', params)
 
-  const handleCancel = (params: any) => {
+    const newRows = [...addedBufferMaster];
+    // Check if the entered Buffer type is unique 
+    if(params.data.bsz===""){
+      notifyError("Buffer size cannot be empty!")
+      return;
+    }
+    
+    const allRows = [...activeMaster.rowData, ...newRows];
+    let isValid = true;
+    allRows.forEach((e)=>{
+
+      if(e.bsz== params.data.bsz && e.bt=== params.data.bt){
+        notifyError("Buffer size must be unique!.")
+        isValid = false;
+        return;
+      }
+    })
+
+    if(isValid){
+      newRows.push(params.data);
+      // console.log("row added", addedBufferMaster, addedBufferMaster.length);
+      setAddedBufferMaster(newRows);
+      setIsButtonDisabled(false);
+      // setUpdatedColDef(activeMaster.colDefs);
+      setBufferInColDef(activeMaster.colDefs)
+      // TODO add to the local state
+    }
+    }
+    
+    const handleCancel = (params: any) => {
 
     setIsButtonDisabled(false);
     setData((prevRowData: any) => {
@@ -265,7 +296,7 @@ const ViewModify = () => {
       return newData;
     });
     setUpdatedColDef(activeMaster.colDefs);
-    // setBufferInColDef(activeMaster.colDefs)
+    setBufferInColDef(activeMaster.colDefs);
 
     // Optionally remove the last row
     // setData(MtoGridData.slice(0, -1));
@@ -304,10 +335,10 @@ const ViewModify = () => {
       bcd: `PROD-Buff`,
       bd: `BUFF-`,
       bsz: '', // Example value; modify as needed
-      slt: '',
-      mlt: '',
+      slt: 0,
+      mlt: 0,
       ib: false,
-      bt: '',
+      bt: 1,
       editable: true,
     };
     setData((prevData: any) => [newRow, ...prevData]);
@@ -319,6 +350,43 @@ const ViewModify = () => {
   const onGridReady = (params: any) => {
     params.api.sizeColumnsToFit();
   };
+
+  // Saves Buffer Data for MTO
+  const onMTOSaveBufferData= async()=>{
+
+    const BufferPostObj: any = {
+      mid: activeMaster.id,
+      uid: user.user.id.toString(),
+      unm: user.user.name,
+      buffData: []
+    }
+
+    addedBufferMaster.forEach((e:any)=>{
+      bufferTypeMaster.forEach((e:any)=>{
+        if(e.dsc===e.bt){
+          e.bt=e.id;
+        }
+      })
+      e.ib= (e.ib==="false"?0: 1);
+      e.mlt = parseInt(e.mlt);
+      e.slt = parseInt(e.slt);
+
+
+      BufferPostObj.buffData.push(_.omit(e,'editable'));
+    })
+
+    try{
+      const response = await saveBufferMasterTask(BufferPostObj);
+      // console.log("save api response...",response)
+      if(response.status=== 200){
+        setAddedBufferMaster([]);
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+    
+  }
 
 
 
@@ -431,6 +499,7 @@ const ViewModify = () => {
                   readOnlyEdit={false}
                   onCellEditingStopped={(params) => {
                     console.log('onCellEditingStopped', params)
+
                   }}
                   ref={ref}
                   columnDefs={updatedColDef}
@@ -639,8 +708,8 @@ const ViewModify = () => {
           onDeleteOnline={() => console.log('')}
           masterId={activeMaster.id}
           mtoSaveData={true}
-          onMTOSaveData={() => { console.log("Data saved for mto") }}
-          isMTOSaveDataDisabled={addedBufferMaster.length !== 0}
+          onMTOSaveData={ onMTOSaveBufferData}
+          isMTOSaveDataDisabled={addedBufferMaster.length === 0}
         />
       }
 
