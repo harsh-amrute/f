@@ -567,7 +567,7 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/prod-plan-icon",
     url: "/production-planning-scheduling/enquiry-response",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager"],
     child: [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.enquiryResponse",
@@ -603,13 +603,13 @@ export const listMenuParent: any = [
         name: "navbar.listMenuParent.prodAndPlanningScheduling.deptWiseBMReport",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-scheduling/deptwise-bm-report",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.overallBMReport",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-scheduling/overall-bm-report",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.insightAndTrends",

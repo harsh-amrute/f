@@ -1,11 +1,14 @@
 import {useEffect, useState} from 'react';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
-import { checkValue, findUniqueKeysAndValues, getDynamicAttributes, getKeyName } from '../helpers/utils';
+import { checkValue, findUniqueKeysAndValues, formatFilterJSON, getDynamicAttributes, getKeyName } from '../helpers/utils';
 import { filterAttributes, staticHeaderConfig } from '../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
 import { FilterState } from '../VectorFlow/types/MTO';
 
 const useFilter=(filterData: any, page: any)=>{
     const [multiFilter, setMultiFilter]= useState<any>({})
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
+    const [appliedFilters, setAppliedFilters] = useState<any>({});
     
     const onFilterRemove = (parentId:string, filterId:any, value:any) => {
         const updatedMultiFilter = { ...multiFilter };
@@ -27,6 +30,20 @@ const useFilter=(filterData: any, page: any)=>{
         setMultiFilter(updatedMultiFilter);
         return updatedMultiFilter
     };
+
+    const onApplyFilter = (filter: any) => {
+        console.log(formatFilterJSON(filter), 'APPLIED Filters');
+        setAppliedFilters(filter);
+        setIsMfgSelected(true);
+        setIsFilterOpen(false)
+    }
+    const onAddFilter = () => {
+        setIsFilterOpen(true)
+    }
+
+    const toggleFilter = (state: boolean) => {
+        setIsFilterOpen(state);
+    }
 
     useEffect(()=>{
 
@@ -140,14 +157,25 @@ const useFilter=(filterData: any, page: any)=>{
     }
 
     },[filterData])
-        
+
+    useEffect(()=>{
+        if(Object.keys(multiFilter).length){
+            setAppliedFilters(multiFilter);
+        }
+    },[multiFilter])
            
     // console.log(defaultFilterState, 'DEFAULT');
     // console.log(multiFilter, 'MULTI');
     return{
         state:multiFilter,
         setState:setMultiFilter,
-        onFilterRemove:onFilterRemove
+        onFilterRemove:onFilterRemove,
+        isFilterOpen:isFilterOpen,
+        isMfgSelected:isMfgSelected,
+        onApplyFilter:onApplyFilter,
+        onAddFilter:onAddFilter,
+        toggleFilter:toggleFilter,
+        appliedFilters:appliedFilters
     }
 
 }

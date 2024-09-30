@@ -23,7 +23,7 @@ import {
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 
 const APIFilterConfig = {
@@ -39,16 +39,25 @@ const APIFilterConfig = {
 
 const OrderBalance = () => {
   const [isGridView, setIsGridView] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
   const { screenHeight } = useViewPort();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-  const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
-  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
+  const { 
+    state: currFilter, 
+    setState: setCurrFilter, 
+    onFilterRemove, 
+    isFilterOpen, 
+    isMfgSelected,
+    onAddFilter, 
+    onApplyFilter, 
+    toggleFilter,
+    appliedFilters
+} = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Balance);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getOrderBalanceData, isLoading, isError, isSuccess } = useGetOrderBalanceData();
@@ -76,18 +85,6 @@ const OrderBalance = () => {
     catch (e) {
       console.log(e);
     }
-  }
-
-  const onApplyFilter = (filter: any) => {
-    console.log(filter)
-    setIsFilterOpen(false)
-  }
-  const onAddFilter = () => {
-    setIsFilterOpen(true)
-  }
-
-  const toggleFilter = (state: boolean) => {
-    setIsFilterOpen(state);
   }
 
   const getGraphData = async (params: any) => {
@@ -152,17 +149,23 @@ const OrderBalance = () => {
     setIsReset(true);
   }
 
+  const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({ page_name: FilterPageName.Prod_Order_Balance });
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   useEffect(() => {
     setColumnDef();
     getUserColumnConfig();
     getGraphData({ graphflag: 1, ordertype: 1 });
+    getFilterData();
     // <-------------- uncomment below code to enable dropdown for orderType    --------->  
      getOrderOptions()
   }, [])
-
-  useEffect(() => {
-    setFilterData(filterResponse?.data.data)
-  }, [filterResponse]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -200,34 +203,12 @@ const OrderBalance = () => {
         multiFilter={currFilter}
         setMultiFilter={setCurrFilter}
         onFilterRemove={onFilterRemove}
+        isMfgSelected={isMfgSelected}
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
       />
       <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: '25px' }}>
         {isGridView ? (
-          // <div data-testid="grid-view" style={{ height: screenHeight - 200 }}>
-          //   <VFTable
-          //     {...gridOptions}
-          //     columnDefs={tableColDefs}
-          //     rowData={gridData || []}
-          //     tooltipHideDelay={100000}
-          //     tooltipShowDelay={0}
-          //     tooltipMouseTrack={true}
-          //     ref={gridRef}
-          //     statusBar={{
-          //       statusPanels: [
-          //         { statusPanel: "agTotalRowCountComponent", align: "left" },
-          //       ],
-          //     }}
-          //   />
-          //   <VFPagination
-          //     selectedRows={0}
-          //     rowsPerPage={pagination.mtoPageSize}
-          //     totalRows={totalRows}
-          //     currentPage={currentPage}
-          //     handleChangePage={handlePageChange}
-          //   />
-          // </div>
           <GridView
             getData={getOrderBalanceData}
             colDef={colDef}
@@ -237,6 +218,7 @@ const OrderBalance = () => {
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
+            appliedFilters={appliedFilters}
           />
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>

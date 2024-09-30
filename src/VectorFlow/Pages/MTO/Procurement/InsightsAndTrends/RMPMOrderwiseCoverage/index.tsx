@@ -43,11 +43,19 @@ const RMPMOrderwiseCoverage = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([{}]);
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filterData, setFilterData] = useState({});
-    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_OrderWise);
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+        appliedFilters
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_OrderWise);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -206,7 +214,7 @@ const RMPMOrderwiseCoverage = () => {
         if (graph === 1) {
             try {
                 notifyLoader("Loading Data...")
-                const APIData = await getOrderwiseCoverageData({ graph, page });
+                const APIData = await getOrderwiseCoverageData({ graph });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
                     setApiGraphData(APIData?.data?.data);
@@ -221,7 +229,8 @@ const RMPMOrderwiseCoverage = () => {
         else {
             try {
                 notifyLoader("Loading Data...")
-                const APIData = await getOrderwiseCoverageData({ graph, page });
+                const formatedFilters = formatFilterJSON(appliedFilters);
+                const APIData = await getOrderwiseCoverageData({ graph, page, appliedFilters: formatedFilters });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
                     setApiGridData(APIData?.data?.data?.results);
@@ -277,11 +286,7 @@ const RMPMOrderwiseCoverage = () => {
     const handleResetClick = () => {
         setIsReset(true);
     }
-    
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
-
+   
     const getFilterData = async () => {
     try {
         const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_RM_PM_OrderWise});
@@ -291,23 +296,16 @@ const RMPMOrderwiseCoverage = () => {
     }
     }
 
-    const onApplyFilter = (filter: any) => {
-        console.log(formatFilterJSON(filter), 'APPLIED Filters');
-        setIsMfgSelected(true);
-        setIsFilterOpen(false)
-    }
-    const onAddFilter = () => {
-        setIsFilterOpen(true)
-    }
-
-
     useEffect(() => {
         getUserColumnConfig();
         setColumnDef();
         GetData(1, 1);
-        GetData(0, 1);
         getFilterData()
     }, [])
+
+    useEffect(()=>{
+        GetData(0, 1);
+    },[appliedFilters]);
 
     useEffect(() => {
         setConvertedData(mapDataToColumns(apiGridData, columnData));

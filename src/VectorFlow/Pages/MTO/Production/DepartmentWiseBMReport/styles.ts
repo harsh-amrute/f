@@ -11,6 +11,7 @@ import * as globalstyles from '../../../../../styles/global'
 //     background-color:red;
 //   }
 export const BMDepWrapper = styled.div`
+margin-left: 3rem;
 @media only screen and (min-width: ${gridSystem.size.mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
    margin-left: -40px;
    margin-top: -40px;
@@ -19,7 +20,7 @@ export const BMDepWrapper = styled.div`
 `
 
 export const BMDepHeaderWraper = styled.div`
-  zoom: 1.25;
+  zoom: 1;
  
 `
 export const BMDepSubHeaderWraper = styled.div`
@@ -29,12 +30,13 @@ export const BMDepSubHeaderWraper = styled.div`
 export const NoDataAvailableContainer = styled.div`
       border: 2px dashed #ccc;
       width: 100%;
-      height: 70%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       background-color: #fff;
       margin-top:20px;
+      overflow: hidden;
 `
 
 export const NoDataToShowDiv = styled.div`
@@ -45,14 +47,14 @@ export const NoDataToShowDiv = styled.div`
 export const NoDataText = styled.p`
    color:#000000;
    font-family:Roboto;
-   font-size:20px;
+   font-size:16px;
    font-weight:500;
 `
 
 export const SelectText = styled.p`
   color:#000000;
   font-family:Roboto;
-  font-size:20px;
+  font-size:14px;
   color: grey;
 `
 
@@ -195,6 +197,7 @@ export const ETACellRendererWrapper = styled.div`
 export const VFWrapper = styled.div`
   height: 100%;
   display: flex;
+  flex-direction: column;
   & .ag-theme-alpine {
     flex: 1;
   }
@@ -206,9 +209,13 @@ export const VFWrapper = styled.div`
     background-color: black;
     color: white;
   }
-  & .ag-theme-alpine .ag-header-row:nth-child(3){
-    background-color: rgb(255,255,255);
-    color: black;
+  & .ag-theme-alpine .ag-header-row:nth-child(3), & .ag-theme-alpine .ag-header-row-column-filter{
+    background-color: #f7f7f7 !important;
+    color: black !important;
+  }
+  & > div[data-testid="vf_pagination"]{
+    padding: 0 !important;
+    margin-top: -20px !important;
   }
 
 `
@@ -260,6 +267,7 @@ export const BPRDailyAnalyticsTableContainer = styled.div`
 export const BPRDailyAnalyticsTableHeaderContainer = styled.div`
     display:flex;
     flex-direction:row;
+    justify-content:space-between;
     color:inherit;
 `
 

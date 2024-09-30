@@ -8,6 +8,7 @@ import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import CustomTagTooltip from '../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import { pagination } from '../Enum';
+import { formatFilterJSON } from '../../../../../helpers/utils';
 
 interface IGridViewProps {
     getData: (isGraph: number) => any,
@@ -18,11 +19,12 @@ interface IGridViewProps {
     setCurrentGridRef: any,
     currentGridRef: any,
     columnState: any,
+    appliedFilters?: any
 }
 
 const GridView = (props: IGridViewProps) => {
 
-    const { getData, isLoading, isError, isSuccess, setCurrentGridRef, currentGridRef, columnState, colDef } = props;
+    const { getData, isLoading, isError, isSuccess, setCurrentGridRef, currentGridRef, columnState, colDef, appliedFilters } = props;
 
     const gridRef = useRef<any>(null);
     const [gridData, setGridData] = useState([]);
@@ -69,7 +71,8 @@ const GridView = (props: IGridViewProps) => {
 
     const getGridData = async (params: any) => {
         try {
-            const response = await getData(params);
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const response = await getData({...params, appliedFilters: formatedFilters});
             setGridData(response?.data?.data?.results || []);
             setTotalRows(response?.data?.data?.count || 0)
         }
@@ -86,8 +89,7 @@ const GridView = (props: IGridViewProps) => {
 
     useEffect(() => {
         getGridData({ graphflag: 0, page: currentPage });
-        
-    }, [])
+    }, [appliedFilters])
 
 
 

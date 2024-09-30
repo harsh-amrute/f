@@ -17,7 +17,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { formatFilterJSON, getColumnDefinations } from "../../../../../../helpers/utils";
+import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
@@ -59,15 +59,22 @@ const DayWiseCoverage = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([{}]);
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filterData, setFilterData] = useState({});
-    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { mutateAsync: getData, isLoading: isCalenderLoading } = useGetDayWiseCoverageData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData();
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Day_Wise_Coverage);
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter 
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Day_Wise_Coverage);
     const { user } = useUserData();
     const reportName = "DayWiseCoverage";
 
@@ -275,10 +282,6 @@ const DayWiseCoverage = () => {
         setIsReset(true);
     }
 
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
-
     const getFilterData = async () => {
     try {
         const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Day_Wise_Coverage});
@@ -286,15 +289,6 @@ const DayWiseCoverage = () => {
     } catch (error) {
         console.error(error);
     }
-    }
-
-    const onApplyFilter = (filter: any) => {
-        console.log(formatFilterJSON(filter), 'APPLIED Filters');
-        setIsMfgSelected(true);
-        setIsFilterOpen(false)
-    }
-    const onAddFilter = () => {
-        setIsFilterOpen(true)
     }
 
     useEffect(() => {

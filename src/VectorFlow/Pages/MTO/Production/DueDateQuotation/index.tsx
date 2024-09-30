@@ -72,16 +72,19 @@ const DueDateQuotation = () => {
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const [filterData, setFilterData] = useState({});
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState<any>({});
-  const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
   const {  mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-  const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
+  const  { 
+    state: currFilter, 
+    setState: setCurrFilter, 
+    onFilterRemove, 
+    isFilterOpen, 
+    isMfgSelected,
+    onAddFilter, 
+    onApplyFilter, 
+    toggleFilter,
+    appliedFilters
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
 
-
-  const toggleFilter = (state: boolean) => {
-    setIsFilterOpen(state);
-  }
   const [loading, setLoading] = useState(false);
 
   const extras: any = [
@@ -366,16 +369,6 @@ const DueDateQuotation = () => {
     }
   }
 
-  const onApplyFilter = (filter: any) => {
-    setAppliedFilters(filter);
-    setIsMfgSelected(true);
-    setIsFilterOpen(false)
-  }
-
-  const onAddFilter = () => {
-    setIsFilterOpen(true)
-  }
-
   const getUpdatedFilterData = async () => {
     try {
       const formatedFilters = formatFilterJSON(appliedFilters);
@@ -392,10 +385,6 @@ const DueDateQuotation = () => {
       notifyError("Something Went Wrong!");
     }
   }
-
-  useEffect(() => {
-    setAppliedFilters(currFilter);
-  }, [currFilter])
 
   useEffect(() => {
     getUpdatedFilterData();

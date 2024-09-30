@@ -4,7 +4,6 @@ import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloati
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import OverlayLoader from '../../Common/Loader';
-import { formatFilterJSON } from "../../../../../helpers/utils";
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { FilterPageName } from "../../Common/Enum";
@@ -21,14 +20,21 @@ const APIFilterConfig = {
 };
 
 const ProcurementPlanning = () => {
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filterData, setFilterData] = useState({});
-    const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     const datetime = moment(d).format(format2);
     const [date, selectedDate] = useState<string>(datetime);
-    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Procurement_Planning);
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen,
+        isMfgSelected, 
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter 
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Procurement_Planning);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
         renderView, 
@@ -44,20 +50,6 @@ const ProcurementPlanning = () => {
     const handleDateChange = (date: string) => {
         selectedDate(date);
     };
-
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
-
-    const onApplyFilter = (filter: any) => {
-        console.log(formatFilterJSON(filter), 'APPLIED Filters');
-        setIsMfgSelected(true);
-        setIsFilterOpen(false)
-    }
-    
-    const onAddFilter = () => {
-        setIsFilterOpen(true)
-    }
 
     const getFilterData = async () => {
         try {

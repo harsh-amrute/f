@@ -34,7 +34,6 @@ const BMTrends = () => {
         label: "Absolute Value",
         value: 'Absolute Value'
     });
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [bmTrendData, setBMTrendData] = useState<BufferTrendData[]>([]);
     const { data } = useGetBMTrendsData() || {};
     const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(bmTrendData, 0, horizonDays, false));
@@ -42,22 +41,18 @@ const BMTrends = () => {
     const [rowData, setRowData] = useState(numericData);
     const [chartLoading, setChartLoading] = useState(true);
     const [tableLoading, setTableLoading] = useState(true);
-    const { data: filterResponse, /*isLoading*/ } = useGetFilterData();
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const [filterData, setFilterData] = useState({});
-    const { state: currFilter, setState: setCurrFilter, onFilterRemove } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
-
-    const onApplyFilter = (filter: any) => {
-        console.log(filter)
-        setIsFilterOpen(false)
-    }
-    const onAddFilter = () => {
-        setIsFilterOpen(true)
-    }
-
-    const toggleFilter = (state: boolean) => {
-        setIsFilterOpen(state);
-    }
-
+    const  { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
 
     const colors = [
         { label: 'Black', value: 'black', key: 'b' },
@@ -413,6 +408,19 @@ const BMTrends = () => {
         )
     }
 
+    const getFilterData = async () => {
+        try {
+            const response = await getPageWiseFilterData({});
+            setFilterData(response?.data.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(()=>{
+        getFilterData();
+    },[])
+
     useEffect(() => {
         if (numericData) {
             setRowData(numericData);
@@ -426,13 +434,6 @@ const BMTrends = () => {
             setNumericData(filterDataByDaysGap(updatedData, 0, horizonDays, false));
         }
     }, [data]);
-
-    useEffect(() => {
-        setFilterData(filterResponse?.data.data)
-    }, [filterResponse]);
-
-
-
 
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
@@ -464,6 +465,7 @@ const BMTrends = () => {
                 multiFilter={currFilter}
                 setMultiFilter={setCurrFilter}
                 onFilterRemove={onFilterRemove}
+                isMfgSelected={isMfgSelected}
             />
             <div style={{ paddingLeft: '25px', height: screenHeight - 180, display: 'flex' }}>
                 <SplitGraphContainer

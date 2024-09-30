@@ -648,7 +648,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
 
     return (
         isTrue ?
-            <div style={{ display: 'flex', gap: "2rem" }}>
+            <div style={{ display: 'flex', gap: "2rem", marginBottom: "2rem" }}>
                 <BPRViewTableWrapper>
                     <BPRViewTablePrefixWrapper>
                         <BPRViewTableHeaderTab
@@ -699,7 +699,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
                                 </ExpansionHeader>
                                 {(isLeftPanelOrderStatusOpen) && (
                                     <ExpansionContent>
-                                        <VFWrapper>
+                                        <VFWrapper style={{height: "300px"}}>
                                             <VFTable
                                                 {...agGridProps}
                                                 columnDefs={ordeStatusColDef}
@@ -736,13 +736,15 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
                                     </ExpansionHeaderGroup>
                                 </ExpansionHeader>
                                 {(isleftPanelElapsedTimeOpen) && (
-                                    <ExpansionContent>
-                                        <VFTable
-                                            {...agGridPropsElapsedTime}
-                                            height='400px'
-                                            rowData={ElapsedTimeRowData}
-                                            columnDefs={elapsedOrderColdef}
-                                        />
+                                    <ExpansionContent >
+                                        <VFWrapper style={{height: "300px"}}>
+                                            <VFTable
+                                                {...agGridPropsElapsedTime}
+                                                height='400px'
+                                                rowData={ElapsedTimeRowData}
+                                                columnDefs={elapsedOrderColdef}
+                                                />
+                                        </VFWrapper>
                                     </ExpansionContent>
                                 )}
                             </ExpansionWrapper>
@@ -801,12 +803,14 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
                             </ExpansionHeader>
                             {(isRightPanel) && (
                                 <ExpansionContent>
-                                    <VFTable
-                                        {...agGridProps}
-                                        height='400px'
-                                        columnDefs={highAgeingColdef}
-                                        rowData={highAgeingdata}
-                                    />
+                                    <VFWrapper style={{height: "300px"}}>
+                                        <VFTable
+                                            {...agGridProps}
+                                            height='400px'
+                                            columnDefs={highAgeingColdef}
+                                            rowData={highAgeingdata}
+                                        />
+                                    </VFWrapper>
                                 </ExpansionContent>
                             )}
                         </ExpansionWrapper>
@@ -816,7 +820,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
 
             :
 
-            <NoDataAvailableContainer>
+            <NoDataAvailableContainer style={{marginBottom: "2rem"}}>
                 <NoDataToShowDiv>
                     <NoDataText>No Data To Show</NoDataText>
                     <SelectText>Please select a row from above table to view data</SelectText>

@@ -7,13 +7,38 @@ import DownTrend from './DownTrend'
 import EmgAndUnres from './EmgAndUnres'
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
+import useFilter from '../../../../../../hooks/useFilter'
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
+import { FilterPageName } from '../../../Common/Enum'
+
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Poogi_Trend_Of_Failure_Reasons" : {
+            mjr : true,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
 
 const TrendsOfFailureReason = () => {
 
     const [graphData, setGraphData] = useState<any>({});
     const { mutateAsync: getTrendsFailureData, isLoading, isError, isSuccess } = useTopFailureReasonData();
+    const [filterData, setFilterData] = useState({});
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Trend_Of_Failure_Reasons);
     
-
     const getGraphData = async () => {
         try {
           const response = await getTrendsFailureData();
@@ -25,8 +50,18 @@ const TrendsOfFailureReason = () => {
         }
     }
 
+    const getFilterData = async () => {
+        try {
+          const response = await getPageWiseFilterData({page_name: FilterPageName.Poogi_Trend_Of_Failure_Reasons});
+          setFilterData(response?.data.data);
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
     useEffect(() => {
         getGraphData();
+        getFilterData();
       }, []);
     
       useEffect(() => {
@@ -43,7 +78,17 @@ const TrendsOfFailureReason = () => {
             {
                 isLoading && <OverlayLoader />
             }
-            <MTOActionToolBar isAddFilterButton />
+            <MTOActionToolBar 
+                isAddFilterButton
+                isFilterOpen={isFilterOpen}
+                onAddFilter={onAddFilter}
+                toggleFilter={toggleFilter}
+                onApplyFilter={onApplyFilter}
+                multiFilter={currFilter}
+                setMultiFilter={setCurrFilter}
+                onFilterRemove={onFilterRemove}
+                isMfgSelected={isMfgSelected}
+            />
             <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
                 <BTRTableWrapper style={{ flex: '1', margin: '0' }}>
                     <Allotment vertical={false} separator={false}   >

@@ -9,8 +9,9 @@ import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFP
 import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
+import { formatFilterJSON } from '../../../../../../../helpers/utils';
 
-const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState }: any) => {
+const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters }: any) => {
     const gridRef = useRef(null);
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -56,7 +57,8 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState }: an
 
     const getGridData = async () => {
         try {
-            const data = await getLeadTimeData({ page: currentPage, graphFlag: 0 });
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const data = await getLeadTimeData({ page: currentPage, graphflag: 0, appliedFilters: formatedFilters });
             setData(data?.data?.data?.results)
             setTotalRows(data?.data?.data?.count)
             notifySuccess("Data Fetched Successfully!");
@@ -70,7 +72,7 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState }: an
 
     useEffect(() => {
         getGridData()
-    }, [currentPage])
+    }, [currentPage, appliedFilters])
 
 
     useEffect(()=>{ 

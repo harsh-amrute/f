@@ -46,7 +46,7 @@ const OrderRescheduling = () => {
     const [HeaderData, setHeaderData] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { user } = useUserData();
-
+    
     const getSelectedRowData = () => {
 
         const selectedData = refGraph1.current?.api.getSelectedRows();
@@ -262,7 +262,7 @@ const OrderRescheduling = () => {
     const GetData = async () => {
         try {
 
-            const APIData = await getOrderSchedulingData();
+            const APIData = await getOrderSchedulingData(pagination.mtoPageSize);
             setCurrData(APIData);
             setRowData(APIData.data.data.results);
 
@@ -497,6 +497,31 @@ const OrderRescheduling = () => {
         }
     }, [isReset]);
 
+    const [tempRowData, setTempRowData] = useState<any>(undefined);
+
+
+    const GetExcelData = async () => {
+        try {
+
+            const APIData = await getOrderSchedulingData(currData.data.data.count);
+            setTempRowData(APIData.data.data.results);
+
+        }
+        catch (e) {
+            notifyError("Failed to fetch Grid data!")
+        }
+    }
+
+
+    const tempRef = useRef<any>(null);
+
+    useEffect(() => {
+        if (tempRowData) {
+            tempRef?.current?.api.exportDataAsExcel({ fileName: "OrderRescheduling" });
+        }
+    }, [tempRowData])
+
+
     return (
         <>
             <OrderReschedulingWrapper style={{ width: "100%", position: 'relative', height: '100%', display: "flex", flexDirection: "column" }}>
@@ -504,6 +529,7 @@ const OrderRescheduling = () => {
                 <MTOActionToolBar
                     comp={'orderReschedule'}
                     isExcelExport
+                    onExcelExportClick={GetExcelData}
                     handleSaveClick={handleSaveClick}
                     handleResetClick={handleResetClick}
                 />
@@ -565,6 +591,9 @@ const OrderRescheduling = () => {
                                 </div>
                             </div>
                         </VFTableWrapper>
+                        <div style={{ display: 'none' }}>
+                            <VFTable columnDefs={colDef} rowData={tempRowData} ref={tempRef} />
+                        </div>
                     </div>
                 </div>
                 {/* )} */}

@@ -6,8 +6,8 @@ export const QUERY_KEYS = {
 }
 
 export const useGetOrderSchedulingData = () => {
-    return useMutation(async () => {
-        return OrderReschedulingService.getOrderReschedulingData()
+    return useMutation(async (pageSize: number) => {
+        return OrderReschedulingService.getOrderReschedulingData(pageSize)
     })
 }
 

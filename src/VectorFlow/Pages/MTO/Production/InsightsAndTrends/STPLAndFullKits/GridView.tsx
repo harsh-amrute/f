@@ -8,9 +8,10 @@ import { useGetBOMExplosionData } from "../../../../../../VectorFlow/Services/MT
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { pagination } from "../../../Common/Enum";
 import { Wrapper } from "./styles";
+import { formatFilterJSON } from "../../../../../../helpers/utils";
 
 
-const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef}: any) => {
+const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appliedFilters}: any) => {
 
   const [gridData, setGridData] = useState([]);
   const [totalRow, setTotalRow] = useState<number>(0)
@@ -28,7 +29,8 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef}: any)
 
   const getGridData = async (params: any) => {
     try {
-      const response = await getSTPLandFullkitInDaysData(params);
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const response = await getSTPLandFullkitInDaysData({ ...params, appliedFilters: formatedFilters});
       setGridData(response?.data?.data?.results);
       setTotalRow(response?.data?.data?.count)
     }
@@ -40,8 +42,8 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef}: any)
 
 
   useEffect(() => {
-    getGridData({ graphFlag: 0, page: currentPage });
-  }, [])
+    getGridData({ graphflag: 0, page: currentPage });
+  }, [appliedFilters])
 
   useEffect(() => {
     if (isSuccess) {

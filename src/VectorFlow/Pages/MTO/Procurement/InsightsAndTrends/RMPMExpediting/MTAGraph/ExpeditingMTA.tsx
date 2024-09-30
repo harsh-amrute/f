@@ -1,5 +1,5 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFRangeSlider from '../../../../../../../VectorFlow/Pages/MTO/Common/VFRangeSlider'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
@@ -7,6 +7,7 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
+import { formatFilterJSON } from '../../../../../../../helpers/utils'
 
 interface SupplierData {
     [key: string]: {
@@ -24,18 +25,18 @@ interface Result {
     tt: Product[];  // Array of product objects with rn and c
 }
 
-const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
+const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: any, setSupplierHorizon: (days: any) => void, getFilterData: () => void, appliedFilters: any  }) => {
+    const { date, supplierHorizon, setSupplierHorizon, getFilterData, appliedFilters } = props;
     let RMPMExpeditionOBj = {}
     const [chartLoading, setChartLoading] = useState(false);
     const [tableLoading, setTableLoading] = useState(false);
-    const [horizonDays, setHorizondays] = useState(14);
 
     const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
     const [numericData, setNumericData] = useState<any>();
 
     useEffect(() => {
-        getOnLoadData();
-    }, [])
+        getRMHorizonBasedData();
+    }, [appliedFilters])
 
 
     const transformSupplierData = (data: SupplierData): Result[] => {
@@ -65,19 +66,6 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
 
         return result;
     };
-
-    const getOnLoadData = async () => {
-        RMPMExpeditionOBj = {
-            'horizon': '14',
-            'val': 'all'
-        }
-        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
-        const xAxisValue = transformSupplierData(someData?.data?.data?.supplier);
-        setNumericData(xAxisValue)
-    }
-
-
-
 
     const TooltipRenderer = ({ datum }: any) => {
 
@@ -172,21 +160,23 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
     const getRMHorizonBasedData = async () => {
         //setNumericData(null)
         RMPMExpeditionOBj = {
-            'horizon': horizonDays,
+            'horizon': supplierHorizon,
             'val': 'supplier'
         }
-        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const someData = await getRMPMExpedition({...RMPMExpeditionOBj, appliedFilters: formatedFilters});
         const xAxisValue = transformSupplierData(someData?.data?.data?.supplier);
         setNumericData(xAxisValue)
     }
 
     const handleSubmitClick = () => {
         //setNumericData();
+        getFilterData();
         getRMHorizonBasedData();
     }
 
     const handleSliderChange = (val: any) => {
-        setHorizondays(val)
+        setSupplierHorizon(val)
     }
 
 
@@ -235,7 +225,7 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
                             milestones={[0, 30, 60, 90]}
                             strictMode={false}
                             width={200}
-                            defaultValue={horizonDays}
+                            defaultValue={supplierHorizon}
                             handleChange={(e) => handleSliderChange(e)}
                             labelValueFormatter={(value: number) => value.toString()}
                         />
@@ -290,7 +280,7 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
         }}
     >
         <span style={{ fontWeight: 500 }}>Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon </span>
-        <span style={{ fontWeight: 300 }}>{` ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')})`}</span>
+        <span style={{ fontWeight: 300 }}>{` ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(supplierHorizon, 'days').format('D MMM YYYY')})`}</span>
     </div>
 
     return (
@@ -307,7 +297,7 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
                 rowData={rowData}
                 graphTitle={''}
                 graphTitleJSX={graphTitleJSX}
-                tableTitle={`Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')})`}
+                tableTitle={`Top 10 Suppliers Impacting Orders With Release Date In Selected Horizon ( ${moment(date).format('D MMM YYYY')} - ${moment(date).add(supplierHorizon, 'days').format('D MMM YYYY')})`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}
@@ -320,4 +310,4 @@ const ExpeditingMTA = ({ date }: { isMTO: boolean, date: string }) => {
     )
 }
 
-export default ExpeditingMTA
+export default React.memo(ExpeditingMTA)

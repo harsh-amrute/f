@@ -16,7 +16,19 @@ import { UIGridCode} from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import ColorRangeCellRenderer from '../../../../../../VectorFlow/Pages/MTO/Common/ColorRangeCellRenderer';
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
+import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../../hooks/useFilter';
 
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Prod_Elapsed_Time" : {
+            mjr : false,
+            or: false,
+            res: true,
+            cus: false
+        },
+    }
+};
 
 const ElapsedTime = () => {
 
@@ -33,6 +45,19 @@ const ElapsedTime = () => {
     const [HeaderData, setHeaderData] = useState();
     const [selectedPlant, setSelectedPlant] = useState<any>();
     const [selectedDept, setSelectedDept] = useState<any>();
+    const [filterData, setFilterData] = useState({});
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter, 
+        toggleFilter,
+        appliedFilters
+    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Elapsed_Time);
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: getElapsedTimeData, isLoading } = useGetElapsedTimeData()
     const { mutateAsync: getElapsedDaysforDeptPlantData, isLoading: isLoading2 } = useGetElapsedDaysforDeptPlantData()
@@ -53,7 +78,7 @@ const ElapsedTime = () => {
 
     const getDeptWiseChartData = async () => {
         try {
-            const data = await getElapsedTimeData({ graphFlag: 1 });
+            const data = await getElapsedTimeData({ graphflag: 1 });
             const chartData: any = []
             const tableData: any = []
             const alertData: any = []
@@ -107,10 +132,20 @@ const ElapsedTime = () => {
         setSelectedDept(newDept);
     }
 
+    const getFilterData = async () => {
+        try {
+            const response = await getPageWiseFilterData({});
+            setFilterData(response?.data.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     useEffect(() => {
         setColumnDef();
         getDeptWiseChartData();
         getUserColumnConfig();
+        getFilterData();
     }, [])
 
     useEffect(() => {
@@ -197,6 +232,14 @@ const ElapsedTime = () => {
                 isGridView={isGridView}
                 handleSaveClick={handleSaveClick}
                 handleResetClick={handleResetClick}
+                isFilterOpen={isFilterOpen}
+                onAddFilter={onAddFilter}
+                toggleFilter={toggleFilter}
+                onApplyFilter={onApplyFilter}
+                multiFilter={currFilter}
+                setMultiFilter={setCurrFilter}
+                onFilterRemove={onFilterRemove}
+                isMfgSelected={isMfgSelected}
             />
 
             {
@@ -232,6 +275,7 @@ const ElapsedTime = () => {
                             setCurrentGridRef={setCurrentGridRef}
                             currentGridRef={currentGridRef}
                             columnState={columnState}
+                            appliedFilters={appliedFilters}
                         />
                     </>
             }

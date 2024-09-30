@@ -1,5 +1,5 @@
 import { AgChartOptions } from 'ag-charts-community'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import VFInfoToolTip from '../../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import VFRangeSlider from '../../../../../../../VectorFlow/Pages/MTO/Common/VFRangeSlider'
 import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } from '../../styles'
@@ -8,26 +8,17 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
-const ExpeditingMTO = ({ date }: { isMTO: boolean, date: string }) => {
+import { formatFilterJSON } from '../../../../../../../helpers/utils'
 
+const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, setRmHorizon: (day: any) => void, getFilterData: () => void, appliedFilters: any }) => {
+    const { date, rmHorizon, setRmHorizon, getFilterData, appliedFilters } = props;
     const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
-    const [horizonDays, setHorizondays] = useState(14);
     const [numericData, setNumericData] = useState<any>();
 
     let RMPMExpeditionOBj = {}
     useEffect(() => {
-        getOnLoadData();
-    }, [])
-
-    const getOnLoadData = async () => {
-        RMPMExpeditionOBj = {
-            'horizon': '14',
-            'val': 'all'
-        }
-        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
-        setNumericData(someData.data?.data?.rm)
-    }
-
+        getRMHorizonBasedData();
+    }, [appliedFilters])
 
     function TooltipRenderer({ datum }: any) {
         return ` 
@@ -119,20 +110,22 @@ const ExpeditingMTO = ({ date }: { isMTO: boolean, date: string }) => {
     const getRMHorizonBasedData = async () => {
         //setNumericData(null)
         RMPMExpeditionOBj = {
-            'horizon': horizonDays,
+            'horizon': rmHorizon,
             'val': 'rm'
         }
-        const someData = await getRMPMExpedition(RMPMExpeditionOBj);
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const someData = await getRMPMExpedition({...RMPMExpeditionOBj, appliedFilters: formatedFilters });
         setNumericData(someData.data?.data?.rm)
     }
 
     const handleSubmitClick = () => {
         //setNumericData();
+        getFilterData();
         getRMHorizonBasedData();
     }
 
     const handleSliderChange = (val: any) => {
-        setHorizondays(val)
+        setRmHorizon(val)
     }
 
 
@@ -190,7 +183,7 @@ const ExpeditingMTO = ({ date }: { isMTO: boolean, date: string }) => {
                             milestones={[0, 30, 60, 90]}
                             strictMode={false}
                             width={200}
-                            defaultValue={horizonDays}
+                            defaultValue={rmHorizon}
                             handleChange={(e) => handleSliderChange(e)}
                             labelValueFormatter={(value: number) => value.toString()}
                         />
@@ -247,7 +240,7 @@ const ExpeditingMTO = ({ date }: { isMTO: boolean, date: string }) => {
         }}
     >
         <span style={{ fontWeight: 500 }}>Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon</span>
-        <span style={{ fontWeight: 300 }}>{` (${moment(date).format('D MMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('D MMM YYYY')}) `}</span>
+        <span style={{ fontWeight: 300 }}>{` (${moment(date).format('D MMM YYYY')} - ${moment(date).add(rmHorizon, 'days').format('D MMM YYYY')}) `}</span>
     </div>
 
 
@@ -264,7 +257,7 @@ const ExpeditingMTO = ({ date }: { isMTO: boolean, date: string }) => {
                 rowData={numericData}
                 graphTitle={''}
                 graphTitleJSX={graphTitleJSX}
-                tableTitle={`Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon (${moment(date).format('Do MMMM YYYY')} - ${moment(date).add(horizonDays, 'days').format('Do MMMM YYYY')})`}
+                tableTitle={`Top 10 Raw Materials Impacting Orders With Release Date In Selected Horizon (${moment(date).format('Do MMMM YYYY')} - ${moment(date).add(rmHorizon, 'days').format('Do MMMM YYYY')})`}
                 options={options}
                 colDef={colDef}
                 header={generateHeader}
@@ -280,4 +273,4 @@ const ExpeditingMTO = ({ date }: { isMTO: boolean, date: string }) => {
     )
 }
 
-export default ExpeditingMTO
+export default React.memo(ExpeditingMTO)

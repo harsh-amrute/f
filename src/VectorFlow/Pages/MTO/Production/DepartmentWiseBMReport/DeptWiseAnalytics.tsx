@@ -1,6 +1,8 @@
 
 import { ColDef } from 'ag-grid-enterprise'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import { BMReportAnaytics } from './helper';
+import { useSelector } from 'react-redux';
 
 import {
     BPRDailyAnalyticsHeader,
@@ -19,6 +21,7 @@ import {
     BPRDailyAnalyticsTableCellHeader,
     BPRDailyAnalyticsTableCellText,
 } from './styles'
+import Tooltip from '../../Common/Tooltip';
 
 
 const DeptWiseAnalytics = () => {
@@ -28,7 +31,7 @@ const DeptWiseAnalytics = () => {
     // const themeUi = user.user.theme_ui;
     const [isLoading] = useState<boolean>(false);
 
-
+    const rowData = useSelector((state: any)=> state.mto.BMReportAnalytics);
 
 
     const colHeaders: any = [
@@ -37,83 +40,101 @@ const DeptWiseAnalytics = () => {
         { headerName: 'Production' }
     ];
 
-    const rowData: any = [
-        {
-            color: 'black',
-            ProcCount: 100,
-            ProcPer: 20,
-            ProdCount: 80,
-            ProdPer: 15,
-            ProcValue: -10,
-            ProdValue: 20
-        },
-        {
-            color: 'red',
-            ProcCount: 100,
-            ProcPer: 20,
-            ProdCount: 80,
-            ProdPer: 15,
-            ProcValue: -10,
-            ProdValue: 10
-        },
-        {
-            color: 'yellow',
-            ProcCount: 100,
-            ProcPer: 20,
-            ProdCount: 80,
-            ProdPer: 15,
-            ProcValue: 10,
-            ProdValue: -5
-        },
-        {
-            color: 'green',
-            ProcCount: 100,
-            ProcPer: 20,
-            ProdCount: 80,
-            ProdPer: 15,
-            ProcValue: 0,
-            ProdValue: 0
+    // const rowData: any = [
+    //     {
+    //         color: 'black',
+    //         ProcCount: 100,
+    //         ProcPer: 20,
+    //         ProdCount: 80,
+    //         ProdPer: 15,
+    //         ProcValue: -10,
+    //         ProdValue: 20
+    //     },
+    //     {
+    //         color: 'red',
+    //         ProcCount: 100,
+    //         ProcPer: 20,
+    //         ProdCount: 80,
+    //         ProdPer: 15,
+    //         ProcValue: -10,
+    //         ProdValue: 10
+    //     },
+    //     {
+    //         color: 'yellow',
+    //         ProcCount: 100,
+    //         ProcPer: 20,
+    //         ProdCount: 80,
+    //         ProdPer: 15,
+    //         ProcValue: 10,
+    //         ProdValue: -5
+    //     },
+    //     {
+    //         color: 'green',
+    //         ProcCount: 100,
+    //         ProcPer: 20,
+    //         ProdCount: 80,
+    //         ProdPer: 15,
+    //         ProcValue: 0,
+    //         ProdValue: 0
 
-        },
-        {
-            color: 'blue',
-            ProcCount: 100,
-            ProcPer: 20,
-            ProdCount: 80,
-            ProdPer: 15,
-            ProcValue: -2,
-            ProdValue: -2
-        },
-        {
-            color: '#ccccc',
-            ProcCount: 100,
-            ProcPer: 20,
-            ProdCount: 80,
-            ProdPer: 15,
-            ProcValue: 2,
-            ProdValue: -2
-        }
+    //     },
+    //     {
+    //         color: 'blue',
+    //         ProcCount: 100,
+    //         ProcPer: 20,
+    //         ProdCount: 80,
+    //         ProdPer: 15,
+    //         ProcValue: -2,
+    //         ProdValue: -2
+    //     },
+    //     {
+    //         color: 'white',
+    //         ProcCount: 100,
+    //         ProcPer: 20,
+    //         ProdCount: 80,
+    //         ProdPer: 15,
+    //         ProcValue: 2,
+    //         ProdValue: -2
+    //     }
 
-    ]
-
-
-    const summation = '24232'
+    // ]
 
 
-    const getCellIcons = (value: number) => {
-        if (value > 0) {
+    const summation = useMemo(()=>{
+        let total = 0
+        rowData?.forEach((row: any)=>{
+            total += (row.ProcCount + row.ProdCount) ;
+        })
+        return total;
+    }, [])
+
+
+    const getCellIcons = (value: BMReportAnaytics) => {
+        if (value == BMReportAnaytics.INCREASE) {
             return <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-increase.svg' />
         }
-        if (value < 0) {
+        
+        if (value == BMReportAnaytics.DECREASE) {
             return <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-decrease.svg' style={{ transform: 'rotate(90deg)' }} />
         }
-        return (
-            <BPRDailyAnalyticsTableNoChangeWrapper>
-                <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-increase.svg' />
-                <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-decrease.svg' style={{ transform: 'rotate(90deg)' }} />
-            </BPRDailyAnalyticsTableNoChangeWrapper>
-        )
 
+        if(value == BMReportAnaytics.INCREASE_DECREASE){
+            return (
+                <BPRDailyAnalyticsTableNoChangeWrapper>
+                    <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-increase.svg' />
+                    <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-decrease.svg' style={{ transform: 'rotate(90deg)' }} />
+                </BPRDailyAnalyticsTableNoChangeWrapper>
+            )
+        } 
+
+        if(value == BMReportAnaytics.DECREASE_INCREASE){
+            return (
+                <BPRDailyAnalyticsTableNoChangeWrapper>
+                    <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-decrease.svg' style={{ transform: 'rotate(90deg)' }} />
+                    <BPRDailyAnalyticsTableChangeIcon src='/assets/img/VectorFLOW/BPR/analytics-increase.svg' />
+                </BPRDailyAnalyticsTableNoChangeWrapper>
+            )
+        }
     }
 
 
@@ -160,9 +181,9 @@ const DeptWiseAnalytics = () => {
                     <BPRDailyAnalyticsTableHeaderContainer>
                         {
                             colHeaders.map((colDef: ColDef) => {
-                                if (colDef.colId === 'color') {
+                                if (colDef.headerName === 'color') {
                                     return (
-                                        <BPRDailyAnalyticsTableHeader style={{ width: 25 }} />
+                                        <BPRDailyAnalyticsTableHeader style={{ width: 33 }} />
                                     )
                                 }
                                 return (
@@ -191,7 +212,9 @@ const DeptWiseAnalytics = () => {
                                                         <BPRDailyAnalyticsTableCellText>{row.ProcPer + '%'}</BPRDailyAnalyticsTableCellText>
                                                     </BPRDailyAnalyticsTableCell>
                                                     <BPRDailyAnalyticsTableCell>
-                                                        {getCellIcons(row.ProcValue)}
+                                                        <Tooltip content={<div style={{padding:"0.5rem 1rem", fontSize:"12px"}}>{row.ProcPer}%</div>} tooltipZoom={1}>
+                                                            {getCellIcons(row.ProcValue)}
+                                                        </Tooltip>
                                                     </BPRDailyAnalyticsTableCell>
                                                 </React.Fragment>
                                             )
@@ -204,7 +227,9 @@ const DeptWiseAnalytics = () => {
                                                         <BPRDailyAnalyticsTableCellText>{row.ProdPer + '%'}</BPRDailyAnalyticsTableCellText>
                                                     </BPRDailyAnalyticsTableCell>
                                                     <BPRDailyAnalyticsTableCell>
+                                                    <Tooltip content={<div style={{padding:"0.5rem 1rem", fontSize:"12px"}}>{row.ProdPer}%</div>} tooltipZoom={1}>
                                                         {getCellIcons(row.ProdValue)}
+                                                    </Tooltip>
                                                     </BPRDailyAnalyticsTableCell>
                                                 </React.Fragment>
                                             )
@@ -215,7 +240,7 @@ const DeptWiseAnalytics = () => {
                         })}
                     </BPRDailyAnalyticsTableRowContainer>
                 </BPRDailyAnalyticsTableContainer>
-                <BPRDailyAnalyticStatusBar>
+                <BPRDailyAnalyticStatusBar style={{margin:"0 1rem"}}>
                     <BPRDailyAnalyticStatusBarSection>
                         Total
                     </BPRDailyAnalyticStatusBarSection>
