@@ -113,7 +113,7 @@ const InTransitWhereAbouts = ()=>{
             <div style={{height:'70%',marginLeft:'15px'}}>
                 <VFTable
                     columnDefs={colDefs}
-                    rowData={[...rowData]}
+                    rowData={rowData}
                     {...agGridProps}
                     ref={ref}
                     height={"100%"}
