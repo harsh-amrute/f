@@ -379,6 +379,7 @@ const useBTR = ()=>{
         if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN","pc","pn"])
         return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,["RN"])
     },[ecoRowData,currentTab,verticalView,dateLabels])
+    
 
     return{
         ecoRef,
@@ -408,6 +409,7 @@ const useBTR = ()=>{
         onDeleteFilter,
         onApplyFilter,
         horizon,
+        ecoColDefs,
         setHorizon
     }
 }
