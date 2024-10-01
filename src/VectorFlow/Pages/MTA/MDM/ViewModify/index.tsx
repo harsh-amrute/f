@@ -183,7 +183,7 @@ const ViewModify = () => {
               </div>
 
               <div
-                onClick={() => handleCancel(params)}
+                onClick={() => handleCancel()}
                 style={{ cursor: 'pointer' }}
               >
                 <img
@@ -285,7 +285,7 @@ const ViewModify = () => {
     }
     }
     
-    const handleCancel = (params: any) => {
+    const handleCancel = () => {
 
     setIsButtonDisabled(false);
     setData((prevRowData: any) => {
