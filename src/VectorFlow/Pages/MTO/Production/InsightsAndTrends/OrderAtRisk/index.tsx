@@ -223,49 +223,55 @@ const OrderAtRisk = () => {
             </div>`;
   }
 
-  const options: AgChartOptions = {
-    data: rawData,
+  // const options: AgChartOptions = 
 
-    series: [
-      {
-        type: "bar",
-        direction: "horizontal",
-        xKey: "r",
-        yKey: "bo",
-        yName: "Impacted order - Black",
-        stacked: true,
-        fill: "black",
-        tooltip: {
-          renderer: TooltipRenderer,
-        },
-      },
-      {
-        type: "bar",
-        direction: "horizontal",
-        xKey: "r",
-        yKey: "ro",
-        yName: "Impacted order - Red",
-        stacked: true,
-        fill: "red",
-        tooltip: {
-          renderer: TooltipRenderer,
-        },
-      },
-    ],
+  const [options, setOptions] = useState({});
+  
+  useEffect(()=>{
 
-    axes: [
-      {
-        type: "category",
-        position: "left",
-        title: {
-          text: "Major | Minor Reasons",
-          fontSize: 10,
-          fontWeight: "bold",
+   setOptions( {
+      data: rawData,
+      
+      series: [
+        {
+          type: "bar",
+          direction: "horizontal",
+          xKey: "r",
+          yKey: "bo",
+          yName: "Impacted order - Black",
+          stacked: true,
+          fill: "black",
+          tooltip: {
+            renderer: TooltipRenderer,
+          },
         },
-        label: {
-          fontSize: 8,
-          fontWeight: "bold",
-          color: "black",
+        {
+          type: "bar",
+          direction: "horizontal",
+          xKey: "r",
+          yKey: "ro",
+          yName: "Impacted order - Red",
+          stacked: true,
+          fill: "red",
+          tooltip: {
+            renderer: TooltipRenderer,
+          },
+        },
+      ],
+      
+      axes: [
+        {
+          type: "category",
+          position: "left",
+          title: {
+            text: "Major | Minor Reasons",
+            fontSize: 10,
+            fontWeight: "bold",
+          },
+          label: {
+            fontSize: 8,
+            fontWeight: "bold",
+            color: "black",
           padding: 10,
         },
         gridLine: {
@@ -292,7 +298,7 @@ const OrderAtRisk = () => {
         },
       },
     ],
-
+    
     legend: {
       item: {
         label: {
@@ -300,23 +306,24 @@ const OrderAtRisk = () => {
         },
       },
     },
-  };
-
+  })
+  
+}, [rawData])
   // useEffect(() => {
-  //   if (data?.data?.data?.r && data?.data?.data?.g) {
-  //     setRawData(data?.data?.data?.r);
-  //     setGridData(data?.data?.data?.g);
-  //   }
-  // }, [data]);
-
-  const getData = async () => {
-    try {
-      const formatedFilters = formatFilterJSON(appliedFilters);
-      const response = await getOrderAtRiskData({ appliedFilters: formatedFilters});
-      setRawData(response?.data?.r);
-      setGridData(response?.data?.g || []);
-    }
-    catch (e) {
+    //   if (data?.data?.data?.r && data?.data?.data?.g) {
+      //     setRawData(data?.data?.data?.r);
+      //     setGridData(data?.data?.data?.g);
+      //   }
+      // }, [data]);
+      
+      const getData = async () => {
+        try {
+          const formatedFilters = formatFilterJSON(appliedFilters);
+          const response = await getOrderAtRiskData({ appliedFilters: formatedFilters});
+          setRawData(response?.data?.data?.r);
+          setGridData(response?.data?.data?.g || []);
+        }
+        catch (e) {
         console.log(e);
         notifyError('Failed to fetch Grid data!');
     }
