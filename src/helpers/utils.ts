@@ -342,6 +342,40 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
 
 }
 
+export const handleDownloadMTOVF = async (reportName: string, downloadName: string) => {
+  try{
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST_MTO}/DownloadReportData/?report_name=${reportName}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    if (!response.ok) {
+      notifyError("Error while downloading")
+    } else {
+      // Convert response to blob object
+      const blob = await response.blob()
+      // Create download URL for blob object
+      const url = URL.createObjectURL(blob)
+
+      // Trigger download
+      const link = document.createElement('a')
+      link.href = url
+      if (downloadName.length !== 0) {
+        link.setAttribute('download', `${downloadName}`)
+      } else {
+        link.setAttribute('download', `ReportFile.zip`)
+      }
+      document.body.appendChild(link)
+      link.click()
+      // Clean up download URL
+      URL.revokeObjectURL(url);
+    }
+  }
+  catch(err){
+    notifyError('Error while downloading');
+  }
+}
+
 
 export const handleDownloadVF = async (reportName: string, downloadName: string) => {
   try {
