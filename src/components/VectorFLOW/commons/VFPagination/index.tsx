@@ -25,7 +25,7 @@ const VFPagination  = (props:VFPaginationProps)=>{
 
 
     const defaultPaginationLimit = 100;
-    const totalPages = Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit));
+    const totalPages = Math.max(Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit)),1)
 
    // const totalPages = Math.ceil(totalRows/rowsPerPage)
     

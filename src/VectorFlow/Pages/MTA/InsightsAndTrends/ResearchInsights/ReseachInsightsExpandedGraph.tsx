@@ -31,6 +31,7 @@ const ExpandedGraph = (props:ExpandedGraphProps)=>{
         onUpdateGraphs
     } = props
 
+
     const activeCapsuleIndex = graphs[id-1].pen
 
     const onChange =(e:any,key:string)=>{
