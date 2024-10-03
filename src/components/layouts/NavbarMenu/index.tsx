@@ -24,7 +24,7 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
   
   useEffect(()=>{
     getReportFields();
-  },[window.location.pathname])
+  },[])
 
   const getReportFields = async ()=>{
     const reports = await getAllReports();
@@ -51,7 +51,7 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
   const handleClickMenu = (item: any, index: number) => {
     if(item.name==='navbar.listMenuParent.miscellaneousReports.title') return;
     setMenuItem(item);
-    const newMenu = [...listMenuParent];
+    const newMenu = [...listMenu];
     newMenu.forEach((itemMenu: any) => {
       itemMenu.status = false;
     });

@@ -363,6 +363,7 @@ const useResearchInsights = ()=>{
         }
         return setGraphs(graphs.map((graph:ReseachInsightsGraphState)=>{
             if(graph.id===id){
+                console.log(id)
                 return {
                     ...graph,
                     [property]:payload
@@ -422,32 +423,42 @@ const useResearchInsights = ()=>{
 
     const locationGraphData = useMemo(()=>{
         const selectedRows =  ref.current?.api.getSelectedRows()
+       
         if(selectedRows && selectedRows.length>1){
-            let locationArraySelectedData = selectedRowsDates.filter((row:any)=>row.Pen===graphs[1].pen.value && row.Type===graphs[1].type.value)
+            let locationArraySelectedData = selectedRowsDates.filter((row:any)=>
+                row.Pen===graphs[1].pen.value && row.Type===graphs[1].type.value
+            )
             const filters =graphs[1].filters
-            if(filters.length>0){
-                filters.forEach((filter)=>{
-                    locationArraySelectedData = locationArraySelectedData.filter((row:any)=>row[filter.key]===filter.value)
-                })
-            }
-            const locationData = getColorData(locationArraySelectedData)        
+            const whKeys = [{label:'Child',value:'ChildCode'},{label:'Parent',value:'ParentWhCode'}]
+            const currWhKey = whKeys.find((k)=>k.label ===graphs[expandedGraphId -1].type.value)?.value || 'ChildCode'
+            if (filters.length > 0) {
+                locationArraySelectedData = locationArraySelectedData.filter((row: any) =>{
+                    return filters.every(filter => row[filter.key!=='Whcode'?filter.key:currWhKey] === filter.value)
+            });
+            }   
+            const locationData = getColorData(locationArraySelectedData)   
             return locationData
         }
         return []
     },[graphs,selectedRowsDates,horizon])
+
+    // console.log(selectedRowsDates)
 
     const expandedGraphAllFilterValues = useMemo(()=>{
         const index = expandedGraphId-1
         const locationArraySelectedData = selectedRowsDates.filter((row:any)=>row.Pen===graphs[index].pen.value && row.Type===graphs[index].type.value)
         let uniqueSkus:any = []
         let uniqueWhCode:any = []
+        const whKeys = [{label:'Self',value:'Whcode'},{label:'Child',value:'ChildCode'},{label:'Parent',value:'ParentWhCode'}]
+        const currWhKey = whKeys.find((k)=>k.label ===graphs[index].type.value)?.value || 'Whcode'
         locationArraySelectedData.map((row:any)=>{
             if(!uniqueSkus.includes(row.SKUCode)){
                 uniqueSkus.push(row.SKUCode)
             }
-            if(!uniqueWhCode.includes(row.Whcode)){
-                uniqueWhCode.push(row.Whcode)
+            if(!uniqueWhCode.includes(row[currWhKey])){
+                uniqueWhCode.push(row[currWhKey])
             }
+           
         })
         uniqueSkus = uniqueSkus.map((sku:string)=>{
             return{
@@ -461,11 +472,15 @@ const useResearchInsights = ()=>{
                 label:whcode
             }
         })
+        console.log({
+            skus:uniqueSkus,
+            whcodes:uniqueWhCode
+        })
         return{
             skus:uniqueSkus,
             whcodes:uniqueWhCode
         }
-    },[selectedRowsDates,graphs])
+    },[selectedRowsDates,graphs,expandedGraphId])
 
     const historicalAvailabilityData = useMemo(()=>{
         if(historicalAvailabilityResponse){
