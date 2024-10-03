@@ -231,6 +231,10 @@
   background-color: rgb(188, 61, 129, 0.3) !important;
 }
 
+.vfwrap .ag-column-drop-horizontal {
+   background-color: #cecece !important;
+}
+
 .vfwrap .ag-theme-pure-elegance .ag-row:hover {
   background-color: rgb(188, 61, 129, 0.3) !important;
 }

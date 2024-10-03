@@ -611,7 +611,7 @@ export const generateRandomId = (length?: number) => {
 }
 
 export const replaceKeyWithDisplayName = (message: string, master: MDMMasterState) => {
-  console.log(message)
+  //console.log(message)
   return new String(message).replaceAll(/",*?"/g, (m) => {
     const displayName = master.fields.find((f: Field) => f.key === m.replaceAll('"', ''))?.displayName;
     if (displayName) return displayName
@@ -841,7 +841,7 @@ export const mapStateFiltersToPayload = (filters: Filter[]) => {
 
 }
 
-export const mapMasterToMasterState = (masters: Master[], onShowChart?: any): MDMMasterState[] => {
+export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMasterState[] => {
 
   return masters.map((master: Master) => ({
     id: master.id,
@@ -858,7 +858,8 @@ export const mapMasterToMasterState = (masters: Master[], onShowChart?: any): MD
     colDefs: mapMasterToColumnDefs(master.fields, master.id, onShowChart),
     rowData: [],
     progress: 'default',
-    isChecked: true
+    isChecked: true,
+    isMTO: master.isMTO ? true : false
   }))
 }
 
@@ -1808,8 +1809,8 @@ export const addPrefixToObjectKeys = (obj: any, prefix: string) => {
 }
 
 export const createConflictRowData = (conflicts: { conflictdetails: { oldData: any, requestedData: any }[], user: string }[], masterId: any): ColDef[] => {
-  console.log(conflicts)
-  console.log(TaskPendingAvoidColumnsMapper[masterId])
+  // console.log(conflicts)
+  // console.log(TaskPendingAvoidColumnsMapper[masterId])
   const result: any[] = []
   conflicts.map((conflict) => {
     conflict.conflictdetails.map((conflictDetail, conflictIndex: number) => {
@@ -1829,7 +1830,7 @@ export const createConflictRowData = (conflicts: { conflictdetails: { oldData: a
         }
         return isDuplicate
       })
-      console.log(existingRowIndex)
+      //console.log(existingRowIndex)
 
       if (existingRowIndex === -1) {
         result.push({ ...conflictDetail.requestedData, users: [{ user: conflict.user, data: conflictDetail.oldData }] })
@@ -1845,7 +1846,7 @@ export const createConflictRowData = (conflicts: { conflictdetails: { oldData: a
 }
 
 export const createErrorRowData = (errorConflicts: { errorData: any[], errorType: string }[], masterId: any): ColDef[] => {
-  console.log(masterId)
+  //console.log(masterId)
   const result: any[] = []
   if (Array.isArray(errorConflicts)) {
     errorConflicts.map((currError: { errorData: any[], errorType: string }) => {
@@ -1888,7 +1889,7 @@ export const createErrorRowData = (errorConflicts: { errorData: any[], errorType
       })
     })
   }
-  console.log(result)
+  //console.log(result)
   return result
 }
 

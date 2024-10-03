@@ -46,7 +46,7 @@ const OrderRescheduling = () => {
     const [HeaderData, setHeaderData] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { user } = useUserData();
-
+    
     const getSelectedRowData = () => {
 
         const selectedData = refGraph1.current?.api.getSelectedRows();
@@ -253,7 +253,7 @@ const OrderRescheduling = () => {
     useEffect(() => {
         const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
         setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
-    }, [HeaderData]);
+    }, [HeaderData, currTab]);
 
     const [rowData, setRowData] = useState<RowDataType[]>([]);
 

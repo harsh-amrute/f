@@ -58,7 +58,7 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                 ref={gridRef}
                 onGridReady={(params: any) => {
                     params.api.autoSizeAllColumns();
-
+                    
                     setCurrentGridRef(gridRef);
                 }}
                 statusBar={{
