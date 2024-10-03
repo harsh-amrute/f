@@ -4,7 +4,6 @@ import { HorizontalViewWrapper } from "./styles";
 import { formatFilterJSON, getColumnDefinations } from "../../../../../../helpers/utils";
 import { reasonColConfig } from "./MockData";
 import SplitGraphContainer from "../../../Common/SplitGraphContainer";
-import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import { ProductionInsightsAndTrendsString } from "../../../Common/String";
 import { format } from "date-fns";
