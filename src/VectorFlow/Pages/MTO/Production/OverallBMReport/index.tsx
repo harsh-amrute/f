@@ -18,7 +18,7 @@ import RemarkHistoryRenderer from '../DepartmentWiseBMReport/RemarkHistoryRender
 import GridView from '../DepartmentWiseBMReport/GridView'
 import OrderElapsedGrid from '../DepartmentWiseBMReport/OrderElapsedGrid';
 import { useGetOverAllBMReport } from '../../../../Services/MTO/Production/OverallBMReport/index'
-import { notifyError, notifyLoader } from '../../../../../helpers/notify';
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
@@ -799,7 +799,6 @@ const OverallBmReport = () => {
 
     const setColumnDef = async () => {
         try {
-            console.log("heluuuuuu");
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
             const modifiedResponse = addDefaultAttributes(response?.data?.data)
@@ -920,11 +919,11 @@ const OverallBmReport = () => {
 
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
-        const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
+        const mapChildren = (parent: any, children: ApiResponse[]): ColDefChild[] => {
             return children.map((child: ApiResponse, index: any) => ({
                 field: child.scc.trim(),
                 headerName: child.hd,
-                colId: child.cc,
+                colId: `${parent}-${child.cc}`,
                 hide: !child.v,
                 suppressHeaderFilterButton: true,
                 cellRenderer: (child.cc === 'ec' && systemType >= 3) ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
@@ -951,8 +950,6 @@ const OverallBmReport = () => {
             }));
         };
 
-        // console.log("apiResponse", apiResponse);
-
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
             floatingFilterComponentParams: section.scc === "chckbx" || section.scc == "ic" ? { suppressFilterButton: false } : undefined,
@@ -976,7 +973,7 @@ const OverallBmReport = () => {
             //     } : undefined,
             cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3 ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
-            children: section.scc === "chckbx" ? undefined : section.ch ? mapChildren(section.ch) : undefined,
+            children: section.scc === "chckbx" ? undefined : section.ch ? mapChildren(section.cc, section.ch) : undefined,
 
         }));
     }
@@ -1089,7 +1086,6 @@ const OverallBmReport = () => {
                 }
             });
 
-            console.log("gridData from func", gridData)
 
             gridData?.forEach((item: any) => {
                 let isThere = 0;
@@ -1313,7 +1309,7 @@ const OverallBmReport = () => {
     }, [])
 
 
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState<any>();
     const [columnState, setColumnState] = useState<any>();
 
 
@@ -1349,18 +1345,18 @@ const OverallBmReport = () => {
             else{
                 if (refGraph2?.current?.api) {
                     const config = refGraph2.current.api.getColumnState();
-    
                     const payload = {
                         un: user.user.name,
                         rn_id: UIGridCode.ProdOverallBMReport,
                         cs: JSON.stringify(config)
                     }
                     await updateUserUIConfigData([payload]);
-                    
                 }
             }
+            notifySuccess("Changes saved successfully");
         } catch (error) {
             console.error(error);
+            notifyError("Error saving changes");
         }
     }
 
@@ -1369,7 +1365,6 @@ const OverallBmReport = () => {
     }
 
     useEffect(() => {
-        // console.log("calling apply column state", columnState);
         applyColumnState(true);
     }, [columnState]);
 
@@ -1423,10 +1418,12 @@ const OverallBmReport = () => {
 
     useEffect(() => {
         if (isReset) {
-            setColumnState(coldefs);
+            setColumnState([...coldefs]);
             setIsReset(false)
         } else {
-            handleSaveClick(coldefs);
+            if(isReset != undefined){
+                handleSaveClick(coldefs);
+            }
         }
     }, [isReset]);
 
