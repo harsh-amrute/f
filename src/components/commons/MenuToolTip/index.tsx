@@ -9,7 +9,7 @@ import {
   TooltipContent,
   SCIcon,
 } from "./style";
-import { handleDownloadVF, navigateWithPrompt } from "../../../helpers/utils";
+import { handleDownloadMTOVF, handleDownloadVF, navigateWithPrompt } from "../../../helpers/utils";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
@@ -23,24 +23,32 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
   const mdm = useSelector((state: RootState) => state.mdm);
   const dispatch = useDispatch();
 
+
   const resetState = () => {
     dispatch(RESET_STATE());
   }
 
 
-  const handleTooltipClick = async (url: string, downloadName?: any) => {
-
+  const handleTooltipClick = async (url: string, isMTO: boolean, downloadName?: any,) => {
+    
     if (reportUrls.includes(url)) {
       setTempUrls([...tempUrls].concat(url));
       setIsLoading(true);
-      if (await handleDownloadVF(url, downloadName)) {
+      if(isMTO){
+        await handleDownloadMTOVF(url, downloadName)
         setIsLoading(false);
         const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
         setTempUrls([...tempArr]);
-      } else {
-        setIsLoading(false);
-        const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
-        setTempUrls([...tempArr]);
+      }else{
+        if (await handleDownloadVF(url, downloadName)) {
+          setIsLoading(false);
+          const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
+          setTempUrls([...tempArr]);
+        } else {
+          setIsLoading(false);
+          const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
+          setTempUrls([...tempArr]);
+        }
       }
     }
     else {
@@ -98,7 +106,7 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
               key={index}
               action={itemChild.url === location.pathname}
               themeUi={themeUi}
-              onClick={() => handleTooltipClick(itemChild.url, itemChild.downloadName)}
+              onClick={() => handleTooltipClick(itemChild.url, itemChild.isMTO ,itemChild.downloadName)}
             >
               {t(itemChild.name) || itemChild.name}
               {itemChild.url !== location.pathname && (
@@ -118,8 +126,6 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
       })
     )
   }
-
-
 
 
   return (
