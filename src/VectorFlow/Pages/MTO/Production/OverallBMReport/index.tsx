@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import {
     BMDepWrapper,
@@ -18,7 +18,7 @@ import RemarkHistoryRenderer from '../DepartmentWiseBMReport/RemarkHistoryRender
 import GridView from '../DepartmentWiseBMReport/GridView'
 import OrderElapsedGrid from '../DepartmentWiseBMReport/OrderElapsedGrid';
 import { useGetOverAllBMReport } from '../../../../Services/MTO/Production/OverallBMReport/index'
-import { notifyError, notifyLoader } from '../../../../../helpers/notify';
+import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { toast } from 'react-toastify';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
@@ -136,7 +136,8 @@ const OverallBmReport = () => {
     const [coldefs, setColdef] = useState<any>();
     const [gridData, setGridData] = useState<any>();
     const [gridDataCount, setGridDataCount] = useState<number>(0);
-    const [areRowsSelected, setAreRowsSelected] = useState<boolean>(false);
+    const rowsSelected = useRef(false);
+    
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -163,7 +164,7 @@ const OverallBmReport = () => {
     const [tempColdef, setTempColdef] = useState<any>();
 
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
-    const { mutateAsync: updateUserUIConfigData, isLoading: isSetStateLoading } = useUpdateUserUIConfigData();
+    const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
 
 
     const { user } = useUserData();
@@ -175,14 +176,16 @@ const OverallBmReport = () => {
         try {
             getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
                 const response: any = data?.data?.data;
-                const analytics = modifyAnalyticsData(response);
-                dispatch(BM_REPORT_ANALYTICS(analytics))
+                console.log(response);
+                if(response){
+                    const analytics = modifyAnalyticsData(response);
+                    dispatch(BM_REPORT_ANALYTICS(analytics))
+                }
             })
         }
         catch (e) {
             dispatch(BM_REPORT_ANALYTICS([]))
         }
-
     }, [])
 
     useEffect(() => {
@@ -194,7 +197,7 @@ const OverallBmReport = () => {
         }
     }, [coldefs])
 
-    const onOpenRemarkHistory = async (data: any) => {
+      const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
         try {
             //console.log('data.rm', data.rm.length)
@@ -790,21 +793,16 @@ const OverallBmReport = () => {
             return data.flag == "SystemType"
         })
         setSystemType(Number(systemType.value))
-        setColumnDef()
-            ;
+        setColumnDef();
     }
 
 
     const setColumnDef = async () => {
         try {
-
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
             const modifiedResponse = addDefaultAttributes(response?.data?.data)
-            // console.log("modifiedResponse", modifiedResponse)
             const coldef = mapApiResponseToColDefs(modifiedResponse)
-            console.log("coldef", coldef);
-            // console.log('modified Data', modifiedResponse)
             setColdef(coldef)
         }
         catch (e) {
@@ -863,10 +861,10 @@ const OverallBmReport = () => {
 
         // Add a default object outside each main object
         const defaultOuterObject: ApiResponseItem = {
-            cc: " ",
+            cc: "chckbx",
             v: true,
             cp: 0,
-            hd: " ",
+            hd: "",
             cla: "Centre",
             scc: "chckbx",
         };
@@ -921,11 +919,11 @@ const OverallBmReport = () => {
 
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
-        const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
+        const mapChildren = (parent: any, children: ApiResponse[]): ColDefChild[] => {
             return children.map((child: ApiResponse, index: any) => ({
                 field: child.scc.trim(),
                 headerName: child.hd,
-                colId: child.hd,
+                colId: `${parent}-${child.cc}`,
                 hide: !child.v,
                 suppressHeaderFilterButton: true,
                 cellRenderer: (child.cc === 'ec' && systemType >= 3) ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
@@ -952,8 +950,6 @@ const OverallBmReport = () => {
             }));
         };
 
-        // console.log("apiResponse", apiResponse);
-
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
             floatingFilterComponentParams: section.scc === "chckbx" || section.scc == "ic" ? { suppressFilterButton: false } : undefined,
@@ -965,7 +961,7 @@ const OverallBmReport = () => {
             floatingFilter: section.scc === "chckbx" || section.scc == "ic" ? false : undefined,
             headerName: section.hd,
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
-            colId: section.hd,
+            colId: section.cc,
             // field: section.scc ? section.scc.toLowerCase() : undefined,
             // cellStyle: section.cc === 'Remark' ? {
             //         backgroundColor: 'white',
@@ -977,7 +973,7 @@ const OverallBmReport = () => {
             //     } : undefined,
             cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3 ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
-            children: section.scc === "chckbx" ? undefined : section.ch ? mapChildren(section.ch) : undefined,
+            children: section.scc === "chckbx" ? undefined : section.ch ? mapChildren(section.cc, section.ch) : undefined,
 
         }));
     }
@@ -1042,9 +1038,9 @@ const OverallBmReport = () => {
         }
     }
 
-    const handlePageChange = async (currPage: number) => {
+    const handlePageChange = useCallback(async (currPage: number) => {
         setCurrentPage(currPage)
-    }
+    }, [])
 
     const extractDepartmentNames = (orders: Orders): string[] => {
         const departmentNames: Set<string> = new Set();
@@ -1067,14 +1063,14 @@ const OverallBmReport = () => {
     useEffect(() => {
         if (allotementRef.current)
             allotementRef.current.reset();
-    }, [areRowsSelected])
+    }, [rowsSelected.current])
 
     const getSelectedRow = async () => {
         const selectedData = refGraph2.current?.api.getSelectedRows();
         if (selectedData.length == 0) {
-            setAreRowsSelected(false)
+            rowsSelected.current = false
         } else {
-            setAreRowsSelected(true);
+            rowsSelected.current = true
         }
         /* To persist the state*/
         if (selectedData) {
@@ -1090,7 +1086,8 @@ const OverallBmReport = () => {
                 }
             });
 
-            gridData.forEach((item: any) => {
+
+            gridData?.forEach((item: any) => {
                 let isThere = 0;
                 selectedData.forEach((selectedD: any) => {
                     if (selectedD.oid === item.oid) {
@@ -1171,97 +1168,99 @@ const OverallBmReport = () => {
 
     const cache = useRef<any>({});
 
-    const agGridProps: AgGridReactProps = {
-        tooltipShowDelay: 0,
-        tooltipTrigger: "focus",
-        gridOptions: {
-            rowHeight: 50,
-            getRowStyle: (params: any) => {
-                return {
-                    background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
-                };
-            },
-            rowSelection: 'multiple',
-            suppressRowClickSelection: true,
-            enableBrowserTooltips: true,
-            enableRangeSelection: true,
-            components: customCellRenderers,
-            pagination: true,
-            defaultColDef: {
-                filter: 'agTextColumnFilter',
-                floatingFilter: true,
-                //suppressFiltersToolPanel:true,
-                cellStyle: {
-                    'text-align': 'center',
-                    //'height': '50px',
-                    //"font-style": "Roboto",
-                    //"font-variant": "normal",
-                    "font-size": "18px",
-                    "font-family": "Roboto",
-                    'white-space': 'nowrap',
-                    'resizable': 'true',
-                    'color': '#000'
+    const agGridProps: AgGridReactProps = useMemo(()=>{
+        return    {
+            tooltipShowDelay: 0,
+            tooltipTrigger: "focus",
+            gridOptions: {
+                rowHeight: 50,
+                getRowStyle: (params: any) => {
+                    return {
+                        background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
+                    };
                 },
-                floatingFilterComponentParams: {
-                    suppressFilterButton: true
-                }
-            },
-        },
-        sideBar: sideBar,
-        masterDetail: true,
-        //detailCellRenderer: RowGroupRenderer,
-        //detailCellRendererParams:RowGroupRenderer,
-        paginationAutoPageSize: true,
-        enterNavigatesVertically: true,
-        enterNavigatesVerticallyAfterEdit: true,
-        groupDefaultExpanded: 0,
-        pivotMode: false,
-        onSelectionChanged: getSelectedRow,
-        onFirstDataRendered: onFirstDataRendered,
-        detailCellRendererParams: {
-            suppressMenu: true,
-            detailGridOptions: {
-                rowHeight: 45,
-                domLayout: "autoHeight",
-                autoGroupColumnDef: {
-                    headerName: "Item Name",
-                    cellRendererParams: {
-                        suppressCount: true
-                    }
-                },
-                columnDefs: [
-                    { field: "qty", headerName: "Requirement", },
-                    { field: "soh", headerName: "Stock", },
-                    { field: "wip", headerName: "WIP", },
-                    { field: "gap", headerName: "Gap", },
-                ],
+                rowSelection: 'multiple',
+                suppressRowClickSelection: true,
+                enableBrowserTooltips: true,
+                enableRangeSelection: true,
+                components: customCellRenderers,
+                pagination: true,
                 defaultColDef: {
-                    flex: 1,
-                    suppressMenu: true,
+                    filter: 'agTextColumnFilter',
+                    floatingFilter: true,
+                    //suppressFiltersToolPanel:true,
                     cellStyle: {
-                        fontSize: "16px",
-                        display: "flex",
-                        alignItems: "center"
+                        'text-align': 'center',
+                        //'height': '50px',
+                        //"font-style": "Roboto",
+                        //"font-variant": "normal",
+                        "font-size": "18px",
+                        "font-family": "Roboto",
+                        'white-space': 'nowrap',
+                        'resizable': 'true',
+                        'color': '#000'
+                    },
+                    floatingFilterComponentParams: {
+                        suppressFilterButton: true
                     }
                 },
-
-                treeData: true,
-                getDataPath: (data: any) => {
-                    return data.path;
-                },
             },
-            getDetailRowData: async (params: any) => {
-                if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
-                    params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
+            sideBar: sideBar,
+            masterDetail: true,
+            //detailCellRenderer: RowGroupRenderer,
+            //detailCellRendererParams:RowGroupRenderer,
+            paginationAutoPageSize: true,
+            enterNavigatesVertically: true,
+            enterNavigatesVerticallyAfterEdit: true,
+            groupDefaultExpanded: 0,
+            pivotMode: false,
+            onSelectionChanged: getSelectedRow,
+            onFirstDataRendered: onFirstDataRendered,
+            detailCellRendererParams: {
+                suppressMenu: true,
+                detailGridOptions: {
+                    rowHeight: 45,
+                    domLayout: "autoHeight",
+                    autoGroupColumnDef: {
+                        headerName: "Item Name",
+                        cellRendererParams: {
+                            suppressCount: true
+                        }
+                    },
+                    columnDefs: [
+                        { field: "qty", headerName: "Requirement", },
+                        { field: "soh", headerName: "Stock", },
+                        { field: "wip", headerName: "WIP", },
+                        { field: "gap", headerName: "Gap", },
+                    ],
+                    defaultColDef: {
+                        flex: 1,
+                        suppressMenu: true,
+                        cellStyle: {
+                            fontSize: "16px",
+                            display: "flex",
+                            alignItems: "center"
+                        }
+                    },
+    
+                    treeData: true,
+                    getDataPath: (data: any) => {
+                        return data.path;
+                    },
+                },
+                getDetailRowData: async (params: any) => {
+                    if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
+                        params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
+                        return
+                    }
+                    const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
+                    cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
+                    params.successCallback(data?.data?.data)
                     return
                 }
-                const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
-                cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
-                params.successCallback(data?.data?.data)
-                return
-            }
-        },
-    };
+            },
+        };
+    },[])
 
     useEffect(() => {
         if (Object.keys(appliedFilters).length) {
@@ -1310,7 +1309,7 @@ const OverallBmReport = () => {
     }, [])
 
 
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState<any>();
     const [columnState, setColumnState] = useState<any>();
 
 
@@ -1321,9 +1320,10 @@ const OverallBmReport = () => {
                 rn_id: UIGridCode.ProdOverallBMReport
             });
 
-            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-            setColumnState(newConfig);
+            const newConfig = JSON.parse(data?.data?.data?.[0]?.columns_settings) || [];
 
+            setColumnState(newConfig);
+            
             if (!data) {
                 console.error('Failed to apply column state');
             }
@@ -1332,21 +1332,31 @@ const OverallBmReport = () => {
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-            if (refGraph2?.current?.api) {
-                const config = refGraph2.current.api.getColumnState();
-
+            if(coldefs){
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.ProdOverallBMReport,
-                    cs: JSON.stringify(config)
+                    cs: JSON.stringify(coldefs)
                 }
                 await updateUserUIConfigData([payload]);
-                await getUserColumnConfig();
             }
+            else{
+                if (refGraph2?.current?.api) {
+                    const config = refGraph2.current.api.getColumnState();
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.ProdOverallBMReport,
+                        cs: JSON.stringify(config)
+                    }
+                    await updateUserUIConfigData([payload]);
+                }
+            }
+            notifySuccess("Changes saved successfully");
         } catch (error) {
             console.error(error);
+            notifyError("Error saving changes");
         }
     }
 
@@ -1355,23 +1365,65 @@ const OverallBmReport = () => {
     }
 
     useEffect(() => {
+        applyColumnState(true);
+    }, [columnState]);
+
+    const applyColumnState = useCallback((flag = false) => {
         if (refGraph2?.current && columnState?.length) {
-            const result = refGraph2?.current?.api?.applyColumnState({
-                state: columnState,
+            let colState = [...columnState];
+            if(flag){
+                const arr: any = []
+                colState.forEach((col: any)=>{
+                    if(col.children){
+                        col.children.forEach((child: any)=>{
+                            arr.push({
+                                "colId": child.colId,
+                                "hide": false,
+                                "pinned": null,
+                                "sort": null,
+                                "sortIndex": null,
+                                "aggFunc": null,
+                                "rowGroup": false,
+                                "rowGroupIndex": null,
+                                "pivot": false,
+                                "pivotIndex": null,
+                                "flex": null
+                              })
+                        })
+                    }
+                    else{
+                        arr.push({
+                            "colId": col.colId,
+                            "hide": false,
+                            "pinned": null,
+                            "sort": null,
+                            "sortIndex": null,
+                            "aggFunc": null,
+                            "rowGroup": false,
+                            "rowGroupIndex": null,
+                            "pivot": false,
+                            "pivotIndex": null,
+                            "flex": null
+                          })
+                    }
+                    colState = arr;
+                })
+            }
+            refGraph2.current.api?.applyColumnState({
+                state: colState,
                 applyOrder: true
             });
-            if (!result) {
-                console.error('Failed to apply column state');
-            }
         }
-    });
+    }, [columnState])
 
     useEffect(() => {
         if (isReset) {
-            setColumnState(coldefs);
+            setColumnState([...coldefs]);
             setIsReset(false)
         } else {
-            handleSaveClick();
+            if(isReset != undefined){
+                handleSaveClick(coldefs);
+            }
         }
     }, [isReset]);
 
@@ -1401,22 +1453,23 @@ const OverallBmReport = () => {
                 />
             </BMDepHeaderWraper>
 
-            {(isGridLoading && !isExcelLoading) || (isGetStateLoading || isSetStateLoading) ? <OverlayLoader /> :
+            {(isGridLoading && !isExcelLoading) || (isGetStateLoading ) ? <OverlayLoader /> :
 
                 <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                    <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>
+                    <BTRTableWrapper style={{ height: rowsSelected.current ? "120vh" : "80vh", margin: '0' }}>
                         <Allotment vertical={true} separator={true} ref={allotementRef}>
-                            <Allotment.Pane preferredSize={areRowsSelected ? "45%" : '70%'}>
+                            <Allotment.Pane preferredSize={rowsSelected.current ? "45%" : '70%'}>
                                 <BTRAllomentSection>
                                     <GridView
                                         reference={refGraph2}
                                         agGridProps={agGridProps}
                                         columDef={coldefs}
                                         convercolumnDef={gridData}
-                                        handlePageChange={(cp) => handlePageChange(cp)}
+                                        handlePageChange={handlePageChange}
                                         saveBtn={false}
                                         totalRow={gridDataCount}
                                         currentPage={currentPage}
+                                        onGridReady={applyColumnState}
                                     />
                                     {/* This Grid is only for the user to download the excel report */}
                                     <div style={{ display: 'none' }}>
@@ -1434,7 +1487,7 @@ const OverallBmReport = () => {
                                 </BTRAllomentSection>
                             </Allotment.Pane>
 
-                            <Allotment.Pane preferredSize={areRowsSelected ? "55%" : '30%'}>
+                            <Allotment.Pane preferredSize={rowsSelected.current ? "55%" : '30%'}>
                                 <VFWrapper>
                                     <BTRAllomentSection>
                                         <OrderElapsedGrid

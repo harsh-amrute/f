@@ -31,7 +31,7 @@ const calcValue = (tc: number, yc: number, tcp: number, ycp: number) => {
 
 export const modifyAnalyticsData = (response: any) => {
   const analytics: any = [];
-  const colors = Object.keys(response.prod);
+  const colors = Object.keys(response?.prod);
 
   colors.forEach((color) => {
     if (response.proc[color]) {
