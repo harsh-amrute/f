@@ -481,13 +481,15 @@ const useViewModify = (pageType: string) => {
     // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
     loadingOverlayComponent: 'loadingOverlay',
     onRowDataUpdated: (event: any) => {
-      const downloadableColumnKeys: string[] = [];
-      activeMaster.fields.forEach((field: Field) => {
+      
+     
+        const downloadableColumnKeys: string[] = [];
+        activeMaster.fields.forEach((field: Field) => {
         if (field.isDownload) {
           downloadableColumnKeys.push(field.key)
         }
       });
-
+      
       if (downloadData) {
         const currentMaster = masters.find((master: MDMMasterState) => master.id === activeMaster.id);
         const visibleColumns = ref.current?.api.getAllDisplayedColumns();
@@ -504,6 +506,7 @@ const useViewModify = (pageType: string) => {
           event.api.exportDataAsExcel({ fileName: downloadFileName === '' ? currentMaster.name : downloadFileName, columnKeys: validColumnKeys });
         }
       }
+      
     },
     rowSelection: 'multiple',
     suppressRowClickSelection: true,
@@ -1024,32 +1027,53 @@ const useViewModify = (pageType: string) => {
       // const toasId = notifyLoader("Reading File");
       setIsOverlayVisible(true)
 
-      if (activeMaster.id < 14) {
-        await parseExcelData(file, activeMaster, pageType, selectedColumns);
-      }
+      // console.log("file buffer", file, activeMaster, pageType, selectedColumns );
+      // console.log("active Master", activeMaster);
+      // console.log("pageType", pageType);
+      // console.log("selectedColumns", selectedColumns);
 
+      // TODO : MTO check for which all master this needs to be done
+      // if (activeMaster.id < 14) {
+      const buffData =  await parseExcelData(file, activeMaster, pageType, selectedColumns);
+      // }
+
+
+      /////
+      const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
+        // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
+  
+        return {  ...col, editable: true, singleClickEdit: true }
+        // return { ...col }
+      })
+      dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 200},{colId: 'err', field: 'err',cellStyle: {color: 'red'}, headerName: 'Error'  },...updatedColdefs]))
+      ////
       const formData = new FormData();
       formData.append("file", file);
       formData.append("ui_config", JSON.stringify(activeMaster.fields))
+      console.log("ui_config activeMaster.field", activeMaster);
       formData.append("screen_type", JSON.stringify({ screenType: pageType }))
       const processId = uuidv4();
 
-      formData.append("process_id", JSON.stringify({ processId: processId }));
 
-      intervalID = setInterval(async () => {
-        const progress = await getUploadProgress(processId);
-        setUploadProgress(progress.data.progress);
-        setTotalProgress(progress.data.totalRows)
-      }, 1000)
+      // TODO: checked for buffer only make it dynamic
+      if(activeMaster.id!==501){
 
-      const response = await validateMaster({ formData, masterId: activeMaster.id });
-      clearInterval(intervalID);
-      let result = JSON.parse(response.data)
-      const errorAndWarningData = result.filter((data: any) => data.error.length > 0 || data.warning.length > 0)
-      result = [...errorAndWarningData, ...result.filter((data: any) => data.error.length === 0 && data.warning.length === 0)]
-
-      setIsOverlayVisible(false);
-
+        
+        intervalID = setInterval(async () => {
+          const progress = await getUploadProgress(processId);
+          console.log("progress data...",progress.data)
+          setUploadProgress(progress.data.progress);
+          setTotalProgress(progress.data.totalRows)
+        }, 1000)
+        
+        const response = await validateMaster({ formData, masterId: activeMaster.id });
+        clearInterval(intervalID);
+        let result = JSON.parse(response.data)
+        const errorAndWarningData = result.filter((data: any) => data.error.length > 0 || data.warning.length > 0)
+        result = [...errorAndWarningData, ...result.filter((data: any) => data.error.length === 0 && data.warning.length === 0)]
+        
+        setIsOverlayVisible(false);
+        
       const ifErrorExists = result.find((data: any) => data.error.length > 1);
       const ifWarningExists = result.find((data: any) => data.warning.length > 1);
 
@@ -1066,10 +1090,22 @@ const useViewModify = (pageType: string) => {
         else dispatch(UPDATE_PROGRESS_STATE('uploaded'));
         addCheckBoxColDefs();
       }
-
+      
+    
       dispatch(SET_RECORD_COUNT(result.length));
-      dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
       dispatch(UPDATE_ROW_DATA(result));
+      dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+    }
+    else{
+
+    //   console.log("file buffer wala", file);
+
+    dispatch(SET_RECORD_COUNT(buffData.length));
+    dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+    dispatch(UPDATE_ROW_DATA(buffData));
+
+    }
+      
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       dispatch(TOGGLE_UPLOAD_MODAL(false));
       setIsOverlayVisible(false)

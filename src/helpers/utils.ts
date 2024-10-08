@@ -21,6 +21,7 @@ import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
+
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -636,6 +637,10 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   //Selected Columns Keys
   const selectedKeys = selectedColumns.map((col: any) => col.colId);
 
+  console.log("selected Columns buffer", selectedColumns);
+  console.log("master buffer", master);
+  console.log("file", file);
+
   const data = await readXlsxFile(buffer, {
     parseNumber: (string: any) => string
   });
@@ -645,6 +650,37 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
     if (fieldObj) return fieldObj.key;
     else return '';
   })
+
+  console.log("buff ka data...",data)
+
+  if(master.id===501){
+    const objKeys: string[] = [];
+    selectedColumns.forEach((ele:any)=>{
+      objKeys.push(ele.colId);
+    })
+
+    const bufferData:any = [];
+    for(let i=1; i< data.length; i++){
+      const buffData:any = {};
+      for(let j=0; j< data[i].length; j++){
+        buffData[objKeys[j]]= data[i][j];
+      }
+      buffData["err"]="Enter Unique Values for buffer type";
+      bufferData.push(buffData);
+    }
+
+    // dispatch(SET_RECORD_COUNT(bufferData.length));
+    // dispatch(UPDATE_ROW_DATA(bufferData));
+
+    return bufferData;
+
+    // console.log("** Final buffer data **", bufferData);
+    // TODO do validations here to show a modal for errors
+
+
+
+    
+  }
 
   let headers: any = [] //Not Selected Headers
   let error = false;

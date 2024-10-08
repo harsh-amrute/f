@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectGroupedMasters";
 
@@ -23,6 +23,11 @@ import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
 import { MDMMasterState,Field } from "../../../../types/MDM";
+import { useGetBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM";
+import _ from "lodash";
+import { GridReadyEvent } from "ag-grid-enterprise";
+
+
 
 const AddRecord = () => {
 
@@ -93,13 +98,87 @@ const AddRecord = () => {
       }
     },[isTableDataLoading])
 
+    const [rowDataCustom, setRowDataCustom] =useState<any>(_.cloneDeep(activeMaster.rowData))
+    const {mutateAsync: getBufferMasterData} = useGetBufferMasterData();
+
+
+    const [addedData, setAddedData] = useState<any>([]);
+
+    const getBufferData= async ()=>{
+      try{
+        const response = await getBufferMasterData();
+        setAddedData(response.data.data.results);
+      }
+      catch(error){
+        console.log(error)
+      }
+    }
+
+    useEffect(()=>{
+      getBufferData();
+    },[])
+
+    useEffect(()=>{
+      console.log("rwo  Data custom", rowDataCustom)
+    },[rowDataCustom])
+    const onMTORowDataUpdated=(params: any)=>{
+      if(activeMaster.isMTO){
+        console.log("this worked")
+
+      // ref?.current?.api?.selectAll();s
+      
+
+      // console.log("getBufferData....response..", addedData);
+      
+
+      
+      if(addedData){
+        params?.api?.forEachNode(
+          (node: any, index: any)=>{
+            console.log("node.....", node.data.bsz);
+            addedData.forEach((addData: any)=>{
+              // console.log("This played..")
+              if(node.data.bd=== addData.bd){
+                node.data.err = "The buffer code already exists in the added buffers!";
+                // changeRowData({node: {rowIndex: index}, column: {colId: 'err'}, newValue: "The buffer code already exists in the added buffers!"})
+              }
+              else if((node.data.bt=== addData.bt) && (node.data.bsz=== addData.bsz)){
+                node.data.err = "The buffer with the buffer size already exists!";
+              }
+            })
+            
+            params?.api?.forEachNode((node2: any, index2: any)=>{
+              if(index > index2){
+
+                if(node.data.bd === node2.data.bd){
+                  node.data.err = "Enter a unique buffer code!"
+                // changeRowData({node: {rowIndex: index}, column: {colId: 'err'}, newValue: "Enter a unique buffer code!"})
+
+                }
+                else if(node.data.bt === node2.data.bt && node.data.bsz === node2.data.bsz){
+                  node.data.err = "Enter a unique buffer size for the given buffer type!"
+                }
+                else{
+                  node.data.err="";
+                }
+              }
+              })
+            }
+          );
+        }
+      }
+    }
+
+    useEffect(()=>{
+      // ref?.current?.api?.selectAll();
+      setRowDataCustom(_.cloneDeep(activeMaster.rowData))
+      // console.log("yeh hua re yeh hua yeh console run hua!!")
+    },[activeMaster.rowData])
+
 
     if(isLoading){
         return <VFLoader/>
     }
-
-    
-
 
     if(isSelectMasterOpen){
       return(
@@ -119,6 +198,22 @@ const AddRecord = () => {
     }
     const dispatch = useDispatch();
 
+
+    // const onGridReady = useCallback((params: GridReadyEvent) => {
+    //   if(activeMaster.rowData){
+    //     setRowDataCustom(activeMaster.rowData);
+    //   }
+    // },[activeMaster.rowData]);
+
+    console.log('sdfdsf rowdata custoj',rowDataCustom);
+
+    const changeRowData =(params: any)=>{
+      const newData = [...rowDataCustom];
+      newData[params.node.rowIndex][params.column.colId] = params.newValue;
+      console.log("new dAtaa", newData);
+      setRowDataCustom(newData);
+    }
+
     return(
         <React.Fragment>
           <SCContainer>
@@ -131,30 +226,55 @@ const AddRecord = () => {
                 newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
                 newTabHandler={addNewMaster}
                 >
+                {activeMaster.isMTO?
+
                   <VFTable
-                    height={"95%"}
-                    ref={ref}
-                    columnDefs={activeMaster.colDefs}
-                    rowData={activeMaster.rowData}
-                    {...agGridProps}
+                  height={"95%"}
+                  ref={ref}
+                  columnDefs={activeMaster.colDefs}
+                  rowData={rowDataCustom}
+                  {...agGridProps}
+                  onCellEditingStopped={(params: any)=>{ changeRowData(params)}}
+                  onRowDataUpdated={onMTORowDataUpdated}
+                  // onGridReady={onGridReady}
                     suppressPaginationPanel={!isDataAvailableLocally}
-                  statusBar={{
-                    statusPanels: isDataAvailableLocally?[
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                    statusBar={{
+                      statusPanels: isDataAvailableLocally?[
+                        { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                        { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                        { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ]:
                     [],
                   }}
                   />
+                  :
+                  <VFTable
+                  height={"95%"}
+                  ref={ref}
+                  columnDefs={activeMaster.colDefs}
+                  rowData={activeMaster.rowData}
+                    {...agGridProps}
+                    suppressPaginationPanel={!isDataAvailableLocally}
+                    statusBar={{
+                      statusPanels: isDataAvailableLocally?[
+                        { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                        { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                        { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                    ]:
+                    [],
+                  }}
+                  />
+                }
                   <div style={{display:'none'}}>                
                     <VFTable
                       ref={tempRef}
                       rowData={tempGridData}
                       {...tempAgGridProps}
-                    />
+                      />
                   </div>
 
               </VFTab>
