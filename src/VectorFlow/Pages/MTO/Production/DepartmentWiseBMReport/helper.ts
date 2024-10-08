@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export enum BMReportAnaytics {
   INCREASE = "increase",
   DECREASE = "decrease",
@@ -30,23 +32,29 @@ const calcValue = (tc: number, yc: number, tcp: number, ycp: number) => {
 };
 
 export const modifyAnalyticsData = (response: any) => {
+  const newResponse = _.transform(
+    response,
+    function (result: any, val: any, key: any) {
+      result[key.toLowerCase()] = val;
+    }
+  );
   const analytics: any = [];
-  const colors = Object.keys(response?.prod);
+  const colors = Object.keys(newResponse?.prod || {});
 
   colors.forEach((color) => {
-    if (response.proc[color]) {
+    if (newResponse.proc[color]) {
       const {
         tc: procTc,
         tcp: procTcp,
         yc: procYc,
         ycp: procYcp,
-      } = response.proc[color];
+      } = newResponse.proc[color];
       const {
         tc: prodTc,
         tcp: prodTcp,
         yc: prodYc,
         ycp: prodYcp,
-      } = response.prod[color];
+      } = newResponse.prod[color];
       analytics.push({
         color: color.toLowerCase(),
         ProcCount: procTc,

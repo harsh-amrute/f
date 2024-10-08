@@ -1427,11 +1427,6 @@ const OverallBmReport = () => {
         }
     }, [isReset]);
 
-
-
-
-
-
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>

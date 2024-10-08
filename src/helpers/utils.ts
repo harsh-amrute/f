@@ -344,9 +344,11 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
 
 export const handleDownloadMTOVF = async (reportName: string, downloadName: string) => {
   try{
+    const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_VF_API_HOST_MTO}/DownloadReportData/?report_name=${reportName}`, {
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token?.access}`
       }
     })
     if (!response.ok) {
