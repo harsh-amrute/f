@@ -667,7 +667,7 @@ const DptWiseBMReport = () => {
             scc: 'ic'
         };
 
-        apiResponse.forEach((item, index) => {
+        apiResponse.forEach((item) => {
             const modifiedItem = { ...item };
 
             // Initialize cp for this cc if not already done
