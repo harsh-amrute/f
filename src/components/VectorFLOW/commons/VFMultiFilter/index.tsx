@@ -104,7 +104,6 @@ const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:
     const {user} = useUserData()
 
     const themeUi = user.user.theme_ui
-    // console.log(header)
     return(
         <>
            { filterOptions.map((option: {label:string, id:string}, index:number) =>{
@@ -336,7 +335,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
     const getValue = ()=>{
         const doesFilterExist = filterState.find((o:any)=>o.name==filterId)
         if(doesFilterExist){
-            return doesFilterExist.value
+            return doesFilterExist.value 
         }
         return ''
     }
@@ -436,7 +435,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         // if(filterId==="Horizon"){
         //     setMultiFilter({...multiFilter,horizon:e})
         // }
-        console.log(property,updateLabel);
         
         const filterObj:BPRFilter = {
             attributeName:"",
@@ -612,14 +610,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             return multiFilter[key as keyof BPRFilterState].id ===parentId
         })
 
-        console.log(console.log(multiFilter));
        
         if(currGroup){
 
             const currFilter:BPRFilter | undefined =multiFilter[currGroup as keyof BPRFilterState].filters.find((filter:BPRFilter)=>{
                 return filter.name===filterId
             })
-           
             if(currFilter){
                 //if((e.target && e.target.type ==="checkbox") || Array.isArray(e) ){
                 if( Array.isArray(e)){ 
@@ -634,22 +630,21 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                     })   
                 }
                 else{
-                    console.log(multiFilter)
                     setMultiFilter({
                         ...multiFilter,
                         [currGroupKey]:{
                             ...multiFilter[currGroupKey as keyof BPRFilterState],
                             filters:[...multiFilter[currGroupKey as keyof BPRFilterState].filters.map((filter:BPRFilter)=>{
-                                console.log(filter);
                                 if(filter.name===filterId){
-                                    console.log(finalLabel);
                                     const result:any = {
                                         ...filter
                                     };
-                                    console.log(property);
-                                    console.log(finalLabel)
+                                   
                                     if(finalLabel && updateLabel) {console.log('heelo');result['label'] = finalLabel;}
-                                    if(finalValue) result[property] = finalValue;
+                                    if(finalValue!==undefined){
+                                        result[property] = finalValue;
+
+                                    } 
                                     return result;
                                     
                                 }
