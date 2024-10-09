@@ -1,8 +1,10 @@
 import { VFWrapper } from './styles';
 import { SaveBtnWrapper, SaveBtn } from '../../Poogi/ReasonOrderChange/styles';
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
-import { pagination } from '../../Common/Enum';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+// import { pagination } from '../../Common/Enum';
+// import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
+import { memo } from 'react';
 interface GridProps {
     agGridProps: any
     columDef: any
@@ -12,10 +14,11 @@ interface GridProps {
     handlePageChange: (e: any) => any
     totalRow?: any
     currentPage?: any,
-    saveBtn?: boolean
+    saveBtn?: boolean,
+    onGridReady?: any
 }
 
-const GridView = ({
+const GridView = memo(({
     agGridProps,
     columDef,
     convercolumnDef,
@@ -24,12 +27,14 @@ const GridView = ({
     handlePageChange,
     totalRow,
     currentPage,
+    onGridReady,
     saveBtn = true }: GridProps) => {
     return (
         <>
-            <VFWrapper>
+            <VFWrapper className="wrapper-overall">
                 <VFTable
                     {...agGridProps}
+                    maintainColumnOrder
                     pagination={false}
                     columnDefs={columDef}
                     rowData={convercolumnDef}
@@ -40,6 +45,11 @@ const GridView = ({
                     detailRowAutoHeight
                     tooltipMouseTrack={true}
                     //defaultColDef={{maxWidth:150}}
+                    onGridReady = {()=>{
+                        if(onGridReady){
+                            onGridReady();
+                        }
+                    }}
                     statusBar={{
                         statusPanels: [
                             { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -54,17 +64,17 @@ const GridView = ({
                     }}
                     ref={reference}
                 />
-            </VFWrapper>
             <VFPagination
                 selectedRows={0}
-                rowsPerPage={pagination.mtoPageSize}
+                rowsPerPage={500}
                 totalRows={totalRow}
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
             />
+            </VFWrapper>
             {
                 saveBtn && (
-                    <SaveBtnWrapper style={{ margin: '0px 5px 10px' }}>
+                    <SaveBtnWrapper style={{ margin: '1rem 0', padding: 0 }}>
                         <SaveBtn onClick={updateReason}>
                             Save Remark
                         </SaveBtn>
@@ -73,6 +83,6 @@ const GridView = ({
             }
         </>
     )
-}
+})
 
 export default GridView

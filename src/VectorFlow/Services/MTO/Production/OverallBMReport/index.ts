@@ -3,7 +3,8 @@ import { OverallBMReportService } from './api'
 type OverallBMReportInputType = {
     page: number,
     appliedFilters: any,
-    page_size?: number
+    page_size?: number,
+    analytics?: 0 | 1,
 }
 
 export const useGetOverAllBMReport = () => {

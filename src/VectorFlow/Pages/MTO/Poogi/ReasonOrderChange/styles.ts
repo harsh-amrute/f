@@ -22,7 +22,7 @@ export const SaveBtn=styled.button`
     background-color:#fff;
     border:1px solid #B93B7E;
     border-radius:4px;
-    font-size:18px;
+    font-size:14px;
     font-family: 'Roboto', sans-serif;
     font-weight:400;
     curser:pointer;

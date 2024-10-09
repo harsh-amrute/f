@@ -20,7 +20,7 @@ height: max-content;
 export const FilterWrapper = styled.div`
 height: max-content;
 max-height: 600px;
-overflow: auto;
+overflow: visible;
 `
 
 export const NoFilterWrapper = styled.div`

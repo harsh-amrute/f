@@ -30,8 +30,17 @@
   --ag-header-cell-moving-background-color: rgb(80, 40, 140) !important; */
 }
 
-.vfwrap .ag-icon-filter {
-  zoom: 0.75;
+.vfwrap .ag-icon-filter, .vfwrap .ag-icon-menu-alt, .vfwrap .ag-icon-expanded, .vfwrap .ag-icon-contracted, .vfwrap .ag-icon-desc, .vfwrap .ag-icon-asc{
+  zoom: 1;
+  color: white;
+}
+
+.vfwrap .ag-header-row-column-filter .ag-icon-filter{
+  color: black;
+}
+
+.vfwrap .ag-menu-list .ag-icon-asc,  .vfwrap .ag-menu-list .ag-icon-desc{
+  color: black;
 }
 
 .vfwrap .ag-status-bar {
@@ -220,6 +229,10 @@
 
 .vfwrap .ag-theme-noir-fusion .ag-row:hover {
   background-color: rgb(188, 61, 129, 0.3) !important;
+}
+
+.vfwrap .ag-column-drop-horizontal {
+   background-color: #cecece !important;
 }
 
 .vfwrap .ag-theme-pure-elegance .ag-row:hover {
