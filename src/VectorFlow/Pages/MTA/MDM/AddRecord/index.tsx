@@ -23,9 +23,9 @@ import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
 import { MDMMasterState,Field } from "../../../../types/MDM";
-import { useGetBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM";
+import { useGetBufferMasterData, useSaveBufferMasterTask } from "../../../../../VectorFlow/Services/MTA/MDM";
 import _ from "lodash";
-import { GridReadyEvent } from "ag-grid-enterprise";
+
 
 
 
@@ -100,6 +100,7 @@ const AddRecord = () => {
 
     const [rowDataCustom, setRowDataCustom] =useState<any>(_.cloneDeep(activeMaster.rowData))
     const {mutateAsync: getBufferMasterData} = useGetBufferMasterData();
+    const {mutateAsync: saveBufferMasterTask} = useSaveBufferMasterTask();
 
 
     const [addedData, setAddedData] = useState<any>([]);
@@ -120,25 +121,19 @@ const AddRecord = () => {
 
     useEffect(()=>{
       console.log("rwo  Data custom", rowDataCustom)
-    },[rowDataCustom])
+    },[rowDataCustom]);
     const onMTORowDataUpdated=(params: any)=>{
       if(activeMaster.isMTO){
         console.log("this worked")
-
-      // ref?.current?.api?.selectAll();s
       
-
-      // console.log("getBufferData....response..", addedData);
-      
-
-      
+        const nodesToSelect:any = [];
+        params.api.deselectAll();
       if(addedData){
         params?.api?.forEachNode(
           (node: any, index: any)=>{
-            console.log("node.....", node.data.bsz);
+            console.log("node.....", node.data);
             addedData.forEach((addData: any)=>{
-              // console.log("This played..")
-              if(node.data.bd=== addData.bd){
+              if(node.data.bcd=== addData.bcd){
                 node.data.err = "The buffer code already exists in the added buffers!";
                 // changeRowData({node: {rowIndex: index}, column: {colId: 'err'}, newValue: "The buffer code already exists in the added buffers!"})
               }
@@ -150,7 +145,7 @@ const AddRecord = () => {
             params?.api?.forEachNode((node2: any, index2: any)=>{
               if(index > index2){
 
-                if(node.data.bd === node2.data.bd){
+                if(node.data.bcd === node2.data.bcd){
                   node.data.err = "Enter a unique buffer code!"
                 // changeRowData({node: {rowIndex: index}, column: {colId: 'err'}, newValue: "Enter a unique buffer code!"})
 
@@ -160,11 +155,15 @@ const AddRecord = () => {
                 }
                 else{
                   node.data.err="";
+                  nodesToSelect.push(node);
                 }
               }
-              })
-            }
+            })
+          }
           );
+
+          console.log("nodes to select....",nodesToSelect);
+          params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
         }
       }
     }
@@ -205,7 +204,6 @@ const AddRecord = () => {
     //   }
     // },[activeMaster.rowData]);
 
-    console.log('sdfdsf rowdata custoj',rowDataCustom);
 
     const changeRowData =(params: any)=>{
       const newData = [...rowDataCustom];
@@ -213,6 +211,50 @@ const AddRecord = () => {
       console.log("new dAtaa", newData);
       setRowDataCustom(newData);
     }
+
+
+
+     // Saves Buffer Data for MTO
+  const onMTOSaveBufferData= async()=>{
+
+    const BufferPostObj: any = {
+      mid: activeMaster.id,
+      uid: user.user.id.toString(),
+      unm: user.user.name,
+      buffData: []
+    }
+
+
+    const selectedRows:any = ref?.current?.api?.getSelectedRows();
+    const finalData:any = [...selectedRows];
+    finalData.forEach((e:any)=>{
+      // bufferTypeMaster.forEach((e:any)=>{
+      //   if(e.dsc===e.bt){
+      //     e.bt=e.id;
+      //   }
+      // })
+
+      // TODO: call the buffer type and add the id and use drop down instead;
+      e.bt = 1;
+      e.ib= (e.ib==="false"?0: 1);
+      e.mlt = parseInt(e.mlt);
+      e.slt = parseInt(e.slt);
+
+
+      BufferPostObj.buffData.push(_.omit(e,'editable'));
+      BufferPostObj.buffData.push(_.omit(e,'err'));
+    })
+
+    try{
+      console.log("finalData......", BufferPostObj);
+      const response = await saveBufferMasterTask(BufferPostObj);
+      // console.log("save api response...",response)
+    }
+    catch(error){
+      console.log(error)
+    }
+    
+  }
 
     return(
         <React.Fragment>
@@ -368,6 +410,9 @@ const AddRecord = () => {
             onSubmitConflictData={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
             masterId={activeMaster.id}
+            mtoSaveData={true}
+            onMTOSaveData={ onMTOSaveBufferData}
+            isMTOSaveDataDisabled={activeMaster.rowData.length === 0}
           />
         }
         </React.Fragment>

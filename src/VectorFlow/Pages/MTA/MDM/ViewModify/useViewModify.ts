@@ -429,9 +429,15 @@ const useViewModify = (pageType: string) => {
       const MtoBufferdata = await MTOMasterUIConfiguration();
 
       //console.log('MtoMtoBufferdata',MtoBufferdata?.data?.data)
-      const concatenatedResult = concatenateFields(data.data, MtoBufferdata?.data?.data);
-      console.log('<><>concatenatedResult<><><>', concatenatedResult)
-      setAllMasterState(mapMasterToMasterState(concatenatedResult, onShowChart))
+      if(data){
+
+        const concatenatedResult = concatenateFields(data?.data, MtoBufferdata?.data?.data);
+        console.log('<><>concatenatedResult<><><>', concatenatedResult)
+        setAllMasterState(mapMasterToMasterState(concatenatedResult, onShowChart))
+      }
+      else{
+        setAllMasterState(mapMasterToMasterState(MtoBufferdata?.data?.data, onShowChart))
+      }
     }
 
     getMasterUIConfigurationData()
