@@ -313,7 +313,6 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
     
     const comparisionIntegerOptions = [
         {value:'equalto',label:'='},
-
         {value:'greaterthan',label:'>'},
         {value:'greaterthanequalto',label:'>='},
         {value:'smallerthan',label:'<'},
@@ -329,7 +328,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
         if(doesFilterExist){
             return comparisionOptions.find((c:any)=>c.value===doesFilterExist.operator)
         }
-        return comparisionOptions[0]
+        // return comparisionOptions[0]
+        return 'OP'
     }
 
     const getValue = ()=>{
@@ -385,10 +385,10 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
                 <SelectDropdownComponent data-testid="BPR-filter-dropdown">
                     {
                     header==="Availabilty Filter" ?
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionIntegerOptions)}/>    
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionIntegerOptions)}/>    
 
                     : 
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/>    
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/>    
 
                     }
                     {/* <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue()}/>     */}
@@ -866,23 +866,23 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             <p>Location Filter</p>
                         </FilterHeader>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF1',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF1'}  filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF1',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF1'}  filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF2',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF2'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF2',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF2'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF3',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF3'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF3',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF3'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF4',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF4'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF4',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF4'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={process.env.REACT_APP_LOCATION_PERMISSION_L1}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF5',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF5'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF5',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF5'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
                             <VFMasterFieldSearch 
-                                 value={getAPIValue('LF6', multiFilter.locationFilter.filters)}  
+                                value={getAPIValue('LF6', multiFilter.locationFilter.filters)}  
                                 setValue={(e:any)=>onFilterChange('LF6',e,'2','value')} 
                                 options={getOptions(locationData?.data.data)}  
                                 placeholder={'Enter Location'} 
@@ -903,19 +903,19 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         <p>Product Filter</p>
                     </FilterHeader>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any, key:string,updateLabel:boolean)=>onFilterChange('PF1',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF1'} ></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={'Select'} onChange={(e:any, key:string,updateLabel:boolean)=>onFilterChange('PF1',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF1'} ></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF2',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF2'} ></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF2',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF2'} ></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF3',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF3'}></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF3',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF3'}></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF4',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF4'}></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF4',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF4'}></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF5',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF5'}></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF5',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF5'}></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
                         <VFMasterFieldSearch
