@@ -409,95 +409,7 @@ export const listMenuParent: any = [
   //     },
   //   ],
   // },
-  {
-    id: 8,
-    name: "navbar.listMenuParent.miscellaneousReports.title",
-    img: "/assets/img/nav/miscellaneousReports",
-    url: "",
-    status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","BMReportManager"],
-    child: [
-
-
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.bufferPenetrationReport",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "/api/download-reports/bpr",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.fashionRationedRequirement",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "/api/download-reports/fr",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.rosn",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "/api/download-reports/rosn",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.store_classification",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "/api/download-reports/store_classification",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.ist",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "/api/download-reports/ist",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.dailyDataUnavailibilityReport",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.invalidDataReport",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.uiUploadLogs_AddNewSKULoc",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.uiUploadLogs_ModifySKULoc",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.uiUploadLogs_RemoveSKULoc",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-      // {
-      //   name: "navbar.listMenuParent.miscellaneousReports.uiUploadLogs_SKUMaster",
-      //   img: "/assets/img/nav/arrow_down.svg",
-      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      //   url: "",
-      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-      // },
-    ],
-  },
+  
 
   {
     id: 19,
@@ -656,6 +568,95 @@ export const listMenuParent: any = [
 
         ]
       },
+    ],
+  },
+  {
+    id: 8,
+    name: "navbar.listMenuParent.miscellaneousReports.title",
+    img: "/assets/img/nav/miscellaneousReports",
+    url: "",
+    status: false,
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","BMReportManager"],
+    child: [
+
+
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.bufferPenetrationReport",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/bpr",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.fashionRationedRequirement",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/fr",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.rosn",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/rosn",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.store_classification",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/store_classification",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.ist",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "/api/download-reports/ist",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.dailyDataUnavailibilityReport",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.invalidDataReport",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.uiUploadLogs_AddNewSKULoc",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.uiUploadLogs_ModifySKULoc",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.uiUploadLogs_RemoveSKULoc",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
+      // {
+      //   name: "navbar.listMenuParent.miscellaneousReports.uiUploadLogs_SKUMaster",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      //   url: "",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      // },
     ],
   },
   {

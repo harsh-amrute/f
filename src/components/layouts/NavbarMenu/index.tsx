@@ -60,7 +60,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
         img: "/assets/img/nav/arrow_down.svg",
         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
         url: key,
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
         isMTO: true,
         downloadName: attributes.downloadName
       }));
