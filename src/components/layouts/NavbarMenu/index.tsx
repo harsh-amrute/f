@@ -108,8 +108,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
 
   const navigate = useNavigate();
 
-  console.log("tempUrls", tempUrls);
-
   return (
     <NavStyle.SCGridNav id="vector_nav" className="list-roles-per--content">
       <NavStyle.SCNavBox>

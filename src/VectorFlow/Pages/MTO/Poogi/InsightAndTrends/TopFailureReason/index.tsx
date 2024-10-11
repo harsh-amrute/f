@@ -198,7 +198,7 @@ const TopFailureReasons = () => {
         isGridView={isGridView}
         setIsGridView={setIsGridView}
         // isChartGridToggle /***commented it  */
-        isAddFilterButton
+        // isAddFilterButton
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
         isFilterOpen={isFilterOpen}

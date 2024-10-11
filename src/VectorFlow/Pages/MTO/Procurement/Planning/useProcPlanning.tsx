@@ -212,7 +212,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }, [getProcPlanningData,appliedFilters]);
 
     useEffect(() => {
-        if (datas.length && HeaderData.length) {
+        if (datas && HeaderData.length) {
             const initializeData = (data: any, headerData: any) => {
                 const calculateData = data.map((item: any) => ({
                     ...item,

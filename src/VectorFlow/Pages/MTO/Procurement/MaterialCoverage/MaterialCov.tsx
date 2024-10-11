@@ -49,7 +49,7 @@ const MaterialCov = () => {
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState(false);
-  const [colDef, setColDef] = useState([{}]);
+  const [colDef, setColDef] = useState<any>([]);
   const [HeaderData, setHeaderData] = useState([]);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -91,7 +91,7 @@ const MaterialCov = () => {
     try {
       const formatedFilters = formatFilterJSON(appliedFilters);
       const response = await getSOSummaryData({ appliedFilters: formatedFilters});
-      setSOData(response?.data?.data?.results || []);
+      setSOData(response?.data?.data || []);
     } catch (error) {
       console.log(error);
       notifyError('Failed to fetch Grid data!');
@@ -193,12 +193,12 @@ const MaterialCov = () => {
   const extras = [
       {
           field: "",
-          resizable: false,
+          resizable: true,
           position: 0,
           suppressHeaderFilterButton: true,
           suppressMenu: true,
           filter: false,
-          initialWidth: 50,
+          width: 50,
           maxWidth: 50,
           cellRenderer: CustomGroupCellRenderer
       }
@@ -214,7 +214,8 @@ const MaterialCov = () => {
   }
 
   useEffect(() => {
-    setColDef(getColumnDefinations(HeaderData, customHeader, extras))
+    const coldefs = getColumnDefinations(HeaderData, customHeader, extras);
+    setColDef(coldefs);
   }, [HeaderData])
 
   useEffect(() => {

@@ -14,13 +14,13 @@ import VFModalCard from '../../../../../../components/VectorFLOW/commons/VFModal
 import MaterialRequirementComponent from '../../MaterialRequirement/MaterialRequirementComponent';
 import useMaterialReq from '../../MaterialRequirement/useMaterialRequirements';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { FilterPageName, UIGridCode } from "../../../Common/Enum";
+import { UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
-import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
-import useFilter from '../../../../../../hooks/useFilter';
+// import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
+// import useFilter from '../../../../../../hooks/useFilter';
 
 enum Colors {
     Selected = "#B93B7E",
@@ -59,22 +59,22 @@ const DayWiseCoverage = () => {
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([{}]);
-    const [filterData, setFilterData] = useState({});
+    // const [filterData, setFilterData] = useState({});
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { mutateAsync: getData, isLoading: isCalenderLoading } = useGetDayWiseCoverageData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { 
-        state: currFilter, 
-        setState: setCurrFilter, 
-        onFilterRemove, 
-        isFilterOpen, 
-        isMfgSelected,
-        onAddFilter, 
-        onApplyFilter, 
-        toggleFilter
-    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Day_Wise_Coverage);
+    // const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    // const { 
+    //     state: currFilter, 
+    //     setState: setCurrFilter, 
+    //     onFilterRemove, 
+    //     isFilterOpen, 
+    //     isMfgSelected,
+    //     onAddFilter, 
+    //     onApplyFilter, 
+    //     toggleFilter
+    // } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Day_Wise_Coverage);
     const { user } = useUserData();
     const reportName = "DayWiseCoverage";
 
@@ -205,7 +205,7 @@ const DayWiseCoverage = () => {
         }
     }
 
-    const { renderView, toggleCurrentTab, date, currentTab } = useMaterialReq({}, selectedDate);
+    const { renderView, toggleCurrentTab, date, currentTab } = useMaterialReq(null, selectedDate);
 
     useEffect(() => {
         toggleCurrentTab({
@@ -282,19 +282,19 @@ const DayWiseCoverage = () => {
         setIsReset(true);
     }
 
-    const getFilterData = async () => {
-    try {
-        const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Day_Wise_Coverage});
-        setFilterData(response?.data.data);
-    } catch (error) {
-        console.error(error);
-    }
-    }
+    // const getFilterData = async () => {
+    // try {
+    //     const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Day_Wise_Coverage});
+    //     setFilterData(response?.data.data);
+    // } catch (error) {
+    //     console.error(error);
+    // }
+    // }
 
     useEffect(() => {
         getUserColumnConfig();
         setColumnDef();
-        getFilterData()
+        // getFilterData()
     }, [])
 
     useEffect(() => {
@@ -311,15 +311,15 @@ const DayWiseCoverage = () => {
             <div style={{ zoom: 1.25 }}>
                 <MTOActionToolBar 
                     isExcelExport 
-                    isAddFilterButton
-                    isFilterOpen={isFilterOpen}
-                    onAddFilter={onAddFilter}
-                    toggleFilter={toggleFilter}
-                    onApplyFilter={onApplyFilter}
-                    multiFilter={currFilter}
-                    setMultiFilter={setCurrFilter}
-                    onFilterRemove={onFilterRemove}
-                    isMfgSelected={isMfgSelected}
+                    // isAddFilterButton
+                    // isFilterOpen={isFilterOpen}
+                    // onAddFilter={onAddFilter}
+                    // toggleFilter={toggleFilter}
+                    // onApplyFilter={onApplyFilter}
+                    // multiFilter={currFilter}
+                    // setMultiFilter={setCurrFilter}
+                    // onFilterRemove={onFilterRemove}
+                    // isMfgSelected={isMfgSelected}
                     handleSaveClick={handleSaveClick}
                     handleResetClick={handleResetClick}
                 />

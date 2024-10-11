@@ -9,6 +9,12 @@ const useFilter=(filterData: any, page: any)=>{
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
     const [appliedFilters, setAppliedFilters] = useState<any>({});
+
+    // console.log("multiFilter", multiFilter);
+
+    // console.log("filterData", filterData);
+
+    // console.log("page", page);
     
     const onFilterRemove = (parentId:string, filterId:any, value:any) => {
         const updatedMultiFilter = { ...multiFilter };
@@ -32,7 +38,6 @@ const useFilter=(filterData: any, page: any)=>{
     };
 
     const onApplyFilter = (filter: any) => {
-        console.log(formatFilterJSON(filter), 'APPLIED Filters');
         setAppliedFilters(filter);
         setIsMfgSelected(true);
         setIsFilterOpen(false)
