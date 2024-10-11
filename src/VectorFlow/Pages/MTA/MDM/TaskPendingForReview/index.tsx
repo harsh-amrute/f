@@ -6,7 +6,9 @@ import TaskPendingTaskBar from "./TaskPendingTaskBar"
 import { TaskPendingWrapper } from "./styles"
 import ApproveAllModal from "./ApproveAllModal"
 import RejectAllModal from "./RejectAllModal"
+import {useEffect, useState} from 'react'
 import { useUserData } from "../../../../../context"
+import { useGetMTOTaskStatusData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 
 const TaskPendingForReview = ()=>{
@@ -35,6 +37,52 @@ const TaskPendingForReview = ()=>{
 
     if(showLoader) return <VFLoader/>
 
+    // const [mtoPendingData, setMTOPendingData] = useState<any>([]);
+    // const {mutateAsync: getMTOTaskStatusData} = useGetMTOTaskStatusData();
+    const MTOToMTAFormat=(inData: any)=>{
+
+      const newData:any = [];
+      inData.forEach((val:any)=>{
+          const newVal:any = {}
+          newVal.TaskID = val.tid;
+          newVal.PendingSince = val.co;
+          newVal.TaskName = val.tnm;
+          newVal.TaskStatus = val.std;
+          newVal.Requester = val.r_nm;
+
+          newData.push(newVal);
+      })
+
+      return newData;
+  }
+
+  const getMTOTaskData = async()=>{
+      try{
+          // const response = await getMTOTaskStatusData();
+          // const response = {data: {data: {results: []}}}
+          // console.log("MTO task data....", response.data.data.results);
+          // const transformedData = MTOToMTAFormat(response.data.data.results);
+          // if(viewTableRowData){
+          //     setMTOPendingData([...viewTableRowData, ...transformedData])
+          // }
+          // else{
+
+          //     setMTOPendingData([...transformedData]);
+          // }
+      }
+      catch(error){
+          console.log(error)
+      }
+  }
+
+
+    // useEffect(()=>{
+      // if(viewTableRowData){
+      //   getMTOTaskData();
+      // }
+      
+    // },[viewTableRowData])
+
     if(isViewTableOpen){
         return(
             <TaskPendingWrapper>
@@ -61,6 +109,7 @@ const TaskPendingForReview = ()=>{
                     ]
                   }}
                 rowData={mapRowDataWithSrNo(viewTableRowData)}
+                // rowData={mtoPendingData}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
             />

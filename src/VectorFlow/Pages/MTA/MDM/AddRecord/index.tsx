@@ -25,6 +25,7 @@ import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 import { MDMMasterState,Field } from "../../../../types/MDM";
 import { useGetBufferMasterData, useSaveBufferMasterTask } from "../../../../../VectorFlow/Services/MTA/MDM";
 import _ from "lodash";
+import { notifyError, notifySuccess } from "../../../../../helpers/notify";
 
 
 
@@ -109,6 +110,7 @@ const AddRecord = () => {
       try{
         const response = await getBufferMasterData();
         setAddedData(response.data.data.results);
+        console.log("sdfdsfdsfdsf,,,,,,,,,,,,,,,,,,", response.data)
       }
       catch(error){
         console.log(error)
@@ -128,10 +130,10 @@ const AddRecord = () => {
       
         const nodesToSelect:any = [];
         params.api.deselectAll();
-      if(addedData){
         params?.api?.forEachNode(
           (node: any, index: any)=>{
             console.log("node.....", node.data);
+            if(addedData){
             addedData.forEach((addData: any)=>{
               if(node.data.bcd=== addData.bcd){
                 node.data.err = "The buffer code already exists in the added buffers!";
@@ -141,6 +143,7 @@ const AddRecord = () => {
                 node.data.err = "The buffer with the buffer size already exists!";
               }
             })
+          }
             
             params?.api?.forEachNode((node2: any, index2: any)=>{
               if(index > index2){
@@ -162,9 +165,9 @@ const AddRecord = () => {
           }
           );
 
-          console.log("nodes to select....",nodesToSelect);
-          params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-        }
+          // console.log("nodes to select....",nodesToSelect);
+          // params.api.deselectAll();
+          // params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
       }
     }
 
@@ -248,7 +251,13 @@ const AddRecord = () => {
     try{
       console.log("finalData......", BufferPostObj);
       const response = await saveBufferMasterTask(BufferPostObj);
-      // console.log("save api response...",response)
+      console.log("save api response...",response)
+      if(response.status===200){
+        notifySuccess("Buffer task updated!!")
+      }
+      else{
+        notifyError("Failed to create the task....Please check your validations!")
+      }
     }
     catch(error){
       console.log(error)
@@ -278,7 +287,8 @@ const AddRecord = () => {
                   {...agGridProps}
                   onCellEditingStopped={(params: any)=>{ changeRowData(params)}}
                   onRowDataUpdated={onMTORowDataUpdated}
-                  // onGridReady={onGridReady}
+                  onGridReady={onMTORowDataUpdated}
+                  onFirstDataRendered = {onMTORowDataUpdated}
                     suppressPaginationPanel={!isDataAvailableLocally}
                     statusBar={{
                       statusPanels: isDataAvailableLocally?[

@@ -121,6 +121,11 @@ export const useGetTaskStatusData = () => {
     return await MDMService.getTaskStatusData()
   })
 }
+export const useGetMTOTaskStatusData = () => {
+  return useMutation(async () => {
+    return await MDMService.getMTOTaskStatusData();
+  })
+}
 
 export const useGetTaskDetailDownloadData = () => {
   return useMutation(async (body: { taskId: string, approverId: number }) => {

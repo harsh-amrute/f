@@ -665,7 +665,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
       for(let j=0; j< data[i].length; j++){
         buffData[objKeys[j]]= data[i][j];
       }
-      buffData["err"]="";
+      buffData["err"]= "";
       bufferData.push(buffData);
     }
 

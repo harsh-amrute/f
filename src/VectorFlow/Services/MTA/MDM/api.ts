@@ -190,6 +190,12 @@ export namespace MDMService {
     })
   }
 
+  export const getMTOTaskStatusData = async () => {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetTasks', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   /** Save buffer master task MTO */
   export const saveBufferMasterTask = async (body: any) => {
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveBufferMasterTask/', 
