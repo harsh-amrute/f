@@ -70,7 +70,6 @@ const InTransitWhereAbouts = ()=>{
         themeUi
     } = useInTransitWhereAbouts()
 
-
     return(
         <GridStateContext.Provider
         value={{
