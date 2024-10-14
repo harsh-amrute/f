@@ -25,6 +25,13 @@ describe('MaterialRequirement', () => {
         expect(response.status).toBe(200);
     });
 
+    it('should fetch the initial data without analytics', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        //const data = {  curr: Number(1) };
+        const response = await OverallBMReportService.getOverallBMReportData({page: 1, appliedFilters: {}, page_size: 500,analytics: 0});
+        expect(response.status).toBe(200);
+    });
+
     it('should fetch the initial data without some parameters', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         //const data = {  curr: Number(1) };
