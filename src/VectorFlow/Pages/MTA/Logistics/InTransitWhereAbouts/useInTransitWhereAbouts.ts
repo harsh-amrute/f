@@ -34,7 +34,11 @@ const useInTransitWhereAbouts = ()=>{
 
     const [internalRef,setInternalRef] = useState<any>()
 
-    const [gridState,setGridState] = useState<any>()
+    const [gridState,setGridState] = useState<{charts:[],columns:[],pivot:boolean}>({
+      charts: [],
+      columns: [],
+      pivot: false,
+    })
 
     const themeUi = user.user.theme_ui
 
@@ -152,7 +156,8 @@ const useInTransitWhereAbouts = ()=>{
 
   useEffect(()=>{
       if(internalRef){
-          internalRef.api.applyColumnState({state:gridState.columns })
+          console.log(gridState)
+          internalRef.api.applyColumnState({state:gridState?.columns })
       }
   },[internalRef,gridState])
     
