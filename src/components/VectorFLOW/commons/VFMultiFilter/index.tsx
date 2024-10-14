@@ -436,7 +436,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         // if(filterId==="Horizon"){
         //     setMultiFilter({...multiFilter,horizon:e})
         // }
-        console.log(property,updateLabel);
+        console.log(filterId);
         
         const filterObj:BPRFilter = {
             attributeName:"",
@@ -612,7 +612,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             return multiFilter[key as keyof BPRFilterState].id ===parentId
         })
 
-        console.log(console.log(multiFilter));
+        console.log(multiFilter);
        
         if(currGroup){
 

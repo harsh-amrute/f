@@ -8,6 +8,7 @@ import { notifyError, notifyLoader, notifySuccess } from "../helpers/notify";
 
 import {toast} from 'react-toastify'
 import { GridState } from "../VectorFlow/types/BPR";
+import { handleDownloadVFReports } from "../helpers/utils";
 
 
 interface exportToExcelParameters {
@@ -33,8 +34,7 @@ const useSaveAllState = (isPlanning?:boolean) => {
     
   },[tempDownloadData])
 
-
-  const onExportToExcel = async (params:exportToExcelParameters)=>{
+  const onExportToExcelOld = async (params:exportToExcelParameters)=>{
     const {pagination,callBack} = params
     const {recordCount,chunkSize} = pagination
     
@@ -68,6 +68,53 @@ const useSaveAllState = (isPlanning?:boolean) => {
       toast.dismiss();
       notifyError('Something Went Wrong');
     }
+    
+  }
+
+
+  const onExportToExcel = async (params:{name:string,filters:any})=>{
+    const loader = notifyLoader(`Downloading ${params.name}`)
+    try{
+      await handleDownloadVFReports(params)
+    }catch(err:any){
+      notifyError(err)
+    }finally{
+      toast.dismiss(loader)
+    }
+
+    // const {pagination,callBack} = params
+    // const {recordCount,chunkSize} = pagination
+    
+
+    // try {
+    //   //buggy line below
+    //   const numberOfPages = Math.ceil(recordCount/chunkSize);
+    //   const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
+    //   const rows = [];
+    //   for(let i=1; i<=numberOfPages; i++){
+      
+    //     const result = await callBack(i);
+
+    //     if(result === null) {
+    //       // throw new Error("Something Went Wrong")
+    //       break
+    //     }
+    //     rows.push(...result)
+    //     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
+    //     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
+    //   }
+      
+    //   // setExportExcelColumns(exportExcelColumns)
+    //   setExportExcelRowData([...rows])
+    //   setTempDownloadData(true);
+    //   toast.dismiss(toastId);
+      
+    //   notifySuccess(`Data Exported Successfully`);
+    // } catch (error) {
+    //   console.error(error)
+    //   toast.dismiss();
+    //   notifyError('Something Went Wrong');
+    // }
     
   }
 
@@ -125,7 +172,8 @@ const useSaveAllState = (isPlanning?:boolean) => {
   return {
     onSaveState,
     onResetAllState,
-    onExportToExcel
+    onExportToExcel,
+    onExportToExcelOld
   };
 };
 
