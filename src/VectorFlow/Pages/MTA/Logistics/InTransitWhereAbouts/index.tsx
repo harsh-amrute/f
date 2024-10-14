@@ -102,6 +102,7 @@ const InTransitWhereAbouts = ()=>{
                 onApplyFilter={onApplyFilter}
                 onSubmitEditedRows={onSubmitEditedRows}
                 disableSubmitEditedRowsBtn={editedRows.length===0}
+                disableChartAndGridViewToggle
               />
               </div>
           

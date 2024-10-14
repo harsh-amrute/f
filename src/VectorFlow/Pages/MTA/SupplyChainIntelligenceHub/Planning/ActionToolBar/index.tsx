@@ -84,12 +84,13 @@ const ActionToolBar = ({
   isPlanning,
   onChangeHorizon,
 }: ActionToolBarProps) => {
+
   const { user } = useUserData();
   const { ref } = useContext(GridStateContext);
 
   const {locations} = useGetLocation()
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-  const { onSaveState, onResetAllState, onExportToExcel } = useSaveAllState(isPlanning);
+  const { onSaveState, onResetAllState, onExportToExcel ,onExportToExcelOld} = useSaveAllState(isPlanning);
   const { currentCategory } = useSelector(
     (state: RootState) => state.mta.planning
   );
@@ -127,15 +128,26 @@ const ActionToolBar = ({
     if (
       pathname === "/supply-chain-intelligence-hub/open-expediting-requests"
     ) {
-      return ref.current.api.exportDataAsExcel({
+      ref.current.api.exportDataAsExcel({
         fileName: "OpenExpeditingRequests",
       });
     }
 
-    onExportToExcel({
-      pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
-      callBack: onExportToExcelCallBack,
-    });
+    else if(pathname  === '/supply-chain-intelligence-hub/bpr'){
+      onExportToExcel({
+        // pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
+        // callBack: onExportToExcelCallBack,
+        name:currCategory + currentTab,
+        filters:multiFilter
+      });
+    }
+
+    else{
+      onExportToExcelOld({
+        pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
+        callBack: onExportToExcelCallBack,
+      });
+    }
   };
 
   const renderFilter = () => {

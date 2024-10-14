@@ -1,7 +1,7 @@
 import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
-import { notifyError } from './notify'
+import { notifyError} from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef,CellClickedEvent} from 'ag-grid-community';
@@ -342,6 +342,8 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
 
 
 export const handleDownloadVF = async (reportName: string, downloadName:string) => {
+
+  console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
@@ -2819,4 +2821,49 @@ export const getProductAndLocationHeirarchiesFromEnv = (column:any,extraProperti
   }
 
   return undefined;
+}
+
+export const handleDownloadVFReports = async (payload:{name:string,filters:any}) => {
+
+  try {
+    const {name} = payload
+    const token = await MainService.refreshToken();
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/download-excel`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`,
+        'Content-Type': 'application/json'
+      },
+      method:"post",
+      body:JSON.stringify(payload)
+    })  
+    if(!response.ok){
+      notifyError("Error while downloading")
+      return false; 
+    }else{
+    // Convert response to blob object
+    const blob = await response.blob()
+
+    console.log(blob)
+    // Create download URL for blob object
+    const url = URL.createObjectURL(blob)
+  
+    // Trigger download
+    const link = document.createElement('a')
+    link.href = url
+    if(name.length!==0){
+      link.setAttribute('download', `${name}`)
+    }else{
+      link.setAttribute('download', `ReportFile.csv`)
+    }
+    document.body.appendChild(link)
+    link.click()
+    // Clean up download URL
+    URL.revokeObjectURL(url);
+    
+  }
+  } catch (error:any) {
+    notifyError('Error while downloading');
+    return false;
+  }
+ 
 }
