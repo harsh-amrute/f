@@ -1,6 +1,6 @@
 
 import { useGetSDRUIConfiguration ,useGetSDRData,useGetSDRDataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport/index';
-import { getColumnsForExcelExport, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
+import { convertUiConfigToOptions, getColumnsForExcelExport, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader } from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
@@ -25,12 +25,14 @@ const useSupplierDispatchReport= ()=>{
 
     const tempRef = useRef()
 
-    const {data,isLoading}= useGetSDRUIConfiguration();
+    const {data,isLoading:isSDRUILoading}= useGetSDRUIConfiguration();
     const {mutateAsync:getSDRData} =useGetSDRData();
     const {mutateAsync:getSDRDataCount}=useGetSDRDataCount();
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
     const {mutateAsync:getState} = useGetState()
+    const [generalFilterOptions,setGeneralFilterOptions] = useState();
+
 
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
 
@@ -111,8 +113,10 @@ const useSupplierDispatchReport= ()=>{
         await GetSDRData(currentPage);
     }
     fetchData();
+    setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+
     
-},[])
+},[isSDRUILoading])
 
     useEffect(()=>{
         const getTableState = async()=>{
@@ -242,7 +246,7 @@ const useSupplierDispatchReport= ()=>{
         tempDownloadData,
         exportExcelRowData,
         setExportExcelRowData,
-        isLoading,
+        isLoading:isSDRUILoading,
         GetSDRData,
         tempRef,
         tempAgGridProps,
@@ -253,7 +257,8 @@ const useSupplierDispatchReport= ()=>{
         onExportToExcelCallBack,
         onApplyFilter,
         agGridProps,
-        ref
+        ref,
+        generalFilterOptions
     }
     
 

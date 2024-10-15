@@ -72,6 +72,7 @@ export interface BPRFilterState{
     availabilityFilter:BPRFilterGroup
     coverageFilter:BPRFilterGroup
     colorFilter:BPRFilterGroup
+    generalFilter:BPRFilterGroup
 }
 
 

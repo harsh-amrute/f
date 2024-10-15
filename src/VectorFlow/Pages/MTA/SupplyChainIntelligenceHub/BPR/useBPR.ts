@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { getColumnsForExcelExport, mapBPRFieldsToColDefs, mapBPRRowData } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, getColumnsForExcelExport, mapBPRFieldsToColDefs, mapBPRRowData } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -69,7 +69,9 @@ const useBPR =()=>{
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
   
     const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
-
+   
+   
+      
     const {date:lastRunDate} = useGetlastRunData()
     
     const {mutateAsync:getBPRData,isLoading:isRowDataLoading} = useGetBPRData()
@@ -84,13 +86,15 @@ const useBPR =()=>{
 
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
     const [gridState,setGridState] = useState<any>()
+    const [generalFilterOptions,setGeneralFilterOptions] = useState();
 
 
   
     useEffect(()=>{
         
         getInitialBPRRowData()
-    },[])
+        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+    },[isBPRUILoading])
 
     useEffect(()=>{
         const getTableState = async()=>{
@@ -384,10 +388,8 @@ const useBPR =()=>{
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
     const BPRColumns =useMemo(()=>mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph),[data])
-
-
-
-   
+    
+    
     return {
         isSubGridOpen,
         isLoading :  isBPRUILoading || isBPRDataCountLoading,
@@ -438,7 +440,9 @@ const useBPR =()=>{
         onDeleteFilter,
         isRowDataLoading,
         gridState,
-        lastRunDate
+        lastRunDate,
+        generalFilterOptions
+
     }
 }
 

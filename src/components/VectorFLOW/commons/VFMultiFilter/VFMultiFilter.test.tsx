@@ -74,6 +74,7 @@ const dummyprops={
     productFilterActive:true,
     availabilityFilterActive:true,
     colorFilterActive:true,
+    generalFilter:true,
     coverageFilterActive:true,
     horizonActive:true,
     currentTab:'both',

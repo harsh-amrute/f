@@ -2820,3 +2820,23 @@ export const getProductAndLocationHeirarchiesFromEnv = (column:any,extraProperti
 
   return undefined;
 }
+
+export const convertUiConfigToOptions = (data:any) => {
+  console.log(data);
+  return data?.map((column:any)=>{
+    return {
+      value:column.Col_Code,
+      label:column.Header
+    }
+  })
+}
+
+// export const convertUiConfigToOptions = (data: any) => {
+
+//   return {
+//     // value: data.data.Col_Code,
+//     // label: data.data.Header,
+//   }
+// }
+
+
