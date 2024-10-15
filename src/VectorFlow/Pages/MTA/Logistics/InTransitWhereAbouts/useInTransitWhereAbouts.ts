@@ -34,7 +34,11 @@ const useInTransitWhereAbouts = ()=>{
 
     const [internalRef,setInternalRef] = useState<any>()
 
-    const [gridState,setGridState] = useState<any>()
+    const [gridState,setGridState] = useState<{charts:[],columns:[],pivot:boolean}>({
+      charts: [],
+      columns: [],
+      pivot: false,
+    })
 
     const themeUi = user.user.theme_ui
 
@@ -98,10 +102,6 @@ const useInTransitWhereAbouts = ()=>{
 
 
     const customCellRenderers = useMemo(() => ({
-        // grapCellRenderer:BPRGraphCellRenderer,
-        // colorTechCellRenderer:BPRTechColorCellRenderer,
-        // colorEcoCellRenderer:BPREcoColorCellRenderer,
-        // tagsCellRenderer:BPRTagsCellRenderer,
         currentLocationCellRenderer:CurrentLocationCellRenderer,
         etaCellRenderer:ETACellRenderer,
         colorCellRenderer:ColorGroupCellRenderer,
@@ -110,21 +110,6 @@ const useInTransitWhereAbouts = ()=>{
     }), []);
 
     const {mutateAsync:getState} = useGetState()
-    // const [columnState,setColumnState] = useState<any>()
-    // const {currentGridState} = useSelector((state:RootState)=>state.mta)
-
-    // useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState("OpenExpeditingRequests")
-    //         setColumnState(JSON.parse(data.data.data))
-    //       }catch(err:any){
-    //         setColumnState(colDefs)
-    //       }
-    //     }
-    //     getTableState()
-    //     getRowData(currentFilter,1)
-    // },[currentGridState])
 
     useEffect(()=>{
       const getInitialData =async()=>{
@@ -134,25 +119,45 @@ const useInTransitWhereAbouts = ()=>{
       getInitialData()
     },[]) 
 
-    useEffect(()=>{
-      const getTableState = async()=>{
-        try{
-          const data =  await getState("InTransitWhereAbouts")
-          setGridState(JSON.parse(data.data.data))
-        }catch(err:any){
+    useEffect(() => {
+      const getTableState = async () => {
+        try {
+          const data = await getState("InTransitWhereAbouts");
+          
+          let parsedData;
+          try {
+            parsedData = data.data.data ? JSON.parse(data.data.data) : null;
+          } catch (parseError) {
+            console.error("Error parsing JSON:", parseError);
+            parsedData = null;
+          }
+    
+          if (parsedData) {
+            setGridState(parsedData);
+          } else {
+            setGridState({
+              charts: [],
+              columns: [],
+              pivot: false,
+            });
+          }
+        } catch (err: any) {
+          console.error("Error fetching data:", err);
           setGridState({
-              charts:[],
-              columns:[],
-              pivot:false
-          })
+            charts: [],
+            columns: [],
+            pivot: false,
+          });
         }
-      }
-      getTableState()
-  },[])
+      };
+      
+      getTableState();
+    }, []);
 
   useEffect(()=>{
       if(internalRef){
-          internalRef.api.applyColumnState({state:gridState.columns })
+          console.log(gridState)
+          internalRef.api.applyColumnState({state:gridState?.columns })
       }
   },[internalRef,gridState])
     
@@ -170,16 +175,6 @@ const useInTransitWhereAbouts = ()=>{
         detailCellRendererParams:{
           onContactDetails:onOpenContactModal
         },
-        // detailRowAutoHeight:true,
-        // detailCellRendererParams:{
-        //   detailGridOptions: {
-        //     columnDefs: [{ field: 'detailData' }],
-        //   },
-        //   getDetailRowData: function(params:any) {
-        //     params.successCallback([1,2,3,4,5,5,3,23,2,5,2,2]);
-        //   },
-        //   pagination: true
-        // },
           suppressRowTransform: true,
           tooltipShowDelay: 0.3,
           tooltipTrigger: 'focus',
@@ -198,7 +193,6 @@ const useInTransitWhereAbouts = ()=>{
           },
           
           sideBar:defaultAgGridSideBarForBPR,
-          // suppressRowClickSelection: true,
           components: customCellRenderers,
           defaultColDef: {
             
@@ -216,8 +210,6 @@ const useInTransitWhereAbouts = ()=>{
           },
           enableRangeSelection:true ,
           rowSelection:"multiple",
-          // onPasteEnd:(params)=>console.log(params),
-          // enableGroupEdit:true,
           statusBar : {
               statusPanels: [
                 { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
@@ -362,50 +354,6 @@ const useInTransitWhereAbouts = ()=>{
               orderNo:data.OrderNo
             })
             toast.dismiss(toastId)
-          //   setRemarkHistory([
-          //     {
-          //         name:'JP',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Pune'
-          //     },
-          //     {
-          //         name:'RT',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Mumbai'
-          //     },
-          //     {
-          //         name:'MD',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Delhi'
-          //     },
-          //     {
-          //         name:'AF',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Pune'
-          //     },
-          //     {
-          //         name:'FD',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Mumbai'
-          //     },
-          //     {
-          //         name:'AF',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Delhi'
-          //     }
-          // ])
           setRemarkHistory(remarkData.data.data)
             setIsRemarkHistoryToolTipOpen(true)
         } catch (err: any) {
@@ -647,8 +595,6 @@ const useInTransitWhereAbouts = ()=>{
         onCloseSubmitRemark,
         onCloseRemarkHistory,
         ref,
-        // columnState,
-        // isSavedDataLoading,
         tempRef,
         tempDownloadData,
         setTempDownloadData,

@@ -38,6 +38,7 @@ const BufferTrendReport = () => {
         setHorizon,
     } = useBTR()
 
+    
 
     return (
         <GridStateContext.Provider

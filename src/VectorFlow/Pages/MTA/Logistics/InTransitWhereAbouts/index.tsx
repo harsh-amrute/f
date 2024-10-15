@@ -70,7 +70,6 @@ const InTransitWhereAbouts = ()=>{
         themeUi
     } = useInTransitWhereAbouts()
 
-
     return(
         <GridStateContext.Provider
         value={{
@@ -88,7 +87,7 @@ const InTransitWhereAbouts = ()=>{
                 <ActionToolBar 
                 view={'grid'} 
                 setCurrentTab={''} 
-                currCategory={'InTransitWhereAbouts'} 
+                currCategory={'InTransitWhereabouts'} 
                 currentTab={''} 
                 tabsList={[]} 
                 onFloatingTabChange={()=>console.log('')} 
@@ -102,6 +101,7 @@ const InTransitWhereAbouts = ()=>{
                 onApplyFilter={onApplyFilter}
                 onSubmitEditedRows={onSubmitEditedRows}
                 disableSubmitEditedRowsBtn={editedRows.length===0}
+                disableChartAndGridViewToggle
               />
               </div>
           

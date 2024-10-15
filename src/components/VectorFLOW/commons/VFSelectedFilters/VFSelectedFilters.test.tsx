@@ -72,6 +72,11 @@ const mockFilters:BPRFilterState = {
         id:'6',
         label:'Coverage',
         filters:[]
+    },
+    generalFilter:{
+        id:'7',
+        label:'General',
+        filters:[]
     }
 };
 

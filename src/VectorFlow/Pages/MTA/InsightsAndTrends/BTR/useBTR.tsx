@@ -117,6 +117,8 @@ const useBTR = ()=>{
         
     }
 
+    console.log(techRowData)
+
     const gridProps = useMemo(():AgGridReactProps=>{
         return {
             gridOptions:{

@@ -86,12 +86,13 @@ const ActionToolBar = ({
   onChangeHorizon,
   generalFilterOptions
 }: ActionToolBarProps) => {
+
   const { user } = useUserData();
   const { ref } = useContext(GridStateContext);
 
   const {locations} = useGetLocation()
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-  const { onSaveState, onResetAllState, onExportToExcel } = useSaveAllState(isPlanning);
+  const { onSaveState, onResetAllState, onExportToExcel ,onExportToExcelOld} = useSaveAllState(isPlanning);
   const { currentCategory } = useSelector(
     (state: RootState) => state.mta.planning
   );
@@ -129,15 +130,26 @@ const ActionToolBar = ({
     if (
       pathname === "/supply-chain-intelligence-hub/open-expediting-requests"
     ) {
-      return ref.current.api.exportDataAsExcel({
+      ref.current.api.exportDataAsExcel({
         fileName: "OpenExpeditingRequests",
       });
     }
 
-    onExportToExcel({
-      pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
-      callBack: onExportToExcelCallBack,
-    });
+    else if(pathname  === '/supply-chain-intelligence-hub/bpr'){
+      onExportToExcel({
+        // pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
+        // callBack: onExportToExcelCallBack,
+        name:currCategory + currentTab,
+        filters:multiFilter
+      });
+    }
+
+    else{
+      onExportToExcelOld({
+        pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
+        callBack: onExportToExcelCallBack,
+      });
+    }
   };
 
   const renderFilter = () => {
@@ -268,7 +280,7 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               availabilityFilterActive={true}
-              generalFilterActive={true}
+              generalFilterActive={false}
               generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
@@ -292,7 +304,7 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               availabilityFilterActive={true}
-              generalFilterActive={true}
+              generalFilterActive={false}
               generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
@@ -314,7 +326,7 @@ const ActionToolBar = ({
               setMultiFilter={setMultiFilter}
               productFilterActive={true}
               locationFilterActive={true}
-              generalFilterActive={true}
+              generalFilterActive={false}
               generalFilterOptions={generalFilterOptions}
               availabilityFilterActive={true}
               supplyChainNodeFilterActive={true}
@@ -338,9 +350,9 @@ const ActionToolBar = ({
               setMultiFilter={setMultiFilter}
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
+              locationFilterActive={false}
               generalFilterOptions={generalFilterOptions}
-              generalFilterActive={true}
+              generalFilterActive={false}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
                 locations
@@ -410,7 +422,7 @@ const ActionToolBar = ({
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
-              generalFilterActive={true}
+              generalFilterActive={false}
               generalFilterOptions={generalFilterOptions}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
@@ -455,7 +467,7 @@ const ActionToolBar = ({
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
-              generalFilterActive={true}
+              generalFilterActive={false}
               generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
@@ -480,7 +492,7 @@ const ActionToolBar = ({
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
-              generalFilterActive={true}
+              generalFilterActive={false}
               generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations

@@ -192,6 +192,20 @@ const dummyprops={
                 }
             ]
         },
+        generalFilter:{
+            id:'7',
+            label:'General',
+            filters:[
+                // {name:'CF2',type: "colorage",attributeName: "black/red",value: "100",operator: "startswith"}
+                {
+                    "attributeName": "SKUCode",
+                    "value": "22",
+                    "operator": "equalto",
+                    "label": "SKUCode",
+                    "name": "GF1"
+                }
+            ]
+        },
     },
     setMultiFilter:mockFunction,  
 }
