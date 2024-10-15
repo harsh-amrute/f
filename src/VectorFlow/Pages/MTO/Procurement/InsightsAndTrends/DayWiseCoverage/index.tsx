@@ -29,16 +29,16 @@ enum Colors {
     Red = "#F02424"
 }
 
-const APIFilterConfig = {
-    filSecVisConfig: {
-        "Proc_Day_Wise_Coverage" : {
-            mjr : false,
-            or: false,
-            res: true,
-            cus: true
-        },
-    }
-  };
+// const APIFilterConfig = {
+//     filSecVisConfig: {
+//         "Proc_Day_Wise_Coverage" : {
+//             mjr : false,
+//             or: false,
+//             res: true,
+//             cus: true
+//         },
+//     }
+//   };
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 

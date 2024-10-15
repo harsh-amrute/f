@@ -19,16 +19,16 @@ import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCell
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';
 
-const APIFilterConfig = {
-    filSecVisConfig: {
-        "Prod_Elapsed_Time" : {
-            mjr : false,
-            or: false,
-            res: true,
-            cus: false
-        },
-    }
-};
+// const APIFilterConfig = {
+//     filSecVisConfig: {
+//         "Prod_Elapsed_Time" : {
+//             mjr : false,
+//             or: false,
+//             res: true,
+//             cus: false
+//         },
+//     }
+// };
 
 const ElapsedTime = () => {
 
@@ -45,7 +45,7 @@ const ElapsedTime = () => {
     const [HeaderData, setHeaderData] = useState();
     const [selectedPlant, setSelectedPlant] = useState<any>();
     const [selectedDept, setSelectedDept] = useState<any>();
-    const [filterData, setFilterData] = useState({});
+    // const [filterData, setFilterData] = useState({});
     // const { 
     //     state: currFilter, 
     //     setState: setCurrFilter, 

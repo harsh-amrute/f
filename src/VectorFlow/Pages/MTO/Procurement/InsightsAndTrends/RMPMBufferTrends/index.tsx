@@ -11,20 +11,20 @@ import { useGetRMPMBufferTrendsData } from "../../../../../../VectorFlow/Service
 import { BufferTrendData } from "../../../../../../types/MTO/types"
 import { toast } from "react-toastify"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../../helpers/notify"
-import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
+// import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';
 // import { FilterPageName } from "../../../Common/Enum";
 
-const APIFilterConfig = {
-    filSecVisConfig: {
-        "Proc_RM_PM_BufferTrend" : {
-            mjr : false,
-            or: true,
-            res: true,
-            cus: true
-        },
-    }
-};
+// const APIFilterConfig = {
+//     filSecVisConfig: {
+//         "Proc_RM_PM_BufferTrend" : {
+//             mjr : false,
+//             or: true,
+//             res: true,
+//             cus: true
+//         },
+//     }
+// };
 
 
 const RMPMBufferTrends = () => {
