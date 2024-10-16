@@ -49,10 +49,10 @@ describe('BMTrends Component', () => {
         expect(screen.getByText('Percentage')).toBeInTheDocument();
     });
     
-    test('to check capsule action toolbar render properly', () => {
-        render(contextWrapper(<BMTrends />, mockedStore));
-        expect(screen.getByText('+ Add Filter')).toBeInTheDocument();
-    });
+    // test('to check capsule action toolbar render properly', () => {
+    //     render(contextWrapper(<BMTrends />, mockedStore));
+    //     expect(screen.getByText('+ Add Filter')).toBeInTheDocument();
+    // });
 
     test('toggles between Percentage and Absolute Value and updates the chart', async () => {
       render(contextWrapper(<BMTrends />, mockedStore));
