@@ -50,6 +50,7 @@ const OTAndIFAnalysis = () => {
         onAddFilter, 
         onApplyFilter, 
         toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_And_Analysis);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -223,6 +224,7 @@ const OTAndIFAnalysis = () => {
                             setCurrentGridRef={setCurrentGridRef}
                             currentGridRef={currentGridRef}
                             columnState={columnState}
+                            appliedFilters={appliedFilters}
                         />
                     </>
             }

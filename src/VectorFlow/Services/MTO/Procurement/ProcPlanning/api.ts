@@ -3,8 +3,10 @@ import axios from 'axios'
 
 export namespace ProcPlanningService {
 
-    export const GetProcPlanningData = async (date: string, pageNum: string, ca: string) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getProcPlanningData/?releaseDate=${date}&page=${pageNum}&ca=${ca}&page_size=500`, {
+    export const GetProcPlanningData = async (date: string, pageNum: string, ca: string, appliedFilters: any) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getProcPlanningData/?releaseDate=${date}&page=${pageNum}&ca=${ca}&page_size=500`, 
+        appliedFilters,
+        {
             headers: { 'Content-Type': 'application/json' }
         });
     }

@@ -28,7 +28,8 @@ const MaterialRequirement = () => {
         isMfgSelected,
         onAddFilter, 
         onApplyFilter, 
-        toggleFilter 
+        toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Requirement);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const { 
@@ -44,7 +45,7 @@ const MaterialRequirement = () => {
         isGetUserConfig,
         handleResetClick,
         handleSaveClick, 
-    } = useMaterialReq();
+    } = useMaterialReq(appliedFilters);
 
     const getFilterData = async () => {
         try {

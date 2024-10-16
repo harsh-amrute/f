@@ -20,13 +20,13 @@ describe('MaterialRequirement', () => {
 
     it('should fetch Material Requirement Daywise', async () => {
 
-        mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         const response = await MaterialRequirementService.getMaterialRequirementDataDayWise({});
         expect(response.status).toBe(200);
     });
 
     it('should fetch Material Requirement Cumulative', async () => {
-        mockedAxios.get.mockResolvedValueOnce({data:'test',status:200});
+        mockedAxios.put.mockResolvedValueOnce({data:'test',status:200});
       const response = await MaterialRequirementService.getMaterialRequirementData({});
       expect(response.status).toBe(200);
     });

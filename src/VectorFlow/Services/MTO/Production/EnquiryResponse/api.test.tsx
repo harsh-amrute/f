@@ -81,7 +81,7 @@ describe("EnquiryResponseService", () => {
     const response = await EnquiryResponseService.getEnquiryData();
 
     expect(axios.get).toHaveBeenCalledWith(
-      `${process.env.REACT_APP_VF_API_HOST_MTO}/getEnquiryResponseData`,
+      `${process.env.REACT_APP_VF_API_HOST_MTO}/getEnquiryResponseData/`,
       {
         headers: { "Content-Type": "application/json" },
       }

@@ -19,7 +19,13 @@ describe('UIConvfig Service', () => {
 
     it('should fetch OTIF Analysis data', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await OTIFAanalysisService.getOTIFAnalysisData('0')
+        const response = await OTIFAanalysisService.getOTIFAnalysisData({graphflag: 1})
+        expect(response.status).toBe(200);
+    });
+
+    it('should fetch OTIF Analysis data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await OTIFAanalysisService.getOTIFAnalysisData({graphflag: 0, page: 1, appliedFilters: {}})
         expect(response.status).toBe(200);
     });
 

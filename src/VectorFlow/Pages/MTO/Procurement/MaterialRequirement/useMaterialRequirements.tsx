@@ -10,7 +10,7 @@ import VFTable from "../../Common/VFTable";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
 // import GetProcPlanningData from '../Planning/GetProcPlanningData.json';
 // import GetProcPlanningDataColumn from '../Planning/GetProcPlanningDataColumn.json';
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
 import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
 import moment from "moment";
@@ -68,7 +68,7 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
     };
 };
 
-const useMaterialReq = (forDate?: string) => {
+const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
     const format2 = "YYYY-MM-DD"
     const d = forDate ? new Date(forDate) : new Date();
@@ -214,7 +214,7 @@ const useMaterialReq = (forDate?: string) => {
 
     useEffect(() => {
         getInitialData()
-    }, [currentTab])
+    }, [currentTab, appliedFilters])
 
     useEffect(() => {
         if (forDate) {
@@ -240,14 +240,16 @@ const useMaterialReq = (forDate?: string) => {
 
     const getSelectedDateWise = async (currPage?: number, releaseDate: string = date) => {
 
-        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage });
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage, appliedFilters: formatedFilters  });
         const dayWiseOutput = datWiseData.data?.data?.results;
         setDayWiseRecordCount(datWiseData.data?.data?.count)
         setDayWiseData(dayWiseOutput)
     }
 
     const getCumulativeDateWise = async (currPage?: number, releaseDate: string = date) => {
-        const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage });
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage, appliedFilters: formatedFilters });
         const cumulativeOutput = cumulativeData.data?.data?.results
         setcumulativeRecordCount(cumulativeData.data?.data?.count)
         SetCumulativeData(cumulativeOutput)

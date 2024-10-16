@@ -54,6 +54,7 @@ const TopFailureReasons = () => {
       onAddFilter, 
       onApplyFilter, 
       toggleFilter,
+      appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Top_Failure_Reasons);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -197,7 +198,7 @@ const TopFailureReasons = () => {
         isGridView={isGridView}
         setIsGridView={setIsGridView}
         // isChartGridToggle /***commented it  */
-        isAddFilterButton
+        // isAddFilterButton
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
         isFilterOpen={isFilterOpen}
@@ -220,6 +221,7 @@ const TopFailureReasons = () => {
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
+            appliedFilters={appliedFilters}
           />
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>

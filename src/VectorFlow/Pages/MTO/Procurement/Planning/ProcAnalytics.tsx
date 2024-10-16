@@ -12,6 +12,7 @@ const ProcAnalytics = () => {
     const [availCount, setAvailCount] = useState(0);
 
     const data = useSelector((state: any) => state.mto.ProcPlanningAnalytics)
+    const appliedFilters = useSelector((state: any) => state.mto.AppliedFilters)
     
 
     const GetData=async()=>{
@@ -19,8 +20,8 @@ const ProcAnalytics = () => {
 
             if(data && data.date){
 
-                const response1 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '1' })
-                const response2 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '0' })
+                const response1 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '1', appliedFilters })
+                const response2 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '0', appliedFilters })
 
             setShortageCount(response1?.data?.data?.count)
             setAvailCount(response2?.data?.data?.count)
