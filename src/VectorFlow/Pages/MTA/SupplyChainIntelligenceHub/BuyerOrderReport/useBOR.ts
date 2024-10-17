@@ -1,6 +1,6 @@
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import {mapBORFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
@@ -29,7 +29,7 @@ export const useBOR =()=>{
 
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
-     const {data,isLoading} = useGetBORUIConfiguration();
+     const {data,isLoading:isBORUILoading} = useGetBORUIConfiguration();
      const dispatch = useDispatch();
    
     //  const [toggleSubGrid] = useState<boolean>(false);
@@ -45,6 +45,8 @@ export const useBOR =()=>{
      const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
  
      const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+     const [generalFilterOptions,setGeneralFilterOptions] = useState();
+
 
      const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
      const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
@@ -64,6 +66,7 @@ export const useBOR =()=>{
      const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         colorDispatchCellRenderer:DispatchColorCellRenderer,
+
         
       }), []);
 
@@ -106,6 +109,7 @@ export const useBOR =()=>{
           }
         }
         getTableState()
+
     },[])
   
     useEffect(()=>{
@@ -119,9 +123,14 @@ export const useBOR =()=>{
         const fetchData = async () => {
             await getRecordsCount();
             await loadGridData(currentPage);
+
+
         };
         fetchData();
-    }, []);
+        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+
+    }, [isBORUILoading]);
+
 
       const getRecordsCount=async(filter?:any)=>{
             const payload={
@@ -243,7 +252,7 @@ export const useBOR =()=>{
   
      return {   
         ref,    
-        isLoading,      
+        isLoading :isBORUILoading,      
         BORColumns,
         agGridProps,
         rowData ,
@@ -270,5 +279,6 @@ export const useBOR =()=>{
         currFilter,
         setCurrFilter,
         onDeleteFilter,
+        generalFilterOptions
     }
 }

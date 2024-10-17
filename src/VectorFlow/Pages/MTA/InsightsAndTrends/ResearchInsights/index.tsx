@@ -79,7 +79,8 @@ const ResearchInsights = ()=>{
         historicalAvailabilityData,
         continuousBlack,
         continuousBlackAndRed,
-        continuousWhite
+        continuousWhite,
+        generalFilterOptions
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -116,6 +117,7 @@ const ResearchInsights = ()=>{
             multiFilter={currentFilter}
             setMultiFilter={setCurrentFilter}
             onDelete={onDeleteFilter}
+            generalFilterOptions={generalFilterOptions}
             onUpdateInsight={handleOnUpdateGraph}
             hideUpdateInsightsBtn={graphState==='default'}
         />

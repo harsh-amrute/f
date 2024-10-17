@@ -4,7 +4,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import {  mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
@@ -44,6 +44,8 @@ const useRRR =()=>{
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
 
     const [gridState,setGridState] = useState<any>()
+    const [generalFilterOptions,setGeneralFilterOptions] = useState();
+
     // const [rowData,setRowData] = useState([]);
 
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
@@ -55,10 +57,12 @@ const useRRR =()=>{
         const fetchData = async () => {
             await getDataCount();
             await getRRRRowData(currentPage);
+            setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
         };
         fetchData();
-    }, []);
-
+    }, [isRRRConfigLoading]);
+    
+console.log(data)
     useEffect(()=>{
         const getTableState = async()=>{
           try{
@@ -295,7 +299,8 @@ const useRRR =()=>{
         setCurrFilter,
         onDeleteFilter,
         isSavedDataLoading,
-        ref
+        ref,
+        generalFilterOptions
     }
 }
 

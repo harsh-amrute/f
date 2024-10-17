@@ -32,7 +32,8 @@ const RRR = () => {
   setCurrFilter,
   onDeleteFilter,
   isSavedDataLoading,
-  ref
+  ref,
+  generalFilterOptions
 } = useRRR();
 
 
@@ -63,6 +64,7 @@ const RRR = () => {
         genericRecordCount={RRRDataCount}
         onExportToExcelCallBack={onExportToExcelCallBack}
         multiFilter={currFilter}
+        generalFilterOptions={generalFilterOptions}
         setMultiFilter={setCurrFilter}
         onDelete={onDeleteFilter}
       />

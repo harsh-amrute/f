@@ -2368,7 +2368,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'ParentWhCode',
+        headerName:'Parent Code',
         ...BTRDefaultColDefs
       }
     }
@@ -2376,7 +2376,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'ParentName',
+        headerName:'Parent Name',
         ...BTRDefaultColDefs
       }
     }
@@ -2385,7 +2385,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'WhiteCount',
+        headerName:'White in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2393,7 +2393,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'BlackCount',
+        headerName:'Black in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2401,7 +2401,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'BlueCount',
+        headerName:'Blue in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2409,7 +2409,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'RedCount',
+        headerName:'Red in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2417,7 +2417,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'YellowCount',
+        headerName:'Yellow in 30 days',
         ...BTRDefaultColDefs
       }
       
@@ -2426,7 +2426,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'GreenCount',
+        headerName:'Green in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2822,6 +2822,17 @@ export const getProductAndLocationHeirarchiesFromEnv = (column:any,extraProperti
 
   return undefined;
 }
+
+export const convertUiConfigToOptions = (data:any) => {
+  console.log(data);
+  return data?.map((column:any)=>{
+    return {
+      value:column.Col_Code,
+      label:column.Header
+    }
+  })
+}
+
 
 export const handleDownloadVFReports = async (payload:{name:string,filters:any}) => {
 
