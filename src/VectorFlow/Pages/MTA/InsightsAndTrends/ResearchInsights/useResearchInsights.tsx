@@ -1,7 +1,7 @@
 import {useEffect,useState,useMemo,useRef} from 'react'
 import {AgGridReactProps} from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-import { getColumnsForExcelExport, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
+import {  mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
 
 import {BPRTagsCellRenderer,BPRTechColorCellRenderer,BPREcoColorCellRenderer} from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
@@ -176,7 +176,7 @@ const useResearchInsights = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:getColumnsForExcelExport(ResearchInsightsColumns)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
 
@@ -240,7 +240,8 @@ const useResearchInsights = ()=>{
     }
     
     const getColor = (date:any)=>{
-        const doesExist = calenderData.find((d)=>isSameDay(d.date,date))
+      
+        const doesExist = calenderData.slice(0,horizon).find((d)=>isSameDay(d.date,date))
         return doesExist?doesExist.color:'gray'
     }
 
@@ -252,16 +253,16 @@ const useResearchInsights = ()=>{
                 colorValues.push(jsonData[key]);
             }
         }
-        if(colorValues.length>horizon){
-            return colorValues.slice(colorValues.length-horizon);
-        }
+        // Rather calculate range w.r.t horizon in the later functions instead of at the core
+        // if(colorValues.length>horizon){
+        //     return colorValues.slice(colorValues.length-horizon);
+        // }
         return colorValues;
     }
 
     function convertToObjects(colorArray:Array<string>) {
         const today = new Date();
         const result = [];
-    
         // Loop through each color in the array
         for (let i = 0; i < colorArray.length; i++) {
             const daysBeforeToday = colorArray.length - i;
@@ -275,7 +276,7 @@ const useResearchInsights = ()=>{
             result.push({ date: dateString, color: color });
         }
     
-        return result;
+        return result.reverse();
     }
 
     const resetState = ()=>{
@@ -392,18 +393,60 @@ const useResearchInsights = ()=>{
         return []
     },[selectedRowsDates,horizon,calenderType])
 
-   
+    const calenderDataWithHorizon = useMemo(()=>calenderData.slice(0,horizon),[calenderData])
+
+    const continuousBlack = useMemo(() => {
+        let count = 0;
+        for (let i = 0; i < calenderData.length; i++) {
+            if (calenderData[i].color === 'Black') {
+                count++;
+            } else {
+                break; 
+            }
+        }
+        return count;
+    }, [calenderData]);
+
+    const continuousBlackAndRed = useMemo(() => {
+        let count = 0;
+        for (let i = 0; i < calenderData.length; i++) {
+            const currColor = calenderData[i].color
+            if ( currColor  === 'Black' || currColor === 'Red') {
+                count++;
+            } else {
+                break; 
+            }
+        }
+        return count;
+    }, [calenderData]);
+
+    const continuousWhite = useMemo(() => {
+        let count = 0;
+        for (let i = 0; i < calenderData.length; i++) {
+            const currColor = calenderData[i].color
+            if ( currColor  === 'White') {
+                count++;
+            } else {
+                break; 
+            }
+        }
+        return count;
+    }, [calenderData]);
+    
+
+    
+
     const blackCount = useMemo(()=>{
-        return Math.round(((calenderData.slice(0,horizon).filter((row:any)=>row.color==='Black').length)/calenderData.slice(0,horizon).length)*100)
-    },[calenderData])
+        return Math.round(((calenderDataWithHorizon.filter((row:any)=>row.color==='Black').length)/horizon)*100)
+    },[calenderDataWithHorizon])
 
     const redCount = useMemo(()=>{
-        return Math.round(((calenderData.slice(0,horizon).filter((row:any)=>row.color==='Red').length)/calenderData.slice(0,horizon).length)*100)
-    },[calenderData])
+        return Math.round(((calenderDataWithHorizon.filter((row:any)=>row.color==='Red').length)/horizon)*100)
+    },[calenderDataWithHorizon])
 
     const whiteCount = useMemo(()=>{
-        return Math.round(((calenderData.slice(0,horizon).filter((row:any)=>row.color==='White').length)/calenderData.slice(0,horizon).length)*100)
-    },[calenderData])
+        return Math.round(((calenderDataWithHorizon.filter((row:any)=>row.color==='White').length)/horizon)*100)
+    },[calenderDataWithHorizon])
 
     const selfGraphData = useMemo(()=>{
         const selectedRows =  ref.current?.api.getSelectedRows()
@@ -471,10 +514,6 @@ const useResearchInsights = ()=>{
                 value:whcode,
                 label:whcode
             }
-        })
-        console.log({
-            skus:uniqueSkus,
-            whcodes:uniqueWhCode
         })
         return{
             skus:uniqueSkus,
@@ -587,7 +626,10 @@ const useResearchInsights = ()=>{
         onDeleteFilter,
         currentFilter,
         setCurrentFilter,
-        historicalAvailabilityData
+        historicalAvailabilityData,
+        continuousBlack,
+        continuousBlackAndRed,
+        continuousWhite
     }
 }
 

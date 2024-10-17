@@ -4,13 +4,14 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import { getColumnsForExcelExport, mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
+import {  mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { GridRef } from "../../../../../VectorFlow/types/MDM"
 
 
 const useRRR =()=>{
@@ -23,6 +24,9 @@ const useRRR =()=>{
 
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
     const tempRef = useRef()
+    const ref = useRef<GridRef>()
+
+   
 
     const [currentPage,setCurrentPage] = useState<any>(1);
 
@@ -252,7 +256,7 @@ const useRRR =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport',columnKeys:getColumnsForExcelExport(RRRColumns)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
 
@@ -290,7 +294,8 @@ const useRRR =()=>{
         currFilter,
         setCurrFilter,
         onDeleteFilter,
-        isSavedDataLoading
+        isSavedDataLoading,
+        ref
     }
 }
 

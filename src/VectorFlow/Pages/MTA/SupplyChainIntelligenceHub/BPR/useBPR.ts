@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { getColumnsForExcelExport, mapBPRFieldsToColDefs, mapBPRRowData } from "../../../../../helpers/utils"
+import { mapBPRFieldsToColDefs, mapBPRRowData } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -17,13 +17,14 @@ import { useUserData } from "../../../../../context"
 
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import useGetlastRunData from "../../../../../hooks/useGetLastRunData"
+import { GridRef } from "../../../../../VectorFlow/types/MDM"
 
 
 
 const useBPR =()=>{
 
 
-    const ref = useRef<any>()
+    const ref = useRef<GridRef>()
     const tempRef = useRef()
 
     const [internalRef,setInternalRef] = useState<any>()
@@ -110,7 +111,7 @@ const useBPR =()=>{
 
     useEffect(()=>{
         if(internalRef && gridState.columns){
-            internalRef.api.applyColumnState({state:gridState.columns})
+            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
         }
     },[internalRef,gridState])
   
@@ -180,7 +181,7 @@ const useBPR =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:getColumnsForExcelExport(BPRColumns)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
 

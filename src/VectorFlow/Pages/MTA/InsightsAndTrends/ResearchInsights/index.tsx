@@ -77,6 +77,9 @@ const ResearchInsights = ()=>{
         currentFilter,
         setCurrentFilter,
         historicalAvailabilityData,
+        continuousBlack,
+        continuousBlackAndRed,
+        continuousWhite
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -148,6 +151,7 @@ const ResearchInsights = ()=>{
                                 { statusPanel: 'agAggregationComponent', align:'left' },
                                 ],
                             }}
+                            
                         />
                         <VFPagination
                             selectedRows={0}
@@ -328,7 +332,7 @@ const ResearchInsights = ()=>{
                                 <CalenderSummaryCellText style={{height:27}}>Contd. Black Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
-                                        0
+                                        {continuousBlack}
                                     </CalenderSummaryCellContent>
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>
@@ -336,7 +340,7 @@ const ResearchInsights = ()=>{
                                 <CalenderSummaryCellText style={{height:27}}>Contd. Black + Red Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
-                                        30
+                                        {continuousBlackAndRed}
                                     </CalenderSummaryCellContent>
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>
@@ -344,7 +348,7 @@ const ResearchInsights = ()=>{
                                 <CalenderSummaryCellText style={{height:27}}>Contd. White Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
-                                        0
+                                        {continuousWhite}
                                     </CalenderSummaryCellContent>
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>

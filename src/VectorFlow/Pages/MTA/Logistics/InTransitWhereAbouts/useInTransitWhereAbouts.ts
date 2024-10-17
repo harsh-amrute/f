@@ -14,20 +14,21 @@ import ShowRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpedit
 import SubmitRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/SubmitRemarkCellRenderer";
 import MasterDetail from "./MasterDetail";
 import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } from "./CellRenderers";
-import { getColumnsForExcelExport, mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
+import {mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
 import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,useGetRemarkDetailsForInTransit, useGetTransporterDetails, useSubmitRemarksForInTransit } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { ColDef } from "ag-grid-enterprise";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { GridRef } from "../../../../../VectorFlow/types/MDM";
 
 
 
 
 
 const useInTransitWhereAbouts = ()=>{
-    const ref = useRef()
+    const ref = useRef<GridRef>()
     const tempRef = useRef()
 
     const {user} = useUserData()
@@ -156,7 +157,6 @@ const useInTransitWhereAbouts = ()=>{
 
   useEffect(()=>{
       if(internalRef){
-          console.log(gridState)
           internalRef.api.applyColumnState({state:gridState?.columns })
       }
   },[internalRef,gridState])
@@ -227,7 +227,7 @@ const useInTransitWhereAbouts = ()=>{
     const tempAgGridProps:AgGridReactProps = useMemo(()=>{
       return {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts',columnKeys:getColumnsForExcelExport(colDefs)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       }
     },[])

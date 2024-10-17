@@ -1,6 +1,6 @@
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { getColumnsForExcelExport, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
+import {mapBORFieldsToColDefs } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
@@ -17,11 +17,12 @@ import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+import { GridRef } from "../../../../../VectorFlow/types/MDM"
 
 
 
 export const useBOR =()=>{
-    const ref=  useRef()
+    const ref=  useRef<GridRef>()
     const tempRef = useRef()
 
     const [internalRef,setInternalRef] = useState<any>()
@@ -224,7 +225,7 @@ export const useBOR =()=>{
 
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:getColumnsForExcelExport(BORColumns)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
       const onExportToExcelCallBack=async(pageNumber:number)=>{

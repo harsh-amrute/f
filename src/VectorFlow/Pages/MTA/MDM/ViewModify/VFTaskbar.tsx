@@ -281,7 +281,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                                 <p>Edit Online</p>
                             </div>
                         </VFButtonOutline>
-                    <VFButtonOutline onClick={onModifyData} themeUi={themeUi} disabled={editOnline} width={164}>
+                    <VFButtonOutline onClick={onModifyData} themeUi={themeUi} disabled={false} width={164}>
                         Modify Data
                     </VFButtonOutline>
                     </VFTaskBarButtonGroup>
@@ -442,7 +442,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnline} disabled={!deleteOnline}>  
                             Delete Online
                     </VFButtonOutline >
-                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteData} disabled={deleteOnline}>
+                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteData} disabled={false}>
                             Delete Data
                         </VFButtonOutline>
                     </VFTaskBarButtonGroup>

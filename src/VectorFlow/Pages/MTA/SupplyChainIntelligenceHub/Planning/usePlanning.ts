@@ -10,7 +10,7 @@ import { type RootState } from "../../../../../redux/store/store";
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA, UPDATE_PLANNING_DATA} from '../../../../../redux/actions/MTA';
 import { AgGridReactProps } from 'ag-grid-react';
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
-import { getColumnsForExcelExport } from "../../../../../helpers/utils";
+import { GridRef } from "../../../../../VectorFlow/types/MDM";
 
 const usePlanning = ()=>{
 
@@ -31,7 +31,7 @@ const usePlanning = ()=>{
 
     const dispatch = useDispatch(); 
 
-    const ref:any = useRef()
+    const ref = useRef<GridRef>()
     const tempRef:any = useRef()
 
     const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
@@ -99,7 +99,7 @@ const usePlanning = ()=>{
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
             
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`,columnKeys:getColumnsForExcelExport(currentColDefs)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`, columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
   
