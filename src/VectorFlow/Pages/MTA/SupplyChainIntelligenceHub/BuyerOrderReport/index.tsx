@@ -35,7 +35,8 @@ const BuyerOrderReport = ()=>{
         currFilter,
         setCurrFilter,
         onDeleteFilter, 
-        onApplyFilter 
+        onApplyFilter ,
+        generalFilterOptions
     } = useBOR()
 
 
@@ -68,6 +69,7 @@ const BuyerOrderReport = ()=>{
             onExportToExcelCallBack={onExportToExcelCallBack}
             multiFilter={currFilter}
             setMultiFilter={setCurrFilter}
+            generalFilterOptions={generalFilterOptions}
             onDelete={onDeleteFilter} />
         </div>
         <BORLayout>

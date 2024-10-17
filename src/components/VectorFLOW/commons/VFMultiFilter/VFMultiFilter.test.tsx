@@ -74,6 +74,7 @@ const dummyprops={
     productFilterActive:true,
     availabilityFilterActive:true,
     colorFilterActive:true,
+    generalFilter:true,
     coverageFilterActive:true,
     horizonActive:true,
     currentTab:'both',
@@ -188,6 +189,20 @@ const dummyprops={
                     "operator": "equalto",
                     "label": "",
                     "name": "CF1"
+                }
+            ]
+        },
+        generalFilter:{
+            id:'7',
+            label:'General',
+            filters:[
+                // {name:'CF2',type: "colorage",attributeName: "black/red",value: "100",operator: "startswith"}
+                {
+                    "attributeName": "SKUCode",
+                    "value": "22",
+                    "operator": "equalto",
+                    "label": "SKUCode",
+                    "name": "GF1"
                 }
             ]
         },

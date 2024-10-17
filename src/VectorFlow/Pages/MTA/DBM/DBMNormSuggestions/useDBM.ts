@@ -1,7 +1,7 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useGetDBMUIConfiguration,useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
-import { getColumnsForExcelExport, mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, getColumnsForExcelExport, mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -50,6 +50,8 @@ const useDBM =()=>{
     const {mutateAsync:getState} = useGetState()
 
     const {mutateAsync:getDailyData} = useGetDailyData();
+    const [generalFilterOptions,setGeneralFilterOptions] = useState();
+
 
     const dispatch = useDispatch();
 
@@ -61,6 +63,11 @@ const useDBM =()=>{
         sleepCellRenderer:DBMSleepCellRenderer,
         suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
       }), []);
+
+      useEffect(()=>{
+        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+
+      },[isDBMConfigLoading])
 
       useEffect(()=>{
         const getTableState = async()=>{
@@ -76,12 +83,16 @@ const useDBM =()=>{
           }
         }
         getTableState()
+
+
     },[])
   
     useEffect(()=>{
         if(internalRef){
             internalRef.api.applyColumnState({state:gridState?.columns })
+
         }
+        
     },[internalRef,gridState])
 
     const onOpenDailyDataGraph = async (params:any) => {
@@ -164,6 +175,7 @@ const useDBM =()=>{
     useEffect(()=>{       
         getDataCount(currentFilter);
         getDBMRowData(currentFilter,currentPage);
+
     },[])
 
    
@@ -292,7 +304,8 @@ const useDBM =()=>{
         setCurrentFilter,
         onDeleteFilter,
         onExportToExcelCallBack,
-        recordsPerPage
+        recordsPerPage,
+        generalFilterOptions
     }
 }
 

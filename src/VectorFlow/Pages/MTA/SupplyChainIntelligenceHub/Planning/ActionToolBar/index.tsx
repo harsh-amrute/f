@@ -54,7 +54,8 @@ interface ActionToolBarProps {
   onSubmitEditedRows?: () => void;
   disableSubmitEditedRowsBtn?: boolean;
   lastRunDate?:string
-  isPlanning?:boolean
+  isPlanning?:boolean,
+  generalFilterOptions?:any
 }
 
 const ActionToolBar = ({
@@ -83,6 +84,7 @@ const ActionToolBar = ({
   lastRunDate,
   isPlanning,
   onChangeHorizon,
+  generalFilterOptions
 }: ActionToolBarProps) => {
 
   const { user } = useUserData();
@@ -278,6 +280,8 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               availabilityFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
               }
@@ -300,6 +304,8 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               availabilityFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
               }
@@ -319,15 +325,17 @@ const ActionToolBar = ({
               multiFilter={multiFilter}
               setMultiFilter={setMultiFilter}
               productFilterActive={true}
-              supplyChainNodeFilterActive={false}
               locationFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               availabilityFilterActive={true}
+              supplyChainNodeFilterActive={true}
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
+              supplyChainForChildrenOfCheckBoxList={locations.filter(
+                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
+              )}
             />
           );
         }
@@ -342,7 +350,9 @@ const ActionToolBar = ({
               setMultiFilter={setMultiFilter}
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
                 locations
@@ -412,6 +422,8 @@ const ActionToolBar = ({
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
                 locations
@@ -455,6 +467,8 @@ const ActionToolBar = ({
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
               }
@@ -478,6 +492,8 @@ const ActionToolBar = ({
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
               }

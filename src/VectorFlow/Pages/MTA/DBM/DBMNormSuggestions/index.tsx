@@ -37,7 +37,8 @@ const DBM = () => {
   setCurrentFilter,
   onDeleteFilter,
   onExportToExcelCallBack,
-  recordsPerPage
+  recordsPerPage,
+  generalFilterOptions
 } = useDBM();
 
  if(isLoading){
@@ -74,6 +75,7 @@ const DBM = () => {
         onApplyFilter={handleApplyFilter}
         multiFilter={currentFilter}
         setMultiFilter={setCurrentFilter}
+        generalFilterOptions={generalFilterOptions}
         onDelete={onDeleteFilter}
       />
       <DBMLayout>

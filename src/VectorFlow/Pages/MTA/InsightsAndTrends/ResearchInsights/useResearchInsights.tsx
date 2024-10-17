@@ -1,7 +1,7 @@
 import {useEffect,useState,useMemo,useRef} from 'react'
 import {AgGridReactProps} from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-import { getColumnsForExcelExport, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
+import { convertUiConfigToOptions, getColumnsForExcelExport, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
 
 import {BPRTagsCellRenderer,BPRTechColorCellRenderer,BPREcoColorCellRenderer} from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
@@ -65,6 +65,8 @@ const useResearchInsights = ()=>{
     const [graphState,setGraphState] = useState<'default' | 'calender' | 'graph'>('default')
     const [calenderType,setCalenderType] = useState<'Tech' | 'Eco'>('Tech')
     const [expandedGraphId,setExpandedGraphId] = useState<1 | 2>(1)
+    const [generalFilterOptions,setGeneralFilterOptions] = useState();
+
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
@@ -89,6 +91,11 @@ const useResearchInsights = ()=>{
 
     const [selectedRowsDates,setSelectedRowsDates] = useState<Array<any>>([])
 
+    useEffect (()=>{
+        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+
+    },[isBPRUILoading])
+
     useEffect(()=>{
         const getTableState = async()=>{
           try{
@@ -103,6 +110,7 @@ const useResearchInsights = ()=>{
           }
         }
         getTableState()
+
     },[])
   
     useEffect(()=>{
@@ -587,7 +595,8 @@ const useResearchInsights = ()=>{
         onDeleteFilter,
         currentFilter,
         setCurrentFilter,
-        historicalAvailabilityData
+        historicalAvailabilityData,
+        generalFilterOptions
     }
 }
 

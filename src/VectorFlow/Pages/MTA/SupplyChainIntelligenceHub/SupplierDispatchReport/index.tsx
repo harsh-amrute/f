@@ -31,7 +31,8 @@ const SupplierDispatchReport = () => {
     onExportToExcelCallBack,
     onApplyFilter,
     ref,
-    agGridProps
+    agGridProps,
+    generalFilterOptions
   } = useSupplierDispatchReport();
   
 
@@ -62,6 +63,7 @@ const SupplierDispatchReport = () => {
         genericRecordCount={SDRCount}
         onExportToExcelCallBack={onExportToExcelCallBack}
         multiFilter={currFilter}
+        generalFilterOptions={generalFilterOptions}
         setMultiFilter={setCurrFilter}
         onDelete={onDeleteFilter}
       />

@@ -2823,6 +2823,17 @@ export const getProductAndLocationHeirarchiesFromEnv = (column:any,extraProperti
   return undefined;
 }
 
+export const convertUiConfigToOptions = (data:any) => {
+  console.log(data);
+  return data?.map((column:any)=>{
+    return {
+      value:column.Col_Code,
+      label:column.Header
+    }
+  })
+}
+
+
 export const handleDownloadVFReports = async (payload:{name:string,filters:any}) => {
 
   try {
