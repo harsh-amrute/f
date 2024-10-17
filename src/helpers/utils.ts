@@ -2833,14 +2833,6 @@ export const convertUiConfigToOptions = (data:any) => {
   })
 }
 
-// export const convertUiConfigToOptions = (data: any) => {
-
-//   return {
-//     // value: data.data.Col_Code,
-//     // label: data.data.Header,
-//   }
-// }
-
 
 export const handleDownloadVFReports = async (payload:{name:string,filters:any}) => {
 

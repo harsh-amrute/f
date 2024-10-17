@@ -16,8 +16,6 @@ import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
 import { BTRCategoryNumberToTextMapper } from "../../../../helpers/BPRConstants";
 
-import {convertUiConfigToOptions} from '../../../../helpers/utils'
-
 // import { generalFilterOptions } from '../../utils';
 
 interface VFMultiFilterProps{
