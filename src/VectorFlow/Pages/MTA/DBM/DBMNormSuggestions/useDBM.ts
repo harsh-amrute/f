@@ -1,7 +1,7 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useGetDBMUIConfiguration,useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
-import { convertUiConfigToOptions, getColumnsForExcelExport, mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -183,7 +183,7 @@ const useDBM =()=>{
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
             console.log(event,'from tempGridProps',{tempDownloadData:tempDownloadData})
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:getColumnsForExcelExport(DBMColumns)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:gridRef.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
 

@@ -1,5 +1,3 @@
-import {useRef} from 'react'
-
 import {RRRLayout} from './styles'
 import useRRR from './useRRR';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
@@ -34,9 +32,10 @@ const RRR = () => {
   setCurrFilter,
   onDeleteFilter,
   isSavedDataLoading,
+  ref,
   generalFilterOptions
 } = useRRR();
- const ref = useRef()
+
 
  
   return (

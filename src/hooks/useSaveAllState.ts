@@ -22,8 +22,6 @@ interface exportToExcelParameters {
 const useSaveAllState = (isPlanning?:boolean) => {
   const { ref,setTempDownloadData,setExportExcelRowData,tempDownloadData } = useContext(GridStateContext);
 
-
-
   const { mutateAsync: saveState } = useSaveState();
   const { mutateAsync: resetState } = useResetState();
 

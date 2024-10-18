@@ -1,6 +1,6 @@
 
 import { useGetSDRUIConfiguration ,useGetSDRData,useGetSDRDataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport/index';
-import { convertUiConfigToOptions, getColumnsForExcelExport, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
+import { convertUiConfigToOptions, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader } from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
@@ -9,10 +9,11 @@ import { AgGridReactProps } from 'ag-grid-react';
 import {SDRDispatchColorCellRenderer} from './SDRCellRenderers'
 import { useGetState } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants';
+import { GridRef } from '../../../../../VectorFlow/types/MDM';
 
 const useSupplierDispatchReport= ()=>{
 
-    const ref = useRef<any>();
+    const ref = useRef<GridRef>();
 
     const [internalRef,setInternalRef] = useState<any>()
     const [gridState,setGridState] = useState<any>()
@@ -180,7 +181,7 @@ const useSupplierDispatchReport= ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'SupplierDispatchReport',columnKeys:getColumnsForExcelExport(VDRColumns)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'SupplierDispatchReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
     
