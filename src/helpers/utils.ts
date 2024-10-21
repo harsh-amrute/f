@@ -653,7 +653,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
 
   console.log("buff ka data...",data)
 
-  if(master.id===501){
+  if(master.id===501 || master.id===502){
     const objKeys: string[] = [];
     selectedColumns.forEach((ele:any)=>{
       objKeys.push(ele.colId);
@@ -1580,6 +1580,7 @@ export const getActionId = (actionName: string): DraftActionType => {
 
 export const createMastersStateFromDraftData = (draftData: any[], fields: Master[]): MDMMasterState[] => {
 
+  console.log("mTA draft data and fields", draftData, fields);
   const masters: MDMMasterState[] = []
   draftData.map((master) => {
     const existingMaster = fields.find((m: Master) => m.id == master.MasterId)
@@ -1602,6 +1603,8 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
       })
     }
   })
+
+  console.log('expected masters output',masters)
   return masters
 }
 export const getUploadModalRadioButtons = (masterId: number) => {

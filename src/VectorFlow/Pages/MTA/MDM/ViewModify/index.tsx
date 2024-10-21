@@ -120,124 +120,122 @@ const ViewModify = () => {
     submittedDataCount,
     uploadProgress,
     totalProgress,
-    tempRecordCount
+    tempRecordCount,
+    addRowToMtoGrid,
+    onMTOSaveBufferData,
+    onMTOSaveAsDraft
 
   } = useViewModify('modify');
 
-  //console.log('<><>>>>><>activeMaster>><>>>>><>', activeMaster.colDefs)
-  const [MtoGridData, setData] = useState<any>();
+
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [updatedColDef, setUpdatedColDef] = useState<any>();
   const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
-  const [addedBufferMaster, setAddedBufferMaster] = useState<any>([]);
-  const {mutateAsync: saveBufferMasterTask } = useSaveBufferMasterTask();
-  //const [isEditable, setIsEditable] = useState(false);
 
 
-  const addEditableToLastColumn = (colDefs: any): ColumnDef[] => {
-    const modifiedColDefs = colDefs.map((colDef: any) => {
-      const editable = (params: any) => params.node.rowIndex === 0;
+  // const addEditableToLastColumn = (colDefs: any): ColumnDef[] => {
+  //   const modifiedColDefs = colDefs.map((colDef: any) => {
+  //     const editable = (params: any) => params.node.rowIndex === 0;
 
-      // console.log("Buffer type masters", bufferTypeMaster)
+  //     // console.log("Buffer type masters", bufferTypeMaster)
 
-      if (colDef.field === 'bt') {
-        return {
-          ...colDef,
-          cellEditor: 'agRichSelectCellEditor',
-          valueFormatter: myFormatter,
-          cellEditorParams: {
-            values: bufferTypeMaster.map((item: any) =>  item.dsc), // Dropdown values
-          },
-          editable,
-        };
-      }
+  //     if (colDef.field === 'bt') {
+  //       return {
+  //         ...colDef,
+  //         cellEditor: 'agRichSelectCellEditor',
+  //         valueFormatter: myFormatter,
+  //         cellEditorParams: {
+  //           values: bufferTypeMaster.map((item: any) =>  item.dsc), // Dropdown values
+  //         },
+  //         editable,
+  //       };
+  //     }
 
-      return {
-        // valueFormatter: myFormatter,
+  //     return {
+  //       // valueFormatter: myFormatter,
 
-        ...colDef,
-        // cellEditor: "agNumberCellEditor",
-        editable,
-      };
-    });
-
-
-    // Create actions column with button rendering
-    const actionsCol: any = {
-      field: 'actions',
-      headerName: 'Actions',
-      //flex: 1,
-      width: 100, // Set the width for the actions column
-      cellRenderer: (params: any) => {
-        if ((params.node.rowIndex === 0)) {
-          return (
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' }}>
-
-              <div
-                onClick={() => addRow(params)}
-                style={{ cursor: 'pointer' }}>
-                <img
-                  src="/assets/img/MTOapprovalBuffer.svg"
-                  alt="ApproveMaster"
-                />
-              </div>
-
-              <div
-                onClick={() => handleCancel()}
-                style={{ cursor: 'pointer' }}
-              >
-                <img
-                  src="/assets/img/MTOcancelBuffer.svg"
-                  alt="CancelMaster"
-                />
-              </div>
-
-            </div>
-          );
-        }
-        return null; // No buttons for other rows
-      },
-    };
-
-    // Prepend the actions column
-    return [actionsCol, ...modifiedColDefs];
-  };
-
-  function myFormatter(params: any) {
-    const currBuff = params.value;
-
-    let val = params.value;
-    bufferTypeMaster.forEach((ele: any) => {
-      // console.log(ele.id, currBuff)
-      if (ele.id.toString() === currBuff.toString()) {
-
-        val = ele.dsc;
-      }
-    })
-    return val;
-
-  }
-
-  const setBufferInColDef = (colDefs: any) => {
-    const modifiedColDefs = colDefs.map((colDef: any) => {
-      // const editable = (params: any) => params.node.rowIndex === params.api.getDisplayedRowCount() - 1;
-
-      if (colDef.field === 'bt') {
-        return {
-          ...colDef,
-          valueFormatter: myFormatter
-        };
-      }
-
-      return {
-        ...colDef
-      }
+  //       ...colDef,
+  //       // cellEditor: "agNumberCellEditor",
+  //       editable,
+  //     };
+  //   });
 
 
-    });
+  //   // Create actions column with button rendering
+  //   const actionsCol: any = {
+  //     field: 'actions',
+  //     headerName: 'Actions',
+  //     //flex: 1,
+  //     width: 100, // Set the width for the actions column
+  //     cellRenderer: (params: any) => {
+  //       if ((params.node.rowIndex === 0)) {
+  //         return (
+  //           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' }}>
 
-    setUpdatedColDef(modifiedColDefs);
-  }
+  //             <div
+  //               onClick={() => addRow(params)}
+  //               style={{ cursor: 'pointer' }}>
+  //               <img
+  //                 src="/assets/img/MTOapprovalBuffer.svg"
+  //                 alt="ApproveMaster"
+  //               />
+  //             </div>
+
+  //             <div
+  //               onClick={() => handleCancel()}
+  //               style={{ cursor: 'pointer' }}
+  //             >
+  //               <img
+  //                 src="/assets/img/MTOcancelBuffer.svg"
+  //                 alt="CancelMaster"
+  //               />
+  //             </div>
+
+  //           </div>
+  //         );
+  //       }
+  //       return null; // No buttons for other rows
+  //     },
+  //   };
+
+  //   // Prepend the actions column
+  //   return [actionsCol, ...modifiedColDefs];
+  // };
+
+  // function myFormatter(params: any) {
+  //   const currBuff = params.value;
+
+  //   let val = params.value;
+  //   bufferTypeMaster.forEach((ele: any) => {
+  //     // console.log(ele.id, currBuff)
+  //     if (ele.id.toString() === currBuff.toString()) {
+
+  //       val = ele.dsc;
+  //     }
+  //   })
+  //   return val;
+
+  // }
+
+  // const setBufferInColDef = (colDefs: any) => {
+  //   const modifiedColDefs = colDefs.map((colDef: any) => {
+  //     // const editable = (params: any) => params.node.rowIndex === params.api.getDisplayedRowCount() - 1;
+
+  //     if (colDef.field === 'bt') {
+  //       return {
+  //         ...colDef,
+  //         valueFormatter: myFormatter
+  //       };
+  //     }
+
+  //     return {
+  //       ...colDef
+  //     }
+
+
+  //   });
+
+  //   setUpdatedColDef(modifiedColDefs);
+  // }
 
   useEffect(()=>{
     if(activeMaster.rowData.length>0 ){
@@ -247,76 +245,16 @@ const ViewModify = () => {
 
   useEffect(() => {
     if (bufferTypeMaster) {
-      setBufferInColDef(activeMaster.colDefs)
+      // setBufferInColDef(activeMaster.colDefs)
     }
 
   }, [bufferTypeMaster])
-
-
-  const addRow = (params: any) => {
-    // console.log('added row params', params)
-
-    const newRows = [...addedBufferMaster];
-    // Check if the entered Buffer type is unique 
-    if(params.data.bsz===""){
-      notifyError("Buffer size cannot be empty!")
-      return;
-    }
-    
-    const allRows = [...activeMaster.rowData, ...newRows];
-    let isValid = true;
-    allRows.forEach((e)=>{
-
-      if(e.bsz== params.data.bsz && e.bt=== params.data.bt){
-        notifyError("Buffer size must be unique!.")
-        isValid = false;
-        return;
-      }
-    })
-
-    if(isValid){
-      newRows.push(params.data);
-      // console.log("row added", addedBufferMaster, addedBufferMaster.length);
-      setAddedBufferMaster(newRows);
-      setIsButtonDisabled(false);
-      // setUpdatedColDef(activeMaster.colDefs);
-      setBufferInColDef(activeMaster.colDefs)
-      // TODO add to the local state
-    }
-    }
-    
-    const handleCancel = () => {
-
-    setIsButtonDisabled(false);
-    setData((prevRowData: any) => {
-      // TODO remove the last row instead
-      const newData = [...prevRowData];
-
-      newData.splice(0, 1); // Remove the last row
-      return newData;
-    });
-    setUpdatedColDef(activeMaster.colDefs);
-    setBufferInColDef(activeMaster.colDefs);
-
-    // Optionally remove the last row
-    // setData(MtoGridData.slice(0, -1));
-    //setRowData(rowData.slice(0, -1));
-  };
-
 
   const getBufferMasterDataType = async () => {
     const BufferTypeMaster = await GetBufferTypeMaster();
     setBufferTypeMaster(BufferTypeMaster?.data?.data);
   }
 
-  useEffect(() => {
-    getBufferMasterDataType()
-    setData(activeMaster.rowData);
-  }, [activeMaster.rowData])
-
-  useEffect(() => {
-    setUpdatedColDef(activeMaster.colDefs)
-  }, [activeMaster.colDefs])
 
   useEffect(() => {
     if (ref.current && ref.current.api) {
@@ -330,64 +268,24 @@ const ViewModify = () => {
   }, [isTableDataLoading])
 
   //this will add new master only for MTO
-  const addRowToMtoGrid = () => {
-    const newRow: any = {
-      bcd: `PROD-Buff`,
-      bd: `BUFF-`,
-      bsz: '', // Example value; modify as needed
-      slt: 0,
-      mlt: 0,
-      ib: false,
-      bt: 1,
-      editable: true,
-    };
-    setData((prevData: any) => [newRow, ...prevData]);
-    //setIsButtonDisabled(false);
-    const latestcoldef = addEditableToLastColumn(activeMaster.colDefs);
-    setUpdatedColDef(latestcoldef)
-  }
+  
 
-  const onGridReady = (params: any) => {
-    params.api.sizeColumnsToFit();
-  };
+  // const onGridReady = (params: any) => {
+  //   params.api.sizeColumnsToFit();
+  // };
 
   // Saves Buffer Data for MTO
-  const onMTOSaveBufferData= async()=>{
+ 
 
-    const BufferPostObj: any = {
-      mid: activeMaster.id,
-      uid: user.user.id.toString(),
-      unm: user.user.name,
-      buffData: []
-    }
-
-    addedBufferMaster.forEach((e:any)=>{
-      bufferTypeMaster.forEach((e:any)=>{
-        if(e.dsc===e.bt){
-          e.bt=e.id;
-        }
-      })
-      e.ib= (e.ib==="false"?0: 1);
-      e.mlt = parseInt(e.mlt);
-      e.slt = parseInt(e.slt);
-
-
-      BufferPostObj.buffData.push(_.omit(e,'editable'));
-    })
-
-    try{
-      const response = await saveBufferMasterTask(BufferPostObj);
-      // console.log("save api response...",response)
-      if(response.status=== 200){
-        setAddedBufferMaster([]);
-      }
-    }
-    catch(error){
-      console.log(error)
-    }
-    
-  }
-
+  // const onMTOSaveAsDraft = async()=>{
+  //   console.log("ref data...",MtoGridData )
+  //   try{
+      
+  //   }
+  //   catch(error){
+  //     console.log(error);
+  //   }
+  // }
 
 
   return (
@@ -493,34 +391,7 @@ const ViewModify = () => {
                   </SCFilterButtonGroup>
                 </SCFilterContainer>
               }
-              {activeMaster.isMTO ?
-                <VFTable
-                  {...agGridProps}
-                  readOnlyEdit={false}
-                  onCellEditingStopped={(params) => {
-                    console.log('onCellEditingStopped', params)
-
-                  }}
-                  ref={ref}
-                  columnDefs={updatedColDef}
-                  rowData={MtoGridData}
-                  suppressPaginationPanel={!isDataAvailableLocally}
-                  statusBar={{
-                    statusPanels: isDataAvailableLocally ? [
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                      { statusPanel: 'agAggregationComponent', align: 'left' },
-                    ] :
-                      [],
-                  }}
-                  height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "65%" : "95%" : "75%"}
-                  editType="fullRow"
-                  onGridReady={onGridReady}
-                />
-                :
-                <VFTable
+               <VFTable
                   ref={ref}
                   columnDefs={activeMaster.colDefs}
                   rowData={activeMaster.rowData}
@@ -538,7 +409,6 @@ const ViewModify = () => {
                   }}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "65%" : "95%" : "75%"}
                 />
-              }
               {
                 (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
                 &&
@@ -573,10 +443,9 @@ const ViewModify = () => {
                     cursor: 'pointer',
                     background: '#fff'
                   }}
-                  onClick={() => { (!isButtonDisabled) && (addRowToMtoGrid(), setIsButtonDisabled(true)) }}
-                  disabled={isButtonDisabled ? true : false}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoGrid()) }}
                 >
-                  {(!isButtonDisabled) ?
+                  {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"
@@ -709,7 +578,8 @@ const ViewModify = () => {
           masterId={activeMaster.id}
           mtoSaveData={true}
           onMTOSaveData={ onMTOSaveBufferData}
-          isMTOSaveDataDisabled={addedBufferMaster.length === 0}
+          isMTOSaveDataDisabled={(activeMaster.rowData.length === tempRecordCount) || (activeMaster.colDefs.some((x) => x.field === 'actions'))                                 }
+          onMTOSaveAsDraft={onMTOSaveAsDraft}
         />
       }
 

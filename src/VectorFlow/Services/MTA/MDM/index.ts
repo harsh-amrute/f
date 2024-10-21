@@ -21,7 +21,8 @@ export const QUERY_KEYS = {
   usegetSkuLoc: ['MDMService.useGetSkuLoc'],
   usegetTaskMastersHistory: ['MDMService.useGetTaskMastersHistory'],
   useGetUploadProgress: ['MDMService.useGetUploadProgress'],
-  useGetAllReports: ['MDMService.useGetAllReports']
+  useGetAllReports: ['MDMService.useGetAllReports'],
+  useGetMTOPendingTask: ['MDMService.useGetMTOPendingTask']
 }
 
 
@@ -121,9 +122,22 @@ export const useGetTaskStatusData = () => {
     return await MDMService.getTaskStatusData()
   })
 }
+
 export const useGetMTOTaskStatusData = () => {
   return useMutation(async () => {
     return await MDMService.getMTOTaskStatusData();
+  })
+}
+
+export const useGetMTOPendingTaskData = () => {
+  return useQuery(QUERY_KEYS.useGetMTOPendingTask, async () => {
+    return await MDMService.getMTOTaskStatusData();
+  })
+}
+
+export const useGetMTOTaskById = () => {
+  return useMutation(async (taskId: string)=>{
+    return await MDMService.getMTOTaskById(taskId);
   })
 }
 
@@ -231,6 +245,12 @@ export const useSaveBufferMasterTask = () => {
   })
 }
 
+export const usePutMtoBufferMasterData = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.putMTOAddBufferMaster(body);
+  })
+}
+
 export const useGetBufferMasterData = () => {
   return useMutation(async () => {
     return await MDMService.getBufferMasterData()
@@ -240,6 +260,24 @@ export const useGetBufferMasterData = () => {
 export const useGetBufferTypeMaster = () => {
   return useMutation(async () => {
     return await MDMService.getBufferTypeMaster()
+  })
+}
+
+export const useGetMTODrafts = () => {
+  return useMutation(async (uid: any) => {
+    return await MDMService.getMTODrafts(uid);
+  })
+}
+
+export const useGetMTODraftById = () => {
+  return useMutation(async (draftId: any) => {
+    return await MDMService.getMTODraftById(draftId);
+  })
+}
+
+export const useGetCCRMasterData = ()=>{
+  return useMutation(async ()=>{
+    return await MDMService.getCCRMasterData();
   })
 }
 

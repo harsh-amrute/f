@@ -1,6 +1,6 @@
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetMasterUIConfiguration, useGetPendingTasks, useGetTaskCount, useGetTaskDetails } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOPendingTaskData, useGetMTOTaskById, useGetMTOTaskStatusData, useGetPendingTasks, useGetTaskCount, useGetTaskDetails, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -11,12 +11,19 @@ import { toast } from 'react-toastify';
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
 import { SET_RECORD_COUNT } from "../../../../../redux/actions/MDM";
 import { useUserData } from "../../../../../context"
+import { JsxElement } from "typescript"
+import TaskPendingActionHeader from "./TaskPendingActionHeader"
+import TaskPendingActionRenderer from "./TaskPendingActionRenderer"
+import TaskPendingActionRendererMTO from "./TaskPendingActionRendererMTO"
+import TaskPendingActionHeaderMTO from "./TaskPendingActionHeaderMTO"
 
 const useTaskPendingForReview = ()=>{
     const ref = useRef<GridRef>()
     const dispatch = useDispatch();
 
     const {user} = useUserData()
+
+    
 
     const themeUi = user.user.theme_ui
 
@@ -37,13 +44,38 @@ const useTaskPendingForReview = ()=>{
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
     const rowsPerPage = 50;
 
-    const {data,isLoading,refetch} = useGetPendingTasks()
+    const {data,isLoading,refetch} = useGetPendingTasks();
+    const {mutateAsync : getMTOTaskStatusData} = useGetMTOTaskStatusData();
+    const {data: getMtoPendingTaskData} = useGetMTOPendingTaskData();
+
+    const [mtoPendingTaskData, setMTOPendingTaskData ] = useState<any>([]);
+
+    const GetMTOData = async()=>{
+        try{
+            const response = await getMTOTaskStatusData();
+            setMTOPendingTaskData(MTOToMTAFormat(response.data.data.results))
+            
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+
+    useEffect(()=>{
+        GetMTOData();
+        // console.log(mtoPendingTaskData)
+    },[])
+
+
+
 
     const {mutateAsync:getTaskDetails,isLoading:isViewTableLoading} = useGetTaskDetails()
 
     const {mutateAsync:getMasterUIConfiguration,isError:isMasterUiConfigurationLoading} = useGetMasterUIConfiguration();
 
     const {mutateAsync:getTaskCount} = useGetTaskCount();
+    
+    const {mutateAsync : getMTOTAskById} = useGetMTOTaskById();
 
     const {mutateAsync:approveTask } = useApproveTask();
 
@@ -55,7 +87,13 @@ const useTaskPendingForReview = ()=>{
 
     const [TASK_ID,setTaskId] = useState<string>('')
 
+  const { mutateAsync: MTOMasterUIConfiguration, /*isLoading: MTOBufferLoading*/ } = useGetMTOMasterUIConfiguration();
 
+  const [mtoActionStatus,setMtoActionStatus] = useState<string>('ApproveAll');
+
+  const [mtoTask, setMTOTask] = useState<any>(undefined);
+  
+  const {mutateAsync: putMTOBufferData} = usePutMtoBufferMasterData();
 
     const resetState = ()=>{
         setDetailTableColDefs([])
@@ -65,9 +103,118 @@ const useTaskPendingForReview = ()=>{
         setSelectedRows(0)
     }
 
-    const handleOnClick = async(taskData:TaskDataType)=>{
+    const handleOnClick = async(taskData:TaskDataType|any)=>{
         let toastId;
-        try {
+        // TODO: write the conditions for MTO
+        console.log('taskData id',taskData.TaskID)
+        setMTOTask(taskData);
+        if(taskData.isMTO){
+
+            try{
+                resetState()
+            
+                setTaskId(taskData.TaskID)
+                
+                setTaskActionType(1)
+                const tempToastId = notifyLoader('Loading Data')
+                const res: any = await getMTOTAskById(taskData.TaskID);
+
+                const taskCount = res.data.data.count;
+                dispatch(SET_RECORD_COUNT(taskCount));
+                console.log("responseeee",res)
+
+                const taskDataStore = res.data.data.results;
+                toast.dismiss(toastId);
+            
+                const currentTaskMaster = taskDataStore[0]
+                console.log("ctm...", currentTaskMaster)
+                // TODO: get the 
+                const currentTaskMasterId:any = 501;
+                setCurrMasterId(currentTaskMasterId);
+
+                // // TODO: here
+                const uiConfigurationResponse = await MTOMasterUIConfiguration();
+                console.log('ui config respoinse...',uiConfigurationResponse);
+            
+                const masters:Master[] = uiConfigurationResponse.data.data
+                const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
+
+                console.log("heree........", currentMasterFields)
+
+
+    const convertColumnsFormat = (columns:any) => {
+        const sortedColumns = columns.sort((a:any,b:any)=>parseInt(a.col_Position)-parseInt(b.col_Position));
+        return sortedColumns.map((col:any, index:any) => ({
+            field:col.key,
+            headerName:col.displayName,
+            position:index+1,
+            dataType:col.dataType,
+            visible:col.visible
+        }));
+    }
+
+                
+                if(currentMasterFields){
+                    // console.log(currentTaskMaster.data[0].new)
+
+                    // TODO do the modification of column definations here!
+                    const existingColumns = getExistingColumns(currentTaskMaster);
+                    console.log("existing columns,,,", existingColumns)
+
+                        
+                        const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
+                        console.log("existingColumns fields", existingColumnFields)
+                        const newColDefs = convertColumnsFormat(existingColumnFields);
+                        newColDefs.push(
+                            {
+                                headerComponent: TaskPendingActionHeaderMTO,
+                                headerComponentParams: {
+                                  showApproveAllModal: showApproveAllModal,
+                                  toggleApproveAllModal,
+                                  toggleRejectAllModal,
+                                  showRejectAllModal: showRejectAllModal,
+                                  setActionStatus,
+                                  setMtoActionStatus,
+                                  mtoActionStatus,
+                                  actionStatus
+                                },
+                                cellRenderer: TaskPendingActionRendererMTO,
+                                cellRendererParams: {
+                                    actionStatus,
+                                    setMtoActionStatus,
+                                    mtoActionStatus,
+                                    setActionStatus
+                                },
+                                width: 300,
+                                cellStyle: {
+                                  "border-left": "solid 1px #B9B9B9"
+                                },
+                                pinned: 'right'
+                              }
+                           
+                            
+                        )
+                       
+                        setDetailTableColDefs(newColDefs);
+                        // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(1).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
+                        setDetailTableRowData(taskDataStore);
+                        // setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
+                    dispatch(SET_RECORD_COUNT(res.data.data.count));
+                }
+
+                notifySuccess("Task Details Fetched Successfully");
+                setIsViewTableOpen(false)
+
+
+            }
+            catch(error){
+                console.log(error)
+            }
+        }
+        else{
+
+            
+            try {
             resetState()
             
             setTaskId(taskData.TaskID)
@@ -76,7 +223,7 @@ const useTaskPendingForReview = ()=>{
             
             const tempToastId = notifyLoader('Loading Data')
             const res:any = await getTaskCount(taskData.TaskID);
-
+            
             const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
             dispatch(SET_RECORD_COUNT(taskCount));
          
@@ -116,7 +263,7 @@ const useTaskPendingForReview = ()=>{
             const currentTaskMasterId:number = currentTaskMaster.MasterId
             setCurrMasterId(currentTaskMasterId)
             
-        
+            
             const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
             
             const masters:Master[] = uiConfigurationResponse.data.data
@@ -127,14 +274,14 @@ const useTaskPendingForReview = ()=>{
                     (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
                     ? JSON.parse(currentTaskMaster.data[0].new)
                     : currentTaskMaster.data[0]
-                );
-                               
-                const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
-                setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
+                    );
+                    
+                    const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
+                    setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
+                    setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                 // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));
             }
-
+            
             notifySuccess("Task Details Fetched Successfully");
             setIsViewTableOpen(false)
             
@@ -144,6 +291,7 @@ const useTaskPendingForReview = ()=>{
             notifyError("Something Went Wrong");
             
         }
+    }
         
     }
 
@@ -210,6 +358,7 @@ const useTaskPendingForReview = ()=>{
     }
 
     const onSelectionTypeSuccess = (status:string,) => {
+
         const pageSize:any = ref.current?.api.paginationGetPageSize()
         const currentPage:any = ref.current?.api.paginationGetCurrentPage()
         const filteredData:any = []
@@ -271,6 +420,34 @@ const useTaskPendingForReview = ()=>{
         }
     }
 
+    const MTOToMTAFormat=(inData: any)=>{
+
+        const newData:any = [];
+        // console.log("mtomta data....", inData)
+        inData.forEach((val:any)=>{
+            const newVal:any = {}
+            newVal.TaskID = val.tid;
+            newVal.PendingSince = val.co;
+            newVal.TaskName = val.tnm;
+            newVal.TaskStatus = val.std;
+            newVal.Requester = val.r_nm;
+            newVal.isMTO = true;
+  
+            newData.push(newVal);
+        })
+  
+        return newData;
+    }
+
+    useEffect(()=>{
+        if(actionStatus==='Approve All'){
+            ref?.current?.api.selectAll();
+        }
+        else{
+            ref?.current?.api.deselectAll();
+        }
+    },[actionStatus])
+
     useEffect(()=>{
         setViewTableColDefs(mapPendingTaskToColumnDefs([
             {
@@ -305,6 +482,30 @@ const useTaskPendingForReview = ()=>{
         ]))
         
     },[])
+
+    const mtoSubmitTask=async()=>{
+
+        const approvedData:any = ref.current?.api.getSelectedRows();
+        const finData =
+            {
+              "tid": mtoTask.TaskID,
+              "ti_id": approvedData[0].ti_id,
+              "uid": user.user.id,
+              "unm": user.user.name,
+              "mmid": approvedData[0].mmid,
+              "buffData": approvedData
+            }
+          
+        // console.log("final data submit",finData);
+        try{
+            const response = await putMTOBufferData(finData);
+            console.log(response);
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+    
     return{
         ref,
         isViewTableOpen,
@@ -327,7 +528,10 @@ const useTaskPendingForReview = ()=>{
         showRejectAllModal,
         toggleRejectAllModal,
         onSelectionTypeSuccess,
-        setSelectionType
+        setSelectionType,
+        mtoPendingTaskData,
+        actionStatus,
+        mtoSubmitTask
     }
 }
 

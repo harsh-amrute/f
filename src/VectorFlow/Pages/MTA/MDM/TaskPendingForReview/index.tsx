@@ -6,9 +6,10 @@ import TaskPendingTaskBar from "./TaskPendingTaskBar"
 import { TaskPendingWrapper } from "./styles"
 import ApproveAllModal from "./ApproveAllModal"
 import RejectAllModal from "./RejectAllModal"
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useRef} from 'react'
 import { useUserData } from "../../../../../context"
-import { useGetMTOTaskStatusData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useGetMTOPendingTaskData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import _ from "lodash"
 
 
 const TaskPendingForReview = ()=>{
@@ -32,61 +33,21 @@ const TaskPendingForReview = ()=>{
         showRejectAllModal,
         toggleRejectAllModal,
         onSelectionTypeSuccess,
-        setSelectionType
+        setSelectionType,
+        mtoPendingTaskData,
+        mtoSubmitTask
     } = useTaskPendingForReview()
 
     if(showLoader) return <VFLoader/>
 
-    // const [mtoPendingData, setMTOPendingData] = useState<any>([]);
-    // const {mutateAsync: getMTOTaskStatusData} = useGetMTOTaskStatusData();
-    const MTOToMTAFormat=(inData: any)=>{
+   
 
-      const newData:any = [];
-      inData.forEach((val:any)=>{
-          const newVal:any = {}
-          newVal.TaskID = val.tid;
-          newVal.PendingSince = val.co;
-          newVal.TaskName = val.tnm;
-          newVal.TaskStatus = val.std;
-          newVal.Requester = val.r_nm;
-
-          newData.push(newVal);
-      })
-
-      return newData;
-  }
-
-  const getMTOTaskData = async()=>{
-      try{
-          // const response = await getMTOTaskStatusData();
-          // const response = {data: {data: {results: []}}}
-          // console.log("MTO task data....", response.data.data.results);
-          // const transformedData = MTOToMTAFormat(response.data.data.results);
-          // if(viewTableRowData){
-          //     setMTOPendingData([...viewTableRowData, ...transformedData])
-          // }
-          // else{
-
-          //     setMTOPendingData([...transformedData]);
-          // }
-      }
-      catch(error){
-          console.log(error)
-      }
-  }
-
-
-    // useEffect(()=>{
-      // if(viewTableRowData){
-      //   getMTOTaskData();
-      // }
-      
-    // },[viewTableRowData])
 
     if(isViewTableOpen){
         return(
             <TaskPendingWrapper>
                 <VFTable
+                // ref = {gridRef}
                 height={"100%"}
                 columnDefs={viewTableColDefs}
                 gridOptions={{
@@ -98,6 +59,9 @@ const TaskPendingForReview = ()=>{
                     },
                     enableRangeSelection:true,
                     rowSelection:'multiple',
+                    defaultColDef:{
+                      flex: 1
+                    }
                   }}
                   statusBar={{
                     statusPanels:[
@@ -108,8 +72,8 @@ const TaskPendingForReview = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ]
                   }}
-                rowData={mapRowDataWithSrNo(viewTableRowData)}
-                // rowData={mtoPendingData}
+                rowData={mapRowDataWithSrNo(mtoPendingTaskData)}
+                // rowData={mtoPendingTaskData}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
             />
@@ -176,12 +140,25 @@ const TaskPendingForReview = ()=>{
                 showRejectAllModal && 
                     <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
             }
-            <TaskPendingTaskBar
-                isSideBarOpen={isSideBarOpen}
-                disableSubmit={selectedRows!==detailTableRowData.length}
-                onCancel={onCancel}
-                onSubmit={onTaskSubmit}
-            />
+            {
+              (!(detailTableRowData&& detailTableRowData.length>0 && detailTableRowData)) ?
+
+              <TaskPendingTaskBar
+              isSideBarOpen={isSideBarOpen}
+              disableSubmit={selectedRows!==detailTableRowData.length}
+              onCancel={onCancel}
+              onSubmit={onTaskSubmit}
+              />
+              :
+
+              <TaskPendingTaskBar
+              isSideBarOpen={isSideBarOpen}
+              disableSubmit={false}
+              onCancel={onCancel}
+              onSubmit={mtoSubmitTask}
+              />
+
+            }
         </TaskPendingWrapper>
         
     )

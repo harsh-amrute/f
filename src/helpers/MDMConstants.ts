@@ -231,7 +231,7 @@ export const masterGroupMapper:masterGroupMapperType[] = [
     },
     {
       name:"Plant/CCR",
-      masters:['501', '502']
+      masters:['501', '502','503']
     },
   ]
 
@@ -259,6 +259,7 @@ export const masterGroupMapper:masterGroupMapperType[] = [
     '17':'/assets/img/VectorFLOW/NMS/AddRecords/discount-period.svg',
     '501': '/assets/img/VectorFLOW/NMS/AddRecords/ccr-master-logo.svg',
     '502': '/assets/img/VectorFLOW/NMS/AddRecords/buffer-master-logo.svg',
+    '503': '/assets/img/VectorFLOW/NMS/AddRecords/poogi-master-logo.svg',
   
 }
 
@@ -286,6 +287,7 @@ export const ImageMapperHover:any={
     '17':'/assets/img/VectorFLOW/NMS/AddRecords/discount-period-hover.svg',
     '501':'/assets/img/VectorFLOW/NMS/AddRecords/ccr-master-logo-hover.svg',
     '502': '/assets/img/VectorFLOW/NMS/AddRecords/buffer-master-logo-hover.svg',
+    '503': '/assets/img/VectorFLOW/NMS/AddRecords/poogi-master-logo.svg'
 }
 
 export const TaskPendingAvoidColumnsMapper:any ={

@@ -68,7 +68,8 @@ const AddRecord = () => {
         onEditOnlineSave,
         isDataAvailableLocally,
         isOverlayVisible,
-        errorCount
+        errorCount,
+        onMTOSaveBufferData
 
     } = useViewModify('add');
 
@@ -85,7 +86,8 @@ const AddRecord = () => {
         showMasterGroup,
         showMaster,
         options,
-        selectedOptions
+        selectedOptions,
+        onDataChange
     } = useAdd()
     
     useEffect(()=>{
@@ -99,83 +101,14 @@ const AddRecord = () => {
       }
     },[isTableDataLoading])
 
-    const [rowDataCustom, setRowDataCustom] =useState<any>(_.cloneDeep(activeMaster.rowData))
-    const {mutateAsync: getBufferMasterData} = useGetBufferMasterData();
     const {mutateAsync: saveBufferMasterTask} = useSaveBufferMasterTask();
 
 
-    const [addedData, setAddedData] = useState<any>([]);
 
-    const getBufferData= async ()=>{
-      try{
-        const response = await getBufferMasterData();
-        setAddedData(response.data.data.results);
-        console.log("sdfdsfdsfdsf,,,,,,,,,,,,,,,,,,", response.data)
-      }
-      catch(error){
-        console.log(error)
-      }
-    }
+     // Saves Buffer Data for MTO
 
-    useEffect(()=>{
-      getBufferData();
-    },[])
 
-    useEffect(()=>{
-      console.log("rwo  Data custom", rowDataCustom)
-    },[rowDataCustom]);
-    const onMTORowDataUpdated=(params: any)=>{
-      if(activeMaster.isMTO){
-        console.log("this worked")
-      
-        const nodesToSelect:any = [];
-        params.api.deselectAll();
-        params?.api?.forEachNode(
-          (node: any, index: any)=>{
-            console.log("node.....", node.data);
-            if(addedData){
-            addedData.forEach((addData: any)=>{
-              if(node.data.bcd=== addData.bcd){
-                node.data.err = "The buffer code already exists in the added buffers!";
-                // changeRowData({node: {rowIndex: index}, column: {colId: 'err'}, newValue: "The buffer code already exists in the added buffers!"})
-              }
-              else if((node.data.bt=== addData.bt) && (node.data.bsz=== addData.bsz)){
-                node.data.err = "The buffer with the buffer size already exists!";
-              }
-            })
-          }
-            
-            params?.api?.forEachNode((node2: any, index2: any)=>{
-              if(index > index2){
 
-                if(node.data.bcd === node2.data.bcd){
-                  node.data.err = "Enter a unique buffer code!"
-                // changeRowData({node: {rowIndex: index}, column: {colId: 'err'}, newValue: "Enter a unique buffer code!"})
-
-                }
-                else if(node.data.bt === node2.data.bt && node.data.bsz === node2.data.bsz){
-                  node.data.err = "Enter a unique buffer size for the given buffer type!"
-                }
-                else{
-                  node.data.err="";
-                  nodesToSelect.push(node);
-                }
-              }
-            })
-          }
-          );
-
-          // console.log("nodes to select....",nodesToSelect);
-          // params.api.deselectAll();
-          // params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-      }
-    }
-
-    useEffect(()=>{
-      // ref?.current?.api?.selectAll();
-      setRowDataCustom(_.cloneDeep(activeMaster.rowData))
-      // console.log("yeh hua re yeh hua yeh console run hua!!")
-    },[activeMaster.rowData])
 
 
     if(isLoading){
@@ -185,7 +118,7 @@ const AddRecord = () => {
     if(isSelectMasterOpen){
       return(
           <SelectGroupedMasters  
-              onSubmit={handleSubmitSelectMaster}  //console.log()
+              onSubmit={handleSubmitSelectMaster}  
               onCancel={onCancel}
               handleOnClickMaster={handleOnClickMaster}
               allMasters={allMasters}
@@ -201,69 +134,8 @@ const AddRecord = () => {
     const dispatch = useDispatch();
 
 
-    // const onGridReady = useCallback((params: GridReadyEvent) => {
-    //   if(activeMaster.rowData){
-    //     setRowDataCustom(activeMaster.rowData);
-    //   }
-    // },[activeMaster.rowData]);
 
-
-    const changeRowData =(params: any)=>{
-      const newData = [...rowDataCustom];
-      newData[params.node.rowIndex][params.column.colId] = params.newValue;
-      console.log("new dAtaa", newData);
-      setRowDataCustom(newData);
-    }
-
-
-
-     // Saves Buffer Data for MTO
-  const onMTOSaveBufferData= async()=>{
-
-    const BufferPostObj: any = {
-      mid: activeMaster.id,
-      uid: user.user.id.toString(),
-      unm: user.user.name,
-      buffData: []
-    }
-
-
-    const selectedRows:any = ref?.current?.api?.getSelectedRows();
-    const finalData:any = [...selectedRows];
-    finalData.forEach((e:any)=>{
-      // bufferTypeMaster.forEach((e:any)=>{
-      //   if(e.dsc===e.bt){
-      //     e.bt=e.id;
-      //   }
-      // })
-
-      // TODO: call the buffer type and add the id and use drop down instead;
-      e.bt = 1;
-      e.ib= (e.ib==="false"?0: 1);
-      e.mlt = parseInt(e.mlt);
-      e.slt = parseInt(e.slt);
-
-
-      BufferPostObj.buffData.push(_.omit(e,'editable'));
-      BufferPostObj.buffData.push(_.omit(e,'err'));
-    })
-
-    try{
-      console.log("finalData......", BufferPostObj);
-      const response = await saveBufferMasterTask(BufferPostObj);
-      console.log("save api response...",response)
-      if(response.status===200){
-        notifySuccess("Buffer task updated!!")
-      }
-      else{
-        notifyError("Failed to create the task....Please check your validations!")
-      }
-    }
-    catch(error){
-      console.log(error)
-    }
-    
-  }
+   
 
     return(
         <React.Fragment>
@@ -277,31 +149,6 @@ const AddRecord = () => {
                 newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
                 newTabHandler={addNewMaster}
                 >
-                {activeMaster.isMTO?
-
-                  <VFTable
-                  height={"95%"}
-                  ref={ref}
-                  columnDefs={activeMaster.colDefs}
-                  rowData={rowDataCustom}
-                  {...agGridProps}
-                  onCellEditingStopped={(params: any)=>{ changeRowData(params)}}
-                  onRowDataUpdated={onMTORowDataUpdated}
-                  onGridReady={onMTORowDataUpdated}
-                  onFirstDataRendered = {onMTORowDataUpdated}
-                    suppressPaginationPanel={!isDataAvailableLocally}
-                    statusBar={{
-                      statusPanels: isDataAvailableLocally?[
-                        { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                        { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                        { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                      { statusPanel: 'agAggregationComponent', align: 'left' },
-                    ]:
-                    [],
-                  }}
-                  />
-                  :
                   <VFTable
                   height={"95%"}
                   ref={ref}
@@ -319,8 +166,9 @@ const AddRecord = () => {
                     ]:
                     [],
                   }}
+                  onCellEditingStopped={activeMaster.isMTO? onDataChange: ()=>{}}
                   />
-                }
+                {/* } */}
                   <div style={{display:'none'}}>                
                     <VFTable
                       ref={tempRef}
@@ -423,6 +271,7 @@ const AddRecord = () => {
             mtoSaveData={true}
             onMTOSaveData={ onMTOSaveBufferData}
             isMTOSaveDataDisabled={activeMaster.rowData.length === 0}
+            // onMTOSaveAsDraft={onMTOSaveAsDraft}
           />
         }
         </React.Fragment>
