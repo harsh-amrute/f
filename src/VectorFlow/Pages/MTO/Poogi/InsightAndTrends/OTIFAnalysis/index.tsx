@@ -55,6 +55,7 @@ const OTIFAnalysis = () => {
     onAddFilter, 
     onApplyFilter, 
     toggleFilter,
+    appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
 
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
@@ -214,6 +215,7 @@ const OTIFAnalysis = () => {
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
+            appliedFilters={appliedFilters}
           />
 
         ) : (

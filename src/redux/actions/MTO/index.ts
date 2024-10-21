@@ -6,6 +6,7 @@ const actions = {
     DAYWISE_COVERAGE_ANALYTICS: createAction<object>("DAYWISE_COVERAGE_ANALYTICS"),
     PROCPLANNING_ANALYTICS: createAction<object>("PROCPLANNING_ANALYTICS"),
     RESOURCE_UTIL_ANALYTICS: createAction<object>("RESOURCE_UTIL_ANALYTICS"),
+    APPLIED_FILTERS: createAction<object>("APPLIED_FILTERS"),
     BM_REPORT_ANALYTICS: createAction<object>("BM_REPORT_ANALYTICS"),
     // UPDATE_DAILY_DATA: createAction<DailyDataGraph>("UPDATE_DAILY_DATA"),
     // TOGGLE_GRAPH_MODAL: createAction<boolean>("TOGGLE_GRAPH_MODAL"),
@@ -20,6 +21,7 @@ export const {
     DAYWISE_COVERAGE_ANALYTICS,
     PROCPLANNING_ANALYTICS,
     RESOURCE_UTIL_ANALYTICS,
+    APPLIED_FILTERS,
     BM_REPORT_ANALYTICS
 } = actions;
 //console.log('action=',actions.SAVE_ANALYTICS_DATA)

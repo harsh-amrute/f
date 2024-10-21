@@ -2,14 +2,17 @@ import axios from 'axios';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OrderBalanceService {
-    export const getOrderBalanceData = async ({graphflag, page, appliedFilters}: any) => {
+    export const getOrderBalanceData = async ({graphflag, page, appliedFilters, ordertype}: any) => {
+        console.log("ot...", ordertype)
+        
         if(graphflag){
             return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrderBalanceData/`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 params: {
-                    graphflag
+                    graphflag,
+                    ordertype
                 }
             })
         }
@@ -21,7 +24,8 @@ export namespace OrderBalanceService {
             },
             params: {
                 graphflag,
-                page
+                page,
+                ordertype
             }
         })
     }

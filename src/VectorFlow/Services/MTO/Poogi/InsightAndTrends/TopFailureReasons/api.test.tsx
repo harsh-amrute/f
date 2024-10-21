@@ -18,7 +18,13 @@ describe('Top Failure Service', () => {
 
     it('should fetch Top Failure Reasons data', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await TopFailureReasonsService.getTopFailureData('0')
+        const response = await TopFailureReasonsService.getTopFailureData({graphflag: 1})
+        expect(response.status).toBe(200);
+    });
+   
+    it('should fetch Top Failure Reasons data', async () => {
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const response = await TopFailureReasonsService.getTopFailureData({graphflag: 0, page: 1, appliedFilters: {}})
         expect(response.status).toBe(200);
     });
 

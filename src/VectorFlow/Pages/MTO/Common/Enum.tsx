@@ -99,7 +99,7 @@ export enum FilterPageName {
 
     Poogi_Reason_For_Delayed_Orders="Poogi_Reason_For_Delayed_Orders",
     Poogi_OTIF_Analysis= "Poogi_OTIF_Analysis",
-    Poogi_OTIF_And_Analysis="Poogi_OTIF_And_Analysis",
+    Poogi_OTIF_And_Analysis="Poogi_OTandIF_Analysis",
     Poogi_Lead_Time="Poogi_Lead_Time",
     Poogi_Top_Failure_Reasons="Poogi_Top_Failure_Reasons",
     Poogi_Trend_Of_Failure_Reasons="Poogi_Trend_Of_Failure_Reasons"
