@@ -24,9 +24,9 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
 
   const gridRef = useRef<any>();
 
-  const handlePageChange = async (currPage: number) => {
+  const handlePageChange = useCallback(async (currPage: number) => {
     setCurrentPage(currPage);
-  };
+  },[]);
 
   const deselectAllForStep1 = () => {
     gridRef.current?.api.deselectAll();
@@ -66,8 +66,9 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
         onGridReady={(params: any) => {
           params.api.autoSizeAllColumns();
           setCurrentGridRef(gridRef);
-        }}
+        }}        
         onRowDataUpdated={(params) => {
+          console.log("running row data update")
           const selectedRowIds = Array.from(selectedRows.keys());
           const newCurrentPageSelected: any = [];
           params.api.forEachNode(node => {
@@ -80,12 +81,20 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
         }}
         onSelectionChanged={(params: any) => {
           const newMap = new Map(selectedRows);
+          const selectedRowIds = Array.from(selectedRows.keys());
+          const newCurrentPageSelected: any = [];
+          params.api.forEachNode((node:any) => {
+            if (selectedRowIds.includes(node.data.ok)) {
+              newCurrentPageSelected.push(node);
+            }
+          });
+          currentPageSelectedRows.current = newCurrentPageSelected;
           _.differenceWith(currentPageSelectedRows.current, params.api.getSelectedNodes(), _.isEqual).forEach((node: any) => {
             newMap.delete(node.data.ok);
           });
           params.api.getSelectedNodes().forEach((node: any) => {
             newMap.set(node.data.ok, node);
-          });
+          });       
           setSelectedRows(newMap);
           currentPageSelectedRows.current = params.api.getSelectedNodes();
         }}

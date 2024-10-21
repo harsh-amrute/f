@@ -21,6 +21,7 @@ import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
+import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -3432,6 +3433,18 @@ export const getKeyName = (attributes: any, key: string) => {
     }
   }
   return ''
+}
+
+export const getType = (attributes: any, key: any) => {
+    for (let i = 0; i < attributes.length; i++) {
+      if (key === attributes[i].key) {
+        if(attributes[i].is_number){
+          return InputTypes.NumberCompare
+        }
+        return InputTypes.TextCompare
+      }
+    }
+    return ""
 }
 
 // Function to structure the output of filter modal

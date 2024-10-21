@@ -5,6 +5,7 @@ import VFPagination from '../../../../../components/VectorFLOW/commons/VFPaginat
 import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';
 import { useEffect, useRef } from 'react';
+import axios from 'axios';
 
 interface MaterialSODetailedProps {
     parameterData: any,
@@ -31,6 +32,46 @@ interface MaterialSODetailedProps {
     const handlePageChange = (currPage: number) => {
         handlePageChangeOnHook(currPage);
     }
+
+    //Excel Export POC 
+
+    // useEffect(() =>{
+    //     if(colDef){
+    //         axios.put("http://10.8.1.10:9000/getOpenSODetailsData/?Color=Black,Red,Yellow&KitStatus=NK&S=0&E=0&export=1&report_name=kuchbh", {
+    //             headers: colDef.map((col: any)=>{
+    //                 return {
+    //                     hd: col.headerName,
+    //                     scc: col.field,
+    //                 }
+    //             }).filter((col: any)=> {
+    //                 return col.hd != undefined && col.hide != false
+    //             })
+    //         },{
+    //             headers:{
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             responseType: "blob"
+    //         }).then((data: any)=>{
+    //             console.log(data);
+    //             const blob = data.data
+    //             console.log(blob);
+    //             const url = URL.createObjectURL(blob)
+
+    //                 // Trigger download
+    //                 const link = document.createElement('a')
+    //                 link.href = url
+                   
+    //                 link.setAttribute('download', `ReportFile.xlsx`)
+    //                 document.body.appendChild(link)
+    //                 link.click()
+    //                 // Clean up download URL
+    //                 URL.revokeObjectURL(url)
+    //             // Create download URL for blob object
+    //             ;
+    //         })
+    //     }
+        
+    // }, [colDef])
 
     useEffect(()=>{ 
         if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
