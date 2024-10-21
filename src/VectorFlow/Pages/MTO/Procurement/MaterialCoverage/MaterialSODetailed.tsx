@@ -5,7 +5,7 @@ import VFPagination from '../../../../../components/VectorFLOW/commons/VFPaginat
 import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';
 import { useEffect, useRef } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 
 interface MaterialSODetailedProps {
     parameterData: any,

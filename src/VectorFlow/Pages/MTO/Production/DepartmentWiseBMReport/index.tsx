@@ -40,7 +40,7 @@ import { modifyAnalyticsData } from './helper';
 import { useDispatch } from 'react-redux';
 import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { UIGridCode } from '../../Common/Enum';
+import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import _, { debounce } from 'lodash';
 
 interface ApiResponse {
@@ -374,7 +374,7 @@ const DptWiseBMReport = () => {
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
         const mapChildren = (parent: any, children: ApiResponse[]): ColDefChild[] => {
-            return children.map((child, index) => ({
+            return children.map((child) => ({
                 field: child.scc.trim(),
                 suppressHeaderFilterButton: true,
                 headerName: child.hd,
@@ -382,7 +382,7 @@ const DptWiseBMReport = () => {
                 hide: !child.v,
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
-                columnGroupShow: index > 2 ? "closed" : undefined,
+                // columnGroupShow: index > 2 ? "closed" : undefined,
                 pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
@@ -423,7 +423,7 @@ const DptWiseBMReport = () => {
 
     const getFilterData = async () => {
         try {
-            const response = await getPageWiseFilterData({});
+            const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_Dept_Wise_BM_Report});
             setFilterData(response?.data.data);
         } catch (error) {
             console.error(error);
@@ -742,10 +742,10 @@ const DptWiseBMReport = () => {
     }, [masterSelectedRowData, gridData])
     
 
-    const getUpdatedFilteredData = async () => {
+    const getUpdatedFilteredData = async (page: any) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': currentPage, appliedFilters: formatedFilters });
+            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': page, appliedFilters: formatedFilters });
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
         }
@@ -770,8 +770,21 @@ const DptWiseBMReport = () => {
     }
 
     useEffect(() => {
-        getUpdatedFilteredData()
-    }, [appliedFilters, isWIPChecked, currentPage]);
+        if (Object.keys(appliedFilters).length) {
+            getUpdatedFilteredData(currentPage)
+        }
+    }, [isWIPChecked, currentPage]);
+
+
+    useEffect(()=>{
+        if (Object.keys(appliedFilters).length) {
+            if(currentPage != 1){
+                setCurrentPage(1)
+            }else{
+                getUpdatedFilteredData(currentPage)
+            }
+        }
+    }, [appliedFilters])
 
 
     const onExcelExport = () => {

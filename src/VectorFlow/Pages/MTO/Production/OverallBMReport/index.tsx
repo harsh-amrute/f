@@ -19,12 +19,10 @@ import GridView from '../DepartmentWiseBMReport/GridView'
 import OrderElapsedGrid from '../DepartmentWiseBMReport/OrderElapsedGrid';
 import { useGetOverAllBMReport } from '../../../../Services/MTO/Production/OverallBMReport/index'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
-import { toast } from 'react-toastify';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import BPRRemarkHistoryModal from '../DepartmentWiseBMReport/MTORemarkHistoryModal';
 import { useGetDeptWiseWipData, useGetHighAgeingData } from '../../../../../VectorFlow/Services/MTO/Production/DepartmentWiseBMReport/index';
-import { FirstDataRenderedEvent } from 'ag-grid-community';
 import { IRowNode } from 'ag-grid-enterprise';
 import OverlayLoader from '../../Common/Loader';
 import { ColorsMTO } from '../../Common/Colors';
@@ -325,7 +323,7 @@ const OverallBmReport = () => {
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
         const mapChildren = (parent: any, children: ApiResponse[]): ColDefChild[] => {
-            return children.map((child: ApiResponse, index: any) => ({
+            return children.map((child: ApiResponse) => ({
                 field: child.scc.trim(),
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
@@ -333,7 +331,7 @@ const OverallBmReport = () => {
                 suppressHeaderFilterButton: true,
                 cellRenderer: (child.cc === 'ec' && systemType >= 3) ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' || child.scc === 'bpp' ? 80 : undefined,
-                columnGroupShow: index > 2 ? "closed" : undefined,
+                // columnGroupShow: index > 2 ? "open" : undefined,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
                     onClick: child.scc === 'rm' ? (data: string) => onOpenRemarkHistory(data) : undefined
@@ -670,7 +668,16 @@ const OverallBmReport = () => {
         if (Object.keys(appliedFilters).length) {
             getInitialGridData(currentPage);
         }
-    }, [currentPage, appliedFilters])
+    }, [currentPage])
+
+    useEffect(() => {
+        if (Object.keys(appliedFilters).length) {
+        if(currentPage != 1){
+            setCurrentPage(1)
+        }else{
+            getInitialGridData(currentPage);
+        }}
+    }, [appliedFilters])
 
 
     const tempGridRef = useRef<any>(null);
