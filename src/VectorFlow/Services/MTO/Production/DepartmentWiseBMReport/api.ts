@@ -4,7 +4,7 @@ import axios from 'axios';
 export namespace DepartmentWiseBMReport {
 
     export const getFilteredDeptWiseBMReport = async ({ wip, curr, appliedFilters, page_size = 500 }: any) => {
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${wip}&page=${curr}&page_size=${page_size}`,
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${wip}&page=${curr}&page_size=${process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE || page_size}`,
             appliedFilters,
             {
                 headers: {
