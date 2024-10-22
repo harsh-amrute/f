@@ -1,7 +1,10 @@
 import { ICellRendererParams } from "ag-grid-enterprise"
-import { notifyError } from "../../../../../helpers/notify"
 import { ActionRendererWrapper,ActionButtonWrapper } from "./styles"
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
+import { useDispatch, useSelector } from "react-redux"
+import _ from "lodash"
+import useTaskPendingForReview from "./useTaskPendingForReview"
+import { SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO"
 
 
 interface TaskPendingActionRendererProps extends ICellRendererParams{
@@ -10,48 +13,59 @@ interface TaskPendingActionRendererProps extends ICellRendererParams{
 }
 
 const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)=>{
-    
-    console.log("taskpendingactionrenderer action status...",props )
-    const [mtoStatusApproved, setMTOStatusApproved] = useState(false);
-    const [mtoStatusRejected, setMTOStatusRejected] = useState(false);
-    
-    // props?.api?.selectAll();
-    //  useEffect(()=>{
-    //   console.log("this action status", props.actionStatus);
-    //   if(props.actionStatus==='Approve All'){
-    //   }
-    //   else{
-    //     props?.current?.api?.deselectAll();
-    //   }
-    // },[props.actionStatus])
 
-    // console.log("valll", props);
+    const {detailTableRowData} = useTaskPendingForReview();
+
+    const dispatch = useDispatch();
+
+
+  const selectedRows = useSelector((state: any) => state.mto.taskPendingSelected);
 
     const [approved, setApproved] =  useState(true);
 
 
     props.api.setNodesSelected({ nodes: [props.node], newValue: approved });
 
-   
-
     const onClick = (status:string)=>{
         
         if(status==='Approved'){
             props.api.setNodesSelected({ nodes: [props.node], newValue: true });
-            const selectedNodes2 = props?.api?.getSelectedNodes();
             setApproved(!approved);
+            const newData : any = [];
+            detailTableRowData.map((data:any, index: any)=>{
+                const newVal  = _.cloneDeep(data);
+                if(index===props.node.rowIndex){
+                    
+                    newVal.selectStatus = '';
+                    newData.push(newVal);
+                }
+                else{
+                    newData.push(newVal);
+                }
+            })
+            dispatch(SET_TASK_PENDING_SELECTED(newData))
         }
         else{
             props.api.setNodesSelected({nodes: [props.node], newValue: false});
             setApproved(!approved);
+            const newData : any = [];
+            detailTableRowData.map((data:any, index: any)=>{
+                const newVal  = _.cloneDeep(data);
+                if(index===props.node.rowIndex){
+                    
+                    newVal.selectStatus = 'approve';
+                    newData.push(index);
+                }
+            })
+        dispatch(SET_TASK_PENDING_SELECTED([]))
+
         }
     }
-    
-    
+
         return(
             <ActionRendererWrapper>
-              <ActionButtonWrapper src={(approved)?"/assets/img/VectorFLOW/NMS/task-pending-approve.svg":"/assets/img/VectorFLOW/NMS/task-pending-approve-grey.svg"} height={24} width={24} onClick={()=>onClick('Approved')}/>
-              <ActionButtonWrapper src={(!(approved))?"/assets/img/VectorFLOW/NMS/task-pending-reject.svg":"/assets/img/VectorFLOW/NMS/task-pending-reject-grey.svg"} height={24} width={24} onClick={()=>onClick('Rejected')}/>
+              <ActionButtonWrapper src={((selectedRows && selectedRows.includes(props.data))|| (selectedRows==='all')) ? "/assets/img/VectorFLOW/NMS/task-pending-approve.svg" : "/assets/img/VectorFLOW/NMS/task-pending-approve-grey.svg"} height={24} width={24} onClick={() => onClick('Approved')} />
+              <ActionButtonWrapper src={(selectedRows && !selectedRows.includes(props.data))?"/assets/img/VectorFLOW/NMS/task-pending-reject.svg":"/assets/img/VectorFLOW/NMS/task-pending-reject-grey.svg"} height={24} width={24} onClick={()=>onClick('Rejected')}/>
             </ActionRendererWrapper>
          )
     

@@ -1,5 +1,8 @@
 import { ActionHeaderContent, ActionHeaderWrapper, TaskPendingActionHeaderButton } from "./styles"
 import { useUserData } from "../../../../../context";
+import { useDispatch } from "react-redux";
+import { SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO";
+
 
 
 const TaskPendingActionHeader = (props:any)=>{
@@ -7,9 +10,13 @@ const TaskPendingActionHeader = (props:any)=>{
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
+  const dispatch = useDispatch();
+
+
+
   // const [actionStatus,setActionStatus] = useState<string>('')
 
-    
+
 
 
     // const onUnCheckAll = ()=>{
@@ -37,13 +44,19 @@ const TaskPendingActionHeader = (props:any)=>{
       if(query==="Approved"){
         props.setActionStatus("Approve All");
         props.setMtoActionStatus("ApproveAll");
+        props.api.selectAll();
+        dispatch(SET_TASK_PENDING_SELECTED("all"))
       }
       else{
         props.setActionStatus("Reject All");
         props.setMtoActionStatus("RejectAll");
 
+        props.api.deselectAll();
+        dispatch(SET_TASK_PENDING_SELECTED([]))
 
       }
+
+      props.api.refreshCells();
       
         // if(unCheckEvent){
         //     onUnCheckAll()

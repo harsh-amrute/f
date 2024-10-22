@@ -1,6 +1,6 @@
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOPendingTaskData, useGetMTOTaskById, useGetMTOTaskStatusData, useGetPendingTasks, useGetTaskCount, useGetTaskDetails, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, useGetPendingTasks, useGetTaskCount, useGetTaskDetails, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -9,21 +9,18 @@ import { useSelector, useDispatch } from "react-redux"
 import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
-import { SET_RECORD_COUNT } from "../../../../../redux/actions/MDM";
+import { SET_RECORD_COUNT} from "../../../../../redux/actions/MDM";
 import { useUserData } from "../../../../../context"
-import { JsxElement } from "typescript"
-import TaskPendingActionHeader from "./TaskPendingActionHeader"
-import TaskPendingActionRenderer from "./TaskPendingActionRenderer"
 import TaskPendingActionRendererMTO from "./TaskPendingActionRendererMTO"
 import TaskPendingActionHeaderMTO from "./TaskPendingActionHeaderMTO"
+import _ from "lodash"
+import { SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO"
 
 const useTaskPendingForReview = ()=>{
     const ref = useRef<GridRef>()
     const dispatch = useDispatch();
 
     const {user} = useUserData()
-
-    
 
     const themeUi = user.user.theme_ui
 
@@ -46,7 +43,6 @@ const useTaskPendingForReview = ()=>{
 
     const {data,isLoading,refetch} = useGetPendingTasks();
     const {mutateAsync : getMTOTaskStatusData} = useGetMTOTaskStatusData();
-    const {data: getMtoPendingTaskData} = useGetMTOPendingTaskData();
 
     const [mtoPendingTaskData, setMTOPendingTaskData ] = useState<any>([]);
 
@@ -63,7 +59,6 @@ const useTaskPendingForReview = ()=>{
 
     useEffect(()=>{
         GetMTOData();
-        // console.log(mtoPendingTaskData)
     },[])
 
 
@@ -106,7 +101,6 @@ const useTaskPendingForReview = ()=>{
     const handleOnClick = async(taskData:TaskDataType|any)=>{
         let toastId;
         // TODO: write the conditions for MTO
-        console.log('taskData id',taskData.TaskID)
         setMTOTask(taskData);
         if(taskData.isMTO){
 
@@ -116,30 +110,25 @@ const useTaskPendingForReview = ()=>{
                 setTaskId(taskData.TaskID)
                 
                 setTaskActionType(1)
-                const tempToastId = notifyLoader('Loading Data')
                 const res: any = await getMTOTAskById(taskData.TaskID);
 
                 const taskCount = res.data.data.count;
                 dispatch(SET_RECORD_COUNT(taskCount));
-                console.log("responseeee",res)
 
                 const taskDataStore = res.data.data.results;
                 toast.dismiss(toastId);
             
                 const currentTaskMaster = taskDataStore[0]
-                console.log("ctm...", currentTaskMaster)
                 // TODO: get the 
                 const currentTaskMasterId:any = 501;
                 setCurrMasterId(currentTaskMasterId);
 
                 // // TODO: here
                 const uiConfigurationResponse = await MTOMasterUIConfiguration();
-                console.log('ui config respoinse...',uiConfigurationResponse);
             
                 const masters:Master[] = uiConfigurationResponse.data.data
                 const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
 
-                console.log("heree........", currentMasterFields)
 
 
     const convertColumnsFormat = (columns:any) => {
@@ -159,14 +148,14 @@ const useTaskPendingForReview = ()=>{
 
                     // TODO do the modification of column definations here!
                     const existingColumns = getExistingColumns(currentTaskMaster);
-                    console.log("existing columns,,,", existingColumns)
 
                         
                         const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                        console.log("existingColumns fields", existingColumnFields)
                         const newColDefs = convertColumnsFormat(existingColumnFields);
                         newColDefs.push(
                             {
+                                colId: 'selectStatus',
+                                field: 'selectStatus',
                                 headerComponent: TaskPendingActionHeaderMTO,
                                 headerComponentParams: {
                                   showApproveAllModal: showApproveAllModal,
@@ -194,10 +183,21 @@ const useTaskPendingForReview = ()=>{
                            
                             
                         )
+
+                        const newData:any = [];
+
+                        taskDataStore.forEach((ele:any)=>{
+                            const newEle = _.cloneDeep(ele);
+                            newEle.selectStatus = '';
+                            newData.push(newEle);
+                        })
+                        
                        
                         setDetailTableColDefs(newColDefs);
+                        // dispatch(UPDATE_ROW_DATA(newData));
                         // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(1).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
-                        setDetailTableRowData(taskDataStore);
+                        // setDetailTableRowData(taskDataStore);
+                        setDetailTableRowData(newData);
                         // setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                     dispatch(SET_RECORD_COUNT(res.data.data.count));
                 }
@@ -357,6 +357,37 @@ const useTaskPendingForReview = ()=>{
        
     }
 
+    const [masterSelect]= useState<any>([])
+
+    const mtoOnSelectionChange = ()=>{
+        const selectRow:any = ref.current?.api.getSelectedRows();
+        const selectedRows = [...selectRow]
+
+        const newData:any = []; 
+        console.log("selected rows... ", selectedRows)
+
+        if(selectedRows.length > 0 && !_.isEqual(masterSelect,selectedRows)){
+
+            
+            detailTableRowData.forEach((ele:any)=>{
+                const newVal  = _.cloneDeep(ele)
+                if(selectedRows.includes(ele)){
+                        newVal.selectStatus = 'approve';
+                    }
+                else{
+                        newVal.selectStatus = 'reject';
+                    }
+                newData.push(newVal);
+            })
+            // ref.current?.api.setNodesSelected({ nodes: selectedRows, newValue: true })
+            // setDetailTableRowData(newData);
+            // setMasterSelect(selectedRows);
+            dispatch(SET_TASK_PENDING_SELECTED([...selectedRows] ));
+
+        }
+
+    }
+
     const onSelectionTypeSuccess = (status:string,) => {
 
         const pageSize:any = ref.current?.api.paginationGetPageSize()
@@ -381,10 +412,12 @@ const useTaskPendingForReview = ()=>{
                     if(!rowNode.data.isModified && taskActionype===2 && status==="Rejected"){
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
+
                     }
                     else if(taskActionype!==2 || currMasterId===6){
                         rowNode.setDataValue('status',status)
                         rowNode.setSelected(true)
+
                     }
                 })
                 setActionStatus(status);
@@ -531,7 +564,9 @@ const useTaskPendingForReview = ()=>{
         setSelectionType,
         mtoPendingTaskData,
         actionStatus,
-        mtoSubmitTask
+        mtoSubmitTask,
+        setDetailTableRowData,
+        mtoOnSelectionChange
     }
 }
 

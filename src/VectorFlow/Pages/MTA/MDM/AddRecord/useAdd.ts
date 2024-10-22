@@ -67,19 +67,6 @@ const useAdd=()=>{
         }
     ];
 
-    const mtoInvalidDataColdefs:ColDef[] = [
-      {
-        field:'error',
-        colId:'error',
-        headerName:'Error/ Warning',
-        floatingFilter:false, 
-        cellRenderer:'errorCell',
-        suppressColumnsToolPanel:true,
-        wrapText:true,
-        autoHeight:true,
-      }
-    ]
-
 
     const addInvalidDataColDefs = (columnName:string) => {
         if(activeMaster.isMTO){
@@ -337,8 +324,8 @@ const useAdd=()=>{
 
       // TODO : mto 
       const getErrorForBuffer = (ele:any, index: any)=>{
-        if(ele.bt === '' || ele.bsz === ''){ return {error: "Enter Buffer Type and Buffer Size", warning: ""};}
-
+        if(ele.bt === '' || ele.bsz === '' || ele.bsz=== null || ele.bt===null){ return {error: "Enter Buffer Type and Buffer Size", warning: ""};}
+        console.log("error for buffer", ele)
         let isBszUniq = true;
         activeMaster.rowData.forEach((e: any, i:any)=>{
           if (i>=index) return ;

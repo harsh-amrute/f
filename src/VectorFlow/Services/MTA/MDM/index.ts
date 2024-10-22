@@ -244,6 +244,11 @@ export const useSaveBufferMasterTask = () => {
     return await MDMService.saveBufferMasterTask(body)
   })
 }
+export const useSaveBufferMasterDraft = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.saveBufferMasterDraft(body)
+  })
+}
 
 export const usePutMtoBufferMasterData = () => {
   return useMutation(async (body: any) => {

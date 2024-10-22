@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -19,7 +19,6 @@ import { v4 as uuidv4 } from 'uuid';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
-import { useGetBufferTypeMaster, useSaveBufferMasterTask } from '../../../../Services/MTA/MDM'
 import MTOErrorWarningCell from './MTOErrorWarningCell';
 
 
@@ -115,7 +114,7 @@ const useViewModify = (pageType: string) => {
   /***Add the below line to fetch MTO Buffer */
   const { mutateAsync: MTOMasterUIConfiguration, /*isLoading: MTOBufferLoading*/ } = useGetMTOMasterUIConfiguration();
   const {mutateAsync: saveBufferMasterTask } = useSaveBufferMasterTask();
-
+  const {mutateAsync: saveBufferMasterDraft} = useSaveBufferMasterDraft();
   const [bufferTypeData, setBufferTypeData] = useState<any>(undefined);
 
 
@@ -338,6 +337,45 @@ const useViewModify = (pageType: string) => {
     }
   }, [activeMaster])
 
+  const validateMTOMaster = (masterId: number) => {
+    if(masterId=== 501){
+      const allRows = [...activeMaster.rowData];
+      allRows.shift();
+      // Check if the entered Buffer type is unique 
+      const newData:any = [];
+      allRows.forEach((e:any, i)=>{
+        const newVal = _.cloneDeep(e);
+        if(e.bsz===""){
+          newVal.err = {error: "Enter the Buffer Size!", warning: ""}
+          newData.push(newVal);
+        }
+        else if(e.bt===""){
+          newVal.err = {error: "Enter the Buffer Type!", warning: ""}
+          newData.push(newVal);
+        }
+        let isValid = true;
+        allRows.forEach((ele, index)=>{
+    
+          if(index !== i && ele.bsz=== e.bsz && e.bt=== ele.bt){
+           
+            newVal.err = {error: "Buffer size must be unique!", warning: ""}
+            isValid = false;
+            newData.push(newVal);
+          }
+        })
+        if(isValid){
+          newData.push(newVal);
+        }
+      
+
+      })
+
+          dispatch(UPDATE_ROW_DATA(newData));
+
+    }
+  }
+
+
   const sideBar: SideBarDef = {
     toolPanels: [
       {
@@ -375,7 +413,11 @@ const useViewModify = (pageType: string) => {
     onColumnVisible: onColumnChange,
     // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
     loadingOverlayComponent: 'loadingOverlay',
+    onFirstDataRendered: ()=>{
+      validateMTOMaster( activeMaster.id);
+    },
     onRowDataUpdated: (event: any) => {
+
       
      
         const downloadableColumnKeys: string[] = [];
@@ -418,7 +460,9 @@ const useViewModify = (pageType: string) => {
           node.setSelected(isSelected);
         });
       }
+      
     },
+  
     onCellEditingStopped(event) {
       const data = event.data;
       const field = event.colDef.field;
@@ -1805,7 +1849,6 @@ const useViewModify = (pageType: string) => {
 
         return {
           ...colDef,
-          valueFormatter: myFormatter,
           cellRenderer: 'agCheckboxCellRenderer',
           cellEditor: "agCheckboxCellEditor",
           editable,
@@ -1817,7 +1860,6 @@ const useViewModify = (pageType: string) => {
 
         return {
           ...colDef,
-          valueFormatter: myFormatter,
           editable,
         };
       }
@@ -1825,7 +1867,6 @@ const useViewModify = (pageType: string) => {
       else {
         return {
           ...colDef,
-          valueFormatter: myFormatter,
           cellEditor: "agNumberCellEditor",
           editable,
         };
@@ -1886,7 +1927,6 @@ const useViewModify = (pageType: string) => {
 
     const selectedRows:any = ref?.current?.api?.getSelectedRows();
     console.log("selected rows..", selectedRows);
-    const finalData:any = [];
     selectedRows.forEach((e:any)=>{
       const newVal = JSON.parse(JSON.stringify(e));
       // bufferTypeData.forEach((e:any)=>{
@@ -1907,7 +1947,7 @@ const useViewModify = (pageType: string) => {
 
     try{
       const response = await saveBufferMasterTask(BufferPostObj);
-      if(response.status===200){
+      if(response.status==200){
         notifySuccess("Buffer task updated!!")
       }
       else{
@@ -1922,15 +1962,11 @@ const useViewModify = (pageType: string) => {
 
   const onMTOSaveBufferData= async()=>{
 
-    console.log('page type', pageType)
-
     if(pageType==="add")
     {
      onMTOAddSaveBufferData();
       return;
     }
-
-    console.log("user data", user);
 
     const BufferPostObj: any = {
       mid: activeMaster.id,
@@ -1940,14 +1976,13 @@ const useViewModify = (pageType: string) => {
     }
 
     let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
-    console.log("active master.rowdat", totalNewVals);
     activeMaster.rowData.forEach((ele:any)=>{
       bufferTypeData.forEach((e:any)=>{
-        if(e.dsc===e.bt){
-          e.bt=e.id;
+      console.log("e.dsc e.bt", ele.dsc, e.bt)
+        if(ele.dsc===e.bt){
+          e.bt=ele.id;
         }
       })
-      console.log("each row data...", ele);
       const e = _.cloneDeep(ele);
       e.ib= (e.ib==="false"?0: 1);
       e.mlt = parseInt(e.mlt);
@@ -1962,7 +1997,6 @@ const useViewModify = (pageType: string) => {
 
     try{
       const response = await saveBufferMasterTask(BufferPostObj);
-      // console.log("save api response...",response)
       if(response.status=== 200){
         notifySuccess("Saved Buffer Task Successfully");
       }
@@ -1971,8 +2005,38 @@ const useViewModify = (pageType: string) => {
       console.log(error)
     }
   }
-  const onMTOSaveAsDraft = ()=>{
-    console.log("saved draft")
+  const onMTOSaveAsDraft = async()=>{
+    const BufferPostObj: any = {
+      mid: activeMaster.id,
+      uid: user.user.user.id.toString(),
+      unm: user.user.user.name,
+      buffData: []
+    }
+
+    activeMaster.rowData.forEach((ele:any)=>{
+      bufferTypeData.forEach((e:any)=>{
+        if(ele.dsc===e.bt){
+          e.bt=ele.id;
+        }
+      })
+      const e = _.cloneDeep(ele);
+      e.ib= (e.ib==="false"?0: 1);
+      e.mlt = parseInt(e.mlt);
+      e.slt = parseInt(e.slt);
+
+
+      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning', 'err']));
+    })
+
+    try{
+      const response = await saveBufferMasterDraft(BufferPostObj);
+      if(response.status=== 200){
+        notifySuccess("Saved Buffer Task Successfully");
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
   }
 
   return {

@@ -12,7 +12,7 @@ import { SeasonalityQuickFilterType, type Filter } from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SeasonalityChartModal from "./SeasonalityChartModal";
@@ -21,30 +21,13 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import _ from "lodash";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
-import { useGetBufferTypeMaster, useSaveBufferMasterTask } from '../../../../Services/MTA/MDM'
-import { notifyError } from "../../../../../helpers/notify";
+import { } from '../../../../Services/MTA/MDM'
 
-type ColumnDef = {
-  field: string;
-  colId: string;
-  headerName: string;
-  hide?: boolean;
-  floatingFilter?: boolean;
-  filter?: string;
-  cellDataType?: string;
-  tooltipComponent?: string;
-  suppressColumnsToolPanel?: boolean;
-  minWidth?: number;
-  cellStyle?: React.CSSProperties;
-  flex?: number;
-  editable?: boolean | ((params: any) => boolean);
-};
 
 
 const ViewModify = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-  const { mutateAsync: GetBufferTypeMaster } = useGetBufferTypeMaster();
 
   // const disabled=true;
   // const dummyFn =()=>{return}
@@ -128,134 +111,6 @@ const ViewModify = () => {
   } = useViewModify('modify');
 
 
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
-
-
-  // const addEditableToLastColumn = (colDefs: any): ColumnDef[] => {
-  //   const modifiedColDefs = colDefs.map((colDef: any) => {
-  //     const editable = (params: any) => params.node.rowIndex === 0;
-
-  //     // console.log("Buffer type masters", bufferTypeMaster)
-
-  //     if (colDef.field === 'bt') {
-  //       return {
-  //         ...colDef,
-  //         cellEditor: 'agRichSelectCellEditor',
-  //         valueFormatter: myFormatter,
-  //         cellEditorParams: {
-  //           values: bufferTypeMaster.map((item: any) =>  item.dsc), // Dropdown values
-  //         },
-  //         editable,
-  //       };
-  //     }
-
-  //     return {
-  //       // valueFormatter: myFormatter,
-
-  //       ...colDef,
-  //       // cellEditor: "agNumberCellEditor",
-  //       editable,
-  //     };
-  //   });
-
-
-  //   // Create actions column with button rendering
-  //   const actionsCol: any = {
-  //     field: 'actions',
-  //     headerName: 'Actions',
-  //     //flex: 1,
-  //     width: 100, // Set the width for the actions column
-  //     cellRenderer: (params: any) => {
-  //       if ((params.node.rowIndex === 0)) {
-  //         return (
-  //           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' }}>
-
-  //             <div
-  //               onClick={() => addRow(params)}
-  //               style={{ cursor: 'pointer' }}>
-  //               <img
-  //                 src="/assets/img/MTOapprovalBuffer.svg"
-  //                 alt="ApproveMaster"
-  //               />
-  //             </div>
-
-  //             <div
-  //               onClick={() => handleCancel()}
-  //               style={{ cursor: 'pointer' }}
-  //             >
-  //               <img
-  //                 src="/assets/img/MTOcancelBuffer.svg"
-  //                 alt="CancelMaster"
-  //               />
-  //             </div>
-
-  //           </div>
-  //         );
-  //       }
-  //       return null; // No buttons for other rows
-  //     },
-  //   };
-
-  //   // Prepend the actions column
-  //   return [actionsCol, ...modifiedColDefs];
-  // };
-
-  // function myFormatter(params: any) {
-  //   const currBuff = params.value;
-
-  //   let val = params.value;
-  //   bufferTypeMaster.forEach((ele: any) => {
-  //     // console.log(ele.id, currBuff)
-  //     if (ele.id.toString() === currBuff.toString()) {
-
-  //       val = ele.dsc;
-  //     }
-  //   })
-  //   return val;
-
-  // }
-
-  // const setBufferInColDef = (colDefs: any) => {
-  //   const modifiedColDefs = colDefs.map((colDef: any) => {
-  //     // const editable = (params: any) => params.node.rowIndex === params.api.getDisplayedRowCount() - 1;
-
-  //     if (colDef.field === 'bt') {
-  //       return {
-  //         ...colDef,
-  //         valueFormatter: myFormatter
-  //       };
-  //     }
-
-  //     return {
-  //       ...colDef
-  //     }
-
-
-  //   });
-
-  //   setUpdatedColDef(modifiedColDefs);
-  // }
-
-  useEffect(()=>{
-    if(activeMaster.rowData.length>0 ){
-      setIsButtonDisabled(false);
-    }
-  },[activeMaster.rowData])
-
-  useEffect(() => {
-    if (bufferTypeMaster) {
-      // setBufferInColDef(activeMaster.colDefs)
-    }
-
-  }, [bufferTypeMaster])
-
-  const getBufferMasterDataType = async () => {
-    const BufferTypeMaster = await GetBufferTypeMaster();
-    setBufferTypeMaster(BufferTypeMaster?.data?.data);
-  }
-
-
   useEffect(() => {
     if (ref.current && ref.current.api) {
       if (isTableDataLoading) {
@@ -267,25 +122,12 @@ const ViewModify = () => {
     }
   }, [isTableDataLoading])
 
-  //this will add new master only for MTO
   
 
-  // const onGridReady = (params: any) => {
-  //   params.api.sizeColumnsToFit();
-  // };
+  const onGridReady = (params: any) => {
+    params.api.sizeColumnsToFit();
+  };
 
-  // Saves Buffer Data for MTO
- 
-
-  // const onMTOSaveAsDraft = async()=>{
-  //   console.log("ref data...",MtoGridData )
-  //   try{
-      
-  //   }
-  //   catch(error){
-  //     console.log(error);
-  //   }
-  // }
 
 
   return (
@@ -407,6 +249,7 @@ const ViewModify = () => {
                     ] :
                       [],
                   }}
+                  onGridReady={onGridReady}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "65%" : "95%" : "75%"}
                 />
               {
@@ -451,7 +294,7 @@ const ViewModify = () => {
                         src="/assets/img/AddBufferMasterIcon.svg"
                         alt="Add Master Button"
                       />
-                      <p style={{ fontSize: '18px', color: ColorsMTO.Pink.code }}>Add Buffer</p>
+                      <p style={{ fontSize: '18px', color: ColorsMTO.Pink.code }}>Add {activeMaster.name}</p>
                     </>
                     :
                     <>
@@ -557,7 +400,7 @@ const ViewModify = () => {
           enableEditOnlineReset={enableEditOnlineReset}
           disableDeleteSelected={activeMaster.rowData.length < 1}
           onReset={onReset}
-          onSaveToDraft={onSaveToDraft}
+          onSaveToDraft={activeMaster.isMTO? onMTOSaveAsDraft :onSaveToDraft}
           onEditOnlineSave={onEditOnlineSave}
           editOnline={editOnline}
           onEditOnline={() => onEditOnline('editOnline')}

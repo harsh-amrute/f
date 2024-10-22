@@ -1,12 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
-
+import React, { useEffect } from "react";
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectGroupedMasters";
-
-
 import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
-
-
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import { SCContainer } from "../ViewModify/styles";
@@ -15,19 +10,11 @@ import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
-
-
 import { useUserData } from "../../../../../context";
 import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
 import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
-
 import { MDMMasterState,Field } from "../../../../types/MDM";
-import { useGetBufferMasterData, useSaveBufferMasterTask } from "../../../../../VectorFlow/Services/MTA/MDM";
-import _ from "lodash";
-import { notifyError, notifySuccess } from "../../../../../helpers/notify";
-
-
 
 
 const AddRecord = () => {
@@ -101,14 +88,6 @@ const AddRecord = () => {
       }
     },[isTableDataLoading])
 
-    const {mutateAsync: saveBufferMasterTask} = useSaveBufferMasterTask();
-
-
-
-     // Saves Buffer Data for MTO
-
-
-
 
 
     if(isLoading){
@@ -134,6 +113,9 @@ const AddRecord = () => {
     const dispatch = useDispatch();
 
 
+    const onGridReady = (params: any) => {
+      params.api.sizeColumnsToFit();
+    };
 
    
 
@@ -153,6 +135,8 @@ const AddRecord = () => {
                   height={"95%"}
                   ref={ref}
                   columnDefs={activeMaster.colDefs}
+                  onGridReady={onGridReady}
+
                   rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}
@@ -166,7 +150,10 @@ const AddRecord = () => {
                     ]:
                     [],
                   }}
-                  onCellEditingStopped={activeMaster.isMTO? onDataChange: ()=>{}}
+                  defaultColDef= {
+                    {flex: 1}
+                  }
+                  onCellEditingStopped={activeMaster.isMTO? onDataChange: ()=>{console.log("data updated")}}
                   />
                 {/* } */}
                   <div style={{display:'none'}}>                

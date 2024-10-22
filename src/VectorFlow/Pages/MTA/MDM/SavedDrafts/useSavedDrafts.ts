@@ -10,6 +10,7 @@ import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
 import { useUserData } from "../../../../../context"
+import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
 
 const useSavedDrafts = ()=>{
 
@@ -34,8 +35,11 @@ const useSavedDrafts = ()=>{
     const getCombinedMTOData = async()=>{
         try{
             // TODO: change the data to userid later now data is available for this
-            const response:any = await getMtoDrafts("3_20240930");
-            const concatedData:any = [...data?.data.data];
+            const response:any = await getMtoDrafts(user.user.user.id);
+            let concatedData:any = [];
+            if(data){
+                concatedData = [...data.data.data];
+            }
             response.data.data.results.forEach((draft: any)=>{
                 const newData = {
                     DraftId: draft.did,
@@ -48,8 +52,6 @@ const useSavedDrafts = ()=>{
                 }
                 concatedData.push(newData);
             })
-            
-            console.log("comb data....", concatedData)
             
             setAllDrafts(concatedData);
             
@@ -100,7 +102,21 @@ const useSavedDrafts = ()=>{
     //       }
     //     })
     //     return masters
+
+
     //   }
+
+    const convertToColDefs = (data:any) => {
+        return data.map((item:any )=> ({
+          field: item?.key,                    // Use the "key" as the "field"
+          colId: item?.key,                    // Also set "colId" from "key"
+          headerName: item?.displayName,        // Set "headerName" from "displayName"
+          floatingFilter: false,              // Set default values for additional properties
+          wrapText: true,
+          autoHeight: true,
+          editable: true
+        }));
+      };
     
     const onEditDraft = async(draftDetails:any)=>{
         let toastId;
@@ -119,66 +135,26 @@ const useSavedDrafts = ()=>{
             const mastersDataRes= await getMTOMasterUIConfiguration();
             // console.log("masteres dataaa", mastersDataRes);
             const mastersData = mastersDataRes.data.data[1];
+            console.log('master Data res...',mastersDataRes)
         
             toast.dismiss();
             
-            const fields = mastersDataRes.data.data[1];
+            const fields = mastersData.fields;
 
             // draftData
             // DataMaster gridState MasterId Status
-            fields
             // const masterState = createMastersStateFromDraftData(draftData,fields)
             // const activeMaster = masterState.find((m:MDMMasterState)=>m.progress!=='submitted');
                 // const activeMaster= "dsf";
+
             const masterState:any = [
-                {
-                    "id": "1",
+                {   isMTO: true,
+                    "id": "501",
                     "name": "SKU",
-                    "colDefs": [
-                        {
-                            "field": "error",
-                            "colId": "error",
-                            "headerName": "Error",
-                            "floatingFilter": false,
-                            "cellRenderer": "errorCell",
-                            "suppressColumnsToolPanel": true,
-                            "wrapText": true,
-                            "autoHeight": true
-                        },
-                        {
-                            "field": "warning",
-                            "colId": "warning",
-                        }
-                        
-                    ],
-                    "rowData": [
-                        {
-                            "warning": "something",
-                            "sc": "CFSBARY48BRN1S",
-                            "sd": "SURBRZ ARIYABRIZ 1.2M BRN 1S",
-                            "ec": "3540",
-                            "wt": "4.407",
-                            "vm": "0.376",
-                            "c1": "FG",
-                            "c2": "",
-                            "c3": "",
-                            "c4": "",
-                            "c5": "",
-                            "SL1": "FANS",
-                            "SL2": "CEILING_FAN",
-                            "SL3": "Ariyabriz",
-                            "error": ""
-                        }
-                    ],
+                    "colDefs": [{checkboxSelection: true},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...convertToColDefs(fields)],
+                    "rowData": draftData,
                     "isChecked": true,
                     "filters": [
-                        {
-                            "id": "rILYuAPYax",
-                            "masterId": "1",
-                            "field": "",
-                            "operator": "",
-                            "text": ""
-                        }
                     ],
                     "progress": "something",
                     "fields": [

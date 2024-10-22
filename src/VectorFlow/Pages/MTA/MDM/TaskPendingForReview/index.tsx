@@ -6,10 +6,7 @@ import TaskPendingTaskBar from "./TaskPendingTaskBar"
 import { TaskPendingWrapper } from "./styles"
 import ApproveAllModal from "./ApproveAllModal"
 import RejectAllModal from "./RejectAllModal"
-import {useEffect, useState, useRef} from 'react'
 import { useUserData } from "../../../../../context"
-import { useGetMTOPendingTaskData } from "../../../../../VectorFlow/Services/MTA/MDM"
-import _ from "lodash"
 
 
 const TaskPendingForReview = ()=>{
@@ -22,11 +19,9 @@ const TaskPendingForReview = ()=>{
         detailTableColDefs,
         detailTableRowData,
         isViewTableOpen,
-        viewTableRowData,
         showLoader,
         selectedRows,
         onCancel,
-        setSelectedRows,
         onTaskSubmit,
         showApproveAllModal,
         toggleApproveAllModal,
@@ -35,7 +30,8 @@ const TaskPendingForReview = ()=>{
         onSelectionTypeSuccess,
         setSelectionType,
         mtoPendingTaskData,
-        mtoSubmitTask
+        mtoSubmitTask,
+        mtoOnSelectionChange
     } = useTaskPendingForReview()
 
     if(showLoader) return <VFLoader/>
@@ -111,8 +107,12 @@ const TaskPendingForReview = ()=>{
                 rowData={detailTableRowData}
                 suppressRowClickSelection 
                 onSelectionChanged={()=>{
+                  // if( detailTableRowData && detailTableRowData[0].selectStatus){
+                    console.log("selection changed...")
+                    mtoOnSelectionChange();
+                  // }
                     if(ref && ref.current){
-                        setSelectedRows(ref.current.api.getSelectedRows().length)
+                        // setSelectedRows(ref.current.api.getSelectedRows().length)
                     }
                     
                 }}
