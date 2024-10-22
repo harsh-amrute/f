@@ -3,13 +3,13 @@ import axios from 'axios'
 
 export namespace ResearchInsightsService {
     export const getUpdatedGraphData = async (body:any) => {
-        return axios.post(process.env.REACT_APP_VF_API_HOST +`/api/SCIH/GetResearchInsightData`,body,{
+        return axios.post(process.env.REACT_APP_API_HOST +`/api/SCIH/GetResearchInsightData`,body,{
             headers: { 'Content-Type': 'application/json' }
         })      
     }
 
     export const getHistoricalAvailabilityData = async()=>{
-        return await axios.get(process.env.REACT_APP_VF_API_HOST + `api/mta/GetHistroricalAvailabilityBPRData`,{
+        return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/GetHistroricalAvailabilityBPRData`,{
             headers: { 'Content-Type': 'application/json' }
           })
     }

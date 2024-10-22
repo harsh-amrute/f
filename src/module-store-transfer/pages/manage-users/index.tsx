@@ -193,9 +193,9 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
       item?.location_id.forEach((app:any)=>{
         const getLocationPermissions = getPermission({
           data: app.permissions,
-          txtParent: "wh_region",
-          txtChild: "wh_type",
-          txtGrandChild: "wh_location_group",
+          txtParent: "location_heirarchy_1",
+          txtChild: "location_heirarchy_2",
+          txtGrandChild: "location_heirarchy_3",
         });
 
         const locationPermission = {

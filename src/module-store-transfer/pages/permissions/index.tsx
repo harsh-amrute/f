@@ -57,9 +57,9 @@ const Permissions = ({ roles }: any) => {
   const generateLocationPermissionsList = (roles:any) => {
     
     return roles?.location_permission.map((application:any)=>{
-      const listLCRegion = application.wh_region;
-      const listLCType = application.wh_type;
-      const listLCCluster = application.wh_location_group;
+      const listLCRegion = application.location_heirarchy_1;
+      const listLCType = application.location_heirarchy_2;
+      const listLCCluster = application.location_heirarchy_3;
       return {
         'application_name':application['application_name'],
         'permissions':[

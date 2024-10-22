@@ -115,9 +115,9 @@ const ModalAdvanedPermissions = (props: any) => {
         parent: location.lcRegion,
         child: location.lcType,
         grandChild: location.lcCluster,
-        keyParent: "wh_region",
-        keyChild: "wh_type",
-        keyGrandChild: "wh_location_group",
+        keyParent: "location_heirarchy_1",
+        keyChild: "location_heirarchy_2",
+        keyGrandChild: "location_heirarchy_3",
       });
 
       productPermissions.push({
