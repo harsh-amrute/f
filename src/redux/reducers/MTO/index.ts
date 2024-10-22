@@ -41,10 +41,9 @@ const mtoReducer = (initialState: MTOStore) => createReducer(initialState, (buil
     builder.addCase(DAYWISE_COVERAGE_ANALYTICS, setDayWiseCoverageAnalytics)
     builder.addCase(PROCPLANNING_ANALYTICS, setProcPlanningAnalytics)
     builder.addCase(RESOURCE_UTIL_ANALYTICS, setResourceUtilAnalytics)
-    builder.addCase(BM_REPORT_ANALYTICS, setBMReportAnalytics);
+    builder.addCase(BM_REPORT_ANALYTICS, setBMReportAnalytics)
     builder.addCase(SET_TASK_PENDING_SELECTED, setTaskPendingSelected)
     builder.addCase(APPLIED_FILTERS, setAppliedFilters)
-    builder.addCase(BM_REPORT_ANALYTICS, setBMReportAnalytics)
 })
 
 export default mtoReducer;
