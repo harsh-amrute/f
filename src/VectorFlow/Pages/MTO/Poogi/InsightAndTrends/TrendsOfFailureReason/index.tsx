@@ -10,6 +10,7 @@ import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import { FilterPageName } from '../../../Common/Enum'
+import { formatFilterJSON } from '../../../../../../helpers/utils'
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -37,11 +38,13 @@ const TrendsOfFailureReason = () => {
         onAddFilter, 
         onApplyFilter, 
         toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Trend_Of_Failure_Reasons);
     
     const getGraphData = async () => {
         try {
-          const response = await getTrendsFailureData();
+          const formatedFilters = formatFilterJSON(appliedFilters);
+          const response = await getTrendsFailureData({ appliedFilters: formatedFilters });
           setGraphData(response.data.data);
         }
         catch (e) {
@@ -60,9 +63,12 @@ const TrendsOfFailureReason = () => {
     }
 
     useEffect(() => {
-        getGraphData();
         getFilterData();
-      }, []);
+    }, []);
+    
+    useEffect(()=>{
+        getGraphData();
+      },[appliedFilters])
     
       useEffect(() => {
         if (isSuccess) {

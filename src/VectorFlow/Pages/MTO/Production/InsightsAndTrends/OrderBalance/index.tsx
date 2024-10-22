@@ -66,7 +66,7 @@ const OrderBalance = () => {
   const [graphData, setGraphData] = useState<any>({});
   //  <-------------- uncomment below code to enable dropdown for orderType    --------->
   const [orderOptions, setOrderOptions] = useState([]); 
-  const [orderType, setOrderType] = useState({}); 
+  const [orderType, setOrderType] = useState<any>({}); 
   const reportName = "OrderBalance";
   const { user } = useUserData();
 
@@ -161,7 +161,7 @@ const OrderBalance = () => {
   useEffect(() => {
     setColumnDef();
     getUserColumnConfig();
-    getGraphData({ graphflag: 1, ordertype: 1 });
+    getGraphData({ graphflag: 1});
     getFilterData();
     // <-------------- uncomment below code to enable dropdown for orderType    --------->  
      getOrderOptions()

@@ -4,6 +4,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 // import { pagination } from '../../Common/Enum';
 // import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFTable from '../../Common/VFTable';
+import { memo } from 'react';
 interface GridProps {
     agGridProps: any
     columDef: any
@@ -13,10 +14,11 @@ interface GridProps {
     handlePageChange: (e: any) => any
     totalRow?: any
     currentPage?: any,
-    saveBtn?: boolean
+    saveBtn?: boolean,
+    onGridReady?: any
 }
 
-const GridView = ({
+const GridView = memo(({
     agGridProps,
     columDef,
     convercolumnDef,
@@ -25,12 +27,17 @@ const GridView = ({
     handlePageChange,
     totalRow,
     currentPage,
+    onGridReady,
     saveBtn = true }: GridProps) => {
+
+        const rowsPerPage = Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
+
     return (
         <>
             <VFWrapper className="wrapper-overall">
                 <VFTable
                     {...agGridProps}
+                    maintainColumnOrder
                     pagination={false}
                     columnDefs={columDef}
                     rowData={convercolumnDef}
@@ -41,8 +48,10 @@ const GridView = ({
                     detailRowAutoHeight
                     tooltipMouseTrack={true}
                     //defaultColDef={{maxWidth:150}}
-                    onGridReady = {(params)=>{
-                        params.api.autoSizeAllColumns();
+                    onGridReady = {()=>{
+                        if(onGridReady){
+                            onGridReady();
+                        }
                     }}
                     statusBar={{
                         statusPanels: [
@@ -60,7 +69,7 @@ const GridView = ({
                 />
             <VFPagination
                 selectedRows={0}
-                rowsPerPage={500}
+                rowsPerPage={rowsPerPage}
                 totalRows={totalRow}
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
@@ -77,6 +86,6 @@ const GridView = ({
             }
         </>
     )
-}
+})
 
 export default GridView

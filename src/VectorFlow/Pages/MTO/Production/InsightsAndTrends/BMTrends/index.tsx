@@ -12,8 +12,8 @@ import moment from 'moment'
 import { useGetDate } from '../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import VFRangeSlider from '../../../Common/VFRangeSlider'
 import useViewPort from '../../../../../../hooks/useViewPort'
-import useFilter from "../../../../../../hooks/useFilter";
-import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
+// import useFilter from "../../../../../../hooks/useFilter";
+// import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import { ColorsMTO } from '../../../Common/Colors'
 
 export const APIFilterConfig = {
@@ -41,18 +41,18 @@ const BMTrends = () => {
     const [rowData, setRowData] = useState(numericData);
     const [chartLoading, setChartLoading] = useState(true);
     const [tableLoading, setTableLoading] = useState(true);
-    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const [filterData, setFilterData] = useState({});
-    const  { 
-        state: currFilter, 
-        setState: setCurrFilter, 
-        onFilterRemove, 
-        isFilterOpen, 
-        isMfgSelected,
-        onAddFilter, 
-        onApplyFilter, 
-        toggleFilter,
-    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
+    // const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    // const [filterData, setFilterData] = useState({});
+    // const  { 
+    //     state: currFilter, 
+    //     setState: setCurrFilter, 
+    //     onFilterRemove, 
+    //     isFilterOpen, 
+    //     isMfgSelected,
+    //     onAddFilter, 
+    //     onApplyFilter, 
+    //     toggleFilter,
+    // } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_BM_Trend);
 
     const colors = [
         { label: 'Black', value: 'black', key: 'b' },
@@ -408,18 +408,18 @@ const BMTrends = () => {
         )
     }
 
-    const getFilterData = async () => {
-        try {
-            const response = await getPageWiseFilterData({});
-            setFilterData(response?.data.data);
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    // const getFilterData = async () => {
+    //     try {
+    //         const response = await getPageWiseFilterData({});
+    //         setFilterData(response?.data.data);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
 
-    useEffect(()=>{
-        getFilterData();
-    },[])
+    // useEffect(()=>{
+    //     getFilterData();
+    // },[])
 
     useEffect(() => {
         if (numericData) {
@@ -457,15 +457,15 @@ const BMTrends = () => {
         <BMTrendWrapper>
             <MTOActionToolBar
                 comp={'BMTrends'}
-                isAddFilterButton
-                isFilterOpen={isFilterOpen}
-                onAddFilter={onAddFilter}
-                toggleFilter={toggleFilter}
-                onApplyFilter={onApplyFilter}
-                multiFilter={currFilter}
-                setMultiFilter={setCurrFilter}
-                onFilterRemove={onFilterRemove}
-                isMfgSelected={isMfgSelected}
+                // isAddFilterButton
+                // isFilterOpen={isFilterOpen}
+                // onAddFilter={onAddFilter}
+                // toggleFilter={toggleFilter}
+                // onApplyFilter={onApplyFilter}
+                // multiFilter={currFilter}
+                // setMultiFilter={setCurrFilter}
+                // onFilterRemove={onFilterRemove}
+                // isMfgSelected={isMfgSelected}
             />
             <div style={{ paddingLeft: '25px', height: screenHeight - 180, display: 'flex' }}>
                 <SplitGraphContainer

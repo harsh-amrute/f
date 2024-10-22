@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { MaterialCoverageServices } from './api'
 
 //useQuery for get 
@@ -8,8 +8,8 @@ export const QUERY_KEYS = {
 }
 
 export const useGetSOSummaydetails = ()=>{
-    return useQuery(QUERY_KEYS.useGetSummarySo,async()=>{
-      return await MaterialCoverageServices.getMaterialSOData()
+    return useMutation(async(params: {appliedFilters: any})=>{
+      return await MaterialCoverageServices.getMaterialSOData(params)
     })
   }
 

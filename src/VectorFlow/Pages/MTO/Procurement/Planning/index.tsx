@@ -33,7 +33,8 @@ const ProcurementPlanning = () => {
         isMfgSelected, 
         onAddFilter, 
         onApplyFilter, 
-        toggleFilter 
+        toggleFilter,
+        appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Procurement_Planning);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
@@ -45,7 +46,7 @@ const ProcurementPlanning = () => {
         isGetUserConfig,
         handleResetClick,
         handleSaveClick, 
-    } = useProcPlanning(date);
+    } = useProcPlanning(date, appliedFilters);
 
     const handleDateChange = (date: string) => {
         selectedDate(date);

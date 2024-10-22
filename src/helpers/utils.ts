@@ -21,6 +21,7 @@ import _ from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
+import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
 
 // clear cached token and redirect to sso login
 
@@ -341,6 +342,42 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
     notifyError(error);
   }
 
+}
+
+export const handleDownloadMTOVF = async (reportName: string, downloadName: string) => {
+  try{
+    const token = await MainService.refreshToken();
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST_MTO}/DownloadReportData/?report_name=${reportName}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token?.access}`
+      }
+    })
+    if (!response.ok) {
+      notifyError("Error while downloading")
+    } else {
+      // Convert response to blob object
+      const blob = await response.blob()
+      // Create download URL for blob object
+      const url = URL.createObjectURL(blob)
+
+      // Trigger download
+      const link = document.createElement('a')
+      link.href = url
+      if (downloadName.length !== 0) {
+        link.setAttribute('download', `${downloadName}`)
+      } else {
+        link.setAttribute('download', `ReportFile.zip`)
+      }
+      document.body.appendChild(link)
+      link.click()
+      // Clean up download URL
+      URL.revokeObjectURL(url);
+    }
+  }
+  catch(err){
+    notifyError('Error while downloading');
+  }
 }
 
 
@@ -3435,6 +3472,18 @@ export const getKeyName = (attributes: any, key: string) => {
     }
   }
   return ''
+}
+
+export const getType = (attributes: any, key: any) => {
+    for (let i = 0; i < attributes.length; i++) {
+      if (key === attributes[i].key) {
+        if(attributes[i].is_number){
+          return InputTypes.NumberCompare
+        }
+        return InputTypes.TextCompare
+      }
+    }
+    return ""
 }
 
 // Function to structure the output of filter modal

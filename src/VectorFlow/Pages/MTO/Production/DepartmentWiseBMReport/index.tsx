@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import {
     BMDepWrapper,
@@ -40,8 +40,8 @@ import { modifyAnalyticsData } from './helper';
 import { useDispatch } from 'react-redux';
 import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { UIGridCode } from '../../Common/Enum';
-import _ from 'lodash';
+import { FilterPageName, UIGridCode } from '../../Common/Enum';
+import _, { debounce } from 'lodash';
 
 interface ApiResponse {
     cc: string;
@@ -145,7 +145,7 @@ const DptWiseBMReport = () => {
     const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-    const [colDeflatest, setColdef] = useState([{}])
+    const [colDeflatest, setColdef] = useState<any>();
     const [tempColdef, setTempColdef] = useState<any>([{}]);
     const [systemType, setSystemType] = useState<any>()
     const [areRowsSelected, setAreRowsSelected] = useState(false);
@@ -167,7 +167,7 @@ const DptWiseBMReport = () => {
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
     const [filterData, setFilterData] = useState({});
 
-    const { mutateAsync: getUserUIConfigData } = useGetUserUIConfigData();
+    const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
 
 
@@ -190,10 +190,7 @@ const DptWiseBMReport = () => {
         {
             "colorCellRenderer": BPPRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
-            //"customCellRenderer": customCellRenderer,
             "RemarkHistoryRenderer": RemarkHistoryRenderer,
-            //"EditableRender": isCellEditable
-            //"TextBoxCellRenderer": TextBoxCellRenderer,
         }), []);
 
     const sideBar = useMemo(() => {
@@ -218,375 +215,7 @@ const DptWiseBMReport = () => {
 
     }, [])
 
-    /* const apiResponse: ApiResponse[] =
-         [
-             {
-                 "cc": "",
-                 "cp": 0,
-                 "hd": " ",
-                 "v": true,
-                 "cla": "Centre",
-                 "scc": "chckbx",
-             },
-             {
-                 "cc": "Default Attributes",
-                 "cp": 2,
-                 "hd": "Default Attributes",
-                 "v": true,
-                 "cla": "Centre",
-                 "scc": "Default Attributes",
-                 "children": [
-                     {
-                         "cc": 'ec',
-                         'cp': 1,
-                         'hd': '',
-                         'v': true,
-                         'cla': 'centre',
-                         'scc': 'ec',
-                     },
-                     {
-                         "cc": 'ic',
-                         'cp': 2,
-                         'hd': '',
-                         'v': true,
-                         'cla': 'centre',
-                         'scc': 'ic',
-                     },
-                     {
-                         "cc": "BPP",
-                         "cp": 3,
-                         "hd": "BPP",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "bpp",
-                     },
-                     {
-                         "cc": "da",
-                         "cp": 4,
-                         "hd": "Dept Ageing",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "da",
-                     },
-                     {
-                         "cc": "OrderType",
-                         "cp": 5,
-                         "hd": "Order Type",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "ot",
- 
-                     },
-                     {
-                         "cc": "OrderID",
-                         "cp": 6,
-                         "hd": "Order ID",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "oid",
- 
-                     },
-                     {
-                         "cc": "LineItem",
-                         "cp": 7,
-                         "hd": "Line Item",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "lid",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "ItemCode",
-                         "cp": 8,
-                         "hd": "Item Code",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "ic",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "ItemDescription",
-                         "cp": 9,
-                         "hd": "Item Description",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "id",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "OrderQuantity",
-                         "cp": 10,
-                         "hd": "Order Quantity",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "oq",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "WIPOnHand",
-                         "cp": 11,
-                         "hd": "WIPOn Hand",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "woh",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "Mfg.Balance",
-                         "cp": 12,
-                         "hd": "Mfg. Balance",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "mfg",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "DueDate",
-                         "cp": 13,
-                         "hd": "Due Date",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "dd",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "TrailingDepartment",
-                         "cp": 14,
-                         "hd": "Trailing Department",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "td",
-                         "cgs": "closed"
-                     },
- 
-                     {
-                         "cc": "CRDD",
-                         "cp": 15,
-                         "hd": "CRDD",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "crdd",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "ccr",
-                         "cp": 16,
-                         "hd": "CCRName ",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "ccr",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "CustomerName",
-                         "cp": 17,
-                         "hd": "Customer Name",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "cn",
-                         "cgs": "closed"
-                     },
-                 ],
-             },
- 
-             {
-                 "cc": "Calculate Attributes",
-                 "cp": 3,
-                 "hd": "Calculate Attributes",
-                 "v": true,
-                 "cla": "Centre",
-                 "scc": "Calculate Attributes",
-                 "children": [
-                     {
-                         "cc": "ed",
-                         "cp": 18,
-                         "hd": "Elapsed Days",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "ed",
- 
-                     },
-                     {
-                         "cc": "Attribute",
-                         "cp": 19,
-                         "hd": "Attribute ",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Attr",
-                         "cgs": "closed"
-                     },
-                 ]
-             },
-             {
-                 "cc": "Order Attribute",
-                 "cp": 4,
-                 "hd": "Order Attribute",
-                 "v": true,
-                 "cla": "Centre",
-                 "scc": "Order Attribute",
-                 "children": [
-                     {
-                         "cc": "pn",
-                         "cp": 20,
-                         "hd": "Plant Name",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "pn",
- 
-                     },
-                     {
-                         "cc": "PONo.",
-                         "cp": 21,
-                         "hd": "PO No.",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "PO_No.",
-                         "cgs": "closed"
-                     }
-                 ]
-             },
-             {
-                 "cc": "Product Attribute",
-                 "cp": 5,
-                 "hd": "Product Attribute",
-                 "v": true,
-                 "cla": "Centre",
-                 "scc": "Product Attribute",
-                 "children": [
-                     {
-                         "cc": "Price",
-                         "cp": 22,
-                         "hd": "Price ",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Price",
- 
- 
-                     },
-                     {
-                         "cc": "ItemGroup",
-                         "cp": 23,
-                         "hd": "Item Group",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Itm_Grp",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "Attribute1",
-                         "cp": 24,
-                         "hd": "Attribute 1",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Att_1",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "Attribute2",
-                         "cp": 25,
-                         "hd": "Attribute 2",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Att_2",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "Attribute3",
-                         "cp": 26,
-                         "hd": "Attribute 3",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Att_3",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "Attribute4",
-                         "cp": 27,
-                         "hd": "Attribute 4",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Att_4",
-                         "cgs": "closed"
-                     },
-                 ]
-             },
-             {
-                 "cc": "Customer Attribute",
-                 "cp": 4,
-                 "hd": "Customer Attribute",
-                 "v": true,
-                 "cla": "Centre",
-                 "scc": "Customer Attribute",
-                 "children": [
- 
-                     {
-                         "cc": "CustCode",
-                         "cp": 26,
-                         "hd": "Cust Code",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Cust_Cd",
-                         //"cgs": "open"
-                     },
-                     {
-                         "cc": "Region",
-                         "cp": 27,
-                         "hd": "Region ",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Rgn",
-                         "cgs": "closed"
-                     },
-                     {
-                         "cc": "Country",
-                         "cp": 28,
-                         "hd": "Country ",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Cntry",
-                         "cgs": "closed"
-                     }
-                 ]
-             },
-             {
-                 "cc": "",
-                 "cp": 6,
-                 "hd": " ",
-                 "v": true,
-                 "cla": "Centre",
-                 "scc": "rmk",
-                 "children": [
-                     {
-                         "cc": "Remark",
-                         "cp": 28,
-                         "hd": "Remark",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "r",
- 
-                     },
-                     {
-                         "cc": "lr",
-                         "cp": 29,
-                         "hd": "Latest Remark",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "lr",
-                     },
-                     {
- 
-                         "cc": "Remark History",
-                         "cp": 30,
-                         "hd": "Remark History",
-                         "v": true,
-                         "cla": "Centre",
-                         "scc": "Remark History",
-                     }
- 
-                 ]
-             }
-         ]*/
-
+   
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
         try {
@@ -617,12 +246,10 @@ const DptWiseBMReport = () => {
             return data.flag == "SystemType"
         })
         setSystemType(Number(systemType.value))
-        setColumnDef()
-            ;
+        setColumnDef();
     }
 
     const removeUtilcolumns = (incolDef: any) => {
-        console.log("inColdef", incolDef)
         const newColDef = _.cloneDeep(incolDef);
 
         newColDef.shift();
@@ -630,19 +257,15 @@ const DptWiseBMReport = () => {
         setTempColdef(newColDef);
     }
 
-    const ogCOlDef = useRef<any>();
-
     const setColumnDef = async () => {
         try {
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
             const modifiedResponse = addDefaultAttributes(response?.data?.data);
-            // console.log("modifiedResponse", modifiedResponse);
             const coldef = mapApiResponseToColDefs(modifiedResponse)
-            // console.log('modified Data', colDef)
-            ogCOlDef.current = coldef;
-            setColdef(coldef)
+            setColdef(coldef);
             setTempColdef(removeUtilcolumns(coldef))
+            // getUserColumnConfig();
         }
         catch (e) {
             console.log(e);
@@ -653,26 +276,16 @@ const DptWiseBMReport = () => {
         const modifiedResponse: ApiResponseItem[] = [];
         const cpMap: { [key: string]: number } = {};
 
-        // Create the specified default objects for the first item's ch array
-        // const defaultFirstObject: any = {
-        //     cc: 'ec',
-        //     cp: 1,
-        //     hd: '',
-        //     v: true,
-        //     cla: 'centre',
-        //     scc: 'ec'
-        // };
-
         const defaultSecondObject: any = {
             cc: 'ic',
-            cp: 2,
+            cp: 1,
             hd: '',
             v: true,
             cla: 'centre',
             scc: 'ic'
         };
 
-        apiResponse.forEach((item, index) => {
+        apiResponse.forEach((item) => {
             const modifiedItem = { ...item };
 
             // Initialize cp for this cc if not already done
@@ -686,20 +299,21 @@ const DptWiseBMReport = () => {
             modifiedItem.cla = item.cla; // Fixed value
             modifiedItem.scc = item.scc; // Set scc to the name of cc
 
-            // If it's the first object, add default items to the ch array
-            if (index === 0) {
-                modifiedItem.ch = modifiedItem.ch || [];
-                modifiedItem.ch.unshift(defaultSecondObject);
+            if(item.cc){
+                if(item.cc.includes("Dept") && modifiedItem.ch){
+                    modifiedItem.ch = item.ch?.map((child)=>{
+                        return {...child, scc: `ddtl.${item.cc}.${child.scc}`}
+                    })
+                }
             }
 
-            console.log("modified Item", modifiedItem)
             // Push the modified item to the response array
             modifiedResponse.push(modifiedItem);
         });
 
         // Add a default object outside each main object
         const defaultOuterObject: ApiResponseItem = {
-            cc: " ",
+            cc: "chckbx",
             v: true,
             cp: 0,
             hd: " ",
@@ -708,6 +322,7 @@ const DptWiseBMReport = () => {
         };
 
         // Prepend the default outer object
+        modifiedResponse.unshift(defaultSecondObject);
         modifiedResponse.unshift(defaultOuterObject);
 
         // Calculate cp for the additional object based on existing cp values
@@ -758,16 +373,16 @@ const DptWiseBMReport = () => {
 
 
     const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
-        const mapChildren = (children: ApiResponse[]): ColDefChild[] => {
-            return children.map((child, index) => ({
+        const mapChildren = (parent: any, children: ApiResponse[]): ColDefChild[] => {
+            return children.map((child) => ({
                 field: child.scc.trim(),
                 suppressHeaderFilterButton: true,
                 headerName: child.hd,
-                colId: child.hd,
+                colId: `${parent}-${child.cc}`,
                 hide: !child.v,
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
-                columnGroupShow: index > 2 ? "closed" : undefined,
+                // columnGroupShow: index > 2 ? "closed" : undefined,
                 pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
@@ -790,24 +405,25 @@ const DptWiseBMReport = () => {
 
         return apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
-            floatingFilterComponentParams: section.scc === "chckbx" ? { suppressFilterButton: false } : undefined,
-            suppressHeaderFilterButton: section.scc === "chckbx" ? true : false,
-            suppressMenu: section.scc === "chckbx" ? true : false,
+            floatingFilterComponentParams: section.scc === "chckbx" || section.cc == "ic"  ? { suppressFilterButton: false } : undefined,
+            suppressHeaderFilterButton: section.scc === "chckbx" || section.cc == "ic" ? true : false,
+            suppressMenu: section.scc === "chckbx" || section.cc == "ic" ? true : false,
             checkboxSelection: section.scc === "chckbx" ? true : undefined,
-            maxWidth: section.scc === "chckbx" ? 50 : undefined,
-            floatingFilter: section.scc === "chckbx" ? false : undefined,
-            headerName: section.cc,
+            maxWidth: section.scc === "chckbx" || section.cc == "ic" ? 60 : undefined,
+            sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
+            floatingFilter: section.scc === "chckbx" || section.cc == "ic" ? false : undefined,
+            headerName: section.hd,
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
-            colId: section.hd,
+            colId: section.cc,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
-            children: section.scc === "chckbx" ? undefined : mapChildren(section.ch || []),
+            children: section.scc === "chckbx" || section.cc === 'ic' ? undefined : mapChildren(section.cc, section.ch || []),
             cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3 ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
         }));
     }
 
     const getFilterData = async () => {
         try {
-            const response = await getPageWiseFilterData({});
+            const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_Dept_Wise_BM_Report});
             setFilterData(response?.data.data);
         } catch (error) {
             console.error(error);
@@ -858,7 +474,27 @@ const DptWiseBMReport = () => {
             allotementRef.current.reset();
     }, [areRowsSelected])
 
-    const getSelectedRow = async () => {
+    const fetcDeptWiseWiphData = async (selectedOrderKeys: any) => {
+        try {
+            notifyLoader("Loading")
+            const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
+            const highAgeingData = await getHighAgeingData(selectedOrderKeys);
+            sethighAgeing(highAgeingData?.data?.data);
+            //console.log('HighAgeingData',highAgeingData)
+            //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
+            setDeptWiseWipData(DeptWiseWipData?.data?.data);
+            const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
+            //console.log('DeptWiseWipData===',departmentNames);
+            departmentNames.sort()
+            setDeptName(departmentNames);
+            notifySuccess("Fetched");
+        } catch (error) {
+            notifyError('Failed to fetch data');
+        }
+
+    };
+
+    const getSelectedRow = () => {
         const selectedData = refGraph1.current?.api.getSelectedRows();
         // To persist the state
         if (selectedData.length == 0) {
@@ -879,7 +515,7 @@ const DptWiseBMReport = () => {
                 }
             });
 
-            gridData.forEach((item: any) => {
+            gridData?.forEach((item: any) => {
                 let isThere = 0;
                 selectedData.forEach((selectedD: any) => {
                     if (selectedD.oid === item.oid) {
@@ -891,42 +527,28 @@ const DptWiseBMReport = () => {
                 }
             })
 
-            setMasterSelectedRowData(mergedData);
+            if (!_.isEqual(mergedData, masterSelectedRowData)) {
+                setMasterSelectedRowData(mergedData);
+            }
             //console.log("masterDataaa", mergedData)
             /*Persist state code end here*/
-
-            if (mergedData.length > 0) {
-                //console.log('selected', mergedData.length)
-                const selectedOrderKeys: orderkeyObj[] = []
-                mergedData.map((ele: any) => {
-                    selectedOrderKeys.push(ele.ok)
-                })
-                //console.log('slectedOrder', selectedOrderKeys)
-
-                const fetcDeptWiseWiphData = async () => {
-                    try {
-                        const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
-                        const highAgeingData = await getHighAgeingData(selectedOrderKeys);
-                        sethighAgeing(highAgeingData?.data?.data);
-                        //console.log('HighAgeingData',highAgeingData)
-                        //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
-                        setDeptWiseWipData(DeptWiseWipData?.data?.data);
-                        const departmentNames = extractDepartmentNames(DeptWiseWipData?.data?.data);
-                        //console.log('DeptWiseWipData===',departmentNames);
-                        setDeptName(departmentNames);
-                    } catch (error) {
-                        notifyError('Failed to fetch data');
-                    }
-
-                };
-                fetcDeptWiseWiphData();
-                setIsOrderElapsedGrid(true)
-            } else {
-                setDeptWiseWipData('');
-                setIsOrderElapsedGrid(false)
-            }
         }
     }
+
+    useEffect(()=>{
+        if (masterSelectedRowData.length > 0) {
+            const selectedOrderKeys: orderkeyObj[] = []
+            masterSelectedRowData.map((ele: any) => {
+                selectedOrderKeys.push(ele.ok)
+            })
+            
+            fetcDeptWiseWiphData(selectedOrderKeys);
+            setIsOrderElapsedGrid(true)
+        } else {
+            setDeptWiseWipData('');
+            setIsOrderElapsedGrid(false)
+        }
+    }, [masterSelectedRowData])
 
     // Handle cell value changes
     const onCellValueChanged = (event: any) => {
@@ -1022,108 +644,108 @@ const DptWiseBMReport = () => {
 
     const cache = useRef<any>({});
 
-    const agGridProps: AgGridReactProps = {
-        tooltipShowDelay: 0,
-        tooltipTrigger: "focus",
-        gridOptions: {
-            rowHeight: 50,
-            getRowStyle: (params: any) => {
-                return {
-                    background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
-                };
-            },
-            rowSelection: 'multiple',
-            suppressRowClickSelection: true,
-            enableBrowserTooltips: true,
-            enableRangeSelection: true,
-            components: customCellRenderers,
-            pagination: true,
-            defaultColDef: {
-                filter: 'agTextColumnFilter',
-                floatingFilter: true,
-                //suppressFiltersToolPanel:true,
-                cellStyle: {
-                    'text-align': 'center',
-                    //'height': '50px',
-                    //"font-style": "Roboto",
-                    //"font-variant": "normal",
-                    "font-size": "18px",
-                    "font-family": "Roboto",
-                    'white-space': 'nowrap',
-                    'resizable': 'true',
-                    'color': '#000'
+    const agGridProps: AgGridReactProps = useMemo(()=>{
+        return {
+            tooltipShowDelay: 0,
+            tooltipTrigger: "focus",
+            gridOptions: {
+                rowHeight: 50,
+                getRowStyle: (params: any) => {
+                    return {
+                        background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
+                    };
                 },
-                floatingFilterComponentParams: {
-                    suppressFilterButton: true
-                }
-            },
-        },
-        sideBar: sideBar,
-        //masterDetail: true,
-        //detailCellRenderer: RowGroupRenderer,
-        //detailCellRendererParams:RowGroupRenderer,
-        paginationAutoPageSize: true,
-        enterNavigatesVertically: true,
-        enterNavigatesVerticallyAfterEdit: true,
-        groupDefaultExpanded: 0,
-        pivotMode: false,
-        onSelectionChanged: getSelectedRow,
-        onCellValueChanged: onCellValueChanged,
-        stopEditingWhenCellsLoseFocus: true,
-        //onGridReady: onGridReady
-        onFirstDataRendered: onFirstDataRendered,
-        onGridReady: onFirstDataRendered,
-        onRowDataUpdated: onFirstDataRendered,
-        masterDetail: true,
-        detailRowAutoHeight: true,
-        detailCellRendererParams: {
-            suppressMenu: true,
-            detailGridOptions: {
-                rowHeight: 45,
-                domLayout: "autoHeight",
-                autoGroupColumnDef: {
-                    headerName: "Item Name",
-                    cellRendererParams: {
-                        suppressCount: true
-                    }
-                },
-                columnDefs: [
-                    { field: "qty", headerName: "Requirement", },
-                    { field: "soh", headerName: "Stock", },
-                    { field: "wip", headerName: "WIP", },
-                    { field: "gap", headerName: "Gap", },
-                ],
+                rowSelection: 'multiple',
+                suppressRowClickSelection: true,
+                enableBrowserTooltips: true,
+                enableRangeSelection: true,
+                components: customCellRenderers,
+                pagination: true,
                 defaultColDef: {
-                    flex: 1,
-                    suppressMenu: true,
+                    filter: 'agTextColumnFilter',
+                    floatingFilter: true,
+                    //suppressFiltersToolPanel:true,
                     cellStyle: {
-                        fontSize: "16px",
-                        display: "flex",
-                        alignItems: "center"
+                        'text-align': 'center',
+                        //'height': '50px',
+                        //"font-style": "Roboto",
+                        //"font-variant": "normal",
+                        "font-size": "18px",
+                        "font-family": "Roboto",
+                        'white-space': 'nowrap',
+                        'resizable': 'true',
+                        'color': '#000'
+                    },
+                    floatingFilterComponentParams: {
+                        suppressFilterButton: true
                     }
                 },
-                treeData: true,
-                getDataPath: (data: any) => {
-                    return data.path;
-                },
             },
-            getDetailRowData: async (params: any) => {
-                if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
-                    params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
+            sideBar: sideBar,
+            //masterDetail: true,
+            //detailCellRenderer: RowGroupRenderer,
+            //detailCellRendererParams:RowGroupRenderer,
+            paginationAutoPageSize: true,
+            enterNavigatesVertically: true,
+            enterNavigatesVerticallyAfterEdit: true,
+            groupDefaultExpanded: 0,
+            pivotMode: false,
+            onSelectionChanged: debounce(getSelectedRow, 1000),
+            onCellValueChanged: onCellValueChanged,
+            stopEditingWhenCellsLoseFocus: true,
+            onRowDataUpdated: onFirstDataRendered,
+            masterDetail: true,
+            detailRowAutoHeight: true,
+            detailCellRendererParams: {
+                suppressMenu: true,
+                detailGridOptions: {
+                    rowHeight: 45,
+                    domLayout: "autoHeight",
+                    autoGroupColumnDef: {
+                        headerName: "Item Name",
+                        cellRendererParams: {
+                            suppressCount: true
+                        }
+                    },
+                    columnDefs: [
+                        { field: "qty", headerName: "Requirement", },
+                        { field: "soh", headerName: "Stock", },
+                        { field: "wip", headerName: "WIP", },
+                        { field: "gap", headerName: "Gap", },
+                    ],
+                    defaultColDef: {
+                        flex: 1,
+                        suppressMenu: true,
+                        cellStyle: {
+                            fontSize: "16px",
+                            display: "flex",
+                            alignItems: "center"
+                        }
+                    },
+                    treeData: true,
+                    getDataPath: (data: any) => {
+                        return data.path;
+                    },
+                },
+                getDetailRowData: async (params: any) => {
+                    if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
+                        params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
+                        return
+                    }
+                    const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
+                    cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
+                    params.successCallback(data?.data?.data)
                     return
                 }
-                const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
-                cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
-                params.successCallback(data?.data?.data)
-                return
-            }
-        },
-    };
+            },
+        };
+    }, [masterSelectedRowData, gridData])
+    
 
-    const getUpdatedFilteredData = async () => {
+    const getUpdatedFilteredData = async (page: any) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': currentPage, appliedFilters: formatedFilters });
+            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': page, appliedFilters: formatedFilters });
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
         }
@@ -1148,8 +770,21 @@ const DptWiseBMReport = () => {
     }
 
     useEffect(() => {
-        getUpdatedFilteredData()
-    }, [appliedFilters, isWIPChecked, currentPage]);
+        if (Object.keys(appliedFilters).length) {
+            getUpdatedFilteredData(currentPage)
+        }
+    }, [isWIPChecked, currentPage]);
+
+
+    useEffect(()=>{
+        if (Object.keys(appliedFilters).length) {
+            if(currentPage != 1){
+                setCurrentPage(1)
+            }else{
+                getUpdatedFilteredData(currentPage)
+            }
+        }
+    }, [appliedFilters])
 
 
     const onExcelExport = () => {
@@ -1180,7 +815,7 @@ const DptWiseBMReport = () => {
     }, [])
 
 
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState<any>();
     const [columnState, setColumnState] = useState<any>();
 
 
@@ -1202,21 +837,31 @@ const DptWiseBMReport = () => {
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-            if (refGraph1?.current?.api) {
-                const config = refGraph1.current.api.getColumnState();
-
+            if(coldefs){
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.ProdDeptWiseBMReport,
-                    cs: JSON.stringify(config)
+                    cs: JSON.stringify(coldefs)
                 }
                 await updateUserUIConfigData([payload]);
-                await getUserColumnConfig();
             }
+            else{
+                if (refGraph1?.current?.api) {
+                    const config = refGraph1.current.api.getColumnState();
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.ProdDeptWiseBMReport,
+                        cs: JSON.stringify(config)
+                    }
+                    await updateUserUIConfigData([payload]);
+                }
+            }
+            notifySuccess("Changes saved successfully");
         } catch (error) {
             console.error(error);
+            notifyError("Error saving changes");
         }
     }
 
@@ -1225,25 +870,112 @@ const DptWiseBMReport = () => {
     }
 
     useEffect(() => {
+        applyColumnState(true);
+    }, [columnState, colDeflatest]);
+
+    // console.log("columnState", columnState);
+
+    const applyColumnState = useCallback((flag = false) => {
         if (refGraph1?.current && columnState?.length) {
-            const result = refGraph1?.current?.api?.applyColumnState({
-                state: columnState,
-                applyOrder: true
-            });
-            if (!result) {
-                console.error('Failed to apply column state');
+            let colState = [...columnState];
+            if(flag){
+                const arr: any = []
+                colState.forEach((col: any)=>{
+                    if(col.children){
+                        col.children.forEach((child: any)=>{
+                            arr.push({
+                                "colId": child.colId,
+                                "hide": false,
+                                "pinned": null,
+                                "sort": null,
+                                "sortIndex": null,
+                                "aggFunc": null,
+                                "rowGroup": false,
+                                "rowGroupIndex": null,
+                                "pivot": false,
+                                "pivotIndex": null,
+                                "flex": null
+                              })
+                        })
+                    }
+                    else{
+                        arr.push({
+                            "colId": col.colId,
+                            "hide": false,
+                            "pinned": null,
+                            "sort": null,
+                            "sortIndex": null,
+                            "aggFunc": null,
+                            "rowGroup": false,
+                            "rowGroupIndex": null,
+                            "pivot": false,
+                            "pivotIndex": null,
+                            "flex": null
+                          })
+                    }
+                    colState = arr;
+                })
             }
+            refGraph1.current.api?.applyColumnState({
+                state: colState,
+                applyOrder: true,
+            });
         }
-    });
+    }, [columnState])
 
     useEffect(() => {
         if (isReset) {
-            setColumnState(colDeflatest);
+            setColumnState([...colDeflatest]);
             setIsReset(false)
         } else {
-            handleSaveClick();
+            if(isReset != undefined){
+                handleSaveClick(colDeflatest);
+            }
         }
     }, [isReset]);
+
+    // const handleSaveClick = async () => {
+    //     try {
+    //         if (refGraph1?.current?.api) {
+    //             const config = refGraph1.current.api.getColumnState();
+
+    //             const payload = {
+    //                 un: user.user.name,
+    //                 rn_id: UIGridCode.ProdDeptWiseBMReport,
+    //                 cs: JSON.stringify(config)
+    //             }
+    //             await updateUserUIConfigData([payload]);
+    //             await getUserColumnConfig();
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
+
+    // const handleResetClick = () => {
+    //     setIsReset(true);
+    // }
+
+    // useEffect(() => {
+    //     if (refGraph1?.current && columnState?.length) {
+    //         const result = refGraph1?.current?.api?.applyColumnState({
+    //             state: columnState,
+    //             applyOrder: true
+    //         });
+    //         if (!result) {
+    //             console.error('Failed to apply column state');
+    //         }
+    //     }
+    // });
+
+    // useEffect(() => {
+    //     if (isReset) {
+    //         setColumnState(colDeflatest);
+    //         setIsReset(false)
+    //     } else {
+    //         handleSaveClick();
+    //     }
+    // }, [isReset]);
 
 
 
@@ -1282,7 +1014,7 @@ const DptWiseBMReport = () => {
 
             <>
                 {
-                    (isFilteredDataLoaded && !isExcelLoading) ? <OverlayLoader /> :
+                    (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }
 
                         <HorizontalViewWrapper style={{ marginTop: '0px' }}>
                             <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>
@@ -1294,10 +1026,13 @@ const DptWiseBMReport = () => {
                                                 agGridProps={agGridProps}
                                                 columDef={colDeflatest}
                                                 convercolumnDef={gridData}
-                                                updateReason={() => handleUpdateReason()}
-                                                handlePageChange={(cp) => handlePageChange(cp)}
+                                                updateReason={handleUpdateReason}
+                                                handlePageChange={handlePageChange}
                                                 totalRow={gridDataCount}
                                                 currentPage={currentPage}
+                                                onGridReady={() => {
+                                                    applyColumnState();
+                                                }}
                                             />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
@@ -1316,7 +1051,6 @@ const DptWiseBMReport = () => {
                                 </Allotment>
                             </BTRTableWrapper>
                         </HorizontalViewWrapper>
-                }
 
                 <div style={{ display: 'none' }}>
                     <GridView
