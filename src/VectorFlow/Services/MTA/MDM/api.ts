@@ -190,9 +190,30 @@ export namespace MDMService {
     })
   }
 
+  export const getMTOTaskStatusData = async () => {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetTasks', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const putMTOAddBufferMaster = async (body:any)=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/AddBufferMaster/', body )
+  }
+
+  export const getMTOTaskById = async (taskId: string) => {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetTaskById/?tid=${taskId}&mmid=1`, {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   /** Save buffer master task MTO */
   export const saveBufferMasterTask = async (body: any) => {
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveBufferMasterTask/', 
+      body
+    )
+  }
+  export const saveBufferMasterDraft = async (body: any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveBufferMasterDraft/', 
       body
     )
   }
@@ -203,12 +224,26 @@ export namespace MDMService {
     })
   }
 
+  export const getCCRMasterData = async ()=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/GetCCRMasterForMasterMgmt/?masterId=502', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
 
 
   export const getBufferTypeMaster = async () => {
     return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetBufferTypeMaster/', {
       headers: { 'Content-Type': 'application/json' }
     })
+  }
+
+  export const getMTODrafts = async (uid: any)=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetDraftInstances/?uid=${uid}`)
+  }
+
+  export const getMTODraftById = async (id: any)=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetBufferDraftData/?did=${id}&mid=501`)
   }
 
 }

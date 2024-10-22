@@ -38,6 +38,8 @@ import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Pr
 import _, { debounce } from 'lodash';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig';
 import { useUserData } from '../../../../../context';
+import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
+import moment from 'moment';
 
 
 interface ApiResponse {
@@ -827,6 +829,10 @@ const OverallBmReport = () => {
         }
     }, [columnState])
 
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
+    const date = apiResponseData?.data?.data;
+
     useEffect(() => {
         if (isReset) {
             setColumnState([...coldefs]);
@@ -858,11 +864,14 @@ const OverallBmReport = () => {
                     handleResetClick={handleResetClick}
                 />
             </BMDepHeaderWraper>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
+                <p>{moment(date).format('D MMM YYYY')}</p>
+            </div>
 
             {(isGridLoading || isExcelLoading || isGetStateLoading ) &&  <OverlayLoader/> }
 
-                <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                    <BTRTableWrapper style={{ height: rowsSelected.current ? "120vh" : "80vh", margin: '0' }}>
+                <HorizontalViewWrapper style={{ marginTop: '0' }}>
+                    <BTRTableWrapper style={{ height: rowsSelected.current ? "120vh" : "75vh", margin: '0' }}>
                         <Allotment vertical={true} separator={true} ref={allotementRef}>
                             <Allotment.Pane preferredSize={rowsSelected.current ? "45%" : '70%'}>
                                 <BTRAllomentSection>

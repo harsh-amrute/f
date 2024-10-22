@@ -30,7 +30,7 @@ const GridView = memo(({
     onGridReady,
     saveBtn = true }: GridProps) => {
 
-        const rowsPerPage = Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
+    const rowsPerPage = Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
 
     return (
         <>

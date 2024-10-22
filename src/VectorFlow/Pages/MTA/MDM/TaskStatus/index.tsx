@@ -4,7 +4,7 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 import {  getActionName, mapTaskStatusToColDefs,getExistingColumns,getExistingColumnFields, mapMasterToTaskStatusColumnGroupDefs, mapTaskStatusDataToRowData } from "../../../../../helpers/utils"
 import TaskStatusMasterDetail from "./TaskStatusMasterDetail"
-import { useGetTaskDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useGetTaskDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration, useGetMTOTaskStatusData } from "../../../../../VectorFlow/Services/MTA/MDM"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import { AgGridReactProps } from "ag-grid-react"
@@ -20,6 +20,7 @@ const TaskStatus = ()=>{
 
 
     const {data,isLoading} = useGetTaskStatusData()
+    const {mutateAsync: getMTOTaskStatusData} = useGetMTOTaskStatusData();
     const gridRef = useRef<GridRef>()
 
     const {mutateAsync:getTaskDetailDownloadData} = useGetTaskDetailDownloadData()
@@ -94,7 +95,8 @@ const TaskStatus = ()=>{
        }
     }
 
-    const rowData = data?.data.data || []
+    const [rowData, setRowData] = useState<any>(data?.data.data || undefined)
+    const [finalData, setFinalData] = useState<any>(undefined);
     // rowData = rowData.map((row:any)=>{
     //     return {
     //         ...row,
@@ -102,22 +104,61 @@ const TaskStatus = ()=>{
            
     //     }
     // })
-    rowData.sort((a:any,b:any)=>{
-       return differenceInSeconds(formatDate(b.PendingSince),formatDate(a.PendingSince)) 
-    })
-    // rowData = rowData.map((r:any)=>{
-    //     return {
-    //         ...r,
-    //         PendingSince:format(r.PendingSince,'dd/MM/yy hh:mm:ss a')
-    //     }
-    // })
+    const MTOToMTAFormat=(inData: any)=>{
 
-    if(isLoading){
-        return <VFLoader/>
+        const newData:any = [];
+        inData.forEach((val:any)=>{
+            const newVal:any = {}
+            newVal.TaskID = val.tid;
+            newVal.PendingSince = val.co;
+            newVal.TaskName = val.tnm;
+            newVal.TaskStatus = val.std;
+            newVal.Requester = val.r_nm;
+
+            newData.push(newVal);
+        })
+
+        return newData;
     }
 
-    return(
-        <div style={{paddingTop:'20px',height:'95%'}}>
+    const getMTOTaskData = async()=>{
+        try{
+            const response = await getMTOTaskStatusData();
+            const transformedData = MTOToMTAFormat(response.data.data.results);
+            if(rowData){
+                setFinalData([...rowData, ...transformedData])
+            }
+            else{
+
+                setFinalData([...transformedData]);
+            }
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+
+    React.useEffect(()=>{
+
+        if(rowData){
+
+            const newRowData = [...rowData];
+
+            newRowData.sort((a:any,b:any)=>{
+                return differenceInSeconds(formatDate(b.PendingSince),formatDate(a.PendingSince)) 
+            })
+            setRowData(newRowData)
+            getMTOTaskData();
+        }
+    },[rowData])
+        
+                
+                if(isLoading){
+                    return <VFLoader/>
+                }
+                
+                return(
+                    <div style={{paddingTop:'20px',height:'95%'}}>
             <VFTable
                 masterDetail
                 detailCellRenderer={TaskStatusMasterDetail}
@@ -146,7 +187,7 @@ const TaskStatus = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ]
                   }}
-                rowData={rowData}
+                rowData={finalData}
                 columnDefs={mapTaskStatusToColDefs([
                     {
                         field:"TaskID",

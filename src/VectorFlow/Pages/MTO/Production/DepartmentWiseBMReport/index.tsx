@@ -42,6 +42,8 @@ import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Pr
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import _, { debounce } from 'lodash';
+import moment from 'moment';
+import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
 
 interface ApiResponse {
     cc: string;
@@ -977,6 +979,10 @@ const DptWiseBMReport = () => {
     //     }
     // }, [isReset]);
 
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
+    const date = apiResponseData?.data?.data;
+
 
 
 
@@ -1011,13 +1017,15 @@ const DptWiseBMReport = () => {
                     isMfgSelected={isMfgSelected}
                 />
             </BMDepHeaderWraper>
-
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
+                <p>{moment(date).format('D MMM YYYY')}</p>
+            </div>
             <>
                 {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }
 
                         <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                            <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "80vh", margin: '0' }}>
+                            <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
                                 <Allotment vertical={true} separator={true} ref={allotementRef}>
                                     <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
                                         <BTRAllomentSection>
