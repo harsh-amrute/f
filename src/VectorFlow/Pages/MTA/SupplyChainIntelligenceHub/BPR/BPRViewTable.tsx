@@ -1,15 +1,27 @@
-
+import {useState,useMemo} from 'react'
 import { ColDef } from 'ag-grid-enterprise';
 import { useUserData } from '../../../../../context';
 import BPRViewTableRequestCellRenderer from './BPRViewTableRequestCellRenderer';
 import BPRViewTableRowCellWithReadMore from './BPRViewTableRowCellWithReadMore';
-import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableHeader,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell,BPRViewTablePrefixWrapper, BPRViewTablePrefixText, BPRViewTablePrefixIcon, BPRViewTableNoDataContainer, BPRViewTableNoDataHeader, BPRViewTableNoDataText, BPRViewTableHeaderTab} from './styles'
+import {BPRViewTableWrapper,BPRViewTablePrefix,BPRViewTableGrid,BPRViewTableHeaderContainer,BPRViewTableRowContainer,BPRViewTableRow,BPRViewTableRowCell,BPRViewTablePrefixWrapper, BPRViewTablePrefixText, BPRViewTablePrefixIcon, BPRViewTableNoDataContainer, BPRViewTableNoDataHeader, BPRViewTableNoDataText, BPRViewTableHeaderTab, BPRViewTableAvailabilityCellRenderer} from './styles'
 import AgeingCellRenderer from './AgeingCellRenderer';
 import WhereAboutsCellRenderer from './WhereAboutsCellRenderer';
+import BPRViewTableColumnHeader from './BPRViewTableColumnHeader';
+import { getFiltersArrayFromColDefs, performNumericalOpertionsForBPRViewTableFilter, performStringOpertionsForBPRViewTableFilter } from '../../../../../helpers/utils';
 
+export interface BPRViewTableColDef{
+    headerName: any
+    colId: string
+    field?: string
+    filter?:boolean
+    filterValue?:string
+    dataType?:string
+    onApplyFilter?:(filterString:string,query:string)=>void
+    onCellClicked?:()=>void
+}
 
 interface BPRViewTableProps{
-    colDefs:ColDef[]
+    colDefs:BPRViewTableColDef[]
     rowData:any[]
     tablePrefixSrc:string
     tableHeader:string
@@ -35,8 +47,38 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
     const {user} = useUserData()
     const {theme_ui} = user.user
 
+    const [filters,setFilters] = useState<Array<any>>(getFiltersArrayFromColDefs(colDefs))
+    const onApplyFilter = (key:string,value:string,query:string)=>{
+       setFilters((prev)=>prev.map((f)=>f.colId===key?{...f,filterValue:value,query:query}:f))
+    }
+
+    const filteredRows = useMemo(():Array<any>=>{
+        if(Array.isArray(rowData)){
+            return rowData.filter((r)=>{
+                return filters.every((f)=>{
+                    
+
+                    if(f.filterValue===""){
+                        return true
+                    }
+                    
+                    if(f.dataType==='number'){ 
+                        return performNumericalOpertionsForBPRViewTableFilter(parseFloat(r[f.colId]),parseFloat(f.filterValue),f.query)
+                    }
+
+                    if(!r[f.colId])return false
+
+                    return performStringOpertionsForBPRViewTableFilter(String(r[f.colId]).toUpperCase(),f.filterValue.toUpperCase(),f.query)
+                })
+            })
+        }
+        return []
+    },[filters,rowData])
+
     const renderRows = ()=>{
-        if(!rowData || rowData.length===0){
+        
+
+        if(!filteredRows || filteredRows.length===0){
             return(
                     <BPRViewTableNoDataContainer>
                         <BPRViewTableNoDataHeader>
@@ -49,7 +91,7 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
             )
         }
         return(
-            rowData && rowData.map((row:any,index:number)=>{
+            filteredRows && filteredRows.map((row:any,index:number)=>{
                 return(
                     <BPRViewTableRow key={index}>
                         {
@@ -75,6 +117,15 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
                                        if(colDef.colId==='request'){
                                             return(
                                                 <BPRViewTableRequestCellRenderer onClick={onReq} key={index}/>
+                                            )
+                                        }
+                                        if(colDef.colId==='avail'){
+                                            return(
+                                                <BPRViewTableRowCell key={index}>
+                                                    <BPRViewTableAvailabilityCellRenderer>
+                                                        {row[colDef.colId]}
+                                                    </BPRViewTableAvailabilityCellRenderer>
+                                                </BPRViewTableRowCell>
                                             )
                                         }
                                        return(
@@ -123,11 +174,18 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
                     </TableHeader>
                 )} */}
                 <BPRViewTableHeaderContainer>
-                    {colDefs.map((colDef:ColDef)=>{
-                        return(
-                            <BPRViewTableHeader style={{minWidth:colDef.colId==='whereabouts'?200:120}} key={colDef.colId}>
-                                {colDef.headerName}
-                            </BPRViewTableHeader>
+                    {colDefs.map((colDef)=>{
+                        const currFilter = filters.find((f)=>f.colId===colDef.colId)
+                        return (
+                            <BPRViewTableColumnHeader 
+                                colDef={{
+                                    ...colDef,
+                                    filterValue:currFilter?.filterValue || '',
+                                    onApplyFilter:(filterString,query)=> {
+                                    onApplyFilter(colDef.colId,filterString,query)
+                                }}}
+                                query={currFilter?.query}
+                            />
                         )
                     })}
                 </BPRViewTableHeaderContainer>

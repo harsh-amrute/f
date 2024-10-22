@@ -10,7 +10,9 @@ export const QUERY_KEYS = {
   useGetAllSKUs:['BPRService.useGetAllSKUs'],
   useGetAllLocations:['BPRService.useGetAllLocations'],
   useGetInTransitWhereAboutAnalytics:['BPRService.useGetInTransitWhereAboutAnalytics'],
-  useGetOpenExpediteAnalytics:['BPRService.useGetOpenExpediteAnalytics']
+  useGetOpenExpediteAnalytics:['BPRService.useGetOpenExpediteAnalytics'],
+  useGetLocationTypes:['useGetLocationTypes'],
+  useGetlastRunDate:['useGetlastRunDate']
 }
 
 
@@ -98,5 +100,17 @@ export const useGetInTransitWhereAboutAnalytics = ()=>{
 export const useGetOpenExpediteAnalytics = ()=>{
   return useQuery(QUERY_KEYS.useGetOpenExpediteAnalytics,async()=>{
     return await BPRService.getOpenExpediteAnalytics()
+  })
+}
+
+export const useGetLocationTypes = ()=>{
+  return useQuery(QUERY_KEYS.useGetLocationTypes,async()=>{
+    return await BPRService.getLocationTypes()
+  })
+}
+
+export const useGetlastRunDate = ()=>{
+  return useQuery(QUERY_KEYS.useGetlastRunDate,async()=>{
+    return await BPRService.getlastRunDate()
   })
 }

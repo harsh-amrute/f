@@ -1,17 +1,18 @@
+import {useContext,useEffect,useState} from "react"
+
+
 import { Allotment } from "allotment"
-import {useContext,useEffect} from "react"
 import "allotment/dist/style.css";
 import { GridViewLayout } from "./styles";
 import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
-import BPRViewTable from '../../BPR/BPRViewTable'
+import BPRViewTable, { BPRViewTableColDef } from '../../BPR/BPRViewTable'
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { GridStateContext } from "../../../../../../context/GridStateContext";
 import { useGetState } from "../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
-import { notifyError } from "../../../../../../helpers/notify";
 
 
 // import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
@@ -22,7 +23,7 @@ interface GridViewTableProps {
     agGridColDefs:ColDef[],
     agGridRowData:any,
     customGridRowData:any,
-    customGridColDef:Array<{headerName:string,colId:string,field:string}>
+    customGridColDef:Array<BPRViewTableColDef>
     isSubGridOpen:boolean
     showStockGrid?:boolean
     stockGridData?:Array<any>
@@ -38,18 +39,42 @@ interface GridViewTableProps {
 const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader,currentCategory,currentTab}:GridViewTableProps) => {
     const {ref} = useContext(GridStateContext)
     const {mutateAsync:getState} = useGetState()
+    const [gridState,setGridState] = useState<any>()
+
+    const [internalRef,setInternalRef] = useState<any>()
+    // useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState(`${currentCategory}${currentTab}`)
+    //         ref.current.api.applyColumnState({state:JSON.parse(data.data.data)})
+    //       }catch(err:any){
+    //         notifyError(err)
+    //       }
+    //     }
+    //     getTableState()
+    // },[ref])
+
     useEffect(()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState(`${currentCategory}${currentTab}`)
-            ref.current.api.applyColumnState({state:JSON.parse(data.data.data)})
+            setGridState(JSON.parse(data.data.data))
           }catch(err:any){
-            notifyError(err)
+            setGridState({
+                charts:[],
+                columns:[],
+                pivot:false
+            })
           }
         }
         getTableState()
-    },[ref])
+    },[])
 
+    useEffect(()=>{
+        if(internalRef){
+            internalRef.api.applyColumnState({state:gridState?.columns})
+        }
+    },[internalRef,gridState])
 
     // if(isLoading){
     //     return <VFLoader/>
@@ -132,13 +157,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
                             height={gridHeight ? gridHeight : '380px'}
-                            // onGridReady={(params)=>{
-                            //     console.log(columnState)
-                            //     if(columnState){
-                                    
-                            //         params.columnApi.applyColumnState({state:columnState})
-                            //     }
-                            // }}
+                            onGridReady={(params)=>setInternalRef(params)}
                         />
                         {paginationProps && <VFPagination {...paginationProps}/>}
     
@@ -168,7 +187,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                     ) 
                 }
                 {isSubGridOpen && (
-                    <Allotment.Pane minSize={180} maxSize={260}>
+                    <Allotment.Pane minSize={180} maxSize={350}>
                         <div style={{marginTop:'20px',height:'100%'}}>
                             {renderSubGrid()}
                         </div>

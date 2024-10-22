@@ -54,6 +54,7 @@ export interface BPRFilter{
     type?:string
     name:string
     attributeName:string
+    label:string
     operator:string
     value:string
 }
@@ -71,6 +72,7 @@ export interface BPRFilterState{
     availabilityFilter:BPRFilterGroup
     coverageFilter:BPRFilterGroup
     colorFilter:BPRFilterGroup
+    generalFilter:BPRFilterGroup
 }
 
 
@@ -167,3 +169,7 @@ export interface GridState {
     charts:Array<any>
     columns:Array<any>
 }
+
+export type BPRViewTableFilterNumericalOperator = 'equals' | 'doesNotEqual' | 'lessThan' | 'greaterThan'
+
+export type BPRViewTableFilterStringOperator = 'equals' | 'doesNotEqual' | 'contains' | 'doesNotContain'

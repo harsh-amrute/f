@@ -39,7 +39,8 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
         bu:parseFloat(item.bu),
         y:parseFloat(item.y),
         g:parseFloat(item.g),
-        w:parseFloat(item.w)
+        w:parseFloat(item.w),
+        r:parseFloat(item.r)
         // Parse the string to a floating-point number
     }));
     const options:AgChartOptions = {
@@ -51,7 +52,9 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                 label:{
                     fontSize:8,
                     fontWeight:'bold',
-                    color:'black'
+                    color:'black',
+                    autoRotate:false,
+                    avoidCollisions:true
                 }
             },
             {
@@ -168,7 +171,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
     
     return(
         <>
-            <SCChartContainer height={"75%"}>
+            <SCChartContainer >
                 <SCChartMainContainer>
                     <SCChartSliderContainer>                               
                     <label style={{fontStyle:"normal",

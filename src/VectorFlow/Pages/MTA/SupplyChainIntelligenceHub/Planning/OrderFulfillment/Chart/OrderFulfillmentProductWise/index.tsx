@@ -10,7 +10,7 @@ import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/V
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import {convertToInt} from '../../../../../../../../helpers/utils';
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
 
 interface OrderFulfillmentProps{
     data:any
@@ -53,6 +53,8 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -91,6 +93,8 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
         ];
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
                 colId:column['colCode'],
@@ -200,7 +204,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,
@@ -241,7 +245,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,

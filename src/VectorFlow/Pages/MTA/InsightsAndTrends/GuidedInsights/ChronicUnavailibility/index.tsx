@@ -1,4 +1,4 @@
-import {useRef, useMemo, useState} from "react";
+import {useRef, useMemo, useState, useEffect} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
@@ -10,14 +10,37 @@ import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFModalCard from "../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
-const ChronicUnavailabilityCharts = () => {
+const ChronicUnavailabilityCharts = ({filter}:{filter:any}) => {
 
 
-    const {data:ChronicUnavailabilityLoc, isLoading:isLoadingChronicLoc}=useGetChronicUnavailabilityLoc();
-    const {data:ChronicUnavailabilitySku, isLoading:isLoadingChronicSku}=useGetChronicUnavailabilitySku();
+    // const {data:ChronicUnavailabilityLoc, isLoading:isLoadingChronicLoc}=useGetChronicUnavailabilityLoc();
+    // const {data:ChronicUnavailabilitySku, isLoading:isLoadingChronicSku}=useGetChronicUnavailabilitySku();
 
-    const ChronicUnavailabilityLocData=ChronicUnavailabilityLoc?.data?.data;
-    const ChronicUnavailabilitySkuData=ChronicUnavailabilitySku?.data?.data;
+    // const ChronicUnavailabilityLocData=ChronicUnavailabilityLoc?.data?.data;
+    // const ChronicUnavailabilitySkuData=ChronicUnavailabilitySku?.data?.data;
+
+    const { mutateAsync: ChronicUnavailabilityLoc, isLoading: isLoadingChronicLoc } =
+    useGetChronicUnavailabilityLoc();
+    const { mutateAsync: ChronicUnavailabilitySku, isLoading: isLoadingChronicSku } =
+    useGetChronicUnavailabilitySku();
+    const param = {};
+
+    const [ChronicUnavailabilityLocData, SetChronicUnavailabilityLocD]=useState([]);
+    const [ChronicUnavailabilitySkuData, SetActiveDBMSuggestionData]=useState([]);
+
+    useEffect(() => {
+        const fetchDBMNormSuggestionData = async ()=>{
+          const ChronicUnavailabilityLocs =  await  ChronicUnavailabilityLoc(param);
+          SetChronicUnavailabilityLocD(ChronicUnavailabilityLocs?.data?.data);
+          const ChronicUnavailabilitySkus = await ChronicUnavailabilitySku(param);
+          SetActiveDBMSuggestionData(ChronicUnavailabilitySkus?.data?.data);
+         
+        }
+        fetchDBMNormSuggestionData();
+       
+      }, [filter]);
+
+
 
     const refGraph1 = useRef<GridRef>();
     const refGraph2 = useRef<GridRef>();
@@ -42,11 +65,14 @@ const ChronicUnavailabilityCharts = () => {
     }
 
     const sortData = (data:any,key:string) => {
-        data?.sort((row1:any,row2:any)=>{
-            return (row2[key]) - (row1[key])
-        })
-
-        return [...data];
+        if(data){
+            data?.sort((row1:any,row2:any)=>{
+                return (row2[key]) - (row1[key])
+            })
+    
+            return [...data]
+        }
+        return []
     }
 
     const coldefs1:ColDef[] = [
@@ -428,11 +454,12 @@ const ChronicUnavailabilityCharts = () => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
+                                
                             },
                             fontSize:8,
-                            fontFamily:'Roboto'
+                            fontFamily:'Roboto',
                           }
                     },
                     number:{
@@ -479,7 +506,7 @@ const ChronicUnavailabilityCharts = () => {
                         },
                         label:{
                             formatter:(params:any)=>{
-                                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                                 return params.value;
                             },
                             fontSize:8,

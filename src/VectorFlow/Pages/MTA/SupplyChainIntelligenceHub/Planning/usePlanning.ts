@@ -10,7 +10,7 @@ import { type RootState } from "../../../../../redux/store/store";
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA, UPDATE_PLANNING_DATA} from '../../../../../redux/actions/MTA';
 import { AgGridReactProps } from 'ag-grid-react';
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
-import { getColumnsForExcelExport } from "../../../../../helpers/utils";
+import { GridRef } from "../../../../../VectorFlow/types/MDM";
 
 const usePlanning = ()=>{
 
@@ -31,7 +31,7 @@ const usePlanning = ()=>{
 
     const dispatch = useDispatch(); 
 
-    const ref:any = useRef()
+    const ref = useRef<GridRef>()
     const tempRef:any = useRef()
 
     const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
@@ -99,7 +99,7 @@ const usePlanning = ()=>{
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
             
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`,columnKeys:getColumnsForExcelExport(currentColDefs)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`, columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
   
@@ -179,7 +179,18 @@ const usePlanning = ()=>{
                 ])
             }
             else{
-                return []
+                return ([
+                    {
+                        id:'expediteDispatches',
+                        label:'Expedite Dispatches',
+                        value:'expediteDispatches'
+                    },
+                    {
+                        id:'createAvailabilityAtParent',
+                        label:'Create Availability At Parent',
+                        value:'createAvailabilityAtParent'
+                    },
+                ])
             }
           
         }
@@ -199,7 +210,18 @@ const usePlanning = ()=>{
                 ])
             }
             else{
-                return []
+                return ([
+                    {
+                        id:'expediteDispatches',
+                        label:'Expedite Dispatches',
+                        value:'expediteDispatches'
+                    },
+                    {
+                        id:'createAvailabilityAtParent',
+                        label:'Create Availability At Parent',
+                        value:'createAvailabilityAtParent'
+                    },
+                ])
             }
           
         }
@@ -287,6 +309,9 @@ const usePlanning = ()=>{
         
         setPlanningCounts(tempPlanningCount);
     }
+    
+   
+
 
     const onExportToExcelCallBack = async(pageNumber:number)=>{
         const data =  await getPlanningDataGrid({
@@ -298,11 +323,18 @@ const usePlanning = ()=>{
                 recordsPerPage:5000
             }
         })
+
         if(currentPageData.category==='git' && currentPageData.type==='child'){
             if(currentTab==='transporterWise'){
                 return data.data.data.transporterWise.data
             }
             return data.data.data.locationWise.data
+        }
+        if(currentPageData.category==='expedite' && currentPageData.type==='child'){
+            if(currentTab==='expediteDispatches'){
+                return data.data.data.data[0].expediteDispatches
+            }
+            return data.data.data.data[0].createAvailabilityAtParent
         }
         return data.data.data.data
     }
@@ -331,7 +363,7 @@ const usePlanning = ()=>{
                     setCurrentGridData(result.data.data);
                     setIsSelectCategoryOpen(false);
                     toast.dismiss(toastId);
-                    notifySuccess("Grid Data Fetched Successfully");
+                    if(count.data.data[0].locationwise!==0)notifySuccess("Grid Data Fetched Successfully");
                     break;
                 }
              
@@ -455,6 +487,7 @@ const usePlanning = ()=>{
             // await getAndApplyGridState()
             switch(currentCategory){
                 case 'GITFromParent':{
+                    let totalTempCount
                     const toastId = notifyLoader('Loading Grid Data');
                     const body = {
                         category:'git',
@@ -468,16 +501,22 @@ const usePlanning = ()=>{
                     if(!fromPagination){
                         const count = await getPlanningDataGridCount(body)
                         setTotalRows(count.data.data[0].locationwise)
+                        totalTempCount = count.data.data[0].locationwise
                         setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data[0].locationwise})
                     }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
-                    if(fromPagination)setTotalRows(planningCounts.parentMonitorCount)
+                    if(fromPagination){
+                        setTotalRows(planningCounts.parentMonitorCount)
+                        totalTempCount = planningCounts.parentMonitorCount
+                    }
                     toast.dismiss(toastId);
-                    notifySuccess("Grid Details Fetched Successfully");
+                    console.log(totalTempCount)
+                    if(totalTempCount !==0)notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
                 case 'GITToChild':{
+                    let totalTempCount
                     const toastId = notifyLoader('Loading Grid Data');
                     const body = {
                         category:'git',
@@ -495,20 +534,26 @@ const usePlanning = ()=>{
                         if(tempTab==="locationWise"){
                             setPlanningCounts({...planningCounts,childMonitorCount:locationwise})
                             setTotalRows(locationwise)
+                            totalTempCount = locationwise
                         }
                         else {
                             setPlanningCounts({...planningCounts,childMonitorCount:transporterwise})
                             setTotalRows(transporterwise)
+                            totalTempCount = transporterwise
                         }
                     }
                     const result = await getPlanningDataGrid(body);
                     setCurrentGridData(result.data.data);
-                    if(fromPagination)setTotalRows(planningCounts.childMonitorCount)
+                    if(fromPagination){
+                        setTotalRows(planningCounts.childMonitorCount)
+                        totalTempCount = planningCounts.childMonitorCount
+                    }
                     toast.dismiss(toastId);
-                    notifySuccess("Grid Details Fetched Successfully");
+                    if(totalTempCount !==0)notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
                 case 'ExpediteFromParent':{
+                    let totalTempCount
                     const toastId = notifyLoader('Loading Grid Data');
                     const body = {
                         category:'expedite',
@@ -521,18 +566,35 @@ const usePlanning = ()=>{
                     }
                     if(!fromPagination){
                         const count = await getPlanningDataGridCount(body)
-                        setTotalRows(count.data.data)
-                        setPlanningCounts({...planningCounts,parentExpediteCount:count.data.data})
-                        // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
+                        const {createAvailabilityAtParent,expediteDispatches} = JSON.parse(count.data.data)[0]
+                        const tempTab =tab?tab:currentTab
+                        if(tempTab==="createAvailabilityAtParent"){
+                            setPlanningCounts({...planningCounts,parentExpediteCount:createAvailabilityAtParent})
+                            setTotalRows(createAvailabilityAtParent)
+                            totalTempCount = createAvailabilityAtParent
+                        }
+                        else {
+                            setPlanningCounts({...planningCounts,parentExpediteCount:expediteDispatches})
+                            setTotalRows(expediteDispatches)
+                            totalTempCount = expediteDispatches
+                        }
                     }
+                    
                     const result = await getPlanningDataGrid(body);
-                    setCurrentGridData(result.data.data);
-                    if(fromPagination)setTotalRows(planningCounts.parentExpediteCount)
+                    const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data[0];
+                    const uiConfig = result.data.data.uiConfig;
+                    const customData = {"createAvailabilityAtParent":{"data":createAvailabilityAtParent,"uiConfig":uiConfig},"expediteDispatches":{"data":expediteDispatches,"uiConfig":uiConfig}};
+                    setCurrentGridData(customData);
+                    if(fromPagination){
+                        setTotalRows(planningCounts.parentExpediteCount)
+                        totalTempCount = planningCounts.parentExpediteCount
+                    }
                     toast.dismiss(toastId);
-                    notifySuccess("Grid Details Fetched Successfully");
+                    if(totalTempCount !==0)notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
                 case 'ExpediteToChild':{
+                    let totalTempCount
                     const toastId = notifyLoader('Loading Grid Data');
                     const body = {
                         category:'expedite',
@@ -546,19 +608,35 @@ const usePlanning = ()=>{
                     if(!fromPagination){
                         body.paginationParameter.pageNumber  = 1
                         const count = await getPlanningDataGridCount(body)
-                        setTotalRows(count.data.data)
+                        const {createAvailabilityAtParent,expediteDispatches} = JSON.parse(count.data.data)[0]
+                        const tempTab =tab?tab:currentTab
+                        if(tempTab==="createAvailabilityAtParent"){
+                            setPlanningCounts({...planningCounts,childExpediteCount:createAvailabilityAtParent})
+                            setTotalRows(createAvailabilityAtParent)
+                            totalTempCount = createAvailabilityAtParent
+                        }
+                        else {
+                            setPlanningCounts({...planningCounts,childExpediteCount:expediteDispatches})
+                            setTotalRows(expediteDispatches)
+                            totalTempCount = expediteDispatches
+                        }
                         setCurrentPage(1)
-                        setPlanningCounts({...planningCounts,childExpediteCount:count.data.data})
-                        // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
                     }
                     const result = await getPlanningDataGrid(body);
-                    setCurrentGridData(result.data.data);
-                    if(fromPagination)setTotalRows(planningCounts.childExpediteCount)
+                    const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data[0];
+                    const uiConfig = result.data.data.uiConfig;
+                    const customData = {"createAvailabilityAtParent":{"data":createAvailabilityAtParent,"uiConfig":uiConfig},"expediteDispatches":{"data":expediteDispatches,"uiConfig":uiConfig}};
+                    setCurrentGridData(customData);
+                    if(fromPagination){
+                        setTotalRows(planningCounts.childExpediteCount)
+                        totalTempCount = planningCounts.childExpediteCount
+                    }
                     toast.dismiss(toastId);
-                    notifySuccess("Grid Details Fetched Successfully");
+                    if(totalTempCount !==0)notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
                 case 'ExcessInventory':{
+                    let totalTempCount
                     const toastId = notifyLoader('Loading Grid Data');
                     const body = {
                         category:'excessInventory',
@@ -576,16 +654,21 @@ const usePlanning = ()=>{
                         setTotalRows(count.data.data)
                         setCurrentPage(1)
                         setPlanningCounts({...planningCounts,reviewExcessInventoryCount:count.data.data})
+                        totalTempCount = count.data.data
                         // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
                     }
                     const result = await getPlanningDataGrid(body);
-                    if(fromPagination)setTotalRows(planningCounts.reviewExcessInventoryCount)
+                    if(fromPagination){
+                        setTotalRows(planningCounts.reviewExcessInventoryCount)
+                        totalTempCount = planningCounts.reviewExcessInventoryCount
+                    }
                     setCurrentGridData(result.data.data);
                     toast.dismiss(toastId);
-                    notifySuccess("Grid Details Fetched Successfully");
+                    if(totalTempCount !==0)notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
                 case 'OrderFulfillment':{
+                    let totalTempCount
                     const toastId = notifyLoader('Loading Grid Data');
                     const body = {
                         category:'orderFulfillment',
@@ -599,17 +682,20 @@ const usePlanning = ()=>{
                     if(!fromPagination){
                         body.paginationParameter.pageNumber  = 1
                         const count = await getPlanningDataGridCount(body)
-                        console.log(count)
                         setTotalRows(count.data.data)
+                        totalTempCount = count.data.data
                         setCurrentPage(1)
                         setPlanningCounts({...planningCounts,reviewOrderFulfillmentCount:count.data.data})
                         // setPlanningCounts({...planningCounts,parentMonitorCount:count.data.data})
                     }
                     const result = await getPlanningDataGrid(body);
-                    if(fromPagination)setTotalRows(planningCounts.reviewOrderFulfillmentCount)
+                    if(fromPagination){
+                        totalTempCount = planningCounts.reviewOrderFulfillmentCount
+                        setTotalRows(planningCounts.reviewOrderFulfillmentCount)
+                    }
                     setCurrentGridData(result.data.data);
                     toast.dismiss(toastId);
-                    notifySuccess("Grid Details Fetched Successfully");
+                    if(totalTempCount !==0)notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
             }
@@ -642,6 +728,14 @@ const usePlanning = ()=>{
     const onFloatingTabChange = (tab:any) => {
         setCurrentTab(tab.value);
         if(currentCategory==='GITToChild' && currentView==='grid'){
+            setCurrentPage(1)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+        }
+        if(currentCategory==='ExpediteFromParent' && currentView==='grid'){
+            setCurrentPage(1)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+        }
+        if(currentCategory==='ExpediteToChild' && currentView==='grid'){
             setCurrentPage(1)
             fetchAndUpdateGridData(1,false,currentFilter,tab.value)
         }
@@ -733,8 +827,16 @@ const usePlanning = ()=>{
         if(currentGridData){
             let currUiConfig = []
             if(currentCategory==="GITToChild"){
-                if(currentTab==="locationWise")currUiConfig=currentGridData['locationWise'].uiConfig
+                if(currentTab==="locationWise") currUiConfig=currentGridData['locationWise'].uiConfig
                 else currUiConfig=currentGridData['transporterWise'].uiConfig
+            }
+            else if(currentCategory==="ExpediteFromParent"){
+                if(currentTab==="createAvailabilityAtParent") currUiConfig=currentGridData['createAvailabilityAtParent'].uiConfig
+                else currUiConfig=currentGridData['expediteDispatches'].uiConfig
+            }
+            else if(currentCategory==="ExpediteToChild"){
+                if(currentTab==="createAvailabilityAtParent") currUiConfig=currentGridData['createAvailabilityAtParent'].uiConfig
+                else currUiConfig=currentGridData['expediteDispatches'].uiConfig
             }
             else currUiConfig = currentGridData.uiConfig
             let colDefs = [];
@@ -757,6 +859,8 @@ const usePlanning = ()=>{
         }
         return []
     },[currentGridData])
+
+    // console.log(currentPageData,currentTab)
 
  
     return {

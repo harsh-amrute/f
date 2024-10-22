@@ -52,7 +52,6 @@ const Planning = () => {
     } = usePlanning();
 
 
-
     const renderView = () => {
 
         switch(currentView){
@@ -140,6 +139,7 @@ const Planning = () => {
                         multiFilter={currentFilter}
                         setMultiFilter={setCurrentFilter}
                         onDelete={onDeleteFilter}
+                        isPlanning
                         />
                 </div>  
                     

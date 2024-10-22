@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Allotment } from "allotment";
 import {
   useGetDBMNormSuggestionLoc,
@@ -24,27 +24,56 @@ import {GraphSeriesOverrides} from '../../../../../../helpers/BPRConstants'
 
 //import 'ag-grid-enterprise';
 
-const DBMNormSuggestions = () => {
-  const { data: DBMNormSuggestionLoc, isLoading: isLoadingGraph1 } =
-    useGetDBMNormSuggestionLoc();
-  const { data: DBMNormSuggestionPie, isLoading: isLoadingGraph2 } =
+const DBMNormSuggestions = ({filter}:{filter:any}) => {
+  const { mutateAsync: DBMNormSuggestionLoc, isLoading:isLoadingGraph1 } =
+  useGetDBMNormSuggestionLoc();
+  // const { data: DBMNormSuggestionLoc, isLoading: isLoadingGraph1 } =
+  //   useGetDBMNormSuggestionLoc(filter);
+  const { mutateAsync: DBMNormSuggestionPie, isLoading: isLoadingGraph2 } =
     useGetDBMNormSuggestionPie();
-  const { data: DBMNormSuggestionSKUs, isLoading: isLoadingGraph3 } =
+  const { mutateAsync: DBMNormSuggestionSKUs, isLoading: isLoadingGraph3 } =
     useGetDBMNormSuggestionSKUs();
-  const { data: DBMNormSuggestionAgeing, isLoading: isLoadingGraph4 } =
+  const { mutateAsync: DBMNormSuggestionAgeing, isLoading: isLoadingGraph4 } =
     useGetDBMNormSuggestionAgeing();
 
-  const DBMSuggestionLocData = DBMNormSuggestionLoc?.data?.data;
-  const ActiveDBMSuggestionData = DBMNormSuggestionPie?.data?.data;
-  const DBMSuggestionSkuData = DBMNormSuggestionSKUs?.data?.data;
-  const DBMSuggestionAgeingData = DBMNormSuggestionAgeing?.data?.data;
+    const [DBMSuggestionLocData, SetDBMSuggestionLocData]=useState([]);
+    const [ActiveDBMSuggestionData, SetActiveDBMSuggestionData]=useState([]);
+    const [DBMSuggestionSkuData, SetDBMSuggestionSkuData]=useState([]);
+    const [DBMSuggestionAgeingData, SetDBMSuggestionAgeingData]=useState([]);
+    const param = {};
+
+    useEffect(() => {
+      const fetchDBMNormSuggestionData = async ()=>{
+        const DBMNormSuggestionLocD =  await  DBMNormSuggestionLoc(param);
+        SetDBMSuggestionLocData(DBMNormSuggestionLocD?.data?.data);
+        const ActiveDBMSuggestionDataD= await DBMNormSuggestionPie(param);
+        SetActiveDBMSuggestionData(ActiveDBMSuggestionDataD?.data?.data);
+        const DBMSuggestionSkuDataD= await DBMNormSuggestionSKUs(param);
+        SetDBMSuggestionSkuData(DBMSuggestionSkuDataD?.data?.data);
+        const DBMSuggestionAgeingDataD = await  DBMNormSuggestionAgeing(param)
+        SetDBMSuggestionAgeingData(DBMSuggestionAgeingDataD?.data?.data)
+      }
+      fetchDBMNormSuggestionData();
+     
+    }, [filter]);
+
+    console.log(DBMSuggestionSkuData)
+
+    const SortedDBMSuggestionSkuData = useMemo(()=>{
+      return DBMSuggestionSkuData.sort((a:any,b:any)=>(b.NormInc + b.NormDec) - (a.NormInc + a.NormDec))
+    },[DBMSuggestionSkuData])
+    
+    
+
+  // const DBMSuggestionSkuData = DBMNormSuggestionSKUs?.data?.data;
+  // const DBMSuggestionAgeingData = DBMNormSuggestionAgeing?.data?.data;
   const totalCount = ActiveDBMSuggestionData?.reduce(
     (acc: any, curr: any) => acc + curr.count,
     0
   );
   const pieData = ActiveDBMSuggestionData?.map((row: any) => ({
     suggestion: row.suggestion,
-    count: Math.floor((row.count / totalCount) * 100),
+    count: parseFloat(((row.count / totalCount) * 100).toFixed(2))
   }));
 
   const refGraph1 = useRef<GridRef>();
@@ -528,7 +557,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -571,7 +600,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -621,7 +650,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -671,7 +700,7 @@ const DBMNormSuggestions = () => {
             },
             label:{
               formatter:(params:any)=>{
-                if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                 return params.value;
               },
               fontSize:8,
@@ -715,7 +744,7 @@ const DBMNormSuggestions = () => {
 
   if (
     isLoadingGraph1 ||
-    isLoadingGraph2 ||
+    isLoadingGraph2 || 
     isLoadingGraph3 ||
     isLoadingGraph4
   ) {
@@ -943,7 +972,7 @@ const DBMNormSuggestions = () => {
                           <VFTable
                             ref={refGraph3}
                             columnDefs={coldefs3}
-                            rowData={DBMSuggestionSkuData}
+                            rowData={SortedDBMSuggestionSkuData}
                             enableCharts={true}
                             enableRangeSelection={true} 
                             rowSelection="multiple"
@@ -977,7 +1006,7 @@ const DBMNormSuggestions = () => {
                       <VFTable
                         ref={refGraph3}
                         columnDefs={coldefs3}
-                        rowData={DBMSuggestionSkuData}
+                        rowData={SortedDBMSuggestionSkuData}
                         enableCharts={true}
                         enableRangeSelection={true} 
                         rowSelection="multiple"
@@ -989,7 +1018,8 @@ const DBMNormSuggestions = () => {
                               { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                               { statusPanel: 'agAggregationComponent', align:'left' },
                             ],
-                          }}                             onRowDataUpdated={() => generateChart(3)}
+                          }}                             
+                        onRowDataUpdated={() => generateChart(3)}
                         getChartToolbarItems={getChartToolbarItems}
                         chartToolPanelsDef={{
                           panels: [],

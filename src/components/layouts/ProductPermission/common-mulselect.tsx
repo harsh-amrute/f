@@ -131,7 +131,7 @@ export default forwardRef(({ ...props }: any, ref) => {
 
   const prdPermissions = [
     {
-      title: "Business",
+      title: process.env.REACT_APP_PRODUCT_PERMISSION_L1 || '',
       placeholder: "",
       options: listBrand,
       value: brand,
@@ -140,7 +140,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       disabled: false,
     },
     {
-      title: "Category",
+      title: process.env.REACT_APP_PRODUCT_PERMISSION_L2 || '',
       placeholder: "",
       options: listSubBrand,
       value: subBrand,
@@ -149,7 +149,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       disabled: false,
     },
     {
-      title: "Family",
+      title: process.env.REACT_APP_PRODUCT_PERMISSION_L3 || '',
       placeholder: "",
       options: listCategory,
       value: category,

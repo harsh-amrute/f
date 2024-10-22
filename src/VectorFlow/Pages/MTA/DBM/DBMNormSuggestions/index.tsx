@@ -36,7 +36,9 @@ const DBM = () => {
   currentFilter,
   setCurrentFilter,
   onDeleteFilter,
-  onExportToExcelCallBack
+  onExportToExcelCallBack,
+  recordsPerPage,
+  generalFilterOptions
 } = useDBM();
 
  if(isLoading){
@@ -46,6 +48,7 @@ const DBM = () => {
 }
 
   return (
+    <>
     <GridStateContext.Provider value={{
       ref:gridRef,
       exportExcelColumns:exportExcelColumns,
@@ -72,6 +75,7 @@ const DBM = () => {
         onApplyFilter={handleApplyFilter}
         multiFilter={currentFilter}
         setMultiFilter={setCurrentFilter}
+        generalFilterOptions={generalFilterOptions}
         onDelete={onDeleteFilter}
       />
       <DBMLayout>
@@ -105,7 +109,7 @@ const DBM = () => {
                 selectedRows={0} 
                 totalRows={DBMDataCount} 
                 currentPage={currentPage} 
-                rowsPerPage={50}
+                rowsPerPage={recordsPerPage}
                 handleChangePage={(e)=>handleChangePage(e)} 
               />  
         </div>
@@ -119,6 +123,7 @@ const DBM = () => {
         </div>
       </DBMLayout>
       </GridStateContext.Provider>
+      </>
   )
 }
 

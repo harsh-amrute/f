@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import * as globalStyles from '../../../../../styles/global'
+
 export const SCChartContainer = styled.div<{height?:string}>`
     padding:5px;
     border-radius:12px;
@@ -67,3 +69,65 @@ export const SCHorizontalDivider = styled.hr`
     border-top:1px solid #B2B2B2;
 `
 
+export const SummaryTableColumn = styled.p<{color:string}>`
+    color:${(props)=>props.color};
+    font-weight:600;
+`
+
+export const AvailabilityContainer = styled.div`
+    display:flex;
+    flex-direction:column;
+    margin-top:58px;
+    margin-left:-10px;
+    box-shadow: rgb(155 155 155 / 16%) 6px 6px 12px;
+    z-index:100;
+    border-radius:0px 8px 8px 0px;
+`
+
+export const AvailabilityHeader = styled.div`
+    position:relative;
+    width:250px;
+   overflow:hidden;
+    min-width:120px;
+    height:53px;
+    padding:10px;
+    padding-top:15px;
+    font-style:normal;
+    font-variant:normal;
+    font-weight:600;
+    font-size:13px;
+    line-height:13px;
+    font-family:Roboto;
+    letter-spacing: 0px;
+    color: #000000;
+    // border-bottom: 1px solid #919191B3;
+    box-shadow: 0px 6px 12px #9B9B9B29;
+    text-align:center;
+    &::after{
+        content:'';
+        position:absolute;
+        left:1px;
+        top:4px;
+        bottom:4px;
+        background-color:#898585;
+        width:0.5px;
+    }
+    &:last-child::after {
+        display: none;
+    }
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    background-color:white;
+    border-radius:0px 8px 0px 0px ;
+`
+
+export const AvailabilityContent = styled.div<{themeUI:string}>`
+    display:grid;
+    place-items:center;
+    background-color:white;
+    height:100%;
+    font-size:24px;
+    font-weight:500;
+    color:${(props)=>globalStyles.chooseThemeColor[props.themeUI].color5};
+    border-radius:inherit;
+`

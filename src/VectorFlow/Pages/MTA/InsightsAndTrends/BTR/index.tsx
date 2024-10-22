@@ -34,9 +34,11 @@ const BufferTrendReport = () => {
         onApplyFilter,
         themeUi,
         horizon,
-        setHorizon
+        ecoColDefs,
+        setHorizon,
     } = useBTR()
 
+    
 
     return (
         <GridStateContext.Provider
@@ -120,7 +122,7 @@ const BufferTrendReport = () => {
                 <div style={{ display: 'none' }}>
                     <VFTable
                         ref={tempRef}
-                        columnDefs={techColDefs}
+                        columnDefs={currentTab.id==='2'?techColDefs:ecoColDefs}
                         rowData={exportExcelRowData}
                         {...tempAgGridProps}
                     />

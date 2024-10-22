@@ -14,22 +14,32 @@ import ShowRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpedit
 import SubmitRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/SubmitRemarkCellRenderer";
 import MasterDetail from "./MasterDetail";
 import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } from "./CellRenderers";
-import { getColumnsForExcelExport, mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
+import {mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
 import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,useGetRemarkDetailsForInTransit, useGetTransporterDetails, useSubmitRemarksForInTransit } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { ColDef } from "ag-grid-enterprise";
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { GridRef } from "../../../../../VectorFlow/types/MDM";
 
 
 
 
 
 const useInTransitWhereAbouts = ()=>{
-    const ref = useRef()
+    const ref = useRef<GridRef>()
     const tempRef = useRef()
 
     const {user} = useUserData()
 
+    const [internalRef,setInternalRef] = useState<any>()
+
+    const [gridState,setGridState] = useState<{charts:[],columns:[],pivot:boolean}>({
+      charts: [],
+      columns: [],
+      pivot: false,
+    })
 
     const themeUi = user.user.theme_ui
 
@@ -93,10 +103,6 @@ const useInTransitWhereAbouts = ()=>{
 
 
     const customCellRenderers = useMemo(() => ({
-        // grapCellRenderer:BPRGraphCellRenderer,
-        // colorTechCellRenderer:BPRTechColorCellRenderer,
-        // colorEcoCellRenderer:BPREcoColorCellRenderer,
-        // tagsCellRenderer:BPRTagsCellRenderer,
         currentLocationCellRenderer:CurrentLocationCellRenderer,
         etaCellRenderer:ETACellRenderer,
         colorCellRenderer:ColorGroupCellRenderer,
@@ -104,41 +110,7 @@ const useInTransitWhereAbouts = ()=>{
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
-    // const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    // const [columnState,setColumnState] = useState<any>()
-    // const {currentGridState} = useSelector((state:RootState)=>state.mta)
-
-    const sideBar = {
-        toolPanels: [
-          {
-            id: "columns",
-            labelDefault: "Columns",
-            labelKey: "columns",
-            iconKey: "columns",
-            toolPanel: "agColumnsToolPanel",
-            toolPanelParams: {
-              suppressPivots: true,
-              suppressPivotMode: true,
-            },
-          
-          },
-        ],
-        defaultToolPanel:'',
-      }
-
-
-    // useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState("OpenExpeditingRequests")
-    //         setColumnState(JSON.parse(data.data.data))
-    //       }catch(err:any){
-    //         setColumnState(colDefs)
-    //       }
-    //     }
-    //     getTableState()
-    //     getRowData(currentFilter,1)
-    // },[currentGridState])
+    const {mutateAsync:getState} = useGetState()
 
     useEffect(()=>{
       const getInitialData =async()=>{
@@ -148,85 +120,117 @@ const useInTransitWhereAbouts = ()=>{
       getInitialData()
     },[]) 
 
-    
-
-    const agGridProps: AgGridReactProps = {
-      readOnlyEdit:false,
-      icons:{
-        groupExpanded: `<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg"} style="width: 20px; height: 20px;">`,
-        groupContracted:`<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus.svg"} style="width: 20px; height: 20px;">`
-      },
-      masterDetail:true,
-      detailRowHeight:500,
-      detailCellRenderer:MasterDetail,
-      detailCellRendererParams:{
-        onContactDetails:onOpenContactModal
-      },
-      // detailRowAutoHeight:true,
-      // detailCellRendererParams:{
-      //   detailGridOptions: {
-      //     columnDefs: [{ field: 'detailData' }],
-      //   },
-      //   getDetailRowData: function(params:any) {
-      //     params.successCallback([1,2,3,4,5,5,3,23,2,5,2,2]);
-      //   },
-      //   pagination: true
-      // },
-        suppressRowTransform: true,
-        tooltipShowDelay: 0.3,
-        tooltipTrigger: 'focus',
-        tooltipInteraction: true,
-        // rowSelection:'single',
-        gridOptions: {
-            animateRows:true,
-            rowHeight: 50,
-            getRowStyle: (params: any) => {
-                if (params.node.rowIndex % 2 === 0) {
-                    return { background: "#EBEBEB" };
-                }
-                return { background: "#F7F7F7" };
-            },
-            readOnlyEdit:true
-        },
-        
-        sideBar:sideBar,
-        // suppressRowClickSelection: true,
-        components: customCellRenderers,
-        defaultColDef: {
+    useEffect(() => {
+      const getTableState = async () => {
+        try {
+          const data = await getState("InTransitWhereAbouts");
           
-            floatingFilter: true,
-            filter: "agMultiColumnFilter",
-            cellDataType: false,
-            resizable: false,
-            minWidth:140,
-            cellStyle: {
-              "text-align": "center",
-              'text-overflow':'ellipsis',
-              'white-space':'nowrap'
-            },
-            flex: 1,
-        },
-        enableRangeSelection:true ,
-        rowSelection:"multiple",
-        // onPasteEnd:(params)=>console.log(params),
-        // enableGroupEdit:true,
-        statusBar : {
-            statusPanels: [
-              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-              { statusPanel: 'agTotalRowCountComponent', align:'left' },
-              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-              { statusPanel: 'agAggregationComponent', align:'left' },
-            ],
-          },
-          onCellValueChanged:(params)=>onCellValueChanged(params.data,"OrderNo")
-    }
-
-    const tempAgGridProps:AgGridReactProps = {
-        onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts',columnKeys:getColumnsForExcelExport(colDefs)});
+          let parsedData;
+          try {
+            parsedData = data.data.data ? JSON.parse(data.data.data) : null;
+          } catch (parseError) {
+            console.error("Error parsing JSON:", parseError);
+            parsedData = null;
+          }
+    
+          if (parsedData) {
+            setGridState(parsedData);
+          } else {
+            setGridState({
+              charts: [],
+              columns: [],
+              pivot: false,
+            });
+          }
+        } catch (err: any) {
+          console.error("Error fetching data:", err);
+          setGridState({
+            charts: [],
+            columns: [],
+            pivot: false,
+          });
         }
       };
+      
+      getTableState();
+    }, []);
+
+  useEffect(()=>{
+      if(internalRef){
+          internalRef.api.applyColumnState({state:gridState?.columns })
+      }
+  },[internalRef,gridState])
+    
+
+    const agGridProps: AgGridReactProps =useMemo(()=>{
+      return  {
+        readOnlyEdit:false,
+        icons:{
+          groupExpanded: `<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-minus.svg"} style="width: 20px; height: 20px;">`,
+          groupContracted:`<img src=${themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus-regal.svg":"/assets/img/VectorFLOW/BPR/intransit-where-abouts-plus.svg"} style="width: 20px; height: 20px;">`
+        },
+        masterDetail:true,
+        detailRowHeight:500,
+        detailCellRenderer:MasterDetail,
+        detailCellRendererParams:{
+          onContactDetails:onOpenContactModal
+        },
+          suppressRowTransform: true,
+          tooltipShowDelay: 0.3,
+          tooltipTrigger: 'focus',
+          tooltipInteraction: true,
+          // rowSelection:'single',
+          gridOptions: {
+              animateRows:true,
+              rowHeight: 50,
+              getRowStyle: (params: any) => {
+                  if (params.node.rowIndex % 2 === 0) {
+                      return { background: "#EBEBEB" };
+                  }
+                  return { background: "#F7F7F7" };
+              },
+              readOnlyEdit:true
+          },
+          
+          sideBar:defaultAgGridSideBarForBPR,
+          components: customCellRenderers,
+          defaultColDef: {
+            
+              floatingFilter: true,
+              filter: "agMultiColumnFilter",
+              cellDataType: false,
+              resizable: false,
+              minWidth:140,
+              cellStyle: {
+                "text-align": "center",
+                'text-overflow':'ellipsis',
+                'white-space':'nowrap'
+              },
+              flex: 1,
+          },
+          enableRangeSelection:true ,
+          rowSelection:"multiple",
+          statusBar : {
+              statusPanels: [
+                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+                { statusPanel: 'agTotalRowCountComponent', align:'left' },
+                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+                { statusPanel: 'agAggregationComponent', align:'left' },
+              ],
+            },
+            onCellValueChanged:(params)=>onCellValueChanged(params.data,"OrderNo"),
+            onGridReady:(params)=>setInternalRef(params)
+      }
+    },[])
+
+    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
+      return {
+        onRowDataUpdated:(event)=>{
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+        }
+      }
+    },[])
 
 
       const onCellValueChanged = (newRow: any, primaryKey: string) => {
@@ -350,50 +354,6 @@ const useInTransitWhereAbouts = ()=>{
               orderNo:data.OrderNo
             })
             toast.dismiss(toastId)
-          //   setRemarkHistory([
-          //     {
-          //         name:'JP',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Pune'
-          //     },
-          //     {
-          //         name:'RT',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Mumbai'
-          //     },
-          //     {
-          //         name:'MD',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Delhi'
-          //     },
-          //     {
-          //         name:'AF',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Pune'
-          //     },
-          //     {
-          //         name:'FD',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Mumbai'
-          //     },
-          //     {
-          //         name:'AF',
-          //         remark:"Moved from Mumbai and Reached Nagpur",
-          //         date:'2023 - 09 - 20 | 12 pm',
-          //         eta:'2024-05-07',
-          //         currentLocation:'Delhi'
-          //     }
-          // ])
           setRemarkHistory(remarkData.data.data)
             setIsRemarkHistoryToolTipOpen(true)
         } catch (err: any) {
@@ -635,8 +595,6 @@ const useInTransitWhereAbouts = ()=>{
         onCloseSubmitRemark,
         onCloseRemarkHistory,
         ref,
-        // columnState,
-        // isSavedDataLoading,
         tempRef,
         tempDownloadData,
         setTempDownloadData,

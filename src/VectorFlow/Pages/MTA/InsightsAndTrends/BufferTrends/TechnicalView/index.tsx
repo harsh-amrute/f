@@ -15,7 +15,6 @@ import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from ".././../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
 
-
 interface TechnicalWiseProps {
     data: any
     currentPageTab: string
@@ -33,13 +32,14 @@ interface TechnicalWiseProps {
 const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizondays, handleSubmitClick, horizonDays,themeUi }: TechnicalWiseProps) => {
 
 
-    const numericData = data.map((item: any) => ({
+    const numericData = data?.map((item: any) => ({
         ...item,
         b: parseFloat(item.b),
         bu: parseFloat(item.bu),
         y: parseFloat(item.y),
         g: parseFloat(item.g),
-        w: parseFloat(item.w)
+        w: parseFloat(item.w),
+        r:parseFloat(item.r)
         // Parse the string to a floating-point number
     }));
 
@@ -52,7 +52,9 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                 label: {
                     fontSize: 8,
                     fontWeight: 'bold',
-                    color: 'black'
+                    color: 'black',
+                    autoRotate:false,
+                    avoidCollisions:true
                 }
             },
             {
@@ -171,7 +173,7 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
 
     return (
         <>
-            <SCChartContainer height={"75%"}>
+            <SCChartContainer >
                 <SCChartMainContainer>
                     <SCChartSliderContainer>
                         <label style={{

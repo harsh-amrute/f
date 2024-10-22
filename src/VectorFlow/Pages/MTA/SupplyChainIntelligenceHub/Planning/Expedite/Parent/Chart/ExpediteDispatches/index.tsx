@@ -19,7 +19,7 @@ import { AgChartOptions} from "ag-charts-community";
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants'
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import {convertToInt} from '../../../../../../../../../helpers/utils';
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../../helpers/utils';
 
 interface ExpediteParentDispatchesProps {
   data: any;
@@ -77,6 +77,9 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
     ];
     
     colDefs = columns.map((column:{header:string,colCode:string})=>{
+        const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+        if(customColdef) return customColdef
         return {
             field:column['colCode'],
             colId:column['colCode'],
@@ -100,6 +103,9 @@ const mapUIConfigToColdefs2 = (columns:Array<{header:string,colCode:string}>) =>
     ];
     
     colDefs = columns.map((column:{header:string,colCode:string})=>{
+        const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+
+        if(customColdef) return customColdef;
         return {
             field:column['colCode'],
             colId:column['colCode'],
@@ -390,7 +396,7 @@ const colDefs3: ColDef[] = [
             },
             label:{
                 formatter:(params:any)=>{
-                    if(params.value.length > 10) return params.value.toString().slice(0,10) + '...';
+                    if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
                     return params.value;
             },
               fontSize:8,
@@ -429,7 +435,7 @@ const colDefs3: ColDef[] = [
             },
             label:{
                 formatter:(params:any)=>{
-                    if(params.value.length > 6) return params.value.toString().slice(0,6) + '...';
+                    if(params.value.value.length > 6) return params.value.toString().slice(0,6) + '...';
                     return params.value;
                 },
               fontSize:8,

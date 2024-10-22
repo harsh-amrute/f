@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
 import {GetInTransitWhereAboutsDataCountMockResponse, GetInTransitWhereAboutsMockResponse, GetRemarkDetailsForInTransitMockResponse, GetStateMockResponse,GetTransporterDetailsMockResponse,ResetStateMockResponse,SaveStateMockResponse, SubmitRemarksForInTransitMockResponse} from '../../../../../mock-data/BPR';
 
-import {useGetState,useResetState,useSaveState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
+import {useGetLocationTypes, useGetState,useResetState,useSaveState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import {store} from "../../../../../redux/store/store";
@@ -58,6 +58,11 @@ const useSubmitRemarksForInTransitMock = useSubmitRemarksForInTransit as jest.Mo
 const useGetTransporterDetailsMock = useGetTransporterDetails as jest.MockedFunction<
   typeof useGetTransporterDetails
 >
+
+const useGetLocationTypesMock = useGetLocationTypes as jest.MockedFunction<
+  typeof useGetLocationTypes
+>
+
 
 // const contextWrapper = (children:any) => {
 //   return (
@@ -191,6 +196,19 @@ describe("It handles all interactions",()=>{
           }
         }
         
+      })
+
+      useGetLocationTypesMock.mockImplementation(():any=>{
+        return {data: {data:{
+          "recordCount": null,
+          "data": "[{\"lt\":\"2013\"},{\"lt\":\"CWH\"},{\"lt\":\"Depot\"},{\"lt\":\"Inhouse\"},{\"lt\":\"plant\"},{\"lt\":\"Supplier\"},{\"lt\":\"WS01\"}]",
+          "status": 200,
+          "msg": null,
+          "errorCount": null,
+          "error": null,
+          "conflictErrorCount": null,
+          "conflictError": null
+        }},isLoading:false};
       })
 
     render(contextWrapper(<InTransitWhereAbouts/>,store))

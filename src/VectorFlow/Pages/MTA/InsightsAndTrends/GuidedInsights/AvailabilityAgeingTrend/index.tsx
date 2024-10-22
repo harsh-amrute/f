@@ -6,17 +6,19 @@ import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 
-const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
-  const [horizon, setHorizon] = useState<number>(9);
-  const [minAgeing, setAgeing] = useState<number>(1);
+const AvailabilityAgeingTrend = ({themeUi,filter, ageing, setAgeing, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
+ 
+
+
   const { mutateAsync: GetAvailabilityAgeing, isLoading } =
     useGetAvailabilityAgeing();
   const [AvailabilityAgeingTrendData, setAgeingData] = useState();
   const OnHorizonChange = async (hvalue: any, age: any) => {
     setAgeing(age);
-
+console.log(age)
     setHorizon(hvalue);
-    const param = { horison: horizon, ageing: minAgeing };
+    const param = { horison: horizon, ageing: ageing,filters:filter};
+
 
     const AvailabilityAgeing = await GetAvailabilityAgeing(param);
 
@@ -29,8 +31,8 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
   };
 
   useEffect(() => {
-    OnHorizonChange(horizon, minAgeing);
-  }, []);
+    OnHorizonChange(horizon, ageing);
+  }, [filter]);
 
   const AvailabilityAgeingTrendOptions: AgChartOptions = {
     // title: {
@@ -99,6 +101,8 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
         label: {
           fontSize: 8,
           fontFamily: "Roboto",
+          autoRotate:false,
+          avoidCollisions:true
         },
       },
       {
@@ -150,7 +154,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
           </label>
           <select
             onChange={handleAgeChange}
-            value={minAgeing}
+            value={ageing}
             style={{
               marginLeft: "4px",
               textAlign: "center",
@@ -211,7 +215,7 @@ const AvailabilityAgeingTrend = ({themeUi}:{themeUi:string}) => {
             src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
             height={40} 
             width={50} 
-            onClick={() => OnHorizonChange(horizon, minAgeing)}
+            onClick={() => OnHorizonChange(horizon, ageing)}
             /> 
       </div>
       <div style={{ marginLeft: "10px", marginRight: "10px", height: "88%"}}>

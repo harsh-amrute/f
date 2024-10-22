@@ -60,7 +60,7 @@ function ForgotPasswordContainer() {
             <SuccessText>Password reset link successfully sent to your email ID.</SuccessText>
             <SuccessText>Please follow the steps provided on email.</SuccessText>
           </SuccessArea>) : (<>
-            <LogoArvind src="/assets/img/logoArvind.png" alt="logo" />
+            <LogoArvind src="" alt="logo" style={{opacity:0,visibility:'hidden'}}/>
             <Tittle>{t("forgotPasswordPage.title")}</Tittle>
             <FormArea onSubmit={handleSubmit(onSave)}>
               <InputArea error={errors.email}>
