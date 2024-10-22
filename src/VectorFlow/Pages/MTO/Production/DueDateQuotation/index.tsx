@@ -177,9 +177,11 @@ const DueDateQuotation = () => {
     },
   }
 
-  useEffect(() => {
-    getDDQData();
-  }, [currentPage, unScheduled, step == 1]);
+  // useEffect(() => {
+  //   // getDDQData();
+    
+  //   // console.log("running");
+  // }, [currentPage, unScheduled, step == 1]);
 
   useEffect(() => {
     if (selectedRows.size > 0) {
@@ -195,22 +197,22 @@ const DueDateQuotation = () => {
   //   setLoading(false)
   // }, [masters])
 
-  const getDDQData = async () => {
-    try {
-      const formatedFilters = formatFilterJSON(appliedFilters);
-      const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
-      totalRows.current = data?.data?.data?.count;
-      const results: any = data?.data?.data?.results;
-      // results = results?.filter((order: any) => {
-      //   return !scheduledOrders.has(order.id);
-      // })
-      setRows(results);
-    }
-    catch (err) {
-      console.error(err);
-      notifyError("Something Went Wrong!");
-    }
-  }
+  // const getDDQData = async () => {
+  //   try {
+  //     const formatedFilters = formatFilterJSON(appliedFilters);
+  //     const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
+  //     totalRows.current = data?.data?.data?.count;
+  //     const results: any = data?.data?.data?.results;
+  //     // results = results?.filter((order: any) => {
+  //     //   return !scheduledOrders.has(order.id);
+  //     // })
+  //     setRows(results);
+  //   }
+  //   catch (err) {
+  //     console.error(err);
+  //     notifyError("Something Went Wrong!");
+  //   }
+  // }
 
   const getMastersData = async () => {
     try {
@@ -375,9 +377,11 @@ const DueDateQuotation = () => {
       const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
       totalRows.current = data?.data?.data?.count;
       let results: any = data?.data?.data?.results;
-      results = results?.filter((order: any) => {
-        return !scheduledOrders.has(order.id);
-      })
+      if(scheduledOrders){
+        results = results?.filter((order: any) => {
+          return !scheduledOrders.has(order.id);
+        })
+      }
       setRows(results);
     }
     catch (err) {
@@ -388,7 +392,7 @@ const DueDateQuotation = () => {
 
   useEffect(() => {
     getUpdatedFilterData();
-  }, [appliedFilters, currentPage, unScheduled]);
+  }, [appliedFilters, currentPage, unScheduled, step == 1]);
 
 
   const getUserColumnConfig = async () => {

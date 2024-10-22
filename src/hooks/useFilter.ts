@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
-import { checkValue, findUniqueKeysAndValues, getDynamicAttributes, getKeyName } from '../helpers/utils';
+import { checkValue, findUniqueKeysAndValues, getDynamicAttributes, getKeyName, getType } from '../helpers/utils';
 import { filterAttributes, staticHeaderConfig } from '../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
 import { FilterState } from '../VectorFlow/types/MTO';
 
@@ -121,7 +121,7 @@ const useFilter=(filterData: any, page: any)=>{
                 id: "odr",
                 label: "Order Details Filter",
                 filters: updatedFilterAttributes?.order?.map((key: any) => ({
-                    type: staticHeaderConfig[key]?.type || InputTypes.MultiSelect,
+                    type: staticHeaderConfig[key]?.type || getType(filterData?.hdrkeymap?.lattr, key) || getType(filterData?.hdrkeymap?.oattr, key),
                     name: staticHeaderConfig[key]?.name || (getKeyName(filterData?.hdrkeymap?.lattr, key) || getKeyName(filterData?.hdrkeymap?.oattr, key)),
                     attributeName: key,
                     operator: '',

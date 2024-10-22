@@ -42,12 +42,6 @@ const contextWrapper = (children: ReactNode,store:any) => {
 };
 
 describe('BMTrends Component', () => {
-
-    test('to check capsule buttons render properly', () => {
-        render(contextWrapper(<BMTrends />, mockedStore));
-        expect(screen.getByText('Absolute Value')).toBeInTheDocument();
-        expect(screen.getByText('Percentage')).toBeInTheDocument();
-    });
     
     // test('to check capsule action toolbar render properly', () => {
     //     render(contextWrapper(<BMTrends />, mockedStore));

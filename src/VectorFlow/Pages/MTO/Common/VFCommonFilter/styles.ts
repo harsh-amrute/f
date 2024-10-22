@@ -2,19 +2,21 @@ import styled from "styled-components";
 
 
 export const FilterBody = styled.div`
-margin:0px 47px 0px 47px;
-display:flex;
-justify-content:center;
-gap:10px;  //25px
+    // margin:0px 47px 0px 47px;
+    display:flex;
+    justify-content:center;
+    gap:10px;  //25px
+    height: max-content;
+    padding: 0 47px;
+    overflow: auto;
 }
 `
 export const FilterCardWrapper = styled.div`
-width:400px;
-margin:47px 0px 47px 0px;
-background-color:white;
-box-shadow: 0px 6px 12px #95959529;
-border-radius: 6px;
-height: max-content;
+    width:400px;
+    margin:47px 0px 47px 0px;
+    background-color:white;
+    box-shadow: 0px 6px 12px #95959529;
+    border-radius: 6px;
 `
 
 export const FilterWrapper = styled.div`
