@@ -1,7 +1,6 @@
 import React from 'react'
 
 const MTOErrorWarningCell = (data: any) => {
-    console.log("cell renedere data", data);
   if(data?.value?.error){
     return (
     <div style={{display: 'flex', alignItems: 'center',justifyContent: 'center', fontFamily: 'roboto', fontWeight: 'bold'}}>

@@ -124,7 +124,6 @@ const TaskStatus = ()=>{
     const getMTOTaskData = async()=>{
         try{
             const response = await getMTOTaskStatusData();
-            console.log("MTO task data....", response.data.data.results);
             const transformedData = MTOToMTAFormat(response.data.data.results);
             if(rowData){
                 setFinalData([...rowData, ...transformedData])
@@ -149,15 +148,10 @@ const TaskStatus = ()=>{
                 return differenceInSeconds(formatDate(b.PendingSince),formatDate(a.PendingSince)) 
             })
             setRowData(newRowData)
+            getMTOTaskData();
         }
-        getMTOTaskData();
     },[rowData])
-        // rowData = rowData.map((r:any)=>{
-            //     return {
-                //         ...r,
-                //         PendingSince:format(r.PendingSince,'dd/MM/yy hh:mm:ss a')
-                //     }
-                // })
+        
                 
                 if(isLoading){
                     return <VFLoader/>

@@ -649,7 +649,6 @@ export const generateRandomId = (length?: number) => {
 }
 
 export const replaceKeyWithDisplayName = (message: string, master: MDMMasterState) => {
-  //console.log(message)
   return new String(message).replaceAll(/",*?"/g, (m) => {
     const displayName = master.fields.find((f: Field) => f.key === m.replaceAll('"', ''))?.displayName;
     if (displayName) return displayName
@@ -674,9 +673,6 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   //Selected Columns Keys
   const selectedKeys = selectedColumns.map((col: any) => col.colId);
 
-  console.log("selected Columns buffer", selectedColumns);
-  console.log("master buffer", master);
-  console.log("file", file);
 
   const data = await readXlsxFile(buffer, {
     parseNumber: (string: any) => string
@@ -688,7 +684,6 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
     else return '';
   })
 
-  console.log("buff ka data...",data)
 
   if(master.id===501 || master.id===502){
     const objKeys: string[] = [];
@@ -706,17 +701,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
       bufferData.push(buffData);
     }
 
-    // dispatch(SET_RECORD_COUNT(bufferData.length));
-    // dispatch(UPDATE_ROW_DATA(bufferData));
-
     return bufferData;
-
-    // console.log("** Final buffer data **", bufferData);
-    // TODO do validations here to show a modal for errors
-
-
-
-    
   }
 
   let headers: any = [] //Not Selected Headers
@@ -1617,7 +1602,6 @@ export const getActionId = (actionName: string): DraftActionType => {
 
 export const createMastersStateFromDraftData = (draftData: any[], fields: Master[]): MDMMasterState[] => {
 
-  console.log("mTA draft data and fields", draftData, fields);
   const masters: MDMMasterState[] = []
   draftData.map((master) => {
     const existingMaster = fields.find((m: Master) => m.id == master.MasterId)
@@ -1641,7 +1625,6 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
     }
   })
 
-  console.log('expected masters output',masters)
   return masters
 }
 export const getUploadModalRadioButtons = (masterId: number) => {

@@ -325,7 +325,6 @@ const useAdd=()=>{
       // TODO : mto 
       const getErrorForBuffer = (ele:any, index: any)=>{
         if(ele.bt === '' || ele.bsz === '' || ele.bsz=== null || ele.bt===null){ return {error: "Enter Buffer Type and Buffer Size", warning: ""};}
-        console.log("error for buffer", ele)
         let isBszUniq = true;
         activeMaster.rowData.forEach((e: any, i:any)=>{
           if (i>=index) return ;
@@ -343,7 +342,6 @@ const useAdd=()=>{
       }
 
       const onDataChange = (data: any)=>{
-        console.log("data changed", data);
         const tempRowData:any = [...activeMaster.rowData];
         const finData:any = [];
         tempRowData.forEach((ele:any, index: any)=>{

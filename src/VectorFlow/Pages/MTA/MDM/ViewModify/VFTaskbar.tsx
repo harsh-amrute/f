@@ -271,13 +271,13 @@ const VFTaskBar = (props: VFTaskBarProps) => {
             <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
                 <VFTaskBarButtonGroup>
                     <BackButton />
-                    <VFButtonOutline onClick={() => {console.log("Export Data") }} themeUi={themeUi} disabled={false} width={139}>
+                    <VFButtonOutline onClick={() => {return null; }} themeUi={themeUi} disabled={false} width={139}>
                         Export Data
                     </VFButtonOutline>
-                    <VFButtonOutline onClick={onMTOSaveAsDraft? onMTOSaveAsDraft: () => { console.log("Save As Draft2") }} themeUi={themeUi} disabled={false} width={139}>
+                    <VFButtonOutline onClick={onMTOSaveAsDraft? onMTOSaveAsDraft: () => { return null; }} themeUi={themeUi} disabled={false} width={139}>
                         Save As Draft
                     </VFButtonOutline>
-                    <VFButtonOutline onClick={onMTOSaveData && (!isMTOSaveDataDisabled) ? onMTOSaveData : () => { console.log("Save Data") }} themeUi={themeUi} disabled={isMTOSaveDataDisabled} width={139}>
+                    <VFButtonOutline onClick={onMTOSaveData && (!isMTOSaveDataDisabled) ? onMTOSaveData : () => {return null;}} themeUi={themeUi} disabled={isMTOSaveDataDisabled} width={139}>
                         Save Data
                     </VFButtonOutline>
 

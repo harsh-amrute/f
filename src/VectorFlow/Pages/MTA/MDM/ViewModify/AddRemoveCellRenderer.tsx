@@ -38,11 +38,6 @@ const AddRemoveCellRenderer = (params: any) => {
     }
     
         
-    
-
-                // console.log("params", params);
-
-
               if ((params.node.rowIndex === 0)) {
                 return (
                   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' }}>

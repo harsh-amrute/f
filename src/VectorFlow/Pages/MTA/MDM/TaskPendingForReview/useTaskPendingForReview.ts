@@ -90,6 +90,17 @@ const useTaskPendingForReview = ()=>{
   
   const {mutateAsync: putMTOBufferData} = usePutMtoBufferMasterData();
 
+  const convertColumnsFormat = (columns:any) => {
+    const sortedColumns = columns.sort((a:any,b:any)=>parseInt(a.col_Position)-parseInt(b.col_Position));
+    return sortedColumns.map((col:any, index:any) => ({
+        field:col.key,
+        headerName:col.displayName,
+        position:index+1,
+        dataType:col.dataType,
+        visible:col.visible
+    }));
+}
+
     const resetState = ()=>{
         setDetailTableColDefs([])
         setDetailTableRowData([])
@@ -100,7 +111,6 @@ const useTaskPendingForReview = ()=>{
 
     const handleOnClick = async(taskData:TaskDataType|any)=>{
         let toastId;
-        // TODO: write the conditions for MTO
         setMTOTask(taskData);
         if(taskData.isMTO){
 
@@ -131,16 +141,7 @@ const useTaskPendingForReview = ()=>{
 
 
 
-    const convertColumnsFormat = (columns:any) => {
-        const sortedColumns = columns.sort((a:any,b:any)=>parseInt(a.col_Position)-parseInt(b.col_Position));
-        return sortedColumns.map((col:any, index:any) => ({
-            field:col.key,
-            headerName:col.displayName,
-            position:index+1,
-            dataType:col.dataType,
-            visible:col.visible
-        }));
-    }
+   
 
                 
                 if(currentMasterFields){
@@ -251,7 +252,6 @@ const useTaskPendingForReview = ()=>{
                         taskDataStore.push(...result.data.data);
                     }
                     taskDataStore[0].data.push(...result.data.data[0].data);
-                    console.log(result.data.data)
                     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${taskCount} / ${taskCount}`})
                     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${taskCount}`})
                 }
@@ -357,16 +357,14 @@ const useTaskPendingForReview = ()=>{
        
     }
 
-    const [masterSelect]= useState<any>([])
 
     const mtoOnSelectionChange = ()=>{
         const selectRow:any = ref.current?.api.getSelectedRows();
         const selectedRows = [...selectRow]
 
         const newData:any = []; 
-        console.log("selected rows... ", selectedRows)
 
-        if(selectedRows.length > 0 && !_.isEqual(masterSelect,selectedRows)){
+        if(selectedRows.length > 0 ){
 
             
             detailTableRowData.forEach((ele:any)=>{
@@ -379,9 +377,6 @@ const useTaskPendingForReview = ()=>{
                     }
                 newData.push(newVal);
             })
-            // ref.current?.api.setNodesSelected({ nodes: selectedRows, newValue: true })
-            // setDetailTableRowData(newData);
-            // setMasterSelect(selectedRows);
             dispatch(SET_TASK_PENDING_SELECTED([...selectedRows] ));
 
         }
@@ -456,7 +451,6 @@ const useTaskPendingForReview = ()=>{
     const MTOToMTAFormat=(inData: any)=>{
 
         const newData:any = [];
-        // console.log("mtomta data....", inData)
         inData.forEach((val:any)=>{
             const newVal:any = {}
             newVal.TaskID = val.tid;
@@ -529,10 +523,11 @@ const useTaskPendingForReview = ()=>{
               "buffData": approvedData
             }
           
-        // console.log("final data submit",finData);
         try{
             const response = await putMTOBufferData(finData);
-            console.log(response);
+            if(response.status=== 200){
+                notifySuccess("Task Updated Successfully");
+            }
         }
         catch(error){
             console.log(error)

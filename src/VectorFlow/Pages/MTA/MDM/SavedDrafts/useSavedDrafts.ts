@@ -78,7 +78,6 @@ const useSavedDrafts = ()=>{
 
     // export const createMastersStateFromDraftData = (draftData: any[], fields: any[]): any[] => {
 
-    //     console.log("mTA draft data and fields", draftData, fields);
     //     const masters: MDMMasterState[] = []
     //     draftData.map((master) => {
     //       const existingMaster = fields.find((m: any) => m.id == master.MasterId)
@@ -120,22 +119,16 @@ const useSavedDrafts = ()=>{
     
     const onEditDraft = async(draftDetails:any)=>{
         let toastId;
-        // mto draft .....
         if(draftDetails.isMTO){
-            // console.log('dd details...',draftDetails)
             
             try{
                 const res: any = await getDraftByIdMTO(draftDetails.DraftId);
-                // console.log('res',res);
                 dispatch(SET_RECORD_COUNT(res.data.data.count));
                 const draftData:any = res.data.data.results;
            
 
-            // const mastersData:any= {data: {data: []}};
             const mastersDataRes= await getMTOMasterUIConfiguration();
-            // console.log("masteres dataaa", mastersDataRes);
             const mastersData = mastersDataRes.data.data[1];
-            console.log('master Data res...',mastersDataRes)
         
             toast.dismiss();
             
@@ -258,8 +251,6 @@ const useSavedDrafts = ()=>{
         const fields = mastersData.data.data
         const masterState = createMastersStateFromDraftData(draftData,fields)
         const activeMaster = masterState.find((m:MDMMasterState)=>m.progress!=='submitted');
-        console.log("active master mta", activeMaster);
-        console.log("master state mta", masterState);
         
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
         dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(fields)))
@@ -268,7 +259,6 @@ const useSavedDrafts = ()=>{
         if(activeMaster){
             dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster)))
             dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
-            console.log('index of active master',masterState.indexOf(activeMaster))
         }
 
         

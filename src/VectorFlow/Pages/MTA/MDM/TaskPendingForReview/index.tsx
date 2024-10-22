@@ -107,14 +107,7 @@ const TaskPendingForReview = ()=>{
                 rowData={detailTableRowData}
                 suppressRowClickSelection 
                 onSelectionChanged={()=>{
-                  // if( detailTableRowData && detailTableRowData[0].selectStatus){
-                    console.log("selection changed...")
                     mtoOnSelectionChange();
-                  // }
-                    if(ref && ref.current){
-                        // setSelectedRows(ref.current.api.getSelectedRows().length)
-                    }
-                    
                 }}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  

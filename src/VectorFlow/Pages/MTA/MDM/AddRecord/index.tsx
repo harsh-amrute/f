@@ -153,7 +153,7 @@ const AddRecord = () => {
                   defaultColDef= {
                     {flex: 1}
                   }
-                  onCellEditingStopped={activeMaster.isMTO? onDataChange: ()=>{console.log("data updated")}}
+                  onCellEditingStopped={activeMaster.isMTO? onDataChange: ()=>{return null}}
                   />
                 {/* } */}
                   <div style={{display:'none'}}>                

@@ -317,7 +317,6 @@ const useViewModify = (pageType: string) => {
       const { data } = await masterUIConfiguration(pageType);
       const MtoBufferdata = await MTOMasterUIConfiguration();
 
-      //console.log('MtoMtoBufferdata',MtoBufferdata?.data?.data)
       if(data){
 
         const concatenatedResult = concatenateFields(data?.data, MtoBufferdata?.data?.data);
@@ -773,7 +772,6 @@ const useViewModify = (pageType: string) => {
     setIsTableDataLoading(false);
     if (activeMaster.isMTO) {
       if (!result?.data?.data?.count || result?.data?.data?.count == 0 || result?.data?.data?.count == '') {
-        console.log("count,.,",result?.data?.data?.length)
         setTempRecordCount(result.data.data.length)
       }
       else {
@@ -979,7 +977,6 @@ const useViewModify = (pageType: string) => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("ui_config", JSON.stringify(activeMaster.fields))
-      console.log("ui_config activeMaster.field", activeMaster);
       formData.append("screen_type", JSON.stringify({ screenType: pageType }))
       const processId = uuidv4();
 
@@ -990,7 +987,6 @@ const useViewModify = (pageType: string) => {
         
         intervalID = setInterval(async () => {
           const progress = await getUploadProgress(processId);
-          console.log("progress data...",progress.data)
           setUploadProgress(progress.data.progress);
           setTotalProgress(progress.data.totalRows)
         }, 1000)
@@ -1355,8 +1351,6 @@ const useViewModify = (pageType: string) => {
         }
       }
       else {
-        // console.time('That took ')
-        // console.log('Calculating...')
         const tempCon = createConflictRowData(localConflictData, activeMaster.id)
         const tempError = createErrorRowData(localErrorData, activeMaster.id)
         const tempResult: any = []
@@ -1365,14 +1359,6 @@ const useViewModify = (pageType: string) => {
           const exist = tempError.find((e: any) => e.sc === t.sc)
           if (exist) tempResult.push(exist)
         })
-
-        // console.log("Conflicts Count : ",tempCon.length)
-        // console.log("Errors Count : ",tempError.length)
-        // console.log("Intersection Count : ",tempResult.length)
-        // console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
-        // console.log("Active master length",activeMaster.rowData.length);
-        // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
-        // console.timeEnd('That took ')
         setConflictData(tempCon)
         setConflictCount(tempCon.length)
         setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length - tempResult.length) + (tempError.length - tempResult.length)))
@@ -1412,8 +1398,6 @@ const useViewModify = (pageType: string) => {
         }
       }
       else {
-        // console.time('That took ')
-        // console.log('Calculating...')
 
         const tempCon = createConflictRowData(localConflictData, activeMaster.id)
         const tempError = createErrorRowData(localErrorData, activeMaster.id)
@@ -1424,14 +1408,6 @@ const useViewModify = (pageType: string) => {
           const exist = tempError.find((e: any) => e.sc === t.sc)
           if (exist) tempResult.push(exist)
         })
-
-        // console.log("Conflicts Count : ",tempCon.length)
-        // console.log("Errors Count : ",tempError.length)
-        // console.log("Intersection Count : ",tempResult.length)
-        // console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
-        // console.log("Active master length",activeMaster.rowData.length);
-        // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
-        // console.timeEnd('That took ')
         setConflictData(tempCon)
         setConflictCount(tempCon.length)
         setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length - tempResult.length) + (tempError.length - tempResult.length)))
@@ -1673,7 +1649,6 @@ const useViewModify = (pageType: string) => {
   // }
 
   const getBufferMasterDataType = async () => {
-    console.log("yeh ho raha haii calll.......", activeMaster.colDefs);
     const BufferTypeMaster = await GetBufferTypeMaster();
     setBufferTypeData(BufferTypeMaster?.data?.data);
 
@@ -1779,7 +1754,6 @@ const useViewModify = (pageType: string) => {
             padding: 0
           }
         }
-        // onCellClicked:(params:any)=>console.log(params)
         // tooltipField:colDef.field
 
       }
@@ -1793,7 +1767,6 @@ const useViewModify = (pageType: string) => {
   }
 
   const onIgnoreSubmitErrors = () => {
-    console.log(activeMaster.progress)
     const errorRowData = createErrorRowData(errorData, activeMaster.id)
     if (errorRowData.length > 0) {
       addInvalidDataColDefs('error')
@@ -1815,7 +1788,6 @@ const useViewModify = (pageType: string) => {
     if(bufferTypeData){
 
       bufferTypeData.forEach((ele: any) => {
-      // console.log(ele.id, currBuff)
       if (ele.id.toString() === currBuff.toString()) {
         
         val = ele.dsc;
@@ -1830,8 +1802,6 @@ const useViewModify = (pageType: string) => {
     const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
       const editable = (params: any) => params.node.rowIndex === 0;
 
-      // console.log("Buffer type masters", bufferTypeMaster)
-      // console.log('**',colDef.field);
 
       if (colDef.field === 'bt') {
         return {
@@ -1845,7 +1815,6 @@ const useViewModify = (pageType: string) => {
         };
       }
       if (colDef.field==="ib"){
-        console.log("yahan pe ayaa!! ib", colDef);
 
         return {
           ...colDef,
@@ -1856,7 +1825,6 @@ const useViewModify = (pageType: string) => {
         
       }
       else if (colDef.field==="bcd" || colDef.field === "bd"){
-        console.log("yahan pe ayaa bcd bd!!", colDef);
 
         return {
           ...colDef,
@@ -1926,7 +1894,6 @@ const useViewModify = (pageType: string) => {
 
 
     const selectedRows:any = ref?.current?.api?.getSelectedRows();
-    console.log("selected rows..", selectedRows);
     selectedRows.forEach((e:any)=>{
       const newVal = JSON.parse(JSON.stringify(e));
       // bufferTypeData.forEach((e:any)=>{
@@ -1978,7 +1945,6 @@ const useViewModify = (pageType: string) => {
     let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
     activeMaster.rowData.forEach((ele:any)=>{
       bufferTypeData.forEach((e:any)=>{
-      console.log("e.dsc e.bt", ele.dsc, e.bt)
         if(ele.dsc===e.bt){
           e.bt=ele.id;
         }
