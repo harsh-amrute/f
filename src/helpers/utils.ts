@@ -3485,6 +3485,12 @@ export const formatFilterJSON = (filter: any) => {
       }
     }
   }
+  Object.keys(formatFilter).forEach(key => {
+    if (formatFilter[key]?.val === '') {
+      delete formatFilter[key];
+    }
+  });
+  console.log("formate filter", formatFilter);
   return formatFilter;
 }
 
