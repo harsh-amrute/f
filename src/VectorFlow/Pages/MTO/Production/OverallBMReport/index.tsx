@@ -876,7 +876,7 @@ const OverallBmReport = () => {
                 />
             </BMDepHeaderWraper>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
-                <p>{moment(date).format('D MMM YYYY')}</p>
+                <p>{date? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
 
             {(isGridLoading || isExcelLoading || isGetStateLoading ) &&  <OverlayLoader/> }
