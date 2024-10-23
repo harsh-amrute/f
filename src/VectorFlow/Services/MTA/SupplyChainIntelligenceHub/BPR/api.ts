@@ -25,13 +25,13 @@ export namespace BPRService {
   }
 
   export const submitRemark = async (payload:{data:Array<SubmitBPRRemarkPayload>}) => {
-    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/AddRemark`,payload,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/AddRemark`,{...payload,"forwardUsers":true},{
       headers:{ 'Content-Type': 'application/json' }
     });
   }
 
   export const getRemarkHistory = async (payload:any) => {
-    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetRemarkDetails`,payload,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetRemarkDetails`,{...payload,"forwardUsers":true},{
       headers:{ 'Content-Type': 'application/json' }
     }); 
   }

@@ -158,6 +158,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
       }) : undefined).filter((element:any) => element !== undefined)
 
       setStorePermission(fillEmptyPermission);
+      console.log(fillStepperDetails);
       setStepperDetails(fillStepperDetails);
       setActiveApplication(validApplications[0]);
       updateAllPermissions(validApplications[0]);
@@ -247,6 +248,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
         }
       }
     })
+    console.log(newStepperDetails);
     setStepperDetails(newStepperDetails);
 
     //Set Permissions For Selected Applications

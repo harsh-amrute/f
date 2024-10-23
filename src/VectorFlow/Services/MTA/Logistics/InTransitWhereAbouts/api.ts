@@ -18,13 +18,13 @@ export const getInTransitWhereAboutsDataCount = async (body:any) => {
   }
 
   export const getRemarkDetailsForInTransit = async (body:any) => {
-    return await axios.post(process.env.REACT_APP_API_HOST + `/api/mta/GetRemarkDetailsForInTransit`,body,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/mta/GetRemarkDetailsForInTransit`,{...body,"forwardUsers":true},{
         headers:{ 'Content-Type': 'application/json' }
       });
   }
 
   export const submitRemarksForInTransit = async (body:any) => {
-    return await axios.post(process.env.REACT_APP_API_HOST + `/api/mta/SubmitRemarksForInTransit`,body,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/mta/SubmitRemarksForInTransit`,{...body,"forwardUsers":true},{
         headers:{ 'Content-Type': 'application/json' }
       });
   }

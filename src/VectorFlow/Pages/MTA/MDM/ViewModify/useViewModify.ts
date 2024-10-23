@@ -1132,7 +1132,7 @@ const useViewModify = (pageType:string) => {
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-            if(draftID.length > 0){
+            if(draftID.length > 0 && localErrorCount === 0){
               await deleteDraft(draftID);
             }
           }
@@ -1189,7 +1189,7 @@ const useViewModify = (pageType:string) => {
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-            if(draftID.length > 0){
+            if(draftID.length > 0 && localErrorCount === 0){
               await deleteDraft(draftID);
             }
           }
