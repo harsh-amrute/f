@@ -7,8 +7,13 @@ export const FilterBody = styled.div`
     justify-content:center;
     gap:10px;  //25px
     height: max-content;
+    max-height: 95vh;
     padding: 0 47px;
     overflow: auto;
+
+    input {
+        padding: 9px;
+    }
 }
 `
 export const FilterCardWrapper = styled.div`
@@ -81,6 +86,7 @@ gap:4px;
 input:focus {
     outline: none;
 }
+
 `
 
 export const ButtonContainer = styled.div`

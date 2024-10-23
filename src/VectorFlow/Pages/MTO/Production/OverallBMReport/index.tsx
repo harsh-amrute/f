@@ -176,8 +176,8 @@ const OverallBmReport = () => {
     useEffect(() => {
         try {
             getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
+
                 const response: any = data?.data?.data;
-                console.log(response);
                 if(response){
                     const analytics = modifyAnalyticsData(response);
                     dispatch(BM_REPORT_ANALYTICS(analytics))
@@ -421,6 +421,7 @@ const OverallBmReport = () => {
         try {
             setIsGridLoading(true)
             const formatedFilters = formatFilterJSON(appliedFilters);
+        
             const gridData = await getOverallBMReportData({ page: currentPage, appliedFilters: formatedFilters });
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
@@ -710,7 +711,14 @@ const OverallBmReport = () => {
 
     useEffect(() => {
         if (tempGridData) {
+            const colState = refGraph2.current?.api?.getColumnState();
+            tempGridRef.current?.api?.applyColumnState({
+                state: colState,
+                applyOrder: true
+            });
             tempGridRef.current?.api?.exportDataAsExcel({ fileName: "OverallBMReport" })
+
+            console.log("tempgreid state", tempGridRef.current?.api.getColumnState())
         }
     }, [tempGridData])
 
@@ -826,6 +834,8 @@ const OverallBmReport = () => {
                 state: colState,
                 applyOrder: true
             });
+
+         
         }
     }, [columnState])
 
@@ -834,6 +844,7 @@ const OverallBmReport = () => {
     const date = apiResponseData?.data?.data;
 
     useEffect(() => {
+       
         if (isReset) {
             setColumnState([...coldefs]);
             setIsReset(false)
@@ -865,7 +876,7 @@ const OverallBmReport = () => {
                 />
             </BMDepHeaderWraper>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
-                <p>{moment(date).format('D MMM YYYY')}</p>
+                <p>{date? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
 
             {(isGridLoading || isExcelLoading || isGetStateLoading ) &&  <OverlayLoader/> }
@@ -887,7 +898,7 @@ const OverallBmReport = () => {
                                         onGridReady={applyColumnState}
                                     />
                                     {/* This Grid is only for the user to download the excel report */}
-                                    <div style={{ display: 'none' }}>
+                                    <div style={{display: 'none'}}>
                                         <GridView
                                             reference={tempGridRef}
                                             agGridProps={agGridProps}

@@ -133,7 +133,7 @@ const MTOActionToolBar = ({
     const format2 = "MM-dd-yyyy"
     const d = new Date();
     const datetime = moment(d).format(format2);
-
+    
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
 
     return (
@@ -424,7 +424,7 @@ const MTOActionToolBar = ({
                                             <VFSelectedFilterLabel>
                                                 {filter?.label}:
                                             </VFSelectedFilterLabel>
-                                            {filter?.value?.map((f: any) => (
+                                            { filter?.value?.map((f: any) => (
                                                 <div key={f.value}>
                                                     <VFSelectedFiltersFilterContent>
                                                         <VFSelectedFiltersFilterValue>

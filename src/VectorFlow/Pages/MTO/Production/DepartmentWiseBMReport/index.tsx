@@ -797,6 +797,11 @@ const DptWiseBMReport = () => {
     useEffect(() => {
 
         if (tempGridData) {
+            const colState = refGraph1.current?.api?.getColumnState();
+            tempGraph.current?.api?.applyColumnState({
+                state: colState,
+                applyOrder: true
+            });
 
             tempGraph.current?.api?.exportDataAsExcel({ fileName: "DepartmentWiseBMReport" })
         }
@@ -1018,7 +1023,7 @@ const DptWiseBMReport = () => {
                 />
             </BMDepHeaderWraper>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
-                <p>{moment(date).format('D MMM YYYY')}</p>
+            <p>{date? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
             <>
                 {
