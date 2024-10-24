@@ -9,7 +9,8 @@ interface UserManagementStepperProps{
 }
 
 interface UserManagementStepperListProps{
-    label:string
+    label:string,
+    currentState:StepState
 }
 
 interface StepComponentProps {
@@ -27,21 +28,13 @@ const UserManagementStepper = (props:UserManagementStepperProps)=>{
         themeUi
     } = props
 
-    const getCurrentStep = (currIndex:number):StepState=>{
-
-
-        if(currIndex===activeStep) return "active"
-        if(currIndex<activeStep) return "completed"
-        return "pending"
-    }
-
     return(
         <StepperWrapper>
             {list.map((s,index)=>{
                 return(
                     <UserManagementStepperItem
                         label={s.label}
-                        currentState={getCurrentStep(index)}
+                        currentState={s.currentState}
                         isLast={index===list.length-1}
                         themeUi={themeUi}
                         key={index}

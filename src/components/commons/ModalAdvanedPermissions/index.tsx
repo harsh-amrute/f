@@ -39,7 +39,8 @@ const ModalAdvanedPermissions = (props: any) => {
     allPermissions,
     updateAllPermissions,
     storePermission,
-    setStorePermission
+    setStorePermission,
+    setStepperDetails
   } = props;
 
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
@@ -67,6 +68,12 @@ const ModalAdvanedPermissions = (props: any) => {
     }
     else{
       const newApplicationId = storePermission[getActiveApplicationIndex()-1].application_id;
+      setStepperDetails([...stepperDetails.map((step:any)=>{
+        const stepCopy = {...step};
+        if(step.id === newApplicationId) stepCopy.currentState='active';
+        if(step.id === activeApplication) stepCopy.currentState='pending';
+        return stepCopy;
+      })]);
       setActiveApplication(newApplicationId);
       updateAllPermissions(newApplicationId);
     } 
@@ -239,6 +246,12 @@ const ModalAdvanedPermissions = (props: any) => {
     }
     
     const newApplicationId = storePermission[getActiveApplicationIndex()+1].application_id;
+    setStepperDetails([...stepperDetails.map((step:any)=>{
+      const stepCopy = {...step};
+      if(step.id === newApplicationId) stepCopy.currentState='active';
+      if(step.id === activeApplication) stepCopy.currentState='completed';
+      return stepCopy;
+    })]);
     setActiveApplication(newApplicationId);
     updateAllPermissions(newApplicationId);
     

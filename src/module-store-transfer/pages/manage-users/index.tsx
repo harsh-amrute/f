@@ -146,10 +146,13 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
       
       const fillStepperDetails = dataAllPermissions.map((app:any,index:number)=>validApplications.includes(app.application_id) ? ({
         label:app.application_name,
+        id:app.application_id,
         currentState:'pending',
         isLast:index===dataAllPermissions.length-1,
         themeUi:themeUi
-      }) : undefined).filter((element:any) => element !== undefined)
+      }) : undefined).filter((element:any) => element !== undefined);
+      fillStepperDetails.sort((a:any,b:any)=>a.id-b.id)
+      fillStepperDetails[0].currentState = 'active';
 
       const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
         application_id:app.application_id,
@@ -157,8 +160,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
         locationPermission:[]
       }) : undefined).filter((element:any) => element !== undefined)
 
+      fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
       setStorePermission(fillEmptyPermission);
-      console.log(fillStepperDetails);
       setStepperDetails(fillStepperDetails);
       setActiveApplication(validApplications[0]);
       updateAllPermissions(validApplications[0]);
@@ -228,12 +231,13 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
     })
 
     //Enable Product Permissions of Applications With Selected Roles
-    const newStepperDetails:any = validApplications.map((id:any,index:number)=>{
+    const newStepperDetails:any = validApplications.map((valid_id:any,index:number)=>{
       //Find if Application Permission Already Exist
-      const oldPermissions = initialPermissions.find((app:any)=>app.application_id === id);
+      const oldPermissions = initialPermissions.find((app:any)=>app.application_id === valid_id);
       if(oldPermissions){
         return {
           label:oldPermissions.application_name,
+          id:valid_id,
           currentState:'pending',
           isLast:index===initialPermissions.length-1,
           themeUi:themeUi
@@ -241,14 +245,16 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
       }
       else{
         return {
-          label:dataAllPermissions.find((app:any)=>app.application_id === id).application_name,
+          label:dataAllPermissions.find((app:any)=>app.application_id === valid_id).application_name,
+          id:valid_id,
           currentState:'pending',
           isLast:index===initialPermissions.length-1,
           themeUi:themeUi
         }
       }
     })
-    console.log(newStepperDetails);
+    newStepperDetails.sort((a:any,b:any)=>a.id-b.id)
+    newStepperDetails[0].currentState = 'active';
     setStepperDetails(newStepperDetails);
 
     //Set Permissions For Selected Applications
@@ -267,6 +273,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
         }
       }
     })
+    validApplicationPermissions.sort((a:any,b:any)=>a.id-b.id);
 
     setStorePermission(validApplicationPermissions);
 
@@ -375,6 +382,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
         updateAllPermissions={updateAllPermissions}
         storePermission={storePermission}
         setStorePermission={setStorePermission}
+        setStepperDetails={setStepperDetails}
       />
     </>
   );
