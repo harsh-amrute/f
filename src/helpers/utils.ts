@@ -20,6 +20,7 @@ import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
 // clear cached token and redirect to sso login
+import CryptoJS from 'crypto-js';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -52,6 +53,17 @@ export const login = (navigate: NavigateFunction) => {
     window.location.href = String(process.env.REACT_APP_SSO_LOGIN_URL)
   }
 }
+
+export const hashPassword = (password: string): Promise<string> => {
+  const iv = CryptoJS.lib.WordArray.random(16); 
+  const encrypted = CryptoJS.AES.encrypt(password, CryptoJS.enc.Utf8.parse(process.env.REACT_APP_SECRET_KEY), {
+    iv: iv,
+    mode: CryptoJS.mode.CTR,
+    padding: CryptoJS.pad.NoPadding,
+  });
+  const encryptedPassword = iv.concat(encrypted.ciphertext).toString(CryptoJS.enc.Base64);
+  return encryptedPassword;
+};
 
 // save current url in session storage
 const saveOriginalUrlBeforeLogin = () => {

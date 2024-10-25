@@ -12,6 +12,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 // import { SITE_KEY,TEST_SITE_KEY } from "../../../helpers/constants";
 import { SITE_KEY} from "../../../helpers/constants";
 import WelcomeBoard from "./welcome-board";
+import { hashPassword } from '../../../helpers/utils'
 
 function LoginContainer() {
   const { t } = useTranslation();
@@ -46,13 +47,14 @@ function LoginContainer() {
   const [remember, setRemember] = useState(true);
   const recaptchaRef: any = useRef();
 
-  const onSave = () => {
+  const onSave = async () => {
     const recaptchaValue = recaptchaRef.current.getValue();
     const recaptcha = localStorage.getItem("_grecaptcha");
 
     if (recaptchaValue || recaptcha) {
 
       const formData = getValues();  
+      formData.password = await hashPassword(formData.password)
       mutateLogin(formData, {
         onSuccess: (data: any) => {
           if (data?.status === 400) {
