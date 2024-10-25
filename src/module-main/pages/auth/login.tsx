@@ -58,6 +58,7 @@ function LoginContainer() {
       mutateLogin(formData, {
         onSuccess: (data: any) => {
           if (data?.status === 400) {
+            recaptchaRef.current?.reset();
             notifyError(data?.error?.non_field_errors[0])
             localStorage.removeItem("token")
             localStorage.removeItem("url_permission")
@@ -77,6 +78,7 @@ function LoginContainer() {
         },
       });
     } else {
+      // recaptchaRef.current?.reload();
       notifyError(t("loginPage.notify.completeReCaptcha"));
     }
   };
