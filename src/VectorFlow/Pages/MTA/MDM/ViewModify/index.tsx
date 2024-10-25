@@ -1,6 +1,6 @@
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText } from "./styles";
+import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText, MTOPoogiTableContainer, PoogiSection, PoogiAddButtonWrapper } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
 import { generateOptions } from "../../../../../helpers/utils";
@@ -106,7 +106,11 @@ const ViewModify = () => {
     tempRecordCount,
     addRowToMtoGrid,
     onMTOSaveBufferData,
-    onMTOSaveAsDraft
+    onMTOSaveAsDraft,
+    MTOPoogiMajorColdef,
+    MTOPoogiMinorColdef,
+    onMajReasonSelected,
+    minReasonRowData
 
   } = useViewModify('modify');
 
@@ -121,14 +125,6 @@ const ViewModify = () => {
       }
     }
   }, [isTableDataLoading])
-
-  
-
-  const onGridReady = (params: any) => {
-    params.api.sizeColumnsToFit();
-  };
-
-
 
   return (
     <>
@@ -233,9 +229,119 @@ const ViewModify = () => {
                   </SCFilterButtonGroup>
                 </SCFilterContainer>
               }
-               <VFTable
-                  ref={ref}
-                  columnDefs={activeMaster.colDefs}
+              {
+                (activeMaster?.isMTO && (activeMaster?.id===503)) ?
+                <PoogiSection>
+
+                <MTOPoogiTableContainer style={{display: 'flex', height: '50%', flex: '1'}}>
+                 <VFTable
+                ref={ref}
+                columnDefs={MTOPoogiMajorColdef}
+                rowData={activeMaster.rowData}
+                {...agGridProps}
+                suppressPaginationPanel={!isDataAvailableLocally}
+                statusBar={{
+                  statusPanels: isDataAvailableLocally ? [
+                    { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                    { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                    { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                    ] :
+                    [],
+                  }}
+                  rowSelection ={"single"}
+                  suppressRowClickSelection={false}
+                  onSelectionChanged={onMajReasonSelected}
+                  height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
+                  />
+                 <VFTable
+              
+                columnDefs={MTOPoogiMinorColdef}
+                rowData={minReasonRowData}
+                  {...agGridProps}
+                  suppressPaginationPanel={!isDataAvailableLocally}
+                  statusBar={{
+                    statusPanels: isDataAvailableLocally ? [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                    ] :
+                      [],
+                    }}
+                  height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
+                  />
+                </MTOPoogiTableContainer>
+                    <PoogiAddButtonWrapper>
+                    <button
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '130px',
+                    margin: '10px',
+                    cursor: 'pointer',
+                    background: '#fff'
+                  }}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoGrid()) }}
+                >
+                  {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
+                    <>
+                      <img
+                        src="/assets/img/AddBufferMasterIcon.svg"
+                        alt="Add Master Button"
+                      />
+                      <p style={{ fontSize: '14px', color: ColorsMTO.Pink.code }}>Add Major Reason</p>
+                    </>
+                    :
+                    <>
+                      <img
+                        src="/assets/img/AddBufferMasterIconGrey.svg"
+                        alt="Add Master Button"
+                      />
+                      <p style={{ fontSize: '14px', color: ColorsMTO.LightGrey.code }}>Add Major Reason</p>
+                    </>
+                  }
+                </button>
+                <button
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '130px',
+                    margin: '10px',
+                    cursor: 'pointer',
+                    background: '#fff'
+                  }}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoGrid()) }}
+                >
+                  {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
+                    <>
+                      <img
+                        src="/assets/img/AddBufferMasterIcon.svg"
+                        alt="Add Master Button"
+                      />
+                      <p style={{ fontSize: '14px', color: ColorsMTO.Pink.code }}>Add Minor Reason</p>
+                    </>
+                    :
+                    <>
+                      <img
+                        src="/assets/img/AddBufferMasterIconGrey.svg"
+                        alt="Add Master Button"
+                      />
+                      <p style={{ fontSize: '14px', color: ColorsMTO.LightGrey.code }}>Add Minor Reason</p>
+                    </>
+                  }
+                </button>
+
+                    </PoogiAddButtonWrapper>
+                </PoogiSection>
+
+                :
+
+                <VFTable
+                ref={ref}
+                columnDefs={activeMaster.colDefs}
                   rowData={activeMaster.rowData}
                   {...agGridProps}
                   suppressPaginationPanel={!isDataAvailableLocally}
@@ -249,9 +355,9 @@ const ViewModify = () => {
                     ] :
                       [],
                   }}
-                  onGridReady={onGridReady}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "65%" : "95%" : "75%"}
-                />
+                  />
+                }
               {
                 (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
                 &&
@@ -276,7 +382,7 @@ const ViewModify = () => {
                   {...tempAgGridProps}
                 />
               </div>
-              {activeMaster.isMTO &&
+              {activeMaster.isMTO && activeMaster.id!==503 &&
                 <button
                   style={{
                     display: 'flex',
@@ -302,7 +408,7 @@ const ViewModify = () => {
                         src="/assets/img/AddBufferMasterIconGrey.svg"
                         alt="Add Master Button"
                       />
-                      <p style={{ fontSize: '18px', color: ColorsMTO.LightGrey.code }}>Add Buffer</p>
+                      <p style={{ fontSize: '18px', color: ColorsMTO.LightGrey.code }}>Add {activeMaster.name}</p>
                     </>
                   }
                 </button>

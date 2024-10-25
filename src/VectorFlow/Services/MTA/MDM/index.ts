@@ -285,4 +285,9 @@ export const useGetCCRMasterData = ()=>{
     return await MDMService.getCCRMasterData();
   })
 }
+export const useGetPOOGIMasterData = ()=>{
+  return useMutation(async ()=>{
+    return await MDMService.getPOOGIMasterData();
+  })
+}
 

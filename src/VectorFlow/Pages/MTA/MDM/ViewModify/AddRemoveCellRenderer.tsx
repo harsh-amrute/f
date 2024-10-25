@@ -16,25 +16,50 @@ const AddRemoveCellRenderer = (params: any) => {
         const allRows = [...activeMaster.rowData];
         allRows.shift();
         // Check if the entered Buffer type is unique 
-        if(params.data.bsz===""){
-          notifyError("Buffer size cannot be empty!")
-          return;
-        }
-        
-        
-        let isValid = true;
-        allRows.forEach((e)=>{
+        if(activeMaster.id===501){
+
+          if(params.data.bsz===""){
+            notifyError("Buffer size cannot be empty!")
+            return;
+          }
+          
+          
+          let isValid = true;
+          allRows.forEach((e)=>{
     
-          if(e.bsz== params.data.bsz && e.bt=== params.data.bt){
+            if(e.bsz== params.data.bsz && e.bt=== params.data.bt){
             notifyError("Buffer size must be unique!.")
             isValid = false;
             return;
           }
         })
-    
+        
         if(isValid){
-            dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'actions')));
+          dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'actions')));
         }
+      }
+      else if(activeMaster.id === 502){
+        // TODO: validations for CCR
+        if(params.data.cnm==="" || !params.data.cnm){
+          notifyError("CCR name cannot be empty!")
+          return;
+        }
+        if(params.data.cpd==="" || !params.data.cpd){
+          notifyError("CCR Capacity Per Day cannot be empty!")
+          return;
+        }
+        if(params.data.whpd==="" || !params.data.whpd){
+          notifyError("Working hours Per Day cannot be empty!")
+          return;
+        }
+        if(params.data.sh==="" || !params.data.sh){
+          notifyError("Scheduling horizon cannot be empty!")
+          return ;
+        }
+        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'actions')));
+
+
+      }
     }
     
         

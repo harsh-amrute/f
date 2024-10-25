@@ -230,6 +230,12 @@ export namespace MDMService {
     })
   }
 
+  export const getPOOGIMasterData = async ()=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/GetPoogiReasonMasterForMasterMgmt/?masterId=503', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
 
 
   export const getBufferTypeMaster = async () => {

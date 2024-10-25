@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -20,6 +20,7 @@ import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
+import PoogiEditDeleteCell from './PoogiEditDeleteCell';
 
 
 // Define TypeScript interfaces for the parameters
@@ -138,6 +139,7 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
   const {mutateAsync: getCCRMasterData}  = useGetCCRMasterData();
+  const {mutateAsync: getPOOGIMasterData} = useGetPOOGIMasterData();
 
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
 
@@ -207,7 +209,8 @@ const useViewModify = (pageType: string) => {
     warningCell: WarningCell,
     seasonalityColorCellRenderer: SeasonalityColorCellRenderer,
     seasonalityGraphCellRenderer: SeasonalityGraphCellRenderer,
-    conflictErrorCellRenderer: ConflictErrorCellRenderer
+    conflictErrorCellRenderer: ConflictErrorCellRenderer,
+    poogiEditDeleteCellRenderer: PoogiEditDeleteCell
   }), []);
 
 
@@ -625,6 +628,9 @@ const useViewModify = (pageType: string) => {
       else if(activeMaster.id===502 && activeMaster.isMTO) {
         resultData = await getCCRMasterData();
       }
+      else if(activeMaster.id===503 && activeMaster.isMTO){
+        resultData = await getPOOGIMasterData();
+      }
       else {
         resultData = await getCount(payload);
       }
@@ -639,6 +645,9 @@ const useViewModify = (pageType: string) => {
       }
       else if(activeMaster.id===502 && activeMaster.isMTO) {
         resultData = await getCCRMasterData();
+      }
+      else if(activeMaster.id===503 && activeMaster.isMTO) {
+        resultData = await getPOOGIMasterData();
       }
       else {
         resultData = await getMasterData(payload);
@@ -1832,6 +1841,13 @@ const useViewModify = (pageType: string) => {
         };
       }
 
+      if(activeMaster.id===502){
+        return {
+          ...colDef,
+          editable
+        }
+      }
+
       else {
         return {
           ...colDef,
@@ -1847,6 +1863,7 @@ const useViewModify = (pageType: string) => {
     const actionsCol: any = {
       field: 'actions',
       headerName: 'Actions',
+      colId: 'actions',
       //flex: 1,
       width: 100, // Set the width for the actions column
       cellRenderer: AddRemoveCellRenderer
@@ -1865,16 +1882,26 @@ const useViewModify = (pageType: string) => {
 
   const addRowToMtoGrid = () => {
     const newRowValue = activeMaster.rowData.length;
-    const newRow: any = {
-      bcd: `PROD-${newRowValue}-Buff`,
-      bd: `BUFF-${newRowValue}`,
-      bsz: '', // Example value; modify as needed
-      slt: 0,
-      mlt: 0,
-      ib: false,
-      bt: 1,
-      editable: true,
-    };
+    let newRow:any = {};
+
+    if(activeMaster.id===501){
+
+      newRow = {
+        bcd: `PROD-${newRowValue}-Buff`,
+        bd: `BUFF-${newRowValue}`,
+        bsz: '', // Example value; modify as needed
+        slt: 0,
+        mlt: 0,
+        ib: false,
+        bt: 1,
+        editable: true,
+      };
+    }
+    else if(activeMaster.id===502){
+      newRow = {
+        ccd: `CCR-${newRowValue}`,
+      }
+    }
     dispatch(UPDATE_ROW_DATA([newRow,...activeMaster.rowData]));
     addEditableToLastColumn();
 
@@ -2005,6 +2032,12 @@ const useViewModify = (pageType: string) => {
     }
   }
 
+  const [selectedMajReason, setSelectedMajReason] = useState<any>('');
+
+  const onMajReasonSelected = ()=>{
+    setSelectedMajReason(ref?.current?.api?.getSelectedRows()[0])
+  }
+
   return {
     colDefs,
     isSelectMasterOpen,
@@ -2087,7 +2120,24 @@ const useViewModify = (pageType: string) => {
     tempRecordCount,
     addRowToMtoGrid,
     onMTOSaveBufferData,
-    onMTOSaveAsDraft
+    onMTOSaveAsDraft,
+    MTOPoogiMajorColdef:[{
+      headerName: "Sr No.",
+      cellStyle: {
+        "textAlign": "center"},
+      valueGetter: "node.rowIndex + 1"
+    },...activeMaster.colDefs.filter((ele: any) =>ele.field==='actions'|| ele.colId === 'majId' || ele.colId === 'majdsc' || ele.colId === 'pl')],
+    MTOPoogiMinorColdef: [{
+      headerName: "Sr No.",
+      cellStyle: {
+        "textAlign": "center"},
+      valueGetter: "node.rowIndex + 1"
+    },...activeMaster.colDefs.filter((ele: any) => ele.field==='actions'|| ele.colId === 'minId' || ele.colId === 'mindsc'), {
+      headerName: "",
+      cellRenderer: 'poogiEditDeleteCellRenderer'
+    }],
+    onMajReasonSelected,
+    minReasonRowData: activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData
   }
 }
 
