@@ -24,15 +24,18 @@ const contextWrapperWithCustomTheme = (children: ReactNode,theme:string) => {
   };
 
 describe('Stepper Component', () => {
-  const StepItems = [
+  const StepItems:any = [
     {
-        label:'Retail'
+        label:'Retail',
+        currentState:'completed'
     },
     {
-        label:'Distribution'
+        label:'Distribution',
+        currentState:'active'
     },
     {
-        label:'Production'
+        label:'Production',
+        currentState:'pending'
     }
   ]
 

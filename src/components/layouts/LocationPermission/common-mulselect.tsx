@@ -54,10 +54,11 @@ export default forwardRef(({ ...props }: any, ref) => {
     setListLcType(newListLcType);
     setListLcCluster(newListLcCluster);
 
+
     setLcRegion(valueSelectLc?.lcRegion);
     setLcType(valueSelectLc?.lcType);
     setLcCluster(valueSelectLc?.lcCluster);
-  }, []);
+  }, [valueSelectLc]);
 
   const handleSelectLcRegion = (e: any) => {
     handleSelectParent({

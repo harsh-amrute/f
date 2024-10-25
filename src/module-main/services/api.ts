@@ -102,6 +102,10 @@ export namespace MainService {
           LOCAL_STORAGE_KEY.URL_PERMISSION,
           JSON.stringify(resp?.data?.data?.url_permission)
         )
+        localStorage.setItem(
+          LOCAL_STORAGE_KEY.LANDING_PAGE,
+          resp?.data?.data?.landing_page
+        )
         return await Promise.resolve(resp)
       })
   }

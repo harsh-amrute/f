@@ -9,7 +9,8 @@ interface UserManagementStepperProps{
 }
 
 interface UserManagementStepperListProps{
-    label:string
+    label:string,
+    currentState:StepState
 }
 
 interface StepComponentProps {
@@ -27,23 +28,16 @@ const UserManagementStepper = (props:UserManagementStepperProps)=>{
         themeUi
     } = props
 
-    const getCurrentStep = (currIndex:number):StepState=>{
-
-
-        if(currIndex===activeStep) return "active"
-        if(currIndex<activeStep) return "completed"
-        return "pending"
-    }
-
     return(
         <StepperWrapper>
             {list.map((s,index)=>{
                 return(
                     <UserManagementStepperItem
                         label={s.label}
-                        currentState={getCurrentStep(index)}
+                        currentState={s.currentState}
                         isLast={index===list.length-1}
                         themeUi={themeUi}
+                        key={index}
                     />
                 )
             })}
@@ -62,6 +56,7 @@ const UserManagementStepperItem = (step:StepComponentProps)=>{
     } = step
 
     const getImgSrc = (state:StepState):string=>{
+        console.log(state)
         if(state==='completed') return "/assets/img/step-completed.svg"
         if(state==='active')return themeUi==="REGALBLAZE"?"/assets/img/step-active-regal.svg":"/assets/img/step-active.svg"
         return "/assets/img/step-pending.svg"

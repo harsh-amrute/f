@@ -20,6 +20,7 @@ export default forwardRef(({ ...props }: any, ref) => {
   const [category, setCategory] = useState<any>([]);
   // const [select, setSelect] = useState<any>();
 
+  
   useEffect(() => {
     const newListBrand: any = [];
     const newListSubBrand: any = [];
@@ -49,14 +50,18 @@ export default forwardRef(({ ...props }: any, ref) => {
       });
     });
 
+    console.log('effect called')
+    console.log("ALL OPTIONS",newListBrand);
+    console.log("CURRENT SELECTED OPTIONS",valueSelectPrd?.brand)
+
     setListBrand(newListBrand);
     setListSubBrand(newListSubBrand);
     setListCategory(newListCategory);
-
+    console.log(valueSelectPrd?.brand)
     setBrand(valueSelectPrd?.brand);
-    setSubBrand(valueSelectPrd?.sub_brand);
+    setSubBrand(valueSelectPrd?.subBrand);
     setCategory(valueSelectPrd?.category);
-  }, []);
+  }, [valueSelectPrd]);
 
   const handleSelectBrand = (e: any) => {
     handleSelectParent({
