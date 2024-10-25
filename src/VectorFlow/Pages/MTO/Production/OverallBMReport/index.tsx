@@ -421,8 +421,14 @@ const OverallBmReport = () => {
         try {
             setIsGridLoading(true)
             const formatedFilters = formatFilterJSON(appliedFilters);
-        
+            
             const gridData = await getOverallBMReportData({ page: currentPage, appliedFilters: formatedFilters });
+            if(!gridData.data.data || gridData.data.data.length===0){
+                setGridDataCount(0);
+                setGridData([]);
+                setIsGridLoading(false);
+                return;
+            }
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
             setIsGridLoading(false)
