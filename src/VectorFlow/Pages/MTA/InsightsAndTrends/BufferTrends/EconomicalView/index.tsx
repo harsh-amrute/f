@@ -1,4 +1,3 @@
-
 import "allotment/dist/style.css";
 import {CapsuleWrapper} from "./styles";
 import {SCChartHeaderContainer, SCChartContainer, SCHorizontalDivider,

@@ -1,6 +1,4 @@
-
 {
-
   "loginPage": {
     "welcome": "Welcome to a seamless, end to end supply chain management system",
     "title": "Login",
@@ -77,11 +75,11 @@
         "forceNormChange": "Force Norm Change",
         "PhaseIn_PhaseOut": "Phase-In & Phase Out",
         "Seasonality": "Seasonality",
-        "controlPanel":"Control Panel",
-        "savedDrafts":"Saved Drafts",
-        "taskPendingForReview":"Task Pending for Review",
-        "taskStatus":"Task Status",
-        "modificationHistory":"Data Modification History"
+        "controlPanel": "Control Panel",
+        "savedDrafts": "Saved Drafts",
+        "taskPendingForReview": "Task Pending for Review",
+        "taskStatus": "Task Status",
+        "modificationHistory": "Data Modification History"
       },
       "dynamicGridControl_AssortmentPlanning": {
         "title": "Dynamic Grid Control & Assortment Planning",
@@ -100,7 +98,6 @@
         "buyerOrderReport": "Buyer Order Report",
         "vendorDispatchReport": "Vendor Dispatch Report",
         "availabilityComparison": "Availability Comparison"
-      
       },
       "groupLifeCycleManagement": {
         "title": "Group Life Cycle Management",
@@ -136,6 +133,45 @@
         "uiUploadLogs_ModifySKULoc": "UI Upload Logs - Modify SKU-Loc",
         "uiUploadLogs_RemoveSKULoc": "UI Upload Logs - Remove SKU-Loc",
         "uiUploadLogs_SKUMaster": "UI Upload Logs - SKU Master"
+      },
+      "prodAndPlanningScheduling": {
+        "title": "Production Planning & Scheduling",
+        "enquiryResponse": "Enquiry Response",
+        "dueDateQuotation": "Due Date Quotation",
+        "orderRescheduling": "Order Rescheduling",
+        "fullKitAssignment": "Full Kit Assignment",
+        "dynamicReleaseManagement": "Dynamic Release Management",
+        "deptWiseBMReport": "Dept-Wise BM Report",
+        "overallBMReport": "Overall BM Report",
+        "insightAndTrends": "Insight and Trends"
+      },
+      "poogi": {
+        "title": "POOGI",
+        "reasonForDelayedOrders": "Reason For Delayed Orders",
+        "insightAndTrends": "Insight and Trends"
+      },
+      "manufacturingHub": {
+        "title": "Manufacturing Intelligence Hub",
+        "deliveryPerformance": "Delivery Performance",
+        "bmtrends":"BM Trends",
+        "otifanalysis":"OTIF Analysis",
+        "otandifanalysis":"OT & IF Analysis",
+        "leadtime":"Lead Time",
+        "congestionanalysis":"Congestion Analysis",
+        "elapsedtime":"Elapsed Time",
+        "orderatrisk":"Orders At Risk",
+        "orderbalance":"Order Balance",
+        "forwardexecution":"Forward Execution",
+        "folsummary":"FOL Summary",
+        "STPL&FullKits":"STPL & Full Kits",
+        "daywisecoverage":"Day Wise Coverage",
+        "rmpmorderwisecoverage":"RM / PM Order Wise Coverage",
+        "expeditingrm":"Expediting - RM & Suppliers",
+        "rmpmbuffertrend":"RM / PM Buffer Trend",
+        "improvementaread":"Improvement Areas",
+        "topfailurereason":"Top Failure Reasons",
+        "trenfailurereason":"Trend Of Failure Reasons",
+        "resourceutilizationwip":"Resource Utilization & WIP Profile"
       }
     },
     "particulars": {
@@ -545,8 +581,8 @@
         },
         "roles": {
           "interStoreTransfers": "Inter Store Transfers",
-          "vectorFlow":"VectorFlow",
-          "distribution":"Distribution",
+          "vectorFlow": "VectorFlow",
+          "distribution": "Distribution",
           "ISTAdmin": "IST Admin",
           "ISTRequestor": "IST Requestor",
           "ISTGovernor": "IST Governor",
@@ -614,5 +650,11 @@
     "red": "Red",
     "green": "Green",
     "white": "White"
+  },
+  "ProcPlanning": {
+    "Analytics": "Analytics",
+    "cntshort": "Count Of RM in Shortage",
+    "cntfa": "Count Of RM in Fully Available",
+    "total": "Total"
   }
 }

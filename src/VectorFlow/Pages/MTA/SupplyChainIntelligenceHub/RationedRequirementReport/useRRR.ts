@@ -180,7 +180,6 @@ console.log(data)
         colorTechCellRenderer:RRRTechColorCellRenderer,
         colorEcoCellRenderer:RRREcoColorCellRenderer,
         colorDispatchRender:RRRDispatchColorCellRenderer
-        
       }), []);
 
     const agGridProps:AgGridReactProps = useMemo(()=>{

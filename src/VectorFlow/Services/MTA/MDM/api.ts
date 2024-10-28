@@ -16,9 +16,9 @@ export namespace MDMService {
     })
   }
 
-  export const getRetailCount = async (body:GetMasterDataPayload) => {
-   
-    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/get-count/`,body,{
+  export const getRetailCount = async (body: GetMasterDataPayload) => {
+
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/get-count/`, body, {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -30,9 +30,9 @@ export namespace MDMService {
     })
   }
 
-  export const getMasterDataRetail = async (body:GetMasterDataPayload) => {
-   
-    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/get-master-data/`,body,{
+  export const getMasterDataRetail = async (body: GetMasterDataPayload) => {
+
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/get-master-data/`, body, {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -116,8 +116,8 @@ export namespace MDMService {
     })
   }
 
-  export const modifyMasterDataRetail = async(body:any)=>{
-    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/modify-master-data/`,body,{
+  export const modifyMasterDataRetail = async (body: any) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/modify-master-data/`, body, {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -128,8 +128,8 @@ export namespace MDMService {
     })
   }
 
-  export const addMasterDataRetail = async(body:any)=>{
-    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/add-valid-master/`,body,{
+  export const addMasterDataRetail = async (body: any) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/add-valid-master/`, body, {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -140,8 +140,8 @@ export namespace MDMService {
     })
   }
 
-  export const deleteMasterDataRetail = async(body:any)=>{
-    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/remove-master-data/`,body,{
+  export const deleteMasterDataRetail = async (body: any) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + `/api/validate-master/remove-master-data/`, body, {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -157,9 +157,9 @@ export namespace MDMService {
     })
   }
 
-  export const validateMaster = async(formData:any,masterId:any)=>{
-    return await axios.post(process.env.REACT_APP_API_HOST + 'api/validate-master/basic-validation/' + masterId,formData,{
-      responseType:'stream'
+  export const validateMaster = async (formData: any, masterId: any) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/validate-master/basic-validation/' + masterId, formData, {
+      responseType: 'stream'
     })
   }
 
@@ -170,9 +170,9 @@ export namespace MDMService {
   export const getTaskMastersHistory = async (body:any) => {
     return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetTaskMastersHistory`,body);
   }
-  
-  export const getUploadProgress = async(processId:any)=>{
-    return await axios.get(process.env.REACT_APP_API_HOST + 'api/validate-master/get-upload-progress/' + processId,{
+
+  export const getUploadProgress = async (processId: any) => {
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/validate-master/get-upload-progress/' + processId, {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -181,6 +181,69 @@ export namespace MDMService {
     return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/GetAllReports',{
       headers: { 'Content-Type': 'application/json' }
     })
+  }
+
+  /**This get the  MTO Masters Data*/
+  export const getMTOMastersData = async () => {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetMasterManagementData', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getMTOTaskStatusData = async () => {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetTasks', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const putMTOAddBufferMaster = async (body:any)=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/AddBufferMaster/', body )
+  }
+
+  export const getMTOTaskById = async (taskId: string) => {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetTaskById/?tid=${taskId}&mmid=1`, {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  /** Save buffer master task MTO */
+  export const saveBufferMasterTask = async (body: any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveBufferMasterTask/', 
+      body
+    )
+  }
+  export const saveBufferMasterDraft = async (body: any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveBufferMasterDraft/', 
+      body
+    )
+  }
+
+  export const getBufferMasterData = async () => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/GetBufferMasterForMasterMgmt/?masterId=501', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getCCRMasterData = async ()=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/GetCCRMasterForMasterMgmt/?masterId=502', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+
+
+  export const getBufferTypeMaster = async () => {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetBufferTypeMaster/', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getMTODrafts = async (uid: any)=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetDraftInstances/?uid=${uid}`)
+  }
+
+  export const getMTODraftById = async (id: any)=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetBufferDraftData/?did=${id}&mid=501`)
   }
 
 }

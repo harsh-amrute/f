@@ -146,6 +146,3 @@ describe('Filter Component', () => {
   //   })
 
 });
-
-
-
