@@ -46,28 +46,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
       }));
 
   
-  useEffect(()=>{
-    getReportFields();
-  },[])
-
-  const getReportFields = async ()=>{
-    const reports = await getAllReports();
-    const rawDailyReport = reports.data.data
-    const transformedData = Object.entries(rawDailyReport).map(([key, attributes]:[string , any]) => ({
-      name: attributes.reportName,
-      img: "/assets/img/nav/arrow_down.svg", 
-      imgHover: "/assets/img/nav/DownloadReport-Icon.svg", 
-      url: key, 
-      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","DBMManager","BPRManager","MasterUpdater","MasterApprover"],
-      downloadName: attributes.downloadName
-    }));
-    const extractedNewMenu = _.cloneDeep(listMenuParent)
-    const targetObject = extractedNewMenu.find((item:any) => item.id === 8);
-    if (targetObject) {
-      console.log(targetObject)
-      targetObject.child.push(...transformedData);
-      const reporturls = targetObject.child.map((child:any) => child.url).filter((url:string) => url);
-      setReportUrls(reporturls)
     }
     catch(err){
       
@@ -76,27 +54,27 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     finally{
       try{
         const mtoReports = await getAllMTOReports();
-      const rawMTOReports = mtoReports.data.data;
-      const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
-        name: attributes.reportName,
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: key,
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
-        isMTO: true,
-        downloadName: attributes.downloadName
-      }));
+        const rawMTOReports = mtoReports.data.data;
+        const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
+          name: attributes.reportName,
+          img: "/assets/img/nav/arrow_down.svg",
+          imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+          url: key,
+          role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
+          isMTO: true,
+          downloadName: attributes.downloadName
+        }));
 
-      const extractedNewMenu = _.cloneDeep(listMenuParent)
-      const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
-      if (targetObject) {
-        if(transformedData){
+        const extractedNewMenu = _.cloneDeep(listMenuParent)
+        const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
+        if (targetObject) {
+          if(transformedData){
 
-          targetObject.child.push(...transformedData);
-        }
-        targetObject.child.push(...transformedMTOData);
-        const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
-        setReportUrls(reporturls)
+            targetObject.child.push(...transformedData);
+          }
+          targetObject.child.push(...transformedMTOData);
+          const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+          setReportUrls(reporturls)
       }
       setListMenu(extractedNewMenu);
       }

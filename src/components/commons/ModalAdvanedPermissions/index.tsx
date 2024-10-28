@@ -323,7 +323,7 @@ const ModalAdvanedPermissions = (props: any) => {
                         (<div style={{margin:'20px',minWidth:'500px'}}>
                           <UserMangementStepper
                             list={stepperDetails}
-                            activeStep={getActiveApplicationIndex()}
+                            // activeStep={getActiveApplicationIndex()}
                             themeUi={themeUi}
                           />
                         </div>)

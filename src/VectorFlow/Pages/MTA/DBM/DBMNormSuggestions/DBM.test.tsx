@@ -3,13 +3,14 @@ import { useGetDBMApplySelectedNorm,useGetDBMData,useGetDBMDataCount,useGetDBMUI
 import { mockDBMApplySelectedNorm,mockDBMCountData,mockDBMData,mockDBMUIConfigData,mockDBMUpdateSleepTbl} from "../../../../../mock-data/DBM";
 import DBM from './';
 jest.mock("../../../../../VectorFlow/Services/MTA/DBM");
-//import { QueryClientProvider } from "@tanstack/react-query";
-//import { BrowserRouter as Router } from "react-router-dom";
-//import { setupReactQuery } from "../../../../../config/react-query-config";
-//import { ReactNode } from "react";
-//import { Provider } from "react-redux";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter as Router } from "react-router-dom";
+import { setupReactQuery } from "../../../../../config/react-query-config";
+import { ReactNode } from "react";
+import { Provider } from "react-redux";
 
-//import { UserDataContext } from "../../../../../context";
+import { UserDataContext } from "../../../../../context";
+import {store} from "../../../../../redux/store/store";
 
 
 const useGetDBMUIConfigurationMock = useGetDBMUIConfiguration as jest.MockedFunction<
@@ -34,29 +35,29 @@ const useGetDBMUpdateSleepTblMock = useGetDBMUpdateSleepTbl as jest.MockedFuncti
 
   window.URL.createObjectURL = jest.fn();
 
-//const queryClient = setupReactQuery();
+const queryClient = setupReactQuery();
 
-// const contextWrapper = (children: ReactNode,store:any) => {
-//   return (
-//     <QueryClientProvider client={queryClient}>
-//       <Router>
-//         <Provider store={store}>
-//           <UserDataContext.Provider
-//             value={{
-//               user: { user: { theme_ui: "NOIRFUSION" } },
-//               changeColorTheme: (color) => {
-//                 return color;
-//               },
-//               isSideBarOpen:true,toggleSideBar:jest.fn
-//             }}
-//           >
-//             {children}
-//           </UserDataContext.Provider>
-//         </Provider>
-//       </Router>
-//     </QueryClientProvider>
-//   );
-// };
+const contextWrapper = (children: ReactNode,store:any) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Provider store={store}>
+          <UserDataContext.Provider
+            value={{
+              user: { user: { theme_ui: "NOIRFUSION" } },
+              changeColorTheme: (color) => {
+                return color;
+              },
+              isSideBarOpen:true,toggleSideBar:jest.fn
+            }}
+          >
+            {children}
+          </UserDataContext.Provider>
+        </Provider>
+      </Router>
+    </QueryClientProvider>
+  );
+};
 
 
 const useDBMDataResult: any = {
@@ -137,7 +138,7 @@ describe("Renders DBM Component", ()=>{
     //       })
     // })
 
-  });
+
   it("renders Loading Overlay Component when loading", async () => {
     // useGetDBMUIConfigurationMock.mockImplementation(()=>{
     //     return {...useGetMasterUIConfigurationMockResult,isLoading:true};

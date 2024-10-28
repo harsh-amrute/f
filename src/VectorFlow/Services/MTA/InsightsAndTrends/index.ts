@@ -19,12 +19,12 @@ export const useGetAvailabilityTrend = ()=>{
   })
 }
 export const useGetChronicUnavailabilityLoc = ()=>{
-  return useMutation(async(body:any)=>{
+  return useMutation(async()=>{
     return await InsightsAndTrendsService.getChronicUnavailabilityLoc()
   })
 }
 export const useGetChronicUnavailabilitySku = ()=>{
-  return useMutation(async(body:any)=>{
+  return useMutation(async()=>{
     return await InsightsAndTrendsService.getChronicUnavailabilitySku()
   })
 }
@@ -40,22 +40,22 @@ export const useGetAvailabilityAgeing = () => {
   }
 
 export const useGetDBMNormSuggestionLoc= ()=>{
-  return useMutation(async(body:any)=>{
+  return useMutation(async()=>{
     return await InsightsAndTrendsService.getDBMNormSuggestionLoc()
   })
 }
 export const useGetDBMNormSuggestionPie= ()=>{
-  return useMutation(async(body:any)=>{
+  return useMutation(async()=>{
     return await InsightsAndTrendsService.getDBMNormSuggestionPie()
   })
 }
 export const useGetDBMNormSuggestionSKUs = ()=>{
-  return useMutation(async(body:any)=>{
+  return useMutation(async()=>{
     return await InsightsAndTrendsService.getDBMNormSuggestionSKUs()
   })
 }
 export const useGetDBMNormSuggestionAgeing = ()=>{
-  return useMutation(async(body:any)=>{
+  return useMutation(async()=>{
     return await InsightsAndTrendsService.getDBMNormSuggestionAgeing()
   })
 }

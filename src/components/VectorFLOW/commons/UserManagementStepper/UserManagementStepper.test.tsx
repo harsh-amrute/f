@@ -40,21 +40,21 @@ describe('Stepper Component', () => {
   ]
 
   it('Renders the Stepper component with theme = REGALBLAZE', () => {
-    render(contextWrapperWithCustomTheme(<UserManagementStepper activeStep={0} list={StepItems} themeUi="REGALBLAZE"/>,"REGALBLAZE"));
+    render(contextWrapperWithCustomTheme(<UserManagementStepper list={StepItems} themeUi="REGALBLAZE"/>,"REGALBLAZE"));
     
     // You may want to add more specific assertions here
     
   });
 
   it('Renders the Stepper component with theme = NOIRFUSION', () => {
-    render(contextWrapperWithCustomTheme(<UserManagementStepper activeStep={0} list={StepItems} themeUi="NOIRFUSION"/>,"NOIRFUSION"));
+    render(contextWrapperWithCustomTheme(<UserManagementStepper list={StepItems} themeUi="NOIRFUSION"/>,"NOIRFUSION"));
     
     // You may want to add more specific assertions here
     
   });
 
   it('Renders the Stepper component with activeStep = 1', () => {
-    render(contextWrapperWithCustomTheme(<UserManagementStepper activeStep={1} list={StepItems} themeUi="NOIRFUSION"/>,"NOIRFUSION"));
+    render(contextWrapperWithCustomTheme(<UserManagementStepper list={StepItems} themeUi="NOIRFUSION"/>,"NOIRFUSION"));
     
     // You may want to add more specific assertions here
     

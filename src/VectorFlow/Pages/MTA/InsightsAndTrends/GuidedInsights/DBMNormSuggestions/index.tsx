@@ -40,17 +40,16 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
     const [ActiveDBMSuggestionData, SetActiveDBMSuggestionData]=useState([]);
     const [DBMSuggestionSkuData, SetDBMSuggestionSkuData]=useState([]);
     const [DBMSuggestionAgeingData, SetDBMSuggestionAgeingData]=useState([]);
-    const param = {};
 
     useEffect(() => {
       const fetchDBMNormSuggestionData = async ()=>{
-        const DBMNormSuggestionLocD =  await  DBMNormSuggestionLoc(param);
+        const DBMNormSuggestionLocD =  await  DBMNormSuggestionLoc();
         SetDBMSuggestionLocData(DBMNormSuggestionLocD?.data?.data);
-        const ActiveDBMSuggestionDataD= await DBMNormSuggestionPie(param);
+        const ActiveDBMSuggestionDataD= await DBMNormSuggestionPie();
         SetActiveDBMSuggestionData(ActiveDBMSuggestionDataD?.data?.data);
-        const DBMSuggestionSkuDataD= await DBMNormSuggestionSKUs(param);
+        const DBMSuggestionSkuDataD= await DBMNormSuggestionSKUs();
         SetDBMSuggestionSkuData(DBMSuggestionSkuDataD?.data?.data);
-        const DBMSuggestionAgeingDataD = await  DBMNormSuggestionAgeing(param)
+        const DBMSuggestionAgeingDataD = await  DBMNormSuggestionAgeing()
         SetDBMSuggestionAgeingData(DBMSuggestionAgeingDataD?.data?.data)
       }
       fetchDBMNormSuggestionData();

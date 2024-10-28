@@ -53,6 +53,9 @@ const useResearchInsights = () => {
 
     const { mutateAsync: getBPRDataCount, isLoading: isBPRDataCountLoading } = useGetBPRDataCount()
 
+    const { data: historicalAvailabilityResponse } = useGetHistroricalAvailabilityData()
+
+
 
     const [currGridPage,setCurrGridPage] = useState<number>(1)
     const [recordCount,setRecordCount] = useState<number>()
@@ -68,21 +71,6 @@ const useResearchInsights = () => {
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
-
-
-    const [currGridPage, setCurrGridPage] = useState<number>(1)
-    const [recordCount, setRecordCount] = useState<number>()
-
-    const [isGraphOneOpen, setIsGraphOneOpen] = useState<boolean>(false)
-    const [horizon, setHorizon] = useState<number>(10)
-    const [graphState, setGraphState] = useState<'default' | 'calender' | 'graph'>('default')
-    const [calenderType, setCalenderType] = useState<'Tech' | 'Eco'>('Tech')
-    const [expandedGraphId, setExpandedGraphId] = useState<1 | 2>(1)
-
-    const showDailyDataGraphModal = useSelector((state: RootState) => state.mta.showDailyDataGraphModal);
-    const showNormChangeHistoryTable = useSelector((state: RootState) => state.mta.showNormChangeHistoryTable);
-    const dailyData = useSelector((state: RootState) => state.mta.dailyData);
-
 
     const [graphs, setGraphs] = useState<Array<ReseachInsightsGraphState>>([
         {
@@ -468,10 +456,6 @@ const useResearchInsights = () => {
     const whiteCount = useMemo(()=>{
         return Math.round(((calenderDataWithHorizon.filter((row:any)=>row.color==='White').length)/horizon)*100)
     },[calenderDataWithHorizon])
-
-    const whiteCount = useMemo(() => {
-        return Math.round(((calenderData.slice(0, horizon).filter((row: any) => row.color === 'White').length) / calenderData.slice(0, horizon).length) * 100)
-    }, [calenderData])
 
     const selfGraphData = useMemo(() => {
         const selectedRows = ref.current?.api.getSelectedRows()

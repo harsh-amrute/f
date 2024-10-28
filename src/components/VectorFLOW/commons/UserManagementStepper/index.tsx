@@ -4,7 +4,6 @@ type StepState = "completed" |  "active" | "pending"
 
 interface UserManagementStepperProps{
     list:Array<UserManagementStepperListProps>
-    activeStep:number
     themeUi:string
 }
 
@@ -24,7 +23,6 @@ const UserManagementStepper = (props:UserManagementStepperProps)=>{
 
     const {
         list,
-        activeStep,
         themeUi
     } = props
 

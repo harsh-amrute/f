@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef,useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ContainerRight,
@@ -28,9 +28,8 @@ import { LoginRequest } from "../../types";
 import { useForgotPassword } from "../../services";
 import { notifyError } from "../../../helpers/notify";
 import WelcomeBoard from "./welcome-board";
-import { useState } from "react";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
-import ReCAPTCHA from "react-google-recaptcha";
+import {ReCAPTCHA} from "react-google-recaptcha";
 import { SITE_KEY } from "../../../helpers/constants";
 
 function ForgotPasswordContainer() {

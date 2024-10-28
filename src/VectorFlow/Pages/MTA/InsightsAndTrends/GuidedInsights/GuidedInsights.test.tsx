@@ -69,36 +69,36 @@ const useGetAvailabiltyAgeingViewMockData: any = {
   },
 };
 
-const useGetDBMNormSuggestionLocMock = useGetDBMNormSuggestionLoc as jest.MockedFunction<
-    typeof useGetAvailabilityAgeing
->;
+// const useGetDBMNormSuggestionLocMock = useGetDBMNormSuggestionLoc as jest.MockedFunction<
+//     typeof useGetAvailabilityAgeing
+// >;
 const useGetDBMNormSuggestionLocMockData: any = {
   mutateAsync: () => {
     return { data: {data: GuidedInsights.DBMSuggestionsLoc }};
   },
 };
 
-const useGetDBMNormSuggestionPieMock = useGetDBMNormSuggestionPie as jest.MockedFunction<
-    typeof useGetAvailabilityAgeing
->;
+// const useGetDBMNormSuggestionPieMock = useGetDBMNormSuggestionPie as jest.MockedFunction<
+//     typeof useGetAvailabilityAgeing
+// >;
 const useGetDBMNormSuggestionPieMockData: any = {
   mutateAsync: () => {
     return { data: {data: GuidedInsights.DBMSuggestionsPie }};
   },
 };
 
-const useGetDBMNormSuggestionSKUsMock = useGetDBMNormSuggestionSKUs as jest.MockedFunction<
-    typeof useGetAvailabilityAgeing
->;
+// const useGetDBMNormSuggestionSKUsMock = useGetDBMNormSuggestionSKUs as jest.MockedFunction<
+//     typeof useGetAvailabilityAgeing
+// >;
 const useGetDBMNormSuggestionSKUsData: any = {
   mutateAsync: () => {
     return { data: {data: GuidedInsights.DBMSuggestionsSKUs }};
   },
 };
 
-const useGetDBMNormSuggestionAgeingMock = useGetDBMNormSuggestionAgeing as jest.MockedFunction<
-    typeof useGetAvailabilityAgeing
->;
+// const useGetDBMNormSuggestionAgeingMock = useGetDBMNormSuggestionAgeing as jest.MockedFunction<
+//     typeof useGetAvailabilityAgeing
+// >;
 const useGetDBMNormSuggestionAgeingData: any = {
   mutateAsync: () => {
     return { data: {data: GuidedInsights.DBMSuggestionAgeing }};
@@ -123,18 +123,18 @@ const useGetExcessInventoryValueData: any = {
   },
 };
 
-const useGetChronicUnavailabilityLocMock = useGetChronicUnavailabilityLoc as jest.MockedFunction<
-    typeof useGetAvailabilityAgeing
->;
+// const useGetChronicUnavailabilityLocMock = useGetChronicUnavailabilityLoc as jest.MockedFunction<
+//     typeof useGetAvailabilityAgeing
+// >;
 const useGetChronicUnavailabilityLocData: any = {
   mutateAsync: () => {
     return { data: {data: GuidedInsights.ChronicUnavailabilityLocData}};
   },
 };
 
-const useGetChronicUnavailabilitySkuMock = useGetChronicUnavailabilitySku as jest.MockedFunction<
-    typeof useGetAvailabilityAgeing
->;
+// const useGetChronicUnavailabilitySkuMock = useGetChronicUnavailabilitySku as jest.MockedFunction<
+//     typeof useGetAvailabilityAgeing
+// >;
 const useGetChronicUnavailabilitySkuData: any = {
   mutateAsync: () => {
     return { data: {data: GuidedInsights.ChronicUnavailabilitySkuData}};
@@ -180,30 +180,30 @@ describe("Availability Trend Data", () => {
         useGetAvailabiltyAgeingViewMock.mockImplementation(()=>{
           return useGetAvailabiltyAgeingViewMockData
         })
-        useGetDBMNormSuggestionLocMock.mockImplementation(()=>{
-          return useGetDBMNormSuggestionLocMockData
-        })
-        useGetDBMNormSuggestionPieMock.mockImplementation(()=>{
-          return useGetDBMNormSuggestionPieMockData
-        })
-        useGetDBMNormSuggestionSKUsMock.mockImplementation(()=>{
-          return useGetDBMNormSuggestionSKUsData
-        })
-        useGetDBMNormSuggestionAgeingMock.mockImplementation(()=>{
-          return useGetDBMNormSuggestionAgeingData
-        })
+        // useGetDBMNormSuggestionLocMock.mockImplementation(()=>{
+        //   return useGetDBMNormSuggestionLocMockData
+        // })
+        // useGetDBMNormSuggestionPieMock.mockImplementation(()=>{
+        //   return useGetDBMNormSuggestionPieMockData
+        // })
+        // useGetDBMNormSuggestionSKUsMock.mockImplementation(()=>{
+        //   return useGetDBMNormSuggestionSKUsData
+        // })
+        // useGetDBMNormSuggestionAgeingMock.mockImplementation(()=>{
+        //   return useGetDBMNormSuggestionAgeingData
+        // })
         useGetExcessInventorySkuMock.mockImplementation(()=>{
           return useGetExcessInventorySkuData
         })
         useGetExcessInventoryValueMock.mockImplementation(()=>{
           return useGetExcessInventoryValueData
         })
-        useGetChronicUnavailabilityLocMock.mockImplementation(()=>{
-          return useGetChronicUnavailabilityLocData
-        })
-        useGetChronicUnavailabilitySkuMock.mockImplementation(()=>{
-          return useGetChronicUnavailabilitySkuData
-        })
+        // useGetChronicUnavailabilityLocMock.mockImplementation(()=>{
+        //   return useGetChronicUnavailabilityLocData
+        // })
+        // useGetChronicUnavailabilitySkuMock.mockImplementation(()=>{
+        //   return useGetChronicUnavailabilitySkuData
+        // })
 
         })
     
