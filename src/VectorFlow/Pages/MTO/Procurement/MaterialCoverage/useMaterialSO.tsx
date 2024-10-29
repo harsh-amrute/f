@@ -29,9 +29,8 @@ const useMaterialSO = (data: any) => {
 
 
     const getInitialData = async (currPage: number, isExcelExport = false , body = {}) => {
-        if (isExcelExport) {
-            try {
-                let queryString = '?Color='
+        try {
+            let queryString = '?Color='
                 const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'))
                 colorsArray.forEach((s: string, index: number) => {
                     if (index === colorsArray.length - 1) {
@@ -42,6 +41,10 @@ const useMaterialSO = (data: any) => {
                     }
                 })
                 queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}`
+         
+        if (isExcelExport) {
+            
+                
                 const response = await  getOpenSODetailsDataForExcelExport({data : queryString , isExcelExport :1 , body , report_name : FilterPageName.Proc_Material_Coverage_For_OpenSO})
                 if(response.status === 200) {
                     DownloadExcel(response , FilterPageName.Proc_Material_Coverage_For_OpenSO)
@@ -51,11 +54,9 @@ const useMaterialSO = (data: any) => {
                     notifyError("Failed to export Excel")
                 }
 
-            } catch (error) {
-                notifyError("An error occurred");
-            }
+            
         }else{
-            try {
+           
             setIsLoading(true);
             toast.dismiss();
             notifyLoader("Loading data...")
@@ -84,11 +85,10 @@ const useMaterialSO = (data: any) => {
             toast.dismiss();
             notifySuccess("Fetched data successfully!")
         }
-        catch (e) {
-            setIsLoading(false);
-            notifyError("Failed to load data!")
-        }
-    }
+        
+            }catch (error) {
+                console.log(error);
+            }
     }
 
 
