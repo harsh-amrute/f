@@ -38,6 +38,8 @@ import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Pr
 import _, { debounce } from 'lodash';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig';
 import { useUserData } from '../../../../../context';
+import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
+import moment from 'moment';
 
 
 interface ApiResponse {
@@ -174,8 +176,8 @@ const OverallBmReport = () => {
     useEffect(() => {
         try {
             getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
+
                 const response: any = data?.data?.data;
-                console.log(response);
                 if(response){
                     const analytics = modifyAnalyticsData(response);
                     dispatch(BM_REPORT_ANALYTICS(analytics))
@@ -419,7 +421,14 @@ const OverallBmReport = () => {
         try {
             setIsGridLoading(true)
             const formatedFilters = formatFilterJSON(appliedFilters);
+            
             const gridData = await getOverallBMReportData({ page: currentPage, appliedFilters: formatedFilters });
+            if(!gridData.data.data || gridData.data.data.length===0){
+                setGridDataCount(0);
+                setGridData([]);
+                setIsGridLoading(false);
+                return;
+            }
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
             setIsGridLoading(false)
@@ -708,7 +717,14 @@ const OverallBmReport = () => {
 
     useEffect(() => {
         if (tempGridData) {
+            const colState = refGraph2.current?.api?.getColumnState();
+            tempGridRef.current?.api?.applyColumnState({
+                state: colState,
+                applyOrder: true
+            });
             tempGridRef.current?.api?.exportDataAsExcel({ fileName: "OverallBMReport" })
+
+            console.log("tempgreid state", tempGridRef.current?.api.getColumnState())
         }
     }, [tempGridData])
 
@@ -824,10 +840,17 @@ const OverallBmReport = () => {
                 state: colState,
                 applyOrder: true
             });
+
+         
         }
     }, [columnState])
 
+    const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
+
+    const date = apiResponseData?.data?.data;
+
     useEffect(() => {
+       
         if (isReset) {
             setColumnState([...coldefs]);
             setIsReset(false)
@@ -858,11 +881,14 @@ const OverallBmReport = () => {
                     handleResetClick={handleResetClick}
                 />
             </BMDepHeaderWraper>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
+                <p>{date? moment(date).format('D MMM YYYY'): ""}</p>
+            </div>
 
             {(isGridLoading || isExcelLoading || isGetStateLoading ) &&  <OverlayLoader/> }
 
-                <HorizontalViewWrapper style={{ marginTop: '0px' }}>
-                    <BTRTableWrapper style={{ height: rowsSelected.current ? "120vh" : "80vh", margin: '0' }}>
+                <HorizontalViewWrapper style={{ marginTop: '0' }}>
+                    <BTRTableWrapper style={{ height: rowsSelected.current ? "120vh" : "75vh", margin: '0' }}>
                         <Allotment vertical={true} separator={true} ref={allotementRef}>
                             <Allotment.Pane preferredSize={rowsSelected.current ? "45%" : '70%'}>
                                 <BTRAllomentSection>
@@ -878,7 +904,7 @@ const OverallBmReport = () => {
                                         onGridReady={applyColumnState}
                                     />
                                     {/* This Grid is only for the user to download the excel report */}
-                                    <div style={{ display: 'none' }}>
+                                    <div style={{display: 'none'}}>
                                         <GridView
                                             reference={tempGridRef}
                                             agGridProps={agGridProps}

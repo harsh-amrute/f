@@ -69,8 +69,13 @@ const useAdd=()=>{
 
 
     const addInvalidDataColDefs = (columnName:string) => {
-        dispatch(ADD_COLDEFS({colDefs:[columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]]}));
-        // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+        if(activeMaster.isMTO){
+          dispatch(ADD_COLDEFS({colDefs: [invalidDataColdefs[0]]}));
+        }
+        else{
+          dispatch(ADD_COLDEFS({colDefs:[columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]]}));
+          // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+        }
       }
 
     const onCancel=()=>{
@@ -317,6 +322,41 @@ const useAdd=()=>{
           
       }
 
+      // TODO : mto 
+      const getErrorForBuffer = (ele:any, index: any)=>{
+        if(ele.bt === '' || ele.bsz === '' || ele.bsz=== null || ele.bt===null){ return {error: "Enter Buffer Type and Buffer Size", warning: ""};}
+        let isBszUniq = true;
+        activeMaster.rowData.forEach((e: any, i:any)=>{
+          if (i>=index) return ;
+          if(e.bt===ele.bt && e.bsz === ele.bsz){
+            isBszUniq = false;
+            return;
+          }
+        })
+
+        if(!isBszUniq){
+            return {error: "Buffer size must be unique for a given buffer type", warning:"" };
+        }
+
+        return {error: "", warning: ""};
+      }
+
+      const onDataChange = (data: any)=>{
+        const tempRowData:any = [...activeMaster.rowData];
+        const finData:any = [];
+        tempRowData.forEach((ele:any, index: any)=>{
+          const newVal = JSON.parse(JSON.stringify(ele));
+          if(index===data.rowIndex){
+            newVal[data.column.colId] = data.newValue;
+          }
+          newVal.err= getErrorForBuffer(newVal, index);
+
+          finData.push(newVal);
+        })
+
+        dispatch(UPDATE_ROW_DATA(finData))
+      }
+
       const showMasterGroup = (currMasterGroup:{name:string,masters:Array<any>})=>{
         if(selectedOptions.length===0)return true
         let shouldShow = false
@@ -349,6 +389,7 @@ const useAdd=()=>{
         return shouldShow
       }
 
+
     return {
         allMasters,
         onCancel,
@@ -365,7 +406,8 @@ const useAdd=()=>{
         showMasterGroup,
         showMaster,
         options,
-        selectedOptions
+        selectedOptions,
+        onDataChange
     }
 }
 

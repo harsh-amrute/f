@@ -30,7 +30,7 @@ const GridView = memo(({
     onGridReady,
     saveBtn = true }: GridProps) => {
 
-        const rowsPerPage = Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
+    const rowsPerPage = Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
 
     return (
         <>
@@ -69,9 +69,9 @@ const GridView = memo(({
                 />
             <VFPagination
                 selectedRows={0}
-                rowsPerPage={rowsPerPage}
-                totalRows={totalRow}
-                currentPage={currentPage}
+                rowsPerPage={rowsPerPage?rowsPerPage: 0}
+                totalRows={totalRow?totalRow: 0}
+                currentPage={currentPage?currentPage: 0}
                 handleChangePage={handlePageChange}
             />
             </VFWrapper>

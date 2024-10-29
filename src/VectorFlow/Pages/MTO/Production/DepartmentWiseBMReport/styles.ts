@@ -200,6 +200,7 @@ export const VFWrapper = styled.div`
   flex-direction: column;
   & .ag-theme-alpine {
     flex: 1;
+    margin-top: 0px !important;
   }
   & .ag-theme-alpine .ag-header-row:nth-child(2){
     background-color: black;

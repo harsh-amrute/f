@@ -22,6 +22,7 @@ import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
+
 // clear cached token and redirect to sso login
 
 const keyboardCharacters = [
@@ -648,7 +649,6 @@ export const generateRandomId = (length?: number) => {
 }
 
 export const replaceKeyWithDisplayName = (message: string, master: MDMMasterState) => {
-  //console.log(message)
   return new String(message).replaceAll(/",*?"/g, (m) => {
     const displayName = master.fields.find((f: Field) => f.key === m.replaceAll('"', ''))?.displayName;
     if (displayName) return displayName
@@ -673,6 +673,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   //Selected Columns Keys
   const selectedKeys = selectedColumns.map((col: any) => col.colId);
 
+
   const data = await readXlsxFile(buffer, {
     parseNumber: (string: any) => string
   });
@@ -682,6 +683,26 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
     if (fieldObj) return fieldObj.key;
     else return '';
   })
+
+
+  if(master.id===501 || master.id===502){
+    const objKeys: string[] = [];
+    selectedColumns.forEach((ele:any)=>{
+      objKeys.push(ele.colId);
+    })
+
+    const bufferData:any = [];
+    for(let i=1; i< data.length; i++){
+      const buffData:any = {};
+      for(let j=0; j< data[i].length; j++){
+        buffData[objKeys[j]]= data[i][j];
+      }
+      buffData["err"]= "";
+      bufferData.push(buffData);
+    }
+
+    return bufferData;
+  }
 
   let headers: any = [] //Not Selected Headers
   let error = false;
@@ -1603,6 +1624,7 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
       })
     }
   })
+
   return masters
 }
 export const getUploadModalRadioButtons = (masterId: number) => {
@@ -3463,6 +3485,12 @@ export const formatFilterJSON = (filter: any) => {
       }
     }
   }
+  Object.keys(formatFilter).forEach(key => {
+    if (formatFilter[key]?.val === '') {
+      delete formatFilter[key];
+    }
+  });
+  console.log("formate filter", formatFilter);
   return formatFilter;
 }
 

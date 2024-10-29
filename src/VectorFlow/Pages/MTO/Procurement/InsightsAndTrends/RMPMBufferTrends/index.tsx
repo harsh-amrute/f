@@ -160,7 +160,7 @@ const RMPMBufferTrends = () => {
 
 
     return (
-        <div style={{ zoom: 1.33, marginLeft: '30px' }}>
+        <div style={{ marginLeft: '30px' }}>
 
 
             <MTOActionToolBar 
