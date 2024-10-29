@@ -520,7 +520,7 @@ const OrderRescheduling = () => {
         }
     }, [isReset]);
 
-    const [tempRowData, setTempRowData] = useState<any>(undefined);
+    const [tempRowData] = useState<any>(undefined);
 
 
     const GetExcelData = async () => {
