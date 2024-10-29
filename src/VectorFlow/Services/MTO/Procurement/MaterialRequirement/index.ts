@@ -15,6 +15,12 @@ export const useGetMaterialRequirementDetailsDatewise = () => {
     })
 }
 
+export const useGetMaterialRequirementDetailsForExcelExport = () => {
+    return useMutation(async (params: any) => {
+        return MaterialRequirementService.getMaterialRequirementData(params)
+    })
+}
+
 // export const useGetDate = () => {
   
 //     return useQuery(QUERY_KEYS.useGetLatestRunDate, async () => {

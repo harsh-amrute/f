@@ -6,3 +6,9 @@ export const useGetSTPLAndFullKitData = () => {
         return STPLAndFullKitService.getSTPLandFullkitInDaysData(params);
     })
 }
+
+export const useGetSTPLAndFullKitExcelData = () => {
+    return useMutation(async (params: any) => {
+        return STPLAndFullKitService.getSTPLandFullkitInDaysExcelData(params);
+    })
+}

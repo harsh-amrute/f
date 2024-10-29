@@ -23,6 +23,7 @@ import { useUserData } from "../../../../../../context/index";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 
+
 const APIFilterConfig = {
     filSecVisConfig: {
       "Poogi_Top_Failure_Reasons" : {
@@ -60,6 +61,7 @@ const TopFailureReasons = () => {
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { user } = useUserData();
+
   const reportName = "TopFailureReasons";
 
   const colDefCustomizations = {
@@ -122,6 +124,7 @@ const TopFailureReasons = () => {
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
+     
       setHeaderData(response?.data?.data);
     }
     catch (e) {
@@ -197,7 +200,7 @@ const TopFailureReasons = () => {
       <MTOActionToolBar
         isGridView={isGridView}
         setIsGridView={setIsGridView}
-        // isChartGridToggle /***commented it  */
+        // isChartGridToggle //commented for grid view
         // isAddFilterButton
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}

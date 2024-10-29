@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import { SaveBtnWrapper, SaveBtn } from './styles';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
+import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks, useGetPoogReasonForDealyedOrderExcel } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import { toast } from 'react-toastify';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
 import { AgGridReactProps } from 'ag-grid-react';
@@ -22,6 +22,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
 import useFilter from '../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
+import useColDef from '../../../../../hooks/useColDef';
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -75,6 +76,8 @@ const ReasonForDelayOrder = () => {
     const reportName = 'ReasonForDelayedOrders';
     const tableRowRef = useRef<any>(null);
     const { user } = useUserData();
+    const { colDefMap , getColDef} = useColDef();
+    const { mutateAsync : getPoogiReasonsDelayedOrderExcelExport} = useGetPoogReasonForDealyedOrderExcel();
     const themeUi = user?.user?.theme_ui;
 
     const sideBar = useMemo(() => {
@@ -173,6 +176,7 @@ const ReasonForDelayOrder = () => {
     const getHeaderData = async () => {
         try {
             const response = await getUIConfigData(reportName);
+            getColDef(response);
             setColDef(getColumnDefinations(response.data.data, customHeader))
         }
         catch (e) {
@@ -181,17 +185,35 @@ const ReasonForDelayOrder = () => {
     }
 
     //to get the rowdata for Aggrid
-    const getInitialData = async (wipval: boolean, page: number) => {
-        try {
-            setCurrentPage(page);
-            setWIPCheck(wipval);
-            const formatedFilters = formatFilterJSON(appliedFilters);
-            const apiResponse = await getPoogiReasonsDelayedOrder({ 'wip': wipval === true ? 0 : 1, 'curr': page, appliedFilters: formatedFilters });
-            setRowDataCount(apiResponse.data?.data?.count);
-            setRowData(apiResponse?.data?.data?.results)
-        }
-        catch (e) {
-            console.log(e)
+    const getInitialData = async (wipval: boolean, page: number, isExcelExport = false) => {
+        if(isExcelExport){
+            try {
+                const headersdata = currentGridRef?.current?.api.getColumnState();
+                const formattedFilters = formatFilterJSON(appliedFilters);
+                const body = getBodyForExcelExport({headersdata,appliedFilters : formattedFilters,colDefMap});
+                const apiResponse = await getPoogiReasonsDelayedOrderExcelExport({ wip : wipval == true ? 1 : 0,body, isExcelExport : 1, report_name : FilterPageName.Poogi_Reason_For_Delayed_Orders})
+                if(apiResponse.status == 200) {
+                    DownloadExcel(apiResponse,FilterPageName.Poogi_Reason_For_Delayed_Orders)
+                }else{
+                    notifyError("Error downloading")
+                }
+            } catch (error) {
+                notifyError("An error occurred")
+                console.log(error)
+            }
+        }else{
+
+            try {
+                setCurrentPage(page);
+                setWIPCheck(wipval);
+                const formatedFilters = formatFilterJSON(appliedFilters);
+                const apiResponse = await getPoogiReasonsDelayedOrder({ 'wip': wipval === true ? 0 : 1, 'curr': page, appliedFilters: formatedFilters });
+                setRowDataCount(apiResponse.data?.data?.count);
+                setRowData(apiResponse?.data?.data?.results)
+            }
+            catch (e) {
+                console.log(e)
+            }
         }
     }
 
@@ -372,6 +394,9 @@ const ReasonForDelayOrder = () => {
     if (!rowData) {
         return null;
     }
+    const ExcelData = ()=>{
+        getInitialData(isWIPChecked,0,true)
+    }
 
     return (
         <div style={{ zoom: 1.1 }}>
@@ -385,6 +410,7 @@ const ReasonForDelayOrder = () => {
                 }
                 isAddFilterButton
                 isExcelExport
+                onExcelExportClick={ExcelData}
                 handleSaveClick={handleSaveClick}
                 handleResetClick={handleResetClick}
                 isFilterOpen={isFilterOpen}

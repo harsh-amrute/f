@@ -28,3 +28,20 @@ export const getLeadTimeData = async (graphflag: number, page?: number, appliedF
     }
   );
 };
+
+export const getLeadTimeExcelData = async({body, isExcelExport , report_name} : {body? : any, isExcelExport? : any , report_name?: any}) =>{
+  return await axios.put(
+    process.env.REACT_APP_VF_API_HOST_MTO + `/getLeadTimeData/`,
+    body,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      params : {
+        export : isExcelExport,
+        report_name
+      },
+      responseType : "blob"
+    }
+  );
+}

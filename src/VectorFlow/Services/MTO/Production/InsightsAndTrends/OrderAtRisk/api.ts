@@ -13,4 +13,17 @@ export namespace OrderAtRiskService {
             }
         });
     }
+
+    export const getOrderAtRiskDataExcelExport = async ({ body, isExcelExport, report_name}: any) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersAtRiskData/`,
+        body,
+        {
+            headers: { 'Content-Type': 'application/json' },
+            params: {
+                export : isExcelExport,
+                report_name
+            },
+            responseType: 'blob' 
+        });
+    }
 }

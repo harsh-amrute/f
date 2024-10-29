@@ -53,5 +53,23 @@ export namespace FullKitAssignmentService {
              }
         })
     }
+    export const getFullKitAssignmentDataWithGraphExcelData = async ({is_fullkit , load_data_after_simulation , load_graph_data , body,isExcelExport ,report_name}:{is_fullkit: boolean, load_data_after_simulation: boolean, load_graph_data: boolean, body : any , isExcelExport : any , report_name : any}) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getFullKitAssignmentDataWithGraphData/`, 
+        body,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+            params:{
+                is_fullkit,
+                load_data_after_simulation,
+                load_graph_data,
+                export : isExcelExport,
+                report_name
+            },
+            responseType : "blob"
+        })
+    }
     
 }

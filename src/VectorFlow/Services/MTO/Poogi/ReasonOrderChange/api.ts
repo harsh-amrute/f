@@ -47,4 +47,16 @@ export namespace ReasonOrderChangeServices {
             headers: { 'Content-Type': 'application/json' }
         })
     }
+
+    export const getPoogiReasonsDelayedOrderExcelExport = async (data: any) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getPoogiReasonForDealyedOrdersData/?isAssigned=${data.wip}&export=${data.isExcelExport}&report_name=${data.report_name}`, 
+        data.body,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+            responseType : 'blob'
+        })
+    }
 }

@@ -9,17 +9,18 @@ import {
   BTRTableWrapper,
   HorizontalViewWrapper,
 } from "./styles";
-import { useGetSTPLAndFullKitData } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/STPLAndFullKits";
+import { useGetSTPLAndFullKitData, useGetSTPLAndFullKitExcelData } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/STPLAndFullKits";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from "./GridView";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
-import { getColumnDefinations } from '../../../../../../helpers/utils';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
+import useColDef from "../../../../../../hooks/useColDef";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -59,15 +60,35 @@ const STPLAndFullKits = () => {
   const { screenHeight } = useViewPort();
   const reportName = "STPLAndFullKits";
   const { user } = useUserData();
+  const { colDefMap,getColDef } = useColDef()
+  const { mutateAsync : getSTPLandFullkitInDaysExcelData} = useGetSTPLAndFullKitExcelData();
 
   const getGraphData = async (params: any) => {
-    try {
-      const response = await getSTPLandFullkitInDaysData(params);
-      setGraphData(response.data.data);
+    const {isExcelExport,graphflag} = params;
+    if(isExcelExport) {
+      const headersdata = currentGridRef?.current?.api?.getColumnState();
+      const formattedFilters = formatFilterJSON(appliedFilters)
+      const body = getBodyForExcelExport({headersdata,appliedFilters : formattedFilters,colDefMap})
+      console.log('stpl and full kit response body',body)
+      try{
+          const response = await getSTPLandFullkitInDaysExcelData({body,isExcelExport : 1,graphflag, report_name : FilterPageName.Prod_STPL_And_FullKits})
+          DownloadExcel(response, FilterPageName.Prod_STPL_And_FullKits)
+      }
+      catch(e){
+        console.log(e)
+      }
+
     }
-    catch (e) {
-      console.log(e);
-      notifyError('Failed to fetch Graph data!');
+    else{
+
+      try {
+        const response = await getSTPLandFullkitInDaysData(params);
+        setGraphData(response.data.data);
+      }
+      catch (e) {
+        console.log(e);
+        notifyError('Failed to fetch Graph data!');
+      }
     }
   }
 
@@ -80,6 +101,7 @@ const STPLAndFullKits = () => {
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
+      getColDef(response)
       setColDef(getColumnDefinations(response.data.data, colDefCustomizations, []));
     }
     catch (e) {
@@ -159,7 +181,9 @@ const STPLAndFullKits = () => {
       handleSaveClick();
     }
   }, [isReset]);
-
+  const GetExcelData = async () => {
+    getGraphData({graphflag : 0 , isExcelExport : true , appliedFilters})
+  }
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {
@@ -171,6 +195,8 @@ const STPLAndFullKits = () => {
         setIsGridView={setIsGridView}
         isChartGridToggle
         isAddFilterButton
+        isExcelExport={isGridView?true:false}
+        onExcelExportClick = {GetExcelData}
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
         isFilterOpen={isFilterOpen}

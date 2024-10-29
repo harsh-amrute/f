@@ -27,4 +27,20 @@ export namespace OTIFAanalysisService {
         })
     }
 
+    export const getOTIFAnalysisDataExcelExport = async ({graphflag, body, report_name,isExcelExport}: any) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOTIFAnalysisData/`, 
+        body,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            params:{
+                graphflag,
+                report_name,
+                export : isExcelExport
+            },
+            responseType : 'blob'
+        })
+    }
+
 }

@@ -4,10 +4,12 @@ import AvlCellRenderer from '../../Common/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import DetailCellRenderer from "./MaterialCellRenderer";
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
-import { useGetOpenSODetailsData } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
+import { useGetOpenSODetailsData, useGetOpenSODetailsDataForExcelExport } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
+import { FilterPageName } from "../../Common/Enum";
+import { DownloadExcel } from "../../../../../helpers/utils";
 
 const useMaterialSO = (data: any) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
@@ -16,6 +18,7 @@ const useMaterialSO = (data: any) => {
 
     // const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
     const { mutateAsync: getOpenSODetailsData } = useGetOpenSODetailsData()
+    const { mutateAsync : getOpenSODetailsDataForExcelExport } = useGetOpenSODetailsDataForExcelExport();
 
     useEffect(() => {
         getInitialData(currentPage)
@@ -25,9 +28,34 @@ const useMaterialSO = (data: any) => {
 
 
 
-    const getInitialData = async (currPage: number) => {
+    const getInitialData = async (currPage: number, isExcelExport = false , body = {}) => {
+        if (isExcelExport) {
+            try {
+                let queryString = '?Color='
+                const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'))
+                colorsArray.forEach((s: string, index: number) => {
+                    if (index === colorsArray.length - 1) {
+                        queryString += `${data[s]}`
+                    }
+                    else {
+                        queryString += `${data[s]},`
+                    }
+                })
+                queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}`
+                const response = await  getOpenSODetailsDataForExcelExport({data : queryString , isExcelExport :1 , body , report_name : FilterPageName.Proc_Material_Coverage_For_OpenSO})
+                if(response.status === 200) {
+                    DownloadExcel(response , FilterPageName.Proc_Material_Coverage_For_OpenSO)
+                    notifySuccess("Excel Export Successfully")
+                }
+                else{
+                    notifyError("Failed to export Excel")
+                }
 
-        try {
+            } catch (error) {
+                notifyError("An error occurred");
+            }
+        }else{
+            try {
             setIsLoading(true);
             toast.dismiss();
             notifyLoader("Loading data...")
@@ -43,7 +71,7 @@ const useMaterialSO = (data: any) => {
                 }
             })
             queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}`
-
+            
             const someData = await getOpenSODetailsData(queryString);
             const output = someData.data?.data?.results.map((item: any) => ({
                 ...item,
@@ -60,6 +88,7 @@ const useMaterialSO = (data: any) => {
             setIsLoading(false);
             notifyError("Failed to load data!")
         }
+    }
     }
 
 
@@ -153,13 +182,18 @@ const useMaterialSO = (data: any) => {
         enterNavigatesVerticallyAfterEdit: true,
     };
 
+    const ExcelExportData = (body : any) =>{    
+        getInitialData(0, true, body)
+    }
+
     return {
         agGridProps,
         RRRRowData: orderDetailsData,
         isLoading,
         rowDataCount: rowDataCount,
         handlePageChangeOnHook,
-        currentPage: currentPage
+        currentPage: currentPage,
+        ExcelExportData
     }
 }
 

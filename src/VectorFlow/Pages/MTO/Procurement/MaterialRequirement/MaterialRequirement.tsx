@@ -45,6 +45,7 @@ const MaterialRequirement = () => {
         isGetUserConfig,
         handleResetClick,
         handleSaveClick, 
+        onExcelExportClickReq
     } = useMaterialReq(appliedFilters);
 
     const getFilterData = async () => {
@@ -75,6 +76,7 @@ const MaterialRequirement = () => {
                     onDateSubmitReq()
                     getFilterData()
                 }}
+                onExcelExportClick = {onExcelExportClickReq}
                 date={date}
                 handleSaveClick={handleSaveClick}
                 handleResetClick={handleResetClick}

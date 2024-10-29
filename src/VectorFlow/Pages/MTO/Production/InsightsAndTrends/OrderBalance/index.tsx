@@ -8,7 +8,7 @@ import {
   HorizontalViewWrapper,
 } from "./styles";
 import GridView from "../../../Common/GridView";
-import { getColumnDefinations } from "../../../../../../helpers/utils";
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TrailDeptCount from "./TrailDeptCount";
 import TrailDeptBalance from "./TrailDeptBalance";
@@ -17,6 +17,7 @@ import useFilter from "../../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import {
   useGetOrderBalanceData,
+  useGetOrderBalanceDataExcelExport,
   // <-------------- uncomment below code to enable dropdown for orderType    --------->
   useGetOrderTypeOptions 
 } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/OrderBalance";
@@ -25,6 +26,7 @@ import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
+import useColDef from "../../../../../../hooks/useColDef";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -69,6 +71,8 @@ const OrderBalance = () => {
   const [orderType, setOrderType] = useState<any>({}); 
   const reportName = "OrderBalance";
   const { user } = useUserData();
+  const {colDefMap , getColDef} = useColDef();
+  const { mutateAsync : getOrderBalanceGraphDataExcelExport} = useGetOrderBalanceDataExcelExport();
 
   const colDefCustomizations = {
     BPP: {
@@ -79,6 +83,7 @@ const OrderBalance = () => {
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
+      getColDef(response)
       // setHeaderData(response.data.data);
       setColDef(getColumnDefinations(response.data.data, colDefCustomizations, []));
     }
@@ -88,13 +93,33 @@ const OrderBalance = () => {
   }
 
   const getGraphData = async (params: any) => {
-    try {
-      const response = await getOrderBalanceData(params);
-      setGraphData(response?.data?.data[0]);
-    }
-    catch (e) {
-      console.log(e);
-      notifyError('Failed to fetch Graph data!');
+    if(params.isExcelExport){
+      try {
+        const headersdata = currentGridRef?.current?.api.getColumnState();
+        const formattedFilters = formatFilterJSON(appliedFilters);
+        const body = getBodyForExcelExport({headersdata,filterData :formattedFilters,colDefMap})
+        const response = await getOrderBalanceGraphDataExcelExport({body , report_name : FilterPageName.Prod_Order_Balance , isExcelExport : 1})
+        if(response.status === 200){
+          DownloadExcel(response,FilterPageName.Prod_Order_Balance)
+          notifySuccess("Excel data exported successfully")
+        }else{
+          notifyError("Failed to export Excel data")
+        }
+      } catch (error) {
+         notifyError(" An error has occurred")
+         console.log(error)
+      }
+         
+    }else{
+
+      try {
+        const response = await getOrderBalanceData(params);
+        setGraphData(response?.data?.data[0]);
+      }
+      catch (e) {
+        console.log(e);
+        notifyError('Failed to fetch Graph data!');
+      }
     }
   }
 
@@ -185,6 +210,10 @@ const OrderBalance = () => {
     }
   }, [isReset]);
 
+  const ExcelExportData = () => {
+    getGraphData({isExcelExport : true})
+  }
+
   return (
     <div style={{}}>
       {
@@ -194,6 +223,8 @@ const OrderBalance = () => {
         comp={"orderBalance"}
         isGridView={isGridView}
         setIsGridView={setIsGridView}
+        isExcelExport = {isGridView ? true : false}
+        onExcelExportClick = {ExcelExportData}
         isChartGridToggle
         isAddFilterButton
         isFilterOpen={isFilterOpen}

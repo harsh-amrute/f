@@ -10,16 +10,18 @@ import VFTable from "../../Common/VFTable";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
 // import GetProcPlanningData from '../Planning/GetProcPlanningData.json';
 // import GetProcPlanningDataColumn from '../Planning/GetProcPlanningDataColumn.json';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
-import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
+import { useGetMaterialRequirementDetails, useGetMaterialRequirementDetailsDatewise, useGetMaterialRequirementDetailsForExcelExport } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialRequirement";
 import moment from "moment";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import VFPagination from "../../Common/VFPagination";
 import { TableWrapper } from "./styles";
-import { pagination,UIGridCode } from "../../Common/Enum";
+import { FilterPageName, pagination,UIGridCode } from "../../Common/Enum";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { useUserData } from "../../../../../context"
+import useColDef from "../../../../../hooks/useColDef";
+import { notifyError, notifySuccess } from "../../../../../helpers/notify";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -82,12 +84,15 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData(); 
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { user } = useUserData();
+    const { colDefMap , getColDef } = useColDef()
+    const { mutateAsync : getMaterialRequirementDataExcelExport } = useGetMaterialRequirementDetailsForExcelExport();
 
     const reportName = "MaterialRequirement";
 
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
+            getColDef(response)
             setHeaderData(response?.data?.data);
         }
         catch (e) {
@@ -201,6 +206,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
     const [cumulativeRecordCount, setcumulativeRecordCount] = useState<number>(0);
     const [date, setDate] = useState<string>(datetime);
+    
 
     useEffect(()=>{
         if (currentTab.label === 'Shortage') {
@@ -234,25 +240,56 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         getInitialData()
     }
 
-    const getInitialData = async (currPage?: number, releaseDate?: string) => {
-        currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate) : getCumulativeDateWise(currPage, releaseDate);
+    const onExcelExportClickReq = () => { 
+        getInitialData(0,"",true)
     }
 
-    const getSelectedDateWise = async (currPage?: number, releaseDate: string = date) => {
-
-        const formatedFilters = formatFilterJSON(appliedFilters);
-        const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage, appliedFilters: formatedFilters  });
-        const dayWiseOutput = datWiseData.data?.data?.results;
-        setDayWiseRecordCount(datWiseData.data?.data?.count)
-        setDayWiseData(dayWiseOutput)
+    const getInitialData = async (currPage?: number, releaseDate?: string, isExcelExport = false) => {
+        currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport) : getCumulativeDateWise(currPage, releaseDate);
     }
 
-    const getCumulativeDateWise = async (currPage?: number, releaseDate: string = date) => {
+    const getSelectedDateWise = async (currPage?: number, releaseDate: string = date, isExcelExport = false) => {
+
         const formatedFilters = formatFilterJSON(appliedFilters);
-        const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage, appliedFilters: formatedFilters });
-        const cumulativeOutput = cumulativeData.data?.data?.results
-        setcumulativeRecordCount(cumulativeData.data?.data?.count)
-        SetCumulativeData(cumulativeOutput)
+        if(isExcelExport){
+            const headersdata = currentGridRef?.current?.api.getColumnState();
+            const body = getBodyForExcelExport({headersdata: headersdata,filterData: formatedFilters,colDefMap})
+            const response = await getMaterialRequirementDataExcelExport({releaseDate : releaseDate,body ,isExcelExport : 1 ,report_name : FilterPageName.Proc_Material_Requirement})
+            if(response.status === 200){
+                DownloadExcel(response,FilterPageName.Proc_Material_Requirement)
+                notifySuccess("Excel exported successfully")
+            }else{
+                notifyError("Failed to export excel")
+            }
+        }else{
+
+            const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage, appliedFilters: formatedFilters  });
+            const dayWiseOutput = datWiseData.data?.data?.results;
+            setDayWiseRecordCount(datWiseData.data?.data?.count)
+            setDayWiseData(dayWiseOutput)
+        }
+    }
+
+    const getCumulativeDateWise = async (currPage?: number, releaseDate: string = date, isExcelExport = false ) => {
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        if(isExcelExport){
+            const headersdata = currentGridRef?.current?.api.getColumnState();
+            const body = getBodyForExcelExport({headersdata: headersdata, filterData: formatedFilters, colDefMap})
+            const response = await getMaterialRequirementDataExcelExport({releaseDate : releaseDate, body ,isExcelExport : 1 ,report_name : FilterPageName.Proc_Material_Requirement})
+            if(response.status === 200){
+                DownloadExcel(response,FilterPageName.Proc_Material_Requirement)
+                notifySuccess("Excel exported successfully")
+            }else{
+                notifyError("Failed to export excel")
+            }
+        }
+        else{
+
+            const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage, appliedFilters: formatedFilters });
+            const cumulativeOutput = cumulativeData.data?.data?.results
+            setcumulativeRecordCount(cumulativeData.data?.data?.count)
+            SetCumulativeData(cumulativeOutput)
+        }
     }
 
 
@@ -503,6 +540,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         isGetUserConfig,
         handleResetClick,
         handleSaveClick,
+        onExcelExportClickReq
         //excelDownload,
         //GetCount
     }

@@ -17,6 +17,12 @@ export const useGetOrderSchedulingPageData = () => {
     })
 }
 
+export const useGetOrderSchedulingExcelData = () => {
+    return useMutation(async (args: {body: any, isExcelExport: any, report_name : any}) => {
+        return OrderReschedulingService.getOrderReschedulingExcelData(args);
+    })
+}
+
 
 export const usePutUpdateOrderDueDate = () => {
     return useMutation(async (body: any) => {

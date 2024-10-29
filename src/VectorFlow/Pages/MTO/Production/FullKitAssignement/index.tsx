@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
 
 // import { AgChartOptions } from 'ag-charts-community';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './FullKitAssignment.styled';
@@ -15,12 +15,12 @@ import * as globalStyles from "../../../../../styles/global";
 import { Rectangle } from './RectangleMarker';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
-import { useGetFullKitAssignmentDataWithGraphData, useUpdateExcludedOrdersForFullkitAssignment, useUpdateFullkitOnSimulation, useUpdateOrSimulateStockAllocation } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
+import { useGetFullKitAssignmentDataWithGraphData, useGetFullkitAssignmentExcelData, useUpdateExcludedOrdersForFullkitAssignment, useUpdateFullkitOnSimulation, useUpdateOrSimulateStockAllocation } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
 import OverlayLoader from '../../Common/Loader';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import VFPagination from '../../Common/VFPagination';
 import _ from 'lodash';
-import { notifyError } from '../../../../../helpers/notify';
+import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import { useGetCCRGroupMaster, useGetFOLData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import AvailabilityCellRenderer from './AvailabilityCellRenderer';
 import useFilter from "../../../../../hooks/useFilter";
@@ -28,6 +28,7 @@ import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/
 import { AvailabilityToolTipWrapper } from '../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/styles';
 import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
+import useColDef from '../../../../../hooks/useColDef';
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -103,7 +104,8 @@ const FullKitAssignment = () => {
     toggleFilter,
     appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_FullKit_Assignment);
-
+  const {colDefMap , getColDef} =  useColDef();
+  const { mutateAsync : getFullKitAssignmentDataWithGraphExcelData } = useGetFullkitAssignmentExcelData();
   const reportName = "FullKitAssignment";
 
   const defaultColDefCustomisation = useRef({
@@ -159,6 +161,7 @@ const FullKitAssignment = () => {
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
+      getColDef(response)
       setHeaderData(response.data.data);
     }
     catch (e) {
@@ -212,7 +215,7 @@ const FullKitAssignment = () => {
 
   // const noOfCalls = useRef(0);
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (isExcelExport = false) => {
     // if(noOfCalls.current == 0){
     //   await saveOrCancelSimulaton("Delete");
     //   noOfCalls.current += 1;
@@ -220,7 +223,26 @@ const FullKitAssignment = () => {
     const formatedFilters = formatFilterJSON(appliedFilters);
     const data = await getFullKitAssignmentDataWithGraphData({...loadDataParams, appliedFilters: formatedFilters});
     const griddata: any = data?.data?.data?.results?.griddata;
-    if (loadDataParams.load_graph_data) {
+    if(isExcelExport){
+      try {
+        const headersdata = currentGridRef?.current?.api?.getColumnState();
+        const formattedFilters = formatFilterJSON(appliedFilters);
+        const body = getBodyForExcelExport({headersdata,filterData : formattedFilters,colDefMap})
+        const response = await getFullKitAssignmentDataWithGraphExcelData({...loadDataParams,body, isExcelExport : 1 ,report_name : FilterPageName.Prod_FullKit_Assignment})
+        if(response.status == 200){
+          DownloadExcel(response, FilterPageName.Prod_FullKit_Assignment);
+          notifySuccess('Report downloaded successfully')
+        }else{
+          notifyError('Failed to download the report')
+          console.log('error downloading')
+        }
+        
+      } catch (error) {
+        notifyError('An error has occurred while downloading the report')
+        console.log(error)
+      }
+    }
+    else if (loadDataParams.load_graph_data) {
       const graph: any = [];
       const newGraphdata = data?.data?.data?.results?.graphdata;
       //underload
@@ -661,12 +683,15 @@ const FullKitAssignment = () => {
         }
     }
   });
-
+  const ExcelData = ()=>{
+    fetchOrders(true);
+  }
   return (
     <Wrapper>
       <MTOActionToolBar
         comp="FullKitAssignment"
         isExcelExport
+        onExcelExportClick={ExcelData}
         isAddFilterButton
         isFilterOpen={isFilterOpen}
         isMfgSelected={isMfgSelected}
