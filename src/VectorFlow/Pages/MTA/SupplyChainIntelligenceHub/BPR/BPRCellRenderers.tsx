@@ -121,6 +121,8 @@ export const BPRTagsCellRenderer = (params:any)=>{
 
 export const BPRSubmitRemarkCellRenderer = (params:any)=>{
 
+    console.log(params.value)
+
     return(
         <BPRRemarksCellRendererWrapper>
             <BPRSubmitRemarkInput 
@@ -133,7 +135,7 @@ export const BPRSubmitRemarkCellRenderer = (params:any)=>{
             //     };
             // }}
             >
-                {params.value}
+                {params.value?params.value:params.data.Remark}
             </BPRSubmitRemarkInput>
         </BPRRemarksCellRendererWrapper>
     )
