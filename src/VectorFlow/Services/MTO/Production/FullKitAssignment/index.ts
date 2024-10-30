@@ -42,3 +42,9 @@ export const useUpdateFullkitOnSimulation = () => {
         return FullKitAssignmentService.updateFullkitOnSimulation(data.is_type, data.username);
     })
 }
+
+export const useGetFullkitAssignmentExcelData = ()=>{
+    return useMutation( async (params : any) =>{
+        return FullKitAssignmentService.getFullKitAssignmentDataWithGraphExcelData(params);
+    })
+}

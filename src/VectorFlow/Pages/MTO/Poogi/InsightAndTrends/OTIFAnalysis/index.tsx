@@ -13,15 +13,16 @@ import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRen
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../../hooks/useFilter";
-import { useGetOTIFAnalysisData } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
+import { useGetOTIFAnalysisData, useGetOTIFAnalysisDataExcelExport } from "../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTIFAnalysis";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from "../../../Common/GridView";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
-import { getColumnDefinations } from '../../../../../../helpers/utils';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
+import useColDef from "../../../../../../hooks/useColDef";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -61,8 +62,9 @@ const OTIFAnalysis = () => {
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-  
   const { user } = useUserData();
+  const { mutateAsync : getOTIFAnalysisDataExcelExport} = useGetOTIFAnalysisDataExcelExport();
+  const { colDefMap , getColDef} = useColDef();
 
   const colDefCustomizations = {
     Tags: {
@@ -79,13 +81,27 @@ const OTIFAnalysis = () => {
   }
 
   const getGraphData = async (params: any) => {
-    try {
-      const response = await getOTIFAnalysisData(params);
-      setGraphData(response.data.data);
+    if(params.isExcelExport){
+      const headersdata = currentGridRef?.current?.api.getColumnState();
+      const formattedFilters = formatFilterJSON(appliedFilters);
+      const body = getBodyForExcelExport({headersdata,filterData : formattedFilters, colDefMap})
+      const response = await getOTIFAnalysisDataExcelExport({body , report_name : FilterPageName.Poogi_OTIF_Analysis, isExcelExport : 1, graphflag : 0 })
+      if(response.status === 200){
+        DownloadExcel(response,FilterPageName.Poogi_OTIF_Analysis)
+      }else{
+        notifyError('Failed to export Excel file!');
+      }
     }
-    catch (e) {
-      console.log(e);
-      notifyError('Failed to fetch Graph data!');
+    else{
+
+      try {
+        const response = await getOTIFAnalysisData(params);
+        setGraphData(response.data.data);
+      }
+      catch (e) {
+        console.log(e);
+        notifyError('Failed to fetch Graph data!');
+      }
     }
   }
 
@@ -124,6 +140,7 @@ const OTIFAnalysis = () => {
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData('OTIFAnalysis');
+      getColDef(response);
       setHeaderData(response?.data?.data);
     }
     catch (e) {
@@ -181,6 +198,9 @@ const OTIFAnalysis = () => {
     }
   }, [isReset]);
 
+  const ExcelData = ()=>{
+    getGraphData({isExcelExport : true})
+  }
 
 
   return (
@@ -193,6 +213,8 @@ const OTIFAnalysis = () => {
         setIsGridView={setIsGridView}
         isChartGridToggle
         isAddFilterButton
+        isExcelExport={isGridView ? true : false}
+        onExcelExportClick={ExcelData}
         isFilterOpen={isFilterOpen}
         onAddFilter={onAddFilter}
         toggleFilter={toggleFilter}

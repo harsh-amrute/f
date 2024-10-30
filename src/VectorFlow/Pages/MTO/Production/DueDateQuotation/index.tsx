@@ -4,8 +4,8 @@ import { useUserData } from '../../../../../context'
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { Footer, Wrapper } from './DueDateQuotation.styled'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
-import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetDBRsettingsData, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetUIConfig, useGetFilteredOrdersForDDQ } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils'
+import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetDBRsettingsData, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetUIConfig, useGetFilteredOrdersForDDQ, useGetOrdersForExcelDDQ } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
 import "./style.css"
@@ -20,6 +20,7 @@ import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/
 import useFilter from '../../../../../hooks/useFilter';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { FilterPageName, UIGridCode } from '../../Common/Enum'
+import useColDef from '../../../../../hooks/useColDef'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -73,6 +74,8 @@ const DueDateQuotation = () => {
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const [filterData, setFilterData] = useState({});
   const {  mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  const { mutateAsync: getFilteredOrdersForExcelDDQ} = useGetOrdersForExcelDDQ();
+  const {colDefMap , getColDef} = useColDef();
   const  { 
     state: currFilter, 
     setState: setCurrFilter, 
@@ -192,6 +195,10 @@ const DueDateQuotation = () => {
     }
   }, [selectedRows]);
 
+  useEffect(()=>{
+    if(UIConfig)
+      getColDef(UIConfig)
+  },[UIConfig])
 
   // useEffect(()=>{
   //   setLoading(false)
@@ -371,22 +378,40 @@ const DueDateQuotation = () => {
     }
   }
 
-  const getUpdatedFilterData = async () => {
-    try {
+  const getUpdatedFilterData = async (isExcelExport = false) => {
+    if(isExcelExport){
+      const headersdata = currentGridRef?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
-      const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
-      totalRows.current = data?.data?.data?.count;
-      let results: any = data?.data?.data?.results;
-      if(scheduledOrders){
-        results = results?.filter((order: any) => {
-          return !scheduledOrders.has(order.id);
-        })
+      const body = getBodyForExcelExport({headersdata , filterData : formatedFilters, colDefMap});
+      try{
+        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled})
+        if(response.status == 200){
+          DownloadExcel(response,FilterPageName.Prod_DDQ)
+        }else{
+          notifyError("Error exporting Excel!");
+        }
+      }catch(e){
+        console.error("Error exporting Excel", e);
+        notifyError("Error exporting Excel!");
       }
-      setRows(results);
-    }
-    catch (err) {
-      console.error(err);
-      notifyError("Something Went Wrong!");
+    }else{
+
+      try {
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
+        totalRows.current = data?.data?.data?.count;
+        let results: any = data?.data?.data?.results;
+        if(scheduledOrders){
+          results = results?.filter((order: any) => {
+            return !scheduledOrders.has(order.id);
+          })
+        }
+        setRows(results);
+      }
+      catch (err) {
+        console.error(err);
+        notifyError("Something Went Wrong!");
+      }
     }
   }
 
@@ -458,7 +483,9 @@ const DueDateQuotation = () => {
       handleSaveClick();
     }
   }, [isReset]);
-
+ const ExcelData = ()=>{
+    getUpdatedFilterData(true);
+ }
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
       {step === 1 ?
@@ -471,6 +498,8 @@ const DueDateQuotation = () => {
             </div> : null
           }
           isAddFilterButton
+          isExcelExport
+          onExcelExportClick={ExcelData}
           isFilterOpen={isFilterOpen}
           onAddFilter={onAddFilter}
           toggleFilter={toggleFilter}

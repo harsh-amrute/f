@@ -19,3 +19,9 @@ export const useGetOpenSODetailsData = () => {
         return MaterialCoverageServices.getOpenSODetailsData(data)
     })
 }
+
+export const useGetOpenSODetailsDataForExcelExport = () =>{
+  return useMutation(async(data:any)=>{
+        return MaterialCoverageServices.getOpenSODetailsDataForExcelExport(data)
+    })
+}

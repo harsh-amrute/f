@@ -6,3 +6,9 @@ export const useGetOrderRiskData = () => {
         return await OrderAtRiskService.getOrderAtRiskData(params);
     });
 }
+
+export const useGetOrderRiskDataExcelExport = () => {
+    return useMutation(async(params: any) => {
+        return await OrderAtRiskService.getOrderAtRiskDataExcelExport(params);
+    });
+}

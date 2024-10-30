@@ -7,11 +7,11 @@ import { Order } from '../../../../../../VectorFlow/types/MTO'
 import { ColDef } from 'ag-grid-enterprise'
 import columnData from './ColumnData'
 import { AgGridReactProps } from 'ag-grid-react'
-import { useGetOrderwiseCoverageData } from '../../../../../../VectorFlow/Services/MTO/Procurement/OrderwiseCoverage'
+import { useGetOrderwiseCoverageData, useGetOrderwiseCoverageDataForExcelExport } from '../../../../../../VectorFlow/Services/MTO/Procurement/OrderwiseCoverage'
 import { toast } from 'react-toastify'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
-import { formatFilterJSON, getColumnDefinations } from '../../../../../../helpers/utils'
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils'
 import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
 import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
 import { FilterPageName, pagination, UIGridCode } from '../../../Common/Enum'
@@ -20,6 +20,7 @@ import { useUserData } from "../../../../../../context/index";
 import OverlayLoader from '../../../Common/Loader'
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
+import useColDef from '../../../../../../hooks/useColDef'
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -61,6 +62,8 @@ const RMPMOrderwiseCoverage = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: getOrderwiseCoverageData } = useGetOrderwiseCoverageData();
     const { user } = useUserData();
+    const { mutateAsync : getOrderwiseCoverageDataForExcelExport} = useGetOrderwiseCoverageDataForExcelExport();
+    const {colDefMap , getColDef} = useColDef()
     const reportName = "RMPMOrderWiseCoverage";
 
     const agGridProps: AgGridReactProps = {
@@ -174,6 +177,7 @@ const RMPMOrderwiseCoverage = () => {
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
+            getColDef(response)
             setColDef(getColumnDefinations(response?.data?.data, customHeader, []));
         }
         catch (e) {
@@ -210,8 +214,26 @@ const RMPMOrderwiseCoverage = () => {
         });
     };
 
-    const GetData = async (graph: any, page: any) => {
-        if (graph === 1) {
+    const GetData = async (graph: any, page: any, isExcelExport = false) => {
+        if(isExcelExport) {
+            try {
+                const headersdata = currentGridRef?.current?.api.getColumnState();
+                const formatedFilters = formatFilterJSON(appliedFilters)
+                const body = getBodyForExcelExport({headersdata,filterData : formatedFilters,colDefMap})
+                const response = await getOrderwiseCoverageDataForExcelExport({body , isExcelExport : 1, report_name : FilterPageName.Proc_RM_PM_OrderWise,  graph});
+                if(response.status === 200) {
+                    DownloadExcel(response, FilterPageName.Proc_RM_PM_OrderWise,);
+                }else{
+                    notifyError("An error occurred while downloading")
+                }
+                
+            } catch (error) {
+                notifyError("An error occurred");
+                console.log(error)
+
+            }
+        }
+        else if (graph === 1) {
             try {
                 notifyLoader("Loading Data...")
                 const APIData = await getOrderwiseCoverageData({ graph });
@@ -324,6 +346,10 @@ const RMPMOrderwiseCoverage = () => {
         }
     }, [isReset]);
 
+    const ExcelExport = () =>{
+        GetData(0,0,true)
+    }
+
     return (
         <>
             {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
@@ -336,6 +362,8 @@ const RMPMOrderwiseCoverage = () => {
                     handleGoBack={() => { (setIsGridView(false)) }} 
                     isAddFilterButton 
                     isChartGridToggle 
+                    isExcelExport = {isGridView ? true : false}
+                    onExcelExportClick = {ExcelExport}
                     isGridView={isGridView} 
                     setIsGridView={setIsGridView} 
                     isFilterOpen={isFilterOpen}

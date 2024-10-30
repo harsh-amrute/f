@@ -2,7 +2,7 @@ import { AgCharts } from 'ag-charts-react'
 import { GridOptions, IRowNode } from 'ag-grid-enterprise';
 import { useEffect, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer';
 import { Button, Wrapper } from './DynamicReleaseManagement.styled';
@@ -14,7 +14,7 @@ import { Rectangle } from './RectangleMarker';
 import { BPRViewTableHeaderTab, SCTabHeader } from './styles';
 import ReleaseModal from './ReleaseModal';
 import './styles.css'
-import { useGetDynamicReleaseData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
+import { useGetDynamicReleaseData, useGetDynamicReleaseExcelData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import { useGetCCRGroupMaster, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import OverlayLoader from '../../Common/Loader';
@@ -25,6 +25,7 @@ import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
+import useColDef from '../../../../../hooks/useColDef';
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -81,6 +82,7 @@ const DynamicReleaseManagement = () => {
   const [message, setMessage] = useState('');
   const [HeaderData, setHeaderData] = useState([]);
   const [filterData, setFilterData] = useState({});
+  const { mutateAsync : getDynamicReleaseExcelData} = useGetDynamicReleaseExcelData();
   const { 
       state: currFilter, 
       setState: setCurrFilter, 
@@ -94,10 +96,12 @@ const DynamicReleaseManagement = () => {
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dynamic_Release_Management);
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { colDefMap , getColDef} = useColDef();
 
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
+      getColDef(response);
       setHeaderData(response.data.data);
     }
     catch (e) {
@@ -105,9 +109,26 @@ const DynamicReleaseManagement = () => {
     }
   }
 
-  const GetData = async (allOrders = 0, page = 1, graph = 1) => {
+  const GetData = async (allOrders = 0, page = 1, graph = 1,isExcelExport = false) => {
     const formatedFilters = formatFilterJSON(appliedFilters);
-    if (allOrders) {
+    if(isExcelExport){
+      try {
+        const headersdata = currentGridRef?.current?.api.getColumnState();
+        const formatedFilters = formatFilterJSON(appliedFilters)
+        const body = getBodyForExcelExport({headersdata,filterData :  formatedFilters, colDefMap})
+        const response = await getDynamicReleaseExcelData({isExcelExport : 1 , body , graph : 0 , ao : allOrders,report_name : FilterPageName.Prod_Dynamic_Release_Management})
+        if(response.status === 200){
+          DownloadExcel(response,FilterPageName.Prod_Dynamic_Release_Management);
+        }else{
+          notifyError("Failed to export to Excel");
+          console.log(response)
+        }
+      } catch (error) {
+        notifyError("An error has occurred")
+        console.log(error)
+      }
+    }
+    else if (allOrders) {
       try {
         const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
@@ -732,7 +753,9 @@ const DynamicReleaseManagement = () => {
           handleSaveClick();
       }
   }, [isReset]);
-
+  const ExcelData = () =>{
+    GetData(table1 ? 1 : 0 , 0 , 0, true)
+  }
   return (
     <>
       <Wrapper>
@@ -742,6 +765,7 @@ const DynamicReleaseManagement = () => {
         <MTOActionToolBar 
           comp="FullKitAssignment" 
           isExcelExport 
+          onExcelExportClick={ExcelData}
           isAddFilterButton 
           isReleaseButton 
           isReleaseButtonDisabled={isReleaseButtonDisabled} 

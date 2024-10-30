@@ -4,8 +4,7 @@ import VFTable from '../../Common/VFTable';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';
-import { useEffect, useRef } from 'react';
-// import axios from 'axios';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 interface MaterialSODetailedProps {
     parameterData: any,
@@ -17,22 +16,28 @@ interface MaterialSODetailedProps {
     isGetUserConfig: any
 }
 
-    const MaterialSODetailed = ({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef}: MaterialSODetailedProps) => {
+    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef}: MaterialSODetailedProps, ref) => {
     const {
         agGridProps,
         RRRRowData,
         isLoading,
         rowDataCount,
         handlePageChangeOnHook,
-        currentPage
+        currentPage,
+        ExcelExportData
     } = useMaterialSO(parameterData);
     const gridRef = useRef<any>(null);
 
+    useImperativeHandle(ref, ()=>({
+        getExcelExport: (body : any)=>{
+            console.log('materail so ',body)
+            ExcelExportData(body);
+        }
+    }))
 
     const handlePageChange = (currPage: number) => {
         handlePageChangeOnHook(currPage);
     }
-
     //Excel Export POC 
 
     // useEffect(() =>{
@@ -123,7 +128,7 @@ interface MaterialSODetailedProps {
             </ProcurementLayout>
         </>
     )
-}
+})
 
 export default MaterialSODetailed
 

@@ -6,7 +6,7 @@ import VFTable from '../../Common/VFTable';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import ReasonCellRenderer from './ReasonCellRenderer';
 import DueDateCellRenderer from './DueDateCellRenderer';
-import { usePutUpdateOrderDueDate, useGetOrderSchedulingData, useGetOrderSchedulingPageData } from '../../../../Services/MTO/Production/OrderRescheduling';
+import { usePutUpdateOrderDueDate, useGetOrderSchedulingData, useGetOrderSchedulingPageData, useGetOrderSchedulingExcelData } from '../../../../Services/MTO/Production/OrderRescheduling';
 import { AgGridReactProps } from 'ag-grid-react';
 import { GridRef } from '../../../../types/MDM';
 import { notifySuccess, notifyError } from '../../../../../helpers/notify';
@@ -14,11 +14,13 @@ import { toast } from 'react-toastify';
 import { IRowNode } from 'ag-grid-enterprise';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
-import { getColumnDefinations } from '../../../../../helpers/utils';
+import { DownloadExcel, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import VFPagination from '../../Common/VFPagination';
-import { pagination, UIGridCode } from '../../Common/Enum';
+import { pagination, UIGridCode ,FilterPageName } from '../../Common/Enum';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useUserData } from "../../../../../context/index";
+import useColDef from '../../../../../hooks/useColDef';
+
 
 // const user = { user: { them_ui: 'pure' } };
 
@@ -46,7 +48,41 @@ const OrderRescheduling = () => {
     const [HeaderData, setHeaderData] = useState([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { user } = useUserData();
+    const [rowData, setRowData] = useState<RowDataType[]>([]);
+    const [currData, setCurrData] = useState<any>(null);
+    const {mutateAsync: getOrderReschedulingExcelData} = useGetOrderSchedulingExcelData();
+    const { getColDef, colDefMap} = useColDef();
+
+    const GetData =  async (isExcelExport = false) => {
+        if(isExcelExport){
+            const headersdata = refGraph1?.current?.api?.getColumnState();
+            const body = getBodyForExcelExport({headersdata, colDefMap});
+            try{
+
+                const response = await getOrderReschedulingExcelData({body, isExcelExport: 1,report_name: FilterPageName.Prod_Order_Rescheduling});
+                DownloadExcel(response)
+            }
+            catch (e){
+                console.log(e)
+            }
+        }
+        else{
+
+            try {
+                
+            const APIData = await getOrderSchedulingData(pagination.mtoPageSize);
+            setCurrData(APIData);
+            setRowData(APIData.data.data.results);
+
+        }
+        catch (e) {
+            notifyError("Failed to fetch Grid data!")
+        }
+        setIsLoading(false);
+    }
+    };
     
+
     const getSelectedRowData = () => {
 
         const selectedData = refGraph1.current?.api.getSelectedRows();
@@ -181,6 +217,7 @@ const OrderRescheduling = () => {
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
+            getColDef(response); 
             setHeaderData(response.data.data);
         }
         catch (e) {
@@ -255,23 +292,9 @@ const OrderRescheduling = () => {
         setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
     }, [HeaderData, currTab]);
 
-    const [rowData, setRowData] = useState<RowDataType[]>([]);
+    
 
-    const [currData, setCurrData] = useState<any>(null);
-
-    const GetData = async () => {
-        try {
-
-            const APIData = await getOrderSchedulingData(pagination.mtoPageSize);
-            setCurrData(APIData);
-            setRowData(APIData.data.data.results);
-
-        }
-        catch (e) {
-            notifyError("Failed to fetch Grid data!")
-        }
-        setIsLoading(false);
-    };
+   
 
     const handlePageChangeCumulative = async (pageNumber: number) => {
         setIsLoading(true);
@@ -497,19 +520,11 @@ const OrderRescheduling = () => {
         }
     }, [isReset]);
 
-    const [tempRowData, setTempRowData] = useState<any>(undefined);
+    const [tempRowData] = useState<any>(undefined);
 
 
     const GetExcelData = async () => {
-        try {
-
-            const APIData = await getOrderSchedulingData(currData.data.data.count);
-            setTempRowData(APIData.data.data.results);
-
-        }
-        catch (e) {
-            notifyError("Failed to fetch Grid data!")
-        }
+        GetData(true)  
     }
 
 

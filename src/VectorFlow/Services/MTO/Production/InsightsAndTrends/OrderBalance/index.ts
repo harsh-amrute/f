@@ -12,3 +12,9 @@ export const useGetOrderTypeOptions = () => {
         return OrderBalanceService.getOrderTypeOptions();
     })
 }
+
+export const useGetOrderBalanceDataExcelExport = () => {
+    return useMutation(async (params: any) => {
+        return OrderBalanceService.getOrderBalanceGraphDataExcelExport(params);
+    })
+}

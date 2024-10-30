@@ -65,6 +65,10 @@ const ProcurementPlanning = () => {
         getFilterData()
     }, []);
 
+    const ExcelExportData = ()=>{
+        fetchData(date ,1 , currentTab.label === 'Shortage' ? '0' : '1', true)
+    }
+
     return (
         <>
 
@@ -79,6 +83,7 @@ const ProcurementPlanning = () => {
                     isReleaseDate
                     isAddFilterButton
                     isExcelExport
+                    onExcelExportClick={ExcelExportData}
                     submitDate={() => { 
                         fetchData(date, 1, currentTab.label === 'Shortage' ? '0' : '1') 
                         getFilterData()

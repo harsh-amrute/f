@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   TextXAxis,
   TextYAxis,
@@ -20,11 +20,12 @@ import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useUserData } from "../../../../../context/index";
 import ColorCellRenderer from "../../Common/ColorCellRenderer";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
+import useColDef from '../../../../../hooks/useColDef';
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -55,6 +56,7 @@ const MaterialCov = () => {
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { user } = useUserData();
+  const { getColDef , colDefMap} = useColDef();
     const { 
     state: currFilter, 
     setState: setCurrFilter, 
@@ -162,6 +164,7 @@ const MaterialCov = () => {
   const getHeaderData = async () => {
       try {
           const response = await getUIConfigData(reportName);
+          getColDef(response)
           setHeaderData(response.data.data);
       }
       catch (e) {
@@ -233,6 +236,15 @@ const MaterialCov = () => {
     }
   }, [isReset]);
 
+  const materialSoDetailRef = useRef<any>();
+  const callExportExcel = () => {
+      const headersdata = currentGridRef?.current?.api.getColumnState();
+      const formattedFilters = formatFilterJSON(appliedFilters)
+      const body = getBodyForExcelExport({headersdata: headersdata, filterData : formattedFilters , colDefMap})
+      if(materialSoDetailRef.current?.getExcelExport)
+        materialSoDetailRef.current.getExcelExport(body)
+    
+  }
   return (
     <div style={{ width: "100%", height: "100%" }}>
       {!toggleComponent ?
@@ -326,9 +338,11 @@ const MaterialCov = () => {
             disableRemoveFilter={true}
             handleSaveClick={handleSaveClick}
             handleResetClick={handleResetClick}
+            onExcelExportClick={ callExportExcel}
           />
 
           <MaterialSODetailed 
+            ref={materialSoDetailRef}
             isUpdateUserConfig={isUpdateUserConfig}
             isGetUserConfig={isGetUserConfig}
             parameterData={detailDataObj}

@@ -3,17 +3,18 @@ import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Co
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import ChartView from './ChartView';
 import GridView from './GridView';
-import { useGetLeadTimeData } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime'
+import { useGetLeadTimeData, useGetLeadTimeExcelData } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime'
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
 import OverlayLoader from '../../../Common/Loader';
 import { useUserData } from "../../../../../../context/index";
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
-import { getColumnDefinations } from '../../../../../../helpers/utils';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
+import useColDef from '../../../../../../hooks/useColDef';
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -54,10 +55,13 @@ const LeadTime = () => {
     const { user } = useUserData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData();
     const { mutateAsync: getLeadTimeData, isLoading} = useGetLeadTimeData()
+    const {colDefMap,getColDef} = useColDef();
+    const {mutateAsync : getLeadTimeExcelData} = useGetLeadTimeExcelData();
 
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
+            getColDef(response)
             setHeaderData(response?.data?.data);
         }
         catch (e) {
@@ -120,24 +124,38 @@ const LeadTime = () => {
         getFilterData();
     }, [])
 
-    const getGridData = async () => {
+    const getGridData = async (isExcelExport = false) => {
+      if(isExcelExport){
+        const headersdata = currentGridRef?.current?.api?.getColumnState();
+        const formatedFilters = formatFilterJSON(appliedFilters)
+        const body = getBodyForExcelExport({headersdata,appliedFilters:formatedFilters,colDefMap})
+        try {
+          const response = await getLeadTimeExcelData({body, isExcelExport : 1,report_name : FilterPageName.Poogi_Lead_Time})
+          console.log('api response: ', response)
+          DownloadExcel(response,FilterPageName.Poogi_Lead_Time)
+        } catch (error) {
+          console.log(error);
+        }
+      }else{
+
         try{
-            const data = await getLeadTimeData({graphflag: 1});
-            const chartData: any = []
-            const tableData: any = []
-            Object.entries(data.data.data).forEach((entry: any)=>{
-                // console.log(entry1);
-                chartData.push({x: entry[0], y: Object.values(entry[1]).sort((a: any,b: any)=> a - b)})
-                tableData.push({...entry[1], week: entry[0]})
-            })
-            setChartTableData(tableData);
-            setChartData(chartData)
-            notifySuccess("Data Fetched Successfully!");
+          const data = await getLeadTimeData({graphflag: 1});
+          const chartData: any = []
+          const tableData: any = []
+          Object.entries(data.data.data).forEach((entry: any)=>{
+            // console.log(entry1);
+            chartData.push({x: entry[0], y: Object.values(entry[1]).sort((a: any,b: any)=> a - b)})
+            tableData.push({...entry[1], week: entry[0]})
+          })
+          setChartTableData(tableData);
+          setChartData(chartData)
+          notifySuccess("Data Fetched Successfully!");
         }
         catch(err: any){
-            console.log(err)
-            notifyError("Something Went Wrong")
+          console.log(err)
+          notifyError("Something Went Wrong")
         }
+      }
     }
     
     const colDefCustomizations = {
@@ -167,6 +185,9 @@ const LeadTime = () => {
         }
       }, [isReset]);
 
+    const GetExcelData = () =>{
+      getGridData(true);
+    }
 
     return (
         <>
@@ -178,7 +199,8 @@ const LeadTime = () => {
                 isChartGridToggle 
                 isGridView={isGridView} 
                 setIsGridView={setIsGridView} 
-                isExcelExport 
+                isExcelExport = {isGridView ? true : false}
+                onExcelExportClick={GetExcelData}
                 isAddFilterButton
                 isFilterOpen={isFilterOpen}
                 onAddFilter={onAddFilter}

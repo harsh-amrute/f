@@ -38,4 +38,10 @@ export const usePutPoogiRemarks = () => {
     })
 }
 
+export const useGetPoogReasonForDealyedOrderExcel = () => {
+    return useMutation(async (data: any) => {
+        return await ReasonOrderChangeServices.getPoogiReasonsDelayedOrderExcelExport(data);
+    })
+}
+
 

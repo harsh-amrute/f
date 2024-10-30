@@ -96,6 +96,7 @@ export enum FilterPageName {
     Prod_STPL_And_FullKits="Prod_STPL_And_FullKits",
     Prod_Order_Balance="Prod_Order_Balance",
     Prod_Order_At_Risk="Prod_Order_At_Risk",
+    Prod_Order_Rescheduling="Prod_Order_Rescheduling",
 
     Poogi_Reason_For_Delayed_Orders="Poogi_Reason_For_Delayed_Orders",
     Poogi_OTIF_Analysis= "Poogi_OTIF_Analysis",

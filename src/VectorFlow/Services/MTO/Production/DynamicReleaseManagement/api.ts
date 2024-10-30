@@ -96,4 +96,13 @@ export namespace DynamicReleaseManagementService {
             }
         })
     }
+
+    export const getDynamicReleaseExcelData = async ({body, isExcelExport , report_name , ao ,graph}: {body : any,isExcelExport : any, report_name : any,ao : any , graph : any}) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDynamicReleaseData/?graph=${graph}&ao=${ao}&report_name=${report_name}&export=${isExcelExport}`, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            responseType : "blob"
+        })
+    }
 }
