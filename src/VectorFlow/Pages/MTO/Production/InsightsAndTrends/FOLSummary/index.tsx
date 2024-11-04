@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import FilterModal from "./FilterModal";
 import ResizableTable from "./ResizableTable";
 import MTOActionToolBar from "../../../../../../../src/components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
@@ -18,6 +18,7 @@ import FullkitCellRenderer from "../../../Common/FullkitCellRenderer";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import OverlayLoader from "../../../Common/Loader";
 import { UIGridCode } from "../../../Common/Enum";
+import { format } from "date-fns";
 
 
 const FOLSummary = () => {
@@ -42,6 +43,7 @@ const FOLSummary = () => {
   const { user } = useUserData();
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
   const themeUi = user.user.theme_ui;
+  const gridRef = useRef<any>(null);
 
 
   const handleNameChange = (arr: any) => {
@@ -556,6 +558,9 @@ const FOLSummary = () => {
     setMyColDefs(getColumnDefinations(HeaderData, CustomHeader));
   }, [HeaderData])
 
+  const onExcelExport = ()=>{
+    gridRef.current?.api?.exportDataAsExcel({ fileName: `FOL_Summary_${format(Date.now(), "dd/MM/yyyy")}` })
+  }
 
   return (
     <EnquiryWrapper>
@@ -565,6 +570,8 @@ const FOLSummary = () => {
           comp={"EnquiryResponse"}
           isAddFilterButton
           isAsOnDate
+          isExcelExport
+          onExcelExportClick={onExcelExport}
           onAddFilter={handleModalToggle}
           selectedFilters={selectedFilters}
           removeFilters={removeFilters}
@@ -579,6 +586,7 @@ const FOLSummary = () => {
 
         <ResizableTable 
           colDef={myColDefs} 
+          gridRef = {gridRef}
           data={filterData}
           setCurrentGridRef={setCurrentGridRef}
           currentGridRef={currentGridRef}

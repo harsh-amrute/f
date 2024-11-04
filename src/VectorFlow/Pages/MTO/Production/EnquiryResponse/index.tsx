@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FilterModal from "./FilterModal";
 import Note from "./Note";
 import ResizableTable from "./ResizableTable";
@@ -34,6 +34,7 @@ import FullkitCellRenderer from "../../Common/FullkitCellRenderer";
 import { UIGridCode } from "../../Common/Enum";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import OverlayLoader from "../../Common/Loader";
+import { format } from "date-fns";
 const tabOptions = [{ label: "RM Not Available", value: "RM Not Available" }, { label: "RM Available", value: "RM Available" }];
 
 
@@ -622,6 +623,7 @@ const EnquiryResponse = () => {
 
   const reportName = "EnquiryResponse";
   const [myColDefs, setMyColDefs] = useState([{}]);
+  const gridRef = useRef<any>();
 
   const setColumnDef = async () => {
     try {
@@ -648,7 +650,9 @@ const EnquiryResponse = () => {
     setMyColDefs(getColumnDefinations(HeaderData, CustomHeader));
   }, [HeaderData])
 
-
+  const ExcelExport =()=>{
+    gridRef.current?.api?.exportDataAsExcel({ fileName: `Enquiry_Response_${format(Date.now(), "dd/MM/yyyy")}` })
+  }
   return (
     <EnquiryWrapper>
       {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
@@ -657,6 +661,8 @@ const EnquiryResponse = () => {
           comp={"EnquiryResponse"}
           isAddFilterButton
           isAsOnDate
+          isExcelExport
+          onExcelExportClick={ExcelExport}
           onAddFilter={handleModalToggle}
           selectedFilters={selectedFilters}
           removeFilters={removeFilters}
@@ -674,6 +680,7 @@ const EnquiryResponse = () => {
             <Allotment.Pane preferredSize={'55%'}>
               <BTRAllomentSection>
                 <ResizableTable 
+                  gridRef={gridRef}
                   colDef={myColDefs} 
                   data={filterData}
                   setCurrentGridRef={setCurrentGridRef}

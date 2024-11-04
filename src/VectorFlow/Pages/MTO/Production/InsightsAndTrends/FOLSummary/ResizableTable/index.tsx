@@ -1,5 +1,5 @@
 import { ColDef } from "ag-grid-enterprise";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../../../../../VectorFlow/Pages/MTO/Common/VFTable";
@@ -12,11 +12,11 @@ interface IResizeTableProps {
   setCurrentGridRef: any,
   currentGridRef: any,
   columnState: any,
+  gridRef: any
 }
 
 const ResizableTable = (props: IResizeTableProps) => {
   const {data, colDef, setCurrentGridRef, currentGridRef, columnState} = props;
-  const gridRef = useRef();
 
   const getRowStyle = (params: any) => {
     if (params.node.rowIndex % 2 === 0) {
@@ -60,7 +60,7 @@ const ResizableTable = (props: IResizeTableProps) => {
     <VFTableWrapper>
 
       <VFTable
-        ref={gridRef}
+        ref={props.gridRef}
         columnDefs={colDef}
         rowData={data}
         defaultColDef={defaultColDef}
@@ -69,7 +69,7 @@ const ResizableTable = (props: IResizeTableProps) => {
         onGridReady={(params: any) => {
           params.api.autoSizeAllColumns();
 
-          setCurrentGridRef(gridRef);
+          setCurrentGridRef(props.gridRef);
         }}
         paginationPageSize={pagination.mtoPageSize}
 
