@@ -35,7 +35,14 @@ const AddRemoveCellRenderer = (params: any) => {
         })
         
         if(isValid){
-          dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'actions')));
+          const newColDefs:any = [];
+          activeMaster.colDefs.forEach((ele:any)=>{
+            const newColDef = {...ele, editable: false};
+            delete newColDef.editable;   
+            newColDefs.push(newColDef);
+          })
+    
+          dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
         }
       }
       else if(activeMaster.id === 502){
@@ -56,14 +63,44 @@ const AddRemoveCellRenderer = (params: any) => {
           notifyError("Scheduling horizon cannot be empty!")
           return ;
         }
-        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'actions')));
+        const newColDefs:any = [];
+        activeMaster.colDefs.forEach((ele:any)=>{
+          const newColDef = {...ele, editable: false};
+          delete newColDef.editable;   
+          newColDefs.push(newColDef);
+        })
+  
+        dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
 
 
       }
+      else if(activeMaster.id=== 503){
+        // TODO: validations for CCR
+        const newColDefs:any = [];
+        activeMaster.colDefs.forEach((ele:any)=>{
+          const newColDef = {...ele, editable: false};
+          delete newColDef.editable;   
+          newColDefs.push(newColDef);
+        })
+  
+        dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
+      }
+    }
+
+    const onRemoveRow = ()=>{
+      const newData = [...activeMaster.rowData]; newData.shift();dispatch(UPDATE_ROW_DATA([...newData])) ;
+      const newColDefs:any = [];
+      activeMaster.colDefs.forEach((ele:any)=>{
+        const newColDef = {...ele, editable: false};
+        delete newColDef.editable;   
+        newColDefs.push(newColDef);
+      })
+
+      dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
     }
     
         
-              if ((params.node.rowIndex === 0)) {
+              if ((params?.node?.rowIndex === 0)) {
                 return (
                   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' }}>
       
@@ -78,7 +115,7 @@ const AddRemoveCellRenderer = (params: any) => {
                     </div>
       
                     <div
-                      onClick={() => {const newData = [...activeMaster.rowData]; newData.shift(); dispatch(UPDATE_ROW_DATA([...newData])); dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'actions')))} }
+                      onClick={() => onRemoveRow()}
                       style={{ cursor: 'pointer' }}
                     >
                       <img

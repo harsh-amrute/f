@@ -1841,10 +1841,16 @@ const useViewModify = (pageType: string) => {
         };
       }
 
-      if(activeMaster.id===502){
+      if(activeMaster.id===502 ){
         return {
           ...colDef,
           editable
+        }
+      }
+      if(activeMaster.id===503){
+        return {
+          ...colDef,
+          editable: (params: any) => params.node.rowIndex === useSelector((state: any) => state.mto.editableRow)
         }
       }
 
@@ -1900,6 +1906,12 @@ const useViewModify = (pageType: string) => {
     else if(activeMaster.id===502){
       newRow = {
         ccd: `CCR-${newRowValue}`,
+      }
+    }
+    else if(activeMaster.id===503){
+      newRow = {
+        plnm: '--',
+        majdsc: '--'
       }
     }
     dispatch(UPDATE_ROW_DATA([newRow,...activeMaster.rowData]));
@@ -2126,7 +2138,10 @@ const useViewModify = (pageType: string) => {
       cellStyle: {
         "textAlign": "center"},
       valueGetter: "node.rowIndex + 1"
-    },...activeMaster.colDefs.filter((ele: any) =>ele.field==='actions'|| ele.colId === 'majId' || ele.colId === 'majdsc' || ele.colId === 'pl')],
+    },...activeMaster.colDefs.filter((ele: any) =>ele.field==='actions'|| ele.colId === 'majId' || ele.colId === 'majdsc' || ele.colId === 'plnm'),{
+      headerName: "",
+      cellRenderer: 'poogiEditDeleteCellRenderer'
+    }],
     MTOPoogiMinorColdef: [{
       headerName: "Sr No.",
       cellStyle: {
