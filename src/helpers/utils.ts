@@ -2182,7 +2182,7 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
   return [checkboxColDef,{...createIconColumn({id:'dailydatagraph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result]
 }
 
-export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any, onOpenSubmitRemark:(params:any,e:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -2206,6 +2206,36 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
       
 
       // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     cellRendererParams:{
+      onClick:onOpenSubmitRemark
+     },
+     pinned:'right',
+     cellStyle:{
+      overflow:'visible',
+      'min-width':180,
+    },
+    editable:true
+    },
+    {
+      colId:'rh',
+      field:'rh',
+      headerName:'Remark History',
+      cellRenderer:'remarksCellRenderer',
+      
+      cellRendererParams:{
+        onClick:onOpenRemarkHistory
+       },
+       pinned:'right',
+      cellStyle:{
+        overflow:'visible',
+        'min-width':180,
+      }
     }
   ]
 
