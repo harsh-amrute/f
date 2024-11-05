@@ -514,7 +514,7 @@ const useTaskPendingForReview = ()=>{
 
         const approvedData:any = ref.current?.api.getSelectedRows();
         const newApprovedData:any = [];
-        approvedData.forEach((ele:any)=>{
+        detailTableRowData.forEach((ele:any)=>{
             const newEle = {
                 bcd: ele.bcd,
                 bd:ele.bd,
@@ -523,14 +523,15 @@ const useTaskPendingForReview = ()=>{
                 bt_id: ele.bt_id, 
                 btd: ele.btd,
                 ib: ele.ib,
-                mlt: ele.mlt,
+                mlt: ele.mlt ,
                 mmid: ele.mmid,
                 slt: ele.slt, 
                 tbmId: ele.tbmId,
-                ia: true,
+                ia: approvedData.some((el:any)=>el.tbmId===ele.tbmId),
             }
             newApprovedData.push(newEle);
         })
+
 
         const finData =
             {
