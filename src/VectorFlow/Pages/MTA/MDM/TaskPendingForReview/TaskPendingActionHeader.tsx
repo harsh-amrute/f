@@ -34,44 +34,7 @@ const TaskPendingActionHeader = (props:any)=>{
         props.showRejectAllModal(true)
       }
       
-        // if(unCheckEvent){
-        //     onUnCheckAll()
-        //     setActionStatus('')
-        //     return 
-        // }
-        // setActionStatus(query)
-        // props.api.forEachNode((rowNode)=>{
-        //     rowNode.setDataValue('status',query)
-        //     rowNode.setSelected(true)
-        // })
-        
     }
-
-    
-  // useEffect(() => {
-  //   // Check for mismatched statuses and uncheck checkboxes if needed
-  //   // const handleStatusMismatch = (query: string) => {
-  //   //   props.api.forEachNode((rowNode:any) => {
-  //   //     if (rowNode.data.status !== query) {
-  //   //       setActionStatus(''); // Uncheck the checkbox
-  //   //       return; // No need to continue iterating
-  //   //     }
-  //   //   });
-  //   // };
-
-  //   // handleStatusMismatch('Approved');
-  //   // handleStatusMismatch('Rejected');
-
-  //   // const totalRows = props.api.paginationGetRowCount();
-  //   // const selectedRows = props.api.getSelectedRows();
-  //   // const approvedRows = selectedRows.filter((row:any)=>row.status === 'Approved');
-  //   // if(approvedRows.length === totalRows) setActionStatus('Approved');
-
-
-
-
-
-  // }, [props.api.getSelectedRows()])
 
   
 

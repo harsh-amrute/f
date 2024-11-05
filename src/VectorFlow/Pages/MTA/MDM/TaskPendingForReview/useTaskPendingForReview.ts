@@ -49,7 +49,7 @@ const useTaskPendingForReview = ()=>{
     const GetMTOData = async()=>{
         try{
             const response = await getMTOTaskStatusData();
-            setMTOPendingTaskData(MTOToMTAFormat(response.data.data))
+            setMTOPendingTaskData(MTOToMTAFormat(response.data.data.results))
             
         }
         catch(error){
@@ -513,6 +513,26 @@ const useTaskPendingForReview = ()=>{
     const mtoSubmitTask=async()=>{
 
         const approvedData:any = ref.current?.api.getSelectedRows();
+        const newApprovedData:any = [];
+        approvedData.forEach((ele:any)=>{
+            const newEle = {
+                bcd: ele.bcd,
+                bd:ele.bd,
+                bsz: ele.bsz,
+                bt: ele.bt,
+                bt_id: ele.bt_id, 
+                btd: ele.btd,
+                ib: ele.ib,
+                mlt: ele.mlt ,
+                mmid: ele.mmid,
+                slt: ele.slt, 
+                tbmId: ele.tbmId,
+                ti_id: ele.ti_id,
+                tid: ele.tid
+            }
+            newApprovedData.push(newEle);
+        })
+
         const finData =
             {
               "tid": mtoTask.TaskID,
@@ -520,7 +540,7 @@ const useTaskPendingForReview = ()=>{
               "uid": user.user.id,
               "unm": user.user.name,
               "mmid": approvedData[0].mmid,
-              "buffData": approvedData
+              "buffData": newApprovedData
             }
           
         try{
