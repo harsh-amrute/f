@@ -544,7 +544,7 @@ const useTaskPendingForReview = ()=>{
             }
           
         try{
-            const response = await putMTOBufferData(finData);
+            const response = await putMTOBufferData([finData]);
             if(response.status=== 200){
                 notifySuccess("Task Updated Successfully");
             }
