@@ -2,7 +2,6 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { UPDATE_COLDEFS, UPDATE_ROW_DATA } from '../../../../../redux/actions/MDM';
 import { SET_EDITABLE_ROW } from '../../../../../redux/actions/MTO';
-import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 
 const PoogiEditDeleteCell = (params: any) => {
 
@@ -17,14 +16,17 @@ const PoogiEditDeleteCell = (params: any) => {
     const dispatch = useDispatch();
     const editableRowIndex = useSelector((state: any) => state.mto.editableRow);
 
+    const intialData = useSelector((state: any)=> state.mto.poogiIntialData);
     const onSaveChange = ()=>{
         dispatch(UPDATE_COLDEFS(activeMaster.colDefs.map((colDef: any) => ({ ...colDef, editable: false }))))
         dispatch(SET_EDITABLE_ROW(null))
     }
 
     const onCancel = ()=>{
+      console.log("ini data...", intialData);
         dispatch(UPDATE_COLDEFS(activeMaster.colDefs.map((colDef: any) => ({ ...colDef, editable: false }))))
         console.log("params....",activeMaster.rowData[params.node.rowIndex]);
+        
         dispatch(SET_EDITABLE_ROW(null))
     }
 

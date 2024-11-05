@@ -21,6 +21,7 @@ import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
 import PoogiEditDeleteCell from './PoogiEditDeleteCell';
+import { SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
 
 
 // Define TypeScript interfaces for the parameters
@@ -509,6 +510,7 @@ const useViewModify = (pageType: string) => {
         return row;
       })
       setEnableEditOnlineReset(true)
+      console.log("this ran....")
       dispatch(UPDATE_ROW_DATA([...newRowData]))
     },
   }
@@ -631,6 +633,8 @@ const useViewModify = (pageType: string) => {
       }
       else if(activeMaster.id===503 && activeMaster.isMTO){
         resultData = await getPOOGIMasterData();
+        console.log("intial data", resultData.data.data)
+        SET_POOGI_INITIAL_DATA(resultData.data.data);
       }
       else {
         resultData = await getCount(payload);
@@ -649,6 +653,8 @@ const useViewModify = (pageType: string) => {
       }
       else if(activeMaster.id===503 && activeMaster.isMTO) {
         resultData = await getPOOGIMasterData();
+        console.log("intial data", resultData.data.data)
+        SET_POOGI_INITIAL_DATA(resultData.data.data)
       }
       else {
         resultData = await getMasterData(payload);
@@ -1929,7 +1935,8 @@ const useViewModify = (pageType: string) => {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
-      buffData: []
+      buffData: [],
+      aIds: ["111111","222222","333333"]
     }
 
 
