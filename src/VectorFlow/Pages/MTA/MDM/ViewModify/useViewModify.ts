@@ -1960,6 +1960,7 @@ const useViewModify = (pageType: string) => {
     })
 
     try{
+      console.log('>>>>',BufferPostObj)
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status==200){
         notifySuccess("Buffer task updated!!")
@@ -1986,7 +1987,8 @@ const useViewModify = (pageType: string) => {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
-      buffData: []
+      buffData: [],
+      aids: ["111111","222222","333333"]
     }
 
     let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
