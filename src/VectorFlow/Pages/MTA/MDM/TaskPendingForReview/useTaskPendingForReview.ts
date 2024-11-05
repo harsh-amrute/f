@@ -523,12 +523,11 @@ const useTaskPendingForReview = ()=>{
                 bt_id: ele.bt_id, 
                 btd: ele.btd,
                 ib: ele.ib,
-                mlt: ele.mlt ,
+                mlt: ele.mlt,
                 mmid: ele.mmid,
                 slt: ele.slt, 
                 tbmId: ele.tbmId,
-                ti_id: ele.ti_id,
-                tid: ele.tid
+                ia: true,
             }
             newApprovedData.push(newEle);
         })
