@@ -2025,7 +2025,6 @@ const useViewModify = (pageType: string) => {
         }
       })
       const e = _.cloneDeep(ele);
-      e.ib= (e.ib==="false"?0: 1);
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
 
@@ -2152,7 +2151,7 @@ const useViewModify = (pageType: string) => {
       cellRenderer: 'poogiEditDeleteCellRenderer'
     }],
     onMajReasonSelected,
-    minReasonRowData: activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData
+    minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData):[]
   }
 }
 

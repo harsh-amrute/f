@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { UPDATE_COLDEFS } from '../../../../../redux/actions/MDM';
+import { UPDATE_COLDEFS, UPDATE_ROW_DATA } from '../../../../../redux/actions/MDM';
 import { SET_EDITABLE_ROW } from '../../../../../redux/actions/MTO';
 import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 
@@ -22,6 +22,12 @@ const PoogiEditDeleteCell = (params: any) => {
         dispatch(SET_EDITABLE_ROW(null))
     }
 
+    const onCancel = ()=>{
+        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.map((colDef: any) => ({ ...colDef, editable: false }))))
+        console.log("params....",activeMaster.rowData[params.node.rowIndex]);
+        dispatch(SET_EDITABLE_ROW(null))
+    }
+
     if( (editableRowIndex === params?.node?.rowIndex)){
        return (
         <div style={{ display: 'flex', flexDirection: 'row',gap:'12px', justifyContent:'center', marginTop: '4px' }}>
@@ -37,7 +43,7 @@ const PoogiEditDeleteCell = (params: any) => {
           </div>
 
           <div
-            onClick={() =>{return null;}}
+            onClick={onCancel}
             style={{ cursor: 'pointer' }}
           >
             <img

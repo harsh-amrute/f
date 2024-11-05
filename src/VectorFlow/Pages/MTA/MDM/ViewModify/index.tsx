@@ -272,6 +272,7 @@ const ViewModify = () => {
                       [],
                     }}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
+                  overlayNoRowsTemplate={"Select a major reason to see the corresponding minor reason"}
                   />
                 </MTOPoogiTableContainer>
                     <PoogiAddButtonWrapper>
