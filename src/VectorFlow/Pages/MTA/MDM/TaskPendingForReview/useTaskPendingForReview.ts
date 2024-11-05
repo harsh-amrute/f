@@ -49,7 +49,7 @@ const useTaskPendingForReview = ()=>{
     const GetMTOData = async()=>{
         try{
             const response = await getMTOTaskStatusData();
-            setMTOPendingTaskData(MTOToMTAFormat(response.data.data.results))
+            setMTOPendingTaskData(MTOToMTAFormat(response.data.data))
             
         }
         catch(error){
