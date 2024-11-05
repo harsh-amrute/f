@@ -1936,7 +1936,7 @@ const useViewModify = (pageType: string) => {
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
       buffData: [],
-      aIds: ["111111","222222","333333"]
+      aids: ["111111","222222","333333"]
     }
 
 
