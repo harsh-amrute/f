@@ -2027,13 +2027,14 @@ const useViewModify = (pageType: string) => {
       const e = _.cloneDeep(ele);
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
+      e.err= "no error"
 
 
-      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning', 'err']));
+      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
     })
 
     try{
-      const response = await saveBufferMasterDraft(BufferPostObj);
+      const response = await saveBufferMasterDraft([BufferPostObj]);
       if(response.status=== 200){
         notifySuccess("Saved Buffer Task Successfully");
       }
