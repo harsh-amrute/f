@@ -250,6 +250,12 @@ export const useSaveBufferMasterDraft = () => {
   })
 }
 
+export const useSaveCCRMasterDraft = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.saveCCRMasterDraft(body)
+  })
+}
+
 export const usePutMtoBufferMasterData = () => {
   return useMutation(async (body: any) => {
     return await MDMService.putMTOAddBufferMaster(body);

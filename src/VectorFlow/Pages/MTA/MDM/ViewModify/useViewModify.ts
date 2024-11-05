@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -116,6 +116,7 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: MTOMasterUIConfiguration, /*isLoading: MTOBufferLoading*/ } = useGetMTOMasterUIConfiguration();
   const {mutateAsync: saveBufferMasterTask } = useSaveBufferMasterTask();
   const {mutateAsync: saveBufferMasterDraft} = useSaveBufferMasterDraft();
+  const {mutateAsync: saveCCRMasterDraft} = useSaveCCRMasterDraft();
   const [bufferTypeData, setBufferTypeData] = useState<any>(undefined);
 
 
@@ -2011,8 +2012,11 @@ const useViewModify = (pageType: string) => {
     }
   }
   const onMTOSaveAsDraft = async()=>{
-    const BufferPostObj: any = {
-      mid: activeMaster.id,
+
+    if(activeMaster.id===501){
+
+      const BufferPostObj: any = {
+        mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
       buffData: []
@@ -2028,8 +2032,8 @@ const useViewModify = (pageType: string) => {
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
       e.err= "no error"
-
-
+      
+      
       BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
     })
 
@@ -2042,6 +2046,35 @@ const useViewModify = (pageType: string) => {
     catch(error){
       console.log(error)
     }
+  }
+  else if(activeMaster.id===502){
+    const CCRPostObj: any = {
+      mid: activeMaster.id,
+    uid: user.user.user.id.toString(),
+    unm: user.user.user.name,
+    ccrData: []
+  }
+
+  activeMaster.rowData.forEach((ele:any)=>{
+    const e = _.cloneDeep(ele);
+    e.err= "no error"
+    e.cgid = 1;
+    e.plid = 1;
+    e.dpid = 1;
+    CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
+  })
+  try{
+    const response = await saveCCRMasterDraft([CCRPostObj]);
+    if(response.status=== 200){
+      notifySuccess("Saved Buffer Task Successfully");
+    }
+  }
+  catch(error){
+    console.log(error)
+  }
+
+
+  }
   }
 
   const [selectedMajReason, setSelectedMajReason] = useState<any>('');
