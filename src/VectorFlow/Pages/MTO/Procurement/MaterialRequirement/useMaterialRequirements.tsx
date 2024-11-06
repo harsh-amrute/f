@@ -241,11 +241,11 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     }
 
     const onExcelExportClickReq = () => { 
-        getInitialData(0,"",true)
+        getInitialData(0,date,true)
     }
 
     const getInitialData = async (currPage?: number, releaseDate?: string, isExcelExport = false) => {
-        currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport) : getCumulativeDateWise(currPage, releaseDate);
+        currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport) : getCumulativeDateWise(currPage, releaseDate,isExcelExport);
     }
 
     const getSelectedDateWise = async (currPage?: number, releaseDate: string = date, isExcelExport = false) => {
@@ -254,7 +254,9 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         if(isExcelExport){
             const headersdata = currentGridRef?.current?.api.getColumnState();
             const body = getBodyForExcelExport({headersdata: headersdata,filterData: formatedFilters,colDefMap})
-            const response = await getMaterialRequirementDataExcelExport({releaseDate : releaseDate,body ,isExcelExport : 1 ,report_name : FilterPageName.Proc_Material_Requirement})
+            console.log('date of release',releaseDate);
+            
+            const response = await getMaterialRequirementDataDayWise({releaseDate : releaseDate,body ,isExcelExport : 1 ,report_name : FilterPageName.Proc_Material_Requirement})
             if(response.status === 200){
                 DownloadExcel(response,FilterPageName.Proc_Material_Requirement)
                 notifySuccess("Excel exported successfully")
