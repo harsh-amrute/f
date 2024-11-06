@@ -342,7 +342,7 @@ const useViewModify = (pageType: string) => {
   }, [activeMaster])
 
   const validateMTOMaster = (masterId: number) => {
-    if(masterId=== 501){
+    if(masterId=== 501 && pageType === "add"){
       const allRows = [...activeMaster.rowData];
       allRows.shift();
       // Check if the entered Buffer type is unique 
@@ -351,11 +351,9 @@ const useViewModify = (pageType: string) => {
         const newVal = _.cloneDeep(e);
         if(e.bsz===""){
           newVal.err = {error: "Enter the Buffer Size!", warning: ""}
-          newData.push(newVal);
         }
         else if(e.bt===""){
           newVal.err = {error: "Enter the Buffer Type!", warning: ""}
-          newData.push(newVal);
         }
         let isValid = true;
         allRows.forEach((ele, index)=>{
@@ -364,17 +362,13 @@ const useViewModify = (pageType: string) => {
            
             newVal.err = {error: "Buffer size must be unique!", warning: ""}
             isValid = false;
-            newData.push(newVal);
+            
           }
         })
-        if(isValid){
-          newData.push(newVal);
-        }
-      
-
+        newData.push(newVal);
       })
 
-          dispatch(UPDATE_ROW_DATA(newData));
+      dispatch(UPDATE_ROW_DATA(newData));
 
     }
   }
@@ -1958,7 +1952,6 @@ const useViewModify = (pageType: string) => {
     })
 
     try{
-      console.log('>>>>',BufferPostObj)
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status==200){
         notifySuccess("Buffer task updated!!")
@@ -1990,6 +1983,8 @@ const useViewModify = (pageType: string) => {
     }
 
     let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
+    console.log("active master. rowdata....", activeMaster.rowData)
+    console.log("totalNewVals....", totalNewVals,'=>',activeMaster.rowData.length,'=>',tempRecordCount)
     activeMaster.rowData.forEach((ele:any)=>{
       bufferTypeData.forEach((e:any)=>{
         if(ele.dsc===e.bt){
