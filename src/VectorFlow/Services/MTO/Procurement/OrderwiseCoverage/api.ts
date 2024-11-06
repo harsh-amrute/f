@@ -30,4 +30,19 @@ export namespace OrderwiseCoverageService {
         })
     }
 
+    export const getOrderwiseCoverageDataForExcelExport = async ({body, isExcelExport , report_name, graph  }: { body: any , isExcelExport : any , report_name : any, graph : number }) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getRMPMCoverageData/`,body, {
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            },
+            params: {
+                export : isExcelExport ,
+                report_name,
+                graph
+            },
+            responseType: 'blob'
+        })
+    }
+
 }

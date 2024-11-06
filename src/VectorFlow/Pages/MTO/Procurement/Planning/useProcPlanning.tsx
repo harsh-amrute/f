@@ -10,9 +10,9 @@ import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { useNavigate } from "react-router-dom";
 import { ProcessRowGroupForExportParams, ExcelCell, ExcelRow, ExcelExportParams, ExcelStyle } from 'ag-grid-community';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import ChildrenProcPlanningCellRenderer from "../ChildrenProcPlanningCellRenderer";
-import { putUpdateProcurementSimulationData, userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
+import { putUpdateProcurementSimulationData, useGetProcurementPlanningDataForExcelExport, userGetProcPlanningData } from "../../../../Services/MTO/Procurement/ProcPlanning/index";
 import { toast } from "react-toastify";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
@@ -24,7 +24,8 @@ import { TableWrapper } from "./styles";
 import { useDispatch } from "react-redux";
 import { APPLIED_FILTERS, PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
-import { UIGridCode } from "../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../Common/Enum";
+import useColDef from "../../../../../hooks/useColDef";
 
 
 
@@ -84,11 +85,13 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+    const { colDefMap , getColDef} = useColDef();
     const reportName = "ProcurementPlanningShortage";
 
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
+            getColDef(response)
             setHeaderData(response.data.data);
         }
         catch (e) {
@@ -184,8 +187,27 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
-    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1') => {
+    const { mutateAsync : GetProcPlanningDataForExcelData} = useGetProcurementPlanningDataForExcelExport()
+    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false) => {
         setIsLoading(true);
+        if(isExcelExport){
+            try {
+                const headersdata = currentGridRef?.current?.api.getColumnState();
+                const formattedFilters = formatFilterJSON(appliedFilters)
+                const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
+                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning });
+                if (response.status === 200) {
+                    DownloadExcel(response, FilterPageName.Proc_Procurement_Planning);
+                    notifySuccess('Excel Export Successfully')
+                }else{
+                    notifyError('Failed to export Excel')
+                }
+            } catch (error) {
+                notifyError("Failed to export")
+            }
+            setIsLoading(false);
+        }else{
+
         try {
             toast.dismiss();
             notifyLoader("Loading data...")
@@ -209,6 +231,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             notifyError("Failed to fetch data!");
             setIsLoading(false);
         }
+    }
     }, [getProcPlanningData,appliedFilters]);
 
     useEffect(() => {

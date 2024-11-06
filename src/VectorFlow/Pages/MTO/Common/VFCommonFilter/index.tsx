@@ -38,7 +38,8 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const [openStatus, setOpenStatus] = useState<any>({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
   const { user } = useUserData();
-  
+  const [isCCDisabled, setIsCCDisabled] = useState(false);
+  const [isCNDisabled, setIsCNDisabled] = useState(false);
 
   const onFilterChange = (type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any) => {
 
@@ -179,19 +180,25 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                             >
                               <VFMasterFieldSearch
                                 value={filter.value}
-                                setValue={(e: any) =>
+                                setValue={(e: any) =>{
+                                  if(filter.attributeName==='cc'){
+                                    setIsCNDisabled(true);
+                                  }
+                                  else if(filter.attributeName==='cn'){
+                                    setIsCCDisabled(true);
+                                  }
                                   onFilterChange(InputTypes.Search, filter.attributeName, e, category, "value")
-                                }
+                                }}
                                 options={filter.options?.map((f: any) => ({
                                   label: f.label,
                                   value: f.value,
                                 }))}
                                 placeholder={`${filter.name}`}
-                                handleListChild={() => console.log("")}
+                                handleListChild={() => {return null}}
                                 maxToShow={3}
                                 backgroundColor={"#F2F2F2"}
                                 borderRadius={40}
-                                disabled={false}
+                                disabled={filter.attributeName==='cc'?(props.multiFilter.customers?.filters[1].value.length > 0 || isCCDisabled):(filter.attributeName==='cn'?(props.multiFilter.customers?.filters[0].value.length > 0 || isCNDisabled): false)}
                                 boxShadow={"0"}
                               />
                             </FilterComponent>

@@ -3537,4 +3537,49 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   return selectedFilter;
 }
 
+export const getBodyForExcelExport = ({headersdata , filterData = {}, colDefMap} : any) => {
+  try{
+            const headers = headersdata?.map((col : any) => {
+              const header_data = colDefMap.current.get(col.colId);
+              return {
+                  ...header_data
+              }
+          }).filter((col : any) =>{
+              return col.hd != undefined && col.scc != undefined
+          })
+          const body = {
+              headers: headers,
+              ...filterData
+          }
+          return body;
+  }
+  catch (e){
+    console.log(e)
+
+  }
+        
+} 
+
+export const DownloadExcel = (response : any,filename = "ReportFile") => {
+  try {
+    if (response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`); // Use extracted filename
+      document.body.appendChild(link);
+      link.click();
+      URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } else {
+      notifyError('Error Downloading the excel as the response is not the expected response')
+      console.error('The response is not of the expected file type.');
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+
 // ===================================================================================================

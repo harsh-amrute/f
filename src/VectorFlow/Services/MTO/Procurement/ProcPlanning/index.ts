@@ -31,4 +31,10 @@ export const putUpdateProcurementSimulationData = () => {
     })
 }
 
+export const useGetProcurementPlanningDataForExcelExport = () => {
+    return useMutation(async (params: any) => {
+        return await ProcPlanningService.GetProcPlanningDataForExcelData(params);
+    })
+}
+
 

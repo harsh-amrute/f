@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import { HorizontalViewWrapper } from "./styles";
-import { formatFilterJSON, getColumnDefinations } from "../../../../../../helpers/utils";
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
 import { reasonColConfig } from "./MockData";
 import SplitGraphContainer from "../../../Common/SplitGraphContainer";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
@@ -9,7 +9,7 @@ import { ProductionInsightsAndTrendsString } from "../../../Common/String";
 import { format } from "date-fns";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import useViewPort from "../../../../../../hooks/useViewPort";
-import { useGetOrderRiskData } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
+import { useGetOrderRiskData, useGetOrderRiskDataExcelExport } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
 import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import OverlayLoader from "../../../Common/Loader";
@@ -20,6 +20,7 @@ import GridView from "./GridView";
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import { notifyError } from "../../../../../../helpers/notify";
+import useColDef from "../../../../../../hooks/useColDef";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -63,10 +64,13 @@ const OrderAtRisk = () => {
   const { user } = useUserData();
   const reportName = "OrdersAtRisk";
   const { mutateAsync: getOrderAtRiskData, isLoading } = useGetOrderRiskData() || {};
+  const {colDefMap ,getColDef} = useColDef();
+  const { mutateAsync : getOrderAtRiskDataExcelExport} = useGetOrderRiskDataExcelExport();
 
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
+      getColDef(response);
       setColDef(getColumnDefinations(response.data.data, colDefCustomizations, []));
     }
     catch (e) {
@@ -315,17 +319,35 @@ const OrderAtRisk = () => {
       //   }
       // }, [data]);
       
-      const getData = async () => {
-        try {
-          const formatedFilters = formatFilterJSON(appliedFilters);
-          const response = await getOrderAtRiskData({ appliedFilters: formatedFilters});
-          setRawData(response?.data?.data?.r);
-          setGridData(response?.data?.data?.g || []);
+      const getData = async (isExcelExport = false) => {
+        if(isExcelExport) {
+            try {
+              const headersdata = currentGridRef?.current?.api.getColumnState();
+              const formattedFilters = formatFilterJSON(appliedFilters)
+              const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
+              const response = await getOrderAtRiskDataExcelExport({body , isExcelExport : 1,report_name : FilterPageName.Prod_Order_At_Risk})
+              if(response.status === 200) {
+                DownloadExcel(response,FilterPageName.Prod_Order_At_Risk)
+              }else{
+                notifyError("Failed to export data to Excel")
+              }
+            } catch (error) {
+              notifyError("An error occurred")
+              console.log(error)
+            }
+        }else{
+
+          try {
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const response = await getOrderAtRiskData({ appliedFilters: formatedFilters});
+            setRawData(response?.data?.data?.r);
+            setGridData(response?.data?.data?.g || []);
+          }
+          catch (e) {
+            console.log(e);
+            notifyError('Failed to fetch Grid data!');
+          }
         }
-        catch (e) {
-        console.log(e);
-        notifyError('Failed to fetch Grid data!');
-    }
   }
 
   useEffect(()=>{
@@ -340,12 +362,17 @@ const OrderAtRisk = () => {
       handleSaveClick();
     }
   }, [isReset]);
+  const ExcelExport = () =>{
+    getData(true)
+  }
 
   return (
     <div>
       <MTOActionToolBar
         comp={"orderAtRisk"}
         isGridView={isGridView}
+        isExcelExport = {isGridView ? true : false} 
+        onExcelExportClick={ExcelExport}
         isChartGridToggle
         isAddFilterButton
         setIsGridView={setIsGridView}

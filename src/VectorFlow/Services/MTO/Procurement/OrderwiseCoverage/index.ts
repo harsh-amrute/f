@@ -11,3 +11,11 @@ export const useGetOrderwiseCoverageData = () => {
     })
 }
 
+export const useGetOrderwiseCoverageDataForExcelExport = () => {
+    return useMutation(async (params : any) => {
+        return OrderwiseCoverageService.getOrderwiseCoverageDataForExcelExport(params)
+    })
+}
+
+
+

@@ -13,6 +13,16 @@ export namespace OrderReschedulingService {
         })
     }
 
+    export const getOrderReschedulingExcelData = async ({body, isExcelExport, report_name}: any) => {
+
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?export=${isExcelExport}&report_name=${report_name}`, body, {
+            headers:{
+                'Content-Type': 'application/json',
+            },
+            responseType: "blob"
+        })
+    }
+
     export const getOrderReschedulingPageData = async (pageNum: string) => {
         console.log("this url is called", process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?page=${pageNum}`)
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?page=${pageNum}`, {

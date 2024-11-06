@@ -6,3 +6,9 @@ export const useGetOTAndIFAnalysisData = () => {
         return OTAndIFAanalysisService.getOTAndIFAnalysisData(params);
     })
 }
+
+export const useGetOTAndIFAnalysisDataExcelExport = () => {
+    return useMutation(async (params: any) => {
+        return OTAndIFAanalysisService.getOTAndIFAnalysisDataExcelExport(params);
+    })
+}

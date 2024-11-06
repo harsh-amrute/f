@@ -4,7 +4,7 @@ import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MT
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles'
 import IFFaildGraph from './IFFailedGraph'
 import OTFailedGraph from './OTFailedGraph'
-import { useGetOTAndIFAnalysisData } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
+import { useGetOTAndIFAnalysisData, useGetOTAndIFAnalysisDataExcelExport } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from '../../../Common/GridView'
@@ -12,11 +12,12 @@ import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCell
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
-import { getColumnDefinations } from '../../../../../../helpers/utils';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import { useUserData } from "../../../../../../context/index";
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
+import useColDef from '../../../../../../hooks/useColDef'
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -56,15 +57,29 @@ const OTAndIFAnalysis = () => {
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { user } = useUserData();
+    const { colDefMap , getColDef} = useColDef();
+    const { mutateAsync : getOTAndIFAnalysisDataExcelExport} = useGetOTAndIFAnalysisDataExcelExport();
 
     const getGraphData = async (params: any) => {
-        try {
-          const response = await getOTAndIFAnalysisData(params);
-          setGraphData(response.data.data);
-        }
-        catch (e) {
-          console.log(e);
-          notifyError('Failed to fetch Graph data!');
+        if(params.isExcelExport){
+            const headersdata = currentGridRef?.current?.api.getColumnState();
+            const formattedFilters = formatFilterJSON(appliedFilters);
+            const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters,colDefMap})
+            const response = await getOTAndIFAnalysisDataExcelExport({body, isExcelExport : 1, graphflag : 0,report_name : FilterPageName.Poogi_OTIF_And_Analysis})
+            if(response.status === 200){
+                DownloadExcel(response, FilterPageName.Poogi_OTIF_And_Analysis)
+            }else{
+                notifyError('Failed to export Excel!');
+            }
+        }else{
+            try {
+                const response = await getOTAndIFAnalysisData(params);
+                setGraphData(response.data.data);
+            }
+            catch (e) {
+                console.log(e);
+                notifyError('Failed to fetch Graph data!');
+            }
         }
     }
 
@@ -103,6 +118,7 @@ const OTAndIFAnalysis = () => {
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData('OTIFAnalysis');
+            getColDef(response);
             setHeaderData(response?.data?.data);
         }
         catch (e) {
@@ -172,6 +188,9 @@ const OTAndIFAnalysis = () => {
         }
     }, [isReset]);
 
+    const ExportExcelData = () =>{
+        getGraphData({ isExcelExport: true });
+    }
     return (
         <>
             {
@@ -181,6 +200,8 @@ const OTAndIFAnalysis = () => {
                 isAddFilterButton
                 isChartGridToggle
                 setIsGridView={setIsGridView}
+                isExcelExport = {isGridView ? true : false}
+                onExcelExportClick ={ExportExcelData}
                 isGridView={isGridView}
                 handleSaveClick={handleSaveClick}
                 handleResetClick={handleResetClick}

@@ -29,6 +29,12 @@ export const useUpdateDynamicReleaseData = () => {
 
 
     })
+    
+}
+export const useGetDynamicReleaseExcelData = () => {
+    return useMutation(async (params: any) => {
+        return DynamicReleaseManagementService.getDynamicReleaseExcelData(params);
+    })
 }
 
 

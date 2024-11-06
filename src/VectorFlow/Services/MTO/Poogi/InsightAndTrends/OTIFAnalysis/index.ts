@@ -6,3 +6,10 @@ export const useGetOTIFAnalysisData = () => {
         return OTIFAanalysisService.getOTIFAnalysisData(params);
     })
 }
+
+export const useGetOTIFAnalysisDataExcelExport = () => {
+    return useMutation(async (params: any) => {
+            return OTIFAanalysisService.getOTIFAnalysisDataExcelExport(params);
+        })
+}
+

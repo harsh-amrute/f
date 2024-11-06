@@ -1,5 +1,5 @@
 import { ColDef } from "ag-grid-enterprise";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../Common/VFTable";
@@ -11,11 +11,12 @@ interface IResizeTableProps {
   setCurrentGridRef: any,
   currentGridRef: any,
   columnState: any,
+  gridRef: any
 }
 
 const ResizableTable = (props: IResizeTableProps) => {
   const { data, colDef, setCurrentGridRef, currentGridRef, columnState } = props;
-  const gridRef = useRef();
+  const gridRef = props.gridRef;
 
   const getRowStyle = (params: any) => {
     if (params.node.rowIndex % 2 === 0) {

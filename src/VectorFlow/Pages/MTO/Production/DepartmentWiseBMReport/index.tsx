@@ -748,8 +748,15 @@ const DptWiseBMReport = () => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
             const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': page, appliedFilters: formatedFilters });
+            if(!gridData.data.data || gridData.data.data.length===0){
+                setGridDataCount(0);
+                setGridData([])
+                return;
+            }
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
+
+
         }
         catch (e) {
             console.log(e);
