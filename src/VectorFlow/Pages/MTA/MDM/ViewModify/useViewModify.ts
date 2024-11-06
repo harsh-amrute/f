@@ -8,7 +8,7 @@ import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
-import { ColDef, SideBarDef } from 'ag-grid-enterprise';
+import { ColDef, IRowNode, SideBarDef } from 'ag-grid-enterprise';
 
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
@@ -168,6 +168,8 @@ const useViewModify = (pageType: string) => {
   const validStopStatuses = [1, 2, 3, 4, 5, 6, 21];
 
   const validResumeStatuses = [23];
+
+  const [selectedMajReason, setSelectedMajReason] = useState<any>('');
 
 
   const invalidDataColdefs: ColDef[] = [
@@ -417,6 +419,21 @@ const useViewModify = (pageType: string) => {
     onRowDataUpdated: (event: any) => {
 
       
+        if(activeMaster.id===503){
+          const nodesToSelect: any= [];
+
+          event.api.forEachNode((node: any) => {
+
+            if((!node.data.minId) && node.data.majId=== selectedMajReason.majId){
+              nodesToSelect.push(node)
+            }
+            // console.log("slsdfdsfdsf", selectedMajReason, node)
+             
+          });
+          event.api.setNodesSelected({nodes: nodesToSelect, newValue: true});
+          console.log("yessss updated......")
+        }
+      
      
         const downloadableColumnKeys: string[] = [];
         activeMaster.fields.forEach((field: Field) => {
@@ -504,7 +521,6 @@ const useViewModify = (pageType: string) => {
         return row;
       })
       setEnableEditOnlineReset(true)
-      console.log("this ran....")
       dispatch(UPDATE_ROW_DATA([...newRowData]))
     },
   }
@@ -1849,7 +1865,7 @@ const useViewModify = (pageType: string) => {
       if(activeMaster.id===503){
         return {
           ...colDef,
-          editable: (params: any) => params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow)
+          editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
         }
       }
 
@@ -1983,8 +1999,6 @@ const useViewModify = (pageType: string) => {
     }
 
     let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
-    console.log("active master. rowdata....", activeMaster.rowData)
-    console.log("totalNewVals....", totalNewVals,'=>',activeMaster.rowData.length,'=>',tempRecordCount)
     activeMaster.rowData.forEach((ele:any)=>{
       bufferTypeData.forEach((e:any)=>{
         if(ele.dsc===e.bt){
@@ -2024,19 +2038,26 @@ const useViewModify = (pageType: string) => {
       buffData: []
     }
 
+    
+    let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
+
     activeMaster.rowData.forEach((ele:any)=>{
       bufferTypeData.forEach((e:any)=>{
         if(ele.dsc===e.bt){
           e.bt=ele.id;
         }
       })
+      if(totalNewVals===0) return;
+      totalNewVals--;
       const e = _.cloneDeep(ele);
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
       e.err= "no error"
       
       
+      
       BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
+      
     })
 
     try{
@@ -2079,7 +2100,7 @@ const useViewModify = (pageType: string) => {
   }
   }
 
-  const [selectedMajReason, setSelectedMajReason] = useState<any>('');
+
 
   const onMajReasonSelected = ()=>{
     setSelectedMajReason(ref?.current?.api?.getSelectedRows()[0])
@@ -2187,7 +2208,8 @@ const useViewModify = (pageType: string) => {
       cellRenderer: 'poogiEditDeleteCellRenderer'
     }],
     onMajReasonSelected,
-    minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData):[]
+    // minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData):(useSelector((state: any) => state.mto.editableMinRow))? activeMaster.rowData[useSelector((state: any) => state.mto.editableMinRow)]?.minData: [],
+    minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData): [],
   }
 }
 
