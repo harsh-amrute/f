@@ -633,8 +633,7 @@ const useViewModify = (pageType: string) => {
       }
       else if(activeMaster.id===503 && activeMaster.isMTO){
         resultData = await getPOOGIMasterData();
-        console.log("intial data", resultData.data.data)
-        SET_POOGI_INITIAL_DATA(resultData.data.data);
+        dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
       }
       else {
         resultData = await getCount(payload);
@@ -653,8 +652,7 @@ const useViewModify = (pageType: string) => {
       }
       else if(activeMaster.id===503 && activeMaster.isMTO) {
         resultData = await getPOOGIMasterData();
-        console.log("intial data", resultData.data.data)
-        SET_POOGI_INITIAL_DATA(resultData.data.data)
+        dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
       }
       else {
         resultData = await getMasterData(payload);
@@ -1857,7 +1855,7 @@ const useViewModify = (pageType: string) => {
       if(activeMaster.id===503){
         return {
           ...colDef,
-          editable: (params: any) => params.node.rowIndex === useSelector((state: any) => state.mto.editableRow)
+          editable: (params: any) => params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow)
         }
       }
 

@@ -9,7 +9,8 @@ const actions = {
     APPLIED_FILTERS: createAction<object>("APPLIED_FILTERS"),
     BM_REPORT_ANALYTICS: createAction<object>("BM_REPORT_ANALYTICS"),
     SET_TASK_PENDING_SELECTED: createAction<any>("SET_TASK_PENDING_SELECTED"),
-    SET_EDITABLE_ROW: createAction<any>("SET_EDITABLE_ROW"),
+    SET_EDITABLE_MAJ_ROW: createAction<any>("SET_EDITABLE_MAJ_ROW"),
+    SET_EDITABLE_MIN_ROW: createAction<any>("SET_EDITABLE_MIN_ROW"),
     SET_POOGI_INITIAL_DATA: createAction<any>("SET_POOGI_INITIAL_DATA"),
     // UPDATE_DAILY_DATA: createAction<DailyDataGraph>("UPDATE_DAILY_DATA"),
     // TOGGLE_GRAPH_MODAL: createAction<boolean>("TOGGLE_GRAPH_MODAL"),
@@ -27,7 +28,7 @@ export const {
     BM_REPORT_ANALYTICS,
     SET_TASK_PENDING_SELECTED,
     APPLIED_FILTERS,
-    SET_EDITABLE_ROW,
+    SET_EDITABLE_MAJ_ROW,
+    SET_EDITABLE_MIN_ROW,
     SET_POOGI_INITIAL_DATA
 } = actions;
-//console.log('action=',actions.SAVE_ANALYTICS_DATA)

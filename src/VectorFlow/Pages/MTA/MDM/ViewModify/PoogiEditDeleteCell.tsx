@@ -1,33 +1,25 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { UPDATE_COLDEFS, UPDATE_ROW_DATA } from '../../../../../redux/actions/MDM';
-import { SET_EDITABLE_ROW } from '../../../../../redux/actions/MTO';
+import { SET_EDITABLE_MAJ_ROW, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
 
 const PoogiEditDeleteCell = (params: any) => {
 
-    // const onEditClick=()=>{
-
-    // }
-    // const onDeleteClick=()=>{
-
-    // }
-
     const activeMaster = useSelector((state: any)=> state.mdm.activeMaster)
     const dispatch = useDispatch();
-    const editableRowIndex = useSelector((state: any) => state.mto.editableRow);
-
+    const editableRowIndex = useSelector((state: any) => state.mto.editableMajRow);
     const intialData = useSelector((state: any)=> state.mto.poogiIntialData);
+
     const onSaveChange = ()=>{
+        dispatch(SET_POOGI_INITIAL_DATA(activeMaster.rowData));
         dispatch(UPDATE_COLDEFS(activeMaster.colDefs.map((colDef: any) => ({ ...colDef, editable: false }))))
-        dispatch(SET_EDITABLE_ROW(null))
+        dispatch(SET_EDITABLE_MAJ_ROW(null))
     }
 
     const onCancel = ()=>{
-      console.log("ini data...", intialData);
-        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.map((colDef: any) => ({ ...colDef, editable: false }))))
-        console.log("params....",activeMaster.rowData[params.node.rowIndex]);
-        
-        dispatch(SET_EDITABLE_ROW(null))
+      dispatch(UPDATE_ROW_DATA(intialData));
+      dispatch(UPDATE_COLDEFS(activeMaster.colDefs.map((colDef: any) => ({ ...colDef, editable: false }))))      
+      dispatch(SET_EDITABLE_MAJ_ROW(null))
     }
 
     if( (editableRowIndex === params?.node?.rowIndex)){
@@ -61,7 +53,7 @@ const PoogiEditDeleteCell = (params: any) => {
 
 
   const onEditClick = ()=>{
-    dispatch(SET_EDITABLE_ROW(params?.node?.rowIndex))
+    dispatch(SET_EDITABLE_MAJ_ROW(params?.node?.rowIndex))
     dispatch(UPDATE_COLDEFS(activeMaster?.colDefs?.map((colDef: any) => ({ ...colDef, editable: (para: any) => para.node.rowIndex === params?.node?.rowIndex}))));
   }
 
