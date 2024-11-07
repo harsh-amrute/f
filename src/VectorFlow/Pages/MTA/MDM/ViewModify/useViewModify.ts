@@ -426,11 +426,9 @@ const useViewModify = (pageType: string) => {
             if((!node.data.minId) && node.data.majId=== selectedMajReason.majId){
               nodesToSelect.push(node)
             }
-            // console.log("slsdfdsfdsf", selectedMajReason, node)
              
           });
           event.api.setNodesSelected({nodes: nodesToSelect, newValue: true});
-          console.log("yessss updated......")
         }
       
      
@@ -1294,7 +1292,6 @@ const useViewModify = (pageType: string) => {
       setErrorCount(pureErrorCount);
       setConflictData(tempConflictData);
       setErrorData(errorData)
-      // console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
       return { isConflicts: pureConflictCount > 0, errorCount: pureErrorCount, errorData, conflictCount: pureConflictCount, conflictData: tempConflictData }
 
     }
