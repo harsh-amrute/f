@@ -43,18 +43,17 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
 
 
 
-  // useEffect(()=>{ 
-  //   console.debug("this line is for step 1");
-  //   if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-  //       const result = currentGridRef?.current?.api.applyColumnState({
-  //           state: columnState,
-  //           applyOrder: true
-  //       });
-  //       if (!result) {
-  //           console.error('Failed to apply column state');
-  //       }
-  //   }
-  // });
+  useEffect(()=>{ 
+    if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+        const result = currentGridRef?.current?.api.applyColumnState({
+            state: columnState,
+            applyOrder: true
+        });
+        if (!result) {
+            console.error('Failed to apply column state');
+        }
+    }
+  });
 
   return (
     <>
