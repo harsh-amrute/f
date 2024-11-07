@@ -8,7 +8,7 @@ import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
 import { AgGridReactProps } from 'ag-grid-react';
-import { ColDef, IRowNode, SideBarDef } from 'ag-grid-enterprise';
+import { ColDef, SideBarDef } from 'ag-grid-enterprise';
 
 import WarningCell from '../../../../../components/VectorFLOW/commons/WarningCell';
 import { SeasonalityColorCellRenderer, SeasonalityGraphCellRenderer } from '../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers';
@@ -357,13 +357,12 @@ const useViewModify = (pageType: string) => {
         else if(e.bt===""){
           newVal.err = {error: "Enter the Buffer Type!", warning: ""}
         }
-        let isValid = true;
         allRows.forEach((ele, index)=>{
     
           if(index !== i && ele.bsz=== e.bsz && e.bt=== ele.bt){
            
             newVal.err = {error: "Buffer size must be unique!", warning: ""}
-            isValid = false;
+
             
           }
         })
