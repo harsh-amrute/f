@@ -37,7 +37,7 @@ const AddRemoveCellRenderer = (params: any) => {
         if(isValid){
           const newColDefs:any = [];
           activeMaster.colDefs.forEach((ele:any)=>{
-            const newColDef = {...ele, editable: false};
+            const newColDef = {...ele};
             delete newColDef.editable;   
             newColDefs.push(newColDef);
           })
