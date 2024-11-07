@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../Common/VFTable';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
-import { SaveBtnWrapper, SaveBtn } from './styles';
+import { SaveBtnWrapper, SaveBtn, Wrapper } from './styles';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks, useGetPoogReasonForDealyedOrderExcel } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
@@ -399,7 +399,7 @@ const ReasonForDelayOrder = () => {
     }
 
     return (
-        <div style={{ zoom: 1.1 }}>
+        <div>
             <MTOActionToolBar
                 quickFilter={
                     <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
@@ -424,19 +424,17 @@ const ReasonForDelayOrder = () => {
             />
             {(isLoading || isUpdateUserConfig || isGetUserConfig) ?
                 <OverlayLoader /> :
-                <>
+                <Wrapper>
                     <VFTable
                         {...agGridProps}
                         paginationPageSize={10}
-                        height='650px'
+                        height='480px'
                         columnDefs={colDef}
                         rowData={rowData}
                         pagination={false}
                         ref={tableRowRef}
                         onGridReady={(params: any) => {
-                            console.log(params, 'PARAMS');
                             params?.api.autoSizeAllColumns();
-
                             setCurrentGridRef(tableRowRef);
                         }}
                     />
@@ -460,7 +458,7 @@ const ReasonForDelayOrder = () => {
                         isOpen={isRemarkHistoryOpen}
                         onClose={() => setIsRemarkHistoryOpen(false)}
                     />
-                </>
+                </Wrapper>
             }
         </div>
 

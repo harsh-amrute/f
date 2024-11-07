@@ -41,6 +41,8 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
     return (params.data.dd == null || params.data.dd == undefined);
   }, []);
 
+
+
   useEffect(()=>{ 
     if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
         const result = currentGridRef?.current?.api.applyColumnState({
@@ -98,6 +100,7 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
           setSelectedRows(newMap);
           currentPageSelectedRows.current = params.api.getSelectedNodes();
         }}
+        debug={true}
       />
       <VFPagination
         selectedRows={0}

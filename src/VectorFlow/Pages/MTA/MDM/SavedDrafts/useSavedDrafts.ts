@@ -40,7 +40,7 @@ const useSavedDrafts = ()=>{
             if(data){
                 concatedData = [...data.data.data];
             }
-            response.data.data.results.forEach((draft: any)=>{
+            response.data.data.forEach((draft: any)=>{
                 const newData = {
                     DraftId: draft.did,
                     ActionType: draft.at,

@@ -217,6 +217,11 @@ export namespace MDMService {
       body
     )
   }
+  export const saveCCRMasterDraft = async (body: any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveCCRMasterDraft/', 
+      body
+    )
+  }
 
   export const getBufferMasterData = async () => {
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/GetBufferMasterForMasterMgmt/?masterId=501', {
@@ -226,6 +231,12 @@ export namespace MDMService {
 
   export const getCCRMasterData = async ()=>{
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/GetCCRMasterForMasterMgmt/?masterId=502', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const getPOOGIMasterData = async ()=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/GetPoogiReasonMasterForMasterMgmt/?masterId=503', {
       headers: { 'Content-Type': 'application/json' }
     })
   }

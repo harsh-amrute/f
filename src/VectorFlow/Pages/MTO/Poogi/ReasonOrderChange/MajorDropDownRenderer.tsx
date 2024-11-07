@@ -111,7 +111,7 @@ const CustomCellEditor = (props: any) => {
 
     return (
       <select
-        style={{ width: '100%', height: '100%', fontSize: '18px', fontFamily: 'Roboto' }}
+        style={{ width: '100%', height: '100%', fontSize: '12px', fontFamily: 'Roboto' }}
         value={selectedValue}
         onChange={handleChange}
         defaultValue={''}
@@ -156,7 +156,7 @@ const CustomCellEditor = (props: any) => {
     return (
       <select
         disabled={props.data.maj == undefined}
-        style={{ width: '100%', height: '100%', fontSize: '18px', fontFamily: 'Roboto' }}
+        style={{ width: '100%', height: '100%', fontSize: '12px', fontFamily: 'Roboto' }}
         //value={props.data.min === null ? selectedMinorReason : props.data.min}
         value={props.data.maj == undefined ? undefined : selectedMinorReason}
         onChange={handleMinorChange}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -20,6 +20,8 @@ import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
+import PoogiEditDeleteCell from './PoogiEditDeleteCell';
+import { SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
 
 
 // Define TypeScript interfaces for the parameters
@@ -115,6 +117,7 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: MTOMasterUIConfiguration, /*isLoading: MTOBufferLoading*/ } = useGetMTOMasterUIConfiguration();
   const {mutateAsync: saveBufferMasterTask } = useSaveBufferMasterTask();
   const {mutateAsync: saveBufferMasterDraft} = useSaveBufferMasterDraft();
+  const {mutateAsync: saveCCRMasterDraft} = useSaveCCRMasterDraft();
   const [bufferTypeData, setBufferTypeData] = useState<any>(undefined);
 
 
@@ -138,6 +141,7 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
   const {mutateAsync: getCCRMasterData}  = useGetCCRMasterData();
+  const {mutateAsync: getPOOGIMasterData} = useGetPOOGIMasterData();
 
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
 
@@ -164,6 +168,8 @@ const useViewModify = (pageType: string) => {
   const validStopStatuses = [1, 2, 3, 4, 5, 6, 21];
 
   const validResumeStatuses = [23];
+
+  const [selectedMajReason, setSelectedMajReason] = useState<any>('');
 
 
   const invalidDataColdefs: ColDef[] = [
@@ -207,7 +213,8 @@ const useViewModify = (pageType: string) => {
     warningCell: WarningCell,
     seasonalityColorCellRenderer: SeasonalityColorCellRenderer,
     seasonalityGraphCellRenderer: SeasonalityGraphCellRenderer,
-    conflictErrorCellRenderer: ConflictErrorCellRenderer
+    conflictErrorCellRenderer: ConflictErrorCellRenderer,
+    poogiEditDeleteCellRenderer: PoogiEditDeleteCell
   }), []);
 
 
@@ -337,7 +344,7 @@ const useViewModify = (pageType: string) => {
   }, [activeMaster])
 
   const validateMTOMaster = (masterId: number) => {
-    if(masterId=== 501){
+    if(masterId=== 501 && pageType === "add"){
       const allRows = [...activeMaster.rowData];
       allRows.shift();
       // Check if the entered Buffer type is unique 
@@ -346,30 +353,23 @@ const useViewModify = (pageType: string) => {
         const newVal = _.cloneDeep(e);
         if(e.bsz===""){
           newVal.err = {error: "Enter the Buffer Size!", warning: ""}
-          newData.push(newVal);
         }
         else if(e.bt===""){
           newVal.err = {error: "Enter the Buffer Type!", warning: ""}
-          newData.push(newVal);
         }
-        let isValid = true;
         allRows.forEach((ele, index)=>{
     
           if(index !== i && ele.bsz=== e.bsz && e.bt=== ele.bt){
            
             newVal.err = {error: "Buffer size must be unique!", warning: ""}
-            isValid = false;
-            newData.push(newVal);
+
+            
           }
         })
-        if(isValid){
-          newData.push(newVal);
-        }
-      
-
+        newData.push(newVal);
       })
 
-          dispatch(UPDATE_ROW_DATA(newData));
+      dispatch(UPDATE_ROW_DATA(newData));
 
     }
   }
@@ -417,6 +417,19 @@ const useViewModify = (pageType: string) => {
     },
     onRowDataUpdated: (event: any) => {
 
+      
+        if(activeMaster.id===503){
+          const nodesToSelect: any= [];
+
+          event.api.forEachNode((node: any) => {
+
+            if((!node.data.minId) && node.data.majId=== selectedMajReason.majId){
+              nodesToSelect.push(node)
+            }
+             
+          });
+          event.api.setNodesSelected({nodes: nodesToSelect, newValue: true});
+        }
       
      
         const downloadableColumnKeys: string[] = [];
@@ -625,6 +638,10 @@ const useViewModify = (pageType: string) => {
       else if(activeMaster.id===502 && activeMaster.isMTO) {
         resultData = await getCCRMasterData();
       }
+      else if(activeMaster.id===503 && activeMaster.isMTO){
+        resultData = await getPOOGIMasterData();
+        dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
+      }
       else {
         resultData = await getCount(payload);
       }
@@ -639,6 +656,10 @@ const useViewModify = (pageType: string) => {
       }
       else if(activeMaster.id===502 && activeMaster.isMTO) {
         resultData = await getCCRMasterData();
+      }
+      else if(activeMaster.id===503 && activeMaster.isMTO) {
+        resultData = await getPOOGIMasterData();
+        dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
       }
       else {
         resultData = await getMasterData(payload);
@@ -1271,7 +1292,6 @@ const useViewModify = (pageType: string) => {
       setErrorCount(pureErrorCount);
       setConflictData(tempConflictData);
       setErrorData(errorData)
-      // console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
       return { isConflicts: pureConflictCount > 0, errorCount: pureErrorCount, errorData, conflictCount: pureConflictCount, conflictData: tempConflictData }
 
     }
@@ -1832,6 +1852,19 @@ const useViewModify = (pageType: string) => {
         };
       }
 
+      if(activeMaster.id===502 ){
+        return {
+          ...colDef,
+          editable
+        }
+      }
+      if(activeMaster.id===503){
+        return {
+          ...colDef,
+          editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
+        }
+      }
+
       else {
         return {
           ...colDef,
@@ -1847,6 +1880,7 @@ const useViewModify = (pageType: string) => {
     const actionsCol: any = {
       field: 'actions',
       headerName: 'Actions',
+      colId: 'actions',
       //flex: 1,
       width: 100, // Set the width for the actions column
       cellRenderer: AddRemoveCellRenderer
@@ -1865,16 +1899,32 @@ const useViewModify = (pageType: string) => {
 
   const addRowToMtoGrid = () => {
     const newRowValue = activeMaster.rowData.length;
-    const newRow: any = {
-      bcd: `PROD-${newRowValue}-Buff`,
-      bd: `BUFF-${newRowValue}`,
-      bsz: '', // Example value; modify as needed
-      slt: 0,
-      mlt: 0,
-      ib: false,
-      bt: 1,
-      editable: true,
-    };
+    let newRow:any = {};
+
+    if(activeMaster.id===501){
+
+      newRow = {
+        bcd: `PROD-${newRowValue}-Buff`,
+        bd: `BUFF-${newRowValue}`,
+        bsz: '', // Example value; modify as needed
+        slt: 0,
+        mlt: 0,
+        ib: false,
+        bt: 1,
+        editable: true,
+      };
+    }
+    else if(activeMaster.id===502){
+      newRow = {
+        ccd: `CCR-${newRowValue}`,
+      }
+    }
+    else if(activeMaster.id===503){
+      newRow = {
+        plnm: '--',
+        majdsc: '--'
+      }
+    }
     dispatch(UPDATE_ROW_DATA([newRow,...activeMaster.rowData]));
     addEditableToLastColumn();
 
@@ -1889,7 +1939,8 @@ const useViewModify = (pageType: string) => {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
-      buffData: []
+      buffData: [],
+      aids: ["111111","222222","333333"]
     }
 
 
@@ -1939,7 +1990,8 @@ const useViewModify = (pageType: string) => {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
-      buffData: []
+      buffData: [],
+      aids: ["111111","222222","333333"]
     }
 
     let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
@@ -1972,12 +2024,18 @@ const useViewModify = (pageType: string) => {
     }
   }
   const onMTOSaveAsDraft = async()=>{
-    const BufferPostObj: any = {
-      mid: activeMaster.id,
+
+    if(activeMaster.id===501){
+
+      const BufferPostObj: any = {
+        mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
       buffData: []
     }
+
+    
+    let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
 
     activeMaster.rowData.forEach((ele:any)=>{
       bufferTypeData.forEach((e:any)=>{
@@ -1985,17 +2043,21 @@ const useViewModify = (pageType: string) => {
           e.bt=ele.id;
         }
       })
+      if(totalNewVals===0) return;
+      totalNewVals--;
       const e = _.cloneDeep(ele);
-      e.ib= (e.ib==="false"?0: 1);
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
-
-
-      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning', 'err']));
+      e.err= "no error"
+      
+      
+      
+      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
+      
     })
 
     try{
-      const response = await saveBufferMasterDraft(BufferPostObj);
+      const response = await saveBufferMasterDraft([BufferPostObj]);
       if(response.status=== 200){
         notifySuccess("Saved Buffer Task Successfully");
       }
@@ -2003,6 +2065,41 @@ const useViewModify = (pageType: string) => {
     catch(error){
       console.log(error)
     }
+  }
+  else if(activeMaster.id===502){
+    const CCRPostObj: any = {
+      mid: activeMaster.id,
+    uid: user.user.user.id.toString(),
+    unm: user.user.user.name,
+    ccrData: []
+  }
+
+  activeMaster.rowData.forEach((ele:any)=>{
+    const e = _.cloneDeep(ele);
+    e.err= "no error"
+    e.cgid = 1;
+    e.plid = 1;
+    e.dpid = 1;
+    CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
+  })
+  try{
+    const response = await saveCCRMasterDraft([CCRPostObj]);
+    if(response.status=== 200){
+      notifySuccess("Saved Buffer Task Successfully");
+    }
+  }
+  catch(error){
+    console.log(error)
+  }
+
+
+  }
+  }
+
+
+
+  const onMajReasonSelected = ()=>{
+    setSelectedMajReason(ref?.current?.api?.getSelectedRows()[0])
   }
 
   return {
@@ -2087,7 +2184,28 @@ const useViewModify = (pageType: string) => {
     tempRecordCount,
     addRowToMtoGrid,
     onMTOSaveBufferData,
-    onMTOSaveAsDraft
+    onMTOSaveAsDraft,
+    MTOPoogiMajorColdef:[{
+      headerName: "Sr No.",
+      cellStyle: {
+        "textAlign": "center"},
+      valueGetter: "node.rowIndex + 1"
+    },...activeMaster.colDefs.filter((ele: any) =>ele.field==='actions'|| ele.colId === 'majId' || ele.colId === 'majdsc' || ele.colId === 'plnm'),{
+      headerName: "",
+      cellRenderer: 'poogiEditDeleteCellRenderer'
+    }],
+    MTOPoogiMinorColdef: [{
+      headerName: "Sr No.",
+      cellStyle: {
+        "textAlign": "center"},
+      valueGetter: "node.rowIndex + 1"
+    },...activeMaster.colDefs.filter((ele: any) => ele.field==='actions'|| ele.colId === 'minId' || ele.colId === 'mindsc'), {
+      headerName: "",
+      cellRenderer: 'poogiEditDeleteCellRenderer'
+    }],
+    onMajReasonSelected,
+    // minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData):(useSelector((state: any) => state.mto.editableMinRow))? activeMaster.rowData[useSelector((state: any) => state.mto.editableMinRow)]?.minData: [],
+    minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData): [],
   }
 }
 

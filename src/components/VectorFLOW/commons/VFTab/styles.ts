@@ -135,7 +135,8 @@ export const SCTabTitle = styled.p<{status:string}>`
 `
 
 export const SCTabBody = styled.div`
-  display: block;
+  display: flex;
+  flex-direction: column;
   height:100%;
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 0.5px solid #cccccc;
