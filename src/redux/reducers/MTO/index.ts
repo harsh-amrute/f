@@ -35,16 +35,13 @@ const setTaskPendingSelected = (state: any, action: PayloadAction<any>)=>{
 }
 
 const setEditableMajRow = (state: any, action: PayloadAction<any>)=>{
-    console.log("editable row....", action.payload);
     state.editableMajRow = action.payload;
 }
 const setEditableMinRow = (state: any, action: PayloadAction<any>)=>{
-    console.log("editable row....", action.payload);
     state.editableMinRow = action.payload;
 }
 
 const setPoogiIntialData = (state: any, action: PayloadAction<any>)=>{
-    console.log("poogi iniiiiii  data....", action.payload)
     state.poogiIntialData = action.payload;
 }
 
