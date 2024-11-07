@@ -38,8 +38,8 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const [openStatus, setOpenStatus] = useState<any>({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
   const { user } = useUserData();
-  const [isCCDisabled, setIsCCDisabled] = useState(props.multiFilter.customers?.filters[1].value.length > 0);
-  const [isCNDisabled, setIsCNDisabled] = useState(props.multiFilter.customers?.filters[0].value.length > 0);
+  const [isCCDisabled, setIsCCDisabled] = useState(props.multiFilter.customers?.filters[1]?.value?.length > 0);
+  const [isCNDisabled, setIsCNDisabled] = useState(props.multiFilter.customers?.filters[0]?.value?.length > 0);
 
   const onFilterChange = (type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any) => {
 
