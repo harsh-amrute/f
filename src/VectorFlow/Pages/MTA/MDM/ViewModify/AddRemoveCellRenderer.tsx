@@ -65,7 +65,7 @@ const AddRemoveCellRenderer = (params: any) => {
         }
         const newColDefs:any = [];
         activeMaster.colDefs.forEach((ele:any)=>{
-          const newColDef = {...ele, editable: false};
+          const newColDef = {...ele};
           delete newColDef.editable;   
           newColDefs.push(newColDef);
         })
@@ -78,7 +78,7 @@ const AddRemoveCellRenderer = (params: any) => {
         // TODO: validations for CCR
         const newColDefs:any = [];
         activeMaster.colDefs.forEach((ele:any)=>{
-          const newColDef = {...ele, editable: false};
+          const newColDef = {...ele};
           delete newColDef.editable;   
           newColDefs.push(newColDef);
         })
@@ -91,7 +91,7 @@ const AddRemoveCellRenderer = (params: any) => {
       const newData = [...activeMaster.rowData]; newData.shift();dispatch(UPDATE_ROW_DATA([...newData])) ;
       const newColDefs:any = [];
       activeMaster.colDefs.forEach((ele:any)=>{
-        const newColDef = {...ele, editable: false};
+        const newColDef = {...ele};
         delete newColDef.editable;   
         newColDefs.push(newColDef);
       })
