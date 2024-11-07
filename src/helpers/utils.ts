@@ -633,9 +633,16 @@ export const parseExcelData = async (file:any,master:MDMMasterState,pageType:str
   const result:object[] = [];
   const buffer = await file.arrayBuffer();
 
-  //Selected Columns Keys
-  const selectedKeys = selectedColumns.map((col:any)=>col.colId);
+  let selectedKeys:any;
 
+  //Selected Columns Keys
+  if(pageType==='add'){
+    selectedKeys = master.fields.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+  }
+  else{
+    selectedKeys = selectedColumns.map((col:any)=>col.colId);
+  }
+   
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
   });
