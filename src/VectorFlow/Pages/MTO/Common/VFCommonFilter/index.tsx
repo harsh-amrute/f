@@ -38,8 +38,8 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const [openStatus, setOpenStatus] = useState<any>({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
   const { user } = useUserData();
-  const [isCCDisabled, setIsCCDisabled] = useState(false);
-  const [isCNDisabled, setIsCNDisabled] = useState(false);
+  const [isCCDisabled, setIsCCDisabled] = useState(props.multiFilter.customers?.filters[1].value.length > 0);
+  const [isCNDisabled, setIsCNDisabled] = useState(props.multiFilter.customers?.filters[0].value.length > 0);
 
   const onFilterChange = (type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any) => {
 
@@ -75,6 +75,14 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
           updatedFilters[i].value = e.target.name === updatedFilters[i].value[0] ? [] : [e.target.name];
         }
       }
+    }
+
+
+    if(filterState.customers.filters[0].value.length===0){
+      setIsCNDisabled(false);
+    }
+    if(filterState.customers.filters[1].value.length===0){
+      setIsCCDisabled(false);
     }
 
     setFilterState({
@@ -198,7 +206,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                                 maxToShow={3}
                                 backgroundColor={"#F2F2F2"}
                                 borderRadius={40}
-                                disabled={filter.attributeName==='cc'?(props.multiFilter.customers?.filters[1].value.length > 0 || isCCDisabled):(filter.attributeName==='cn'?(props.multiFilter.customers?.filters[0].value.length > 0 || isCNDisabled): false)}
+                                disabled={filter.attributeName==='cc'?(isCCDisabled):(filter.attributeName==='cn'?(isCNDisabled): false)}
                                 boxShadow={"0"}
                               />
                             </FilterComponent>
