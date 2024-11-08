@@ -1,5 +1,5 @@
 import { Allotment } from 'allotment'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from '../../../Common/SplitGraphContainer/styles'
 import GridView from './GridView'
@@ -16,6 +16,7 @@ import { UIGridCode} from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import ColorRangeCellRenderer from '../../../../../../VectorFlow/Pages/MTO/Common/ColorRangeCellRenderer';
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
+import useColDef from '../../../../../../hooks/useColDef'
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';
 
@@ -64,11 +65,13 @@ const ElapsedTime = () => {
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { user } = useUserData();
+    const { getColDef , colDefMap} = useColDef();
     const reportName = "Elapse Time";
 
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
+            getColDef(response)
             setHeaderData(response?.data?.data);
         }
         catch (e) {
@@ -222,12 +225,22 @@ const ElapsedTime = () => {
         }
     }, [isReset]);
 
+    const elapsedTimeRef = useRef<any>();
+
+    const ExcelExportRefCall =()=>{
+        if(elapsedTimeRef?.current?.getExcelExport){
+            elapsedTimeRef.current.getExcelExport();
+        }
+    }
+
     return (
         <>
             <MTOActionToolBar
                 comp={"BTRMTO"}
                 // isAddFilterButton
                 isChartGridToggle
+                isExcelExport = {isGridView ? true : false}
+                onExcelExportClick = {ExcelExportRefCall}
                 setIsGridView={setIsGridView}
                 isGridView={isGridView}
                 handleSaveClick={handleSaveClick}
@@ -271,11 +284,13 @@ const ElapsedTime = () => {
                     :
                     <>
                         <GridView 
+                            ref = {elapsedTimeRef}
                             colDef={colDef}
                             setCurrentGridRef={setCurrentGridRef}
                             currentGridRef={currentGridRef}
                             columnState={columnState}
                             appliedFilters={null}
+                            colDefMap = {colDefMap}
                         />
                     </>
             }

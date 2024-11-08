@@ -15,4 +15,10 @@ export const useGetElapsedDaysforDeptPlantData = () => {
     })
 }
 
+export const useGetElapsedTimeDataForExcelExport = () => {
+    return useMutation(async (params : any) => {
+        return getElapsedTimeData(params);
+    })
+}
+
 

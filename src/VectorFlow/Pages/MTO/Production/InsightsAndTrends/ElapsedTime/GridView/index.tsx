@@ -1,28 +1,33 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
 import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
 import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
-import { useGetElapsedTimeData } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
+import { useGetElapsedTimeData, useGetElapsedTimeDataForExcelExport } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
-import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
-import { formatFilterJSON } from '../../../../../../../helpers/utils';
+import { FilterPageName, pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport } from '../../../../../../../helpers/utils';
 
-const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters }: any) => {
+const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters ,colDefMap}: any,ref) => {
     const gridRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
     const [data, setData] = useState([]);
     const { mutateAsync: getElapsedTimeData, isLoading } = useGetElapsedTimeData()
-
+    const { mutateAsync : getElapsedTimeDataExcelExport } = useGetElapsedTimeDataForExcelExport();    
 
     useEffect(() => {
         getGridData()
     }, [currentPage, appliedFilters])
 
+    useImperativeHandle(ref, ()=>({
+        getExcelExport: ()=>{
+            ExcelExportData();
+        }
+    }))
 
     const defaultColDef = {
         // suppressMenu: true,
@@ -60,17 +65,38 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appl
     };
 
 
-    const getGridData = async () => {
-        try {
-            const formatedFilters = formatFilterJSON(appliedFilters);
-            const data = await getElapsedTimeData({ page: currentPage, graphflag: 0, appliedFilters: formatedFilters });
-            setData(data?.data?.data?.results)
-            setTotalRows(data?.data?.data?.count)
-            notifySuccess("Data Fetched Successfully!")
+    const getGridData = async (isExcelExport = false ) => {
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        if(isExcelExport){
+            try{
+                const headersdata = currentGridRef?.current?.api.getColumnState();                
+                const body = getBodyForExcelExport({headersdata,filterData : formatedFilters,colDefMap});                
+                const response = await getElapsedTimeDataExcelExport({body , isExcelExport : 1, report_name : FilterPageName.Poogi_Elapsed_Time})   
+                if(response.status === 200){
+                    console.log('blob that is received',response)
+                    DownloadExcel(response,FilterPageName.Poogi_Elapsed_Time);
+                    notifySuccess("Data Exported to Excel Successfully!")
+                }else{
+                    notifyError("Failed to Export to Excel")
+                }
+            }
+            catch(err){
+                console.log(err)
+                notifyError("Failed to Export to Excel")
+            }
         }
-        catch (err: any) {
-            console.log(err)
-            notifyError("Something Went Wrong")
+        else{
+
+            try {
+                const data = await getElapsedTimeData({ page: currentPage, graphflag: 0, appliedFilters: formatedFilters });
+                setData(data?.data?.data?.results)
+                setTotalRows(data?.data?.data?.count)
+                notifySuccess("Data Fetched Successfully!")
+            }
+            catch (err: any) {
+                console.log(err)
+                notifyError("Something Went Wrong")
+            }
         }
 
     }
@@ -91,6 +117,15 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appl
         }
     });
 
+    const ExcelExportData = () =>{
+        if(data.length> 0){
+            
+            getGridData(true)
+        }
+        else{
+            notifyError("There is no data that can be exported to Excel!")
+        }
+    }
 
     return (
 
@@ -124,6 +159,6 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appl
         </SCDynamicContainer>
 
     )
-}
+})
 
 export default React.memo(GridView)

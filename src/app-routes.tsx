@@ -65,6 +65,7 @@ import ElapsedTime from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/Ela
 import LeadTime from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/LeadTime'
 import TrendsOfFailureReason from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
 import OverallBmReport from './VectorFlow/Pages/MTO/Production/OverallBMReport'
+import LandingPage from './VectorFlow/Pages/Common/LandingPage'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -163,7 +164,8 @@ const lazyLoad = (children: React.ReactNode) => {
 
     '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
     '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
-    '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile'
+    '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
+    '/landing-page'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -1022,8 +1024,16 @@ export const initRoutes = (): RouteObject[] => {
           element: lazyLoad(<ResourceUtilization />)
         }
       ]
+    },
+    {
+      path: '/landing-page',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<LandingPage />)
+        }
+      ]
     }
-
-
   ]
 }
