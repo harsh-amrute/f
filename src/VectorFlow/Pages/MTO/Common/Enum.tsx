@@ -103,5 +103,6 @@ export enum FilterPageName {
     Poogi_OTIF_And_Analysis="Poogi_OTandIF_Analysis",
     Poogi_Lead_Time="Poogi_Lead_Time",
     Poogi_Top_Failure_Reasons="Poogi_Top_Failure_Reasons",
-    Poogi_Trend_Of_Failure_Reasons="Poogi_Trend_Of_Failure_Reasons"
+    Poogi_Trend_Of_Failure_Reasons="Poogi_Trend_Of_Failure_Reasons",
+    Poogi_Elapsed_Time="Poogi_Elapsed_Time"
 }
