@@ -49,7 +49,7 @@ const useTaskPendingForReview = ()=>{
     const GetMTOData = async()=>{
         try{
             const response = await getMTOTaskStatusData();
-            setMTOPendingTaskData(MTOToMTAFormat(response.data.data.results))
+            setMTOPendingTaskData(MTOToMTAFormat(response.data.data))
             
         }
         catch(error){
@@ -513,6 +513,26 @@ const useTaskPendingForReview = ()=>{
     const mtoSubmitTask=async()=>{
 
         const approvedData:any = ref.current?.api.getSelectedRows();
+        const newApprovedData:any = [];
+        detailTableRowData.forEach((ele:any)=>{
+            const newEle = {
+                bcd: ele.bcd,
+                bd:ele.bd,
+                bsz: ele.bsz,
+                bt: ele.bt,
+                bt_id: ele.bt_id, 
+                btd: ele.btd,
+                ib: ele.ib,
+                mlt: ele.mlt ,
+                mmid: ele.mmid,
+                slt: ele.slt, 
+                tbmId: ele.tbmId,
+                ia: approvedData.some((el:any)=>el.tbmId===ele.tbmId),
+            }
+            newApprovedData.push(newEle);
+        })
+
+
         const finData =
             {
               "tid": mtoTask.TaskID,
@@ -520,11 +540,11 @@ const useTaskPendingForReview = ()=>{
               "uid": user.user.id,
               "unm": user.user.name,
               "mmid": approvedData[0].mmid,
-              "buffData": approvedData
+              "buffData": newApprovedData
             }
           
         try{
-            const response = await putMTOBufferData(finData);
+            const response = await putMTOBufferData([finData]);
             if(response.status=== 200){
                 notifySuccess("Task Updated Successfully");
             }

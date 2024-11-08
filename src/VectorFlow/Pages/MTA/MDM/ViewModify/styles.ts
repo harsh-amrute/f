@@ -359,3 +359,23 @@ export const ToolTipTriangle = styled.div`
     border-color: transparent transparent white transparent;
     // transform: rotate(0deg);
 ` 
+export const MTOPoogiTableContainer = styled.div`
+    display:flex;
+    width: 100%;
+    & > .ag-theme-alpine {
+        width: 100% !important;
+    }
+
+`
+
+export const PoogiSection = styled.div`
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+`
+
+export const PoogiAddButtonWrapper = styled.div`
+    display: flex;
+    gap: 40%;
+
+`

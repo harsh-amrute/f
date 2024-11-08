@@ -118,3 +118,22 @@ export const BPRDailyAnalyticsTableCellHeader = styled.p`
     letter-spacing: 0px;
     color: #313131;
 `
+
+export const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  margin: 20px 0 0;
+
+  & .ag-header-cell-text {
+    font-size: 13px;
+  }
+
+  & > .ag-theme-alpine{
+    margin: 0 !important;
+    }
+& div[data-testid="vf_pagination"]{
+  margin: 0 !important;
+  padding: 0;
+}
+ 
+`;

@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import { MTOStore } from '../../../VectorFlow/types/MTO';
-import { SAVE_ANALYTICS_DATA, DAYWISE_COVERAGE_ANALYTICS, PROCPLANNING_ANALYTICS, RESOURCE_UTIL_ANALYTICS, BM_REPORT_ANALYTICS, SET_TASK_PENDING_SELECTED ,APPLIED_FILTERS} from '../../actions/MTO';
+import { SAVE_ANALYTICS_DATA, DAYWISE_COVERAGE_ANALYTICS, PROCPLANNING_ANALYTICS, RESOURCE_UTIL_ANALYTICS, BM_REPORT_ANALYTICS, SET_TASK_PENDING_SELECTED ,APPLIED_FILTERS, SET_POOGI_INITIAL_DATA, SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW} from '../../actions/MTO';
 
 
 
@@ -34,6 +34,17 @@ const setTaskPendingSelected = (state: any, action: PayloadAction<any>)=>{
     state.taskPendingSelected = action.payload;
 }
 
+const setEditableMajRow = (state: any, action: PayloadAction<any>)=>{
+    state.editableMajRow = action.payload;
+}
+const setEditableMinRow = (state: any, action: PayloadAction<any>)=>{
+    state.editableMinRow = action.payload;
+}
+
+const setPoogiIntialData = (state: any, action: PayloadAction<any>)=>{
+    state.poogiIntialData = action.payload;
+}
+
 
 
 const mtoReducer = (initialState: MTOStore) => createReducer(initialState, (builder) => {
@@ -44,6 +55,9 @@ const mtoReducer = (initialState: MTOStore) => createReducer(initialState, (buil
     builder.addCase(BM_REPORT_ANALYTICS, setBMReportAnalytics)
     builder.addCase(SET_TASK_PENDING_SELECTED, setTaskPendingSelected)
     builder.addCase(APPLIED_FILTERS, setAppliedFilters)
+    builder.addCase(SET_EDITABLE_MAJ_ROW, setEditableMajRow)
+    builder.addCase(SET_EDITABLE_MIN_ROW, setEditableMinRow)
+    builder.addCase(SET_POOGI_INITIAL_DATA, setPoogiIntialData)
 })
 
 export default mtoReducer;
