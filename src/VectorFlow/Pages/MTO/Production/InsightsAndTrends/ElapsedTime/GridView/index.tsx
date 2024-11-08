@@ -73,7 +73,6 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                 const body = getBodyForExcelExport({headersdata,filterData : formatedFilters,colDefMap});                
                 const response = await getElapsedTimeDataExcelExport({body , isExcelExport : 1, report_name : FilterPageName.Poogi_Elapsed_Time})   
                 if(response.status === 200){
-                    console.log('blob that is received',response)
                     DownloadExcel(response,FilterPageName.Poogi_Elapsed_Time);
                     notifySuccess("Data Exported to Excel Successfully!")
                 }else{
