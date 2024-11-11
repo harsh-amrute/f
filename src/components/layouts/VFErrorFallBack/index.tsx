@@ -10,7 +10,7 @@ const VFErrorFallBack = ()=>{
 
 
     const handleGoHome =()=>{
-        window.location.href = '/master-data-management/control-panel'
+        window.location.href = '/landing-page'
     }
 
     const handleRefresh = ()=>{
