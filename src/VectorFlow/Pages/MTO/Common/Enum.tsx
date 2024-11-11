@@ -106,3 +106,9 @@ export enum FilterPageName {
     Poogi_Trend_Of_Failure_Reasons="Poogi_Trend_Of_Failure_Reasons",
     Poogi_Elapsed_Time="Poogi_Elapsed_Time"
 }
+
+export enum ApplicationName {
+    "Retail"  = 1, 
+    "Replenishment" = 2,
+    "Production and Procurement" = 3
+}
