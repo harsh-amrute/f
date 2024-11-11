@@ -70,11 +70,13 @@ const LandingPage = () => {
               }
             }
           }
-          currentList.push({
-            name: item.name,
-            img: item.lp_img,
-            url: url,
-          });
+          if(url != null && url != undefined){
+            currentList.push({
+              name: item.name,
+              img: item.lp_img,
+              url: url,
+            });
+          }
           map.current.set(app_id, currentList);
         }
       }
