@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -22,6 +22,7 @@ import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
 import PoogiEditDeleteCell from './PoogiEditDeleteCell';
 import { SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
+import MTOCalendarEditCellRenderer from './MTOCalendarEditCellRenderer';
 
 
 // Define TypeScript interfaces for the parameters
@@ -116,6 +117,7 @@ const useViewModify = (pageType: string) => {
   /***Add the below line to fetch MTO Buffer */
   const { mutateAsync: MTOMasterUIConfiguration, /*isLoading: MTOBufferLoading*/ } = useGetMTOMasterUIConfiguration();
   const {mutateAsync: saveBufferMasterTask } = useSaveBufferMasterTask();
+  const {mutateAsync: saveCCRMasterTask} = useSaveCCRMasterTask();
   const {mutateAsync: saveBufferMasterDraft} = useSaveBufferMasterDraft();
   const {mutateAsync: saveCCRMasterDraft} = useSaveCCRMasterDraft();
   const [bufferTypeData, setBufferTypeData] = useState<any>(undefined);
@@ -142,6 +144,7 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
   const {mutateAsync: getCCRMasterData}  = useGetCCRMasterData();
   const {mutateAsync: getPOOGIMasterData} = useGetPOOGIMasterData();
+  const {mutateAsync: getCalendarMasterData} = useGetCalendarMasterData();
 
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
 
@@ -479,7 +482,10 @@ const useViewModify = (pageType: string) => {
       const data = event.data;
       const field = event.colDef.field;
       const newValue = event.newValue;
-      // const oldRow = activeMaster.rowData.find((row) => row.RN === data.RN);
+      // if(activeMaster.id===503){
+      //   return;
+      // }
+    
       if (!field) {
         return;
       }
@@ -642,6 +648,13 @@ const useViewModify = (pageType: string) => {
         resultData = await getPOOGIMasterData();
         dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
       }
+      else if(activeMaster.id===504 && activeMaster.isMTO){
+        resultData = await getCalendarMasterData();
+        if(!activeMaster.colDefs.some((col: ColDef) => col.headerName === 'Action')){
+          dispatch(UPDATE_COLDEFS([...activeMaster.colDefs,{headerName: 'Action', cellRenderer: MTOCalendarEditCellRenderer}]))
+
+        }
+      }
       else {
         resultData = await getCount(payload);
       }
@@ -660,6 +673,9 @@ const useViewModify = (pageType: string) => {
       else if(activeMaster.id===503 && activeMaster.isMTO) {
         resultData = await getPOOGIMasterData();
         dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
+      }
+      else if(activeMaster.id===504 && activeMaster.isMTO){
+        resultData = await getCalendarMasterData();
       }
       else {
         resultData = await getMasterData(payload);
@@ -695,11 +711,15 @@ const useViewModify = (pageType: string) => {
 
   const handleTabChange = (currMaster: MDMMasterState) => {
     if (currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
-
+    if(activeMaster.isMTO){
+      dispatch(UPDATE_ACTIVE_MASTER(currMaster));
+      return;
+    }
     const nextMasterIndex = masters.findIndex((master: MDMMasterState) => (master.progress !== 'submitted' && master.progress !== 'editOnlineSubmitted'));
 
     if (currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
-    else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);
+    else  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);
+
   }
 
   const generateDraftPayload = (rowData: any, draftId?: string) => {
@@ -1861,7 +1881,8 @@ const useViewModify = (pageType: string) => {
       if(activeMaster.id===503){
         return {
           ...colDef,
-          editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
+          // editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
+          editable
         }
       }
 
@@ -1922,7 +1943,8 @@ const useViewModify = (pageType: string) => {
     else if(activeMaster.id===503){
       newRow = {
         plnm: '--',
-        majdsc: '--'
+        majdsc: '--',
+        minData: []
       }
     }
     dispatch(UPDATE_ROW_DATA([newRow,...activeMaster.rowData]));
@@ -1930,10 +1952,21 @@ const useViewModify = (pageType: string) => {
 
   }
 
+  const addRowToMtoMinGrid = () => {
+
+    setSelectedMajReason({...selectedMajReason,minData: [{majId: selectedMajReason.majId, mindsc: ''},...selectedMajReason.minData]});
+    
+    // dispatch(UPDATE_ROW_DATA([newRow,...activeMaster.rowData]));
+    // addEditableToLastColumn();
+  }
+
   const user = useUserData();
 
      
   const onMTOAddSaveBufferData= async()=>{
+
+    notifyLoader("Saving Task...")
+
 
     const BufferPostObj: any = {
       mid: activeMaster.id,
@@ -1966,9 +1999,11 @@ const useViewModify = (pageType: string) => {
     try{
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status==200){
+        toast.dismiss();
         notifySuccess("Buffer task updated!!")
       }
       else{
+        toast.dismiss();
         notifyError("Failed to create the task....Please check your validations!")
       }
     }
@@ -1978,13 +2013,113 @@ const useViewModify = (pageType: string) => {
     
   }
 
+  const onMTOAddCCRData = async()=>{
+    notifyLoader("Saving Task...")
+
+
+    const CCRPostObj: any = {
+      mid: activeMaster.id,
+      uid: user.user.user.id.toString(),
+      unm: user.user.user.name,
+      ccrData: [],
+      aids: ["111111","222222","333333"]
+    }
+
+
+    const selectedRows:any = ref?.current?.api?.getSelectedRows();
+    selectedRows.forEach((e:any)=>{
+      const newVal = JSON.parse(JSON.stringify(e));
+      // bufferTypeData.forEach((e:any)=>{
+      //   if(e.dsc===e.bt){
+      //     newVal.bt=e.id;
+      //   }
+      // })
+      newVal.cg = e.ccr_group;
+
+      // TODO: call the buffer type and add the id and use drop down instead;
+     
+
+
+      CCRPostObj.ccrData.push(_.omit(newVal,['editable','err']));
+    })
+
+    try{
+      const response = await saveCCRMasterTask(CCRPostObj);
+      if(response.status==200){
+        toast.dismiss();
+        notifySuccess("CCR task updated!!")
+      }
+      else{
+        toast.dismiss();
+        notifyError("Failed to create the task....Please check your validations!")
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
   const onMTOSaveBufferData= async()=>{
 
     if(pageType==="add")
     {
-     onMTOAddSaveBufferData();
+      if(activeMaster.id===501){
+        onMTOAddSaveBufferData();
+      }
+      else if(activeMaster.id===502){
+        onMTOAddCCRData();
+      }
+     
       return;
     }
+
+    // move this to different function
+    if(activeMaster.id===502){
+      const CCRPostObj: any = {
+        mid: activeMaster.id,
+        uid: user.user.user.id.toString(),
+        unm: user.user.user.name,
+        ccrData: [],
+        aids: ["11111", "22222", "33333"]
+      }
+
+      let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
+      activeMaster.rowData.forEach((ele:any)=>{
+        const e = _.cloneDeep(ele);
+        e.mlt = parseInt(e.mlt);
+        e.slt = parseInt(e.slt);
+        e.cg = e.ccr_group;
+  
+        if(totalNewVals===0) return;
+        totalNewVals--;
+  
+  
+        CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
+      })
+
+
+      try{
+        const response = await saveCCRMasterTask(CCRPostObj);
+        if(response.status=== 200){
+          notifySuccess("Saved CCR Task Successfully");
+          let totalNewVals = activeMaster.rowData.length - tempRecordCount;
+          const currData = _.cloneDeep(activeMaster.rowData);
+          while (totalNewVals-- > 0) {  
+            currData.shift();
+          }
+          dispatch(UPDATE_ROW_DATA(currData));
+        }
+      }
+      catch(error){
+        console.log(error)
+      }
+
+
+      return;
+    }
+
+
+    notifyLoader("Saving Task...")
 
     const BufferPostObj: any = {
       mid: activeMaster.id,
@@ -2017,6 +2152,12 @@ const useViewModify = (pageType: string) => {
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status=== 200){
         notifySuccess("Saved Buffer Task Successfully");
+        let totalNewVals = activeMaster.rowData.length - tempRecordCount;
+        const currData = _.cloneDeep(activeMaster.rowData);
+        while (totalNewVals-- > 0) {  
+          currData.shift();
+        }
+        dispatch(UPDATE_ROW_DATA(currData));
       }
     }
     catch(error){
@@ -2024,6 +2165,8 @@ const useViewModify = (pageType: string) => {
     }
   }
   const onMTOSaveAsDraft = async()=>{
+
+    notifyLoader("Saving Draft...")
 
     if(activeMaster.id===501){
 
@@ -2059,20 +2202,27 @@ const useViewModify = (pageType: string) => {
     try{
       const response = await saveBufferMasterDraft([BufferPostObj]);
       if(response.status=== 200){
-        notifySuccess("Saved Buffer Task Successfully");
+        toast.dismiss();
+        notifySuccess("Saved Draft Successfully");
+      }
+      else{
+        notifyError("Failed to save draft!")
       }
     }
     catch(error){
       console.log(error)
     }
   }
+
   else if(activeMaster.id===502){
+
     const CCRPostObj: any = {
       mid: activeMaster.id,
     uid: user.user.user.id.toString(),
     unm: user.user.user.name,
     ccrData: []
   }
+  let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
 
   activeMaster.rowData.forEach((ele:any)=>{
     const e = _.cloneDeep(ele);
@@ -2080,12 +2230,22 @@ const useViewModify = (pageType: string) => {
     e.cgid = 1;
     e.plid = 1;
     e.dpid = 1;
+
+    if(totalNewVals===0) return;
+    totalNewVals--;
+
+
     CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
   })
   try{
     const response = await saveCCRMasterDraft([CCRPostObj]);
     if(response.status=== 200){
-      notifySuccess("Saved Buffer Task Successfully");
+      toast.dismiss();
+      notifySuccess("Saved CCR Task Successfully");
+    }
+    else{
+      toast.dismiss();
+      notifyError("Failed to Save draft!")
     }
   }
   catch(error){
@@ -2100,6 +2260,23 @@ const useViewModify = (pageType: string) => {
 
   const onMajReasonSelected = ()=>{
     setSelectedMajReason(ref?.current?.api?.getSelectedRows()[0])
+  }
+
+  const onMinReasonEditingStopped = (params: any)=>{
+
+
+     const newData = _.cloneDeep(activeMaster.rowData);
+     let majIdIndex = -1;
+     newData.forEach((ele:any,index:number)=>{
+       if(ele.majId===selectedMajReason.majId){
+         majIdIndex = index;
+       }
+     })
+     newData[majIdIndex].minData[params.node.rowIndex].mindsc = params.newValue;
+
+     dispatch(UPDATE_ROW_DATA(newData));
+     setSelectedMajReason(newData[majIdIndex]);
+
   }
 
   return {
@@ -2205,7 +2382,9 @@ const useViewModify = (pageType: string) => {
     }],
     onMajReasonSelected,
     // minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData):(useSelector((state: any) => state.mto.editableMinRow))? activeMaster.rowData[useSelector((state: any) => state.mto.editableMinRow)]?.minData: [],
-    minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData): [],
+    minReasonRowData: selectedMajReason? selectedMajReason.minData: [],
+    onMinReasonEditingStopped,
+    addRowToMtoMinGrid
   }
 }
 
