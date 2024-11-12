@@ -135,14 +135,12 @@ const ActionToolBar = ({
       });
     }
 
-    else if(pathname  === '/supply-chain-intelligence-hub/bpr'){
-      onExportToExcel({
-        // pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
-        // callBack: onExportToExcelCallBack,
-        name:currCategory + currentTab,
-        filters:multiFilter
-      });
-    }
+    // else if(pathname  === '/supply-chain-intelligence-hub/bpr'){
+    //   onExportToExcel({
+    //     name:currCategory + currentTab,
+    //     filters:multiFilter
+    //   });
+    // }
 
     else{
       onExportToExcelOld({

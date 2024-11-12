@@ -411,13 +411,13 @@ export const listMenuParent: any = [
             url: "/dbm/dbm-norm-suggestions",
             role: ["Admin","VectorConsultant","DBMManager"],
           },
-          {
-            name: "Periodic Norm Sensing",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "/dbm/periodic-norm-sensing",
-            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+          // {
+          //   name: "Periodic Norm Sensing",
+          //   img: "/assets/img/nav/arrow_down.svg",
+          //   url: "/dbm/periodic-norm-sensing",
+          //   role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
 
-          },
+          // },
         ]
       }
     ],

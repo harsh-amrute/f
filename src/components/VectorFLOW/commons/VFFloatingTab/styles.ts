@@ -29,6 +29,10 @@ export const VFFloatingTabButton = styled.button<{isActive:boolean}>`
     margin-left:10px;
     transition:color 0.3s ease;
     z-index:10;
+    &:hover{
+        background-color:rgba(0,0,0,0.1);
+    };
+    transition:0.3s ease-in-out
 `
 export const VFFloatingTabButtonActiveShadow = styled.button<{theme:string}>`
     position:absolute;
