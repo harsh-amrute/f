@@ -1,5 +1,5 @@
-import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
-import {useGetState,useGetDailyData, useGetBPRRemarkHistory, useSubmitBPRRemark} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
+import { useGetBORUIConfiguration, useBORData, useBORDataCount,useSubmitBORRemark,useGetBORRemarkHistory } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
+import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { convertUiConfigToOptions, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
@@ -18,8 +18,9 @@ import { toast } from "react-toastify"
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
-import { BPRRemarksCellRenderer, BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers"
+import {  BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers"
 import useViewPort from "../../../../../hooks/useViewPort"
+import { BORRemarksCellRenderer } from "./BORCellRenderers"
 
 
 
@@ -59,12 +60,12 @@ export const useBOR =()=>{
      const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
      const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
      const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
-     const {mutateAsync:getRemarkHistory} = useGetBPRRemarkHistory()
+     const {mutateAsync:getBORRemarkHistory} = useGetBORRemarkHistory() || {};
      const [remarkHistory,setRemarkHistory] = useState<any[]>([])
      const [editedRows,setEditedRows] = useState<Array<any>>([])
      const [remark,setRemark] = useState<string>('')
 
-     const {mutateAsync:submitRemark} = useSubmitBPRRemark()
+     const {mutateAsync:submitRemark} = useSubmitBORRemark() || {}
 
 
 
@@ -88,7 +89,7 @@ export const useBOR =()=>{
         grapCellRenderer:BPRGraphCellRenderer,
         colorDispatchCellRenderer:DispatchColorCellRenderer,
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
-        remarksCellRenderer:BPRRemarksCellRenderer
+        remarksCellRenderer:BORRemarksCellRenderer
 
         
       }), []);
@@ -134,7 +135,7 @@ export const useBOR =()=>{
             height:360,
             width:350
         })
-        const {data} = await getRemarkHistory(row)
+        const {data} = await getBORRemarkHistory(row)
         toast.dismiss(toastId)
         setRemarkHistory(data.data)
         setIsRemarkHistoryToolTipOpen(true)
@@ -169,7 +170,8 @@ export const useBOR =()=>{
            return {
                remark:e.remarks,
                whcode:e.WHCode,
-               skucode:e.SKUCode
+               skucode:e.SKUCode,
+               spc:e.SupplierCode
            }
            
        })
@@ -382,6 +384,7 @@ export const useBOR =()=>{
         isSubmitRemarkToolTipOpen,
         isRemarkHistoryToolTipOpen,
         remarkHistory,
+        remark,
         submitRemarkToolTipPosition,
         remarkHistoryToolipPosition,
         onSubmitRemarks,
