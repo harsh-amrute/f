@@ -328,21 +328,36 @@ const useViewModify = (pageType: string) => {
   };
 
 
-  useEffect(()=>{
-    const getMasterUIConfigurationData = async()=>{
-      const {data} = await masterUIConfiguration(pageType);
-      setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
-      }
-      getMasterUIConfigurationData()
-  },[])
+  // useEffect(()=>{
+  //   const getMasterUIConfigurationData = async()=>{
+  //     const {data} = await masterUIConfiguration(pageType);
+  //     setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
+  //     }
+  //     getMasterUIConfigurationData()
+  // },[])
 
   useEffect(() => {
     const getMasterUIConfigurationData = async () => {
-      const { data } = await masterUIConfiguration(pageType);
-      const MtoBufferdata = await MTOMasterUIConfiguration();
+      let data = undefined;
+      let MtoBufferdata = undefined;
+      try{
 
+        const { data: myData } = await masterUIConfiguration(pageType);
+        data = myData;
+      }
+      catch(e){
+        console.log(e)
+      }finally{
+        try{
+          MtoBufferdata = await MTOMasterUIConfiguration();
+        }
+        catch(e){
+          console.log(e);
+        }
+      }
+      
       if(data){
-
+        
         const concatenatedResult = concatenateFields(data?.data, MtoBufferdata?.data?.data);
         setAllMasterState(mapMasterToMasterState(concatenatedResult, onShowChart))
       }
@@ -350,7 +365,7 @@ const useViewModify = (pageType: string) => {
         setAllMasterState(mapMasterToMasterState(MtoBufferdata?.data?.data, onShowChart))
       }
     }
-
+    
     getMasterUIConfigurationData()
   }, [])
 
