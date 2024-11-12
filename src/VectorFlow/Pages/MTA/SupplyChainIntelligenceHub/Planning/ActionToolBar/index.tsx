@@ -288,6 +288,8 @@ const ActionToolBar = ({
               supplyChainForChildrenOfCheckBoxList={
                 locations
               }
+              currCategory={currCategory}
+
             />
           );
         }
@@ -312,6 +314,8 @@ const ActionToolBar = ({
               supplyChainForChildrenOfCheckBoxList={
                 locations
               }
+              currCategory={currCategory}
+
             />
           );
         }
@@ -360,6 +364,8 @@ const ActionToolBar = ({
               supplyChainForChildrenOfCheckBoxList={
                 locations
               }
+              currCategory={currCategory}
+
             />
           );
         }
