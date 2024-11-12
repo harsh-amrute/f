@@ -3,53 +3,89 @@ import { useQueryClient } from "@tanstack/react-query";
 import { MainService } from "../../../module-main/services/api";
 import { listMenuParent } from "./listMenu";
 import { MenuToolTip } from "../../../components/index";
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useUserData } from "../../../context";
 import { useNavigate } from "react-router";
 import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
 import _ from 'lodash'
+import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
 
-const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) => {
-  const {mutateAsync:getAllReports} = useGetAllReports();
+const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
+  const { mutateAsync: getAllReports } = useGetAllReports();
+  const {mutateAsync: getAllMTOReports} = useGetAllMTOReports()
   const [listMenu, setListMenu] = useState(listMenuParent);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const [activeTooltip, setActiveTooltip] = useState<number>(0);
-  const [isLoading,setIsLoading] = useState(false);
-  const [tempUrls,setTempUrls] = useState([]);
-  const [reportUrls,setReportUrls] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [tempUrls, setTempUrls] = useState([]); //temp url is used to show downloading
+  const [reportUrls, setReportUrls] = useState<string[]>([]);
+
+
+  useEffect(() => {
+    getReportFields();
+  }, [])
+
+
+  const getReportFields = async () => {
+
+    let transformedData: any = undefined;
+    
+    try{
+      const reports = await getAllReports();
+      const rawDailyReport = reports.data.data
+      transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
+        name: attributes.reportName,
+        img: "/assets/img/nav/arrow_down.svg",
+        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+        url: key,
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        downloadName: attributes.downloadName
+      }));
 
   
-  useEffect(()=>{
-    getReportFields();
-  },[])
-
-  const getReportFields = async ()=>{
-    const reports = await getAllReports();
-    const rawDailyReport = reports.data.data
-    const transformedData = Object.entries(rawDailyReport).map(([key, attributes]:[string , any]) => ({
-      name: attributes.reportName,
-      img: "/assets/img/nav/arrow_down.svg", 
-      imgHover: "/assets/img/nav/DownloadReport-Icon.svg", 
-      url: key, 
-      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","DBMManager","BPRManager","MasterUpdater","MasterApprover"],
-      downloadName: attributes.downloadName
-    }));
-    const extractedNewMenu = _.cloneDeep(listMenuParent)
-    const targetObject = extractedNewMenu.find((item:any) => item.id === 8);
-    if (targetObject) {
-      console.log(targetObject)
-      targetObject.child.push(...transformedData);
-      const reporturls = targetObject.child.map((child:any) => child.url).filter((url:string) => url);
-      setReportUrls(reporturls)
     }
-    setListMenu(extractedNewMenu);
+    catch(err){
+      
+      console.error("Error fetching reports", err);
+    }
+    finally{
+      try{
+        const mtoReports = await getAllMTOReports();
+        const rawMTOReports = mtoReports.data.data;
+        const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
+          name: attributes.reportName,
+          img: "/assets/img/nav/arrow_down.svg",
+          imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+          url: key,
+          role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
+          isMTO: true,
+          downloadName: attributes.downloadName
+        }));
+
+        const extractedNewMenu = _.cloneDeep(listMenuParent)
+        const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
+        if (targetObject) {
+          if(transformedData){
+
+            targetObject.child.push(...transformedData);
+          }
+          targetObject.child.push(...transformedMTOData);
+          const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+          setReportUrls(reporturls)
+      }
+      setListMenu(extractedNewMenu);
+      }
+      catch(error){
+        console.log(error)
+      }
+    }
   }
 
   const handleClickMenu = (item: any, index: number) => {
-    if(item.name==='navbar.listMenuParent.miscellaneousReports.title') return;
+    if (item.name === 'navbar.listMenuParent.miscellaneousReports.title') return;
     setMenuItem(item);
     const newMenu = [...listMenu];
     newMenu.forEach((itemMenu: any) => {
@@ -87,6 +123,7 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
 
 
   const navigate = useNavigate();
+
   return (
     <NavStyle.SCGridNav id="vector_nav" className="list-roles-per--content">
       <NavStyle.SCNavBox>
@@ -111,8 +148,9 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
                     data-tooltip-id={item.name}
                     src={renderImg(item.img, item.status, item.id)}
                     alt="logo"
+                    style={{ zoom: item.id == `11` || item.id == `12` ? 1.2 : 1 }}
                     widthIcon={item.widthIcon}
-                    onClick={()=>{navigate(item.url)}}
+                    onClick={() => { navigate(item.url) }}
 
                   />
                   {!item.status && activeTooltip === item.id && (

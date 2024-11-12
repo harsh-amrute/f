@@ -1,0 +1,21 @@
+import { useMutation } from '@tanstack/react-query'
+import { MaterialCoverageServices } from './api'
+
+//useQuery for get 
+export const QUERY_KEYS = {
+    useGetSummarySo: ['MDMService.useGetSummarySO'],
+    useGetOpenSODetailsData:['MDMService.useGetOpenSODetailsData']
+}
+
+export const useGetSOSummaydetails = ()=>{
+    return useMutation(async(params: {appliedFilters: any})=>{
+      return await MaterialCoverageServices.getMaterialSOData(params)
+    })
+  }
+
+export const useGetOpenSODetailsData = () => {
+  return useMutation(async(data:any)=>{
+        //console.log("return ===",MaterialCoverageServices.getOpenSODetailsData)
+        return MaterialCoverageServices.getOpenSODetailsData(data)
+    })
+}

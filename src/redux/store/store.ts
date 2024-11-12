@@ -3,6 +3,8 @@ import { MTAStore } from '../../VectorFlow/types/MTA';
 import { MDMStore } from '../../VectorFlow/types/MDM';
 import mdmReducer from '../reducers/MDM';
 import mtaReducer from '../reducers/MTA';
+import mtoReducer from '../reducers/MTO/index';
+import { MTOStore } from '../../VectorFlow/types/MTO';
 
 const mdmState:MDMStore = {
     allMasters:[],
@@ -19,30 +21,35 @@ const mdmState:MDMStore = {
     lastRunDate:''
 }
 
-const mtaState:MTAStore = {
-    showDailyDataGraphModal:false,
-    showNormChangeHistoryTable:false,
-    dailyData:{
-        normChangeData:[],
-        chartData:[],
-        masterData:[],
-        suggestionData:[],
-        monitoringData:[],
-        rowData:{}
+const mtaState: MTAStore = {
+    showDailyDataGraphModal: false,
+    showNormChangeHistoryTable: false,
+    dailyData: {
+        normChangeData: [],
+        chartData: [],
+        masterData: [],
+        suggestionData: [],
+        monitoringData: [],
+        rowData: {}
     },
-    currentGridState:[],
-    planning:{
-        currentTab:'',
-        currentCategory:'',
-        currentView:''
+    currentGridState: [],
+    planning: {
+        currentTab: '',
+        currentCategory: '',
+        currentView: ''
     }
-    
+
 }
 
-export const createStore = (mdmState:MDMStore) => configureStore({
+const mtoState: MTOStore = {
+    AnalyticsData:{}
+}
+
+export const createStore = (mdmState: MDMStore) => configureStore({
     reducer: {
-        mdm:mdmReducer(mdmState),
-        mta:mtaReducer(mtaState)
+        mdm: mdmReducer(mdmState),
+        mta: mtaReducer(mtaState),
+        mto: mtoReducer(mtoState)
     },
 });
 

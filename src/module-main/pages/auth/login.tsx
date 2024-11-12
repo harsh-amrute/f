@@ -12,6 +12,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 // import { SITE_KEY,TEST_SITE_KEY } from "../../../helpers/constants";
 import { SITE_KEY} from "../../../helpers/constants";
 import WelcomeBoard from "./welcome-board";
+import { hashPassword } from '../../../helpers/utils'
 
 function LoginContainer() {
   const { t } = useTranslation();
@@ -20,9 +21,9 @@ function LoginContainer() {
 
   useEffect(() => {
     if(token) {
-      const urlPermission: any = JSON.parse(localStorage?.getItem('url_permission') || "");
-      console.log(urlPermission);
-      const url = urlPermission.includes("/") ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0]
+      const url: any = JSON.parse(localStorage?.getItem('landing_page') || "");
+      // console.log(urlPermission);
+      // const url = urlPermission.includes("/") ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0]
       navigate(url, { replace: true });
     } else {
       localStorage.clear();
@@ -46,25 +47,28 @@ function LoginContainer() {
   const [remember, setRemember] = useState(true);
   const recaptchaRef: any = useRef();
 
-  const onSave = () => {
+  const onSave = async () => {
     const recaptchaValue = recaptchaRef.current.getValue();
     const recaptcha = localStorage.getItem("_grecaptcha");
 
     if (recaptchaValue || recaptcha) {
 
       const formData = getValues();  
+      formData.password = await hashPassword(formData.password)
       mutateLogin(formData, {
         onSuccess: (data: any) => {
           if (data?.status === 400) {
+            recaptchaRef.current?.reset();
             notifyError(data?.error?.non_field_errors[0])
             localStorage.removeItem("token")
             localStorage.removeItem("url_permission")
           } else {
-            const urlPermission = data?.data?.data.url_permission;
-            const rolePermission = data?.data?.data.roles.permission;
-            const isRolePresent =  rolePermission.some((permission:any) => !permission.name.startsWith("IST"));
+            // const urlPermission = data?.data?.data.url_permission;
+            // const rolePermission = data?.data?.data.roles.permission;
+            // const isRolePresent =  rolePermission.some((permission:any) => !permission.name.startsWith("IST"));
             // const url = urlPermission.includes("/") && isRolePresent ? "/" : !urlPermission.includes("/") && isRolePresent ? '/master-data-management/control-panel' : urlPermission[0];
-            const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission.includes('/supply-chain-intelligence-hub/planning') ? '/supply-chain-intelligence-hub/planning' : urlPermission[0];
+            // const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission.includes('/supply-chain-intelligence-hub/planning') ? '/supply-chain-intelligence-hub/planning' : urlPermission[0];
+            const url = data.data.data.landing_page
             console.log(url);
             navigate(url, { replace: true });
             notifySuccess(t("loginPage.notify.success"));
@@ -75,6 +79,7 @@ function LoginContainer() {
         },
       });
     } else {
+      // recaptchaRef.current?.reload();
       notifyError(t("loginPage.notify.completeReCaptcha"));
     }
   };

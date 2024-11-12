@@ -1,10 +1,10 @@
-import {AvailabilityToolTipWrapper} from './styles'
+import { AvailabilityToolTipWrapper } from './styles'
 
-import {ITooltipParams} from 'ag-grid-enterprise'
+import { ITooltipParams } from 'ag-grid-enterprise'
 
 
-const AvailabilityToolTip = (params:ITooltipParams)=>{
-    return(
+const AvailabilityToolTip = (params: ITooltipParams) => {
+    return (
         <AvailabilityToolTipWrapper>
             {params.value}% Availability
         </AvailabilityToolTipWrapper>

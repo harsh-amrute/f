@@ -7,13 +7,15 @@ import { useRegisterUser, usePutEditUser } from "../../../services/profile";
 import LoadingSpinner from "../LoadingSpinner";
 import PrdPermissions from "../../../components/layouts/ProductPermission/common-mulselect";
 import LcPermissions from "../../../components/layouts/LocationPermission/common-mulselect";
+import UserMangementStepper from "../../VectorFLOW/commons/UserManagementStepper";
 import {
   formDataPermission,
   handleSelectParent,
   handleSelectChild,
-  handleSelectGrandChild,
+  handleSelectGrandChild
 } from "./common-func";
 import { useUserData } from "../../../context";
+import _ from "lodash";
 
 const ModalAdvanedPermissions = (props: any) => {
   const { t } = useTranslation();
@@ -30,8 +32,15 @@ const ModalAdvanedPermissions = (props: any) => {
     refetch,
     prdPermissionRef,
     lcPermissionRef,
-    dataAllPermissions,
     valueSelect,
+    stepperDetails,
+    activeApplication,
+    setActiveApplication,
+    allPermissions,
+    updateAllPermissions,
+    storePermission,
+    setStorePermission,
+    setStepperDetails
   } = props;
 
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
@@ -39,47 +48,115 @@ const ModalAdvanedPermissions = (props: any) => {
   const { mutateAsync: mutatePutEditUser } = usePutEditUser();
 
   const backModalUser = () => {
-    setIsOpenUser(true);
-    setIsOpenAdvanced(false);
+ 
+    //Reset Current Application Permissions
+    if(valueSelect.length > 0){
+      const initalPermissions = valueSelect.find((app:any)=>app.application_id === activeApplication);
+      setStorePermission([...storePermission.map((app:any)=>{
+        if(app.application_id === activeApplication){
+          return {
+            ...app,productPermission:initalPermissions.productPermission,locationPermission:initalPermissions.locationPermission
+          }
+        }
+        return {...app}
+      })])
+    }
+    
+    if(getActiveApplicationIndex() === 0){
+      setIsOpenUser(true);
+      setIsOpenAdvanced(false);
+    }
+    else{
+      const newApplicationId = storePermission[getActiveApplicationIndex()-1].application_id;
+      setStepperDetails([...stepperDetails.map((step:any)=>{
+        const stepCopy = {...step};
+        if(step.id === newApplicationId) stepCopy.currentState='active';
+        if(step.id === activeApplication) stepCopy.currentState='pending';
+        return stepCopy;
+      })]);
+      setActiveApplication(newApplicationId);
+      updateAllPermissions(newApplicationId);
+    } 
+    
   };
 
   const handleSubmit = () => {
-    const { brand, subBrand, category } =
+    let product:any;
+    let location:any;
+    
+    const productPermissions:any = [];
+    const locationPermissions:any = [];
+
+    storePermission.forEach((app:any,index:number) => {
+      if(index===storePermission.length-1){
+        product = prdPermissionRef.current?.getPrdPermissionValue();
+        location = lcPermissionRef.current?.getLcPermissionValue();
+
+        //Store Permissions
+        const storePermissionCopy = [...storePermission]
+        const currentPermission:any = storePermissionCopy.find((app:any)=>app.application_id === activeApplication);
+        currentPermission.productPermission = product;
+        currentPermission.locationPermission = location;
+        setStorePermission(storePermissionCopy)
+      }
+      else{
+        product =
       // eslint-disable-next-line no-unsafe-optional-chaining
-      prdPermissionRef.current?.getPrdPermissionValue();
+      app.productPermission
 
-    const { lcRegion, lcType, lcCluster } =
+      location =
       // eslint-disable-next-line no-unsafe-optional-chaining
-      lcPermissionRef.current?.getLcPermissionValue();
-
-    if (brand?.length > 0) {
-      setIsLoadSpinner(true);
-
+      app.locationPermission
+      }
+      
       const dataPrdPermission = formDataPermission({
-        parent: brand,
-        child: subBrand,
-        grandChild: category,
+        parent: product.brand,
+        child: product.subBrand,
+        grandChild: product.category,
         keyParent: "product_hierarchy_1",
         keyChild: "product_hierarchy_2",
         keyGrandChild: "product_hierarchy_3",
       });
 
       const dataLcPermission = formDataPermission({
-        parent: lcRegion,
-        child: lcType,
-        grandChild: lcCluster,
-        keyParent: "wh_region",
-        keyChild: "wh_type",
-        keyGrandChild: "wh_location_group",
+        parent: location.lcRegion,
+        child: location.lcType,
+        grandChild: location.lcCluster,
+        keyParent: "location_heirarchy_1",
+        keyChild: "location_heirarchy_2",
+        keyGrandChild: "location_heirarchy_3",
       });
+
+      productPermissions.push({
+        application_id:app.application_id,
+        permissions:dataPrdPermission
+      })
+      locationPermissions.push({
+        application_id:app.application_id,
+        permissions:dataLcPermission
+      })
+  
+    });
+
+    const { brand} =
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      prdPermissionRef.current?.getPrdPermissionValue();
+
+      const { lcRegion} =
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      lcPermissionRef.current?.getLcPermissionValue();
+
+    if(brand?.length > 0 && lcRegion?.length > 0) {
+      // setIsLoadSpinner(true);
 
       const formData: any = {
         ...infoUser,
         tc: true,
-        product_permissions: dataPrdPermission,
-        location_permissions: dataLcPermission,
+        product_permissions: productPermissions,
+        location_permissions: locationPermissions,
       };
 
+      setIsLoadSpinner(true);
       if (contentModal.callApi === 1) {
         mutateRegister(formData, {
           onSuccess: (res: any) => {
@@ -151,6 +228,52 @@ const ModalAdvanedPermissions = (props: any) => {
     }
   };
 
+  
+  const saveAndGoToNext = () => {
+    const storePermissionCopy = [...storePermission]
+    const currentPermission:any = storePermissionCopy.find((app:any)=>app.application_id === activeApplication);
+    const currentProductPermission = prdPermissionRef.current?.getPrdPermissionValue();
+    const currentLocationPermission = lcPermissionRef.current?.getLcPermissionValue();
+
+    if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
+      t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
+    );
+
+    if(currentPermission){
+      currentPermission.productPermission = currentProductPermission;
+      currentPermission.locationPermission = currentLocationPermission;
+      setStorePermission(storePermissionCopy)
+    }
+    
+    const newApplicationId = storePermission[getActiveApplicationIndex()+1].application_id;
+    setStepperDetails([...stepperDetails.map((step:any)=>{
+      const stepCopy = {...step};
+      if(step.id === newApplicationId) stepCopy.currentState='active';
+      if(step.id === activeApplication) stepCopy.currentState='completed';
+      return stepCopy;
+    })]);
+    setActiveApplication(newApplicationId);
+    updateAllPermissions(newApplicationId);
+    
+  }
+
+
+  const getCurrentProductPermission = ()=>{
+    if(storePermission.length > 0) return _.cloneDeep(storePermission.find((app:any)=>app.application_id === activeApplication).productPermission);
+    return {};
+  }
+
+  const getCurrentLocationPermission = ()=>{
+    if(storePermission.length > 0) return {...storePermission.find((app:any)=>app.application_id === activeApplication).locationPermission};
+    return {};
+  }
+
+  const getActiveApplicationIndex = ()=>{
+    return storePermission?.findIndex((app:any)=>app.application_id === activeApplication);
+  }
+
+
+
   return (
     <>
       {
@@ -191,47 +314,74 @@ const ModalAdvanedPermissions = (props: any) => {
                           "profile.tabContent.manageUsers.advancedPermission.title"
                         )}
                       </span>
-                      <span onClick={backModalUser} className="close-forced">
+                      <span onClick={()=>{setIsOpenUser(false);setIsOpenAdvanced(false);setStorePermission([]);}} className="close-forced">
                         x
                       </span>
                     </Dialog.Title>
+                    <div className="advanced-permission-container">
+                      {stepperDetails?.length > 1 && 
+                        (<div style={{margin:'20px',minWidth:'500px'}}>
+                          <UserMangementStepper
+                            list={stepperDetails}
+                            // activeStep={getActiveApplicationIndex()}
+                            themeUi={themeUi}
+                          />
+                        </div>)
+                      }
 
-                    <PrdPermissions
-                      ref={prdPermissionRef}
-                      product={dataAllPermissions?.product}
-                      valueSelectPrd={valueSelect?.productPermission}
-                      handleSelectParent={handleSelectParent}
-                      handleSelectChild={handleSelectChild}
-                      handleSelectGrandChild={handleSelectGrandChild}
-                    />
-                    <LcPermissions
-                      ref={lcPermissionRef}
-                      location={dataAllPermissions?.location}
-                      valueSelectLc={valueSelect?.locationPermission}
-                      handleSelectParent={handleSelectParent}
-                      handleSelectChild={handleSelectChild}
-                      handleSelectGrandChild={handleSelectGrandChild}
-                    />
+                      <PrdPermissions
+                        ref={prdPermissionRef}
+                        product={allPermissions?.product_permission}
+                        valueSelectPrd={getCurrentProductPermission()}
+                        handleSelectParent={handleSelectParent}
+                        handleSelectChild={handleSelectChild}
+                        handleSelectGrandChild={handleSelectGrandChild}
+                      />
+                      <LcPermissions
+                        ref={lcPermissionRef}
+                        location={allPermissions?.location_permission}
+                        valueSelectLc={getCurrentLocationPermission()}
+                        handleSelectParent={handleSelectParent}
+                        handleSelectChild={handleSelectChild}
+                        handleSelectGrandChild={handleSelectGrandChild}
+                      />
 
-                    <div className="modal-bottom upper-line">
-                      <button
-                        type="button"
-                        className={`btn_submit ${themeUi} ${
-                          isLoadSpinner ? "btn-disabled" : ""
-                        }`}
-                        onClick={handleSubmit}
-                        disabled={isLoadSpinner}
-                      >
-                        {contentModal.buttonSubmit}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn_cancel"
-                        disabled={isLoadSpinner}
-                        onClick={backModalUser}
-                      >
-                        {t("profile.tabContent.manageUsers.button.goBack")}
-                      </button>
+                      <div className="modal-bottom upper-line">
+                        {
+                          getActiveApplicationIndex() === storePermission?.length-1 ? 
+                          (
+                            <button
+                              type="button"
+                              className={`btn_submit ${themeUi} ${
+                                isLoadSpinner ? "btn-disabled" : ""
+                              }`}
+                              onClick={handleSubmit}
+                              disabled={isLoadSpinner}
+                            >
+                              {contentModal.buttonSubmit}
+                            </button>) : 
+                          (<button
+                            type="button"
+                            className={`btn_submit ${themeUi} ${
+                              isLoadSpinner ? "btn-disabled" : ""
+                            }`}
+                            onClick={saveAndGoToNext}
+                            disabled={isLoadSpinner}
+                            style={{width:'190px'}}
+                          >
+                            {"Save & Go To Next"}
+                          </button>)
+                        }
+                        
+                        <button
+                          type="button"
+                          className="btn_cancel"
+                          disabled={isLoadSpinner}
+                          onClick={backModalUser}
+                        >
+                          {t("profile.tabContent.manageUsers.button.goBack")}
+                        </button>
+                      </div>
                     </div>
                   </Dialog.Panel>
                 </Transition.Child>

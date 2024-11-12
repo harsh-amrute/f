@@ -14,71 +14,71 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { ButtonWrapper } from "./styles"
 
 
-const OpenExpeditingRequests = ()=>{
+const OpenExpeditingRequests = () => {
 
-    const {
-        agGridProps,
-        rowData,
-        remark,
-        remarkHistory,
-        isSubmitRemarkToolTipOpen,
-        isRemarkHistoryToolTipOpen,
-        submitRemarkToolTipPosition,
-        ref,
-        updateRemark,
-        onSubmitRemark,
-        onCloseSubmitRemark,
-        onCloseRemarkHistory,
-        tempDownloadData,
-        setTempDownloadData,
-        colDefs,
-        exportExcelRowData,
-        setExportExcelRowData,
-        exportExcelColumns,
-        setExportExcelColumns,
-        currentFilter,
-        setCurrentFilter,
-        onDelete,
-        onApplyFilter,
-        editedRows,
-        onSubmitEditedRows,
-        themeUi
-    } = useOpenExpeditingRequests()
+  const {
+    agGridProps,
+    rowData,
+    remark,
+    remarkHistory,
+    isSubmitRemarkToolTipOpen,
+    isRemarkHistoryToolTipOpen,
+    submitRemarkToolTipPosition,
+    ref,
+    updateRemark,
+    onSubmitRemark,
+    onCloseSubmitRemark,
+    onCloseRemarkHistory,
+    tempDownloadData,
+    setTempDownloadData,
+    colDefs,
+    exportExcelRowData,
+    setExportExcelRowData,
+    exportExcelColumns,
+    setExportExcelColumns,
+    currentFilter,
+    setCurrentFilter,
+    onDelete,
+    onApplyFilter,
+    editedRows,
+    onSubmitEditedRows,
+    themeUi
+  } = useOpenExpeditingRequests()
 
-    return(
-        <GridStateContext.Provider
-        value={{
-          ref:ref,
-          exportExcelColumns:exportExcelColumns,
-          setExportExcelColumns:setExportExcelColumns,
-          tempDownloadData:tempDownloadData,
-          setTempDownloadData:setTempDownloadData,
-          exportExcelRowData:exportExcelRowData,
-          setExportExcelRowData:setExportExcelRowData
+  return (
+    <GridStateContext.Provider
+      value={{
+        ref: ref,
+        exportExcelColumns: exportExcelColumns,
+        setExportExcelColumns: setExportExcelColumns,
+        tempDownloadData: tempDownloadData,
+        setTempDownloadData: setTempDownloadData,
+        exportExcelRowData: exportExcelRowData,
+        setExportExcelRowData: setExportExcelRowData
 
       }}
-        >
-          <div style={{marginLeft:'10px'}}>
-            <ActionToolBar 
-                view={'grid'} 
-                setCurrentTab={''} 
-                currCategory={'OpenExpeditingRequests'} 
-                currentTab={''} 
-                tabsList={[]} 
-                onFloatingTabChange={()=>console.log('')} 
-                onGoBack={()=>console.log('')} 
-                onViewChange={()=>console.log('')}
-                genericRecordCount={12}
-                onExportToExcelCallBack={()=>{return }}
-                multiFilter={currentFilter}
-                setMultiFilter={setCurrentFilter}
-                onDelete={onDelete}
-                onApplyFilter={onApplyFilter}
-                onSubmitEditedRows={onSubmitEditedRows}
-                disableSubmitEditedRowsBtn={editedRows.length===0}
-              />
-          </div>
-          {/* {(isLoading)?
+    >
+      <div style={{ marginLeft: '10px' }}>
+        <ActionToolBar
+          view={'grid'}
+          setCurrentTab={''}
+          currCategory={'OpenExpeditingRequests'}
+          currentTab={''}
+          tabsList={[]}
+          onFloatingTabChange={() => console.log('')}
+          onGoBack={() => console.log('')}
+          onViewChange={() => console.log('')}
+          genericRecordCount={12}
+          onExportToExcelCallBack={() => { return }}
+          multiFilter={currentFilter}
+          setMultiFilter={setCurrentFilter}
+          onDelete={onDelete}
+          onApplyFilter={onApplyFilter}
+          onSubmitEditedRows={onSubmitEditedRows}
+          disableSubmitEditedRowsBtn={editedRows.length === 0}
+        />
+      </div>
+      {/* {(isLoading)?
           (
             <VFLoader/>
           )
@@ -98,53 +98,64 @@ const OpenExpeditingRequests = ()=>{
         />
           )
         } */}
-        <div style={{marginLeft:'15px',height:'75%'}}>
-          <VFTable
-            columnDefs={colDefs}
-            rowData={rowData}
-            enableRangeSelection={true} 
-            rowSelection="multiple"
-            statusBar = {{
-                statusPanels: [
-                  { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                  { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                  { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                  { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                  { statusPanel: 'agAggregationComponent', align:'left' },
-                ],
-              }} 
-              {...agGridProps}
-              ref={ref}
-              // onGridReady={(params)=>{
-              //   if(columnState){
-              //     params.columnApi.applyColumnState({state:columnState})
-              //   }
-              // }}
-              height={"100%"}
-          />
+      <div style={{ marginLeft: '15px', height: '75%' }}>
+        <VFTable
+          columnDefs={colDefs}
+          rowData={rowData}
+          enableRangeSelection={true}
+          rowSelection="multiple"
+          statusBar={{
+            statusPanels: [
+              { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+              { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+              { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+              { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+              { statusPanel: 'agAggregationComponent', align: 'left' },
+            ],
+          }}
+          {...agGridProps}
+          ref={ref}
+          // onGridReady={(params)=>{
+          //   if(columnState){
+          //     params.columnApi.applyColumnState({state:columnState})
+          //   }
+          // }}
+          height={"100%"}
+        />
 
-          <ButtonWrapper>
-            <VFButtonOutline disabled={editedRows.length===0} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
-          </ButtonWrapper>
-        </div>
-        {isSubmitRemarkToolTipOpen && (
-            <BPRSubmiRemarkToolTip
-                remark={remark}
-                setRemark={updateRemark}
-                style={submitRemarkToolTipPosition}
-                onSuccess={onSubmitRemark}
-                onClose={onCloseSubmitRemark}
-                themeUi={themeUi}
-            />
-        )}
+        <ButtonWrapper>
+          <VFButtonOutline disabled={editedRows.length === 0} themeUi={themeUi} width={169} style={{ fontSize: '20px', fontWeight: '500' }} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
+        </ButtonWrapper>
+      </div>
+      {isSubmitRemarkToolTipOpen && (
+        <BPRSubmiRemarkToolTip
+          remark={remark}
+          setRemark={updateRemark}
+          style={submitRemarkToolTipPosition}
+          onSuccess={onSubmitRemark}
+          onClose={onCloseSubmitRemark}
+          themeUi={themeUi}
+        />
+      )}
 
-            <RemarkModal
-                isOpen={isRemarkHistoryToolTipOpen}
-                data={remarkHistory}
-                onClose={onCloseRemarkHistory}
-            />
-        </GridStateContext.Provider>
-    )
+      {isSubmitRemarkToolTipOpen && (
+        <BPRSubmiRemarkToolTip
+          remark={remark}
+          setRemark={updateRemark}
+          style={submitRemarkToolTipPosition}
+          onSuccess={onSubmitRemark}
+          onClose={onCloseSubmitRemark}
+          themeUi={themeUi}
+        />
+      )}
+
+      <RemarkModal
+        isOpen={isRemarkHistoryToolTipOpen}
+        data={remarkHistory}
+        onClose={onCloseRemarkHistory}
+      />
+    </GridStateContext.Provider>
+  )
 }
 
 export default OpenExpeditingRequests

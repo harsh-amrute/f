@@ -15,7 +15,7 @@ export namespace MainService {
   }
 
   export const getAllRoles = async () => {
-    return await axios.get(`${API_USER}/all-role`)
+    return await axios.get(`${API_USER}/all-role/`)
   }
 
   export const getAllUsers = async () => {

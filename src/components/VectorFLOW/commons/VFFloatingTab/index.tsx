@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 import { useUserData } from '../../../../context'
 import {VFFloatingTabWrapper,VFFloatingTabButton,VFFloatingTabButtonActiveShadow} from './styles'

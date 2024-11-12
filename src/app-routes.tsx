@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react'
-import {type RouteObject} from 'react-router-dom'
+import { type RouteObject } from 'react-router-dom'
 import { AppLayout } from './components'
 import { getStoreTransferModuleRoutes } from './module-store-transfer/app-routes-store-transfer'
 import Login from './module-main/pages/auth/login'
@@ -31,11 +31,40 @@ import GuidedInsights from './VectorFlow/Pages/MTA/InsightsAndTrends/GuidedInsig
 import BufferTrends from './VectorFlow/Pages/MTA/InsightsAndTrends/BufferTrends'
 import BufferTrendReport from './VectorFlow/Pages/MTA/InsightsAndTrends/BTR'
 import DBM from './VectorFlow/Pages/MTA/DBM/DBMNormSuggestions'
+import EnquiryResponse from './VectorFlow/Pages/MTO/Production/EnquiryResponse'
 import OpenExpeditingRequests from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OpenExpeditingRequests'
+import MaterialCov from './VectorFlow/Pages/MTO/Procurement/MaterialCoverage/MaterialCov'
+import ProcurementPlanning from './VectorFlow/Pages/MTO/Procurement/Planning';
+import SimulateFullKit from './VectorFlow/Pages/MTO/Procurement/Planning/SimulateFullKit';
 import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWhereAbouts'
+import DayWiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/DayWiseCoverage'
+import MaterialRequirement from './VectorFlow/Pages/MTO/Procurement/MaterialRequirement/MaterialRequirement'
+import RMPMBufferTrends from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMBufferTrends'
+import RMPMOrderwiseCoverage from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage'
+import DptWiseBMReport from './VectorFlow/Pages/MTO/Production/DepartmentWiseBMReport/index';
+import FullKitAssignment from './VectorFlow/Pages/MTO/Production/FullKitAssignement'
+import OrderRescheduling from './VectorFlow/Pages/MTO/Production/OrderRescheduling'
+import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
+import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTrends'
 import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
+
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 import MCGrid from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/MerchandisingGrid'
+import STPLAndFullKits from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/STPLAndFullKits'
+import OrderAtRisk from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderAtRisk'
+import DueDateQuotation from './VectorFlow/Pages/MTO/Production/DueDateQuotation'
+import OrderBalance from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/OrderBalance'
+import OTIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTIFAnalysis'
+import ResourceUtilization from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization'
+import FOLSummary from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/FOLSummary'
+import DynamicReleaseManagement from './VectorFlow/Pages/MTO/Production/DynamicReleaseManagement'
+import ReasonForDelayOrder from './VectorFlow/Pages/MTO/Poogi/ReasonOrderChange/index'
+import TopFailureReasons from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TopFailureReason'
+import OTAndIFAnalysis from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/OTAndIFAnalysis'
+import ElapsedTime from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/ElapsedTime'
+import LeadTime from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/LeadTime'
+import TrendsOfFailureReason from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
+import OverallBmReport from './VectorFlow/Pages/MTO/Production/OverallBMReport'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -52,7 +81,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/login',
     '/forgot-password',
     '/change-password',
-    '/profile'
+    '/profile',
   ]
   const urlAllPage = [
     ...authenPage,
@@ -81,10 +110,60 @@ const lazyLoad = (children: React.ReactNode) => {
     '/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
     '/logistics/intransit-whereabouts',
+    '/procurement/material-coverage-open-sales',
+    '/procurement-planning/planning',
+    "/procurement/insights-and-trends/day-wise-coverage",
+    '/planning/simulative-fullkit',
+    '/logistics/intransit-whereabouts',
+    '/procurement/material-requirement',
+    '/procurement/insights-and-trends/rmpm',
+    '/procurement/insights-and-trends/rmpm-buffer-trends',
+    '/procurement/insights-and-trends/rmpm-orderwise-coverage',
+    '/production-planning-and-scheduling/order-rescheduling',
+    '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
+    '/production-planning-scheduling/enquiry-response',
+    '/production-planning-scheduling/insight-and-trends/bm-trends',
+    '/production-planning-scheduling/deptwise-bm-report',
+    '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
+    '/production-planning-scheduling/full-kit-assignment',
     '/supply-chain-intelligence-hub/sdr',
     '/master-data-management/data-modification-history',
-    '/supply-chain-intelligence-hub/merchandising-grid'
+    '/supply-chain-intelligence-hub/merchandising-grid',
+    '/production-planning-and-scheduling/due-date-quotation',
+    '/production-planning-scheduling/insight-and-trends/order-at-risk',
+    '/production-planning-scheduling/insight-and-trends/order-balance',
+    '/poogi/insight-and-trends/resource-utilization-wip-profile',
+    '/poogi/insight-and-trends/otif-analysis',
+    '/production-planning-scheduling/insights-and-trends/fol-summary',
+    '/production-planning-scheduling/dynamic-release-mangement',
+    '/poogi/insight-and-trends/ot-and-if-analysis',
+    '/production-planning-scheduling/insights-and-trends/elapsed-time',
+    '/poogi/reasons-for-delayed-orders',
+    '/poogi/insight-and-trends/ot-and-if-analysis',
+    '/poogi/insight-and-trends/top-failure-reasons',
+    '/poogi/insight-and-trends/trend-of-failure-reason',
+    '/poogi/insight-and-trends/lead-time',
+    '/production-planning-scheduling/overall-bm-report',
+    /**Delivery and Intelligence hub */
+    '/manufacturing-intelligence-hub/delivery-performance/bm-trends',
+    '/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
+    '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
+    '/manufacturing-intelligence-hub/delivery-performance/lead-time',
 
+    '/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
+    '/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
+    '/manufacturing-intelligence-hub/congestion-analysis/order-balance',
+
+    '/manufacturing-intelligence-hub/forward-exceution/fol-summary',
+    '/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit',
+    '/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage',
+    '/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage',
+    '/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier',
+    '/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend',
+
+    '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+    '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
+    '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -212,24 +291,12 @@ export const initRoutes = (): RouteObject[] => {
         },
         {
           index: true,
-          path:'view-modify',
+          path: 'view-modify',
           element: lazyLoad(<ViewModify />)
         },
         ...getStoreTransferModuleRoutes()
       ]
     },
-    // {
-    //   path: '/master-data-management/control-panel',
-    //   element: <AppLayout />,
-    //   children: [
-    //     {
-    //       index: true,
-    //       path:'view-modify',
-    //       element: lazyLoad(<ViewModify />)
-    //     },
-    //     ...getStoreTransferModuleRoutes()
-    //   ]
-    // },
     {
       path: '/master-data-management/saved-drafts',
       element: <AppLayout />,
@@ -269,7 +336,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<AddRecord/>)
+          element: lazyLoad(<AddRecord />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -280,7 +347,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DeleteRecord/>)
+          element: lazyLoad(<DeleteRecord />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -291,7 +358,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<DataModificationHistory/>)
+          element: lazyLoad(<DataModificationHistory />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -315,7 +382,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<Planning/>)
+          element: lazyLoad(<Planning />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -326,7 +393,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BPR/>)
+          element: lazyLoad(<BPR />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -337,7 +404,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<OpenExpeditingRequests/>)
+          element: lazyLoad(<OpenExpeditingRequests />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -359,7 +426,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<InTransitWhereAbouts/>)
+          element: lazyLoad(<InTransitWhereAbouts />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -381,7 +448,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BuyerOrderReport/>)
+          element: lazyLoad(<BuyerOrderReport />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -392,7 +459,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<ResearchInsights/>)
+          element: lazyLoad(<ResearchInsights />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -414,7 +481,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<GuidedInsights/>)
+          element: lazyLoad(<GuidedInsights />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -425,7 +492,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<BufferTrendReport/>)
+          element: lazyLoad(<BufferTrendReport />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -436,44 +503,527 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<RRR/>)
+          element: lazyLoad(<RRR />)
         },
         ...getStoreTransferModuleRoutes()
       ]
     },
     {
-      path:'/insights-and-trends/buffer-trends',
-      element:<AppLayout/>,
-      children:[
+      path: '/insights-and-trends/buffer-trends',
+      element: <AppLayout />,
+      children: [
         {
-          index:true,
-          element:lazyLoad(<BufferTrends/>)
+          index: true,
+          element: lazyLoad(<BufferTrends />)
         },
         ...getStoreTransferModuleRoutes()
       ]
     },
     {
-     path: '/dbm/dbm-norm-suggestions',
-     element: <AppLayout />,
-     children: [
-       {
-         index: true,
-         element: lazyLoad(<DBM/>)
-       },
-       ...getStoreTransferModuleRoutes()
-     ]
+      path: '/dbm/dbm-norm-suggestions',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DBM />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/enquiry-response',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<EnquiryResponse />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insight-and-trends/bm-trends',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<BMTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<STPLAndFullKits />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insight-and-trends/order-at-risk',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderAtRisk />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insight-and-trends/order-balance',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderBalance />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/dbm/dbm-norm-suggestions',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DBM />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/material-coverage-open-sales',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MaterialCov />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement-planning/planning',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ProcurementPlanning />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/planning/simulative-fullkit',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<SimulateFullKit />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/insights-and-trends/day-wise-coverage',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DayWiseCoverage />)
+
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/insights-and-trends/rmpm-orderwise-coverage',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPMOrderwiseCoverage />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/material-requirement',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MaterialRequirement />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+
+    {
+      path: '/production-planning-scheduling/full-kit-assignment',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FullKitAssignment />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/insights-and-trends/rmpm-buffer-trends',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPMBufferTrends />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/deptwise-bm-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DptWiseBMReport />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMExpeditionSuppliers />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
     },
     {
       path: '/supply-chain-intelligence-hub/sdr',
-      element:<AppLayout/>,
-      children:[
+      element: <AppLayout />,
+      children: [
         {
-        index:true,
-        element:lazyLoad(<SupplierDispatchReport/>)
-        } ,
+          index: true,
+          element: lazyLoad(<SupplierDispatchReport />)
+        },
         ...getStoreTransferModuleRoutes()
       ]
     }
-    
+    ,
+    {
+      path: '/production-planning-and-scheduling/order-rescheduling',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderRescheduling />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/resource-utilization-wip-profile',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ResourceUtilization />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/otif-analysis',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OTIFAnalysis />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insights-and-trends/fol-summary',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FOLSummary />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/dynamic-release-mangement',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DynamicReleaseManagement />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/reasons-for-delayed-orders',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ReasonForDelayOrder />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-and-scheduling/due-date-quotation',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DueDateQuotation />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/insights-and-trends/elapsed-time',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ElapsedTime />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/ot-and-if-analysis',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OTAndIFAnalysis />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/top-failure-reasons',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TopFailureReasons />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/trend-of-failure-reason',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TrendsOfFailureReason />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/poogi/insight-and-trends/lead-time',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<LeadTime />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/production-planning-scheduling/overall-bm-report',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OverallBmReport />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/delivery-performance/bm-trends',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<BMTrends />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OTIFAnalysis />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OTAndIFAnalysis />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/delivery-performance/lead-time',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<LeadTime />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ElapsedTime />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderAtRisk />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/congestion-analysis/order-balance',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<OrderBalance />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/fol-summary',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<FOLSummary />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<STPLAndFullKits />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<DayWiseCoverage />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPMOrderwiseCoverage />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMExpeditionSuppliers />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<RMPMBufferTrends />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TopFailureReasons />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<TrendsOfFailureReason />)
+        }
+      ]
+    },
+    {
+      path: '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ResourceUtilization />)
+        }
+      ]
+    }
+
+
   ]
 }

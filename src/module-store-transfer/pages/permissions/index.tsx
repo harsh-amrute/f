@@ -16,59 +16,73 @@ import {
   SCOverviewItemContent,
   SCOverviewInfoPermis,
   SCOverviewItemPerTitle,
-  SCOverviewItemPerTitleLoca,
+  // SCOverviewItemPerTitleLoca,
   SCOverviewWrapTitle,
   SCOverviewWrapItem,
 } from "./styles";
 
 const Permissions = ({ roles }: any) => {
+  console.log(roles);
   const { t } = useTranslation();
 
-  const listBrand = roles.product_permission.product_hierarchy_1;
-  const listSubBrand = roles.product_permission.product_hierarchy_2;
-  const listCategories = roles.product_permission.product_hierarchy_3;
+  const generateProductPermissionsList = (roles:any) => {
+    
+    return roles?.product_permission.map((application:any)=>{
+      const listBrand = application.product_hierarchy_1;
+      const listSubBrand = application.product_hierarchy_2;
+      const listCategories = application.product_hierarchy_3;
+      return {
+        'application_name':application['application_name'],
+        'permissions':[
+          {
+            title: t("profile.tabContent.permissions.L1"),
+            name: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
+            data: listBrand,
+          },
+          {
+            title: t("profile.tabContent.permissions.L2"),
+            name: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
+            data: listSubBrand,
+          },
+          {
+            title: t("profile.tabContent.permissions.L3"),
+            name: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
+            data: listCategories,
+          },
+        ]
+      }
+    })
+  }
 
-  const listLCRegion = roles.location_permission.wh_region;
-  const listLCType = roles.location_permission.wh_type;
-  const listLCCluster = roles.location_permission.wh_location_group;
-
-  const listDataPrdPermission = [
-    {
-      title: t("profile.tabContent.permissions.L1"),
-      name: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
-      data: listBrand,
-    },
-    {
-      title: t("profile.tabContent.permissions.L2"),
-      name: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
-      data: listSubBrand,
-    },
-    {
-      title: t("profile.tabContent.permissions.L3"),
-      name: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
-      data: listCategories,
-    },
-  ];
-
-
-  const listDataLcPermission = [
-    {
-      title: t("profile.tabContent.permissions.L1"),
-      name: process.env.REACT_APP_LOCATION_PERMISSION_L1,
-      data: listLCRegion,
-    },
-    {
-      title: t("profile.tabContent.permissions.L2"),
-      name: process.env.REACT_APP_LOCATION_PERMISSION_L2,
-      data: listLCType,
-    },
-    {
-      title: t("profile.tabContent.permissions.L3"),
-      name:process.env.REACT_APP_LOCATION_PERMISSION_L3,
-      data: listLCCluster,
-    },
-  ];
-
+  const generateLocationPermissionsList = (roles:any) => {
+    
+    return roles?.location_permission.map((application:any)=>{
+      const listLCRegion = application.location_heirarchy_1;
+      const listLCType = application.location_heirarchy_2;
+      const listLCCluster = application.location_heirarchy_3;
+      return {
+        'application_name':application['application_name'],
+        'permissions':[
+          {
+            title: t("profile.tabContent.permissions.L1"),
+            name: process.env.REACT_APP_LOCATION_PERMISSION_L1,
+            data: listLCRegion,
+          },
+          {
+            title: t("profile.tabContent.permissions.L2"),
+            name: process.env.REACT_APP_LOCATION_PERMISSION_L2,
+            data: listLCType,
+          },
+          {
+            title: t("profile.tabContent.permissions.L3"),
+            name:process.env.REACT_APP_LOCATION_PERMISSION_L3,
+            data: listLCCluster,
+          },
+        ]
+      }
+    })
+  }
+  
   return (
     <>
       <SCProfileOverView>
@@ -112,19 +126,28 @@ const Permissions = ({ roles }: any) => {
           </SCSubTitleBox>
 
           <SCOverviewInfoPermis>
-            {listDataPrdPermission.map((dataPrd: any) => (
-              <SCOverViewSignItem>
-                <SCSubTitleSpan>{dataPrd.title}</SCSubTitleSpan>
-                <SCSubTitleSpanItem>
-                  <SCOverviewItemPerTitle>
-                    {dataPrd.name}
-                  </SCOverviewItemPerTitle>
-                  <SCOverviewItemContent>-</SCOverviewItemContent>
-                  <SCOverviewItemContent>
-                    {dataPrd.data.toString().replace(/,/g, " | ")}
-                  </SCOverviewItemContent>
-                </SCSubTitleSpanItem>
-              </SCOverViewSignItem>
+            {generateProductPermissionsList(roles).map((application:any)=>(
+              <div style={{margin:'5px'}}>
+                <SCOverviewWrapTitle>
+                  {application.application_name}
+                </SCOverviewWrapTitle>
+                {
+                  application.permissions.map((dataPrd: any) => (
+                    <SCOverViewSignItem>
+                      <SCSubTitleSpan>{dataPrd.title}</SCSubTitleSpan>
+                      <SCSubTitleSpanItem>
+                        <SCOverviewItemPerTitle>
+                          {dataPrd.name}
+                        </SCOverviewItemPerTitle>
+                        <SCOverviewItemContent>-</SCOverviewItemContent>
+                        <SCOverviewItemContent>
+                          {dataPrd.data.toString().replace(/,/g, " | ")}
+                        </SCOverviewItemContent>
+                      </SCSubTitleSpanItem>
+                    </SCOverViewSignItem>
+                  ))
+                }
+              </div>
             ))}
           </SCOverviewInfoPermis>
         </SCProfileOverViewCol>
@@ -138,21 +161,28 @@ const Permissions = ({ roles }: any) => {
             </SCSubTitlePad>
           </SCSubTitleBox>
           <SCOverviewInfoPermis>
-            {listDataLcPermission.map((dataLc: any) => (
-              <SCOverViewSignItem>
-                <SCSubTitleSpan>
-                  {dataLc.title}
-                </SCSubTitleSpan>
-                <SCSubTitleSpanItem>
-                  <SCOverviewItemPerTitleLoca>
-                    {dataLc.name}
-                  </SCOverviewItemPerTitleLoca>
-                  <SCOverviewItemContent>-</SCOverviewItemContent>
-                  <SCOverviewItemContent>
-                    {dataLc.data.toString().replace(/,/g, " | ")}
-                  </SCOverviewItemContent>
-                </SCSubTitleSpanItem>
-              </SCOverViewSignItem>
+            {generateLocationPermissionsList(roles).map((application:any)=>(
+              <div style={{margin:'10px 5px'}}>
+                <SCOverviewWrapTitle>
+                  {application.application_name}
+                </SCOverviewWrapTitle>
+                {
+                  application.permissions.map((dataPrd: any) => (
+                    <SCOverViewSignItem>
+                      <SCSubTitleSpan>{dataPrd.title}</SCSubTitleSpan>
+                      <SCSubTitleSpanItem>
+                        <SCOverviewItemPerTitle>
+                          {dataPrd.name}
+                        </SCOverviewItemPerTitle>
+                        <SCOverviewItemContent>-</SCOverviewItemContent>
+                        <SCOverviewItemContent>
+                          {dataPrd.data.toString().replace(/,/g, " | ")}
+                        </SCOverviewItemContent>
+                      </SCSubTitleSpanItem>
+                    </SCOverViewSignItem>
+                  ))
+                }
+              </div>
             ))}
           </SCOverviewInfoPermis>
         </SCProfileOverViewCol>

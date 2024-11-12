@@ -1,30 +1,30 @@
-import {useEffect,useState,useMemo,useRef} from 'react'
-import {AgGridReactProps} from 'ag-grid-react'
+import { useEffect, useState, useMemo, useRef } from 'react'
+import { AgGridReactProps } from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
 import { convertUiConfigToOptions, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
 
-import {BPRTagsCellRenderer,BPRTechColorCellRenderer,BPREcoColorCellRenderer} from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
+import { BPRTagsCellRenderer, BPRTechColorCellRenderer, BPREcoColorCellRenderer } from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
 
-import { useGetBPRData, useGetBPRUIConfiguration,useGetBPRDataCount,useGetState,useGetDailyData } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
-import { isSameDay,format,addDays } from 'date-fns'
+import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRDataCount, useGetState, useGetDailyData } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { isSameDay, format, addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
-import { useGetUpdatedGraphData,useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
+import { useGetUpdatedGraphData, useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
 import { notifyError, notifyLoader } from '../../../../../helpers/notify'
 import { toast } from 'react-toastify'
 
 
-import { useSelector,useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { RootState } from '../../../../../redux/store/store'
 import { type DailyDataGraph } from "../../../../types/MTA";
-import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
+import { TOGGLE_GRAPH_MODAL, UPDATE_DAILY_DATA } from '../../../../../redux/actions/MTA';
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants'
 
-const useResearchInsights = ()=>{
-    
-    const {data,isLoading:isBPRUILoading} = useGetBPRUIConfiguration()
+const useResearchInsights = () => {
+
+    const { data, isLoading: isBPRUILoading } = useGetBPRUIConfiguration()
     const dispatch = useDispatch();
 
     const ref = useRef<GridRef>();
@@ -35,26 +35,26 @@ const useResearchInsights = ()=>{
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
     const [gridState,setGridState] = useState<any>()
 
-    const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
+    const { state: currentFilter, setState: setCurrentFilter, onDelete } = useBPRFilter()
 
-    const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+    const [tempDownloadData, setTempDownloadData] = useState<boolean>(false);
 
-    const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
+    const [exportExcelColumns, setExportExcelColumns] = useState<Array<any>>([])
 
-    const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+    const [exportExcelRowData, setExportExcelRowData] = useState<Array<any>>([])
 
 
-    const {mutateAsync:getDailyData} = useGetDailyData();
+    const { mutateAsync: getDailyData } = useGetDailyData();
 
-    const {mutateAsync:getUpdatedGraphData,isLoading:isUpdatedGraphDataLoading} = useGetUpdatedGraphData()
+    const { mutateAsync: getUpdatedGraphData, isLoading: isUpdatedGraphDataLoading } = useGetUpdatedGraphData()
 
-    const [ResearchInsightsData,setResearchInsightsRowData] = useState<Array<any>>([])
-    const {mutateAsync:getBPRData} = useGetBPRData()
+    const [ResearchInsightsData, setResearchInsightsRowData] = useState<Array<any>>([])
+    const { mutateAsync: getBPRData } = useGetBPRData()
 
-    const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
+    const { mutateAsync: getBPRDataCount, isLoading: isBPRDataCountLoading } = useGetBPRDataCount()
 
-    
-    const {data:historicalAvailabilityResponse} = useGetHistroricalAvailabilityData()
+    const { data: historicalAvailabilityResponse } = useGetHistroricalAvailabilityData()
+
 
 
     const [currGridPage,setCurrGridPage] = useState<number>(1)
@@ -72,24 +72,23 @@ const useResearchInsights = ()=>{
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
-
-    const [graphs,setGraphs] = useState<Array<ReseachInsightsGraphState>>([
+    const [graphs, setGraphs] = useState<Array<ReseachInsightsGraphState>>([
         {
-            type:{label:'Self',value:'Self'},
-            pen:{label:'Tech',value:'Tech'},
-            filters:[],
-            id:1
+            type: { label: 'Self', value: 'Self' },
+            pen: { label: 'Tech', value: 'Tech' },
+            filters: [],
+            id: 1
         },
         {
-            type:{label:'Parent',value:'Parent'},
-            pen:{label:'Tech',value:'Tech'},
-            filters:[],
-            id:2
+            type: { label: 'Parent', value: 'Parent' },
+            pen: { label: 'Tech', value: 'Tech' },
+            filters: [],
+            id: 2
         }
     ])
 
 
-    const [selectedRowsDates,setSelectedRowsDates] = useState<Array<any>>([])
+    const [selectedRowsDates, setSelectedRowsDates] = useState<Array<any>>([])
 
     useEffect (()=>{
         setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
@@ -120,19 +119,19 @@ const useResearchInsights = ()=>{
     },[internalRef,gridState])
 
 
-    useEffect(()=>{
-        async function getBPRRowData(){
+    useEffect(() => {
+        async function getBPRRowData() {
             resetState()
             await getRecordCount(currentFilter)
-            await getRowData(currentFilter,1)
+            await getRowData(currentFilter, 1)
         }
-        try{
-            
+        try {
+
             getBPRRowData()
-        }catch(err:any){
+        } catch (err: any) {
             notifyError(err)
         }
-    },[])
+    }, [])
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -186,63 +185,63 @@ const useResearchInsights = ()=>{
         onRowDataUpdated:(event)=>{
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
-      };
+    };
 
-    const getRecordCount =async(filter:any)=>{
+    const getRecordCount = async (filter: any) => {
         const countData = await getBPRDataCount({
             id: 1,
             name: "",
             fields: [],
-            filters:filter,
-            paginationParameter:{
-                pageNumber:1,
-                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+            filters: filter,
+            paginationParameter: {
+                pageNumber: 1,
+                recordsPerPage: parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50')
             }
         })
 
         setRecordCount(countData.data.recordCount)
     }
 
-    const getRowData = async(filter:any,pageNo:number)=>{
+    const getRowData = async (filter: any, pageNo: number) => {
         notifyLoader("Loading Grid Data")
-        const rowData =await  getBPRData({
+        const rowData = await getBPRData({
             id: 1,
             name: "",
             fields: [],
-            filters:filter,
-            paginationParameter:{
-                pageNumber:pageNo,
-                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+            filters: filter,
+            paginationParameter: {
+                pageNumber: pageNo,
+                recordsPerPage: parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50')
             }
         })
         toast.dismiss()
         setResearchInsightsRowData(rowData.data.data)
     }
 
-    const onApplyFilter = async(filter:any)=>{
+    const onApplyFilter = async (filter: any) => {
         resetState()
         setCurrentFilter(filter)
         setCurrGridPage(1)
-        try{
+        try {
             await getRecordCount(filter)
-            await getRowData(filter,1)
-        }catch(err:any){
+            await getRowData(filter, 1)
+        } catch (err: any) {
             notifyError(err)
         }
-        
+
     }
 
-    const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
-        const updatedFilter = onDelete(parentId,filterId,value)
+    const onDeleteFilter = async (parentId: any, filterId: any, value: any) => {
+        const updatedFilter = onDelete(parentId, filterId, value)
         onApplyFilter(updatedFilter)
     }
 
-    const handlePageChange = async(pageNo:number)=>{
+    const handlePageChange = async (pageNo: number) => {
         resetState()
         setCurrGridPage(pageNo)
-        try{
-            await getRowData(currentFilter,pageNo)
-        }catch(err:any){
+        try {
+            await getRowData(currentFilter, pageNo)
+        } catch (err: any) {
             notifyError(err)
         }
     }
@@ -253,8 +252,8 @@ const useResearchInsights = ()=>{
         return doesExist?doesExist.color:'gray'
     }
 
-    function getColorValues(jsonData:any) {
-    
+    function getColorValues(jsonData: any) {
+
         const colorValues = [];
         for (const key in jsonData) {
             if (key.startsWith('D')) {
@@ -268,7 +267,7 @@ const useResearchInsights = ()=>{
         return colorValues;
     }
 
-    function convertToObjects(colorArray:Array<string>) {
+    function convertToObjects(colorArray: Array<string>) {
         const today = new Date();
         const result = [];
         // Loop through each color in the array
@@ -276,95 +275,97 @@ const useResearchInsights = ()=>{
             const daysBeforeToday = colorArray.length - i;
             const date = new Date(today);
             date.setDate(today.getDate() - daysBeforeToday + 1); // Adding 1 to start from 1 day ago
-    
+
             const dateString = date.toISOString().slice(0, 10); // Get date in YYYY-MM-DD format
-    
+
             const color = colorArray[i];
-    
+
             result.push({ date: dateString, color: color });
         }
     
         return result.reverse();
     }
 
-    const resetState = ()=>{
+    const resetState = () => {
         setSelectedRowsDates([])
         setResearchInsightsRowData([])
         // ref.current?.api.setNodesSelected({nodes:[],newValue:false})
         setGraphState('default')
     }
 
-    function convertCustomObjToObjects(colorArray:any) {
-        const result:any = [];
-    
-        colorArray.forEach((color:any, index:any) => {
+    function convertCustomObjToObjects(colorArray: any) {
+        const result: any = [];
+
+        colorArray.forEach((color: any, index: any) => {
             const date = addDays(new Date(), -(colorArray.length - index) + 1);
-            
-    
+
+
             const dateString = `${format(date, 'do MMM')}`;
-    
+
             result.push({ ...color, date: dateString });
         });
-    
+
         return result;
     }
-    
-    const getColorData = (array:Array<any>)=>{
-        const colorFrequencyArray:any = [];
-            for (let day = 1; day <= horizon; day++) {
-                const colorFrequency:any = {
-                    Red: 0,
-                    Blue: 0,
-                    Green: 0,
-                    Yellow: 0,
-                    Black: 0,
-                    White: 0
-                };
-                array.forEach((obj:any)=>{
-                    const color = obj[`D${day}`];
-                    if(color)colorFrequency[color]++
-                    else colorFrequency[color] = 0
-                })
-                colorFrequencyArray.push(colorFrequency)
-            }
-            return convertCustomObjToObjects(colorFrequencyArray)
+
+    const getColorData = (array: Array<any>) => {
+        const colorFrequencyArray: any = [];
+        for (let day = 1; day <= horizon; day++) {
+            const colorFrequency: any = {
+                Red: 0,
+                Blue: 0,
+                Green: 0,
+                Yellow: 0,
+                Black: 0,
+                White: 0
+            };
+            array.forEach((obj: any) => {
+                const color = obj[`D${day}`];
+                if (color) colorFrequency[color]++
+                else colorFrequency[color] = 0
+            })
+            colorFrequencyArray.push(colorFrequency)
+        }
+        return convertCustomObjToObjects(colorFrequencyArray)
     }
 
-     const handleOnUpdateGraph = async()=>{
-        const selectedRows =  ref.current?.api.getSelectedRows()
-        if(selectedRows && selectedRows.length===0)return setGraphState('default')
+    const handleOnUpdateGraph = async () => {
+        const selectedRows = ref.current?.api.getSelectedRows()
+        if (selectedRows && selectedRows.length === 0) return setGraphState('default')
         const loaderId = notifyLoader('Loading graph data')
-        try{
-            const data = await getUpdatedGraphData({data:selectedRows?.map((s)=>{
-                return {
-                    "SKUCode":s.SKUCode,
-                    "WhCode":s.WHCode
-                }
-            })})
+        try {
+            const data = await getUpdatedGraphData({
+                data: selectedRows?.map((s) => {
+                    return {
+                        "SKUCode": s.SKUCode,
+                        "WhCode": s.WHCode
+                    }
+                })
+            })
             setSelectedRowsDates(data.data.data)
-            if(selectedRows &&  selectedRows.length>1){
+            if (selectedRows && selectedRows.length > 1) {
                 return setGraphState('graph')
             }
-            if(selectedRows){
+            if (selectedRows) {
                 return setGraphState('calender')
-            
+
             }
-        }catch(error:any){
+        } catch (error: any) {
             notifyError(error)
-        }finally{
+        } finally {
             toast.dismiss(loaderId)
         }
     }
 
 
-    const updateGraphState = (id:number,property:string,payload:any)=>{
-        if(property!=='filters'){
-            return setGraphs(graphs.map((graph:ReseachInsightsGraphState)=>{
-                if(graph.id===id){
+    const updateGraphState = (id: number, property: string, payload: any) => {
+        if (property !== 'filters') {
+            return setGraphs(graphs.map((graph: ReseachInsightsGraphState) => {
+                if (graph.id === id) {
                     return {
                         ...graph,
-                        [property]:payload,
-                        filters:[]
+                        [property]: payload,
+                        filters: []
                     }
                 }
                 return graph
@@ -375,31 +376,31 @@ const useResearchInsights = ()=>{
                 console.log(id)
                 return {
                     ...graph,
-                    [property]:payload
+                    [property]: payload
                 }
             }
             return graph
         }))
     }
 
-    const toggleGraphModal = (open:boolean,data?:any)=>{
-        if(data){
+    const toggleGraphModal = (open: boolean, data?: any) => {
+        if (data) {
             setExpandedGraphId(data)
         }
         setIsGraphOneOpen(open)
     }
 
-    const calenderData = useMemo(()=>{
-        const selectedRows =  ref.current?.api.getSelectedRows()
-        if(selectedRows &&  selectedRows.length===1){
-            const allDates = selectedRowsDates.find((row:any)=>row.Type==='Self' && row.Pen===calenderType )
-            if(allDates){
+    const calenderData = useMemo(() => {
+        const selectedRows = ref.current?.api.getSelectedRows()
+        if (selectedRows && selectedRows.length === 1) {
+            const allDates = selectedRowsDates.find((row: any) => row.Type === 'Self' && row.Pen === calenderType)
+            if (allDates) {
                 return convertToObjects(getColorValues(allDates))
-                
+
             }
         }
         return []
-    },[selectedRowsDates,horizon,calenderType])
+    }, [selectedRowsDates, horizon, calenderType])
 
     const calenderDataWithHorizon = useMemo(()=>calenderData.slice(0,horizon),[calenderData])
 
@@ -456,21 +457,21 @@ const useResearchInsights = ()=>{
         return Math.round(((calenderDataWithHorizon.filter((row:any)=>row.color==='White').length)/horizon)*100)
     },[calenderDataWithHorizon])
 
-    const selfGraphData = useMemo(()=>{
-        const selectedRows =  ref.current?.api.getSelectedRows()
-        if(selectedRows && selectedRows.length>1){
-            let selfArraySelectedData = selectedRowsDates.filter((row:any)=>row.Pen===graphs[0].pen.value && row.Type===graphs[0].type.value)
-            const filters =graphs[0].filters
-            if(filters.length>0){
-                filters.forEach((filter)=>{
-                    selfArraySelectedData = selfArraySelectedData.filter((row:any)=>row[filter.key]===filter.value)
+    const selfGraphData = useMemo(() => {
+        const selectedRows = ref.current?.api.getSelectedRows()
+        if (selectedRows && selectedRows.length > 1) {
+            let selfArraySelectedData = selectedRowsDates.filter((row: any) => row.Pen === graphs[0].pen.value && row.Type === graphs[0].type.value)
+            const filters = graphs[0].filters
+            if (filters.length > 0) {
+                filters.forEach((filter) => {
+                    selfArraySelectedData = selfArraySelectedData.filter((row: any) => row[filter.key] === filter.value)
                 })
             }
             const selfData = getColorData(selfArraySelectedData)
             return selfData
         }
         return []
-    },[graphs,selectedRowsDates,horizon])
+    }, [graphs, selectedRowsDates, horizon])
 
     const locationGraphData = useMemo(()=>{
         const selectedRows =  ref.current?.api.getSelectedRows()
@@ -491,7 +492,7 @@ const useResearchInsights = ()=>{
             return locationData
         }
         return []
-    },[graphs,selectedRowsDates,horizon])
+    }, [graphs, selectedRowsDates, horizon])
 
     // console.log(selectedRowsDates)
 
@@ -511,26 +512,26 @@ const useResearchInsights = ()=>{
             }
            
         })
-        uniqueSkus = uniqueSkus.map((sku:string)=>{
-            return{
-                value:sku,
-                label:sku
+        uniqueSkus = uniqueSkus.map((sku: string) => {
+            return {
+                value: sku,
+                label: sku
             }
         })
-        uniqueWhCode = uniqueWhCode.map((whcode:string)=>{
-            return{
-                value:whcode,
-                label:whcode
+        uniqueWhCode = uniqueWhCode.map((whcode: string) => {
+            return {
+                value: whcode,
+                label: whcode
             }
         })
-        return{
-            skus:uniqueSkus,
-            whcodes:uniqueWhCode
+        return {
+            skus: uniqueSkus,
+            whcodes: uniqueWhCode
         }
     },[selectedRowsDates,graphs,expandedGraphId])
 
-    const historicalAvailabilityData = useMemo(()=>{
-        if(historicalAvailabilityResponse){
+    const historicalAvailabilityData = useMemo(() => {
+        if (historicalAvailabilityResponse) {
             return historicalAvailabilityResponse.data.data[0]
         }
         return {
@@ -538,57 +539,57 @@ const useResearchInsights = ()=>{
             Availability_31_60: 0,
             Availability_61_90: 0
         }
-    },[historicalAvailabilityResponse])
+    }, [historicalAvailabilityResponse])
 
 
-    const onOpenDailyDataGraph = async (params:any) => {
-        const payload:any = {
-            SKUCode:params.data['SKUCode'],
-            WHCode:params.data['WHCode']
+    const onOpenDailyDataGraph = async (params: any) => {
+        const payload: any = {
+            SKUCode: params.data['SKUCode'],
+            WHCode: params.data['WHCode']
         }
         const result = await getDailyData(payload)
         const data = result.data.data[0];
-        const dailyData:DailyDataGraph = {
-            rowData:params.data,
-            chartData:data['StockData'],
-            normChangeData:data['NormChangeHistoryData'],
-            masterData:data['MasterData'][0],
-            suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-            monitoringData:data['MonitoringData']
+        const dailyData: DailyDataGraph = {
+            rowData: params.data,
+            chartData: data['StockData'],
+            normChangeData: data['NormChangeHistoryData'],
+            masterData: data['MasterData'][0],
+            suggestionData: data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
+            monitoringData: data['MonitoringData']
         }
 
         dispatch(UPDATE_DAILY_DATA(dailyData));
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
 
-    const ResearchInsightsColumns = useMemo(()=>{
-        return mapResearchInsightsFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
-    },[data])
+    const ResearchInsightsColumns = useMemo(() => {
+        return mapResearchInsightsFieldsToColDefs(data?.data.data, onOpenDailyDataGraph)
+    }, [data])
 
-    const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const data =  await getBPRData({
-            id:1,
-            name:'',
-            fields:[],
-            filters:currentFilter,
-            paginationParameter:{
-                pageNumber:pageNumber,
-                recordsPerPage:5000
+    const onExportToExcelCallBack = async (pageNumber: number) => {
+        const data = await getBPRData({
+            id: 1,
+            name: '',
+            fields: [],
+            filters: currentFilter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: 5000
             }
         })
-        
+
         return data.data.data
     }
 
 
-    const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
+    const rowsPerPage = useMemo(() => parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'), [])
 
     return {
         ref,
         agGridProps,
         ResearchInsightsData,
         ResearchInsightsColumns,
-        isLoading:isBPRUILoading ||isBPRDataCountLoading,
+        isLoading: isBPRUILoading || isBPRDataCountLoading,
         isUpdatedGraphDataLoading,
         horizon,
         graphState,

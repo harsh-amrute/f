@@ -23,6 +23,7 @@ import Spinner from "../../../components/commons/Spinner";
 import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
+import _ from 'lodash'
 
 const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
   const { t } = useTranslation();
@@ -50,13 +51,24 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
   const { data: dataPermissions } = useGetAllPermissions();
 
   useGetAllRoles((data:any)=>{
-    const dataAllRoles = data.data ? generateRolesObject(data.data,permission,is_admin) : [];
+    const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
   });
 
   const dataAllPermissions = dataPermissions?.data;
 
   const dataAllUsers = dataFetch?.data;
+
+  const [stepperDetails,setStepperDetails] = useState();
+  const [activeApplication,setActiveApplication] = useState<number>(0);
+  const [allPermissions,setAllPermissions] = useState([]);
+  const [storePermission,setStorePermission] = useState([]);
+  const [currentItem,setCurrentItem] = useState();
+  
+  //Follwing Function Updates All Permissions according to current active Application/Application Id provided
+  const updateAllPermissions = (applicationId:number) => {
+    setAllPermissions(dataAllPermissions.find((app:any)=>app.application_id===applicationId))
+  }
 
   const handleClickAddNewUser = () => {
     setvalueSelect({});
@@ -120,43 +132,162 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
     };
   };
 
+  const fillAdvancedPermissionsModalData = (item?:any)=>{
+    console.log(listRoles)
+    //Application Ids with valid Selected Roles
+    const validApplications:Array<number> = [];
+      listRoles.forEach((app:any)=>{
+        const commonRoles = _.intersection(app.child.map((perm:any)=>perm.id),infoUser.roles);
+        if(commonRoles.length > 0) validApplications.push(app.id);
+      })
+
+    if(contentModal.callApi === 1){
+      
+      
+      const fillStepperDetails = dataAllPermissions.map((app:any,index:number)=>validApplications.includes(app.application_id) ? ({
+        label:app.application_name,
+        id:app.application_id,
+        currentState:'pending',
+        isLast:index===dataAllPermissions.length-1,
+        themeUi:themeUi
+      }) : undefined).filter((element:any) => element !== undefined);
+      fillStepperDetails.sort((a:any,b:any)=>a.id-b.id)
+      fillStepperDetails[0].currentState = 'active';
+
+      const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
+        application_id:app.application_id,
+        productPermission:[],
+        locationPermission:[]
+      }) : undefined).filter((element:any) => element !== undefined)
+
+      fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
+      setStorePermission(fillEmptyPermission);
+      setStepperDetails(fillStepperDetails);
+      setActiveApplication(validApplications[0]);
+      updateAllPermissions(validApplications[0]);
+    }
+    if(contentModal.callApi === 2){
+      const productPermissionAllApp:any = [];
+      const locationPermissionAllApp:any = [];
+
+      item?.product_id.forEach((app:any)=>{
+        const getProductPermissions = getPermission({
+          data: app.permissions,
+          txtParent: "product_hierarchy_1",
+          txtChild: "product_hierarchy_2",
+          txtGrandChild: "product_hierarchy_3",
+        });
+
+        const productPermission = {
+          brand: getProductPermissions.parent,
+          subBrand: getProductPermissions.child,
+          category: getProductPermissions.grandChild,
+          checkAddBrand: getProductPermissions.checkAddParent,
+          checkAddSubBrand: getProductPermissions.checkAddChild,
+          checkAddCategory: getProductPermissions.checkAddGrandChild,
+        };
+
+        productPermissionAllApp.push({
+          'application_id':app.application_id,
+          'application_name':app.application_name,
+          'productPermission':productPermission
+        })
+      })
+
+      item?.location_id.forEach((app:any)=>{
+        const getLocationPermissions = getPermission({
+          data: app.permissions,
+          txtParent: "location_heirarchy_1",
+          txtChild: "location_heirarchy_2",
+          txtGrandChild: "location_heirarchy_3",
+        });
+
+        const locationPermission = {
+          lcRegion: getLocationPermissions.parent,
+          lcType: getLocationPermissions.child,
+          lcCluster: getLocationPermissions.grandChild,
+          checkAddLcRegion: getLocationPermissions.checkAddParent,
+          checkAddLcType: getLocationPermissions.checkAddChild,
+          checkAddLcCluster: getLocationPermissions.checkAddGrandChild,
+        };
+        
+        locationPermissionAllApp.push({
+          'application_id':app.application_id,
+          'application_name':app.application_name,
+          'locationPermission':locationPermission
+        })
+
+    })
+
+    const initialPermissions = productPermissionAllApp.map((prodApp:any)=>{
+      const coLocationPermission = locationPermissionAllApp.find((locApp:any)=>prodApp.application_id === locApp.application_id);
+      if(coLocationPermission){
+        return {
+          ...prodApp,
+          locationPermission:coLocationPermission.locationPermission
+        }
+      }
+      return {...prodApp}
+    })
+
+    //Enable Product Permissions of Applications With Selected Roles
+    const newStepperDetails:any = validApplications.map((valid_id:any,index:number)=>{
+      //Find if Application Permission Already Exist
+      const oldPermissions = initialPermissions.find((app:any)=>app.application_id === valid_id);
+      if(oldPermissions){
+        return {
+          label:oldPermissions.application_name,
+          id:valid_id,
+          currentState:'pending',
+          isLast:index===initialPermissions.length-1,
+          themeUi:themeUi
+        }
+      }
+      else{
+        return {
+          label:dataAllPermissions.find((app:any)=>app.application_id === valid_id).application_name,
+          id:valid_id,
+          currentState:'pending',
+          isLast:index===initialPermissions.length-1,
+          themeUi:themeUi
+        }
+      }
+    })
+    newStepperDetails.sort((a:any,b:any)=>a.id-b.id)
+    newStepperDetails[0].currentState = 'active';
+    setStepperDetails(newStepperDetails);
+
+    //Set Permissions For Selected Applications
+
+    const validApplicationPermissions:any = validApplications.map((id:any)=>{
+      //Find if Application Permission Already Exist
+      const oldPermissions = initialPermissions.find((app:any)=>app.application_id === id);
+      if(oldPermissions){
+        return _.cloneDeep(oldPermissions)
+      }
+      else{
+        return {
+          application_id:id,
+          productPermission:[],
+          locationPermission:[]
+        }
+      }
+    })
+    validApplicationPermissions.sort((a:any,b:any)=>a.id-b.id);
+
+    setStorePermission(validApplicationPermissions);
+
+    setvalueSelect(_.cloneDeep(validApplicationPermissions));
+
+    setActiveApplication(validApplicationPermissions[0].application_id)
+
+    updateAllPermissions(validApplicationPermissions[0].application_id)
+    }
+  }
+
+
   const handleClickEdit = (item: any) => {
-    const getProductPermissions = getPermission({
-      data: item.product_id,
-      txtParent: "product_hierarchy_1",
-      txtChild: "product_hierarchy_2",
-      txtGrandChild: "product_hierarchy_3",
-    });
-
-    const getLocationPermissions = getPermission({
-      data: item.location_id,
-      txtParent: "wh_region",
-      txtChild: "wh_type",
-      txtGrandChild: "wh_location_group",
-    });
-
-    const productPermission = {
-      brand: getProductPermissions.parent,
-      sub_brand: getProductPermissions.child,
-      category: getProductPermissions.grandChild,
-      checkAddBrand: getProductPermissions.checkAddParent,
-      checkAddSubBrand: getProductPermissions.checkAddChild,
-      checkAddCategory: getProductPermissions.checkAddGrandChild,
-    };
-
-    const locationPermission = {
-      lcRegion: getLocationPermissions.parent,
-      lcType: getLocationPermissions.child,
-      lcCluster: getLocationPermissions.grandChild,
-      checkAddLcRegion: getLocationPermissions.checkAddParent,
-      checkAddLcType: getLocationPermissions.checkAddChild,
-      checkAddLcCluster: getLocationPermissions.checkAddGrandChild,
-    };
-
-    setvalueSelect({
-      productPermission,
-      locationPermission,
-    });
+    setCurrentItem(item);
 
     const roles = item.role_id.map((role: any) => role.id);
 
@@ -228,6 +359,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
         setInfoUser={setInfoUser}
         listRoles={listRoles}
         setListRoles={setListRoles}
+        fillAdvancedPermissionsModalData={fillAdvancedPermissionsModalData}
+        currentItem={currentItem}
       />
 
       <ModalAdvanedPermissions
@@ -242,6 +375,14 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
         refetch={refetch}
         dataAllPermissions={dataAllPermissions}
         valueSelect={valueSelect}
+        stepperDetails={stepperDetails}
+        activeApplication={activeApplication}
+        setActiveApplication={setActiveApplication}
+        allPermissions={allPermissions}
+        updateAllPermissions={updateAllPermissions}
+        storePermission={storePermission}
+        setStorePermission={setStorePermission}
+        setStepperDetails={setStepperDetails}
       />
     </>
   );

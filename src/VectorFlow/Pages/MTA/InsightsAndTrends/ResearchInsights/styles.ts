@@ -9,7 +9,7 @@ export const ResearchInsightsLayout = styled.div`
     display:grid;
     grid-template-columns:3fr 1fr;
     padding-bottom:50px;
- 
+
 
     
 `
@@ -204,7 +204,7 @@ export const ChartWrapper = styled.div`
     align-items:center;
 `
 
-export const CalenderSummaryWrapper  = styled.div`
+export const CalenderSummaryWrapper = styled.div`
     display:flex;
     flex-direction:row;
     width:100%;

@@ -15,7 +15,7 @@ export const BTRLayoutTabsWrapper = styled.div`
     z-index:200;
 `
 
-export  const ToggleViewBtnWrapper = styled.div`
+export const ToggleViewBtnWrapper = styled.div`
     position:absolute;
     right:35px;
     zoom:0.6;
@@ -48,17 +48,18 @@ export const BTRTableHeader = styled.p`
 
 export const BTRAvailabiltyCellRendererWrapper = styled.div`
     height:100%;
-    width:100%;
+    width:150px;
     display:flex;
     align-items:center;
-    justify-content:center;
+    justify-content:right;
 `
 
-export const BTRAvailabiltyCellRenderer = styled.div<{value:number}>`
+export const BTRAvailabiltyCellRenderer = styled.div<{ value: number }>`
     position:relative;
     height:100%;
     max-height:15px;
     width:45px;
+    max-width: 45px;
     background: #DEDEDE 0% 0% no-repeat padding-box;
     &::before {
         content: '';
@@ -66,17 +67,19 @@ export const BTRAvailabiltyCellRenderer = styled.div<{value:number}>`
         top: 0;
         left: 0;
         bottom:0;
-        width:${(props)=>props.value}%;
+        max-width: 45px;
+        width:${(props) => props.value}%;
         background: transparent linear-gradient(270deg, #EB73B3 0%, #820F4C 100%) 0% 0% no-repeat padding-box;
       }
 `
 
+
 export const CategoryCellRendererWrapper = styled.div`
-    height:100%;
-    width:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+height: 100 %;
+width: 100 %;
+display: flex;
+align - items: center;
+justify - content: center;
 `
 
 export const CategoryCellRendererChip = styled.div`
@@ -114,11 +117,11 @@ export const CategoryToolTipWrapper = styled.div`
     overflow:hidden;
 `
 
-export  const CategoryToolTipSection = styled.div`
-    width:100%;
-    padding:10px;
-    display:flex;
-    flex-direction:column;
+export const CategoryToolTipSection = styled.div`
+width: 100 %;
+padding: 10px;
+display: flex;
+flex - direction: column;
 `
 
 export const CategoryToolTipSectionHeader = styled.p`
@@ -137,7 +140,7 @@ export const CategoryToolTipSectionDescription = styled.div`
     margin-top:5px;
 `
 
-export  const LockBtnWrapper = styled.div`
+export const LockBtnWrapper = styled.div`
     position:relative;
     z-index:300;
 `
@@ -159,7 +162,7 @@ export const LockLabel = styled.div`
       font-size:12px;
 `
 
-export  const HorizontalViewWrapper = styled.div`
+export const HorizontalViewWrapper = styled.div`
       display:flex;
       width:100%;
 `
