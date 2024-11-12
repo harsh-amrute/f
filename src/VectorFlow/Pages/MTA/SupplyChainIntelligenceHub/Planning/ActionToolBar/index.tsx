@@ -92,7 +92,7 @@ const ActionToolBar = ({
 
   const {locations} = useGetLocation()
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-  const { onSaveState, onResetAllState, onExportToExcel ,onExportToExcelOld} = useSaveAllState(isPlanning);
+  const { onSaveState, onResetAllState ,onExportToExcelOld} = useSaveAllState(isPlanning);
   const { currentCategory } = useSelector(
     (state: RootState) => state.mta.planning
   );
@@ -135,14 +135,12 @@ const ActionToolBar = ({
       });
     }
 
-    else if(pathname  === '/supply-chain-intelligence-hub/bpr'){
-      onExportToExcel({
-        // pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
-        // callBack: onExportToExcelCallBack,
-        name:currCategory + currentTab,
-        filters:multiFilter
-      });
-    }
+    // else if(pathname  === '/supply-chain-intelligence-hub/bpr'){
+    //   onExportToExcel({
+    //     name:currCategory + currentTab,
+    //     filters:multiFilter
+    //   });
+    // }
 
     else{
       onExportToExcelOld({
@@ -366,6 +364,78 @@ const ActionToolBar = ({
               }
               currCategory={currCategory}
 
+            />
+          );
+        }
+        break;
+      case "BORColorBandwise":
+        if (pathname === "/supply-chain-intelligence-hub/bor-color-bandwise") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+            />
+          );
+        }
+        break;
+       case "OrderAllocationReport":
+        if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+            />
+          );
+        }
+        break;
+      case "TotalRequirementReport":
+        if (pathname === "/supply-chain-intelligence-hub/total-requirement-report") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
             />
           );
         }
@@ -831,7 +901,7 @@ const ActionToolBar = ({
               ></VFSelectedFilters>
             )}
 
-            {currCategory === "BPR" && onSubmitEditedRows && (
+            {["BPR","BOR","BORColorBandwise"].includes(currCategory) && onSubmitEditedRows && (
               <VFButtonOutline
                 onClick={onSubmitEditedRows}
                 themeUi={themeUi}

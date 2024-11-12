@@ -114,3 +114,9 @@ export const useGetlastRunDate = ()=>{
     return await BPRService.getlastRunDate()
   })
 }
+
+export const useGetUiConfig = ()=>{
+  return useMutation(async(reportName:string)=>{
+    return await BPRService.getUiConfig(reportName)
+  })
+}

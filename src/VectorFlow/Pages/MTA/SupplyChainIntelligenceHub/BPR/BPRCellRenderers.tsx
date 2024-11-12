@@ -61,6 +61,58 @@ const colorMapper =(color:string)=> {
     }
 }
 
+const colorToColorMapper =(color:string)=> {
+
+    switch (color){
+        case "White":
+            return {
+                "bg":"white",
+                "text":"black"
+            }
+        case "Yellow":
+            return {
+                "bg":"#EBBF2B",
+                "text":"white"
+            }
+        case "Green":
+            return {
+                "bg":"#418D18",
+                "text":"white"
+            }
+        case "Red":
+            return {
+                "bg":"#F04D4D",
+                "text":"white"
+            }
+        case "Black":
+            return{
+                "bg":"#000000",
+                "text":"white"
+            }
+        case "Blue":
+            return{
+                "bg":"#355FD3",
+                "text":"white"
+            }
+        default:
+            return{
+                "bg":"white",
+                "text":"black"
+            }
+    }
+}
+
+
+export const TextToTextColorMapper = (params:any)=>{
+
+    const styles = colorToColorMapper(params.value)
+    return(
+        <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:styles.bg,color:styles.text,maxWidth:90}}>
+            {params.value}
+        </BPRColorCellRendererWrapper>
+    )
+}
+
 export const BPRTechColorCellRenderer = (params:any)=>{
 
     const techColor = params.data.TechColor

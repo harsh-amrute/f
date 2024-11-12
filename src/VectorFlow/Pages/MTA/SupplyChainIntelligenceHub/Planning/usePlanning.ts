@@ -330,11 +330,18 @@ const usePlanning = ()=>{
             }
             return data.data.data.locationWise.data
         }
-        if(currentPageData.category==='expedite' && currentPageData.type==='child'){
-            if(currentTab==='expediteDispatches'){
-                return data.data.data.data[0].expediteDispatches
+        if(currentPageData.category==='expedite'){
+            if(currentPageData.type==='child'){
+                if(currentTab==='expediteDispatches'){
+                    return data.data.data.data[0].expediteDispatches
+                }
+                return data.data.data.data[0].createAvailabilityAtParent
+            }else{
+                if(currentTab==='expediteDispatches'){
+                    return data.data.data.data[0].expediteDispatches
+                }
+                return data.data.data.data[0].createAvailabilityAtParent
             }
-            return data.data.data.data[0].createAvailabilityAtParent
         }
         return data.data.data.data
     }
@@ -859,6 +866,8 @@ const usePlanning = ()=>{
         }
         return []
     },[currentGridData])
+
+    console.log(currentCategory,currentTab,currentPageData)
 
     // console.log(currentPageData,currentTab)
 

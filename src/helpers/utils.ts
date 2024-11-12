@@ -305,6 +305,89 @@ export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
   return [...result,...RRRSpecificColumns]
 }
 
+export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const specificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+    }
+  ]
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      // hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result,...specificColumns]
+}
+
+export const mapTotalRequirementFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      // hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result]
+}
+
+
 export const handleDownload = async (nameApi: string, nameFile: string) => {
   try {
     const token = await MainService.refreshToken();
@@ -2211,8 +2294,12 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
         onOpenDailyDataGraph:onOpenDailyDataGraph
       }
       
+      
 
       // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+
     }
   ]
 
@@ -2245,6 +2332,137 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
   })
   return [...result,...BORSpecificColumns]
 }
+
+
+
+export const mapBORColorBandWiseFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     pinned:'right',
+     editable:true,
+     cellStyle:{
+      overflow:'visible',
+      'min-width':180,
+    }
+  }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
+export const mapOrderAllocationReportFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='OrderColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
 
 export const BPRColorMapper =(color:string):{bg:string,text:string}=> {
 
