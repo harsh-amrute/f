@@ -185,13 +185,13 @@ export namespace MDMService {
 
   /**This get the  MTO Masters Data*/
   export const getMTOMastersData = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetMasterManagementData', {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetMasterManagementData/', {
       headers: { 'Content-Type': 'application/json' }
     })
   }
 
   export const getMTOTaskStatusData = async () => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetTasks', {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetTasks/', {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -208,7 +208,7 @@ export namespace MDMService {
 
   /** Save buffer master task MTO */
   export const saveBufferMasterTask = async (body: any) => {
-    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveBufferMasterTask/', 
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveBufferMasterTask/?forwardUsers=true', 
       body
     )
   }

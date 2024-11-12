@@ -306,6 +306,7 @@ const useViewModify = (pageType: string) => {
 
     // Process params2
     params2.forEach((param) => {
+      console.log("name mere name....", param.name)
       if (resultMap[param.name]) {
         // Merge fields if the name already exists
         resultMap[param.name].fields = [
@@ -322,19 +323,18 @@ const useViewModify = (pageType: string) => {
         };
       }
     });
-
     // Convert the result map to an array of objects
     return Object.values(resultMap);
   };
 
 
-  // useEffect(()=>{
-  //   const getMasterUIConfigurationData = async()=>{
-  //     const {data} = await masterUIConfiguration(pageType);
-  //     setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
-  //     }
-  //     getMasterUIConfigurationData()
-  // },[])
+  useEffect(()=>{
+    const getMasterUIConfigurationData = async()=>{
+      const {data} = await masterUIConfiguration(pageType);
+      setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
+      }
+      getMasterUIConfigurationData()
+  },[])
 
   useEffect(() => {
     const getMasterUIConfigurationData = async () => {
@@ -355,6 +355,8 @@ const useViewModify = (pageType: string) => {
           console.log(e);
         }
       }
+
+      console.log("data.......", data)
       
       if(data){
         
@@ -627,11 +629,13 @@ const useViewModify = (pageType: string) => {
     }
     let resultData;
     if (count) {
-      if (activeMaster.id > 14) {
+      if (activeMaster.id > 14 && !activeMaster.isMTO) {
         resultData = await getRetailCount(payload);
       }
       else {
-        resultData = await getCount(payload);
+        if(!activeMaster.isMTO){
+          resultData = await getCount(payload);
+        }
       }
     }
     else {
@@ -645,7 +649,7 @@ const useViewModify = (pageType: string) => {
 
     return resultData;
   }
-
+  
   const queryAllData = async (configs: QueryFilteredDataConfigs) => {
     const { pagination, fields, count, currentPage, rowsPerPage } = configs;
     const payload: GetMasterDataPayload = {
@@ -654,7 +658,7 @@ const useViewModify = (pageType: string) => {
       filters: [],
       fields: fields,
     }
-
+    
     
     if (pagination && !count) {
       payload.paginationParameter = {
@@ -663,8 +667,10 @@ const useViewModify = (pageType: string) => {
       }
     }
     let resultData;
-    if (count) {
+    if ((!activeMaster.isMTO && count) || activeMaster.isMTO) {
+      console.log("active popcorn", activeMaster)
       if (activeMaster.id > 14 && !activeMaster.isMTO) {
+        console.log("should not go here also here.........")
         resultData = await getRetailCount(payload);
       }
       else if (activeMaster.id===501 && activeMaster.isMTO) {
@@ -685,7 +691,9 @@ const useViewModify = (pageType: string) => {
         }
       }
       else {
-        resultData = await getCount(payload);
+        if(!activeMaster.isMTO){
+          resultData = await getCount(payload);
+        }
       }
     }
     else {
@@ -832,23 +840,28 @@ const useViewModify = (pageType: string) => {
     setIsTableDataLoading(true);
 
     let result;
-    if (showAll) {
-      result = await queryAllData({ filters: payloadFilters, fields: payloadFields, pagination: false, count: true, rowsPerPage });
-    }
-    else {
+    try{
+
+      if (showAll) {
+        result = await queryAllData({ filters: payloadFilters, fields: payloadFields, pagination: false, count: true, rowsPerPage });
+      }
+      else {
       result = await queryFilteredData({ filters: payloadFilters, fields: payloadFields, pagination: false, count: true, rowsPerPage });
     }
+  }catch(err){
+    console.log(err)
+  }
 
     setIsTableDataLoading(false);
     if (activeMaster.isMTO) {
       if (!result?.data?.data?.count || result?.data?.data?.count == 0 || result?.data?.data?.count == '') {
-        setTempRecordCount(result.data.data.length)
+        setTempRecordCount(result?.data.data.length)
       }
       else {
         setTempRecordCount(result?.data?.data?.count)
       }
     } else {
-      if (!result.data.recordCount || result.data.recordCount == 0 || result.data.recordCount == '') {
+      if (!result?.data.recordCount || result?.data.recordCount == 0 || result.data.recordCount == '') {
         setTempRecordCount(0)
       }
       else {
@@ -946,7 +959,7 @@ const useViewModify = (pageType: string) => {
  
     let tempRowData: any
     if (activeMaster.isMTO) {
-      tempRowData = result?.data?.data?.results.map((row: any) => {
+      tempRowData = result?.data?.data?.map((row: any) => {
         const newRow = { ...row };
  
         Object.keys(newRow).map((key) => {
@@ -1086,8 +1099,8 @@ const useViewModify = (pageType: string) => {
           const rows = [];
           for(let i=1; i<=numberOfPages; i++){
             const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:true,currentPage:i,rowsPerPage:chunkSize});
-            if(result.data.data === null) throw new Error("Something Went Wrong")
-            rows.push(...result.data.data)
+            if(result?.data.data === null) throw new Error("Something Went Wrong")
+            rows.push(...result?.data.data)
             if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
             else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
           }
@@ -1172,7 +1185,7 @@ const useViewModify = (pageType: string) => {
           result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo,rowsPerPage});
         }
         
-        dispatch(UPDATE_ROW_DATA(result.data.data));
+        dispatch(UPDATE_ROW_DATA(result?.data.data));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         setIsTableDataLoading(false);
 

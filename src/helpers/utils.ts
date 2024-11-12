@@ -912,6 +912,7 @@ export const mapStateFiltersToPayload = (filters: Filter[]) => {
 
 export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMasterState[] => {
 
+  console.log("masters mere masters.....",masters)
   return masters.map((master: Master) => ({
     id: master.id,
     name: master.name,
@@ -928,7 +929,7 @@ export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMa
     rowData: [],
     progress: 'default',
     isChecked: true,
-    isMTO: master.isMTO ? true : false
+    isMTO: true
   }))
 }
 
