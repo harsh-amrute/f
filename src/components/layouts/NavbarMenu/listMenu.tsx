@@ -576,7 +576,7 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/miscellaneousReports",
     url: "",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","BMReportManager"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","DBMManager","BPRManager","MasterUpdater","MasterApprover","BMReportManager"],
     child: [
 
 

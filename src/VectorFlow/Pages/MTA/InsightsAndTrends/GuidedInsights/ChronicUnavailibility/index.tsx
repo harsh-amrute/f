@@ -23,16 +23,15 @@ const ChronicUnavailabilityCharts = ({filter}:{filter:any}) => {
     useGetChronicUnavailabilityLoc();
     const { mutateAsync: ChronicUnavailabilitySku, isLoading: isLoadingChronicSku } =
     useGetChronicUnavailabilitySku();
-    const param = {};
 
     const [ChronicUnavailabilityLocData, SetChronicUnavailabilityLocD]=useState([]);
     const [ChronicUnavailabilitySkuData, SetActiveDBMSuggestionData]=useState([]);
 
     useEffect(() => {
         const fetchDBMNormSuggestionData = async ()=>{
-          const ChronicUnavailabilityLocs =  await  ChronicUnavailabilityLoc(param);
+          const ChronicUnavailabilityLocs =  await  ChronicUnavailabilityLoc();
           SetChronicUnavailabilityLocD(ChronicUnavailabilityLocs?.data?.data);
-          const ChronicUnavailabilitySkus = await ChronicUnavailabilitySku(param);
+          const ChronicUnavailabilitySkus = await ChronicUnavailabilitySku();
           SetActiveDBMSuggestionData(ChronicUnavailabilitySkus?.data?.data);
          
         }

@@ -517,6 +517,8 @@ const mapDataToRowData = (data: any) => {
   //   })
   // }
 
+  console.log(hideChart3)
+
   return (
     <>
       <SCDynamicContainer>
@@ -771,6 +773,7 @@ const mapDataToRowData = (data: any) => {
               <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                   <VFTable
+                    height="500px"
                     ref={refGraph3}
                     columnDefs={colDefs3}
                     rowData={convertToInt(data["prePostRationing"],['pre','post'])}

@@ -1,15 +1,11 @@
 import useSupplierDispatchReport from "./useSupplierDispatchReport";
-import { AgGridReactProps } from "ag-grid-react";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import { GridStateContext } from "../../../../../context/GridStateContext";
-import { useRef, useEffect } from "react";
 import { VDRLayout } from "./styles";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import ActionToolBar from "../Planning/ActionToolBar";
-import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR/index'
-import { notifyError } from "../../../../../helpers/notify";
-import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+
 
 const SupplierDispatchReport = () => {
   
@@ -29,87 +25,18 @@ const SupplierDispatchReport = () => {
     GetSDRData,
     tempRef,
     tempAgGridProps,
-    customCellRenderers,
     currFilter,
     setCurrFilter,
     onDeleteFilter,
     onExportToExcelCallBack,
-    onApplyFilter
+    onApplyFilter,
+    ref,
+    agGridProps,
+    generalFilterOptions
   } = useSupplierDispatchReport();
   
 
-  const ref = useRef<any>();
-  const {mutateAsync:getState} = useGetState()
-    useEffect(()=>{
-        const getTableState = async()=>{
-          if(ref && ref.current) {
-            try{
-              const data =  await getState(`SDR`)
-              const {columns} = JSON.parse(data.data.data)
-            
-              ref.current.api.applyColumnState({state:columns})
-            }catch(err:any){
-              notifyError(err)
-            }
-          }
-          
-        }
-       getTableState()
-    },[ref])
-  const agGridProps: AgGridReactProps = {
-    paginationPageSize: parseInt(
-      process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
-    ),
-
-    suppressRowTransform: true,
-    tooltipShowDelay: 0.3,
-    tooltipTrigger: "focus",
-    tooltipInteraction: true,
-    readOnlyEdit: true,
-    
-    gridOptions: {
-      sideBar: defaultAgGridSideBarForBPR,
-      rowHeight: 50,
-      getRowStyle: (params: any) => {
-        if (params.node.rowIndex % 2 === 0) {
-          return { background: "#EBEBEB" };
-        }
-        return { background: "#F7F7F7" };
-      },
-    },
-    enableRangeSelection: true,
-    components:customCellRenderers,
-    rowSelection: "multiple",
-    statusBar: {
-      statusPanels: [
-        { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
-        { statusPanel: "agTotalRowCountComponent", align: "left" },
-        { statusPanel: "agFilteredRowCountComponent", align: "left" },
-        { statusPanel: "agSelectedRowCountComponent", align: "left" },
-        { statusPanel: "agAggregationComponent", align: "left" },
-      ],
-    },
-    pagination: false,
-    suppressRowClickSelection: true,
-
-    defaultColDef: {
-      floatingFilter: true,
-      resizable: false,
-      cellStyle: {
-        flex: 1,
-        "text-align": "center",
-        height: "50px",
-        "font-style": "normal",
-        " font-variant": "normal",
-        " font-weight": "300",
-        " font-size": "20px",
-        " font-family": "Roboto",
-        display: "block",
-        "text-overflow": "ellipsis",
-        "white-space": "nowrap",
-      },
-    },
-  };
+  
   return (
     <GridStateContext.Provider
       value={{
@@ -136,6 +63,7 @@ const SupplierDispatchReport = () => {
         genericRecordCount={SDRCount}
         onExportToExcelCallBack={onExportToExcelCallBack}
         multiFilter={currFilter}
+        generalFilterOptions={generalFilterOptions}
         setMultiFilter={setCurrFilter}
         onDelete={onDeleteFilter}
       />

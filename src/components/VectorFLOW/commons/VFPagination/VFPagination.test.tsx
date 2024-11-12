@@ -70,30 +70,23 @@ describe("VFPagination Component", () => {
 
   it("handles more edge cases", () => {
     render(<VFPagination {...dummyprops} totalRows={5} rowsPerPage={2000}/>)
-
-    // const nextBtn = screen.getByAltText('pagination-next-arrow')
-    // const previousBtn = screen.getByAltText('pagination-prev-arrow')
-    // const prevLastBtn = screen.getByAltText('pagination-last-prev-arrow')
-    // const nextLastBtn = screen.getByAltText('pagination-last-next-arrow')
-    // fireEvent.click(nextBtn)
-    // fireEvent.click(previousBtn)
-    // fireEvent.click(prevLastBtn)
-    // fireEvent.click(nextLastBtn)
-    // expect(dummyFn).toBeCalledTimes(2)
   })
 
-  it("handles more more edge cases", () => {
-    render(<VFPagination selectedRows={0} handleChangePage={()=>{return}} currentPage={1} totalRows={5} rowsPerPage={10}/>)
+  it("handles more and more edge cases", () => {
+    render(<VFPagination {...dummyprops}  totalRows={0} />)
+  })
 
-    // const nextBtn = screen.getByAltText('pagination-next-arrow')
-    // const previousBtn = screen.getByAltText('pagination-prev-arrow')
-    // const prevLastBtn = screen.getByAltText('pagination-last-prev-arrow')
-    // const nextLastBtn = screen.getByAltText('pagination-last-next-arrow')
-    // fireEvent.click(nextBtn)
-    // fireEvent.click(previousBtn)
-    // fireEvent.click(prevLastBtn)
-    // fireEvent.click(nextLastBtn)
-    // expect(dummyFn).toBeCalledTimes(2)
+  it("handles more and more and more edge cases", () => {
+    render(<VFPagination {...dummyprops}  totalRows={200} rowsPerPage={10} currentPage={40} />)
+  })
+
+
+  it("handles more and more and more and more edge cases", () => {
+    render(<VFPagination {...dummyprops}  totalRows={200} rowsPerPage={10} currentPage={2} />)
+  })
+
+  it("handles most of the edge cases", () => {
+    render(<VFPagination selectedRows={0} handleChangePage={()=>{return}} currentPage={1} totalRows={5} rowsPerPage={10}/>)
     cleanup()
     render(<VFPagination selectedRows={0} handleChangePage={()=>{return}} currentPage={1} totalRows={10} rowsPerPage={10}/>);
   })

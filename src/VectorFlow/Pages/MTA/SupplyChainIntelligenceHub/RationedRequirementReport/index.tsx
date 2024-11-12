@@ -1,5 +1,3 @@
-import {useRef,useState,useEffect} from 'react'
-
 import {RRRLayout} from './styles'
 import useRRR from './useRRR';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
@@ -7,9 +5,6 @@ import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
-import {useSelector}  from 'react-redux';
-import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { RootState } from '../../../../../redux/store/store';
 
 
 
@@ -35,24 +30,13 @@ const RRR = () => {
   onApplyFilter,
   currFilter,
   setCurrFilter,
-  onDeleteFilter
+  onDeleteFilter,
+  isSavedDataLoading,
+  ref,
+  generalFilterOptions
 } = useRRR();
- const ref = useRef()
 
- const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState("RRR")
-            setColumnState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setColumnState(RRRColumns)
-          }
-        }
-        getTableState()
-    },[currentGridState])
+
  
   return (
   <GridStateContext.Provider
@@ -80,6 +64,7 @@ const RRR = () => {
         genericRecordCount={RRRDataCount}
         onExportToExcelCallBack={onExportToExcelCallBack}
         multiFilter={currFilter}
+        generalFilterOptions={generalFilterOptions}
         setMultiFilter={setCurrFilter}
         onDelete={onDeleteFilter}
       />
@@ -116,11 +101,6 @@ const RRR = () => {
                   {...agGridProps}
                   columnDefs={RRRColumns}
                   rowData={RRRRowData}
-                  onGridReady={(params)=>{
-                    if(columnState){
-                      params.api.applyColumnState({state:columnState})
-                    }
-                  }}
                   enableRangeSelection={true} // Added property
                 rowSelection="multiple"
                 statusBar = {{

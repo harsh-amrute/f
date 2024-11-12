@@ -54,27 +54,27 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     finally{
       try{
         const mtoReports = await getAllMTOReports();
-      const rawMTOReports = mtoReports.data.data;
-      const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
-        name: attributes.reportName,
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: key,
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
-        isMTO: true,
-        downloadName: attributes.downloadName
-      }));
+        const rawMTOReports = mtoReports.data.data;
+        const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
+          name: attributes.reportName,
+          img: "/assets/img/nav/arrow_down.svg",
+          imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+          url: key,
+          role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
+          isMTO: true,
+          downloadName: attributes.downloadName
+        }));
 
-      const extractedNewMenu = _.cloneDeep(listMenuParent)
-      const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
-      if (targetObject) {
-        if(transformedData){
+        const extractedNewMenu = _.cloneDeep(listMenuParent)
+        const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
+        if (targetObject) {
+          if(transformedData){
 
-          targetObject.child.push(...transformedData);
-        }
-        targetObject.child.push(...transformedMTOData);
-        const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
-        setReportUrls(reporturls)
+            targetObject.child.push(...transformedData);
+          }
+          targetObject.child.push(...transformedMTOData);
+          const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+          setReportUrls(reporturls)
       }
       setListMenu(extractedNewMenu);
       }
@@ -121,6 +121,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     return srcImg;
   };
 
+
   const navigate = useNavigate();
 
   return (
@@ -153,10 +154,30 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
 
                   />
                   {!item.status && activeTooltip === item.id && (
-                    <MenuToolTip reportUrls={reportUrls} item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />
+                    <MenuToolTip 
+                      reportUrls={reportUrls} 
+                      item={item} 
+                      isLoading={isLoading} 
+                      setIsLoading={setIsLoading} 
+                      tempUrls={tempUrls} 
+                      setTempUrls={setTempUrls} 
+                      isHide={isHide} 
+                      setIsHide={setIsHide} 
+                      setWidthResponsive={setWidthResponsive}
+                    />
                   )}
                   {item.status && !isHide && activeTooltip === item.id && (
-                    <MenuToolTip reportUrls={reportUrls} item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />
+                    <MenuToolTip 
+                      reportUrls={reportUrls} 
+                      item={item} 
+                      isLoading={isLoading} 
+                      setIsLoading={setIsLoading} 
+                      tempUrls={tempUrls} 
+                      setTempUrls={setTempUrls} 
+                      isHide={isHide} 
+                      setIsHide={setIsHide} 
+                      setWidthResponsive={setWidthResponsive} 
+                    />
                   )}
                 </NavStyle.SCNavMenu>
               </NavStyle.SCMenuItem>

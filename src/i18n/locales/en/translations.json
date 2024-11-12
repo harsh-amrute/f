@@ -121,12 +121,12 @@
         "itr": "ITR"
       },
       "miscellaneousReports": {
-        "title": "Miscellaneous Reports",
-        "bufferPenetrationReport": "Buffer Penetration Report",
-        "fashionRationedRequirement": "Fashion RationedRequirement",
-        "rosn": "ROSN",
-        "store_classification": "Store Classification",
-        "ist": "IST",
+        "title": "Download Reports",
+        "bufferPenetrationReport":"Buffer Penetration Report",
+        "fashionRationedRequirement":"Fashion RationedRequirement",
+        "rosn":"ROSN",
+        "store_classification":"Store Classification",
+        "ist":"IST",
         "dailyDataUnavailibilityReport": "Daily Data Unavailibility Report",
         "invalidDataReport": "Invalid Data Report",
         "uiUploadLogs_AddNewSKULoc": "UI Upload Logs - Add New SKU-Loc",

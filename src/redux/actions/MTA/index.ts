@@ -6,7 +6,8 @@ const actions =  {
     TOGGLE_GRAPH_MODAL: createAction<boolean>("TOGGLE_GRAPH_MODAL"),
     TOGGLE_NORM_CHANGE_HISTORY_TABLE: createAction<boolean>("TOGGLE_NORM_CHANGE_HISTORY_TABLE"),
     UPDATE_GRID_STATE:createAction<any>(" UPDATE_GRID_STATE"),
-    UPDATE_PLANNING_DATA:createAction<any>("UPDATE_PLANNING_DATA")
+    UPDATE_PLANNING_DATA:createAction<any>("UPDATE_PLANNING_DATA"),
+    UPDATE_LAST_RUN_DATE:createAction<string>("UPDATE_LAST_RUN_DATE")
 }
 
 export const {
@@ -14,5 +15,6 @@ export const {
     TOGGLE_GRAPH_MODAL,
     TOGGLE_NORM_CHANGE_HISTORY_TABLE,
     UPDATE_GRID_STATE,
-    UPDATE_PLANNING_DATA
+    UPDATE_PLANNING_DATA,
+    UPDATE_LAST_RUN_DATE
 } = actions;

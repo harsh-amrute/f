@@ -16,6 +16,8 @@ import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
 import { BTRCategoryNumberToTextMapper } from "../../../../helpers/BPRConstants";
 
+// import { generalFilterOptions } from '../../utils';
+
 interface VFMultiFilterProps{
     onApplyFilter:(params:any)=>void
     onGoBack:()=>void
@@ -28,12 +30,17 @@ interface VFMultiFilterProps{
     availabilityFilterActive?:boolean
     colorFilterActive?:boolean
     coverageFilterActive?:boolean
+    generalFilterActive?:boolean
     horizon?:number
     onChangeHorizon?:(value:number)=>void
     multiFilter:BPRFilterState
     setMultiFilter:any 
     supplyChainForLocationCheckBoxList:Array<any> 
     supplyChainForChildrenOfCheckBoxList:Array<any>  
+    currentTab?:any
+    currCategory?:any
+    generalFilterOptions?:any
+
 }
 
 const FilterCheckboxAccordian = ({filterType,filterKey,isOpen,setOpenStatus,children}:any) => {
@@ -94,7 +101,7 @@ interface FilterMultiSelectCheckboxProps{
     filterState:Array<any>
     header?:string,
     onChange:any,
-    filterId?:any
+    filterId?:any,
 }
 
 const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:FilterMultiSelectCheckboxProps)=>{
@@ -103,7 +110,6 @@ const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:
     const {user} = useUserData()
 
     const themeUi = user.user.theme_ui
-    // console.log(header)
     return(
         <>
            { filterOptions.map((option: {label:string, id:string}, index:number) =>{
@@ -126,7 +132,7 @@ const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:
 
 const FilterSelectDropdown = ({placeholder,options,hideDropdownArrow,onChange,filterId,value}:any) => {
     
-
+    console.log(options)
     const customStylesClose = {
         control: (baseStyles:any)=>(
             {
@@ -256,27 +262,30 @@ const FilterSelectDropdown = ({placeholder,options,hideDropdownArrow,onChange,fi
     )
 }
 const FilterTextInput = ({placeholder, onChange,disabled=false, value}:any) => {
+    
    return (
-        <input type="text" disabled={disabled} style={{width:'100%', height:'38px',background:'#F2F2F2 0% 0% no-repeat padding-box', borderRadius:'20px',outline:'none',color:'#313131',fontFamily:'Roboto',fontWeight:'300',fontSize:'12px', textAlign:'center', border:'none'}}placeholder={placeholder} onChange={onChange} value={value}/>
+        <input type="text" disabled={disabled} style={{width:'100%', height:'38px',background:'#F2F2F2 0% 0% no-repeat padding-box', borderRadius:'20px',outline:'none',color:'#313131',fontFamily:'Roboto',fontWeight:'300',fontSize:'12px', textAlign:'center', border:'none'}} placeholder={placeholder} onChange={onChange} value={value}/>
    ) 
+
 }
 
 
-const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}:any)=>{
+const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,generalFilterOptions}:any)=>{
+
 
 
     const filterLocationOptions = [
-        {value:'l1',label:'L1'},
-        {value:'l2',label:'L2'},
-        {value:'l3',label:'L3'},
+        {value:'l1',label:process.env.REACT_APP_LOCATION_PERMISSION_L1},
+        {value:'l2',label:process.env.REACT_APP_LOCATION_PERMISSION_L2},
+        {value:'l3',label:process.env.REACT_APP_LOCATION_PERMISSION_L3},
         {value:'l4',label:'L4'},
         {value:'l5',label:'L5'}, 
     ]
 
     const filterProductOptions = [
-        {value:'p1',label:'P1'},
-        {value:'p2',label:'P2'},
-        {value:'p3',label:'P3'},
+        {value:'p1',label:process.env.REACT_APP_PRODUCT_PERMISSION_L1},
+        {value:'p2',label:process.env.REACT_APP_PRODUCT_PERMISSION_L2},
+        {value:'p3',label:process.env.REACT_APP_PRODUCT_PERMISSION_L3},
         {value:'p4',label:'P4'},
         {value:'p5',label:'P5'},  
     ]
@@ -296,12 +305,12 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
     ]
 
     const comparisionOptions = [
-        {value:'equalto',label:'Equal to'},
+        {value:'equalto',label:'='},
         {value:'notequalto',label:'Not Equal to'},
-        {value:'greaterthan',label:'>'},
-        {value:'greaterthanequalto',label:'>='},
-        {value:'smallerthan',label:'<'},
-        {value:'smallerthanequalto',label:'<='},
+        // {value:'greaterthan',label:'>'},
+        // {value:'greaterthanequalto',label:'>='},
+        // {value:'smallerthan',label:'<'},
+        // {value:'smallerthanequalto',label:'<='},
         {value:'doesnotcontain',label:'Does not contain'},
         {value:'startswith',label:'Starts with'},
         {value:'doesnotstartwith',label:'Does not start with'},
@@ -311,23 +320,35 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
         // {value:'hasnovalue',label:'Has no value'},
     ]
     
-    const getOperatorValue = ()=>{
+    const comparisionIntegerOptions = [
+        {value:'equalto',label:'='},
+        {value:'greaterthan',label:'>'},
+        {value:'greaterthanequalto',label:'>='},
+        {value:'smallerthan',label:'<'},
+        {value:'smallerthanequalto',label:'<='},
+        {value:'notequalto',label:'Not Equal to'},
+    ]
+
+    const getOperatorValue = (comparisionOptions:any)=>{
         const doesFilterExist = filterState.find((filter:any)=>filter.name===filterId)
         if(doesFilterExist){
             return comparisionOptions.find((c:any)=>c.value===doesFilterExist.operator)
         }
-        return comparisionOptions[5]
+        // return comparisionOptions[0]
+        return 'OP'
     }
 
     const getValue = ()=>{
         const doesFilterExist = filterState.find((o:any)=>o.name==filterId)
         if(doesFilterExist){
-            return doesFilterExist.value
+            console.log('Filter value:', doesFilterExist.value); 
+            return doesFilterExist.value || ''
+            // return doesFilterExist.value 
         }
-        return ''
+        return '';
     }
-    
 
+   
     const getDropDownValue = (options:any)=>{
         const doesFilterExist = filterState.find((m:any)=>m.name==filterId)
        if(doesFilterExist){
@@ -345,6 +366,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
        }
            
     }
+   
 
      
     return(
@@ -357,9 +379,10 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
                     </SelectDropdownComponent> 
                     : 
                     <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-    
-                        {(header!=="Location Filter" && header!=="Color Filter")&& <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={filterProductOptions} onChange={(e:any)=>onChange(e,'attributeName')} filterId={filterId} value={getDropDownValue('filterProductOptions')} />}
-                        {header==="Location Filter" && <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={filterLocationOptions} onChange={(e:any)=>onChange(e,'attributeName')} filterId={filterId} value={getDropDownValue('filterLocationOptions')} />}
+                        {(header==="General Filter") && <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={generalFilterOptions} onChange={(e:any)=>{onChange(e,'attributeName',true)}} filterId={filterId} value={getDropDownValue('generalFilterOptions')} /> }
+                        {/* {(header!=="Location Filter" && header!=="Color Filter")&& <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={filterProductOptions} onChange={(e:any)=>{onChange(e,'attributeName',true)}} filterId={filterId} value={getDropDownValue('filterProductOptions')} />} */}
+                        {(header === 'Product Filter')&& <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={filterProductOptions} onChange={(e:any)=>{onChange(e,'attributeName',true)}} filterId={filterId} value={getDropDownValue('filterProductOptions')} />}
+                        {header==="Location Filter" && <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={filterLocationOptions} onChange={(e:any)=>onChange(e,'attributeName',true)} filterId={filterId} value={getDropDownValue('filterLocationOptions')} />}
                         {header ==="Color Filter" && <FilterSelectDropdown className="custom-scrollbar" placeholder={placeholder} options={colorTypeFilterOptions} onChange={(e:any)=>onChange(e,'type')} filterId={filterId} value={getDropDownValue('colorTypeFilterOptions')} />}
                     </SelectDropdownComponent>
                     }
@@ -370,16 +393,24 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
                 )}
                 
                 <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue()}/>    
+                    {
+                    header==="Availabilty Filter" ?
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionIntegerOptions)}/>    
+
+                    : 
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/>    
+
+                    }
+                    {/* <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue()}/>     */}
                 </SelectDropdownComponent>
                 <SelectDropdownComponent data-testid="BPR-filter-dropdown">
-                    <FilterTextInput placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
+                    <FilterTextInput placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>  
+
                 </SelectDropdownComponent>  
             </DropdownGroupWrapper>  
             </>     
     )
 }
-
 const VFMultiFilter=(props:VFMultiFilterProps)=>{ 
 
     const {user} = useUserData();
@@ -400,25 +431,30 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         availabilityFilterActive = false,
         colorFilterActive = false,
         coverageFilterActive = false,
+        generalFilterActive=false,
         onChangeHorizon,
         onApplyFilter,
         supplyChainForLocationCheckBoxList,
         supplyChainForChildrenOfCheckBoxList,
-        horizon = 0
+        horizon = 0,
+        currentTab,
+        currCategory,
+        generalFilterOptions
+
         
     } = props
-
-    const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string)=>{
+    console.log(currentTab)
+    const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string,updateLabel?:boolean)=>{
 
         // if(filterId==="Horizon"){
         //     setMultiFilter({...multiFilter,horizon:e})
         // }
-
         
         const filterObj:BPRFilter = {
             attributeName:"",
             value:"",
             operator:"",
+            label:"",
             name:filterId
         }
         // if(filterId==='SCF2'){
@@ -427,18 +463,25 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         // }
         if(filterId==='SCF3'){
             filterObj.attributeName='ForChildrenLocationCode'; 
+            filterObj.label='ForChildrenLocationCode';
             filterObj.operator='='
         }
         if(filterId==='PF6'){
             filterObj.attributeName='SKU'; //enter sku
+            filterObj.label='SKU';
+
             filterObj.operator='='
         }
         if(filterId==='PF7'){
-            filterObj.attributeName='EnterDescription';  //omit
+            filterObj.attributeName='EnterDescription';
+            filterObj.label='EnterDescription';
+            //omit
             filterObj.operator='='
         }
         if(filterId==='LF6'){
-            filterObj.attributeName='Location'; //location
+            filterObj.attributeName='Location'; 
+            filterObj.label='Location';
+            //location
             filterObj.operator='='
         }
         // if(filterId ==='SCF2'){ //locatipon code tha og
@@ -451,43 +494,58 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         // }
         if(filterId==='SCF1'){
             filterObj.attributeName='ForLocation';
+            filterObj.label='ForLocation';
             filterObj.operator='='
         }
         if(filterId==='SCF2'){
             filterObj.attributeName='ForChildren';
+            filterObj.label='ForChildren';
             filterObj.operator='='
         }
         if(filterId==='AF5'){
             filterObj.attributeName='OHIC';
+            filterObj.label='OHIC';
             filterObj.operator='='
         }
         if(filterId==='AF6'){
             filterObj.attributeName='PIC';
+            filterObj.label='PIc';
             filterObj.operator='='
         }
         if(filterId==='AF7'){
             filterObj.attributeName='PIPO,Seasonality';
+            filterObj.label='PIPO,Seasonality';
             filterObj.operator='='
         }
         if(filterId==='AF8'){
             filterObj.attributeName='Category';
+            filterObj.label='Category';
             filterObj.operator='='
         }
         if(filterId==='CGF3'){
             filterObj.attributeName='Coverage';
+            filterObj.label='Coverage';
             filterObj.operator='='
         }
         if(filterId==='AF1'){
             filterObj.attributeName='Norm'
+            filterObj.label='Norm';
+
         }
         if(filterId==='AF3'){
             filterObj.attributeName='Git'
+            filterObj.label='Git';
+
         }
         if(filterId==='AF2'){
             filterObj.attributeName='Stock'
+            filterObj.label='Stock';
+
         }
         if(filterId==='AF4'){
             filterObj.attributeName='Availability'
+            filterObj.label='Availabilty';
+
         }
 
     
@@ -495,6 +553,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         // let currentKey:any=""
         let finalValue:any | [];
         let selectedValues:any = [];
+        const finalLabel:string = e.label;
 
         const getTrimmedValue = (finalValue:any) => {
             return finalValue.split(' ')[0];
@@ -559,18 +618,18 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         })
        }
 
-
+       
         
         const currGroup:string | undefined = Object.keys(multiFilter).find((key:string)=>{
             return multiFilter[key as keyof BPRFilterState].id ===parentId
         })
+
        
         if(currGroup){
 
             const currFilter:BPRFilter | undefined =multiFilter[currGroup as keyof BPRFilterState].filters.find((filter:BPRFilter)=>{
                 return filter.name===filterId
             })
-           
             if(currFilter){
                 //if((e.target && e.target.type ==="checkbox") || Array.isArray(e) ){
                 if( Array.isArray(e)){ 
@@ -585,21 +644,26 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                     })   
                 }
                 else{
-                  
                     setMultiFilter({
                         ...multiFilter,
                         [currGroupKey]:{
                             ...multiFilter[currGroupKey as keyof BPRFilterState],
-                            filters:multiFilter[currGroupKey as keyof BPRFilterState].filters.map((filter:BPRFilter)=>{
+                            filters:[...multiFilter[currGroupKey as keyof BPRFilterState].filters.map((filter:BPRFilter)=>{
                                 if(filter.name===filterId){
-                                    return{
-                                        ...filter,
-                                        [property]:finalValue
-                                    }
+                                    const result:any = {
+                                        ...filter
+                                    };
+                                   
+                                    if(finalLabel && updateLabel) {console.log('heelo');result['label'] = finalLabel;}
+                                    if(finalValue!==undefined){
+                                        result[property] = finalValue;
+
+                                    } 
+                                    return result;
                                     
                                 }
                                 return filter
-                            })    
+                            })]    
                         }  
                     })   
                 }
@@ -611,6 +675,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                     attributeName:"",
                     value:"",
                     operator:"",
+                    label:"",
                     name:filterId
                 }
                 filterObj[property as keyof BPRFilter] = finalValue
@@ -638,6 +703,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                      return 
                 }
                 filterObj[property as keyof BPRFilter] = finalValue
+                if(finalLabel && updateLabel) filterObj['label'] = finalLabel;  
                 setMultiFilter({
                     ...multiFilter,
                     [currGroupKey]:{
@@ -714,7 +780,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         })
     }
 
-  
     return(
         <>
         <VFModalCard zoom={'0.73'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
@@ -738,6 +803,19 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
 
             <FilterBody style={{maxHeight:onChangeHorizon?'450px':"unset"}}>
+            {/* {generalFilterActive && (
+                    <FilterCardWrapper data-testid="locationFilter">
+                    <FilterHeader>
+                        <p>General Filter</p>
+                    </FilterHeader>
+                    <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
+                        <AvailabilityFilter placeholder={'G1'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF1',e,'2',key,'',updateLabel)} header="General Filter" filterId={'LF1'}  filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                    </FilterComponent>
+                    </FilterCardWrapper>
+                )} */}
+
+
+            <div>
                 {supplyChainNodeFilterActive && (
                       <FilterCardWrapper data-testid="supplyChainNodeFilter">
                       <FilterHeader >
@@ -752,29 +830,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                           </FilterCheckboxAccordian>
                           </FilterCheckboxAccordian>
                       </FilterComponent>
-                      {/* {openStatus.location ?
-                      <>
-                      <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'5px'}}>  
-                          <TextFieldHeader>
-                              <p>Specific Locations</p>
-                          </TextFieldHeader>         
-                          <VFMasterFieldSearch
-                               value={getAPIValue('SCF2', multiFilter.supplyChainFilter.filters)} 
-                              setValue={(e:any)=>onFilterChange('SCF2',e,'1','value')} 
-                              options={getOptions(locationData?.data.data)} 
-                              placeholder={'Enter Location'} 
-                              handleListChild={()=>console.log("")} 
-                              maxToShow={3} 
-                              backgroundColor={'#F2F2F2'}
-                              borderRadius={40}
-                              disabled={false}
-                              boxShadow={'0'}
-
-                          />
-                      </FilterComponent>
-                      </>
-                       : null 
-                      }   */}
                       <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.loc_children?'unset' : '50px'}}>
                           <FilterCheckboxAccordian filterType="For Children Of" filterKey="loc_children" isOpen={openStatus.loc_children} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="loc_children_type" isOpen={child.loc_children_type} setOpenStatus={setChild} style={{paddingLeft:'50px'}}>
@@ -808,6 +863,20 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                       } 
                   </FilterCardWrapper> 
                 )}
+
+                <div style={{marginTop:'-30px'}}>
+                {generalFilterActive && (
+                <FilterCardWrapper data-testid="locationFilter"> 
+                <FilterHeader>
+                    <p>General Filter</p>
+                </FilterHeader>
+                <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
+                    <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('GF1',e,'7',key,'',updateLabel)} header="General Filter" filterId={'GF1'}  filterState={multiFilter.generalFilter.filters} generalFilterOptions={generalFilterOptions}></AvailabilityFilter>
+                </FilterComponent>
+                </FilterCardWrapper>
+                )} 
+                </div>     
+            </div>
               
                  {locationFilterActive && (
                         <FilterCardWrapper data-testid="locationFilter">
@@ -815,23 +884,23 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             <p>Location Filter</p>
                         </FilterHeader>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                           <AvailabilityFilter placeholder={"L1"} onChange={(e:any,key:string)=>onFilterChange('LF1',e,'2',key)} header="Location Filter" filterId={'LF1'}  filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF1',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF1'}  filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={"L1"}  onChange={(e:any,key:string)=>onFilterChange('LF2',e,'2',key)} header="Location Filter" filterId={'LF2'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF2',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF2'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={"L1"}  onChange={(e:any,key:string)=>onFilterChange('LF3',e,'2',key)} header="Location Filter" filterId={'LF3'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF3',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF3'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={"L1"}  onChange={(e:any,key:string)=>onFilterChange('LF4',e,'2',key)} header="Location Filter" filterId={'LF4'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF4',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF4'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={"L1"}  onChange={(e:any,key:string)=>onFilterChange('LF5',e,'2',key)} header="Location Filter" filterId={'LF5'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF5',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF5'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
                             <VFMasterFieldSearch 
-                                 value={getAPIValue('LF6', multiFilter.locationFilter.filters)}  
+                                value={getAPIValue('LF6', multiFilter.locationFilter.filters)}  
                                 setValue={(e:any)=>onFilterChange('LF6',e,'2','value')} 
                                 options={getOptions(locationData?.data.data)}  
                                 placeholder={'Enter Location'} 
@@ -852,19 +921,19 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         <p>Product Filter</p>
                     </FilterHeader>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any, key:string)=>onFilterChange('PF1',e,'3',key)}  filterState={multiFilter.productFilter.filters} filterId={'PF1'} ></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any, key:string,updateLabel:boolean)=>onFilterChange('PF1',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF1'} header="Product Filter"></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any,key:string)=>onFilterChange('PF2',e,'3',key)}  filterState={multiFilter.productFilter.filters} filterId={'PF2'} ></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF2',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF2'} header="Product Filter" ></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any,key:string)=>onFilterChange('PF3',e,'3',key)}  filterState={multiFilter.productFilter.filters} filterId={'PF3'}></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF3',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF3'} header="Product Filter"></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any,key:string)=>onFilterChange('PF4',e,'3',key)}  filterState={multiFilter.productFilter.filters} filterId={'PF4'}></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF4',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF4'} header="Product Filter"></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={"P1"} onChange={(e:any,key:string)=>onFilterChange('PF5',e,'3',key)}  filterState={multiFilter.productFilter.filters} filterId={'PF5'}></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF5',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF5'} header="Product Filter"></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
                         <VFMasterFieldSearch
@@ -899,27 +968,32 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
                             <AvailabilityFilter placeholder={"Git"} onChange={(e:any,key:string)=>onFilterChange('AF3',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF3'}></AvailabilityFilter>
                         </FilterComponent>
-                        <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
+                        {/* <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
                             <AvailabilityFilter placeholder={"Availabilty"} onChange={(e:any,key:string)=>onFilterChange('AF4',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF4'}></AvailabilityFilter>
-                        </FilterComponent>
-                        <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tech_color?'unset' : '50px'}}>
-                            <FilterCheckboxAccordian filterType="On Hand Inventory Color" filterKey="availabilty_tech_color" isOpen={openStatus.availabilty_tech_color} setOpenStatus={setOpenStatus}>
-                            <FilterMultiSelectCheckbox header={'OHIC'} filterOptions={[
-                                 { label: 'Red', id: '1' },
-                                 { label: 'Yellow', id: '2' },
-                                 { label: 'Green', id: '3' },
-                                 { label: 'Black', id: '4' },
-                                 { label: 'White', id: '5' },
-                                 { label: 'Blue', id: '6' },
+                        </FilterComponent> */}
+                        {(currentTab==='on-hand' || currentTab==='both' || currCategory==='BPR'  ) && (
+                             <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tech_color?'unset' : '50px'}}>
+                             <FilterCheckboxAccordian filterType="On Hand Inventory Color" filterKey="availabilty_tech_color" isOpen={openStatus.availabilty_tech_color} setOpenStatus={setOpenStatus}>
+                             <FilterMultiSelectCheckbox header={'OHIC'} filterOptions={[
+                                  { label: 'Red', id: '1' },
+                                  { label: 'Yellow', id: '2' },
+                                  { label: 'Green', id: '3' },
+                                  { label: 'Black', id: '4' },
+                                  { label: 'White', id: '5' },
+                                  { label: 'Blue', id: '6' },
+ 
+                                 
+                             ]} 
+                            
+                             filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF5')}
+                             onChange={(e:any,key:string)=>onFilterChange('AF5',e,'4',key)} filterId={'AF5'}/> 
+                             </FilterCheckboxAccordian>
+                         </FilterComponent>
 
-                                
-                            ]} 
-                           
-                            filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF5')}
-                            onChange={(e:any,key:string)=>onFilterChange('AF5',e,'4',key)} filterId={'AF5'}/> 
-                            </FilterCheckboxAccordian>
-                        </FilterComponent>
-                        <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_eco_color?'unset' : '50px'}}>
+
+                        )}
+                        {(currentTab==='pipeline'|| currentTab==='both' || currCategory==='BOR' || currCategory==='BPR'|| currCategory==='RRR') &&  (
+                            <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_eco_color?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Pipeline Inventory Color" filterKey="availabilty_eco_color" isOpen={openStatus.availabilty_eco_color} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'PIC'}filterOptions={[
                                   { label: 'Red', id: '1' },
@@ -934,6 +1008,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             onChange={(e:any,key:string)=>onFilterChange('AF6',e,'4',key)} filterId={'AF6'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
+
+                        )}
+                        
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tags?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Tags(PIPO, Seasonality)" filterKey="availabilty_tags" isOpen={openStatus.availabilty_tags} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'PIPO,Seasonality'} filterOptions={[ 

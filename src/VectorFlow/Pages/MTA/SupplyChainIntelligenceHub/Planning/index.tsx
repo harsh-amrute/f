@@ -51,8 +51,6 @@ const Planning = () => {
         currentColDefs
     } = usePlanning();
 
-    console.log(currentCategory,currentTab)
-
 
     const renderView = () => {
 
@@ -141,6 +139,7 @@ const Planning = () => {
                         multiFilter={currentFilter}
                         setMultiFilter={setCurrentFilter}
                         onDelete={onDeleteFilter}
+                        isPlanning
                         />
                 </div>  
                     

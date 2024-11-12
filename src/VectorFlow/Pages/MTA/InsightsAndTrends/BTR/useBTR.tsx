@@ -117,7 +117,9 @@ const useBTR = () => {
 
     }
 
-    const gridProps = useMemo((): AgGridReactProps => {
+    console.log(techRowData)
+
+    const gridProps = useMemo(():AgGridReactProps=>{
         return {
             gridOptions: {
                 components: {
@@ -157,7 +159,7 @@ const useBTR = () => {
     const getData = async (filter: any, pageNumber: number) => {
         const payload = {
             id: 0,
-            name: '',
+            name: 'both',
             fields: [],
             filters: filter,
             paginationParameter: {
@@ -185,7 +187,7 @@ const useBTR = () => {
     useEffect(() => {
         const payload = {
             id: 0,
-            name: '',
+            name: 'both',
             fields: [],
             filters: currFilter,
             paginationParameter: {
@@ -354,7 +356,7 @@ const useBTR = () => {
         const tempFilter = getPreparedFilter(currFilter)
         const payload = {
             id: 0,
-            name: '',
+            name: page==='on-hand'?'tech':'eco',
             fields: [],
             filters: tempFilter,
             paginationParameter: {
@@ -375,11 +377,12 @@ const useBTR = () => {
     }, [techRowData, dateLabels, verticalView, currentTab])
 
 
-    const ecoColDefs = useMemo((): Array<ColDef> => {
-        if (ecoRowData.length === 0) return []
-        if (verticalView && currentTab.id === "1") return mapBTRRowDataToColDefs(ecoRowData[0], dateLabels, horizon, false, ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn"])
-        return mapBTRRowDataToColDefs(ecoRowData[0], dateLabels, horizon, false, ["RN"])
-    }, [ecoRowData, currentTab, verticalView, dateLabels])
+    const ecoColDefs = useMemo(():Array<ColDef>=>{
+        if(ecoRowData.length===0)return []
+        if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN","pc","pn"])
+        return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,["RN"])
+    },[ecoRowData,currentTab,verticalView,dateLabels])
+    
 
     return {
         ecoRef,
@@ -409,6 +412,7 @@ const useBTR = () => {
         onDeleteFilter,
         onApplyFilter,
         horizon,
+        ecoColDefs,
         setHorizon
     }
 }

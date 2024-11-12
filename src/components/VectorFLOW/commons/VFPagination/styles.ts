@@ -96,7 +96,7 @@ align-items:center;
 
 export const PaginationArrowIcon = styled.img<{disabled:boolean}>`
     margin-left:5px;
-    cursor:pointer;
+    cursor:${({disabled})=>disabled?'not-allowed':'pointer'};
     height:10px;
     width:10px;
     opacity:${(props)=>props.disabled?0.3:1};

@@ -49,7 +49,8 @@ describe('View Modify Component', () => {
     isUploadModalOpen:false,
     chunkSize:100,
     recordCount:0,
-    isDataAvailableLocally:true
+    isDataAvailableLocally:true,
+    lastRunDate:''
   }
 
   const themeUi = 'NOIRFUSION';
@@ -142,7 +143,8 @@ describe('View Modify Component', () => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const localMockStore = createStore(localMockState);

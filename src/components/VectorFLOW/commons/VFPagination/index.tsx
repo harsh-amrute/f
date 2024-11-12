@@ -23,12 +23,14 @@ const VFPagination  = (props:VFPaginationProps)=>{
         handleChangePage,
     } = props
 
+
     const defaultPaginationLimit = 100;
-    const totalPages = Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit));
+    const totalPages = Math.max(Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit)),1)
 
    // const totalPages = Math.ceil(totalRows/rowsPerPage)
     
     const getTotalItemsString = () => {
+        if(totalRows===0) return `0 to ${totalRows}`
         if(totalRows <= rowsPerPage) return `1 to ${totalRows}`;        
         if(currentPage===1) return `1 to ${rowsPerPage}`;
         const start = (currentPage * rowsPerPage)-rowsPerPage + 1;

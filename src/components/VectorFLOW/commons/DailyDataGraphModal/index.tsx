@@ -93,8 +93,13 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
 
     const generateChartOptions = () => {
         const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
-        const sortedNormChangeData = [...normChangeData].sort((a:NormChangeHistory,b:NormChangeHistory) => new Date(a.nCD).getTime() - new Date(b.nCD).getTime());
-
+        console.log(adjustedChartData);
+        const sortedNormChangeData = normChangeData
+          ? [...normChangeData].sort(
+              (a: NormChangeHistory, b: NormChangeHistory) => 
+                new Date(a.nCD).getTime() - new Date(b.nCD).getTime()
+            )
+          : [];
         let tempNorm = 0;
 
         let normData = chartData.map((dailyData:DailyDataChart) => {
@@ -108,7 +113,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
               }
             });
             
-            if(normChangeData.length > 0 && closestNormChangeIndex !== -1){
+            if(normChangeData?.length > 0 && closestNormChangeIndex !== -1){
               tempNorm = sortedNormChangeData[closestNormChangeIndex]['nN'];
             }
             else{

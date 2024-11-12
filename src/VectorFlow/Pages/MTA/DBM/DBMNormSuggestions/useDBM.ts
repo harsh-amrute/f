@@ -1,7 +1,7 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useGetDBMUIConfiguration,useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
-import { getColumnsForExcelExport, mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -11,7 +11,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type RootState } from "../../../../../redux/store/store";
 import { DailyDataGraph } from "../../../../types/MTA"
-import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetDailyData, useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
@@ -25,6 +25,9 @@ const useDBM =()=>{
     const [DBMRowData,setDBMRowData] = useState<any[]>([])
     const [DBMDataCount, setDBMDataCount]=useState<any>();
     // const [recordCount,setRecordCount] = useState<number>(0)
+
+    const [internalRef,setInternalRef] = useState<any>()
+    const [gridState,setGridState] = useState<any>()
 
     const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
     const [currentPage,setCurrentPage] = useState<any>(1);
@@ -44,9 +47,15 @@ const useDBM =()=>{
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
+    const {mutateAsync:getState} = useGetState()
+
     const {mutateAsync:getDailyData} = useGetDailyData();
+    const [generalFilterOptions,setGeneralFilterOptions] = useState();
+
 
     const dispatch = useDispatch();
+
+    const recordsPerPage = parseInt(process.env.REACT_APP_DBM_ROWS_PER_PAGE || '50');
 
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
@@ -54,6 +63,37 @@ const useDBM =()=>{
         sleepCellRenderer:DBMSleepCellRenderer,
         suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
       }), []);
+
+      useEffect(()=>{
+        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+
+      },[isDBMConfigLoading])
+
+      useEffect(()=>{
+        const getTableState = async()=>{
+          try{
+            const data =  await getState("DBMNorm")
+            setGridState(JSON.parse(data.data.data))
+          }catch(err:any){
+            setGridState({
+                charts:[],
+                columns:[],
+                pivot:false
+            })
+          }
+        }
+        getTableState()
+
+
+    },[])
+  
+    useEffect(()=>{
+        if(internalRef){
+            internalRef.api.applyColumnState({state:gridState?.columns })
+
+        }
+        
+    },[internalRef,gridState])
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -80,7 +120,7 @@ const useDBM =()=>{
         getDataCount(currentFilter);
         getDBMRowData(currentFilter,currentPage);
     }
-    const DBMColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
+    const DBMColumns = useMemo(()=>mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter),[data])
 
     const showAllCheckbox = () => {
         const rows:any[] = []
@@ -122,7 +162,7 @@ const useDBM =()=>{
                 filters:[],
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:50
+                    recordsPerPage:recordsPerPage
                 }
             })
         toast.dismiss()
@@ -135,13 +175,15 @@ const useDBM =()=>{
     useEffect(()=>{       
         getDataCount(currentFilter);
         getDBMRowData(currentFilter,currentPage);
+
     },[])
 
    
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:getColumnsForExcelExport(DBMColumns)});
+            console.log(event,'from tempGridProps',{tempDownloadData:tempDownloadData})
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:gridRef.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
 
@@ -150,7 +192,7 @@ const useDBM =()=>{
             filters:filter,
             paginationParameter:{
                 pageNumber:1,
-                recordsPerPage:50
+                recordsPerPage:recordsPerPage
             }
         })
         setDBMDataCount(rowDataCount?.data?.recordCount)
@@ -162,7 +204,7 @@ const useDBM =()=>{
             filters:filter,
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:50
+                recordsPerPage:recordsPerPage
             }
         })
         toast.dismiss()
@@ -187,7 +229,7 @@ const useDBM =()=>{
             filters:currentFilter,
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:50
+                recordsPerPage:5000
             }
         })
         // console.log(rowData.data.data)
@@ -195,40 +237,43 @@ const useDBM =()=>{
     }
 
 
-    const agGridProps:AgGridReactProps = {
-        tooltipShowDelay:0,
-        tooltipTrigger:"focus",
-        readOnlyEdit:true,
-        suppressRowClickSelection:true,
-        components:customCellRenderers,
-        enableBrowserTooltips:true,
-        rowSelection:'multiple',
-        gridOptions:{
-            rowHeight:50,
-            getRowStyle: (params: any) => {
-            if (params.node.rowIndex % 2 === 0) {
-                return { background: "#EBEBEB" };
-            }
-            return { background: "#F7F7F7" };
+    const agGridProps:AgGridReactProps = useMemo(()=>{
+        return {
+            tooltipShowDelay:0,
+            tooltipTrigger:"focus",
+            readOnlyEdit:true,
+            suppressRowClickSelection:true,
+            components:customCellRenderers,
+            enableBrowserTooltips:true,
+            rowSelection:'multiple',
+            gridOptions:{
+                rowHeight:50,
+                getRowStyle: (params: any) => {
+                if (params.node.rowIndex % 2 === 0) {
+                    return { background: "#EBEBEB" };
+                }
+                return { background: "#F7F7F7" };
+                },
             },
-        },
-        pagination:false,
-        defaultColDef:{
-            floatingFilter: true,
-            cellStyle:{
-                'text-align':'center',
-                'height':'50px',
-                "font-style":"normal",
-            " font-variant":"normal",
-            " font-weight":"300",
-            " font-size":"20px",
-            " font-family":"Roboto",
-            "display":"block",
-            'text-overflow':'ellipsis',
-            'white-space':'nowrap'
-            }
+            pagination:false,
+            defaultColDef:{
+                floatingFilter: true,
+                cellStyle:{
+                    'text-align':'center',
+                    'height':'50px',
+                    "font-style":"normal",
+                " font-variant":"normal",
+                " font-weight":"300",
+                " font-size":"20px",
+                " font-family":"Roboto",
+                "display":"block",
+                'text-overflow':'ellipsis',
+                'white-space':'nowrap'
+                }
+            },
+            onGridReady:(params)=>setInternalRef(params)
         }
-    }
+    },[])
 
     
 
@@ -259,6 +304,8 @@ const useDBM =()=>{
         setCurrentFilter,
         onDeleteFilter,
         onExportToExcelCallBack,
+        recordsPerPage,
+        generalFilterOptions
     }
 }
 

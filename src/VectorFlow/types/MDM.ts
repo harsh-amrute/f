@@ -4,19 +4,20 @@ import {
 } from 'ag-grid-enterprise'
 import Joi from 'joi'
 
-export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted" | "editOnline" | "editOnlineSubmitted" | "seasonality" | "phaseInPhaseOut" | "deleteUploaded" | "deleteView" | "deleteOnline" | "deleteOnlineSubmitted" | "conflicts" | "editOnlineConflicts" | "mtoView";
-export interface MDMStore {
-    allMasters: MDMMasterState[],
-    masters: MDMMasterState[],
-    options: Option[],
-    selectedOptions: Option[],
-    activeMaster: MDMMasterState,
-    isSelectMasterOpen: boolean,
-    draftId: string
-    isUploadModalOpen: boolean,
-    chunkSize: number,
-    recordCount: number,
-    isDataAvailableLocally: boolean
+export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted" | "editOnline"  | "editOnlineSubmitted" | "seasonality" | "phaseInPhaseOut" | "deleteUploaded" | "deleteView"| "deleteOnline"  | "deleteOnlineSubmitted" | "conflicts" | "editOnlineConflicts" | "mtoView";
+export interface MDMStore{
+    allMasters:MDMMasterState[],
+    masters:MDMMasterState[],
+    options:Option[],
+    selectedOptions:Option[],
+    activeMaster:MDMMasterState,
+    isSelectMasterOpen:boolean,
+    draftId:string
+    isUploadModalOpen:boolean,
+    chunkSize:number,
+    recordCount:number,
+    isDataAvailableLocally:boolean
+    lastRunDate:string
 }
 
 export interface MDMMasterState {

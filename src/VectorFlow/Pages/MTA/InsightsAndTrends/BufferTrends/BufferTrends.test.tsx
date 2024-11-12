@@ -8,7 +8,6 @@ import { UserDataContext } from "../../../../../context/UserDataContext";
 import BufferTrends from ".";
 import { Provider } from "react-redux";
 import {ReactNode} from 'react'
-import {act} from "react-dom/test-utils"
 import { store } from "../../../../../redux/store/store";
 
 
@@ -88,7 +87,7 @@ describe ("Buffer trends",()=>{
     })
 
     it("should render the buffer trends components",async ()=>{
-        await act (async ()=>  render(contextWrapper(<BufferTrends/>,store)))
+        render(contextWrapper(<BufferTrends/>,store))
     
         // const button=screen.getByText("On-Hand Inv. Availability Trend")
         // expect(button).toBeInTheDocument();

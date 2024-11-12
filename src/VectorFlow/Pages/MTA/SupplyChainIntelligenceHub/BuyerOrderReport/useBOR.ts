@@ -1,6 +1,6 @@
 import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { getColumnsForExcelExport, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
@@ -17,16 +17,19 @@ import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+import { GridRef } from "../../../../../VectorFlow/types/MDM"
 
 
 
 export const useBOR =()=>{
-    const ref=  useRef()
+    const ref=  useRef<GridRef>()
     const tempRef = useRef()
+
+    const [internalRef,setInternalRef] = useState<any>()
 
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
-     const {data,isLoading} = useGetBORUIConfiguration();
+     const {data,isLoading:isBORUILoading} = useGetBORUIConfiguration();
      const dispatch = useDispatch();
    
     //  const [toggleSubGrid] = useState<boolean>(false);
@@ -42,6 +45,8 @@ export const useBOR =()=>{
      const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
  
      const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
+     const [generalFilterOptions,setGeneralFilterOptions] = useState();
+
 
      const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
      const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
@@ -61,6 +66,7 @@ export const useBOR =()=>{
      const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         colorDispatchCellRenderer:DispatchColorCellRenderer,
+
         
       }), []);
 
@@ -85,30 +91,46 @@ export const useBOR =()=>{
     }
 
       
-      const BORColumns = mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph)
+      const BORColumns = useMemo(()=>mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph),[data])
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-      const [columnState,setColumnState] = useState<any>()
-      const {currentGridState} = useSelector((state:RootState)=>state.mta)
+      const [gridState,setGridState] = useState<any>()
 
-    useEffect(()=>{
+      useEffect(()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState("BOR")
-            setColumnState(JSON.parse(data.data.data))
+            setGridState(JSON.parse(data.data.data))
           }catch(err:any){
-            setColumnState(BORColumns)
+            setGridState({
+                charts:[],
+                columns:[],
+                pivot:false
+            })
           }
         }
         getTableState()
-    },[currentGridState])
+
+    },[])
+  
+    useEffect(()=>{
+        if(internalRef){
+            console.log('in if')
+            internalRef.api.applyColumnState({state:gridState.columns })
+        }
+    },[internalRef,gridState])
 
       useEffect(()=>{       
         const fetchData = async () => {
             await getRecordsCount();
             await loadGridData(currentPage);
+
+
         };
         fetchData();
-    }, []);
+        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+
+    }, [isBORUILoading]);
+
 
       const getRecordsCount=async(filter?:any)=>{
             const payload={
@@ -154,7 +176,8 @@ export const useBOR =()=>{
       onApplyFilter(updatedFilter)
   }
 
-     const agGridProps:AgGridReactProps = {
+     const agGridProps:AgGridReactProps = useMemo(()=>{
+      return {
         tooltipShowDelay:0,
         tooltipTrigger:"focus",
         readOnlyEdit:true,
@@ -189,8 +212,10 @@ export const useBOR =()=>{
             'white-space':'nowrap'
             },
            
-        }
+        },
+        onGridReady:(params)=>setInternalRef(params)
       }
+     },[])
 
       const getBORRowData=async(filter:BPRFilterState)=>{
         if(filter)setCurrFilter(filter)
@@ -209,7 +234,7 @@ export const useBOR =()=>{
 
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:getColumnsForExcelExport(BORColumns)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
       const onExportToExcelCallBack=async(pageNumber:number)=>{
@@ -227,14 +252,14 @@ export const useBOR =()=>{
   
      return {   
         ref,    
-        isLoading,      
+        isLoading :isBORUILoading,      
         BORColumns,
         agGridProps,
         rowData ,
         currentPage,
         rowsPerPage,
         recordCount,
-        columnState,
+        gridState,
         isSavedDataLoading,
         handleChangePage,
         tempRef,
@@ -254,5 +279,6 @@ export const useBOR =()=>{
         currFilter,
         setCurrFilter,
         onDeleteFilter,
+        generalFilterOptions
     }
 }

@@ -117,15 +117,17 @@ const ViewModify = () => {
   } = useViewModify('modify');
 
 
-  useEffect(() => {
-    if (ref.current && ref.current.api) {
-      if (isTableDataLoading) {
-        ref.current?.api.showLoadingOverlay();
+
+    
+    useEffect(()=>{
+      if(ref.current && ref.current.api){
+        if(isTableDataLoading){
+          ref.current?.api.showLoadingOverlay();
+        }
+        else{
+          ref.current?.api.hideOverlay();
+        }
       }
-      else {
-        ref.current?.api.hideOverlay();
-      }
-    }
   }, [isTableDataLoading])
 
   return (

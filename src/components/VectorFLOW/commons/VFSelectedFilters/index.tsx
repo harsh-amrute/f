@@ -42,7 +42,7 @@ const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
                         return(
                             <VFSelectedFiltersFilterContent style={{borderRight:index===filterLength-1?'none':'solid 2px black'}}>
                                 <VFSelectedFiltersFilterValue>
-                                    <p>{filter.attributeName}</p> 
+                                    <p>{filter.label}</p> 
                                     <p style={{margin:'0px 5px 0px 5px'}}>:</p>
                                     <p>{filter.value}</p>
                                 </VFSelectedFiltersFilterValue>

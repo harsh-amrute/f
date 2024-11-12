@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { getColumnsForExcelExport, mapBPRFieldsToColDefs, mapBPRRowData } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -16,14 +16,18 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter"
 import { useUserData } from "../../../../../context"
 
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+import useGetlastRunData from "../../../../../hooks/useGetLastRunData"
+import { GridRef } from "../../../../../VectorFlow/types/MDM"
 
 
 
 const useBPR =()=>{
 
 
-    const ref = useRef()
+    const ref = useRef<GridRef>()
     const tempRef = useRef()
+
+    const [internalRef,setInternalRef] = useState<any>()
 
     const {getGridZoom,getScreenZoomValue} = useViewPort()
     const dispatch = useDispatch();
@@ -66,8 +70,12 @@ const useBPR =()=>{
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
   
     const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
+   
+   
+      
+    const {date:lastRunDate} = useGetlastRunData()
     
-    const {mutateAsync:getBPRData} = useGetBPRData()
+    const {mutateAsync:getBPRData,isLoading:isRowDataLoading} = useGetBPRData()
 
     const {mutateAsync:submitRemark} = useSubmitBPRRemark()
 
@@ -78,28 +86,38 @@ const useBPR =()=>{
     const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
 
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    const [gridState,setGridState] = useState<any>()
+    const [generalFilterOptions,setGeneralFilterOptions] = useState();
 
+
+  
+    useEffect(()=>{
+        
+        getInitialBPRRowData()
+        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+    },[isBPRUILoading])
 
     useEffect(()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState("BPR")
-            setColumnState(JSON.parse(data.data.data))
+            setGridState(JSON.parse(data.data.data))
           }catch(err:any){
-            setColumnState(BPRColumns)
+            setGridState({
+                charts:[],
+                columns:BPRColumns,
+                pivot:false
+            })
           }
         }
         getTableState()
-    },[currentGridState])
-  
-    useEffect(()=>{
-        
-        getInitialBPRRowData()
     },[])
 
-
+    useEffect(()=>{
+        if(internalRef && gridState.columns){
+            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+        }
+    },[internalRef,gridState])
   
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -109,60 +127,65 @@ const useBPR =()=>{
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
         remarksCellRenderer:BPRRemarksCellRenderer
       }), []);
+
   
-    const agGridProps:AgGridReactProps = {
+    const agGridProps:AgGridReactProps = useMemo(()=>{
+
+        return {
         
-        suppressRowTransform:true,
-        tooltipShowDelay:0.3,
-        tooltipTrigger:'focus',
-        tooltipInteraction:true,
-        // rowSelection:'single',
-        readOnlyEdit:false,
-        sideBar:defaultAgGridSideBarForBPR,
-        paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
-        onRowClicked:(params:any)=>{
-            if(params.data.intransit && params.data.intransit.length>0){
-                setActiveRow(params.data.intransit)
-                toggleSubGrid(true)
-            }
-        },
-        gridOptions:{
-            rowHeight:50,
-            getRowStyle: (params: any) => {
-            if (params.node.rowIndex % 2 === 0) {
-                return { background: "#EBEBEB" };
-            }
-            return { background: "#F7F7F7" };
+            suppressRowTransform:true,
+            tooltipShowDelay:0.3,
+            tooltipTrigger:'focus',
+            tooltipInteraction:true,
+            // rowSelection:'single',
+            readOnlyEdit:false,
+            sideBar:defaultAgGridSideBarForBPR,
+            paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
+            onRowClicked:(params:any)=>{
+                if(params.data.intransit && params.data.intransit.length>0){
+                    setActiveRow(params.data.intransit)
+                    toggleSubGrid(true)
+                }
             },
-        },
-        suppressRowClickSelection:true,
-        components:customCellRenderers,
-        defaultColDef:{
-            floatingFilter: true,
-            // filter: "agMultiColumnFilter",
-            cellDataType:false,
-            resizable:false,
-            cellStyle:{
-                "flex":1,
-                'text-align':'center',
-                'height':'50px',
-                "font-style":"normal",
-                " font-variant":"normal",
-                " font-weight":"300",
-                " font-size":"20px",
-                " font-family":"Roboto",
-                "display":"block",
-                'text-overflow':'ellipsis',
-                'white-space':'nowrap'
+            gridOptions:{
+                rowHeight:50,
+                getRowStyle: (params: any) => {
+                if (params.node.rowIndex % 2 === 0) {
+                    return { background: "#EBEBEB" };
+                }
+                return { background: "#F7F7F7" };
+                },
             },
-        },
-        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode")
-    }
+            suppressRowClickSelection:true,
+            components:customCellRenderers,
+            defaultColDef:{
+                floatingFilter: true,
+                // filter: "agMultiColumnFilter",
+                cellDataType:false,
+                resizable:false,
+                cellStyle:{
+                    "flex":1,
+                    'text-align':'center',
+                    'height':'50px',
+                    "font-style":"normal",
+                    " font-variant":"normal",
+                    " font-weight":"300",
+                    " font-size":"20px",
+                    " font-family":"Roboto",
+                    "display":"block",
+                    'text-overflow':'ellipsis',
+                    'white-space':'nowrap'
+                },
+            },
+            onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode"),
+            onGridReady:(params)=>setInternalRef(params)
+        }
+    },[])
 
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:getColumnsForExcelExport(BPRColumns)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
 
@@ -272,6 +295,7 @@ const useBPR =()=>{
        }
     }
     
+    
 
     const onCloseSubmitRemark =()=>setIsSubmitRemarkToolTipOpen(false)
 
@@ -364,8 +388,9 @@ const useBPR =()=>{
 
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
-    const BPRColumns =mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph)
-
+    const BPRColumns =useMemo(()=>mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph),[data])
+    
+    
     return {
         isSubGridOpen,
         isLoading :  isBPRUILoading || isBPRDataCountLoading,
@@ -397,7 +422,6 @@ const useBPR =()=>{
         showNormChangeHistoryTable,
         ref,
         isSavedDataLoading,
-        columnState,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
@@ -415,6 +439,11 @@ const useBPR =()=>{
         themeUi,
         editedRows,
         onDeleteFilter,
+        isRowDataLoading,
+        gridState,
+        lastRunDate,
+        generalFilterOptions
+
     }
 }
 
