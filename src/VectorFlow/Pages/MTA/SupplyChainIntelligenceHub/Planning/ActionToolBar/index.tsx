@@ -364,6 +364,78 @@ const ActionToolBar = ({
           );
         }
         break;
+      case "BORColorBandwise":
+        if (pathname === "/supply-chain-intelligence-hub/bor-color-bandwise") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+            />
+          );
+        }
+        break;
+       case "OrderAllocationReport":
+        if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+            />
+          );
+        }
+        break;
+      case "TotalRequirementReport":
+        if (pathname === "/supply-chain-intelligence-hub/total-requirement-report") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+            />
+          );
+        }
+        break;
       case "BTR":
         if (pathname === "/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
           return (
@@ -825,7 +897,7 @@ const ActionToolBar = ({
               ></VFSelectedFilters>
             )}
 
-            {currCategory === "BPR" && onSubmitEditedRows && (
+            {["BPR","BOR","BORColorBandwise"].includes(currCategory) && onSubmitEditedRows && (
               <VFButtonOutline
                 onClick={onSubmitEditedRows}
                 themeUi={themeUi}

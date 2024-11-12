@@ -36,6 +36,10 @@ import InTransitWhereAbouts from './VectorFlow/Pages/MTA/Logistics/InTransitWher
 import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 import MCGrid from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/MerchandisingGrid'
+import RRRColorBandwise from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport  Color Bandwise'
+import BuyerOrderReportColorBandwise from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport Color Bandwise'
+import OrderAllocationReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OrderAllocationReport'
+import TotalRequirementReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/TotalRequirementReport'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -83,8 +87,11 @@ const lazyLoad = (children: React.ReactNode) => {
     '/logistics/intransit-whereabouts',
     '/supply-chain-intelligence-hub/sdr',
     '/master-data-management/data-modification-history',
-    '/supply-chain-intelligence-hub/merchandising-grid'
-
+    '/supply-chain-intelligence-hub/merchandising-grid',
+    '/supply-chain-intelligence-hub/rrr-color-bandwise',
+    '/supply-chain-intelligence-hub/bor-color-bandwise',
+    '/supply-chain-intelligence-hub/order-allocation-report',
+    '/supply-chain-intelligence-hub/total-requirement-report'
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -470,6 +477,50 @@ export const initRoutes = (): RouteObject[] => {
         {
         index:true,
         element:lazyLoad(<SupplierDispatchReport/>)
+        } ,
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/rrr-color-bandwise',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<RRRColorBandwise/>)
+        } ,
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/bor-color-bandwise',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<BuyerOrderReportColorBandwise/>)
+        } ,
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/order-allocation-report',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<OrderAllocationReport/>)
+        } ,
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/total-requirement-report',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<TotalRequirementReport/>)
         } ,
         ...getStoreTransferModuleRoutes()
       ]
