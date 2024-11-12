@@ -92,7 +92,7 @@ const ActionToolBar = ({
 
   const {locations} = useGetLocation()
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-  const { onSaveState, onResetAllState, onExportToExcel ,onExportToExcelOld} = useSaveAllState(isPlanning);
+  const { onSaveState, onResetAllState ,onExportToExcelOld} = useSaveAllState(isPlanning);
   const { currentCategory } = useSelector(
     (state: RootState) => state.mta.planning
   );
