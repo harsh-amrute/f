@@ -115,7 +115,7 @@ describe('Testing the MDMService',  () => {
       expect(mockedAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/allDrafts',{
         headers: { 'Content-Type': 'application/json' }
       })
-      expect(response.status).toBe(200);
+      expect(response?.status).toBe(200);
 
     });
 

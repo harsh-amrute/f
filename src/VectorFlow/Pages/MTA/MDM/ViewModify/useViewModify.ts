@@ -1100,7 +1100,9 @@ const useViewModify = (pageType: string) => {
           for(let i=1; i<=numberOfPages; i++){
             const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:true,currentPage:i,rowsPerPage:chunkSize});
             if(result?.data.data === null) throw new Error("Something Went Wrong")
-            rows.push(...result?.data.data)
+            if(result?.data){
+              rows.push(...result.data.data)
+            }
             if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
             else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
           }

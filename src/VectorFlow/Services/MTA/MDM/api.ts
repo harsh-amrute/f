@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { GetMasterDataPayload } from '../../../types/MDM';
 
 
@@ -38,10 +38,13 @@ export namespace MDMService {
   }
 
   export const getAllDrafts = async () => {
-    return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/allDrafts`,{
-      headers: { 'Content-Type': 'application/json' }
-    })
-  }
+      return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/allDrafts`,{
+        headers: { 'Content-Type': 'application/json' }
+      }).catch((err)=>{
+        console.log(err);
+        return {} as AxiosResponse
+      })
+    }
 
   export const getDraftCount = async(id:string)=>{
     return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/draftCount/${id}`,{

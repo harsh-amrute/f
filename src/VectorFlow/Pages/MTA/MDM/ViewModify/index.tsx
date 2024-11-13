@@ -171,7 +171,7 @@ const ViewModify = () => {
               onTabChange={handleTabChange}
               onTabClose={handleTabClose}
               newTabTitle={"Add Master"}
-              newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
+              newTabIcon={"/assets/img/VectorFLOW/BPR/add-circle.svg"}
               newTabHandler={addNewMaster}
             >
               {(activeMaster.progress === 'default' || activeMaster.progress === 'view')
