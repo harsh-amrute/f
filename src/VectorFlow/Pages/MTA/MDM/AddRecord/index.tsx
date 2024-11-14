@@ -56,7 +56,8 @@ const AddRecord = () => {
         isDataAvailableLocally,
         isOverlayVisible,
         errorCount,
-        onMTOSaveBufferData
+        onMTOSaveBufferData,
+        onMTOSaveAsDraft
 
     } = useViewModify('add');
 
@@ -258,7 +259,7 @@ const AddRecord = () => {
             mtoSaveData={true}
             onMTOSaveData={ onMTOSaveBufferData}
             isMTOSaveDataDisabled={activeMaster.rowData.length === 0}
-            // onMTOSaveAsDraft={onMTOSaveAsDraft}
+            onMTOSaveAsDraft={onMTOSaveAsDraft}
           />
         }
         </React.Fragment>

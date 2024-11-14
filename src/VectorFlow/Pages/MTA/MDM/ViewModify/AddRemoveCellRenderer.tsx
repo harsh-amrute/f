@@ -13,6 +13,8 @@ const AddRemoveCellRenderer = (params: any) => {
     const activeMaster = useSelector((state: RootState) => state.mdm.activeMaster);
     const addRow = () => {
 
+      console.log("activeMaster.... in add remove", activeMaster);
+
         const allRows = [...activeMaster.rowData];
         allRows.shift();
         // Check if the entered Buffer type is unique 

@@ -4,8 +4,8 @@ import { useNavigate } from "react-router"
 import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration, useGetBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyError, notifyPromise, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
-import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS } from "../../../../../redux/actions/MDM"
-import { createMastersStateFromDraftData, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
+import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS, UPDATE_FILTER } from "../../../../../redux/actions/MDM"
+import { createMastersStateFromDraftData, generateRandomId, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
@@ -45,7 +45,7 @@ const useSavedDrafts = ()=>{
                 const newData = {
                     DraftId: draft.did,
                     ActionType: draft.at,
-                    LastModifiedDateTime:draft.co,
+                    LastModifiedDateTime: new Date(draft.co).getTime(),
                     Masters: draft.mnm,
                     SearchKeys: draft.sk,
                     userid: draft.uid,
@@ -106,16 +106,18 @@ const useSavedDrafts = ()=>{
 
     //   }
 
-    const convertToColDefs = (data:any) => {
-        return data.map((item:any )=> ({
-          field: item?.key,                    // Use the "key" as the "field"
-          colId: item?.key,                    // Also set "colId" from "key"
-          headerName: item?.displayName,        // Set "headerName" from "displayName"
-          floatingFilter: false,              // Set default values for additional properties
-          wrapText: true,
-          autoHeight: true,
-          editable: true
-        }));
+    const convertToColDefs = (data:any, ActionType: string) => {
+        return data
+          .sort((a:any, b:any) => (a.col_Position || 0) - (b.col_Position || 0))
+          .map((item: any) => ({
+            field: item?.key,                    // Use the "key" as the "field"
+            colId: item?.key,                    // Also set "colId" from "key"
+            headerName: item?.displayName,        // Set "headerName" from "displayName"
+            floatingFilter: false,              // Set default values for additional properties
+            wrapText: true,
+            autoHeight: true,
+            editable: (ActionType == "Modify") ? false : true
+          }));
       };
     
     const onEditDraft = async(draftDetails:any)=>{
@@ -126,11 +128,13 @@ const useSavedDrafts = ()=>{
                 const res: any = await getDraftByIdMTO(draftDetails.DraftId);
                 dispatch(SET_RECORD_COUNT(res.data.data.count));
                 let draftData:any = res.data.data.results;
-                console.log("draftDetails....draftId", draftDetails)
+
                 if(draftDetails.isMTO && (draftDetails.ActionType === "Modify")){
                     try{
                         const result = await getBufferMasterData();
-                        draftData = [...draftData, result.data.data];
+                        draftData = [...draftData, ...result.data.data];
+
+                        // console.log("final DraftData .... ", draftData);
                     }
                     catch(e){
                         console.log(e);
@@ -153,20 +157,25 @@ const useSavedDrafts = ()=>{
 
             const masterState:any = [
                 {   isMTO: true,
-                    "id": "501",
+                    "id": 501,
                     "name": "Buffer",
-                    "colDefs": [{checkboxSelection: true},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...convertToColDefs(fields)],
+                    "colDefs": [{checkboxSelection: true},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...convertToColDefs(fields,draftDetails.ActionType)],
                     "rowData": draftData,
                     "isChecked": true,
-                    "filters": [
-                    ],
-                    "progress": "something",
-                    "fields": []
+                    "filters": [{
+                        id: generateRandomId(),
+                        masterId: 501,
+                        field: "",
+                        operator: '',
+                        text: ''
+                    }],
+                    "progress": "view",
+                    "fields": fields
                 }
             ]
 
             if(draftDetails.isMTO && (draftDetails.ActionType === "Modify")){
-                masterState[0].colDefs = [...convertToColDefs(fields)];
+                masterState[0].colDefs = [...convertToColDefs(fields, draftDetails.ActionType)];
             }
 
             dispatch(TOGGLE_UPLOAD_MODAL(false));
@@ -174,6 +183,7 @@ const useSavedDrafts = ()=>{
             
             dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
             // dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(fields)))
+            dispatch(UPDATE_FILTER(masterState.filters))
             dispatch(FILL_MASTERS(masterState))
             dispatch(SET_DRAFT_ID(draftDetails.DraftId))
             dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))

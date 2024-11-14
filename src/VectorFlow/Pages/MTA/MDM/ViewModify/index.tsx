@@ -181,6 +181,7 @@ const ViewModify = () => {
                     <SCLegend>Filter</SCLegend>
                     {
                       activeMaster.filters.map((f: Filter) => {
+                        console.log("activeMaster filters in view mofidy", activeMaster.filters, "activeMaster id", activeMaster.id);
                         if (f.masterId == activeMaster?.id) {
                           return (
                             <VFFilter

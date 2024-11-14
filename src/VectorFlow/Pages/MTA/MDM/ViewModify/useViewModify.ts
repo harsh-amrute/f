@@ -509,6 +509,9 @@ const useViewModify = (pageType: string) => {
           node.setSelected(isSelected);
         });
       }
+      if(activeMaster.id===501){
+        params.api.sizeColumnsToFit();
+      }
       
     },
   
@@ -1016,79 +1019,109 @@ const useViewModify = (pageType: string) => {
     dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
   }
 
-      const onUploadMaster = async () => {
-        let intervalID:any;
-        try {
-          if(!file){
-            notifyError('Please select a file to upload.');
-            return
-          }
-          const selectedColumns = ref.current?.api.getAllDisplayedColumns();
-          // const toasId = notifyLoader("Reading File");
-          setIsOverlayVisible(true)
-  
-          if(activeMaster.id < 14){
-            await parseExcelData(file,activeMaster,pageType,selectedColumns);
-          }
-          
-          const formData = new FormData();
-          formData.append("file", file);
-          formData.append("ui_config",JSON.stringify(activeMaster.fields))
-          formData.append("screen_type",JSON.stringify({screenType:pageType}))
-          const processId = uuidv4();
-          
-          formData.append("process_id",JSON.stringify({processId:processId}));
-
-          intervalID = setInterval(async ()=>{
-            const progress = await getUploadProgress(processId);
-            setUploadProgress(progress.data.progress);
-            setTotalProgress(progress.data.totalRows)
-          },1000)
-
-          const response = await validateMaster({formData,masterId:activeMaster.id});
-          clearInterval(intervalID);
-          let result = JSON.parse(response.data)
-          const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
-          result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
-          
-          setIsOverlayVisible(false);
-
-          const ifErrorExists = result.find((data:any)=>data.error.length > 1);
-          const ifWarningExists = result.find((data:any)=>data.warning.length > 1);
-
-          if(ifErrorExists) {
-            dispatch(UPDATE_PROGRESS_STATE('error'));
-            addInvalidDataColDefs('error');
-          }
-          if(ifWarningExists){
-            // dispatch(UPDATE_PROGRESS_STATE('error'));
-            addInvalidDataColDefs('warning');
-          }
-          if(!ifErrorExists){
-            if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-            else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-            addCheckBoxColDefs();
-           }
-          
-          dispatch(SET_RECORD_COUNT(result.length));
-          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-          dispatch(UPDATE_ROW_DATA(result));
-          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-          dispatch(TOGGLE_UPLOAD_MODAL(false));
-          setIsOverlayVisible(false)
-          notifySuccess(`Data Uploaded Successfully`);
-          setDownloadData(false);
-          setTempDownloadData(false);
-          setCurrentPage(1);
-        }
-         catch (error:any) {
-          toast.dismiss();
-          notifyError(error.message);
-          setIsOverlayVisible(false);
-          if(intervalID) clearInterval(intervalID);
-        }
-
+  const onUploadMaster = async () => {
+    let intervalID: any;
+    try {
+      if (!file) {
+        notifyError('Please select a file to upload.');
+        return
       }
+      const selectedColumns = ref.current?.api.getAllDisplayedColumns();
+      // const toasId = notifyLoader("Reading File");
+      setIsOverlayVisible(true)
+
+      // TODO : MTO check for which all master this needs to be done
+      // if (activeMaster.id < 14) {
+      const buffData =  await parseExcelData(file, activeMaster, pageType, selectedColumns);
+      // }
+
+
+      /////
+      const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
+        // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
+  
+        return {  ...col, editable: true, singleClickEdit: true }
+        // return { ...col }
+      })
+
+      if(activeMaster.isMTO){
+          dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 200},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...updatedColdefs]))
+      }
+      else{
+        dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 200},{colId: 'err', field: 'err',cellStyle: {color: 'red'}, headerName: 'Error'  },...updatedColdefs]))
+      }
+      ////
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("ui_config", JSON.stringify(activeMaster.fields))
+      formData.append("screen_type", JSON.stringify({ screenType: pageType }))
+      const processId = uuidv4();
+
+
+      // TODO: checked for buffer only make it dynamic
+      if(activeMaster.id!==501 && activeMaster.id!==502){
+
+        
+        intervalID = setInterval(async () => {
+          const progress = await getUploadProgress(processId);
+          setUploadProgress(progress.data.progress);
+          setTotalProgress(progress.data.totalRows)
+        }, 1000)
+        
+        const response = await validateMaster({ formData, masterId: activeMaster.id });
+        clearInterval(intervalID);
+        let result = JSON.parse(response.data)
+        const errorAndWarningData = result.filter((data: any) => data.error.length > 0 || data.warning.length > 0)
+        result = [...errorAndWarningData, ...result.filter((data: any) => data.error.length === 0 && data.warning.length === 0)]
+        
+        setIsOverlayVisible(false);
+        
+      const ifErrorExists = result.find((data: any) => data.error.length > 1);
+      const ifWarningExists = result.find((data: any) => data.warning.length > 1);
+
+      if (ifErrorExists) {
+        dispatch(UPDATE_PROGRESS_STATE('error'));
+        addInvalidDataColDefs('error');
+      }
+      if (ifWarningExists) {
+        // dispatch(UPDATE_PROGRESS_STATE('error'));
+        addInvalidDataColDefs('warning');
+      }
+      if (!ifErrorExists) {
+        if (activeMaster.progress === 'deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+        else dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+        addCheckBoxColDefs();
+      }
+      
+    
+      dispatch(SET_RECORD_COUNT(result.length));
+      dispatch(UPDATE_ROW_DATA(result));
+      dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+    }
+    else{
+
+    dispatch(SET_RECORD_COUNT(buffData.length));
+    dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+    dispatch(UPDATE_ROW_DATA(buffData));
+
+    }
+      
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+      dispatch(TOGGLE_UPLOAD_MODAL(false));
+      setIsOverlayVisible(false)
+      notifySuccess(`Data Uploaded Successfully`);
+      setDownloadData(false);
+      setTempDownloadData(false);
+      setCurrentPage(1);
+    }
+    catch (error: any) {
+      toast.dismiss();
+      notifyError(error.message);
+      setIsOverlayVisible(false);
+      if (intervalID) clearInterval(intervalID);
+    }
+
+  }
 
       const exportToExcel = async (fromUploadModal?:boolean)=>{
         try {
@@ -1890,7 +1923,7 @@ const useViewModify = (pageType: string) => {
           cellEditor: 'agRichSelectCellEditor',
           valueFormatter: myFormatter,
           cellEditorParams: {
-            values: bufferTypeData.map((item: any) =>  item.dsc), // Dropdown values
+            values: bufferTypeData?.map((item: any) =>  item.dsc), // Dropdown values
           },
           editable,
         };
@@ -2041,6 +2074,18 @@ const useViewModify = (pageType: string) => {
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status==200){
         toast.dismiss();
+        const allData = [...activeMaster.rowData];
+        const indexesToRemove = selectedRows.map((row:any) => allData.indexOf(row));
+        indexesToRemove.sort((a:any,b:any) => b - a);
+        // indexesToRemove.forEach((index:number) => allData.splice(index,1));
+        const newData:any = [];
+        allData.forEach((e:any,index: any)=>{
+          if(!indexesToRemove.includes(index)) newData.push(e);
+        })
+
+        dispatch(UPDATE_ROW_DATA(newData));
+        
+        
         notifySuccess("Buffer task updated!!")
       }
       else{
@@ -2208,9 +2253,6 @@ const useViewModify = (pageType: string) => {
   const onMTOSaveAsDraft = async()=>{
 
     notifyLoader("Saving Draft...")
-
-    console.log("draft page type", pageType);
-    console.log("active master for page", activeMaster);
 
     if(activeMaster.id===501){
 
