@@ -81,7 +81,6 @@ const DueDateQuotation = () => {
   const {  mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getFilteredOrdersForExcelDDQ} = useGetOrdersForExcelDDQ();
   const {colDefMap , getColDef} = useColDef();
-  const [isAnalyticsLoading, setIsAnalyticsLaoding] = useState(false);
   const  { 
     state: currFilter, 
     setState: setCurrFilter, 
