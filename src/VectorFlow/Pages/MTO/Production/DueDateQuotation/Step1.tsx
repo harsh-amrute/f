@@ -1,5 +1,5 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
-import { GridOptions } from 'ag-grid-enterprise';
+import { GridOptions, SideBarDef } from 'ag-grid-enterprise';
 import _ from 'lodash';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import VFTable from '../../Common/VFTable';
@@ -43,7 +43,7 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
 
 
 
-  useEffect(()=>{ 
+  useEffect(()=>{
     if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
         const result = currentGridRef?.current?.api.applyColumnState({
             state: columnState,
@@ -53,7 +53,27 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
             console.error('Failed to apply column state');
         }
     }
-  });
+  }, []);
+
+  const sideBar = React.useMemo<
+  SideBarDef | string | string[] | boolean | null
+>(() => {
+  return {
+    toolPanels: [
+      {
+        id: "columns",
+        labelDefault: "Columns",
+        labelKey: "columns",
+        iconKey: "columns",
+        toolPanel: "agColumnsToolPanel",
+        toolPanelParams: {
+          suppressPivots: true,
+          suppressPivotMode: true,
+        },
+      },
+    ],
+  };
+}, []);
 
   return (
     <>
@@ -100,7 +120,8 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
           setSelectedRows(newMap);
           currentPageSelectedRows.current = params.api.getSelectedNodes();
         }}
-        debug={true}
+        maintainColumnOrder={true}
+        sideBar={sideBar}
       />
       <VFPagination
         selectedRows={0}

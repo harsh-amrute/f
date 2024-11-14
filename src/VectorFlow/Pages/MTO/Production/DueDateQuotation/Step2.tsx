@@ -1,5 +1,5 @@
 import { AgCharts } from 'ag-charts-react';
-import { GridOptions } from 'ag-grid-enterprise';
+import { GridOptions, SideBarDef } from 'ag-grid-enterprise';
 import { Allotment } from 'allotment';
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { getColumnDefinations } from '../../../../../helpers/utils';
@@ -962,6 +962,26 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         return isDisabled;
     }, [selectedRoute, selectedBuffers])
 
+    const sideBar = React.useMemo<
+    SideBarDef | string | string[] | boolean | null
+  >(() => {
+    return {
+      toolPanels: [
+        {
+          id: "columns",
+          labelDefault: "Columns",
+          labelKey: "columns",
+          iconKey: "columns",
+          toolPanel: "agColumnsToolPanel",
+          toolPanelParams: {
+            suppressPivots: true,
+            suppressPivotMode: true,
+          },
+        },
+      ],
+    };
+  }, []);
+
     return (
         <>
             <Allotment vertical separator ref={allotment} snap={false} proportionalLayout={false}>
@@ -1077,7 +1097,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             onGridReady={(params: any) => {
                                 params.api.autoSizeAllColumns();
                             }}
-
+                            sideBar={sideBar}
                         />
                     </Wrapper>
                 </Allotment.Pane>
