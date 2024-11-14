@@ -831,7 +831,16 @@ const ActionToolBar = ({
               ></VFSelectedFilters>
             )}
 
-            {currCategory === "BPR" && onSubmitEditedRows && (
+            {/* {currCategory === "BPR" && onSubmitEditedRows && (
+              <VFButtonOutline
+                onClick={onSubmitEditedRows}
+                themeUi={themeUi}
+                disabled={disableSubmitEditedRowsBtn}
+              >
+                Save Remarks
+              </VFButtonOutline>
+            )} */}
+            {(currCategory === "BPR" || currCategory === "BOR") && onSubmitEditedRows && (
               <VFButtonOutline
                 onClick={onSubmitEditedRows}
                 themeUi={themeUi}
@@ -840,6 +849,7 @@ const ActionToolBar = ({
                 Save Remarks
               </VFButtonOutline>
             )}
+
 
             {currCategory === "ResearchInsight" && (
               <>

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import axios from 'axios'
+import { SubmitBORRemarkPayload } from '../../../../../VectorFlow/types/BPR';
 
 
 export namespace SupplyChainIntelligenceHubService {
@@ -33,5 +34,16 @@ export namespace SupplyChainIntelligenceHubService {
     });
   }
 
+  export const submitBORRemark = async (payload:{data:Array<SubmitBORRemarkPayload>}) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/AddBORRemark`,{...payload,"forwardUsers":true},{
+      headers:{ 'Content-Type': 'application/json' }
+    });
+  }
+
+  export const getBORRemarkHistory = async (payload:any) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetBORRemarkDetails`,{...payload,"forwardUsers":true},{
+      headers:{ 'Content-Type': 'application/json' }
+    }); 
+  }
 }
 
