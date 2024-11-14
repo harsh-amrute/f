@@ -165,6 +165,10 @@ const useSavedDrafts = ()=>{
                 }
             ]
 
+            if(draftDetails.isMTO && (draftDetails.ActionType === "Modify")){
+                masterState[0].colDefs = [...convertToColDefs(fields)];
+            }
+
             dispatch(TOGGLE_UPLOAD_MODAL(false));
 
             
@@ -176,7 +180,16 @@ const useSavedDrafts = ()=>{
             dispatch(UPDATE_ACTIVE_MASTER(0))
             
             // dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster))            // dispatch(UPDATE_ACTIVE_MASTER())
+            if(draftDetails.ActionType == "Modify"){
+                navigate(`/master-data-management/control-panel/view-modify`);
+            }
+            else if(draftDetails.ActionType === "Add"){
+                navigate(`/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
+            }
+            else{
             navigate(`/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
+
+            }
             toast.dismiss();
             notifySuccess("Draft Loaded Successfully");
 
@@ -186,7 +199,6 @@ const useSavedDrafts = ()=>{
         }
             
             // console.log('act name..',draftDetails.ActionType)
-            // navigate(`/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
             // toast.dismiss();
             // notifySuccess("Draft Loaded Successfully");
 

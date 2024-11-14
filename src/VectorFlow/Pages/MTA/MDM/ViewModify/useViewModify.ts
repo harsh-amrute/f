@@ -330,8 +330,13 @@ const useViewModify = (pageType: string) => {
 
   useEffect(()=>{
     const getMasterUIConfigurationData = async()=>{
-      const {data} = await masterUIConfiguration(pageType);
-      setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
+      try{
+
+        const {data} = await masterUIConfiguration(pageType);
+        setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
+      }catch(e){
+        console.error(e)
+      }
       }
       getMasterUIConfigurationData()
   },[])
@@ -355,8 +360,6 @@ const useViewModify = (pageType: string) => {
           console.log(e);
         }
       }
-
-      console.log("data.......", data)
       
       if(data){
         
@@ -2206,13 +2209,17 @@ const useViewModify = (pageType: string) => {
 
     notifyLoader("Saving Draft...")
 
+    console.log("draft page type", pageType);
+    console.log("active master for page", activeMaster);
+
     if(activeMaster.id===501){
 
       const BufferPostObj: any = {
         mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
-      buffData: []
+      buffData: [],
+      at: pageType==="add"?"Add":"Modify"
     }
 
     
