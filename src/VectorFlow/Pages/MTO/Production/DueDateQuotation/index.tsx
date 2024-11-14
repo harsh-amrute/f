@@ -41,11 +41,6 @@ const DueDateQuotation = () => {
   const [unScheduled, setUnScheduled] = useState(true);
   const [rows, setRows] = useState<any>([]);
   const [selectedRows, setSelectedRows] = useState<any>(new Map());
-  // const selectedRows = useRef(new Map());
-
-  // const setSelectedRows = (key:any,value:any) => {
-  //   selectedRows.current.set(key,value);
-  // };
   const [step, setStep] = useState(1);
   const [masters, setMasters] = useState<any>(null);
   const [lineCCR, setLineCCR] = useState<any>(null);
@@ -448,15 +443,6 @@ const DueDateQuotation = () => {
   }
 
   const handleSaveClick = async (coldefs?: any) => {
-  //   if (currentGridRef?.current && columnState?.length ) {
-  //     const result = currentGridRef?.current?.api.applyColumnState({
-  //         state: columnState,
-  //         applyOrder: true
-  //     });
-  //     if (!result) {
-  //         console.error('Failed to apply column state');
-  //     }
-  // }
     try {
       if(coldefs){
         const payload = {
@@ -476,7 +462,6 @@ const DueDateQuotation = () => {
           rn_id: UIGridCode.ProdDDQ,
           cs: JSON.stringify(config)
         }
-        console.log("config.....", config);
         
         await updateUserUIReportConfigData([payload]);
         await getUserColumnConfig();
