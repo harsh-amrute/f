@@ -239,7 +239,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         return i
     }, [maxFolinDays])
 
-    console.log(chartData);
     const chartOptions: any = {
         data: chartData,
         series: [
@@ -464,9 +463,9 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         console.log("lineCCRPendingQty", lineCCRPendingQty)
                         console.log("orderPendingQty", orderPendingQty)
 
-                        if (!lineCCRPendingQty) {
+                        if (lineCCRPendingQty!==null && lineCCRPendingQty<0 && lineCCRPendingQty===undefined) {
                             if (!orderPendingQty) {
-                                errors.push(`Missing Pending Qty for CCR: ${ccrNames[index]} or Order: ${order.oid}`)
+                                errors.push(`Missing Pending Qty for CCR: ${ccrNames[index]} for Order: ${order.oid}`)
                             }
                         }
 
