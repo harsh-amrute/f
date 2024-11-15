@@ -1,4 +1,4 @@
-import { GridOptions } from 'ag-grid-enterprise'
+import { GridOptions, SideBarDef } from 'ag-grid-enterprise'
 import { format } from 'date-fns'
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useUpdateScheduleOrders } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
@@ -144,6 +144,24 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
         onScheduled: onScheduled
     }));
 
+    const sideBar = React.useMemo<SideBarDef | string | string[] | boolean | null >(() => {
+    return {
+      toolPanels: [
+        {
+          id: "columns",
+          labelDefault: "Columns",
+          labelKey: "columns",
+          iconKey: "columns",
+          toolPanel: "agColumnsToolPanel",
+          toolPanelParams: {
+            suppressPivots: true,
+            suppressPivotMode: true,
+          },
+        },
+      ],
+    };
+  }, []);
+
 
     return (
         <>
@@ -183,6 +201,7 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
                         maxDateLno
                     });
                 }}
+                sideBar={sideBar}
             />
             {dates && <BasketingSection>
                 <BasketingContainer>

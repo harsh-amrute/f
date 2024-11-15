@@ -201,6 +201,9 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/IST",
     url: "/",
     status: true,
+    lp_attr : true,
+    lp_img : "/assets/img/IST 1.svg",
+    app_id : 1,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
     child: [
       {
@@ -247,6 +250,7 @@ export const listMenuParent: any = [
     img: "/assets/img/VectorFLOW/BPR/replacement",
     url: "/supply-chain-intelligence-hub/planning",
     status: false,
+    app_id : 2,
     role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
     avoidHeader: true,
     child: [
@@ -258,7 +262,9 @@ export const listMenuParent: any = [
         child: [
           {
             name: "Planning",
+            lp_attr : true,
             img: "/assets/img/nav/arrow_down.svg",
+            lp_img : "/assets/img/planning.svg",
             url: "/supply-chain-intelligence-hub/planning",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
@@ -360,13 +366,17 @@ export const listMenuParent: any = [
           {
             name: "Guided Insights",
             img: "/assets/img/nav/arrow_down.svg",
+            lp_attr : true,
             url: "/insights-and-trends/guided-insights",
+            lp_img : "/assets/img/Guided-In.svg",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           {
             name: "Research Insights",
             img: "/assets/img/nav/arrow_down.svg",
+            lp_attr : true,
             url: "/insights-and-trends/research-insights",
+            lp_img : "/assets/img/Reasearch-in.svg",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           }
         ]
@@ -415,7 +425,10 @@ export const listMenuParent: any = [
     id: 19,
     name: "Procurement",
     img: "/assets/img/nav/procurement",
+    lp_attr : true,
+    app_id : 3,
     url: "/procurement/material-coverage-open-sales",
+    lp_img : "/assets/img/Prourment.svg",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
     avoidHeader: true,
@@ -477,6 +490,9 @@ export const listMenuParent: any = [
     id: 10,
     name: "navbar.listMenuParent.prodAndPlanningScheduling.title",
     img: "/assets/img/nav/prod-plan-icon",
+    lp_attr : true,
+    app_id : 3,
+    lp_img : "/assets/img/Prod-icon.svg",
     url: "/production-planning-scheduling/enquiry-response",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager"],
@@ -663,6 +679,9 @@ export const listMenuParent: any = [
     id: 11,
     name: "navbar.listMenuParent.poogi.title",
     img: "/assets/img/nav/poogi-module1",
+    lp_attr : true ,
+    app_id : 3,
+    lp_img :"/assets/img/Poogi 3.svg",
     url: "/poogi/reasons-for-delayed-orders",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
@@ -723,6 +742,9 @@ export const listMenuParent: any = [
     id: 12,
     name: "navbar.listMenuParent.manufacturingHub.title",
     img: "/assets/img/nav/machine2",
+    lp_attr : true , 
+    app_id : 3,
+    lp_img : "/assets/img/Manufacturing.svg",
     url: "/manufacturing-intelligence-hub/delivery-performance/bm-trends",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
