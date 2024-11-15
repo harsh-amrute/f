@@ -2267,26 +2267,27 @@ const useViewModify = (pageType: string) => {
     
     let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
 
+
     activeMaster.rowData.forEach((ele:any)=>{
-      bufferTypeData.forEach((e:any)=>{
-        if(ele.dsc===e.bt){
-          e.bt=ele.id;
+      const e = _.cloneDeep(ele);
+      bufferTypeData.forEach((elm:any)=>{
+        if(ele.dsc===elm.bt){
+          e.bt=elm.id;
         }
       })
-      if(totalNewVals===0) return;
-      totalNewVals--;
-      const e = _.cloneDeep(ele);
+      if(totalNewVals===0 && pageType==="modify") return;
+      else totalNewVals--;
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
       e.err= "no error"
       
       
       
-      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
-      
+      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));   
     })
 
     try{
+      
       const response = await saveBufferMasterDraft([BufferPostObj]);
       if(response.status=== 200){
         toast.dismiss();
