@@ -70,7 +70,6 @@ const InTransitWhereAbouts = ()=>{
         themeUi
     } = useInTransitWhereAbouts()
 
-
     return(
         <GridStateContext.Provider
         value={{
@@ -102,6 +101,7 @@ const InTransitWhereAbouts = ()=>{
                 onApplyFilter={onApplyFilter}
                 onSubmitEditedRows={onSubmitEditedRows}
                 disableSubmitEditedRowsBtn={editedRows.length===0}
+                disableChartAndGridViewToggle
               />
               </div>
           
@@ -113,7 +113,7 @@ const InTransitWhereAbouts = ()=>{
             <div style={{height:'70%',marginLeft:'15px'}}>
                 <VFTable
                     columnDefs={colDefs}
-                    rowData={[...rowData]}
+                    rowData={rowData}
                     {...agGridProps}
                     ref={ref}
                     height={"100%"}

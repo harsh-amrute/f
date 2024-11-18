@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router"
-import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
+import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration, useGetBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyError, notifyPromise, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
-import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS } from "../../../../../redux/actions/MDM"
-import { createMastersStateFromDraftData, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
+import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS, UPDATE_FILTER } from "../../../../../redux/actions/MDM"
+import { createMastersStateFromDraftData, generateRandomId, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
@@ -25,10 +25,11 @@ const useSavedDrafts = ()=>{
     const {data,isLoading,refetch} = useGetAllDrafts();
     const {mutateAsync:getDraftCount} = useGetDraftCount();
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
-    const [allDrafts, setAllDrafts] = useState<any>(data?.data.data);
+    const [allDrafts, setAllDrafts] = useState<any>(data?.data?.data);
     const {mutateAsync: getMtoDrafts} = useGetMTODrafts();
     const {mutateAsync: getDraftByIdMTO} = useGetMTODraftById();
     const {mutateAsync: getMTOMasterUIConfiguration} = useGetMTOMasterUIConfiguration();
+    const {mutateAsync: getBufferMasterData} = useGetBufferMasterData();
     
     const user = useUserData();
     
@@ -37,14 +38,14 @@ const useSavedDrafts = ()=>{
             // TODO: change the data to userid later now data is available for this
             const response:any = await getMtoDrafts(user.user.user.id);
             let concatedData:any = [];
-            if(data){
+            if(data && data.data && data.data.data){
                 concatedData = [...data.data.data];
             }
             response.data.data.forEach((draft: any)=>{
                 const newData = {
                     DraftId: draft.did,
                     ActionType: draft.at,
-                    LastModifiedDateTime:draft.co,
+                    LastModifiedDateTime: new Date(draft.co).getTime(),
                     Masters: draft.mnm,
                     SearchKeys: draft.sk,
                     userid: draft.uid,
@@ -64,9 +65,9 @@ const useSavedDrafts = ()=>{
     
     
     useEffect(()=>{
-        if(data?.data){
+        // if(data?.data){
             getCombinedMTOData();
-        }
+        // }
     },[data])
     
     const openDeleteModal = (draftId:string)=>{
@@ -105,16 +106,18 @@ const useSavedDrafts = ()=>{
 
     //   }
 
-    const convertToColDefs = (data:any) => {
-        return data.map((item:any )=> ({
-          field: item?.key,                    // Use the "key" as the "field"
-          colId: item?.key,                    // Also set "colId" from "key"
-          headerName: item?.displayName,        // Set "headerName" from "displayName"
-          floatingFilter: false,              // Set default values for additional properties
-          wrapText: true,
-          autoHeight: true,
-          editable: true
-        }));
+    const convertToColDefs = (data:any, ActionType: string) => {
+        return data
+          .sort((a:any, b:any) => (a.col_Position || 0) - (b.col_Position || 0))
+          .map((item: any) => ({
+            field: item?.key,                    // Use the "key" as the "field"
+            colId: item?.key,                    // Also set "colId" from "key"
+            headerName: item?.displayName,        // Set "headerName" from "displayName"
+            floatingFilter: false,              // Set default values for additional properties
+            wrapText: true,
+            autoHeight: true,
+            editable: (ActionType == "Modify") ? false : true
+          }));
       };
     
     const onEditDraft = async(draftDetails:any)=>{
@@ -124,7 +127,19 @@ const useSavedDrafts = ()=>{
             try{
                 const res: any = await getDraftByIdMTO(draftDetails.DraftId);
                 dispatch(SET_RECORD_COUNT(res.data.data.count));
-                const draftData:any = res.data.data.results;
+                let draftData:any = res.data.data.results;
+
+                if(draftDetails.isMTO && (draftDetails.ActionType === "Modify")){
+                    try{
+                        const result = await getBufferMasterData();
+                        draftData = [...draftData, ...result.data.data];
+
+                        // console.log("final DraftData .... ", draftData);
+                    }
+                    catch(e){
+                        console.log(e);
+                    }
+                }
            
 
             const mastersDataRes= await getMTOMasterUIConfiguration();
@@ -142,42 +157,49 @@ const useSavedDrafts = ()=>{
 
             const masterState:any = [
                 {   isMTO: true,
-                    "id": "501",
-                    "name": "SKU",
-                    "colDefs": [{checkboxSelection: true},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...convertToColDefs(fields)],
+                    "id": 501,
+                    "name": "Buffer",
+                    "colDefs": [{checkboxSelection: true},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...convertToColDefs(fields,draftDetails.ActionType)],
                     "rowData": draftData,
                     "isChecked": true,
-                    "filters": [
-                    ],
-                    "progress": "something",
-                    "fields": [
-                        {
-                            "displayName": "SKUCode",
-                            "key": "sc",
-                            "col_Position": "1",
-                            "visible": true,
-                            "isAdd": true,
-                            "isEdit": false,
-                            "isDownload": true,
-                            "isApplicable": true,
-                            "dataType": "String"
-                        },
-                    ]
+                    "filters": [{
+                        id: generateRandomId(),
+                        masterId: 501,
+                        field: "",
+                        operator: '',
+                        text: ''
+                    }],
+                    "progress": "view",
+                    "fields": fields
                 }
             ]
+
+            if(draftDetails.isMTO && (draftDetails.ActionType === "Modify")){
+                masterState[0].colDefs = [...convertToColDefs(fields, draftDetails.ActionType)];
+            }
 
             dispatch(TOGGLE_UPLOAD_MODAL(false));
 
             
             dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
             // dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(fields)))
+            dispatch(UPDATE_FILTER(masterState.filters))
             dispatch(FILL_MASTERS(masterState))
             dispatch(SET_DRAFT_ID(draftDetails.DraftId))
             dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
             dispatch(UPDATE_ACTIVE_MASTER(0))
             
             // dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster))            // dispatch(UPDATE_ACTIVE_MASTER())
+            if(draftDetails.ActionType == "Modify"){
+                navigate(`/master-data-management/control-panel/view-modify`);
+            }
+            else if(draftDetails.ActionType === "Add"){
+                navigate(`/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
+            }
+            else{
             navigate(`/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
+
+            }
             toast.dismiss();
             notifySuccess("Draft Loaded Successfully");
 
@@ -187,7 +209,6 @@ const useSavedDrafts = ()=>{
         }
             
             // console.log('act name..',draftDetails.ActionType)
-            // navigate(`/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
             // toast.dismiss();
             // notifySuccess("Draft Loaded Successfully");
 

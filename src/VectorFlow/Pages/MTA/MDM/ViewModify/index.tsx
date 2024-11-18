@@ -110,20 +110,24 @@ const ViewModify = () => {
     MTOPoogiMajorColdef,
     MTOPoogiMinorColdef,
     onMajReasonSelected,
-    minReasonRowData
+    minReasonRowData,
+    onMinReasonEditingStopped,
+    addRowToMtoMinGrid
 
   } = useViewModify('modify');
 
 
-  useEffect(() => {
-    if (ref.current && ref.current.api) {
-      if (isTableDataLoading) {
-        ref.current?.api.showLoadingOverlay();
+
+    
+    useEffect(()=>{
+      if(ref.current && ref.current.api){
+        if(isTableDataLoading){
+          ref.current?.api.showLoadingOverlay();
+        }
+        else{
+          ref.current?.api.hideOverlay();
+        }
       }
-      else {
-        ref.current?.api.hideOverlay();
-      }
-    }
   }, [isTableDataLoading])
 
   return (
@@ -167,7 +171,7 @@ const ViewModify = () => {
               onTabChange={handleTabChange}
               onTabClose={handleTabClose}
               newTabTitle={"Add Master"}
-              newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
+              newTabIcon={"/assets/img/VectorFLOW/BPR/add-circle.svg"}
               newTabHandler={addNewMaster}
             >
               {(activeMaster.progress === 'default' || activeMaster.progress === 'view')
@@ -177,6 +181,7 @@ const ViewModify = () => {
                     <SCLegend>Filter</SCLegend>
                     {
                       activeMaster.filters.map((f: Filter) => {
+                        console.log("activeMaster filters in view mofidy", activeMaster.filters, "activeMaster id", activeMaster.id);
                         if (f.masterId == activeMaster?.id) {
                           return (
                             <VFFilter
@@ -239,16 +244,14 @@ const ViewModify = () => {
                 columnDefs={MTOPoogiMajorColdef}
                 rowData={activeMaster.rowData}
                 {...agGridProps}
-                suppressPaginationPanel={!isDataAvailableLocally}
                 statusBar={{
-                  statusPanels: isDataAvailableLocally ? [
+                  statusPanels:  [
                     { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                     { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
                     { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                       { statusPanel: 'agAggregationComponent', align: 'left' },
-                    ] :
-                    [],
+                    ] 
                   }}
                   rowSelection ={"single"}
                   suppressRowClickSelection={false}
@@ -260,19 +263,18 @@ const ViewModify = () => {
                 columnDefs={MTOPoogiMinorColdef}
                 rowData={minReasonRowData}
                   {...agGridProps}
-                  suppressPaginationPanel={!isDataAvailableLocally}
                   statusBar={{
-                    statusPanels: isDataAvailableLocally ? [
+                    statusPanels: [
                       { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
                       { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                       { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
                       { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                       { statusPanel: 'agAggregationComponent', align: 'left' },
-                    ] :
-                      [],
+                    ] 
                     }}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
                   overlayNoRowsTemplate={"Select a major reason to see the corresponding minor reason"}
+                  onCellEditingStopped={onMinReasonEditingStopped}
                   />
                 </MTOPoogiTableContainer>
                     <PoogiAddButtonWrapper>
@@ -314,7 +316,7 @@ const ViewModify = () => {
                     cursor: 'pointer',
                     background: '#fff'
                   }}
-                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoGrid()) }}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoMinGrid()) }}
                 >
                   {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
                     <>
@@ -360,7 +362,7 @@ const ViewModify = () => {
                   />
                 }
               {
-                (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
+                (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen) && !(activeMaster.id===503))
                 &&
                 <VFPagination
                   selectedRows={selectedRowsCount}

@@ -495,7 +495,7 @@ export const listMenuParent: any = [
     lp_img : "/assets/img/Prod-icon.svg",
     url: "/production-planning-scheduling/enquiry-response",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager","MasterScheduler"],
     child: [
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.enquiryResponse",
@@ -507,7 +507,7 @@ export const listMenuParent: any = [
         name: "navbar.listMenuParent.prodAndPlanningScheduling.dueDateQuotation",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-and-scheduling/due-date-quotation",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "MasterScheduler"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.orderRescheduling",
@@ -592,7 +592,7 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/miscellaneousReports",
     url: "",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","BMReportManager"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","DBMManager","BPRManager","MasterUpdater","MasterApprover","BMReportManager"],
     child: [
 
 

@@ -36,6 +36,16 @@ export namespace DueDateQuotationService {
 
     }
 
+    export const getDDQAnalyticsData = async () => {
+       
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?analytics=1`,{
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+            }
+        })
+    }
+
     export const getBufferMasterData = async () => {
         return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getBufferMasterData/`, {
             headers: {

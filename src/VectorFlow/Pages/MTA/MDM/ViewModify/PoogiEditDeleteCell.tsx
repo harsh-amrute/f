@@ -69,14 +69,12 @@ const PoogiEditDeleteCell = (params: any) => {
 
 
   const onEditClick = ()=>{
-    console.log("params..........", params)
     if(params.data.minId){
       dispatch(SET_EDITABLE_MIN_ROW(params.node.rowIndex))
-      console.log("maj updated");
+
     }
     else{
       dispatch(SET_EDITABLE_MAJ_ROW(params.node.rowIndex))
-      console.log("min updated");
     }
     dispatch(UPDATE_COLDEFS(activeMaster?.colDefs?.map((colDef: any) => ({ ...colDef, editable: (para: any) => para.node.rowIndex === params?.node?.rowIndex}))));
   }

@@ -25,7 +25,7 @@ import useColDef from '../../../../../hooks/useColDef';
 // const user = { user: { them_ui: 'pure' } };
 
 interface RowDataType {
-    oid: string;
+    odk: string;
     dd?: string;
     [key: string]: any; // Add this line to allow for additional properties
 }
@@ -148,10 +148,9 @@ const OrderRescheduling = () => {
 
         if (selectedData) {
             let mergedData = [...selectedRowData]; // Start with the existing selected data
-
+            
             selectedData.forEach((newItem) => {
-                const index = mergedData.findIndex(item => item.oid === newItem.oid);
-
+                const index = mergedData.findIndex(item => (item.odk === newItem.odk));
                 if (index !== -1) {
                     // If the item exists, replace it
                     mergedData[index] = newItem;
@@ -164,16 +163,15 @@ const OrderRescheduling = () => {
             rowData.forEach((item) => {
                 let isThere = 0;
                 selectedData.forEach((selectedD) => {
-                    if (selectedD.oid === item.oid) {
+                    if (selectedD.odk === item.odk) {
                         isThere = 1;
                     }
                 })
 
                 if (isThere == 0) {
-                    mergedData = mergedData.filter(e => e.oid !== item.oid)
+                    mergedData = mergedData.filter(e => e.odk !== item.odk)
                 }
             })
-
             setSelectedRowData(mergedData);
         }
     };
@@ -248,7 +246,7 @@ const OrderRescheduling = () => {
     const addChangeDate = (date: string, key: string) => {
         const newData = rowData;
         newData.forEach(item => {
-            if (item.oid === key) {
+            if (item.odk === key) {
                 item.dd = date;
             }
         });
@@ -419,15 +417,13 @@ const OrderRescheduling = () => {
         const isSuccess = await PostData(finalData, "Order Due date updated successfully !");
         if (isSuccess) {
             setSelectedRowData([]);
-
         }
-
     };
 
-    const existsInSelected = (reqOid: string): boolean => {
+    const existsInSelected = (reqOdk: string): boolean => {
         for (let index = 0; index < selectedRowData.length; index++) {
             const element = selectedRowData[index];
-            if (element.oid === reqOid) {
+            if (element.odk === reqOdk) {
                 return true;
             }
 
@@ -440,11 +436,11 @@ const OrderRescheduling = () => {
             const nodesToSelect: IRowNode[] = [];
 
             params.api.forEachNode((node: any) => {
-                if (node.data && node.data.oid && existsInSelected(node.data.oid)) {
+                if (node.data && node.data.odk && existsInSelected(node.data.odk)) {
                     node.data.rs = selectedRowData[0].r;
                     for (let index = 0; index < selectedRowData.length; index++) {
                         const element = selectedRowData[index];
-                        if (element.oid === node.data.oid) {
+                        if (element.odk === node.data.odk) {
                             node.data.rs = element.rs;
                             node.data.dd = element.dd;
                         }

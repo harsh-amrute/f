@@ -22,11 +22,14 @@ import SubmitRemarkCellRenderer from "./SubmitRemarkCellRenderer";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
 const useOpenExpeditingRequests = () => {
 
     const ref = useRef()
     const tempRef = useRef()
+
+    const [internalRef,setInternalRef] = useState<any>()
 
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
@@ -74,10 +77,31 @@ const useOpenExpeditingRequests = () => {
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
-    // const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    // const [columnState,setColumnState] = useState<any>()
+    const {mutateAsync:getState} = useGetState()
+    const [gridState,setGridState] = useState<any>()
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
+    useEffect(()=>{
+      const getTableState = async()=>{
+        try{
+          const data =  await getState("OpenExpeditingRequests")
+          setGridState(JSON.parse(data.data.data))
+        }catch(err:any){
+          setGridState({
+              charts:[],
+              columns:[],
+              pivot:false
+          })
+        }
+      }
+      getTableState()
+  },[])
+
+  useEffect(()=>{
+      if(internalRef){
+          internalRef.api.applyColumnState({state:gridState?.columns || []})
+      }
+  },[internalRef,gridState])
 
       useEffect(()=>{
         const getRowData = async()=>{
@@ -107,8 +131,8 @@ const useOpenExpeditingRequests = () => {
     //     getTableState()
     // },[currentGridState])
 
-    const agGridProps: AgGridReactProps = {
-
+    const agGridProps: AgGridReactProps =useMemo(()=>{
+      return{
         suppressRowTransform: true,
         tooltipShowDelay: 0.3,
         tooltipTrigger: 'focus',
@@ -141,8 +165,10 @@ const useOpenExpeditingRequests = () => {
             },
             flex: 1,
         },
-        onCellValueChanged:(params)=>onCellValueChanged(params.data)
-    }
+        onCellValueChanged:(params)=>onCellValueChanged(params.data),
+        onGridReady:(params)=>setInternalRef(params)
+      }
+    },[])
 
     const onCellValueChanged = (newRow: any) => {
       setEditedRows((prev) => {

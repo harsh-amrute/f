@@ -259,6 +259,7 @@ export const SCOverviewWrap = styled.div`
 export const SCOverviewWrapTitle = styled.div`
   font-size: 1.6rem;
   margin-bottom: 10px;
+  font-weight:500;
 `
 
 export const SCOverviewWrapItem = styled.div<{ checkBackGround: boolean }>`

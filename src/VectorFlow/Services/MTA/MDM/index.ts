@@ -244,6 +244,12 @@ export const useSaveBufferMasterTask = () => {
     return await MDMService.saveBufferMasterTask(body)
   })
 }
+
+export const useSaveCCRMasterTask = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.saveCCRMasterTask(body)
+  })
+}
 export const useSaveBufferMasterDraft = () => {
   return useMutation(async (body: any) => {
     return await MDMService.saveBufferMasterDraft(body)
@@ -294,6 +300,12 @@ export const useGetCCRMasterData = ()=>{
 export const useGetPOOGIMasterData = ()=>{
   return useMutation(async ()=>{
     return await MDMService.getPOOGIMasterData();
+  })
+}
+
+export const useGetCalendarMasterData = ()=>{
+  return useMutation(async ()=>{
+    return await MDMService.getCalendarMasterData();
   })
 }
 

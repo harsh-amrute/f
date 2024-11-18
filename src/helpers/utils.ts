@@ -3,8 +3,8 @@ import { ColumnHeaderConfig } from '../VectorFlow/types/ColumnHeaderConfig';
 import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
-import { notifyError } from './notify'
-import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType, type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
+import { notifyError} from './notify'
+import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import { ColDef, ColGroupDef, CellClickedEvent } from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
@@ -24,6 +24,7 @@ import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntellige
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
 
 // clear cached token and redirect to sso login
+import CryptoJS from 'crypto-js';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -56,6 +57,17 @@ export const login = (navigate: NavigateFunction) => {
     window.location.href = String(process.env.REACT_APP_SSO_LOGIN_URL)
   }
 }
+
+export const hashPassword = (password: string): Promise<string> => {
+  const iv = CryptoJS.lib.WordArray.random(16); 
+  const encrypted = CryptoJS.AES.encrypt(password, CryptoJS.enc.Utf8.parse(process.env.REACT_APP_SECRET_KEY), {
+    iv: iv,
+    mode: CryptoJS.mode.CTR,
+    padding: CryptoJS.pad.NoPadding,
+  });
+  const encryptedPassword = iv.concat(encrypted.ciphertext).toString(CryptoJS.enc.Base64);
+  return encryptedPassword;
+};
 
 // save current url in session storage
 const saveOriginalUrlBeforeLogin = () => {
@@ -381,7 +393,9 @@ export const handleDownloadMTOVF = async (reportName: string, downloadName: stri
 }
 
 
-export const handleDownloadVF = async (reportName: string, downloadName: string) => {
+export const handleDownloadVF = async (reportName: string, downloadName:string) => {
+
+  console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
@@ -578,41 +592,32 @@ export const format_number = (num: number) => {
 }
 
 // Helper Function to Dynamically Map Roles fetched from Backend to the Frontend as required by the ArrowList Component.
-export const generateRolesObject = (roles: Array<object>, permission: string[], is_admin: boolean) => {
-  const rolesArray = [] as object[];
-  const rolesObjectIST: { id: number, title: string, status: boolean, child: object[] } = {
-    id: 0,
-    title: "",
-    status: false,
-    child: [],
-  }
-  const rolesObjectVF: { id: number, title: string, status: boolean, child: object[] } = {
-    id: 0,
-    title: "",
-    status: false,
-    child: [],
-  }
-
-  roles.forEach((role: any) => {
-
-    if (role.name.startsWith("IST")) {
-      if (permission.includes("IST Admin") || is_admin) {
-        rolesObjectIST.id = 1;
-        rolesObjectIST.title = "profile.tabContent.manageUsers.roles.interStoreTransfers";
-        rolesObjectIST.child.push(role);
-      }
+export const 
+generateRolesObject = (roles:Array<object>) => {
+  type Role = {
+    id: number;
+    title: string;
+    status: boolean;
+    child: Role[];
+  };
+  
+  const rolesArray:Role [] = [];
+  
+  roles.forEach((role:any)=>{
+    const roleObj = rolesArray.find((app:Role)=>app.id===role.application_id);
+    if(roleObj){
+      roleObj.child.push(role)
     }
-    else {
-      if (permission.includes("Admin") || is_admin) {
-        rolesObjectVF.id = 2;
-        rolesObjectVF.title = "profile.tabContent.manageUsers.roles.distribution";
-        rolesObjectVF.child.push(role);
-      }
+    else{
+      rolesArray.push({
+        id:role.application_id,
+        title:role.application_name,
+        status:false,
+        child:[role],
+      })
     }
   })
 
-  if (rolesObjectIST.child.length > 0) rolesArray.push(rolesObjectIST);
-  if (rolesObjectVF.child.length > 0) rolesArray.push(rolesObjectVF);
   return rolesArray;
 }
 
@@ -670,12 +675,18 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   const result: object[] = [];
   const buffer = await file.arrayBuffer();
 
+  let selectedKeys:any;
+
   //Selected Columns Keys
-  const selectedKeys = selectedColumns.map((col: any) => col.colId);
-
-
-  const data = await readXlsxFile(buffer, {
-    parseNumber: (string: any) => string
+  if(pageType==='add'){
+    selectedKeys = master.fields.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+  }
+  else{
+    selectedKeys = selectedColumns.map((col:any)=>col.colId);
+  }
+   
+  const data = await readXlsxFile(buffer,{
+    parseNumber: (string:any) => string
   });
   //displayName to key mapper
   const headerKeys = data[0].map((headerName: any) => {
@@ -901,6 +912,7 @@ export const mapStateFiltersToPayload = (filters: Filter[]) => {
 
 export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMasterState[] => {
 
+  console.log("masters mere masters.....",masters)
   return masters.map((master: Master) => ({
     id: master.id,
     name: master.name,
@@ -917,7 +929,7 @@ export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMa
     rowData: [],
     progress: 'default',
     isChecked: true,
-    isMTO: master.isMTO ? true : false
+    isMTO: true
   }))
 }
 
@@ -2426,17 +2438,67 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
     }
     if (key == 'pc') {
       return {
-        field: key,
-        colId: key,
-        headerName: 'ParentWhCode',
+        field:key,
+        colId:key,
+        headerName:'Parent Code',
         ...BTRDefaultColDefs
       }
     }
     if (key == 'pn') {
       return {
-        field: key,
-        colId: key,
-        headerName: 'ParentName',
+        field:key,
+        colId:key,
+        headerName:'Parent Name',
+        ...BTRDefaultColDefs
+      }
+    }
+    
+    if(key=='wc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'White in 30 days',
+        ...BTRDefaultColDefs
+      }
+    }
+    if(key=='bc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'Black in 30 days',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='blc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'Blue in 30 days',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='rc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'Red in 30 days',
+        ...BTRDefaultColDefs
+      }
+    }
+     if(key=='yc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'Yellow in 30 days',
+        ...BTRDefaultColDefs
+      }
+      
+    }
+     if(key=='gc'){
+      return {
+        field:key,
+        colId:key,
+        headerName:'Green in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2883,6 +2945,61 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
   return undefined;
 }
 
+export const convertUiConfigToOptions = (data:any) => {
+  console.log(data);
+  return data?.map((column:any)=>{
+    return {
+      value:column.Col_Code,
+      label:column.Header
+    }
+  })
+}
+
+
+export const handleDownloadVFReports = async (payload:{name:string,filters:any}) => {
+
+  try {
+    const {name} = payload
+    const token = await MainService.refreshToken();
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/download-excel`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`,
+        'Content-Type': 'application/json'
+      },
+      method:"post",
+      body:JSON.stringify(payload)
+    })  
+    if(!response.ok){
+      notifyError("Error while downloading")
+      return false; 
+    }else{
+    // Convert response to blob object
+    const blob = await response.blob()
+
+    console.log(blob)
+    // Create download URL for blob object
+    const url = URL.createObjectURL(blob)
+  
+    // Trigger download
+    const link = document.createElement('a')
+    link.href = url
+    if(name.length!==0){
+      link.setAttribute('download', `${name}`)
+    }else{
+      link.setAttribute('download', `ReportFile.csv`)
+    }
+    document.body.appendChild(link)
+    link.click()
+    // Clean up download URL
+    URL.revokeObjectURL(url);
+    
+  }
+  } catch (error:any) {
+    notifyError('Error while downloading');
+    return false;
+  }
+ 
+}
 export const mapProcPlanningFieldsToColDefs = (fields: ColumnHeaderConfig[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {

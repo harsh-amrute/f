@@ -67,6 +67,12 @@ const useBPRFilter=()=>{
                 label:'Color',
                 filters:[]
             },
+            generalFilter:{
+                id:'7',
+                label:'General',
+                filters:[]
+
+            }
         }
     )
     

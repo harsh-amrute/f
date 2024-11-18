@@ -40,23 +40,28 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
     const [ActiveDBMSuggestionData, SetActiveDBMSuggestionData]=useState([]);
     const [DBMSuggestionSkuData, SetDBMSuggestionSkuData]=useState([]);
     const [DBMSuggestionAgeingData, SetDBMSuggestionAgeingData]=useState([]);
-    const param = {};
 
     useEffect(() => {
       const fetchDBMNormSuggestionData = async ()=>{
-        const DBMNormSuggestionLocD =  await  DBMNormSuggestionLoc(param);
+        const DBMNormSuggestionLocD =  await  DBMNormSuggestionLoc();
         SetDBMSuggestionLocData(DBMNormSuggestionLocD?.data?.data);
-        const ActiveDBMSuggestionDataD= await DBMNormSuggestionPie(param);
+        const ActiveDBMSuggestionDataD= await DBMNormSuggestionPie();
         SetActiveDBMSuggestionData(ActiveDBMSuggestionDataD?.data?.data);
-        const DBMSuggestionSkuDataD= await DBMNormSuggestionSKUs(param);
+        const DBMSuggestionSkuDataD= await DBMNormSuggestionSKUs();
         SetDBMSuggestionSkuData(DBMSuggestionSkuDataD?.data?.data);
-        const DBMSuggestionAgeingDataD = await  DBMNormSuggestionAgeing(param)
+        const DBMSuggestionAgeingDataD = await  DBMNormSuggestionAgeing()
         SetDBMSuggestionAgeingData(DBMSuggestionAgeingDataD?.data?.data)
       }
       fetchDBMNormSuggestionData();
      
     }, [filter]);
 
+    console.log(DBMSuggestionSkuData)
+
+    const SortedDBMSuggestionSkuData = useMemo(()=>{
+      return DBMSuggestionSkuData.sort((a:any,b:any)=>(b.NormInc + b.NormDec) - (a.NormInc + a.NormDec))
+    },[DBMSuggestionSkuData])
+    
     
 
   // const DBMSuggestionSkuData = DBMNormSuggestionSKUs?.data?.data;
@@ -67,7 +72,7 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
   );
   const pieData = ActiveDBMSuggestionData?.map((row: any) => ({
     suggestion: row.suggestion,
-    count: Math.floor((row.count / totalCount) * 100),
+    count: parseFloat(((row.count / totalCount) * 100).toFixed(2))
   }));
 
   const refGraph1 = useRef<GridRef>();
@@ -966,7 +971,7 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
                           <VFTable
                             ref={refGraph3}
                             columnDefs={coldefs3}
-                            rowData={DBMSuggestionSkuData}
+                            rowData={SortedDBMSuggestionSkuData}
                             enableCharts={true}
                             enableRangeSelection={true} 
                             rowSelection="multiple"
@@ -1000,7 +1005,7 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
                       <VFTable
                         ref={refGraph3}
                         columnDefs={coldefs3}
-                        rowData={DBMSuggestionSkuData}
+                        rowData={SortedDBMSuggestionSkuData}
                         enableCharts={true}
                         enableRangeSelection={true} 
                         rowSelection="multiple"
@@ -1012,7 +1017,8 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
                               { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                               { statusPanel: 'agAggregationComponent', align:'left' },
                             ],
-                          }}                             onRowDataUpdated={() => generateChart(3)}
+                          }}                             
+                        onRowDataUpdated={() => generateChart(3)}
                         getChartToolbarItems={getChartToolbarItems}
                         chartToolPanelsDef={{
                           panels: [],

@@ -38,7 +38,8 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
         bu: parseFloat(item.bu),
         y: parseFloat(item.y),
         g: parseFloat(item.g),
-        w: parseFloat(item.w)
+        w: parseFloat(item.w),
+        r:parseFloat(item.r)
         // Parse the string to a floating-point number
     }));
 

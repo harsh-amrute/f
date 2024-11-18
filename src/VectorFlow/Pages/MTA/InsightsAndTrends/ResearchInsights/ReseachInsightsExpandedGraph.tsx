@@ -31,7 +31,8 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
         onUpdateGraphs
     } = props
 
-    const activeCapsuleIndex = graphs[id - 1].pen
+
+    const activeCapsuleIndex = graphs[id-1].pen
 
     const onChange = (e: any, key: string) => {
         const doesFilterExist = graphs[id - 1].filters.find((filter) => filter.key === key)
