@@ -24,8 +24,21 @@ import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
+import UserURLsDrawer from "../../../components/layouts/UserURLsDrawer";
+import UserRolesDrawer from "../../../components/layouts/UserRolesDrawer";
 
-const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
+
+interface ManageUsersProps{
+  is_admin:boolean
+  permission:Array<any>
+  themeUi:string
+  isRolesDrawerOpen:boolean
+  isURLsDrawerOpen:boolean
+  toggleRolesDrawer:(v:boolean)=>void
+  toggleURLsDrawer:(v:boolean)=>void
+}
+
+const ManageUsers = ({ is_admin, permission, themeUi,isRolesDrawerOpen,isURLsDrawerOpen,toggleRolesDrawer,toggleURLsDrawer }: ManageUsersProps) => {
   const { t } = useTranslation();
   const [contentModal, setContentModal] = useState({
     callApi: 0,
@@ -349,6 +362,19 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
           />
         )}
       </SCProfileOverView>
+
+      {isURLsDrawerOpen && (
+        <UserURLsDrawer
+          onClose={()=>toggleURLsDrawer(false)}
+        />
+        )}
+
+      {isRolesDrawerOpen && (
+        <UserRolesDrawer
+          onClose={()=>toggleRolesDrawer(false)}
+        />
+        )}
+
 
       <ModalManageUsers
         contentModal={contentModal}

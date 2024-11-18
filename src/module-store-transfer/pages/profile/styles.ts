@@ -150,3 +150,16 @@ export const SCChangePasswordCancel = styled.button`
 export const SCTabs = styled.div`
   padding: 0 50px;
 `
+
+
+export const SCTabsWrapper = styled.div`
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+`
+
+export const SCTabsAction = styled.div`
+  display:flex;
+  gap:15px;
+  margin:0px 10px 10px 0px;
+`

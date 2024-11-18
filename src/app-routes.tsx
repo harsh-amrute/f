@@ -65,6 +65,13 @@ import ElapsedTime from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/Ela
 import LeadTime from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/LeadTime'
 import TrendsOfFailureReason from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
 import OverallBmReport from './VectorFlow/Pages/MTO/Production/OverallBMReport'
+import {AuthGate,UnAuthGate} from './components/VectorFLOW/layouts/VectorAdmin/AuthGate'
+import VectorAdminLogin from './components/VectorFLOW/layouts/VectorAdmin/Login'
+import VectorAdminLayout from './components/VectorFLOW/layouts/VectorAdmin'
+import { ToastContainer } from 'react-toastify'
+import Tools from './components/VectorFLOW/layouts/VectorAdmin/Tools'
+import ManageRoles from './components/VectorFLOW/layouts/VectorAdmin/ManageRoles'
+import ManageURLs from './components/VectorFLOW/layouts/VectorAdmin/ManageURLs'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -1022,8 +1029,37 @@ export const initRoutes = (): RouteObject[] => {
           element: lazyLoad(<ResourceUtilization />)
         }
       ]
+    },
+    {
+      path: '/vector-admin',
+      element: <AuthGate />,
+      children: [
+        {
+          index: true,
+          element: <Tools/>,
+          path:'/vector-admin'
+        },
+        {
+          index: true,
+          element: <ManageRoles/>,
+          path:'/vector-admin/manage-roles'
+        },
+        {
+          index: true,
+          element: <ManageURLs/>,
+          path:'/vector-admin/manage-urls'
+        }
+      ]
+    },
+    {
+      path: '/vector-admin/login',
+      element: <UnAuthGate />,
+      children: [
+        {
+          index: true,
+          element: <VectorAdminLogin/>,
+        }
+      ]
     }
-
-
   ]
 }
