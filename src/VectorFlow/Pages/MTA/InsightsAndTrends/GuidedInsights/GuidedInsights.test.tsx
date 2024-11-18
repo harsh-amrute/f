@@ -1,6 +1,7 @@
 import { screen, render, fireEvent } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
-import { useGetAvailabilityTrend,  useGetChronicUnavailabilityGridView, useGetAvailabilityAgeing, useGetDBMNormSuggestionLoc, useGetDBMNormSuggestionPie, useGetDBMNormSuggestionSKUs, useGetDBMNormSuggestionAgeing, useGetExcessInventorySku, useGetExcessInventoryValue, useGetChronicUnavailabilityLoc, useGetChronicUnavailabilitySku} from "../../../../Services/MTA/InsightsAndTrends";
+// import { useGetAvailabilityTrend,  useGetChronicUnavailabilityGridView, useGetAvailabilityAgeing, useGetDBMNormSuggestionLoc, useGetDBMNormSuggestionPie, useGetDBMNormSuggestionSKUs, useGetDBMNormSuggestionAgeing, useGetExcessInventorySku, useGetExcessInventoryValue, useGetChronicUnavailabilityLoc, useGetChronicUnavailabilitySku} from "../../../../Services/MTA/InsightsAndTrends";
+import { useGetAvailabilityTrend,  useGetChronicUnavailabilityGridView, useGetAvailabilityAgeing, useGetExcessInventorySku, useGetExcessInventoryValue} from "../../../../Services/MTA/InsightsAndTrends";
 import { GuidedInsights } from "../../../../../mock-data/GuidedInsights";
 import GuidedInsight from ".";
 import { UserDataContext } from "../../../../../context";
@@ -72,38 +73,38 @@ const useGetAvailabiltyAgeingViewMockData: any = {
 // const useGetDBMNormSuggestionLocMock = useGetDBMNormSuggestionLoc as jest.MockedFunction<
 //     typeof useGetAvailabilityAgeing
 // >;
-const useGetDBMNormSuggestionLocMockData: any = {
-  mutateAsync: () => {
-    return { data: {data: GuidedInsights.DBMSuggestionsLoc }};
-  },
-};
+// const useGetDBMNormSuggestionLocMockData: any = {
+//   mutateAsync: () => {
+//     return { data: {data: GuidedInsights.DBMSuggestionsLoc }};
+//   },
+// };
 
 // const useGetDBMNormSuggestionPieMock = useGetDBMNormSuggestionPie as jest.MockedFunction<
 //     typeof useGetAvailabilityAgeing
 // >;
-const useGetDBMNormSuggestionPieMockData: any = {
-  mutateAsync: () => {
-    return { data: {data: GuidedInsights.DBMSuggestionsPie }};
-  },
-};
+// const useGetDBMNormSuggestionPieMockData: any = {
+//   mutateAsync: () => {
+//     return { data: {data: GuidedInsights.DBMSuggestionsPie }};
+//   },
+// };
 
 // const useGetDBMNormSuggestionSKUsMock = useGetDBMNormSuggestionSKUs as jest.MockedFunction<
 //     typeof useGetAvailabilityAgeing
 // >;
-const useGetDBMNormSuggestionSKUsData: any = {
-  mutateAsync: () => {
-    return { data: {data: GuidedInsights.DBMSuggestionsSKUs }};
-  },
-};
+// const useGetDBMNormSuggestionSKUsData: any = {
+//   mutateAsync: () => {
+//     return { data: {data: GuidedInsights.DBMSuggestionsSKUs }};
+//   },
+// };
 
 // const useGetDBMNormSuggestionAgeingMock = useGetDBMNormSuggestionAgeing as jest.MockedFunction<
 //     typeof useGetAvailabilityAgeing
 // >;
-const useGetDBMNormSuggestionAgeingData: any = {
-  mutateAsync: () => {
-    return { data: {data: GuidedInsights.DBMSuggestionAgeing }};
-  },
-};
+// const useGetDBMNormSuggestionAgeingData: any = {
+//   mutateAsync: () => {
+//     return { data: {data: GuidedInsights.DBMSuggestionAgeing }};
+//   },
+// };
 
 const useGetExcessInventorySkuMock = useGetExcessInventorySku as jest.MockedFunction<
     typeof useGetAvailabilityAgeing
@@ -126,20 +127,20 @@ const useGetExcessInventoryValueData: any = {
 // const useGetChronicUnavailabilityLocMock = useGetChronicUnavailabilityLoc as jest.MockedFunction<
 //     typeof useGetAvailabilityAgeing
 // >;
-const useGetChronicUnavailabilityLocData: any = {
-  mutateAsync: () => {
-    return { data: {data: GuidedInsights.ChronicUnavailabilityLocData}};
-  },
-};
+// const useGetChronicUnavailabilityLocData: any = {
+//   mutateAsync: () => {
+//     return { data: {data: GuidedInsights.ChronicUnavailabilityLocData}};
+//   },
+// };
 
 // const useGetChronicUnavailabilitySkuMock = useGetChronicUnavailabilitySku as jest.MockedFunction<
 //     typeof useGetAvailabilityAgeing
 // >;
-const useGetChronicUnavailabilitySkuData: any = {
-  mutateAsync: () => {
-    return { data: {data: GuidedInsights.ChronicUnavailabilitySkuData}};
-  },
-};
+// const useGetChronicUnavailabilitySkuData: any = {
+//   mutateAsync: () => {
+//     return { data: {data: GuidedInsights.ChronicUnavailabilitySkuData}};
+//   },
+// };
 
 
 

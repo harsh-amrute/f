@@ -12,7 +12,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 // import { SITE_KEY,TEST_SITE_KEY } from "../../../helpers/constants";
 import { SITE_KEY} from "../../../helpers/constants";
 import WelcomeBoard from "./welcome-board";
-import { hashPassword } from '../../../helpers/utils'
+// import { hashPassword } from '../../../helpers/utils'
 
 function LoginContainer() {
   const { t } = useTranslation();
