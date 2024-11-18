@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     BPRDailyAnalyticsHeader,
     BPRDailyAnalyticsContainer,
@@ -12,37 +12,38 @@ import {
     BPRDailyAnalyticsTableCellHeader,
 } from './DueDateQuotation.styled';
 import { formatNumber } from '../../Procurement/MaterialCoverage/CommonFunc';
+import { useGetDDQAnalytics } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 
 const DDQAnalytics = () => {
 
-    const options = {
-        "Order": [
-            {
-                "procBuff": 6,
-                "PodBuff": 9,
-                "ccrroute": 7,
-                "unsch": 0,
-                "sch": 0,
-                "count": 4
-            },
-            {
-                "procBuff": 5,
-                "PodBuff": 2,
-                "ccrroute": 9,
-                "unsch": 0,
-                "sch": 0,
-                "count": 2
-            },
-            {
-                "procBuff": 14,
-                "PodBuff": 4,
-                "ccrroute": 3,
-                "unsch": 0,
-                "sch": 0,
-                "count": 3
+    const {mutateAsync: getAnalyticsData} = useGetDDQAnalytics()
+
+    const [options , setOptions] = useState<any>({Order: [
+        { "pcb": "--",
+        "pdb":"--",
+        "ccr": "--",
+        "us": "--",
+        "sc": "--",
+        "ttl": "--"}
+    ]});
+
+    const getData = async()=>{
+        try{
+            const res:any = await getAnalyticsData();
+            if(res.status===200){
+                setOptions({Order: [res.data.data]})
             }
-        ]
+        }
+        catch(e){
+            console.log(e);
+        }
     }
+
+
+    useEffect(()=>{
+        getData();
+    },[])
+    
 
     const [rowData] = useState([
         {
@@ -55,10 +56,10 @@ const DDQAnalytics = () => {
             headerName: 'CCR/ Route'
         },
         {
-            headerName: 'Unsch- eduled'
+            headerName: 'Unscheduled'
         },
         {
-            headerName: 'Sched- uled'
+            headerName: 'Scheduled'
         },
         {
             headerName: 'Count'
@@ -88,7 +89,7 @@ const DDQAnalytics = () => {
 
                             if (data.headerName === 'Proc Buffer') {
                                 return (
-                                    <BPRDailyAnalyticsTableHeader style={{ borderTop: '1px solid white', borderLeft: '1px solid white' }}>
+                                    <BPRDailyAnalyticsTableHeader style={{ wordBreak:'break-all', padding: '1px', borderTop: '1px solid white', borderLeft: '1px solid white' }}>
                                         {data.headerName}
 
                                     </BPRDailyAnalyticsTableHeader>
@@ -96,7 +97,7 @@ const DDQAnalytics = () => {
                             }
                             else if (data.headerName === "Prod Buffer") {
                                 return (
-                                    <BPRDailyAnalyticsTableHeader style={{ borderTop: '1px solid white' }}>
+                                    <BPRDailyAnalyticsTableHeader style={{ wordBreak:'break-all', padding: '1px', borderTop: '1px solid white' }}>
                                         {data.headerName}
 
                                     </BPRDailyAnalyticsTableHeader>
@@ -104,14 +105,14 @@ const DDQAnalytics = () => {
                             }
                             else if (data.headerName === 'CCR/ Route') {
                                 return (
-                                    <BPRDailyAnalyticsTableHeader style={{ borderTop: '1px solid white', borderRight: '1px solid white' }}>
+                                    <BPRDailyAnalyticsTableHeader style={{ wordBreak:'break-all', padding: '1px', borderTop: '1px solid white', borderRight: '1px solid white' }}>
                                         {data.headerName}
 
                                     </BPRDailyAnalyticsTableHeader>
                                 )
                             }
                             return (
-                                <BPRDailyAnalyticsTableHeader>
+                                <BPRDailyAnalyticsTableHeader style={{ wordBreak:'break-all', padding: '1px',}}>
                                     {data.headerName}
                                 </BPRDailyAnalyticsTableHeader>
                             )
@@ -132,37 +133,37 @@ const DDQAnalytics = () => {
 
                                     <BPRDailyAnalyticsTableCell>
                                         <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
-                                            {o.procBuff}
+                                            {o.pcb}
                                         </BPRDailyAnalyticsTableCellHeader>
 
                                     </BPRDailyAnalyticsTableCell>
                                     <BPRDailyAnalyticsTableCell>
                                         <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }}>
-                                            {o.PodBuff}
+                                            {o.pdb}
                                         </BPRDailyAnalyticsTableCellHeader>
 
                                     </BPRDailyAnalyticsTableCell>
                                     <BPRDailyAnalyticsTableCell>
                                         <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
-                                            {formatNumber(o.ccrroute)}
+                                            {formatNumber(o.ccr)}
                                         </BPRDailyAnalyticsTableCellHeader>
 
                                     </BPRDailyAnalyticsTableCell>
                                     <BPRDailyAnalyticsTableCell>
                                         <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
-                                            {formatNumber(o.unsch)}
+                                            {formatNumber(o.us)}
                                         </BPRDailyAnalyticsTableCellHeader>
 
                                     </BPRDailyAnalyticsTableCell>
                                     <BPRDailyAnalyticsTableCell>
                                         <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
-                                            {formatNumber(o.sch)}
+                                            {formatNumber(o.sc)}
                                         </BPRDailyAnalyticsTableCellHeader>
 
                                     </BPRDailyAnalyticsTableCell>
                                     <BPRDailyAnalyticsTableCell>
                                         <BPRDailyAnalyticsTableCellHeader style={{ color: 'white' }} >
-                                            {formatNumber(o.count)}
+                                            {formatNumber(o.ttl)}
                                         </BPRDailyAnalyticsTableCellHeader>
 
                                     </BPRDailyAnalyticsTableCell>

@@ -102,3 +102,9 @@ export const useGetOrdersForExcelDDQ = () =>{
     })
 }
 
+export const useGetDDQAnalytics = ()=>{
+    return useMutation(async () => {
+        return DueDateQuotationService.getDDQAnalyticsData()
+    })
+}
+

@@ -507,13 +507,13 @@ export const listMenuParent: any = [
         name: "navbar.listMenuParent.prodAndPlanningScheduling.dueDateQuotation",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-and-scheduling/due-date-quotation",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "MasterScheduler"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.orderRescheduling",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-and-scheduling/order-rescheduling",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","MasterScheduler"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.fullKitAssignment",

@@ -54,7 +54,7 @@ function LoginContainer() {
     if (recaptchaValue || recaptcha) {
 
       const formData = getValues();  
-      formData.password = await hashPassword(formData.password)
+      // formData.password = await hashPassword(formData.password)
       mutateLogin(formData, {
         onSuccess: (data: any) => {
           if (data?.status === 400) {
