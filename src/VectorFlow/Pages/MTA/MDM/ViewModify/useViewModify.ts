@@ -337,8 +337,9 @@ const useViewModify = (pageType:string) => {
               err = error;
               warn = warning;
             }
-            
-            if(err){
+            //check if there is any errorenous column
+            const ifErrorExists = activeMaster.rowData.some((row:any)=>("error" in row)&&row["error"].length > 0);
+            if(err || ifErrorExists){
               newRow.error = err
               addInvalidDataColDefs('error');
             
@@ -346,7 +347,9 @@ const useViewModify = (pageType:string) => {
             else{
               newRow.error = ''
             }
-            if(warn){
+            //check if there is any warning column
+            const ifWarningExists = activeMaster.rowData.some((row:any)=>("warning" in row)&&row["warning"].length > 0);
+            if(warn || ifWarningExists){
               newRow.warning = warn
               addInvalidDataColDefs('warning');
             

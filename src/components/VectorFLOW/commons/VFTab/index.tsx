@@ -29,7 +29,7 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
   const masters = useSelector((state:RootState)=>state.mdm.masters);
 
   const getTabStatus = (currMaster:MDMMasterState) => {
-    if(currMaster.progress === 'submitted' || currMaster.progress === 'editOnlineSubmitted') return 'completed';
+    if(currMaster.progress === 'submitted' || currMaster.progress === 'editOnlineSubmitted' || currMaster.progress === 'deleteOnlineSubmitted') return 'completed';
     return activeMaster.id === currMaster.id ? 'active' : currMaster.progress;
 
   }
@@ -42,7 +42,7 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
                 masters.map((master:MDMMasterState,index:number)=>{
                   return(
                     <SCTabButton 
-                      status={getTabStatus(master)} 
+                      status={getTabStatus(activeMaster)} 
                       zIndex={masters.length-index} 
                       marLeft={index !== 0} 
                       themeUi={themeUi}
