@@ -38,6 +38,7 @@ interface VFMultiFilterProps{
     supplyChainForLocationCheckBoxList:Array<any> 
     supplyChainForChildrenOfCheckBoxList:Array<any>  
     currentTab?:any
+    currCategory?:any
     generalFilterOptions?:any
 
 }
@@ -437,11 +438,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         supplyChainForChildrenOfCheckBoxList,
         horizon = 0,
         currentTab,
+        currCategory,
         generalFilterOptions
 
         
     } = props
-
+    console.log(currentTab)
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string,updateLabel?:boolean)=>{
 
         // if(filterId==="Horizon"){
@@ -966,10 +968,10 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
                             <AvailabilityFilter placeholder={"Git"} onChange={(e:any,key:string)=>onFilterChange('AF3',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF3'}></AvailabilityFilter>
                         </FilterComponent>
-                        <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
+                        {/* <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
                             <AvailabilityFilter placeholder={"Availabilty"} onChange={(e:any,key:string)=>onFilterChange('AF4',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF4'}></AvailabilityFilter>
-                        </FilterComponent>
-                        {(currentTab==='on-hand' || currentTab==='both') && (
+                        </FilterComponent> */}
+                        {(currentTab==='on-hand' || currentTab==='both' || currCategory==='BPR'  ) && (
                              <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tech_color?'unset' : '50px'}}>
                              <FilterCheckboxAccordian filterType="On Hand Inventory Color" filterKey="availabilty_tech_color" isOpen={openStatus.availabilty_tech_color} setOpenStatus={setOpenStatus}>
                              <FilterMultiSelectCheckbox header={'OHIC'} filterOptions={[
@@ -989,8 +991,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                          </FilterComponent>
 
 
-                        ) }
-                        {(currentTab==='pipeline'|| currentTab==='both') &&  (
+                        )}
+                        {(currentTab==='pipeline'|| currentTab==='both' || currCategory==='BOR' || currCategory==='BPR'|| currCategory==='RRR') &&  (
                             <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_eco_color?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Pipeline Inventory Color" filterKey="availabilty_eco_color" isOpen={openStatus.availabilty_eco_color} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'PIC'}filterOptions={[

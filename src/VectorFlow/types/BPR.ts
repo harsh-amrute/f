@@ -23,6 +23,17 @@ export interface BPRDataPayload{
 }
 
 
+export interface BORDataPayload{
+    id: number,
+  name: string,
+  fields: Array<any>,
+    filters:any
+    paginationParameter:{
+        pageNumber:number,
+        recordsPerPage:number
+    }
+}
+
 export interface BPRSubmitRemarkToolTipProps{
     remark:string 
     style:CSSProperties
@@ -43,6 +54,10 @@ export interface SubmitBPRRemarkPayload{
     remark:string
     whcode:string
     skucode:string
+}
+
+export interface SubmitBORRemarkPayload extends SubmitBPRRemarkPayload{
+    spc:string
 }
 
 export interface GetDailyDataPayload{
