@@ -148,7 +148,9 @@ const ModalAdvanedPermissions = (props: any) => {
 
     // if(brand?.length > 0 && lcRegion?.length > 0) {
       // setIsLoadSpinner(true);
-      console.log("productPdrmis", productPermissions);
+      console.log(brand);
+      console.log(lcRegion);
+      console.log(productPermissions);
       const formData: any = {
         ...infoUser,
         tc: true,
@@ -239,6 +241,9 @@ const ModalAdvanedPermissions = (props: any) => {
     const currentPermission:any = storePermissionCopy.find((app:any)=>app.application_id === activeApplication);
     const currentProductPermission = prdPermissionRef.current?.getPrdPermissionValue();
     const currentLocationPermission = lcPermissionRef.current?.getLcPermissionValue();
+
+    console.log(currentPermission, currentProductPermission, currentLocationPermission);
+
 
     // if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
     //   t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
