@@ -66,6 +66,14 @@ import LeadTime from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/LeadTime'
 import TrendsOfFailureReason from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends/TrendsOfFailureReason'
 import OverallBmReport from './VectorFlow/Pages/MTO/Production/OverallBMReport'
 import LandingPage from './VectorFlow/Pages/Common/LandingPage'
+import MTOControlPanel from './VectorFlow/Pages/MTO/MDM/ControlPanel'
+import MTOViewModify from './VectorFlow/Pages/MTO/MDM/ViewModify'
+import MTOSavedDrafts from './VectorFlow/Pages/MTO/MDM/SavedDrafts'
+import MTOTaskStatus from './VectorFlow/Pages/MTO/MDM/TaskStatus'
+import MTOTaskPendingForReview from './VectorFlow/Pages/MTO/MDM/TaskPendingForReview'
+import MTOAddRecord from './VectorFlow/Pages/MTO/MDM/AddRecord'
+import MTODeleteRecord from './VectorFlow/Pages/MTO/MDM/DeleteRecord'
+import MTODataModificationHistory from './VectorFlow/Pages/MTO/MDM/DataModificationHistory'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -100,6 +108,15 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/task-pending',
     '/master-data-management/control-panel/add',
     '/master-data-management/control-panel/delete',
+    // mto mdm pages
+    '/master-data-management/mto-control-panel',
+    '/master-data-management/mto-control-panel/view-modify',
+    '/master-data-management/mto-saved-drafts',
+    '/master-data-management/mto-task-status',
+    '/master-data-management/mto-task-pending',
+    '/master-data-management/mto-control-panel/add',
+    '/master-data-management/mto-control-panel/delete',
+    //
     '/supply-chain-intelligence-hub/bor',
     '/supply-chain-intelligence-hub/bpr',
     '/supply-chain-intelligence-hub/planning',
@@ -366,6 +383,92 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
 
+    // mto mdm pages
+    {
+      path: '/master-data-management/mto-control-panel',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTOControlPanel/>)
+        },
+        {
+          index: true,
+          path: 'view-modify',
+          element: lazyLoad(<MTOViewModify />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/mto-saved-drafts',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTOSavedDrafts />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/mto-task-status',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTOTaskStatus />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/mto-task-pending',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTOTaskPendingForReview />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/mto-control-panel/add',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTOAddRecord />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/mto-control-panel/delete',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTODeleteRecord />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/master-data-management/mto-data-modification-history',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTODataModificationHistory />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+
+
+    //
 
     {
       path: '/supply-chain-intelligence-hub/planning',

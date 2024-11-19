@@ -1,13 +1,15 @@
+
+import {useState} from 'react';
 import IconCard from "../../../../../components/VectorFLOW/commons/VFCard/IconCard"
 import { Container,PanelGrid, PanelGridWrapper } from "./styles"
 import { useNavigate } from "react-router";
-
 import ButtonCard from "../../../../../components/VectorFLOW/commons/VFCard/ButtonCard";
 import { useDispatch } from "react-redux";
 import { useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM";
 import { ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_ACTIVE_MASTER } from "../../../../../redux/actions/MDM";
 import { mapMasterToMasterState } from "../../../../../helpers/utils";
 import { useUserData } from "../../../../../context";
+import ApplicationSelectModal from './ApplicationSelectModal';
 
 
 
@@ -32,8 +34,11 @@ const ControlPanel = ()=>{
         navigate('/master-data-management/control-panel/view-modify')   
     }
 
+    const [isAppModalOpen, setIsAppModalOpen] = useState(true);
+
     return (
         <Container>
+            {isAppModalOpen && <ApplicationSelectModal isModalOpen={isAppModalOpen} setIsModalOpen={setIsAppModalOpen}/>}
             <PanelGridWrapper>
                 <PanelGrid>
                     <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/edit.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/edit-hover.svg'} text={'View / Modify Records '}  onClick={()=>navigate('/master-data-management/control-panel/view-modify')} themeUi={themeUi}/>
