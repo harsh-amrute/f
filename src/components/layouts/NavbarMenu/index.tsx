@@ -86,11 +86,9 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     getReportFields();
     if(localStorage.getItem("ListItem")){
       setMenuItem(JSON.parse(localStorage.getItem("ListItem") || ""))
-      console.log(JSON.parse(localStorage.getItem("ListItem") || ""));
     }
     if(localStorage.getItem("ListMenu")){
       setListMenu(JSON.parse(localStorage.getItem("ListMenu")|| "[]"))
-      console.log(JSON.parse(localStorage.getItem("ListMenu")|| "[]"))
     }
   }, [listMenuParent])
 
