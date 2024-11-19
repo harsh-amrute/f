@@ -80,9 +80,8 @@ console.log(data)
     },[])
   
     useEffect(()=>{
-        if(internalRef){
-            console.log('in if')
-            internalRef.api.applyColumnState({state:gridState.columns })
+        if(internalRef && gridState.columns){
+            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true })
         }
     },[internalRef,gridState])
     // const getRecordsCount=async(filter?:any)=>{

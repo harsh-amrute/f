@@ -64,7 +64,7 @@ const useTotalRequirementReport =()=>{
     // const [rowData,setRowData] = useState([]);
 
 
-    const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+    const rowsPerPage = parseInt(process.env.REACT_APP_TOTAL_REQUIREMENT_ROWS_PER_PAGE || '100');
 
     // const RRRColorBandWiseColumns = useMemo(()=>mapRRRColorBandWiseFieldsToColDefs(data?.data.data),[data])
 
@@ -96,53 +96,10 @@ const useTotalRequirementReport =()=>{
     },[])
   
     useEffect(()=>{
-        if(internalRef){
-            console.log('in if')
-            internalRef.api.applyColumnState({state:gridState.columns })
+        if(internalRef && gridState.columns){
+            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true })
         }
     },[internalRef,gridState])
-    // const getRecordsCount=async(filter?:any)=>{
-    //     const payload={
-    //     filters:filter || currFilter,
-    //     paginationParameter: {
-    //     pageNumber: currentPage,
-    //     // recordPerPage:20
-    //     recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
-    //     }
-    // }
-    // const resultCount=await getRRRDataCount(payload);
-    // setRecordCount(resultCount?.data?.recordCount);
-    // }
-
-    // const loadGridData = async (pageNo:any,filter?:any)=> {
-    // const payload={
-    //     filters:filter || currFilter,
-    //     paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
-    // }
-    // const result = await getRRRData(payload);
-    // setRRRRowData(result?.data.data)
-
-    // }
-
-    // const onOpenDailyDataGraph = async (params:any) => {
-    //     const payload:any = {
-    //         SKUCode:params.data['SKUCode'],
-    //         WHCode:params.data['WHCode']
-    //     }
-    //     const result = await getDailyData(payload)
-    //     const data = result.data.data[0];
-    //     const dailyData:DailyDataGraph = {
-    //         rowData:params.data,
-    //         chartData:data['StockData'],
-    //         normChangeData:data['NormChangeHistoryData'],
-    //         masterData:data['MasterData'][0],
-    //         suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-    //         monitoringData:data['MonitoringData']
-    //     }
-  
-    //     dispatch(UPDATE_DAILY_DATA(dailyData));
-    //     dispatch(TOGGLE_GRAPH_MODAL(true));
-    // }
 
     const getBandwiseDataCount=async (filter?:any) => {
         const rowDataCount =await getRRRBandwiseDataCount({
@@ -164,55 +121,9 @@ const useTotalRequirementReport =()=>{
         }
     }
 
-    // const getRRRBandwiseRowData= async(pageNo:any)=>{
-    //     try{
-    //         if(RRRBandwiseDataCount===0){
-    //             await getBandwiseDataCount(currFilter);
-    //         }
-    //         notifyLoader("Loading Grid Data")
-    //         const rowData =await getRRRBandwiseData({
-    //             filters:currFilter,
-    //             paginationParameter:{
-    //                 pageNumber:pageNo,
-    //                 recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
-    //             }
-    //         })
-            
-        
-    //     // setRecordCount(rowData.data.recordCount)
-    //         setCurrentPage(pageNo)
-    //         setRRRBandwiseRowData(rowData?.data?.data)
-    //         toast.dismiss()
-    //     }catch(err:any){
-    //         notifyError(err)
-    //     }
-    // }
 
     const onApplyFilter = async(filter:any)=>{
         console.debug(filter)
-        // try {
-        //   await getBandwiseDataCount(filter);
-        //   notifyLoader("Loading Grid Data");
-        //   const rowData = await getRRRBandwiseData({
-        //     filters: filter,
-        //     paginationParameter: {
-        //       pageNumber: 1,
-        //       recordsPerPage: parseInt(
-        //         process.env.REACT_APP_RRR_ROWS_PER_PAGE || "100"
-        //       ),
-        //     },
-        //   });
-
-        //   // setRecordCount(rowData.data.recordCount)
-        //   setCurrFilter(filter);
-        //   setCurrentPage(1);
-        //   setRRRBandwiseRowData(rowData?.data?.data);
-        //   toast.dismiss();
-        // } catch (err: any) {
-        //   notifyError(err);
-        //   setRRRBandwiseRowData([])
-        //   setRRRBandwiseDataCount(0)
-        // }
         return 
     }
 

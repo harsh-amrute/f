@@ -20,6 +20,7 @@ import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCe
 
 import {RowData} from '../../../../../mock-data/Order-Allocation'
 import { ColDef } from "ag-grid-enterprise"
+import { useGetOrderAllocationReportData, useGetOrderAllocationReportRecordsCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/OrderAllocationReport'
 
 
 
@@ -31,7 +32,6 @@ const useOrderAllocation =()=>{
 
     const [internalRef,setInternalRef] = useState<any>()
 
-    const [editedRows,setEditedRows] = useState<Array<any>>([])
 
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
@@ -40,8 +40,6 @@ const useOrderAllocation =()=>{
 
      const dispatch = useDispatch();
    
-    //  const [toggleSubGrid] = useState<boolean>(false);
-     const [currGridPage,setCurrGridPage] = useState<number>(1)
 
      const [rowData,setRowData] = useState<Array<any>>([]);
 
@@ -63,8 +61,8 @@ const useOrderAllocation =()=>{
      const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
-    //  const rowsPerPage=50;
-     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+
+     const rowsPerPage = parseInt(process.env.REACT_APP_ORDERALLOCATION_ROWS_PER_PAGE || '100');
 
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
@@ -72,9 +70,9 @@ const useOrderAllocation =()=>{
       }
 
 
-    //  const {mutateAsync:getBorData} = useBORData();
+     const {mutateAsync:getData} = useGetOrderAllocationReportData();
 
-    //  const {mutateAsync:getBorDataCount} = useBORDataCount();
+     const {mutateAsync:getRecordsCount} = useGetOrderAllocationReportRecordsCount();
 
      const {mutateAsync:getDailyData} = useGetDailyData();
 
@@ -84,25 +82,6 @@ const useOrderAllocation =()=>{
         colorCellRenderer:TextToTextColorMapper
         
       }), []);
-
-      const onCellValueChanged = (newRow: any, primaryKey: string) => {
-        setEditedRows((prev) => {
-          let found = false; // Flag to track if the row has been updated
-          const updatedRows = prev.map((row) => {
-            if (row[primaryKey] === newRow[primaryKey]) {
-              found = true;
-              return { ...newRow }; // Return updated row
-            }
-            return row; // Return unchanged row
-          });
-      
-          if (!found) {
-            // If no existing row was found, add the new row
-            return [...updatedRows, {...newRow}];
-          }
-          return updatedRows;
-        });
-      };
 
       const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -123,9 +102,6 @@ const useOrderAllocation =()=>{
         dispatch(UPDATE_DAILY_DATA(dailyData));
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
-
-      
-      // const BORColumns = useMemo(()=>mapBORColorBandWiseFieldsToColDefs(data?.data.data,onOpenDailyDataGraph),[data])
       
 
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
@@ -150,14 +126,14 @@ const useOrderAllocation =()=>{
     },[])
   
     useEffect(()=>{
-        if(internalRef){
-            internalRef.api.applyColumnState({state:gridState.columns })
-        }
+      if(internalRef && gridState.columns){
+        internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true })
+    }
     },[internalRef,gridState])
 
       useEffect(()=>{       
         const fetchData = async () => {
-            await getRecordsCount();
+            await handleGetRecordsCount();
             await getOrderAllocationReportUiConfig()
             await loadGridData(currentPage);
 
@@ -168,31 +144,28 @@ const useOrderAllocation =()=>{
     }, []);
 
 
-      const getRecordsCount=async(filter?:any)=>{
-        console.debug(filter)
-    //         const payload={
-    //         filters:filter || {},
-    //          paginationParameter: {
-    //     pageNumber: currentPage,
-    // recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
-    // }
-    //     }
-    //     const resultCount=await getBorDataCount(payload);
+      const handleGetRecordsCount=async(filter?:any)=>{
+            const payload={
+            filters:filter || {},
+             paginationParameter: {
+        pageNumber: currentPage,
+        recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+    }
+        }
+        const resultCount=await getRecordsCount(payload);
         
-    //     setRecordCount(resultCount?.data?.recordCount); 
-        setRecordCount(50)
+        setRecordCount(resultCount?.data?.data[0]?.count || 0); 
       }
     
     const loadGridData = async (pageNo:any,filter?:any)=> {
-      console.debug(pageNo,filter)
         try{
           notifyLoader("loading Grid Data")
-        //   const payload={
-        //     filters:filter || {},
-        //     paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
-        // }
-        // const result = await getBorData(payload);
-        setRowData(RowData)
+          const payload={
+            filters:filter || {},
+            paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
+        }
+        const result = await getData(payload);
+        setRowData(result.data.data)
         toast.dismiss()
         }catch(err:any){
           notifyError(err)
@@ -212,7 +185,7 @@ const useOrderAllocation =()=>{
   }
 
     const onApplyFilter = async(filter:any)=>{
-      await getRecordsCount(filter)
+      await handleGetRecordsCount(filter)
       await loadGridData(1,filter)
       setCurrFilter(filter)
       setCurrentPage(1)
@@ -261,24 +234,8 @@ const useOrderAllocation =()=>{
            
         },
         onGridReady:(params)=>setInternalRef(params),
-        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode")
       }
      },[])
-
-      const getOrderAllocationRowData=async(filter:BPRFilterState)=>{
-        if(filter)setCurrFilter(filter)
-        try{
-            if(recordCount===0 || filter){
-                await getRecordsCount(filter)
-                setCurrGridPage(currGridPage)
-            }
-
-            await loadGridData(currentPage,filter)
-         }
-       catch(err:any){
-            notifyError(err)
-        }
-    }
 
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
@@ -286,38 +243,16 @@ const useOrderAllocation =()=>{
         }
       };
       const onExportToExcelCallBack=async(pageNumber:number)=>{
-        console.debug(pageNumber)
-        // const data =  await getBorData({
-        //     filters:currFilter,
-        //     paginationParameter:{
-        //         pageNumber:pageNumber,
-        //         recordsPerPage:5000
-        //     }
-        // })
+        const data =  await getData({
+            filters:currFilter,
+            paginationParameter:{
+                pageNumber:pageNumber,
+                recordsPerPage:5000
+            }
+        })
         
-        // return data.data.data
-        return RowData
+        return data.data.data
     }
-
-    const onSubmitRemarks = async()=>{
-      try{
-       const toastId = notifyLoader("Submitting Remark")
-      //  const payload = editedRows.map((e)=>{
-      //      return {
-      //          remark:e.remarks,
-      //          whcode:e.WHCode,
-      //          skucode:e.SKUCode
-      //      }
-           
-      //  })
-      //  const {data} = await submitRemark({data:payload})
-       toast.dismiss(toastId)
-      //  notifySuccess(data.msg)
-       setEditedRows([])
-      }catch(err:any){
-       notifyError(err.message)
-      }
-   }
 
       const generalFilterOptions = useMemo(()=>{
         return convertUiConfigToOptions(colDefs)
@@ -348,14 +283,11 @@ const useOrderAllocation =()=>{
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
         dailyData,
-        getOrderAllocationRowData,
         onApplyFilter,
         currFilter,
         setCurrFilter,
         onDeleteFilter,
         generalFilterOptions,
-        onSubmitRemarks,
-        editedRows
     }
 }
 

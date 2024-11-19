@@ -392,6 +392,30 @@ const ActionToolBar = ({
           );
         }
         break;
+      case "RRRColorBandwise":
+        if (pathname === "/supply-chain-intelligence-hub/rrr-color-bandwise") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+            />
+          );
+        }
+        break;
        case "OrderAllocationReport":
         if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
           return (

@@ -4,7 +4,7 @@ import {
   useSaveState,
 } from "../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../context/GridStateContext";
-import { notifyError, notifyLoader, notifySuccess } from "../helpers/notify";
+import { notifyError, notifyInfo, notifyLoader, notifySuccess } from "../helpers/notify";
 
 import {toast} from 'react-toastify'
 import { GridState } from "../VectorFlow/types/BPR";
@@ -36,6 +36,10 @@ const useSaveAllState = (isPlanning?:boolean) => {
     const {pagination,callBack} = params
     const {recordCount,chunkSize} = pagination
     
+    if(recordCount === 0){
+      notifyInfo("No Rows To Export")
+      return 
+    }
 
     try {
       //buggy line below

@@ -26,7 +26,7 @@ const OrderAllocationReport = () => {
   exportExcelColumns,
   setExportExcelColumns,
   onExportToExcelCallBack,
-  getOrderAllocationRowData,
+  handleChangePage,
   onApplyFilter,
   currFilter,
   setCurrFilter,
@@ -120,7 +120,7 @@ const OrderAllocationReport = () => {
                 totalRows={recordCount} 
                 currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
-                handleChangePage={(e)=>getOrderAllocationRowData(e)} 
+                handleChangePage={handleChangePage} 
               />  
         </div>
         )}
