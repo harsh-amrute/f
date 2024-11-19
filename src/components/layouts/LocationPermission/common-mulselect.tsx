@@ -26,7 +26,7 @@ export default forwardRef(({ ...props }: any, ref) => {
     const newListLcType: any = [];
     const newListLcCluster: any = [];
 
-    Object.keys(location)?.forEach((keyLcRegion: any) => {
+    location && Object.keys(location)?.forEach((keyLcRegion: any) => {
       const dataLcRegion = { label: keyLcRegion, value: keyLcRegion };
       newListLcRegion.push(dataLcRegion);
 

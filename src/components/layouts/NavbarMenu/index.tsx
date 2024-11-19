@@ -24,9 +24,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   const [reportUrls, setReportUrls] = useState<string[]>([]);
 
 
-  useEffect(() => {
-    getReportFields();
-  }, [])
 
 
   const getReportFields = async () => {
@@ -65,7 +62,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
           downloadName: attributes.downloadName
         }));
 
-        const extractedNewMenu = _.cloneDeep(listMenuParent)
+        const extractedNewMenu = _.cloneDeep(localStorage.getItem("ListMenu")? JSON.parse(localStorage.getItem("ListMenu") || ""): listMenuParent)
         const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
         if (targetObject) {
           if(transformedData){
@@ -84,7 +81,21 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     }
   }
 
+  
+  useEffect(() => {
+    getReportFields();
+    if(localStorage.getItem("ListItem")){
+      setMenuItem(JSON.parse(localStorage.getItem("ListItem") || ""))
+      console.log(JSON.parse(localStorage.getItem("ListItem") || ""));
+    }
+    if(localStorage.getItem("ListMenu")){
+      setListMenu(JSON.parse(localStorage.getItem("ListMenu")|| "[]"))
+      console.log(JSON.parse(localStorage.getItem("ListMenu")|| "[]"))
+    }
+  }, [listMenuParent])
+
   const handleClickMenu = (item: any, index: number) => {
+    console.log("yeh hya clickeddd", item, "index", index)
     if (item.name === 'navbar.listMenuParent.miscellaneousReports.title') return;
     setMenuItem(item);
     const newMenu = [...listMenu];
@@ -92,6 +103,8 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
       itemMenu.status = false;
     });
     newMenu[index].status = true;
+    localStorage.setItem("ListItem",JSON.stringify(item));
+    localStorage.setItem("ListMenu", JSON.stringify(newMenu));
     setListMenu(newMenu);
   };
 

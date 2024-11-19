@@ -26,7 +26,8 @@ export default forwardRef(({ ...props }: any, ref) => {
     const newListSubBrand: any = [];
     const newListCategory: any = [];
 
-    Object.keys(product)?.forEach((keyBrand: any) => {
+
+    product && Object.keys(product)?.forEach((keyBrand: any) => {
       const dataBrand = { label: keyBrand, value: keyBrand };
       newListBrand.push(dataBrand);
 

@@ -200,7 +200,7 @@ export const listMenuParent: any = [
     name: "navbar.listMenuParent.innerStoreTransfers.title",
     img: "/assets/img/nav/IST",
     url: "/",
-    status: true,
+    status: false,
     lp_attr : true,
     lp_img : "/assets/img/IST 1.svg",
     app_id : 1,

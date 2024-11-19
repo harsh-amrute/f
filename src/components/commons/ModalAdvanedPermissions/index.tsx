@@ -146,18 +146,22 @@ const ModalAdvanedPermissions = (props: any) => {
       // eslint-disable-next-line no-unsafe-optional-chaining
       lcPermissionRef.current?.getLcPermissionValue();
 
-    if(brand?.length > 0 && lcRegion?.length > 0) {
+    // if(brand?.length > 0 && lcRegion?.length > 0) {
       // setIsLoadSpinner(true);
-
+      console.log("productPdrmis", productPermissions);
       const formData: any = {
         ...infoUser,
         tc: true,
-        product_permissions: productPermissions,
-        location_permissions: locationPermissions,
+        // product_permissions: productPermissions,
+        // location_permissions: locationPermissions
+        product_permissions: [],
+        location_permissions: []
       };
 
+
       setIsLoadSpinner(true);
-      if (contentModal.callApi === 1) {
+ 
+      if (contentModal.callApi === 1 ) {
         mutateRegister(formData, {
           onSuccess: (res: any) => {
             setIsLoadSpinner(false);
@@ -220,12 +224,13 @@ const ModalAdvanedPermissions = (props: any) => {
           },
         });
       }
-    } else {
-      notifyError(
-        t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
-      );
-      setIsLoadSpinner(false);
-    }
+    // } else {
+    //   notifyError(
+    //     "somethin .."+
+    //     t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
+    //   );
+    //   setIsLoadSpinner(false);
+    // }
   };
 
   
@@ -235,15 +240,15 @@ const ModalAdvanedPermissions = (props: any) => {
     const currentProductPermission = prdPermissionRef.current?.getPrdPermissionValue();
     const currentLocationPermission = lcPermissionRef.current?.getLcPermissionValue();
 
-    if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
-      t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
-    );
+    // if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
+    //   t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
+    // );
 
-    if(currentPermission){
-      currentPermission.productPermission = currentProductPermission;
-      currentPermission.locationPermission = currentLocationPermission;
-      setStorePermission(storePermissionCopy)
-    }
+    // if(currentPermission){
+    //   currentPermission.productPermission = currentProductPermission;
+    //   currentPermission.locationPermission = currentLocationPermission;
+    //   setStorePermission(storePermissionCopy)
+    // }
     
     const newApplicationId = storePermission[getActiveApplicationIndex()+1].application_id;
     setStepperDetails([...stepperDetails.map((step:any)=>{
