@@ -3,7 +3,6 @@ import { convertUiConfigToOptions, mapOrderAllocationReportFieldsToColDefs } fro
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
-import { BPRFilterState } from "../../../../types/BPR"
 
 import { useSelector,useDispatch } from "react-redux"
 
@@ -18,7 +17,6 @@ import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants"
 import { GridRef } from "../../../../types/MDM"
 import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCellRenderers"
 
-import {RowData} from '../../../../../mock-data/Order-Allocation'
 import { ColDef } from "ag-grid-enterprise"
 import { useGetOrderAllocationReportData, useGetOrderAllocationReportRecordsCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/OrderAllocationReport'
 

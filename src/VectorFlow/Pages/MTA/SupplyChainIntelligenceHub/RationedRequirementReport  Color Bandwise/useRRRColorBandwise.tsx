@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { AgGridReactProps } from "ag-grid-react";
 
-import { useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR";
 import { useUserData } from "../../../../../context";
 import {
   RRREcoColorCellRenderer,
@@ -24,7 +23,6 @@ import {
 import { GridRef } from "../../../../types/MDM";
 import { ColDef } from "ag-grid-enterprise";
 
-import { RowData } from "../../../../../mock-data/RRR-Color-Bandwise";
 import { TextToTextColorMapper } from "../BPR/BPRCellRenderers";
 import { type DailyDataGraph } from "../../../../types/MTA";
 import { useDispatch } from "react-redux";
@@ -72,7 +70,6 @@ const useRRRColorBandwise = () => {
 
   // const {mutateAsync:getRRRBandwiseData} =useGetRRRData();
 
-  const { mutateAsync: getRRRBandwiseDataCount } = useGetRRRDataCount();
 
   const { mutateAsync: getState, isLoading: isSavedDataLoading } =
     useGetState();
