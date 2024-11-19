@@ -13,7 +13,7 @@ const DueDateCellRenderer = (params: any) => {
         let isThere = false;
         for (let index = 0; index < selectedRow.length; index++) {
             const element = selectedRow[index];
-            if (element.oid === params.data.oid) {
+            if (element.odk === params.data.odk) {
                 isThere = true;
             }
 
@@ -69,7 +69,7 @@ const DueDateCellRenderer = (params: any) => {
 
                 disabled={false}
 
-                onChange={(e) => { params.data.dd = e.target.value; params.data.addChangeDate(e.currentTarget.value, params.data.oid), setCurrDate(e.target.value) }}
+                onChange={(e) => { params.data.dd = e.target.value; params.data.addChangeDate(e.currentTarget.value, params.data.odk), setCurrDate(e.target.value) }}
                 value={currDate}
 
             />
