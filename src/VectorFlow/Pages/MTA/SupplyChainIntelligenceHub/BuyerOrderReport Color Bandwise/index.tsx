@@ -123,7 +123,7 @@ const BuyerOrderReportColorBandwise = ()=>{
                   totalRows={recordCount}
                   currentPage={currentPage}
                   rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
-                  handleChangePage={(e) => handleChangePage(e)} />
+                  handleChangePage={handleChangePage} />
 
               </div>
             )}

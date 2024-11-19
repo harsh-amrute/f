@@ -62,7 +62,6 @@ const useRRR =()=>{
         fetchData();
     }, [isRRRConfigLoading]);
     
-console.log(data)
     useEffect(()=>{
         const getTableState = async()=>{
           try{
@@ -80,33 +79,10 @@ console.log(data)
     },[])
   
     useEffect(()=>{
-        if(internalRef){
-            console.log('in if')
-            internalRef.api.applyColumnState({state:gridState.columns })
+        if(internalRef && gridState.columns){
+            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true })
         }
     },[internalRef,gridState])
-    // const getRecordsCount=async(filter?:any)=>{
-    //     const payload={
-    //     filters:filter || currFilter,
-    //     paginationParameter: {
-    //     pageNumber: currentPage,
-    //     // recordPerPage:20
-    //     recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
-    //     }
-    // }
-    // const resultCount=await getRRRDataCount(payload);
-    // setRecordCount(resultCount?.data?.recordCount);
-    // }
-
-    // const loadGridData = async (pageNo:any,filter?:any)=> {
-    // const payload={
-    //     filters:filter || currFilter,
-    //     paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
-    // }
-    // const result = await getRRRData(payload);
-    // setRRRRowData(result?.data.data)
-
-    // }
 
     const getDataCount=async (filter?:any) => {
         const rowDataCount =await getRRRDataCount({

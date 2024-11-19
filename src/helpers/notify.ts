@@ -42,3 +42,8 @@ export const notifyLoader = (msg: string) =>{
   toast.dismiss()
   return toast.loading(msg)
 }
+
+export const notifyInfo = (msg:any)=>{
+  toast.dismiss()
+  return toast.info(msg,ATTR_TOAST)
+}

@@ -13,9 +13,9 @@ const RRRColorBandwise = () => {
  const { 
   RRRColorBandWiseColumns,
   agGridProps,
-  RRRBandwiseRowData, 
+  rowData, 
   isLoading,
-  RRRBandwiseDataCount,
+  recordsCount,
   currentPage,
   tempRef,
   tempDownloadData,
@@ -54,14 +54,14 @@ const RRRColorBandwise = () => {
       <ActionToolBar 
         view={'grid'} 
         setCurrentTab={''} 
-        currCategory={'RRRColorBandWise'} 
+        currCategory={'RRRColorBandwise'} 
         currentTab={''} 
         tabsList={[]} 
         onApplyFilter={(e)=>onApplyFilter(e)}
         onFloatingTabChange={()=>console.log('')} 
         onGoBack={()=>console.log('')} 
         onViewChange={()=>console.log('')}
-        genericRecordCount={RRRBandwiseDataCount}
+        genericRecordCount={recordsCount}
         disableChartAndGridViewToggle
         onExportToExcelCallBack={onExportToExcelCallBack}
         multiFilter={currFilter}
@@ -101,7 +101,7 @@ const RRRColorBandwise = () => {
                   ref={ref}
                   {...agGridProps}
                   columnDefs={RRRColorBandWiseColumns}
-                  rowData={RRRBandwiseRowData}
+                  rowData={rowData}
                   enableRangeSelection={true} // Added property
                 rowSelection="multiple"
                 statusBar = {{
@@ -117,7 +117,7 @@ const RRRColorBandwise = () => {
               />  
               <VFPagination 
                 selectedRows={0} 
-                totalRows={RRRBandwiseDataCount} 
+                totalRows={recordsCount} 
                 currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>console.log(e)} 

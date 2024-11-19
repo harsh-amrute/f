@@ -19,8 +19,8 @@ import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants"
 import { GridRef } from "../../../../types/MDM"
 import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCellRenderers"
 
-import {RowData} from '../../../../../mock-data/BOR-Color-Bandwise'
 import { ColDef } from "ag-grid-enterprise"
+import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
 
 
 
@@ -65,7 +65,7 @@ export const useBORColorBandwise =()=>{
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     //  const rowsPerPage=50;
-     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
 
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
@@ -73,9 +73,9 @@ export const useBORColorBandwise =()=>{
       }
 
 
-    //  const {mutateAsync:getBorData} = useBORData();
+     const {mutateAsync:getData} = useGetBORColorBandWisData();
 
-    //  const {mutateAsync:getBorDataCount} = useBORDataCount();
+     const {mutateAsync:getDataCount} = useGetBORColorBandWiseRecordCount();
 
      const {mutateAsync:getDailyData} = useGetDailyData();
 
@@ -151,9 +151,9 @@ export const useBORColorBandwise =()=>{
     },[])
   
     useEffect(()=>{
-        if(internalRef){
-            internalRef.api.applyColumnState({state:gridState.columns })
-        }
+      if(internalRef && gridState.columns){
+        internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true })
+    }
     },[internalRef,gridState])
 
       useEffect(()=>{       
@@ -170,30 +170,27 @@ export const useBORColorBandwise =()=>{
 
 
       const getRecordsCount=async(filter?:any)=>{
-        console.debug(filter)
-    //         const payload={
-    //         filters:filter || {},
-    //          paginationParameter: {
-    //     pageNumber: currentPage,
-    // recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
-    // }
-    //     }
-    //     const resultCount=await getBorDataCount(payload);
+        const payload={
+          filters:filter || {},
+          paginationParameter: {
+            pageNumber: currentPage,
+            recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+          }
+        }
+        const resultCount=await getDataCount(payload);
         
-    //     setRecordCount(resultCount?.data?.recordCount); 
-        setRecordCount(50)
+        setRecordCount(resultCount?.data?.data[0]?.count || 0); 
       }
     
     const loadGridData = async (pageNo:any,filter?:any)=> {
-      console.debug(pageNo,filter)
         try{
           notifyLoader("loading Grid Data")
-        //   const payload={
-        //     filters:filter || {},
-        //     paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
-        // }
-        // const result = await getBorData(payload);
-        setRowData(RowData)
+          const payload={
+            filters:filter || {},
+            paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
+        }
+        const result = await getData(payload);
+        setRowData(result.data.data)
         toast.dismiss()
         }catch(err:any){
           notifyError(err)
@@ -287,17 +284,15 @@ export const useBORColorBandwise =()=>{
         }
       };
       const onExportToExcelCallBack=async(pageNumber:number)=>{
-        console.debug(pageNumber)
-        // const data =  await getBorData({
-        //     filters:currFilter,
-        //     paginationParameter:{
-        //         pageNumber:pageNumber,
-        //         recordsPerPage:5000
-        //     }
-        // })
+        const data =  await getData({
+            filters:currFilter,
+            paginationParameter:{
+                pageNumber:pageNumber,
+                recordsPerPage:5000
+            }
+        })
         
-        // return data.data.data
-        return RowData
+        return data.data.data
     }
 
     const onSubmitRemarks = async()=>{
