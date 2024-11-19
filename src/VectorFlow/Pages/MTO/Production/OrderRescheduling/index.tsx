@@ -228,8 +228,6 @@ const OrderRescheduling = () => {
           state: columnState,
           applyOrder: true
       });
-      console.log("this is the result.....", result);
-      console.log("this is colstate after res...", columnState);
       if (!result) {
           console.error('Failed to apply column state');
       }
@@ -476,7 +474,6 @@ const OrderRescheduling = () => {
             });
 
             const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-            console.log("data?.data?.data[0]?.columns_settings", data?.data?.data[0]?.columns_settings)
             setColumnState(newConfig);
 
             if (!data) {

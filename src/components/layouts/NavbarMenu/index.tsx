@@ -95,7 +95,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   }, [listMenuParent])
 
   const handleClickMenu = (item: any, index: number) => {
-    console.log("yeh hya clickeddd", item, "index", index)
     if (item.name === 'navbar.listMenuParent.miscellaneousReports.title') return;
     setMenuItem(item);
     const newMenu = [...listMenu];
