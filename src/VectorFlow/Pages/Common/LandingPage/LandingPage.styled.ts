@@ -87,6 +87,7 @@ export const AppBox = styled.div`
   box-shadow: 0px 6px 12px #9A9A9A26;
   opacity: 1;
   float: left;
+  width: 25%;
   position: relative; 
   z-index : 1;
 `;

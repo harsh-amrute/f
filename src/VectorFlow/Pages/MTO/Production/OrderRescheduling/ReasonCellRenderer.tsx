@@ -8,10 +8,10 @@ const ReasonCellRenderer = (params: any) => {
     let disabled = true;
 
     if (selects) {
-        const myoid = params.data.oid;
+        const myodk = params.data.odk;
 
         selects.forEach((element: any) => {
-            if (element.oid === myoid) {
+            if (element.odk === myodk) {
                 disabled = false;
 
             }

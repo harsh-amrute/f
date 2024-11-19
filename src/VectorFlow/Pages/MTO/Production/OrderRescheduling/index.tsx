@@ -223,6 +223,16 @@ const OrderRescheduling = () => {
         }
     }
 
+    useEffect(()=>{
+        const result = currentGridRef?.current?.api.applyColumnState({
+          state: columnState,
+          applyOrder: true
+      });
+      if (!result) {
+          console.error('Failed to apply column state');
+      }
+      },[columnState])
+
     useEffect(() => {
         GetData();
         setColumnDef();
@@ -239,6 +249,7 @@ const OrderRescheduling = () => {
             checkboxSelection: true,
             maxWidth: 50,
             flex: 1,
+            pinned: "left",
             suppressMenu: true,
             floatingFilter: false,
         }
@@ -288,6 +299,7 @@ const OrderRescheduling = () => {
     useEffect(() => {
         const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
         setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
+        getUserColumnConfig();
     }, [HeaderData, currTab]);
 
     
@@ -473,23 +485,36 @@ const OrderRescheduling = () => {
     }
 
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-            if (currentGridRef?.current?.api) {
-                const config = currentGridRef.current.api.getColumnState();
-
-                const payload = {
-                    un: user.user.name,
-                    rn_id: UIGridCode.ProdOrderRescheduling,
-                    cs: JSON.stringify(config)
-                }
-                await updateUserUIReportConfigData([payload]);
-                await getUserColumnConfig();
+          if(coldefs){
+            const payload = {
+              un: user.user.name,
+              rn_id: UIGridCode.ProdDeptWiseBMReport,
+              cs: JSON.stringify(coldefs)
+          }
+          await updateUserUIReportConfigData([payload]);
+          }
+          else{
+    
+            if(currentGridRef?.current?.api){
+              const config = currentGridRef.current.api.getColumnState();
+            
+            const payload = {
+              un: user.user.name,
+              rn_id: UIGridCode.ProdOrderRescheduling,
+              cs: JSON.stringify(config)
             }
-        } catch (error) {
-            console.error(error);
+            
+            await updateUserUIReportConfigData([payload]);
+            await getUserColumnConfig();
+          }
+    
         }
-    }
+        } catch (error) {
+          console.error(error);
+        }
+      }
 
     const handleResetClick = () => {
         setIsReset(true);
@@ -497,7 +522,7 @@ const OrderRescheduling = () => {
 
     useEffect(() => {
         if (currentGridRef?.current && columnState?.length) {
-            const result = currentGridRef.current.api.applyColumnState({
+            const result = currentGridRef?.current?.api.applyColumnState({
                 state: columnState,
                 applyOrder: true
             });
@@ -505,16 +530,18 @@ const OrderRescheduling = () => {
                 console.error('Failed to apply column state');
             }
         }
-    });
+    },[columnState]);
 
     useEffect(() => {
-        if (isReset) {
-            setColumnState(colDef);
-            setIsReset(false)
-        } else {
-            handleSaveClick();
+    if (isReset) {
+        setColumnState([...colDef]);
+        setIsReset(false)
+    } else {
+        if(isReset != undefined){
+            handleSaveClick(colDef);
         }
-    }, [isReset]);
+    }
+}, [isReset]);
 
     const [tempRowData] = useState<any>(undefined);
 
@@ -580,6 +607,7 @@ const OrderRescheduling = () => {
                                 {...agGridProps}
                                 pagination={false}
                                 height={"100%"}
+                                maintainColumnOrder={true}
                             />
                             <VFPagination
                                 selectedRows={0}
