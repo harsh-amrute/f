@@ -36,7 +36,7 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
 
   return(
       <SCTabArea>
-        <SCTabHeader>
+        <SCTabHeader style={{zoom: 0.8}}>
             <SCTabHeaderLeft>
               {
                 masters.map((master:MDMMasterState,index:number)=>{

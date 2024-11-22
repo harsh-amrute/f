@@ -13,8 +13,6 @@ const AddRemoveCellRenderer = (params: any) => {
     const activeMaster = useSelector((state: RootState) => state.mdm.activeMaster);
     const addRow = () => {
 
-      console.log("activeMaster.... in add remove", activeMaster);
-
         const allRows = [...activeMaster.rowData];
         allRows.shift();
         // Check if the entered Buffer type is unique 
@@ -104,13 +102,15 @@ const AddRemoveCellRenderer = (params: any) => {
         
               if ((params?.node?.rowIndex === 0)) {
                 return (
-                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' , gap: '8px'}}>
       
                     <div
                     //   onClick={() => dispatch(UPDATE_ROW_DATA(activeMaster.rowData.filter((item: any) => item.id !== params.data.id))) }
                       onClick={() => addRow() }
                       style={{ cursor: 'pointer' }}>
                       <img
+                      height={17}
+                      width={17}
                         src="/assets/img/MTOapprovalBuffer.svg"
                         alt="ApproveMaster"
                       />
@@ -121,6 +121,8 @@ const AddRemoveCellRenderer = (params: any) => {
                       style={{ cursor: 'pointer' }}
                     >
                       <img
+                      height={17}
+                      width={17}
                         src="/assets/img/MTOcancelBuffer.svg"
                         alt="CancelMaster"
                       />

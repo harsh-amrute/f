@@ -23,6 +23,7 @@ import MTOErrorWarningCell from './MTOErrorWarningCell';
 import PoogiEditDeleteCell from './PoogiEditDeleteCell';
 import { SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
 import MTOCalendarEditCellRenderer from './MTOCalendarEditCellRenderer';
+import ToggleButton from './ToggleButton';
 
 
 // Define TypeScript interfaces for the parameters
@@ -258,8 +259,10 @@ const useViewModify = (pageType: string) => {
   useEffect(()=>{
     if(bufferTypeData){
 
-      const newColDef = activeMaster.colDefs.filter((obj)=>obj.field !== 'bt');
-      dispatch(UPDATE_COLDEFS([...newColDef, {colId: 'bt', field: 'bt', headerName: 'Buffer Type', valueFormatter: myFormatter }])) 
+      const newColDef = _.cloneDeep(activeMaster.colDefs);
+      newColDef[newColDef.length-2].valueFormatter =  myFormatter;
+      newColDef[newColDef.length-1].cellRenderer = ToggleButton;
+      dispatch(UPDATE_COLDEFS([...newColDef]));
     }
 
   },[bufferTypeData])
@@ -708,7 +711,7 @@ const useViewModify = (pageType: string) => {
         resultData = await getMasterDataRetail(payload);
       }
       else if (activeMaster.id === 501 && activeMaster.isMTO) {
-        resultData = await getBufferMasterData()
+        resultData = await getBufferMasterData();
       }
       else if(activeMaster.id===502 && activeMaster.isMTO) {
         resultData = await getCCRMasterData();
@@ -998,7 +1001,6 @@ const useViewModify = (pageType: string) => {
         return newRow
       })
     }
- 
     dispatch(UPDATE_ROW_DATA(tempRowData));
     if (refetch) return
     toggleWarningModal(false);
@@ -2054,11 +2056,11 @@ const useViewModify = (pageType: string) => {
     const selectedRows:any = ref?.current?.api?.getSelectedRows();
     selectedRows.forEach((e:any)=>{
       const newVal = JSON.parse(JSON.stringify(e));
-      // bufferTypeData.forEach((e:any)=>{
-      //   if(e.dsc===e.bt){
-      //     newVal.bt=e.id;
-      //   }
-      // })
+      bufferTypeData.forEach((ele:any)=>{
+        if(ele.dsc===e.bt){
+          newVal.bt=ele.id;
+        }
+      })
 
       // TODO: call the buffer type and add the id and use drop down instead;
       newVal.bt = 1;
@@ -2069,6 +2071,8 @@ const useViewModify = (pageType: string) => {
 
       BufferPostObj.buffData.push(_.omit(newVal,['editable','err']));
     })
+
+    console.log("bufferPostObj", BufferPostObj);
 
     try{
       const response = await saveBufferMasterTask(BufferPostObj);
@@ -2175,6 +2179,8 @@ const useViewModify = (pageType: string) => {
         e.mlt = parseInt(e.mlt);
         e.slt = parseInt(e.slt);
         e.cg = e.ccr_group;
+
+      
   
         if(totalNewVals===0) return;
         totalNewVals--;
@@ -2211,21 +2217,22 @@ const useViewModify = (pageType: string) => {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
-      buffData: [],
-      aids: ["111111","222222","333333"]
+      buffData: []
     }
 
     let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
     activeMaster.rowData.forEach((ele:any)=>{
-      bufferTypeData.forEach((e:any)=>{
-        if(ele.dsc===e.bt){
-          e.bt=ele.id;
+      const e = _.cloneDeep(ele);
+      bufferTypeData.forEach((elm:any)=>{
+        if(elm.dsc===ele.bt){
+          e.bt=elm.id;
         }
       })
-      const e = _.cloneDeep(ele);
       e.ib= (e.ib==="false"?0: 1);
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
+      if(!e.iv && e.iv!==false)e.iv = false;
+      if(!e.bid)e.bid=null;
 
       if(totalNewVals===0) return;
       totalNewVals--;
@@ -2234,6 +2241,7 @@ const useViewModify = (pageType: string) => {
       BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
     })
 
+    console.log("bufferPostObj", BufferPostObj);
     try{
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status=== 200){
@@ -2244,6 +2252,10 @@ const useViewModify = (pageType: string) => {
           currData.shift();
         }
         dispatch(UPDATE_ROW_DATA(currData));
+      }
+      else{
+        toast.dismiss();
+        notifyError("Failed to create the task....Please check your validations!")
       }
     }
     catch(error){
@@ -2279,6 +2291,8 @@ const useViewModify = (pageType: string) => {
       else totalNewVals--;
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
+      e.bid = null;
+      e.iv = null;
       e.err= "no error"
       
       

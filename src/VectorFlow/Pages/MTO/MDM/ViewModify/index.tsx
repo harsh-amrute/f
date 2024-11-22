@@ -9,7 +9,7 @@ import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify";
 import { operators, seasonalityQuickFilterData } from "../../../../../helpers/MDMConstants";
 import { SeasonalityQuickFilterType, type Filter } from '../../../../types/MDM';
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../Common/VFTable";
 import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
 import React, { useEffect} from "react";
@@ -134,6 +134,8 @@ const MTOViewModify = () => {
     <>
       <SCContainer>
         {isSelectMasterOpen &&
+        <div  style={{zoom: 0.8}}>
+
           <SelectMaster
             data={allMastersState}
             options={options}
@@ -143,7 +145,8 @@ const MTOViewModify = () => {
             themeUi={themeUi}
             isLoading={isLoading}
             handleSubmit={() => { handleSelectMasterSubmit() }}
-          />
+            />
+        </div>
         }
         {!isSelectMasterOpen &&
           <React.Fragment>
@@ -165,6 +168,8 @@ const MTOViewModify = () => {
                 })}
               </SeasonalityQuickFilterWrapper>
             }
+
+
             <VFTab
               activeMaster={activeMaster}
               themeUi={themeUi}
@@ -173,10 +178,10 @@ const MTOViewModify = () => {
               newTabTitle={"Add Master"}
               newTabIcon={"/assets/img/VectorFLOW/BPR/add-circle.svg"}
               newTabHandler={addNewMaster}
-            >
+              >
               {(activeMaster.progress === 'default' || activeMaster.progress === 'view')
                 &&
-                <SCFilterContainer>
+                <SCFilterContainer style={{zoom: 0.8}}>
                   <SCFilterControls>
                     <SCLegend>Filter</SCLegend>
                     {
@@ -282,8 +287,8 @@ const MTOViewModify = () => {
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    width: '130px',
-                    margin: '10px',
+                    width: '90px',
+                    margin: '8px',
                     cursor: 'pointer',
                     background: '#fff'
                   }}
@@ -389,29 +394,34 @@ const MTOViewModify = () => {
                 <button
                   style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '130px',
-                    margin: '10px',
+                    justifyContent: 'left',
+                    gap: '12px',
+                    width: '110px',
+                    margin: '8px',
                     cursor: 'pointer',
                     background: '#fff'
                   }}
                   onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoGrid()) }}
                 >
-                  {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
+                  {(activeMaster.rowData.length && !(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"
                         alt="Add Master Button"
+                        height={14}
+                        width={14}
                       />
-                      <p style={{ fontSize: '18px', color: ColorsMTO.Pink.code }}>Add {activeMaster.name}</p>
+                      <p style={{ fontSize: '12px', color: ColorsMTO.Pink.code }}>Add {activeMaster.name}</p>
                     </>
                     :
                     <>
                       <img
+                       height={14}
+                       width={14}
                         src="/assets/img/AddBufferMasterIconGrey.svg"
                         alt="Add Master Button"
                       />
-                      <p style={{ fontSize: '18px', color: ColorsMTO.LightGrey.code }}>Add {activeMaster.name}</p>
+                      <p style={{ fontSize: '12px', color: ColorsMTO.LightGrey.code }}>Add {activeMaster.name}</p>
                     </>
                   }
                 </button>
@@ -480,6 +490,8 @@ const MTOViewModify = () => {
       }
       {
         !isSelectMasterOpen &&
+        <div style={{zoom: 0.8}}>
+
         <VFTaskBar
           disableStopSeasonality={() => {
             const flatState = _.flatMap(seasonalityActiveQuickFilter)
@@ -488,11 +500,11 @@ const MTOViewModify = () => {
               if (!validStopStatuses.includes(state)) error = true;
             })
             if (error) return true;
-
+            
             return false;
-
+            
           }}
-
+          
           disableResumeSeasonality={() => {
             const flatState = _.flatMap(seasonalityActiveQuickFilter)
             let error = false;
@@ -500,7 +512,7 @@ const MTOViewModify = () => {
               if (!validResumeStatuses.includes(state)) error = true;
             })
             if (error) return true;
-
+            
             return false;
           }}
           showSubmittedExportError={errorCount > 0}
@@ -532,7 +544,8 @@ const MTOViewModify = () => {
           onMTOSaveData={ onMTOSaveBufferData}
           isMTOSaveDataDisabled={(activeMaster.rowData.length === tempRecordCount) || (activeMaster.colDefs.some((x) => x.field === 'actions'))                                 }
           onMTOSaveAsDraft={onMTOSaveAsDraft}
-        />
+          />
+          </div>
       }
 
     </>

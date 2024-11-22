@@ -379,3 +379,37 @@ export const PoogiAddButtonWrapper = styled.div`
     gap: 40%;
 
 `
+
+interface ToggleProps {
+    isActive: boolean;
+  }
+  
+export const ToggleContainer = styled.div<ToggleProps>`
+    display: flex;
+    align-items: center;
+    width: 100px;
+    padding: 5px;
+    border-radius: 50px;
+    cursor: pointer;
+    border 3px solid;
+    border-color: ${(props) => (props.isActive ? "#800040" : "#a0a0a0")};
+    transition: background-color 0.3s ease;
+  `;
+  
+export const ToggleCircle = styled.div<ToggleProps>`
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: ${(props) => (props.isActive ? "#800040" : "#a0a0a0")};
+    transform: ${(props) => (props.isActive ? "translateX(60px)" : "translateX(0)")};
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  `;
+  
+export const ToggleText = styled.span<ToggleProps>`
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transform: ${(props) => (props.isActive ? "translateX(-25px)" : "translateX(0)")};
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    color: ${(props) => (props.isActive ? "#800040" : "#808080")};
+  `;
