@@ -18,6 +18,7 @@ export const Input = styled.input<{themeUi:string}>`
     opacity: 1;
     padding: 0 15px;
     height:39px;
+    font-size:12px;
     &:disabled{
         opacity:0.7;
         cursor:not-allowed;
@@ -40,6 +41,7 @@ export const TextArea = styled.textarea<{themeUi:string}>`
     min-width:100%;
     padding: 5px 15px;
     font-family:inherit;
+    font-size:12px;
     min-height:100px;
     transition:0.3s ease-in;
     /* box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 0px 1px; */

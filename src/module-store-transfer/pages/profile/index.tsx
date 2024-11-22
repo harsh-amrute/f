@@ -4,7 +4,7 @@ import {
   SCProfileImg,
   SCProfileName,
   SCTabsWrapper,
-  SCTabsAction
+  // SCTabsAction
 } from './styles'
 import { useUserData } from '../../../../src/context'
 import { useState } from 'react'
@@ -13,8 +13,8 @@ import Overview from '../overview'
 import Permissions from '../permissions'
 import ManageUsers from '../manage-users'
 import { useTranslation } from 'react-i18next'
-import VFButton from '../../../components/VectorFLOW/commons/VFButton'
-import VFButtonOutline from '../../../components/VectorFLOW/commons/VFButtonOutline'
+// import VFButton from '../../../components/VectorFLOW/commons/VFButton'
+// import VFButtonOutline from '../../../components/VectorFLOW/commons/VFButtonOutline'
 
 const Profile = () => {
   const { t } = useTranslation()
@@ -44,9 +44,9 @@ const Profile = () => {
     setTabPanel(children)
   }
 
-  const [isRolesDrawerOpen,toggleRolesDrawer] = useState<boolean>(false)
+  // const [isRolesDrawerOpen,toggleRolesDrawer] = useState<boolean>(false)
 
-  const [isURLsDrawerOpen,toggleURLsDrawer] = useState<boolean>(false)
+  // const [isURLsDrawerOpen,toggleURLsDrawer] = useState<boolean>(false)
 
   return (
     <>
@@ -60,7 +60,7 @@ const Profile = () => {
           listTabs={listTabs}
           onClick={handleClickItem}
         />
-        {(tabPanel === 2) && (
+        {/* {(tabPanel === 2) && (
           <SCTabsAction>
             <VFButton
               themeUi={themeUi}
@@ -77,7 +77,7 @@ const Profile = () => {
               Manage URLs
             </VFButtonOutline>
           </SCTabsAction>
-        )}
+        )} */}
         </SCTabsWrapper>
       </SCProfileOverView>
       {tabPanel === 0 && <Overview themeUi={themeUi} />}
@@ -87,10 +87,10 @@ const Profile = () => {
           is_admin={isAdmin} 
           permission={permissions} 
           themeUi={themeUi} 
-          isRolesDrawerOpen={isRolesDrawerOpen}
-          isURLsDrawerOpen={isURLsDrawerOpen}
-          toggleRolesDrawer={toggleRolesDrawer}
-          toggleURLsDrawer={toggleURLsDrawer}
+          // isRolesDrawerOpen={isRolesDrawerOpen}
+          // isURLsDrawerOpen={isURLsDrawerOpen}
+          // toggleRolesDrawer={toggleRolesDrawer}
+          // toggleURLsDrawer={toggleURLsDrawer}
         />
       )}
     </>

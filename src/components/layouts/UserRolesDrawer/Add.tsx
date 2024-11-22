@@ -90,11 +90,34 @@ const AddRole = (props:{cb:()=>void})=>{
     
         setFormData(prevFormData => {
             const updatedUrls = checked
-                ? [...prevFormData.urls, data] // Add the URL if checked
-                : prevFormData.urls.filter(url => url.id !== data.id); // Remove the URL if unchecked
+                ? [...prevFormData.urls, data] 
+                : prevFormData.urls.filter(url => url.id !== data.id); 
     
             return { ...prevFormData, urls: updatedUrls };
         });
+    };
+
+    const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {  checked } = e.target;
+    
+        if(checked){
+            setFormData(prev=>{
+                return {
+                    ...prev,
+                    urls:allUrls
+                }
+            });
+        }
+        else{
+            setFormData(prev=>{
+                return {
+                    ...prev,
+                    urls:[]
+                }
+            });
+        }
+
+        
     };
     
     
@@ -130,7 +153,9 @@ const AddRole = (props:{cb:()=>void})=>{
         });
     },[formData])
 
-    console.log(allUrls)
+    const isChecked = useCallback((url:any)=>{
+        return formData.urls.some((u)=>u.code === url.code)
+    },[formData])
 
     if(isLoading){
         return(
@@ -199,7 +224,7 @@ const AddRole = (props:{cb:()=>void})=>{
                 
                 option: (baseStyles, { isSelected }) => ({
                     ...baseStyles,
-                    fontSize:13,
+                    fontSize:11,
                     backgroundColor: isSelected ?themeUi==="REGALBLAZE"?"#FCA311": "#BC3D80" : "white",
                     
                     
@@ -211,13 +236,13 @@ const AddRole = (props:{cb:()=>void})=>{
                 control: (baseStyles, { isFocused }) => (
                     {
                         ...baseStyles, 
-                        fontSize:16,
-                        borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
-                        // border: "none",
-                        // borderBottom: error ? "3px solid #D03E3E;" : menuIsOpen || isFocused ? '3px solid #820F4C' : '3px solid #A1A1A1',
+                        fontSize:12,
+                        borderColor: !isFocused ? "transparent": "#BC3D80",
+                        borderWidth:2,
                         boxShadow: 'none',
+                        backgroundColor:'rgb(247, 247, 247)',
                         "&:hover":{
-                            borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
+                            borderColor: "#BC3D80",
 
                         }
                     }),
@@ -229,7 +254,7 @@ const AddRole = (props:{cb:()=>void})=>{
             <Label htmlFor="description"> Description</Label>
             <TextArea
             name="description"
-            style={{ fontSize: "14px" }}
+            style={{minHeight:50 }}
             required
             placeholder="Example : BPR Manager"
             themeUi={themeUi}
@@ -238,11 +263,16 @@ const AddRole = (props:{cb:()=>void})=>{
         </InputWrapper>
         <CheckBoxesWrapper>
             <CheckBoxesHeader > Select URLS</CheckBoxesHeader>
-                <CheckBoxesContainer style={{display:'flex',flexDirection:'column'}}>
+                <CheckBoxesContainer style={{display:'flex',flexDirection:'column',maxHeight:'150px',overflowY:'scroll'}}>
+                    <CheckBoxWrapper>
+                        <input style={{width:10}} type={'checkbox'} name={'all'} onChange={handleSelectAll}/>
+                        <Label htmlFor={'all'}><b> Select All</b></Label>
+                        
+                    </CheckBoxWrapper>
                     {allUrls.map((r)=>{
                         return (
-                            <CheckBoxWrapper>
-                                <input type={'checkbox'} name={r.name} onChange={(e)=>handleCheck(e,r)}/>
+                            <CheckBoxWrapper key={r.code}>
+                                <input style={{width:10}} checked={isChecked(r)} type={'checkbox'} name={r.name} onChange={(e)=>handleCheck(e,r)}/>
                                 <Label htmlFor={r.name}> {r.name}</Label>
                                 
                             </CheckBoxWrapper>

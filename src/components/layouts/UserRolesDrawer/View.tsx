@@ -53,7 +53,7 @@ const ViewURLs = (props:{onDelete:(data:any)=>void})=>{
     if(isLoading){
         return (
             <Skeleton
-                style={{height:200,width:'100%'}}
+                style={{height:400,width:'100%'}}
             />
         )
     }
@@ -68,7 +68,7 @@ const ViewURLs = (props:{onDelete:(data:any)=>void})=>{
                     }
                 }}
                 rowHeight={50}
-                height="300px"
+                height="600px"
                 rowData={rowData}
                 columnDefs={[
                     {

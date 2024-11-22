@@ -66,7 +66,7 @@ const ViewURLs = (props:{onDelete:(params:any)=>void})=>{
                     flex:1,
                 }}
                 rowHeight={50}
-                height="300px"
+                height="600px"
                 rowData={rowData}
                 columnDefs={[
                     {
@@ -96,6 +96,7 @@ const ViewURLs = (props:{onDelete:(params:any)=>void})=>{
                         },
                         cellRenderer:(params:any)=>(
                             <SecondaryButton
+                            style={{backgroundColor:'transparent'}}
                                 themeUi={themeUi}
                                 onClick={()=>onDelete(params.data)}
                             >

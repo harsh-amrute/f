@@ -102,7 +102,6 @@ const AddURL = (props:{cb:()=>void}) => {
         <Label htmlFor="description"> Description</Label>
         <TextArea
           name="description"
-          style={{ fontSize: "14px" }}
           required
           placeholder="Example : BPR url"
           themeUi={themeUi}

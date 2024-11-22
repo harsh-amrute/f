@@ -4,7 +4,7 @@ import { Content, InputWrapper, URLsForm ,Label, TableWrapper, DrawerHeader} fro
 import { Input, Skeleton, TextArea } from "../../commons/styled"
 import { useUserData } from "../../../context"
 import { useState,useEffect } from "react"
-import AddURL from "./Add"
+import AddRole from "./Add"
 import NavigationTab from "../NavigationTab"
 import ViewURLs from "./View"
 import DeleteUrl from "./Delete"
@@ -63,7 +63,7 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
             
             {currTab === 1 && (
                 <Content>
-                    <AddURL cb={()=>setCurrTab(0)}/>
+                    <AddRole cb={()=>setCurrTab(0)}/>
                 </Content>
             )}
             {currTab === 0 && (

@@ -36,7 +36,7 @@ export const URLsForm = styled.form`
     flex:1;
     width:100%;
     height:100%;
-    padding:10px;
+    padding:0px 10px 10px 10px;
     display:flex;
     flex-direction:column;
 `
@@ -49,8 +49,8 @@ export const InputWrapper = styled.div`
 `
 
 export const Label = styled.label`
-    margin-bottom:5px;
-    font-size:16px;
+    /* margin-bottom:5px; */
+    font-size:12px;
 `
 
 export const TableWrapper = styled.div`
@@ -98,4 +98,5 @@ export const CheckBoxesContainer = styled.div`
 
 export const CheckBoxWrapper = styled.div`
     display:flex;
+    align-items:center;
 `

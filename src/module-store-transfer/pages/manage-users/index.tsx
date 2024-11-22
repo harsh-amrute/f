@@ -32,13 +32,13 @@ interface ManageUsersProps{
   is_admin:boolean
   permission:Array<any>
   themeUi:string
-  isRolesDrawerOpen:boolean
-  isURLsDrawerOpen:boolean
-  toggleRolesDrawer:(v:boolean)=>void
-  toggleURLsDrawer:(v:boolean)=>void
+  // isRolesDrawerOpen:boolean
+  // isURLsDrawerOpen:boolean
+  // toggleRolesDrawer:(v:boolean)=>void
+  // toggleURLsDrawer:(v:boolean)=>void
 }
 
-const ManageUsers = ({ is_admin, permission, themeUi,isRolesDrawerOpen,isURLsDrawerOpen,toggleRolesDrawer,toggleURLsDrawer }: ManageUsersProps) => {
+const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const { t } = useTranslation();
   const [contentModal, setContentModal] = useState({
     callApi: 0,
@@ -146,7 +146,6 @@ const ManageUsers = ({ is_admin, permission, themeUi,isRolesDrawerOpen,isURLsDra
   };
 
   const fillAdvancedPermissionsModalData = (item?:any)=>{
-    console.log(listRoles)
     //Application Ids with valid Selected Roles
     const validApplications:Array<number> = [];
       listRoles.forEach((app:any)=>{
@@ -363,7 +362,7 @@ const ManageUsers = ({ is_admin, permission, themeUi,isRolesDrawerOpen,isURLsDra
         )}
       </SCProfileOverView>
 
-      {isURLsDrawerOpen && (
+      {/* {isURLsDrawerOpen && (
         <UserURLsDrawer
           onClose={()=>toggleURLsDrawer(false)}
         />
@@ -373,7 +372,7 @@ const ManageUsers = ({ is_admin, permission, themeUi,isRolesDrawerOpen,isURLsDra
         <UserRolesDrawer
           onClose={()=>toggleRolesDrawer(false)}
         />
-        )}
+        )} */}
 
 
       <ModalManageUsers
