@@ -2292,7 +2292,7 @@ const useViewModify = (pageType: string) => {
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
       e.bid = null;
-      e.iv = null;
+      e.iv = e.iv!==undefined?e.iv: true;
       e.err= "no error"
       
       

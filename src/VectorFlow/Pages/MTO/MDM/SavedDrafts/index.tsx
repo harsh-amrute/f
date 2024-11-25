@@ -1,9 +1,9 @@
 import React from "react"
 import useSavedDrafts from "./useSavedDrafts"
-import { mapDraftDataToTableRowData, mapDraftToColumnDefs } from "../../../../../helpers/utils"
+import { mapDraftDataToTableRowData, mapDraftToMTOColumnDefs } from "../../../../../helpers/utils"
 import { useUserData } from "../../../../../context"
 
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
+import VFTable from "../../Common/VFTable"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
@@ -31,9 +31,9 @@ const MTOSavedDrafts = ()=>{
   }
 
   return(
-    <div style={{paddingTop:'20px',height:'95%'}}>
+    <div style={{paddingTop:'20px',paddingLeft: '25px',height:'90%'}}>
       <VFTable
-          columnDefs={mapDraftToColumnDefs([
+          columnDefs={mapDraftToMTOColumnDefs([
             {
                 
               displayName: "Sr No.",

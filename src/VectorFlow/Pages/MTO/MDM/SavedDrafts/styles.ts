@@ -8,7 +8,5 @@ export const ActionContainer  = styled.div`
     align-items:center;
 `
 export const ActionButtonWrapper = styled.img`
-    height:24px;
-    width:24px;
     cursor:pointer;
 `

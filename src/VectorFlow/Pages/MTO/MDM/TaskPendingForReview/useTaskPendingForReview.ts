@@ -21,6 +21,7 @@ const useTaskPendingForReview = ()=>{
     const dispatch = useDispatch();
 
     const {user} = useUserData()
+    const [data, setData] = useState<any>([]);
 
     const themeUi = user.user.theme_ui
 
@@ -41,8 +42,8 @@ const useTaskPendingForReview = ()=>{
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
     const rowsPerPage = 50;
 
-    const {data,isLoading,refetch} = useGetPendingTasks();
-    const {mutateAsync : getMTOTaskStatusData} = useGetMTOTaskStatusData();
+    // const {data,isLoading,refetch} = useGetPendingTasks();
+    const {mutateAsync : getMTOTaskStatusData, isLoading: showLoader} = useGetMTOTaskStatusData();
 
     const [mtoPendingTaskData, setMTOPendingTaskData ] = useState<any>([]);
 
@@ -76,7 +77,7 @@ const useTaskPendingForReview = ()=>{
 
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize) 
 
-    const showLoader = isLoading || isMasterUiConfigurationLoading || isViewTableLoading;
+    // const showLoader = isLoading || isMasterUiConfigurationLoading || isViewTableLoading;
 
     const [actionStatus,setActionStatus] = useState<string>('');
 
@@ -346,7 +347,7 @@ const useTaskPendingForReview = ()=>{
             setCurrentPage(1);
             setSelectedRows(0);
             setSelectionType('');
-            refetch()
+            // refetch()
             notifySuccess('Data submitted successfully and Task status updated');
 
             
@@ -559,7 +560,7 @@ const useTaskPendingForReview = ()=>{
         isViewTableOpen,
         viewTableColDefs,
         detailTableColDefs,
-        viewTableRowData : data?.data.data,
+        // viewTableRowData : data?.data.data,
         detailTableRowData,
         showLoader,
         recordCount,

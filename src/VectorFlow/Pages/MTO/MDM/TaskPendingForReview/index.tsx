@@ -1,5 +1,5 @@
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
+import VFTable from "../../Common/VFTable"
 import { mapRowDataWithSrNo } from "../../../../../helpers/utils"
 import useTaskPendingForReview from "./useTaskPendingForReview"
 import TaskPendingTaskBar from "./TaskPendingTaskBar"
@@ -72,6 +72,8 @@ const MTOTaskPendingForReview = ()=>{
                 // rowData={mtoPendingTaskData}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
+                disableZoomScaling
+                maintainColumnOrder
             />
             </TaskPendingWrapper>
         )
@@ -112,6 +114,8 @@ const MTOTaskPendingForReview = ()=>{
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
                 // suppressPaginationPanel={true}
+                disableZoomScaling
+                maintainColumnOrder
             />
                     
 
@@ -132,8 +136,10 @@ const MTOTaskPendingForReview = ()=>{
             {
                 showRejectAllModal && 
                     <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
-            }
-            {
+                  }
+                    <div style={{zoom:0.8}}>
+                  {
+
               (!(detailTableRowData&& detailTableRowData.length>0 && detailTableRowData)) ?
 
               <TaskPendingTaskBar
@@ -150,8 +156,9 @@ const MTOTaskPendingForReview = ()=>{
               onCancel={onCancel}
               onSubmit={mtoSubmitTask}
               />
-
+              
             }
+            </div>
         </TaskPendingWrapper>
         
     )

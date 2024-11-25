@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 
 
-const ApplicationSelectModal = ({isModalOpen, setIsModalOpen}:any) => {
+const ApplicationSelectModal = ({isModalOpen, setIsModalOpen, mtoLink}:any) => {
     
     const [selectedOption, setSelectedOption] = useState<string>("");
 
@@ -19,7 +19,7 @@ const ApplicationSelectModal = ({isModalOpen, setIsModalOpen}:any) => {
         setIsModalOpen(false);
       }
       else{
-        navigate("/master-data-management/mto-control-panel");
+        navigate(mtoLink);
       }
     };
   return (

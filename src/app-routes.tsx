@@ -91,6 +91,13 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
+    '/master-data-management/mto-control-panel',
+    '/master-data-management/mto-control-panel/view-modify',
+    '/master-data-management/mto-saved-drafts',
+    '/master-data-management/mto-task-status',
+    '/master-data-management/mto-task-pending',
+    '/master-data-management/mto-control-panel/add',
+    '/master-data-management/mto-control-panel/delete',
   ]
   const urlAllPage = [
     ...authenPage,

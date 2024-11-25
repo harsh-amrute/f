@@ -352,18 +352,9 @@ const MTOViewModify = () => {
                 columnDefs={activeMaster.colDefs}
                   rowData={activeMaster.rowData}
                   {...agGridProps}
-                  suppressPaginationPanel={!isDataAvailableLocally}
-                  statusBar={{
-                    statusPanels: isDataAvailableLocally ? [
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                      { statusPanel: 'agAggregationComponent', align: 'left' },
-                    ] :
-                      [],
-                  }}
+                  suppressPaginationPanel={false}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "65%" : "95%" : "75%"}
+                  maintainColumnOrder
                   />
                 }
               {

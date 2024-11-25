@@ -38,7 +38,7 @@ const ControlPanel = ()=>{
 
     return (
         <Container>
-            {isAppModalOpen && <ApplicationSelectModal isModalOpen={isAppModalOpen} setIsModalOpen={setIsAppModalOpen}/>}
+            {isAppModalOpen && <ApplicationSelectModal mtoLink={'/master-data-management/mto-control-panel'} isModalOpen={isAppModalOpen} setIsModalOpen={setIsAppModalOpen}/>}
             <PanelGridWrapper>
                 <PanelGrid>
                     <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/edit.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/edit-hover.svg'} text={'View / Modify Records '}  onClick={()=>navigate('/master-data-management/control-panel/view-modify')} themeUi={themeUi}/>

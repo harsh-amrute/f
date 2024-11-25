@@ -25,6 +25,7 @@ import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
 
 // clear cached token and redirect to sso login
 import CryptoJS from 'crypto-js';
+import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -947,6 +948,25 @@ export const mapDraftToColumnDefs = (fields: Field[], customParams?: ColDef) => 
       },
       flex: 1,
       cellRenderer: f.key === "action" && ActionRenderer,
+      ...customParams
+    }
+  })
+  return result
+}
+export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) => {
+  let result: ColDef[] = []
+  result = fields.map((f) => {
+    return {
+      field: f.key,
+      colId: f.key,
+      headerName: f.displayName,
+      minWidth: 180,
+
+      cellStyle: {
+        "textAlign": "center",
+      },
+      flex: 1,
+      cellRenderer: f.key === "action" && MTOActionRenderer,
       ...customParams
     }
   })

@@ -66,6 +66,30 @@ export const listMenuParent: any = [
         url: "/master-data-management/data-modification-history",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
+      {
+        name: "MTO Saved Drafts",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/master-data-management/mto-saved-drafts",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+      },
+      {
+        name: "MTO Task Pending For Review",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/master-data-management/mto-task-pending",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", 'MasterApprover'],
+      },
+      {
+        name: "MTO Task Status",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/master-data-management/mto-task-status",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+      },
+      {
+        name: "MTO Data Modification History",
+        img: "/assets/img/nav/arrow_down.svg",
+        url: "/master-data-management/mto-data-modification-history",
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+      },
     ],
   },
   // {

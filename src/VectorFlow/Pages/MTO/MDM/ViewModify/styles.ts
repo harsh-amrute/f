@@ -12,8 +12,8 @@ const fadeIn = keyframes`
 
 export const SCContainer = styled.div`
     margin-left:50px;
-    padding-bottom:90px;
-    height:85%;
+    padding-bottom:70px;
+    height:90%;
 `
 
 export const SCFilterContainer = styled.div`
