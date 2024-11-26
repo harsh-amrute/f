@@ -1,5 +1,5 @@
 import {  render } from '@testing-library/react';
-import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
+import { useGetBORUIConfiguration, useBORData, useBORDataCount , useSubmitBORRemark, useGetBORRemarkHistory,} from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import { mockBORData,mockBORCountData,mockBORUIConfigData} from "../../../../../mock-data/BOR";
 import BuyerOrderReport from './';
 jest.mock("../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport");
@@ -24,6 +24,14 @@ const useGetBORUIConfigurationMock = useGetBORUIConfiguration as jest.MockedFunc
     const useBORDataCountMock = useBORDataCount as jest.MockedFunction<
     typeof useBORDataCount
   >;
+
+  const useSubmitBORRemarkMock = useSubmitBORRemark as jest.MockedFunction<
+  typeof useSubmitBORRemark
+>
+
+const useGetBORRemarkHistoryMock = useGetBORRemarkHistory as jest.MockedFunction<
+  typeof useGetBORRemarkHistory
+>
 
   window.URL.createObjectURL = jest.fn();
 
@@ -71,6 +79,48 @@ const useGetBORCountResult: any = {
     return { data: mockBORCountData };
   },
 };
+
+useSubmitBORRemarkMock.mockImplementation(():any=>{
+  return{
+    mutateAsync:()=>{
+      return{data:{
+        "recordCount": "10",
+        "data": [],
+        "status": 200,
+        "msg": "Remark Submitted Successfully",
+        "errorCount": null,
+        "error": null,
+        "conflictErrorCount": null,
+        "conflictError": null
+    }}
+    }
+  }
+})
+
+useGetBORRemarkHistoryMock.mockImplementation(():any=>{
+  return{
+    mutateAsync:()=>{
+      return {data:{
+        "recordCount": "10",
+        "data": [
+            {
+                "author": "Akash Shewale",
+                "date": "2023-10-20 10:20:12 am",
+                "remark": "The SKU is having trouble with the order delivery please help us with suitable actions"
+            },
+        ],
+        "status": 200,
+        "msg": null,
+        "errorCount": null,
+        "error": null,
+        "conflictErrorCount": null,
+        "conflictError": null
+    }}
+    }
+  }
+})
+
+
 
 describe("Renders BOR Component", ()=>{
     beforeEach(()=>{
