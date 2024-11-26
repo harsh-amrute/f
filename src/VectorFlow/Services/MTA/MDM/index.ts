@@ -309,3 +309,9 @@ export const useGetCalendarMasterData = ()=>{
   })
 }
 
+export const useGetAllUsers = ()=>{
+  return useMutation(async ()=>{
+    return await MDMService.getAllUsers();
+  })
+}
+

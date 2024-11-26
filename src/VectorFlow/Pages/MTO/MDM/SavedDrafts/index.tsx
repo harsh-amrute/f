@@ -1,6 +1,6 @@
 import React from "react"
 import useSavedDrafts from "./useSavedDrafts"
-import { mapDraftDataToTableRowData, mapDraftToMTOColumnDefs } from "../../../../../helpers/utils"
+import { mapDraftDataToMTOTableRowData, mapDraftDataToTableRowData, mapDraftToMTOColumnDefs } from "../../../../../helpers/utils"
 import { useUserData } from "../../../../../context"
 
 import VFTable from "../../Common/VFTable"
@@ -95,7 +95,7 @@ const MTOSavedDrafts = ()=>{
               onDelete:openDeleteModal
             }
           })}
-          rowData={mapDraftDataToTableRowData(allDrafts)}
+          rowData={mapDraftDataToMTOTableRowData(allDrafts)}
           pagination={true}
           // paginationPageSize={50}
           paginationPageSize={parseInt(process.env.REACT_APP_SAVEDRAFT_PAGE || '100')}

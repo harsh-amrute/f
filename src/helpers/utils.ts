@@ -1074,6 +1074,26 @@ export const mapDraftDataToTableRowData = (rowData: any[]) => {
   return result
 }
 
+export const mapDraftDataToMTOTableRowData = (rowData: any[]) => {
+  let result = []
+  if (!rowData) return
+  result = rowData.map((row) => {
+    return {
+      ...row,
+      LastModifiedDateTime: row.LastModifiedDateTime
+    }
+  })
+
+  result.sort((a, b): any => {
+    return differenceInSeconds(b.LastModifiedDateTime, a.LastModifiedDateTime)
+  })
+
+  result = result.map((r: any, index: number) => {
+    return { ...r, sr_no: index + 1, LastModifiedDateTime: r.LastModifiedDateTime }
+  })
+  return result
+}
+
 export const getExistingColumns = (rowData: any) => {
   return Object.keys(rowData)
 }

@@ -32,6 +32,26 @@ const useSavedDrafts = ()=>{
     const {mutateAsync: getBufferMasterData} = useGetBufferMasterData();
     
     const user = useUserData();
+
+    const convertDateFormat = (inputDate: string)=>{
+
+        // Extract parts of the string
+        const [date, ltime] = inputDate.split("T");
+        const time = ltime.split(".")[0]; // Remove milliseconds
+        const [year, month, day] = date.split("-");
+        const [hours, minutes, seconds] = time.split(":");
+
+        // Convert to 12-hour format
+        const isPM = parseInt(hours) >= 12;
+        const newHours = (parseInt(hours) % 12 || 12).toString().padStart(2, "0");
+        const period = isPM ? "PM" : "AM";
+
+        console.log("month,,,,", month);
+
+        const newMonth = month.toString();
+        const formattedDate = `${year}/${newMonth}/${day} ${newHours}:${minutes}:${seconds} ${period}`;
+        return formattedDate;
+    }
     
     const getCombinedMTOData = async()=>{
         try{
@@ -42,11 +62,12 @@ const useSavedDrafts = ()=>{
                 concatedData = [...data.data.data];
             }
             response.data.data.forEach((draft: any)=>{
+                // const date = new Date(draft.co);
                 const newData = {
                     DraftId: draft.did,
                     ActionType: draft.at,
-                    LastModifiedDateTime: new Date(draft.co).getTime(),
-                    Masters: draft.mnm,
+                    LastModifiedDateTime: convertDateFormat(draft.co.toString()),
+                    Masters: draft.at +" - "+ draft.mnm,
                     SearchKeys: draft.sk,
                     userid: draft.uid,
                     isMTO: true
@@ -127,12 +148,13 @@ const useSavedDrafts = ()=>{
             try{
                 const res: any = await getDraftByIdMTO(draftDetails.DraftId);
                 dispatch(SET_RECORD_COUNT(res.data.data.count));
-                let draftData:any = res.data.data.results;
+                const draftData:any = res.data.data.results;
 
                 if(draftDetails.isMTO && (draftDetails.ActionType === "Modify")){
                     try{
                         const result = await getBufferMasterData();
-                        draftData = [...draftData, ...result.data.data];
+                        // draftData = [...draftData, ...result.data.data];
+                        console.log(result);
 
                         // console.log("final DraftData .... ", draftData);
                     }

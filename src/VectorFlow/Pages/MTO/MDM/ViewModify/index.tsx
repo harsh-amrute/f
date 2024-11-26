@@ -394,7 +394,7 @@ const MTOViewModify = () => {
                   }}
                   onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoGrid()) }}
                 >
-                  {(activeMaster.rowData.length && !(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
+                  {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"

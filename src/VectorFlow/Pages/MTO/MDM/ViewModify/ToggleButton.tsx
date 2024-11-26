@@ -18,14 +18,14 @@ const ToggleButton: React.FC = (props: any) => {
     
         const newData = _.cloneDeep(activeMaster.rowData);
         newData.forEach((row: any) => {
-            if(row.bid === props.data.bid){
+
+            if(row.bid!==undefined && row.bid === props.data.bid){
                 row.iv = !isActive;
             }
-            else if(row.bd=== props.data.bd){
+            else if(row.bcd=== props.data.bcd){
                 row.iv = !isActive;
             }
         })
-        console.log("new data....", newData);
         dispatch(UPDATE_ROW_DATA(newData));
     setIsActive(!isActive);
   };

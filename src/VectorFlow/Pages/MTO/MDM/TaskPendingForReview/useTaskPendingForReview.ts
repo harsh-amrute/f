@@ -361,7 +361,7 @@ const useTaskPendingForReview = ()=>{
 
     const mtoOnSelectionChange = ()=>{
         const selectRow:any = ref.current?.api.getSelectedRows();
-        const selectedRows = [...selectRow]
+        const selectedRows = selectRow?[...selectRow]: []
 
         const newData:any = []; 
 
@@ -449,17 +449,47 @@ const useTaskPendingForReview = ()=>{
         }
     }
 
+    const getDaysDifference = (inputDate: string): number => {
+        const givenDate = new Date(inputDate);
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        givenDate.setHours(0, 0, 0, 0);
+        const timeDifference = currentDate.getTime() - givenDate.getTime();
+        const dayDifference = Math.round(timeDifference / (1000 * 60 * 60 * 24));
+        return dayDifference;
+    };
+    
+    const convertDateFormat = (inputDate: string)=>{
+
+        // Extract parts of the string
+        const [date, ltime] = inputDate.split("T");
+        const time = ltime.split(".")[0]; // Remove milliseconds
+        const [year, month, day] = date.split("-");
+        const [hours, minutes, seconds] = time.split(":");
+
+        // Convert to 12-hour format
+        const isPM = parseInt(hours) >= 12;
+        const newHours = (parseInt(hours) % 12 || 12).toString().padStart(2, "0");
+        const period = isPM ? "PM" : "AM";
+
+        const newMonth = month;
+        // Format the output
+        const formattedDate = `${year}/${newMonth}/${day}  ${newHours}:${minutes}:${seconds} ${period}`;
+        return formattedDate;
+    }
+
     const MTOToMTAFormat=(inData: any)=>{
 
         const newData:any = [];
         inData.forEach((val:any)=>{
             const newVal:any = {}
             newVal.TaskID = val.tid;
-            newVal.PendingSince = val.co;
+            newVal.PendingSince = convertDateFormat(val.co);
             newVal.TaskName = val.tnm;
             newVal.TaskStatus = val.std;
-            newVal.Requester = val.r_nm;
+            newVal.RequesterName = val.r_nm;
             newVal.isMTO = true;
+            newVal.ageing = getDaysDifference(val.co);
   
             newData.push(newVal);
         })

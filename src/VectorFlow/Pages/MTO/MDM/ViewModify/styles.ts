@@ -387,7 +387,7 @@ interface ToggleProps {
 export const ToggleContainer = styled.div<ToggleProps>`
     display: flex;
     align-items: center;
-    width: 100px;
+    width: 120px;
     padding: 5px;
     border-radius: 50px;
     cursor: pointer;
@@ -401,7 +401,7 @@ export const ToggleCircle = styled.div<ToggleProps>`
     height: 28px;
     border-radius: 50%;
     background-color: ${(props) => (props.isActive ? "#800040" : "#a0a0a0")};
-    transform: ${(props) => (props.isActive ? "translateX(60px)" : "translateX(0)")};
+    transform: ${(props) => (props.isActive ? "translateX(70px)" : "translateX(5px)")};
     transition: transform 0.3s ease, background-color 0.3s ease;
   `;
   

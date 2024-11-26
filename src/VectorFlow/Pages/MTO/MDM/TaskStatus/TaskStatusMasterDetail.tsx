@@ -3,6 +3,8 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import { VFTaskStatusWrapper,VFTaskStatusContentWrapper, VFTaskStatusStepperWrapper, VFTastStatusDownloadWrapper,VFTaskStatusNoData } from "./styles"
 import { useUserData } from "../../../../../context"
 import StepperPrefix from "./StepperPrefix"
+import { useEffect, useState } from "react"
+import { useGetMTOTaskById } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 
 
@@ -151,6 +153,29 @@ const getStepperState = (data:any):StepItem[]=>{
                     prefix:<div style={{height:'15px'}}/>
                 }
             ]
+        case "Pending":
+            return [
+                {
+                    label:"Submission",
+                    status:'completed',
+                    description:data.PendingSince,
+                    prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
+                    //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a')
+                },
+                {
+                    label:"Approval Pending",
+                    status:'pending',
+                    description:data.ApprovedDate,
+                    prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
+                    //description:formatMDMDate(data.ApprovedDate, 'dd/MM/yy hh:mm:ss a')
+                },
+                {
+                    label:"DB Updated",
+                    status:'pending',
+                    description:'',
+                    prefix:<div style={{height:'15px'}}/>
+                }
+            ]
         default:
             return [
                 {
@@ -178,29 +203,53 @@ const getStepperState = (data:any):StepItem[]=>{
 
 const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
 
+    console.log("props....", props);
+
     const{
         data,
         onDownload
     } = props
     const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
     const {user} = useUserData()
-    const {Approvers} = data
+    const {Approvers} = data;
+
+
+    const {mutateAsync: getTaskById} = useGetMTOTaskById();
+    const [taskDetails, setTaskDetails] = useState<any>();
+
+    const GetTaskDetails = async()=>{
+        try{
+            const result = await getTaskById(data.TaskID);
+            console.log("Taks details. resultu", result.data.data.results);
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+
+    useEffect(()=>{
+        if(data.TaskID){
+            GetTaskDetails();
+        }
+    },[data.TaskID]);
+    
 
     const showDisplayDownloadButton = (status:string):boolean=>{
         return approvedStatuses.includes(status)
     }
     const gridFraction ="5fr 1fr"
 
-
+    console.log("A[[rodf", Approvers, Approvers?.length);
     return (
         <VFTaskStatusWrapper data-testid="task-status-master-detail">
             {(Approvers && Approvers.length>0)?Approvers?.map((approver:any,index:number)=>{
+                
                 return(
                     <VFTaskStatusContentWrapper key={index}>
                         <VFTaskStatusStepperWrapper gridFraction={gridFraction}>
                         {/* <VFTaskStatusStepperLabel></VFTaskStatusStepperLabel> */}
                             <VFStepper
-                                items={getStepperState(approver)}
+                                items={getStepperState({...approver, Requester: props.data.Requester, Approver: props.data.Approver[index], TaskStatus: props.data.TaskStatus})}
                                 dashWidth="500px"
                                 zoom={0.9}
                             />

@@ -12,6 +12,7 @@ const actions = {
     SET_EDITABLE_MAJ_ROW: createAction<any>("SET_EDITABLE_MAJ_ROW"),
     SET_EDITABLE_MIN_ROW: createAction<any>("SET_EDITABLE_MIN_ROW"),
     SET_POOGI_INITIAL_DATA: createAction<any>("SET_POOGI_INITIAL_DATA"),
+    SET_BUFFER_INITIAL_DATA: createAction<any>("SET_BUFFER_INITIAL_DATA")
     // UPDATE_DAILY_DATA: createAction<DailyDataGraph>("UPDATE_DAILY_DATA"),
     // TOGGLE_GRAPH_MODAL: createAction<boolean>("TOGGLE_GRAPH_MODAL"),
     // TOGGLE_NORM_CHANGE_HISTORY_TABLE: createAction<boolean>("TOGGLE_NORM_CHANGE_HISTORY_TABLE"),
@@ -30,5 +31,6 @@ export const {
     APPLIED_FILTERS,
     SET_EDITABLE_MAJ_ROW,
     SET_EDITABLE_MIN_ROW,
-    SET_POOGI_INITIAL_DATA
+    SET_POOGI_INITIAL_DATA,
+    SET_BUFFER_INITIAL_DATA
 } = actions;

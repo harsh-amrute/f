@@ -21,7 +21,7 @@ import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
 import PoogiEditDeleteCell from './PoogiEditDeleteCell';
-import { SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
+import { SET_BUFFER_INITIAL_DATA, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
 import MTOCalendarEditCellRenderer from './MTOCalendarEditCellRenderer';
 import ToggleButton from './ToggleButton';
 
@@ -250,10 +250,18 @@ const useViewModify = (pageType: string) => {
 
   }, [selectedOptions, isLoading, activeMaster, allMastersState]);
 
+  const getBufferInitialData = async()=>{
+    if(activeMaster.id===501){
+      const result = await getBufferMasterData();
+      dispatch(SET_BUFFER_INITIAL_DATA(result.data.data));
+    }
+  }
+
   useEffect(()=>{
     if (activeMaster.id === 501 && !bufferTypeData){
       getBufferMasterDataType();
     }
+    getBufferInitialData();
   },[activeMaster.id])
 
   useEffect(()=>{
@@ -1927,6 +1935,11 @@ const useViewModify = (pageType: string) => {
           cellEditorParams: {
             values: bufferTypeData?.map((item: any) =>  item.dsc), // Dropdown values
           },
+          cellStyle: (params:any)=>{
+            if(params.data.bid===undefined || params.data.iv===false){
+              return {color: "rgb(128, 0, 64)"}
+            }
+          },
           editable,
         };
       }
@@ -1944,6 +1957,11 @@ const useViewModify = (pageType: string) => {
 
         return {
           ...colDef,
+          cellStyle: (params:any)=>{
+            if(params.data.bid===undefined || params.data.iv===false){
+              return {color: "rgb(128, 0, 64)"}
+            }
+          },
           editable,
         };
       }
@@ -1967,6 +1985,11 @@ const useViewModify = (pageType: string) => {
           ...colDef,
           cellEditor: "agNumberCellEditor",
           editable,
+          cellStyle: (params:any)=>{
+            if(params.data.bid===undefined || params.data.iv===false){
+              return {color: "rgb(128, 0, 64)"}
+            }
+          },
         };
       }
 
@@ -1978,6 +2001,7 @@ const useViewModify = (pageType: string) => {
       field: 'actions',
       headerName: 'Actions',
       colId: 'actions',
+      pinned: 'left',
       //flex: 1,
       width: 100, // Set the width for the actions column
       cellRenderer: AddRemoveCellRenderer
@@ -2008,6 +2032,7 @@ const useViewModify = (pageType: string) => {
         mlt: 0,
         ib: false,
         bt: 1,
+        iv: true,
         editable: true,
       };
     }
@@ -2220,7 +2245,6 @@ const useViewModify = (pageType: string) => {
       buffData: []
     }
 
-    let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
     activeMaster.rowData.forEach((ele:any)=>{
       const e = _.cloneDeep(ele);
       bufferTypeData.forEach((elm:any)=>{
@@ -2234,14 +2258,11 @@ const useViewModify = (pageType: string) => {
       if(!e.iv && e.iv!==false)e.iv = false;
       if(!e.bid)e.bid=null;
 
-      if(totalNewVals===0) return;
-      totalNewVals--;
-
-
-      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
+      if(e.bid==null || e.iv==false){
+        BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
+      }
     })
 
-    console.log("bufferPostObj", BufferPostObj);
     try{
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status=== 200){

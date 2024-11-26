@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react"
 
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
+import VFTable from "../../Common/VFTable"
 
 import {  getActionName, mapTaskStatusToColDefs,getExistingColumns,getExistingColumnFields, mapMasterToTaskStatusColumnGroupDefs, mapTaskStatusDataToRowData } from "../../../../../helpers/utils"
 import TaskStatusMasterDetail from "./TaskStatusMasterDetail"
-import { useGetTaskDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration, useGetMTOTaskStatusData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useGetTaskDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration, useGetMTOTaskStatusData, useGetAllUsers } from "../../../../../VectorFlow/Services/MTA/MDM"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import { AgGridReactProps } from "ag-grid-react"
@@ -19,12 +19,14 @@ import * as globalStyles from '../../../../../styles/global'
 const MTOTaskStatus = ()=>{
 
 
-    const {data,isLoading} = useGetTaskStatusData()
-    const {mutateAsync: getMTOTaskStatusData} = useGetMTOTaskStatusData();
+    // const {data,isLoading} = useGetTaskStatusData()
+    const {mutateAsync: getMTOTaskStatusData, isLoading} = useGetMTOTaskStatusData();
     const gridRef = useRef<GridRef>()
 
     const {mutateAsync:getTaskDetailDownloadData} = useGetTaskDetailDownloadData()
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
+
+    const {mutateAsync: getAllUsers} = useGetAllUsers();
 
     const {user} = useUserData()
 
@@ -95,7 +97,7 @@ const MTOTaskStatus = ()=>{
        }
     }
 
-    const [rowData, setRowData] = useState<any>(data?.data.data || undefined)
+    const [rowData, setRowData] = useState<any>([])
     const [finalData, setFinalData] = useState<any>(undefined);
     // rowData = rowData.map((row:any)=>{
     //     return {
@@ -104,6 +106,23 @@ const MTOTaskStatus = ()=>{
            
     //     }
     // })
+    const mapIdsToNames = (idString: string, data: any): any => {
+        // Parse the comma-separated string into an array of numbers
+        const ids = idString.split(",").map(id => parseInt(id.trim(), 10));
+    
+        // Filter and map the objects to their names based on matching IDs
+        const names = ids
+            .map(id => data.find((person:any) => person.id === id)?.name)
+            .filter(name => name); // Remove undefined names (if any ID doesn't match)
+    
+        // Join the names into a single string
+        const result  = names.join(", ");
+        // console.log("names list....", result)
+        // const approverList = [];
+        return result.split(",");
+    };
+
+
     const MTOToMTAFormat=(inData: any)=>{
 
         const newData:any = [];
@@ -114,9 +133,14 @@ const MTOTaskStatus = ()=>{
             newVal.TaskName = val.tnm;
             newVal.TaskStatus = val.std;
             newVal.Requester = val.r_nm;
+            newVal.Approver = mapIdsToNames(val.a_ids, allUsers);
+            newVal.Approvers = mapIdsToNames(val.a_ids, allUsers);
+            newVal.Aids = val.a_ids;
 
             newData.push(newVal);
         })
+
+        console.log("enw data", newData);
 
         return newData;
     }
@@ -124,33 +148,54 @@ const MTOTaskStatus = ()=>{
     const getMTOTaskData = async()=>{
         try{
             const response = await getMTOTaskStatusData();
-            const transformedData = MTOToMTAFormat(response.data.data.results);
-            if(rowData){
-                setFinalData([...rowData, ...transformedData])
-            }
-            else{
-
-                setFinalData([...transformedData]);
-            }
+            const transformedData = MTOToMTAFormat(response.data.data);
+            setRowData(transformedData);
+            setFinalData(transformedData)
+           
         }
         catch(error){
             console.log(error)
         }
     }
 
+    React.useEffect(() => {
+        console.log("Final data/////",finalData);
+    }, [finalData])
+
+    const [allUsers, setAllUsers] = useState<any>([])
+
+    const GetAllUsersData = async()=>{
+        try{
+
+            const response = await getAllUsers();
+            console.log("response.....", response.data);
+            setAllUsers(response.data);
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+    
+
     React.useEffect(()=>{
 
-        if(rowData){
 
-            const newRowData = [...rowData];
+            // const newRowData = [...rowData];
 
-            newRowData.sort((a:any,b:any)=>{
-                return differenceInSeconds(formatDate(b.PendingSince),formatDate(a.PendingSince)) 
-            })
-            setRowData(newRowData)
+            // newRowData.sort((a:any,b:any)=>{
+            //     return differenceInSeconds(formatDate(b.PendingSince),formatDate(a.PendingSince)) 
+            // })
+            // setRowData(newRowData)
+            GetAllUsersData();
+            
+        
+    },[])
+
+    React.useEffect(()=>{
+        if(allUsers.length>0){
             getMTOTaskData();
         }
-    },[rowData])
+    },[allUsers])
         
                 
                 if(isLoading){
@@ -158,7 +203,7 @@ const MTOTaskStatus = ()=>{
                 }
                 
                 return(
-                    <div style={{paddingTop:'20px',height:'95%'}}>
+                    <div style={{paddingTop:'20px', paddingLeft: "25px",height:'95%'}}>
             <VFTable
                 masterDetail
                 detailCellRenderer={TaskStatusMasterDetail}

@@ -11,7 +11,10 @@ const AddRemoveCellRenderer = (params: any) => {
 
     const dispatch = useDispatch();
     const activeMaster = useSelector((state: RootState) => state.mdm.activeMaster);
+    const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
     const addRow = () => {
+
+      console.log("buff initial Dat...", bufferInitialData);
 
         const allRows = [...activeMaster.rowData];
         allRows.shift();
@@ -25,7 +28,7 @@ const AddRemoveCellRenderer = (params: any) => {
           
           
           let isValid = true;
-          allRows.forEach((e)=>{
+          bufferInitialData.forEach((e:any)=>{
     
             if(e.bsz== params.data.bsz && e.bt=== params.data.bt){
             notifyError("Buffer size must be unique!.")
