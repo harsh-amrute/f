@@ -62,5 +62,68 @@ describe('Testing the BORService',  () => {
     
       });
 
+      it('should make a Post request to /SubmitRemark', async () => {
+        mockedAxios.post.mockResolvedValueOnce({
+            "recordCount": "10",
+            "data": [],
+            "status": 200,
+            "msg": "Remark Submitted Successfully",
+            "errorCount": null,
+            "error": null,
+            "conflictErrorCount": null,
+            "conflictError": null
+        });
+        const mockBody = {
+          data:[{
+            remark:"Some remark",
+            skucode:'4124',
+            whcode:'dsaf',
+            spc:'1234',
+        }]
+        }
+        const response = await SupplyChainIntelligenceHubService.submitBORRemark(mockBody);
+        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8082/AddBORRemark',mockBody,{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+
+      it('should make a Post request to /GetBORRemarkDetails', async () => {
+        mockedAxios.post.mockResolvedValueOnce(
+          {
+            "recordCount": "10",
+            "data": [
+                {
+                    "author": "Akash Shewale",
+                    "date": "2023-10-20 10:20:12 am",
+                    "remark": "The SKU is having trouble with the order delivery please help us with suitable actions"
+                },
+                {
+                    "author": "Akash Shewale",
+                    "date": "2023-10-20 10:20:12 am",
+                    "remark": "The SKU is having trouble with the order delivery please help us with suitable actions"
+                },
+                {
+                    "author": "Akash Shewale",
+                    "date": "2023-10-20 10:20:12 am",
+                    "remark": "The SKU is having trouble with the order delivery please help us with suitable actions"
+                }
+            ],
+            "status": 200,
+            "msg": null,
+            "errorCount": null,
+            "error": null,
+            "conflictErrorCount": null,
+            "conflictError": null
+        });
+        const response = await SupplyChainIntelligenceHubService.getBORRemarkHistory({whcode:'fsaf',skucode:"fasf"});
+        expect(mockedAxios.post).toHaveBeenCalledWith('http://10.8.1.10:8082/GetBORRemarkDetails',{whcode:'fsaf',skucode:"fasf"},{
+          headers: { 'Content-Type': 'application/json' }
+        })
+        expect(response.status).toBe(200);
+    
+      });
+
   });
 
