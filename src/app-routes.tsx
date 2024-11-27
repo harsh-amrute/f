@@ -92,7 +92,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-    '/mto/master-data-management/control-panel/',
+    '/mto/master-data-management/control-panel',
     '/master-data-management/mto-control-panel/view-modify',
     '/master-data-management/mto-saved-drafts',
     '/master-data-management/mto-task-status',
@@ -100,7 +100,17 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/mto-control-panel/add',
     '/master-data-management/mto-control-panel/delete',
     '/master-data-management/masters-interceptor',
-    '/masters-interceptor/control-panel/'
+    '/masters-interceptor/control-panel',
+    "/masters-interceptor/saved-drafts",
+    "/mto/master-data-management/saved-drafts",
+    "/masters-interceptor/task-status",
+    "/mto/master-data-management/task-status",
+    '/masters-interceptor/task-pending',
+    "/mto/master-data-management/task-pending",
+    "/masters-interceptor/data-modification-history",
+    "/mto/master-data-management/data-modification-history",
+    "/mto/master-data-management/control-panel/view-modify"
+
   ]
   const urlAllPage = [
     ...authenPage,
@@ -487,7 +497,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor url={"/master-data-management/control-panel/"}/>)
+          element: lazyLoad(<MastersInterceptor url={"/master-data-management/control-panel"}/>)
         },
         {
           index: true,
@@ -498,34 +508,34 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/mto/master-data-management/saved-drafts',
+      path: '/masters-interceptor/saved-drafts',
       element: <AppLayout />,
       children: [
         {
           index: true,
-          element: lazyLoad(<MTOSavedDrafts />)
+          element: lazyLoad(<MastersInterceptor url={'/master-data-management/saved-drafts'} />)
         },
         ...getStoreTransferModuleRoutes()
       ]
     },
     {
-      path: '/mto/master-data-management/task-status',
+      path: '/masters-interceptor/task-status',
       element: <AppLayout />,
       children: [
         {
           index: true,
-          element: lazyLoad(<MTOTaskStatus />)
+          element: lazyLoad(<MastersInterceptor url={"/master-data-management/task-status"} />)
         },
         ...getStoreTransferModuleRoutes()
       ]
     },
     {
-      path: '/mto/master-data-management/task-pending',
+      path: '/masters-interceptor/task-pending',
       element: <AppLayout />,
       children: [
         {
           index: true,
-          element: lazyLoad(<MTOTaskPendingForReview />)
+          element: lazyLoad(<MastersInterceptor url={'/master-data-management/task-pending'} />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -553,12 +563,12 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/mto/master-data-management/data-modification-history',
+      path: "/masters-interceptor/data-modification-history",
       element: <AppLayout />,
       children: [
         {
           index: true,
-          element: lazyLoad(<MTODataModificationHistory />)
+          element: lazyLoad(<MastersInterceptor url={'/master-data-management/data-modification-history'} />)
         },
         ...getStoreTransferModuleRoutes()
       ]

@@ -274,6 +274,11 @@ const useViewModify = (pageType: string) => {
       const newColDef = _.cloneDeep(activeMaster.colDefs);
       newColDef[newColDef.length-2].valueFormatter =  myFormatter;
       newColDef[newColDef.length-1].cellRenderer = ToggleButton;
+      newColDef.forEach((ele:any)=>{ele.cellStyle = (params:any)=>{
+        if(params.data.bid===undefined || params.data.iv===false){
+          return {color: "rgb(128, 0, 64)"}
+        }
+      }})
       dispatch(UPDATE_COLDEFS([...newColDef]));
     }
 

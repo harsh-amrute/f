@@ -48,9 +48,9 @@ const Icon = styled.div`
 `;
 
 const Text = styled.div`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
-  color: pink;
+  color: rgb(128, 0, 64);
 `;
 
 
@@ -84,7 +84,7 @@ const ApplicationSelectModal = ({url}: any) => {
   return (
     <div>
 
-    <VFModalCard openModal={true} closeModal={() => {null}} headerText={"Choose Application"} headerIcon={""} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} >
+    <VFModalCard openModal={true} closeModal={() => {null}} headerText={"Choose Application"} headerIcon={""} closeIcon={""} >
         <ActionSelectModal url={url}/>
     </VFModalCard>
     </div>
