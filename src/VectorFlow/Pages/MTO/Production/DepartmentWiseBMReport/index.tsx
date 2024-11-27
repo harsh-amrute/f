@@ -1030,7 +1030,7 @@ const DptWiseBMReport = () => {
                 />
             </BMDepHeaderWraper>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
-            <p>{date? moment(date).format('D MMM YYYY'): ""}</p>
+            <p>{(date && date.length)? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
             <>
                 {

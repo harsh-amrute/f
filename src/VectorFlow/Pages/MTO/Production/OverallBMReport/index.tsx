@@ -848,6 +848,8 @@ const OverallBmReport = () => {
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
     const date = apiResponseData?.data?.data;
+    
+    
 
     useEffect(() => {
        
@@ -882,7 +884,7 @@ const OverallBmReport = () => {
                 />
             </BMDepHeaderWraper>
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
-                <p>{date? moment(date).format('D MMM YYYY'): ""}</p>
+                <p>{(date && date.length)? moment(date).format('D MMM YYYY'): " "}</p>
             </div>
 
             {(isGridLoading || isExcelLoading || isGetStateLoading ) &&  <OverlayLoader/> }
