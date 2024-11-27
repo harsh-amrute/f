@@ -5,7 +5,8 @@ import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError} from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
-import readXlsxFile from 'read-excel-file'
+import readXlsxFile from 'read-excel-file';
+import {readSheetNames} from 'read-excel-file';
 import { ColDef, ColGroupDef, CellClickedEvent } from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
@@ -684,6 +685,17 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   else{
     selectedKeys = selectedColumns.map((col:any)=>col.colId);
   }
+
+
+  const numberOfSheets = await readSheetNames(file);
+  if(numberOfSheets.length > 1){
+    console.log('ok'+ numberOfSheets);
+    throw new Error('File cannot contain multiple sheets') 
+  }
+
+ 
+
+
    
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
@@ -694,6 +706,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
     if (fieldObj) return fieldObj.key;
     else return '';
   })
+
 
 
   if(master.id===501 || master.id===502){
@@ -746,11 +759,12 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   })
 
   if (error) {
-    throw new Error(`File is Missing ${headers.join(', ')}`);
+    throw new Error(`File is missing the following columns: ${headers.join(', ')}`);
   }
 
   error = false;
   headers = [];
+
 
   headerKeys.forEach((key: string) => {
 
