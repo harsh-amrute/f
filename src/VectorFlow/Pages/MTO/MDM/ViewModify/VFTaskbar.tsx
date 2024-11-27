@@ -39,6 +39,7 @@ export interface VFTaskBarProps {
     onMTOSaveData?: () => void
     isMTOSaveDataDisabled?: boolean
     onMTOSaveAsDraft?: () => void
+    isMTODraftDisabled?: boolean
 }
 
 
@@ -75,7 +76,8 @@ const VFTaskBar = (props: VFTaskBarProps) => {
         mtoSaveData,
         onMTOSaveData,
         isMTOSaveDataDisabled,
-        onMTOSaveAsDraft
+        onMTOSaveAsDraft,
+        isMTODraftDisabled
     } = props
 
     const { user, isSideBarOpen } = useUserData()
@@ -274,7 +276,7 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                     <VFButtonOutline onClick={() => {return null; }} themeUi={themeUi} disabled={false} width={139}>
                         Export Data
                     </VFButtonOutline>
-                    <VFButtonOutline onClick={onMTOSaveAsDraft? onMTOSaveAsDraft: () => { return null; }} themeUi={themeUi} disabled={false} width={139}>
+                    <VFButtonOutline onClick={onMTOSaveAsDraft? onMTOSaveAsDraft: () => { return null; }} themeUi={themeUi} disabled={isMTODraftDisabled} width={139}>
                         Save As Draft
                     </VFButtonOutline>
                     <VFButtonOutline onClick={onMTOSaveData && (!isMTOSaveDataDisabled) ? onMTOSaveData : () => {return null;}} themeUi={themeUi} disabled={isMTOSaveDataDisabled} width={139}>

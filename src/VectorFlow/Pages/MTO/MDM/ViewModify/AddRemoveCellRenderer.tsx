@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
+import { SET_BUFFER_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 
 
 const AddRemoveCellRenderer = (params: any) => {
@@ -12,6 +13,7 @@ const AddRemoveCellRenderer = (params: any) => {
     const dispatch = useDispatch();
     const activeMaster = useSelector((state: RootState) => state.mdm.activeMaster);
     const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
+    const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
     const addRow = () => {
 
       console.log("buff initial Dat...", bufferInitialData);
@@ -28,7 +30,7 @@ const AddRemoveCellRenderer = (params: any) => {
           
           
           let isValid = true;
-          bufferInitialData.forEach((e:any)=>{
+          bufferInitialData?.forEach((e:any)=>{
     
             if(e.bsz== params.data.bsz && e.bt=== params.data.bt){
             notifyError("Buffer size must be unique!.")
@@ -44,7 +46,10 @@ const AddRemoveCellRenderer = (params: any) => {
             delete newColDef.editable;   
             newColDefs.push(newColDef);
           })
-    
+
+
+          if(bufferModifyData && bufferModifyData.length) dispatch(SET_BUFFER_MODIFY_DATA([activeMaster.rowData[0], ...bufferModifyData]));
+          else dispatch(SET_BUFFER_MODIFY_DATA([activeMaster.rowData[0]]));
           dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
         }
       }

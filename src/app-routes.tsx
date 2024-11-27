@@ -74,6 +74,7 @@ import MTOTaskPendingForReview from './VectorFlow/Pages/MTO/MDM/TaskPendingForRe
 import MTOAddRecord from './VectorFlow/Pages/MTO/MDM/AddRecord'
 import MTODeleteRecord from './VectorFlow/Pages/MTO/MDM/DeleteRecord'
 import MTODataModificationHistory from './VectorFlow/Pages/MTO/MDM/DataModificationHistory'
+import MastersInterceptor from './VectorFlow/Pages/Common/MastersInterceptor'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -91,13 +92,15 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-    '/master-data-management/mto-control-panel',
+    '/mto/master-data-management/control-panel/',
     '/master-data-management/mto-control-panel/view-modify',
     '/master-data-management/mto-saved-drafts',
     '/master-data-management/mto-task-status',
     '/master-data-management/mto-task-pending',
     '/master-data-management/mto-control-panel/add',
     '/master-data-management/mto-control-panel/delete',
+    '/master-data-management/masters-interceptor',
+    '/masters-interceptor/control-panel/'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -392,7 +395,7 @@ export const initRoutes = (): RouteObject[] => {
 
     // mto mdm pages
     {
-      path: '/master-data-management/mto-control-panel',
+      path: '/mto/master-data-management/control-panel',
       element: <AppLayout />,
       children: [
         {
@@ -408,7 +411,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/mto-saved-drafts',
+      path: '/mto/master-data-management/saved-drafts',
       element: <AppLayout />,
       children: [
         {
@@ -419,7 +422,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/mto-task-status',
+      path: '/mto/master-data-management/task-status',
       element: <AppLayout />,
       children: [
         {
@@ -430,7 +433,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/mto-task-pending',
+      path: '/mto/master-data-management/task-pending',
       element: <AppLayout />,
       children: [
         {
@@ -441,7 +444,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/mto-control-panel/add',
+      path: '/mto/master-data-management/control-panel/add',
       element: <AppLayout />,
       children: [
         {
@@ -452,7 +455,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/mto-control-panel/delete',
+      path: '/mto/master-data-management/control-panel/delete',
       element: <AppLayout />,
       children: [
         {
@@ -463,7 +466,94 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/mto-data-modification-history',
+      path: '/mto/master-data-management/data-modification-history',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTODataModificationHistory />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+
+
+    //
+
+     // interceptor pages
+     {
+      path: '/masters-interceptor/control-panel/',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MastersInterceptor url={"/master-data-management/control-panel/"}/>)
+        },
+        {
+          index: true,
+          path: 'view-modify',
+          element: lazyLoad(<MTOViewModify />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/mto/master-data-management/saved-drafts',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTOSavedDrafts />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/mto/master-data-management/task-status',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTOTaskStatus />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/mto/master-data-management/task-pending',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTOTaskPendingForReview />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/mto/master-data-management/control-panel/add',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTOAddRecord />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/mto/master-data-management/control-panel/delete',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<MTODeleteRecord />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/mto/master-data-management/data-modification-history',
       element: <AppLayout />,
       children: [
         {

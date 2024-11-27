@@ -5,7 +5,7 @@ import useAdd from "./useAdd";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import { SCContainer } from "../ViewModify/styles";
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../Common/VFTable";
 import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
@@ -155,6 +155,7 @@ const MTOAddRecord = () => {
                     {flex: 1}
                   }
                   onCellEditingStopped={activeMaster.isMTO? onDataChange: ()=>{return null}}
+                  maintainColumnOrder
                   />
                 {/* } */}
                   <div style={{display:'none'}}>                

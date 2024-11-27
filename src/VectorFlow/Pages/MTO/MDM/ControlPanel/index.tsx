@@ -33,7 +33,7 @@ const MTOControlPanel = ()=>{
     }
 
     return (
-        <Container>
+        <Container style={{padding: '20px'}}>
             <PanelGridWrapper>
                 <PanelGrid>
                     <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/edit.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/edit-hover.svg'} text={'View / Modify Records '}  onClick={()=>navigate('/master-data-management/mto-control-panel/view-modify')} themeUi={themeUi}/>

@@ -22,6 +22,7 @@ import _ from "lodash";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
 import { } from '../../../../Services/MTA/MDM'
+import { useSelector } from "react-redux";
 
 
 
@@ -115,6 +116,9 @@ const MTOViewModify = () => {
     addRowToMtoMinGrid
 
   } = useViewModify('modify');
+
+  const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
+
 
 
 
@@ -533,8 +537,9 @@ const MTOViewModify = () => {
           masterId={activeMaster.id}
           mtoSaveData={true}
           onMTOSaveData={ onMTOSaveBufferData}
-          isMTOSaveDataDisabled={(activeMaster.rowData.length === tempRecordCount) || (activeMaster.colDefs.some((x) => x.field === 'actions'))                                 }
+          isMTOSaveDataDisabled={!(bufferModifyData && bufferModifyData.length>0)} 
           onMTOSaveAsDraft={onMTOSaveAsDraft}
+          isMTODraftDisabled={!(bufferModifyData && bufferModifyData.length>0)}
           />
           </div>
       }

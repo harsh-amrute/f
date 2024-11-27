@@ -21,7 +21,7 @@ import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
 import PoogiEditDeleteCell from './PoogiEditDeleteCell';
-import { SET_BUFFER_INITIAL_DATA, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
+import { SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
 import MTOCalendarEditCellRenderer from './MTOCalendarEditCellRenderer';
 import ToggleButton from './ToggleButton';
 
@@ -177,6 +177,10 @@ const useViewModify = (pageType: string) => {
 
     const validResumeStatuses = [23];
 
+    const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
+
+    const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
+
   
 
   const [selectedMajReason, setSelectedMajReason] = useState<any>('');
@@ -317,7 +321,6 @@ const useViewModify = (pageType: string) => {
 
     // Process params2
     params2.forEach((param) => {
-      console.log("name mere name....", param.name)
       if (resultMap[param.name]) {
         // Merge fields if the name already exists
         resultMap[param.name].fields = [
@@ -691,7 +694,16 @@ const useViewModify = (pageType: string) => {
         resultData = await getRetailCount(payload);
       }
       else if (activeMaster.id===501 && activeMaster.isMTO) {
-        resultData = await getBufferMasterData()
+        const tempResultData = await getBufferMasterData();
+        const updatedData = _.cloneDeep(tempResultData)
+        if(bufferModifyData && bufferModifyData.length){
+          const updatedDataBuffer = updatedData.data.data;
+          const filteredDataBuffer = updatedDataBuffer.filter(
+            (buffer:any) => !bufferModifyData.some((modifiedBuffer:any) => modifiedBuffer.bid === buffer.bid)
+          );
+          updatedData.data.data = updatedData.data.data = [...bufferModifyData,...filteredDataBuffer];
+        }
+        resultData = updatedData;
       }
       else if(activeMaster.id===502 && activeMaster.isMTO) {
         resultData = await getCCRMasterData();
@@ -1055,7 +1067,7 @@ const useViewModify = (pageType: string) => {
       })
 
       if(activeMaster.isMTO){
-          dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 200},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...updatedColdefs]))
+          dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 80, pinned: 'left'},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, minWidth: 300, headerName: 'Error'  },...updatedColdefs]))
       }
       else{
         dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 200},{colId: 'err', field: 'err',cellStyle: {color: 'red'}, headerName: 'Error'  },...updatedColdefs]))
@@ -2255,15 +2267,16 @@ const useViewModify = (pageType: string) => {
       e.ib= (e.ib==="false"?0: 1);
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
-      if(!e.iv && e.iv!==false)e.iv = false;
       if(!e.bid)e.bid=null;
 
-      if(e.bid==null || e.iv==false){
+      if(e.bid===null || e.iv===false){
         BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
       }
     })
 
     try{
+      console.log("BufferPostObj", BufferPostObj);
+      console.log("buffer modifyData", bufferModifyData);
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status=== 200){
         notifySuccess("Saved Buffer Task Successfully");
@@ -2272,7 +2285,8 @@ const useViewModify = (pageType: string) => {
         while (totalNewVals-- > 0) {  
           currData.shift();
         }
-        dispatch(UPDATE_ROW_DATA(currData));
+        dispatch(UPDATE_ROW_DATA(bufferInitialData));
+        dispatch(SET_BUFFER_MODIFY_DATA([]));
       }
       else{
         toast.dismiss();

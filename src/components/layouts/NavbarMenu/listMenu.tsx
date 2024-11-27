@@ -1,3 +1,5 @@
+const baseLink = '/master-data-management/control-panel/';
+
 export const listMenuParent: any = [
   {
     id: 1,
@@ -32,14 +34,14 @@ export const listMenuParent: any = [
     id: 2,
     name: "navbar.listMenuParent.masterDataManagement.title",
     img: "/assets/img/nav/master_data",
-    url: "/master-data-management/control-panel",
+    url:  '/masters-interceptor/control-panel/',
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "MasterApprover"],
     child: [
       {
         name: "navbar.listMenuParent.masterDataManagement.controlPanel",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/master-data-management/control-panel",
+        url: '/masters-interceptor/control-panel/',
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
