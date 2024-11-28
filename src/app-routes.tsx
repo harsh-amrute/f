@@ -72,7 +72,6 @@ import MTOSavedDrafts from './VectorFlow/Pages/MTO/MDM/SavedDrafts'
 import MTOTaskStatus from './VectorFlow/Pages/MTO/MDM/TaskStatus'
 import MTOTaskPendingForReview from './VectorFlow/Pages/MTO/MDM/TaskPendingForReview'
 import MTOAddRecord from './VectorFlow/Pages/MTO/MDM/AddRecord'
-import MTODeleteRecord from './VectorFlow/Pages/MTO/MDM/DeleteRecord'
 import MTODataModificationHistory from './VectorFlow/Pages/MTO/MDM/DataModificationHistory'
 import MastersInterceptor from './VectorFlow/Pages/Common/MastersInterceptor'
 
@@ -466,17 +465,6 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/mto/master-data-management/control-panel/delete',
-      element: <AppLayout />,
-      children: [
-        {
-          index: true,
-          element: lazyLoad(<MTODeleteRecord />)
-        },
-        ...getStoreTransferModuleRoutes()
-      ]
-    },
-    {
       path: '/mto/master-data-management/data-modification-history',
       element: <AppLayout />,
       children: [
@@ -548,17 +536,6 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<MTOAddRecord />)
-        },
-        ...getStoreTransferModuleRoutes()
-      ]
-    },
-    {
-      path: '/mto/master-data-management/control-panel/delete',
-      element: <AppLayout />,
-      children: [
-        {
-          index: true,
-          element: lazyLoad(<MTODeleteRecord />)
         },
         ...getStoreTransferModuleRoutes()
       ]

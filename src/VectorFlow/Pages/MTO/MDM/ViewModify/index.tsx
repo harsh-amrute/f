@@ -4,7 +4,7 @@ import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAdd
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
 import { generateOptions } from "../../../../../helpers/utils";
-import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
+import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify";
 import { operators, seasonalityQuickFilterData } from "../../../../../helpers/MDMConstants";
@@ -15,7 +15,6 @@ import UploadModal from "./UploadModal";
 import React, { useEffect} from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
-import SeasonalityChartModal from "./SeasonalityChartModal";
 import SubmitConflictModal from "./SubmitConflictModal";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import _ from "lodash";
@@ -83,12 +82,7 @@ const MTOViewModify = () => {
     handleChangePage,
     onReset,
     onEditOnlineSave,
-    isSeasonalityChartModalOpen,
-    chartData,
-    normChangeData,
-    toggleSeasonalityChartModal,
     onSeasonalityQuickFilter,
-    seasonalityRowData,
     conflictCount,
     errorCount,
     isConflictModalOpen,
@@ -464,16 +458,6 @@ const MTOViewModify = () => {
 
         />
       }
-      {isSeasonalityChartModalOpen &&
-        <SeasonalityChartModal
-          isModalOpen={isSeasonalityChartModalOpen}
-          closeModal={() => toggleSeasonalityChartModal(false)}
-          chartData={chartData}
-          rowData={seasonalityRowData}
-          normChangeData={normChangeData}
-
-        />
-      }
       {
         isOverlayVisible && (
           <VFOverlay>
@@ -525,7 +509,7 @@ const MTOViewModify = () => {
           onBack={onBackButton}
           onClearAndExportErrors={onClearExportError}
           onModifyData={() => toggleUploadModal(true)}
-          onExportData={()=>{console.log("exporting"), ref?.current!.api.exportDataAsExcel({fileName: `${activeMaster.name} (MTO)`})}}
+          onExportData={()=>{ref?.current?.api && ref?.current?.api.exportDataAsExcel({fileName: `${activeMaster.name} (MTO)`})}}
           onSubmit={onSubmit}
           onSubmitConflictData={() => onSubmit(true)}
           onDeleteSelected={deleteSelected}

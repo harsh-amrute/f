@@ -1,6 +1,6 @@
 import React from "react"
 import useSavedDrafts from "./useSavedDrafts"
-import { mapDraftDataToMTOTableRowData, mapDraftDataToTableRowData, mapDraftToMTOColumnDefs } from "../../../../../helpers/utils"
+import { mapDraftDataToMTOTableRowData,  mapDraftToMTOColumnDefs } from "../../../../../helpers/utils"
 import { useUserData } from "../../../../../context"
 
 import VFTable from "../../Common/VFTable"

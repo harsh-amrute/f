@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router"
-import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration, useGetBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyError, notifyPromise, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
-import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS, UPDATE_FILTER } from "../../../../../redux/actions/MDM"
+import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS} from "../../../../../redux/actions/MDM"
 import { createMastersStateFromDraftData, generateRandomId, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
@@ -30,25 +30,17 @@ const useSavedDrafts = ()=>{
     const {mutateAsync: getMtoDrafts} = useGetMTODrafts();
     const {mutateAsync: getDraftByIdMTO} = useGetMTODraftById();
     const {mutateAsync: getMTOMasterUIConfiguration} = useGetMTOMasterUIConfiguration();
-    const {mutateAsync: getBufferMasterData} = useGetBufferMasterData();
     
     const user = useUserData();
 
     const convertDateFormat = (inputDate: string)=>{
-
-        // Extract parts of the string
         const [date, ltime] = inputDate.split("T");
-        const time = ltime.split(".")[0]; // Remove milliseconds
+        const time = ltime.split(".")[0];
         const [year, month, day] = date.split("-");
         const [hours, minutes, seconds] = time.split(":");
-
-        // Convert to 12-hour format
         const isPM = parseInt(hours) >= 12;
         const newHours = (parseInt(hours) % 12 || 12).toString().padStart(2, "0");
         const period = isPM ? "PM" : "AM";
-
-        console.log("month,,,,", month);
-
         const newMonth = month.toString();
         const formattedDate = `${year}/${newMonth}/${day} ${newHours}:${minutes}:${seconds} ${period}`;
         return formattedDate;
@@ -150,19 +142,6 @@ const useSavedDrafts = ()=>{
                 const res: any = await getDraftByIdMTO(draftDetails.DraftId);
                 dispatch(SET_RECORD_COUNT(res.data.data.count));
                 const draftData:any = res.data.data.results;
-
-                if(draftDetails.isMTO && (draftDetails.ActionType === "Modify")){
-                    try{
-                        const result = await getBufferMasterData();
-                        // draftData = [...draftData, ...result.data.data];
-                        console.log(result);
-
-                        // console.log("final DraftData .... ", draftData);
-                    }
-                    catch(e){
-                        console.log(e);
-                    }
-                }
            
 
             const mastersDataRes= await getMTOMasterUIConfiguration();

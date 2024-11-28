@@ -1,5 +1,3 @@
-
-import {useState} from 'react';
 import IconCard from "../../../../../components/VectorFLOW/commons/VFCard/IconCard"
 import { Container,PanelGrid, PanelGridWrapper } from "./styles"
 import { useNavigate } from "react-router";
@@ -9,7 +7,6 @@ import { useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/
 import { ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_ACTIVE_MASTER } from "../../../../../redux/actions/MDM";
 import { mapMasterToMasterState } from "../../../../../helpers/utils";
 import { useUserData } from "../../../../../context";
-import ApplicationSelectModal from './ApplicationSelectModal';
 
 
 

@@ -1,10 +1,9 @@
 import React from 'react'
-import ApplicationSelectModal from '../../MTA/MDM/ControlPanel/ApplicationSelectModal'
+import ApplicationSelectModal from './ApplicationSelectModal'
 
 const MastersInterceptor = ({url}: any) => {
-    console.log(url);
   return (
-    <ApplicationSelectModal url={url}/>
+    <ApplicationSelectModal redirectUrl={url}/>
   )
 }
 

@@ -1,5 +1,3 @@
-const baseLink = '/master-data-management/control-panel/';
-
 export const listMenuParent: any = [
   {
     id: 1,

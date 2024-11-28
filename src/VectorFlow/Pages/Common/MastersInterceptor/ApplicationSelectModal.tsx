@@ -1,7 +1,7 @@
-import React,{useState} from 'react'
-import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
+import React from 'react'
+import VFModalCard from '../../../../components/VectorFLOW/commons/VFModalCard'
 import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const Container = styled.div`
   display: flex;
@@ -55,16 +55,20 @@ const Text = styled.div`
 
 
 
-const ActionSelectModal = ({url}:any) => {
+const ActionSelectModal = ({redirectUrl}:any) => {
   const navigate = useNavigate();
+
+  const ref = React.useRef({
+    appData: [
+      { text: 'Make to Availability (MTA)', icon: '/assets/img/planning.svg', link: redirectUrl },
+      { text: 'Make to Order (MTO)', icon: "/assets/img/Prod-icon.svg", link: "/mto" + redirectUrl },
+      { text: 'Inter Store Transfer (IST)', icon: "/assets/img/IST 1.svg", link: redirectUrl },
+    ]
+  });
 
   return (
     <Container>
-      {[
-        { text: 'Make to Availability (MTA)', icon: '/assets/img/planning.svg', link: url},
-        { text: 'Make to Order (MTO)', icon: "/assets/img/Prod-icon.svg", link: "/mto"+url},
-        { text: 'Inter Store Transfer (IST)', icon: "/assets/img/IST 1.svg", link: url},
-      ].map((option, index) => (
+      {ref?.current?.appData.map((option, index) => (
         <OptionCard key={index} onClick={() => {navigate(option.link);}}>
           <Icon>
             <img src={option.icon} alt={option.text} />
@@ -79,13 +83,13 @@ const ActionSelectModal = ({url}:any) => {
 
 
 
-const ApplicationSelectModal = ({url}: any) => {
+const ApplicationSelectModal = ({redirectUrl}: any) => {
     
   return (
     <div>
 
     <VFModalCard openModal={true} closeModal={() => {null}} headerText={"Choose Application"} headerIcon={""} closeIcon={""} >
-        <ActionSelectModal url={url}/>
+        <ActionSelectModal redirectUrl={redirectUrl}/>
     </VFModalCard>
     </div>
   )

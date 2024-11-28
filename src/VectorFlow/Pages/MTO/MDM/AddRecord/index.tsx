@@ -3,7 +3,7 @@ import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/S
 import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
-import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
+import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
 import { SCContainer } from "../ViewModify/styles";
 import VFTable from "../../Common/VFTable";
 import UploadModal from "../ViewModify/UploadModal";

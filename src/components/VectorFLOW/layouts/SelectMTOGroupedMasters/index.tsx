@@ -5,10 +5,9 @@ import VFButton from "../../../VectorFLOW/commons/VFButton";
 import { useState,ReactNode} from "react";
 import { MDMMasterState, Option } from "../../../../VectorFlow/types/MDM";
 import {ImageMapper,ImageMapperHover, masterGroupMapper} from "../../../../helpers/MtoMDMConstants"
-import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import * as globalStyles from "../../../../styles/global";
-import { useDispatch } from "react-redux";
-import { FILL_SELECTED_OPTIONS } from "../../../../redux/actions/MDM";
+// import { useDispatch } from "react-redux";
+// import { FILL_SELECTED_OPTIONS } from "../../../../redux/actions/MDM";
 
 export interface SelectGroupedMastersProps {
     onSubmit:()=>void;
@@ -97,18 +96,16 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
         selectedMasters,
         text,
         shouldShowMasterGroup,
-        shouldShowMaster,
-        selectedOptions,
-        options
+        shouldShowMaster
     } = props
 
     const {user} = useUserData();
 
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
-    const handleClick = (data:any)=>{
-        dispatch(FILL_SELECTED_OPTIONS(data))
-    }
+    // const handleClick = (data:any)=>{
+    //     dispatch(FILL_SELECTED_OPTIONS(data))
+    // }
     // console.log(selectedOptions)
    
  return(

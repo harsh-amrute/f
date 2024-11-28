@@ -215,7 +215,6 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
 
 
     const {mutateAsync: getTaskById} = useGetMTOTaskById();
-    const [taskDetails, setTaskDetails] = useState<any>();
 
     const GetTaskDetails = async()=>{
         try{

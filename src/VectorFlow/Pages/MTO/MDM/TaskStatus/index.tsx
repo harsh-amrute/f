@@ -4,13 +4,12 @@ import VFTable from "../../Common/VFTable"
 
 import {  getActionName, mapTaskStatusToColDefs,getExistingColumns,getExistingColumnFields, mapMasterToTaskStatusColumnGroupDefs, mapTaskStatusDataToRowData } from "../../../../../helpers/utils"
 import TaskStatusMasterDetail from "./TaskStatusMasterDetail"
-import { useGetTaskDetailDownloadData, useGetTaskStatusData,useGetMasterUIConfiguration, useGetMTOTaskStatusData, useGetAllUsers } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useGetTaskDetailDownloadData,useGetMasterUIConfiguration, useGetMTOTaskStatusData, useGetAllUsers } from "../../../../../VectorFlow/Services/MTA/MDM"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import { AgGridReactProps } from "ag-grid-react"
 import { notifyError } from "../../../../../helpers/notify"
 import { ColDef } from "ag-grid-enterprise"
-import {  differenceInSeconds} from "date-fns"
 import { useUserData } from "../../../../../context"
 
 import * as globalStyles from '../../../../../styles/global'
@@ -44,28 +43,6 @@ const MTOTaskStatus = ()=>{
         }
       };
 
-      const formatDate =  (dateString:string)=>{
-
-        // Split the date string into its components
-        const parts = dateString.split(/[/: ]/);
-
-        // Parse the components
-        const day = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) - 1; // Months are zero-based
-        const year = parseInt(parts[2], 10);
-        let hours = parseInt(parts[3], 10);
-        const minutes = parseInt(parts[4], 10);
-        const period = parts[5].toLowerCase(); // "AM" or "PM"
-
-        // Adjust hours for PM
-        if (period === "pm" && hours < 12) {
-        hours += 12;
-        }
-
-        // Create a Date object
-        return new Date(year, month, day, hours, minutes);
-      }
-
     const onDownloadTaskDetails = async(payload:any)=>{
         
        try{
@@ -97,7 +74,6 @@ const MTOTaskStatus = ()=>{
        }
     }
 
-    const [rowData, setRowData] = useState<any>([])
     const [finalData, setFinalData] = useState<any>(undefined);
     // rowData = rowData.map((row:any)=>{
     //     return {
@@ -149,7 +125,6 @@ const MTOTaskStatus = ()=>{
         try{
             const response = await getMTOTaskStatusData();
             const transformedData = MTOToMTAFormat(response.data.data);
-            setRowData(transformedData);
             setFinalData(transformedData)
            
         }

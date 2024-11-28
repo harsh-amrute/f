@@ -8,9 +8,9 @@ import {
     SCTabContent,
     SCTabTitle
   } from './styles'
-import {type MDMMasterState} from '../../../../VectorFlow/types/MDM';
+import {type MDMMasterState} from '../../../../../VectorFlow/types/MDM';
 import { useSelector } from 'react-redux';
-import { RootState } from "../../../../redux/store/store";
+import { RootState } from "../../../../../redux/store/store";
 
 interface VFTabProps{
   activeMaster:MDMMasterState,
@@ -36,7 +36,7 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
 
   return(
       <SCTabArea>
-        <SCTabHeader>
+        <SCTabHeader style={{zoom: 0.8}}>
             <SCTabHeaderLeft>
               {
                 masters.map((master:MDMMasterState,index:number)=>{

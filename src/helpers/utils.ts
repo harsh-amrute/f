@@ -953,25 +953,6 @@ export const mapDraftToColumnDefs = (fields: Field[], customParams?: ColDef) => 
   })
   return result
 }
-export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) => {
-  let result: ColDef[] = []
-  result = fields.map((f) => {
-    return {
-      field: f.key,
-      colId: f.key,
-      headerName: f.displayName,
-      minWidth: 180,
-
-      cellStyle: {
-        "textAlign": "center",
-      },
-      flex: 1,
-      cellRenderer: f.key === "action" && MTOActionRenderer,
-      ...customParams
-    }
-  })
-  return result
-}
 
 export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
   let result: ColDef[] = []
@@ -1070,26 +1051,6 @@ export const mapDraftDataToTableRowData = (rowData: any[]) => {
 
   result = result.map((r: any, index: number) => {
     return { ...r, sr_no: index + 1, LastModifiedDateTime: format(r.LastModifiedDateTime, 'dd/MM/yy hh:mm:ss a') }
-  })
-  return result
-}
-
-export const mapDraftDataToMTOTableRowData = (rowData: any[]) => {
-  let result = []
-  if (!rowData) return
-  result = rowData.map((row) => {
-    return {
-      ...row,
-      LastModifiedDateTime: row.LastModifiedDateTime
-    }
-  })
-
-  result.sort((a, b): any => {
-    return differenceInSeconds(b.LastModifiedDateTime, a.LastModifiedDateTime)
-  })
-
-  result = result.map((r: any, index: number) => {
-    return { ...r, sr_no: index + 1, LastModifiedDateTime: r.LastModifiedDateTime }
   })
   return result
 }
@@ -3738,5 +3699,46 @@ export const DownloadExcel = (response : any,filename = "ReportFile") => {
   }
 };
 
+// MDM MTO Utils
+export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) => {
+  let result: ColDef[] = []
+  result = fields.map((f) => {
+    return {
+      field: f.key,
+      colId: f.key,
+      headerName: f.displayName,
+      minWidth: 180,
+
+      cellStyle: {
+        "textAlign": "center",
+      },
+      flex: 1,
+      cellRenderer: f.key === "action" && MTOActionRenderer,
+      ...customParams
+    }
+  })
+  return result
+}
+
+
+export const mapDraftDataToMTOTableRowData = (rowData: any[]) => {
+  let result = []
+  if (!rowData) return
+  result = rowData.map((row) => {
+    return {
+      ...row,
+      LastModifiedDateTime: row.LastModifiedDateTime
+    }
+  })
+
+  result.sort((a, b): any => {
+    return differenceInSeconds(b.LastModifiedDateTime, a.LastModifiedDateTime)
+  })
+
+  result = result.map((r: any, index: number) => {
+    return { ...r, sr_no: index + 1, LastModifiedDateTime: r.LastModifiedDateTime }
+  })
+  return result
+}
 
 // ===================================================================================================

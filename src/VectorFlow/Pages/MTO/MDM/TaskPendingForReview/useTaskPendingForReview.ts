@@ -1,6 +1,6 @@
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, useGetPendingTasks, useGetTaskCount, useGetTaskDetails, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, useGetTaskCount, useGetTaskDetails, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -21,7 +21,6 @@ const useTaskPendingForReview = ()=>{
     const dispatch = useDispatch();
 
     const {user} = useUserData()
-    const [data, setData] = useState<any>([]);
 
     const themeUi = user.user.theme_ui
 
@@ -65,9 +64,9 @@ const useTaskPendingForReview = ()=>{
 
 
 
-    const {mutateAsync:getTaskDetails,isLoading:isViewTableLoading} = useGetTaskDetails()
+    const {mutateAsync:getTaskDetails} = useGetTaskDetails()
 
-    const {mutateAsync:getMasterUIConfiguration,isError:isMasterUiConfigurationLoading} = useGetMasterUIConfiguration();
+    const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration();
 
     const {mutateAsync:getTaskCount} = useGetTaskCount();
     

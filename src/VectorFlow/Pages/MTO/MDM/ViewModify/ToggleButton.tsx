@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { ToggleCircle, ToggleContainer, ToggleText } from "./styles";
 import { useSelector, useDispatch } from 'react-redux';
-import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';
+import { UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
-import _, { truncate } from "lodash";
+import _ from "lodash";
 import { SET_BUFFER_MODIFY_DATA } from "../../../../../redux/actions/MTO";
 
 
