@@ -24,8 +24,6 @@ import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
-import UserURLsDrawer from "../../../components/layouts/UserURLsDrawer";
-import UserRolesDrawer from "../../../components/layouts/UserRolesDrawer";
 
 
 interface ManageUsersProps{
