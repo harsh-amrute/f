@@ -113,7 +113,8 @@ const MTOViewModify = () => {
     onMajReasonSelected,
     minReasonRowData,
     onMinReasonEditingStopped,
-    addRowToMtoMinGrid
+    addRowToMtoMinGrid,
+    mtoProgress
 
   } = useViewModify('modify');
 
@@ -511,7 +512,8 @@ const MTOViewModify = () => {
             return false;
           }}
           showSubmittedExportError={errorCount > 0}
-          masterProgress={activeMaster.progress}
+          // masterProgress={(!bufferModifyData)?"initial":(bufferModifyData?"editOnline":"editOnlineSubmitted")}
+          masterProgress={(mtoProgress==='initial')?((!bufferModifyData || bufferModifyData.length===0)?'initial':"editOnline"):((bufferModifyData.length===0)?"editOnlineSubmitted":"editOnline")}
           disableSubmit={activeMaster.rowData.length === 0}
           enableEditOnlineReset={enableEditOnlineReset}
           disableDeleteSelected={activeMaster.rowData.length < 1}
@@ -523,7 +525,7 @@ const MTOViewModify = () => {
           onBack={onBackButton}
           onClearAndExportErrors={onClearExportError}
           onModifyData={() => toggleUploadModal(true)}
-          onExportData={exportToExcel}
+          onExportData={()=>{console.log("exporting"), ref?.current!.api.exportDataAsExcel({fileName: `${activeMaster.name} (MTO)`})}}
           onSubmit={onSubmit}
           onSubmitConflictData={() => onSubmit(true)}
           onDeleteSelected={deleteSelected}

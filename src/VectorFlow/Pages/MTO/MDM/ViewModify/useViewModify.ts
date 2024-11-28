@@ -181,6 +181,8 @@ const useViewModify = (pageType: string) => {
 
     const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
 
+    const [mtoProgress, setMTOProgress] = useState("initial");
+
   
 
   const [selectedMajReason, setSelectedMajReason] = useState<any>('');
@@ -275,7 +277,7 @@ const useViewModify = (pageType: string) => {
       newColDef[newColDef.length-2].valueFormatter =  myFormatter;
       newColDef[newColDef.length-1].cellRenderer = ToggleButton;
       newColDef.forEach((ele:any)=>{ele.cellStyle = (params:any)=>{
-        if(params.data.bid===undefined || params.data.iv===false){
+        if(params.data.bid===null || params.data.bid===undefined || params.data.iv===false){
           return {color: "rgb(128, 0, 64)"}
         }
       }})
@@ -1591,10 +1593,33 @@ const useViewModify = (pageType: string) => {
       } 
 
       const onBackButton = () => {
-       if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
+
+        if(!bufferModifyData || (bufferModifyData && bufferModifyData.length === 0)){
+          dispatch(UPDATE_PROGRESS_STATE('default'));
+        dispatch(UPDATE_ROW_DATA([]));
+        dispatch(SET_BUFFER_INITIAL_DATA([]));
+        dispatch(SET_BUFFER_MODIFY_DATA([]));
+        dispatch(UPDATE_COLDEFS([]));
+        dispatch(REMOVE_ALL_FILTERS());
+        // dispatch(UPDATE_ACTIVE_MASTER([]))
+       
+        dispatch(ADD_FILTER())
+        setDownloadData(false);
+        setTempDownloadData(false);
+        dispatch(FILL_MASTERS([]));
+        setFilterButtonStatus([]);
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+        
+
+        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+        }
+       
+       else if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
        {
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
+        dispatch(SET_BUFFER_INITIAL_DATA([]));
+        dispatch(SET_BUFFER_MODIFY_DATA([]));
         dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
         // dispatch(UPDATE_ACTIVE_MASTER([]))
@@ -1953,7 +1978,7 @@ const useViewModify = (pageType: string) => {
             values: bufferTypeData?.map((item: any) =>  item.dsc), // Dropdown values
           },
           cellStyle: (params:any)=>{
-            if(params.data.bid===undefined || params.data.iv===false){
+            if(params.data.bid===null || params.data.bid===undefined || params.data.iv===false){
               return {color: "rgb(128, 0, 64)"}
             }
           },
@@ -1975,7 +2000,7 @@ const useViewModify = (pageType: string) => {
         return {
           ...colDef,
           cellStyle: (params:any)=>{
-            if(params.data.bid===undefined || params.data.iv===false){
+            if(params.data.bid===null || params.data.bid===undefined || params.data.iv===false){
               return {color: "rgb(128, 0, 64)"}
             }
           },
@@ -2003,7 +2028,7 @@ const useViewModify = (pageType: string) => {
           cellEditor: "agNumberCellEditor",
           editable,
           cellStyle: (params:any)=>{
-            if(params.data.bid===undefined || params.data.iv===false){
+            if(params.data.bid===null || params.data.bid===undefined || params.data.iv===false){
               return {color: "rgb(128, 0, 64)"}
             }
           },
@@ -2292,6 +2317,7 @@ const useViewModify = (pageType: string) => {
         }
         dispatch(UPDATE_ROW_DATA(bufferInitialData));
         dispatch(SET_BUFFER_MODIFY_DATA([]));
+        setMTOProgress("submitted Once");
       }
       else{
         toast.dismiss();
@@ -2317,27 +2343,22 @@ const useViewModify = (pageType: string) => {
     }
 
     
-    let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
-
-
     activeMaster.rowData.forEach((ele:any)=>{
       const e = _.cloneDeep(ele);
       bufferTypeData.forEach((elm:any)=>{
-        if(ele.dsc===elm.bt){
+        if(elm.dsc===ele.bt){
           e.bt=elm.id;
         }
       })
-      if(totalNewVals===0 && pageType==="modify") return;
-      else totalNewVals--;
+      e.ib= (e.ib==="false"?0: 1);
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
-      e.bid = null;
-      e.iv = e.iv!==undefined?e.iv: true;
-      e.err= "no error"
-      
-      
-      
-      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));   
+      e.err="";
+      if(!e.bid)e.bid=null;
+
+      if(e.bid===null || e.iv===false){
+        BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
+      }
     })
 
     try{
@@ -2526,7 +2547,8 @@ const useViewModify = (pageType: string) => {
     // minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData):(useSelector((state: any) => state.mto.editableMinRow))? activeMaster.rowData[useSelector((state: any) => state.mto.editableMinRow)]?.minData: [],
     minReasonRowData: selectedMajReason? selectedMajReason.minData: [],
     onMinReasonEditingStopped,
-    addRowToMtoMinGrid
+    addRowToMtoMinGrid,
+    mtoProgress
   }
 
 }

@@ -7,7 +7,7 @@ import VFStepper, { StepItem } from "../../../../../components/VectorFLOW/common
 import { ViewModifyProgressState } from "../../../../../VectorFlow/types/MDM"
 
 export interface VFTaskBarProps {
-    masterProgress: ViewModifyProgressState
+    masterProgress: ViewModifyProgressState | any
     disableSubmit?: boolean
     disableDeleteSelected?: boolean
     editOnline?: boolean
@@ -167,6 +167,19 @@ const VFTaskBar = (props: VFTaskBarProps) => {
                         description: ""
                     }
                 ]
+            case "initial":
+                return [
+                    {
+                        label: 'Edit Online',
+                        status: 'pending',
+                        description: ''
+                    },
+                    {
+                        label: "Submitted",
+                        status: "pending",
+                        description: ""
+                    }
+                ]
             // case "editOnlineSaved":
             //     return [
             //         {
@@ -273,17 +286,22 @@ const VFTaskBar = (props: VFTaskBarProps) => {
             <TaskBarContainer data-testid="taskbar" style={{ width: width }}>
                 <VFTaskBarButtonGroup>
                     <BackButton />
-                    <VFButtonOutline onClick={() => {return null; }} themeUi={themeUi} disabled={false} width={139}>
+                    <VFButtonOutline onClick={onExportData} themeUi={themeUi} disabled={false} width={139}>
                         Export Data
                     </VFButtonOutline>
                     <VFButtonOutline onClick={onMTOSaveAsDraft? onMTOSaveAsDraft: () => { return null; }} themeUi={themeUi} disabled={isMTODraftDisabled} width={139}>
                         Save As Draft
                     </VFButtonOutline>
                     <VFButtonOutline onClick={onMTOSaveData && (!isMTOSaveDataDisabled) ? onMTOSaveData : () => {return null;}} themeUi={themeUi} disabled={isMTOSaveDataDisabled} width={139}>
-                        Save Data
+                        Save As Task
                     </VFButtonOutline>
-
                 </VFTaskBarButtonGroup>
+                <div>
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
+
             </TaskBarContainer>
         )
     }

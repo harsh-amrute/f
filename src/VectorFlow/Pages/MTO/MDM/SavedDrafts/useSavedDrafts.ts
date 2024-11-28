@@ -11,6 +11,7 @@ import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
 import { useUserData } from "../../../../../context"
 import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
+import { SET_BUFFER_MODIFY_DATA } from "../../../../../redux/actions/MTO"
 
 const useSavedDrafts = ()=>{
 
@@ -177,6 +178,8 @@ const useSavedDrafts = ()=>{
             // const activeMaster = masterState.find((m:MDMMasterState)=>m.progress!=='submitted');
                 // const activeMaster= "dsf";
 
+            dispatch(SET_BUFFER_MODIFY_DATA(draftData));
+
             const masterState:any = [
                 {   isMTO: true,
                     "id": 501,
@@ -205,7 +208,7 @@ const useSavedDrafts = ()=>{
             
             dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
             // dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(fields)))
-            dispatch(UPDATE_FILTER(masterState.filters))
+            // dispatch(UPDATE_FILTER(masterState.filters))
             dispatch(FILL_MASTERS(masterState))
             dispatch(SET_DRAFT_ID(draftDetails.DraftId))
             dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
@@ -213,13 +216,13 @@ const useSavedDrafts = ()=>{
             
             // dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster))            // dispatch(UPDATE_ACTIVE_MASTER())
             if(draftDetails.ActionType == "Modify"){
-                navigate(`/master-data-management/mto-control-panel/view-modify`);
+                navigate(`/mto/master-data-management/control-panel/view-modify`);
             }
             else if(draftDetails.ActionType === "Add"){
-                navigate(`/master-data-management/mto-control-panel/${draftDetails.ActionType.toLowerCase()}`);
+                navigate(`/mto/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
             }
             else{
-            navigate(`/master-data-management/mto-control-panel/${draftDetails.ActionType.toLowerCase()}`);
+            navigate(`/mto/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
 
             }
             toast.dismiss();

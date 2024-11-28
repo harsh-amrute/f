@@ -109,7 +109,8 @@ const lazyLoad = (children: React.ReactNode) => {
     "/mto/master-data-management/task-pending",
     "/masters-interceptor/data-modification-history",
     "/mto/master-data-management/data-modification-history",
-    "/mto/master-data-management/control-panel/view-modify"
+    "/mto/master-data-management/control-panel/view-modify",
+    "/mto/master-data-management/control-panel/add"
 
   ]
   const urlAllPage = [
