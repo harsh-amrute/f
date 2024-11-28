@@ -109,3 +109,8 @@ export const ReleaseText = styled.div`
   padding: 10px;
   font-size: 2.2em; /* Increased font size */
 `
+
+export const LastRunDateHeader = styled.div`
+    font-size:20px;
+    font-weight:500;
+`
