@@ -120,7 +120,7 @@ describe('Testing the ResearchInsightsService',  () => {
           "WhCode": "4245"
         }
       ]});
-      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/api/SCIH/GetResearchInsightData',{data:[
+      expect(mockedAxios.post).toHaveBeenCalledWith( process.env.REACT_APP_VF_API_HOST+'/api/mta/GetResearchInsightData',{data:[
         {
           "SKUCode": "ARES0798C004",
           "WhCode": "2224"
