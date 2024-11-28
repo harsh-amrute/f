@@ -17,6 +17,7 @@ import {
   SCCustomActionsContainer,
   SCViewContainerWithBg,
   SCTaskFilterContainer,
+  LastRunDateHeader,
 } from "./styles";
 import { useUserData } from "../../../../../../context/UserDataContext";
 import { DBMApplyNormChange } from "../../../DBM/DBMNormSuggestions/applyNormButton";
@@ -27,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { UPDATE_PLANNING_DATA } from "../../../../../../redux/actions/MTA";
 import { RootState } from "../../../../../../redux/store/store";
 import useGetLocation from "../../../../../../hooks/useGetLocation";
+import { Skeleton } from "../../../../../../components/commons/styled";
 
 interface ActionToolBarProps {
   view: string;
@@ -53,7 +55,7 @@ interface ActionToolBarProps {
   hideUpdateInsightsBtn?: boolean;
   onSubmitEditedRows?: () => void;
   disableSubmitEditedRowsBtn?: boolean;
-  lastRunDate?:string
+  lastRunDate?:string 
   isPlanning?:boolean,
   generalFilterOptions?:any
 }
@@ -872,7 +874,11 @@ const ActionToolBar = ({
             )}
           </SCTaskFilterContainer>
           {(currCategory==='BPR' && lastRunDate) && (
-            <h2>{lastRunDate}</h2>
+            lastRunDate === "Loading"?(
+              <Skeleton style={{height:30,width:150}}/>
+            ):(
+              <LastRunDateHeader>{lastRunDate}</LastRunDateHeader>
+            )
           )}
           <SCCustomActionsContainer>
             <VFButton

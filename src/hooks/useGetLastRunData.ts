@@ -7,7 +7,7 @@ const useGetlastRunData = ()=>{
    
     const {mutateAsync:getLastRunDate} = useGetLastRunDate()
 
-    const [lastRunDate,setLastRunDate] = useState<string>("Loading Date")
+    const [lastRunDate,setLastRunDate] = useState<string >("Loading")
 
    useEffect(()=>{
         (async()=>{

@@ -77,8 +77,6 @@ const FilterCheckboxAccordian = ({filterType,filterKey,isOpen,setOpenStatus,chil
                 transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
             },
             config: { duration: "120" }
-            
-            
       });
 
     return(
@@ -443,7 +441,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
         
     } = props
-    console.log(currentTab)
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string,updateLabel?:boolean)=>{
 
         // if(filterId==="Horizon"){

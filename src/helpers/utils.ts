@@ -915,7 +915,7 @@ export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMa
   return masters.map((master: Master) => ({
     id: master.id,
     name: master.name,
-    fields: master.fields,
+    fields: master.fields.sort((a:Field,b:Field)=>parseInt(a.col_Position) - parseInt(b.col_Position)),
     filters: [
       {
         id: generateRandomId(),
