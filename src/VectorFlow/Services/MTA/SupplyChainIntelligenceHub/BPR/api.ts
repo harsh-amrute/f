@@ -99,7 +99,7 @@ export namespace BPRService {
   }
 
   export const getlastRunDate = async()=>{
-    return await axios.get(process.env.REACT_APP_API_HOST + '/api/mta/GetLastRunDate',{
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/GetLastRunDate',{
       headers:{ 'Content-Type': 'application/json' }
     })
   }

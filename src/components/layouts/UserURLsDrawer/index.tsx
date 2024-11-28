@@ -1,14 +1,13 @@
-import VFLoader from "../../../components/VectorFLOW/commons/VFLoader"
+
 import Drawer from "../../../components/commons/Drawer"
-import { Content, InputWrapper, URLsForm ,Label, TableWrapper, DrawerHeader, DrawerHeaderText} from "./styles"
-import { Input, Skeleton, TextArea } from "../../../components/commons/styled"
+import { Content, DrawerHeader, DrawerHeaderText} from "./styles"
 import { useUserData } from "../../../context"
 import { useState } from "react"
 import AddURL from "./Add"
 import NavigationTab from "../NavigationTab"
 import ViewURLs from "./View"
 import DeleteUrl from "./Delete"
-import axios from "axios"
+
 import { notifyError, notifySuccess } from "../../../helpers/notify"
 
 interface UserURLsDrawerProps{

@@ -4,7 +4,7 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark, useGetDailyData,useGetBPRDataCount, useGetState, useSaveState, useResetState,useGetLocationTypes, useGetlastRunDate } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { useGetBPRData, useGetBPRRemarkHistory, useGetBPRUIConfiguration, useSubmitBPRRemark, useGetDailyData,useGetBPRDataCount, useGetState, useSaveState, useResetState,useGetLocationTypes, useGetLastRunDate } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
 import { GetBPRDataMockResponse, GetBPRUIConfigurationMockResponse, GetDailyDataMockResponse, GetStateMockResponse, ResetStateMockResponse, SaveStateMockResponse } from '../../../../../mock-data/BPR';
 
 import { ReactNode } from "react";
@@ -65,8 +65,8 @@ const useGetLocationTypesMock = useGetLocationTypes as jest.MockedFunction<
   typeof useGetLocationTypes
 >
 
-const useGetLastRunDateMock = useGetlastRunDate as jest.MockedFunction<
-  typeof useGetlastRunDate
+const useGetLastRunDateMock = useGetLastRunDate as jest.MockedFunction<
+  typeof useGetLastRunDate
 >
 
 // const contextWrapper = (children:any) => {

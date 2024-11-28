@@ -67,8 +67,6 @@ import TrendsOfFailureReason from './VectorFlow/Pages/MTO/Poogi/InsightAndTrends
 import OverallBmReport from './VectorFlow/Pages/MTO/Production/OverallBMReport'
 import {AuthGate,UnAuthGate} from './components/VectorFLOW/layouts/VectorAdmin/AuthGate'
 import VectorAdminLogin from './components/VectorFLOW/layouts/VectorAdmin/Login'
-import VectorAdminLayout from './components/VectorFLOW/layouts/VectorAdmin'
-import { ToastContainer } from 'react-toastify'
 import Tools from './components/VectorFLOW/layouts/VectorAdmin/Tools'
 import ManageRoles from './components/VectorFLOW/layouts/VectorAdmin/ManageRoles'
 import ManageURLs from './components/VectorFLOW/layouts/VectorAdmin/ManageURLs'

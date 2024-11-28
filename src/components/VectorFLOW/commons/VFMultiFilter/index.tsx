@@ -752,12 +752,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     const getOptions = (data:Array<any>,isSku?:boolean)=>{
             
         if(isSku){
-            return data.map((sku: any) => {
+            return data?.map((sku: any) => {
                 return { label:  `${sku.sc} (${sku.sd})`, value: sku.sc };
             }) 
         }
         
-        return data.map((location: any) => {
+        return data?.map((location: any) => {
             return { label:  `${location.wc} (${location.wd})`, value: location.wc };
         }) 
         

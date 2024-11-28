@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { notifyError } from "../../../../helpers/notify";
 
-import { Input, PrimaryButton } from "../../../../components/commons/styled";
-import {
-  InputGroup,
-  IputLogin,
-} from "../../../../module-main/pages/auth/styles";
+import { PrimaryButton } from "../../../../components/commons/styled";
+
 import {
   FormLogo,
   LoginForm,

@@ -16,7 +16,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter"
 import { useUserData } from "../../../../../context"
 
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
-import useGetlastRunData from "../../../../../hooks/useGetLastRunData"
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
 
 
@@ -73,7 +73,7 @@ const useBPR =()=>{
    
    
       
-    const {date:lastRunDate} = useGetlastRunData()
+    const {date:lastRunDate} = useGetLastRunData()
     
     const {mutateAsync:getBPRData,isLoading:isRowDataLoading} = useGetBPRData()
 
@@ -101,6 +101,7 @@ const useBPR =()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState("BPR")
+            console.log(data)
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
@@ -114,7 +115,7 @@ const useBPR =()=>{
     },[])
 
     useEffect(()=>{
-        if(internalRef && gridState.columns){
+        if(internalRef && gridState && gridState.columns){
             internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
         }
     },[internalRef,gridState])
@@ -249,6 +250,8 @@ const useBPR =()=>{
         else setBPRRowData([])
         
     }
+
+
 
     const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
     
@@ -389,6 +392,8 @@ const useBPR =()=>{
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
 
     const BPRColumns =useMemo(()=>mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph),[data])
+
+    console.log(BPRColumns)
     
     
     return {

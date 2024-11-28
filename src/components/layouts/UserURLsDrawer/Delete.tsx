@@ -1,7 +1,6 @@
 import { PrimaryButton, SecondaryButton } from "../../../components/commons/styled";
 import { ButtonsWrapper, URLsForm } from "./styles";
 import { useUserData } from "../../../context"
-import axios from "axios";
 
 const DeleteUrl  = (props:{
     onSuccess:()=>void
@@ -17,28 +16,6 @@ const DeleteUrl  = (props:{
 
     const themeUi = user.user.theme_ui
 
-    const handleSubmit = async(e: any) => {
-        e.preventDefault();
-        // setIsSubmitting(true)
-        // try{
-        //   const response = await axios.delete(`${process.env.REACT_APP_API_HOST}api/user/add-function/`,{
-        //     data:[formData]
-        //   },{
-        //     headers: { 'Content-Type': 'application/json' }
-        //   })
-        //   if(response.status === 400){
-        //     notifyError("A URL with the name " + formData.name  +" already exists" )
-        //   }
-        //   else{
-        //     notifySuccess("Successfully Added " + formData.name)
-        //   }
-        // }catch(error){
-        //   console.error(error)
-        //   notifyError("Server Went Unresponsive")
-        // }finally{
-        //   setIsSubmitting(false)
-        // }
-      };
 
     return(
         <URLsForm>

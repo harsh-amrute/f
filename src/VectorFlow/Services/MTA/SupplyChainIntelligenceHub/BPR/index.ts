@@ -109,8 +109,8 @@ export const useGetLocationTypes = ()=>{
   })
 }
 
-export const useGetlastRunDate = ()=>{
-  return useQuery(QUERY_KEYS.useGetlastRunDate,async()=>{
+export const useGetLastRunDate = ()=>{
+  return useMutation(async()=>{
     return await BPRService.getlastRunDate()
   })
 }
