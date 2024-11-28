@@ -1,7 +1,6 @@
 import IconCard from "../../../../../components/VectorFLOW/commons/VFCard/IconCard"
 import { Container,PanelGrid, PanelGridWrapper } from "./styles"
 import { useNavigate } from "react-router";
-
 import ButtonCard from "../../../../../components/VectorFLOW/commons/VFCard/ButtonCard";
 import { useDispatch } from "react-redux";
 import { useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM";

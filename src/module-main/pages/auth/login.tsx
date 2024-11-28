@@ -12,7 +12,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 // import { SITE_KEY,TEST_SITE_KEY } from "../../../helpers/constants";
 import { SITE_KEY} from "../../../helpers/constants";
 import WelcomeBoard from "./welcome-board";
-// import { hashPassword } from '../../../helpers/utils'
+import { hashPassword } from '../../../helpers/utils'
 
 function LoginContainer() {
   const { t } = useTranslation();
@@ -21,7 +21,8 @@ function LoginContainer() {
 
   useEffect(() => {
     if(token) {
-      const url: any = JSON.parse(localStorage?.getItem('landing_page') || "");
+      // const url: any = JSON.parse(localStorage?.getItem('landing_page') || "");
+      const url: any = "/landing-page";
       // console.log(urlPermission);
       // const url = urlPermission.includes("/") ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0]
       navigate(url, { replace: true });
@@ -54,7 +55,7 @@ function LoginContainer() {
     if (recaptchaValue || recaptcha) {
 
       const formData = getValues();  
-      // formData.password = await hashPassword(formData.password)
+      formData.password = await hashPassword(formData.password)
       mutateLogin(formData, {
         onSuccess: (data: any) => {
           if (data?.status === 400) {
@@ -68,7 +69,8 @@ function LoginContainer() {
             // const isRolePresent =  rolePermission.some((permission:any) => !permission.name.startsWith("IST"));
             // const url = urlPermission.includes("/") && isRolePresent ? "/" : !urlPermission.includes("/") && isRolePresent ? '/master-data-management/control-panel' : urlPermission[0];
             // const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission.includes('/supply-chain-intelligence-hub/planning') ? '/supply-chain-intelligence-hub/planning' : urlPermission[0];
-            const url = data.data.data.landing_page
+            // const url = data.data.data.landing_page
+            const url = "/landing-page";
             console.log(url);
             navigate(url, { replace: true });
             notifySuccess(t("loginPage.notify.success"));

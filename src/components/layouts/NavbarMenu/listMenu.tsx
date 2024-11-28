@@ -32,40 +32,40 @@ export const listMenuParent: any = [
     id: 2,
     name: "navbar.listMenuParent.masterDataManagement.title",
     img: "/assets/img/nav/master_data",
-    url: "/master-data-management/control-panel",
+    url:  '/masters-interceptor/control-panel',
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "MasterApprover"],
     child: [
       {
         name: "navbar.listMenuParent.masterDataManagement.controlPanel",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/master-data-management/control-panel",
+        url: '/masters-interceptor/control-panel',
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
         name: "navbar.listMenuParent.masterDataManagement.savedDrafts",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/master-data-management/saved-drafts",
+        url: "/masters-interceptor/saved-drafts",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
         name: "navbar.listMenuParent.masterDataManagement.taskPendingForReview",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/master-data-management/task-pending",
+        url: "/masters-interceptor/task-pending",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", 'MasterApprover'],
       },
       {
         name: "navbar.listMenuParent.masterDataManagement.taskStatus",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/master-data-management/task-status",
+        url: "/masters-interceptor/task-status",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
       },
       {
         name: "navbar.listMenuParent.masterDataManagement.modificationHistory",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/master-data-management/data-modification-history",
+        url: "/masters-interceptor/data-modification-history",
         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
-      },
+      }
     ],
   },
   // {

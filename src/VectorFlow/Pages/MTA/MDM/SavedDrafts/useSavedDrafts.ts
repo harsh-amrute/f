@@ -1,16 +1,14 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router"
-import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration, useGetBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyError, notifyPromise, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
-import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS, UPDATE_FILTER } from "../../../../../redux/actions/MDM"
-import { createMastersStateFromDraftData, generateRandomId, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
+import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS } from "../../../../../redux/actions/MDM"
+import { createMastersStateFromDraftData, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
-import { useUserData } from "../../../../../context"
-import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
 
 const useSavedDrafts = ()=>{
 
@@ -25,211 +23,32 @@ const useSavedDrafts = ()=>{
     const {data,isLoading,refetch} = useGetAllDrafts();
     const {mutateAsync:getDraftCount} = useGetDraftCount();
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
-    const [allDrafts, setAllDrafts] = useState<any>(data?.data?.data);
-    const {mutateAsync: getMtoDrafts} = useGetMTODrafts();
-    const {mutateAsync: getDraftByIdMTO} = useGetMTODraftById();
-    const {mutateAsync: getMTOMasterUIConfiguration} = useGetMTOMasterUIConfiguration();
-    const {mutateAsync: getBufferMasterData} = useGetBufferMasterData();
-    
-    const user = useUserData();
-    
-    const getCombinedMTOData = async()=>{
-        try{
-            // TODO: change the data to userid later now data is available for this
-            const response:any = await getMtoDrafts(user.user.user.id);
-            let concatedData:any = [];
-            if(data && data.data && data.data.data){
-                concatedData = [...data.data.data];
-            }
-            response.data.data.forEach((draft: any)=>{
-                const newData = {
-                    DraftId: draft.did,
-                    ActionType: draft.at,
-                    LastModifiedDateTime: new Date(draft.co).getTime(),
-                    Masters: draft.mnm,
-                    SearchKeys: draft.sk,
-                    userid: draft.uid,
-                    isMTO: true
-                }
-                concatedData.push(newData);
-            })
-            
-            setAllDrafts(concatedData);
-            
-        }
-        catch(error){
-            console.log(error)
-        }
-    }
-    
-    
-    
-    useEffect(()=>{
-        // if(data?.data){
-            getCombinedMTOData();
-        // }
-    },[data])
-    
+    const allDrafts = data?.data.data;
+  
+
     const openDeleteModal = (draftId:string)=>{
         setDeleteDraftId(draftId)
         toggleDeleteModal(true)
     }
-    
+
     const closeDeleteModal =()=>toggleDeleteModal(false)
 
-    // export const createMastersStateFromDraftData = (draftData: any[], fields: any[]): any[] => {
-
-    //     const masters: MDMMasterState[] = []
-    //     draftData.map((master) => {
-    //       const existingMaster = fields.find((m: any) => m.id == master.MasterId)
-    //       if (existingMaster) {
-    //         masters.push({
-    //           id: existingMaster.id,
-    //           name: existingMaster.name,
-    //           colDefs: master.GridState.length > 0 ? JSON.parse(master.GridState) : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id),
-    //           rowData: master.DataMaster || [],
-    //           isChecked: true,
-    //           filters: [{
-    //             id: generateRandomId(),
-    //             masterId: existingMaster.id,
-    //             field: '',
-    //             operator: '',
-    //             text: ''
-    //           }],
-    //           progress: master.Status,
-    //           fields: existingMaster.fields
-    //         })
-    //       }
-    //     })
-    //     return masters
-
-
-    //   }
-
-    const convertToColDefs = (data:any, ActionType: string) => {
-        return data
-          .sort((a:any, b:any) => (a.col_Position || 0) - (b.col_Position || 0))
-          .map((item: any) => ({
-            field: item?.key,                    // Use the "key" as the "field"
-            colId: item?.key,                    // Also set "colId" from "key"
-            headerName: item?.displayName,        // Set "headerName" from "displayName"
-            floatingFilter: false,              // Set default values for additional properties
-            wrapText: true,
-            autoHeight: true,
-            editable: (ActionType == "Modify") ? false : true
-          }));
-      };
-    
     const onEditDraft = async(draftDetails:any)=>{
-        let toastId;
-        if(draftDetails.isMTO){
-            
-            try{
-                const res: any = await getDraftByIdMTO(draftDetails.DraftId);
-                dispatch(SET_RECORD_COUNT(res.data.data.count));
-                let draftData:any = res.data.data.results;
+       let toastId;
 
-                if(draftDetails.isMTO && (draftDetails.ActionType === "Modify")){
-                    try{
-                        const result = await getBufferMasterData();
-                        draftData = [...draftData, ...result.data.data];
-
-                        // console.log("final DraftData .... ", draftData);
-                    }
-                    catch(e){
-                        console.log(e);
-                    }
-                }
-           
-
-            const mastersDataRes= await getMTOMasterUIConfiguration();
-            const mastersData = mastersDataRes.data.data[1];
+       try{
         
-            toast.dismiss();
-            
-            const fields = mastersData.fields;
-
-            // draftData
-            // DataMaster gridState MasterId Status
-            // const masterState = createMastersStateFromDraftData(draftData,fields)
-            // const activeMaster = masterState.find((m:MDMMasterState)=>m.progress!=='submitted');
-                // const activeMaster= "dsf";
-
-            const masterState:any = [
-                {   isMTO: true,
-                    "id": 501,
-                    "name": "Buffer",
-                    "colDefs": [{checkboxSelection: true},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...convertToColDefs(fields,draftDetails.ActionType)],
-                    "rowData": draftData,
-                    "isChecked": true,
-                    "filters": [{
-                        id: generateRandomId(),
-                        masterId: 501,
-                        field: "",
-                        operator: '',
-                        text: ''
-                    }],
-                    "progress": "view",
-                    "fields": fields
-                }
-            ]
-
-            if(draftDetails.isMTO && (draftDetails.ActionType === "Modify")){
-                masterState[0].colDefs = [...convertToColDefs(fields, draftDetails.ActionType)];
-            }
-
-            dispatch(TOGGLE_UPLOAD_MODAL(false));
-
-            
-            dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
-            // dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(fields)))
-            dispatch(UPDATE_FILTER(masterState.filters))
-            dispatch(FILL_MASTERS(masterState))
-            dispatch(SET_DRAFT_ID(draftDetails.DraftId))
-            dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
-            dispatch(UPDATE_ACTIVE_MASTER(0))
-            
-            // dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster))            // dispatch(UPDATE_ACTIVE_MASTER())
-            if(draftDetails.ActionType == "Modify"){
-                navigate(`/master-data-management/control-panel/view-modify`);
-            }
-            else if(draftDetails.ActionType === "Add"){
-                navigate(`/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
-            }
-            else{
-            navigate(`/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`);
-
-            }
-            toast.dismiss();
-            notifySuccess("Draft Loaded Successfully");
-
-        }
-        catch(error){
-            console.log(error);
-        }
-            
-            // console.log('act name..',draftDetails.ActionType)
-            // toast.dismiss();
-            // notifySuccess("Draft Loaded Successfully");
-
-
-
-            return;
-        }
-          
-            try{
-                
-                const res:any = await getDraftCount(draftDetails.DraftId);
-                const draftCount = JSON.parse(res.data.recordCount)[0].recordCount;
-                dispatch(SET_RECORD_COUNT(draftCount));
-                let draftDataRaw = [];
-                const payload = {
+        const res:any = await getDraftCount(draftDetails.DraftId);
+        const draftCount = JSON.parse(res.data.recordCount)[0].recordCount;
+        dispatch(SET_RECORD_COUNT(draftCount));
+        let draftDataRaw = [];
+        const payload = {
             pageNumber:1,
             recordsPerPage:chunkSize
         }
-        
+
         toastId = notifyLoader(`Downloading Data 0 / ${draftCount}`)
-        
+
         if(draftCount <= chunkSize){
             const result = await getDraftById({id:draftDetails.DraftId,body:payload});
             draftDataRaw = result.data.data;
@@ -247,9 +66,9 @@ const useSavedDrafts = ()=>{
         toast.dismiss(toastId);
 
         notifyLoader("Getting Draft Ready")
-        
+    
         // toast.update(toastId,{render:"Getting Draft Ready"});
-        
+       
         const draftData:any = [];
         draftDataRaw.forEach((data:any)=>{
         const masterIndex = draftData.findIndex((draftObj:any) => draftObj.MasterId == data.MasterId);
@@ -264,15 +83,15 @@ const useSavedDrafts = ()=>{
             }
             
         })
-        
+ 
         const mastersData= await getMasterUIConfiguration(getActionName(draftDetails.ActionType).value)
-        
+
         toast.dismiss();
-        
+
         const fields = mastersData.data.data
         const masterState = createMastersStateFromDraftData(draftData,fields)
         const activeMaster = masterState.find((m:MDMMasterState)=>m.progress!=='submitted');
-        
+
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
         dispatch(STORE_ALL_MASTERS(mapMasterToMasterState(fields)))
         dispatch(FILL_MASTERS(masterState))
@@ -281,20 +100,19 @@ const useSavedDrafts = ()=>{
             dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster)))
             dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
         }
-
         
         
         navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`);
         toast.dismiss();
         notifySuccess("Draft Loaded Successfully");
 
-    }catch(error:any){
+       }catch(error:any){
         notifyError(error.message);
         toast.dismiss(toastId)
+       }
     }
-    }
-    
-    
+
+
     
     const onDeleteDraft = async()=>{
         closeDeleteModal();
@@ -317,6 +135,7 @@ const useSavedDrafts = ()=>{
         onDeleteDraft,
         allDrafts,
         isLoading
+        
     }
 }
 

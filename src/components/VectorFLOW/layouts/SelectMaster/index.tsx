@@ -138,10 +138,6 @@ const SelectMaster = (
                             })}
                         </Container>
 
-                        <div style={{ border: "0.5px dashed #000", width: '100%', marginBottom: '10px' }}>
-
-                        </div>
-
                         <Container
                             style={{
                                 flexDirection: 'row',

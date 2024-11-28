@@ -2,9 +2,9 @@ import React from 'react'
 import { DayPicker } from 'react-day-picker';
 import { CalenderHeading } from '../../../../../VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization/styles';
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
-import CustomCalenderCaption from '../../InsightsAndTrends/ResearchInsights/CustomCalenderCaption';
-import CustomCalenderDay from '../../InsightsAndTrends/ResearchInsights/CustomCalenderDay';
-import { CalenderWrapper } from '../../InsightsAndTrends/ResearchInsights/styles';
+import CustomCalenderCaption from '../../../MTA/InsightsAndTrends/ResearchInsights/CustomCalenderCaption';
+import CustomCalenderDay from '../../../MTA/InsightsAndTrends/ResearchInsights/CustomCalenderDay';
+import { CalenderWrapper } from '../../../MTA/InsightsAndTrends/ResearchInsights/styles';
 
 
 import styled from 'styled-components';

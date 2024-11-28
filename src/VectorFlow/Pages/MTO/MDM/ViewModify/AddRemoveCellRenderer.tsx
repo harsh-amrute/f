@@ -5,15 +5,18 @@ import { useSelector, useDispatch } from 'react-redux';
 import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
+import { SET_BUFFER_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 
 
 const AddRemoveCellRenderer = (params: any) => {
 
     const dispatch = useDispatch();
     const activeMaster = useSelector((state: RootState) => state.mdm.activeMaster);
+    const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
+    const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
     const addRow = () => {
 
-      console.log("activeMaster.... in add remove", activeMaster);
+      console.log("buff initial Dat...", bufferInitialData);
 
         const allRows = [...activeMaster.rowData];
         allRows.shift();
@@ -27,7 +30,7 @@ const AddRemoveCellRenderer = (params: any) => {
           
           
           let isValid = true;
-          allRows.forEach((e)=>{
+          bufferInitialData?.forEach((e:any)=>{
     
             if(e.bsz== params.data.bsz && e.bt=== params.data.bt){
             notifyError("Buffer size must be unique!.")
@@ -43,7 +46,10 @@ const AddRemoveCellRenderer = (params: any) => {
             delete newColDef.editable;   
             newColDefs.push(newColDef);
           })
-    
+
+
+          if(bufferModifyData && bufferModifyData.length) dispatch(SET_BUFFER_MODIFY_DATA([activeMaster.rowData[0], ...bufferModifyData]));
+          else dispatch(SET_BUFFER_MODIFY_DATA([activeMaster.rowData[0]]));
           dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
         }
       }
@@ -104,13 +110,15 @@ const AddRemoveCellRenderer = (params: any) => {
         
               if ((params?.node?.rowIndex === 0)) {
                 return (
-                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '4px' , gap: '8px'}}>
       
                     <div
                     //   onClick={() => dispatch(UPDATE_ROW_DATA(activeMaster.rowData.filter((item: any) => item.id !== params.data.id))) }
                       onClick={() => addRow() }
                       style={{ cursor: 'pointer' }}>
                       <img
+                      height={17}
+                      width={17}
                         src="/assets/img/MTOapprovalBuffer.svg"
                         alt="ApproveMaster"
                       />
@@ -121,6 +129,8 @@ const AddRemoveCellRenderer = (params: any) => {
                       style={{ cursor: 'pointer' }}
                     >
                       <img
+                      height={17}
+                      width={17}
                         src="/assets/img/MTOcancelBuffer.svg"
                         alt="CancelMaster"
                       />

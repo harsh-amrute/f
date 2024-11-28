@@ -851,7 +851,7 @@ const DptWiseBMReport = () => {
         }
     }
 
-    const handleSaveClick = async (coldefs?: any) => {
+    const handleSaveClick = useCallback(async (coldefs?: any) => {
         try {
             if(coldefs){
                 const payload = {
@@ -877,7 +877,7 @@ const DptWiseBMReport = () => {
             console.error(error);
             notifyError("Error saving changes");
         }
-    }
+    }, [])
 
     const handleResetClick = () => {
         setIsReset(true);
