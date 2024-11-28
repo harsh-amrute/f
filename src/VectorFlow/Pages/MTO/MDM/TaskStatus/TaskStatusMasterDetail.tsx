@@ -3,7 +3,7 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import { VFTaskStatusWrapper,VFTaskStatusContentWrapper, VFTaskStatusStepperWrapper, VFTastStatusDownloadWrapper,VFTaskStatusNoData } from "./styles"
 import { useUserData } from "../../../../../context"
 import StepperPrefix from "./StepperPrefix"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useGetMTOTaskById } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 
@@ -203,7 +203,6 @@ const getStepperState = (data:any):StepItem[]=>{
 
 const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
 
-    console.log("props....", props);
 
     const{
         data,
