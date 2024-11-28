@@ -1,23 +1,29 @@
 
-import {useMemo} from 'react'
-import { useGetlastRunDate } from "../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import {useEffect, useState} from 'react'
+import { useGetLastRunDate } from "../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 
 
 const useGetlastRunData = ()=>{
    
-    const {data,isLoading,isError} = useGetlastRunDate()
+    const {mutateAsync:getLastRunDate} = useGetLastRunDate()
 
-    const formattedLastRunDate = useMemo(()=>{
-        const runDate = data?.data?.data
-        if(runDate && Array.isArray(runDate) &&runDate.length>0)return runDate[0].formatted
-        return '-'
-    },[data])
+    const [lastRunDate,setLastRunDate] = useState<string>("Loading Date")
+
+   useEffect(()=>{
+        (async()=>{
+            try{
+                const {data} = await getLastRunDate()
+                setLastRunDate(data?.data[0].formatted)
+            }catch(err){
+                console.error(err)
+                setLastRunDate('Date Unavailable')
+            }
+        })()
+   },[])
 
 
     return {
-        date:formattedLastRunDate,
-        isError,
-        isLoading
+        date:lastRunDate
     }
         
 }

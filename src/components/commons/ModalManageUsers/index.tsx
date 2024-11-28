@@ -135,17 +135,13 @@ const ModalManageUsers = ({
                               required: true,
                               maxLength: {
                                 value: 8,
-                                message: t(
-                                  "profile.tabContent.manageUsers.validate.userNameMaxLength"
-                                ),
+                                message: "The username must be 8 characters or fewer.",
                               },
                               pattern: {
                                 value:
                                   // eslint-disable-next-line no-useless-escape
                                   /^[^@.\s-]*$/,
-                                message: t(
-                                  "profile.tabContent.manageUsers.validate.validateUserName"
-                                ),
+                                message: "The username cannot contain @, ., spaces, or -.",
                               },
                             })}
                             autoComplete="off"

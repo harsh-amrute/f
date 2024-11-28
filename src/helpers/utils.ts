@@ -2053,6 +2053,7 @@ export const createIconColumn = (params: any): ColDef => {
     minWidth: 40,
     colId: id,
     headerName: label,
+    filter:false,
     cellRenderer: cellRenderer,
     floatingFilter: false,
     suppressColumnsToolPanel: true

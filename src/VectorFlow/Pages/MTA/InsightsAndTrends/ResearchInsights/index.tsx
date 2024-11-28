@@ -3,7 +3,7 @@ import { Player } from '@lottiefiles/react-lottie-player'
 
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule"
 import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeSlider"
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
+import VFTable from "../../../MTO/Common/VFTable"
 
 
 import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup, DefaultViewRendererWrapper, DefaultViewRendererHeader, DefaultViewRendererText } from "./styles"
@@ -87,6 +87,7 @@ const ResearchInsights = ()=>{
     const themeUi = user.user.theme_ui
 
     const getFormattedPercentage = (number:number)=>{
+        if(!number || isNaN(number)) return "-"
         return number.toFixed(2)
     }
 
