@@ -56,18 +56,6 @@ interface ApiResponse {
     cgs?: string
 }
 
-interface ColDef {
-    headerName: string;
-    suppressStickyLabel?: boolean;
-    colId: string;
-    openByDefault?: boolean;
-    children?: ColDefChild[];
-    headerCheckboxSelection?: boolean;
-    checkboxSelection?: boolean;
-    maxWidth?: number;
-    floatingFilter?: boolean;
-    cellRenderer: any;
-}
 
 interface ColDefChild {
     field: string;
