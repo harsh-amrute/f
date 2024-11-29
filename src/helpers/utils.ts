@@ -3458,7 +3458,7 @@ export function getColumnDefinations(
       colId: data.cc,
       headerName: data.hd,
       field: data.scc,
-      hide: !data.v,
+      initialHide: !data.v,
       pinned: null,
       sort: null,
       sortIndex: null,

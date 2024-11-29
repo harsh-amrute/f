@@ -143,6 +143,7 @@ const OverallBmReport = () => {
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(()=>{
         return [];
     });
+    const [intialColumnState, setInitialColumnState] = useState<any>();
     const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
     const [deptName, setDeptName] = useState<any>([]);
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
@@ -229,17 +230,50 @@ const OverallBmReport = () => {
             return data.flag == "SystemType"
         })
         setSystemType(Number(systemType.value))
-        setColumnDef();
+        // setColumnDef();
     }
 
+    const mapInitalColumnDefs=async ()=>{
+        try {
+            const data = await getUserUIConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProdOverallBMReport
+            });
+            
+            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            setInitialColumnState(newConfig);
 
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(()=>{
+        mapInitalColumnDefs();
+    },[systemType])
+
+    useEffect(()=>{
+        if(intialColumnState){
+            setColumnDef();
+        }
+    },[intialColumnState])
+
+
+    const [resetColDef, setResetColDef] = useState<any>(undefined);
+
+    
     const setColumnDef = async () => {
         try {
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
             const modifiedResponse = addDefaultAttributes(response?.data?.data)
-            const coldef = mapApiResponseToColDefs(modifiedResponse);
-            getUserColumnConfig();
+            // const coldef = mapApiResponseToColDefs(modifiedResponse);
+            setResetColDef(modifiedResponse);
+            const coldef = mapApiResponseToColDefs(modifiedResponse, intialColumnState)
+            // getUserColumnConfig();
             setColdef(coldef)
         }
         catch (e) {
@@ -323,13 +357,30 @@ const OverallBmReport = () => {
     };
 
 
-    const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
+    const updateInitialHide = (res: any[], columnState: any) => {
+        res.forEach((resParent: any) => {
+            const parentColumn = columnState.find((state:any) => state.colId === resParent.colId);
+            if (parentColumn) {
+                resParent.initialHide = parentColumn.hide;
+            }
+            resParent.children?.forEach((resChild: any) => {
+                const childColumn = columnState.find((state:any) => state.colId === resChild.colId);
+                if (childColumn) {
+                    resChild.initialHide = childColumn.hide;
+                }
+            });
+        });
+        return res;
+    };
+
+
+    const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[], initialColumnState: any, isReset=false): any => {
         const mapChildren = (parent: any, children: ApiResponse[]): ColDefChild[] => {
             return children.map((child: ApiResponse) => ({
                 field: child.scc.trim(),
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
-                hide: !child.v,
+                initialHide: !child.v,
                 suppressHeaderFilterButton: true,
                 cellRenderer: (child.cc === 'ec' && systemType >= 3) ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' || child.scc === 'bpp' ? 80 : undefined,
@@ -355,7 +406,7 @@ const OverallBmReport = () => {
             }));
         };
 
-        return apiResponse.map(section => ({
+        const res = apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
             floatingFilterComponentParams: section.scc === "chckbx" || section.scc == "ic" ? { suppressFilterButton: false } : undefined,
             suppressHeaderFilterButton: section.scc === "chckbx" || section.scc === "ic" ? true : false,
@@ -372,6 +423,14 @@ const OverallBmReport = () => {
             children: section.scc === "chckbx" ? undefined : section.ch ? mapChildren(section.cc, section.ch) : undefined,
 
         }));
+
+        if(isReset){
+            return res;
+        }
+
+       
+        return updateInitialHide(res, initialColumnState);
+    
     }
 
     const getFilterData = async () => {
@@ -731,9 +790,11 @@ const OverallBmReport = () => {
 
     // for save and reset
 
-    // useEffect(() => {
-    //     // getUserColumnConfig();
-    // }, [])
+    useEffect(() => {
+        if(coldefs){
+            getUserColumnConfig();
+        }
+    }, [coldefs])
 
 
     const [isReset, setIsReset] = useState<any>();
@@ -805,7 +866,7 @@ const OverallBmReport = () => {
                         col.children.forEach((child: any)=>{
                             arr.push({
                                 "colId": child.colId,
-                                "hide": false,
+                                "initialHide": false,
                                 "pinned": null,
                                 "sort": null,
                                 "sortIndex": null,
@@ -821,7 +882,7 @@ const OverallBmReport = () => {
                     else{
                         arr.push({
                             "colId": col.colId,
-                            "hide": false,
+                            "initialHide": false,
                             "pinned": null,
                             "sort": null,
                             "sortIndex": null,
@@ -852,13 +913,13 @@ const OverallBmReport = () => {
     
 
     useEffect(() => {
-       
         if (isReset) {
-            setColumnState([...coldefs]);
+            setColumnState(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
+            setColdef(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
             setIsReset(false)
         } else {
             if(isReset != undefined){
-                handleSaveClick(coldefs);
+                handleSaveClick(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
             }
         }
     }, [isReset]);
@@ -895,6 +956,7 @@ const OverallBmReport = () => {
                             <Allotment.Pane preferredSize={rowsSelected.current ? "45%" : '70%'}>
                                 <BTRAllomentSection>
                                     <GridView
+                                        key={isReset?1:2}
                                         reference={refGraph2}
                                         agGridProps={agGridProps}
                                         columDef={coldefs}
