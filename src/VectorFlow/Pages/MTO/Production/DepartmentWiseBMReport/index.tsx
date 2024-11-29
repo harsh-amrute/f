@@ -56,18 +56,6 @@ interface ApiResponse {
     cgs?: string
 }
 
-interface ColDef {
-    headerName: string;
-    suppressStickyLabel?: boolean;
-    colId: string;
-    openByDefault?: boolean;
-    children?: ColDefChild[];
-    headerCheckboxSelection?: boolean;
-    checkboxSelection?: boolean;
-    maxWidth?: number;
-    floatingFilter?: boolean;
-    cellRenderer: any;
-}
 
 interface ColDefChild {
     field: string;
@@ -247,9 +235,44 @@ const DptWiseBMReport = () => {
         const systemType = DBRSettings?.find((data: any) => {
             return data.flag == "SystemType"
         })
-        setSystemType(Number(systemType.value))
-        setColumnDef();
+        // setColumnDef();
+        setSystemType(Number(systemType.value));
     }
+
+    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
+
+    const mapInitalColumnDefs=async ()=>{
+        console.log("intialColumn state is settting..... to");
+        try {
+            const data = await getUserUIConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProdDeptWiseBMReport
+            });
+            
+            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            setInitialColumnState(newConfig);
+            console.log("intialColumn state is set to", newConfig);
+
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(()=>{
+        // if(systemType){
+            mapInitalColumnDefs();
+        // }
+    },[systemType])
+
+    useEffect(()=>{
+        if(intialColumnState){
+            setColumnDef();
+        }
+
+    },[intialColumnState])
 
     const removeUtilcolumns = (incolDef: any) => {
         const newColDef = _.cloneDeep(incolDef);
@@ -259,12 +282,15 @@ const DptWiseBMReport = () => {
         setTempColdef(newColDef);
     }
 
+    const [resetColDef, setResetColDef] = useState<any>(undefined);
+
     const setColumnDef = async () => {
         try {
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
             const modifiedResponse = addDefaultAttributes(response?.data?.data);
-            const coldef = mapApiResponseToColDefs(modifiedResponse)
+            setResetColDef(modifiedResponse);
+            const coldef = mapApiResponseToColDefs(modifiedResponse, intialColumnState)
             setColdef(coldef);
             setTempColdef(removeUtilcolumns(coldef))
             // getUserColumnConfig();
@@ -372,16 +398,30 @@ const DptWiseBMReport = () => {
         return modifiedResponse;
     };
 
+    const updateInitialHide = (res: any[], columnState: any) => {
+        res.forEach((resParent: any) => {
+            const parentColumn = columnState.find((state:any) => state.colId === resParent.colId);
+            if (parentColumn) {
+                resParent.initialHide = parentColumn.hide;
+            }
+            resParent.children?.forEach((resChild: any) => {
+                const childColumn = columnState.find((state:any) => state.colId === resChild.colId);
+                if (childColumn) {
+                    resChild.initialHide = childColumn.hide;
+                }
+            });
+        });
+        return res;
+    };
 
-
-    const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): ColDef[] => {
+    const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[], initialColumnState: any, isReset=false): any => {
         const mapChildren = (parent: any, children: ApiResponse[]): ColDefChild[] => {
             return children.map((child) => ({
                 field: child.scc.trim(),
                 suppressHeaderFilterButton: true,
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
-                hide: !child.v,
+                initialHide: !child.v,
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
@@ -405,7 +445,7 @@ const DptWiseBMReport = () => {
             }));
         };
 
-        return apiResponse.map(section => ({
+        const res = apiResponse.map(section => ({
             headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
             floatingFilterComponentParams: section.scc === "chckbx" || section.cc == "ic"  ? { suppressFilterButton: false } : undefined,
             suppressHeaderFilterButton: section.scc === "chckbx" || section.cc == "ic" ? true : false,
@@ -421,6 +461,13 @@ const DptWiseBMReport = () => {
             children: section.scc === "chckbx" || section.cc === 'ic' ? undefined : mapChildren(section.cc, section.ch || []),
             cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3 ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
         }));
+
+        if(isReset){
+            return res;
+        }
+
+       
+        return updateInitialHide(res, initialColumnState);
     }
 
     const getFilterData = async () => {
@@ -825,8 +872,10 @@ const DptWiseBMReport = () => {
     }, [colDeflatest])
 
     useEffect(() => {
-        getUserColumnConfig();
-    }, [])
+        if(colDeflatest){
+            getUserColumnConfig();
+        }
+    }, [colDeflatest])
 
 
     const [isReset, setIsReset] = useState<any>();
@@ -899,7 +948,7 @@ const DptWiseBMReport = () => {
                         col.children.forEach((child: any)=>{
                             arr.push({
                                 "colId": child.colId,
-                                "hide": false,
+                                "intialHide": child.hide,
                                 "pinned": null,
                                 "sort": null,
                                 "sortIndex": null,
@@ -915,7 +964,7 @@ const DptWiseBMReport = () => {
                     else{
                         arr.push({
                             "colId": col.colId,
-                            "hide": false,
+                            "initialHide": null,
                             "pinned": null,
                             "sort": null,
                             "sortIndex": null,
@@ -939,11 +988,12 @@ const DptWiseBMReport = () => {
 
     useEffect(() => {
         if (isReset) {
-            setColumnState([...colDeflatest]);
+            setColumnState(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
+            setColdef(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
             setIsReset(false)
         } else {
             if(isReset != undefined){
-                handleSaveClick(colDeflatest);
+                handleSaveClick(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
             }
         }
     }, [isReset]);
@@ -995,9 +1045,6 @@ const DptWiseBMReport = () => {
 
     const date = apiResponseData?.data?.data;
 
-
-
-
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -1042,10 +1089,11 @@ const DptWiseBMReport = () => {
                                     <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
                                         <BTRAllomentSection>
                                             <GridView
-                                                reference={refGraph1}
-                                                agGridProps={agGridProps}
-                                                columDef={colDeflatest}
-                                                convercolumnDef={gridData}
+                                            key={isReset? 1: 2}
+                                            reference={refGraph1}
+                                            agGridProps={agGridProps}
+                                            columDef={colDeflatest}
+                                            convercolumnDef={gridData}
                                                 updateReason={handleUpdateReason}
                                                 handlePageChange={handlePageChange}
                                                 totalRow={gridDataCount}
@@ -1053,7 +1101,8 @@ const DptWiseBMReport = () => {
                                                 onGridReady={() => {
                                                     applyColumnState();
                                                 }}
-                                            />
+                                                />
+                                        
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
 
