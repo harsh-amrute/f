@@ -53,7 +53,7 @@ const useResearchInsights = () => {
 
     const { mutateAsync: getBPRDataCount, isLoading: isBPRDataCountLoading } = useGetBPRDataCount()
 
-    const { data: historicalAvailabilityResponse } = useGetHistroricalAvailabilityData()
+    const { data: historicalAvailabilityResponse ,isLoading:isHistoricalAvailabilityLoading } = useGetHistroricalAvailabilityData()
 
 
 
@@ -636,6 +636,7 @@ const useResearchInsights = () => {
         currentFilter,
         setCurrentFilter,
         historicalAvailabilityData,
+        isHistoricalAvailabilityLoading,
         continuousBlack,
         continuousBlackAndRed,
         continuousWhite,

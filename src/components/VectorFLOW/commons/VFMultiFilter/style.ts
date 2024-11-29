@@ -135,3 +135,29 @@ display:flex;
 align-items: center; 
 flex-direction:column;
 `
+
+export const SkeletonWrapper = styled.div`
+    display:flex;
+    justify-content:center;
+    flex-direction:column;
+    width:1200px;
+    max-width:100%;
+`
+export const SkeletonContainer = styled.div`
+    display:flex;
+    justify-content:center;
+    width:100%;
+`
+
+export const SkeletonGroup = styled.div`
+    width:270px;
+    margin:47px 10px;
+`
+
+export const SkeletonFooter = styled.div`
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    margin-top:10px;
+    padding:30px 20px;
+`

@@ -155,9 +155,9 @@ const useInTransitWhereAbouts = ()=>{
       getTableState();
     }, []);
 
-  useEffect(()=>{
-      if(internalRef){
-          internalRef.api.applyColumnState({state:gridState?.columns })
+    useEffect(()=>{
+      if(internalRef && gridState && gridState.columns){
+          internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
       }
   },[internalRef,gridState])
     
