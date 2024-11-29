@@ -693,7 +693,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   }
 
   if(numberOfSheets[0]!='ag-grid'){
-    throw new Error('Sheet Name is modified') 
+    throw new Error('Sheet Name is changed') 
   }
 
  
