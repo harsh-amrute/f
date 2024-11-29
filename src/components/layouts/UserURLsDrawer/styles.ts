@@ -1,6 +1,5 @@
 import styled,{keyframes} from 'styled-components'
 
-import * as globalStyles from "../../../styles/global";
 
 const slideUp = keyframes`
     0%{

@@ -37,7 +37,6 @@ border-radius: 30px;
 
   &::-webkit-slider-runnable-track {
     height:9px;
-    cursor: pointer;
     background: linear-gradient(to right,  ${(props)=>props.theme==="REGALBLAZE"?globalStyles.chooseThemeColor[props.theme].color1:'black'} 0%,${(props)=>props.theme==="REGALBLAZE"?globalStyles.chooseThemeColor[props.theme].color1:'black'} ${(props)=>props.progressValue}%,#ffffff ${(props)=>props.progressValue}%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     border-radius: 30px;
     border: none;
@@ -46,19 +45,27 @@ border-radius: 30px;
   &:hover {
     opacity: 1;
   }
+
+  &:disabled{
+    opacity:0.2;
+    cursor:not-allowed;
+  }
 `;
 
 export const ValueLabel = styled.div<{ left: number,top:number }>`
   position: absolute;
   text-align:center;
-  background-color:white;
+  background-color:rgb(255,255,255,0.4);
+  backdrop-filter:blur(4px);
   top:${(props)=>props.top}px;
   left: ${(props) => props.left}px;
+  border-radius:6px;
 //   transform: translateX(-50%);
   font-size: 10px;
   font-weight:500;
   padding: 0px 5px;
   z-index:10;
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
 `;
 
 export const MilestonesContainer = styled.div`

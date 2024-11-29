@@ -212,11 +212,10 @@ export const useBOR =()=>{
     },[])
   
     useEffect(()=>{
-        if(internalRef){
-            console.log('in if')
-            internalRef.api.applyColumnState({state:gridState.columns })
-        }
-    },[internalRef,gridState])
+      if(internalRef && gridState && gridState.columns){
+          internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+      }
+  },[internalRef,gridState])
 
       useEffect(()=>{       
         const fetchData = async () => {

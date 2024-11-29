@@ -1,7 +1,7 @@
 import VFButton from "../VFButton"
 import VFModalCard from "../VFModalCard"
 import { useUserData } from "../../../../context";
-import { ButtonFilterWrapper, FilterCardWrapper, FilterBody, FilterHeader, ButtonContainer, FilterComponent, SelectDropdownComponent, DropdownGroupWrapper, MultiSelectCheckBoxComponent,TextFieldHeader, RangeSliderComponent,VFHorizonText } from "./style";
+import { ButtonFilterWrapper, FilterCardWrapper, FilterBody, FilterHeader, ButtonContainer, FilterComponent, SelectDropdownComponent, DropdownGroupWrapper, MultiSelectCheckBoxComponent,TextFieldHeader, RangeSliderComponent,VFHorizonText, SkeletonWrapper, SkeletonGroup, SkeletonContainer, SkeletonFooter } from "./style";
 import VFButtonOutline from "../VFButtonOutline";
 import React, { useState } from "react";
 import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
@@ -11,10 +11,10 @@ import './styles.css';
 
 import { useGetAllSKUs,  useGetAllLocations } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
-import VFLoader from "../../../../components/VectorFLOW/commons/VFLoader";
 import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
 import { BTRCategoryNumberToTextMapper } from "../../../../helpers/BPRConstants";
+import { Skeleton } from "../../../../components/commons/styled";
 
 // import { generalFilterOptions } from '../../utils';
 
@@ -777,13 +777,133 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         })
     }
 
+    const loading = (isLoading || isLocationDataLoading)
+
     return(
         <>
-        <VFModalCard zoom={'0.73'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
+        <VFModalCard zoom={'0.73'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={loading?<Skeleton style={{height:20,width:80}}/>:'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
            {
-            (isLoading || isLocationDataLoading)
+            (loading)
             ?
-            <VFLoader/>
+            <SkeletonWrapper>
+                <SkeletonContainer>
+                <SkeletonGroup>
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                </SkeletonGroup>
+                <SkeletonGroup>
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:200,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:100,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    
+                </SkeletonGroup>
+                <SkeletonGroup>
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                </SkeletonGroup>
+                <SkeletonGroup>
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                </SkeletonGroup>
+                </SkeletonContainer>
+                <SkeletonFooter>
+                    <Skeleton
+                        style={{
+                            height:40,
+                            width:160,
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:40,
+                            width:160,
+                            marginLeft:20
+                        }}
+                    />
+                </SkeletonFooter>
+            </SkeletonWrapper>
             :
             <React.Fragment>
             {onChangeHorizon ? 

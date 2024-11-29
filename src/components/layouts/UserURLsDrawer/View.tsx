@@ -3,7 +3,7 @@ import VFTable from "../../../components/VectorFLOW/commons/VFTable"
 import { TableWrapper } from "./styles"
 
 import { useUserData } from "../../../context"
-import { PrimaryButton, SecondaryButton, Skeleton } from "../../../components/commons/styled"
+import {  SecondaryButton, Skeleton } from "../../../components/commons/styled"
 
 import { notifyError } from '../../../helpers/notify'
 import axios from 'axios'

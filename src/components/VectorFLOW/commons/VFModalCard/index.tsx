@@ -15,7 +15,7 @@ import { noop } from "lodash";
 interface VFModalProps {
   openModal: boolean;
   closeModal?: () => void;
-  headerText?:string;
+  headerText?:string | ReactNode;
   headerIcon:string;
   children:ReactNode;
   paddingLeftAndRight?:number;

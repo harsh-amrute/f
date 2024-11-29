@@ -25,6 +25,7 @@ import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/Da
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import { useUserData } from '../../../../../context'
+import { Skeleton } from '../../../../../components/commons/styled'
 
 
 const ResearchInsights = ()=>{
@@ -77,6 +78,7 @@ const ResearchInsights = ()=>{
         currentFilter,
         setCurrentFilter,
         historicalAvailabilityData,
+        isHistoricalAvailabilityLoading,
         continuousBlack,
         continuousBlackAndRed,
         continuousWhite,
@@ -192,32 +194,38 @@ const ResearchInsights = ()=>{
                     <HistoricalAvailabiltyHeader>
                         Historical Availability
                     </HistoricalAvailabiltyHeader>
-                    <HistoricalAvailabiltyContent>
-                        <HistoricalAvailabiltyContentSection>
-                            <HistoricalAvailabiltyContentSectionHeader>
-                                90-60 Days
-                            </HistoricalAvailabiltyContentSectionHeader>
-                            <HistoricalAvailabiltyContentSectionData>
-                                {getFormattedPercentage(historicalAvailabilityData.Availability_61_90)}%
-                            </HistoricalAvailabiltyContentSectionData>
-                        </HistoricalAvailabiltyContentSection>
-                        <HistoricalAvailabiltyContentSection>
-                            <HistoricalAvailabiltyContentSectionHeader>
-                                60-30 Days
-                            </HistoricalAvailabiltyContentSectionHeader>
-                            <HistoricalAvailabiltyContentSectionData>
-                                {getFormattedPercentage(historicalAvailabilityData.Availability_31_60)}%
-                            </HistoricalAvailabiltyContentSectionData>
-                        </HistoricalAvailabiltyContentSection>
-                        <HistoricalAvailabiltyContentSection style={{border:"none"}}>
-                            <HistoricalAvailabiltyContentSectionHeader>
-                                30-0 Days
-                            </HistoricalAvailabiltyContentSectionHeader>
-                            <HistoricalAvailabiltyContentSectionData>
-                                {getFormattedPercentage(historicalAvailabilityData.Availability_01_30)}%
-                            </HistoricalAvailabiltyContentSectionData>
-                        </HistoricalAvailabiltyContentSection>
-                    </HistoricalAvailabiltyContent>
+                    {(isHistoricalAvailabilityLoading)?(
+                    <Skeleton
+                        style={{height:35,width:'100%'}}
+                    />
+                    ):(
+                        <HistoricalAvailabiltyContent>
+                            <HistoricalAvailabiltyContentSection>
+                                <HistoricalAvailabiltyContentSectionHeader>
+                                    90-60 Days
+                                </HistoricalAvailabiltyContentSectionHeader>
+                                <HistoricalAvailabiltyContentSectionData>
+                                    {getFormattedPercentage(historicalAvailabilityData.Availability_61_90)}%
+                                </HistoricalAvailabiltyContentSectionData>
+                            </HistoricalAvailabiltyContentSection>
+                            <HistoricalAvailabiltyContentSection>
+                                <HistoricalAvailabiltyContentSectionHeader>
+                                    60-30 Days
+                                </HistoricalAvailabiltyContentSectionHeader>
+                                <HistoricalAvailabiltyContentSectionData>
+                                    {getFormattedPercentage(historicalAvailabilityData.Availability_31_60)}%
+                                </HistoricalAvailabiltyContentSectionData>
+                            </HistoricalAvailabiltyContentSection>
+                            <HistoricalAvailabiltyContentSection style={{border:"none"}}>
+                                <HistoricalAvailabiltyContentSectionHeader>
+                                    30-0 Days
+                                </HistoricalAvailabiltyContentSectionHeader>
+                                <HistoricalAvailabiltyContentSectionData>
+                                    {getFormattedPercentage(historicalAvailabilityData.Availability_01_30)}%
+                                </HistoricalAvailabiltyContentSectionData>
+                            </HistoricalAvailabiltyContentSection>
+                        </HistoricalAvailabiltyContent>
+                    )}
                 </AvailabilityTrendSection>
                 {(graphState==='default')?(
                     <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0}}>
