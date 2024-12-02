@@ -5,8 +5,7 @@ import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError} from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
-import readXlsxFile from 'read-excel-file';
-import {readSheetNames} from 'read-excel-file';
+import readXlsxFile,{readSheetNames} from 'read-excel-file';
 import { ColDef, ColGroupDef, CellClickedEvent } from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
@@ -655,7 +654,7 @@ export const generateRandomId = (length?: number) => {
 }
 
 export const replaceKeyWithDisplayName = (message: string, master: MDMMasterState) => {
-  return new String(message).replaceAll(/",*?"/g, (m) => {
+  return new String(message).replaceAll(/"([^"]+)"/g, (m) => {
     const displayName = master.fields.find((f: Field) => f.key === m.replaceAll('"', ''))?.displayName;
     if (displayName) return displayName
     return m;
@@ -827,7 +826,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   return result;
 }
 
-export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShowChart?: any) => {
+export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShowChart?: any,pageType?:string) => {
   let result: any[] = []
   const tempFields = [...fields]
   tempFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
@@ -837,7 +836,7 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       field: f.key,
       colId: f.key,
       headerName: f.displayName,
-      hide: !f.visible,
+      hide: pageType==='add' ? !f.isAdd : !f.visible ,
       floatingFilter: true,
       filter: getCellFilter(f.dataType),
       cellDataType: getCellDataType(f.dataType),
@@ -927,7 +926,7 @@ export const mapStateFiltersToPayload = (filters: Filter[]) => {
 
 }
 
-export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMasterState[] => {
+export const mapMasterToMasterState = (masters: any[], onShowChart?: any,pageType?:string): MDMMasterState[] => {
 
   return masters.map((master: Master) => ({
     id: master.id,
@@ -941,7 +940,7 @@ export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMa
         operator: '',
         text: ''
       }],
-    colDefs: mapMasterToColumnDefs(master.fields, master.id, onShowChart),
+    colDefs: mapMasterToColumnDefs(master.fields, master.id, onShowChart,pageType),
     rowData: [],
     progress: 'default',
     isChecked: true,

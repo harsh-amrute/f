@@ -228,7 +228,7 @@ const useViewModify = (pageType:string) => {
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
           const {data} = await masterUIConfiguration(pageType);
-          setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
+          setAllMasterState(mapMasterToMasterState(data.data,onShowChart,pageType))
          }
          getMasterUIConfigurationData()
       },[])
