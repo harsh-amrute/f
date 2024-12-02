@@ -249,7 +249,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<Home />)
+          element: lazyLoad(<LandingPage/>)
         },
         ...getStoreTransferModuleRoutes()
       ]

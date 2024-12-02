@@ -371,6 +371,7 @@ const OverallBmReport = () => {
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
                 suppressHeaderFilterButton: true,
+                valueFormatter: child.cc === 'BPP' ? (params: any)=>{console.log("value params",params);return params.data.bpp}: undefined,
                 cellRenderer: (child.cc === 'ec' && systemType >= 3) ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' || child.scc === 'bpp' ? 80 : undefined,
                 // columnGroupShow: index > 2 ? "open" : undefined,
