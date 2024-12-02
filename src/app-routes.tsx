@@ -3,7 +3,7 @@ import { type RouteObject } from 'react-router-dom'
 import { AppLayout } from './components'
 import { getStoreTransferModuleRoutes } from './module-store-transfer/app-routes-store-transfer'
 import Login from './module-main/pages/auth/login'
-import Home from './module-main/pages/home'
+// import Home from './module-main/pages/home'
 import ManualUpload from './module-store-transfer/pages/manual-upload'
 import IstForced from './module-store-transfer/pages/ist-forced'
 import StoreStatus from './module-store-transfer/pages/store-status'
@@ -249,7 +249,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<Home />)
+          element: lazyLoad(<LandingPage/>)
         },
         ...getStoreTransferModuleRoutes()
       ]
