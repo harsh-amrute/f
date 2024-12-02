@@ -654,25 +654,29 @@ const useViewModify = (pageType: string) => {
         recordsPerPage: rowsPerPage
       }
     }
-    let resultData;
-    if (count) {
-      if (activeMaster.id > 14 && !activeMaster.isMTO) {
-        resultData = await getRetailCount(payload);
-      }
-      else {
-        if(!activeMaster.isMTO){
-          resultData = await getCount(payload);
-        }
-      }
-    }
-    else {
-      if (activeMaster.id > 14) {
-        resultData = await getMasterDataRetail(payload);
-      }
-      else {
-        resultData = await getMasterData(payload);
-      }
-    }
+    let resultData:any={};
+
+    console.log("payload ..filterds", payload.filters);
+    
+    
+    // if (count) {
+    //   if (activeMaster.id > 14 && !activeMaster.isMTO) {
+    //     resultData = await getRetailCount(payload);
+    //   }
+    //   else {
+    //     if(!activeMaster.isMTO){
+    //       resultData = await getCount(payload);
+    //     }
+    //   }
+    // }
+    // else {
+    //   if (activeMaster.id > 14) {
+    //     resultData = await getMasterDataRetail(payload);
+    //   }
+    //   else {
+    //     resultData = await getMasterData(payload);
+    //   }
+    // }
 
     return resultData;
   }

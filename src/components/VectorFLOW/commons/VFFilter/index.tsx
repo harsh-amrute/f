@@ -47,7 +47,8 @@ const VFFilter = (props:VFFilterProps)=>{
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster)
     const updateOperators = (value:string) => {
         const selectedFieldObject:any = activeMaster.fields.find((field:Field)=>field.key === value);
-        if(selectedFieldObject) setValidOperators([...operators.filter((operator:{value:string,label:string})=>operatorDataTypeMapper[selectedFieldObject.dataType].includes(operator.value))])
+        // if(selectedFieldObject) setValidOperators([...operators.filter((operator:{value:string,label:string})=>operatorDataTypeMapper[selectedFieldObject.dataType]?.includes(operator.value))])
+        setValidOperators(operators);
     }
 
 
