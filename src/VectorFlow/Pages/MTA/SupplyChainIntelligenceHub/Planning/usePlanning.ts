@@ -478,10 +478,8 @@ const usePlanning = ()=>{
     //     }
     // }
 
-   
 
     const fetchAndUpdateGridData = async (currentPage:number,fromPagination:boolean,filter?:any,tab?:string) => {
-      
         try {
             setIsDataLoading(true);
             // await getAndApplyGridState()
@@ -581,6 +579,7 @@ const usePlanning = ()=>{
                     }
                     
                     const result = await getPlanningDataGrid(body);
+
                     const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data[0];
                     const uiConfig = result.data.data.uiConfig;
                     const customData = {"createAvailabilityAtParent":{"data":createAvailabilityAtParent,"uiConfig":uiConfig},"expediteDispatches":{"data":expediteDispatches,"uiConfig":uiConfig}};
@@ -703,6 +702,7 @@ const usePlanning = ()=>{
             
         } catch (error) {
             toast.dismiss();
+            console.error(error)
             notifyError('Something Went Wrong')
             setIsDataLoading(false);
         }

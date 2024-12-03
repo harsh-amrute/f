@@ -282,40 +282,68 @@ const useAdd=()=>{
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
         //let result;
- 
+          const totalRecords = activeMaster.rowData.length
         
-          const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isDisaster,errorCount:localErrorCount,errorData:localErrorData,conflictCount,conflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           let errorRowData = [];
 
-          if(isDisaster)return
-            if(localErrorCount>0 || errorCount>0){
-              if(localErrorCount > 0){
-                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
-              }
-              else{
-                errorRowData = createErrorRowData(errorData,activeMaster.id)
-              }
-              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
-                addInvalidDataColDefs('error')
-              }
-              dispatch(UPDATE_ROW_DATA(errorRowData))
-              dispatch(SET_RECORD_COUNT(errorRowData.length))
-             
+          if(isDisaster){
+            notifyError("Something went wrong !")
+            return
+          }
+
+          // if(conflictCount > 0){
+          //   console.log(conflictData)
+          // }
+
+          if(localErrorCount>0 || errorCount>0){
+            if(localErrorCount > 0){
+              errorRowData = createErrorRowData(localErrorData,activeMaster.id)
             }
-            dispatch(REMOVE_COLDEFS(['checkbox']));
-
-
-            if(errorRowData.length > 0) notifyError("Addition Unsuccessfull")
-            else notifySuccess(`Additions Submitted Successfully`);
-            dispatch(UPDATE_PROGRESS_STATE('submitted'));
-            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-            if(draftID.length > 0){
-              await deleteDraft(draftID);
+            else{
+              errorRowData = createErrorRowData(errorData,activeMaster.id)
             }
-            setIsSubmitDisabled(false)
+            if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+              addInvalidDataColDefs('error')
+            }
+            dispatch(UPDATE_ROW_DATA(errorRowData))
+            dispatch(SET_RECORD_COUNT(errorRowData.length))
+            
+          }
+          dispatch(REMOVE_COLDEFS(['checkbox']));
+
+          const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
+
+          if(submittedRecordsCount === totalRecords){
+            notifyError("Addition Successfull")
+          }
+
+          else if(errorRowData.length > 0 || conflictCount > 0){
+
+          if(errorRowData.length && conflictCount){
+            if(submittedRecordsCount === 0){
+              notifyError(`${errorRowData.length} records have error and ${conflictCount} recordshave conflicts. `)
+            }
+            else notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error and ${conflictCount} records have conflicts. `)
+           }
+
+           else if(errorRowData.length){
+            notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error. `)
+           }
+           else{
+            notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${conflictCount} records have conflicts. `)
+           }
+          }
+          else notifySuccess(`Additions Submitted Successfully`);
+          dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          if(draftID.length > 0){
+            await deleteDraft(draftID);
+          }
+          setIsSubmitDisabled(false)
 
 
-          
+        
       }
 
       const showMasterGroup = (currMasterGroup:{name:string,masters:Array<any>})=>{
@@ -366,7 +394,7 @@ const useAdd=()=>{
         showMasterGroup,
         showMaster,
         options,
-        selectedOptions
+        selectedOptions,
     }
 }
 
