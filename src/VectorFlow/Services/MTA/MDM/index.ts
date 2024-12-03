@@ -269,8 +269,8 @@ export const usePutMtoBufferMasterData = () => {
 }
 
 export const useGetBufferMasterData = () => {
-  return useMutation(async () => {
-    return await MDMService.getBufferMasterData()
+  return useMutation(async (body:any) => {
+    return await MDMService.getBufferMasterData(body)
   })
 }
 

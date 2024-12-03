@@ -103,7 +103,7 @@ export const setupAxios = () => {
     }
 
     if (errorResp.status === 400) {
-      alert(JSON.stringify(error.response.data))
+      // alert(JSON.stringify(error.response.data))
       return errorResp
     }
     

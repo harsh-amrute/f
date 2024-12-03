@@ -258,7 +258,7 @@ const useViewModify = (pageType: string) => {
 
   const getBufferInitialData = async()=>{
     if(activeMaster.id===501){
-      const result = await getBufferMasterData();
+      const result = await getBufferMasterData({});
       dispatch(SET_BUFFER_INITIAL_DATA(result.data.data));
     }
   }
@@ -639,6 +639,44 @@ const useViewModify = (pageType: string) => {
     return columnData?.map((column: any) => ({ key: column.colDef.field }));
   }
 
+  function convertArrayToObject(input: { attributeName: string; op: string; value: string }[]) {
+    const operatorMap: Record<string, string> = {
+        "=": "et",
+        "!=": "net",
+        ">": "gt",
+        "<": "lt",
+        ">=": "gte",
+        "<=": "lte",
+        "contains":"cn",
+        "startsWith": "sw",
+        "endsWith": "ew",
+        "hasValue": "hv",
+        "hasNoValue": "dnc"
+        // Add more mappings as needed
+    };
+
+    // 'lt': 'lt',
+    //     'lte': 'lte',
+    //     'gt': 'gt',
+    //     'gte': 'gte',
+    //     'sw': 'istartswith',
+    //     'ew': 'iendswith',
+    //     'et': 'exact',
+    //     'cn': 'icontains',
+    //     'dnc': 'donotcontains',
+    //     'dsw': 'doesnotstartswith',
+    //     'dew' : 'doesnotendswith',
+    //     'hv' : 'hv',
+    //     'net' : 'notequalto'
+
+    return input.reduce((acc, { attributeName, op, value }) => {
+        acc[attributeName] = {
+            op: operatorMap[op] || op, // Convert operator or fallback to original
+            val: value
+        };
+        return acc;
+    }, {} as Record<string, { op: string; val: string }>);
+}
   const queryFilteredData = async (configs: QueryFilteredDataConfigs) => {
     const { filters, pagination, fields, count, currentPage, rowsPerPage } = configs;
     const payload: GetMasterDataPayload = {
@@ -654,29 +692,26 @@ const useViewModify = (pageType: string) => {
         recordsPerPage: rowsPerPage
       }
     }
-    let resultData:any={};
 
-    console.log("payload ..filterds", payload.filters);
+    const finPayload: any= convertArrayToObject(filters);
+    
+    let resultData;
+
+    console.log("payload ..filterds", finPayload);
     
     
-    // if (count) {
-    //   if (activeMaster.id > 14 && !activeMaster.isMTO) {
-    //     resultData = await getRetailCount(payload);
-    //   }
-    //   else {
-    //     if(!activeMaster.isMTO){
-    //       resultData = await getCount(payload);
-    //     }
-    //   }
-    // }
-    // else {
-    //   if (activeMaster.id > 14) {
-    //     resultData = await getMasterDataRetail(payload);
-    //   }
-    //   else {
-    //     resultData = await getMasterData(payload);
-    //   }
-    // }
+    if (activeMaster.id===501 && activeMaster.isMTO) {
+      const tempResultData = await getBufferMasterData({finPayload});
+      const updatedData = _.cloneDeep(tempResultData)
+      if(bufferModifyData && bufferModifyData.length){
+        const updatedDataBuffer = updatedData.data.data;
+        const filteredDataBuffer = updatedDataBuffer.filter(
+          (buffer:any) => !bufferModifyData.some((modifiedBuffer:any) => modifiedBuffer.bid === buffer.bid)
+        );
+        updatedData.data.data = updatedData.data.data = [...bufferModifyData,...filteredDataBuffer];
+      }
+      resultData = updatedData;
+    }
 
     return resultData;
   }
@@ -699,13 +734,8 @@ const useViewModify = (pageType: string) => {
     }
     let resultData;
     if ((!activeMaster.isMTO && count) || activeMaster.isMTO) {
-      console.log("active popcorn", activeMaster)
-      if (activeMaster.id > 14 && !activeMaster.isMTO) {
-        console.log("should not go here also here.........")
-        resultData = await getRetailCount(payload);
-      }
-      else if (activeMaster.id===501 && activeMaster.isMTO) {
-        const tempResultData = await getBufferMasterData();
+      if (activeMaster.id===501 && activeMaster.isMTO) {
+        const tempResultData = await getBufferMasterData({});
         const updatedData = _.cloneDeep(tempResultData)
         if(bufferModifyData && bufferModifyData.length){
           const updatedDataBuffer = updatedData.data.data;
@@ -742,7 +772,7 @@ const useViewModify = (pageType: string) => {
         resultData = await getMasterDataRetail(payload);
       }
       else if (activeMaster.id === 501 && activeMaster.isMTO) {
-        resultData = await getBufferMasterData();
+        resultData = await getBufferMasterData({});
       }
       else if(activeMaster.id===502 && activeMaster.isMTO) {
         resultData = await getCCRMasterData();
@@ -1072,8 +1102,13 @@ const useViewModify = (pageType: string) => {
       /////
       const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
         // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-  
-        return {  ...col, editable: true, singleClickEdit: true }
+        if(col.field==='iv')return {...col};
+        if(col.field==='bt')return {...col, editable: true,  cellEditor: 'agRichSelectCellEditor',
+        valueFormatter: myFormatter,
+        cellEditorParams: {
+          values: bufferTypeData?.map((item: any) =>  item.dsc), // Dropdown values
+        }, }
+        else return {  ...col, editable: true, singleClickEdit: true }
         // return { ...col }
       })
 
@@ -2119,8 +2154,7 @@ const useViewModify = (pageType: string) => {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
-      buffData: [],
-      aids: ["111111","222222","333333"]
+      buffData: []
     }
 
 
