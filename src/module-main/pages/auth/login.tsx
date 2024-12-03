@@ -20,13 +20,15 @@ function LoginContainer() {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    if(token) {
-      const url: any = JSON.parse(localStorage?.getItem('landing_page') || "");
-      // console.log(urlPermission);
-      // const url = urlPermission.includes("/") ? "/" : urlPermission.includes('/master-data-management/control-panel') ? '/master-data-management/control-panel' : urlPermission[0]
-      navigate(url, { replace: true });
-    } else {
-      localStorage.clear();
+    try{
+      if(token) {
+        const url: any = localStorage.getItem('landing_page')
+        if(url)navigate(url, { replace: true });
+      } else {
+        localStorage.clear();
+      }
+    }catch(err){
+      console.error(err)
     }
   },[])
 

@@ -6,7 +6,7 @@ import "allotment/dist/style.css";
 import { GridViewLayout } from "./styles";
 import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
-import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from '../../../../MTO/Common/VFTable';
 import BPRViewTable, { BPRViewTableColDef } from '../../BPR/BPRViewTable'
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
