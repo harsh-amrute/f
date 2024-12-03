@@ -103,6 +103,12 @@ export namespace BPRService {
       headers:{ 'Content-Type': 'application/json' }
     })
   }
+
+  export const getUiConfig = async(reportName:string)=>{
+    return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/GetUIConfig?reportName=${reportName}`,{
+      headers:{ 'Content-Type': 'application/json' }
+    })
+  }
 }
 
 

@@ -250,6 +250,217 @@ export const mapVDRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
 }
 
+export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const specificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+    }
+  ]
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      // hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result,...specificColumns]
+}
+
+export const mapOrderAllocationReportFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='OrderColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
+export const mapBORColorBandWiseFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     pinned:'right',
+     editable:true,
+     cellStyle:{
+      overflow:'visible',
+      'min-width':180,
+    }
+  }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
+export const mapTotalRequirementFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      // hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result]
+}
+
+
 export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
@@ -258,20 +469,19 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
   let result: ColDef[] = []
 
-  const RRRSpecificColumns: ColDef[] = [
-    {
-      colId: 'remarks',
-      field: 'ramarks',
-      headerName: 'Remarks',
-      tooltipField: "tags"
-      // tooltipComponent:'remarksToolTipComponent'
-    },
-    {
-      colId: 'rh',
-      field: 'rh',
-      headerName: 'Remark History',
-    }
-  ]
+  // const RRRSpecificColumns: ColDef[] = [
+  //   {
+  //     colId: 'remarks',
+  //     field: 'ramarks',
+  //     headerName: 'Remarks',
+  //     tooltipField: "tags"
+  //   },
+  //   {
+  //     colId: 'rh',
+  //     field: 'rh',
+  //     headerName: 'Remark History',
+  //   }
+  // ]
 
   result = fields.map((f: RRRField) => {
 
@@ -318,7 +528,7 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
       filter: getCellFilter(f.DataType)
     }
   })
-  return [...result, ...RRRSpecificColumns]
+  return [...result]
 }
 
 export const handleDownload = async (nameApi: string, nameFile: string) => {
