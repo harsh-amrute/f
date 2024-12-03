@@ -25,6 +25,7 @@ import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
 
 // clear cached token and redirect to sso login
 import CryptoJS from 'crypto-js';
+import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -3457,7 +3458,7 @@ export function getColumnDefinations(
       colId: data.cc,
       headerName: data.hd,
       field: data.scc,
-      hide: !data.v,
+      initialHide: !data.v,
       pinned: null,
       sort: null,
       sortIndex: null,
@@ -3698,5 +3699,46 @@ export const DownloadExcel = (response : any,filename = "ReportFile") => {
   }
 };
 
+// MDM MTO Utils
+export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) => {
+  let result: ColDef[] = []
+  result = fields.map((f) => {
+    return {
+      field: f.key,
+      colId: f.key,
+      headerName: f.displayName,
+      minWidth: 180,
+
+      cellStyle: {
+        "textAlign": "center",
+      },
+      flex: 1,
+      cellRenderer: f.key === "action" && MTOActionRenderer,
+      ...customParams
+    }
+  })
+  return result
+}
+
+
+export const mapDraftDataToMTOTableRowData = (rowData: any[]) => {
+  let result = []
+  if (!rowData) return
+  result = rowData.map((row) => {
+    return {
+      ...row,
+      LastModifiedDateTime: row.LastModifiedDateTime
+    }
+  })
+
+  result.sort((a, b): any => {
+    return differenceInSeconds(b.LastModifiedDateTime, a.LastModifiedDateTime)
+  })
+
+  result = result.map((r: any, index: number) => {
+    return { ...r, sr_no: index + 1, LastModifiedDateTime: r.LastModifiedDateTime }
+  })
+  return result
+}
 
 // ===================================================================================================

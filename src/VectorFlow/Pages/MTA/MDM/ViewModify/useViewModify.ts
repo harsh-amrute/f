@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask } from "../../../../Services/MTA/MDM";
+import {useState, useEffect, useRef, useMemo} from 'react';
+import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail, useGetUploadProgress } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -17,47 +17,12 @@ import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
 import { v4 as uuidv4 } from 'uuid';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
-import AddRemoveCellRenderer from './AddRemoveCellRenderer';
-import { useUserData } from '../../../../../context';
-import MTOErrorWarningCell from './MTOErrorWarningCell';
-import PoogiEditDeleteCell from './PoogiEditDeleteCell';
-import { SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
-import MTOCalendarEditCellRenderer from './MTOCalendarEditCellRenderer';
 
 
-// Define TypeScript interfaces for the parameters
-interface mtaField {
-  displayName: string;
-  key: string;
-  col_Position: string;
-  visible: boolean;
-  isAdd?: boolean;
-  isEdit?: boolean;
-  isDownload?: boolean;
-  isApplicable?: boolean;
-  dataType: string;
-}
+const useViewModify = (pageType:string) => {
 
-interface Parameter {
-  id: string;
-  name: string;
-
-  fields: mtaField[];
-}
-
-interface ConcatenatedResult {
-  id: string;
-  name: string;
-  fields: mtaField[];
-  isMTO?: boolean;
-}
-
-    
-
-
-
-const useViewModify = (pageType: string) => {
     const dispatch = useDispatch();
+
     const options = useSelector((state: RootState) => state.mdm.options);
     const selectedOptions = useSelector((state: RootState) => state.mdm.selectedOptions);
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
@@ -118,21 +83,11 @@ const useViewModify = (pageType: string) => {
 
     const {mutateAsync:masterUIConfiguration,isLoading} = useGetMasterUIConfiguration();
 
-    const { mutateAsync: MTOMasterUIConfiguration, /*isLoading: MTOBufferLoading*/ } = useGetMTOMasterUIConfiguration();
-    const {mutateAsync: saveBufferMasterTask } = useSaveBufferMasterTask();
-    const {mutateAsync: saveCCRMasterTask } = useSaveCCRMasterTask();
-    const {mutateAsync: saveBufferMasterDraft} = useSaveBufferMasterDraft();
-    const [bufferTypeData, setBufferTypeData] = useState<any>(undefined);
-
     const [TASK_ID,setTaskId] = useState<string>('');
 
     const [uploadProgress,setUploadProgress] = useState('');
 
-  /***Add the below line to fetch MTO Buffer */
-  const {mutateAsync: saveCCRMasterDraft} = useSaveCCRMasterDraft();
     const [totalProgress,setTotalProgress] = useState('');
-
-    const { mutateAsync: GetBufferTypeMaster } = useGetBufferTypeMaster();
 
     // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
@@ -144,10 +99,6 @@ const useViewModify = (pageType: string) => {
 
     const {mutateAsync:getMasterData} = useGetMasterData();
 
-    const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
-
-    const {mutateAsync: getCCRMasterData}  = useGetCCRMasterData();
-
     const {mutateAsync:getMasterDataRetail} = useGetMasterDataRetail();
     
     const {mutateAsync:getCount} = useGetCount();
@@ -156,8 +107,6 @@ const useViewModify = (pageType: string) => {
 
     const {mutateAsync:createDraft} = useCreateDraft()
 
-  const {mutateAsync: getPOOGIMasterData} = useGetPOOGIMasterData();
-  const {mutateAsync: getCalendarMasterData} = useGetCalendarMasterData();
     const {mutateAsync:modifyDraft} = useModifyDraft();
 
     const {mutateAsync:deleteDraft} = useDeleteDraft()
@@ -176,952 +125,715 @@ const useViewModify = (pageType: string) => {
 
     const validResumeStatuses = [23];
 
-  
 
-  const [selectedMajReason, setSelectedMajReason] = useState<any>('');
-
-
-  const invalidDataColdefs: ColDef[] = [
-    {
-      field: 'warning',
-      colId: 'warning',
-      headerName: 'Warning',
-      floatingFilter: false,
-      cellRenderer: 'warningCell',
-      minWidth: 200,
-      suppressColumnsToolPanel: true,
-      wrapText: true,
-      autoHeight: true,
-    },
-    {
-      field: 'error',
-      colId: 'error',
-      headerName: 'Error',
-      floatingFilter: false,
-      cellRenderer: 'errorCell',
-      suppressColumnsToolPanel: true,
-      wrapText: true,
-      autoHeight: true,
-    }
+    const invalidDataColdefs:ColDef[] = [
+      {
+        field:'warning',
+        colId:'warning',
+        headerName:'Warning',
+        floatingFilter:false,
+        cellRenderer:'warningCell',
+        minWidth:200,
+        suppressColumnsToolPanel:true,
+        wrapText:true,
+        autoHeight:true,
+      },
+      {
+        field:'error',
+        colId:'error',
+        headerName:'Error',
+        floatingFilter:false, 
+        cellRenderer:'errorCell',
+        suppressColumnsToolPanel:true,
+        wrapText:true,
+        autoHeight:true,
+      }
   ];
 
-  const onColumnChange = () => {
-    const localColDefs = ref.current?.api.getColumnDefs()
+    const onColumnChange = () => {
+      const localColDefs = ref.current?.api.getColumnDefs()
 
-    if (ref.current && localColDefs) {
-      dispatch(UPDATE_COLDEFS(localColDefs))
-      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-      setDefaultToolPanel('columns')
-    }
-
-  }
-
-  const customCellRenderers = useMemo(() => ({
-    loadingOverlay: VFLoader,
-    errorCell: ErrorCell,
-    warningCell: WarningCell,
-    seasonalityColorCellRenderer: SeasonalityColorCellRenderer,
-    seasonalityGraphCellRenderer: SeasonalityGraphCellRenderer,
-    conflictErrorCellRenderer: ConflictErrorCellRenderer,
-    poogiEditDeleteCellRenderer: PoogiEditDeleteCell
-  }), []);
-
-
-
-
-  useEffect(() => {
-
-    setColDefs(activeMaster.colDefs);
-
-    if (filterButtonStatus.length !== 0) return;
-
-    if (activeMaster.id === 0) {
-      if (!isLoading) {
-        const allOptions: Option[] = generateOptions(allMastersState);
-        dispatch(STORE_ALL_MASTERS(allMastersState));
-        dispatch(FILL_OPTIONS(allOptions));
+      if (ref.current && localColDefs) {
+        dispatch(UPDATE_COLDEFS(localColDefs))
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        setDefaultToolPanel('columns')
       }
 
-      const temp: MDMMasterState[] = [];
-      if (selectedOptions.length > 0 && pageType === "modify") dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
-    }
-    // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
-
-  }, [selectedOptions, isLoading, activeMaster, allMastersState]);
-
-  useEffect(()=>{
-    if (activeMaster.id === 501 && !bufferTypeData){
-      getBufferMasterDataType();
-    }
-  },[activeMaster.id])
-
-  useEffect(()=>{
-    if(bufferTypeData){
-
-      const newColDef = activeMaster.colDefs.filter((obj)=>obj.field !== 'bt');
-      dispatch(UPDATE_COLDEFS([...newColDef, {colId: 'bt', field: 'bt', headerName: 'Buffer Type', valueFormatter: myFormatter }])) 
     }
 
-  },[bufferTypeData])
+    const customCellRenderers = useMemo(() => ({
+      loadingOverlay:VFLoader,
+      errorCell: ErrorCell,
+      warningCell: WarningCell,
+      seasonalityColorCellRenderer:SeasonalityColorCellRenderer,
+      seasonalityGraphCellRenderer:SeasonalityGraphCellRenderer,
+      conflictErrorCellRenderer:ConflictErrorCellRenderer
+    }), []);
 
-  useEffect(() => {
-    if (masters.length > 0 && filterButtonStatus.length !== 0) {
-      setFilterButtonStatus(masters.map((master: MDMMasterState) => master.id));
-    }
-  }, [masters])
 
-  useEffect(() => {
-    if (activeMaster.progress === 'editOnline') {
-      return onEditOnline('editOnline');
-    }
-    if (activeMaster.progress === 'deleteOnline') {
-      return onEditOnline('deleteOnline');
-    }
-  }, [activeMaster.progress]);
-
-  useEffect(() => {
-    
   
-    //Effect to Add chart handler when seasonality master
-    if (activeMaster.id === 10)
-      dispatch(UPDATE_COLDEFS(mapMasterToColumnDefs(activeMaster.fields, activeMaster.id, onShowChart)))
+  
+    useEffect(()=>{
 
-  }, [])
+        setColDefs(activeMaster.colDefs);
 
-  const concatenateFields = (
-    params1: Parameter[],
-    params2: Parameter[]
-  ): ConcatenatedResult[] => {
-    // Prepare a result map to avoid duplicates and merge fields
-    const resultMap: { [key: string]: ConcatenatedResult } = {};
+        if(filterButtonStatus.length !== 0) return;
 
-    // Process params1
-    params1.forEach((param) => {
-      resultMap[param.name] = {
-        id: param.id,
-        name: param.name,
-        fields: param.fields,
-      };
-    });
-
-    // Process params2
-    params2.forEach((param) => {
-      console.log("name mere name....", param.name)
-      if (resultMap[param.name]) {
-        // Merge fields if the name already exists
-        resultMap[param.name].fields = [
-          ...resultMap[param.name].fields,
-          ...param.fields,
-        ];
-      } else {
-        // Otherwise, add the new entry
-        resultMap[param.name] = {
-          id: param.id,
-          name: param.name,
-          fields: param.fields,
-          isMTO: true, // Add isMTO property
-        };
-      }
-    });
-    // Convert the result map to an array of objects
-    return Object.values(resultMap);
-  };
-
-
-  useEffect(()=>{
-    const getMasterUIConfigurationData = async()=>{
-      try{
-
-        const {data} = await masterUIConfiguration(pageType);
-        setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
-      }catch(e){
-        console.error(e)
-      }
-      }
-      getMasterUIConfigurationData()
-  },[])
-
-  useEffect(() => {
-    const getMasterUIConfigurationData = async () => {
-      let data = undefined;
-      let MtoBufferdata = undefined;
-      try{
-
-        const { data: myData } = await masterUIConfiguration(pageType);
-        data = myData;
-      }
-      catch(e){
-        console.log(e)
-      }finally{
-        try{
-          MtoBufferdata = await MTOMasterUIConfiguration();
+        if(activeMaster.id === 0){
+          if(!isLoading){
+            const allOptions:Option[] =  generateOptions(allMastersState);
+            dispatch(STORE_ALL_MASTERS(allMastersState));
+            dispatch(FILL_OPTIONS(allOptions));
+          }
+  
+          const temp:MDMMasterState[]=[];
+          if(selectedOptions.length > 0 && pageType==="modify") dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
         }
-        catch(e){
-          console.log(e);
+        // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
+
+      },[selectedOptions,isLoading,activeMaster,allMastersState]);  
+
+      useEffect(()=>{
+        if(masters.length > 0 && filterButtonStatus.length !== 0){
+          setFilterButtonStatus(masters.map((master:MDMMasterState)=>master.id));
         }
-      }
-      
-      if(data){
+      },[masters])
+
+      useEffect(()=>{
         
-        const concatenatedResult = concatenateFields(data?.data, MtoBufferdata?.data?.data);
-        setAllMasterState(mapMasterToMasterState(concatenatedResult, onShowChart))
+        // if(activeMaster.progress === 'editOnlineSaved'){
+        //   //remove Editable Coldefs
+        //   const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+        //     return {...col,editable:false}
+        //   })
+        //   dispatch(UPDATE_COLDEFS(updatedColdefs));
+        //   dispatch(REMOVE_COLDEFS(['error','warning']))
+        // }
+        if(activeMaster.progress === 'editOnline'){
+          return onEditOnline('editOnline');
+        }
+        if(activeMaster.progress === 'deleteOnline'){
+          return onEditOnline('deleteOnline');
+        }
+      },[activeMaster.progress]);
+
+      useEffect(()=>{
+        //Effect to Add chart handler when seasonality master
+        if(activeMaster.id === 10)
+        dispatch(UPDATE_COLDEFS(mapMasterToColumnDefs(activeMaster.fields,activeMaster.id,onShowChart)))
+
+      },[])
+
+
+      useEffect(()=>{
+        const getMasterUIConfigurationData = async()=>{
+          const {data} = await masterUIConfiguration(pageType);
+          setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
+         }
+         getMasterUIConfigurationData()
+      },[])
+
+      useEffect(()=>{
+        if(activeMaster.progress==='default' && pageType==='add'){
+          dispatch(TOGGLE_UPLOAD_MODAL(true))
+        }
+      },[activeMaster])
+
+    const sideBar:SideBarDef = {
+      toolPanels: [
+        {
+          id: "columns",
+          labelDefault: "Columns",
+          labelKey: "columns",
+          iconKey: "columns",
+          toolPanel: "agColumnsToolPanel",
+          toolPanelParams: {
+            suppressPivots: true,
+            suppressPivotMode: true,
+          },
+        
+        },
+      ],
+      defaultToolPanel:defaultToolPanel,
+    }
+
+    const agGridProps:AgGridReactProps = {
+      tooltipShowDelay:0,
+      readOnlyEdit:true,
+      tooltipTrigger:'hover',
+      sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
+      gridOptions:{
+        getRowStyle: (params: any) => {
+          if (params.node.rowIndex % 2 === 0) {
+            return { background: "#EBEBEB" };
+          }
+          return { background: "#F7F7F7" };
+        },
+      },
+      pagination:true,
+      paginationPageSize:rowsPerPage,
+      // suppressPaginationPanel:true,
+      onColumnVisible:onColumnChange,
+      // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
+      loadingOverlayComponent:'loadingOverlay',
+      onRowDataUpdated:(event:any)=>{
+        const downloadableColumnKeys:string[] = [];
+        activeMaster.fields.forEach((field:Field)=>{
+          if(field.isDownload){
+            downloadableColumnKeys.push(field.key)
+          }
+        });
+        
+        if(downloadData){
+          const currentMaster = masters.find((master:MDMMasterState)=>master.id === activeMaster.id);
+          const visibleColumns = ref.current?.api.getAllDisplayedColumns();
+          const validColumnKeys:string[] = [];
+          if(visibleColumns){
+            visibleColumns.forEach((col:any)=>{
+              if(isUploadModalOpen && !downloadableColumnKeys.includes(col.colId)){
+                return;
+              }
+              validColumnKeys.push(col.colId)
+            })
+          }
+          if(currentMaster){
+            event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys: validColumnKeys});
+          }
+        }
+      },
+      rowSelection:'multiple',
+      suppressRowClickSelection:true,
+      components:customCellRenderers,
+      onSelectionChanged:()=>{
+        if(ref.current?.api){
+          setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
+        }
+      },
+      onGridReady:(params:any)=>{
+        if(activeMaster.id==10){         
+          params.api.forEachNode((node:any) => {
+            const isSelected = node.data.IsSelected === "True";
+            node.setSelected(isSelected);
+          });       
+        }
+      },
+      onCellEditingStopped(event) {
+        const data = event.data;
+        const field = event.colDef.field;
+        const newValue = event.newValue;
+        // const oldRow = activeMaster.rowData.find((row) => row.RN === data.RN);
+        if (!field) {
+          return;
+        }
+        dispatch(REMOVE_COLDEFS(['error','warning']));
+        const newRow = { ...data };
+        newRow[field] = newValue;
+        
+        const newRowData = activeMaster.rowData.map((row:any)=>{
+          if(JSON.stringify(row) === JSON.stringify(data)){
+            let err,warn;
+            if(activeMaster.id < 14){
+              const {error,warning} = checkError(newRow,activeMaster,pageType);
+              err = error;
+              warn = warning;
+            }
+            //check if there is any errorenous column
+            const ifErrorExists = activeMaster.rowData.some((row:any)=>("error" in row)&&row["error"].length > 0);
+            if(err || ifErrorExists){
+              newRow.error = err
+              addInvalidDataColDefs('error');
+            
+            }
+            else{
+              newRow.error = ''
+            }
+            //check if there is any warning column
+            const ifWarningExists = activeMaster.rowData.some((row:any)=>("warning" in row)&&row["warning"].length > 0);
+            if(warn || ifWarningExists){
+              newRow.warning = warn
+              addInvalidDataColDefs('warning');
+            
+            }
+            else{
+              newRow.warning = ''
+            }
+              return newRow;
+        
+          }
+          return row;
+        })
+        setEnableEditOnlineReset(true)
+        dispatch(UPDATE_ROW_DATA([...newRowData]))
+      },
+    }
+
+    const getTempGridColDefs = () => {
+      //check if it already contains
+      let doesInvalidColDefExists = false;
+      invalidDataColdefs.forEach((invalidColumn:ColDef)=>{
+         if(activeMaster.colDefs.find((column:ColDef)=>invalidColumn.colId === column.colId)) doesInvalidColDefExists = true;
+      })
+      if(doesInvalidColDefExists) return [...activeMaster.colDefs]
+      return [...invalidDataColdefs,...activeMaster.colDefs]
+    }
+
+    const tempAgGridProps:AgGridReactProps = {
+      columnDefs:getTempGridColDefs(),
+      onRowDataUpdated:(event)=>{
+        if(tempDownloadData) event.api.exportDataAsExcel({fileName:downloadFileName ? 'Error-' + downloadFileName : 'Error-'+ activeMaster.name});
+      }
+    };
+
+
+    const addCheckBoxColDefs = () => {
+      const checkboxColDefs:ColDef[] = [
+        {
+          field:'checkbox',
+          colId:'checkbox',
+          headerName:'',
+          width:40,
+          checkboxSelection:true,
+          headerCheckboxSelection:true,
+          headerCheckboxSelectionCurrentPageOnly:true
+        },
+        // {
+        //   field:'checkbox',
+        //   he
+        //   headerName:'Select Across All Pages',
+        //   // checkboxSelection:true,
+        //   headerCheckboxSelection:true
+        // },
+      ]
+      dispatch(ADD_COLDEFS({colDefs:checkboxColDefs}));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+    }
+
+  
+
+    const addInvalidDataColDefs = (columnName:string) => {
+      dispatch(ADD_COLDEFS({colDefs:[columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]]}));
+      // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+    }
+
+    const getCurrentVisbileColumns = () => {
+      const columnData = ref.current?.api.getAllDisplayedColumns();
+      return columnData?.map((column:any) => ({key:column.colDef.field}));
+    }
+
+    const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
+      const {filters,pagination,fields,count,currentPage,rowsPerPage} = configs;
+      const payload:GetMasterDataPayload = {
+        id:activeMaster.id,
+        name:activeMaster.name,
+        filters:filters,
+        fields:fields,
+      }
+
+      if(pagination && !count) {
+        payload.paginationParameter = {
+          pageNumber:currentPage,
+          recordsPerPage:rowsPerPage
+        }
+      }
+      let resultData;
+      if(count){
+        if(activeMaster.id > 14){
+          resultData =  await getRetailCount(payload);
+        }
+        else{
+          resultData =  await getCount(payload);
+        }
       }
       else{
-        setAllMasterState(mapMasterToMasterState(MtoBufferdata?.data?.data, onShowChart))
+        if(activeMaster.id > 14){
+          resultData = await getMasterDataRetail(payload); 
+        }
+        else{
+          resultData = await getMasterData(payload); 
+        }
       }
+
+      return resultData;
     }
-    
-    getMasterUIConfigurationData()
-  }, [])
 
-  useEffect(() => {
-    if (activeMaster.progress === 'default' && pageType === 'add') {
-      dispatch(TOGGLE_UPLOAD_MODAL(true))
+    const queryAllData = async (configs:QueryFilteredDataConfigs) => {
+      const {pagination,fields,count,currentPage,rowsPerPage} = configs;
+      const payload:GetMasterDataPayload = {
+        id:activeMaster.id,
+        name:activeMaster.name,
+        filters:[],
+        fields:fields,
+      }
+
+      if(pagination && !count) {
+        payload.paginationParameter = {
+          pageNumber:currentPage,
+          recordsPerPage:rowsPerPage
+        }
+      }
+      let resultData;
+      if(count){
+        if(activeMaster.id > 14){
+          resultData =  await getRetailCount(payload);
+        }
+        else{
+          resultData =  await getCount(payload);
+        }
+      }
+      else{
+        if(activeMaster.id > 14){
+          resultData = await getMasterDataRetail(payload); 
+        }
+        else{
+          resultData = await getMasterData(payload); 
+        }
+      }
+
+      return resultData;
     }
-  }, [activeMaster])
 
-  const validateMTOMaster = (masterId: number) => {
-    if(masterId=== 501 && pageType === "add"){
-      const allRows = [...activeMaster.rowData];
-      allRows.shift();
-      // Check if the entered Buffer type is unique 
-      const newData:any = [];
-      allRows.forEach((e:any, i)=>{
-        const newVal = _.cloneDeep(e);
-        if(e.bsz===""){
-          newVal.err = {error: "Enter the Buffer Size!", warning: ""}
-        }
-        else if(e.bt===""){
-          newVal.err = {error: "Enter the Buffer Type!", warning: ""}
-        }
-        allRows.forEach((ele, index)=>{
-    
-          if(index !== i && ele.bsz=== e.bsz && e.bt=== ele.bt){
-           
-            newVal.err = {error: "Buffer size must be unique!", warning: ""}
+    const getSelectedMasters = (temp:MDMMasterState[]) => {
+        selectedOptions.forEach((selectedOption:Option)=>{
+          allMastersState.forEach((master:MDMMasterState)=>{
+            if(master.fields.find((field:Field)=>field.displayName === selectedOption.label) && !temp.find((selectedMaster:MDMMasterState)=>selectedMaster.id === master.id)) temp.push(master);
+          })
+        });
+        return temp;
+      }
 
-            
+    const handleSelectMasterSubmit = () => {
+      masters.forEach((master:MDMMasterState)=>{
+        if(!master.isChecked){
+          dispatch(REMOVE_MASTER(master.id));
+        }
+      })
+      if(activeMaster.id===0){
+        dispatch(UPDATE_ACTIVE_MASTER(0));
+      }
+      else{
+        dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
+      }
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
+    }
+
+    const handleTabChange = (currMaster: MDMMasterState) => {
+      if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
+
+      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+
+      if(currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
+      else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
+
+      
+      
+    }
+
+    const generateDraftPayload = (rowData:any,draftId?:string)=>{
+      const pathName = window.location.pathname.split('/')
+      let instanceName = ''
+      masters.map((master:MDMMasterState)=>{
+        instanceName += ` ${master.name}`
+      })
+      return{
+        instanceName:instanceName,
+        searchKey:activeMaster.name,
+        actionType:getActionId(pathName[pathName.length-1]).id,
+        draftId:draftId,
+        draftData:masters.map((master:MDMMasterState)=>{
+
+          return {
+            masterId:master.id,
+            status:master.progress,
+            gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
+            dataMaster:master.id===activeMaster.id?rowData:[]
           }
         })
-        newData.push(newVal);
-      })
-
-      dispatch(UPDATE_ROW_DATA(newData));
-
+      }
     }
-  }
-
-
-  const sideBar: SideBarDef = {
-    toolPanels: [
-      {
-        id: "columns",
-        labelDefault: "Columns",
-        labelKey: "columns",
-        iconKey: "columns",
-        toolPanel: "agColumnsToolPanel",
-        toolPanelParams: {
-          suppressPivots: true,
-          suppressPivotMode: true,
-        },
-
-      },
-    ],
-    defaultToolPanel: defaultToolPanel,
-  }
-
-  const agGridProps: AgGridReactProps = {
-    tooltipShowDelay: 0,
-    readOnlyEdit: true,
-    tooltipTrigger: 'hover',
-    sideBar: ['default', 'view'].includes(activeMaster.progress) ? sideBar : {},
-    gridOptions: {
-      getRowStyle: (params: any) => {
-        if (params.node.rowIndex % 2 === 0) {
-          return { background: "#EBEBEB" };
-        }
-        return { background: "#F7F7F7" };
-      },
-    },
-    pagination: true,
-    paginationPageSize: rowsPerPage,
-    // suppressPaginationPanel:true,
-    onColumnVisible: onColumnChange,
-    // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
-    loadingOverlayComponent: 'loadingOverlay',
-    onFirstDataRendered: ()=>{
-      validateMTOMaster( activeMaster.id);
-    },
-    onRowDataUpdated: (event: any) => {
-
-      
-        if(activeMaster.id===503){
-          const nodesToSelect: any= [];
-
-          event.api.forEachNode((node: any) => {
-
-            if((!node.data.minId) && node.data.majId=== selectedMajReason.majId){
-              nodesToSelect.push(node)
-            }
-             
-          });
-          event.api.setNodesSelected({nodes: nodesToSelect, newValue: true});
-        }
-      
-     
-        const downloadableColumnKeys: string[] = [];
-        activeMaster.fields.forEach((field: Field) => {
-        if (field.isDownload) {
-          downloadableColumnKeys.push(field.key)
-        }
-      });
-      
-      if (downloadData) {
-        const currentMaster = masters.find((master: MDMMasterState) => master.id === activeMaster.id);
-        const visibleColumns = ref.current?.api.getAllDisplayedColumns();
-        const validColumnKeys: string[] = [];
-        if (visibleColumns) {
-          visibleColumns.forEach((col: any) => {
-            if (isUploadModalOpen && !downloadableColumnKeys.includes(col.colId)) {
-              return;
-            }
-            validColumnKeys.push(col.colId)
-          })
-        }
-        if (currentMaster) {
-          event.api.exportDataAsExcel({ fileName: downloadFileName === '' ? currentMaster.name : downloadFileName, columnKeys: validColumnKeys });
-        }
-      }
-      
-    },
-    rowSelection: 'multiple',
-    suppressRowClickSelection: true,
-    components: customCellRenderers,
-    onSelectionChanged: () => {
-      if (ref.current?.api) {
-        setSelectedRowsCount(ref.current?.api.getSelectedRows().length)
-      }
-    },
-    onGridReady: (params: any) => {
-      if (activeMaster.id == 10) {
-        params.api.forEachNode((node: any) => {
-          const isSelected = node.data.IsSelected === "True";
-          node.setSelected(isSelected);
-        });
-      }
-      if(activeMaster.id===501){
-        params.api.sizeColumnsToFit();
-      }
-      
-    },
-  
-    onCellEditingStopped(event) {
-      const data = event.data;
-      const field = event.colDef.field;
-      const newValue = event.newValue;
-      // if(activeMaster.id===503){
-      //   return;
-      // }
     
-      if (!field) {
+    const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
+        e.stopPropagation();
+        if(masters.length === 1){
+          return notifyError("There Should be atleast one selected Master")
+        }
+        dispatch(REMOVE_MASTER(currMaster.id));
+        setDownloadData(false);
+        if(currMaster.id === activeMaster.id){
+          const mastersLength = masters.length
+          for (let index = 0; index < mastersLength; index++) {
+            
+            if(masters[index].progress!=='submitted'){
+              dispatch(UPDATE_ACTIVE_MASTER(index))
+              return
+            }
+          }
+        
+        }
+      }
+    
+
+      
+    const addNewMaster = ()=>{
+      if(allMastersState.length === masters.length) {
+        notifyError('All Masters have already been selected. Cannot add more masters');
         return;
       }
-      dispatch(REMOVE_COLDEFS(['error', 'warning']));
-      const newRow = { ...data };
-      newRow[field] = newValue;
-
-      const newRowData = activeMaster.rowData.map((row: any) => {
-        if (JSON.stringify(row) === JSON.stringify(data)) {
-          let err, warn;
-          if (activeMaster.id < 14) {
-            const { error, warning } = checkError(newRow, activeMaster, pageType);
-            err = error;
-            warn = warning;
-          }
-
-          if (err) {
-            newRow.error = err
-            addInvalidDataColDefs('error');
-
-          }
-          else {
-            newRow.error = ''
-          }
-          if (warn) {
-            newRow.warning = warn
-            addInvalidDataColDefs('warning');
-
-          }
-          else {
-            newRow.warning = ''
-          }
-          return newRow;
-
-        }
-        return row;
-      })
-      setEnableEditOnlineReset(true)
-      dispatch(UPDATE_ROW_DATA([...newRowData]))
-    },
-  }
-
-  const getTempGridColDefs = () => {
-    //check if it already contains
-    let doesInvalidColDefExists = false;
-    invalidDataColdefs.forEach((invalidColumn: ColDef) => {
-      if (activeMaster.colDefs.find((column: ColDef) => invalidColumn.colId === column.colId)) doesInvalidColDefExists = true;
-    })
-    if (doesInvalidColDefExists) return [...activeMaster.colDefs]
-    return [...invalidDataColdefs, ...activeMaster.colDefs]
-  }
-
-  const tempAgGridProps: AgGridReactProps = {
-    columnDefs: getTempGridColDefs(),
-    onRowDataUpdated: (event) => {
-      if (tempDownloadData) event.api.exportDataAsExcel({ fileName: downloadFileName ? 'Error-' + downloadFileName : 'Error-' + activeMaster.name });
-    }
-  };
-
-
-  const addCheckBoxColDefs = () => {
-    const checkboxColDefs: ColDef[] = [
-      {
-        field: 'checkbox',
-        colId: 'checkbox',
-        headerName: '',
-        width: 40,
-        checkboxSelection: true,
-        headerCheckboxSelection: true,
-        headerCheckboxSelectionCurrentPageOnly: true
-      },
-      // {
-      //   field:'checkbox',
-      //   he
-      //   headerName:'Select Across All Pages',
-      //   // checkboxSelection:true,
-      //   headerCheckboxSelection:true
-      // },
-    ]
-    dispatch(ADD_COLDEFS({ colDefs: checkboxColDefs }));
-    dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
-  }
-
-
-
-  const addInvalidDataColDefs = (columnName: string) => {
-    dispatch(ADD_COLDEFS({ colDefs: [columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]] }));
-    // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
-  }
-
-  const getCurrentVisbileColumns = () => {
-    const columnData = ref.current?.api.getAllDisplayedColumns();
-    return columnData?.map((column: any) => ({ key: column.colDef.field }));
-  }
-
-  const queryFilteredData = async (configs: QueryFilteredDataConfigs) => {
-    const { filters, pagination, fields, count, currentPage, rowsPerPage } = configs;
-    const payload: GetMasterDataPayload = {
-      id: activeMaster.id,
-      name: activeMaster.name,
-      filters: filters,
-      fields: fields,
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+      setDownloadData(false);
+      setTempDownloadData(false);
     }
 
-    if (pagination && !count) {
-      payload.paginationParameter = {
-        pageNumber: currentPage,
-        recordsPerPage: rowsPerPage
-      }
+    const handleOnAddFilter = ()=>{
+      dispatch(ADD_FILTER());
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
     }
-    let resultData;
-    if (count) {
-      if (activeMaster.id > 14 && !activeMaster.isMTO) {
-        resultData = await getRetailCount(payload);
-      }
-      else {
-        if(!activeMaster.isMTO){
-          resultData = await getCount(payload);
-        }
-      }
-    }
-    else {
-      if (activeMaster.id > 14) {
-        resultData = await getMasterDataRetail(payload);
-      }
-      else {
-        resultData = await getMasterData(payload);
-      }
-    }
-
-    return resultData;
-  }
   
-  const queryAllData = async (configs: QueryFilteredDataConfigs) => {
-    const { pagination, fields, count, currentPage, rowsPerPage } = configs;
-    const payload: GetMasterDataPayload = {
-      id: activeMaster.id,
-      name: activeMaster.name,
-      filters: [],
-      fields: fields,
-    }
-    
-    
-    if (pagination && !count) {
-      payload.paginationParameter = {
-        pageNumber: currentPage,
-        recordsPerPage: rowsPerPage
-      }
-    }
-    let resultData;
-    if ((!activeMaster.isMTO && count) || activeMaster.isMTO) {
-      console.log("active popcorn", activeMaster)
-      if (activeMaster.id > 14 && !activeMaster.isMTO) {
-        console.log("should not go here also here.........")
-        resultData = await getRetailCount(payload);
-      }
-      else if (activeMaster.id===501 && activeMaster.isMTO) {
-        resultData = await getBufferMasterData()
-      }
-      else if(activeMaster.id===502 && activeMaster.isMTO) {
-        resultData = await getCCRMasterData();
-      }
-      else if(activeMaster.id===503 && activeMaster.isMTO){
-        resultData = await getPOOGIMasterData();
-        dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
-      }
-      else if(activeMaster.id===504 && activeMaster.isMTO){
-        resultData = await getCalendarMasterData();
-        if(!activeMaster.colDefs.some((col: ColDef) => col.headerName === 'Action')){
-          dispatch(UPDATE_COLDEFS([...activeMaster.colDefs,{headerName: 'Action', cellRenderer: MTOCalendarEditCellRenderer}]))
-
-        }
-      }
-      else {
-        if(!activeMaster.isMTO){
-          resultData = await getCount(payload);
-        }
-      }
-    }
-    else {
-
-      if (activeMaster.id > 14 && !activeMaster.isMTO) {
-        resultData = await getMasterDataRetail(payload);
-      }
-      else if (activeMaster.id === 501 && activeMaster.isMTO) {
-        resultData = await getBufferMasterData()
-      }
-      else if(activeMaster.id===502 && activeMaster.isMTO) {
-        resultData = await getCCRMasterData();
-      }
-      else if(activeMaster.id===503 && activeMaster.isMTO) {
-        resultData = await getPOOGIMasterData();
-        dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
-      }
-      else if(activeMaster.id===504 && activeMaster.isMTO){
-        resultData = await getCalendarMasterData();
-      }
-      else {
-        resultData = await getMasterData(payload);
-      }
+    const handleOnDeleteFilter = (id:string)=>{
+      if(activeMaster.filters.length === 1) return notifyError("Cannot Delete this Filter Instance")
+      dispatch(REMOVE_FILTER(id));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
 
-    return resultData;
-  }
-
-  const getSelectedMasters = (temp: MDMMasterState[]) => {
-    selectedOptions.forEach((selectedOption: Option) => {
-      allMastersState.forEach((master: MDMMasterState) => {
-        if (master.fields.find((field: Field) => field.displayName === selectedOption.label) && !temp.find((selectedMaster: MDMMasterState) => selectedMaster.id === master.id)) temp.push(master);
-      })
-    });
-    return temp;
-  }
-
-  const handleSelectMasterSubmit = () => {
-    masters.forEach((master: MDMMasterState) => {
-      if (!master.isChecked) {
-        dispatch(REMOVE_MASTER(master.id));
-      }
-    })
-    if (activeMaster.id === 0) {
-      dispatch(UPDATE_ACTIVE_MASTER(0));
-    }
-    else {
-      dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
-    }
-    dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
-  }
-
-  const handleTabChange = (currMaster: MDMMasterState) => {
-    if (currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
-    if(activeMaster.isMTO){
-      dispatch(UPDATE_ACTIVE_MASTER(currMaster));
-      return;
-    }
-    const nextMasterIndex = masters.findIndex((master: MDMMasterState) => (master.progress !== 'submitted' && master.progress !== 'editOnlineSubmitted'));
-
-    if (currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
-    else  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);
-
-  }
-
-  const generateDraftPayload = (rowData: any, draftId?: string) => {
-    const pathName = window.location.pathname.split('/')
-    let instanceName = ''
-    masters.map((master: MDMMasterState) => {
-      instanceName += ` ${master.name}`
-    })
-    return {
-      instanceName: instanceName,
-      searchKey: activeMaster.name,
-      actionType: getActionId(pathName[pathName.length - 1]).id,
-      draftId: draftId,
-      draftData: masters.map((master: MDMMasterState) => {
-
-        return {
-          masterId: master.id,
-          status: master.progress,
-          gridState: master.id === activeMaster.id ? JSON.stringify(activeMaster.colDefs) : '',
-          dataMaster: master.id === activeMaster.id ? rowData : []
-        }
-      })
-    }
-  }
-
-  const handleTabClose = (e: React.MouseEvent<HTMLElement>, currMaster: MDMMasterState) => {
-    e.stopPropagation();
-    if (masters.length === 1) {
-      return notifyError("There Should be atleast one selected Master")
-    }
-    dispatch(REMOVE_MASTER(currMaster.id));
-    setDownloadData(false);
-    if (currMaster.id === activeMaster.id) {
-      const mastersLength = masters.length
-      for (let index = 0; index < mastersLength; index++) {
-
-        if (masters[index].progress !== 'submitted') {
-          dispatch(UPDATE_ACTIVE_MASTER(index))
-          return
-        }
+    const handleApplyFilter =async (showAll?:boolean) => {
+     if(showAll) setIsShowAll(showAll)
+     else setIsShowAll(false)
+      if(downloadData) setDownloadData(false)
+      const currMasterFilters = activeMaster.filters;
+      if(!areMasterFiltersValid(currMasterFilters) && !showAll){
+        return notifyError('Filter cannot be empty')
       }
 
-    }
-  }
+      const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
+      const payloadFields:any = getCurrentVisbileColumns();
 
+      setIsTableDataLoading(true);
 
-
-  const addNewMaster = () => {
-    if (allMastersState.length === masters.length) {
-      notifyError('All Masters have already been selected. Cannot add more masters');
-      return;
-    }
-    dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-    setDownloadData(false);
-    setTempDownloadData(false);
-  }
-
-  const handleOnAddFilter = () => {
-    dispatch(ADD_FILTER());
-    dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
-  }
-
-  const handleOnDeleteFilter = (id: string) => {
-    if (activeMaster.filters.length === 1) return notifyError("Cannot Delete this Filter Instance")
-    dispatch(REMOVE_FILTER(id));
-    dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-  }
-
-  const handleApplyFilter = async (showAll?: boolean) => {
-    if (showAll) setIsShowAll(showAll)
-    else setIsShowAll(false)
-    if (downloadData) setDownloadData(false)
-    const currMasterFilters = activeMaster.filters;
-    if (!areMasterFiltersValid(currMasterFilters) && !showAll) {
-      return notifyError('Filter cannot be empty')
-    }
-
-    const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
-    const payloadFields: any = getCurrentVisbileColumns();
-
-    setIsTableDataLoading(true);
-
-    let result;
-    try{
-
-      if (showAll) {
-        result = await queryAllData({ filters: payloadFilters, fields: payloadFields, pagination: false, count: true, rowsPerPage });
+      let result;
+      if(showAll){
+        result = await queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true,rowsPerPage});
       }
-      else {
-      result = await queryFilteredData({ filters: payloadFilters, fields: payloadFields, pagination: false, count: true, rowsPerPage });
-    }
-  }catch(err){
-    console.log(err)
-  }
+      else{
+        result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false,count:true,rowsPerPage});
+      }
 
-    setIsTableDataLoading(false);
-    if (activeMaster.isMTO) {
-      if (!result?.data?.data?.count || result?.data?.data?.count == 0 || result?.data?.data?.count == '') {
-        setTempRecordCount(result?.data.data.length)
-      }
-      else {
-        setTempRecordCount(result?.data?.data?.count)
-      }
-    } else {
-      if (!result?.data.recordCount || result?.data.recordCount == 0 || result.data.recordCount == '') {
-        setTempRecordCount(0)
-      }
-      else {
+      setIsTableDataLoading(false);
+      // if(!result.data.recordCount || result.data.recordCount==0 || result.data.recordCount=='')dispatch(SET_RECORD_COUNT(0))
+      // else{
+      //   dispatch(SET_RECORD_COUNT(result.data.recordCount))
+      // }
+      if(!result.data.recordCount || result.data.recordCount==0 || result.data.recordCount=='')setTempRecordCount(0)
+      else{
         setTempRecordCount(result.data.recordCount)
       }
+      // if(result.data.recordCount<=rowsPerPage){
+      //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
+      // }
+      // else{
+      //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
+      // }
+
+      toggleWarningModal(true);    
     }
 
-    toggleWarningModal(true);
-  }
+    const onWarningModalClose = ()=>{
+      toggleWarningModal(false);
+      setIsTableDataLoading(false);
+      setTempRecordCount(0)
+    }
 
-  const onWarningModalClose = () => {
-    toggleWarningModal(false);
-    setIsTableDataLoading(false);
-    setTempRecordCount(0)
-  }
+    const onWarningModalSuccess = async (refetch?:boolean)=>{
+     
+      refetch = refetch?refetch:false
 
-  const onWarningModalSuccess = async (refetch?: boolean) => {
- 
-    refetch = refetch ? refetch : false
- 
-    const currMasterFilters = activeMaster.filters;
- 
-    const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
-    let payloadFields: any = getCurrentVisbileColumns();
-    payloadFields = payloadFields.filter((field: any) => !['checkbox', 'graph', 'color'].includes(field.key))
- 
-    setIsTableDataLoading(true);
-    let result: any;
- 
-    if ((!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1) || isShowAll) {
-      if (activeMaster.id == 10 || activeMaster.id == 6) {
-        result = await notifyPromise(queryAllData({ filters: payloadFilters, fields: payloadFields, pagination: false }), {
-          success: "Data Fetched Successfully",
-          error: "Something Went Wrong",
-          pending: "Loading Data"
-        });
-        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-      }
-      else if (activeMaster.isMTO) {
-        result = await notifyPromise(queryAllData({ filters: payloadFilters, fields: payloadFields, pagination: true, currentPage: 1, rowsPerPage }), {
-          success: "Data Fetched Successfully",
-          error: "Something Went Wrong",
-          pending: "Loading Data"
-        });
-      }
-      else {
-        result = await notifyPromise(queryAllData({ filters: payloadFilters, fields: payloadFields, pagination: true, currentPage: 1, rowsPerPage }), {
-          success: "Data Fetched Successfully",
-          error: "Something Went Wrong",
-          pending: "Loading Data"
-        });
+      const currMasterFilters = activeMaster.filters;
+
+      const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
+      let payloadFields:any = getCurrentVisbileColumns();
+      payloadFields = payloadFields.filter((field:any)=>!['checkbox','graph','color'].includes(field.key))
+      
+      setIsTableDataLoading(true);
+      let result:any;
+
+      if((!areMasterFiltersValid(currMasterFilters) && activeMaster.filters.length === 1) || isShowAll){
+        if(activeMaster.id==10 || activeMaster.id==6){
+          result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:false}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          });
+          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+        }
+        else{
+          result = await notifyPromise(queryAllData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          }); 
       }
       dispatch(RESET_FILTERS())
     }
-    else {
-      if (activeMaster.id == 10 || activeMaster.id == 6) {
-        result = await notifyPromise(queryFilteredData({ filters: payloadFilters, fields: payloadFields, pagination: false }), {
-          success: "Data Fetched Successfully",
-          error: "Something Went Wrong",
-          pending: "Loading Data"
-        });
-        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+      else{
+        if(activeMaster.id==10 || activeMaster.id==6){
+          result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:false}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          }); 
+          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+        }
+        else{
+          result = await notifyPromise(queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:1,rowsPerPage}),{
+            success:"Data Fetched Successfully",
+            error:"Something Went Wrong",
+            pending:"Loading Data"
+          }); 
       }
-      else {
-        result = await notifyPromise(queryFilteredData({ filters: payloadFilters, fields: payloadFields, pagination: true, currentPage: 1, rowsPerPage }), {
-          success: "Data Fetched Successfully",
-          error: "Something Went Wrong",
-          pending: "Loading Data"
-        });
+     
       }
- 
-    }
- 
- 
-    if (tempRecordCount <= rowsPerPage) {
-      dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
-    }
-    else {
-      dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
-    }
- 
-    if (tempRecordCount <= rowsPerPage) {
-      toggleEditOnline(true);
-    }
-    else {
-      toggleEditOnline(false);
-    }
- 
- 
-    setIsTableDataLoading(false);
-    if (tempRecordCount == 0) {
-      toggleWarningModal(false);
-      return;
-    }
- 
-    let tempRowData: any
-    if (activeMaster.isMTO) {
-      tempRowData = result?.data?.data?.map((row: any) => {
-        const newRow = { ...row };
- 
-        Object.keys(newRow).map((key) => {
-          // console.log('line no 949',key)
-          // console.log('isMTO line 951',activeMaster.colDefs)
-          const currentColDef = activeMaster.colDefs.find((c) => c.colId === key)
- 
-          const cellDataType = currentColDef?.cellDataType
-          if (cellDataType === 'number' && newRow[key] !== null) {
-            newRow[key] = parseFloat(newRow[key])
-          }
-        })
- 
- 
-        return newRow
-      })
-    }
-    else {
-      tempRowData = result.data.data.map((row: any) => {
-        const newRow = { ...row };
- 
-        Object.keys(newRow).map((key) => {
-          const currentColDef = activeMaster.colDefs.find((c) => c.colId === key)
-          const cellDataType = currentColDef?.cellDataType
-          if (cellDataType === 'number' && newRow[key] !== null) {
-            newRow[key] = parseFloat(newRow[key])
-          }
-        })
- 
-        return newRow
-      })
-    }
- 
-    dispatch(UPDATE_ROW_DATA(tempRowData));
-    if (refetch) return
-    toggleWarningModal(false);
-    if (pageType === 'remove') {
-      dispatch(UPDATE_PROGRESS_STATE('deleteView'));
-    }
-    else {
-      if (activeMaster.id == 10) {
-        dispatch(UPDATE_PROGRESS_STATE('seasonality'));
-        return dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-      }
-      if (activeMaster.id == 6) {
-        dispatch(UPDATE_PROGRESS_STATE('phaseInPhaseOut'));
-      }
-      else dispatch(UPDATE_PROGRESS_STATE('view'));
-    }
-    dispatch(SET_RECORD_COUNT(tempRecordCount))
-    dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-  }
+      
 
-  const onUploadMaster = async () => {
-    let intervalID: any;
-    try {
-      if (!file) {
-        notifyError('Please select a file to upload.');
-        return
-      }
-      const selectedColumns = ref.current?.api.getAllDisplayedColumns();
-      // const toasId = notifyLoader("Reading File");
-      setIsOverlayVisible(true)
-
-      // TODO : MTO check for which all master this needs to be done
-      // if (activeMaster.id < 14) {
-      const buffData =  await parseExcelData(file, activeMaster, pageType, selectedColumns);
-      // }
-
-
-      /////
-      const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
-        // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-  
-        return {  ...col, editable: true, singleClickEdit: true }
-        // return { ...col }
-      })
-
-      if(activeMaster.isMTO){
-          dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 200},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...updatedColdefs]))
+      if(tempRecordCount<=rowsPerPage){
+        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
       }
       else{
-        dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 200},{colId: 'err', field: 'err',cellStyle: {color: 'red'}, headerName: 'Error'  },...updatedColdefs]))
-      }
-      ////
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("ui_config", JSON.stringify(activeMaster.fields))
-      formData.append("screen_type", JSON.stringify({ screenType: pageType }))
-      const processId = uuidv4();
-
-
-      // TODO: checked for buffer only make it dynamic
-      if(activeMaster.id!==501 && activeMaster.id!==502){
-
-        
-        intervalID = setInterval(async () => {
-          const progress = await getUploadProgress(processId);
-          setUploadProgress(progress.data.progress);
-          setTotalProgress(progress.data.totalRows)
-        }, 1000)
-        
-        const response = await validateMaster({ formData, masterId: activeMaster.id });
-        clearInterval(intervalID);
-        let result = JSON.parse(response.data)
-        const errorAndWarningData = result.filter((data: any) => data.error.length > 0 || data.warning.length > 0)
-        result = [...errorAndWarningData, ...result.filter((data: any) => data.error.length === 0 && data.warning.length === 0)]
-        
-        setIsOverlayVisible(false);
-        
-      const ifErrorExists = result.find((data: any) => data.error.length > 1);
-      const ifWarningExists = result.find((data: any) => data.warning.length > 1);
-
-      if (ifErrorExists) {
-        dispatch(UPDATE_PROGRESS_STATE('error'));
-        addInvalidDataColDefs('error');
-      }
-      if (ifWarningExists) {
-        // dispatch(UPDATE_PROGRESS_STATE('error'));
-        addInvalidDataColDefs('warning');
-      }
-      if (!ifErrorExists) {
-        if (activeMaster.progress === 'deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-        else dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-        addCheckBoxColDefs();
+        dispatch(UPDATE_DATA_AVAILABILITY_STATUS(false))
       }
       
-    
-      dispatch(SET_RECORD_COUNT(result.length));
-      dispatch(UPDATE_ROW_DATA(result));
-      dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-    }
-    else{
+      if(tempRecordCount <= rowsPerPage){
+        toggleEditOnline(true);
+      }
+      else{
+        toggleEditOnline(false);
+      }
 
-    dispatch(SET_RECORD_COUNT(buffData.length));
-    dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-    dispatch(UPDATE_ROW_DATA(buffData));
-
-    }
       
+        setIsTableDataLoading(false);
+        if(tempRecordCount == 0){
+          toggleWarningModal(false);
+          return;
+        }
+        
+        const tempRowData = result.data.data.map((row:any)=>{
+          const newRow = {...row};
+          
+          Object.keys(newRow).map((key)=>{
+            const currentColDef = activeMaster.colDefs.find((c)=>c.colId===key)
+            const cellDataType = currentColDef?.cellDataType
+            if(cellDataType==='number' && newRow[key]!== null){
+              newRow[key] = parseFloat(newRow[key])
+            }
+          })
+
+          return newRow
+        })
+
+        dispatch(UPDATE_ROW_DATA(tempRowData));
+        if(refetch)return
+        toggleWarningModal(false);
+        if(pageType==='remove'){
+           dispatch(UPDATE_PROGRESS_STATE('deleteView'));
+        }
+        else{
+          if(activeMaster.id==10){
+            dispatch(UPDATE_PROGRESS_STATE('seasonality'));
+            return  dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          }
+          if(activeMaster.id==6){
+             dispatch(UPDATE_PROGRESS_STATE('phaseInPhaseOut')); 
+          }
+          else  dispatch(UPDATE_PROGRESS_STATE('view')); 
+        }
+        dispatch(SET_RECORD_COUNT(tempRecordCount))
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+    }
+
+    const onEditOnline = (progress:any) => {
+      const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+        const isEditable = activeMaster.fields.find((field:Field)=>field.key === col.colId )?.isEdit;
+        
+        if(isEditable) return {...col,editable:true}
+        return {...col}
+      })
+
+      dispatch(UPDATE_PROGRESS_STATE(progress))
+      dispatch(UPDATE_COLDEFS(updatedColdefs))
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-      dispatch(TOGGLE_UPLOAD_MODAL(false));
-      setIsOverlayVisible(false)
-      notifySuccess(`Data Uploaded Successfully`);
-      setDownloadData(false);
-      setTempDownloadData(false);
-      setCurrentPage(1);
-    }
-    catch (error: any) {
-      toast.dismiss();
-      notifyError(error.message);
-      setIsOverlayVisible(false);
-      if (intervalID) clearInterval(intervalID);
+
     }
 
-  }
+      const onUploadMaster = async () => {
+        let intervalID:any;
+        try {
+          if(!file){
+            notifyError('Please select a file to upload.');
+            return
+          }
+          const selectedColumns = ref.current?.api.getAllDisplayedColumns();
+          // const toasId = notifyLoader("Reading File");
+          setIsOverlayVisible(true)
+  
+          if(activeMaster.id < 14){
+            await parseExcelData(file,activeMaster,pageType,selectedColumns);
+          }
+          
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("ui_config",JSON.stringify(activeMaster.fields))
+          formData.append("screen_type",JSON.stringify({screenType:pageType}))
+          const processId = uuidv4();
+          
+          formData.append("process_id",JSON.stringify({processId:processId}));
+
+          intervalID = setInterval(async ()=>{
+            const progress = await getUploadProgress(processId);
+            setUploadProgress(progress.data.progress);
+            setTotalProgress(progress.data.totalRows)
+          },1000)
+
+          const response = await validateMaster({formData,masterId:activeMaster.id});
+          clearInterval(intervalID);
+          let result = JSON.parse(response.data)
+          const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
+          result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
+          
+          setIsOverlayVisible(false);
+
+          const ifErrorExists = result.find((data:any)=>data.error.length > 1);
+          const ifWarningExists = result.find((data:any)=>data.warning.length > 1);
+
+          if(ifErrorExists) {
+            dispatch(UPDATE_PROGRESS_STATE('error'));
+            addInvalidDataColDefs('error');
+          }
+          if(ifWarningExists){
+            // dispatch(UPDATE_PROGRESS_STATE('error'));
+            addInvalidDataColDefs('warning');
+          }
+          if(!ifErrorExists){
+            if(activeMaster.progress==='deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+            else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+            addCheckBoxColDefs();
+           }
+          
+          dispatch(SET_RECORD_COUNT(result.length));
+          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+          dispatch(UPDATE_ROW_DATA(result));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          dispatch(TOGGLE_UPLOAD_MODAL(false));
+          setIsOverlayVisible(false)
+          notifySuccess(`Data Uploaded Successfully`);
+          setDownloadData(false);
+          setTempDownloadData(false);
+          setCurrentPage(1);
+        }
+         catch (error:any) {
+          toast.dismiss();
+          notifyError(error.message);
+          setIsOverlayVisible(false);
+          if(intervalID) clearInterval(intervalID);
+        }
+
+      }
 
       const exportToExcel = async (fromUploadModal?:boolean)=>{
         try {
@@ -1135,10 +847,8 @@ const useViewModify = (pageType: string) => {
           const rows = [];
           for(let i=1; i<=numberOfPages; i++){
             const result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,showAll:false,pagination:true,currentPage:i,rowsPerPage:chunkSize});
-            if(result?.data.data === null) throw new Error("Something Went Wrong")
-            if(result?.data){
-              rows.push(...result.data.data)
-            }
+            if(result.data.data === null) throw new Error("Something Went Wrong")
+            rows.push(...result.data.data)
             if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
             else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
           }
@@ -1223,7 +933,7 @@ const useViewModify = (pageType: string) => {
           result = await queryFilteredData({filters:payloadFilters,fields:payloadFields,pagination:true,currentPage:pageNo,rowsPerPage});
         }
         
-        dispatch(UPDATE_ROW_DATA(result?.data.data));
+        dispatch(UPDATE_ROW_DATA(result.data.data));
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         setIsTableDataLoading(false);
 
@@ -1425,7 +1135,7 @@ const useViewModify = (pageType: string) => {
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-            if(draftID.length > 0 && localErrorCount === 0){
+            if(draftID.length > 0){
               await deleteDraft(draftID);
             }
           }
@@ -1482,7 +1192,7 @@ const useViewModify = (pageType: string) => {
             setSelectedRowsCount(0);
             dispatch(UPDATE_PROGRESS_STATE('submitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-            if(draftID.length > 0 && localErrorCount === 0){
+            if(draftID.length > 0){
               await deleteDraft(draftID);
             }
           }
@@ -1689,791 +1399,274 @@ const useViewModify = (pageType: string) => {
          return false
       
     }
-   
-
-  const onEditOnline = (progress: any) => {
-    const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
-      const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-
-      if (isEditable) return { ...col, editable: true }
-      return { ...col }
-    })
-
-    dispatch(UPDATE_PROGRESS_STATE(progress))
-    dispatch(UPDATE_COLDEFS(updatedColdefs))
-    dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-
-  }
-
-  const onReset = () => {
-    const currentMasterData = masters.find((master: MDMMasterState) => master.id === activeMaster.id)
-    if (currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
-    dispatch(REMOVE_COLDEFS(['error', 'warning']));
-    dispatch(UPDATE_PROGRESS_STATE('editOnline'));
-    setEnableEditOnlineReset(false)
-  }
-
-  // const     validateEditOnlineData = (data:any[]) => {
-  //   //Cleanup errors if any and provide clean copy to check again.
-  //   //PS - Worked in tight deadline plz optimize whenever possible.
-  //   dispatch(REMOVE_COLDEFS(['error','warning']));
-
-  //   const rowData = data.map((row:any)=>{
-  //     if(row.error || row.warning){
-  //       return _.omit(row,'error','warning');
-  //     }
-  //     return row;
-  //   })
-
-  //   const newData = rowData.map((row:any)=>{
-  //     const rowClone = {...row};
-  //     const {error,warning} = checkError(rowClone,activeMaster,pageType);
-
-  //     if(error){
-  //       rowClone.error = error
-  //     }
-  //     else{
-  //       rowClone.error = '';
-  //     }
-  //     if(warning){
-  //       rowClone.warning = warning;
-  //     }
-  //     else{
-  //       rowClone.warning = '';
-  //     }
-  //     return rowClone;
-  //   });
-
-  //   const isErrorPresent = newData.find((row:any)=>row.error);
-  //   const isWarningPresent = newData.find((row:any)=>row.warning);
-
-  //   if(isErrorPresent){
-  //     addInvalidDataColDefs('error');
-  //   }
-
-  //   if(isWarningPresent){
-  //     addInvalidDataColDefs('warning');
-
-  //   }
-  //   dispatch(UPDATE_ROW_DATA(newData));
-  //   // if(isErrorPresent || isWarningPresent){
-  //   //   return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
-  //   // } 
-  //   return newData;
-  // }
-
-  const getBufferMasterDataType = async () => {
-    const BufferTypeMaster = await GetBufferTypeMaster();
-    setBufferTypeData(BufferTypeMaster?.data?.data);
-
-
-  }
-
-  const onEditOnlineSave = async () => {
-    await onSaveToDraft();
-    //  if(isSuccess){
-    //   const result = validateEditOnlineData(activeMaster.rowData);
-
-    //   const isErrorPresent = result.find((row:any)=>row.error.length > 0);
-    //   const isWarningPresent = result.find((row:any)=>row.warning.length > 0);
-
-    //   if(isErrorPresent || isWarningPresent){
-    //     return notifyError("Please Clear All Errors before submit")
-    //   }
-    //   // dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
-    //  }
-
-  }
-
-  const toggleUploadModal = (value: boolean) => {
-    dispatch(TOGGLE_UPLOAD_MODAL(value))
-  }
-  const onShowChart = async (rowData: any) => {
-    try {
-      const toastId = notifyLoader('Fetching Chart Details');
-      const { data: { data } } = await getSeasonalityDetails(rowData);
-      const seasonalityData = data[0];
-      setSeasonalityRowData(rowData);
-      setNormChangeData(seasonalityData.norm);
-      const chartData = generateSesonalityChartData(rowData, seasonalityData);
-      setChartData(chartData);
-      toggleSeasonalityChartModal(true);
-      toast.dismiss(toastId);
-      notifySuccess("Chart Details Fetched Successfully");
-
-    } catch (error) {
-      toast.dismiss();
-      toast.error("Something Went Wrong");
-
-    }
-
-  }
-
-
-  const onSeasonalityQuickFilter = (statusId: number[]) => {
-    const doesMasterExist = masters.find((master: MDMMasterState) => master.id === activeMaster.id)
-    let updatedSeasonalityActiveQuickFilter = [...seasonalityActiveQuickFilter];
-
-    if (doesMasterExist) {
-      if (seasonalityActiveQuickFilter.find((s) => JSON.stringify(s) === JSON.stringify(statusId))) {
-        updatedSeasonalityActiveQuickFilter = seasonalityActiveQuickFilter.filter((s) => {
-          return JSON.stringify(s) !== JSON.stringify(statusId)
-        })
-        setSeasonalityActiveQuickFilter(updatedSeasonalityActiveQuickFilter)
-      }
-      else {
-        updatedSeasonalityActiveQuickFilter = [...updatedSeasonalityActiveQuickFilter, statusId]
-        setSeasonalityActiveQuickFilter(updatedSeasonalityActiveQuickFilter)
-      }
-      let updatedRowData = []
-
-
-      const flatState = _.flatMap(updatedSeasonalityActiveQuickFilter)
-      if (flatState.length == 0) {
-        updatedRowData = doesMasterExist.rowData;
-      }
-      else {
-        updatedRowData = doesMasterExist.rowData.filter((row: any) => {
-          return flatState.includes(row.sts)
-        })
-      }
-
-      dispatch(UPDATE_ROW_DATA(updatedRowData))
-      dispatch(SET_RECORD_COUNT(updatedRowData.length))
-
-    }
-    else {
-      return
-    }
-  }
-
-  //   const onDeleteOnlineSave = ()=>{
-  //     const selectedRows = ref.current?.api.getSelectedRows()
-  //     if(!selectedRows || selectedRows.length<1)return notifyError('Please select rows to submit')
-  //     dispatch(REMOVE_COLDEFS(['checkbox']))
-  //     dispatch(UPDATE_ROW_DATA(selectedRows))
-  //     dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
-  // }
-  const onReviewConflicts = () => {
-
-    const newColDefs: ColDef[] = activeMaster.colDefs.map((colDef: ColDef) => {
-      return {
-        ...colDef,
-        // cellRenderer:'conflictErrorCellRenderer',
-        // tooltipField:colDef.field,
-        cellRenderer: 'conflictErrorCellRenderer',
-        cellStyle: (params) => {
-          return {
-            ...params.colDef.cellStyle,
-            padding: 0
-          }
-        }
-        // tooltipField:colDef.field
-
-      }
-    })
-
-    if (newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
-    addCheckBoxColDefs()
-    dispatch(UPDATE_ROW_DATA(conflictData))
-    setIsConflictModalOpen(false)
-    dispatch(SET_RECORD_COUNT(conflictData.length))
-  }
-
-  const onIgnoreSubmitErrors = () => {
-    const errorRowData = createErrorRowData(errorData, activeMaster.id)
-    if (errorRowData.length > 0) {
-      addInvalidDataColDefs('error')
-      dispatch(UPDATE_ROW_DATA(errorRowData))
-      dispatch(SET_RECORD_COUNT(errorRowData.length))
-    }
-    if (activeMaster.progress === 'editOnlineConflicts') dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
-    else dispatch(UPDATE_PROGRESS_STATE('submitted'));
-    dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-
-    setIsConflictModalOpen(false)
-  }
-
-
-  function myFormatter(params: any) {
-    const currBuff = params.value;
-
-    let val = params.value;
-    if(bufferTypeData){
-
-      bufferTypeData.forEach((ele: any) => {
-      if (ele.id.toString() === currBuff.toString()) {
-        
-        val = ele.dsc;
-      }
-    })
-  }
-    return val;
-
-  }
-
-  const addEditableToLastColumn = async() => {
-    const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
-      const editable = (params: any) => params.node.rowIndex === 0;
-
-
-      if (colDef.field === 'bt') {
-        return {
-          ...colDef,
-          cellEditor: 'agRichSelectCellEditor',
-          valueFormatter: myFormatter,
-          cellEditorParams: {
-            values: bufferTypeData?.map((item: any) =>  item.dsc), // Dropdown values
-          },
-          editable,
-        };
-      }
-      if (colDef.field==="ib"){
-
-        return {
-          ...colDef,
-          cellRenderer: 'agCheckboxCellRenderer',
-          cellEditor: "agCheckboxCellEditor",
-          editable,
-        };
-        
-      }
-      else if (colDef.field==="bcd" || colDef.field === "bd"){
-
-        return {
-          ...colDef,
-          editable,
-        };
-      }
-
-      if(activeMaster.id===502 ){
-        return {
-          ...colDef,
-          editable
-        }
-      }
-      if(activeMaster.id===503){
-        return {
-          ...colDef,
-          // editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
-          editable
-        }
-      }
-
-      else {
-        return {
-          ...colDef,
-          cellEditor: "agNumberCellEditor",
-          editable,
-        };
-      }
-
-    });
-
-
-    // Create actions column with button rendering
-    const actionsCol: any = {
-      field: 'actions',
-      headerName: 'Actions',
-      colId: 'actions',
-      //flex: 1,
-      width: 100, // Set the width for the actions column
-      cellRenderer: AddRemoveCellRenderer
-
-    }
-
-    // Prepend the actions column
-    // return [actionsCol, ...modifiedColDefs];
-    if(modifiedColDefs.find((colDef: any) => colDef.field === 'actions')){
-      return;
-    }
-
-    dispatch(UPDATE_COLDEFS([actionsCol, ...modifiedColDefs]));
-
-  };
-
-  const addRowToMtoGrid = () => {
-    const newRowValue = activeMaster.rowData.length;
-    let newRow:any = {};
-
-    if(activeMaster.id===501){
-
-      newRow = {
-        bcd: `PROD-${newRowValue}-Buff`,
-        bd: `BUFF-${newRowValue}`,
-        bsz: '', // Example value; modify as needed
-        slt: 0,
-        mlt: 0,
-        ib: false,
-        bt: 1,
-        editable: true,
-      };
-    }
-    else if(activeMaster.id===502){
-      newRow = {
-        ccd: `CCR-${newRowValue}`,
-      }
-    }
-    else if(activeMaster.id===503){
-      newRow = {
-        plnm: '--',
-        majdsc: '--',
-        minData: []
-      }
-    }
-    dispatch(UPDATE_ROW_DATA([newRow,...activeMaster.rowData]));
-    addEditableToLastColumn();
-
-  }
-
-  const addRowToMtoMinGrid = () => {
-
-    setSelectedMajReason({...selectedMajReason,minData: [{majId: selectedMajReason.majId, mindsc: ''},...selectedMajReason.minData]});
-    
-    // dispatch(UPDATE_ROW_DATA([newRow,...activeMaster.rowData]));
-    // addEditableToLastColumn();
-  }
-
-  const user = useUserData();
 
      
-  const onMTOAddSaveBufferData= async()=>{
+      const onReset = () => {
+        const currentMasterData = masters.find((master:MDMMasterState)=>master.id === activeMaster.id)
+        if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
+        dispatch(REMOVE_COLDEFS(['error','warning']));
+        dispatch(UPDATE_PROGRESS_STATE('editOnline'));
+        setEnableEditOnlineReset(false)
+      }
 
-    notifyLoader("Saving Task...")
+      // const     validateEditOnlineData = (data:any[]) => {
+      //   //Cleanup errors if any and provide clean copy to check again.
+      //   //PS - Worked in tight deadline plz optimize whenever possible.
+      //   dispatch(REMOVE_COLDEFS(['error','warning']));
 
-
-    const BufferPostObj: any = {
-      mid: activeMaster.id,
-      uid: user.user.user.id.toString(),
-      unm: user.user.user.name,
-      buffData: [],
-      aids: ["111111","222222","333333"]
-    }
-
-
-    const selectedRows:any = ref?.current?.api?.getSelectedRows();
-    selectedRows.forEach((e:any)=>{
-      const newVal = JSON.parse(JSON.stringify(e));
-      // bufferTypeData.forEach((e:any)=>{
-      //   if(e.dsc===e.bt){
-      //     newVal.bt=e.id;
+      //   const rowData = data.map((row:any)=>{
+      //     if(row.error || row.warning){
+      //       return _.omit(row,'error','warning');
+      //     }
+      //     return row;
+      //   })
+      
+      //   const newData = rowData.map((row:any)=>{
+      //     const rowClone = {...row};
+      //     const {error,warning} = checkError(rowClone,activeMaster,pageType);
+          
+      //     if(error){
+      //       rowClone.error = error
+      //     }
+      //     else{
+      //       rowClone.error = '';
+      //     }
+      //     if(warning){
+      //       rowClone.warning = warning;
+      //     }
+      //     else{
+      //       rowClone.warning = '';
+      //     }
+      //     return rowClone;
+      //   });
+        
+      //   const isErrorPresent = newData.find((row:any)=>row.error);
+      //   const isWarningPresent = newData.find((row:any)=>row.warning);
+      
+      //   if(isErrorPresent){
+      //     addInvalidDataColDefs('error');
       //   }
-      // })
-
-      // TODO: call the buffer type and add the id and use drop down instead;
-      newVal.bt = 1;
-      newVal.ib= (e.ib==="false"?0: 1);
-      newVal.mlt = parseInt(e.mlt);
-      newVal.slt = parseInt(e.slt);
-
-
-      BufferPostObj.buffData.push(_.omit(newVal,['editable','err']));
-    })
-
-    try{
-      const response = await saveBufferMasterTask(BufferPostObj);
-      if(response.status==200){
-        toast.dismiss();
-        const allData = [...activeMaster.rowData];
-        const indexesToRemove = selectedRows.map((row:any) => allData.indexOf(row));
-        indexesToRemove.sort((a:any,b:any) => b - a);
-        // indexesToRemove.forEach((index:number) => allData.splice(index,1));
-        const newData:any = [];
-        allData.forEach((e:any,index: any)=>{
-          if(!indexesToRemove.includes(index)) newData.push(e);
-        })
-
-        dispatch(UPDATE_ROW_DATA(newData));
         
-        
-        notifySuccess("Buffer task updated!!")
-      }
-      else{
-        toast.dismiss();
-        notifyError("Failed to create the task....Please check your validations!")
-      }
-    }
-    catch(error){
-      console.log(error)
-    }
-    
-  }
-
-  const onMTOAddCCRData = async()=>{
-    notifyLoader("Saving Task...")
-
-
-    const CCRPostObj: any = {
-      mid: activeMaster.id,
-      uid: user.user.user.id.toString(),
-      unm: user.user.user.name,
-      ccrData: [],
-      aids: ["111111","222222","333333"]
-    }
-
-
-    const selectedRows:any = ref?.current?.api?.getSelectedRows();
-    selectedRows.forEach((e:any)=>{
-      const newVal = JSON.parse(JSON.stringify(e));
-      // bufferTypeData.forEach((e:any)=>{
-      //   if(e.dsc===e.bt){
-      //     newVal.bt=e.id;
+      //   if(isWarningPresent){
+      //     addInvalidDataColDefs('warning');
+          
       //   }
-      // })
-      newVal.cg = e.ccr_group;
+      //   dispatch(UPDATE_ROW_DATA(newData));
+      //   // if(isErrorPresent || isWarningPresent){
+      //   //   return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
+      //   // } 
+      //   return newData;
+      // }
 
-      // TODO: call the buffer type and add the id and use drop down instead;
-     
+      const onEditOnlineSave = async()=>{
+        await onSaveToDraft();
+      //  if(isSuccess){
+      //   const result = validateEditOnlineData(activeMaster.rowData);
+        
+      //   const isErrorPresent = result.find((row:any)=>row.error.length > 0);
+      //   const isWarningPresent = result.find((row:any)=>row.warning.length > 0);
+      
+      //   if(isErrorPresent || isWarningPresent){
+      //     return notifyError("Please Clear All Errors before submit")
+      //   }
+      //   // dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
+      //  }
 
-
-      CCRPostObj.ccrData.push(_.omit(newVal,['editable','err']));
-    })
-
-    try{
-      const response = await saveCCRMasterTask(CCRPostObj);
-      if(response.status==200){
-        toast.dismiss();
-        notifySuccess("CCR task updated!!")
-      }
-      else{
-        toast.dismiss();
-        notifyError("Failed to create the task....Please check your validations!")
-      }
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
-
-  const onMTOSaveBufferData= async()=>{
-
-    if(pageType==="add")
-    {
-      if(activeMaster.id===501){
-        onMTOAddSaveBufferData();
-      }
-      else if(activeMaster.id===502){
-        onMTOAddCCRData();
-      }
-     
-      return;
-    }
-
-    // move this to different function
-    if(activeMaster.id===502){
-      const CCRPostObj: any = {
-        mid: activeMaster.id,
-        uid: user.user.user.id.toString(),
-        unm: user.user.user.name,
-        ccrData: [],
-        aids: ["11111", "22222", "33333"]
       }
 
-      let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
-      activeMaster.rowData.forEach((ele:any)=>{
-        const e = _.cloneDeep(ele);
-        e.mlt = parseInt(e.mlt);
-        e.slt = parseInt(e.slt);
-        e.cg = e.ccr_group;
-  
-        if(totalNewVals===0) return;
-        totalNewVals--;
-  
-  
-        CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
-      })
+      const toggleUploadModal = (value:boolean)=>{
+        dispatch(TOGGLE_UPLOAD_MODAL(value))
+      }
+       const onShowChart = async (rowData:any) => {
+        try {
+          const toastId = notifyLoader('Fetching Chart Details');
+          const {data:{data}} = await getSeasonalityDetails(rowData);
+          const seasonalityData = data[0];
+          setSeasonalityRowData(rowData);
+          setNormChangeData(seasonalityData.norm);
+          const chartData = generateSesonalityChartData(rowData,seasonalityData);
+          setChartData(chartData);
+          toggleSeasonalityChartModal(true);
+          toast.dismiss(toastId);
+          notifySuccess("Chart Details Fetched Successfully");
+          
+        } catch (error) {
+          toast.dismiss();
+          toast.error("Something Went Wrong");
 
-
-      try{
-        const response = await saveCCRMasterTask(CCRPostObj);
-        if(response.status=== 200){
-          notifySuccess("Saved CCR Task Successfully");
-          let totalNewVals = activeMaster.rowData.length - tempRecordCount;
-          const currData = _.cloneDeep(activeMaster.rowData);
-          while (totalNewVals-- > 0) {  
-            currData.shift();
-          }
-          dispatch(UPDATE_ROW_DATA(currData));
         }
+        
       }
-      catch(error){
-        console.log(error)
-      }
-
-
-      return;
-    }
-
-
-    notifyLoader("Saving Task...")
-
-    const BufferPostObj: any = {
-      mid: activeMaster.id,
-      uid: user.user.user.id.toString(),
-      unm: user.user.user.name,
-      buffData: [],
-      aids: ["111111","222222","333333"]
-    }
-
-    let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
-    activeMaster.rowData.forEach((ele:any)=>{
-      bufferTypeData.forEach((e:any)=>{
-        if(ele.dsc===e.bt){
-          e.bt=ele.id;
-        }
-      })
-      const e = _.cloneDeep(ele);
-      e.ib= (e.ib==="false"?0: 1);
-      e.mlt = parseInt(e.mlt);
-      e.slt = parseInt(e.slt);
-
-      if(totalNewVals===0) return;
-      totalNewVals--;
-
-
-      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
-    })
-
-    try{
-      const response = await saveBufferMasterTask(BufferPostObj);
-      if(response.status=== 200){
-        notifySuccess("Saved Buffer Task Successfully");
-        let totalNewVals = activeMaster.rowData.length - tempRecordCount;
-        const currData = _.cloneDeep(activeMaster.rowData);
-        while (totalNewVals-- > 0) {  
-          currData.shift();
-        }
-        dispatch(UPDATE_ROW_DATA(currData));
-      }
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
-  const onMTOSaveAsDraft = async()=>{
-
-    notifyLoader("Saving Draft...")
-
-    if(activeMaster.id===501){
-
-      const BufferPostObj: any = {
-        mid: activeMaster.id,
-      uid: user.user.user.id.toString(),
-      unm: user.user.user.name,
-      buffData: [],
-      at: pageType==="add"?"Add":"Modify"
-    }
 
     
-    let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
+      const onSeasonalityQuickFilter = (statusId:number[])=>{
+        const doesMasterExist = masters.find((master:MDMMasterState)=>master.id===activeMaster.id)
+        let updatedSeasonalityActiveQuickFilter= [...seasonalityActiveQuickFilter];
 
+        if(doesMasterExist){
+          if(seasonalityActiveQuickFilter.find((s)=>JSON.stringify(s)===JSON.stringify(statusId))){
+            updatedSeasonalityActiveQuickFilter = seasonalityActiveQuickFilter.filter((s)=>{
+              return JSON.stringify(s)!==JSON.stringify(statusId)
+            })
+            setSeasonalityActiveQuickFilter(updatedSeasonalityActiveQuickFilter)
+          }
+          else{
+            updatedSeasonalityActiveQuickFilter = [...updatedSeasonalityActiveQuickFilter,statusId]
+            setSeasonalityActiveQuickFilter(updatedSeasonalityActiveQuickFilter)
+          }
+          let updatedRowData = []
+          
 
-    activeMaster.rowData.forEach((ele:any)=>{
-      const e = _.cloneDeep(ele);
-      bufferTypeData.forEach((elm:any)=>{
-        if(ele.dsc===elm.bt){
-          e.bt=elm.id;
+          const flatState = _.flatMap(updatedSeasonalityActiveQuickFilter)
+          if(flatState.length==0){
+            updatedRowData=doesMasterExist.rowData;
+          }
+          else{
+            updatedRowData = doesMasterExist.rowData.filter((row:any)=>{     
+              return flatState.includes(row.sts)
+            })
+          }
+          
+          dispatch(UPDATE_ROW_DATA(updatedRowData))
+          dispatch(SET_RECORD_COUNT(updatedRowData.length))
+        
+        }
+        else{
+          return 
+        }
+      }
+
+    //   const onDeleteOnlineSave = ()=>{
+    //     const selectedRows = ref.current?.api.getSelectedRows()
+    //     if(!selectedRows || selectedRows.length<1)return notifyError('Please select rows to submit')
+    //     dispatch(REMOVE_COLDEFS(['checkbox']))
+    //     dispatch(UPDATE_ROW_DATA(selectedRows))
+    //     dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
+    // }
+    const onReviewConflicts = ()=>{
+      
+      const newColDefs:ColDef[] = activeMaster.colDefs.map((colDef:ColDef)=>{
+        return {
+          ...colDef,
+          // cellRenderer:'conflictErrorCellRenderer',
+          // tooltipField:colDef.field,
+          cellRenderer:'conflictErrorCellRenderer',
+          cellStyle:(params)=>{
+            return{
+              ...params.colDef.cellStyle,
+              padding:0
+            }
+          }
+          // onCellClicked:(params:any)=>console.log(params)
+          // tooltipField:colDef.field
+
         }
       })
-      if(totalNewVals===0 && pageType==="modify") return;
-      else totalNewVals--;
-      e.mlt = parseInt(e.mlt);
-      e.slt = parseInt(e.slt);
-      e.err= "no error"
-      
-      
-      
-      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));   
-    })
 
-    try{
-      
-      const response = await saveBufferMasterDraft([BufferPostObj]);
-      if(response.status=== 200){
-        toast.dismiss();
-        notifySuccess("Saved Draft Successfully");
+     if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
+      addCheckBoxColDefs()
+      dispatch(UPDATE_ROW_DATA(conflictData))
+      setIsConflictModalOpen(false)
+      dispatch(SET_RECORD_COUNT(conflictData.length))
+    }
+
+    const onIgnoreSubmitErrors = ()=>{
+      console.log(activeMaster.progress)
+      const errorRowData = createErrorRowData(errorData,activeMaster.id)
+      if(errorRowData.length>0){
+        addInvalidDataColDefs('error')
+        dispatch(UPDATE_ROW_DATA(errorRowData))
+        dispatch(SET_RECORD_COUNT(errorRowData.length))
       }
-      else{
-        notifyError("Failed to save draft!")
-      }
+      if(activeMaster.progress==='editOnlineConflicts')dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+      else dispatch(UPDATE_PROGRESS_STATE('submitted'));
+      dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+      
+      setIsConflictModalOpen(false)
     }
-    catch(error){
-      console.log(error)
+
+
+    return {
+        colDefs,
+        isSelectMasterOpen,
+        options,
+        selectedOptions,
+        activeMaster,
+        filterButtonStatus,
+        setFilterButtonStatus,
+        getSelectedMasters,
+        handleSelectMasterSubmit,
+        handleTabChange,
+        handleTabClose,
+        addNewMaster,  
+        handleOnAddFilter,
+        handleOnDeleteFilter,
+        allMastersState,
+        handleApplyFilter,
+        isLoading,
+        isWarningModalOpen,
+        toggleWarningModal,
+        onWarningModalClose,
+        onWarningModalSuccess,
+        isUploadModalOpen,
+        toggleUploadModal,
+        recordCount,
+        downloadFileName,
+        setDownloadFileName,
+        onUploadMaster,
+        isOverlayVisible,
+        file,
+        setFile,
+        isTableDataLoading,
+        exportToExcel,
+        onColumnChange,
+        onBackButton,
+        onClearExportError,
+        agGridProps,
+        ref,
+        tempRef,
+        tempGridData,
+        tempAgGridProps,
+        deleteSelected,
+        onSubmit,
+        onSaveToDraft,
+        isUploadButtonDisabled,
+        editOnline,
+        onEditOnline,
+        rowsPerPage,
+        selectedRowsCount,
+        currentPage,
+        seasonalityActiveQuickFilter,
+        // onSaveToDraft,
+        onSeasonalityQuickFilter,
+        handleChangePage,
+        onReset,
+        onEditOnlineSave,
+        chartData,
+        isSeasonalityChartModalOpen,
+        normChangeData,
+        toggleSeasonalityChartModal,
+        seasonalityRowData,
+        isShowAll,
+        conflictCount,
+        errorCount,
+        submittedDataCount,
+        conflictData,
+        errorData,
+        isConflictModalOpen,
+        setIsConflictModalOpen,
+        onReviewConflicts,
+        onIgnoreSubmitErrors,
+        isDataAvailableLocally,
+        onSeasonalityStatusUpdate,
+        validResumeStatuses,
+        validStopStatuses,
+        onPIPOStatusUpdate,
+        enableEditOnlineReset,
+        uploadProgress,
+        totalProgress,
+        tempRecordCount
     }
-  }
-
-  else if(activeMaster.id===502){
-
-    const CCRPostObj: any = {
-      mid: activeMaster.id,
-    uid: user.user.user.id.toString(),
-    unm: user.user.user.name,
-    ccrData: []
-  }
-  let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
-
-  activeMaster.rowData.forEach((ele:any)=>{
-    const e = _.cloneDeep(ele);
-    e.err= "no error"
-    e.cgid = 1;
-    e.plid = 1;
-    e.dpid = 1;
-
-    if(totalNewVals===0) return;
-    totalNewVals--;
-
-
-    CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
-  })
-  try{
-    const response = await saveCCRMasterDraft([CCRPostObj]);
-    if(response.status=== 200){
-      toast.dismiss();
-      notifySuccess("Saved CCR Task Successfully");
-    }
-    else{
-      toast.dismiss();
-      notifyError("Failed to Save draft!")
-    }
-  }
-  catch(error){
-    console.log(error)
-  }
-
-
-  }
-  }
-
-
-
-  const onMajReasonSelected = ()=>{
-    setSelectedMajReason(ref?.current?.api?.getSelectedRows()[0])
-  }
-
-  const onMinReasonEditingStopped = (params: any)=>{
-
-
-     const newData = _.cloneDeep(activeMaster.rowData);
-     let majIdIndex = -1;
-     newData.forEach((ele:any,index:number)=>{
-       if(ele.majId===selectedMajReason.majId){
-         majIdIndex = index;
-       }
-     })
-     newData[majIdIndex].minData[params.node.rowIndex].mindsc = params.newValue;
-
-     dispatch(UPDATE_ROW_DATA(newData));
-     setSelectedMajReason(newData[majIdIndex]);
-
-  }
-
-  return {
-    colDefs,
-    isSelectMasterOpen,
-    options,
-    selectedOptions,
-    activeMaster,
-    filterButtonStatus,
-    setFilterButtonStatus,
-    getSelectedMasters,
-    handleSelectMasterSubmit,
-    handleTabChange,
-    handleTabClose,
-    addNewMaster,
-    handleOnAddFilter,
-    handleOnDeleteFilter,
-    allMastersState,
-    handleApplyFilter,
-    isLoading,
-    isWarningModalOpen,
-    toggleWarningModal,
-    onWarningModalClose,
-    onWarningModalSuccess,
-    isUploadModalOpen,
-    toggleUploadModal,
-    recordCount,
-    downloadFileName,
-    setDownloadFileName,
-    onUploadMaster,
-    isOverlayVisible,
-    file,
-    setFile,
-    isTableDataLoading,
-    exportToExcel,
-    onColumnChange,
-    onBackButton,
-    onClearExportError,
-    agGridProps,
-    ref,
-    tempRef,
-    tempGridData,
-    tempAgGridProps,
-    deleteSelected,
-    onSubmit,
-    onSaveToDraft,
-    isUploadButtonDisabled,
-    editOnline,
-    onEditOnline,
-    rowsPerPage,
-    selectedRowsCount,
-    currentPage,
-    seasonalityActiveQuickFilter,
-    // onSaveToDraft,
-    onSeasonalityQuickFilter,
-    handleChangePage,
-    onReset,
-    onEditOnlineSave,
-    chartData,
-    isSeasonalityChartModalOpen,
-    normChangeData,
-    toggleSeasonalityChartModal,
-    seasonalityRowData,
-    isShowAll,
-    conflictCount,
-    errorCount,
-    submittedDataCount,
-    conflictData,
-    errorData,
-    isConflictModalOpen,
-    setIsConflictModalOpen,
-    onReviewConflicts,
-    onIgnoreSubmitErrors,
-    isDataAvailableLocally,
-    onSeasonalityStatusUpdate,
-    validResumeStatuses,
-    validStopStatuses,
-    onPIPOStatusUpdate,
-    enableEditOnlineReset,
-    uploadProgress,
-    totalProgress,
-    tempRecordCount,
-    addRowToMtoGrid,
-    onMTOSaveBufferData,
-    onMTOSaveAsDraft,
-    MTOPoogiMajorColdef:[{
-      headerName: "Sr No.",
-      cellStyle: {
-        "textAlign": "center"},
-      valueGetter: "node.rowIndex + 1"
-    },...activeMaster.colDefs.filter((ele: any) =>ele.field==='actions'|| ele.colId === 'majId' || ele.colId === 'majdsc' || ele.colId === 'plnm'),{
-      headerName: "",
-      cellRenderer: 'poogiEditDeleteCellRenderer'
-    }],
-    MTOPoogiMinorColdef: [{
-      headerName: "Sr No.",
-      cellStyle: {
-        "textAlign": "center"},
-      valueGetter: "node.rowIndex + 1"
-    },...activeMaster.colDefs.filter((ele: any) => ele.field==='actions'|| ele.colId === 'minId' || ele.colId === 'mindsc'), {
-      headerName: "",
-      cellRenderer: 'poogiEditDeleteCellRenderer'
-    }],
-    onMajReasonSelected,
-    // minReasonRowData: selectedMajReason? (activeMaster.rowData.filter((ele: any) => ele.majId === selectedMajReason?.majId)[0]?.minData):(useSelector((state: any) => state.mto.editableMinRow))? activeMaster.rowData[useSelector((state: any) => state.mto.editableMinRow)]?.minData: [],
-    minReasonRowData: selectedMajReason? selectedMajReason.minData: [],
-    onMinReasonEditingStopped,
-    addRowToMtoMinGrid
-  }
-
 }
+
 export default useViewModify;

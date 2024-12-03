@@ -64,8 +64,8 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
 
         return(
             <ActionRendererWrapper>
-              <ActionButtonWrapper src={((selectedRows && selectedRows.includes(props.data))|| (selectedRows==='all')) ? "/assets/img/VectorFLOW/NMS/task-pending-approve.svg" : "/assets/img/VectorFLOW/NMS/task-pending-approve-grey.svg"} height={24} width={24} onClick={() => onClick('Approved')} />
-              <ActionButtonWrapper src={(selectedRows && !selectedRows.includes(props.data) && !(selectedRows==='all'))?"/assets/img/VectorFLOW/NMS/task-pending-reject.svg":"/assets/img/VectorFLOW/NMS/task-pending-reject-grey.svg"} height={24} width={24} onClick={()=>onClick('Rejected')}/>
+              <ActionButtonWrapper src={((selectedRows && selectedRows.includes(props.data))|| (selectedRows==='all')) ? "/assets/img/VectorFLOW/NMS/task-pending-approve.svg" : "/assets/img/VectorFLOW/NMS/task-pending-approve-grey.svg"} height={16} width={16} onClick={() => onClick('Approved')} />
+              <ActionButtonWrapper src={(selectedRows && !selectedRows.includes(props.data) && !(selectedRows==='all'))?"/assets/img/VectorFLOW/NMS/task-pending-reject.svg":"/assets/img/VectorFLOW/NMS/task-pending-reject-grey.svg"} height={16} width={16} onClick={()=>onClick('Rejected')}/>
             </ActionRendererWrapper>
          )
     

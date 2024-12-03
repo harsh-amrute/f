@@ -19,31 +19,26 @@ const TaskPendingForReview = ()=>{
         detailTableColDefs,
         detailTableRowData,
         isViewTableOpen,
+        viewTableRowData,
         showLoader,
         selectedRows,
         onCancel,
+        setSelectedRows,
         onTaskSubmit,
         showApproveAllModal,
         toggleApproveAllModal,
         showRejectAllModal,
         toggleRejectAllModal,
         onSelectionTypeSuccess,
-        setSelectionType,
-        mtoPendingTaskData,
-        mtoSubmitTask,
-        mtoOnSelectionChange
+        setSelectionType
     } = useTaskPendingForReview()
 
     if(showLoader) return <VFLoader/>
-
-   
-
 
     if(isViewTableOpen){
         return(
             <TaskPendingWrapper>
                 <VFTable
-                // ref = {gridRef}
                 height={"100%"}
                 columnDefs={viewTableColDefs}
                 gridOptions={{
@@ -55,9 +50,6 @@ const TaskPendingForReview = ()=>{
                     },
                     enableRangeSelection:true,
                     rowSelection:'multiple',
-                    defaultColDef:{
-                      flex: 1
-                    }
                   }}
                   statusBar={{
                     statusPanels:[
@@ -68,8 +60,7 @@ const TaskPendingForReview = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ]
                   }}
-                rowData={mapRowDataWithSrNo(mtoPendingTaskData)}
-                // rowData={mtoPendingTaskData}
+                rowData={mapRowDataWithSrNo(viewTableRowData)}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
             />
@@ -107,7 +98,10 @@ const TaskPendingForReview = ()=>{
                 rowData={detailTableRowData}
                 suppressRowClickSelection 
                 onSelectionChanged={()=>{
-                    mtoOnSelectionChange();
+                    if(ref && ref.current){
+                        setSelectedRows(ref.current.api.getSelectedRows().length)
+                    }
+                    
                 }}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
@@ -133,25 +127,12 @@ const TaskPendingForReview = ()=>{
                 showRejectAllModal && 
                     <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
             }
-            {
-              (!(detailTableRowData&& detailTableRowData.length>0 && detailTableRowData)) ?
-
-              <TaskPendingTaskBar
-              isSideBarOpen={isSideBarOpen}
-              disableSubmit={selectedRows!==detailTableRowData.length}
-              onCancel={onCancel}
-              onSubmit={onTaskSubmit}
-              />
-              :
-
-              <TaskPendingTaskBar
-              isSideBarOpen={isSideBarOpen}
-              disableSubmit={false}
-              onCancel={onCancel}
-              onSubmit={mtoSubmitTask}
-              />
-
-            }
+            <TaskPendingTaskBar
+                isSideBarOpen={isSideBarOpen}
+                disableSubmit={selectedRows!==detailTableRowData.length}
+                onCancel={onCancel}
+                onSubmit={onTaskSubmit}
+            />
         </TaskPendingWrapper>
         
     )

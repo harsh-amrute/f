@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
+
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectGroupedMasters";
+
+
 import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
+
+
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import { SCContainer } from "../ViewModify/styles";
@@ -10,12 +15,14 @@ import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
+
+
 import { useUserData } from "../../../../../context";
 import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
 import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
-import { MDMMasterState,Field } from "../../../../types/MDM";
 
+import { MDMMasterState,Field } from "../../../../types/MDM";
 
 const AddRecord = () => {
 
@@ -55,9 +62,7 @@ const AddRecord = () => {
         onEditOnlineSave,
         isDataAvailableLocally,
         isOverlayVisible,
-        errorCount,
-        onMTOSaveBufferData,
-        onMTOSaveAsDraft
+        errorCount
 
     } = useViewModify('add');
 
@@ -74,8 +79,7 @@ const AddRecord = () => {
         showMasterGroup,
         showMaster,
         options,
-        selectedOptions,
-        onDataChange
+        selectedOptions
     } = useAdd()
     
     useEffect(()=>{
@@ -90,15 +94,17 @@ const AddRecord = () => {
     },[isTableDataLoading])
 
 
-
     if(isLoading){
         return <VFLoader/>
     }
 
+    
+
+
     if(isSelectMasterOpen){
       return(
           <SelectGroupedMasters  
-              onSubmit={handleSubmitSelectMaster}  
+              onSubmit={handleSubmitSelectMaster}  //console.log()
               onCancel={onCancel}
               handleOnClickMaster={handleOnClickMaster}
               allMasters={allMasters}
@@ -113,13 +119,6 @@ const AddRecord = () => {
     }
     const dispatch = useDispatch();
 
-
-    const onGridReady = (params: any) => {
-      params.api.sizeColumnsToFit();
-    };
-
-   
-
     return(
         <React.Fragment>
           <SCContainer>
@@ -133,36 +132,29 @@ const AddRecord = () => {
                 newTabHandler={addNewMaster}
                 >
                   <VFTable
-                  height={"95%"}
-                  ref={ref}
-                  columnDefs={activeMaster.colDefs}
-                  onGridReady={onGridReady}
-
-                  rowData={activeMaster.rowData}
+                    height={"95%"}
+                    ref={ref}
+                    columnDefs={activeMaster.colDefs}
+                    rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}
-                    statusBar={{
-                      statusPanels: isDataAvailableLocally?[
-                        { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                        { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                        { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                  statusBar={{
+                    statusPanels: isDataAvailableLocally?[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ]:
                     [],
                   }}
-                  defaultColDef= {
-                    {flex: 1}
-                  }
-                  onCellEditingStopped={activeMaster.isMTO? onDataChange: ()=>{return null}}
                   />
-                {/* } */}
                   <div style={{display:'none'}}>                
                     <VFTable
                       ref={tempRef}
                       rowData={tempGridData}
                       {...tempAgGridProps}
-                      />
+                    />
                   </div>
 
               </VFTab>
@@ -256,10 +248,6 @@ const AddRecord = () => {
             onSubmitConflictData={()=>console.log('')}
             onDeleteOnlineSubmit={()=>console.log('')}
             masterId={activeMaster.id}
-            mtoSaveData={true}
-            onMTOSaveData={ onMTOSaveBufferData}
-            isMTOSaveDataDisabled={activeMaster.rowData.length === 0}
-            onMTOSaveAsDraft={onMTOSaveAsDraft}
           />
         }
         </React.Fragment>
