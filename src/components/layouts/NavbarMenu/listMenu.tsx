@@ -493,7 +493,7 @@ export const listMenuParent: any = [
     lp_attr : true,
     app_id : 3,
     lp_img : "/assets/img/Prod-icon.svg",
-    url: "/production-planning-and-scheduling/due-date-quotation",
+    url: "/production-planning-scheduling/deptwise-bm-report",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager","MasterScheduler"],
     child: [

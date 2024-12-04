@@ -70,8 +70,8 @@ const ModalAdvanedPermissions = (props: any) => {
       const newApplicationId = storePermission[getActiveApplicationIndex()-1].application_id;
       setStepperDetails([...stepperDetails.map((step:any)=>{
         const stepCopy = {...step};
-        if(step.id === newApplicationId) stepCopy.currentState='active';
-        if(step.id === activeApplication) stepCopy.currentState='pending';
+        if(step.id === newApplicationId) stepCopy.currentState && ( stepCopy.currentState='active');
+        if(step.id === activeApplication)stepCopy.currentState &&  (stepCopy.currentState='pending');
         return stepCopy;
       })]);
       setActiveApplication(newApplicationId);
