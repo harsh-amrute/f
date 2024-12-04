@@ -199,7 +199,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
     const SaveRoute = async () => {
         const data = convertToRequiredFormat(selectedRoute, lineCCR);
         try {
-            const response = await saveRouteData({body : JSON.parse(JSON.stringify(data)), NoDDQ : 1})
+            const response = await saveRouteData({body : JSON.parse(JSON.stringify(data)), update_order_wip : 1})
             if (response.status === 200) {
                 setShowModal(false);
                 setLoadDataParams({ ...loadDataParams, load_graph_data: true })

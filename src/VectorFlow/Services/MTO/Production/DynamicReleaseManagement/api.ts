@@ -87,7 +87,7 @@ export namespace DynamicReleaseManagementService {
                 'Content-Type': 'application/json',
             },
             params : {
-                NoDDQ : params.NoDDQ
+                update_order_wip : params.update_order_wip
             }
         })
     }
