@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState,useEffect } from "react";
 import {
   SCProfileOverView,
   SCSubTitleBox,
@@ -24,7 +24,6 @@ import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
-import { useEffect } from "react";
 
 
 interface ManageUsersProps{
