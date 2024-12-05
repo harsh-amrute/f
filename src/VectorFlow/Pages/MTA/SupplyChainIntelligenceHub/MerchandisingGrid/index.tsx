@@ -71,7 +71,7 @@ const MCGrid = () =>{
     <p style={{color: themeUi === "REGALBLAZE" ? '#c7810e' : '#BC3D81',  fontSize:'13px', fontWeight:500, fontFamily:'Roboto', paddingLeft:'7px' }}> {} / {}</p>
 
     </div>         
-   <ChartView data={data}/>
+   {/* <ChartView data={data}/> */}
         
     </>
     )

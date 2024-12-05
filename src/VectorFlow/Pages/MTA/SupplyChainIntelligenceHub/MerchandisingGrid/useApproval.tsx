@@ -116,7 +116,7 @@ const useApproval = () => {
     }
     else{
       return (
-        <div className="show-name">Aka</div>
+        <div className="show-name"></div>
       );
     }
     return;
