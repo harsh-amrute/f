@@ -2,7 +2,7 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText, MTOPoogiTableContainer, PoogiSection, PoogiAddButtonWrapper } from "./styles";
 import { useUserData } from "../../../../../context";
-import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
+import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMasterMTO";
 import { generateOptions } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";

@@ -70,8 +70,8 @@ const ModalAdvanedPermissions = (props: any) => {
       const newApplicationId = storePermission[getActiveApplicationIndex()-1].application_id;
       setStepperDetails([...stepperDetails.map((step:any)=>{
         const stepCopy = {...step};
-        if(step.id === newApplicationId) stepCopy.currentState && ( stepCopy.currentState='active');
-        if(step.id === activeApplication)stepCopy.currentState &&  (stepCopy.currentState='pending');
+        if(step.id === newApplicationId) stepCopy.currentState='active';
+        if(step.id === activeApplication) stepCopy.currentState='pending';
         return stepCopy;
       })]);
       setActiveApplication(newApplicationId);
@@ -146,24 +146,18 @@ const ModalAdvanedPermissions = (props: any) => {
       // eslint-disable-next-line no-unsafe-optional-chaining
       lcPermissionRef.current?.getLcPermissionValue();
 
-    // if(brand?.length > 0 && lcRegion?.length > 0) {
+    if(brand?.length > 0 && lcRegion?.length > 0) {
       // setIsLoadSpinner(true);
-      console.log(brand);
-      console.log(lcRegion);
-      console.log(productPermissions);
+
       const formData: any = {
         ...infoUser,
         tc: true,
-        // product_permissions: productPermissions,
-        // location_permissions: locationPermissions
-        product_permissions: [],
-        location_permissions: []
+        product_permissions: productPermissions,
+        location_permissions: locationPermissions,
       };
 
-
       setIsLoadSpinner(true);
- 
-      if (contentModal.callApi === 1 ) {
+      if (contentModal.callApi === 1) {
         mutateRegister(formData, {
           onSuccess: (res: any) => {
             setIsLoadSpinner(false);
@@ -226,13 +220,12 @@ const ModalAdvanedPermissions = (props: any) => {
           },
         });
       }
-    // } else {
-    //   notifyError(
-    //     "somethin .."+
-    //     t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
-    //   );
-    //   setIsLoadSpinner(false);
-    // }
+    } else {
+      notifyError(
+        t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
+      );
+      setIsLoadSpinner(false);
+    }
   };
 
   
@@ -242,18 +235,15 @@ const ModalAdvanedPermissions = (props: any) => {
     const currentProductPermission = prdPermissionRef.current?.getPrdPermissionValue();
     const currentLocationPermission = lcPermissionRef.current?.getLcPermissionValue();
 
-    console.log(currentPermission, currentProductPermission, currentLocationPermission);
+    if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
+      t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
+    );
 
-
-    // if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
-    //   t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
-    // );
-
-    // if(currentPermission){
-    //   currentPermission.productPermission = currentProductPermission;
-    //   currentPermission.locationPermission = currentLocationPermission;
-    //   setStorePermission(storePermissionCopy)
-    // }
+    if(currentPermission){
+      currentPermission.productPermission = currentProductPermission;
+      currentPermission.locationPermission = currentLocationPermission;
+      setStorePermission(storePermissionCopy)
+    }
     
     const newApplicationId = storePermission[getActiveApplicationIndex()+1].application_id;
     setStepperDetails([...stepperDetails.map((step:any)=>{
@@ -341,7 +331,7 @@ const ModalAdvanedPermissions = (props: any) => {
 
                       <PrdPermissions
                         ref={prdPermissionRef}
-                        product={allPermissions?.product_permission}
+                        product={allPermissions?.product_permission? allPermissions.product_permission: []}
                         valueSelectPrd={getCurrentProductPermission()}
                         handleSelectParent={handleSelectParent}
                         handleSelectChild={handleSelectChild}
@@ -349,7 +339,7 @@ const ModalAdvanedPermissions = (props: any) => {
                       />
                       <LcPermissions
                         ref={lcPermissionRef}
-                        location={allPermissions?.location_permission}
+                        location={allPermissions?.location_permission?allPermissions.location_permission: []}
                         valueSelectLc={getCurrentLocationPermission()}
                         handleSelectParent={handleSelectParent}
                         handleSelectChild={handleSelectChild}

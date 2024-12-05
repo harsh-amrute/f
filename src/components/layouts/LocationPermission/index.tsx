@@ -9,20 +9,19 @@ import {
   SCItemMulSelect
 } from "./styles";
 
+import { v4 as uuidv4 } from "uuid";
+
 const LocationPermission = ({ ...props }: any) => {
   const { prdPermissions, title } = props;
-  
+
   return (
     <>
       <SCSwapPermission>
-        <SCtitle>
-          {title}
-        </SCtitle>
-
+        <SCtitle>{title}</SCtitle>
         <SCSwapContent className="scroll-style">
           {prdPermissions.map((item: any) => {
             return (
-              <SCSwapItem className="role-item" key={crypto.randomUUID()}>
+              <SCSwapItem className="role-item" key={uuidv4()}>
                 <SCFlexCenter className="role-item-per--content">
                   <SCItemTitle className="role-item--text">{item.title}</SCItemTitle>
                   <SCItemMulSelect className="role-item--input">
@@ -33,7 +32,7 @@ const LocationPermission = ({ ...props }: any) => {
                       setValue={item.setValue}
                       handleListChild={item.handleAction}
                       disabled={false}
-                      key={crypto.randomUUID()}
+                      key={uuidv4()}
                     />
                   </SCItemMulSelect>
                 </SCFlexCenter>
@@ -47,3 +46,4 @@ const LocationPermission = ({ ...props }: any) => {
 };
 
 export default LocationPermission;
+

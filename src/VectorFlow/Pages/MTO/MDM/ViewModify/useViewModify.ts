@@ -2172,12 +2172,12 @@ const useViewModify = (pageType: string) => {
       newVal.ib= (e.ib==="false"?0: 1);
       newVal.mlt = parseInt(e.mlt);
       newVal.slt = parseInt(e.slt);
+      newVal.bid = null;
 
 
       BufferPostObj.buffData.push(_.omit(newVal,['editable','err']));
     })
 
-    console.log("bufferPostObj", BufferPostObj);
 
     try{
       const response = await saveBufferMasterTask(BufferPostObj);

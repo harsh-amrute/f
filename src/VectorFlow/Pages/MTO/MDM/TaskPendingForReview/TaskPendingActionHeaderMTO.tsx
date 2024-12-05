@@ -9,7 +9,6 @@ const TaskPendingActionHeader = (props:any)=>{
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-
   const dispatch = useDispatch();
 
 
@@ -21,6 +20,7 @@ const TaskPendingActionHeader = (props:any)=>{
 
     // const onUnCheckAll = ()=>{
     //     props.api.forEachNode((rowNode:any)=>{
+    //         rowNode.setDataValue('status','')
     //         rowNode.setDataValue('status','')
     //         rowNode.setSelected(false)
     //     })
@@ -50,15 +50,12 @@ const TaskPendingActionHeader = (props:any)=>{
       else{
         props.setActionStatus("Reject All");
         props.setMtoActionStatus("RejectAll");
-
         props.api.deselectAll();
         dispatch(SET_TASK_PENDING_SELECTED([]))
 
       }
 
-      props.api.refreshCells();
-      
-        
+      props.api.refreshCells();      
     }
 
     

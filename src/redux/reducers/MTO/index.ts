@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import { MTOStore } from '../../../VectorFlow/types/MTO';
-import { SAVE_ANALYTICS_DATA, DAYWISE_COVERAGE_ANALYTICS, PROCPLANNING_ANALYTICS, RESOURCE_UTIL_ANALYTICS, BM_REPORT_ANALYTICS, SET_TASK_PENDING_SELECTED ,APPLIED_FILTERS, SET_POOGI_INITIAL_DATA, SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW, SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA} from '../../actions/MTO';
+import { SAVE_ANALYTICS_DATA, DAYWISE_COVERAGE_ANALYTICS, PROCPLANNING_ANALYTICS, RESOURCE_UTIL_ANALYTICS, BM_REPORT_ANALYTICS, SET_TASK_PENDING_SELECTED ,APPLIED_FILTERS, SET_POOGI_INITIAL_DATA, SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW, SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_TASK_PENDING_ROW_DATA} from '../../actions/MTO';
 
 
 
@@ -53,6 +53,9 @@ const setBufferModifyData = (state: any, action: PayloadAction<any>)=>{
     state.bufferModifyData = action.payload;
 }
 
+const setTaskPendingRowData  = (state: any, action: PayloadAction<any>)=>{
+    state.taskPendingRowData = action.payload;
+}
 
 
 const mtoReducer = (initialState: MTOStore) => createReducer(initialState, (builder) => {
@@ -68,6 +71,7 @@ const mtoReducer = (initialState: MTOStore) => createReducer(initialState, (buil
     builder.addCase(SET_POOGI_INITIAL_DATA, setPoogiIntialData)
     builder.addCase(SET_BUFFER_INITIAL_DATA, setBufferInitialData)
     builder.addCase(SET_BUFFER_MODIFY_DATA, setBufferModifyData)
+    builder.addCase(SET_TASK_PENDING_ROW_DATA, setTaskPendingRowData);
 })
 
 export default mtoReducer;
