@@ -162,7 +162,6 @@ const OverallBmReport = () => {
     // const themeUi = user?.user?.theme_ui;
 
     const dispatch = useDispatch();
-
     useEffect(() => {
         try {
             getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
@@ -471,7 +470,7 @@ const OverallBmReport = () => {
             setIsGridLoading(true)
             const formatedFilters = formatFilterJSON(appliedFilters);
             
-            const gridData = await getOverallBMReportData({ page: currentPage, appliedFilters: formatedFilters });
+            const gridData = await getOverallBMReportData({ page: currentPage, appliedFilters: formatedFilters ,user});
             if(!gridData.data.data || gridData.data.data.length===0){
                 setGridDataCount(0);
                 setGridData([]);
