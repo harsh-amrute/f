@@ -81,10 +81,13 @@ export namespace DynamicReleaseManagementService {
 
     }
 
-    export const saveRouteData = async (body: any) => {
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/updateOrderDataRoute/`, body, {
+    export const saveRouteData = async (params: any) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/updateOrderDataRoute/`, params.body, {
             headers: {
                 'Content-Type': 'application/json',
+            },
+            params : {
+                update_order_wip : params.update_order_wip
             }
         })
     }

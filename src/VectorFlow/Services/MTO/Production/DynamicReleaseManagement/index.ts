@@ -15,9 +15,9 @@ export const useGetDynamicReleaseData = () => {
 }
 
 export const useSaveRouteData = () => {
-    return useMutation(async (body: any) => {
+    return useMutation(async (params: any) => {
 
-        return DynamicReleaseManagementService.saveRouteData(body)
+        return DynamicReleaseManagementService.saveRouteData(params)
 
 
     })
