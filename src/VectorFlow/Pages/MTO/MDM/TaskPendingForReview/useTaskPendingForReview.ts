@@ -14,7 +14,7 @@ import { useUserData } from "../../../../../context"
 import TaskPendingActionRendererMTO from "./TaskPendingActionRendererMTO"
 import TaskPendingActionHeaderMTO from "./TaskPendingActionHeaderMTO"
 import _ from "lodash"
-import { SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO"
+import { SET_TASK_PENDING_ROW_DATA, SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO"
 
 const useTaskPendingForReview = ()=>{
     const ref = useRef<GridRef>()
@@ -28,7 +28,11 @@ const useTaskPendingForReview = ()=>{
     const [isViewTableOpen,setIsViewTableOpen] = useState(true)
     const [viewTableColDefs,setViewTableColDefs] = useState<ColDef[] | ColGroupDef[]>()
     const [detailTableColDefs,setDetailTableColDefs] = useState<ColDef[] | ColGroupDef[]>()
-    const [detailTableRowData,setDetailTableRowData] = useState<any[]>([])
+    const detailTableRowData = useSelector((state: any)=> state.mto.taskPendingRowData)
+    const setDetailTableRowData = (val: any)=>{
+        dispatch(SET_TASK_PENDING_ROW_DATA(val));
+    }
+
     // const [recordCount,setRecordCount] = useState<number>(0)
     const [selectedRows,setSelectedRows] = useState<number>(0)
     const [currentPage,setCurrentPage] = useState<number>(1)

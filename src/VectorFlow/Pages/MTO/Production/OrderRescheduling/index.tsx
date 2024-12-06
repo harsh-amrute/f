@@ -283,6 +283,7 @@ const OrderRescheduling = () => {
         Reason: {
             colId: 'rs',
             field: 'rs',
+            minWidth: 260,
             headerName: "Reason",
             hide: false,
             autoHeaderHeight: true,
@@ -462,7 +463,7 @@ const OrderRescheduling = () => {
 
             });
             params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-            params.api.autoSizeAllColumns();
+            // params.api.autoSizeAllColumns();
             setCurrentGridRef(refGraph1);
         };
 

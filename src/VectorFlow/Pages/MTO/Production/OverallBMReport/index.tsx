@@ -414,7 +414,7 @@ const OverallBmReport = () => {
 
         }));
 
-        if(isReset){
+        if(isReset || !initialColumnState){
             return res;
         }
 

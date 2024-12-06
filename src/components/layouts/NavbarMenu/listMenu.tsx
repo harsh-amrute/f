@@ -493,7 +493,7 @@ export const listMenuParent: any = [
     lp_attr : true,
     app_id : 3,
     lp_img : "/assets/img/Prod-icon.svg",
-    url: "/production-planning-scheduling/enquiry-response",
+    url: "/production-planning-scheduling/deptwise-bm-report",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager","MasterScheduler"],
     child: [
@@ -513,7 +513,7 @@ export const listMenuParent: any = [
         name: "navbar.listMenuParent.prodAndPlanningScheduling.orderRescheduling",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-and-scheduling/order-rescheduling",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","MasterScheduler"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.fullKitAssignment",
@@ -531,59 +531,59 @@ export const listMenuParent: any = [
         name: "navbar.listMenuParent.prodAndPlanningScheduling.deptWiseBMReport",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-scheduling/deptwise-bm-report",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager","MasterScheduler"],
       },
       {
         name: "navbar.listMenuParent.prodAndPlanningScheduling.overallBMReport",
         img: "/assets/img/nav/arrow_down.svg",
         url: "/production-planning-scheduling/overall-bm-report",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
+        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager","MasterScheduler"],
       },
-      {
-        name: "navbar.listMenuParent.prodAndPlanningScheduling.insightAndTrends",
-        img: "/assets/img/nav/arrow_down.svg",
-        url: "",
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-        child: [
-          {
-            name: "FOL Summary",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "/production-planning-scheduling/insights-and-trends/fol-summary",
-            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
-          },
-          {
-            name: "BM Trends",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "/production-planning-scheduling/insight-and-trends/bm-trends",
-            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
-          },
-          {
-            name: "STPL & Full Kits",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "/production-planning-scheduling/insight-and-trends/stpl-full-kits",
-            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
-          },
-          {
-            name: "Elapsed Time",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: '/production-planning-scheduling/insights-and-trends/elapsed-time',
-            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
-          },
-          {
-            name: "Orders At Risk",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "/production-planning-scheduling/insight-and-trends/order-at-risk",
-            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
-          },
-          {
-            name: "Order Balance",
-            img: "/assets/img/nav/arrow_down.svg",
-            url: "/production-planning-scheduling/insight-and-trends/order-balance",
-            role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
-          },
+      // {
+      //   name: "navbar.listMenuParent.prodAndPlanningScheduling.insightAndTrends",
+      //   img: "/assets/img/nav/arrow_down.svg",
+      //   url: "",
+      //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      //   child: [
+      //     {
+      //       name: "FOL Summary",
+      //       img: "/assets/img/nav/arrow_down.svg",
+      //       url: "/production-planning-scheduling/insights-and-trends/fol-summary",
+      //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+      //     },
+      //     {
+      //       name: "BM Trends",
+      //       img: "/assets/img/nav/arrow_down.svg",
+      //       url: "/production-planning-scheduling/insight-and-trends/bm-trends",
+      //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+      //     },
+      //     {
+      //       name: "STPL & Full Kits",
+      //       img: "/assets/img/nav/arrow_down.svg",
+      //       url: "/production-planning-scheduling/insight-and-trends/stpl-full-kits",
+      //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+      //     },
+      //     {
+      //       name: "Elapsed Time",
+      //       img: "/assets/img/nav/arrow_down.svg",
+      //       url: '/production-planning-scheduling/insights-and-trends/elapsed-time',
+      //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+      //     },
+      //     {
+      //       name: "Orders At Risk",
+      //       img: "/assets/img/nav/arrow_down.svg",
+      //       url: "/production-planning-scheduling/insight-and-trends/order-at-risk",
+      //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+      //     },
+      //     {
+      //       name: "Order Balance",
+      //       img: "/assets/img/nav/arrow_down.svg",
+      //       url: "/production-planning-scheduling/insight-and-trends/order-balance",
+      //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
+      //     },
 
-        ]
-      },
+      //   ]
+      // },
     ],
   },
   {
@@ -592,10 +592,8 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/miscellaneousReports",
     url: "",
     status: false,
-    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","DBMManager","BPRManager","MasterUpdater","MasterApprover","BMReportManager"],
+    role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","DBMManager","BPRManager","MasterUpdater","MasterApprover","BMReportManager","MasterScheduler"],
     child: [
-
-
       // {
       //   name: "navbar.listMenuParent.miscellaneousReports.bufferPenetrationReport",
       //   img: "/assets/img/nav/arrow_down.svg",

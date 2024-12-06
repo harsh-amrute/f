@@ -89,7 +89,7 @@ const SelectMaster = (
 
     const onCancel = () => {
         dispatch(RESET_STATE());
-        navigate('/smaster-data-management/control-panel');
+        navigate('/mto/master-data-management/control-panel');
     }
 
     const isAnyMasterChecked = masters.length > 0 && masters.every(master => !master.isChecked);
@@ -123,6 +123,7 @@ const SelectMaster = (
                             }}
                         >
                             {data?.map((master: MDMMasterState) => {
+                                if (master.isMTO) {
                                     return (
                                         <ButtonOutlineStatus
                                             status={getFilterButtonStatus(master.id)}
@@ -133,6 +134,7 @@ const SelectMaster = (
                                             style={{ fontSize: '13px', fontFamily: 'Roboto', letterSpacing: '0px', fontWeight: 400, lineHeight: '15px', width: 'auto', minWidth: '90px' }}
                                         />
                                     )
+                                }
                             })}
                         </Container>
                     </div>
