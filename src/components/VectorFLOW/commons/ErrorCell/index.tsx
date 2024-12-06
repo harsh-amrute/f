@@ -22,8 +22,44 @@ const ErrorCell = (props:ICellRendererParams)=>{
 
     const message = props.data.error;
 
-    const messages = message?.split('.').filter((msg:string)=>msg.length > 1)
+
+    function customSplitter(str:string,exec:(s:number)=>boolean){
+        const result:Array<string> = []
+        let currStr = ""
+        for (let index = 0; index < str.length; index++) {
+            if(exec(index)){
+                result.push(currStr)
+                currStr = ""
+            }
+            else{
+                currStr += str[index]
+            }
+        }
+        if (currStr.length > 0)result.push(currStr);
+            
+        return result
+    }
+
+    // const messages = message?.split('.').filter((msg:string)=>msg.length > 1)
+
+    const messages = customSplitter(message, (s) => {
+        try {
+            const prevChar = message[s - 1];
+            const nextChar = message[s + 1];
     
+    
+            return (
+                message[s] === "." &&
+                (isNaN(parseInt(prevChar)) ||
+                isNaN(parseInt(nextChar)))
+            );
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    });
+
+
     const getFomattedMessage = (msg:string) => {
         if(msg.length > 30) {
             return msg.slice(0,30)+'...'

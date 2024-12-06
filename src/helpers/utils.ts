@@ -811,19 +811,25 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
 }
 
 export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShowChart?: any) => {
+
   let result: any[] = []
   const tempFields = [...fields]
   tempFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
 
   result = tempFields.map((f: any) => {
+
+    const cellFilter = getCellFilter(f.dataType)
+    const cellDataType = getCellDataType(f.dataType)
+
     return {
       field: f.key,
       colId: f.key,
       headerName: f.displayName,
       hide: !f.visible,
       floatingFilter: true,
-      filter: getCellFilter(f.dataType),
-      cellDataType: getCellDataType(f.dataType),
+      filter: cellFilter,
+      cellDataType: cellDataType,
+      onCellClicked:(params:any)=>console.log(params.data),
       tooltipComponent: 'conflictErrorToolTip',
       suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
@@ -835,6 +841,13 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
           return seasonalityQuickFilterData.find((s) => s.id.includes(id))?.label
 
         }
+
+        // if (cellDataType === 'number') {
+        //   return params.value === null || params.value === undefined
+        //     ? ''
+        //     : parseFloat(params.value).toLocaleString(); // Format number properly
+        // }
+
         return params.data[f.key]
       },
       // suppressColumnsToolPanel: f.isEdit ? false : true,
@@ -1610,6 +1623,22 @@ export const getActionId = (actionName: string): DraftActionType => {
   throw new Error('Invalid action Name')
 }
 
+export const formatAndValidateDraftRowData = (colDefs:Array<ColDef>,rowData:Array<any>):Array<any>=>{
+  const result = [...rowData]
+  
+  result.forEach((row)=>{
+    colDefs.forEach((col)=>{
+      if(col.colId && row[col.colId]){
+        if(col.cellDataType === "number"){
+          row[col.colId] = parseFloat(row[col.colId])
+        }
+      }
+    })
+  })
+
+  return result
+}
+
 
 export const createMastersStateFromDraftData = (draftData: any[], fields: Master[]): MDMMasterState[] => {
 
@@ -1617,11 +1646,12 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
   draftData.map((master) => {
     const existingMaster = fields.find((m: Master) => m.id == master.MasterId)
     if (existingMaster) {
+      const colDefs = master.GridState.length > 0 ? JSON.parse(master.GridState) : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id)
       masters.push({
         id: existingMaster.id,
         name: existingMaster.name,
         colDefs: master.GridState.length > 0 ? JSON.parse(master.GridState) : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id),
-        rowData: master.DataMaster || [],
+        rowData:formatAndValidateDraftRowData(colDefs,master.DataMaster)  || [],
         isChecked: true,
         filters: [{
           id: generateRandomId(),

@@ -24,7 +24,6 @@ const useAdd=()=>{
     const navigate = useNavigate();
 
 
-
     const isSelectMasterOpen = useSelector((state:RootState)=>state.mdm.isSelectMasterOpen)
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
 
@@ -315,26 +314,26 @@ const useAdd=()=>{
           const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
 
           if(submittedRecordsCount === totalRecords){
-            notifyError("Addition Successfull")
+            notifySuccess("Addition Successfull")
           }
 
           else if(errorRowData.length > 0 || conflictCount > 0){
 
-          if(errorRowData.length && conflictCount){
-            if(submittedRecordsCount === 0){
-              notifyError(`${errorRowData.length} records have error and ${conflictCount} recordshave conflicts. `)
+            if(errorRowData.length && conflictCount){
+              if(submittedRecordsCount === 0){
+                notifyError(`${errorRowData.length} records have error and ${conflictCount} recordshave conflicts. `)
+              }
+              else notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error and ${conflictCount} records have conflicts. `)
             }
-            else notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error and ${conflictCount} records have conflicts. `)
-           }
 
-           else if(errorRowData.length){
-            notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error. `)
-           }
-           else{
-            notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${conflictCount} records have conflicts. `)
-           }
+            else if(errorRowData.length){
+              notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error. `)
+            }
+            else{
+              notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${conflictCount} records have conflicts. `)
+            }
           }
-          else notifySuccess(`Additions Submitted Successfully`);
+          else notifySuccess("Addition Successfull")
           dispatch(UPDATE_PROGRESS_STATE('submitted'));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           if(draftID.length > 0){

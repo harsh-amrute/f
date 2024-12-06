@@ -82,6 +82,11 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
                     />
                 </Content>
             )}
+            {currTab === 3 && (
+                <Content>
+                    <AddRole cb={()=>setCurrTab(0)}/>
+                </Content>
+            )}
             
             
         </Drawer>

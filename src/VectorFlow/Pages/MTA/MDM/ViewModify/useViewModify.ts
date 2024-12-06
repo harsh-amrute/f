@@ -791,6 +791,7 @@ const useViewModify = (pageType:string) => {
           },1000)
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
+          console.log(response)
           clearInterval(intervalID);
           let result = JSON.parse(response.data)
           const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
@@ -828,6 +829,7 @@ const useViewModify = (pageType:string) => {
         }
          catch (error:any) {
           toast.dismiss();
+          console.error(error)
           notifyError(error.message);
           setIsOverlayVisible(false);
           if(intervalID) clearInterval(intervalID);
