@@ -1,84 +1,33 @@
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
-import RetailActionToolBar from "../../../../../components/layouts/RetailActionToolBar"
-import { useUserData } from "../../../../../context"
-import useApproval from "./useApproval";
-import "./styles.css";
+import { useState } from "react";
+import useMCGrid from "./useMCGrid";
+import ChartView from "./ChartView";
+import MCGridView from "./GridView"; 
+import { TableLabelStatus } from "../../../../../VectorFlow/types/MCGrid";
 
-import ChartView from "./ChartView"
-import useMCGrid from "./useMCGrid"
+const MCGrid = () => {
+    const { gridData: data } = useMCGrid();
 
+    const [view, setView] = useState<'chart' | 'grid'>('chart'); 
+    const [status, setStatus] = useState<TableLabelStatus>('surplus');
 
-
-
-const MCGrid = () =>{
-    const {
-        MCGridColumnDefs,
-        McGridRowData,
-        gridOptions,
-        agGridProps
-    } = useApproval()
-
-    const {
-      gridData:data
-  } = useMCGrid()
-
-    const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
+    const handleViewChange = () => {
+        if (view === 'chart') {
+            setView('grid'); 
+        }
+    };
+    console.log(view)
 
     return (
-    <>
-    <RetailActionToolBar 
-        themeUi={themeUi} 
-        view={'grid'} 
-        currentStatus={'Edit'}
-        handleSubmitButton={()=>console.log('')} 
-        handleOnCancel={()=>console.log('')} 
-        handleSelectChange={()=>console.log('')} 
-        onViewChange={()=>console.log('')} 
-        onCallBack={()=>console.log('')}
-        />
+        <div>
+            <div onClick={handleViewChange}>
+                {view === 'chart' ? (
+                    <ChartView data={data} setStatus={setStatus} />
+                ) : (
+                    <MCGridView view={view} setView={setView} status={status} setStatus={setStatus} />
+                )}
+            </div>
+        </div>
+    );
+};
 
- 
-   <div className="ag-theme-mcgrid">
-
-   <VFTable
-          {...agGridProps}
-            columnDefs={MCGridColumnDefs}
-            rowData={McGridRowData}
-           
-           suppressRowClickSelection={true}
-           gridOptions={gridOptions}
-            enableRangeSelection={true} 
-            pagination={true}
-            rowSelection="multiple"
-              statusBar = {{
-                statusPanels: [
-                { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                { statusPanel: 'agAggregationComponent', align:'left' },
-                ],
-              }} 
-            height={'400px'}
-            disableZoomScaling={true}
-              />
-   </div>
-
-   <div style={{border:'1px solid #C2C2C2', width:'230px', height:'35px', borderRadius:'20px', marginLeft:'20px', display:'flex', alignItems:'center'}}>   
-   <img src={themeUi === "REGALBLAZE" ? '/assets/img/VectorFLOW/BPR/bulb_icon_yellow.svg' : '/assets/img/VectorFLOW/BPR/bulb_icon.svg'} style={{ paddingLeft: '10px' }} height={28} width={28}/>  
-    <p style={{paddingLeft:'10px', fontSize:'13px', fontWeight:500, fontFamily:'Roboto'}}>Loss Of Sale Prevented</p>
-    <p style={{color: themeUi === "REGALBLAZE" ? '#c7810e' : '#BC3D81',  fontSize:'13px', fontWeight:500, fontFamily:'Roboto', paddingLeft:'7px' }}> {} / {}</p>
-
-    </div>         
-   {/* <ChartView data={data}/> */}
-        
-    </>
-    )
-}
-
-
-
-
-
-export default MCGrid
+export default MCGrid;

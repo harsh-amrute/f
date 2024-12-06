@@ -1,4 +1,5 @@
 
+
   export interface DefaultStoreDataType {
     stores:number
     "grid-points":number
@@ -87,6 +88,7 @@ export interface FloatingStoreDataType {
       medium: FloatingStoreDataType;
       high: FloatingStoreDataType;
     };
+    onClick:any
   }
   
   export type TableLabelStatus = "low" | "medium" |  "high" | "surplus" | "complete" | "incomplete" | "very-incomplete"
@@ -94,4 +96,5 @@ export interface FloatingStoreDataType {
   export interface TableLabelProps  {
       text:string
       status: TableLabelStatus
+      onClick?:any
   }

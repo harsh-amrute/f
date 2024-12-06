@@ -1,11 +1,11 @@
 import { ColDef, ColGroupDef,IRichCellEditorParams,ICellEditorParams,ValueFormatterParams} from "ag-grid-enterprise";
-import { useGetRemovalData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/MCGrid";
+import { useGetRemovalData } from "../../../../../Services/MTA/SupplyChainIntelligenceHub/MCGrid";
 import { useEffect, useState, useMemo } from "react";
-import { notifyLoader, notifySuccess } from "../../../../../helpers/notify";
+import { notifyLoader, notifySuccess } from "../../../../../../helpers/notify";
 import { toast } from "react-toastify";
-import { useUserData } from "../../../../../context"
-import './styles.css'
-import {  } from "../../../../..";
+import { useUserData } from "../../../../../../context"
+import '../styles.css'
+import {  } from "../../../../../..";
 import { AgGridReactProps } from "ag-grid-react";
 
 
@@ -208,14 +208,13 @@ const useApproval = () => {
   },[])
 
   const McGridRowData = [...RemovalData];
-  // console.log(RemovalData)
    
     return {
         MCGridColumnDefs,
         McGridRowData,
         gridOptions,
         agGridProps  ,
-        selected      
+        selected    ,
     }
 }
 export default  useApproval

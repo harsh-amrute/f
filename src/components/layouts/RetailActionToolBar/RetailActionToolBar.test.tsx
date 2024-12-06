@@ -15,6 +15,7 @@ describe('RetailActionToolBar component', () => {
     handleSubmitButton: jest.fn(),
     currentStatus: 'Save',
     handleOnCancel: jest.fn(),
+    setView:jest.fn()
   };
 
   it('renders correctly', () => {

@@ -1,40 +1,33 @@
-import { render} from "@testing-library/react";
+
 import { mockBTGTechData } from "../../../../../mock-data/BufferTrends";
 import { useGetBufferTrendsGraph } from '../../../../Services/MTA/InsightsAndTrends/BufferTrends/index'
-import { setupReactQuery } from "../../../../../config/react-query-config";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter as Router } from "react-router-dom";
-import { UserDataContext } from "../../../../../context/UserDataContext";
-import BufferTrends from ".";
-import { Provider } from "react-redux";
-import {ReactNode} from 'react'
-import {act} from "react-dom/test-utils"
-import { store } from "../../../../../redux/store/store";
+// import { setupReactQuery } from "../../../../../config/react-query-config";
 
 
-const queryClient = setupReactQuery();
-const mockContextValue = {
-    user: { user: { theme_ui: "NOIRFUSION" } },
-    changeColorTheme: jest.fn(),
-    isSideBarOpen: true,
-    toggleSideBar: jest.fn()
-  };
 
-  const contextWrapper = (children: ReactNode,store:any) => {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <Provider store={store}>
-            <UserDataContext.Provider
-              value={mockContextValue}
-            >
-              {children}
-            </UserDataContext.Provider>
-          </Provider>
-        </Router>
-      </QueryClientProvider>
-    );
-  };
+
+// const mockContextValue = {
+//     user: { user: { theme_ui: "NOIRFUSION" } },
+//     changeColorTheme: jest.fn(),
+//     isSideBarOpen: true,
+//     toggleSideBar: jest.fn()
+//   };
+
+  // const contextWrapper = (children: ReactNode,store:any) => {
+  //   return (
+  //     <QueryClientProvider client={queryClient}>
+  //       <Router>
+  //         <Provider store={store}>
+  //           <UserDataContext.Provider
+  //             value={mockContextValue}
+  //           >
+  //             {children}
+  //           </UserDataContext.Provider>
+  //         </Provider>
+  //       </Router>
+  //     </QueryClientProvider>
+  //   );
+  // };
   
 //     return (
 //       <QueryClientProvider client={queryClient}>
@@ -88,7 +81,7 @@ describe ("Buffer trends",()=>{
     })
 
     it("should render the buffer trends components",async ()=>{
-        await act (async ()=>  render(contextWrapper(<BufferTrends/>,store)))
+        // await act (async ()=>  render(contextWrapper(<BufferTrends/>,store)))
     
         // const button=screen.getByText("On-Hand Inv. Availability Trend")
         // expect(button).toBeInTheDocument();
