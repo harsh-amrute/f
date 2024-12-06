@@ -873,7 +873,7 @@ const OverallBmReport = () => {
                                 "aggFunc": null,
                                 "rowGroup": false,
                                 "rowGroupIndex": null,
-                                "pivot": child.colId==='BPP'? true:false,
+                                "pivot": false,
                                 "pivotIndex": null,
                                 "flex": null
                               })
@@ -889,7 +889,7 @@ const OverallBmReport = () => {
                             "aggFunc": null,
                             "rowGroup": false,
                             "rowGroupIndex": null,
-                            "pivot": col.colId==='BPP'? true:false,
+                            "pivot": false,
                             "pivotIndex": null,
                             "flex": null
                           })
