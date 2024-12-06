@@ -11,7 +11,8 @@ export const QUERY_KEYS = {
   useGetAllLocations:['BPRService.useGetAllLocations'],
   useGetInTransitWhereAboutAnalytics:['BPRService.useGetInTransitWhereAboutAnalytics'],
   useGetOpenExpediteAnalytics:['BPRService.useGetOpenExpediteAnalytics'],
-  useGetLocationTypes:['useGetLocationTypes']
+  useGetLocationTypes:['useGetLocationTypes'],
+  useGetlastRunDate:['useGetlastRunDate']
 }
 
 
@@ -105,5 +106,17 @@ export const useGetOpenExpediteAnalytics = ()=>{
 export const useGetLocationTypes = ()=>{
   return useQuery(QUERY_KEYS.useGetLocationTypes,async()=>{
     return await BPRService.getLocationTypes()
+  })
+}
+
+export const useGetlastRunDate = ()=>{
+  return useQuery(QUERY_KEYS.useGetlastRunDate,async()=>{
+    return await BPRService.getlastRunDate()
+  })
+}
+
+export const useGetUiConfig = ()=>{
+  return useMutation(async(reportName:string)=>{
+    return await BPRService.getUiConfig(reportName)
   })
 }

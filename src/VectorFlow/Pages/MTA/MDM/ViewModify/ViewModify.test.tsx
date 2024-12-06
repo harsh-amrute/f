@@ -375,7 +375,8 @@ describe("Handles all Interaction in ViewModify Component", () => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(mockState);
@@ -609,7 +610,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
     isUploadModalOpen:false,
     chunkSize:100,
     recordCount:0,
-    isDataAvailableLocally:true
+    isDataAvailableLocally:true,
+    lastRunDate:''
   }
 
   beforeEach(() => {
@@ -707,7 +709,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -732,7 +735,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -760,7 +764,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     let mockStore = createStore(updatedMockState);
@@ -820,7 +825,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -850,7 +856,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -875,7 +882,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -900,7 +908,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -925,7 +934,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(updatedMockState);
@@ -960,7 +970,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(mockState);
@@ -1036,7 +1047,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       isUploadModalOpen:false,
       chunkSize:100,
       recordCount:0,
-      isDataAvailableLocally:true
+      isDataAvailableLocally:true,
+      lastRunDate:''
     }
 
     const mockStore = createStore(updatedMockState);

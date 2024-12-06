@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useGetBufferTrendsGraph } from "../../../../Services/MTA/InsightsAndTrends/BufferTrends";
 import { BufferTrendsGraphState } from '../../../../../VectorFlow/types/BPR'
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
+import { useUserData } from '../../../../../context';
 
 const initialGraphData  ={
     data: {
@@ -28,6 +29,8 @@ const useBufferTrends = () => {
    
     const {mutateAsync:getBufferTrendsGraph,isLoading} = useGetBufferTrendsGraph();
 
+    const {user} = useUserData()
+    const themeUI = user.user.theme_ui
 
     const [graphs,setGraphs] = useState<Array<BufferTrendsGraphState>>([
         {
@@ -194,7 +197,8 @@ const useBufferTrends = () => {
         multiFilterState,
         setMultiFilterState,
         onDeleteFilter,
-        onGoBack
+        onGoBack,
+        themeUI
     }
   
 }

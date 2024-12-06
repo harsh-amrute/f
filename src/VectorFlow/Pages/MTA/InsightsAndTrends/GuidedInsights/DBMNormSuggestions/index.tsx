@@ -57,6 +57,12 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
      
     }, [filter]);
 
+    console.log(DBMSuggestionSkuData)
+
+    const SortedDBMSuggestionSkuData = useMemo(()=>{
+      return DBMSuggestionSkuData.sort((a:any,b:any)=>(b.NormInc + b.NormDec) - (a.NormInc + a.NormDec))
+    },[DBMSuggestionSkuData])
+    
     
 
   // const DBMSuggestionSkuData = DBMNormSuggestionSKUs?.data?.data;
@@ -67,7 +73,7 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
   );
   const pieData = ActiveDBMSuggestionData?.map((row: any) => ({
     suggestion: row.suggestion,
-    count: Math.floor((row.count / totalCount) * 100),
+    count: parseFloat(((row.count / totalCount) * 100).toFixed(2))
   }));
 
   const refGraph1 = useRef<GridRef>();
@@ -966,7 +972,7 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
                           <VFTable
                             ref={refGraph3}
                             columnDefs={coldefs3}
-                            rowData={DBMSuggestionSkuData}
+                            rowData={SortedDBMSuggestionSkuData}
                             enableCharts={true}
                             enableRangeSelection={true} 
                             rowSelection="multiple"
@@ -1000,7 +1006,7 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
                       <VFTable
                         ref={refGraph3}
                         columnDefs={coldefs3}
-                        rowData={DBMSuggestionSkuData}
+                        rowData={SortedDBMSuggestionSkuData}
                         enableCharts={true}
                         enableRangeSelection={true} 
                         rowSelection="multiple"
@@ -1012,7 +1018,8 @@ const DBMNormSuggestions = ({filter}:{filter:any}) => {
                               { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                               { statusPanel: 'agAggregationComponent', align:'left' },
                             ],
-                          }}                             onRowDataUpdated={() => generateChart(3)}
+                          }}                             
+                        onRowDataUpdated={() => generateChart(3)}
                         getChartToolbarItems={getChartToolbarItems}
                         chartToolPanelsDef={{
                           panels: [],

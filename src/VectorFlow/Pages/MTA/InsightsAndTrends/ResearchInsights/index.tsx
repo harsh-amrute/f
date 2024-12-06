@@ -59,7 +59,6 @@ const ResearchInsights = ()=>{
         rowsPerPage,
         currGridPage,
         isSavedDataLoading,
-        columnState,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
@@ -78,6 +77,10 @@ const ResearchInsights = ()=>{
         currentFilter,
         setCurrentFilter,
         historicalAvailabilityData,
+        continuousBlack,
+        continuousBlackAndRed,
+        continuousWhite,
+        generalFilterOptions
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -114,6 +117,7 @@ const ResearchInsights = ()=>{
             multiFilter={currentFilter}
             setMultiFilter={setCurrentFilter}
             onDelete={onDeleteFilter}
+            generalFilterOptions={generalFilterOptions}
             onUpdateInsight={handleOnUpdateGraph}
             hideUpdateInsightsBtn={graphState==='default'}
         />
@@ -138,9 +142,6 @@ const ResearchInsights = ()=>{
                             ref={ref}
                             columnDefs={ResearchInsightsColumns}
                             rowData={ResearchInsightsData}
-                            onGridReady={(params)=>{
-                                if(columnState)params.api.applyColumnState({state:columnState})
-                            }}
                             enableRangeSelection={true} // Added property
                             rowSelection="multiple"
                             statusBar = {{
@@ -152,6 +153,7 @@ const ResearchInsights = ()=>{
                                 { statusPanel: 'agAggregationComponent', align:'left' },
                                 ],
                             }}
+                            
                         />
                         <VFPagination
                             selectedRows={0}
@@ -332,7 +334,7 @@ const ResearchInsights = ()=>{
                                 <CalenderSummaryCellText style={{height:27}}>Contd. Black Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
-                                        0
+                                        {continuousBlack}
                                     </CalenderSummaryCellContent>
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>
@@ -340,7 +342,7 @@ const ResearchInsights = ()=>{
                                 <CalenderSummaryCellText style={{height:27}}>Contd. Black + Red Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
-                                        30
+                                        {continuousBlackAndRed}
                                     </CalenderSummaryCellContent>
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>
@@ -348,7 +350,7 @@ const ResearchInsights = ()=>{
                                 <CalenderSummaryCellText style={{height:27}}>Contd. White Ageing</CalenderSummaryCellText>
                                 <CalenderSummaryCellContentWrapper>
                                     <CalenderSummaryCellContent>
-                                        0
+                                        {continuousWhite}
                                     </CalenderSummaryCellContent>
                                 </CalenderSummaryCellContentWrapper>
                             </CalenderSummaryCell>

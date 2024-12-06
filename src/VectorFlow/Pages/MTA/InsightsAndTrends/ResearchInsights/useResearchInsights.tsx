@@ -1,7 +1,7 @@
 import {useEffect,useState,useMemo,useRef} from 'react'
 import {AgGridReactProps} from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-import { getColumnsForExcelExport, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
+import { convertUiConfigToOptions, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
 
 import {BPRTagsCellRenderer,BPRTechColorCellRenderer,BPREcoColorCellRenderer} from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
@@ -30,9 +30,10 @@ const useResearchInsights = ()=>{
     const ref = useRef<GridRef>();
     const tempRef = useRef()
 
+    const [internalRef,setInternalRef] = useState<any>()
+
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-    const [columnState,setColumnState] = useState<any>()
-    const {currentGridState} = useSelector((state:RootState)=>state.mta)
+    const [gridState,setGridState] = useState<any>()
 
     const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
 
@@ -64,6 +65,8 @@ const useResearchInsights = ()=>{
     const [graphState,setGraphState] = useState<'default' | 'calender' | 'graph'>('default')
     const [calenderType,setCalenderType] = useState<'Tech' | 'Eco'>('Tech')
     const [expandedGraphId,setExpandedGraphId] = useState<1 | 2>(1)
+    const [generalFilterOptions,setGeneralFilterOptions] = useState();
+
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
@@ -88,17 +91,33 @@ const useResearchInsights = ()=>{
 
     const [selectedRowsDates,setSelectedRowsDates] = useState<Array<any>>([])
 
+    useEffect (()=>{
+        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+
+    },[isBPRUILoading])
+
     useEffect(()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState("ResearchInsight")
-            setColumnState(JSON.parse(data.data.data))
+            setGridState(JSON.parse(data.data.data))
           }catch(err:any){
-            setColumnState(ResearchInsightsColumns)
+            setGridState({
+                charts:[],
+                columns:[],
+                pivot:false
+            })
           }
         }
         getTableState()
-    },[currentGridState])
+
+    },[])
+  
+    useEffect(()=>{
+        if(internalRef){
+            internalRef.api.applyColumnState({state:gridState.columns })
+        }
+    },[internalRef,gridState])
 
 
     useEffect(()=>{
@@ -122,47 +141,50 @@ const useResearchInsights = ()=>{
         tagsCellRenderer:BPRTagsCellRenderer
       }), []);
   
-    const agGridProps:AgGridReactProps = {
+    const agGridProps:AgGridReactProps = useMemo(()=>{
+        return {
         
-        suppressRowTransform:true,
-        readOnlyEdit:true,
-        rowSelection:'multiple',
-        gridOptions:{
-            rowHeight:50,
-            getRowStyle: (params: any) => {
-            if (params.node.rowIndex % 2 === 0) {
-                return { background: "#EBEBEB" };
-            }
-            return { background: "#F7F7F7" };
+            suppressRowTransform:true,
+            readOnlyEdit:true,
+            rowSelection:'multiple',
+            gridOptions:{
+                rowHeight:50,
+                getRowStyle: (params: any) => {
+                if (params.node.rowIndex % 2 === 0) {
+                    return { background: "#EBEBEB" };
+                }
+                return { background: "#F7F7F7" };
+                },
             },
-        },
-        sideBar:defaultAgGridSideBarForBPR,
-        // paginationPageSize:25,
-        paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
-        suppressRowClickSelection:true,
-        components:customCellRenderers,
-        defaultColDef:{
-            floatingFilter: true,
-            resizable:false,
-            cellStyle:{
-                "flex":1,
-                'text-align':'center',
-                'height':'50px',
-                "font-style":"normal",
-                " font-variant":"normal",
-                " font-weight":"300",
-                " font-size":"20px",
-                " font-family":"Roboto",
-                "display":"block",
-                'text-overflow':'ellipsis',
-                'white-space':'nowrap'
+            sideBar:defaultAgGridSideBarForBPR,
+            // paginationPageSize:25,
+            paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
+            suppressRowClickSelection:true,
+            components:customCellRenderers,
+            defaultColDef:{
+                floatingFilter: true,
+                resizable:false,
+                cellStyle:{
+                    "flex":1,
+                    'text-align':'center',
+                    'height':'50px',
+                    "font-style":"normal",
+                    " font-variant":"normal",
+                    " font-weight":"300",
+                    " font-size":"20px",
+                    " font-family":"Roboto",
+                    "display":"block",
+                    'text-overflow':'ellipsis',
+                    'white-space':'nowrap'
+                },
             },
+            onGridReady:(params)=>setInternalRef(params)
         }
-    }
+    },[])
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:getColumnsForExcelExport(ResearchInsightsColumns)});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
 
@@ -226,7 +248,8 @@ const useResearchInsights = ()=>{
     }
     
     const getColor = (date:any)=>{
-        const doesExist = calenderData.find((d)=>isSameDay(d.date,date))
+      
+        const doesExist = calenderData.slice(0,horizon).find((d)=>isSameDay(d.date,date))
         return doesExist?doesExist.color:'gray'
     }
 
@@ -238,16 +261,16 @@ const useResearchInsights = ()=>{
                 colorValues.push(jsonData[key]);
             }
         }
-        if(colorValues.length>horizon){
-            return colorValues.slice(colorValues.length-horizon);
-        }
+        // Rather calculate range w.r.t horizon in the later functions instead of at the core
+        // if(colorValues.length>horizon){
+        //     return colorValues.slice(colorValues.length-horizon);
+        // }
         return colorValues;
     }
 
     function convertToObjects(colorArray:Array<string>) {
         const today = new Date();
         const result = [];
-    
         // Loop through each color in the array
         for (let i = 0; i < colorArray.length; i++) {
             const daysBeforeToday = colorArray.length - i;
@@ -261,7 +284,7 @@ const useResearchInsights = ()=>{
             result.push({ date: dateString, color: color });
         }
     
-        return result;
+        return result.reverse();
     }
 
     const resetState = ()=>{
@@ -349,6 +372,7 @@ const useResearchInsights = ()=>{
         }
         return setGraphs(graphs.map((graph:ReseachInsightsGraphState)=>{
             if(graph.id===id){
+                console.log(id)
                 return {
                     ...graph,
                     [property]:payload
@@ -377,18 +401,60 @@ const useResearchInsights = ()=>{
         return []
     },[selectedRowsDates,horizon,calenderType])
 
-   
+    const calenderDataWithHorizon = useMemo(()=>calenderData.slice(0,horizon),[calenderData])
+
+    const continuousBlack = useMemo(() => {
+        let count = 0;
+        for (let i = 0; i < calenderData.length; i++) {
+            if (calenderData[i].color === 'Black') {
+                count++;
+            } else {
+                break; 
+            }
+        }
+        return count;
+    }, [calenderData]);
+
+    const continuousBlackAndRed = useMemo(() => {
+        let count = 0;
+        for (let i = 0; i < calenderData.length; i++) {
+            const currColor = calenderData[i].color
+            if ( currColor  === 'Black' || currColor === 'Red') {
+                count++;
+            } else {
+                break; 
+            }
+        }
+        return count;
+    }, [calenderData]);
+
+    const continuousWhite = useMemo(() => {
+        let count = 0;
+        for (let i = 0; i < calenderData.length; i++) {
+            const currColor = calenderData[i].color
+            if ( currColor  === 'White') {
+                count++;
+            } else {
+                break; 
+            }
+        }
+        return count;
+    }, [calenderData]);
+    
+
+    
+
     const blackCount = useMemo(()=>{
-        return Math.round(((calenderData.slice(0,horizon).filter((row:any)=>row.color==='Black').length)/calenderData.slice(0,horizon).length)*100)
-    },[calenderData])
+        return Math.round(((calenderDataWithHorizon.filter((row:any)=>row.color==='Black').length)/horizon)*100)
+    },[calenderDataWithHorizon])
 
     const redCount = useMemo(()=>{
-        return Math.round(((calenderData.slice(0,horizon).filter((row:any)=>row.color==='Red').length)/calenderData.slice(0,horizon).length)*100)
-    },[calenderData])
+        return Math.round(((calenderDataWithHorizon.filter((row:any)=>row.color==='Red').length)/horizon)*100)
+    },[calenderDataWithHorizon])
 
     const whiteCount = useMemo(()=>{
-        return Math.round(((calenderData.slice(0,horizon).filter((row:any)=>row.color==='White').length)/calenderData.slice(0,horizon).length)*100)
-    },[calenderData])
+        return Math.round(((calenderDataWithHorizon.filter((row:any)=>row.color==='White').length)/horizon)*100)
+    },[calenderDataWithHorizon])
 
     const selfGraphData = useMemo(()=>{
         const selectedRows =  ref.current?.api.getSelectedRows()
@@ -408,32 +474,42 @@ const useResearchInsights = ()=>{
 
     const locationGraphData = useMemo(()=>{
         const selectedRows =  ref.current?.api.getSelectedRows()
+       
         if(selectedRows && selectedRows.length>1){
-            let locationArraySelectedData = selectedRowsDates.filter((row:any)=>row.Pen===graphs[1].pen.value && row.Type===graphs[1].type.value)
+            let locationArraySelectedData = selectedRowsDates.filter((row:any)=>
+                row.Pen===graphs[1].pen.value && row.Type===graphs[1].type.value
+            )
             const filters =graphs[1].filters
-            if(filters.length>0){
-                filters.forEach((filter)=>{
-                    locationArraySelectedData = locationArraySelectedData.filter((row:any)=>row[filter.key]===filter.value)
-                })
-            }
-            const locationData = getColorData(locationArraySelectedData)        
+            const whKeys = [{label:'Child',value:'ChildCode'},{label:'Parent',value:'ParentWhCode'}]
+            const currWhKey = whKeys.find((k)=>k.label ===graphs[expandedGraphId -1].type.value)?.value || 'ChildCode'
+            if (filters.length > 0) {
+                locationArraySelectedData = locationArraySelectedData.filter((row: any) =>{
+                    return filters.every(filter => row[filter.key!=='Whcode'?filter.key:currWhKey] === filter.value)
+            });
+            }   
+            const locationData = getColorData(locationArraySelectedData)   
             return locationData
         }
         return []
     },[graphs,selectedRowsDates,horizon])
+
+    // console.log(selectedRowsDates)
 
     const expandedGraphAllFilterValues = useMemo(()=>{
         const index = expandedGraphId-1
         const locationArraySelectedData = selectedRowsDates.filter((row:any)=>row.Pen===graphs[index].pen.value && row.Type===graphs[index].type.value)
         let uniqueSkus:any = []
         let uniqueWhCode:any = []
+        const whKeys = [{label:'Self',value:'Whcode'},{label:'Child',value:'ChildCode'},{label:'Parent',value:'ParentWhCode'}]
+        const currWhKey = whKeys.find((k)=>k.label ===graphs[index].type.value)?.value || 'Whcode'
         locationArraySelectedData.map((row:any)=>{
             if(!uniqueSkus.includes(row.SKUCode)){
                 uniqueSkus.push(row.SKUCode)
             }
-            if(!uniqueWhCode.includes(row.Whcode)){
-                uniqueWhCode.push(row.Whcode)
+            if(!uniqueWhCode.includes(row[currWhKey])){
+                uniqueWhCode.push(row[currWhKey])
             }
+           
         })
         uniqueSkus = uniqueSkus.map((sku:string)=>{
             return{
@@ -451,7 +527,7 @@ const useResearchInsights = ()=>{
             skus:uniqueSkus,
             whcodes:uniqueWhCode
         }
-    },[selectedRowsDates,graphs])
+    },[selectedRowsDates,graphs,expandedGraphId])
 
     const historicalAvailabilityData = useMemo(()=>{
         if(historicalAvailabilityResponse){
@@ -540,7 +616,7 @@ const useResearchInsights = ()=>{
         rowsPerPage,
         recordCount,
         isSavedDataLoading,
-        columnState,
+        gridState,
         tempRef,
         tempDownloadData,
         setTempDownloadData,
@@ -558,7 +634,11 @@ const useResearchInsights = ()=>{
         onDeleteFilter,
         currentFilter,
         setCurrentFilter,
-        historicalAvailabilityData
+        historicalAvailabilityData,
+        continuousBlack,
+        continuousBlackAndRed,
+        continuousWhite,
+        generalFilterOptions
     }
 }
 

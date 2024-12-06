@@ -8,6 +8,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
+import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
 const BuyerOrderReport = ()=>{
 
     const {     
@@ -18,7 +19,6 @@ const BuyerOrderReport = ()=>{
         currentPage,
         recordCount,
         ref,
-        columnState,
         isSavedDataLoading,
         handleChangePage,
         tempRef,
@@ -36,7 +36,13 @@ const BuyerOrderReport = ()=>{
         currFilter,
         setCurrFilter,
         onDeleteFilter, 
-        onApplyFilter 
+        onApplyFilter ,
+        generalFilterOptions,
+        onSubmitRemarks,
+        editedRows,
+        isRemarkHistoryToolTipOpen,
+        remarkHistory,
+        onCloseRemarkHistory
     } = useBOR()
 
 
@@ -69,6 +75,9 @@ const BuyerOrderReport = ()=>{
             onExportToExcelCallBack={onExportToExcelCallBack}
             multiFilter={currFilter}
             setMultiFilter={setCurrFilter}
+            onSubmitEditedRows={onSubmitRemarks}
+            disableSubmitEditedRowsBtn={editedRows.length===0}
+            generalFilterOptions={generalFilterOptions}
             onDelete={onDeleteFilter} />
         </div>
         <BORLayout>
@@ -99,10 +108,6 @@ const BuyerOrderReport = ()=>{
                   columnDefs={BORColumns}
                   rowData={rowData}
                   ref={ref}
-                  onGridReady={(params) => {
-                    if (columnState)
-                      params.api.applyColumnState({ state: columnState });
-                  } }
                   enableRangeSelection={true} // Added property
                   rowSelection="multiple"
                   statusBar={{
@@ -131,6 +136,33 @@ const BuyerOrderReport = ()=>{
               rowData={exportExcelRowData}
               {...tempAgGridProps} />
           </div>
+          
+
+            {/* {isSubmitRemarkToolTipOpen && (
+                <BPRSubmiRemarkToolTip
+                    remark={remark}
+                    setRemark={updateRemark}
+                    style={submitRemarkToolTipPosition}
+                    onSuccess={onSubmitRemark}
+                    onClose={onCloseSubmitRemark}
+                    themeUi={themeUi}
+                />
+            )} */}
+
+<BPRRemarkHistoryModal
+                data={remarkHistory}
+                isOpen={isRemarkHistoryToolTipOpen}
+                onClose={onCloseRemarkHistory}
+            />
+            <div style={{display:'none'}}>                
+                  <VFTable
+                    ref={tempRef}
+                    columnDefs={BORColumns}
+                    rowData={exportExcelRowData}
+                    {...tempAgGridProps}
+                  />
+                </div>
+
         </BORLayout>
       </GridStateContext.Provider>
     )

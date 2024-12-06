@@ -93,7 +93,7 @@ function LoginContainer() {
       </SignInContainer>
       <SignInContainer>
         <ContainerRight>
-          <LogoArvind style={{opacity:0}} src="" alt="logo" />
+          <LogoArvind style={{opacity:0,visibility:'hidden'}} src="" alt="logo" />
           <Tittle>{t("loginPage.title")}</Tittle>
           <FormArea onSubmit={handleSubmit(onSave)}>
             <InputArea error={errors.email}>

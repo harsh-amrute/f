@@ -17,6 +17,7 @@ export interface MDMStore{
     chunkSize:number,
     recordCount:number,
     isDataAvailableLocally:boolean
+    lastRunDate:string
 }
 
 export interface MDMMasterState{

@@ -22,6 +22,16 @@ export interface BPRDataPayload{
     }
 }
 
+export interface BORDataPayload{
+    id: number,
+  name: string,
+  fields: Array<any>,
+    filters:any
+    paginationParameter:{
+        pageNumber:number,
+        recordsPerPage:number
+    }
+}
 
 export interface BPRSubmitRemarkToolTipProps{
     remark:string 
@@ -44,6 +54,12 @@ export interface SubmitBPRRemarkPayload{
     whcode:string
     skucode:string
 }
+export interface SubmitBORRemarkPayload{
+    remark:string
+    whcode:string
+    skucode:string
+    spc:string
+}
 
 export interface GetDailyDataPayload{
     SKUCode:string,
@@ -54,6 +70,7 @@ export interface BPRFilter{
     type?:string
     name:string
     attributeName:string
+    label:string
     operator:string
     value:string
 }
@@ -71,6 +88,7 @@ export interface BPRFilterState{
     availabilityFilter:BPRFilterGroup
     coverageFilter:BPRFilterGroup
     colorFilter:BPRFilterGroup
+    generalFilter:BPRFilterGroup
 }
 
 

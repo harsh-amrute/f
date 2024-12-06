@@ -1,5 +1,5 @@
 import { useQuery,useMutation } from '@tanstack/react-query'
-
+import { BORDataPayload, SubmitBORRemarkPayload } from '../../../../../VectorFlow/types/BPR';
 import { SupplyChainIntelligenceHubService } from './api'
 
 
@@ -35,3 +35,32 @@ export const useGetBORUIConfiguration = () => {
       return await SupplyChainIntelligenceHubService.getBORAnalyticsData();
     });
   }
+  
+  export const useGetSubmitBORRemark = () => {
+    return useMutation(async (payload:{data:Array<SubmitBORRemarkPayload>}) => {
+      return await SupplyChainIntelligenceHubService.submitBORRemark(payload);
+    });
+
+    
+
+
+    // export const useGetBORRemarkHistory = () => {
+    //   return useMutation(async (payload:BORDataPayload) => {
+    //     return await BORService.getRemarkHistory(payload);
+    //   });
+    // }
+
+  }
+
+  export const useGetBORRemarkHistory = () => {
+    return useMutation(async (payload:BORDataPayload) => {
+      return await SupplyChainIntelligenceHubService.getBORRemarkHistory(payload);
+    });
+  }
+
+  export const useSubmitBORRemark = () => {
+    return useMutation(async (payload:{data:Array<SubmitBORRemarkPayload>}) => {
+      return await SupplyChainIntelligenceHubService.submitBORRemark(payload);
+    });
+  }
+  

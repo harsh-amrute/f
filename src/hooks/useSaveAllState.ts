@@ -1,13 +1,15 @@
-import { useContext, useEffect } from "react";
+import { useContext,useEffect } from "react";
 import {
   useResetState,
   useSaveState,
 } from "../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../context/GridStateContext";
-import { notifyError, notifyLoader, notifySuccess } from "../helpers/notify";
+import { notifyError, notifyInfo, notifyLoader, notifySuccess } from "../helpers/notify";
 
 import {toast} from 'react-toastify'
 import { GridState } from "../VectorFlow/types/BPR";
+import { handleDownloadVFReports } from "../helpers/utils";
+
 
 interface exportToExcelParameters {
   pagination:{
@@ -17,24 +19,28 @@ interface exportToExcelParameters {
   callBack:any
 }
 
-const useSaveAllState = () => {
-  const { ref,tempDownloadData,setTempDownloadData,setExportExcelRowData } = useContext(GridStateContext);
-
-
+const useSaveAllState = (isPlanning?:boolean) => {
+  const { ref,setTempDownloadData,setExportExcelRowData,tempDownloadData } = useContext(GridStateContext);
 
   const { mutateAsync: saveState } = useSaveState();
   const { mutateAsync: resetState } = useResetState();
 
   useEffect(()=>{
-    if(tempDownloadData){
-      setTempDownloadData(false)
-    }
+      if(isPlanning && tempDownloadData){
+        setTempDownloadData(false)
+      }
+    
   },[tempDownloadData])
 
-
-  const onExportToExcel = async (params:exportToExcelParameters)=>{
+  const onExportToExcelOld = async (params:exportToExcelParameters)=>{
     const {pagination,callBack} = params
     const {recordCount,chunkSize} = pagination
+    
+    if(recordCount === 0){
+      notifyInfo("No Rows To Export")
+      return 
+    }
+
     try {
       //buggy line below
       const numberOfPages = Math.ceil(recordCount/chunkSize);
@@ -43,7 +49,6 @@ const useSaveAllState = () => {
       for(let i=1; i<=numberOfPages; i++){
       
         const result = await callBack(i);
-     
 
         if(result === null) {
           // throw new Error("Something Went Wrong")
@@ -55,17 +60,63 @@ const useSaveAllState = () => {
       }
       
       // setExportExcelColumns(exportExcelColumns)
-      setExportExcelRowData(rows)
+      setExportExcelRowData([...rows])
       setTempDownloadData(true);
       toast.dismiss(toastId);
       
-
       notifySuccess(`Data Exported Successfully`);
     } catch (error) {
-      
+      console.error(error)
       toast.dismiss();
       notifyError('Something Went Wrong');
     }
+    
+  }
+
+
+  const onExportToExcel = async (params:{name:string,filters:any})=>{
+    const loader = notifyLoader(`Downloading ${params.name}`)
+    try{
+      await handleDownloadVFReports(params)
+    }catch(err:any){
+      notifyError(err)
+    }finally{
+      toast.dismiss(loader)
+    }
+
+    // const {pagination,callBack} = params
+    // const {recordCount,chunkSize} = pagination
+    
+
+    // try {
+    //   //buggy line below
+    //   const numberOfPages = Math.ceil(recordCount/chunkSize);
+    //   const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
+    //   const rows = [];
+    //   for(let i=1; i<=numberOfPages; i++){
+      
+    //     const result = await callBack(i);
+
+    //     if(result === null) {
+    //       // throw new Error("Something Went Wrong")
+    //       break
+    //     }
+    //     rows.push(...result)
+    //     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
+    //     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
+    //   }
+      
+    //   // setExportExcelColumns(exportExcelColumns)
+    //   setExportExcelRowData([...rows])
+    //   setTempDownloadData(true);
+    //   toast.dismiss(toastId);
+      
+    //   notifySuccess(`Data Exported Successfully`);
+    // } catch (error) {
+    //   console.error(error)
+    //   toast.dismiss();
+    //   notifyError('Something Went Wrong');
+    // }
     
   }
 
@@ -73,7 +124,6 @@ const useSaveAllState = () => {
     try {
       
       const columnState = ref.current.api.getColumnState();
-      console.log(columnState)
       const chartsState =  ref.current.api.getChartModels()
       const isPivot = ref.current.api.isPivotMode()
       const gridState:GridState = {
@@ -90,7 +140,7 @@ const useSaveAllState = () => {
       ref.api.restoreChart(chartsState)
       ref.api.setGridOption('pivotMode',isPivot)
     } catch (err: any) {
-        console.log(err)
+        console.error(err)
       notifyError(err);
     }
   };
@@ -124,7 +174,8 @@ const useSaveAllState = () => {
   return {
     onSaveState,
     onResetAllState,
-    onExportToExcel
+    onExportToExcel,
+    onExportToExcelOld
   };
 };
 

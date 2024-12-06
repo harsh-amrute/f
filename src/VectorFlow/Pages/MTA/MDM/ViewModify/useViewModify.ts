@@ -66,7 +66,11 @@ const useViewModify = (pageType:string) => {
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
     const [currentPage,setCurrentPage] = useState(1);
-    const rowsPerPage = 50;
+    const rowsPerPage = useMemo(()=>{
+      if(pageType === 'add') return parseInt(process.env.REACT_APP_ADDRECORD_PAGE || '50')
+      else if(pageType === 'remove') return parseInt(process.env.REACT_APP_DELETERECORD_PAGE || '50');
+      else return parseInt(process.env.REACT_APP_VIEWRECORD_PAGE || '50');
+    },[]);
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
     const [seasonalityActiveQuickFilter,setSeasonalityActiveQuickFilter]  = useState<Array<Array<number>>>([])
@@ -226,7 +230,6 @@ const useViewModify = (pageType:string) => {
           const {data} = await masterUIConfiguration(pageType);
           setAllMasterState(mapMasterToMasterState(data.data,onShowChart))
          }
-  
          getMasterUIConfigurationData()
       },[])
 

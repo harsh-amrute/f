@@ -53,6 +53,9 @@ interface ActionToolBarProps {
   hideUpdateInsightsBtn?: boolean;
   onSubmitEditedRows?: () => void;
   disableSubmitEditedRowsBtn?: boolean;
+  lastRunDate?:string
+  isPlanning?:boolean,
+  generalFilterOptions?:any
 }
 
 const ActionToolBar = ({
@@ -78,14 +81,18 @@ const ActionToolBar = ({
   hideUpdateInsightsBtn,
   onSubmitEditedRows,
   disableSubmitEditedRowsBtn,
+  lastRunDate,
+  isPlanning,
   onChangeHorizon,
+  generalFilterOptions
 }: ActionToolBarProps) => {
+
   const { user } = useUserData();
   const { ref } = useContext(GridStateContext);
 
   const {locations} = useGetLocation()
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-  const { onSaveState, onResetAllState, onExportToExcel } = useSaveAllState();
+  const { onSaveState, onResetAllState ,onExportToExcelOld} = useSaveAllState(isPlanning);
   const { currentCategory } = useSelector(
     (state: RootState) => state.mta.planning
   );
@@ -123,19 +130,27 @@ const ActionToolBar = ({
     if (
       pathname === "/supply-chain-intelligence-hub/open-expediting-requests"
     ) {
-      return ref.current.api.exportDataAsExcel({
+      ref.current.api.exportDataAsExcel({
         fileName: "OpenExpeditingRequests",
       });
     }
 
-    onExportToExcel({
-      pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
-      callBack: onExportToExcelCallBack,
-    });
+    // else if(pathname  === '/supply-chain-intelligence-hub/bpr'){
+    //   onExportToExcel({
+    //     name:currCategory + currentTab,
+    //     filters:multiFilter
+    //   });
+    // }
+
+    else{
+      onExportToExcelOld({
+        pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
+        callBack: onExportToExcelCallBack,
+      });
+    }
   };
 
   const renderFilter = () => {
-    console.log(currCategory)
     switch (currCategory) {
       case "GITFromParent":
         return (
@@ -263,12 +278,16 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               availabilityFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
               }
               supplyChainForChildrenOfCheckBoxList={
                 locations
               }
+              currCategory={currCategory}
+
             />
           );
         }
@@ -285,12 +304,16 @@ const ActionToolBar = ({
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
               availabilityFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
               }
               supplyChainForChildrenOfCheckBoxList={
                 locations
               }
+              currCategory={currCategory}
+
             />
           );
         }
@@ -304,15 +327,17 @@ const ActionToolBar = ({
               multiFilter={multiFilter}
               setMultiFilter={setMultiFilter}
               productFilterActive={true}
-              supplyChainNodeFilterActive={false}
               locationFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               availabilityFilterActive={true}
+              supplyChainNodeFilterActive={true}
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={
-                locations
-              }
+              supplyChainForChildrenOfCheckBoxList={locations.filter(
+                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
+              )}
             />
           );
         }
@@ -327,7 +352,107 @@ const ActionToolBar = ({
               setMultiFilter={setMultiFilter}
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
-              locationFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+              currCategory={currCategory}
+
+            />
+          );
+        }
+        break;
+      case "BORColorBandwise":
+        if (pathname === "/supply-chain-intelligence-hub/bor-color-bandwise") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+            />
+          );
+        }
+        break;
+      case "RRRColorBandwise":
+        if (pathname === "/supply-chain-intelligence-hub/rrr-color-bandwise") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+            />
+          );
+        }
+        break;
+       case "OrderAllocationReport":
+        if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
+              availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+            />
+          );
+        }
+        break;
+      case "TotalRequirementReport":
+        if (pathname === "/supply-chain-intelligence-hub/total-requirement-report") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              generalFilterActive={false}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
                 locations
@@ -346,6 +471,7 @@ const ActionToolBar = ({
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
+              currentTab={currentTab}
               setMultiFilter={setMultiFilter}
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
@@ -396,6 +522,8 @@ const ActionToolBar = ({
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               availabilityFilterActive={true}
               supplyChainForLocationCheckBoxList={
                 locations
@@ -439,6 +567,8 @@ const ActionToolBar = ({
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
               }
@@ -462,6 +592,8 @@ const ActionToolBar = ({
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
               locationFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
               }
@@ -793,7 +925,7 @@ const ActionToolBar = ({
               ></VFSelectedFilters>
             )}
 
-            {currCategory === "BPR" && onSubmitEditedRows && (
+            {["BPR","BOR","BORColorBandwise"].includes(currCategory) && onSubmitEditedRows && (
               <VFButtonOutline
                 onClick={onSubmitEditedRows}
                 themeUi={themeUi}
@@ -823,6 +955,9 @@ const ActionToolBar = ({
               </>
             )}
           </SCTaskFilterContainer>
+          {(currCategory==='BPR' && lastRunDate) && (
+            <h2>{lastRunDate}</h2>
+          )}
           <SCCustomActionsContainer>
             <VFButton
               onClick={() => toggleFilter(true)}

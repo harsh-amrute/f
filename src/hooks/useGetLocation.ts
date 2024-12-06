@@ -1,4 +1,5 @@
 import {useMemo} from 'react'
+import { notifyError } from '../helpers/notify'
 
 import { MultiFilterSupplyChainCheckboxList } from '../helpers/BPRConstants'
 
@@ -10,12 +11,15 @@ const useGetLocation =()=>{
     const {data,isLoading} = useGetLocationTypes()
 
     const locations= useMemo(()=>{
-        if(isLoading)return MultiFilterSupplyChainCheckboxList
-        console.debug(data)
-        let parsed:Array<any> = JSON.parse(data?.data.data)
-        parsed = parsed.map((l)=>({label:l.lt,id:l.lt}))
-        console.log(parsed)
-        return  parsed
+        try{
+            if(isLoading)return MultiFilterSupplyChainCheckboxList
+            let parsed:Array<any> = JSON.parse(data?.data.data)
+            parsed = parsed.map((l)=>({label:l.lt,id:l.lt}))
+            return  parsed
+        }catch(err){
+            notifyError('Failed To Fetch Location Types')
+            return []
+        }
     },[isLoading])
 
     return {

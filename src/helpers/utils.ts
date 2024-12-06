@@ -1,7 +1,7 @@
 import { type NavigateFunction } from 'react-router'
 import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
-import { notifyError } from './notify'
+import { notifyError} from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
 import readXlsxFile from 'read-excel-file'
 import {ColDef,ColGroupDef,CellClickedEvent} from 'ag-grid-community';
@@ -305,6 +305,89 @@ export const mapRRRFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
   return [...result,...RRRSpecificColumns]
 }
 
+export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const specificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+    }
+  ]
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      // hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result,...specificColumns]
+}
+
+export const mapTotalRequirementFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      // hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result]
+}
+
+
 export const handleDownload = async (nameApi: string, nameFile: string) => {
   try {
     const token = await MainService.refreshToken();
@@ -342,6 +425,8 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
 
 
 export const handleDownloadVF = async (reportName: string, downloadName:string) => {
+
+  console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
@@ -631,9 +716,16 @@ export const parseExcelData = async (file:any,master:MDMMasterState,pageType:str
   const result:object[] = [];
   const buffer = await file.arrayBuffer();
 
-  //Selected Columns Keys
-  const selectedKeys = selectedColumns.map((col:any)=>col.colId);
+  let selectedKeys:any;
 
+  //Selected Columns Keys
+  if(pageType==='add'){
+    selectedKeys = master.fields.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+  }
+  else{
+    selectedKeys = selectedColumns.map((col:any)=>col.colId);
+  }
+   
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
   });
@@ -2180,7 +2272,8 @@ export const mapResearchInsightsFieldsToColDefs = (fields:BPRField[],onOpenDaily
   return [checkboxColDef,{...createIconColumn({id:'dailydatagraph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}},tagsColDef,...result]
 }
 
-export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any, onOpenSubmitRemark:(params:any,e:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void):ColDef[]=>{
 
   if(!fields || fields.length<1){
     return []
@@ -2202,10 +2295,45 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
         onOpenDailyDataGraph:onOpenDailyDataGraph
       }
       
+      
 
       // tooltipComponent:'remarksToolTipComponent'
+    
+      // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     cellRendererParams:{
+      onClick:onOpenSubmitRemark
+     },
+     pinned:'right',
+     cellStyle:{
+      overflow:'visible',
+      'min-width':180,
+    },
+    editable:true
+    },
+    {
+      colId:'rh',
+      field:'rh',
+      headerName:'Remark History',
+      cellRenderer:'remarksCellRenderer',
+      
+      cellRendererParams:{
+        onClick:onOpenRemarkHistory
+       },
+       pinned:'right',
+      cellStyle:{
+        overflow:'visible',
+        'min-width':180,
+      }
     }
   ]
+
+
 
 
 
@@ -2236,6 +2364,137 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
   })
   return [...result,...BORSpecificColumns]
 }
+
+
+
+export const mapBORColorBandWiseFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     pinned:'right',
+     editable:true,
+     cellStyle:{
+      overflow:'visible',
+      'min-width':180,
+    }
+  }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
+export const mapOrderAllocationReportFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='OrderColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
 
 export const BPRColorMapper =(color:string):{bg:string,text:string}=> {
 
@@ -2366,7 +2625,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'ParentWhCode',
+        headerName:'Parent Code',
         ...BTRDefaultColDefs
       }
     }
@@ -2374,7 +2633,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'ParentName',
+        headerName:'Parent Name',
         ...BTRDefaultColDefs
       }
     }
@@ -2383,7 +2642,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'WhiteCount',
+        headerName:'White in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2391,7 +2650,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'BlackCount',
+        headerName:'Black in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2399,7 +2658,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'BlueCount',
+        headerName:'Blue in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2407,7 +2666,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'RedCount',
+        headerName:'Red in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2415,7 +2674,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'YellowCount',
+        headerName:'Yellow in 30 days',
         ...BTRDefaultColDefs
       }
       
@@ -2424,7 +2683,7 @@ export const mapBTRRowDataToColDefs = (row:any,dateMapper:any,horizon:number,pin
       return {
         field:key,
         colId:key,
-        headerName:'GreenCount',
+        headerName:'Green in 30 days',
         ...BTRDefaultColDefs
       }
     }
@@ -2819,4 +3078,60 @@ export const getProductAndLocationHeirarchiesFromEnv = (column:any,extraProperti
   }
 
   return undefined;
+}
+
+export const convertUiConfigToOptions = (data:any) => {
+  console.log(data);
+  return data?.map((column:any)=>{
+    return {
+      value:column.Col_Code,
+      label:column.Header
+    }
+  })
+}
+
+
+export const handleDownloadVFReports = async (payload:{name:string,filters:any}) => {
+
+  try {
+    const {name} = payload
+    const token = await MainService.refreshToken();
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/download-excel`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`,
+        'Content-Type': 'application/json'
+      },
+      method:"post",
+      body:JSON.stringify(payload)
+    })  
+    if(!response.ok){
+      notifyError("Error while downloading")
+      return false; 
+    }else{
+    // Convert response to blob object
+    const blob = await response.blob()
+
+    console.log(blob)
+    // Create download URL for blob object
+    const url = URL.createObjectURL(blob)
+  
+    // Trigger download
+    const link = document.createElement('a')
+    link.href = url
+    if(name.length!==0){
+      link.setAttribute('download', `${name}`)
+    }else{
+      link.setAttribute('download', `ReportFile.csv`)
+    }
+    document.body.appendChild(link)
+    link.click()
+    // Clean up download URL
+    URL.revokeObjectURL(url);
+    
+  }
+  } catch (error:any) {
+    notifyError('Error while downloading');
+    return false;
+  }
+ 
 }

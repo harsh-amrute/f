@@ -34,12 +34,13 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
       img: "/assets/img/nav/arrow_down.svg", 
       imgHover: "/assets/img/nav/DownloadReport-Icon.svg", 
       url: key, 
-      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","DBMManager","BPRManager","MasterUpdater","MasterApprover"],
       downloadName: attributes.downloadName
     }));
     const extractedNewMenu = _.cloneDeep(listMenuParent)
     const targetObject = extractedNewMenu.find((item:any) => item.id === 8);
     if (targetObject) {
+      console.log(targetObject)
       targetObject.child.push(...transformedData);
       const reporturls = targetObject.child.map((child:any) => child.url).filter((url:string) => url);
       setReportUrls(reporturls)
@@ -50,7 +51,7 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
   const handleClickMenu = (item: any, index: number) => {
     if(item.name==='navbar.listMenuParent.miscellaneousReports.title') return;
     setMenuItem(item);
-    const newMenu = [...listMenuParent];
+    const newMenu = [...listMenu];
     newMenu.forEach((itemMenu: any) => {
       itemMenu.status = false;
     });
@@ -84,6 +85,7 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
     return srcImg;
   };
 
+
   const navigate = useNavigate();
   return (
     <NavStyle.SCGridNav id="vector_nav" className="list-roles-per--content">
@@ -114,10 +116,30 @@ const NavbarMenu = ({ setMenuItem, isHide,setIsHide,setWidthResponsive }: any) =
 
                   />
                   {!item.status && activeTooltip === item.id && (
-                    <MenuToolTip reportUrls={reportUrls} item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive}/>
+                    <MenuToolTip 
+                      reportUrls={reportUrls} 
+                      item={item} 
+                      isLoading={isLoading} 
+                      setIsLoading={setIsLoading} 
+                      tempUrls={tempUrls} 
+                      setTempUrls={setTempUrls} 
+                      isHide={isHide} 
+                      setIsHide={setIsHide} 
+                      setWidthResponsive={setWidthResponsive}
+                    />
                   )}
                   {item.status && !isHide && activeTooltip === item.id && (
-                    <MenuToolTip reportUrls={reportUrls} item={item} isLoading={isLoading} setIsLoading={setIsLoading} tempUrls={tempUrls} setTempUrls={setTempUrls} isHide={isHide} setIsHide={setIsHide} setWidthResponsive={setWidthResponsive} />
+                    <MenuToolTip 
+                      reportUrls={reportUrls} 
+                      item={item} 
+                      isLoading={isLoading} 
+                      setIsLoading={setIsLoading} 
+                      tempUrls={tempUrls} 
+                      setTempUrls={setTempUrls} 
+                      isHide={isHide} 
+                      setIsHide={setIsHide} 
+                      setWidthResponsive={setWidthResponsive} 
+                    />
                   )}
                 </NavStyle.SCNavMenu>
               </NavStyle.SCMenuItem>
