@@ -5,18 +5,39 @@ import { useSelector, useDispatch } from 'react-redux';
 import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
-import { SET_BUFFER_MODIFY_DATA } from '../../../../../redux/actions/MTO';
+import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 
 
 const AddRemoveCellRenderer = (params: any) => {
+
+  const validateCCR=()=>{
+    if(params.data.cnm==="" || !params.data.cnm){
+      notifyError("CCR name cannot be empty!")
+      return false;
+    }
+    if(params.data.cpd==="" || !params.data.cpd){
+      notifyError("CCR Capacity Per Day cannot be empty!")
+      return false;
+    }
+    if(params.data.whpd==="" || !params.data.whpd){
+      notifyError("Working hours Per Day cannot be empty!")
+      return false;
+    }
+    if(params.data.sh==="" || !params.data.sh){
+      notifyError("Scheduling horizon cannot be empty!")
+      return false ;
+    }
+
+    return true;
+  }
 
     const dispatch = useDispatch();
     const activeMaster = useSelector((state: RootState) => state.mdm.activeMaster);
     const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
     const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
+    const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
+    const ccrInitialData = useSelector((state: any)=> state.mto.ccrInitialData);
     const addRow = () => {
-
-      console.log("buff initial Dat...", bufferInitialData);
 
         const allRows = [...activeMaster.rowData];
         allRows.shift();
@@ -54,31 +75,19 @@ const AddRemoveCellRenderer = (params: any) => {
         }
       }
       else if(activeMaster.id === 502){
-        // TODO: validations for CCR
-        if(params.data.cnm==="" || !params.data.cnm){
-          notifyError("CCR name cannot be empty!")
-          return;
+        const result = validateCCR();
+        if(result){
+
+          const newColDefs:any = [];
+          activeMaster.colDefs.forEach((ele:any)=>{
+            const newColDef = {...ele};
+            delete newColDef.editable;   
+            newColDefs.push(newColDef);
+          })
+          if(ccrModifyData && ccrModifyData.length) dispatch(SET_CCR_MODIFY_DATA([activeMaster.rowData[0], ...ccrModifyData]));
+          else dispatch(SET_CCR_MODIFY_DATA([activeMaster.rowData[0]]));
+          dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
         }
-        if(params.data.cpd==="" || !params.data.cpd){
-          notifyError("CCR Capacity Per Day cannot be empty!")
-          return;
-        }
-        if(params.data.whpd==="" || !params.data.whpd){
-          notifyError("Working hours Per Day cannot be empty!")
-          return;
-        }
-        if(params.data.sh==="" || !params.data.sh){
-          notifyError("Scheduling horizon cannot be empty!")
-          return ;
-        }
-        const newColDefs:any = [];
-        activeMaster.colDefs.forEach((ele:any)=>{
-          const newColDef = {...ele};
-          delete newColDef.editable;   
-          newColDefs.push(newColDef);
-        })
-  
-        dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
 
 
       }

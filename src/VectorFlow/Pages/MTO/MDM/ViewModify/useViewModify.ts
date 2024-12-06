@@ -181,6 +181,7 @@ const useViewModify = (pageType: string) => {
     const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
 
     const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
+    const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
 
     const [mtoProgress, setMTOProgress] = useState("initial");
 
@@ -315,16 +316,19 @@ const useViewModify = (pageType: string) => {
   },[bufferTypeData])
 
   useEffect(()=>{
-    if(ccrGroupMaster &&  plantMaster &&  deptMaster){
+    if(ccrGroupMaster &&  plantMaster &&  deptMaster && (activeMaster.colDefs.length>0)){
 
       const newColDef = _.cloneDeep(activeMaster.colDefs);
-      newColDef[newColDef.length-2].valueFormatter =  myFormatter;
+      // newColDef[newColDef.length-2].valueFormatter =  myCCRFormatter;
       newColDef[newColDef.length-1].cellRenderer = ToggleButton;
       newColDef.forEach((ele:any)=>{ele.cellStyle = (params:any)=>{
-        if(params.data.bid===null || params.data.bid===undefined || params.data.iv===false){
+        if(params.data.cid===null || params.data.cid===undefined || params.data.iv===false){
           return {color: "rgb(128, 0, 64)"}
         }
-      }})
+      }
+      ele.valueFormatter = myCCRFormatter
+    }
+      )
       dispatch(UPDATE_COLDEFS([...newColDef]));
     }
 
@@ -742,6 +746,8 @@ const useViewModify = (pageType: string) => {
     let resultData;
 
     console.log("payload ..filterds", finPayload);
+    if (finPayload.bt) finPayload.btype = finPayload.bt; delete finPayload.bt;
+/******  cb9a1de4-0e9b-4735-8968-a85fa557c44e  *******/
     
     
     if (activeMaster.id===501 && activeMaster.isMTO) {
@@ -1148,7 +1154,7 @@ const useViewModify = (pageType: string) => {
         // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
         if(col.field==='iv')return {...col};
         if(col.field==='bt')return {...col, editable: true,  cellEditor: 'agRichSelectCellEditor',
-        valueFormatter: myFormatter,
+        valueFormatter: col.field==='bt'? myFormatter: myCCRFormatter,
         cellEditorParams: {
           values: bufferTypeData?.map((item: any) =>  item.dsc), // Dropdown values
         }, }
@@ -1958,6 +1964,27 @@ const useViewModify = (pageType: string) => {
     setIsConflictModalOpen(false)
   }
 
+  function getCCRGroupKeyById(ccrGroupMaster: any, currBuff: number): string | undefined {
+    let val;
+  
+    // Iterate through the keys of the ccrGroupMaster object
+    for (const key in ccrGroupMaster) {
+      if (Object.prototype.hasOwnProperty.call(ccrGroupMaster, key)) {
+        const group = ccrGroupMaster[key];
+  
+        // Check if the `ccr_group_id` matches the current buffer
+        if (group?.ccr_group_id?.toString() === currBuff?.toString()) {
+          val = key; // Assign the key (e.g., "CCR Stitching") to `val`
+          break;
+        }
+      }
+    }
+  
+    return val;
+  }
+  
+  
+
 
   function myFormatter(params: any) {
     const currBuff = params.value;
@@ -1974,6 +2001,58 @@ const useViewModify = (pageType: string) => {
   }
     return val;
 
+  }
+  function myCCRFormatter(params: any) {
+    const currBuff = params.value;
+
+    let val = params.value;
+    if(params.column.colId==='pl'){
+
+      if(plantMaster){
+
+      plantMaster.forEach((ele: any) => {
+        console.log("ele", ele);
+      if (ele?.plant_id?.toString() === currBuff?.toString()) {
+        
+        val = ele.plant_name;
+      }
+    })
+    }
+  }
+  else if(params.column.colId==='dp'){
+
+      if(deptMaster){
+
+      deptMaster.forEach((ele: any) => {
+        console.log("ele", ele);
+      if (ele?.dept_id?.toString() === currBuff?.toString()) {
+        
+        val = ele.dept_name;
+      }
+    })
+    }
+  }
+  else if(params.column.colId==='ccr_group'){
+
+      if(ccrGroupMaster){
+
+      val = getCCRGroupKeyById(ccrGroupMaster, currBuff);
+    }
+  }
+    return val;
+    
+  }
+
+  const getDropDown = (colField: any)=>{
+    if(colField==='pl'){
+      return plantMaster?.map((item: any) =>  item.plant_name)
+    }
+    if(colField==='dp'){
+      return deptMaster?.map((item:any)=> item.dept_name)
+    }
+    if(colField==='ccr_group'){
+      return Object.keys(ccrGroupMaster);
+    }
   }
 
 
@@ -2022,6 +2101,22 @@ const useViewModify = (pageType: string) => {
       }
 
       if(activeMaster.id===502 ){
+        if (colDef.field === 'pl' || colDef.field==='dp' || colDef.field==='ccr_group') {
+          return {
+            ...colDef,
+            cellEditor: 'agRichSelectCellEditor',
+            valueFormatter: myCCRFormatter,
+            cellEditorParams: {
+              values: getDropDown(colDef.field)
+            },
+            cellStyle: (params:any)=>{
+              if(params.data.ccd===null || params.data.ccd===undefined || params.data.iv===false){
+                return {color: "rgb(128, 0, 64)"}
+              }
+            },
+            editable,
+          };
+        }
         return {
           ...colDef,
           editable
@@ -2094,6 +2189,18 @@ const useViewModify = (pageType: string) => {
     else if(activeMaster.id===502){
       newRow = {
         ccd: `CCR-${newRowValue}`,
+        cid: null,
+        cnm: null,
+        cpd: null,
+        whpd: null,
+        sh: null,
+        fh: null,
+        rb: null,
+        pl: null,
+        dp: null,
+        a1: null,a2:null, a3:null,a4:null, a5:null, a6:null, a7:null,a8:null,a9:null,a10:null,
+        cwl: null,
+        ccr_group: null
       }
     }
     else if(activeMaster.id===503){
@@ -2191,7 +2298,6 @@ const useViewModify = (pageType: string) => {
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
       ccrData: [],
-      aids: ["111111","222222","333333"]
     }
 
 
@@ -2244,32 +2350,27 @@ const useViewModify = (pageType: string) => {
 
     // move this to different function
     if(activeMaster.id===502){
+
+      console.log("CCR Master modified data", );
       const CCRPostObj: any = {
         mid: activeMaster.id,
         uid: user.user.user.id.toString(),
         unm: user.user.user.name,
-        ccrData: [],
-        aids: ["11111", "22222", "33333"]
+        ccrData: []
       }
 
-      let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
-      activeMaster.rowData.forEach((ele:any)=>{
+      ccrModifyData.forEach((ele:any)=>{
         const e = _.cloneDeep(ele);
         e.mlt = parseInt(e.mlt);
         e.slt = parseInt(e.slt);
         e.cg = e.ccr_group;
-
-      
-  
-        if(totalNewVals===0) return;
-        totalNewVals--;
-  
-  
         CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
       })
 
 
       try{
+        console.log("ccr modify data", CCRPostObj);
+
         const response = await saveCCRMasterTask(CCRPostObj);
         if(response.status=== 200){
           notifySuccess("Saved CCR Task Successfully");

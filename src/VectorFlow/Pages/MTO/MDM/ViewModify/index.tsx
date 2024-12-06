@@ -113,6 +113,7 @@ const MTOViewModify = () => {
   } = useViewModify('modify');
 
   const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
+  const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
 
 
 
@@ -523,7 +524,7 @@ const MTOViewModify = () => {
           masterId={activeMaster.id}
           mtoSaveData={true}
           onMTOSaveData={ onMTOSaveBufferData}
-          isMTOSaveDataDisabled={!(bufferModifyData && bufferModifyData.length>0)} 
+          isMTOSaveDataDisabled={(activeMaster.id===501 &&!(bufferModifyData && bufferModifyData.length>0)) || (activeMaster.id===502 && !(ccrModifyData && ccrModifyData.length>0))} 
           onMTOSaveAsDraft={onMTOSaveAsDraft}
           isMTODraftDisabled={!(bufferModifyData && bufferModifyData.length>0)}
           />

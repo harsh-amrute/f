@@ -216,7 +216,7 @@ export namespace MDMService {
     )
   }
   export const saveCCRMasterTask = async (body: any) => {
-    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveCCRMasterTask/', 
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveCCRMasterTask/?forwardUsers=true', 
       body
     )
   }
