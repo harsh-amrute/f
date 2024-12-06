@@ -21,7 +21,7 @@ import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
 import PoogiEditDeleteCell from './PoogiEditDeleteCell';
-import { SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
+import { SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
 import MTOCalendarEditCellRenderer from './MTOCalendarEditCellRenderer';
 import ToggleButton from './ToggleButton';
 import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../VectorFlow/Services/MTO/Common/Masters';
@@ -2200,7 +2200,8 @@ const useViewModify = (pageType: string) => {
         dp: null,
         a1: null,a2:null, a3:null,a4:null, a5:null, a6:null, a7:null,a8:null,a9:null,a10:null,
         cwl: null,
-        cgid: null
+        cgid: null,
+        iv: true
       }
     }
     else if(activeMaster.id===503){
@@ -2350,8 +2351,7 @@ const useViewModify = (pageType: string) => {
 
     // move this to different function
     if(activeMaster.id===502){
-
-      console.log("CCR Master modified data", );
+      notifyLoader("Saving CCR Task...");
       const CCRPostObj: any = {
         mid: activeMaster.id,
         uid: user.user.user.id.toString(),
@@ -2361,18 +2361,19 @@ const useViewModify = (pageType: string) => {
 
       ccrModifyData.forEach((ele:any)=>{
         const e = _.cloneDeep(ele);
-        // e.mlt = parseInt(e.mlt);
-        // e.slt = parseInt(e.slt);
-        // e.cg = e.cgid;
-        CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
+        const ccrGid = ccrGroupMaster[e.cgid].ccr_group_id;
+        e.cgid = ccrGid;
+        deptMaster.forEach((elm: any)=>{if(elm.dept_name===ele.dp)e.dpid= elm.dept_id})
+        plantMaster.forEach((elm: any)=>{if(elm.plant_name===ele.pl)e.plid = elm.plant_id})
+        CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning','pl','dp']));
       })
 
 
       try{
-        console.log("ccr modify data", CCRPostObj);
 
         const response = await saveCCRMasterTask(CCRPostObj);
         if(response.status=== 200){
+          toast.dismiss();
           notifySuccess("Saved CCR Task Successfully");
           let totalNewVals = activeMaster.rowData.length - tempRecordCount;
           const currData = _.cloneDeep(activeMaster.rowData);
@@ -2380,6 +2381,12 @@ const useViewModify = (pageType: string) => {
             currData.shift();
           }
           dispatch(UPDATE_ROW_DATA(currData));
+          dispatch(SET_CCR_MODIFY_DATA([]));
+          setMTOProgress("submitted Once");
+        }
+        else{
+          toast.dismiss();
+          notifyError("Failed to create the task...")
         }
       }
       catch(error){
@@ -2423,11 +2430,6 @@ const useViewModify = (pageType: string) => {
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status=== 200){
         notifySuccess("Saved Buffer Task Successfully");
-        let totalNewVals = activeMaster.rowData.length - tempRecordCount;
-        const currData = _.cloneDeep(activeMaster.rowData);
-        while (totalNewVals-- > 0) {  
-          currData.shift();
-        }
         dispatch(UPDATE_ROW_DATA(bufferInitialData));
         dispatch(SET_BUFFER_MODIFY_DATA([]));
         setMTOProgress("submitted Once");
