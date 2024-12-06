@@ -2032,7 +2032,7 @@ const useViewModify = (pageType: string) => {
     })
     }
   }
-  else if(params.column.colId==='ccr_group'){
+  else if(params.column.colId==='cgid'){
 
       if(ccrGroupMaster){
 
@@ -2050,7 +2050,7 @@ const useViewModify = (pageType: string) => {
     if(colField==='dp'){
       return deptMaster?.map((item:any)=> item.dept_name)
     }
-    if(colField==='ccr_group'){
+    if(colField==='cgid'){
       return Object.keys(ccrGroupMaster);
     }
   }
@@ -2101,7 +2101,7 @@ const useViewModify = (pageType: string) => {
       }
 
       if(activeMaster.id===502 ){
-        if (colDef.field === 'pl' || colDef.field==='dp' || colDef.field==='ccr_group') {
+        if (colDef.field === 'pl' || colDef.field==='dp' || colDef.field==='cgid') {
           return {
             ...colDef,
             cellEditor: 'agRichSelectCellEditor',
@@ -2200,7 +2200,7 @@ const useViewModify = (pageType: string) => {
         dp: null,
         a1: null,a2:null, a3:null,a4:null, a5:null, a6:null, a7:null,a8:null,a9:null,a10:null,
         cwl: null,
-        ccr_group: null
+        cgid: null
       }
     }
     else if(activeMaster.id===503){
@@ -2309,7 +2309,7 @@ const useViewModify = (pageType: string) => {
       //     newVal.bt=e.id;
       //   }
       // })
-      newVal.cg = e.ccr_group;
+      newVal.cg = e.cgid;
 
       // TODO: call the buffer type and add the id and use drop down instead;
      
@@ -2361,9 +2361,9 @@ const useViewModify = (pageType: string) => {
 
       ccrModifyData.forEach((ele:any)=>{
         const e = _.cloneDeep(ele);
-        e.mlt = parseInt(e.mlt);
-        e.slt = parseInt(e.slt);
-        e.cg = e.ccr_group;
+        // e.mlt = parseInt(e.mlt);
+        // e.slt = parseInt(e.slt);
+        // e.cg = e.cgid;
         CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
       })
 
