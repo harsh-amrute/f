@@ -7,6 +7,7 @@ import NavigationTab from "../NavigationTab"
 import ViewURLs from "./View"
 import DeleteUrl from "./Delete"
 import { notifySuccess,notifyError } from "../../../helpers/notify"
+import EditRole from "./Edit"
 
 interface UserRolesDrawerProps{
     onClose:()=>void
@@ -27,9 +28,19 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
 
     const [currRole,setCurrRole] = useState<any>(null)
 
-    const onCellClicked = (row:any)=>{
+    const onEditRole = (row:any)=>{
+        setCurrTab(3)
+        setCurrRole(row)
+    }
+
+    const onDeleteRole = (row:any)=>{
         setCurrTab(2)
         setCurrRole(row)
+    }
+
+    const resetTab = ()=>{
+        setCurrTab(0)
+        setCurrRole(null)
     }
 
     const handleDelete = async()=>{
@@ -37,7 +48,7 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
             await fetch(`${process.env.REACT_APP_API_HOST}api/user/delete-role/${currRole.id}/`,{
                 method:'DELETE'
             })
-            notifySuccess("Deleted URL Successfully")
+            notifySuccess("Deleted Role Successfully")
             setCurrTab(0)
         }catch(error){
             console.error(error)
@@ -61,13 +72,14 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
             
             {currTab === 1 && (
                 <Content>
-                    <AddRole cb={()=>setCurrTab(0)}/>
+                    <AddRole cb={resetTab}/>
                 </Content>
             )}
             {currTab === 0 && (
                 <Content>
                     <ViewURLs
-                        onDelete={(r)=>onCellClicked(r)}
+                        onEdit={onEditRole}
+                        onDelete={onDeleteRole}
                     />
                 </Content>
             )}
@@ -75,16 +87,13 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
                 <Content>
                     <DeleteUrl  
                         onSuccess={handleDelete}
-                        onFailure={()=>{
-                            setCurrTab(0)
-                            setCurrRole(null)
-                        }}
+                        onFailure={resetTab}
                     />
                 </Content>
             )}
             {currTab === 3 && (
                 <Content>
-                    <AddRole cb={()=>setCurrTab(0)}/>
+                    <EditRole data={currRole} cb={resetTab}/>
                 </Content>
             )}
             

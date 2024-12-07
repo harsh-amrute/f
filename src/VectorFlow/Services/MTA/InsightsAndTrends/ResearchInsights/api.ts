@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export namespace ResearchInsightsService {
     export const getUpdatedGraphData = async (body:any) => {
-        return axios.post(process.env.REACT_APP_API_HOST +`/api/SCIH/GetResearchInsightData`,body,{
+        return axios.post(process.env.REACT_APP_API_HOST +`api/mta/GetResearchInsightData`,body,{
             headers: { 'Content-Type': 'application/json' }
         })      
     }

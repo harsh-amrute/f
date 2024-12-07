@@ -117,17 +117,17 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       const valueChild = `${valueParent} > ${item[txtChild]}`;
       const valueGrandChild = `${valueChild} > ${item[txtGrandChild]}`;
 
-      if (!checkAddParent.includes(valueParent)) {
+      if (!checkAddParent.includes(valueParent) && valueParent.length > 0) {
         checkAddParent.push(valueParent);
         parent.push({ label: valueParent, value: valueParent });
       }
 
-      if (!checkAddChild.includes(valueChild)) {
+      if (!checkAddChild.includes(valueChild) && item[txtChild].length > 0) {
         checkAddChild.push(valueChild);
         child.push({ label: valueChild, value: valueChild });
       }
 
-      if (!checkAddGrandChild.includes(valueGrandChild)) {
+      if (!checkAddGrandChild.includes(valueGrandChild) && item[txtGrandChild].length > 0) {
         checkAddGrandChild.push(valueGrandChild);
         grandChild.push({ label: valueGrandChild, value: valueGrandChild });
       }
@@ -220,7 +220,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           checkAddLcType: getLocationPermissions.checkAddChild,
           checkAddLcCluster: getLocationPermissions.checkAddGrandChild,
         };
-        
+
         locationPermissionAllApp.push({
           'application_id':app.application_id,
           'application_name':app.application_name,

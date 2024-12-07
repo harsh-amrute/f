@@ -32,20 +32,26 @@ export default forwardRef(({ ...props }: any, ref) => {
 
       Object.keys(product[keyBrand])?.forEach((keySubBrand: any) => {
         const valueSubBrand = `${keyBrand} > ${keySubBrand}`;
-        const dataSubBrand = {
-          label: valueSubBrand,
-          value: valueSubBrand,
-        };
-
-        newListSubBrand.push(dataSubBrand);
+        if(keySubBrand.length > 0){
+          const dataSubBrand = {
+            label: valueSubBrand,
+            value: valueSubBrand,
+          };
+  
+          newListSubBrand.push(dataSubBrand);
+        }
+       
 
         product[keyBrand][keySubBrand]?.forEach((eleCategory: any) => {
-          const valueCategory = `${valueSubBrand} > ${eleCategory.product_hierarchy_3}`;
-          const dataCategory = {
-            label: valueCategory,
-            value: valueCategory,
-          };
-          newListCategory.push(dataCategory);
+          const valueCategory = `${valueSubBrand} > ${eleCategory['product_hierarchy_3']}`;
+          if(eleCategory['product_hierarchy_3'].length > 0){
+            const dataCategory = {
+              label: valueCategory,
+              value: valueCategory,
+            };
+            newListCategory.push(dataCategory);
+          }
+       
         });
       });
     });

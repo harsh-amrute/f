@@ -1,52 +1,58 @@
-import { useGetBORUIConfiguration, useBORData, useBORDataCount,useSubmitBORRemark,useGetBORRemarkHistory } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
-import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
-import { useState,useMemo, useEffect,useRef, CSSProperties } from "react"
+// import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
+import {useGetState,useGetDailyData, useGetUiConfig} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
+import { convertUiConfigToOptions, mapBORColorBandWiseFieldsToColDefs } from "../../../../../helpers/utils"
+import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import {DispatchColorCellRenderer} from "./CellRenderer"
-import BPRGraphCellRenderer from "../../../../Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
-import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
+import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
+import { BPRFilterState } from "../../../../types/BPR"
 
 import { useSelector,useDispatch } from "react-redux"
 
 import { RootState } from "../../../../../redux/store/store"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
-import { notifyError, notifyLoader,notifySuccess} from "../../../../../helpers/notify"
+import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
-import { GridRef } from "../../../../../VectorFlow/types/MDM"
-import {  BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers"
-import useViewPort from "../../../../../hooks/useViewPort"
-import { BORRemarksCellRenderer } from "./BORCellRenderers"
+import { GridRef } from "../../../../types/MDM"
+import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCellRenderers"
+
+import { ColDef } from "ag-grid-enterprise"
+import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
+import { useSubmitBORRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
 
 
 
+export const useBORColorBandwise =()=>{
 
-export const useBOR =()=>{
     const ref=  useRef<GridRef>()
+
     const tempRef = useRef()
 
     const [internalRef,setInternalRef] = useState<any>()
 
+    const [editedRows,setEditedRows] = useState<Array<any>>([])
+
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
-     const {data,isLoading:isBORUILoading} = useGetBORUIConfiguration();
+
+     const {mutateAsync:getUiConfig,isLoading:isBORUILoading} = useGetUiConfig();
+
+     const {mutateAsync:submitRemark} = useSubmitBORRemark()
+
      const dispatch = useDispatch();
    
-     const {getGridZoom,getScreenZoomValue} = useViewPort()
- 
-     const gridZoom = getGridZoom()
-     const screenZoom = getScreenZoomValue() 
-
     //  const [toggleSubGrid] = useState<boolean>(false);
      const [currGridPage,setCurrGridPage] = useState<number>(1)
 
-     const [rowData,setRowData] = useState([]);
+     const [rowData,setRowData] = useState<Array<any>>([]);
+
+     const [colDefs,setColDefs] = useState<Array<ColDef>>([])
 
      const [recordCount,setRecordCount] = useState<number>(0)
+
      const [currentPage,setCurrentPage] = useState(1);
 
      const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
@@ -54,45 +60,53 @@ export const useBOR =()=>{
      const [exportExcelColumns,setExportExcelColumns] = useState<Array<any>>([])
  
      const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
-     const [generalFilterOptions,setGeneralFilterOptions] = useState();
-
-     const [isSubmitRemarkToolTipOpen,setIsSubmitRemarkToolTipOpen] = useState<boolean>(false)
-     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
-     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
-     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
-     const {mutateAsync:getBORRemarkHistory} = useGetBORRemarkHistory();
-     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
-     const [editedRows,setEditedRows] = useState<Array<any>>([])
-     const [remark,setRemark] = useState<string>('')
-
-     const {mutateAsync:submitRemark} = useSubmitBORRemark()
-
-
 
 
      const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
+
      const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
+
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     //  const rowsPerPage=50;
-     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
+
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
       }
 
 
-     const {mutateAsync:getBorData} = useBORData();
-     const {mutateAsync:getBorDataCount} = useBORDataCount();
+     const {mutateAsync:getData} = useGetBORColorBandWisData();
+
+     const {mutateAsync:getDataCount} = useGetBORColorBandWiseRecordCount();
+
      const {mutateAsync:getDailyData} = useGetDailyData();
 
      const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
-        colorDispatchCellRenderer:DispatchColorCellRenderer,
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
-        remarksCellRenderer:BORRemarksCellRenderer
-
+        colorCellRenderer:TextToTextColorMapper
         
       }), []);
+
+      const onCellValueChanged = (newRow: any, primaryKey: string) => {
+        setEditedRows((prev) => {
+          let found = false; // Flag to track if the row has been updated
+          const updatedRows = prev.map((row) => {
+            if (row[primaryKey] === newRow[primaryKey]) {
+              found = true;
+              return { ...newRow }; // Return updated row
+            }
+            return row; // Return unchanged row
+          });
+      
+          if (!found) {
+            // If no existing row was found, add the new row
+            return [...updatedRows, {...newRow}];
+          }
+          return updatedRows;
+        });
+      };
 
       const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -114,90 +128,18 @@ export const useBOR =()=>{
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
 
-    const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>)=>{
-      const {top,left} = e.currentTarget.getBoundingClientRect()
-      setSubmitRemarkToolipPosition({
-          top: top * gridZoom * screenZoom,
-          left: left * gridZoom * screenZoom,
-      })
-      setIsSubmitRemarkToolTipOpen(true)
+      
+      // const BORColumns = useMemo(()=>mapBORColorBandWiseFieldsToColDefs(data?.data.data,onOpenDailyDataGraph),[data])
+      
 
-  }
-
-  const onOpenRemarkHistory = async(e:React.MouseEvent<HTMLElement>,row:any)=>{
-    try{
-        setIsRemarkHistoryToolTipOpen(false)
-        const toastId = notifyLoader("Getting remark history")
-        const {top,left} = e.currentTarget.getBoundingClientRect()
-        setRemarkHistoryToolipPosition({
-            top: top *  gridZoom * screenZoom,
-            left: left *  gridZoom * screenZoom,
-            height:360,
-            width:350
-        })
-        const {data} = await getBORRemarkHistory(row)
-        toast.dismiss(toastId)
-        setRemarkHistory(data.data)
-        setIsRemarkHistoryToolTipOpen(true)
-    }catch(err:any){
-        notifyError(err.message)
-    }
-    }
-
-    const onCellValueChanged = (newRow: any, primaryKey: string) => {
-      console.log('ghsuiag')
-      setEditedRows((prev:any) => {
-        let found = false; // Flag to track if the row has been updated
-        const updatedRows = prev.map((row:any) => {
-          if (row[primaryKey] === newRow[primaryKey]) {
-            found = true;
-            return { ...newRow }; // Return updated row
-          }
-          return row; // Return unchanged row
-        });
-    
-        if (!found) {
-          // If no existing row was found, add the new row
-          return [...updatedRows, {...newRow}];
-        }
-        return updatedRows;
-      });
-    };
-    const onSubmitRemarks = async()=>{
-      try{
-       const toastId = notifyLoader("Submitting Remark")
-       const payload = editedRows.map((e)=>{
-           return {
-               remark:e.remarks,
-               whcode:e.WHCode,
-               skucode:e.SKUCode,
-               spc:e.SupplierCode
-           }
-           
-       })
-       const {data} = await submitRemark({data:payload})
-       toast.dismiss(toastId)
-       notifySuccess(data.msg)
-       setEditedRows([])
-      }catch(err:any){
-       notifyError(err.message)
-      }
-   }
-
-   const onCloseSubmitRemark =()=>setIsSubmitRemarkToolTipOpen(false)
-
-   const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
-
-   const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
- 
-      const BORColumns = useMemo(()=>mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,onOpenSubmitRemark, onOpenRemarkHistory),[data])
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+
       const [gridState,setGridState] = useState<any>()
 
       useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("BOR")
+            const data =  await getState("BOR_Color_Bandwise")
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
@@ -220,39 +162,38 @@ export const useBOR =()=>{
       useEffect(()=>{       
         const fetchData = async () => {
             await getRecordsCount();
+            await getBORColorBandWiseUiConfig()
             await loadGridData(currentPage);
 
 
         };
         fetchData();
-        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
 
-    }, [isBORUILoading]);
+    }, []);
 
 
       const getRecordsCount=async(filter?:any)=>{
-            const payload={
-            filters:filter || {},
-             paginationParameter: {
-        pageNumber: currentPage,
-        // recordPerPage:20
-    recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
-    }
+        const payload={
+          filters:filter || {},
+          paginationParameter: {
+            pageNumber: currentPage,
+            recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+          }
         }
-        const resultCount=await getBorDataCount(payload);
-        setRecordCount(resultCount?.data?.recordCount);
+        const resultCount=await getDataCount(payload);
+        
+        setRecordCount(resultCount?.data?.data[0]?.count || 0); 
       }
     
     const loadGridData = async (pageNo:any,filter?:any)=> {
-
         try{
           notifyLoader("loading Grid Data")
           const payload={
             filters:filter || {},
             paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
         }
-        const result = await getBorData(payload);
-        setRowData(result.data.data || [])
+        const result = await getData(payload);
+        setRowData(result.data.data)
         toast.dismiss()
         }catch(err:any){
           notifyError(err)
@@ -261,6 +202,15 @@ export const useBOR =()=>{
         }
 
     }
+
+    const getBORColorBandWiseUiConfig = async()=>{
+      try{
+          const response = await getUiConfig('BOR_OA')
+          setColDefs(mapBORColorBandWiseFieldsToColDefs(response.data.data,onOpenDailyDataGraph))
+      }catch(err:any){
+          notifyError("Something Went Wrong")
+      }
+  }
 
     const onApplyFilter = async(filter:any)=>{
       await getRecordsCount(filter)
@@ -311,9 +261,8 @@ export const useBOR =()=>{
             },
            
         },
-        // onGridReady:(params)=>setInternalRef(params)
-        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode"),
-        onGridReady:(params)=>setInternalRef(params)
+        onGridReady:(params)=>setInternalRef(params),
+        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode")
       }
      },[])
 
@@ -334,11 +283,11 @@ export const useBOR =()=>{
 
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport-ColorBandWise',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       };
       const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const data =  await getBorData({
+        const data =  await getData({
             filters:currFilter,
             paginationParameter:{
                 pageNumber:pageNumber,
@@ -349,11 +298,36 @@ export const useBOR =()=>{
         return data.data.data
     }
 
+    const onSubmitRemarks = async()=>{
+      try{
+        const toastId = notifyLoader("Submitting Remark")
+        const payload = editedRows.map((e)=>{
+            return {
+                remark:e.remarks,
+                whcode:e.WHCode,
+                skucode:e.SKUCode,
+                spc:e.SupplierCode
+            }
+            
+        })
+        const {data} = await submitRemark({data:payload})
+        toast.dismiss(toastId)
+        notifySuccess(data.msg)
+        setEditedRows([])
+       }catch(err:any){
+        notifyError(err.message)
+       }
+   }
+
+      const generalFilterOptions = useMemo(()=>{
+        return convertUiConfigToOptions(colDefs)
+    },[colDefs])
+
   
      return {   
         ref,    
         isLoading :isBORUILoading,      
-        BORColumns,
+        colDefs,
         agGridProps,
         rowData ,
         currentPage,
@@ -380,17 +354,7 @@ export const useBOR =()=>{
         setCurrFilter,
         onDeleteFilter,
         generalFilterOptions,
-        isSubmitRemarkToolTipOpen,
-        isRemarkHistoryToolTipOpen,
-        remarkHistory,
-        remark,
-        submitRemarkToolTipPosition,
-        remarkHistoryToolipPosition,
         onSubmitRemarks,
-        editedRows,
-        updateRemark,
-        onCloseRemarkHistory,
-        onCloseSubmitRemark,
-
+        editedRows
     }
 }

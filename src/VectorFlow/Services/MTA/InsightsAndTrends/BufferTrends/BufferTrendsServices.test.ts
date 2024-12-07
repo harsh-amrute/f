@@ -25,7 +25,7 @@ describe ("buffer trends services",()=>{
           bufferTrendType:"tech",
         }
         const response = await BufferTrendsService.getBufferTrendsGraph(mockBody);
-        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/api/SCIH/GetBufferTrendGraphData',mockBody,{
+        expect(mockedAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_VF_API_HOST + '/api/mta/GetBufferTrendGraphData',mockBody,{
           headers: { 'Content-Type': 'application/json' }
         })
         expect(response.status).toBe(200);

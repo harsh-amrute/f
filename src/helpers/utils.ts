@@ -5,7 +5,7 @@ import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError} from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
-import readXlsxFile from 'read-excel-file'
+import readXlsxFile,{readSheetNames} from 'read-excel-file';
 import { ColDef, ColGroupDef, CellClickedEvent } from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
@@ -250,6 +250,217 @@ export const mapVDRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
 }
 
+export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const specificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+    }
+  ]
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result,...specificColumns]
+}
+
+export const mapOrderAllocationReportFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='OrderColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
+export const mapBORColorBandWiseFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     pinned:'right',
+     editable:true,
+     cellStyle:{
+      overflow:'visible',
+      'min-width':180,
+    }
+  }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
+export const mapTotalRequirementFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      // hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result]
+}
+
+
 export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
@@ -258,20 +469,19 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
   let result: ColDef[] = []
 
-  const RRRSpecificColumns: ColDef[] = [
-    {
-      colId: 'remarks',
-      field: 'ramarks',
-      headerName: 'Remarks',
-      tooltipField: "tags"
-      // tooltipComponent:'remarksToolTipComponent'
-    },
-    {
-      colId: 'rh',
-      field: 'rh',
-      headerName: 'Remark History',
-    }
-  ]
+  // const RRRSpecificColumns: ColDef[] = [
+  //   {
+  //     colId: 'remarks',
+  //     field: 'ramarks',
+  //     headerName: 'Remarks',
+  //     tooltipField: "tags"
+  //   },
+  //   {
+  //     colId: 'rh',
+  //     field: 'rh',
+  //     headerName: 'Remark History',
+  //   }
+  // ]
 
   result = fields.map((f: RRRField) => {
 
@@ -318,7 +528,7 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
       filter: getCellFilter(f.DataType)
     }
   })
-  return [...result, ...RRRSpecificColumns]
+  return [...result]
 }
 
 export const handleDownload = async (nameApi: string, nameFile: string) => {
@@ -654,7 +864,7 @@ export const generateRandomId = (length?: number) => {
 }
 
 export const replaceKeyWithDisplayName = (message: string, master: MDMMasterState) => {
-  return new String(message).replaceAll(/",*?"/g, (m) => {
+  return new String(message).replaceAll(/"([^"]+)"/g, (m) => {
     const displayName = master.fields.find((f: Field) => f.key === m.replaceAll('"', ''))?.displayName;
     if (displayName) return displayName
     return m;
@@ -684,6 +894,20 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   else{
     selectedKeys = selectedColumns.map((col:any)=>col.colId);
   }
+
+
+  const numberOfSheets = await readSheetNames(file);
+  if(numberOfSheets.length > 1){
+    throw new Error('File cannot contain multiple sheets') 
+  }
+
+  if(numberOfSheets[0]!='ag-grid'){
+    throw new Error('Sheet Name is changed') 
+  }
+
+ 
+
+
    
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
@@ -694,6 +918,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
     if (fieldObj) return fieldObj.key;
     else return '';
   })
+
 
 
   if(master.id===501 || master.id===502){
@@ -746,11 +971,12 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   })
 
   if (error) {
-    throw new Error(`File is Missing ${headers.join(', ')}`);
+    throw new Error(`File is missing the following columns: ${headers.join(', ')}`);
   }
 
   error = false;
   headers = [];
+
 
   headerKeys.forEach((key: string) => {
 
@@ -810,8 +1036,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   return result;
 }
 
-export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShowChart?: any) => {
-
+export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShowChart?: any,pageType?:string) => {
   let result: any[] = []
   const tempFields = [...fields]
   tempFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
@@ -825,7 +1050,7 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       field: f.key,
       colId: f.key,
       headerName: f.displayName,
-      hide: !f.visible,
+      hide: pageType==='add' ? !f.isAdd : !f.visible ,
       floatingFilter: true,
       filter: cellFilter,
       cellDataType: cellDataType,
@@ -923,7 +1148,7 @@ export const mapStateFiltersToPayload = (filters: Filter[]) => {
 
 }
 
-export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMasterState[] => {
+export const mapMasterToMasterState = (masters: any[], onShowChart?: any,pageType?:string): MDMMasterState[] => {
 
   return masters.map((master: Master) => ({
     id: master.id,
@@ -937,7 +1162,7 @@ export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMa
         operator: '',
         text: ''
       }],
-    colDefs: mapMasterToColumnDefs(master.fields, master.id, onShowChart),
+    colDefs: mapMasterToColumnDefs(master.fields, master.id, onShowChart,pageType),
     rowData: [],
     progress: 'default',
     isChecked: true,

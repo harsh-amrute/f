@@ -108,8 +108,9 @@ const useOpenExpeditingRequests = () => {
           try{
             notifyLoader("Loading Grid Data")
             const data = await getData(currentFilter)
-            setRowData(data.data.data.data.map((r:any,index:number)=>({...r,id:index,action:''})))
             setColDefs(mapFieldsToColDefs(data.data.data.config))
+            const tempRowData = data?.data?.data?.data || [];
+            setRowData(tempRowData.map((r:any,index:number)=>({...r,id:index,action:''})))
             toast.dismiss()
             notifySuccess("Data Loaded Successfully")
           }catch(err:any){

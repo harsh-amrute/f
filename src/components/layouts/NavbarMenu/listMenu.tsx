@@ -295,10 +295,38 @@ export const listMenuParent: any = [
 
           },
           {
+            name: "Rationed Requirement Report - Color Bandwise",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/rrr-color-bandwise",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+
+          },
+          {
             name: "Buyer Order Report",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/bor",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
+
+          },
+          {
+            name: "Buyer Order Report - Color Bandwise",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/bor-color-bandwise",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+
+          },
+          {
+            name: "Order Allocation Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/order-allocation-report",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+
+          },
+          {
+            name: "Total Requirement Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/total-requirement-report",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
 
           },
           {
