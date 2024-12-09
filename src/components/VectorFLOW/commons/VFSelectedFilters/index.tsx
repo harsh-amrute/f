@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react'
+import { CSSProperties, useCallback, useMemo } from 'react'
 import { BPRFilter, BPRFilterGroup, BPRFilterState } from '../../../.././VectorFlow/types/BPR'
 import {VFSelectedFiltersChip, VFSelectedFiltersFilterCloseIcon, VFSelectedFiltersFilterContent, VFSelectedFiltersFilterLabel, VFSelectedFiltersFilterValue, VFSelectedFiltersPlaceHolder,VFSelectedFiltersWrapper,VFFilterScrollBar} from './styles'
 
@@ -17,9 +17,9 @@ const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
         onRemoveFilter,
         style
     } = props
-    const areFiltersValid = (groupedFilters:Array<BPRFilter>):boolean=>{
+    const areFiltersValid = useCallback((groupedFilters:Array<BPRFilter>):boolean=>{
         return groupedFilters.some((f:BPRFilter)=>f.attributeName!="" && f.value!="" && f.operator!="")
-    }
+    },[])
  
     return (
         <VFSelectedFiltersWrapper style={style}>

@@ -10,10 +10,11 @@ import axios from 'axios'
 import { notifyError } from '../../../helpers/notify'
 
 
-const ViewURLs = (props:{onDelete:(data:any)=>void})=>{
+const ViewURLs = (props:{onDelete:(data:any)=>void,onEdit:(data:any)=>void})=>{
 
     const {
-        onDelete
+        onDelete,
+        onEdit
     } = props
 
     const {user} = useUserData()
@@ -84,6 +85,26 @@ const ViewURLs = (props:{onDelete:(data:any)=>void})=>{
                         field:"description"
                     },
                     {
+                        colId:'edit',
+                        field:'edit',
+                        headerName:'',
+                        maxWidth:80,
+                        cellStyle:{
+                            display:'flex',
+                            'align-items':'center',
+                        },
+                        cellRenderer:(params:any)=>(
+                            <SecondaryButton
+                                style={{backgroundColor:'transparent'}}
+                                themeUi={themeUi}
+                                onClick={()=>onEdit(params.data)}
+                            >
+                               
+                                <img src="/assets/img/VectorFLOW/NMS/edit-draft.svg" height={20} width={20}/>
+                            </SecondaryButton>
+                        )
+                    },
+                    {
                         colId:'delete',
                         field:'delete',
                         headerName:'',
@@ -99,7 +120,7 @@ const ViewURLs = (props:{onDelete:(data:any)=>void})=>{
                                 onClick={()=>onDelete(params.data)}
                             >
                                
-                                <img src="/assets/img/VectorFLOW/NMS/delete-black.svg" height={20} width={20}/>
+                                <img src="/assets/img/VectorFLOW/NMS/delete-draft.svg" height={20} width={20}/>
                             </SecondaryButton>
                         )
                     }

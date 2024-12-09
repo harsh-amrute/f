@@ -169,6 +169,8 @@ const useRRRColorBandwise = () => {
     dispatch(TOGGLE_GRAPH_MODAL(true));
   };
 
+  console.log(RRRColorBandWiseColumns)
+
   const getRRRColorBandWiseUiConfig = async () => {
     try {
       const response = await getUiConfig("RRR_OA");

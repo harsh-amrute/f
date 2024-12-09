@@ -101,7 +101,7 @@ const ViewURLs = (props:{onDelete:(params:any)=>void})=>{
                                 onClick={()=>onDelete(params.data)}
                             >
                                
-                                <img src="/assets/img/VectorFLOW/NMS/delete-black.svg" height={20} width={20}/>
+                                <img src="/assets/img/VectorFLOW/NMS/delete-draft.svg" height={20} width={20}/>
                             </SecondaryButton>
                         )
                     }

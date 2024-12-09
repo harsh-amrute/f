@@ -60,7 +60,7 @@ const useOrderAllocation =()=>{
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
-     const rowsPerPage = parseInt(process.env.REACT_APP_ORDERALLOCATION_ROWS_PER_PAGE || '100');
+     const rowsPerPage = parseInt( '100');
 
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
@@ -147,7 +147,7 @@ const useOrderAllocation =()=>{
             filters:filter || {},
              paginationParameter: {
         pageNumber: currentPage,
-        recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+        recordsPerPage: parseInt('100')
     }
         }
         const resultCount=await getRecordsCount(payload);

@@ -86,9 +86,13 @@ export const CheckBoxesWrapper = styled.div`
     margin-top:14px;
 `
 
-export const CheckBoxesHeader = styled.div`
-    font-size:16px;
+export const CheckBoxesHeaderContainer = styled.div`
+   display:flex;
+   justify-content:space-between;
     margin-bottom:10px;
+`
+export const CheckBoxesHeader = styled.div`
+ font-size:16px;
 `
 
 export const CheckBoxesContainer = styled.div`
@@ -98,4 +102,20 @@ export const CheckBoxesContainer = styled.div`
 export const CheckBoxWrapper = styled.div`
     display:flex;
     align-items:center;
+`
+
+export const SearchWrapper = styled.div`
+
+`
+
+export const URLSearch = styled.input`
+    all:unset;
+    border-radius:32px;
+    padding:2px 5px;
+    background-color:rgb(0,0,0,0.1);
+    cursor:auto;
+`
+
+export const CheckBoxLabel = styled.div`
+    display:flex;
 `

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React,{ useState, useEffect, useMemo, useCallback } from "react";
 
 import Select from "react-select";
 
@@ -11,11 +11,18 @@ import {
   CheckBoxesHeader,
   CheckBoxesContainer,
   CheckBoxWrapper,
-  CheckBoxLabel,
   CheckBoxesHeaderContainer,
   SearchWrapper,
+  URLSearch,
+  CheckBoxLabel,
 } from "../UserURLsDrawer/styles";
-import { Input, PrimaryButton, Skeleton, TextArea } from "../../commons/styled";
+import {
+  Input,
+  PrimaryButton,
+  SecondaryButton,
+  Skeleton,
+  TextArea,
+} from "../../commons/styled";
 import { useUserData } from "../../../context";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
@@ -24,12 +31,14 @@ interface FormDataType {
   name: string;
   code: string;
   description: string;
-  applicationId: string;
+  application_id: string;
+  application_name: string;
+  id: number;
   urls: Array<any>;
 }
 
-const AddRole = (props: { cb: () => void }) => {
-  const { cb } = props;
+const EditRole = (props: { data: any; cb: () => void }) => {
+  const { data, cb } = props;
 
   const { user } = useUserData();
 
@@ -41,24 +50,26 @@ const AddRole = (props: { cb: () => void }) => {
 
   const [allApplications, setAllApplications] = useState<Array<any>>([]);
 
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [formData, setFormData] = useState<FormDataType>({ ...data });
 
-  const [urlSearchQuery, setUrlSearchQuery] = useState<string>("");
+  const [urlSearchQuery,setUrlSearchQuery] = useState<string>("")
 
-  const [formData, setFormData] = useState<FormDataType>({
-    name: "",
-    code: "",
-    description: "",
-    applicationId: "",
-    urls: [],
-  });
+  const sortUrls = (allUrlsArray: Array<any>): Array<any> => {
+    const selectedUrls = formData.urls.map((url) => url.id);
+    const result = [
+      ...formData.urls,
+      ...allUrlsArray.filter((url) => !selectedUrls.includes(url.id)),
+    ];
+    return result;
+  };
 
   const getAllUrls = useCallback(async () => {
     try {
       const { data } = await axios.get(
         `${process.env.REACT_APP_API_HOST}api/user/get-all-functions/`
       );
-      setAllUrls(data);
+
+      setAllUrls(sortUrls(data));
     } catch (error: any) {
       console.error(error);
       notifyError("Server Went Unresponsive");
@@ -87,12 +98,15 @@ const AddRole = (props: { cb: () => void }) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSelectChange = (value: any) => {
-    setFormData({ ...formData, applicationId: value });
+  const handleSelectChange = (value: any, label: any) => {
+    setFormData({
+      ...formData,
+      application_id: value,
+      application_name: label,
+    });
   };
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>, data: any) => {
@@ -129,45 +143,23 @@ const AddRole = (props: { cb: () => void }) => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setIsSubmitting(true);
     try {
-      await axios.post(
-        `${process.env.REACT_APP_API_HOST}api/user/add-role/`,
+      const response = await fetch(
+        `${process.env.REACT_APP_API_HOST}api/user/edit-role/`,
         {
-          data: [formData],
-        },
-        {
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
         }
       );
-
-      notifySuccess("Successfully Added " + formData.name);
+      if (response.status !== 200) notifyError("Server Went Unresponsive");
+      else notifySuccess("Updated Role Successfully");
       cb();
     } catch (error) {
       console.error(error);
       notifyError("Server Went Unresponsive");
     }
   };
-
-  const debounce = (fn: (...args: any[]) => void, delay: number) => {
-    let timeout: NodeJS.Timeout | null = null;
-
-    return (...args: any[]) => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-
-      timeout = setTimeout(() => {
-        fn(...args);
-      }, delay);
-    };
-  };
-
-  const handleSearchURLs = (e: any) => {
-    setUrlSearchQuery(e.target.value.toLowerCase());
-  };
-
-  const debouncedSearch = debounce(handleSearchURLs, 300);
 
   const applicationsFormattedData = useMemo(() => {
     return [
@@ -180,7 +172,7 @@ const AddRole = (props: { cb: () => void }) => {
   }, [allApplications]);
 
   const isFormValid = useMemo((): boolean => {
-    return !Object.keys(formData).every((k) => {
+    return Object.keys(formData).every((k) => {
       const key = k as keyof FormDataType;
       const value = formData[key];
       return (
@@ -192,6 +184,26 @@ const AddRole = (props: { cb: () => void }) => {
     });
   }, [formData]);
 
+  const debounce = (fn: (...args: any[]) => void, delay: number) => {
+    let timeout: NodeJS.Timeout | null = null;
+
+    return (...args: any[]) => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+
+        timeout = setTimeout(() => {
+            fn(...args);
+        }, delay);
+    };
+};
+
+    const handleSearchURLs = (e:any)=>{
+        setUrlSearchQuery(e.target.value.toLowerCase())
+    }
+
+    const debouncedSearch = debounce(handleSearchURLs,300)
+
   const isChecked = useCallback(
     (url: any) => {
       return formData.urls.some((u) => u.code === url.code);
@@ -199,12 +211,10 @@ const AddRole = (props: { cb: () => void }) => {
     [formData]
   );
 
-  const queriedURLs = useMemo(() => {
-    if (!urlSearchQuery || urlSearchQuery.length === 0) return allUrls;
-    return allUrls.filter((url) =>
-      url.name.toLowerCase().includes(urlSearchQuery)
-    );
-  }, [urlSearchQuery, allUrls]);
+  const queriedURLs = useMemo(()=>{
+    if(!urlSearchQuery || urlSearchQuery.length === 0)return allUrls
+    return allUrls.filter((url)=>url.name.toLowerCase().includes(urlSearchQuery))
+  },[urlSearchQuery,allUrls])
 
   if (isLoading) {
     return (
@@ -239,6 +249,7 @@ const AddRole = (props: { cb: () => void }) => {
             type={"text"}
             required
             name="name"
+            value={formData.name}
             placeholder="Any name"
             themeUi={themeUi}
             onChange={handleChange}
@@ -252,16 +263,22 @@ const AddRole = (props: { cb: () => void }) => {
             name="code"
             placeholder="Role code"
             themeUi={themeUi}
+            value={formData.code}
             onChange={handleChange}
           />
         </InputWrapper>
       </div>
       <InputWrapper>
-        <Label htmlFor="application">Applications </Label>
+        <Label htmlFor="application_name">Applications </Label>
         <Select
+          // defaultValue={{value:data.application_id,label:data.application_name}}
           options={applicationsFormattedData}
+          value={{
+            value: formData.application_id,
+            label: formData.application_name,
+          }}
           placeholder={"Select Application"}
-          onChange={(data: any) => handleSelectChange(data.value)}
+          onChange={(data: any) => handleSelectChange(data.value, data.label)}
           styles={{
             option: (baseStyles, { isSelected }) => ({
               ...baseStyles,
@@ -298,6 +315,7 @@ const AddRole = (props: { cb: () => void }) => {
         <Label htmlFor="description"> Description</Label>
         <TextArea
           name="description"
+          value={formData.description}
           style={{ minHeight: 50 }}
           required
           placeholder="Example : BPR Manager"
@@ -319,7 +337,7 @@ const AddRole = (props: { cb: () => void }) => {
           </SearchWrapper>
         </CheckBoxesHeaderContainer>
         <CheckBoxesContainer
-          className="custom-scrollbar"
+            className="custom-scrollbar"
           style={{
             display: "flex",
             flexDirection: "column",
@@ -327,22 +345,21 @@ const AddRole = (props: { cb: () => void }) => {
             overflowY: "auto",
           }}
         >
-          {queriedURLs.length ? (
+         
+          {queriedURLs.length?(
             <React.Fragment>
-              <CheckBoxWrapper
-                style={{ position: "sticky", top: 0, backgroundColor: "white" }}
-              >
-                <input
-                  style={{ width: 10 }}
-                  type={"checkbox"}
-                  name={"all"}
-                  onChange={handleSelectAll}
-                />
-                <Label htmlFor={"all"}>
-                  <b> Select All</b>
-                </Label>
-              </CheckBoxWrapper>
-              {queriedURLs.map((r) => {
+                 <CheckBoxWrapper style={{position:'sticky',top:0,backgroundColor:'white'}}>
+                    <input
+                    style={{ width: 10 }}
+                    type={"checkbox"}
+                    name={"all"}
+                    onChange={handleSelectAll}
+                    />
+                    <Label htmlFor={"all"}>
+                        <b> Select All</b>
+                    </Label>
+                </CheckBoxWrapper>
+                {queriedURLs.map((r) => {
                 return (
                   <CheckBoxWrapper key={r.code}>
                     <input
@@ -353,33 +370,18 @@ const AddRole = (props: { cb: () => void }) => {
                       onChange={(e) => handleCheck(e, r)}
                     />
                     <Label htmlFor={r.name}>
-                      <CheckBoxLabel>
-                        {r.name.split("").map((letter: string) => (
-                          <p
-                            style={{
-                              color: urlSearchQuery.includes(
-                                letter.toLowerCase()
-                              )
-                                ? "#BC3D81"
-                                : "black",
-                            }}
-                          >
-                            {letter}
-                          </p>
-                        ))}
-                      </CheckBoxLabel>
+                    <CheckBoxLabel>
+                        {r.name.split("").map((letter:string)=><p style={{color:urlSearchQuery.includes(letter.toLowerCase())?"#BC3D81":"black"}}>{letter}</p>)}
+                    </CheckBoxLabel>
                     </Label>
                   </CheckBoxWrapper>
                 );
               })}
             </React.Fragment>
-          ) : (
+            
+          ):(
             <CheckBoxWrapper>
-              <p
-                style={{ fontSize: "14px", textAlign: "center", width: "100%" }}
-              >
-                No result
-              </p>
+                <p style={{fontSize:'14px',textAlign:'center',width:'100%'}}>No result</p>
             </CheckBoxWrapper>
           )}
         </CheckBoxesContainer>
@@ -390,14 +392,18 @@ const AddRole = (props: { cb: () => void }) => {
           alignItems: "flex-end",
           justifyContent: "flex-end",
           flex: 10,
+          gap: 10,
         }}
       >
-        <PrimaryButton disabled={isFormValid || isSubmitting} themeUi={themeUi}>
-          Add Role
+        <SecondaryButton type="button" onClick={cb} themeUi={themeUi}>
+          Cancel
+        </SecondaryButton>
+        <PrimaryButton disabled={!isFormValid} themeUi={themeUi}>
+          Update Role
         </PrimaryButton>
       </div>
     </URLsForm>
   );
 };
 
-export default AddRole;
+export default EditRole;
