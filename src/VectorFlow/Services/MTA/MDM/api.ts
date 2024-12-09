@@ -231,10 +231,8 @@ export namespace MDMService {
     )
   }
 
-  export const getBufferMasterData = async () => {
-    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/GetBufferMasterForMasterMgmt/?masterId=501',{
-      headers: { 'Content-Type': 'application/json' }
-    })
+  export const getBufferMasterData = async (body:any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/GetBufferMasterForMasterMgmt/?masterId=501',body.finPayload? body.finPayload: {});
   }
 
   export const getCCRMasterData = async ()=>{

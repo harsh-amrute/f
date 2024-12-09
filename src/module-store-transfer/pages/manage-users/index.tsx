@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState,useEffect } from "react";
 import {
   SCProfileOverView,
   SCSubTitleBox,
@@ -25,7 +25,18 @@ import { useTranslation } from "react-i18next";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
 
-const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
+
+interface ManageUsersProps{
+  is_admin:boolean
+  permission:Array<any>
+  themeUi:string
+  // isRolesDrawerOpen:boolean
+  // isURLsDrawerOpen:boolean
+  // toggleRolesDrawer:(v:boolean)=>void
+  // toggleURLsDrawer:(v:boolean)=>void
+}
+
+const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const { t } = useTranslation();
   const [contentModal, setContentModal] = useState({
     callApi: 0,
@@ -54,6 +65,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
   });
+
+  useEffect(() => {
+    console.log("data...permissionms", dataPermissions);
+  }, [dataPermissions]);
 
   const dataAllPermissions = dataPermissions?.data;
 
@@ -106,17 +121,17 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
       const valueChild = `${valueParent} > ${item[txtChild]}`;
       const valueGrandChild = `${valueChild} > ${item[txtGrandChild]}`;
 
-      if (!checkAddParent.includes(valueParent)) {
+      if (!checkAddParent.includes(valueParent) && valueParent.length > 0) {
         checkAddParent.push(valueParent);
         parent.push({ label: valueParent, value: valueParent });
       }
 
-      if (!checkAddChild.includes(valueChild)) {
+      if (!checkAddChild.includes(valueChild) && item[txtChild].length > 0) {
         checkAddChild.push(valueChild);
         child.push({ label: valueChild, value: valueChild });
       }
 
-      if (!checkAddGrandChild.includes(valueGrandChild)) {
+      if (!checkAddGrandChild.includes(valueGrandChild) && item[txtGrandChild].length > 0) {
         checkAddGrandChild.push(valueGrandChild);
         grandChild.push({ label: valueGrandChild, value: valueGrandChild });
       }
@@ -132,8 +147,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
     };
   };
 
+  useEffect(()=>{
+    console.log("data....all...permissions.", allPermissions);
+  },[allPermissions])
+
   const fillAdvancedPermissionsModalData = (item?:any)=>{
-    console.log(listRoles)
     //Application Ids with valid Selected Roles
     const validApplications:Array<number> = [];
       listRoles.forEach((app:any)=>{
@@ -143,7 +161,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
 
     if(contentModal.callApi === 1){
       
-      
+      console.log("dataAllPermissions", dataAllPermissions);
       const fillStepperDetails = dataAllPermissions.map((app:any,index:number)=>validApplications.includes(app.application_id) ? ({
         label:app.application_name,
         id:app.application_id,
@@ -153,6 +171,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
       }) : undefined).filter((element:any) => element !== undefined);
       fillStepperDetails.sort((a:any,b:any)=>a.id-b.id)
       fillStepperDetails[0].currentState = 'active';
+      
 
       const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
         application_id:app.application_id,
@@ -210,7 +229,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
           checkAddLcType: getLocationPermissions.checkAddChild,
           checkAddLcCluster: getLocationPermissions.checkAddGrandChild,
         };
-        
+
         locationPermissionAllApp.push({
           'application_id':app.application_id,
           'application_name':app.application_name,
@@ -219,8 +238,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
 
     })
 
-    const initialPermissions = productPermissionAllApp.map((prodApp:any)=>{
-      const coLocationPermission = locationPermissionAllApp.find((locApp:any)=>prodApp.application_id === locApp.application_id);
+    const initialPermissions = productPermissionAllApp?.map((prodApp:any)=>{
+      const coLocationPermission = locationPermissionAllApp?.find((locApp:any)=>prodApp.application_id === locApp.application_id);
       if(coLocationPermission){
         return {
           ...prodApp,
@@ -231,9 +250,9 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
     })
 
     //Enable Product Permissions of Applications With Selected Roles
-    const newStepperDetails:any = validApplications.map((valid_id:any,index:number)=>{
+    const newStepperDetails:any = validApplications?.map((valid_id:any,index:number)=>{
       //Find if Application Permission Already Exist
-      const oldPermissions = initialPermissions.find((app:any)=>app.application_id === valid_id);
+      const oldPermissions = initialPermissions?.find((app:any)=>app.application_id === valid_id);
       if(oldPermissions){
         return {
           label:oldPermissions.application_name,
@@ -259,7 +278,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
 
     //Set Permissions For Selected Applications
 
-    const validApplicationPermissions:any = validApplications.map((id:any)=>{
+    const validApplicationPermissions:any = validApplications?.map((id:any)=>{
       //Find if Application Permission Already Exist
       const oldPermissions = initialPermissions.find((app:any)=>app.application_id === id);
       if(oldPermissions){
@@ -349,6 +368,19 @@ const ManageUsers = ({ is_admin, permission, themeUi }: any) => {
           />
         )}
       </SCProfileOverView>
+
+      {/* {isURLsDrawerOpen && (
+        <UserURLsDrawer
+          onClose={()=>toggleURLsDrawer(false)}
+        />
+        )}
+
+      {isRolesDrawerOpen && (
+        <UserRolesDrawer
+          onClose={()=>toggleRolesDrawer(false)}
+        />
+        )} */}
+
 
       <ModalManageUsers
         contentModal={contentModal}

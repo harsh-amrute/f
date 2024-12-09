@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -153,7 +153,6 @@ const useViewModify = (pageType: string) => {
     
     const {mutateAsync:getCount} = useGetCount();
 
-    const {mutateAsync:getRetailCount} = useGetRetailCount();
 
     const {mutateAsync:createDraft} = useCreateDraft()
 
@@ -258,7 +257,7 @@ const useViewModify = (pageType: string) => {
 
   const getBufferInitialData = async()=>{
     if(activeMaster.id===501){
-      const result = await getBufferMasterData();
+      const result = await getBufferMasterData({});
       dispatch(SET_BUFFER_INITIAL_DATA(result.data.data));
     }
   }
@@ -639,6 +638,44 @@ const useViewModify = (pageType: string) => {
     return columnData?.map((column: any) => ({ key: column.colDef.field }));
   }
 
+  function convertArrayToObject(input: { attributeName: string; op: string; value: string }[]) {
+    const operatorMap: Record<string, string> = {
+        "=": "et",
+        "!=": "net",
+        ">": "gt",
+        "<": "lt",
+        ">=": "gte",
+        "<=": "lte",
+        "contains":"cn",
+        "startsWith": "sw",
+        "endsWith": "ew",
+        "hasValue": "hv",
+        "hasNoValue": "dnc"
+        // Add more mappings as needed
+    };
+
+    // 'lt': 'lt',
+    //     'lte': 'lte',
+    //     'gt': 'gt',
+    //     'gte': 'gte',
+    //     'sw': 'istartswith',
+    //     'ew': 'iendswith',
+    //     'et': 'exact',
+    //     'cn': 'icontains',
+    //     'dnc': 'donotcontains',
+    //     'dsw': 'doesnotstartswith',
+    //     'dew' : 'doesnotendswith',
+    //     'hv' : 'hv',
+    //     'net' : 'notequalto'
+
+    return input.reduce((acc, { attributeName, op, value }) => {
+        acc[attributeName] = {
+            op: operatorMap[op] || op, // Convert operator or fallback to original
+            val: value
+        };
+        return acc;
+    }, {} as Record<string, { op: string; val: string }>);
+}
   const queryFilteredData = async (configs: QueryFilteredDataConfigs) => {
     const { filters, pagination, fields, count, currentPage, rowsPerPage } = configs;
     const payload: GetMasterDataPayload = {
@@ -654,24 +691,25 @@ const useViewModify = (pageType: string) => {
         recordsPerPage: rowsPerPage
       }
     }
+
+    const finPayload: any= convertArrayToObject(filters);
+    
     let resultData;
-    if (count) {
-      if (activeMaster.id > 14 && !activeMaster.isMTO) {
-        resultData = await getRetailCount(payload);
+
+    console.log("payload ..filterds", finPayload);
+    
+    
+    if (activeMaster.id===501 && activeMaster.isMTO) {
+      const tempResultData = await getBufferMasterData({finPayload});
+      const updatedData = _.cloneDeep(tempResultData)
+      if(bufferModifyData && bufferModifyData.length){
+        const updatedDataBuffer = updatedData.data.data;
+        const filteredDataBuffer = updatedDataBuffer.filter(
+          (buffer:any) => !bufferModifyData.some((modifiedBuffer:any) => modifiedBuffer.bid === buffer.bid)
+        );
+        updatedData.data.data = updatedData.data.data = [...bufferModifyData,...filteredDataBuffer];
       }
-      else {
-        if(!activeMaster.isMTO){
-          resultData = await getCount(payload);
-        }
-      }
-    }
-    else {
-      if (activeMaster.id > 14) {
-        resultData = await getMasterDataRetail(payload);
-      }
-      else {
-        resultData = await getMasterData(payload);
-      }
+      resultData = updatedData;
     }
 
     return resultData;
@@ -695,13 +733,8 @@ const useViewModify = (pageType: string) => {
     }
     let resultData;
     if ((!activeMaster.isMTO && count) || activeMaster.isMTO) {
-      console.log("active popcorn", activeMaster)
-      if (activeMaster.id > 14 && !activeMaster.isMTO) {
-        console.log("should not go here also here.........")
-        resultData = await getRetailCount(payload);
-      }
-      else if (activeMaster.id===501 && activeMaster.isMTO) {
-        const tempResultData = await getBufferMasterData();
+      if (activeMaster.id===501 && activeMaster.isMTO) {
+        const tempResultData = await getBufferMasterData({});
         const updatedData = _.cloneDeep(tempResultData)
         if(bufferModifyData && bufferModifyData.length){
           const updatedDataBuffer = updatedData.data.data;
@@ -738,7 +771,7 @@ const useViewModify = (pageType: string) => {
         resultData = await getMasterDataRetail(payload);
       }
       else if (activeMaster.id === 501 && activeMaster.isMTO) {
-        resultData = await getBufferMasterData();
+        resultData = await getBufferMasterData({});
       }
       else if(activeMaster.id===502 && activeMaster.isMTO) {
         resultData = await getCCRMasterData();
@@ -1068,8 +1101,13 @@ const useViewModify = (pageType: string) => {
       /////
       const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
         // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-  
-        return {  ...col, editable: true, singleClickEdit: true }
+        if(col.field==='iv')return {...col};
+        if(col.field==='bt')return {...col, editable: true,  cellEditor: 'agRichSelectCellEditor',
+        valueFormatter: myFormatter,
+        cellEditorParams: {
+          values: bufferTypeData?.map((item: any) =>  item.dsc), // Dropdown values
+        }, }
+        else return {  ...col, editable: true, singleClickEdit: true }
         // return { ...col }
       })
 
@@ -2115,8 +2153,7 @@ const useViewModify = (pageType: string) => {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
-      buffData: [],
-      aids: ["111111","222222","333333"]
+      buffData: []
     }
 
 
@@ -2134,12 +2171,12 @@ const useViewModify = (pageType: string) => {
       newVal.ib= (e.ib==="false"?0: 1);
       newVal.mlt = parseInt(e.mlt);
       newVal.slt = parseInt(e.slt);
+      newVal.bid = null;
 
 
       BufferPostObj.buffData.push(_.omit(newVal,['editable','err']));
     })
 
-    console.log("bufferPostObj", BufferPostObj);
 
     try{
       const response = await saveBufferMasterTask(BufferPostObj);

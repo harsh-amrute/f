@@ -404,13 +404,6 @@ const OverallBmReport = () => {
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
-        valueFormatter:
-          child.cc === "BPP"
-            ? (params: any) => {
-                console.log("value params", params);
-                return params.data.bpp;
-              }
-            : undefined,
         cellRenderer:
           child.cc === "ec" && systemType >= 3
             ? "agGroupCellRenderer"
@@ -436,6 +429,7 @@ const OverallBmReport = () => {
                   : undefined,
             }
           : undefined,
+        pivot: child.cc === "BPP" ? true : false,
         cellStyle:
           child.cc === "Remark"
             ? {
@@ -497,7 +491,7 @@ const OverallBmReport = () => {
           : undefined,
     }));
 
-    if (isReset) {
+    if (isReset || !initialColumnState) {
       return res;
     }
 
@@ -725,7 +719,14 @@ const OverallBmReport = () => {
         enableRangeSelection: true,
         components: customCellRenderers,
         pagination: true,
+        // pivotMode: true,
+
         defaultColDef: {
+          enableValue: true,
+          enableRowGroup: true,
+          enablePivot: true,
+          rowGroup: true,
+
           filter: "agTextColumnFilter",
           floatingFilter: true,
           //suppressFiltersToolPanel:true,
@@ -753,7 +754,6 @@ const OverallBmReport = () => {
       enterNavigatesVertically: true,
       enterNavigatesVerticallyAfterEdit: true,
       groupDefaultExpanded: 0,
-      pivotMode: false,
       onSelectionChanged: debounce(getSelectedRow, 1000),
       onRowDataUpdated: onFirstDataRendered,
       detailCellRendererParams: {
@@ -971,16 +971,10 @@ const OverallBmReport = () => {
             colState = arr;
           });
         }
-        const result = refGraph2.current.api?.applyColumnState({
+        refGraph2.current.api?.applyColumnState({
           state: colState,
           applyOrder: true,
         });
-
-        if (!result) {
-          console.log("result...", result);
-        } else {
-          console.log("result worked");
-        }
       }
     },
     [columnState]

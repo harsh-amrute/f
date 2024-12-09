@@ -259,7 +259,7 @@ const MTOAddRecord = () => {
             masterId={activeMaster.id}
             mtoSaveData={true}
             onMTOSaveData={ onMTOSaveBufferData}
-            isMTOSaveDataDisabled={activeMaster.rowData.length === 0}
+            isMTOSaveDataDisabled={ref.current?.api.getSelectedRows().length === 0}
             onMTOSaveAsDraft={onMTOSaveAsDraft}
           />
         }

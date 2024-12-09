@@ -27,8 +27,8 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
     props.api.setNodesSelected({ nodes: [props.node], newValue: approved });
 
     const onClick = (status:string)=>{
-        
-        if(status==='Approved'){
+        const selectedBCD = props.api.getSelectedRows().some((data:any)=>data.bcd === props.data.bcd);
+        if(status==='Approved' && !selectedBCD){
             props.api.setNodesSelected({ nodes: [props.node], newValue: true });
             setApproved(!approved);
             const newData : any = [];
@@ -45,7 +45,7 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
             })
             dispatch(SET_TASK_PENDING_SELECTED(newData))
         }
-        else{
+        else if(status==='Rejected' && selectedBCD){
             props.api.setNodesSelected({nodes: [props.node], newValue: false});
             setApproved(!approved);
             const newData : any = [];
