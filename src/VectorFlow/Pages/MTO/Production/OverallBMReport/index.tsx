@@ -651,10 +651,11 @@ const OverallBmReport = () => {
 
             
                 defaultColDef: {
+
                     enableValue: true,
                     enableRowGroup:true,
                     enablePivot: true,
-                    rowGroup: true,
+            
 
 
                     filter: 'agTextColumnFilter',
