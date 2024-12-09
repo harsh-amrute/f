@@ -162,7 +162,6 @@ const useResearchInsights = () => {
             components:customCellRenderers,
             defaultColDef:{
                 floatingFilter: true,
-                resizable:false,
                 cellStyle:{
                     "flex":1,
                     'text-align':'center',

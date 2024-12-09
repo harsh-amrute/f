@@ -377,6 +377,7 @@ const usePlanning = ()=>{
                         filters:[]
                     }
                     const result = await getPlanningDataGraph(body);
+                    if(!result.data.data.data)throw new Error("Data Not Available") 
                     setIsSelectCategoryOpen(false);
                     setCurrentGraphData(result.data.data.data)
                     console.log(currentGraphData)
@@ -459,9 +460,9 @@ const usePlanning = ()=>{
                     
             }
             
-        } catch (error) {
+        } catch (error:any) {
             toast.dismiss();
-            notifyError("Something Went Wrong")
+            notifyError(error.message)
         }
 
     }

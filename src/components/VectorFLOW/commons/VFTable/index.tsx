@@ -35,10 +35,15 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
   }
   
   return (
-    <VFTableWrapper className={`${getClassName()} ag-theme-alpine`} role={"table"} height={props.height} disableZoomScaling={props.disableZoomScaling}>
+    <VFTableWrapper className={`${getClassName()} ag-theme-alpine`} role={"table"} height={props.height} disableZoomScaling={true}>
       <AgGridReact
         ref={ref}
         {...props}
+        rowHeight={30}
+        defaultColDef={{
+          resizable:true,
+          ...props.defaultColDef
+        }}
         paginationPageSizeSelector={false}
         suppressDragLeaveHidesColumns={true}
       />

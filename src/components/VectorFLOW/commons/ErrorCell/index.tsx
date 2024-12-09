@@ -1,4 +1,4 @@
-import { SCContainer, SCErrorToolTipLi, SCErrorToolTipUl, SCToolTipWrapper } from "./styles"
+import { ErrorText, SCContainer, SCErrorToolTipLi, SCErrorToolTipUl, SCToolTipWrapper } from "./styles"
 import { ICellRendererParams } from "ag-grid-enterprise"
 import React, { CSSProperties, useState } from "react";
 import Portal from "../../layouts/Portal";
@@ -21,6 +21,8 @@ const ErrorCell = (props:ICellRendererParams)=>{
     const [isToolTipOpen,setIsToolTipOpen] = useState<boolean>(false)
 
     const message = props.data.error;
+
+    if(!message)return null
 
 
     function customSplitter(str:string,exec:(s:number)=>boolean){
@@ -73,11 +75,11 @@ const ErrorCell = (props:ICellRendererParams)=>{
         const tooltipHeight =messages.length * 33 /* Height of your tooltip */;
         const viewportHeight = window.innerHeight;
     
-        let tooltipTop = (bottom * currGridZoom * currScreenZoom) + 10;
+        let tooltipTop = (bottom) + 10;
     
         // Check if tooltip overflows on the bottom side
         if (tooltipTop + tooltipHeight > viewportHeight) {
-            tooltipTop = (top * currGridZoom * currScreenZoom) - tooltipHeight;
+            tooltipTop = (top) - tooltipHeight;
         }
     
         setErrorCellPosition({
@@ -95,10 +97,9 @@ const ErrorCell = (props:ICellRendererParams)=>{
 
     return(
         <>
-        {message &&
             <SCContainer style={{overflow:'visible'}}  themeUi={themeUi}>
                 <img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/error-regal.svg":"/assets/img/VectorFLOW/NMS/error.svg"} width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
-                <p  >{getFomattedMessage(message)}</p>
+                <ErrorText  >{getFomattedMessage(message)}</ErrorText>
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">
                         <SCToolTipWrapper themeUi={themeUi} data-testid='tooltip-wrapper' style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
@@ -111,7 +112,6 @@ const ErrorCell = (props:ICellRendererParams)=>{
                     </Portal>
                 )}
             </SCContainer>
-        }
         </>
         
     )

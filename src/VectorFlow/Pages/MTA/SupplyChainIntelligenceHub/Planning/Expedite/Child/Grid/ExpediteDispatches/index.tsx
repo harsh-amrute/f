@@ -119,7 +119,6 @@ const ExpediteChildExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDa
                 "font-style":"normal",
                 " font-variant":"normal",
                 " font-weight":"300",
-                " font-size":"20px",
                 " font-family":"Roboto",
                 "display":"block",
                 'text-overflow':'ellipsis',
@@ -129,7 +128,8 @@ const ExpediteChildExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDa
     }
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
-        let colDefs = [];
+        try{
+            let colDefs = [];
         const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
         columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
             return column1.colPosition - column2.colPosition;
@@ -164,6 +164,10 @@ const ExpediteChildExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDa
             }
         })
         return [dailyDataColDef,...colDefs]
+        }catch(error){
+            console.error(error)
+            return []
+        }
     }
 
     const colDefs = mapUIConfigToColdefs(data['uiConfig'] ? data['uiConfig'] : [])

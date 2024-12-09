@@ -171,7 +171,6 @@ export const BPRTagsCellRenderer = (params:any)=>{
 
 export const BPRSubmitRemarkCellRenderer = (params:any)=>{
 
-    console.log(params.value)
 
     return(
         <BPRRemarksCellRendererWrapper>

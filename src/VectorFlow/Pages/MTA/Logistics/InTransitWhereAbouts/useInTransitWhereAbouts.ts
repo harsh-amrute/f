@@ -199,7 +199,6 @@ const useInTransitWhereAbouts = ()=>{
               floatingFilter: true,
               filter: "agMultiColumnFilter",
               cellDataType: false,
-              resizable: false,
               minWidth:140,
               cellStyle: {
                 "text-align": "center",

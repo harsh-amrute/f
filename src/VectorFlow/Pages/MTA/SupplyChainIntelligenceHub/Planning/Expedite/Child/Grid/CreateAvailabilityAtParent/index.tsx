@@ -119,7 +119,6 @@ const ExpediteChildCreateAvailabilityAtParentGrid = ({data,paginationProps,onOpe
                 "font-style":"normal",
                 " font-variant":"normal",
                 " font-weight":"300",
-                " font-size":"20px",
                 " font-family":"Roboto",
                 "display":"block",
                 'text-overflow':'ellipsis',
@@ -129,6 +128,7 @@ const ExpediteChildCreateAvailabilityAtParentGrid = ({data,paginationProps,onOpe
     }
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
+       try{
         let colDefs = [];
         const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
         columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
@@ -164,6 +164,10 @@ const ExpediteChildCreateAvailabilityAtParentGrid = ({data,paginationProps,onOpe
             }
         })
         return [dailyDataColDef,...colDefs]
+       }catch(error){
+        console.error(error)
+        return []
+       }
     }
 
     const colDefs = mapUIConfigToColdefs(data['uiConfig'])

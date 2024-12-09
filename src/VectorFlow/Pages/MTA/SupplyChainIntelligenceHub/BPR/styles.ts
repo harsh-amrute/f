@@ -287,7 +287,7 @@ export const BPRRemarksCellRendererWrapper = styled.div`
 `
 
 export const BPRSubmitRemarkInput = styled.div`
-    height:30px;
+    height:25px;
     width:90%;
     background-color:white;
     border:solid 1px black;
@@ -413,8 +413,8 @@ export const BPRRemarksToolTipContentRowCell = styled.p`
 `
 
 export const BPRColorCellRendererIcon = styled.img`
-    height:20px;
-    width:20px;
+    height:15px;
+    width:15px;
     cursor:pointer;
 `
 
@@ -453,8 +453,8 @@ export const BPRViewTableToolTip = styled.div`
 `
 
 export const BPRGraphCellRendererWrapper = styled.img`
-    height:20px;
-    width:20px;
+    height:15px;
+    width:15px;
     cursor:pointer;
 `
 

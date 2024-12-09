@@ -22,8 +22,8 @@ const ActionRenderer = (props:ActionRendererProps)=>{
 
     return(
         <ActionContainer>
-            <ActionButtonWrapper src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/edit-draft-regal.svg":"/assets/img/VectorFLOW/NMS/edit-draft.svg"} height={24} width={24} onClick={()=>onEdit(data)} data-testid="edit-draft"/>
-            <ActionButtonWrapper src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/delete-draft-regal.svg":"/assets/img/VectorFLOW/NMS/delete-draft.svg"} height={24} width={24} style={{marginLeft:"30px"}} onClick={()=>onDelete(data.DraftId)} data-testid="delete-draft"/>
+            <ActionButtonWrapper src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/edit-draft-regal.svg":"/assets/img/VectorFLOW/NMS/edit-draft.svg"}  onClick={()=>onEdit(data)} data-testid="edit-draft"/>
+            <ActionButtonWrapper src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/delete-draft-regal.svg":"/assets/img/VectorFLOW/NMS/delete-draft.svg"}  style={{marginLeft:"30px"}} onClick={()=>onDelete(data.DraftId)} data-testid="delete-draft"/>
         </ActionContainer>
     )
 }

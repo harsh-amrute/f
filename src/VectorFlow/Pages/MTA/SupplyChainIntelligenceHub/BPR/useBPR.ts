@@ -160,10 +160,11 @@ const useBPR =()=>{
             suppressRowClickSelection:true,
             components:customCellRenderers,
             defaultColDef:{
+                
                 floatingFilter: true,
                 // filter: "agMultiColumnFilter",
                 cellDataType:false,
-                resizable:false,
+                resizable:true,
                 cellStyle:{
                     "flex":1,
                     'text-align':'center',

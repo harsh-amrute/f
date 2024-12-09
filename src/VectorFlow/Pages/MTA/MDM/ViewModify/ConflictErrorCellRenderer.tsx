@@ -20,8 +20,8 @@ const ConflictErrorCellRenderer = (params:any)=>{
     const conflictTextColor = themeUi==="REGALBLAZE"?"rgb(164 104 6)":"rgb(130, 15, 76)"
 
 
-    const currScreenZoom = 0.75
-    const currGridZoom = 0.75
+    const currScreenZoom = 1
+    const currGridZoom = 1
 
     const [isToolTipOpen,setIsToolTipOpen] = useState(false)
     const [tooltipPosition,setToolTipPosition] = useState<CSSProperties>()

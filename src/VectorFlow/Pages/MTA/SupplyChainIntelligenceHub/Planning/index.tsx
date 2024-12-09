@@ -97,7 +97,7 @@ const Planning = () => {
             }
             {
                 isSelectCategoryOpen && 
-                <div style={{zoom:0.8}}>
+                <div style={{zoom:'var(--default-zoom)'}}>
                     <SelectCategory
                         childMonitorCount={planningCounts.childMonitorCount}
                         parentMonitorCount={planningCounts.parentMonitorCount}
@@ -121,7 +121,7 @@ const Planning = () => {
             {
                 !isSelectCategoryOpen &&
                 <>
-                <div style={{zoom:0.8}}>        
+                <div style={{zoom:'0.9',marginBottom:'10px'}}>        
                           <ActionToolBar 
                         genericRecordCount={0}
                         onExportToExcelCallBack={onExportToExcelCallBack}

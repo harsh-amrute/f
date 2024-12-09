@@ -3,7 +3,7 @@ import { Player } from '@lottiefiles/react-lottie-player'
 
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule"
 import VFRangeSlider from "../../../../../components/VectorFLOW/commons/VFRangeSlider"
-import VFTable from "../../../MTO/Common/VFTable"
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 
 
 import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrapper, AvailabilityTrendWrapper, ResearchInsightsLayout,AvailabilityTrendSection, HistoricalAvailabiltyHeader, HistoricalAvailabiltyContent, HistoricalAvailabiltyContentSection, HistoricalAvailabiltyContentSectionHeader, HistoricalAvailabiltyContentSectionData, HorizonHeader, ChartHeader, ChartHeaderText, CapsuleWrapper, CalenderWrapper, CalenderHeader, ChartWrapper, CalenderSummaryWrapper, CalenderSummaryCell, CalenderSummaryCellText, CalenderSummaryCellContentWrapper, CalenderSummaryCellContent, CalenderSummaryCellContentStick, ExpandChartIcon, RadioGroup, DefaultViewRendererWrapper, DefaultViewRendererHeader, DefaultViewRendererText } from "./styles"
@@ -134,7 +134,7 @@ const ResearchInsights = ()=>{
             {
                 showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
             }
-            <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
+            <ResearchInsightsTableWrapper style={{ marginRight:'15px'}}>
                 {(isLoading || isSavedDataLoading)?(
                     <VFLoader/>
                 ):(

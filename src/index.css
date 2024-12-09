@@ -1,5 +1,7 @@
 :root {
     --separator-border: transparent;
+
+    --default-zoom:0.8;
 }
 
 .sash-module_sash__K-9lB.sash-module_hover__80W6I:before,
