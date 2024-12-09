@@ -30,8 +30,7 @@ const MTOTaskPendingForReview = ()=>{
         onSelectionTypeSuccess,
         setSelectionType,
         mtoPendingTaskData,
-        mtoSubmitTask,
-        mtoOnSelectionChange
+        mtoSubmitTask
     } = useTaskPendingForReview()
 
     if(showLoader) return <VFLoader/>
@@ -108,9 +107,6 @@ const MTOTaskPendingForReview = ()=>{
                   }}
                 rowData={detailTableRowData}
                 suppressRowClickSelection 
-                onSelectionChanged={()=>{
-                    mtoOnSelectionChange();
-                }}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
                 // suppressPaginationPanel={true}
@@ -129,14 +125,7 @@ const MTOTaskPendingForReview = ()=>{
                 showTotalItems={false}
 
             /> */}
-            {
-                showApproveAllModal && 
-                    <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType}/>
-            }
-            {
-                showRejectAllModal && 
-                    <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
-                  }
+          
                     <div style={{zoom:0.8}}>
                   {
 

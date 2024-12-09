@@ -1,7 +1,8 @@
 import { ActionHeaderContent, ActionHeaderWrapper, TaskPendingActionHeaderButton } from "./styles"
 import { useUserData } from "../../../../../context";
-import { useDispatch } from "react-redux";
-import { SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_TASK_PENDING_ROW_DATA, SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO";
+import _ from "lodash";
 
 
 
@@ -10,6 +11,9 @@ const TaskPendingActionHeader = (props:any)=>{
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const dispatch = useDispatch();
+
+  const detailTableRowData = useSelector((state: any)=> state.mto.taskPendingRowData)
+
 
 
 
@@ -42,16 +46,20 @@ const TaskPendingActionHeader = (props:any)=>{
       // }
 
       if(query==="Approved"){
-        props.setActionStatus("Approve All");
-        props.setMtoActionStatus("ApproveAll");
-        props.api.selectAll();
-        dispatch(SET_TASK_PENDING_SELECTED("all"))
+        const newRowData = _.cloneDeep([...detailTableRowData]);
+        newRowData.forEach((e)=>{
+          e.appStatus = true;
+        })
+        dispatch(SET_TASK_PENDING_ROW_DATA(newRowData));
+
       }
       else{
-        props.setActionStatus("Reject All");
-        props.setMtoActionStatus("RejectAll");
-        props.api.deselectAll();
-        dispatch(SET_TASK_PENDING_SELECTED([]))
+        const newRowData = _.cloneDeep([...detailTableRowData]);
+        newRowData.forEach((e)=>{
+          e.appStatus = false;
+        })
+        dispatch(SET_TASK_PENDING_ROW_DATA(newRowData));
+
 
       }
 

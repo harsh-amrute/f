@@ -1,6 +1,6 @@
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, useGetTaskCount, useGetTaskDetails, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetBufferMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, useGetTaskCount, useGetTaskDetails, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -14,9 +14,33 @@ import { useUserData } from "../../../../../context"
 import TaskPendingActionRendererMTO from "./TaskPendingActionRendererMTO"
 import TaskPendingActionHeaderMTO from "./TaskPendingActionHeaderMTO"
 import _ from "lodash"
-import { SET_TASK_PENDING_ROW_DATA, SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO"
+import { SET_TASK_PENDING_ROW_DATA } from "../../../../../redux/actions/MTO"
+import CommentCellRenderer from "./CommentCellRenderer"
 
 const useTaskPendingForReview = ()=>{
+    const [tempMasterData, setTempMasterData]= useState<any>(undefined);
+    const [mid,setMID] = useState<any>(undefined);
+    const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
+
+    const GetInitialData = async(mid: any)=>{
+        if(mid===501){
+            try{
+
+                console.log("getting intial Dataa");
+                const result = await getBufferMasterData({});
+                setTempMasterData(result.data.data)
+            }
+            catch(e){
+                console.log(e);
+            }
+        }
+    }
+
+    useEffect(()=>{
+        if(mid){
+          GetInitialData(mid);
+        }
+    },[mid])
     const ref = useRef<GridRef>()
     const dispatch = useDispatch();
 
@@ -72,7 +96,6 @@ const useTaskPendingForReview = ()=>{
 
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration();
 
-    const {mutateAsync:getTaskCount} = useGetTaskCount();
     
     const {mutateAsync : getMTOTAskById} = useGetMTOTaskById();
 
@@ -115,6 +138,8 @@ const useTaskPendingForReview = ()=>{
 
     const handleOnClick = async(taskData:TaskDataType|any)=>{
         let toastId;
+        console.log("taskData.mid", taskData);
+        setMID(taskData.mid);
         setMTOTask(taskData);
         if(taskData.isMTO){
 
@@ -189,6 +214,39 @@ const useTaskPendingForReview = ()=>{
                             
                         )
 
+                        newColDefs.push(
+                            {
+                                colId: "cm",
+                                field: "cm",
+                                headerName: "Comments",
+                                cellRenderer: CommentCellRenderer,
+                                // editable: true,
+                                // onCellEdittingStopped: (props: any) => {
+                                //     console.log("props", props);
+                                //     const newComment = props.value;
+                                
+                                //     // Create a deep clone of the row data
+                                //     const newData = detailTableRowData.map((row: any) => {
+                                //         if (row.tbmId === props.data.tbmId) {
+                                //             return {
+                                //                 ...row,
+                                //                 cm: newComment, // Update the 'cm' property
+                                //             };
+                                //         }
+                                //         return row; // Keep other rows unchanged
+                                //     });
+                                
+                                //     // Dispatch the updated data
+                                //     dispatch(SET_TASK_PENDING_ROW_DATA(newData));
+                                // },
+                                
+                                
+                                pinned: 'right'
+
+
+                            }
+                        )
+
                         const newData:any = [];
 
                         taskDataStore.forEach((ele:any)=>{
@@ -227,12 +285,10 @@ const useTaskPendingForReview = ()=>{
             setTaskActionType(taskData.Actiontype)
             
             const tempToastId = notifyLoader('Loading Data')
-            const res:any = await getTaskCount(taskData.TaskID);
             
-            const taskCount = JSON.parse(res.data.recordCount)[0].recordcount;
-            dispatch(SET_RECORD_COUNT(taskCount));
+           
          
-            let taskDataStore:any = [];
+            const taskDataStore:any = [];
             const payload = {
                 taskId:taskData.TaskID,
                 paginationParameter:{
@@ -241,25 +297,8 @@ const useTaskPendingForReview = ()=>{
                 }
             }
             toast.dismiss(tempToastId)
-            toastId = notifyLoader(`Downloading Data 0 / ${taskCount}`)
 
-            if(taskCount <= chunkSize){
-                const result = await getTaskDetails(payload);
-                taskDataStore = result.data.data;
-            }
-            else{
-                const numberOfPages = Math.ceil(taskCount/chunkSize);
-                for(let i=1; i<=numberOfPages; i++){
-                    payload.paginationParameter.pageNumber = i;
-                    const result = await getTaskDetails(payload)
-                    if(i===1){
-                        taskDataStore.push(...result.data.data);
-                    }
-                    taskDataStore[0].data.push(...result.data.data[0].data);
-                    if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${taskCount} / ${taskCount}`})
-                    else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${taskCount}`})
-                }
-            }
+          
             // const response = await getTaskDetails(payload)
             toast.dismiss(toastId);
             
@@ -361,31 +400,6 @@ const useTaskPendingForReview = ()=>{
        
     }
 
-
-    const mtoOnSelectionChange = ()=>{
-        const selectRow:any = ref.current?.api.getSelectedRows();
-        const selectedRows = selectRow?[...selectRow]: []
-
-        const newData:any = []; 
-
-        if(selectedRows.length > 0 ){
-
-            
-            detailTableRowData.forEach((ele:any)=>{
-                const newVal  = _.cloneDeep(ele)
-                if(selectedRows.includes(ele)){
-                        newVal.selectStatus = 'approve';
-                    }
-                else{
-                        newVal.selectStatus = 'reject';
-                    }
-                newData.push(newVal);
-            })
-            dispatch(SET_TASK_PENDING_SELECTED([...selectedRows] ));
-
-        }
-
-    }
 
     const onSelectionTypeSuccess = (status:string,) => {
 
@@ -491,7 +505,8 @@ const useTaskPendingForReview = ()=>{
             newVal.TaskName = val.tnm;
             newVal.TaskStatus = val.std;
             newVal.RequesterName = val.r_nm;
-            newVal.isMTO = true;
+            newVal.mid = val.mid;
+            newVal.isMTO = true,
             newVal.ageing = getDaysDifference(val.co);
   
             newData.push(newVal);
@@ -544,12 +559,67 @@ const useTaskPendingForReview = ()=>{
         
     },[])
 
+    const validateBeforeSubmit = (finData: any) => {
+        console.log("validating ....", finData);
+        console.log("thatData....", tempMasterData);
+        if (mid === 501) {
+          console.log("Validating...");
+      
+          let hasMatchingBSZAndBT = false;
+          let hasExistingBCD = false;
+          let bsz = null;
+          let bt = null;
+          let bcd = null;
+      
+          for (const newData of finData) {
+            if(newData.ia===true && newData.bid===null){
+
+                if (!hasMatchingBSZAndBT) {
+                    hasMatchingBSZAndBT = tempMasterData.some(
+                        (masterData: any) =>
+                        masterData.bsz === newData.bsz && masterData.bt === newData.bt
+                        );
+                        if(hasMatchingBSZAndBT) bsz = newData.bsz; bt = newData.bt;
+                    }
+                    
+                    if (hasExistingBCD===false) {
+                        hasExistingBCD = tempMasterData.some(
+                            (masterData: any) => masterData.bcd === newData.bcd
+                            );
+                            if(hasExistingBCD) bcd = newData.bcd;
+                        }
+                        
+                        if (hasMatchingBSZAndBT && hasExistingBCD) {
+                            break;
+                        }
+                    }
+                }
+      
+          // Handle errors
+          if (hasMatchingBSZAndBT) {
+            toast.dismiss();
+            notifyError(`A buffer with the size ${bsz} and type ${bt} exists in the buffer master`);
+          }
+          if (hasExistingBCD) {
+            notifyError(`A buffer with the code ${bcd} exists in the buffer master`);
+          }
+      
+          // Return the validation result
+          return !(hasMatchingBSZAndBT || hasExistingBCD);
+        }
+      
+        return true;
+      };
+      
+
+
     const mtoSubmitTask=async()=>{
 
-        const approvedData:any = ref.current?.api.getSelectedRows();
         const newApprovedData:any = [];
         detailTableRowData.forEach((ele:any)=>{
+            console.log("ele.appStatus", ele.appStatus);
             const newEle = {
+                bid: ele.bid? ele.bid: null,
                 bcd: ele.bcd,
                 bd:ele.bd,
                 bsz: ele.bsz,
@@ -557,34 +627,51 @@ const useTaskPendingForReview = ()=>{
                 bt_id: ele.bt_id, 
                 btd: ele.btd,
                 ib: ele.ib,
-                mlt: ele.mlt ,
+                ti_id: ele.ti_id,
+                mlt: ele.mlt,
                 mmid: ele.mmid,
-                slt: ele.slt, 
+                slt: ele.slt,
                 tbmId: ele.tbmId,
-                ia: approvedData.some((el:any)=>el.tbmId===ele.tbmId),
+                cm: ele.cm? ele.cm: "",
+                ia: (ele.appStatus && ele.appStatus===true)?true:false,
             }
             newApprovedData.push(newEle);
         })
 
-
         const finData =
             {
               "tid": mtoTask.TaskID,
-              "ti_id": approvedData[0].ti_id,
+              "ti_id": newApprovedData[0].ti_id,
               "uid": user.user.id,
               "unm": user.user.name,
-              "mmid": approvedData[0].mmid,
+              "mmid": newApprovedData[0].mmid,
               "buffData": newApprovedData
             }
-          
-        try{
-            const response = await putMTOBufferData([finData]);
-            if(response.status=== 200){
-                notifySuccess("Task Updated Successfully");
+
+        let isValid = validateBeforeSubmit(newApprovedData);
+        console.log("isvalid", isValid);
+        newApprovedData.forEach((ele:any)=>{
+            if(ele.ia===false && ele.cm===""){
+                (!isValid===false) && notifyError("Make sure you provide a comment for the rejected task!");
+                isValid = false;
             }
-        }
-        catch(error){
-            console.log(error)
+
+        })
+        if(isValid===true){
+            notifyLoader("Task is being approved...")
+
+            try{
+                const response = await putMTOBufferData([finData]);
+                if(response.status=== 200){
+                    notifySuccess("DB Updated Successfully");
+                    dispatch(SET_TASK_PENDING_ROW_DATA([]));
+                    setIsViewTableOpen(true);
+                    GetInitialData(mid);
+                }
+            }
+            catch(error){
+                console.log(error)
+            }
         }
     }
     
@@ -615,7 +702,6 @@ const useTaskPendingForReview = ()=>{
         actionStatus,
         mtoSubmitTask,
         setDetailTableRowData,
-        mtoOnSelectionChange
     }
 }
 

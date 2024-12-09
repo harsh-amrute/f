@@ -21,7 +21,7 @@ import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
 import PoogiEditDeleteCell from './PoogiEditDeleteCell';
-import { SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
+import { SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_CCR_INITIAL_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
 import MTOCalendarEditCellRenderer from './MTOCalendarEditCellRenderer';
 import ToggleButton from './ToggleButton';
 import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../VectorFlow/Services/MTO/Common/Masters';
@@ -179,6 +179,7 @@ const useViewModify = (pageType: string) => {
     const validResumeStatuses = [23];
 
     const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
+    const ccrInitialData = useSelector((state:any)=> state.mto.ccrInitialData);
 
     const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
     const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
@@ -258,10 +259,14 @@ const useViewModify = (pageType: string) => {
 
   }, [selectedOptions, isLoading, activeMaster, allMastersState]);
 
-  const getBufferInitialData = async()=>{
+  const getInitialData = async()=>{
     if(activeMaster.id===501){
       const result = await getBufferMasterData({});
       dispatch(SET_BUFFER_INITIAL_DATA(result.data.data));
+    }
+    if(activeMaster.id===502){
+      const result = await getCCRMasterData();
+      dispatch(SET_CCR_INITIAL_DATA(result.data.data));
     }
   }
 
@@ -296,7 +301,7 @@ const useViewModify = (pageType: string) => {
       getDeptMasterData();
       getCCRGroupMasterData();
     }
-    getBufferInitialData();
+    getInitialData();
   },[activeMaster.id])
 
   useEffect(()=>{
@@ -745,7 +750,6 @@ const useViewModify = (pageType: string) => {
     
     let resultData;
 
-    console.log("payload ..filterds", finPayload);
     if (finPayload.bt) finPayload.btype = finPayload.bt; delete finPayload.bt;
 /******  cb9a1de4-0e9b-4735-8968-a85fa557c44e  *******/
     
@@ -2359,10 +2363,14 @@ const useViewModify = (pageType: string) => {
         ccrData: []
       }
 
+      console.log("ccrModify data", ccrModifyData);
+
       ccrModifyData.forEach((ele:any)=>{
         const e = _.cloneDeep(ele);
-        const ccrGid = ccrGroupMaster[e.cgid].ccr_group_id;
+        const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id? ccrGroupMaster[e.cgid]?.ccr_group_id: e.cgid;
         e.cgid = ccrGid;
+        e.plid = e.pl;
+        e.dpid = e.dp
         deptMaster.forEach((elm: any)=>{if(elm.dept_name===ele.dp)e.dpid= elm.dept_id})
         plantMaster.forEach((elm: any)=>{if(elm.plant_name===ele.pl)e.plid = elm.plant_id})
         CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning','pl','dp']));
@@ -2375,12 +2383,8 @@ const useViewModify = (pageType: string) => {
         if(response.status=== 200){
           toast.dismiss();
           notifySuccess("Saved CCR Task Successfully");
-          let totalNewVals = activeMaster.rowData.length - tempRecordCount;
-          const currData = _.cloneDeep(activeMaster.rowData);
-          while (totalNewVals-- > 0) {  
-            currData.shift();
-          }
-          dispatch(UPDATE_ROW_DATA(currData));
+          console.log("ccrIntialDAta", ccrInitialData);
+          dispatch(UPDATE_ROW_DATA(ccrInitialData));
           dispatch(SET_CCR_MODIFY_DATA([]));
           setMTOProgress("submitted Once");
         }

@@ -498,7 +498,7 @@ const MTOViewModify = () => {
           }}
           showSubmittedExportError={errorCount > 0}
           // masterProgress={(!bufferModifyData)?"initial":(bufferModifyData?"editOnline":"editOnlineSubmitted")}
-          masterProgress={(mtoProgress==='initial')?((!bufferModifyData || bufferModifyData.length===0)?'initial':"editOnline"):((bufferModifyData.length===0)?"editOnlineSubmitted":"editOnline")}
+          masterProgress={(mtoProgress==='initial')?((!bufferModifyData || (bufferModifyData && bufferModifyData?.length===0))?'initial':"editOnline"):((bufferModifyData && bufferModifyData.length===0)?"editOnlineSubmitted":"editOnline")}
           disableSubmit={activeMaster.rowData.length === 0}
           enableEditOnlineReset={enableEditOnlineReset}
           disableDeleteSelected={activeMaster.rowData.length < 1}
