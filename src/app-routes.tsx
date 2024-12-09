@@ -470,17 +470,17 @@ export const initRoutes = (): RouteObject[] => {
        ...getStoreTransferModuleRoutes()
      ]
     },
-    {
-      path: '/supply-chain-intelligence-hub/mcgrid',
-      element: <AppLayout />,
-      children: [
-        {
-          index: true,
-          element: lazyLoad(<MCGrid/>)
-        },
-        ...getStoreTransferModuleRoutes()
-      ]
-     },
+    // {
+    //   path: '/supply-chain-intelligence-hub/mcgrid',
+    //   element: <AppLayout />,
+    //   children: [
+    //     {
+    //       index: true,
+    //       element: lazyLoad(<MCGrid/>)
+    //     },
+    //     ...getStoreTransferModuleRoutes()
+    //   ]
+    //  },
     {
       path: '/supply-chain-intelligence-hub/sdr',
       element:<AppLayout/>,
