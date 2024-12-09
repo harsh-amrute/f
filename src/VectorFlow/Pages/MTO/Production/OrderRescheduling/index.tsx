@@ -532,7 +532,7 @@ const OrderRescheduling = () => {
 
   useEffect(() => {
     if (currentGridRef?.current && columnState?.length) {
-      columnState.forEach((col: any, index: any) => {
+      columnState.forEach((col: any) => {
         if (col.initialHide != undefined) {
           col.hide = col.initialHide;
         }
