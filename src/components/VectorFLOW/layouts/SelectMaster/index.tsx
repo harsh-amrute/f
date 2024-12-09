@@ -96,7 +96,7 @@ const SelectMaster = (
 
     return (
 
-        <Container >
+        <Container style={{zoom:'var(--default-zoom)'}}>
             <Container style={{ flexDirection: 'row', gap: '44px' }}>
                 <VFMasterFieldSearch
                     value={selectedOptions}

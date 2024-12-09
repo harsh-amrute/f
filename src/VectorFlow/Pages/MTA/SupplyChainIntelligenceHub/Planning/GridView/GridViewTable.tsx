@@ -6,7 +6,7 @@ import "allotment/dist/style.css";
 import { GridViewLayout } from "./styles";
 import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
-import VFTable from '../../../../MTO/Common/VFTable';
+import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import BPRViewTable, { BPRViewTableColDef } from '../../BPR/BPRViewTable'
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
@@ -145,7 +145,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
 
     return(
         <GridViewLayout>
-            <div style={{height:'100vh',zoom:0.75}}>
+            <div style={{height:'100vh'}}>
                 <Allotment defaultSizes={[350,150]} vertical>
                 {
                     (isSubGridOpen || showStockGrid ) && (
@@ -188,7 +188,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                 }
                 {isSubGridOpen && (
                     <Allotment.Pane minSize={180} maxSize={350}>
-                        <div style={{marginTop:'20px',height:'100%'}}>
+                        <div style={{marginTop:'20px',height:'100%',zoom:'var(--default-zoom)'}}>
                             {renderSubGrid()}
                         </div>
                     </Allotment.Pane>

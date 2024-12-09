@@ -202,7 +202,7 @@ const EditRole = (props: { data: any; cb: () => void }) => {
         setUrlSearchQuery(e.target.value.toLowerCase())
     }
 
-    const debouncedSearch = debounce(handleSearchURLs,300)
+    const debouncedSearch = debounce(handleSearchURLs,0)
 
   const isChecked = useCallback(
     (url: any) => {
@@ -210,6 +210,18 @@ const EditRole = (props: { data: any; cb: () => void }) => {
     },
     [formData]
   );
+
+
+  // const highlightText = (text: string, query: string) => {
+  //   if (!query) return text
+
+  //   const parts = text.split(new RegExp(`(${urlSearchQuery})`, 'gi'))
+  //   return parts.map((part, index) => 
+  //     part.toLowerCase() === query.toLowerCase() 
+  //       ? <span style={{backgroundColor:"#BC3D81",color:'white',borderRadius:'4px',padding:'0px 2px'}}>{part}</span>
+  //       : <span style={{padding:'0px 2px'}}>{part}</span>
+  //   )
+  // }
 
   const queriedURLs = useMemo(()=>{
     if(!urlSearchQuery || urlSearchQuery.length === 0)return allUrls
@@ -327,13 +339,14 @@ const EditRole = (props: { data: any; cb: () => void }) => {
         <CheckBoxesHeaderContainer>
           <CheckBoxesHeader>Select URLS</CheckBoxesHeader>
           <SearchWrapper>
-            <Input
-              style={{ padding: "2px 5px", height: "25px" }}
-              themeUi={themeUi}
+            <URLSearch
+              // style={{ padding: "2px 5px", height: "25px" }}
+              // themeUi={themeUi}
               type={"search"}
-              placeholder="Quick search"
+              placeholder="Search..."
               onChange={debouncedSearch}
             />
+            <img src="/assets/img/search-icon.svg"height={15} width={15}/>
           </SearchWrapper>
         </CheckBoxesHeaderContainer>
         <CheckBoxesContainer
@@ -371,7 +384,15 @@ const EditRole = (props: { data: any; cb: () => void }) => {
                     />
                     <Label htmlFor={r.name}>
                     <CheckBoxLabel>
-                        {r.name.split("").map((letter:string)=><p style={{color:urlSearchQuery.includes(letter.toLowerCase())?"#BC3D81":"black"}}>{letter}</p>)}
+                        {/* {highlightText(r.name,urlSearchQuery)} */}
+                        {r.name.split("").map((letter:string)=>{
+                          if(urlSearchQuery.includes(letter.toLowerCase())){
+                           return  <p style={{color:"#BC3D81"}}>{letter}</p>
+                          }
+                          return (
+                            <p>{letter}</p>
+                          )
+                        })}
                     </CheckBoxLabel>
                     </Label>
                   </CheckBoxWrapper>

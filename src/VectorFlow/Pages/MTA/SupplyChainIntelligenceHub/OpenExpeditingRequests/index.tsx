@@ -1,6 +1,6 @@
 
 
-import VFTable from "../../../MTO/Common/VFTable"
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import ActionToolBar from "../Planning/ActionToolBar"
 import BPRSubmiRemarkToolTip from "../BPR/BPRSubmitRemarkToolTip"
 
@@ -58,7 +58,7 @@ const OpenExpeditingRequests = () => {
 
       }}
     >
-      <div style={{ marginLeft: '10px' }}>
+      <div style={{ marginLeft: '10px',marginBottom:'10px' }}>
         <ActionToolBar
           view={'grid'}
           setCurrentTab={''}

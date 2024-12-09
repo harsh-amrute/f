@@ -283,7 +283,7 @@ const useAdd=()=>{
         //let result;
           const totalRecords = activeMaster.rowData.length
         
-          const {isDisaster,errorCount:localErrorCount,errorData:localErrorData,conflictCount,conflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isDisaster,errorCount:localErrorCount,errorData:localErrorData,conflictCount} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           let errorRowData = [];
 
           if(isDisaster){

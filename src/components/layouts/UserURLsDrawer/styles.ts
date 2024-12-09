@@ -93,6 +93,8 @@ export const CheckBoxesHeaderContainer = styled.div`
 `
 export const CheckBoxesHeader = styled.div`
  font-size:16px;
+ white-space:nowrap;
+ margin-right:20px;
 `
 
 export const CheckBoxesContainer = styled.div`
@@ -105,14 +107,30 @@ export const CheckBoxWrapper = styled.div`
 `
 
 export const SearchWrapper = styled.div`
-
+    display:flex;
+    width:200px;
+    max-width:100%;
+    align-items:center;
+    background: #F7F7F7 0% 0% no-repeat padding-box;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+    padding:2px 5px;
+    border-radius:16px;
+    outline:solid 2px transparent;
+    transition:0.3s ease-in-out;
+    &:focus-within{
+        box-shadow: #BC3D81 0px 0px 0px 1px, #BC3D81 0px 0px 0px 1px inset;
+        width:100%;
+    }
 `
 
 export const URLSearch = styled.input`
-    all:unset;
-    border-radius:32px;
-    padding:2px 5px;
-    background-color:rgb(0,0,0,0.1);
+    /* all:unset; */
+    outline:none;
+    border:none;
+    /* padding:2px 5px; */
+    height:25px;
+    width:100%;
+    background-color:transparent;
     cursor:auto;
 `
 

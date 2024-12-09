@@ -28,8 +28,8 @@ const TaskPendingActionRenderer = (props:TaskPendingActionRendererProps)=>{
     const {status} = props.data
     return(
        <ActionRendererWrapper>
-         <ActionButtonWrapper src={status==="Approved"?"/assets/img/VectorFLOW/NMS/task-pending-approve.svg":"/assets/img/VectorFLOW/NMS/task-pending-approve-grey.svg"} height={24} width={24} onClick={()=>onClick('Approved')}/>
-         <ActionButtonWrapper src={status==="Rejected"?"/assets/img/VectorFLOW/NMS/task-pending-reject.svg":"/assets/img/VectorFLOW/NMS/task-pending-reject-grey.svg"} height={24} width={24} onClick={()=>onClick('Rejected')}/>
+         <ActionButtonWrapper src={status==="Approved"?"/assets/img/VectorFLOW/NMS/task-pending-approve.svg":"/assets/img/VectorFLOW/NMS/task-pending-approve-grey.svg"}  onClick={()=>onClick('Approved')}/>
+         <ActionButtonWrapper src={status==="Rejected"?"/assets/img/VectorFLOW/NMS/task-pending-reject.svg":"/assets/img/VectorFLOW/NMS/task-pending-reject-grey.svg"}  onClick={()=>onClick('Rejected')}/>
        </ActionRendererWrapper>
     )
 }

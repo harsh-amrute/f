@@ -12,23 +12,33 @@ export const SCToolTipWrapper = styled.div<{themeUi:string}>`
 `
 
 export const SCContainer = styled.div<{themeUi:string}>`
-    height:36px;
+    height:25px;
     border-radius: 5px;
     background: #bc3d811a 0% 0% no-repeat padding-box;
     border: 1px solid ${(props)=>props.themeUi=="REGALBLAZE"?"#FCA311":"#BC3D81"};
     color: ${(props)=>props.themeUi=="REGALBLAZE"?"rgb(164 104 6)":"#820F4C"};
-    font-size:15px;
-    line-height:18px;
+    font-size:10px;
+    /* line-height:18px; */
     font-family:'Roboto'
     font-style:normal;
     font-weight:500;
-    margin-top:4px;
-    margin-bottom:4px;
+    /* margin-top:2px; */
+    margin-bottom:auto;
     display:flex;
     align-items:center;
-    white-space:pre-wrap;
+    white-space:nowrap;
     overflow:visible;
 `
+
+export const ErrorText = styled.span`
+  display: inline-block; /* Ensures proper rendering for inline elements */
+  max-width: 200px; /* Adjust this to set the width constraint */
+  white-space: nowrap; /* Prevents text from wrapping to the next line */
+  overflow: hidden; /* Hides the overflowed content */
+  text-overflow: ellipsis; /* Adds the ellipsis ('...') to indicate overflow */
+`;
+
+
 export const SCErrorToolTipUl = styled.ul`
     font-size:9px;
     width:100%;

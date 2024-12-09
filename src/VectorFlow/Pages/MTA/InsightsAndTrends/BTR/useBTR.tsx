@@ -69,7 +69,7 @@ const useBTR = () => {
     const { state: currFilter, setState: setCurrFilter, onDelete } = useBPRFilter()
 
 
-    const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
+    const rowsPerPage = parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '50');
 
     const { mutateAsync: getBTRData, isLoading } = useGetBTRData()
 
@@ -117,8 +117,6 @@ const useBTR = () => {
 
     }
 
-    console.log(techRowData)
-
     const gridProps = useMemo(():AgGridReactProps=>{
         return {
             gridOptions: {
@@ -164,7 +162,7 @@ const useBTR = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: pageNumber,
-                recordsPerPage: 100
+                recordsPerPage: rowsPerPage
             },
         }
         const loaderId = notifyLoader("Loading data")
@@ -192,7 +190,7 @@ const useBTR = () => {
             filters: currFilter,
             paginationParameter: {
                 pageNumber: 1,
-                recordsPerPage: 100
+                recordsPerPage: rowsPerPage
             },
         }
         getBTRDataCount(payload)
@@ -225,7 +223,7 @@ const useBTR = () => {
             filters: tempFilter,
             paginationParameter: {
                 pageNumber: 1,
-                recordsPerPage: 100
+                recordsPerPage: rowsPerPage
             },
         }
         getBTRDataCount(payload)

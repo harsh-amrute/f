@@ -23,7 +23,7 @@ const TaskPendingTaskBar = (props:TaskPendingTaskBarProps) =>{
     const {user} = useUserData()
 
     return(
-        <TaskBarContainer data-testid="taskbar" style={{width:isSideBarOpen?'77%':'97%'}}>
+        <TaskBarContainer data-testid="taskbar" style={{width:isSideBarOpen?'77%':'97%',zoom:'var(--default-zoom)'}}>
             <VFTaskBarButtonGroup>
                 <VFButtonOutline onClick={onCancel} themeUi={user.user.theme_ui} disabled={false} width={137}>
                     Cancel

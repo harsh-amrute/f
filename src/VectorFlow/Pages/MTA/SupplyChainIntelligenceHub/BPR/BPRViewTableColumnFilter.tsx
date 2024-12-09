@@ -1,3 +1,5 @@
+import {useMemo} from 'react'
+
 
 import { getBPRViewTableHeaderFilterOptions } from '../../../../../helpers/utils'
 import {BPRViewTableColumnFilterContainer,BPRViewTableColumnFilterInput, BPRViewTableColumnFilterSelect, BPRViewTableColumnFilterSelectOption} from './styles'
@@ -19,7 +21,7 @@ const BPRViewTableColumnFilter = (props:BPRViewTableColumnFilterProps)=>{
         query
     } = props
 
-    const filterOptions = getBPRViewTableHeaderFilterOptions(dataType)
+    const filterOptions = useMemo(()=>getBPRViewTableHeaderFilterOptions(dataType),[dataType])
 
     
     return (

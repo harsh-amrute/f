@@ -3,10 +3,10 @@ import styled from "styled-components";
 export const PaginationWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    padding:0 15px;
-    
+    /* padding:0px 15px;
+     */
     border-radius:inherit;
-    margin-top:-15px;
+    /* margin-top:-15px; */
     position:relative;
     // z-index:20;
 `

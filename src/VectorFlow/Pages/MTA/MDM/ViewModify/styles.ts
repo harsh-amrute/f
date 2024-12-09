@@ -253,13 +253,14 @@ export const SeasonalityQuickFilterHeader = styled.p`
 
 export const SeasonalityQuickFilter = styled.button<{stateColor:string,isActive:boolean}>`
     margin-left:20px;
+    padding-left:10px;
     position:relative;
     background-color:white;
     display:flex;
     align-items:center;
     justify-content:center;
-    width: 90px;
-    height: 40px;
+    min-width: 70px;
+    height: 30px;
     border: ${(props)=> props.isActive ? '1px solid transperent' : '1px solid #929292'};
     transition:0.3s ease-in-out;
     border-radius: 6px;
@@ -270,7 +271,7 @@ export const SeasonalityQuickFilter = styled.button<{stateColor:string,isActive:
         position:absolute;
         left:0;
         top:0;
-        bottom:0;
+        height:30px;
         width:${(props)=>props.isActive?'100%':'8px'};
         background-color:${(props)=>props.stateColor};
         transition:0.3s ease-in-out;

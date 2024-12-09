@@ -222,33 +222,35 @@ const AddRecord = () => {
         }
         {
           !isSelectMasterOpen && 
-          <VFTaskBar
-          showSubmittedExportError={errorCount>0}
-            enableEditOnlineReset={false}
-            disableResumeSeasonality={()=>false}
-            disableStopSeasonality={()=>false}
-            masterProgress={activeMaster.progress}
-            onReset={onReset}
-            onSaveToDraft={onSaveToDraft}
-            onEditOnlineSave={onEditOnlineSave}
-            editOnline={editOnline}
-            onEditOnline={()=>onEditOnline('editOnline')}
-            onBack={onBackButton}
-            onClearAndExportErrors={()=>onClearExportError()}
-            onModifyData={()=>toggleUploadModal(true)}
-            onExportData={exportToExcel}
-            onSubmit={onSubmit}
-            onDeleteSelected={deleteSelected}
-            onPhaseInPhaseOutStop={()=>console.log('')}
-            onSeasonalityResume={()=>console.log('')}
-            onSeasonalityStop={()=>console.log('')}
-            onDeleteData={()=>console.log('')}
-            onDeleteOnline={()=>console.log('')}
-            onDeleteOnlineReset={()=>console.log('')}
-            onSubmitConflictData={()=>console.log('')}
-            onDeleteOnlineSubmit={()=>console.log('')}
-            masterId={activeMaster.id}
-          />
+          <div style={{zoom:'var(--default-zoom)'}}>
+            <VFTaskBar
+              showSubmittedExportError={errorCount>0}
+              enableEditOnlineReset={false}
+              disableResumeSeasonality={()=>false}
+              disableStopSeasonality={()=>false}
+              masterProgress={activeMaster.progress}
+              onReset={onReset}
+              onSaveToDraft={onSaveToDraft}
+              onEditOnlineSave={onEditOnlineSave}
+              editOnline={editOnline}
+              onEditOnline={()=>onEditOnline('editOnline')}
+              onBack={onBackButton}
+              onClearAndExportErrors={()=>onClearExportError()}
+              onModifyData={()=>toggleUploadModal(true)}
+              onExportData={exportToExcel}
+              onSubmit={onSubmit}
+              onDeleteSelected={deleteSelected}
+              onPhaseInPhaseOutStop={()=>console.log('')}
+              onSeasonalityResume={()=>console.log('')}
+              onSeasonalityStop={()=>console.log('')}
+              onDeleteData={()=>console.log('')}
+              onDeleteOnline={()=>console.log('')}
+              onDeleteOnlineReset={()=>console.log('')}
+              onSubmitConflictData={()=>console.log('')}
+              onDeleteOnlineSubmit={()=>console.log('')}
+              masterId={activeMaster.id}
+            />
+          </div>
         }
         </React.Fragment>
     )

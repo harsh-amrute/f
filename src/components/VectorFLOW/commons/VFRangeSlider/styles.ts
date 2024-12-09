@@ -12,8 +12,8 @@ export const RangeSliderInput = styled.input<{progressValue:number,theme:string}
   -webkit-appearance: none;
   width: 100%;
   height: 11px;
-box-shadow: 0px 3px 12px #7C7C7C29;
-border-radius: 30px;
+  box-shadow: 0px 3px 12px #7C7C7C29;
+  border-radius: 30px;
   background: transparent;
   outline: none;
   cursor:pointer;
@@ -32,7 +32,12 @@ border-radius: 30px;
     border:4px solid white;
     box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
     cursor: pointer;
+    outline:solid 2px transparent;
+    transition:0.3s ease-in-out;
+  }
 
+  &::-webkit-slider-thumb:active{
+    outline:solid 2px ${(props)=>globalStyles.chooseThemeColor[props.theme].color5};
   }
 
   &::-webkit-slider-runnable-track {

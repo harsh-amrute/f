@@ -1,5 +1,5 @@
 
-import VFTable from "../../../MTO/Common/VFTable"
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { BPRLayout } from "./styles"
 import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
@@ -133,6 +133,7 @@ const BPR = ()=>{
             <Allotment vertical defaultSizes={[300,150]}>
               <Allotment.Pane className="planning-grid-allotment">
               <VFTable
+                disableZoomScaling
                 ref={ref}
                 height={"95%"}
                 {...agGridProps}
@@ -150,6 +151,7 @@ const BPR = ()=>{
                     ],
                   }}
             />
+
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
@@ -161,7 +163,7 @@ const BPR = ()=>{
               <Allotment.Pane maxSize={220} minSize={200}>
               <div style={{marginTop:'20px'}}>
               {isSubGridOpen && (
-                <div style={{marginLeft:'15px'}}>
+                <div style={{marginLeft:'15px',zoom:0.8}}>
                     <BPRViewTable
                 tableHeader="In Transit/WIP"
                     tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"

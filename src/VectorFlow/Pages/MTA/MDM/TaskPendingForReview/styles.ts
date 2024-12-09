@@ -22,8 +22,8 @@ export const ActionRendererWrapper = styled.div`
 `
 
 export const ActionButtonWrapper = styled.img`
-    height:24px;
-    width:24px;
+    height:20px;
+    width:20px;
     cursor:pointer;
 `
 
@@ -124,13 +124,13 @@ align-items:center;
 
 export const TaskPendingActionHeaderButton = styled.button<{ themeUi: string}>`
     background-color:${(props:any)=>globalStyles.chooseThemeColor[props.themeUi]?.color5};
-    height:40px;
-    width:95px;
+    height:30px;
+    width:80px;
     border-radius: 6px;
     display:flex;
     align-items:center;
     justify-content:center;
-  font-size:16px;
+  font-size:12px;
   font-family:'Roboto';
   letter-spacing:0px;
   font-weight:300;

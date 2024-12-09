@@ -24,7 +24,7 @@ const ViewURLs = (props:{onDelete:(params:any)=>void})=>{
     const getAllUrls = useCallback(async()=>{
         try{
             const {data} = await axios.get(`${process.env.REACT_APP_API_HOST}api/user/get-all-functions/`)
-            setRowData(data)
+            setRowData(data.sort((row1:any,row2:any)=>row1.id - row2.id))
         }catch(error:any){
             console.error(error)
             notifyError("Server Went Unresponsive")
@@ -32,18 +32,6 @@ const ViewURLs = (props:{onDelete:(params:any)=>void})=>{
             setIsLoading(false)
         }
     },[])
-
-    
-
-    // const allUrls = [
-    //     {
-    //         "id": 1,
-    //         "name": "VectorFlow. Master Data Management. Control Panel",
-    //         "code": "MDM-CP",
-    //         "description": "VectorFlow. Master Data Management. Control Panel",
-    //         "url": "/master-data-management/control-panel"
-    //     }
-    // ]
 
     const [isLoading,setIsLoading] = useState<boolean>(true)
 

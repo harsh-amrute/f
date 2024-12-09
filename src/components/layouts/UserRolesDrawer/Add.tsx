@@ -14,6 +14,7 @@ import {
   CheckBoxLabel,
   CheckBoxesHeaderContainer,
   SearchWrapper,
+  URLSearch,
 } from "../UserURLsDrawer/styles";
 import { Input, PrimaryButton, Skeleton, TextArea } from "../../commons/styled";
 import { useUserData } from "../../../context";
@@ -167,7 +168,7 @@ const AddRole = (props: { cb: () => void }) => {
     setUrlSearchQuery(e.target.value.toLowerCase());
   };
 
-  const debouncedSearch = debounce(handleSearchURLs, 300);
+  const debouncedSearch = debounce(handleSearchURLs, 0);
 
   const applicationsFormattedData = useMemo(() => {
     return [
@@ -309,13 +310,14 @@ const AddRole = (props: { cb: () => void }) => {
         <CheckBoxesHeaderContainer>
           <CheckBoxesHeader>Select URLS</CheckBoxesHeader>
           <SearchWrapper>
-            <Input
-              style={{ padding: "2px 5px", height: "25px" }}
-              themeUi={themeUi}
+            <URLSearch
+              // style={{ padding: "2px 5px", height: "25px" }}
+              // themeUi={themeUi}
               type={"search"}
-              placeholder="Quick search"
+              placeholder="Search..."
               onChange={debouncedSearch}
             />
+            <img src="/assets/img/search-icon.svg"height={15} width={15}/>
           </SearchWrapper>
         </CheckBoxesHeaderContainer>
         <CheckBoxesContainer
@@ -354,19 +356,14 @@ const AddRole = (props: { cb: () => void }) => {
                     />
                     <Label htmlFor={r.name}>
                       <CheckBoxLabel>
-                        {r.name.split("").map((letter: string) => (
-                          <p
-                            style={{
-                              color: urlSearchQuery.includes(
-                                letter.toLowerCase()
-                              )
-                                ? "#BC3D81"
-                                : "black",
-                            }}
-                          >
-                            {letter}
-                          </p>
-                        ))}
+                      {r.name.split("").map((letter:string)=>{
+                          if(urlSearchQuery.includes(letter.toLowerCase())){
+                           return  <p style={{color:"#BC3D81"}}>{letter}</p>
+                          }
+                          return (
+                            <p>{letter}</p>
+                          )
+                        })}
                       </CheckBoxLabel>
                     </Label>
                   </CheckBoxWrapper>

@@ -168,7 +168,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
               >
                 { (activeMaster.progress ==='default' || activeMaster.progress ==='view') 
                     &&
-                  <SCFilterContainer>
+                  <SCFilterContainer style={{zoom:'var(--default-zoom)'}}>
                     <SCFilterControls>
                       <SCLegend>Filter</SCLegend>
                       {activeMaster.filters.map((f:Filter)=>{
@@ -331,7 +331,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         }
         {
           !isSelectMasterOpen && 
-          <VFTaskBar
+          <div style={{zoom:'var(--default-zoom)'}}>
+            <VFTaskBar
             disableStopSeasonality={()=>{
               const flatState=_.flatMap(seasonalityActiveQuickFilter)
               let error = false;
@@ -380,6 +381,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             onDeleteOnline={()=>console.log('')}
             masterId={activeMaster.id}
           />
+          </div>
         }
         
       </>

@@ -1201,7 +1201,7 @@ export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
         'overflow': 'hidden',
         'text-overflow': 'ellipsis',
         'white-space': 'nowrap',
-        'padding-top': '7px',
+        // 'padding-top': '7px',
         'font-weight': t.colId === 'TaskStatus' ? '500' : 'auto',
         'color': t.colId === 'TaskStatus' ? color : 'black',
         'cursor': t.colId === 'TaskStatus' ? 'pointer' : 'default'
