@@ -126,9 +126,8 @@ const ConflictErrorCellRenderer = (params:any)=>{
            {params.data.users && isToolTipOpen && (
              <Portal wrapperId="conflict-tooltip">
                 <ConflictErrorToolTipWrapper id={'tooltipWrapper'} ref={toolTipRef} style={{...tooltipPosition}}>
-                    {!isToolTipOverflowing && (
-                        
-                            <ToolTipTriangle style={{top:-13}}/>
+                    {!isToolTipOverflowing && (    
+                        <ToolTipTriangle style={{top:-13}}/>
                     )}
                     {params.data.users.map((user:any,index:number)=>{
                         return (

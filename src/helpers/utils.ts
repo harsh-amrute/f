@@ -3939,4 +3939,22 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   return selectedFilter;
 }
 
+export const getMDMTableHeight = (activeMaster:MDMMasterState):string=>{
+  // return activeMaster.progress==='view' ? "calc(100% - 70px)" : "95%" 
+
+  if(activeMaster.progress === 'default' && activeMaster.id == 10){
+    return "calc(100% - 70px)"
+  }
+
+  if(activeMaster.progress === 'view'){
+    
+   
+
+    return "calc(100% - 70px)"
+  }
+
+  return 'calc(95% - 10px)'
+
+}
+
 // ===================================================================================================

@@ -72,7 +72,7 @@ export const StatusBarLabel = styled.div`
     flex-direction:row;
     font-variant:normal;
     align-items:center;
-    font-size:13px;
+    font-size:11px;
     font-family:Roboto;
     line-height:19px;
     letter-spacing: 0px;

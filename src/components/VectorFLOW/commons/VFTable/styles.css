@@ -10,8 +10,8 @@
   /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
   /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
   /* --ag-border-radius:32px; */
-  --ag-font-size: 12px;
-  /* --ag-icon-font-color:white; */
+  --ag-font-size: 10px;
+  /* --ag-icon-font-color:rgb(0, 0, 0); */
   /* --ag-font-family: monospace; */
   --ag-range-selection-background-color: #bc3d814d;
   --ag-alpine-active-color: #bc3d81;
@@ -30,7 +30,8 @@
   /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
   /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
   /* --ag-border-radius:32px; */
-  --ag-font-size: 12px;
+  --ag-font-size: 10px;
+  /* --ag-icon-font-color:gray; */
   /* --ag-font-family: monospace; */
   --ag-range-selection-background-color: rgb(252, 163, 17, 0.3);
   --ag-alpine-active-color: #C7810E;
@@ -48,7 +49,8 @@
   /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
   /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
   /* --ag-border-radius:32px; */
-  --ag-font-size: 12px;
+  --ag-font-size: 10px;
+  /* --ag-icon-font-color:gray; */
   /* --ag-font-family: monospace; */
   --ag-range-selection-background-color: #bc3d814d;
   --ag-alpine-active-color: #BC3D81;
@@ -66,13 +68,21 @@
   /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
   /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
   /* --ag-border-radius:32px; */
-  --ag-font-size: 12px;
+  --ag-font-size: 10px;
+  /* --ag-icon-font-color:gray; */
   /* --ag-font-family: monospace; */
   --ag-range-selection-background-color: #bc3d814d;
   --ag-alpine-active-color: #BC3D81;
   --ag-input-focus-border-color: #BC3D81;
 }
 
+/* .ag-header-cell .ag-floating-filter-button .ag-icon{
+  color:black !important;
+}
+
+.ag-menu-option-icon .ag-icon{
+  color:black;
+} */
 
 .child-grid .ag-header-viewport {
   background-color: #ffffff;
@@ -105,6 +115,8 @@
 
 .ag-icon-menu-alt{
   color: white !important;
+  background-color:rgb(0,0,0,0.1);
+  border-radius: 2px;
 }
 
 /* .simchild-header {
@@ -247,6 +259,10 @@
 
 .ag-header-cell-label {
   justify-content: center;
+}
+
+.ag-header-cell-label  .ag-sort-indicator-icon .ag-icon{
+  color:white !important;
 }
 
 .ag-theme-alpine .ag-header-group-cell-with-group {

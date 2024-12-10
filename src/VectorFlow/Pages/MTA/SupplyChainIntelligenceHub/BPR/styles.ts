@@ -287,7 +287,7 @@ export const BPRRemarksCellRendererWrapper = styled.div`
 `
 
 export const BPRSubmitRemarkInput = styled.div`
-    height:25px;
+    height:20px;
     width:90%;
     background-color:white;
     border:solid 1px black;

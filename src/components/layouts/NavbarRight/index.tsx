@@ -100,7 +100,7 @@ const NavbarRight = ({
         </SCWrapTop>
         <SCWrapContent>
           {listTheme.map((item: any, index: number) => (
-            <SCWrapItem key={index}>
+            <SCWrapItem key={index} onClick={() => handleClick(index)} isActive={item.status}>
               <SCWrapItemLeft>
                 <SCInputRadio
                   type="radio"
@@ -109,7 +109,7 @@ const NavbarRight = ({
                   themeUi={themeUi}
                 />
                 <SCItemText>{item.title}</SCItemText>
-                <div style={{ margin: "0 10px" }}>-</div>
+                <div style={{ margin: "0 10px" }}></div>
               </SCWrapItemLeft>
               <SCListColor>
                 {item.colorTheme.map((color: any) => (
@@ -119,7 +119,9 @@ const NavbarRight = ({
             </SCWrapItem>
           ))}
 
-          <SCButton onClick={handleChangeColor} themeUi={themeUi}>{t('theme.applyTheme')}</SCButton>
+          <div style={{display:'flex',justifyContent:'flex-end'}}>
+            <SCButton onClick={handleChangeColor} themeUi={themeUi}>{t('theme.applyTheme')}</SCButton>
+          </div>
         </SCWrapContent>
       </SCWrap>
       {isOpenNavbarRight && <OverlayPage onClick={handleClose} />}

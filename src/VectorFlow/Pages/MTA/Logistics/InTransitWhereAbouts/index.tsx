@@ -83,7 +83,7 @@ const InTransitWhereAbouts = ()=>{
 
       }}
         >
-            <div style={{marginLeft:'10px'}}>
+            <div style={{marginLeft:'10px',marginBottom:'10px'}}>
                 <ActionToolBar 
                 view={'grid'} 
                 setCurrentTab={''} 

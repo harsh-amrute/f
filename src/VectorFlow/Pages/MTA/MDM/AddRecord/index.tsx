@@ -132,7 +132,7 @@ const AddRecord = () => {
                 newTabHandler={addNewMaster}
                 >
                   <VFTable
-                    height={"95%"}
+                    height={"calc(100% )"}
                     ref={ref}
                     columnDefs={activeMaster.colDefs}
                     rowData={activeMaster.rowData}
@@ -222,7 +222,7 @@ const AddRecord = () => {
         }
         {
           !isSelectMasterOpen && 
-          <div style={{zoom:'var(--default-zoom)'}}>
+          <div style={{zoom:'var(--nms-filter-zoom)'}}>
             <VFTaskBar
               showSubmittedExportError={errorCount>0}
               enableEditOnlineReset={false}

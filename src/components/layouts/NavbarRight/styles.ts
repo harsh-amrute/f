@@ -86,21 +86,33 @@ export const SCClose = styled.div`
 
 export const SCIconClose = styled.img``;
 
-export const SCWrapItem = styled.div`
+export const SCWrapItem = styled.div<{isActive:boolean}>`
   display: flex;
   font-size: 18px;
+  margin-bottom:10px;
   align-items: center;
-  padding: 15px 0;
-
+  padding: 15px 10px;
+  transition:0.2s ease-in-out;
+  border-radius:4px;
+  background-color: ${(props)=>props.isActive ? '#cde3fa' : 'transparent'};
+  outline:solid 2px ${(props)=>props.isActive ? ' rgb(153, 204, 255) ' : 'rgb(209,213,219)'};
+  /* box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset; */
+  cursor:pointer;
+  /* &:hover{
+    background-color: #cde3fa;
+    outline-color: rgb(153, 204, 255) ;
+  } */
 `;
 
 export const SCWrapItemLeft = styled.div`
   display: flex;
   width: 170px;
+  
 `;
 
 export const SCInputRadio = styled.input<{ themeUi: string }>`
   margin-bottom: 5px;
+  margin-right:10px;
   cursor: pointer;
 
   &:checked {
