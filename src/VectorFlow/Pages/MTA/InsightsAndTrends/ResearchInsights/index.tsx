@@ -1,3 +1,5 @@
+import React,{useCallback} from 'react'
+
 import {DayPicker} from 'react-day-picker'
 import { Player } from '@lottiefiles/react-lottie-player'
 
@@ -16,7 +18,6 @@ import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader'
 import 'react-day-picker/dist/style.css';
 import './styles.css'
 import { AgCharts } from 'ag-charts-react'
-import React from 'react'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
@@ -88,10 +89,11 @@ const ResearchInsights = ()=>{
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
 
-    const getFormattedPercentage = (number:number)=>{
-        if(!number || isNaN(number)) return "-"
-        return number.toFixed(2)
-    }
+    const getFormattedPercentage = useCallback((number: number) => {
+        if (number === 0) return "0"; 
+        if (number == null || isNaN(number)) return "-"; 
+        return number.toFixed(2);
+    }, []);
 
     return(
         <GridStateContext.Provider value={{

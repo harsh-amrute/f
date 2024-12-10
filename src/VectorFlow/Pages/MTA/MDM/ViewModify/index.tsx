@@ -3,7 +3,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { generateOptions } from "../../../../../helpers/utils";
+import { generateOptions, getMDMTableHeight } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
@@ -107,9 +107,6 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
     } = useViewModify('modify');
 
-
-
-    
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -168,7 +165,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
               >
                 { (activeMaster.progress ==='default' || activeMaster.progress ==='view') 
                     &&
-                  <SCFilterContainer style={{zoom:'var(--default-zoom)'}}>
+                  <SCFilterContainer style={{zoom:'var(--nms-filter-zoom)'}}>
                     <SCFilterControls>
                       <SCLegend>Filter</SCLegend>
                       {activeMaster.filters.map((f:Filter)=>{
@@ -240,7 +237,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
                     ]:
                     [],
                   }}
-                  height={activeMaster.rowData.length > 0 ? activeMaster.progress==='view' ? "65%" : "95%" : "75%"}
+                  height={getMDMTableHeight(activeMaster)}
                 />
                 {
             (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
@@ -331,7 +328,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         }
         {
           !isSelectMasterOpen && 
-          <div style={{zoom:'var(--default-zoom)'}}>
+          <div style={{zoom:'var(--nms-filter-zoom)'}}>
             <VFTaskBar
             disableStopSeasonality={()=>{
               const flatState=_.flatMap(seasonalityActiveQuickFilter)

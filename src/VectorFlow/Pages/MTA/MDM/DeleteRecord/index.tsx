@@ -22,7 +22,7 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 
 
 
-import { getUploadModalRadioButtons,generateOptions } from "../../../../../helpers/utils";
+import { getUploadModalRadioButtons,generateOptions, getMDMTableHeight } from "../../../../../helpers/utils";
 import { Filter } from "../../../../../VectorFlow/types/MDM";
 import { operators } from "../../../../../helpers/MDMConstants";
 
@@ -147,7 +147,7 @@ const DeleteRecord = () => {
                 >
                   { (activeMaster.progress ==='default' || activeMaster.progress ==='deleteView') 
                     &&
-                  <SCFilterContainer>
+                  <SCFilterContainer style={{zoom:'var(--nms-filter-zoom)'}}>
                     <SCFilterControls>
                       <SCLegend>Filter</SCLegend>
                       {activeMaster.filters.map((f:Filter)=>{
@@ -205,7 +205,7 @@ const DeleteRecord = () => {
                 }
                   <VFTable
                     ref={ref}
-                    height={activeMaster.rowData.length > 0 ? activeMaster.progress==='deleteView' ? "65%" : "95%" : "75%"}
+                    height={getMDMTableHeight(activeMaster)}
                     columnDefs={activeMaster.colDefs}
                     rowData={activeMaster.rowData}
                     {...agGridProps}
@@ -291,34 +291,36 @@ const DeleteRecord = () => {
         }
         {
           !isSelectMasterOpen && 
-          <VFTaskBar
-            showSubmittedExportError={errorCount>0}
-            enableEditOnlineReset={enableEditOnlineReset}
-            disableResumeSeasonality={()=>false}
-            disableStopSeasonality={()=>false}
-            masterProgress={activeMaster.progress}
-            onReset={onReset}
-            onSaveToDraft={onSaveToDraft}
-            onEditOnlineSave={onEditOnlineSave}
-            editOnline={false}
-            deleteOnline={editOnline}
-            onBack={onBackButton}
-            onClearAndExportErrors={onClearExportError}
-            onModifyData={()=>toggleUploadModal(true)}
-            onExportData={exportToExcel}
-            onSubmit={()=>onSubmit(ref)}
-            onDeleteSelected={deleteSelected}
-            onEditOnline={()=>console.log('')}
-            onPhaseInPhaseOutStop={()=>console.log('')}
-            onSeasonalityResume={()=>console.log('')}
-            onSeasonalityStop={()=>console.log('')}
-            onSubmitConflictData={()=>console.log('')}
-            onDeleteData={onDeleteData}
-            onDeleteOnline={onDeleteOnline}
-            onDeleteOnlineReset={onDeleteOnlineReset}
-            onDeleteOnlineSubmit={onDeleteOnlineSubmit}
-            masterId={activeMaster.id}
-          />
+          <div style={{zoom:'var(--nms-filter-zoom)'}}>
+            <VFTaskBar
+              showSubmittedExportError={errorCount>0}
+              enableEditOnlineReset={enableEditOnlineReset}
+              disableResumeSeasonality={()=>false}
+              disableStopSeasonality={()=>false}
+              masterProgress={activeMaster.progress}
+              onReset={onReset}
+              onSaveToDraft={onSaveToDraft}
+              onEditOnlineSave={onEditOnlineSave}
+              editOnline={false}
+              deleteOnline={editOnline}
+              onBack={onBackButton}
+              onClearAndExportErrors={onClearExportError}
+              onModifyData={()=>toggleUploadModal(true)}
+              onExportData={exportToExcel}
+              onSubmit={()=>onSubmit(ref)}
+              onDeleteSelected={deleteSelected}
+              onEditOnline={()=>console.log('')}
+              onPhaseInPhaseOutStop={()=>console.log('')}
+              onSeasonalityResume={()=>console.log('')}
+              onSeasonalityStop={()=>console.log('')}
+              onSubmitConflictData={()=>console.log('')}
+              onDeleteData={onDeleteData}
+              onDeleteOnline={onDeleteOnline}
+              onDeleteOnlineReset={onDeleteOnlineReset}
+              onDeleteOnlineSubmit={onDeleteOnlineSubmit}
+              masterId={activeMaster.id}
+            />
+          </div>
         }
         </React.Fragment>
     ) 
