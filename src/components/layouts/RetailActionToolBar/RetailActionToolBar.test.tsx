@@ -12,9 +12,10 @@ describe('RetailActionToolBar component', () => {
     onCallBack: jest.fn(),
     view: 'grid',
     handleSelectChange: jest.fn(),
-    handleGoButton: jest.fn(),
+    handleSubmitButton: jest.fn(),
     currentStatus: 'Save',
     handleOnCancel: jest.fn(),
+    setView:jest.fn()
   };
 
   it('renders correctly', () => {

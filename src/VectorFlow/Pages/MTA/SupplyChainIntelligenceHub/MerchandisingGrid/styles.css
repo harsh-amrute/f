@@ -1,0 +1,141 @@
+
+.ag-theme-mcgrid {
+    /* --ag-foreground-color: #EBEBEB; */
+    --ag-range-selection-border-color:#BC3D81;
+    /* --ag-background-color: rgb(255, 255, 255); */
+    --ag-header-foreground-color: rgb(255, 255, 255);
+    --ag-header-background-color: rgb(0, 0, 0);
+    --ag-header-height:43px;
+    --ag-checkbox-checked-color:#BC3D81;
+    /* --ag-selected-row-background-color:rgb(188, 61, 129,0.2); */
+    /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
+    /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
+    /* --ag-border-radius:32px; */
+    /* --ag-font-size: 13px; */
+    --ag-grid-size:12px ;
+    /* --ag-font-family: monospace; */
+    height:'500px';
+    --ag-selected-row-background-color: #BC3D81;
+
+}
+
+
+
+/* .ag-theme-noir-fusion  .ag-rich-select-value .ag-picker-collapsed{
+    --ag-selected-row-background-color:red;
+} */
+
+.ag-theme-mcgrid .ag-header-cell {
+    font-size: 13px;
+} 
+
+.ag-theme-mcgrid .ag-row {
+    font-size: 12px;
+}
+
+.ag-theme-mcgrid .ag-status-bar{
+    font-size: 12px;
+}
+
+ .ag-theme-mcgrid .ag-paging-panel {
+    font-size: 12px;
+}
+
+/* .ag-theme-mcgrid .ag-select-list-item{
+  background-color: red;
+} */
+
+.hover-purple .ag-select-option:hover {
+  background-color: purple;
+  color: #fff; /* optional: change the text color to white */
+}
+
+.ag-theme-mcgrid .ag-rich-select-row-selected {
+    color: white;
+    font-size: 13px;
+}
+
+.ag-theme-mcgrid .ag-rich-select-row {
+    font-size: 13px;
+}
+
+.show-cell {
+    background-color: #99999944;
+    border-left: 1px solid var(--ag-foreground-color) !important;
+    border-right: 1px solid var(--ag-foreground-color) !important;
+    border-bottom: 1px solid var(--ag-foreground-color) !important;
+    z-index: 5;
+  }
+  
+  .show-name {
+    font-weight: bold;
+    transform: rotate(180deg);
+    writing-mode: vertical-lr;
+    text-align: center;
+    z-index: 5;
+  }
+
+
+
+
+
+
+
+
+
+
+
+/* .ag-theme-mcgrid-custom { */
+    /* --ag-foreground-color: #EBEBEB; */
+    /* --ag-range-selection-border-color:#BC3D81; */
+    /* --ag-background-color: rgb(255, 255, 255); */
+    /* --ag-header-foreground-color: rgb(255, 255, 255); */
+    /* --ag-header-background-color: rgb(0, 0, 0);
+    --ag-header-height:43px;
+    --ag-checkbox-checked-color:#BC3D81;
+    --ag-selected-row-background-color:rgb(188, 61, 129,0.2); */
+    /* --ag-odd-row-background-color: rgb(0, 0, 0, 0.03); */
+    /* --ag-header-column-resize-handle-color: rgb(126, 46, 132); */
+    /* --ag-border-radius:32px; */
+    /* --ag-font-family: monospace; */
+    /* --ag-font-size: 12px !important; */
+/* } */
+
+/* .ag-theme-mcgrid .ag-header-cell {
+    font-size: 15px;
+} */
+
+/* .ag-theme-mcgrid .ag-row {
+    font-size: 13px;
+} */
+
+/* .ag-theme-mcgrid-custom .ag-side-bar-right{
+    width: 200px !important;
+} */
+
+/* .ag-theme-mcgrid-custom .ag-tool-panel-wrapper{
+    width:200px !important;
+    font-size: 13px;
+} */
+
+/* .ag-theme-mcgrid-custom .ag-side-buttons{
+    font-size: 13px;
+} */
+
+/* .ag-theme-mcgrid-custom .ag-status-bar{
+    font-size: 13px;
+} */
+
+/* .ag-theme-mcgrid-custom .ag-row {
+    font-size: 13px;
+} */
+
+/* /* /* .ag-theme-mcgrid-custom .ag-header-cell {
+    font-size: 14px;
+} */
+/* .ag-theme-mcgrid-custom .ag-checkbox-input-wrapper{
+    font-size: 12px;
+} */
+/* .ag-theme-mcgrid-custom .ag-column-select-checkbox:not(:last-child) {
+    margin-right: 4px !important;
+}  */

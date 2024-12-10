@@ -11,7 +11,6 @@ export const CheckboxWrapper = styled.div`
 `
 export const CheckboxConatiner = styled.div`
     width:50px;
-    // border:1px solid blue;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -25,17 +24,14 @@ export const DropDownContainer = styled.div`
 export const ActionableConatiner= styled.div`
     // width:290px;
     height:50px;
-    // border:1px solid blue;
     display:flex;
 `
 export const ShowAllWrapper = styled.div`
     display:flex;
     align-items:center;
-    // border:2px solid red;
     height:50px;
 `
 export const ButtonWrapper = styled.div`
-    // border:1px solid blue;
     margin-right: 0;
     margin-left: auto; 
     height: 60px;
