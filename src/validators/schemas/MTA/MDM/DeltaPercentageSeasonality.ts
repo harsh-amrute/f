@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MAX_DECIMAL_VAL} from "../../../commons";
+import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH} from "../../../commons";
 
 export const DeltaPercentageSeasonalitySchema = Joi.object({
     sc:Joi.string().empty().invalid(null).max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),

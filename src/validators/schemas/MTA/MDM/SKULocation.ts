@@ -51,7 +51,7 @@ export const SKULocationSchema = Joi.object({
     pd:Joi.string(),
     n:Joi.number().integer(),
     mn:Joi.number().integer(),
-    rlt:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(RLTValidator).messages(SKULocationMessages('RLT')),
+    rlt:Joi.number().integer().min(1).max(MAX_DECIMAL_VAL).custom(RLTValidator).messages(SKULocationMessages('RLT')),
     rcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(RCPValidator).messages(SKULocationMessages('RCP')),
     gcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(GCPValidator).messages(SKULocationMessages('GCP')),
     ocp:Joi.number().integer().min(1),

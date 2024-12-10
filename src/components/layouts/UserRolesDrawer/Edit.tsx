@@ -13,8 +13,8 @@ import {
   CheckBoxWrapper,
   CheckBoxesHeaderContainer,
   SearchWrapper,
-  URLSearch,
   CheckBoxLabel,
+  URLSearch,
 } from "../UserURLsDrawer/styles";
 import {
   Input,

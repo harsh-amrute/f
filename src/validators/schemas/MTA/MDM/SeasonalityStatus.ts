@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MAX_NAME_LENGTH,MAX_DECIMAL_VAL} from "../../../commons";
+import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MAX_NAME_LENGTH} from "../../../commons";
 
 const MIN_RLT_VALUE = 3;
 

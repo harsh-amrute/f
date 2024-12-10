@@ -21,9 +21,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
     const [isToolTipOpen,setIsToolTipOpen] = useState<boolean>(false)
 
     const message = props.data.error;
-
     if(!message)return null
-
 
     function customSplitter(str:string,exec:(s:number)=>boolean){
         const result:Array<string> = []
@@ -97,6 +95,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
 
     return(
         <>
+        
             <SCContainer style={{overflow:'visible'}}  themeUi={themeUi}>
                 <img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/error-regal.svg":"/assets/img/VectorFLOW/NMS/error.svg"} width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
                 <ErrorText  >{getFomattedMessage(message)}</ErrorText>
@@ -112,6 +111,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
                     </Portal>
                 )}
             </SCContainer>
+        
         </>
         
     )
