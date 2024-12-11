@@ -2442,7 +2442,6 @@ const useViewModify = (pageType: string) => {
     let isValid= true;
     selectedRows.forEach((e:any)=>{
       const newVal = _.cloneDeep(e);
-     
       newVal.cid = e.cid? e.cid: null;
       const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id? ccrGroupMaster[e.cgid]?.ccr_group_id: e.cgid;
       newVal.cgid = ccrGid;
@@ -2450,11 +2449,9 @@ const useViewModify = (pageType: string) => {
       newVal.dpid = e.dp
       deptMaster.forEach((elm: any)=>{if(elm.dept_name===e.dp)newVal.dpid= elm.dept_id})
       plantMaster.forEach((elm: any)=>{if(elm.plant_name===e.pl)newVal.plid = elm.plant_id})
-
       if(newVal.err.error!==""){
         isValid = false;
       }
-
       CCRPostObj.ccrData.push(_.omit(newVal,['editable','err']));
     })
     if(!isValid){
@@ -2469,12 +2466,10 @@ const useViewModify = (pageType: string) => {
         const allData = [...activeMaster.rowData];
         const indexesToRemove = selectedRows.map((row:any) => allData.indexOf(row));
         indexesToRemove.sort((a:any,b:any) => b - a);
-        // indexesToRemove.forEach((index:number) => allData.splice(index,1));
         const newData:any = [];
         allData.forEach((e:any,index: any)=>{
           if(!indexesToRemove.includes(index)) newData.push(e);
         })
-
         dispatch(UPDATE_ROW_DATA(newData));
         toast.dismiss();
         notifySuccess("CCR task updated!!")
