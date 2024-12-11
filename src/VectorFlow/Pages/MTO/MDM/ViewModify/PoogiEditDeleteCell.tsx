@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { UPDATE_COLDEFS, UPDATE_ROW_DATA } from '../../../../../redux/actions/MDM';
-import { SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
+import { SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW } from '../../../../../redux/actions/MTO';
 
 const PoogiEditDeleteCell = (params: any) => {
 

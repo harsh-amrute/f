@@ -4,8 +4,6 @@ import { mapRowDataWithSrNo } from "../../../../../helpers/utils"
 import useTaskPendingForReview from "./useTaskPendingForReview"
 import TaskPendingTaskBar from "./TaskPendingTaskBar"
 import { TaskPendingWrapper } from "./styles"
-import ApproveAllModal from "./ApproveAllModal"
-import RejectAllModal from "./RejectAllModal"
 import { useUserData } from "../../../../../context"
 
 
@@ -23,12 +21,6 @@ const MTOTaskPendingForReview = ()=>{
         selectedRows,
         onCancel,
         onTaskSubmit,
-        showApproveAllModal,
-        toggleApproveAllModal,
-        showRejectAllModal,
-        toggleRejectAllModal,
-        onSelectionTypeSuccess,
-        setSelectionType,
         mtoPendingTaskData,
         mtoSubmitTask
     } = useTaskPendingForReview()

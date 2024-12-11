@@ -1,6 +1,6 @@
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetBufferMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, useGetTaskCount, useGetTaskDetails, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetBufferMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, useGetTaskDetails, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -92,7 +92,6 @@ const useTaskPendingForReview = ()=>{
 
 
 
-    const {mutateAsync:getTaskDetails} = useGetTaskDetails()
 
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration();
 
@@ -289,17 +288,9 @@ const useTaskPendingForReview = ()=>{
            
          
             const taskDataStore:any = [];
-            const payload = {
-                taskId:taskData.TaskID,
-                paginationParameter:{
-                    pageNumber:1,
-                    recordsPerPage:chunkSize
-                }
-            }
             toast.dismiss(tempToastId)
 
           
-            // const response = await getTaskDetails(payload)
             toast.dismiss(toastId);
             
             const currentTaskMaster = taskDataStore[0]

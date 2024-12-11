@@ -1,4 +1,4 @@
-import React, { act, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ToggleCircle, ToggleContainer, ToggleText } from "./styles";
 import { useSelector, useDispatch } from 'react-redux';
 import { UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';

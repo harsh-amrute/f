@@ -1,7 +1,7 @@
 import { ActionHeaderContent, ActionHeaderWrapper, TaskPendingActionHeaderButton } from "./styles"
 import { useUserData } from "../../../../../context";
 import { useDispatch, useSelector } from "react-redux";
-import { SET_TASK_PENDING_ROW_DATA, SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO";
+import { SET_TASK_PENDING_ROW_DATA } from "../../../../../redux/actions/MTO";
 import _ from "lodash";
 
 

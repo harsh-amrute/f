@@ -1,10 +1,8 @@
 import { ICellRendererParams } from "ag-grid-enterprise"
 import { ActionRendererWrapper,ActionButtonWrapper } from "./styles"
-import {useState} from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import _ from "lodash"
-import useTaskPendingForReview from "./useTaskPendingForReview"
-import { SET_TASK_PENDING_ROW_DATA, SET_TASK_PENDING_SELECTED } from "../../../../../redux/actions/MTO"
+import { SET_TASK_PENDING_ROW_DATA} from "../../../../../redux/actions/MTO"
 
 
 interface TaskPendingActionRendererProps extends ICellRendererParams{
