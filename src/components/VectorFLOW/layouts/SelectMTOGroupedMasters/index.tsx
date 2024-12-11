@@ -109,7 +109,7 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
     // console.log(selectedOptions)
    
  return(
-    <ContentWrapper>
+    <ContentWrapper style={{zoom: 0.75}}>
         <TextFilterWrapper>
             <TextContainer>
              <p>What kind of records do you want to {text}?</p>

@@ -137,6 +137,7 @@ const MTOViewModify = () => {
         <div  style={{zoom: 0.8}}>
 
           <SelectMaster
+            
             data={allMastersState}
             options={options}
             selectedOptions={selectedOptions}
@@ -525,8 +526,8 @@ const MTOViewModify = () => {
           mtoSaveData={true}
           onMTOSaveData={ onMTOSaveBufferData}
           isMTOSaveDataDisabled={(activeMaster.id===501 &&!(bufferModifyData && bufferModifyData.length>0)) || (activeMaster.id===502 && !(ccrModifyData && ccrModifyData.length>0))} 
+          isMTODraftDisabled={(activeMaster.id===501 &&!(bufferModifyData && bufferModifyData.length>0)) || (activeMaster.id===502 && !(ccrModifyData && ccrModifyData.length>0))} 
           onMTOSaveAsDraft={onMTOSaveAsDraft}
-          isMTODraftDisabled={!(bufferModifyData && bufferModifyData.length>0)}
           />
           </div>
       }

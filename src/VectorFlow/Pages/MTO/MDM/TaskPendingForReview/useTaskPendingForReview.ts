@@ -156,10 +156,10 @@ const useTaskPendingForReview = ()=>{
 
                 const taskDataStore = res.data.data.results;
                 toast.dismiss(toastId);
-            
-                const currentTaskMaster = taskDataStore[0]
+                console.log("taskDataStore", taskDataStore)
+                const currentTaskMaster = taskDataStore[0];
                 // TODO: get the 
-                const currentTaskMasterId:any = 501;
+                const currentTaskMasterId:any = taskData.mid;
                 setCurrMasterId(currentTaskMasterId);
 
                 // // TODO: here
