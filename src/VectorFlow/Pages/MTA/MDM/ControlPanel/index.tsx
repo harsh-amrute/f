@@ -9,6 +9,8 @@ import { useGetMasterUIConfiguration } from "../../../../../VectorFlow/Services/
 import { ADD_MASTER,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_ACTIVE_MASTER } from "../../../../../redux/actions/MDM";
 import { mapMasterToMasterState } from "../../../../../helpers/utils";
 import { useUserData } from "../../../../../context";
+import { notifyError, notifyLoader } from "../../../../../helpers/notify";
+import { toast } from "react-toastify";
 
 
 
@@ -23,14 +25,21 @@ const ControlPanel = ()=>{
 
     const dispatch = useDispatch()
     const handleFNC = async()=>{
-        const data = await getUiConfig('modify')
-        const fncData:any = data.data.data.find((m:any)=>m.id==="13")
-        if(fncData){
-          dispatch(ADD_MASTER(mapMasterToMasterState([fncData])[0]))
-          dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
-          dispatch(UPDATE_ACTIVE_MASTER(0))     
+        try{
+            notifyLoader("Loading FNC Data")
+            const data = await getUiConfig('modify')
+            const fncData:any = data.data.data.find((m:any)=>m.id==="13")
+            if(fncData){
+            dispatch(ADD_MASTER(mapMasterToMasterState([fncData])[0]))
+            dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
+            dispatch(UPDATE_ACTIVE_MASTER(0))     
+            }
+            navigate('/master-data-management/control-panel/view-modify') 
+            toast.dismiss()
+        } catch(err:any){
+            console.error(err)
+            notifyError("Something Went Wrong")
         }
-        navigate('/master-data-management/control-panel/view-modify')   
     }
 
     return (

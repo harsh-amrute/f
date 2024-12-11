@@ -105,6 +105,7 @@ const TaskPendingForReview = ()=>{
                 }}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
+                // paginationPageSize={50}
                 // suppressPaginationPanel={true}
             />
                     

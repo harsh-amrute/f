@@ -56,6 +56,16 @@ const useTaskPendingForReview = ()=>{
     const [TASK_ID,setTaskId] = useState<string>('')
 
 
+    useEffect(() => {
+        console.log("Side Effect")
+        if (ref.current && detailTableRowData.length > 0) {
+          ref.current.api.forEachNode((rowNode) => {
+            if (rowNode.data.status === "Rejected") {
+              rowNode.setSelected(true);
+            }
+          });
+        }
+      }, [detailTableRowData]);
 
     const resetState = ()=>{
         setDetailTableColDefs([])

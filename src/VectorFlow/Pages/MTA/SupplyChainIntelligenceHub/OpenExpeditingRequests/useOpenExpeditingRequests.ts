@@ -110,10 +110,14 @@ const useOpenExpeditingRequests = () => {
             const data = await getData(currentFilter)
             setColDefs(mapFieldsToColDefs(data.data.data.config))
             const tempRowData = data?.data?.data?.data || [];
+            if(!tempRowData.length){
+              return notifyError("No Data To Show")
+            }
             setRowData(tempRowData.map((r:any,index:number)=>({...r,id:index,action:''})))
             toast.dismiss()
             notifySuccess("Data Loaded Successfully")
           }catch(err:any){
+            console.error(err)
             notifyError(err)
           }
         }

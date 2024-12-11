@@ -52,6 +52,10 @@ const ModalManageUsers = ({
   const onSubmit = () => {
     const value = getValues();    
     if (infoUser.roles.length > 0) {
+      // if(!value.password || value.password.length === 0){
+      //   notifyError("Password Cannot Be Empty !")
+      //   return 
+      // }
       if (value.password.length > 0) {
         setInfoUser({
           ...infoUser,
@@ -140,8 +144,8 @@ const ModalManageUsers = ({
                               pattern: {
                                 value:
                                   // eslint-disable-next-line no-useless-escape
-                                  /^[^@.\s-]*$/,
-                                message: "The username cannot contain @, ., spaces, or -.",
+                                  /^(?=.*[a-zA-Z])[^@.\s-]*$/,
+                                message: "The username must contain at least one alphabetical character and  cannot contain @, ., spaces, or -.",
                               },
                             })}
                             autoComplete="off"

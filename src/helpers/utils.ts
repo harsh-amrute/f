@@ -1722,7 +1722,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
       return {
         ...oldDataPrefixed,
         ...newDataPrefixed,
-        status: '',
+        status:!isRowModified?"Rejected" :"",
         comments: isRowModified ? '' : 'No modifications made in this record',
         isModified: isRowModified
       };
