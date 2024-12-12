@@ -51,7 +51,7 @@ const DueDateQuotation = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState<any>();
   //Refs
   const totalRows = useRef(0);
   const currentPageSelectedRows = useRef<any>([]);
@@ -93,9 +93,13 @@ const DueDateQuotation = () => {
   const extras: any = [
     {
       field: "",
+      colId:"checkbox",
+      resizable: false,
       headerCheckboxSelection: true,
       checkboxSelection: true,
       showDisabledCheckboxes: true,
+      flex: 1,
+      initialHide: false,
       suppressMenu: true,
       maxWidth: 30,
       pinned: 'left',
@@ -419,8 +423,11 @@ const DueDateQuotation = () => {
     }
   }
 
+
   useEffect(() => {
-    getUpdatedFilterData();
+    if (Object.entries(appliedFilters).length) {
+      getUpdatedFilterData();
+    }
   }, [appliedFilters, currentPage, unScheduled, step == 1]);
 
 
@@ -444,73 +451,85 @@ const DueDateQuotation = () => {
 
   const handleSaveClick = async (coldefs?: any) => {
     try {
-      if(coldefs){
-        const payload = {
-          un: user.user.name,
-          rn_id: UIGridCode.ProdDeptWiseBMReport,
-          cs: JSON.stringify(coldefs)
-      }
-      await updateUserUIReportConfigData([payload]);
-      }
-      else{
-
-        if(currentGridRef?.current?.api){
-          const config = currentGridRef.current.api.getColumnState();
-        
+      if (coldefs) {
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdDDQ,
-          cs: JSON.stringify(config)
-        }
-        
+          cs: JSON.stringify(coldefs),
+        };
         await updateUserUIReportConfigData([payload]);
-        await getUserColumnConfig();
-      }
+      } else {
+        if (currentGridRef?.current?.api) {
+          const config = currentGridRef.current.api.getColumnState();
 
-    }
+          const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.ProdDDQ,
+            cs: JSON.stringify(config),
+          };
+
+          await updateUserUIReportConfigData([payload]);
+          await getUserColumnConfig();
+        }
+      }
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleResetClick = () => {
     setIsReset(true);
-  }
+  };
 
   const getFilterData = async () => {
     try {
-      const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_DDQ});
+      const response = await getPageWiseFilterData({
+        page_name: FilterPageName.Prod_DDQ,
+      });
       setFilterData(response?.data?.data);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     getUserColumnConfig();
-    getFilterData()
-  },[])
+    getFilterData();
+  }, []);
 
   useEffect(() => {
     if (isReset) {
-        setColumnState([...columnDefs]);
-        setIsReset(false)
+      setColumnState([...columnDefs]);
+      setIsReset(false);
     } else {
-        if(isReset != undefined){
-            handleSaveClick(columnDefs);
-        }
+      if (isReset != undefined) {
+        handleSaveClick(columnDefs);
+      }
     }
-}, [isReset]);
+  }, [isReset]);
 
-  useEffect(()=>{
-    const result = currentGridRef?.current?.api.applyColumnState({
-      state: columnState,
-      applyOrder: true
-  });
-  if (!result) {
-      console.error('Failed to apply column state');
-  }
-  },[columnState])
+  useEffect(() => {
+    if (currentGridRef?.current && columnState?.length) {
+      columnState.forEach((col: any) => {
+        if (col.initialHide != undefined) {
+          col.hide = col.initialHide;
+        }
+      });
+    
+      console.log(columnState);
+      const result = currentGridRef?.current?.api.applyColumnState({
+        state: columnState,
+        applyOrder: true,
+      });
+      if (!result) {
+        console.error("Failed to apply column state 1");
+      }
+      else {
+        console.log("state applied")
+      }
+    }
+  }, [columnState]);
+  
  const ExcelData = ()=>{
     getUpdatedFilterData(true);
  }

@@ -44,14 +44,22 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
 
 
   useEffect(()=>{
-    if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-        const result = currentGridRef?.current?.api.applyColumnState({
-            state: columnState,
-            applyOrder: true
-        });
-        if (!result) {
-            console.error('Failed to apply column state');
+    if (currentGridRef?.current && columnState?.length ) { //&& colDef.length > 0
+      console.log(columnState);
+      columnState.forEach((col: any) => {
+        if (col.initialHide != undefined) {
+          col.hide = col.initialHide;
         }
+      });
+      
+      
+      const result = currentGridRef?.current?.api.applyColumnState({
+        state: columnState,
+        applyOrder: true
+      });
+      if (!result) {
+        console.error('Failed to apply column state 1');
+      }
     }
   }, []);
 

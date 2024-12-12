@@ -255,7 +255,7 @@ const OrderRescheduling = () => {
       checkboxSelection: true,
       maxWidth: 50,
       flex: 1,
-      intialHide: false,
+      initialHide: false,
       pinned: "left",
       suppressMenu: true,
       floatingFilter: false,

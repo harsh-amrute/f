@@ -953,7 +953,7 @@ const DptWiseBMReport = () => {
                         col.children.forEach((child: any)=>{
                             arr.push({
                                 "colId": child.colId,
-                                "intialHide": child.hide,
+                                "initialHide": child.hide,
                                 "pinned": null,
                                 "sort": null,
                                 "sortIndex": null,
