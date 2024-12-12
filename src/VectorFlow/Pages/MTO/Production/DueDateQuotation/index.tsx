@@ -515,17 +515,13 @@ const DueDateQuotation = () => {
           col.hide = col.initialHide;
         }
       });
-    
-      console.log(columnState);
+      
       const result = currentGridRef?.current?.api.applyColumnState({
         state: columnState,
         applyOrder: true,
       });
       if (!result) {
         console.error("Failed to apply column state 1");
-      }
-      else {
-        console.log("state applied")
       }
     }
   }, [columnState]);
