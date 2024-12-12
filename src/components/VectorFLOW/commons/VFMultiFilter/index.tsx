@@ -1088,7 +1088,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         {/* <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
                             <AvailabilityFilter placeholder={"Availabilty"} onChange={(e:any,key:string)=>onFilterChange('AF4',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF4'}></AvailabilityFilter>
                         </FilterComponent> */}
-                        {(currentTab==='on-hand' || currentTab==='both' || currCategory==='BPR'|| currCategory ==='RRR' ) && (
+                        {(currentTab==='on-hand' || currentTab==='both' || currCategory==='BPR'|| currCategory ==='RRR' || currCategory==='BOR' ) && (
                              <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tech_color?'unset' : '50px'}}>
                              <FilterCheckboxAccordian filterType="On Hand Inventory Color" filterKey="availabilty_tech_color" isOpen={openStatus.availabilty_tech_color} setOpenStatus={setOpenStatus}>
                              <FilterMultiSelectCheckbox header={'OHIC'} filterOptions={[
