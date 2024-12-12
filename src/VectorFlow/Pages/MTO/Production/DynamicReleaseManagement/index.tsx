@@ -182,9 +182,19 @@ const DynamicReleaseManagement = () => {
   }, [])
 
   useEffect(() => {
-    console.log("appliedFilters useEffect")
-    GetData();
-  },[appliedFilters])
+    if (Object.entries(appliedFilters).length) {
+      console.log("appliedFilters useEffect")
+      GetData();
+    }
+  }, [appliedFilters])
+  
+  useEffect(() => {
+    if (!showModal) {
+
+      console.log("dataUpdated useeffect" + dataUpdated)
+      GetData(table1 ? 1 : 0, currentPage, 0);
+    }
+  }, [dataUpdated])
 
   useEffect(()=>{
     getFilterData();
@@ -655,13 +665,6 @@ const DynamicReleaseManagement = () => {
     }
   }
 
-  useEffect(() => {
-    if (!showModal) {
-
-      console.log("dataUpdated useeffect" + dataUpdated)
-      GetData(table1 ? 1 : 0, currentPage, 0);
-    }
-  }, [dataUpdated])
 
   const [isReleaseButtonDisabled, setIsReleaseButtonDisabled] = useState(true);
 
