@@ -1,7 +1,8 @@
+import _ from 'lodash';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { UPDATE_COLDEFS, UPDATE_ROW_DATA } from '../../../../../redux/actions/MDM';
-import { SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
+import { SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW } from '../../../../../redux/actions/MTO';
 
 const PoogiEditDeleteCell = (params: any) => {
 
@@ -10,27 +11,26 @@ const PoogiEditDeleteCell = (params: any) => {
     const editableMajRowIndex = useSelector((state: any) => state.mto.editableMajRow);
     
     const editableMinRowIndex = useSelector((state: any) => state.mto.editableMinRow);
-    const intialData = useSelector((state: any)=> state.mto.poogiIntialData);
+    const intialPoogiData = useSelector((state: any)=> state.mto.poogiIntialData);
 
     const onSaveChange = ()=>{
    
-        console.log("activeMaster .rows dtaaddaaad.....f", activeMaster.rowData[0])
         dispatch(UPDATE_COLDEFS(activeMaster.colDefs.map((colDef: any) => ({ ...colDef, editable: false }))))
         if(params.data.minId){
-
           dispatch(SET_EDITABLE_MIN_ROW(null))
         }
         else{
-          dispatch(SET_POOGI_INITIAL_DATA(activeMaster.rowData));
+          const newRowData = _.cloneDeep(activeMaster.rowData);
+          newRowData[params.node.rowIndex].iu = true;
+          dispatch(UPDATE_ROW_DATA(newRowData));
           dispatch(SET_EDITABLE_MAJ_ROW(null))
         }
     }
 
     const onCancel = ()=>{
-      dispatch(UPDATE_ROW_DATA(intialData));
+      dispatch(UPDATE_ROW_DATA(intialPoogiData));
       dispatch(UPDATE_COLDEFS(activeMaster.colDefs.map((colDef: any) => ({ ...colDef, editable: false })))) 
       if(params.data.minId){
-
         dispatch(SET_EDITABLE_MIN_ROW(null))
       }    
       else{
@@ -66,6 +66,16 @@ const PoogiEditDeleteCell = (params: any) => {
       );
     }
     
+  const onDeleteClick = ()=>{
+      const newData = _.cloneDeep(activeMaster.rowData);
+      newData[params.node.rowIndex].id = true;
+      dispatch(UPDATE_ROW_DATA(newData));
+  }
+  const onDeleteUndoClick = ()=>{
+      const newData = _.cloneDeep(activeMaster.rowData);
+      newData[params.node.rowIndex].id = false;
+      dispatch(UPDATE_ROW_DATA(newData));
+  }
 
 
   const onEditClick = ()=>{
@@ -82,12 +92,19 @@ const PoogiEditDeleteCell = (params: any) => {
 
   return (
     <div style={{display: 'flex', margin:'4px auto', width: '80px', justifyContent:'center'}}>
-        <button onClick={onEditClick} style={{background: 'transparent'}}>
-            <img height={24} width={24} src="/assets/img/VectorFLOW/NMS/edit-draft.svg" />
+        <button disabled={params.data.id} onClick={onEditClick} style={{background: 'transparent', opacity: `${params.data.id?0.2:1}`}}>
+            <img height={18} width={18} src="/assets/img/VectorFLOW/NMS/edit-draft.svg" />
         </button>
-        <button style={{background: 'transparent'}}>
-            <img height={24} width={24} src="/assets/img/VectorFLOW/NMS/delete-draft.svg" />
+        {(params.data.id) ?
+        <button onClick={onDeleteUndoClick} style={{background: 'transparent'}}>
+            <img  height={18} width={18} src="/assets/img/delete-undo.svg" alt="undo" />
         </button>
+        :
+        <button onClick={onDeleteClick} style={{background: 'transparent'}}>
+            <img height={18} width={18} src="/assets/img/VectorFLOW/NMS/delete-draft.svg" />
+        </button>
+
+        }
     </div>
   )
 }

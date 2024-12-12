@@ -72,7 +72,6 @@ const SelectMaster = (
         else {
             setFilterButtonStatus([...filterButtonStatus, currMaster.id]);
             dispatch(ADD_MASTER(currMaster));
-
         }
     }
 

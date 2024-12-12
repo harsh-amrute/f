@@ -242,14 +242,13 @@ const DptWiseBMReport = () => {
     const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
 
     const mapInitalColumnDefs=async ()=>{
-        console.log("intialColumn state is settting..... to");
         try {
             const data = await getUserUIConfigData({
                 un: user.user.name,
                 rn_id: UIGridCode.ProdDeptWiseBMReport
             });
             
-            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            const newConfig = data?.data?.data[0]?.columns_settings? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setInitialColumnState(newConfig);
             console.log("intialColumn state is set to", newConfig);
 

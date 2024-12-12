@@ -287,8 +287,8 @@ export const useGetMTODrafts = () => {
 }
 
 export const useGetMTODraftById = () => {
-  return useMutation(async (draftId: any) => {
-    return await MDMService.getMTODraftById(draftId);
+  return useMutation(async (props:any) => {
+    return await MDMService.getMTODraftById(props.draftId, props.mid);
   })
 }
 
