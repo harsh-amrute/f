@@ -48,7 +48,7 @@ const FullKitAssignment = () => {
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
 
-  const [HeaderData, setHeaderData] = useState([{}]);
+  const [HeaderData, setHeaderData] = useState([]);
   const [hide, setHide] = useState(false);
   const [showModal, setShowModal] = useState(false)
   const [editMode, setEditMode] = useState("View")
@@ -78,7 +78,7 @@ const FullKitAssignment = () => {
   const [graphData, setGraphData] = useState([]);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState<any>(undefined);
   const [colDef, setColDef] = useState([{}]);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -377,7 +377,11 @@ const FullKitAssignment = () => {
   }, [editMode, selectedRows])
 
   useEffect(() => {
-     setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extra))
+    if (HeaderData?.length > 0) {
+      setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extra))
+      getUserColumnConfig();
+      getFilterData();
+    }
   }, [HeaderData, extra])
 
   const getUserColumnConfig = async () => {
@@ -398,18 +402,28 @@ const FullKitAssignment = () => {
     }
   }
   
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (coldefs?: any) => {
     try {
-      if(currentGridRef?.current?.api){
-        const config = currentGridRef.current.api.getColumnState();
-  
+      if (coldefs) {
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdFullkitAssignment,
-          cs: JSON.stringify(config)
-        }
+          cs: JSON.stringify(coldefs),
+        };
         await updateUserUIReportConfigData([payload]);
-        await getUserColumnConfig();
+      } else {
+
+        if (currentGridRef?.current?.api) {
+          const config = currentGridRef.current.api.getColumnState();
+  
+          const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.ProdFullkitAssignment,
+            cs: JSON.stringify(config)
+          }
+          await updateUserUIReportConfigData([payload]);
+          await getUserColumnConfig();
+        }
       }
 
     } catch (error) {
@@ -432,13 +446,11 @@ const FullKitAssignment = () => {
 
   useEffect(() => {
     getMasterData();
-    getUserColumnConfig();
     setColumnDef();
-    getFilterData();
   }, [])
 
   useEffect(() => {
-    if (loadDataParams) {
+    if (loadDataParams && Object.entries(appliedFilters).length) {
       fetchOrders();
     }
   }, [loadDataParams, appliedFilters])
@@ -667,22 +679,30 @@ const FullKitAssignment = () => {
     if (isReset) {
       setColumnState(colDef);
       setIsReset(false)
-    }else{
-      handleSaveClick();
+    } else {
+      if (isReset !== undefined) {
+        handleSaveClick(colDef);
+      }
     }
   }, [isReset]);
 
-  useEffect(()=>{ 
+  useEffect(() => {
     if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-        const result = currentGridRef?.current?.api.applyColumnState({
-            state: columnState,
-            applyOrder: true
-        });
-        if (!result) {
-            console.error('Failed to apply column state');
+      columnState.forEach((col: any) => {
+        if (col.initialHide != undefined) {
+          col.hide = col.initialHide;
         }
+      });
+      const result = currentGridRef?.current?.api.applyColumnState({
+        state: columnState,
+        applyOrder: true
+      });
+      if (!result) {
+        console.error('Failed to apply column state');
+      }
     }
-  });
+  }, [columnState]);
+
   const ExcelData = ()=>{
     fetchOrders(true);
   }
@@ -743,6 +763,7 @@ const FullKitAssignment = () => {
           setSelectedRows(newMap)
           currentPageSelectedRows.current = params.api.getSelectedNodes();
         }}
+        maintainColumnOrder
       // onSelectionChanged={(params) => {
       //   const selectedRoutes = new Set();
       //   params.api.getSelectedRows().forEach((row: any) => row.r.split(",").forEach((route: any) => selectedRoutes.add(route.trim())));
@@ -763,9 +784,10 @@ const FullKitAssignment = () => {
       />
       <VFPagination currentPage={currentPage} rowsPerPage={15} selectedRows={1} totalRows={totalRows} handleChangePage={handlePageChange} />
       <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
-      <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
+      {!hide && <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
         <AgCharts ref={graph} options={chartoptions} />
       </div>
+      }
       <EditRouteModal orderKey={orderKey} plantId={selectedPlantId} routeId={selectedRouteId} graphData={graphData} showModal={showModal} ccrGroups={masters?.ccrGroups} setShowModal={setShowModal} theme={themeUi} setOrderKey={setOrderKey} loadDataParams={loadDataParams} setLoadDataParams={setLoadDataParams} />
     </Wrapper >
 
