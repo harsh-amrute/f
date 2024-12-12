@@ -132,7 +132,7 @@ const OverallBmReport = () => {
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(()=>{
         return [];
     });
-    const [intialColumnState, setInitialColumnState] = useState<any>();
+    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
     const [deptName, setDeptName] = useState<any>([]);
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
@@ -229,7 +229,7 @@ const OverallBmReport = () => {
                 rn_id: UIGridCode.ProdOverallBMReport
             });
             
-            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setInitialColumnState(newConfig);
 
             if (!data) {
@@ -651,10 +651,11 @@ const OverallBmReport = () => {
 
             
                 defaultColDef: {
+
                     enableValue: true,
                     enableRowGroup:true,
                     enablePivot: true,
-                    rowGroup: true,
+            
 
 
                     filter: 'agTextColumnFilter',

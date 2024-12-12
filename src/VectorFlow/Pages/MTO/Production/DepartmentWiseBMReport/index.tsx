@@ -242,14 +242,13 @@ const DptWiseBMReport = () => {
     const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
 
     const mapInitalColumnDefs=async ()=>{
-        console.log("intialColumn state is settting..... to");
         try {
             const data = await getUserUIConfigData({
                 un: user.user.name,
                 rn_id: UIGridCode.ProdDeptWiseBMReport
             });
             
-            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            const newConfig = data?.data?.data[0]?.columns_settings? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setInitialColumnState(newConfig);
             console.log("intialColumn state is set to", newConfig);
 
@@ -422,11 +421,10 @@ const DptWiseBMReport = () => {
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
-                valueFormatter: child.cc === 'BPP' ? (params: any) => params.data.bpp : undefined,
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
-                pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
+                  pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 cellRendererParams: child.hd.includes("Remark") ? {
@@ -712,6 +710,11 @@ const DptWiseBMReport = () => {
                 components: customCellRenderers,
                 pagination: true,
                 defaultColDef: {
+
+                    enableValue: true,
+                    enableRowGroup:true,
+                    enablePivot: true,
+
                     filter: 'agTextColumnFilter',
                     floatingFilter: true,
                     //suppressFiltersToolPanel:true,

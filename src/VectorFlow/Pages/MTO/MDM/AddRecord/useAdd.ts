@@ -42,6 +42,8 @@ const useAdd=()=>{
     const [errorCount,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
+    const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
+    const ccrInitialData = useSelector((state: any)=> state.mto.ccrInitialData);
 
     const invalidDataColdefs:ColDef[] = [
         {
@@ -80,7 +82,7 @@ const useAdd=()=>{
 
     const onCancel=()=>{
         dispatch(RESET_STATE());
-        navigate('/master-data-management/control-panel');
+        navigate('/mto/master-data-management/control-panel');
     }
 
     const handleOnClickMaster=(master:MDMMasterState)=>{
@@ -323,35 +325,112 @@ const useAdd=()=>{
       }
 
       // TODO : mto 
-      const getErrorForBuffer = (ele:any, index: any)=>{
-        if(ele.bt === '' || ele.bsz === '' || ele.bsz=== null || ele.bt===null){ return {error: "Enter Buffer Type and Buffer Size", warning: ""};}
-        let isBszUniq = true;
-        activeMaster.rowData.forEach((e: any, i:any)=>{
-          if (i>=index) return ;
-          if(e.bt===ele.bt && e.bsz === ele.bsz){
-            isBszUniq = false;
-            return;
+      const getErrorForMaster = (ele: any, index: any, tempData:any) => {
+        if (activeMaster.id === 501) {
+          // Check if the Buffer Type or Buffer Size is missing
+          if (!ele.bt || !ele.bsz) {
+            return { error: "Enter Buffer Type and Buffer Size", warning: "" };
           }
-        })
-
-        if(!isBszUniq){
-            return {error: "Buffer size must be unique for a given buffer type", warning:"" };
+      
+          // Check if Buffer Code already exists in the master data
+          const isBufferCodeDuplicate = bufferInitialData.some(
+            (master: any) => master.bcd === ele.bcd
+          );
+          const isbufferCodeDuplicateInCurr = activeMaster.rowData.some(
+            (row: any, i: any) => i !== index && row.bcd === ele.bcd
+          );
+          if (isbufferCodeDuplicateInCurr) {
+            return { error: "CCR code must be unique within the current list!", warning: "" };
+          }
+          if (isBufferCodeDuplicate) {
+            return { error: "Buffer code already exists in master", warning: "" };
+          }
+      
+          // Check if Buffer Size for the Buffer Type already exists in the master data
+          const isBufferTypeAndSizeDuplicate = bufferInitialData.some(
+            (master: any) => master.bt === ele.bt && master.bsz === ele.bsz
+          );
+          if (isBufferTypeAndSizeDuplicate) {
+            return { error: "Buffer size for the buffer type already exists in master", warning: "" };
+          }
+      
+          // Check if the Buffer Size is unique within the active master row data
+          const isBszUnique = tempData.every((row: any, i: any) => {
+            // Skip the current index during validation
+            if (i === index) return true;
+            // Check for duplicate Buffer Type and Buffer Size
+            return !(row.bt === ele.bt && row.bsz === ele.bsz);
+          });
+          if (!isBszUnique) {
+            return { error: "Buffer size must be unique for a given buffer type", warning: "" };
+          }
+        } else if (activeMaster.id === 502) {
+      
+          if (!ele.cnm || ele.cnm === "") {
+            return { error: "CCR name cannot be empty!", warning: "" };
+          }
+      
+          // Check if CCR Capacity Per Day (cpd) is missing or <= 0
+          if (!ele.cpd || ele.cpd <= 0) {
+            return { error: "CCR Capacity Per Day must be greater than 0!", warning: "" };
+          }
+      
+          // Check if Working Hours Per Day (whpd) is missing or <= 0
+          if (!ele.whpd || ele.whpd <= 0) {
+            return { error: "Working Hours Per Day must be greater than 0!", warning: "" };
+          }
+      
+          // Check if Scheduling Horizon (sh) is missing
+          if (!ele.sh || ele.sh === "") {
+            return { error: "Scheduling horizon cannot be empty!", warning: "" };
+          }
+      
+          // Check if Resource Buffer (rb) is within the range [0, 1]
+          if (ele.rb === undefined || ele.rb < 0 || ele.rb > 1) {
+            return { error: "Resource buffer (rb) must be between 0 and 1!", warning: "" };
+          }
+      
+          // Check if Capacity Workload (cwl) is > 0
+          if (!ele.cwl || ele.cwl <= 0) {
+            return { error: "Capacity workload (cwl) must be greater than 0!", warning: "" };
+          }
+      
+          // Check if CCR Code is unique within the initial master data
+          const isCcrCodeDuplicate = ccrInitialData.some(
+            (master: any) => master.ccd === ele.ccd
+          );
+          
+          const isCcrCodeDuplicateInCurr = tempData.some(
+            (row: any, i: any) => ((i < index) && (row.ccd === ele.ccd))
+          );
+          if (isCcrCodeDuplicateInCurr) {
+            return { error: "CCR code must be unique!", warning: "" };
+          }
+          if (isCcrCodeDuplicate) {
+            return { error: "CCR code exists in master data!", warning: "" };
+          }
         }
-
-        return {error: "", warning: ""};
-      }
+        
+        // No errors found
+        return { error: "", warning: "" };
+      };
+      
+      
 
       const onDataChange = (data: any)=>{
         const tempRowData:any = [...activeMaster.rowData];
         const finData:any = [];
         tempRowData.forEach((ele:any, index: any)=>{
-          const newVal = JSON.parse(JSON.stringify(ele));
+          const newVal = _.cloneDeep(ele);
           if(index===data.rowIndex){
             newVal[data.column.colId] = data.newValue;
           }
-          newVal.err= getErrorForBuffer(newVal, index);
-
           finData.push(newVal);
+        })
+        ;
+        finData.forEach((ele:any, index: any)=>{
+
+          ele.err= getErrorForMaster(ele, index,finData);
         })
 
         dispatch(UPDATE_ROW_DATA(finData))
