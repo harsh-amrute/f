@@ -183,15 +183,12 @@ const DynamicReleaseManagement = () => {
 
   useEffect(() => {
     if (Object.entries(appliedFilters).length) {
-      console.log("appliedFilters useEffect")
       GetData();
     }
   }, [appliedFilters])
   
   useEffect(() => {
     if (!showModal) {
-
-      console.log("dataUpdated useeffect" + dataUpdated)
       GetData(table1 ? 1 : 0, currentPage, 0);
     }
   }, [dataUpdated])
@@ -755,15 +752,14 @@ const DynamicReleaseManagement = () => {
           col.hide = col.initialHide;
         }
       });
-        console.log(columnState)
-          const result = currentGridRef.current.api.applyColumnState({
-              state: columnState,
-              applyOrder: true
-          });
-          if (!result) {
-              console.error('Failed to apply column state 1');
-          }
+      const result = currentGridRef.current.api.applyColumnState({
+        state: columnState,
+        applyOrder: true
+      });
+      if (!result) {
+        console.error('Failed to apply column state 1');
       }
+    }
   },[columnState]);
 
   useEffect(() => {
