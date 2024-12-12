@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,} from "../../../commons";
+import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MAX_INT_VAL} from "../../../commons";
 
 const SuppCodeValidator = (value:any,helper:any)=>{
 
@@ -12,7 +12,7 @@ export const SOBSchema = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
     spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator).messages(generateCommonMessages('SupplierCode')),
-    sb:Joi.number().min(0.00).max(100.00)
+    sb:Joi.number().min(0.00).max(100.00).messages({'number.unsafe':`SOB should be less than ${MAX_INT_VAL}`}),
 
 }).preferences(defaultJOIOptions)
 
