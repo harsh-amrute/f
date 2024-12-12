@@ -88,7 +88,7 @@ const useSupplierDispatchReport= ()=>{
     
         defaultColDef: {
           floatingFilter: true,
-          resizable: false,
+          resizable: true,
           cellStyle: {
             flex: 1,
             "text-align": "center",
