@@ -791,7 +791,6 @@ const useViewModify = (pageType:string) => {
           },1000)
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
-          console.log(response)
           clearInterval(intervalID);
           let result = JSON.parse(response.data)
           const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
@@ -1072,7 +1071,7 @@ const useViewModify = (pageType:string) => {
             await deleteTask(taskId);
           }
           toast.dismiss(toastId)
-          return {isConflicts:true,errorCount,errorData,conflictCount,conflictData} 
+          return {isDisaster:true,isConflicts:true,errorCount,errorData,conflictCount,conflictData} 
         }
       }
           
@@ -1114,8 +1113,12 @@ const useViewModify = (pageType:string) => {
         //let result;
  
         if(activeMaster.progress === 'editOnline'){
-          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isDisaster,isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           //result = !isConflicts
+          if(isDisaster){
+            setIsSubmitDisabled(false)
+            return 
+          } 
           if(!isConflicts){
             if(localErrorCount>0 || errorCount>0){
               let errorRowData
@@ -1169,68 +1172,73 @@ const useViewModify = (pageType:string) => {
  
         }
         else{
-          const {isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isDisaster,isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           
-          if(!isConflicts){
-            if(localErrorCount>0 || errorCount>0){
-              let errorRowData
-              if(localErrorCount>0){
-                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
-              }
-              else{
-                errorRowData = createErrorRowData(errorData,activeMaster.id)
-              }
-              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
-                addInvalidDataColDefs('error')
-              }
-              if(errorRowData.length>0){
-                dispatch(UPDATE_ROW_DATA(errorRowData))
-                dispatch(SET_RECORD_COUNT(errorRowData.length))
-              }
-              
+          if(isDisaster){
+            setIsSubmitDisabled(false)
+            return 
+          } 
+         if(!isConflicts){
+          if(localErrorCount>0 || errorCount>0){
+            let errorRowData
+            if(localErrorCount>0){
+              errorRowData = createErrorRowData(localErrorData,activeMaster.id)
             }
-           
-            notifySuccess(`Modifications Submitted Successfully`);
-            setSelectedRowsCount(0);
-            dispatch(UPDATE_PROGRESS_STATE('submitted'));
-            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-            if(draftID.length > 0){
-              await deleteDraft(draftID);
+            else{
+              errorRowData = createErrorRowData(errorData,activeMaster.id)
             }
-          }
-          else{
-            // console.time('That took ')
-            // console.log('Calculating...')
-
-            const tempCon = createConflictRowData(localConflictData,activeMaster.id)
-            const tempError = createErrorRowData(localErrorData,activeMaster.id)
-
-            const tempResult:any = []
-
-            tempCon.forEach((t:any)=>{
-              const exist = tempError.find((e:any)=>e.sc===t.sc)
-              if(exist)tempResult.push(exist)
-            })
+            if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+              addInvalidDataColDefs('error')
+            }
+            if(errorRowData.length>0){
+              dispatch(UPDATE_ROW_DATA(errorRowData))
+              dispatch(SET_RECORD_COUNT(errorRowData.length))
+            }
             
-            // console.log("Conflicts Count : ",tempCon.length)
-            // console.log("Errors Count : ",tempError.length)
-            // console.log("Intersection Count : ",tempResult.length)
-            // console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
-            // console.log("Active master length",activeMaster.rowData.length);
-            // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
-            // console.timeEnd('That took ')
-            setConflictData(tempCon)
-            setConflictCount(tempCon.length)
-            setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
-            setIsConflictModalOpen(true)
-            dispatch(UPDATE_PROGRESS_STATE('conflicts'))
           }
+         
+          notifySuccess(`Modifications Submitted Successfully`);
+          setSelectedRowsCount(0);
+          dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          if(draftID.length > 0){
+            await deleteDraft(draftID);
+          }
+        }
+        else{
+          // console.time('That took ')
+          // console.log('Calculating...')
+
+          const tempCon = createConflictRowData(localConflictData,activeMaster.id)
+          const tempError = createErrorRowData(localErrorData,activeMaster.id)
+
+          const tempResult:any = []
+
+          tempCon.forEach((t:any)=>{
+            const exist = tempError.find((e:any)=>e.sc===t.sc)
+            if(exist)tempResult.push(exist)
+          })
+          
+          // console.log("Conflicts Count : ",tempCon.length)
+          // console.log("Errors Count : ",tempError.length)
+          // console.log("Intersection Count : ",tempResult.length)
+          // console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
+          // console.log("Active master length",activeMaster.rowData.length);
+          // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
+          // console.timeEnd('That took ')
+          setConflictData(tempCon)
+          setConflictCount(tempCon.length)
+          setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
+          setIsConflictModalOpen(true)
+          dispatch(UPDATE_PROGRESS_STATE('conflicts'))
+        }
 
 
         }
        setIsSubmitDisabled(false)
       }
 
+      console.log(activeMaster.progress)
       const onSeasonalityStatusUpdate = async (status:string) => {
         const selectedRows = ref.current?.api.getSelectedRows();
         let error = false;

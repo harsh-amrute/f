@@ -97,7 +97,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
         <>
         
             <SCContainer style={{overflow:'visible'}}  themeUi={themeUi}>
-                <img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/error-regal.svg":"/assets/img/VectorFLOW/NMS/error.svg"} width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
+                <img src={"/assets/img/VectorFLOW/NMS/error.svg"} width={17} height={17} style={{marginRight:'7px',marginLeft:'5px'}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
                 <ErrorText  >{getFomattedMessage(message)}</ErrorText>
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">

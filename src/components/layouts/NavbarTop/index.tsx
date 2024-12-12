@@ -75,13 +75,13 @@ const NavbarTop = ({
           </SCWrapBreadcrumb>
         </SCLeft>
         <SCRight>
-          <SCImg
-            src={`/assets/img/header/${
-              colorTheme === "REGALBLAZE"
-                ? "notifications_yellow"
-                : "notifications_purple"
-            }.svg`}
-          />
+            <SCImg
+              src={`/assets/img/header/${
+                colorTheme === "REGALBLAZE"
+                  ? "notifications_yellow"
+                  : "notifications_purple"
+              }.svg`}
+            />
           <SCImg
             src="/assets/img/header/icon_theme_colors.svg"
             onClick={openNavbarRight}

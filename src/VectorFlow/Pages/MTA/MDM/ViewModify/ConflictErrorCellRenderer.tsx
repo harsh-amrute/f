@@ -62,7 +62,7 @@ const ConflictErrorCellRenderer = (params:any)=>{
         const viewportHeight = window.innerHeight;
         // const viewPortWidth = window.innerWidth
 
-        const {height:toolTipHeight} = toolTipRef.current.getBoundingClientRect()
+        const {height:toolTipHeight,width:tooltipWidth} = toolTipRef.current.getBoundingClientRect()
 
         
         const { left, top,height:targetHeight,width:targetWidth} = e.target.getBoundingClientRect();
@@ -72,9 +72,9 @@ const ConflictErrorCellRenderer = (params:any)=>{
         // const viewPortWidth = window.innerWidth
     
     
-        let tooltipTop = (top * currGridZoom * currScreenZoom) +targetHeight;
+        let tooltipTop = (top * currGridZoom * currScreenZoom) +targetHeight + 10;
         // let tooltipLeft = (left *  currGridZoom * currScreenZoom) +((targetWidth/2)*  currGridZoom * currScreenZoom) - (toolTipWidth/2);
-        const tooltipLeft = (left *  currGridZoom * currScreenZoom) +((targetWidth/2)*  currGridZoom * currScreenZoom) ;
+        const tooltipLeft = (left *  currGridZoom * currScreenZoom) +((targetWidth/2)*  currGridZoom * currScreenZoom) - (tooltipWidth/2) ;
 
 
     
@@ -101,7 +101,6 @@ const ConflictErrorCellRenderer = (params:any)=>{
         }
         
        },0)
-       
     }
 
     
