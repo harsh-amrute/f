@@ -187,6 +187,8 @@ const useViewModify = (pageType: string) => {
 
     const [mtoProgress, setMTOProgress] = useState("initial");
 
+    const poogiModifyData = useSelector((state: any)=> state.mto.poogiModifyData);
+
   
 
   const [selectedMajReason, setSelectedMajReason] = useState<any>('');
@@ -266,7 +268,7 @@ const useViewModify = (pageType: string) => {
       dispatch(SET_BUFFER_INITIAL_DATA(result.data.data));
     }
     if(activeMaster.id===502){
-      const result = await getCCRMasterData();
+      const result = await getCCRMasterData({});
       dispatch(SET_CCR_INITIAL_DATA(result.data.data));
     }
   }
@@ -297,8 +299,10 @@ const useViewModify = (pageType: string) => {
     if (activeMaster.id === 501 && !bufferTypeData){
       getBufferMasterDataType();
     }
-    if (activeMaster.id===502){
+    if(activeMaster.id===503 || activeMaster.id===502){
       getPlantMasterData();
+    }
+    if (activeMaster.id===502){
       getDeptMasterData();
       getCCRGroupMasterData();
     }
@@ -331,7 +335,7 @@ const useViewModify = (pageType: string) => {
   },[bufferTypeData])
 
   useEffect(()=>{
-    if(ccrGroupMaster &&  plantMaster &&  deptMaster && (activeMaster.colDefs.length>0)){
+    if(activeMaster.id===502 && ccrGroupMaster &&  plantMaster &&  deptMaster && (activeMaster.colDefs.length>0)){
 
       const newColDef = _.cloneDeep(activeMaster.colDefs);
       // newColDef[newColDef.length-2].valueFormatter =  myCCRFormatter;
@@ -343,7 +347,6 @@ const useViewModify = (pageType: string) => {
           col.cellRenderer = ToggleButton;
         }
       });
-
       newColDef.forEach((ele:any)=>{ele.cellStyle = (params:any)=>{
         if(params.data.cid===null || params.data.cid===undefined || params.data.iv===false){
           return {color: "rgb(128, 0, 64)"}
@@ -839,10 +842,13 @@ const useViewModify = (pageType: string) => {
     let resultData;
 
     if (finPayload.bt) finPayload.btype = finPayload.bt; delete finPayload.bt;
+    if (finPayload.pl) finPayload.plnm = finPayload.pl; delete finPayload.pl;
+    if (finPayload.dp) finPayload.dpnm = finPayload.dp; delete finPayload.dp;
+    if (finPayload.cgid) finPayload.cg = finPayload.cgid; delete finPayload.cgid;
 /******  cb9a1de4-0e9b-4735-8968-a85fa557c44e  *******/
     
     
-    if (activeMaster.id===501 && activeMaster.isMTO) {
+    if (activeMaster.id===501) {
       const tempResultData = await getBufferMasterData({finPayload});
       const updatedData = _.cloneDeep(tempResultData)
       if(bufferModifyData && bufferModifyData.length){
@@ -851,6 +857,30 @@ const useViewModify = (pageType: string) => {
           (buffer:any) => !bufferModifyData.some((modifiedBuffer:any) => modifiedBuffer.bid === buffer.bid)
         );
         updatedData.data.data = updatedData.data.data = [...bufferModifyData,...filteredDataBuffer];
+      }
+      resultData = updatedData;
+    }
+    if(activeMaster.id===502){
+      const tempResultData = await getCCRMasterData({finPayload});
+      const updatedData = _.cloneDeep(tempResultData)
+      if(ccrModifyData && ccrModifyData.length){
+        const updatedDataBuffer = updatedData.data.data;
+        const filteredDataBuffer = updatedDataBuffer.filter(
+          (buffer:any) => !ccrModifyData.some((modifiedBuffer:any) => modifiedBuffer.cid === buffer.cid)
+        );
+        updatedData.data.data = updatedData.data.data = [...ccrModifyData,...filteredDataBuffer];
+      }
+      resultData = updatedData;
+    }
+    if(activeMaster.id===503){
+      const tempResultData = await getPOOGIMasterData({finPayload});
+      const updatedData = _.cloneDeep(tempResultData)
+      if(poogiModifyData && poogiModifyData.length){
+        const updatedDataBuffer = updatedData.data.data;
+        const filteredDataBuffer = updatedDataBuffer.filter(
+          (buffer:any) => !poogiModifyData.some((modifiedBuffer:any) => modifiedBuffer.cid === buffer.cid)
+        );
+        updatedData.data.data = updatedData.data.data = [...ccrModifyData,...filteredDataBuffer];
       }
       resultData = updatedData;
     }
@@ -885,7 +915,7 @@ const useViewModify = (pageType: string) => {
     }
     let resultData;
     if ((!activeMaster.isMTO && count) || activeMaster.isMTO) {
-      if (activeMaster.id===501 && activeMaster.isMTO) {
+      if (activeMaster.id===501) {
         const tempResultData = await getBufferMasterData({});
         const updatedData = _.cloneDeep(tempResultData)
         if(bufferModifyData && bufferModifyData.length){
@@ -898,11 +928,29 @@ const useViewModify = (pageType: string) => {
         resultData = updatedData;
       }
       else if(activeMaster.id===502 && activeMaster.isMTO) {
-        resultData = await getCCRMasterData();
+        const tempResultData = await getCCRMasterData({});
+        const updatedData = _.cloneDeep(tempResultData)
+        if(ccrModifyData && ccrModifyData.length){
+          const updatedDataBuffer = updatedData.data.data;
+          const filteredDataBuffer = updatedDataBuffer.filter(
+            (buffer:any) => !ccrModifyData.some((modifiedBuffer:any) => modifiedBuffer.cid === buffer.cid)
+          );
+          updatedData.data.data = updatedData.data.data = [...ccrModifyData,...filteredDataBuffer];
+        }
+        resultData = updatedData;
       }
       else if(activeMaster.id===503 && activeMaster.isMTO){
-        resultData = await getPOOGIMasterData();
-        dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
+        const tempResultData = await getPOOGIMasterData({});
+        dispatch(SET_POOGI_INITIAL_DATA(tempResultData.data.data))
+        const updatedData = _.cloneDeep(tempResultData)
+        if(poogiModifyData && poogiModifyData.length){
+          const updatedDataPoogi = updatedData.data.data;
+          const filteredDataPoogi = updatedDataPoogi.filter(
+            (poogi:any) => !poogiModifyData.some((modifiedPoogi:any) => modifiedPoogi.majId === poogi.majId)
+          );
+          updatedData.data.data = updatedData.data.data = [...poogiModifyData,...filteredDataPoogi];
+        }
+        resultData = updatedData;
       }
       else if(activeMaster.id===504 && activeMaster.isMTO){
         resultData = await getCalendarMasterData();
@@ -926,10 +974,10 @@ const useViewModify = (pageType: string) => {
         resultData = await getBufferMasterData({});
       }
       else if(activeMaster.id===502 && activeMaster.isMTO) {
-        resultData = await getCCRMasterData();
+        resultData = await getCCRMasterData({});
       }
       else if(activeMaster.id===503 && activeMaster.isMTO) {
-        resultData = await getPOOGIMasterData();
+        resultData = await getPOOGIMasterData({});
         dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data))
       }
       else if(activeMaster.id===504 && activeMaster.isMTO){
@@ -2182,9 +2230,10 @@ const useViewModify = (pageType: string) => {
   }
 
   const getDropDown = (colField: any)=>{
-    if(colField==='pl'){
+    if(colField==='pl' || colField==='plnm'){
       return plantMaster?.map((item: any) =>  item.plant_name)
     }
+  
     if(colField==='dp'){
       return deptMaster?.map((item:any)=> item.dept_name)
     }
@@ -2261,6 +2310,78 @@ const useViewModify = (pageType: string) => {
         }
       }
       if(activeMaster.id===503){
+        if(colDef.field==='plnm'){
+          return {
+            ...colDef,
+            cellEditor: 'agRichSelectCellEditor',
+            valueFormatter: myCCRFormatter,
+            cellEditorParams: {
+              values: getDropDown(colDef.field)
+            },
+            cellStyle: (params:any)=>{
+              if(params.data.majId===null || params.data.minId===null || params.data.iu===true || params.data.id===true){
+                return {color: "rgb(128, 0, 64)"}
+              }
+            },
+            editable,
+          };
+        }
+        return {
+          ...colDef,
+          cellStyle: (params:any)=>{
+            if(params.data.majId===null){
+              return {color: "rgb(128, 0, 64)"}
+            }
+          },
+          // editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
+          editable
+        }
+      }
+
+      else {
+        return {
+          ...colDef,
+          cellEditor: "agNumberCellEditor",
+          editable,
+          cellStyle: (params:any)=>{
+            if(params.data.bid===null || params.data.bid===undefined || params.data.iv===false){
+              return {color: "rgb(128, 0, 64)"}
+            }
+          },
+        };
+      }
+
+    });
+
+
+    const actionsCol: any = {
+      field: 'actions',
+      headerName: 'Actions',
+      colId: 'actions',
+      pinned: 'left',
+      width: 100, 
+      cellRenderer: AddRemoveCellRenderer
+
+    }
+
+    // return [actionsCol, ...modifiedColDefs];
+    if(modifiedColDefs.find((colDef: any) => colDef.field === 'actions')){
+      return;
+    }
+
+    dispatch(UPDATE_COLDEFS([actionsCol, ...modifiedColDefs]));
+
+  };
+
+  const addEditableToLastMinColumn = async() => {
+    const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
+      const editable = (params: any) =>{
+        return (params.node.rowIndex === 0 && params.colDef.colId==='mindsc') ;
+      }
+
+
+      
+      if(activeMaster.id===503){
         return {
           ...colDef,
           // editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
@@ -2284,19 +2405,16 @@ const useViewModify = (pageType: string) => {
     });
 
 
-    // Create actions column with button rendering
     const actionsCol: any = {
       field: 'actions',
       headerName: 'Actions',
       colId: 'actions',
       pinned: 'left',
-      //flex: 1,
-      width: 100, // Set the width for the actions column
+      width: 100, 
       cellRenderer: AddRemoveCellRenderer
 
     }
 
-    // Prepend the actions column
     // return [actionsCol, ...modifiedColDefs];
     if(modifiedColDefs.find((colDef: any) => colDef.field === 'actions')){
       return;
@@ -2346,20 +2464,32 @@ const useViewModify = (pageType: string) => {
         plnm: '--',
         majdsc: '--',
         majId: null,
-        minData: []
+        minData: [
+          {mindsc: '--', minId: null}
+        ]
       }
     }
+    // addRowToMtoMinGrid();
     dispatch(UPDATE_ROW_DATA([newRow,...activeMaster.rowData]));
+    setSelectedMajReason(newRow)
     addEditableToLastColumn();
 
   }
 
   const addRowToMtoMinGrid = () => {
 
+    const actionsColP: any = {
+      field: 'actionsP',
+      headerName: 'Actions',
+      colId: 'actionsP',
+      pinned: 'left',
+      width: 100,
+      cellRenderer: AddRemoveCellRenderer
+    }
     setSelectedMajReason({...selectedMajReason,minData: [{majId: selectedMajReason.majId, mindsc: ''},...selectedMajReason.minData]});
-    
+    dispatch(UPDATE_COLDEFS([actionsColP, ...activeMaster.colDefs]));
     // dispatch(UPDATE_ROW_DATA([newRow,...activeMaster.rowData]));
-    // addEditableToLastColumn();
+    addEditableToLastMinColumn();
   }
 
   const user = useUserData();
@@ -2368,8 +2498,6 @@ const useViewModify = (pageType: string) => {
   const onMTOAddSaveBufferData= async()=>{
 
     notifyLoader("Saving Task...")
-
-
     const BufferPostObj: any = {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
@@ -2706,13 +2834,13 @@ const useViewModify = (pageType: string) => {
 
 
      const newData = _.cloneDeep(activeMaster.rowData);
-     let majIdIndex = -1;
+     let majIdIndex = 0;
      newData.forEach((ele:any,index:number)=>{
-       if(ele.majId===selectedMajReason.majId){
+       if(ele?.majId===selectedMajReason?.majId){
          majIdIndex = index;
        }
      })
-     newData[majIdIndex].minData[params.node.rowIndex].mindsc = params.newValue;
+     newData[majIdIndex] &&  (newData[majIdIndex].minData[params.node.rowIndex].mindsc = params.newValue);
 
      dispatch(UPDATE_ROW_DATA(newData));
      setSelectedMajReason(newData[majIdIndex]);
@@ -2822,7 +2950,7 @@ const useViewModify = (pageType: string) => {
           if (col.colId === "majdsc") {
             return {
               ...col,
-              cellRenderer: MajReasonDescCell, // Add your custom cellRenderer here
+              cellRenderer: MajReasonDescCell,
             };
           }
           return col;
@@ -2837,7 +2965,7 @@ const useViewModify = (pageType: string) => {
       cellStyle: {
         "textAlign": "center"},
       valueGetter: "node.rowIndex + 1"
-    },...activeMaster.colDefs.filter((ele: any) => ele.field==='actions'|| ele.colId === 'minId' || ele.colId === 'mindsc'), {
+    },...activeMaster.colDefs.filter((ele: any) => ele.field==='actionsP'|| ele.colId === 'minId' || ele.colId === 'mindsc'), {
       headerName: "",
       cellRenderer: 'poogiEditDeleteCellRenderer'
     }],

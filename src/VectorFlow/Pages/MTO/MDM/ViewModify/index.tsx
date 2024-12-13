@@ -12,7 +12,7 @@ import { SeasonalityQuickFilterType, type Filter } from '../../../../types/MDM';
 import VFTable from "../../Common/VFTable";
 import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
-import React, { useEffect} from "react";
+import React, { act, useEffect} from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SubmitConflictModal from "./SubmitConflictModal";
@@ -260,7 +260,7 @@ const MTOViewModify = () => {
                     ] 
                   }}
                   rowSelection ={"single"}
-                  suppressRowClickSelection={false}
+                  suppressRowClickSelection={activeMaster.colDefs.some((colDef) => colDef.field === 'actions')? true: false}
                   onSelectionChanged={onMajReasonSelected}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
                   />
@@ -281,6 +281,7 @@ const MTOViewModify = () => {
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
                   overlayNoRowsTemplate={"Select a major reason to see the corresponding minor reason"}
                   onCellEditingStopped={onMinReasonEditingStopped}
+                  suppressRowClickSelection={true}
                   />
                 </MTOPoogiTableContainer>
                     <PoogiAddButtonWrapper>

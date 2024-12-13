@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
-import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA } from '../../../../../redux/actions/MTO';
+import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 
 
 const AddRemoveCellRenderer = (params: any) => {
@@ -18,6 +18,7 @@ const AddRemoveCellRenderer = (params: any) => {
     const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
     const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
     const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
+    const poogiModifyData = useSelector((state: any)=> state.mto.poogiModifyData);
     const ccrInitialData = useSelector((state: any)=> state.mto.ccrInitialData);
 
     const validateCCR = () => {
@@ -135,6 +136,9 @@ const AddRemoveCellRenderer = (params: any) => {
           delete newColDef.editable;   
           newColDefs.push(newColDef);
         })
+
+        if(poogiModifyData && poogiModifyData.length) dispatch(SET_POOGI_MODIFY_DATA([activeMaster.rowData[0], ...poogiModifyData]));
+          else dispatch(SET_POOGI_MODIFY_DATA([activeMaster.rowData[0]]));
   
         dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
       }

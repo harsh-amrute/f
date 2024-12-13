@@ -293,13 +293,13 @@ export const useGetMTODraftById = () => {
 }
 
 export const useGetCCRMasterData = ()=>{
-  return useMutation(async ()=>{
-    return await MDMService.getCCRMasterData();
+  return useMutation(async (body:any)=>{
+    return await MDMService.getCCRMasterData(body);
   })
 }
 export const useGetPOOGIMasterData = ()=>{
-  return useMutation(async ()=>{
-    return await MDMService.getPOOGIMasterData();
+  return useMutation(async (body:any)=>{
+    return await MDMService.getPOOGIMasterData(body);
   })
 }
 
