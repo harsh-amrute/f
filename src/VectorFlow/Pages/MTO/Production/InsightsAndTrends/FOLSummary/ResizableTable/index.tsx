@@ -44,17 +44,22 @@ const ResizableTable = (props: IResizeTableProps) => {
     flex: 1,
   };
 
-  useEffect(()=>{ 
+  useEffect(() => {
     if (currentGridRef?.current && columnState?.length) {
-        const result = currentGridRef.current.api.applyColumnState({
-            state: columnState,
-            applyOrder: true
-        });
-        if (!result) {
-            console.error('Failed to apply column state');
+      columnState.forEach((col: any) => {
+        if (col.initialHide != undefined) {
+          col.hide = col.initialHide;
         }
+      });
+      const result = currentGridRef.current.api.applyColumnState({
+        state: columnState,
+        applyOrder: true
+      });
+      if (!result) {
+        console.error('Failed to apply column state');
+      }
     }
-  });
+  },[columnState]);
 
   return (
     <VFTableWrapper>
@@ -72,6 +77,7 @@ const ResizableTable = (props: IResizeTableProps) => {
           setCurrentGridRef(props.gridRef);
         }}
         paginationPageSize={pagination.mtoPageSize}
+        maintainColumnOrder
 
       />
     </VFTableWrapper>

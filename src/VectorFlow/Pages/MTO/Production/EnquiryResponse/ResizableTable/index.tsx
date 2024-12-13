@@ -46,15 +46,20 @@ const ResizableTable = (props: IResizeTableProps) => {
 
   useEffect(()=>{ 
     if (currentGridRef?.current && columnState?.length) {
-        const result = currentGridRef.current.api.applyColumnState({
-            state: columnState,
-            applyOrder: true
-        });
-        if (!result) {
-            console.error('Failed to apply column state');
+      columnState.forEach((col: any) => {
+        if (col.initialHide != undefined) {
+          col.hide = col.initialHide;
         }
+      });
+      const result = currentGridRef.current.api.applyColumnState({
+        state: columnState,
+        applyOrder: true
+      });
+      if (!result) {
+        console.error('Failed to apply column state');
+      }
     }
-  });
+  },[columnState]);
   
   return (
     <VFTableWrapper>
@@ -77,6 +82,7 @@ const ResizableTable = (props: IResizeTableProps) => {
             toolPanels: ["agColumnsToolPanel"],
           },
         }}
+        maintainColumnOrder
 
       />
     </VFTableWrapper>
