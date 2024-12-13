@@ -3,8 +3,6 @@ import * as globalStyles from "../../../../../styles/global";
 export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
   padding: 0 16px;
   align-items: center;
   display: flex;
@@ -40,6 +38,18 @@ export const Wrapper = styled.div`
       }
   & div[data-testid="vf_pagination"]{
     margin: 0 !important;
+  }
+  & .chart-wrapper > div{
+    height: 100% !important;
+    & .ag-charts-wrapper{
+      max-height: 100% !important;
+      .ag-charts-canvas{
+        height: 100%;
+      }
+      & .ag-charts-canvas >canvas{
+        height:100% !important;
+      }
+    }
   }
 `;
 

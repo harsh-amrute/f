@@ -183,6 +183,7 @@ const DynamicReleaseManagement = () => {
 
   useEffect(() => {
     if (Object.entries(appliedFilters).length) {
+      setCurrentPage(1)
       GetData();
     }
   }, [appliedFilters])
@@ -841,9 +842,9 @@ const DynamicReleaseManagement = () => {
           />
         </div>
         <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
-        {!hide && <div style={{ width: "100%", maxHeight: '40vh', flex: !hide ? 1:0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129", transition: "opacity 2s ease-in-out transform 2s ease-in-out !important" }}>
+         <div className='chart-wrapper' style={{ width: "100%", maxHeight: '40vh', flex: !hide ? 1:0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129"}}>
           <AgCharts ref={graph} options={chartoptions}/>
-        </div>}        
+        </div>       
         <EditRouteModal chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
         <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
       </Wrapper>
