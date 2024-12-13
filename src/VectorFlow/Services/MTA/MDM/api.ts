@@ -216,7 +216,7 @@ export namespace MDMService {
     )
   }
   export const saveCCRMasterTask = async (body: any) => {
-    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveCCRMasterTask/', 
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveCCRMasterTask/?forwardUsers=true', 
       body
     )
   }
@@ -264,8 +264,14 @@ export namespace MDMService {
     return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetDraftInstances/?uid=${uid}`)
   }
 
-  export const getMTODraftById = async (id: any)=>{
-    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetBufferDraftData/?did=${id}&mid=501`)
+  export const getMTODraftById = async (id: any, mid: any)=>{
+    console.log("mid id",mid, id);
+    if(mid===501){
+      return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetBufferDraftData/?did=${id}&mid=501`)
+    }
+    else if(mid===502){
+      return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetCCRDraftData/?did=${id}&mid=502`)
+    }
   }
 
   export const getAllUsers = async()=>{

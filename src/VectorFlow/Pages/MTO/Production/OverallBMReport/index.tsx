@@ -132,7 +132,7 @@ const OverallBmReport = () => {
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(()=>{
         return [];
     });
-    const [intialColumnState, setInitialColumnState] = useState<any>();
+    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
     const [deptName, setDeptName] = useState<any>([]);
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
@@ -228,7 +228,7 @@ const OverallBmReport = () => {
                 rn_id: UIGridCode.ProdOverallBMReport
             });
             
-            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setInitialColumnState(newConfig);
 
             if (!data) {
@@ -370,7 +370,6 @@ const OverallBmReport = () => {
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
                 suppressHeaderFilterButton: true,
-                valueFormatter: child.cc === 'BPP' ? (params: any)=>{console.log("value params",params);return params.data.bpp}: undefined,
                 cellRenderer: (child.cc === 'ec' && systemType >= 3) ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" : child.cc === 'RemarksHistory' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' || child.scc === 'bpp' ? 80 : undefined,
                 // columnGroupShow: index > 2 ? "open" : undefined,
@@ -378,6 +377,7 @@ const OverallBmReport = () => {
                 cellRendererParams: child.hd.includes("Remark") ? {
                     onClick: child.scc === 'rm' ? (data: string) => onOpenRemarkHistory(data) : undefined
                 } : undefined,
+                pivot: child.cc==='BPP'?true:false,
                 cellStyle: child.cc === 'Remark' ? {
                     justifyContent: child.cla,
                     backgroundColor: 'white',
@@ -632,6 +632,7 @@ const OverallBmReport = () => {
             tooltipShowDelay: 0,
             tooltipTrigger: "focus",
             gridOptions: {
+                
                 rowHeight: 50,
                 getRowStyle: (params: any) => {
                     return {
@@ -644,7 +645,18 @@ const OverallBmReport = () => {
                 enableRangeSelection: true,
                 components: customCellRenderers,
                 pagination: true,
+                // pivotMode: true,
+
+
+            
                 defaultColDef: {
+
+                    enableValue: true,
+                    enableRowGroup:true,
+                    enablePivot: true,
+            
+
+
                     filter: 'agTextColumnFilter',
                     floatingFilter: true,
                     //suppressFiltersToolPanel:true,
@@ -672,7 +684,6 @@ const OverallBmReport = () => {
             enterNavigatesVertically: true,
             enterNavigatesVerticallyAfterEdit: true,
             groupDefaultExpanded: 0,
-            pivotMode: false,
             onSelectionChanged: debounce(getSelectedRow, 1000),
             onRowDataUpdated: onFirstDataRendered,
             detailCellRendererParams: {
@@ -867,7 +878,7 @@ const OverallBmReport = () => {
                                 "flex": null
                               })
                         })
-                    }
+                    }   
                     else{
                         arr.push({
                             "colId": col.colId,
@@ -884,7 +895,7 @@ const OverallBmReport = () => {
                           })
                     }
                     colState = arr;
-                })
+                }) 
             }
             refGraph2.current.api?.applyColumnState({
                 state: colState,
@@ -959,6 +970,7 @@ const OverallBmReport = () => {
                                     {/* This Grid is only for the user to download the excel report */}
                                     <div style={{display: 'none'}}>
                                         <GridView
+
                                             reference={tempGridRef}
                                             agGridProps={agGridProps}
                                             columDef={tempColdef}

@@ -129,7 +129,7 @@ const MTOAddRecord = () => {
                 onTabChange={handleTabChange}
                 onTabClose={(e)=>handleTabClose(e,activeMaster)}
                 newTabTitle={"Add Master"}
-                newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
+                newTabIcon={"/assets/img/VectorFLOW/BPR/add-circle.svg"}
                 newTabHandler={addNewMaster}
                 >
                   <VFTable
@@ -152,9 +152,9 @@ const MTOAddRecord = () => {
                     [],
                   }}
                   defaultColDef= {
-                    {flex: 1}
+                    {flex: activeMaster.id===501? 1: 0}
                   }
-                  onCellEditingStopped={activeMaster.isMTO? onDataChange: ()=>{return null}}
+                  onCellEditingStopped={ onDataChange}
                   maintainColumnOrder
                   />
                 {/* } */}

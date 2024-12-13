@@ -25,33 +25,27 @@ export default forwardRef(({ ...props }: any, ref) => {
     const newListLcRegion: any = [];
     const newListLcType: any = [];
     const newListLcCluster: any = [];
-    console.log("location", location);
-    Object.keys(location)?.forEach((keyLcRegion: any) => {
+
+    location && Object.keys(location)?.forEach((keyLcRegion: any) => {
       const dataLcRegion = { label: keyLcRegion, value: keyLcRegion };
       newListLcRegion.push(dataLcRegion);
 
       Object.keys(location[keyLcRegion])?.forEach((keyLcType: any) => {
         const valueLcType = `${keyLcRegion} > ${keyLcType}`;
-        if(keyLcType.length > 0){
-          const dataLcType = {
-            label: valueLcType,
-            value: valueLcType,
-          };
-  
-          newListLcType.push(dataLcType);
-        }
-   
+        const dataLcType = {
+          label: valueLcType,
+          value: valueLcType,
+        };
+
+        newListLcType.push(dataLcType);
 
         location[keyLcRegion][keyLcType]?.forEach((eleLcCluster: any) => {          
-          const valueLcCluster = `${valueLcType} > ${eleLcCluster['location_heirarchy_3']}`;
-          if(eleLcCluster['location_heirarchy_3'].length > 0){
-            const dataLcCluster = {
-              label: valueLcCluster,
-              value: valueLcCluster,
-            };
-            newListLcCluster.push(dataLcCluster);
-          }
-        
+          const valueLcCluster = `${valueLcType} > ${eleLcCluster.wh_location_group}`;
+          const dataLcCluster = {
+            label: valueLcCluster,
+            value: valueLcCluster,
+          };
+          newListLcCluster.push(dataLcCluster);
         });
       });
     });
@@ -172,7 +166,6 @@ export default forwardRef(({ ...props }: any, ref) => {
     // },
   ];
 
-  console.log(prdPermissions);
   return (
     <LocationPermission
       title={t(

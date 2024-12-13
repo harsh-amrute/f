@@ -125,7 +125,7 @@ const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum
     const SaveRoute = async () => {
         const data = convertToRequiredFormat(route, lineCCRDetails);
         try {
-            const response = await saveRouteData(JSON.parse(JSON.stringify(data)))
+            const response = await saveRouteData({body : JSON.parse(JSON.stringify(data)) , update_order_wip : 1})
             if (response.status === 200) {
                 setRouteNum('');
                 setDataUpdated(!dataUpdated)

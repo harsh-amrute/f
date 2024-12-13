@@ -4,8 +4,6 @@ import { mapRowDataWithSrNo } from "../../../../../helpers/utils"
 import useTaskPendingForReview from "./useTaskPendingForReview"
 import TaskPendingTaskBar from "./TaskPendingTaskBar"
 import { TaskPendingWrapper } from "./styles"
-import ApproveAllModal from "./ApproveAllModal"
-import RejectAllModal from "./RejectAllModal"
 import { useUserData } from "../../../../../context"
 
 
@@ -23,15 +21,8 @@ const MTOTaskPendingForReview = ()=>{
         selectedRows,
         onCancel,
         onTaskSubmit,
-        showApproveAllModal,
-        toggleApproveAllModal,
-        showRejectAllModal,
-        toggleRejectAllModal,
-        onSelectionTypeSuccess,
-        setSelectionType,
         mtoPendingTaskData,
-        mtoSubmitTask,
-        mtoOnSelectionChange
+        mtoSubmitTask
     } = useTaskPendingForReview()
 
     if(showLoader) return <VFLoader/>
@@ -108,9 +99,6 @@ const MTOTaskPendingForReview = ()=>{
                   }}
                 rowData={detailTableRowData}
                 suppressRowClickSelection 
-                onSelectionChanged={()=>{
-                    mtoOnSelectionChange();
-                }}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
                 // suppressPaginationPanel={true}
@@ -129,14 +117,7 @@ const MTOTaskPendingForReview = ()=>{
                 showTotalItems={false}
 
             /> */}
-            {
-                showApproveAllModal && 
-                    <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType}/>
-            }
-            {
-                showRejectAllModal && 
-                    <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
-                  }
+          
                     <div style={{zoom:0.8}}>
                   {
 

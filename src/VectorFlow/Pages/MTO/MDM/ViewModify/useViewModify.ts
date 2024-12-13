@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask } from "../../../../Services/MTA/MDM";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -21,9 +21,12 @@ import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
 import PoogiEditDeleteCell from './PoogiEditDeleteCell';
-import { SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
+import { SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_CCR_INITIAL_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA } from '../../../../../redux/actions/MTO';
 import MTOCalendarEditCellRenderer from './MTOCalendarEditCellRenderer';
 import ToggleButton from './ToggleButton';
+import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../VectorFlow/Services/MTO/Common/Masters';
+import { useGetCCRGroupMaster } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import MajReasonDescCell from './MajReasonDescCell';
 
 
 // Define TypeScript interfaces for the parameters
@@ -153,7 +156,6 @@ const useViewModify = (pageType: string) => {
     
     const {mutateAsync:getCount} = useGetCount();
 
-    const {mutateAsync:getRetailCount} = useGetRetailCount();
 
     const {mutateAsync:createDraft} = useCreateDraft()
 
@@ -178,8 +180,10 @@ const useViewModify = (pageType: string) => {
     const validResumeStatuses = [23];
 
     const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
+    const ccrInitialData = useSelector((state:any)=> state.mto.ccrInitialData);
 
     const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
+    const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
 
     const [mtoProgress, setMTOProgress] = useState("initial");
 
@@ -256,26 +260,66 @@ const useViewModify = (pageType: string) => {
 
   }, [selectedOptions, isLoading, activeMaster, allMastersState]);
 
-  const getBufferInitialData = async()=>{
+  const getInitialData = async()=>{
     if(activeMaster.id===501){
       const result = await getBufferMasterData({});
       dispatch(SET_BUFFER_INITIAL_DATA(result.data.data));
     }
+    if(activeMaster.id===502){
+      const result = await getCCRMasterData();
+      dispatch(SET_CCR_INITIAL_DATA(result.data.data));
+    }
+  }
+
+  const {mutateAsync: getPlantMaster} = useGetPlantMasterData();
+  const {mutateAsync: getDeptMaster} = useGetDeptMasterData();
+  const {mutateAsync: getCCRGroupMaster} = useGetCCRGroupMaster(); 
+
+  const [plantMaster, setPlantMaster] = useState<any>([]);
+  const [deptMaster, setDeptMaster] = useState<any>([]);
+  const [ccrGroupMaster, setCCRGroupMaster] = useState<any>([]);
+
+  const getPlantMasterData = async()=>{
+    const response = await getPlantMaster();
+    setPlantMaster(response.data.data);
+  }
+  const getDeptMasterData = async()=>{
+    const response = await getDeptMaster();
+    setDeptMaster(response.data.data);
+
+  }
+  const getCCRGroupMasterData = async()=>{
+    const response = await getCCRGroupMaster();
+    setCCRGroupMaster(response.data.data);
   }
 
   useEffect(()=>{
     if (activeMaster.id === 501 && !bufferTypeData){
       getBufferMasterDataType();
     }
-    getBufferInitialData();
+    if (activeMaster.id===502){
+      getPlantMasterData();
+      getDeptMasterData();
+      getCCRGroupMasterData();
+    }
+    getInitialData();
   },[activeMaster.id])
 
   useEffect(()=>{
     if(bufferTypeData){
 
       const newColDef = _.cloneDeep(activeMaster.colDefs);
-      newColDef[newColDef.length-2].valueFormatter =  myFormatter;
-      newColDef[newColDef.length-1].cellRenderer = ToggleButton;
+      console.log("activemasterColdef", activeMaster.colDefs);
+
+      // Iterate over the column definitions and update based on colId
+      newColDef.forEach((col: any) => {
+        if (col.colId === 'bt') {
+          col.valueFormatter = myFormatter;
+        }
+        if (col.colId === 'iv') {
+          col.cellRenderer = ToggleButton;
+        }
+      });
       newColDef.forEach((ele:any)=>{ele.cellStyle = (params:any)=>{
         if(params.data.bid===null || params.data.bid===undefined || params.data.iv===false){
           return {color: "rgb(128, 0, 64)"}
@@ -285,6 +329,33 @@ const useViewModify = (pageType: string) => {
     }
 
   },[bufferTypeData])
+
+  useEffect(()=>{
+    if(ccrGroupMaster &&  plantMaster &&  deptMaster && (activeMaster.colDefs.length>0)){
+
+      const newColDef = _.cloneDeep(activeMaster.colDefs);
+      // newColDef[newColDef.length-2].valueFormatter =  myCCRFormatter;
+      
+
+      // Iterate over the column definitions and update based on colId
+      newColDef.forEach((col: any) => {
+        if (col.colId === 'iv') {
+          col.cellRenderer = ToggleButton;
+        }
+      });
+
+      newColDef.forEach((ele:any)=>{ele.cellStyle = (params:any)=>{
+        if(params.data.cid===null || params.data.cid===undefined || params.data.iv===false){
+          return {color: "rgb(128, 0, 64)"}
+        }
+      }
+      ele.valueFormatter = myCCRFormatter
+    }
+      )
+      dispatch(UPDATE_COLDEFS([...newColDef]));
+    }
+
+  },[ccrGroupMaster, plantMaster, deptMaster])
 
   useEffect(() => {
     if (masters.length > 0 && filterButtonStatus.length !== 0) {
@@ -404,7 +475,6 @@ const useViewModify = (pageType: string) => {
   const validateMTOMaster = (masterId: number) => {
     if(masterId=== 501 && pageType === "add"){
       const allRows = [...activeMaster.rowData];
-      allRows.shift();
       // Check if the entered Buffer type is unique 
       const newData:any = [];
       allRows.forEach((e:any, i)=>{
@@ -415,21 +485,73 @@ const useViewModify = (pageType: string) => {
         else if(e.bt===""){
           newVal.err = {error: "Enter the Buffer Type!", warning: ""}
         }
+        bufferInitialData.forEach((ele:any)=>{
+          if(ele.bcd===e.bcd){
+            newVal.err={error: "Buffer code already exists in master", warning: ""}
+          }
+          if(ele.bt===e.bt && ele.bsz===e.bsz){
+            newVal.err={error: "Buffer size for the buffer type already exists in master", warning: ""}
+          }
+        })
         allRows.forEach((ele, index)=>{
     
           if(index !== i && ele.bsz=== e.bsz && e.bt=== ele.bt){
-           
             newVal.err = {error: "Buffer size must be unique!", warning: ""}
-
-            
           }
         })
+
         newData.push(newVal);
       })
+
+
 
       dispatch(UPDATE_ROW_DATA(newData));
 
     }
+    if (masterId === 502 && pageType === "add") { 
+      const allRows = [...activeMaster.rowData];
+      const newData: any = [];
+    
+      allRows.forEach((e: any) => {
+        const newVal = _.cloneDeep(e);
+    
+        // Validation 1: CCR Name cannot be empty
+        if (e.cnm === "" || !e.cnm) {
+          newVal.err = { error: "CCR name cannot be empty!", warning: "" };
+        } 
+        // Validation 2: CCR Capacity Per Day cannot be empty or <= 0
+        else if (e.cpd === "" || !e.cpd || e.cpd <= 0) {
+          newVal.err = { error: "CCR Capacity Per Day must be greater than 0!", warning: "" };
+        } 
+        // Validation 3: Working hours per day cannot be empty or <= 0
+        else if (e.whpd === "" || !e.whpd || e.whpd <= 0) {
+          newVal.err = { error: "Working hours Per Day must be greater than 0!", warning: "" };
+        } 
+        // Validation 4: Scheduling horizon cannot be empty
+        else if (e.sh === "" || !e.sh) {
+          newVal.err = { error: "Scheduling horizon cannot be empty!", warning: "" };
+        } 
+        // Validation 5: CCR code must be unique in the master data
+        else if (ccrInitialData.some((ele: any) => ele.ccd === e.ccd)) {
+          newVal.err = { error: "CCR code already exists in the master data!", warning: "" };
+        } 
+        // Validation 6: Resource buffer (rb) must be between 0 and 1
+        else if (e.rb === undefined || e.rb < 0 || e.rb > 1) {
+          newVal.err = { error: "Residual must be between 0 and 1!", warning: "" };
+        } 
+        // Validation 7: Capacity workload (cwl) must be > 0
+        else if (e.cwl === "" || e.cwl === undefined || e.cwl <= 0) {
+          newVal.err = { error: "Cumulative WIP Limit must be greater than 0!", warning: "" };
+        }
+    
+        // Add to the updated row data
+        newData.push(newVal);
+      });
+    
+      // Dispatch the updated row data
+      dispatch(UPDATE_ROW_DATA(newData));
+    }
+    
   }
 
 
@@ -473,6 +595,11 @@ const useViewModify = (pageType: string) => {
     onFirstDataRendered: ()=>{
       validateMTOMaster( activeMaster.id);
     },
+    onCellValueChanged: ()=>{
+     
+        validateMTOMaster( activeMaster.id);
+      
+    },
     onRowDataUpdated: (event: any) => {
 
       
@@ -481,14 +608,14 @@ const useViewModify = (pageType: string) => {
 
           event.api.forEachNode((node: any) => {
 
-            if((!node.data.minId) && node.data.majId=== selectedMajReason.majId){
+            if((!node.data.minId) && node.data?.majId=== selectedMajReason?.majId){
               nodesToSelect.push(node)
             }
              
           });
           event.api.setNodesSelected({nodes: nodesToSelect, newValue: true});
         }
-      
+       
      
         const downloadableColumnKeys: string[] = [];
         activeMaster.fields.forEach((field: Field) => {
@@ -537,7 +664,10 @@ const useViewModify = (pageType: string) => {
     },
   
     onCellEditingStopped(event) {
-      const data = event.data;
+      if(pageType==='add'){
+        validateMTOMaster( activeMaster.id);
+      }
+        const data = event.data;
       const field = event.colDef.field;
       const newValue = event.newValue;
       // if(activeMaster.id===503){
@@ -583,6 +713,7 @@ const useViewModify = (pageType: string) => {
       })
       setEnableEditOnlineReset(true)
       dispatch(UPDATE_ROW_DATA([...newRowData]))
+     
     },
   }
 
@@ -678,6 +809,16 @@ const useViewModify = (pageType: string) => {
     }, {} as Record<string, { op: string; val: string }>);
 }
   const queryFilteredData = async (configs: QueryFilteredDataConfigs) => {
+
+    const newColDefs:any = [];
+      activeMaster.colDefs.forEach((ele:any)=>{
+        const newColDef = {...ele};
+        delete newColDef.editable;   
+        newColDefs.push(newColDef);
+      })
+
+    dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
+
     const { filters, pagination, fields, count, currentPage, rowsPerPage } = configs;
     const payload: GetMasterDataPayload = {
       id: activeMaster.id,
@@ -697,7 +838,8 @@ const useViewModify = (pageType: string) => {
     
     let resultData;
 
-    console.log("payload ..filterds", finPayload);
+    if (finPayload.bt) finPayload.btype = finPayload.bt; delete finPayload.bt;
+/******  cb9a1de4-0e9b-4735-8968-a85fa557c44e  *******/
     
     
     if (activeMaster.id===501 && activeMaster.isMTO) {
@@ -717,6 +859,15 @@ const useViewModify = (pageType: string) => {
   }
   
   const queryAllData = async (configs: QueryFilteredDataConfigs) => {
+    const newColDefs:any = [];
+      activeMaster.colDefs.forEach((ele:any)=>{
+        const newColDef = {...ele};
+        delete newColDef.editable;   
+        newColDefs.push(newColDef);
+      })
+
+    dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
+    
     const { pagination, fields, count, currentPage, rowsPerPage } = configs;
     const payload: GetMasterDataPayload = {
       id: activeMaster.id,
@@ -890,7 +1041,17 @@ const useViewModify = (pageType: string) => {
   }
 
   const handleOnDeleteFilter = (id: string) => {
-    if (activeMaster.filters.length === 1) return notifyError("Cannot Delete this Filter Instance")
+    if (activeMaster.filters.length === 1) {
+    // dispatch(REMOVE_FILTER(id));
+    // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+      dispatch(RESET_FILTERS());
+    dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+
+      // dispatch(UPDATE_FILTER(emptyFilter))
+      return;
+      // return notifyError("Cannot Delete this Filter Instance")
+    }
+
     dispatch(REMOVE_FILTER(id));
     dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
   }
@@ -1097,7 +1258,7 @@ const useViewModify = (pageType: string) => {
       // if (activeMaster.id < 14) {
       const buffData =  await parseExcelData(file, activeMaster, pageType, selectedColumns);
       // }
-
+      getInitialData();
 
       /////
       const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
@@ -1106,18 +1267,41 @@ const useViewModify = (pageType: string) => {
         if(col.field==='bt')return {...col, editable: true,  cellEditor: 'agRichSelectCellEditor',
         valueFormatter: myFormatter,
         cellEditorParams: {
-          values: bufferTypeData?.map((item: any) =>  item.dsc), // Dropdown values
+          values: bufferTypeData?.map((item: any) =>  item.dsc), 
         }, }
+        if (col.field === 'pl') return {
+          ...col,
+          editable: true,
+          cellEditor: 'agRichSelectCellEditor',
+          cellEditorParams: {
+            values: plantMaster?.map((item: any) => item.plant_name),
+          },
+        };
+        
+        if (col.field === 'dp') return {
+          ...col,
+          editable: true,
+          cellEditor: 'agRichSelectCellEditor',
+          cellEditorParams: {
+            values: deptMaster?.map((item: any) => item.dept_name),
+          },
+        };
+        
+        if (col.field === 'cgid') return {
+          ...col,
+          editable: true,
+          cellEditor: 'agRichSelectCellEditor',
+          cellEditorParams: {
+            values: Object.values(ccrGroupMaster || {}).map((group: any) => group.ccr_group_code),
+          },
+        };
+        
         else return {  ...col, editable: true, singleClickEdit: true }
         // return { ...col }
       })
 
-      if(activeMaster.isMTO){
-          dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 80, pinned: 'left'},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, minWidth: 300, headerName: 'Error'  },...updatedColdefs]))
-      }
-      else{
-        dispatch(UPDATE_COLDEFS([{colId: '', checkboxSelection: true, maxWidth: 200},{colId: 'err', field: 'err',cellStyle: {color: 'red'}, headerName: 'Error'  },...updatedColdefs]))
-      }
+      dispatch(UPDATE_COLDEFS([{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, minWidth: 300, headerName: 'Error', pinned: 'left'  },{colId: '',headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 80, pinned: 'left', lockPosition: 'left'},...updatedColdefs]))
+      
       ////
       const formData = new FormData();
       formData.append("file", file);
@@ -1638,6 +1822,8 @@ const useViewModify = (pageType: string) => {
         dispatch(UPDATE_ROW_DATA([]));
         dispatch(SET_BUFFER_INITIAL_DATA([]));
         dispatch(SET_BUFFER_MODIFY_DATA([]));
+        dispatch(SET_CCR_INITIAL_DATA([]));
+        dispatch(SET_CCR_MODIFY_DATA([]));
         dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
         // dispatch(UPDATE_ACTIVE_MASTER([]))
@@ -1661,6 +1847,8 @@ const useViewModify = (pageType: string) => {
         dispatch(SET_BUFFER_MODIFY_DATA([]));
         dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
+        dispatch(SET_CCR_INITIAL_DATA([]));
+        dispatch(SET_CCR_MODIFY_DATA([]));
         // dispatch(UPDATE_ACTIVE_MASTER([]))
        
         dispatch(ADD_FILTER())
@@ -1804,76 +1992,14 @@ const useViewModify = (pageType: string) => {
     setEnableEditOnlineReset(false)
   }
 
-  // const     validateEditOnlineData = (data:any[]) => {
-  //   //Cleanup errors if any and provide clean copy to check again.
-  //   //PS - Worked in tight deadline plz optimize whenever possible.
-  //   dispatch(REMOVE_COLDEFS(['error','warning']));
-
-  //   const rowData = data.map((row:any)=>{
-  //     if(row.error || row.warning){
-  //       return _.omit(row,'error','warning');
-  //     }
-  //     return row;
-  //   })
-
-  //   const newData = rowData.map((row:any)=>{
-  //     const rowClone = {...row};
-  //     const {error,warning} = checkError(rowClone,activeMaster,pageType);
-
-  //     if(error){
-  //       rowClone.error = error
-  //     }
-  //     else{
-  //       rowClone.error = '';
-  //     }
-  //     if(warning){
-  //       rowClone.warning = warning;
-  //     }
-  //     else{
-  //       rowClone.warning = '';
-  //     }
-  //     return rowClone;
-  //   });
-
-  //   const isErrorPresent = newData.find((row:any)=>row.error);
-  //   const isWarningPresent = newData.find((row:any)=>row.warning);
-
-  //   if(isErrorPresent){
-  //     addInvalidDataColDefs('error');
-  //   }
-
-  //   if(isWarningPresent){
-  //     addInvalidDataColDefs('warning');
-
-  //   }
-  //   dispatch(UPDATE_ROW_DATA(newData));
-  //   // if(isErrorPresent || isWarningPresent){
-  //   //   return notifyError("Invalid Data Found. Please Clear all the errors and warnings before proceeding");
-  //   // } 
-  //   return newData;
-  // }
 
   const getBufferMasterDataType = async () => {
     const BufferTypeMaster = await GetBufferTypeMaster();
     setBufferTypeData(BufferTypeMaster?.data?.data);
-
-
   }
 
   const onEditOnlineSave = async () => {
     await onSaveToDraft();
-    //  if(isSuccess){
-    //   const result = validateEditOnlineData(activeMaster.rowData);
-
-    //   const isErrorPresent = result.find((row:any)=>row.error.length > 0);
-    //   const isWarningPresent = result.find((row:any)=>row.warning.length > 0);
-
-    //   if(isErrorPresent || isWarningPresent){
-    //     return notifyError("Please Clear All Errors before submit")
-    //   }
-    //   // dispatch(UPDATE_PROGRESS_STATE('editOnlineSaved'))
-    //  }
-
   }
 
   const toggleUploadModal = (value: boolean) => {
@@ -1938,20 +2064,11 @@ const useViewModify = (pageType: string) => {
     }
   }
 
-  //   const onDeleteOnlineSave = ()=>{
-  //     const selectedRows = ref.current?.api.getSelectedRows()
-  //     if(!selectedRows || selectedRows.length<1)return notifyError('Please select rows to submit')
-  //     dispatch(REMOVE_COLDEFS(['checkbox']))
-  //     dispatch(UPDATE_ROW_DATA(selectedRows))
-  //     dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
-  // }
   const onReviewConflicts = () => {
 
     const newColDefs: ColDef[] = activeMaster.colDefs.map((colDef: ColDef) => {
       return {
         ...colDef,
-        // cellRenderer:'conflictErrorCellRenderer',
-        // tooltipField:colDef.field,
         cellRenderer: 'conflictErrorCellRenderer',
         cellStyle: (params) => {
           return {
@@ -1985,6 +2102,27 @@ const useViewModify = (pageType: string) => {
     setIsConflictModalOpen(false)
   }
 
+  function getCCRGroupKeyById(ccrGroupMaster: any, currBuff: number): string | undefined {
+    let val;
+  
+    // Iterate through the keys of the ccrGroupMaster object
+    for (const key in ccrGroupMaster) {
+      if (Object.prototype.hasOwnProperty.call(ccrGroupMaster, key)) {
+        const group = ccrGroupMaster[key];
+  
+        // Check if the `ccr_group_id` matches the current buffer
+        if (group?.ccr_group_id?.toString() === currBuff?.toString()) {
+          val = key; // Assign the key (e.g., "CCR Stitching") to `val`
+          break;
+        }
+      }
+    }
+  
+    return val;
+  }
+  
+  
+
 
   function myFormatter(params: any) {
     const currBuff = params.value;
@@ -2002,6 +2140,59 @@ const useViewModify = (pageType: string) => {
     return val;
 
   }
+  function myCCRFormatter(params: any) {
+    const currBuff = params.value;
+
+    let val = params.value;
+    if(params.column.colId==='pl'){
+
+      if(plantMaster){
+
+      plantMaster.forEach((ele: any) => {
+        console.log("ele", ele);
+      if (ele?.plant_id?.toString() === currBuff?.toString()) {
+        
+        val = ele.plant_name;
+      }
+    })
+    }
+  }
+  else if(params.column.colId==='dp'){
+
+      if(deptMaster){
+
+      deptMaster.forEach((ele: any) => {
+        console.log("ele", ele);
+      if (ele?.dept_id?.toString() === currBuff?.toString()) {
+        
+        val = ele.dept_name;
+      }
+    })
+    }
+  }
+  else if(params.column.colId==='cgid'){
+
+      if(ccrGroupMaster){
+
+      val = getCCRGroupKeyById(ccrGroupMaster, currBuff);
+    }
+  }
+    return val;
+    
+  }
+
+  const getDropDown = (colField: any)=>{
+    if(colField==='pl'){
+      return plantMaster?.map((item: any) =>  item.plant_name)
+    }
+    if(colField==='dp'){
+      return deptMaster?.map((item:any)=> item.dept_name)
+    }
+    if(colField==='cgid'){
+      return Object.keys(ccrGroupMaster);
+    }
+  }
+
 
   const addEditableToLastColumn = async() => {
     const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
@@ -2048,6 +2239,22 @@ const useViewModify = (pageType: string) => {
       }
 
       if(activeMaster.id===502 ){
+        if (colDef.field === 'pl' || colDef.field==='dp' || colDef.field==='cgid') {
+          return {
+            ...colDef,
+            cellEditor: 'agRichSelectCellEditor',
+            valueFormatter: myCCRFormatter,
+            cellEditorParams: {
+              values: getDropDown(colDef.field)
+            },
+            cellStyle: (params:any)=>{
+              if(params.data.ccd===null || params.data.ccd===undefined || params.data.iv===false){
+                return {color: "rgb(128, 0, 64)"}
+              }
+            },
+            editable,
+          };
+        }
         return {
           ...colDef,
           editable
@@ -2100,14 +2307,13 @@ const useViewModify = (pageType: string) => {
   };
 
   const addRowToMtoGrid = () => {
-    const newRowValue = activeMaster.rowData.length;
     let newRow:any = {};
 
     if(activeMaster.id===501){
 
       newRow = {
-        bcd: `PROD-${newRowValue}-Buff`,
-        bd: `BUFF-${newRowValue}`,
+        bcd: `BUFF-`,
+        bd: `BUFF-`,
         bsz: '', // Example value; modify as needed
         slt: 0,
         mlt: 0,
@@ -2119,13 +2325,27 @@ const useViewModify = (pageType: string) => {
     }
     else if(activeMaster.id===502){
       newRow = {
-        ccd: `CCR-${newRowValue}`,
+        ccd: `CCR-`,
+        cid: null,
+        cnm: null,
+        cpd: null,
+        whpd: null,
+        sh: null,
+        fh: null,
+        rb: null,
+        pl: null,
+        dp: null,
+        a1: null,a2:null, a3:null,a4:null, a5:null, a6:null, a7:null,a8:null,a9:null,a10:null,
+        cwl: null,
+        cgid: null,
+        iv: true
       }
     }
     else if(activeMaster.id===503){
       newRow = {
         plnm: '--',
         majdsc: '--',
+        majId: null,
         minData: []
       }
     }
@@ -2217,32 +2437,43 @@ const useViewModify = (pageType: string) => {
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
       ccrData: [],
-      aids: ["111111","222222","333333"]
     }
-
-
     const selectedRows:any = ref?.current?.api?.getSelectedRows();
+    let isValid= true;
     selectedRows.forEach((e:any)=>{
-      const newVal = JSON.parse(JSON.stringify(e));
-      // bufferTypeData.forEach((e:any)=>{
-      //   if(e.dsc===e.bt){
-      //     newVal.bt=e.id;
-      //   }
-      // })
-      newVal.cg = e.ccr_group;
-
-      // TODO: call the buffer type and add the id and use drop down instead;
-     
-
-
+      const newVal = _.cloneDeep(e);
+      newVal.cid = e.cid? e.cid: null;
+      const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id? ccrGroupMaster[e.cgid]?.ccr_group_id: e.cgid;
+      newVal.cgid = ccrGid;
+      newVal.plid = e.pl;
+      newVal.dpid = e.dp
+      deptMaster.forEach((elm: any)=>{if(elm.dept_name===e.dp)newVal.dpid= elm.dept_id})
+      plantMaster.forEach((elm: any)=>{if(elm.plant_name===e.pl)newVal.plid = elm.plant_id})
+      if(newVal.err.error!==""){
+        isValid = false;
+      }
       CCRPostObj.ccrData.push(_.omit(newVal,['editable','err']));
     })
+    if(!isValid){
+      toast.dismiss();
+      notifyError("Make sure you have resolved the error for the selected row!");
+      return;
+    }
 
     try{
       const response = await saveCCRMasterTask(CCRPostObj);
       if(response.status==200){
+        const allData = [...activeMaster.rowData];
+        const indexesToRemove = selectedRows.map((row:any) => allData.indexOf(row));
+        indexesToRemove.sort((a:any,b:any) => b - a);
+        const newData:any = [];
+        allData.forEach((e:any,index: any)=>{
+          if(!indexesToRemove.includes(index)) newData.push(e);
+        })
+        dispatch(UPDATE_ROW_DATA(newData));
         toast.dismiss();
         notifySuccess("CCR task updated!!")
+
       }
       else{
         toast.dismiss();
@@ -2270,41 +2501,42 @@ const useViewModify = (pageType: string) => {
 
     // move this to different function
     if(activeMaster.id===502){
+      notifyLoader("Saving CCR Task...");
       const CCRPostObj: any = {
         mid: activeMaster.id,
         uid: user.user.user.id.toString(),
         unm: user.user.user.name,
-        ccrData: [],
-        aids: ["11111", "22222", "33333"]
+        ccrData: []
       }
 
-      let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
-      activeMaster.rowData.forEach((ele:any)=>{
-        const e = _.cloneDeep(ele);
-        e.mlt = parseInt(e.mlt);
-        e.slt = parseInt(e.slt);
-        e.cg = e.ccr_group;
+      console.log("ccrModify data", ccrModifyData);
 
-      
-  
-        if(totalNewVals===0) return;
-        totalNewVals--;
-  
-  
-        CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
+      ccrModifyData.forEach((ele:any)=>{
+        const e = _.cloneDeep(ele);
+        const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id? ccrGroupMaster[e.cgid]?.ccr_group_id: e.cgid;
+        e.cgid = ccrGid;
+        e.plid = e.pl;
+        e.dpid = e.dp
+        deptMaster.forEach((elm: any)=>{if(elm.dept_name===ele.dp)e.dpid= elm.dept_id})
+        plantMaster.forEach((elm: any)=>{if(elm.plant_name===ele.pl)e.plid = elm.plant_id})
+        CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning','pl','dp']));
       })
 
 
       try{
+
         const response = await saveCCRMasterTask(CCRPostObj);
         if(response.status=== 200){
+          toast.dismiss();
           notifySuccess("Saved CCR Task Successfully");
-          let totalNewVals = activeMaster.rowData.length - tempRecordCount;
-          const currData = _.cloneDeep(activeMaster.rowData);
-          while (totalNewVals-- > 0) {  
-            currData.shift();
-          }
-          dispatch(UPDATE_ROW_DATA(currData));
+          console.log("ccrIntialDAta", ccrInitialData);
+          dispatch(UPDATE_ROW_DATA(ccrInitialData));
+          dispatch(SET_CCR_MODIFY_DATA([]));
+          setMTOProgress("submitted Once");
+        }
+        else{
+          toast.dismiss();
+          notifyError("Failed to create the task...")
         }
       }
       catch(error){
@@ -2348,11 +2580,6 @@ const useViewModify = (pageType: string) => {
       const response = await saveBufferMasterTask(BufferPostObj);
       if(response.status=== 200){
         notifySuccess("Saved Buffer Task Successfully");
-        let totalNewVals = activeMaster.rowData.length - tempRecordCount;
-        const currData = _.cloneDeep(activeMaster.rowData);
-        while (totalNewVals-- > 0) {  
-          currData.shift();
-        }
         dispatch(UPDATE_ROW_DATA(bufferInitialData));
         dispatch(SET_BUFFER_MODIFY_DATA([]));
         setMTOProgress("submitted Once");
@@ -2416,44 +2643,56 @@ const useViewModify = (pageType: string) => {
   }
 
   else if(activeMaster.id===502){
-
+    notifyLoader("Saving CCR Draft...");
     const CCRPostObj: any = {
       mid: activeMaster.id,
-    uid: user.user.user.id.toString(),
-    unm: user.user.user.name,
-    ccrData: []
-  }
-  let totalNewVals  = activeMaster.rowData.length - tempRecordCount;
-
-  activeMaster.rowData.forEach((ele:any)=>{
-    const e = _.cloneDeep(ele);
-    e.err= "no error"
-    e.cgid = 1;
-    e.plid = 1;
-    e.dpid = 1;
-
-    if(totalNewVals===0) return;
-    totalNewVals--;
-
-
-    CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
-  })
-  try{
-    const response = await saveCCRMasterDraft([CCRPostObj]);
-    if(response.status=== 200){
-      toast.dismiss();
-      notifySuccess("Saved CCR Task Successfully");
+      uid: user.user.user.id.toString(),
+      unm: user.user.user.name,
+      ccrData: [],
+      at: pageType==="add"?"Add":"Modify"
     }
-    else{
-      toast.dismiss();
-      notifyError("Failed to Save draft!")
+    let tempModifyData = _.cloneDeep(ccrModifyData);
+    if(pageType==='add'){
+      tempModifyData = _.cloneDeep(activeMaster.rowData)
     }
-  }
-  catch(error){
-    console.log(error)
-  }
+    tempModifyData.forEach((ele:any)=>{
+      const e = _.cloneDeep(ele);
+      const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id? ccrGroupMaster[e.cgid]?.ccr_group_id: e.cgid;
+      e.cid = ele.cid? ele.cid: null;
+      e.cgid = ccrGid;
+      e.plid = e.pl;
+      e.dpid = e.dp
+      deptMaster.forEach((elm: any)=>{if(elm.dept_name===ele.dp)e.dpid= elm.dept_id})
+      plantMaster.forEach((elm: any)=>{if(elm.plant_name===ele.pl)e.plid = elm.plant_id})
+      e.cpd = parseInt(e.cpd);
+      e.whpd= parseInt(e.whpd);
+      e.fh = parseInt(e.fh);
+      e.rb = Number(e.rb);
+      e.cwl = parseInt(e.cwl);
+      e.sh = parseInt(e.sh);
+      e.err="";
+      CCRPostObj.ccrData.push(_.omit(e,['editable','error','warning']));
+    })
 
 
+    try{
+    
+      const response = await saveCCRMasterDraft([CCRPostObj]);
+      if(response.status=== 200){
+        toast.dismiss();
+        notifySuccess("Saved CCR Draft Successfully");
+      }
+      else{
+        toast.dismiss();
+        notifyError("Failed to save draft...")
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+
+
+    return;
   }
   }
 
@@ -2563,15 +2802,36 @@ const useViewModify = (pageType: string) => {
     addRowToMtoGrid,
     onMTOSaveBufferData,
     onMTOSaveAsDraft,
-    MTOPoogiMajorColdef:[{
-      headerName: "Sr No.",
-      cellStyle: {
-        "textAlign": "center"},
-      valueGetter: "node.rowIndex + 1"
-    },...activeMaster.colDefs.filter((ele: any) =>ele.field==='actions'|| ele.colId === 'majId' || ele.colId === 'majdsc' || ele.colId === 'plnm'),{
-      headerName: "",
-      cellRenderer: 'poogiEditDeleteCellRenderer'
-    }],
+    MTOPoogiMajorColdef:[
+      {
+        headerName: "Sr No.",
+        cellStyle: {
+          textAlign: "center",
+        },
+        valueGetter: "node.rowIndex + 1",
+      },
+      ...activeMaster.colDefs
+        .filter(
+          (ele: any) =>
+            ele.field === "actions" ||
+            ele.colId === "majId" ||
+            ele.colId === "majdsc" ||
+            ele.colId === "plnm"
+        )
+        .map((col: any) => {
+          if (col.colId === "majdsc") {
+            return {
+              ...col,
+              cellRenderer: MajReasonDescCell, // Add your custom cellRenderer here
+            };
+          }
+          return col;
+        }),
+      {
+        headerName: "",
+        cellRenderer: "poogiEditDeleteCellRenderer",
+      },
+    ],
     MTOPoogiMinorColdef: [{
       headerName: "Sr No.",
       cellStyle: {

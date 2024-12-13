@@ -11,7 +11,7 @@ import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
 import { useUserData } from "../../../../../context"
 import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
-import { SET_BUFFER_MODIFY_DATA } from "../../../../../redux/actions/MTO"
+import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA } from "../../../../../redux/actions/MTO"
 
 const useSavedDrafts = ()=>{
 
@@ -63,7 +63,9 @@ const useSavedDrafts = ()=>{
                     Masters: draft.at +" - "+ draft.mnm,
                     SearchKeys: draft.sk,
                     userid: draft.uid,
-                    isMTO: true
+                    isMTO: true,
+                    mid: draft.mid,
+                    dnm: draft.dnm
                 }
                 concatedData.push(newData);
             })
@@ -137,16 +139,19 @@ const useSavedDrafts = ()=>{
     const onEditDraft = async(draftDetails:any)=>{
         let toastId;
         if(draftDetails.isMTO){
+            console.log("draftDetail......", draftDetails);
             
             try{
-                const res: any = await getDraftByIdMTO(draftDetails.DraftId);
-                dispatch(SET_RECORD_COUNT(res.data.data.count));
+                const res: any = await getDraftByIdMTO({draftId: draftDetails.DraftId, mid: draftDetails.mid});
                 const draftData:any = res.data.data.results;
+                dispatch(SET_RECORD_COUNT(res.data.data.results.length));
            
 
             const mastersDataRes= await getMTOMasterUIConfiguration();
-            const mastersData = mastersDataRes.data.data[1];
-        
+            console.log("mastersData res.....",mastersDataRes.data.data)
+            const mastersData = mastersDataRes?.data?.data?.find(
+                (item: any) => item.id === draftDetails.mid
+              );    
             toast.dismiss();
             
             const fields = mastersData.fields;
@@ -157,18 +162,24 @@ const useSavedDrafts = ()=>{
             // const activeMaster = masterState.find((m:MDMMasterState)=>m.progress!=='submitted');
                 // const activeMaster= "dsf";
 
-            dispatch(SET_BUFFER_MODIFY_DATA(draftData));
+            if(draftDetails.mid===501){
+                dispatch(SET_BUFFER_MODIFY_DATA(draftData));
+
+            }
+            if(draftDetails.mid===502){
+                dispatch(SET_CCR_MODIFY_DATA(draftData))
+            }
 
             const masterState:any = [
                 {   isMTO: true,
-                    "id": 501,
-                    "name": "Buffer",
-                    "colDefs": [{checkboxSelection: true},{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error'  },...convertToColDefs(fields,draftDetails.ActionType)],
+                    "id": draftDetails.mid,
+                    "name": draftDetails.dnm,
+                    "colDefs": [{checkboxSelection: true, pinned: 'left', maxWidth: 70, lockPosition: 'left', headerCheckboxSelection: true},...convertToColDefs(fields,draftDetails.ActionType),{colId: 'err',colPosition: 100, field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error' , pinned: 'left' }],
                     "rowData": draftData,
                     "isChecked": true,
                     "filters": [{
                         id: generateRandomId(),
-                        masterId: 501,
+                        masterId: draftDetails.mid,
                         field: "",
                         operator: '',
                         text: ''

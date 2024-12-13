@@ -113,6 +113,7 @@ const MTOViewModify = () => {
   } = useViewModify('modify');
 
   const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
+  const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
 
 
 
@@ -136,6 +137,7 @@ const MTOViewModify = () => {
         <div  style={{zoom: 0.8}}>
 
           <SelectMaster
+            
             data={allMastersState}
             options={options}
             selectedOptions={selectedOptions}
@@ -497,7 +499,7 @@ const MTOViewModify = () => {
           }}
           showSubmittedExportError={errorCount > 0}
           // masterProgress={(!bufferModifyData)?"initial":(bufferModifyData?"editOnline":"editOnlineSubmitted")}
-          masterProgress={(mtoProgress==='initial')?((!bufferModifyData || bufferModifyData.length===0)?'initial':"editOnline"):((bufferModifyData.length===0)?"editOnlineSubmitted":"editOnline")}
+          masterProgress={(mtoProgress==='initial')?((!bufferModifyData || (bufferModifyData && bufferModifyData?.length===0))?'initial':"editOnline"):((bufferModifyData && bufferModifyData.length===0)?"editOnlineSubmitted":"editOnline")}
           disableSubmit={activeMaster.rowData.length === 0}
           enableEditOnlineReset={enableEditOnlineReset}
           disableDeleteSelected={activeMaster.rowData.length < 1}
@@ -523,9 +525,9 @@ const MTOViewModify = () => {
           masterId={activeMaster.id}
           mtoSaveData={true}
           onMTOSaveData={ onMTOSaveBufferData}
-          isMTOSaveDataDisabled={!(bufferModifyData && bufferModifyData.length>0)} 
+          isMTOSaveDataDisabled={(activeMaster.id===501 &&!(bufferModifyData && bufferModifyData.length>0)) || (activeMaster.id===502 && !(ccrModifyData && ccrModifyData.length>0))} 
+          isMTODraftDisabled={(activeMaster.id===501 &&!(bufferModifyData && bufferModifyData.length>0)) || (activeMaster.id===502 && !(ccrModifyData && ccrModifyData.length>0))} 
           onMTOSaveAsDraft={onMTOSaveAsDraft}
-          isMTODraftDisabled={!(bufferModifyData && bufferModifyData.length>0)}
           />
           </div>
       }
