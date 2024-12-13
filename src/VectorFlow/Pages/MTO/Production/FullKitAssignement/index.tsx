@@ -784,10 +784,9 @@ const FullKitAssignment = () => {
       />
       <VFPagination currentPage={currentPage} rowsPerPage={15} selectedRows={1} totalRows={totalRows} handleChangePage={handlePageChange} />
       <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
-      {!hide && <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
+      <div className='chart-wrapper' style={{ width: "100%", flex: !hide ? 1 : 0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129" }}>
         <AgCharts ref={graph} options={chartoptions} />
       </div>
-      }
       <EditRouteModal orderKey={orderKey} plantId={selectedPlantId} routeId={selectedRouteId} graphData={graphData} showModal={showModal} ccrGroups={masters?.ccrGroups} setShowModal={setShowModal} theme={themeUi} setOrderKey={setOrderKey} loadDataParams={loadDataParams} setLoadDataParams={setLoadDataParams} />
     </Wrapper >
 
