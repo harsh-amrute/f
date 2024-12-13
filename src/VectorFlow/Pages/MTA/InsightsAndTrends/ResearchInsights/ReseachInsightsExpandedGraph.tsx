@@ -153,7 +153,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     />
                 </ExpandedChartCapsuleWrapper>
             </ExpandedChartFilterWrapper>
-            <AgCharts
+            {/* <AgCharts
                 options={{
                     height: 400,
                     width: 1000,
@@ -240,7 +240,107 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                         }
                     ]
                 }}
-            />
+            /> */}
+
+<AgCharts
+    options={{
+        height: 400,
+        width: 1000,
+        data: data,
+        series: [
+            {
+                type: "line",
+                xKey: "date",
+                yKey: "Red",
+                yName: "Red",
+                marker: {
+                    fill: 'red',
+                    size: 2,
+                    shape: 'square',
+                    stroke: "red"
+                },
+                stroke: 'red'
+            },
+            {
+                type: "line",
+                xKey: "date",
+                yKey: "Green",
+                yName: "Green",
+                marker: {
+                    fill: 'green',
+                    size: 2,
+                    shape: 'square',
+                    stroke: "green"
+                },
+                stroke: 'green'
+            },
+            {
+                type: "line",
+                xKey: "date",
+                yKey: "Yellow",
+                yName: "Yellow",
+                marker: {
+                    fill: '#FFBF00',
+                    size: 2,
+                    shape: 'square',
+                    stroke: "#FFBF00"
+                },
+                stroke: '#FFBF00'
+            },
+            {
+                type: "line",
+                xKey: "date",
+                yKey: "Black",
+                yName: "Black",
+                marker: {
+                    fill: 'black',
+                    size: 2,
+                    shape: 'square',
+                    stroke: "black"
+                },
+                stroke: 'black'
+            },
+            {
+                type: "line",
+                xKey: "date",
+                yKey: "Blue",
+                yName: "Blue",
+                marker: {
+                    fill: 'blue',
+                    size: 2,
+                    shape: 'square',
+                    stroke: "blue"
+                },
+                stroke: 'blue'
+            },
+            {
+                type: "line",
+                xKey: "date",
+                yKey: "White",
+                yName: "White",
+                marker: {
+                    fill: 'gray',
+                    size: 2,
+                    shape: 'square',
+                    stroke: "gray"
+                },
+                stroke: 'gray',
+            }
+        ],
+        axes: [
+            {
+                type: "number",
+                position: "left",
+                title: {
+                    text: "Count of Item", 
+                    fontSize: 11,  
+                    fontFamily: "Roboto",      
+                }
+            }
+        ]
+    }}
+/>
+
         </VFModalCard>
     )
 }

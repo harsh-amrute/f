@@ -416,6 +416,19 @@ const ResearchInsights = ()=>{
                                     label:{
                                         fontSize:8
                                     }
+                                },
+                                {
+                                    type: "number",
+                                    position: 'left',
+                                    label: {
+                                        fontSize: 8
+                                    },
+                                    title: {
+                                        text: "Count of Item", 
+                                        enabled: true,         
+                                        fontSize: 10,     
+                                        fontFamily: "Roboto",
+                                    }
                                 }
                             ],
                             series: [
@@ -516,6 +529,7 @@ const ResearchInsights = ()=>{
                             }
                             
                         }
+                        
                     }}/>
                     </ChartWrapper>
                     </AvailabilityTrendSection>
@@ -571,7 +585,21 @@ const ResearchInsights = ()=>{
                                     label:{
                                         fontSize:8
                                     }
+                                },
+                                {
+                                    type: "number",
+                                    position: 'left',
+                                    label: {
+                                        fontSize: 8
+                                    },
+                                    title: {
+                                        text: "Count of Item", 
+                                        enabled: true,         
+                                        fontSize: 10,     
+                                        fontFamily: "Roboto",
+                                    }
                                 }
+
                             ],
                             series: [
                                 {

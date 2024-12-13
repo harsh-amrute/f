@@ -135,9 +135,6 @@ const useBPR =()=>{
         return {
         
             suppressRowTransform:true,
-            tooltipShowDelay:0.3,
-            tooltipTrigger:'focus',
-            tooltipInteraction:true,
             // rowSelection:'single',
             readOnlyEdit:false,
             sideBar:defaultAgGridSideBarForBPR,
