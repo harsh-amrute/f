@@ -2807,6 +2807,7 @@ const useViewModify = (pageType: string) => {
         notifySuccess("Saved Draft Successfully");
       }
       else{
+        toast.dismiss();
         notifyError("Failed to save draft!")
       }
     }
