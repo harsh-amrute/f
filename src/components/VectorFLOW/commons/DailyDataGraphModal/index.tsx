@@ -253,164 +253,161 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         }
     
 
-        const options:any = {
-            title: {  
+        const options: any = {
+          title: {  
               text: '',
-            }, 
-            legend: {
+          }, 
+          legend: {
               item: {
                   showSeriesStroke: true,
               },
-            },    
-            series: [
+          },    
+          series: [
               {
-            
-                xKey: 'date',
-                xName:'Date',
-                yKey: 'normRed',
-                yName:'',
-                data:normData,
-                type:'area',
-                // strokeWidth: 3,
-                fill:'#ED4A4A',
-                stacked:true,
-                showInLegend:false,
-                tooltip:{
-                  renderer:renderer
-                },
-                position:{
-                  type:'pointer'
-                }
+                  xKey: 'date',
+                  xName: 'Date',
+                  yKey: 'normRed',
+                  yName: '',
+                  data: normData,
+                  type: 'area',
+                  // strokeWidth: 3,
+                  fill: '#ED4A4A',
+                  stacked: true,
+                  showInLegend: false,
+                  tooltip: {
+                      renderer: renderer
+                  },
+                  position: {
+                      type: 'pointer'
+                  }
               },  
               {
-            
-                xKey: 'date',
-                xName:'Date',
-                yKey: 'normYellow',
-                yName:'',
-                data:normData,
-                type:'area',
-                // strokeWidth: 3,
-                stacked:true,
-                fill:'#F5EE4E',
-                showInLegend:false,
-                tooltip:{
-                  renderer:renderer
-                },
-                position:{
-                  type:'pointer'
-                }
-               
-              },
-              {
-            
-                xKey: 'date',
-                xName:'Date',
-                yKey: 'normGreen',
-                yName:'',
-                data:normData,
-                type:'area',
-                // strokeWidth: 3,
-                stacked:true,
-                fill:'#418D18',
-                showInLegend:false,
-                tooltip:{
-                  renderer:renderer
-                },
-                position:{
-                  type:'pointer'
-                }
-               
-              },
-              {
-            
-                xKey: 'date',
-                xName:'Date',
-                yKey: 'normBlue',
-                yName:'',
-                data:normData,
-                type:'area',
-                // strokeWidth: 3,
-                fill:'#355FD3',
-                stacked:true,
-                showInLegend:false,
-                tooltip:{
-                  renderer:renderer,
-                  position:{
-                    type:'pointer'
+                  xKey: 'date',
+                  xName: 'Date',
+                  yKey: 'normYellow',
+                  yName: '',
+                  data: normData,
+                  type: 'area',
+                  // strokeWidth: 3,
+                  stacked: true,
+                  fill: '#F5EE4E',
+                  showInLegend: false,
+                  tooltip: {
+                      renderer: renderer
+                  },
+                  position: {
+                      type: 'pointer'
                   }
-                }  
+              },
+              {
+                  xKey: 'date',
+                  xName: 'Date',
+                  yKey: 'normGreen',
+                  yName: '',
+                  data: normData,
+                  type: 'area',
+                  // strokeWidth: 3,
+                  stacked: true,
+                  fill: '#418D18',
+                  showInLegend: false,
+                  tooltip: {
+                      renderer: renderer
+                  },
+                  position: {
+                      type: 'pointer'
+                  }
+              },
+              {
+                  xKey: 'date',
+                  xName: 'Date',
+                  yKey: 'normBlue',
+                  yName: '',
+                  data: normData,
+                  type: 'area',
+                  // strokeWidth: 3,
+                  fill: '#355FD3',
+                  stacked: true,
+                  showInLegend: false,
+                  tooltip: {
+                      renderer: renderer,
+                      position: {
+                          type: 'pointer'
+                      }
+                  }  
               }, 
               {
-            
-                xKey: 'dt',
-                xName:'Date',
-                yKey: 'git',
-                yName:'GIT',
-                data:adjustedChartData,
-                type:'bar',
-                fill:'#8137BC',
-                tooltip:{
-                  enabled: false
-                }
+                  xKey: 'dt',
+                  xName: 'Date',
+                  yKey: 'git',
+                  yName: 'GIT',
+                  data: adjustedChartData,
+                  type: 'bar',
+                  fill: '#8137BC',
+                  tooltip: {
+                      enabled: false
+                  }
               },
               {
-            
-                xKey: 'dt',
-                xName:'Date',
-                yKey: 'rp',
-                yName:'Receipts',
-                data:adjustedChartData,
-                type:'bar',
-                fill:'#67B6E8',
-                tooltip:{
-                  enabled: false
-                }   
+                  xKey: 'dt',
+                  xName: 'Date',
+                  yKey: 'rp',
+                  yName: 'Receipts',
+                  data: adjustedChartData,
+                  type: 'bar',
+                  fill: '#67B6E8',
+                  tooltip: {
+                      enabled: false
+                  }   
               },
               {
-            
-                xKey: 'dt',
-                xName:'Date',
-                yKey: 'cs',
-                yName:'Consumption',
-                data:adjustedChartData,
-                type:'bar',
-                fill:'#EDB04D',
-                tooltip:{
-                  enabled: false
-                }
+                  xKey: 'dt',
+                  xName: 'Date',
+                  yKey: 'cs',
+                  yName: 'Consumption',
+                  data: adjustedChartData,
+                  type: 'bar',
+                  fill: '#EDB04D',
+                  tooltip: {
+                      enabled: false
+                  }
               },
               {
-            
-                xKey: 'dt',
-                xName:'Date',
-                yKey: 'stk',
-                yName:'Stock',
-                data:adjustedChartData,
-                type:'line',
-                stroke:'#5D148B',
-                tooltip:{
-                  enabled: false
-                },
-                marker: {
-                  formatter
-                }
+                  xKey: 'dt',
+                  xName: 'Date',
+                  yKey: 'stk',
+                  yName: 'Stock',
+                  data: adjustedChartData,
+                  type: 'line',
+                  stroke: '#5D148B',
+                  tooltip: {
+                      enabled: false
+                  },
+                  marker: {
+                      formatter
+                  }
               },
-            ],
-            axes: [{
-                type: "category",
-                position: "bottom",
-                label:{
-                  autoRotate:false,
-                  avoidCollisions:true
-                }
-            } as const,
-            {         
+          ],
+          axes: [
+              {
+                  type: "category",
+                  position: "bottom",
+                  label: {
+                      autoRotate: false,
+                      avoidCollisions: true
+                  }
+              } as const,
+              {
                 type: "number",
-                position: "left"
-            } as const,
-           ],
-        }
+                position: "left",
+                title: {
+                    text: "Count",
+                    fontSize: 10,
+                    fontFamily: "Roboto",
+                },
+            },
+          ],
+      };
+      
         const upwardStockBasedOptions = {
             
           xKey: 'date',
