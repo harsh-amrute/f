@@ -133,7 +133,6 @@ const useSavedDrafts = ()=>{
     const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
 
     const getInitalData = async()=>{
-        const mid:any = 501;
             try{
                 const BufferTypeMaster = await GetBufferTypeMaster();
                 setBufferTypeMaster(BufferTypeMaster?.data?.data);

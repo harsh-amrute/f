@@ -12,7 +12,7 @@ import { SeasonalityQuickFilterType, type Filter } from '../../../../types/MDM';
 import VFTable from "../../Common/VFTable";
 import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
-import React, { act, useEffect} from "react";
+import React, {useEffect} from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SubmitConflictModal from "./SubmitConflictModal";
