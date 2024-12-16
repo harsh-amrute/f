@@ -260,7 +260,7 @@ const MTOViewModify = () => {
                     ] 
                   }}
                   rowSelection ={"single"}
-                  suppressRowClickSelection={activeMaster.colDefs.some((colDef) => colDef.field === 'actions')? true: false}
+                  suppressRowClickSelection={activeMaster.colDefs.some((colDef) => (colDef.field === 'actions'|| colDef.field==='pactions'))? true: false}
                   onSelectionChanged={onMajReasonSelected}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
                   />
@@ -323,9 +323,9 @@ const MTOViewModify = () => {
                     cursor: 'pointer',
                     background: '#fff'
                   }}
-                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoMinGrid()) }}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actionsP')) && (addRowToMtoMinGrid()) }}
                 >
-                  {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
+                  {(!(activeMaster.colDefs.some((x) => x.field === 'actionsP'))) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"

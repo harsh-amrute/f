@@ -1,6 +1,7 @@
+
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetBufferMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetBufferMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCCRMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -115,6 +116,7 @@ const useTaskPendingForReview = ()=>{
   const [mtoTask, setMTOTask] = useState<any>(undefined);
   
   const {mutateAsync: putMTOBufferData} = usePutMtoBufferMasterData();
+  const {mutateAsync: putMTOCCRData} = usePutMtoCCRMasterData();
 
   const convertColumnsFormat = (columns:any) => {
     const sortedColumns = columns.sort((a:any,b:any)=>parseInt(a.col_Position)-parseInt(b.col_Position));
@@ -554,8 +556,6 @@ const useTaskPendingForReview = ()=>{
         console.log("validating ....", finData);
         console.log("thatData....", tempMasterData);
         if (mid === 501) {
-          console.log("Validating...");
-      
           let hasMatchingBSZAndBT = false;
           let hasExistingBCD = false;
           let bsz = null;
@@ -606,8 +606,12 @@ const useTaskPendingForReview = ()=>{
 
     const mtoSubmitTask=async()=>{
 
-        const newApprovedData:any = [];
-        detailTableRowData.forEach((ele:any)=>{
+
+        if(mtoTask.mid===501){
+
+            
+            const newApprovedData:any = [];
+            detailTableRowData.forEach((ele:any)=>{
             console.log("ele.appStatus", ele.appStatus);
             const newEle = {
                 bid: ele.bid? ele.bid: null,
@@ -630,7 +634,7 @@ const useTaskPendingForReview = ()=>{
         })
 
         const finData =
-            {
+        {
               "tid": mtoTask.TaskID,
               "ti_id": newApprovedData[0].ti_id,
               "uid": user.user.id,
@@ -638,7 +642,73 @@ const useTaskPendingForReview = ()=>{
               "mmid": newApprovedData[0].mmid,
               "buffData": newApprovedData
             }
+            
+            let isValid = validateBeforeSubmit(newApprovedData);
+            console.log("isvalid", isValid);
+            newApprovedData.forEach((ele:any)=>{
+                if(ele.ia===false && ele.cm===""){
+                    (!isValid===false) && notifyError("Make sure you provide a comment for the rejected task!");
+                    isValid = false;
+                }
 
+            })
+            if(isValid===true){
+                notifyLoader("Task is being approved...")
+                
+                try{
+                    const response = await putMTOBufferData([finData]);
+                    if(response.status=== 200){
+                        notifySuccess("DB Updated Successfully");
+                        dispatch(SET_TASK_PENDING_ROW_DATA([]));
+                        setIsViewTableOpen(true);
+                        GetInitialData(mid);
+                    }
+                }
+            catch(error){
+                console.log(error)
+            }
+        }
+    }
+    else if(mtoTask.mid===502){
+           
+        const newApprovedData:any = [];
+        detailTableRowData.forEach((ele:any)=>{
+            console.log("ele...",ele);
+        const newEle = {
+            cid: ele.cid? ele.bid: null,
+            ccd: ele.ccd,
+            cnm:ele.cnm,
+            cpd: ele.cpd,
+            cwl: ele.cwl,
+            whpd: ele.whpd,
+            sh: ele.sh, 
+            fh: ele.fh,
+            rb: ele.rb,
+            ti_id: ele.ti_id,
+            a1: ele.a1,a2: ele.a2,a3: ele.a3,a4: ele.a4,a5: ele.a5,a6: ele.a6,a7: ele.a7,a8: ele.a8,a9: ele.a9,a10: ele.a10,
+            cgid: ele.cgid,
+            plid: ele.plid,
+            dpid: ele.dpid,
+            plnm: ele.plnm,
+            dpnm:ele.dpnm,
+            mmid: ele.mmid,
+            tcmId: ele.tcmId,
+            cm: ele.cm? ele.cm: "",
+            ia: (ele.appStatus && ele.appStatus===true)?true:false,
+        }
+        newApprovedData.push(newEle);
+    })
+
+    const finData =
+    {
+          "tid": mtoTask.TaskID,
+          "ti_id": newApprovedData[0].ti_id,
+          "uid": user.user.id,
+          "unm": user.user.name,
+          "mmid": newApprovedData[0].mmid,
+          "ccrData": newApprovedData
+        }
+        
         let isValid = validateBeforeSubmit(newApprovedData);
         console.log("isvalid", isValid);
         newApprovedData.forEach((ele:any)=>{
@@ -650,9 +720,9 @@ const useTaskPendingForReview = ()=>{
         })
         if(isValid===true){
             notifyLoader("Task is being approved...")
-
+            
             try{
-                const response = await putMTOBufferData([finData]);
+                const response = await putMTOCCRData([finData]);
                 if(response.status=== 200){
                     notifySuccess("DB Updated Successfully");
                     dispatch(SET_TASK_PENDING_ROW_DATA([]));
@@ -660,10 +730,10 @@ const useTaskPendingForReview = ()=>{
                     GetInitialData(mid);
                 }
             }
-            catch(error){
-                console.log(error)
-            }
+        catch(error){
+            console.log(error)
         }
+    }}
     }
     
     return{
@@ -697,6 +767,3 @@ const useTaskPendingForReview = ()=>{
 }
 
 export default useTaskPendingForReview
-
-
-

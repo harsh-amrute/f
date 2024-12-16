@@ -98,15 +98,15 @@ const PoogiEditDeleteCell = (params: any) => {
         <>
 
           <button disabled={params.data.id} onClick={onEditClick} style={{background: 'transparent', opacity: `${params.data.id?0.2:1}`}}>
-            <img height={18} width={18} src="/assets/img/VectorFLOW/NMS/edit-draft.svg" />
+            <img height={16} width={16} src="/assets/img/VectorFLOW/NMS/edit-draft.svg" />
         </button>
         {(params.data.id) ?
           <button onClick={onDeleteUndoClick} style={{background: 'transparent'}}>
-          <img  height={18} width={18} src="/assets/img/delete-undo.svg" alt="undo" />
+          <img  height={16} width={16} src="/assets/img/delete-undo.svg" alt="undo" />
           </button>
           :
           <button onClick={onDeleteClick} style={{background: 'transparent'}}>
-          <img height={18} width={18} src="/assets/img/VectorFLOW/NMS/delete-draft.svg" />
+          <img height={16} width={16} src="/assets/img/VectorFLOW/NMS/delete-draft.svg" />
         </button>
 
 }

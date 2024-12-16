@@ -202,6 +202,9 @@ export namespace MDMService {
   export const putMTOAddBufferMaster = async (body:any)=>{
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/AddBufferMaster/', body )
   }
+  export const putMTOAddCCRMaster = async (body:any)=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/AddCCRMaster/', body )
+  }
 
   export const getMTOTaskById = async (taskId: string) => {
     return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetTaskById/?tid=${taskId}&mmid=1`, {
@@ -212,6 +215,12 @@ export namespace MDMService {
   /** Save buffer master task MTO */
   export const saveBufferMasterTask = async (body: any) => {
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveBufferMasterTask/?forwardUsers=true', 
+      body
+    )
+  }
+
+  export const savePOOGIMasterTask = async (body: any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SavePoogiReasonMasterTask/?forwardUsers=true', 
       body
     )
   }
