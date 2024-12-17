@@ -196,31 +196,26 @@ const ModalManageUsers = ({
                             type="password"
                             placeholder={contentModal.callApi === 2 ? "***********" : ""}
                             className={`modal-Per-input ${
-                              errors.password != null
-                                ? "modal-input--error"
-                                : ""
+                              errors.password != null ? "modal-input--error" : ""
                             }`}
                             {...register("password", {
+                              required: {
+                                value: true,
+                                message: t("profile.tabContent.manageUsers.validate.passwordRequired"), 
+                              },
                               minLength: {
                                 value: 8,
-                                message: t("loginPage.validate.password"),
+                                message: t("loginPage.validate.password"), 
                               },
                               maxLength: {
                                 value: 15,
-                                message: t(
-                                  "loginPage.validate.passwordMaxLength"
-                                ),
+                                message: t("loginPage.validate.passwordMaxLength"), 
                               },
                               pattern: {
-                                value:
-                                  // eslint-disable-next-line no-useless-escape
-                                  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
-                                message: t(
-                                  "profile.tabContent.manageUsers.validate.formatPassword"
-                                ),
+                                value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
+                                message: t("profile.tabContent.manageUsers.validate.formatPassword"),
                               },
                             })}
-                            autoComplete="new-password"
                           />
                           {errors.password != null && (
                             <Errors errors={errors} name="password" />
