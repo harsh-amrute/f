@@ -12,7 +12,7 @@ import { SeasonalityQuickFilterType, type Filter } from '../../../../types/MDM';
 import VFTable from "../../Common/VFTable";
 import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
-import React, { useEffect} from "react";
+import React, {useEffect} from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SubmitConflictModal from "./SubmitConflictModal";
@@ -260,7 +260,7 @@ const MTOViewModify = () => {
                     ] 
                   }}
                   rowSelection ={"single"}
-                  suppressRowClickSelection={false}
+                  suppressRowClickSelection={activeMaster.colDefs.some((colDef) => (colDef.field === 'actions'|| colDef.field==='pactions'))? true: false}
                   onSelectionChanged={onMajReasonSelected}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
                   />
@@ -281,6 +281,7 @@ const MTOViewModify = () => {
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
                   overlayNoRowsTemplate={"Select a major reason to see the corresponding minor reason"}
                   onCellEditingStopped={onMinReasonEditingStopped}
+                  suppressRowClickSelection={true}
                   />
                 </MTOPoogiTableContainer>
                     <PoogiAddButtonWrapper>
@@ -322,9 +323,9 @@ const MTOViewModify = () => {
                     cursor: 'pointer',
                     background: '#fff'
                   }}
-                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoMinGrid()) }}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actionsP')) && (addRowToMtoMinGrid()) }}
                 >
-                  {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
+                  {(!(activeMaster.colDefs.some((x) => x.field === 'actionsP'))) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"

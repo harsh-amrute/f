@@ -3,12 +3,12 @@ import { RootState } from '../../../../../redux/store/store';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
 import { RESET_STATE, REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER,ADD_COLDEFS, UPDATE_PROGRESS_STATE, FILL_MASTERS, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN ,SYNC_ACTIVE_MASTER_TO_MASTER,REMOVE_COLDEFS,UPDATE_ROW_DATA,SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { notifyError,notifyLoader,notifySuccess } from '../../../../../helpers/notify';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
-import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail } from '../../../../../VectorFlow/Services/MTA/MDM';
+import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail, useGetBufferTypeMaster } from '../../../../../VectorFlow/Services/MTA/MDM';
 import { createErrorRowData} from '../../../../../helpers/utils'
 import { ColDef } from 'ag-grid-enterprise';
 
@@ -44,6 +44,26 @@ const useAdd=()=>{
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
     const bufferInitialData = useSelector((state: any)=> state.mto.bufferInitialData);
     const ccrInitialData = useSelector((state: any)=> state.mto.ccrInitialData);
+
+    const {mutateAsync: getBufferTypeMaster} = useGetBufferTypeMaster();
+
+    const [bufferTypeData, setBufferTypeData] = useState<any>();
+
+    const getBufferTypeMasterData = async()=>{
+      try{
+        const BufferTypeMaster = await getBufferTypeMaster();
+    setBufferTypeData(BufferTypeMaster?.data?.data);
+      }
+      catch(e){
+        console.log(e)
+      }
+    }
+
+    useEffect(()=>{
+      if(activeMaster.id===501){
+        getBufferTypeMasterData();
+      }
+    },[activeMaster.id])
 
     const invalidDataColdefs:ColDef[] = [
         {
@@ -345,7 +365,10 @@ const useAdd=()=>{
           if (isBufferCodeDuplicate) {
             return { error: "Buffer code already exists in master", warning: "" };
           }
-      
+        const isBufferTypeValid = bufferTypeData?.some((btData:any) => btData.dsc === ele.bt);
+          if (!isBufferTypeValid) {
+            return { error: "Choose a valid buffer type from the drop down", warning: "" };
+          }
           // Check if Buffer Size for the Buffer Type already exists in the master data
           const isBufferTypeAndSizeDuplicate = bufferInitialData.some(
             (master: any) => master.bt === ele.bt && master.bsz === ele.bsz

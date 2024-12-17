@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router"
-import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
+import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration, useGetBufferTypeMaster } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyError, notifyPromise, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
 import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS} from "../../../../../redux/actions/MDM"
@@ -12,6 +12,8 @@ import { toast } from 'react-toastify';
 import { useUserData } from "../../../../../context"
 import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
 import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA } from "../../../../../redux/actions/MTO"
+import { useGetDeptMasterData, useGetPlantMasterData } from "../../../../../VectorFlow/Services/MTO/Common/Masters"
+import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation"
 
 const useSavedDrafts = ()=>{
 
@@ -121,9 +123,55 @@ const useSavedDrafts = ()=>{
 
 
     //   }
+    const {mutateAsync: GetBufferTypeMaster} = useGetBufferTypeMaster();
+    const {mutateAsync: getPlantMaster} = useGetPlantMasterData();
+    const {mutateAsync: getDeptMaster} = useGetDeptMasterData();
+    const {mutateAsync: getCCRGroupMaster} = useGetCCRGroupMaster();
+    const [plantMaster, setPlantMaster] = useState<any>();
+    const [deptMaster, setDeptMaster] = useState<any>();
+    const [ccrGroupMaster, setCcrGroupMaster] = useState<any>();
+    const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
+
+    const getInitalData = async()=>{
+            try{
+                const BufferTypeMaster = await GetBufferTypeMaster();
+                setBufferTypeMaster(BufferTypeMaster?.data?.data);
+            }
+            catch(e){
+                console.log(e)
+            }
+            try{
+                const response = await getCCRGroupMaster();
+                setCcrGroupMaster(response.data.data);
+
+            }
+            catch(e){
+                console.log(e)
+            }
+            try{
+
+                const response = await getDeptMaster();
+                setDeptMaster(response.data.data);
+            }
+            catch(e){
+                console.log(e)
+            }
+            try{
+                const response = await getPlantMaster();
+                setPlantMaster(response.data.data);
+                
+            }
+            catch(e){
+                console.log(e);
+            }
+       
+    }
+    useEffect(()=>{
+        getInitalData();
+    },[])
 
     const convertToColDefs = (data:any, ActionType: string) => {
-        return data
+        const newColDef =  data
           .sort((a:any, b:any) => (a.col_Position || 0) - (b.col_Position || 0))
           .map((item: any) => ({
             field: item?.key,                    // Use the "key" as the "field"
@@ -134,6 +182,41 @@ const useSavedDrafts = ()=>{
             autoHeight: true,
             editable: (ActionType == "Modify") ? false : true
           }));
+
+        return newColDef.map((col:any)=>{
+            if (col.field === 'pl') return {
+                ...col,
+                editable: (ActionType == "Modify") ? false : true,
+                cellEditor: 'agRichSelectCellEditor',
+                cellEditorParams: {
+                  values: plantMaster?.map((item: any) => item.plant_name),
+                },
+              };
+              
+              if (col.field === 'dp') return {
+                ...col,
+                editable: (ActionType == "Modify") ? false : true,
+                cellEditor: 'agRichSelectCellEditor',
+                cellEditorParams: {
+                  values: deptMaster?.map((item: any) => item.dept_name),
+                },
+              };
+              
+              if (col.field === 'cgid') return {
+                ...col,
+                editable: (ActionType == "Modify") ? false : true,
+                cellEditor: 'agRichSelectCellEditor',
+                cellEditorParams: {
+                  values: Object.values(ccrGroupMaster || {}).map((group: any) => group.ccr_group_code),
+                },
+              };
+              if(col.field==='bt')return {...col,  cellEditor: 'agRichSelectCellEditor',
+              editable: (ActionType == "Modify") ? false : true,
+              cellEditorParams: {
+                values: bufferTypeMaster?.map((item: any) =>  item.dsc), 
+              }, }
+              else return col;
+        })
       };
     
     const onEditDraft = async(draftDetails:any)=>{
