@@ -1,44 +1,44 @@
-import { ISTStatusContext } from "../../../context/ISTStatusContext";
-import { useUserData } from "../../../context";
-import * as HeaderStyled from "./style";
-import { useContext, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { ISTStatusContext } from '../../../context/ISTStatusContext'
+import { useUserData } from '../../../context'
+import * as HeaderStyled from './style'
+import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-interface HeaderProps {
-  urlExcludeHeader: Array<string>;
+interface HeaderProps{
+  urlExcludeHeader:Array<string>
 }
 
-const Header = (props: HeaderProps) => {
-  const { urlExcludeHeader } = props;
+const Header = (props:HeaderProps) => {
 
-  const { t } = useTranslation();
-  const { user } = useUserData();
+  const {
+    urlExcludeHeader
+  } = props
+
+  const { t } = useTranslation()
+  const { user } = useUserData()
   const themeUi = user?.user?.theme_ui;
   const [isHideLogo, setIsHideLogo] = useState<boolean>(true);
   let timeoutId: any;
-
+    
   const renderNamePage = () => {
-    if (location.pathname === "/manual-upload") {
-      return <span>{t("header.manualUpload")}</span>;
-    } else if (location.pathname === "/") {
-      return <span>{t("header.pendingISTRequests")}</span>;
-    } else if (location.pathname === "/ist-forced-closure") {
-      return <span>{t("header.ISTForcedClosure")}</span>;
-    } else if (location.pathname === "/store-status") {
-      return <span>{t("header.storeStatus")}</span>;
-    } else if (location.pathname === "/profile") {
-      if (
-        user.user.is_admin ||
-        user?.roles?.permission?.includes("IST Admin")
-      ) {
-        return <span>{t("header.userAdministration")}</span>;
+    if (location.pathname === '/manual-upload') {
+      return <span>{t('header.manualUpload')}</span>
+    } else if (location.pathname === '/') {
+      return <span>{t('header.pendingISTRequests')}</span>
+    } else if (location.pathname === '/ist-forced-closure') {
+      return <span>{t('header.ISTForcedClosure')}</span>
+    } else if (location.pathname === '/store-status') {
+      return <span>{t('header.storeStatus')}</span>
+    } else if (location.pathname === '/profile') {
+      if (user.user.is_admin || user?.roles?.permission?.includes('IST Admin')) {
+        return <span>{t('header.userAdministration')}</span>
       } else {
-        return <span>{t("header.myProfile")}</span>;
+        return <span>{t('header.myProfile')}</span>
       }
-    } else if (location.pathname === "/availability-comparison") {
-      return <span>{t("header.availabilityComparison")}</span>;
+    } else if (location.pathname === '/availability-comparison') {
+      return <span>{t('header.availabilityComparison')}</span>
     }
-  };
+  }
 
   const {
     currentAction,
@@ -46,12 +46,12 @@ const Header = (props: HeaderProps) => {
     setExportView,
     currentViewName,
     currentViewCount,
-    currentDataCount,
-  } = useContext(ISTStatusContext);
+    currentDataCount
+  } = useContext(ISTStatusContext)
 
   const hideLogo = () => {
     setIsHideLogo(false);
-  };
+  }
 
   useEffect(() => {
     timeoutId = setTimeout(() => {
@@ -64,108 +64,93 @@ const Header = (props: HeaderProps) => {
   const onMouseEnterLogo = () => {
     setIsHideLogo(true);
     clearTimeout(timeoutId);
-  };
+  }
 
   const onMouseLeaveLogo = () => {
     timeoutId = setTimeout(() => {
-      hideLogo();
+      hideLogo()
     }, 300);
-  };
+  }
 
   const renderHeader = () => {
-    if (location.pathname === "/ist-status") {
+    if (location.pathname === '/ist-status') {
       return (
         <>
           <HeaderStyled.SCHeaderBoxIst>
             <HeaderStyled.SCHeaderText>
-              {t("header.ISTStatus")}{" "}
-              {currentDataCount > 0 && (
-                <HeaderStyled.SCHeaderSubTextIst>
-                  ({currentViewName})
-                </HeaderStyled.SCHeaderSubTextIst>
-              )}{" "}
+              {t('header.ISTStatus')}{' '}
+              {currentDataCount > 0 && <HeaderStyled.SCHeaderSubTextIst>
+                ({currentViewName})
+              </HeaderStyled.SCHeaderSubTextIst>}{' '}
             </HeaderStyled.SCHeaderText>
             {currentViewCount > 0 && currentDataCount > 0 && (
               <HeaderStyled.SCHeaderContent>
                 <HeaderStyled.SCExportAllBox
                   onClick={() => {
-                    setExportView(true);
+                    setExportView(true)
                   }}
                 >
                   <HeaderStyled.SCExportAllBoxButton>
                     <img src="/assets/img/forced/excel.png" alt="and" />
                     <HeaderStyled.SCExportAllBoxSpan>
-                      {t("header.exportAllBtn")}
+                      {t('header.exportAllBtn')}
                     </HeaderStyled.SCExportAllBoxSpan>
                     <img src="/assets/img/forced/export.svg" alt="and" />
                   </HeaderStyled.SCExportAllBoxButton>
                 </HeaderStyled.SCExportAllBox>
-                {currentAction === "view" && (
+                {currentAction === 'view' && (
                   <HeaderStyled.SCHeaderButtonIst
                     onClick={() => {
-                      setCurrentAction("edit");
+                      setCurrentAction('edit')
                     }}
                     themeUi={themeUi}
                   >
-                    {t("header.editBtn")}
+                    {t('header.editBtn')}
                   </HeaderStyled.SCHeaderButtonIst>
                 )}
-                {currentAction === "edit" && (
+                {currentAction === 'edit' && (
                   <HeaderStyled.SCHeaderButtonIstDelete
                     onClick={() => {
-                      setCurrentAction("deleting");
+                      setCurrentAction('deleting')
                     }}
                   >
-                    {t("header.deleteBtn")}
+                    {t('header.deleteBtn')}
                   </HeaderStyled.SCHeaderButtonIstDelete>
                 )}
-                {currentAction === "edit" && (
+                {currentAction === 'edit' && (
                   <HeaderStyled.SCHeaderButtonIst
                     onClick={() => {
-                      setCurrentAction("saving");
+                      setCurrentAction('saving')
                     }}
                     themeUi={themeUi}
                   >
-                    {t("header.saveBtn")}
+                    {t('header.saveBtn')}
                   </HeaderStyled.SCHeaderButtonIst>
                 )}
-                {currentAction === "saving" && (
+                {currentAction === 'saving' && (
                   <HeaderStyled.SCHeaderButtonIstSaving>
-                    {t("header.savingBtn")}
+                    {t('header.savingBtn')}
                   </HeaderStyled.SCHeaderButtonIstSaving>
                 )}
-                {currentAction === "deleting" && (
+                {currentAction === 'deleting' && (
                   <HeaderStyled.SCHeaderButtonIstSaving>
-                    {t("header.deletingBtn")}
+                    {t('header.deletingBtn')}
                   </HeaderStyled.SCHeaderButtonIstSaving>
                 )}
               </HeaderStyled.SCHeaderContent>
             )}
           </HeaderStyled.SCHeaderBoxIst>
-          <HeaderStyled.SCWrapperImg
-            isHideLogo={isHideLogo}
-            onMouseEnter={onMouseEnterLogo}
-            onMouseLeave={onMouseLeaveLogo}
-            style={{ right: 0, marginTop: "-110px" }}
-          >
-            <HeaderStyled.SCImg
-              src="/assets/VectorFlow_black.svg"
-              alt="logo"
-              isHideLogo={isHideLogo}
-            />
+          <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{right: 0, marginTop: "-110px"}}>
+            <HeaderStyled.SCImg src="/assets/VectorFlow_black.svg" alt="logo" isHideLogo={isHideLogo} />
           </HeaderStyled.SCWrapperImg>
         </>
-      );
-    }
-
-    if (urlExcludeHeader.includes(location.pathname)) {
-      return (
-        <HeaderStyled.SCWrapperImg
-          isHideLogo={isHideLogo}
-          onMouseEnter={onMouseEnterLogo}
-          onMouseLeave={onMouseLeaveLogo}
-        >
-          {process.env.REACT_APP_CLIENT_NAME?.length !== 0 ? (
+      )
+    } 
+    
+    if(urlExcludeHeader.includes(location.pathname)){
+      return(
+        <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo}>
+            {process.env.REACT_APP_CLIENT_NAME?.length !== 0 ? (
             <HeaderStyled.ClientNameText
                isHideLogo={isHideLogo}>
                 {process.env.REACT_APP_CLIENT_NAME}
@@ -177,39 +162,33 @@ const Header = (props: HeaderProps) => {
               isHideLogo={isHideLogo}
             />
           )}
-        </HeaderStyled.SCWrapperImg>
-      );
-    } else {
+          </HeaderStyled.SCWrapperImg>
+      )
+    }
+
+    else {
       return (
         <HeaderStyled.SCHeaderBox
           style={{
-            position: "sticky",
+            position: 'sticky',
             top: 0,
             zIndex: 2,
-            paddingTop: 15,
+            paddingTop:15
             // paddingBottom: '2px'
           }}
         >
           <HeaderStyled.SCHeaderText>
             {renderNamePage()}
           </HeaderStyled.SCHeaderText>
-          <HeaderStyled.SCWrapperImg
-            isHideLogo={isHideLogo}
-            onMouseEnter={onMouseEnterLogo}
-            onMouseLeave={onMouseLeaveLogo}
-          >
-            <HeaderStyled.SCImg
-              src="/assets/VectorFlow_black.svg"
-              alt="logo"
-              isHideLogo={isHideLogo}
-            />
+          <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo}>
+            <HeaderStyled.SCImg src="/assets/VectorFlow_black.svg" alt="logo" isHideLogo={isHideLogo} />
           </HeaderStyled.SCWrapperImg>
         </HeaderStyled.SCHeaderBox>
-      );
+      )
     }
-  };
+  }
 
-  return <>{renderHeader()}</>;
-};
+  return <>{renderHeader()}</>
+}
 
-export default Header;
+export default Header
