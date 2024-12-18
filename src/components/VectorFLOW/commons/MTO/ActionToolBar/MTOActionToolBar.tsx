@@ -32,16 +32,23 @@ import {
     VFSelectedFilterLabel,
 } from './styles';
 import moment from 'moment';
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
 import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
+import VFSelect from '../VFSelect';
 
 type filterType = {
     label: string,
     values: string[]
 }
+
+
+const selectOptions = [
+    { value: 'shortClose', label: 'Short Close' },
+    { value: 'completeClose', label: 'Complete Close' },
+  ];
 
 interface MTOActionToolBarProps {
     comp?: string,
@@ -78,6 +85,8 @@ interface MTOActionToolBarProps {
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
     isReleaseButtonDisabled?: boolean,
+    isSelectAction?:boolean,
+    isSelectActionDisabled?:boolean,
     utilityBtns?: ReactElement | null,
     handleSaveClick?: () => void
     handleResetClick?: () => void
@@ -120,6 +129,8 @@ const MTOActionToolBar = ({
     WIPFilter,
     handleSaveClick,
     handleResetClick,
+    isSelectAction,
+    isSelectActionDisabled,
     onExcelExportClick
 
 }: MTOActionToolBarProps) => {
@@ -135,6 +146,12 @@ const MTOActionToolBar = ({
     const datetime = moment(d).format(format2);
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
+    const [selectedAction, setSelectedAction] = useState(null);
+
+    const actionOptions = [
+        { value: 'short_close', label: 'Short Close' },
+        { value: 'complete_close', label: 'Complete Close' },
+    ];
 
     return (
         <SCTaskBarContainer className='toolbar-container'>
@@ -220,6 +237,8 @@ const MTOActionToolBar = ({
                         </div>
                     }
                 </>
+
+                
 
                 <>
                     {isGoBackButton &&

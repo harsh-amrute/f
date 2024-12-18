@@ -12,3 +12,12 @@ export const useGetOverAllBMReport = () => {
         return await OverallBMReportService.getOverallBMReportData(data)
     })
 }
+
+export const useShortOrderCompleteOrder = () =>{
+
+    return useMutation(async (data:any)=>{
+
+        return await OverallBMReportService.shortOrder_completeOrder(data);
+    })
+
+}

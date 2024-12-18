@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 type OverallBMReportInputType = {
     page: number,
@@ -30,4 +30,14 @@ export namespace OverallBMReportService {
         }
     }
 
+    export const shortOrder_completeOrder =async (body:any) => {
+
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + "/updateBMReportOrders/",body,{
+        headers: {
+            'Content-Type': 'application/json',
+            //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
+        }})
+        
+        
+    }
 }
