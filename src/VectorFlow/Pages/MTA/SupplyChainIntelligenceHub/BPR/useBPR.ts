@@ -184,7 +184,7 @@ const useBPR =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>key!=='dailydatagraph')});
         }
       };
 
