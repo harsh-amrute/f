@@ -5,6 +5,7 @@ type OverallBMReportInputType = {
     appliedFilters: any,
     page_size?: number,
     analytics?: 0 | 1,
+    user? : any
 }
 
 export const useGetOverAllBMReport = () => {

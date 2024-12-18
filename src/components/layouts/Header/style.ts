@@ -174,3 +174,16 @@ export const SCImg = styled.img<{ isHideLogo: boolean }>`
   transition: ${globalStyles.customTransition};
 
 `;
+
+export const ClientNameText = styled.div<{ isHideLogo: boolean }>`
+    margin-left: ${(props) => (props.isHideLogo ? "20px" : "100px")};
+    /* display: ${props => props.isHideLogo ? "block": "none"}; */
+    display:  flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-style: inherit;
+    font-size: 2rem;
+    padding-top: 1rem;
+    font-weight: 800;
+`
