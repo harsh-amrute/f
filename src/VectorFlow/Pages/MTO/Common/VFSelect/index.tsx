@@ -3,23 +3,18 @@ import Select, { StylesConfig } from 'react-select';
 import { chooseThemeColor } from '../../../../../styles/global';
 
 export type OptionType = { value: string; label: string };
-
 interface VFSelectProps {
     options: OptionType[];
     themeUi: string;
-    icon?: boolean;
     placeholder?: string;
     value: OptionType | null; // Controlled value for the dropdown
     onActionChange?: (selectedValue: OptionType) => void; // Callback for selection change
     [key: string]: any;
     
 }
-
-
 const VFSelect: React.FC<VFSelectProps> = ({
     options,
     themeUi,
-    icon,
     placeholder,
     value,
     onActionChange,

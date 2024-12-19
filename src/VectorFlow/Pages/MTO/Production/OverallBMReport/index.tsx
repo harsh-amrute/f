@@ -62,9 +62,6 @@ import { useGetDate } from "../../../../../VectorFlow/Services/MTO/Production/In
 import moment from "moment";
 import VFSelect, { OptionType } from "../../Common/VFSelect";
 import ConfirmationModal from "./ConfirmationModal";
-import { createGlobalStyle } from "styled-components";
-import { log } from "console";
-// import VFSelect from '../../Common/VFSelect'
 
 interface ApiResponse {
   cc: string;
@@ -387,8 +384,6 @@ const OverallBmReport = () => {
     modifiedResponse.push(additionalObject);
     modifiedResponse.push(short_complete_OrderColumn);
 
-    console.log("modified response", modifiedResponse)
-
     return modifiedResponse;
   };
 
@@ -441,10 +436,8 @@ const OverallBmReport = () => {
     setIsCheckboxChecked(isChecked); // Update state based on checkbox
     if (isChecked) {
       refGraph2.current.api.selectAll();
-      console.log("Checkbox selected: All items are selected.");
     } else {
       refGraph2.current.api.deselectAll();
-      console.log("Checkbox deselected: All items are deselected.");
     }
   };
 
@@ -470,7 +463,8 @@ const OverallBmReport = () => {
       }
         
     } catch (error) {
-      console.error("Failed to update action:", error);
+      console.log(error);
+      
       throw error; 
     }
   };
@@ -484,7 +478,6 @@ const OverallBmReport = () => {
     setShowModal(true); // Open the modal
     setTextAction(selectedAction?.label);
     
-    console.log("selectedActionnnn",selectedAction);
     
 
 
@@ -503,7 +496,6 @@ const OverallBmReport = () => {
     setShowModal(true); // Open the modal
     setTextAction(action);
     
-    console.log("selectedActionnnn",action);
     
 
 
@@ -524,14 +516,11 @@ const OverallBmReport = () => {
     try {
 
       if (orderId && orderId !== "") {
-        console.log("Order ID:", orderId);
-        console.log("Action Text:", actionText);
-  
+   
         const response = await updateActionAPI(actionText, [orderId]);
         
         if (response?.status === 200) {
         
-         console.log("Action updated successfully for Order ID:", orderId)
             
           notifySuccess("Order closed successfully!");
 
@@ -540,7 +529,6 @@ const OverallBmReport = () => {
           setGridData(newGridData);
 
         } else {
-          console.error("Failed to update action for Order ID:", orderId);
           notifyError("Something went wrong!");
         }
   
@@ -563,7 +551,6 @@ const OverallBmReport = () => {
       
       setShowModal(false);
   
-      console.log("Master selected row data:", masterSelectedRowData);
   
     } catch (error) {
       console.error("Failed to perform action:", error);
@@ -574,13 +561,8 @@ const OverallBmReport = () => {
 const undoClicked = async (props:any,orderId: string) => {
   try {
     const response = await updateActionAPI('undo', [orderId]);
-
     if (response?.status === 200) {
-      console.log("Undo action successful for Order ID:", orderId);
       notifySuccess("Order retrived succesfully! ");
-
-
-      
       const newGridData:any = [];
       props.api.forEachNode((node:any)=>{
         newGridData.push(node.data);
@@ -588,26 +570,15 @@ const undoClicked = async (props:any,orderId: string) => {
 
       newGridData?.forEach((ele:any)=>{if(ele.ok===orderId) ele.ct=null;ele.oca=null});
       setGridData(newGridData);
-      console.log("grid dataaaax  ...",newGridData)
 
     } else {
-      console.error("Failed to undo action for Order ID:", orderId);
       notifyError("Something went wrong!")
     }
   } catch (error) {
-    console.error("Failed to perform undo action:", error);
+    console.log("Error occurred while updating action:", error);
+    throw (error)
   }
-};
-
-
-
-
-  const handleModalConfirm1 =(value:any)=>{
-
-    console.log("single value",value)
-
-  }
-  
+};  
   
   const WIPFilter: any = (
     <>
@@ -697,8 +668,7 @@ const undoClicked = async (props:any,orderId: string) => {
     props.api.forEachNode((node:any)=>{
       newGridData.push(node.data);
     })
-    // console.log("griddata", gridData);
-    // console.log('gri data befre dup',gridData)
+   
     if(Array.isArray(newGridData)){
       const dup_gridData = [...newGridData]
       dup_gridData[index].oca = option.value;
@@ -707,17 +677,8 @@ const undoClicked = async (props:any,orderId: string) => {
     handleActionChange(setSelectedAction);
   }
 
-  const handleImageClick = ()=>{
-
-    console.log("Hello undo");
-
-  }
-
   const DropDownCellRenderer= (props: any) =>  {
-  console.log("prosopsdfsd...",props);
-    
-  console.log("props.data....", props.data);
-  
+      
   return (
   <>  {
        props.data?.ct === null ?
@@ -732,7 +693,6 @@ const undoClicked = async (props:any,orderId: string) => {
            actionOptions.find((opt) => opt.value === props.data?.oca) as OptionType || null
         }
         onActionChange={(option: any) => {
-            console.log("Selected Option: ", option);
             onSelectChange(props, option, props.node.rowIndex);
          }}
        />
@@ -740,11 +700,11 @@ const undoClicked = async (props:any,orderId: string) => {
        {/* Right Arrow Component */}
        <div
          style={{
-           cursor: props.data?.oca ? "pointer" : "not-allowed", // Enabled only if oca has a value
-           opacity: props.data?.oca ? 1 : 0.5, // Dim if disabled
+           cursor: props.data?.oca ? "pointer" : "not-allowed", 
+           opacity: props.data?.oca ? 1 : 0.5,
            background: props.data?.oca
              ? `linear-gradient(to right, ${ColorsMTO.darkPink.code}, ${ColorsMTO.Pink.code})`
-             : "#ccc", // Greyed out when disabled
+             : "#ccc", 
            height: "43px",
            width: "59px",
            borderRadius: "4px",
@@ -755,7 +715,6 @@ const undoClicked = async (props:any,orderId: string) => {
          data-testid="isReleaseBtn"
          onClick={() => {
            if (props.data?.oca) {
-             console.log("Button Clicked: Action Triggered");
              handleRightArrowClick1(
                props.data.oca === "Short Close" ? "Short Close" : "Complete Close",
                props.data.ok

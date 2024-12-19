@@ -32,7 +32,7 @@ import {
     VFSelectedFilterLabel,
 } from './styles';
 import moment from 'moment';
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
@@ -137,13 +137,6 @@ const MTOActionToolBar = ({
     const datetime = moment(d).format(format2);
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
-    const [selectedAction, setSelectedAction] = useState(null);
-
-    const actionOptions = [
-        { value: 'short_close', label: 'Short Close' },
-        { value: 'complete_close', label: 'Complete Close' },
-    ];
-
     return (
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer
