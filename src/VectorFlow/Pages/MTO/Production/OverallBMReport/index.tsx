@@ -121,10 +121,6 @@ interface ApiResponseItem {
   ch?: ApiResponse[]; // Array of channel items
 }
 
-const options = [
-  { value: "shortClose", label: "Short Close" },
-  { value: "completeClose", label: "Complete Close" },
-];
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -693,14 +689,6 @@ const undoClicked = async (props:any,orderId: string) => {
     </>
   );
 
-
-
-
-
-
-
-
-
   const onSelectChange =  (props:any, option: any, index: number)=>{
 
     console.log("Selected Option:", option, "Row Index:", index);
@@ -724,8 +712,7 @@ const undoClicked = async (props:any,orderId: string) => {
     console.log("Hello undo");
 
   }
-
-
+  
   const DropDownCellRenderer= (props: any) =>  {
   console.log("prosopsdfsd...",props);
     
