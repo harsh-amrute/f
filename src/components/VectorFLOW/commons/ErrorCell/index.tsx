@@ -102,11 +102,15 @@ const ErrorCell = (props:ICellRendererParams)=>{
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">
                         <SCToolTipWrapper themeUi={themeUi} data-testid='tooltip-wrapper' style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
-                            <SCErrorToolTipUl>
-                                {(messages && messages.length>0) &&  messages.map((sentence:string,index:number)=>{
-                                    return <SCErrorToolTipLi key={index}>{sentence}</SCErrorToolTipLi>
+                        <SCErrorToolTipUl>
+                            {(messages && messages.length > 0) &&
+                                messages.map((sentence: string, index: number) => {
+                                    if (sentence.trim() !== '') {
+                                        return <SCErrorToolTipLi key={index}>{sentence}</SCErrorToolTipLi>;
+                                    }
+                                    return null; 
                                 })}
-                            </SCErrorToolTipUl>
+                        </SCErrorToolTipUl>
                         </SCToolTipWrapper>
                     </Portal>
                 )}
