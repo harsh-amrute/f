@@ -60,7 +60,7 @@ import {
 import { useUserData } from "../../../../../context";
 import { useGetDate } from "../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import moment from "moment";
-import VFSelect, { OptionType } from "../../Common/VFSelect";
+import VFSelect from "./VFSelect";
 import ConfirmationModal from "./ConfirmationModal";
 
 interface ApiResponse {
@@ -690,7 +690,7 @@ const undoClicked = async (props:any,orderId: string) => {
          themeUi={themeUi}
          placeholder="Select Action"
          value={
-           actionOptions.find((opt) => opt.value === props.data?.oca) as OptionType || null
+           actionOptions.find((opt) => opt.value === props.data?.oca) || null
         }
         onActionChange={(option: any) => {
             onSelectChange(props, option, props.node.rowIndex);

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace FullKitAssignmentService {
     export const getFullKitAssignmentDataWithGraphData = async (is_fullkit: boolean, load_data_after_simulation: boolean, load_graph_data: boolean, page: number, appliedFilters: any) => {
