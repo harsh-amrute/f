@@ -5,6 +5,7 @@ export const LocationSchema = Joi.object({
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
     wd:Joi.string().empty().max(MAX_NAME_LENGTH),
     l:Joi.string().empty().max(MAX_NAME_LENGTH),
+    lc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('Location Type')),
     ...CommonSchema
 
 }).preferences(defaultJOIOptions)
