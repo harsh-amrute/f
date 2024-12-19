@@ -37,7 +37,6 @@ import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
 import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
-import VFSelect from '../VFSelect';
 
 type filterType = {
     label: string,
@@ -45,10 +44,6 @@ type filterType = {
 }
 
 
-const selectOptions = [
-    { value: 'shortClose', label: 'Short Close' },
-    { value: 'completeClose', label: 'Complete Close' },
-  ];
 
 interface MTOActionToolBarProps {
     comp?: string,
@@ -84,9 +79,7 @@ interface MTOActionToolBarProps {
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
-    isReleaseButtonDisabled?: boolean,
-    isSelectAction?:boolean,
-    isSelectActionDisabled?:boolean,
+    isReleaseButtonDisabled?: boolean
     utilityBtns?: ReactElement | null,
     handleSaveClick?: () => void
     handleResetClick?: () => void
@@ -129,8 +122,6 @@ const MTOActionToolBar = ({
     WIPFilter,
     handleSaveClick,
     handleResetClick,
-    isSelectAction,
-    isSelectActionDisabled,
     onExcelExportClick
 
 }: MTOActionToolBarProps) => {
@@ -237,9 +228,6 @@ const MTOActionToolBar = ({
                         </div>
                     }
                 </>
-
-                
-
                 <>
                     {isGoBackButton &&
 
