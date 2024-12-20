@@ -1,25 +1,37 @@
-import styled from 'styled-components'
+import styled, {keyframes} from 'styled-components'
 
+const fadeIn = keyframes`
+    from{
+        opacity:0.7;
+        transform:translateY(10px);
+        /* box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 15px 20000px; */
+    }
+    to{
+        opacity:1;
+    }
+`
 
-export const SCContainer = styled.div`
-    height:36px;
+export const SCContainer = styled.div<{themeUi:string}>`
+    height:25px;
     border-radius: 5px;
     background: #ff5f151a 0% 0% no-repeat padding-box;
     border: 1px solid #FF5F15;
     color:#FF5F15;
-    font-size:15px;
+    font-size:10px;
     line-height:18px;
     font-family:'Roboto'
     font-style:normal;
     font-weight:500;
     margin-top:4px;
-    margin-bottom:4px;
     display:flex;
+    // white-space:pre-wrap;
+    margin-bottom:auto;
     align-items:center;
-    white-space:pre-wrap;
+    white-space:nowrap;
+    overflow:visible;
 `
 
-export const SCToolTipWrapper = styled.div`
+export const SCToolTipWrapper = styled.div<{themeUi:string}>`
     position:fixed;
     padding:1px 5px;
     border: 1px solid #FF5F15;
@@ -28,6 +40,7 @@ export const SCToolTipWrapper = styled.div`
     border-radius:4px;
     width:170px;
     z-index:100000;
+    animation:${fadeIn} 0.3s ease;
 `
 
 export const SCErrorToolTipUl = styled.ul`

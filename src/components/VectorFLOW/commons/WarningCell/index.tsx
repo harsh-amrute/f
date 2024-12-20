@@ -3,9 +3,14 @@ import { SCContainer,SCErrorToolTipLi, SCErrorToolTipUl, SCToolTipWrapper } from
 import { ICellRendererParams } from "ag-grid-enterprise"
 import Portal from "../../layouts/Portal";
 import useViewPort from "../../../../hooks/useViewPort";
+import { useUserData } from "../../../../context";
 
 const WarningCell = (props:ICellRendererParams)=>{
+    const {user} = useUserData()
+
     const message = props.data.warning;
+    const themeUi = user.user.theme_ui
+
     const {getGridZoom,getScreenZoomValue} = useViewPort()
 
     const currScreenZoom = getScreenZoomValue()
@@ -30,11 +35,11 @@ const WarningCell = (props:ICellRendererParams)=>{
         const tooltipHeight =messages.length * 33 /* Height of your tooltip */;
         const viewportHeight = window.innerHeight;
     
-        let tooltipTop = (bottom * currGridZoom * currScreenZoom) + 10;
+        let tooltipTop = (bottom) + 10;
     
         // Check if tooltip overflows on the bottom side
         if (tooltipTop + tooltipHeight > viewportHeight) {
-            tooltipTop = (top * currGridZoom * currScreenZoom) - tooltipHeight;
+            tooltipTop = (top) - tooltipHeight;
         }
     
         setErrorCellPosition({
@@ -66,12 +71,12 @@ const WarningCell = (props:ICellRendererParams)=>{
     return (
         <>
             {message &&
-            <SCContainer style={{overflow:'visible'}} >
-                <img src="/assets/img/VectorFLOW/NMS/error-orange.svg" width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="warningImage"/>
+            <SCContainer style={{overflow:'visible'}}  themeUi={themeUi} >
+                <img src="/assets/img/VectorFLOW/NMS/error-orange.svg" width={17} height={17} style={{marginRight:'7px',marginLeft:'5px'}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="warningImage"/>
                 <p  >{getFomattedMessage(message)}</p>
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">
-                        <SCToolTipWrapper data-testid='tooltip-wrapper' style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
+                        <SCToolTipWrapper themeUi={themeUi} data-testid='tooltip-wrapper' style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
                             <SCErrorToolTipUl>
                                 {(messages && messages.length>0) &&  messages.map((sentence:string,index:number)=>{
                                     return <SCErrorToolTipLi key={index}>{sentence}</SCErrorToolTipLi>
