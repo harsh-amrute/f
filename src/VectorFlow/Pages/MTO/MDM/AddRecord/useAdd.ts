@@ -52,7 +52,7 @@ const useAdd=()=>{
     const getBufferTypeMasterData = async()=>{
       try{
         const BufferTypeMaster = await getBufferTypeMaster();
-    setBufferTypeData(BufferTypeMaster?.data?.data);
+        setBufferTypeData(BufferTypeMaster?.data?.data);
       }
       catch(e){
         console.log(e)
@@ -145,7 +145,6 @@ const useAdd=()=>{
             dispatch(UPDATE_PROGRESS_STATE('view'))
             return 
         }
-
     }
     
 
@@ -351,6 +350,13 @@ const useAdd=()=>{
           if (!ele.bt || !ele.bsz) {
             return { error: "Enter Buffer Type and Buffer Size", warning: "" };
           }
+
+          if(Number(ele.bsz)<=0){
+            return { error: "Buffer size must be greater than 0", warning: ""};
+          }
+          if(Number(ele.bsz)>365){
+            return {error: "Buffer size cannot exceed for over a year", warning: ""};
+          }
       
           // Check if Buffer Code already exists in the master data
           const isBufferCodeDuplicate = bufferInitialData.some(
@@ -360,7 +366,7 @@ const useAdd=()=>{
             (row: any, i: any) => i !== index && row.bcd === ele.bcd
           );
           if (isbufferCodeDuplicateInCurr) {
-            return { error: "CCR code must be unique within the current list!", warning: "" };
+            return { error: "Buffer code must be unique within the current list!", warning: "" };
           }
           if (isBufferCodeDuplicate) {
             return { error: "Buffer code already exists in master", warning: "" };

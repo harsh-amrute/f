@@ -359,7 +359,7 @@ const MTOViewModify = () => {
                   maintainColumnOrder
                   />
                 }
-              {
+              {/* {
                 (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen) && !(activeMaster.id===503))
                 &&
                 <VFPagination
@@ -369,7 +369,7 @@ const MTOViewModify = () => {
                   rowsPerPage={rowsPerPage}
                   handleChangePage={(e) => handleChangePage(e)}
                 />
-              }
+              } */}
               {/* <VFTable
                   ref={veryTempRef}
                   columnDefs={activeMaster.colDefs}

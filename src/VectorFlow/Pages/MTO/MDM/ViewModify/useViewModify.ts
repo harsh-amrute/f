@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask, useSavePOOGIMasterTask } from "../../../../Services/MTA/MDM";
+import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData, parseMTOExcelData } from "../../../../../helpers/utils";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask, useSavePOOGIMasterTask, useSavePOOGIMasterDraft } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -27,6 +27,7 @@ import ToggleButton from './ToggleButton';
 import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../VectorFlow/Services/MTO/Common/Masters';
 import { useGetCCRGroupMaster } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import MajReasonDescCell from './MajReasonDescCell';
+import MinReasonDescCell from './MinReasonDescCell';
 
 
 // Define TypeScript interfaces for the parameters
@@ -127,6 +128,7 @@ const useViewModify = (pageType: string) => {
     const {mutateAsync: saveCCRMasterTask } = useSaveCCRMasterTask();
     const {mutateAsync: saveBufferMasterDraft} = useSaveBufferMasterDraft();
     const {mutateAsync: savePOOGIMasterTask} = useSavePOOGIMasterTask();
+    const {mutateAsync: savePOOGIMasterDraft} = useSavePOOGIMasterDraft();
     const [bufferTypeData, setBufferTypeData] = useState<any>(undefined);
 
     const [TASK_ID,setTaskId] = useState<string>('');
@@ -160,8 +162,8 @@ const useViewModify = (pageType: string) => {
 
     const {mutateAsync:createDraft} = useCreateDraft()
 
-  const {mutateAsync: getPOOGIMasterData} = useGetPOOGIMasterData();
-  const {mutateAsync: getCalendarMasterData} = useGetCalendarMasterData();
+    const {mutateAsync: getPOOGIMasterData} = useGetPOOGIMasterData();
+    const {mutateAsync: getCalendarMasterData} = useGetCalendarMasterData();
     const {mutateAsync:modifyDraft} = useModifyDraft();
 
     const {mutateAsync:deleteDraft} = useDeleteDraft()
@@ -232,13 +234,11 @@ const useViewModify = (pageType: string) => {
 
   const onColumnChange = () => {
     const localColDefs = ref.current?.api.getColumnDefs()
-
     if (ref.current && localColDefs) {
       dispatch(UPDATE_COLDEFS(localColDefs))
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       setDefaultToolPanel('columns')
     }
-
   }
 
   const customCellRenderers = useMemo(() => ({
@@ -250,9 +250,6 @@ const useViewModify = (pageType: string) => {
     conflictErrorCellRenderer: ConflictErrorCellRenderer,
     poogiEditDeleteCellRenderer: PoogiEditDeleteCell
   }), []);
-
-
-
 
   useEffect(() => {
 
@@ -283,6 +280,10 @@ const useViewModify = (pageType: string) => {
       const result = await getCCRMasterData({});
       dispatch(SET_CCR_INITIAL_DATA(result.data.data));
     }
+    if(activeMaster.id===503){
+      const result = await getPOOGIMasterData({});
+      dispatch(SET_POOGI_INITIAL_DATA(result.data.data));
+    }
   }
 
   const {mutateAsync: getPlantMaster} = useGetPlantMasterData();
@@ -311,7 +312,7 @@ const useViewModify = (pageType: string) => {
     if (activeMaster.id === 501 && !bufferTypeData){
       getBufferMasterDataType();
     }
-    if(activeMaster.id===503 || activeMaster.id===502){
+    if(activeMaster.id===503 || activeMaster.id===502 || activeMaster.id===504){
       getPlantMasterData();
     }
     if (activeMaster.id===502){
@@ -325,8 +326,6 @@ const useViewModify = (pageType: string) => {
     if(bufferTypeData){
 
       const newColDef = _.cloneDeep(activeMaster.colDefs);
-      console.log("activemasterColdef", activeMaster.colDefs);
-
       // Iterate over the column definitions and update based on colId
       newColDef.forEach((col: any) => {
         if (col.colId === 'bt') {
@@ -347,7 +346,7 @@ const useViewModify = (pageType: string) => {
   },[bufferTypeData])
 
   useEffect(()=>{
-    if(activeMaster.id===502 && ccrGroupMaster &&  plantMaster &&  deptMaster && (activeMaster.colDefs.length>0)){
+    if((activeMaster.id===502 || activeMaster.id===503) && ccrGroupMaster &&  plantMaster &&  deptMaster && (activeMaster.colDefs.length>0)){
 
       const newColDef = _.cloneDeep(activeMaster.colDefs);
       // newColDef[newColDef.length-2].valueFormatter =  myCCRFormatter;
@@ -492,11 +491,12 @@ const useViewModify = (pageType: string) => {
       const allRows = [...activeMaster.rowData];
       // Check if the entered Buffer type is unique 
       const newData:any = [];
-      
+
       allRows.forEach((e, i) => {
         const newVal = _.cloneDeep(e);
-    
+
         // Validate for empty buffer size
+
         if (e.bsz === "") {
           newVal.err = { error: "Enter the Buffer Size!", warning: "" };
         } 
@@ -504,9 +504,19 @@ const useViewModify = (pageType: string) => {
         else if (e.bt === "") {
           newVal.err = { error: "Enter the Buffer Type!", warning: "" };
         }
-    
+        else if (isNaN(e.bsz) || e.bsz <= 0 || e.bsz >= 365) {
+          newVal.err = { error: "Buffer Size must be a number between 1 and 364!", warning: "" };
+        } 
+        // Validate slt is numeric and within range
+        else if (isNaN(e.slt) || e.slt <= 0 || e.slt >= 365) {
+          newVal.err = { error: "SLT must be a number between 1 and 364!", warning: "" };
+        } 
+        // Validate mlt is numeric and within range
+        else if (isNaN(e.mlt) || e.mlt <= 0 || e.mlt >= 365) {
+          newVal.err = { error: "MLT must be a number between 1 and 364!", warning: "" };
+        }
         // Check against bufferInitialData for duplicates
-        bufferInitialData.forEach((ele:any) => {
+        bufferInitialData?.forEach((ele:any) => {
           if (ele.bcd === e.bcd) {
             newVal.err = { error: "Buffer code already exists in master", warning: "" };
           }
@@ -522,20 +532,17 @@ const useViewModify = (pageType: string) => {
           }
         });
     
-        // New validation: Check if bt matches at least one dsc in bufferTypeData
-        const isBufferTypeValid = bufferTypeData.some((btData:any) => btData.dsc === e.bt);
+        const isBufferTypeValid = bufferTypeData?.some((btData:any) => btData.dsc === e.bt);
         if (!isBufferTypeValid) {
           newVal.err = { error: "Choose a valid buffer type from the drop down", warning: "" };
         }
-    
         newData.push(newVal);
       });
-    
+      
       dispatch(UPDATE_ROW_DATA(newData));
     }
     
     if (masterId === 502 && pageType === "add") { 
-      console.log("validateddd....");
       const allRows = [...activeMaster.rowData];
       const newData: any = [];
     
@@ -698,14 +705,34 @@ const useViewModify = (pageType: string) => {
       const newRow = { ...data };
       newRow[field] = newValue;
 
+      if(data.minId===undefined){
+
+        
       const newRowData = activeMaster.rowData.map((row: any) => {
-        if (JSON.stringify(row) === JSON.stringify(data)) {
+      if (JSON.stringify(row) === JSON.stringify(data)) {
           return newRow;
         }
         return row;
       })
       // setEnableEditOnlineReset(true)
       dispatch(UPDATE_ROW_DATA([...newRowData]))
+    }
+    else{
+      const newRowData = activeMaster.rowData.map((row: any, index) => {
+        if (JSON.stringify(row.majId) === JSON.stringify(data.majId)) {
+            const newRow = row;
+            row.minData.map((ele:any)=>{
+              if(ele.minId===data.minId){
+                return data;
+              }
+              return ele;
+            })
+          }
+          return row;
+        })
+        dispatch(UPDATE_ROW_DATA([...newRowData]));
+
+    }
      
     },
   }
@@ -931,7 +958,6 @@ const useViewModify = (pageType: string) => {
       }
       else if(activeMaster.id===503 && activeMaster.isMTO){
         const tempResultData = await getPOOGIMasterData({});
-        dispatch(SET_POOGI_INITIAL_DATA(tempResultData.data.data))
         const updatedData = _.cloneDeep(tempResultData)
         if(poogiModifyData && poogiModifyData.length){
           const updatedDataPoogi = updatedData.data.data;
@@ -1294,7 +1320,7 @@ const useViewModify = (pageType: string) => {
 
       // TODO : MTO check for which all master this needs to be done
       // if (activeMaster.id < 14) {
-      const buffData =  await parseExcelData(file, activeMaster, pageType, selectedColumns);
+      const buffData =  await parseMTOExcelData(file,activeMaster, pageType, selectedColumns);
       // }
       getInitialData();
 
@@ -1307,7 +1333,7 @@ const useViewModify = (pageType: string) => {
         cellEditorParams: {
           values: bufferTypeData?.map((item: any) =>  item.dsc), 
         }, }
-        if (col.field === 'pl') return {
+        if (col.field === 'pl' || col.field==='plnm') return {
           ...col,
           editable: true,
           cellEditor: 'agRichSelectCellEditor',
@@ -1333,10 +1359,24 @@ const useViewModify = (pageType: string) => {
             values: Object.values(ccrGroupMaster || {}).map((group: any) => group.ccr_group_code),
           },
         };
+        if(col.field==='slt') return{
+          ...col,
+          editable: true,
+          cellEditor: 'agNumberCellEditor'
+
+        }
+        if(col.field==='mlt') return{
+          ...col,
+          editable: true,
+          cellEditor: 'agNumberCellEditor'
+
+        }
         
         else return {  ...col, editable: true, singleClickEdit: true }
         // return { ...col }
       })
+
+
 
       dispatch(UPDATE_COLDEFS([{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, minWidth: 300, headerName: 'Error', pinned: 'left'  },{colId: '',headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 80, pinned: 'left', lockPosition: 'left'},...updatedColdefs]))
       
@@ -1349,7 +1389,7 @@ const useViewModify = (pageType: string) => {
 
 
       // TODO: checked for buffer only make it dynamic
-      if(activeMaster.id!==501 && activeMaster.id!==502){
+      if(activeMaster.id!==501 && activeMaster.id!==502 && activeMaster.id!==503 && activeMaster.id!==504){
 
         
         intervalID = setInterval(async () => {
@@ -2182,12 +2222,11 @@ const useViewModify = (pageType: string) => {
     const currBuff = params.value;
 
     let val = params.value;
-    if(params.column.colId==='pl'){
+    if(params.column.colId==='pl' || params.column.colId==="plnm"){
 
       if(plantMaster){
 
       plantMaster.forEach((ele: any) => {
-        console.log("ele", ele);
       if (ele?.plant_id?.toString() === currBuff?.toString()) {
         
         val = ele.plant_name;
@@ -2200,7 +2239,6 @@ const useViewModify = (pageType: string) => {
       if(deptMaster){
 
       deptMaster.forEach((ele: any) => {
-        console.log("ele", ele);
       if (ele?.dept_id?.toString() === currBuff?.toString()) {
         
         val = ele.dept_name;
@@ -2404,8 +2442,6 @@ const useViewModify = (pageType: string) => {
 
     }
 
-    console.log("modified colDefs", modifiedColDefs);
-
     // return [actionsCol, ...modifiedColDefs];
     if(modifiedColDefs.find((colDef: any) => colDef.field === 'actions')){
       return;
@@ -2454,11 +2490,11 @@ const useViewModify = (pageType: string) => {
       const newId = 'maj'+uuidv4();
       const newIdMin = 'min'+uuidv4();
       newRow = {
-        plnm: '--',
-        majdsc: '--',
+        plnm: '',
+        majdsc: '',
         majId: newId,
         minData: [
-          {majId:newId,mindsc: '--', minId: newIdMin}
+          {majId:newId,mindsc: '', minId: newIdMin}
         ]
       }
     }
@@ -2470,7 +2506,8 @@ const useViewModify = (pageType: string) => {
   }
 
   const addRowToMtoMinGrid = () => {
-    const newSelectedMajReason = {...selectedMajReason,minData: [{majId: selectedMajReason.majId, mindsc: ''},...selectedMajReason.minData]};
+    const newMinId = 'min'+uuidv4();
+    const newSelectedMajReason = {...selectedMajReason,minData: [{majId: selectedMajReason.majId,minId: newMinId, mindsc: ''},...selectedMajReason.minData]};
     const newRowData:any = [];
     activeMaster.rowData.forEach(element => {
       if(element.majId===selectedMajReason.majId){
@@ -2495,7 +2532,8 @@ const useViewModify = (pageType: string) => {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
-      buffData: []
+      buffData: [],
+      at: pageType==="add"?"Add":"Modify"
     }
 
     let isValid = true;
@@ -2551,6 +2589,8 @@ const useViewModify = (pageType: string) => {
       }
     }
     catch(error){
+      toast.dismiss();
+      notifyError("Failed to create task!")
       console.log(error)
     }
     
@@ -2565,6 +2605,7 @@ const useViewModify = (pageType: string) => {
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
       ccrData: [],
+      at: pageType==="add"?"Add":"Modify"
     }
     const selectedRows:any = ref?.current?.api?.getSelectedRows();
     let isValid= true;
@@ -2610,6 +2651,61 @@ const useViewModify = (pageType: string) => {
     }
     catch(error){
       console.log(error)
+      toast.dismiss();
+      notifyError("Failed to create task!")
+    }
+  }
+  const onMTOAddPoogiData = async()=>{
+    notifyLoader("Saving Poogi Task...")
+
+
+    const PoogiPostObj: any = {
+      mid: activeMaster.id,
+      uid: user.user.user.id.toString(),
+      unm: user.user.user.name,
+      at: pageType==="add"?"Add":"Modify",
+      reasonData: [],
+    }
+    const selectedRows:any = ref?.current?.api?.getSelectedRows();
+    let isValid= true;
+    selectedRows.forEach((e:any)=>{
+      const newVal = _.cloneDeep(e);
+      newVal.plid = e.plnm;
+      plantMaster.forEach((elm: any)=>{if(elm.plant_name===e.plnm)newVal.plid = elm.plant_id})
+      if(newVal.err.error!==""){
+        isValid = false;
+      }
+      PoogiPostObj.reasonData.push(_.omit(newVal,['editable','err']));
+    })
+    if(!isValid){
+      toast.dismiss();
+      notifyError("Make sure you have resolved the error for the selected row!");
+      return;
+    }
+
+    try{
+      const response = await savePOOGIMasterTask(PoogiPostObj);
+      if(response.status===200){
+        const allData = [...activeMaster.rowData];
+        const indexesToRemove = selectedRows.map((row:any) => allData.indexOf(row));
+        indexesToRemove.sort((a:any,b:any) => b - a);
+        const newData:any = [];
+        allData.forEach((e:any,index: any)=>{
+          if(!indexesToRemove.includes(index)) newData.push(e);
+        })
+        dispatch(UPDATE_ROW_DATA(newData));
+        toast.dismiss();
+        notifySuccess("Poogi task updated!!")
+      }
+      else{
+        toast.dismiss();
+        notifyError("Failed to create the task....Please check your validations!")
+      }
+    }
+    catch(error){
+      toast.dismiss()
+      notifyError("Failed to save task")
+      console.log(error)
     }
   }
 
@@ -2623,6 +2719,9 @@ const useViewModify = (pageType: string) => {
       else if(activeMaster.id===502){
         onMTOAddCCRData();
       }
+      else if(activeMaster.id===503){
+        onMTOAddPoogiData();
+      }
       return;
     }
 
@@ -2633,10 +2732,9 @@ const useViewModify = (pageType: string) => {
         mid: activeMaster.id,
         uid: user.user.user.id.toString(),
         unm: user.user.user.name,
+        at: pageType==="add"?"Add":"Modify",
         ccrData: []
       }
-
-      console.log("ccrModify data", ccrModifyData);
 
       ccrModifyData.forEach((ele:any)=>{
         const e = _.cloneDeep(ele);
@@ -2666,6 +2764,8 @@ const useViewModify = (pageType: string) => {
         }
       }
       catch(error){
+        toast.dismiss();
+        notifyError("Failed to create task!")
         console.log(error)
       }
 
@@ -2680,19 +2780,47 @@ const useViewModify = (pageType: string) => {
         mid: activeMaster.id,
         uid: user.user.user.id.toString(),
         unm: user.user.user.name,
-        reasonData: []
+        reasonData: [],
+        at: pageType==="add"?"Add":"Modify"
+        
       }
 
 
-      poogiModifyData.forEach((ele:any)=>{
+      poogiModifyData?.forEach((ele:any)=>{
         const e = _.cloneDeep(ele);
-        plantMaster.forEach((elm: any)=>{if(elm.plant_name===ele.plnm)e.pl = elm.plant_id})
-        POOGIPostObj.ccrData.push(_.omit(e,['editable','error','warning', 'plnm']));
+        e.ie = null;
+        if (typeof e.majId === "string" && e.majId.startsWith("m")) {
+          e.majId = null;
+        }
+        else{
+          e.ie= true;
+        }
+        e.id = ele.id? ele.id: null;
+        e.iu = ele.iu? ele.iu: null;
+        e.majid = ele.majId;
+      
+        // Iterate through minData to check and update minId if it starts with 'm'
+        e.minData.forEach((minElement: any) => {
+          minElement.id = minElement.id?minElement.id: null;
+          if (typeof minElement.minId === "string" && minElement.minId.startsWith("m")) {
+            minElement.minId = null;
+            minElement.majId = null;
+          }
+          else{
+            minElement.ie = true;
+          }
+          minElement.minid = minElement.minId;
+          minElement.majid = minElement.majId;
+          minElement.iu = minElement.iu? minElement.iu: null;
+        });
+
+
+        plantMaster?.forEach((elm: any)=>{if(elm.plant_name===ele.plnm)e.pl = elm.plant_id})
+        POOGIPostObj.reasonData.push(_.omit(e,['editable','error','warning', 'plnm']));
       })
 
 
       try{
-        console.log("poogipostObj", POOGIPostObj);
         const response = await savePOOGIMasterTask(POOGIPostObj);
         if(response.status=== 200){
           toast.dismiss();
@@ -2707,6 +2835,8 @@ const useViewModify = (pageType: string) => {
         }
       }
       catch(error){
+        toast.dismiss();
+        notifyError("Failed to create task!")
         console.log(error)
       }
 
@@ -2724,6 +2854,7 @@ const useViewModify = (pageType: string) => {
       mid: activeMaster.id,
       uid: user.user.user.id.toString(),
       unm: user.user.user.name,
+      at: pageType==="add"?"Add":"Modify",
       buffData: []
     }
 
@@ -2758,6 +2889,8 @@ const useViewModify = (pageType: string) => {
       }
     }
     catch(error){
+      toast.dismiss();
+      notifyError("Failed to create task!")
       console.log(error)
     }
   }
@@ -2813,6 +2946,8 @@ const useViewModify = (pageType: string) => {
     }
     catch(error){
       console.log(error)
+      toast.dismiss();
+      notifyError("Failed to save draft!")
     }
   }
 
@@ -2863,10 +2998,81 @@ const useViewModify = (pageType: string) => {
     }
     catch(error){
       console.log(error)
+      toast.dismiss();
+      notifyError("Failed to save draft!")
     }
 
 
     return;
+  }
+  else if(activeMaster.id===503){
+
+    notifyLoader("Saving POOGI Draft...");
+    const POOGIPostObj: any = {
+      mid: activeMaster.id,
+      uid: user.user.user.id.toString(),
+      unm: user.user.user.name,
+      reasonData: [],
+      at: pageType==="add"?"Add":"Modify"
+      
+    }
+
+
+    poogiModifyData?.forEach((ele:any)=>{
+      const e = _.cloneDeep(ele);
+      e.ie = null;
+      if (typeof e.majId === "string" && e.majId.startsWith("m")) {
+        e.majId = null;
+      }
+      else{
+        e.ie= true;
+      }
+      e.id = ele.id? ele.id: null;
+      e.iu = ele.iu? ele.iu: null;
+      e.majid = ele.majId;
+      e.err = "";
+    
+      // Iterate through minData to check and update minId if it starts with 'm'
+      e.minData.forEach((minElement: any) => {
+        minElement.id = minElement.id?minElement.id: null;
+        if (typeof minElement.minId === "string" && minElement.minId.startsWith("m")) {
+          minElement.minId = null;
+          minElement.majId = null;
+        }
+        else{
+          minElement.ie = true;
+        }
+        minElement.err= "";
+        minElement.minid = minElement.minId;
+        minElement.majid = minElement.majId;
+        minElement.iu = minElement.iu? minElement.iu: null;
+      });
+
+      plantMaster?.forEach((elm: any)=>{if(elm.plant_name===ele.plnm)e.pl = elm.plant_id})
+      POOGIPostObj.reasonData.push(_.omit(e,['editable','error','warning', 'plnm']));
+    })
+
+    try{
+      const response = await savePOOGIMasterDraft([POOGIPostObj]);
+      if(response.status=== 200){
+        toast.dismiss();
+        notifySuccess("Saved POOGI Task Successfully");
+      }
+      else{
+        toast.dismiss();
+        notifyError("Failed to create the task...")
+      }
+    }
+    catch(error){
+      toast.dismiss();
+      notifyError("Failed to create task!")
+      console.log(error)
+    }
+
+
+    return;
+
+
   }
   }
 
@@ -2879,17 +3085,13 @@ const useViewModify = (pageType: string) => {
   const onMinReasonEditingStopped = (params: any)=>{
      const newData = _.cloneDeep(activeMaster.rowData);
      let majIdIndex = 0;
-     console.log("active master rowDat", activeMaster.rowData);
-     console.log("active master newData", newData);
      activeMaster.rowData.forEach((ele:any,index:number)=>{
        if(ele?.majId===selectedMajReason?.majId){
          majIdIndex = index;
        }
      })
-     console.log("new data before", newData);
 
-     newData[majIdIndex] &&  (newData[majIdIndex].minData[0].mindsc = params.newValue);
-     console.log("new data after ", newData);
+     newData[majIdIndex] &&  (newData[majIdIndex].minData[params.node.rowIndex].mindsc = params.newValue);
      dispatch(UPDATE_ROW_DATA(newData));
      setSelectedMajReason(newData[majIdIndex]);
   }
@@ -2979,10 +3181,20 @@ const useViewModify = (pageType: string) => {
     onMTOSaveAsDraft,
     MTOPoogiMinorColdef: [{
       headerName: "Sr No.",
+      maxWidth: 90,
       cellStyle: {
         "textAlign": "center"},
       valueGetter: "node.rowIndex + 1"
-    },...activeMaster.colDefs.filter((ele: any) =>( ele.field==='pactions'|| ele.colId === 'minId' || ele.colId === 'mindsc')), {
+    },...activeMaster.colDefs.filter((ele: any) =>( ele.field==='pactions'|| ele.colId === 'minId' || ele.colId === 'mindsc'))
+    .map((col: any) => {
+      if (col.colId === "mindsc") {
+        return {
+          ...col,
+          cellRenderer: MinReasonDescCell,
+        };
+      }
+      return col;
+    }), {
       headerName: "",
       cellRenderer: 'poogiEditDeleteCellRenderer',
       maxWidth: 100
@@ -2990,6 +3202,7 @@ const useViewModify = (pageType: string) => {
     MTOPoogiMajorColdef:[
       {
         headerName: "Sr No.",
+        maxWidth: 90,
         cellStyle: {
           textAlign: "center",
         },

@@ -15,25 +15,17 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
     const dispatch = useDispatch();
 
     const detailTableRowData = useSelector((state: any)=> state.mto.taskPendingRowData)
-
+  console.log("props", props);
 
     const onClick = (status:string)=>{
         if(status==='Approved'){
             const newData = _.cloneDeep(detailTableRowData);
-            newData.forEach((ele:any)=>{
-                if(ele.tbmId===props.data.tbmId){
-                    ele.appStatus = true;
-                }
-            })
+            newData[props.node.rowIndex].appStatus = true;
             dispatch(SET_TASK_PENDING_ROW_DATA(newData));
         }
         else{
             const newData = _.cloneDeep(detailTableRowData);
-            newData.forEach((ele:any)=>{
-                if(ele.tbmId===props.data.tbmId){
-                    ele.appStatus = false;
-                }
-            })
+            newData[props.node.rowIndex].appStatus = true;
             dispatch(SET_TASK_PENDING_ROW_DATA(newData));
         }
     }

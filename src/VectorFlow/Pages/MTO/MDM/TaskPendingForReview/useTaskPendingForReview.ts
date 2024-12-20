@@ -118,7 +118,35 @@ const useTaskPendingForReview = ()=>{
   const {mutateAsync: putMTOBufferData} = usePutMtoBufferMasterData();
   const {mutateAsync: putMTOCCRData} = usePutMtoCCRMasterData();
 
-  const convertColumnsFormat = (columns:any) => {
+  const convertColumnsFormat = (columns:any, mid: any) => {
+    if(mid===503){
+        const newColDefs = [
+            {
+                field: "majdsc",
+                headerName: "Major Reason",
+                position: 1,
+                dataType: "string",
+                visible: true
+            },
+            {
+                field: "plnm",
+                headerName: "Plant",
+                position: 2,
+                dataType: "string",
+                visible: true
+            },
+            {
+                field: "mindsc",
+                headerName: "Minor Reason",
+                position: 3,
+                dataType: "string",
+                visible: true
+            },
+
+        ]
+        return newColDefs;
+    }
+
     const sortedColumns = columns.sort((a:any,b:any)=>parseInt(a.col_Position)-parseInt(b.col_Position));
     return sortedColumns.map((col:any, index:any) => ({
         field:col.key,
@@ -182,7 +210,8 @@ const useTaskPendingForReview = ()=>{
 
                         
                         const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                        const newColDefs = convertColumnsFormat(existingColumnFields);
+                        const newColDefs = convertColumnsFormat(existingColumnFields, taskData.mid);
+                        console.log("detail table coldef....", newColDefs);
                         newColDefs.push(
                             {
                                 colId: 'selectStatus',
@@ -313,6 +342,7 @@ const useTaskPendingForReview = ()=>{
                     );
                     
                     const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
+                    console.log("detialTable coldef.....",mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                     setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                     setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                 // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));
@@ -612,7 +642,6 @@ const useTaskPendingForReview = ()=>{
             
             const newApprovedData:any = [];
             detailTableRowData.forEach((ele:any)=>{
-            console.log("ele.appStatus", ele.appStatus);
             const newEle = {
                 bid: ele.bid? ele.bid: null,
                 bcd: ele.bcd,
