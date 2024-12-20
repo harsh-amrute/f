@@ -56,7 +56,7 @@ const ModalManageUsers = ({
       //   notifyError("Password Cannot Be Empty !")
       //   return 
       // }
-      if (value.password.length > 0) {
+      if (infoUser.edit===false && value.password.length > 0) {
         setInfoUser({
           ...infoUser,
           name: value.username,
@@ -170,7 +170,7 @@ const ModalManageUsers = ({
                               pattern: {
                                 value:
                                   // eslint-disable-next-line no-useless-escape
-                                  /^\s*([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})\s*$/i,
+                                  /^[a-zA-Z0-9][a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/,
                                 message: t("loginPage.validate.email"),
                               },
                               maxLength: {
@@ -187,40 +187,58 @@ const ModalManageUsers = ({
                           )}
                         </div>
 
-                        <div className="modal-Per-input--box">
-                          <label htmlFor="password" className="modal-Per-label">
-                            {t("profile.tabContent.manageUsers.modal.password")}
-                          </label>
-                          <input
-                            id="password"
-                            type="password"
-                            placeholder={contentModal.callApi === 2 ? "***********" : ""}
-                            className={`modal-Per-input ${
-                              errors.password != null ? "modal-input--error" : ""
-                            }`}
-                            {...register("password", {
-                              required: {
-                                value: true,
-                                message: t("profile.tabContent.manageUsers.validate.passwordRequired"), 
-                              },
-                              minLength: {
-                                value: 8,
-                                message: t("loginPage.validate.password"), 
-                              },
-                              maxLength: {
-                                value: 15,
-                                message: t("loginPage.validate.passwordMaxLength"), 
-                              },
-                              pattern: {
-                                value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
-                                message: t("profile.tabContent.manageUsers.validate.formatPassword"),
-                              },
-                            })}
-                          />
-                          {errors.password != null && (
-                            <Errors errors={errors} name="password" />
-                          )}
-                        </div>
+                        {infoUser.edit === false && (
+                          <div className="modal-Per-input--box">
+                            <label
+                              htmlFor="password"
+                              className="modal-Per-label"
+                            >
+                              {t(
+                                "profile.tabContent.manageUsers.modal.password"
+                              )}
+                            </label>
+                            <input
+                              id="password"
+                              type="password"
+                              placeholder={
+                                contentModal.callApi === 2 ? "***********" : ""
+                              }
+                              className={`modal-Per-input ${
+                                errors.password != null
+                                  ? "modal-input--error"
+                                  : ""
+                              }`}
+                              {...register("password", {
+                                required: {
+                                  value: !infoUser.edit,
+                                  message: t(
+                                    "profile.tabContent.manageUsers.validate.passwordRequired"
+                                  ),
+                                },
+                                minLength: {
+                                  value: 8,
+                                  message: t("loginPage.validate.password"),
+                                },
+                                maxLength: {
+                                  value: 15,
+                                  message: t(
+                                    "loginPage.validate.passwordMaxLength"
+                                  ),
+                                },
+                                pattern: {
+                                  value:
+                                    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
+                                  message: t(
+                                    "profile.tabContent.manageUsers.validate.formatPassword"
+                                  ),
+                                },
+                              })}
+                            />
+                            {errors.password != null && (
+                              <Errors errors={errors} name="password" />
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       <div className="list-roles">
