@@ -21,7 +21,7 @@ import AddRemoveCellRenderer from './AddRemoveCellRenderer';
 import { useUserData } from '../../../../../context';
 import MTOErrorWarningCell from './MTOErrorWarningCell';
 import PoogiEditDeleteCell from './PoogiEditDeleteCell';
-import { SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_CCR_INITIAL_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
+import { RESET_MTO_STATE, SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_CCR_INITIAL_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 import MTOCalendarEditCellRenderer from './MTOCalendarEditCellRenderer';
 import ToggleButton from './ToggleButton';
 import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../VectorFlow/Services/MTO/Common/Masters';
@@ -1919,6 +1919,7 @@ const useViewModify = (pageType: string) => {
        
        else if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
        {
+        dispatch(RESET_MTO_STATE())
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
         dispatch(SET_BUFFER_INITIAL_DATA([]));
@@ -2327,6 +2328,7 @@ const useViewModify = (pageType: string) => {
             editable,
           };
         }
+        // if(colDef.field==='')
         return {
           ...colDef,
           editable

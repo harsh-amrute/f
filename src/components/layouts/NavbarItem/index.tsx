@@ -28,6 +28,7 @@ import DDQAnalytics from "../../../VectorFlow/Pages/MTO/Production/DueDateQuotat
 import DRMAnalytics from "../../../VectorFlow/Pages/MTO/Production/DynamicReleaseManagement/DRMAnalytics";
 import DeptWiseAnalytics from "../../../VectorFlow/Pages/MTO/Production/DepartmentWiseBMReport/DeptWiseAnalytics";
 import ResourceUtilAnalytics from "../../../VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization/ResourceUtilAnalytics";
+import { RESET_MTO_STATE } from "../../../redux/actions/MTO";
 
 const NavbarItem = ({
   setWidthResponsive,
@@ -51,6 +52,7 @@ const NavbarItem = ({
 
   const resetState = () => {
     dispatch(RESET_STATE());
+    dispatch(RESET_MTO_STATE());
   }
   const RenderListMenu = (props: { listMenu: any }) => {
 

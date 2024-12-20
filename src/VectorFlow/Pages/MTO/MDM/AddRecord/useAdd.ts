@@ -1,7 +1,7 @@
 import { useSelector,useDispatch } from 'react-redux'
 import { RootState } from '../../../../../redux/store/store';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
-import { RESET_STATE, REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER,ADD_COLDEFS, UPDATE_PROGRESS_STATE, FILL_MASTERS, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN ,SYNC_ACTIVE_MASTER_TO_MASTER,REMOVE_COLDEFS,UPDATE_ROW_DATA,SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
+import { REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER,ADD_COLDEFS, UPDATE_PROGRESS_STATE, FILL_MASTERS, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN ,SYNC_ACTIVE_MASTER_TO_MASTER,REMOVE_COLDEFS,UPDATE_ROW_DATA,SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { useEffect, useState } from 'react';
 
@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail, useGetBufferTypeMaster } from '../../../../../VectorFlow/Services/MTA/MDM';
 import { createErrorRowData} from '../../../../../helpers/utils'
 import { ColDef } from 'ag-grid-enterprise';
+import { RESET_MTO_STATE } from '../../../../../redux/actions/MTO';
 
 
 const useAdd=()=>{
@@ -101,7 +102,7 @@ const useAdd=()=>{
       }
 
     const onCancel=()=>{
-        dispatch(RESET_STATE());
+        dispatch(RESET_MTO_STATE());
         navigate('/mto/master-data-management/control-panel');
     }
 
