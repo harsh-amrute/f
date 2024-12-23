@@ -75,6 +75,11 @@ export namespace MDMService {
       headers: { 'Content-Type': 'application/json' }
     })
   }
+  export const deleteMTODraft = async(did:string)=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/DeleteDraft/`,
+    {did}
+    )
+  }
 
   export const getSeasonalityDetails = async (body:any) => {
     return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/GetSeasonalityDetails',body,{
@@ -207,7 +212,7 @@ export namespace MDMService {
   }
 
   export const getMTOTaskById = async (taskId: string) => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetTaskById/?tid=${taskId}&mmid=1`, {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetTaskById/?tid=${taskId}&mmid=3`, {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -221,6 +226,11 @@ export namespace MDMService {
 
   export const savePOOGIMasterTask = async (body: any) => {
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SavePoogiReasonMasterTask/?forwardUsers=true', 
+      body
+    )
+  }
+  export const savePOOGIMasterDraft = async (body: any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SavePoogiReasonDraft/', 
       body
     )
   }
@@ -276,6 +286,9 @@ export namespace MDMService {
     }
     else if(mid===502){
       return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetCCRDraftData/?did=${id}&mid=502`)
+    }
+    else if(mid===503){
+      return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO+ `/GetPoogiReasonDraftData/?did=${id}&mid=503`)
     }
   }
 

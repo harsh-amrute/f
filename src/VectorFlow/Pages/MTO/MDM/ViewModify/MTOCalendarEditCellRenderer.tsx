@@ -257,10 +257,10 @@ const MTOCalendarEditCellRenderer = () => {
            </VFModalCard>
      <div style={{display: 'flex', margin:'4px auto', width: '80px', justifyContent:'center'}}>
         <button onClick={()=>{setIsModalOpen(true)}} style={{background: 'transparent'}}>
-            <img height={24} width={24} src="/assets/img/VectorFLOW/NMS/edit-draft.svg" />
+            <img height={16} width={16} src="/assets/img/VectorFLOW/NMS/edit-draft.svg" />
         </button>
         <button style={{background: 'transparent'}}>
-            <img height={24} width={24} src="/assets/img/VectorFLOW/NMS/delete-draft.svg" />
+            <img height={16} width={16} src="/assets/img/VectorFLOW/NMS/delete-draft.svg" />
         </button>
     </div>
     </>

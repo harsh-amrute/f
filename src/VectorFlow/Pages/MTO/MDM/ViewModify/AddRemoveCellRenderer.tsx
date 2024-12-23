@@ -6,6 +6,7 @@ import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MD
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
 import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
+import _ from 'lodash';
 
 
 const AddRemoveCellRenderer = (params: any) => {
@@ -69,8 +70,19 @@ const AddRemoveCellRenderer = (params: any) => {
         // Check if the entered Buffer type is unique 
         if(activeMaster.id===501){
 
-          if(params.data.bsz===0 || params.data.bsz==='0'){
-            notifyError("Buffer size cannot be 0!");
+
+          if(params.data.bsz % 1 !== 0){
+            notifyError("Buffer size cannot be a fractional value!");
+            return;
+          }
+
+          if(Number(params.data.bsz)>365){
+            notifyError("Buffer size cannot exceed for over a year!");
+            return;
+          }
+          if(Number(params.data.bsz)<=0 || params.data.bsz==='0'){
+          
+            notifyError("Buffer size must be greater than 0!");
             return;
           }
 
@@ -145,6 +157,11 @@ const AddRemoveCellRenderer = (params: any) => {
       }
       else if(activeMaster.id=== 503){
         if(params.data.mindsc!==undefined){
+          if(params.data.mindsc===""){
+            notifyError("Add a minor reason for the selected major reason");
+            return;
+          }
+          
           const newColDefs:any = [];
           activeMaster.colDefs.forEach((ele:any)=>{
             const newColDef = {...ele};
@@ -176,8 +193,29 @@ const AddRemoveCellRenderer = (params: any) => {
             }
         }
 
+        const newInitialData = _.cloneDeep(poogiInitialData);
+        newInitialData.forEach((ele:any)=>{
+          if(ele.majId===params.data.majId){
+            ele.minData = [params.data,...ele.minData];
+          }
+        })
+        dispatch(SET_POOGI_INITIAL_DATA(newInitialData));
+
         }
         else{
+
+          if(params.data.majdsc===""){
+            notifyError("Major reason cannot be empty");
+            return;
+          }
+          else if(params.data.minData[0].mindsc===""){
+            notifyError("Add atleast one minor reason for the major reason");
+            return;
+          }
+          else if(params.data.plnm===""){
+            notifyError("Please select a valid plant from the dropdown");
+            return;
+          }
 
           const newColDefs:any = [];
           activeMaster.colDefs.forEach((ele:any)=>{
@@ -185,9 +223,9 @@ const AddRemoveCellRenderer = (params: any) => {
             delete newColDef.editable;   
             newColDefs.push(newColDef);
           })
-          if(poogiInitialData && poogiInitialData.length) dispatch(SET_POOGI_INITIAL_DATA([activeMaster.rowData[0], ...poogiInitialData]));
+          if(poogiInitialData && poogiInitialData.length) dispatch(SET_POOGI_INITIAL_DATA([params.data, ...poogiInitialData]));
           else dispatch(SET_POOGI_INITIAL_DATA([activeMaster.rowData[0]]));
-          if(poogiModifyData && poogiModifyData.length) dispatch(SET_POOGI_MODIFY_DATA([activeMaster.rowData[0], ...poogiModifyData]));
+          if(poogiModifyData && poogiModifyData.length) dispatch(SET_POOGI_MODIFY_DATA([params.data, ...poogiModifyData]));
           else dispatch(SET_POOGI_MODIFY_DATA([activeMaster.rowData[0]]));
 
           

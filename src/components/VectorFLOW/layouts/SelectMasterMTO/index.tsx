@@ -12,8 +12,9 @@ import { type MDMMasterState, type Option } from "../../../../VectorFlow/types/M
 import { useDispatch, useSelector } from 'react-redux';
 import { notifyError } from "../../../../helpers/notify";
 import { RootState } from "../../../../redux/store/store";
-import { ADD_MASTER, FILL_SELECTED_OPTIONS, REMOVE_MASTER, RESET_STATE, UPDATE_MASTER_CHECKED_STATUS } from "../../../../redux/actions/MDM";
+import { ADD_MASTER, FILL_SELECTED_OPTIONS, REMOVE_MASTER, UPDATE_MASTER_CHECKED_STATUS } from "../../../../redux/actions/MDM";
 import VFLoader from "../../commons/VFLoader";
+import { RESET_MTO_STATE } from "../../../../redux/actions/MTO";
 
 interface SelectMasterProps {
     data: MDMMasterState[],
@@ -88,7 +89,7 @@ const SelectMaster = (
     }
 
     const onCancel = () => {
-        dispatch(RESET_STATE());
+        dispatch(RESET_MTO_STATE());
         navigate('/mto/master-data-management/control-panel');
     }
 
