@@ -258,12 +258,8 @@ const OverallBmReport = () => {
         rn_id: UIGridCode.ProdOverallBMReport,
       });
 
-      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
       setInitialColumnState(newConfig);
-
-      if (!data) {
-        console.error("Failed to apply column state");
-      }
     } catch (error) {
       console.error(error);
     }
@@ -286,7 +282,6 @@ const OverallBmReport = () => {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
       const modifiedResponse = addDefaultAttributes(response?.data?.data);
-      console.log("final", modifiedResponse)
       // const coldef = mapApiResponseToColDefs(modifiedResponse);
       setResetColDef(modifiedResponse);
       const coldef = mapApiResponseToColDefs(
@@ -662,7 +657,6 @@ const undoClicked = async (props:any,orderId: string) => {
 
   const onSelectChange =  (props:any, option: any, index: number)=>{
 
-    console.log("Selected Option:", option, "Row Index:", index);
 
     const newGridData:any = [];
     props.api.forEachNode((node:any)=>{
@@ -719,8 +713,6 @@ const undoClicked = async (props:any,orderId: string) => {
                props.data.oca === "Short Close" ? "Short Close" : "Complete Close",
                props.data.ok
              );
-           } else {
-             console.log("Button Disabled: No Action Selected");
            }
          }}
        >
