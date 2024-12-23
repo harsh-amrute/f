@@ -251,6 +251,8 @@ const useViewModify = (pageType:string) => {
           toolPanelParams: {
             suppressPivots: true,
             suppressPivotMode: true,
+            suppressRowGroups: true,
+            suppressValues: true,
           },
         
         },
