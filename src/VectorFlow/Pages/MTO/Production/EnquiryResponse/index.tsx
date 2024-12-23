@@ -48,7 +48,7 @@ const EnquiryResponse = () => {
   const [hasProductGroup, setHasProductGroup] = useState<any>(false);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState<any>(undefined);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { data } = useGetEnquiryResData() || {};
@@ -574,18 +574,28 @@ const EnquiryResponse = () => {
     }
   }
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (coldefs?:any) => {
     try {
-      const config = currentGridRef.current.api.getColumnState();
+      if (coldefs) {
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdEnquiryResponse,
+          cs: JSON.stringify(coldefs),
+        };
+        await updateUserUIReportConfigData([payload]);
+      } else {
+        if (currentGridRef?.current?.api) {
+          const config = currentGridRef.current.api.getColumnState();
 
-      const payload = {
-        un: user.user.name,
-        rn_id: UIGridCode.ProdEnquiryResponse,
-        cs: JSON.stringify(config)
+          const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.ProdEnquiryResponse,
+            cs: JSON.stringify(config)
+          }
+          await updateUserUIReportConfigData([payload]);
+          await getUserColumnConfig();
+        }
       }
-      await updateUserUIReportConfigData([payload]);
-      await getUserColumnConfig();
-
     } catch (error) {
       console.error(error);
     }
@@ -599,8 +609,10 @@ const EnquiryResponse = () => {
     if (isReset) {
       setColumnState(myColDefs);
       setIsReset(false)
-    }else{
-      handleSaveClick();
+    } else {
+      if (isReset !== undefined) {
+        handleSaveClick(myColDefs);
+      }
     }
   }, [isReset]);
 
@@ -618,7 +630,7 @@ const EnquiryResponse = () => {
 
   const { screenHeight } = useViewPort()
 
-  const [HeaderData, setHeaderData] = useState([{}]);
+  const [HeaderData, setHeaderData] = useState([]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
   const reportName = "EnquiryResponse";
@@ -636,7 +648,6 @@ const EnquiryResponse = () => {
   }
 
   useEffect(() => {
-    getUserColumnConfig();
     setColumnDef();
   }, [])
 
@@ -647,7 +658,10 @@ const EnquiryResponse = () => {
   }
 
   useEffect(() => {
-    setMyColDefs(getColumnDefinations(HeaderData, CustomHeader));
+    if (HeaderData.length > 0) {
+      setMyColDefs(getColumnDefinations(HeaderData, CustomHeader));
+      getUserColumnConfig();
+    }
   }, [HeaderData])
 
   const ExcelExport =()=>{

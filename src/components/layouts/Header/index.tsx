@@ -150,7 +150,18 @@ const Header = (props:HeaderProps) => {
     if(urlExcludeHeader.includes(location.pathname)){
       return(
         <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo}>
-            <HeaderStyled.SCImg src="/assets/VectorFlow_black.svg" alt="logo" isHideLogo={isHideLogo} />
+            {process.env.REACT_APP_CLIENT_NAME?.length !== 0 ? (
+            <HeaderStyled.ClientNameText
+               isHideLogo={isHideLogo}>
+                {process.env.REACT_APP_CLIENT_NAME}
+            </HeaderStyled.ClientNameText>
+          ) : (
+            <HeaderStyled.SCImg
+              src="/assets/VectorFlow_black.svg"
+              alt="logo"
+              isHideLogo={isHideLogo}
+            />
+          )}
           </HeaderStyled.SCWrapperImg>
       )
     }

@@ -43,6 +43,8 @@ type filterType = {
     values: string[]
 }
 
+
+
 interface MTOActionToolBarProps {
     comp?: string,
     onDateChange?: (date: string) => void;
@@ -77,7 +79,7 @@ interface MTOActionToolBarProps {
     isReleaseButton?: boolean
     onOrderRelease?: () => void;
     onCheckBoxToggle?: any;
-    isReleaseButtonDisabled?: boolean,
+    isReleaseButtonDisabled?: boolean
     utilityBtns?: ReactElement | null,
     handleSaveClick?: () => void
     handleResetClick?: () => void
@@ -135,7 +137,6 @@ const MTOActionToolBar = ({
     const datetime = moment(d).format(format2);
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
-
     return (
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer
@@ -220,7 +221,6 @@ const MTOActionToolBar = ({
                         </div>
                     }
                 </>
-
                 <>
                     {isGoBackButton &&
 
