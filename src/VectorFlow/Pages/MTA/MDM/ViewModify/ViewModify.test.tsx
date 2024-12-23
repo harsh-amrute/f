@@ -1048,7 +1048,8 @@ describe("Handles All Interactions (Mocking Redux Store)",() => {
       chunkSize:100,
       recordCount:0,
       isDataAvailableLocally:true,
-      lastRunDate:''
+      lastRunDate:'',
+      isSavingToDraft:false
     }
 
     const mockStore = createStore(updatedMockState);

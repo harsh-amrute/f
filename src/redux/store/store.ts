@@ -18,7 +18,8 @@ const mdmState:MDMStore = {
     chunkSize:20000,
     recordCount:0,
     isDataAvailableLocally:false,
-    lastRunDate:''
+    lastRunDate:'',
+    isSavingToDraft:false
 }
 
 const mtaState: MTAStore = {

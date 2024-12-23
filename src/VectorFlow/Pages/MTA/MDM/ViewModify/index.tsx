@@ -34,6 +34,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
     const {
         isSelectMasterOpen,
+        isSavingToDraft,
         options,
         selectedOptions,
         activeMaster,
@@ -359,6 +360,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             disableDeleteSelected={activeMaster.rowData.length < 1}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
+            isSavingToDraft={isSavingToDraft ?? false}
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
             onEditOnline={()=>onEditOnline('editOnline')}

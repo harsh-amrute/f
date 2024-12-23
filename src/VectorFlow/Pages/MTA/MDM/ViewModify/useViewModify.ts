@@ -3,7 +3,7 @@ import { type Option, type Field,type GetMasterDataPayload, type GridRef, type Q
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail, useGetUploadProgress } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS, UPDATE_IS_SAVING_DRAFT} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -34,6 +34,7 @@ const useViewModify = (pageType:string) => {
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
     const isDataAvailableLocally = useSelector((state:RootState) => state.mdm.isDataAvailableLocally)
+    const isSavingToDraft = useSelector((state:RootState) => state.mdm.isSavingToDraft)
 
     const [tempRecordCount,setTempRecordCount] = useState<number>(0)
 
@@ -1364,6 +1365,7 @@ const useViewModify = (pageType:string) => {
       }
 
       const onSaveToDraft = async () => {
+        dispatch(UPDATE_IS_SAVING_DRAFT(true))
         let newData:any = []
         const errorOrWarning = activeMaster.rowData.find((row:any)=>(Object.keys(row).includes('error'))||(Object.keys(row).includes('warning')));
         if(errorOrWarning){
@@ -1405,6 +1407,8 @@ const useViewModify = (pageType:string) => {
             return notifySuccess("Draft Created Successfully")
           }
         }
+        dispatch(UPDATE_IS_SAVING_DRAFT(false))
+        //isSavingToDraft
          notifyError("Something Went Wrong")
          return false
       
@@ -1599,6 +1603,7 @@ const useViewModify = (pageType:string) => {
     return {
         colDefs,
         isSelectMasterOpen,
+        isSavingToDraft,
         options,
         selectedOptions,
         activeMaster,

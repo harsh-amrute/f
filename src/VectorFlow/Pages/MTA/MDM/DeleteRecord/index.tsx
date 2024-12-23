@@ -47,6 +47,7 @@ const DeleteRecord = () => {
         isWarningModalOpen,
         recordCount,
         isUploadModalOpen,
+        isSavingToDraft,
         toggleUploadModal,
         onWarningModalClose,
         onWarningModalSuccess,
@@ -300,6 +301,7 @@ const DeleteRecord = () => {
               masterProgress={activeMaster.progress}
               onReset={onReset}
               onSaveToDraft={onSaveToDraft}
+              isSavingToDraft={isSavingToDraft ?? false}
               onEditOnlineSave={onEditOnlineSave}
               editOnline={false}
               deleteOnline={editOnline}
