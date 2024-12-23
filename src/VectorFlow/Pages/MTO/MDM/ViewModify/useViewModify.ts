@@ -316,10 +316,12 @@ const useViewModify = (pageType: string) => {
   },[activeMaster.id])
 
   useEffect(()=>{
-    if(bufferTypeData){
+    if(activeMaster.id===501){
 
-      const newColDef = _.cloneDeep(activeMaster.colDefs);
-      // Iterate over the column definitions and update based on colId
+      if(bufferTypeData){
+        
+        const newColDef = _.cloneDeep(activeMaster.colDefs);
+        // Iterate over the column definitions and update based on colId
       newColDef.forEach((col: any) => {
         if (col.colId === 'bt') {
           col.valueFormatter = myFormatter;
@@ -335,6 +337,7 @@ const useViewModify = (pageType: string) => {
       }})
       dispatch(UPDATE_COLDEFS([...newColDef]));
     }
+  }
 
   },[bufferTypeData])
 
@@ -351,14 +354,35 @@ const useViewModify = (pageType: string) => {
           col.cellRenderer = ToggleButton;
         }
       });
-      newColDef.forEach((ele:any)=>{ele.cellStyle = (params:any)=>{
-        if(params.data.cid===null || params.data.cid===undefined || params.data.iv===false){
-          return {color: "rgb(128, 0, 64)"}
+     
+      if(activeMaster.id===502){
+
+        newColDef.forEach((ele:any)=>{ele.cellStyle = (params:any)=>{
+          if(params.data.cid===null || params.data.cid===undefined || params.data.iv===false){
+            return {color: "rgb(128, 0, 64)"}
+          }
         }
+        ele.valueFormatter = myCCRFormatter
       }
-      ele.valueFormatter = myCCRFormatter
+    )
+  }
+  else if(activeMaster.id===503){
+    newColDef.forEach((ele:any)=>{ele.cellStyle = (params:any)=>{
+      if (
+        (params.data.majId?.toString().startsWith('m') || params.data.minId?.toString().startsWith('m')) ||
+        params.data.iu === true ||
+        params.data.id === true
+      ) {
+        return { color: "rgb(128, 0, 64)" };
+      }
     }
-      )
+    ele.valueFormatter = myCCRFormatter
+  }
+)
+  }
+
+
+
       dispatch(UPDATE_COLDEFS([...newColDef]));
     }
 
@@ -2642,8 +2666,12 @@ const useViewModify = (pageType: string) => {
       if(activeMaster.id===503){
         return {
           ...colDef,
-          // editable: (params: any) =>{ (params.data.minId && params.node.rowIndex === useSelector((state: any) => state.mto.editableMinRow)) || ((!params.data.minId) && params.node.rowIndex === useSelector((state: any) => state.mto.editableMajRow))  }
-          editable
+          cellStyle: (params:any)=>{
+            if(params.data.majId?.toString().startsWith('m')){
+              return {color: "rgb(128, 0, 64)"}
+            }
+          },
+         editable
         }
       }
 
@@ -3151,10 +3179,12 @@ const useViewModify = (pageType: string) => {
     }
 
     
-    activeMaster.rowData.forEach((ele:any)=>{
-      const e = _.cloneDeep(ele);
-      let isBuffChanged = false;
-      bufferTypeData?.forEach((elm:any)=>{
+    if(pageType==='add'){
+
+      activeMaster.rowData.forEach((ele:any)=>{
+        const e = _.cloneDeep(ele);
+        let isBuffChanged = false;
+        bufferTypeData?.forEach((elm:any)=>{
         if(elm.dsc===ele.bt){
           isBuffChanged = true;
           e.bt=elm.id;
@@ -3169,13 +3199,39 @@ const useViewModify = (pageType: string) => {
       e.err="";
       (!(e.iv===true || e.iv===false))&& (e.iv= false);
       if(!e.bid)e.bid=null;
-
+      
       if(e.bid===null || e.iv===false){
         BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
       }
     })
+  }
+  else{
+    bufferModifyData.rowData.forEach((ele:any)=>{
+      const e = _.cloneDeep(ele);
+      let isBuffChanged = false;
+      bufferTypeData?.forEach((elm:any)=>{
+      if(elm.dsc===ele.bt){
+        isBuffChanged = true;
+        e.bt=elm.id;
+      }
+    })
+    if(isBuffChanged===false){
+      e.bt=bufferTypeData[0].id;
+    }
+    e.ib= (e.ib==="false"?0: 1);
+    e.mlt = parseInt(e.mlt);
+    e.slt = parseInt(e.slt);
+    e.err="";
+    (!(e.iv===true || e.iv===false))&& (e.iv= false);
+    if(!e.bid)e.bid=null;
+    
+    if(e.bid===null || e.iv===false){
+      BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
+    }
+  })
 
-    console.log("posting this as draft", BufferPostObj);
+  }
+
 
     try{
       

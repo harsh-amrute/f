@@ -91,6 +91,18 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
+    '/masters-interceptor/control-panel',
+    "/masters-interceptor/saved-drafts",
+    "/masters-interceptor/task-status",
+    '/masters-interceptor/task-pending',
+    "/masters-interceptor/data-modification-history",
+    '/mto/master-data-management/control-panel',
+    "/mto/master-data-management/control-panel/add",
+    "/mto/master-data-management/control-panel/view-modify",
+    "/mto/master-data-management/saved-drafts",
+    "/mto/master-data-management/task-status",
+    "/mto/master-data-management/task-pending",
+    "/mto/master-data-management/data-modification-history",
   ]
   const urlAllPage = [
     ...authenPage,
@@ -184,18 +196,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
     '/landing-page',
 
-    '/masters-interceptor/control-panel',
-    "/masters-interceptor/saved-drafts",
-    "/masters-interceptor/task-status",
-    '/masters-interceptor/task-pending',
-    "/masters-interceptor/data-modification-history",
-    '/mto/master-data-management/control-panel',
-    "/mto/master-data-management/control-panel/add",
-    "/mto/master-data-management/control-panel/view-modify",
-    "/mto/master-data-management/saved-drafts",
-    "/mto/master-data-management/task-status",
-    "/mto/master-data-management/task-pending",
-    "/mto/master-data-management/data-modification-history",
+  
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []

@@ -70,27 +70,34 @@ const AddRemoveCellRenderer = (params: any) => {
         // Check if the entered Buffer type is unique 
         if(activeMaster.id===501){
 
-
-          if(params.data.bsz % 1 !== 0){
+          if (params.data.bsz % 1 !== 0) {
             notifyError("Buffer size cannot be a fractional value!");
             return;
           }
 
-          if(Number(params.data.bsz)>365){
+          if (Number(params.data.bsz) > 365) {
             notifyError("Buffer size cannot exceed for over a year!");
             return;
           }
-          if(Number(params.data.bsz)<=0 || params.data.bsz==='0'){
-          
+          if (Number(params.data.bsz) <= 0 || params.data.bsz === '0') {
             notifyError("Buffer size must be greater than 0!");
             return;
           }
 
-          if(params.data.bsz===""){
-            notifyError("Buffer size cannot be empty!")
+          if (params.data.bsz === "") {
+            notifyError("Buffer size cannot be empty!");
             return;
           }
-          
+
+          if (params.data.slt === null || params.data.slt < 0 || params.data.slt > 365) {
+            notifyError("SLT should be a value between 0 and 365!");
+            return;
+          }
+
+          if (params.data.mlt === null || params.data.mlt < 0 || params.data.mlt > 365) {
+            notifyError("MLT should be a value between 0 and 365!");
+            return;
+          }    
           
           let isValid = true;
           bufferInitialData?.forEach((e:any)=>{

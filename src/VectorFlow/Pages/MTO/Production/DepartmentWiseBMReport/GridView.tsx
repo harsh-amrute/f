@@ -36,6 +36,7 @@ const GridView = memo(({
         <>
             <VFWrapper className="wrapper-overall">
                 <VFTable
+                    debug
                     {...agGridProps}
                     maintainColumnOrder
                     pagination={false}
