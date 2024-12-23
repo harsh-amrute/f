@@ -17,7 +17,8 @@ export interface MDMStore{
     chunkSize:number,
     recordCount:number,
     isDataAvailableLocally:boolean
-    lastRunDate:string
+    lastRunDate:string,
+    isSavingToDraft?:boolean
 }
 
 export interface MDMMasterState {

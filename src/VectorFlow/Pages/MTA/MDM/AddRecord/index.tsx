@@ -41,6 +41,7 @@ const AddRecord = () => {
         file,
         setFile,
         isTableDataLoading,
+        isSavingToDraft,
         exportToExcel,
         onBackButton,
         onClearExportError,
@@ -231,6 +232,7 @@ const AddRecord = () => {
               masterProgress={activeMaster.progress}
               onReset={onReset}
               onSaveToDraft={onSaveToDraft}
+              isSavingToDraft={isSavingToDraft ?? false}
               onEditOnlineSave={onEditOnlineSave}
               editOnline={editOnline}
               onEditOnline={()=>onEditOnline('editOnline')}

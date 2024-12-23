@@ -28,7 +28,8 @@ const dummyProps = {
     disableStopSeasonality:mockFn,
     enableEditOnlineReset:false,
     showSubmittedExportError:true,
-    masterId:1
+    masterId:1,
+    isSavingToDraft:false
 }
 
 const contextWrapper = (children:any)=>{
