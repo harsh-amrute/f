@@ -1,5 +1,4 @@
 import React from 'react'
-import VFModalCard from '../../../../components/VectorFLOW/commons/VFModalCard'
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 

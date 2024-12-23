@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { type Option, type Field, type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import { generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData, parseMTOExcelData } from "../../../../../helpers/utils";
-import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetMasterDataRetail, useGetUploadProgress, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask, useSavePOOGIMasterTask, useSavePOOGIMasterDraft } from "../../../../Services/MTA/MDM";
+import { generateOptions, areMasterFiltersValid, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, getActionId, mapMasterToColumnDefs, createConflictRowData, createErrorRowData, parseMTOExcelData } from "../../../../../helpers/utils";
+import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData, useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useGetMasterDataRetail, useGetMTOMasterUIConfiguration, useGetBufferMasterData, useGetCCRMasterData, useSaveBufferMasterDraft, useSaveBufferMasterTask, useGetBufferTypeMaster, useGetPOOGIMasterData, useSaveCCRMasterDraft, useGetCalendarMasterData, useSaveCCRMasterTask, useSavePOOGIMasterTask, useSavePOOGIMasterDraft } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS } from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
@@ -133,11 +133,11 @@ const useViewModify = (pageType: string) => {
 
     const [TASK_ID,setTaskId] = useState<string>('');
 
-    const [uploadProgress,setUploadProgress] = useState('');
+    const [uploadProgress] = useState('');
 
   /***Add the below line to fetch MTO Buffer */
   const {mutateAsync: saveCCRMasterDraft} = useSaveCCRMasterDraft();
-    const [totalProgress,setTotalProgress] = useState('');
+    const [totalProgress] = useState('');
 
     const { mutateAsync: GetBufferTypeMaster } = useGetBufferTypeMaster();
 
@@ -174,9 +174,9 @@ const useViewModify = (pageType: string) => {
 
     const {mutateAsync:deleteTask} = useDeleteTask();
 
-    const {mutateAsync:validateMaster} = useValidateMaster();
+    // const {mutateAsync:validateMaster} = useValidateMaster();
 
-    const {mutateAsync:getUploadProgress} = useGetUploadProgress();
+    // const {mutateAsync:getUploadProgress} = useGetUploadProgress();
 
     const validStopStatuses = [1,2,3,4,5,6,21];
 
@@ -862,9 +862,8 @@ const useViewModify = (pageType: string) => {
       dispatch(UPDATE_ROW_DATA([...newRowData]))
     }
     else if(activeMaster.id===503){
-      const newRowData = activeMaster.rowData.map((row: any, index) => {
+      const newRowData = activeMaster.rowData.map((row: any) => {
         if (JSON.stringify(row.majId) === JSON.stringify(data.majId)) {
-            const newRow = row;
             row.minData.map((ele:any)=>{
               if(ele.minId===data.minId){
                 return data;
@@ -1569,7 +1568,7 @@ const useViewModify = (pageType: string) => {
       formData.append("file", file);
       formData.append("ui_config", JSON.stringify(activeMaster.fields))
       formData.append("screen_type", JSON.stringify({ screenType: pageType }))
-      const processId = uuidv4();
+      // const processId = uuidv4();
 
 
       // TODO: checked for buffer only make it dynamic

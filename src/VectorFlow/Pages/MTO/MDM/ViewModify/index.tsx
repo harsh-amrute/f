@@ -14,7 +14,6 @@ import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
 import React, {useEffect} from "react";
 import VFTaskBar from "./VFTaskbar";
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SubmitConflictModal from "./SubmitConflictModal";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import _ from "lodash";
@@ -49,7 +48,6 @@ const MTOViewModify = () => {
     isLoading,
     handleApplyFilter,
     isWarningModalOpen,
-    recordCount,
     isUploadModalOpen,
     toggleUploadModal,
     onWarningModalClose,
@@ -76,10 +74,7 @@ const MTOViewModify = () => {
     seasonalityActiveQuickFilter,
     onEditOnline,
     onSaveToDraft,
-    selectedRowsCount,
-    currentPage,
     rowsPerPage,
-    handleChangePage,
     onReset,
     onEditOnlineSave,
     onSeasonalityQuickFilter,
@@ -89,7 +84,6 @@ const MTOViewModify = () => {
     isShowAll,
     onIgnoreSubmitErrors,
     onReviewConflicts,
-    isDataAvailableLocally,
     onSeasonalityStatusUpdate,
     validResumeStatuses,
     validStopStatuses,

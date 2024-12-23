@@ -74,9 +74,8 @@ const MTOAddRecord = () => {
         showMasterGroup,
         showMaster,
         options,
-        selectedOptions,
-        onDataChange
-    } = useAdd()
+        selectedOptions
+      } = useAdd()
     
     useEffect(()=>{
       if(ref.current && ref.current.api){
