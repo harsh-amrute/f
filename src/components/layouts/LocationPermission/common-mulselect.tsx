@@ -57,7 +57,7 @@ export default forwardRef(({ ...props }: any, ref) => {
     setListLcType(newListLcType);
     setListLcCluster(newListLcCluster);
 
-    // Safely set initial selected values or default to empty arrays
+   
     setLcRegion(valueSelectLc?.lcRegion || []);
     setLcType(valueSelectLc?.lcType || []);
     setLcCluster(valueSelectLc?.lcCluster || []);
@@ -66,8 +66,8 @@ export default forwardRef(({ ...props }: any, ref) => {
   // Handle region selection
   const handleSelectLcRegion = (e: any) => {
     setLcRegion(e);
-    setLcType([]); // Reset lcType when lcRegion is changed
-    setLcCluster([]); // Reset lcCluster when lcRegion is changed
+    setLcType([]); 
+    setLcCluster([]); 
 
     handleSelectParent({
       e,
@@ -82,7 +82,7 @@ export default forwardRef(({ ...props }: any, ref) => {
   // Handle type selection
   const handleSelectLcType = (e: any) => {
     setLcType(e);
-    setLcCluster([]); // Reset lcCluster when lcType is changed
+    setLcCluster([]); 
 
     handleSelectChild({
       e,
@@ -147,7 +147,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       value: lcType,
       setValue: setLcType,
       handleAction: handleSelectLcType,
-      disabled: lcRegion.length === 0, // Disable if no region is selected
+      disabled: lcRegion.length === 0, 
     },
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L3 || '',
@@ -158,8 +158,31 @@ export default forwardRef(({ ...props }: any, ref) => {
       value: lcCluster,
       setValue: setLcCluster,
       handleAction: handleSelectLcCluster,
-      disabled: lcType.length === 0, // Disable if no lcType is selected
+      disabled: lcType.length === 0, 
     },
+
+    // {
+    //   title: "P-L4",
+    //   placeholder: "",
+    //   options: [],
+    //   value: select,
+    //   setValue: setSelect,
+    //   handleAction: () => {
+    //     return;
+    //   },
+    //   disabled: false,
+    // },
+    // {
+    //   title: "P-L5",
+    //   placeholder: "",
+    //   options: [],
+    //   value: select,
+    //   setValue: setSelect,
+    //   handleAction: () => {
+    //     return;
+    //   },
+    //   disabled: false,
+    // },
   ];
 
   return (

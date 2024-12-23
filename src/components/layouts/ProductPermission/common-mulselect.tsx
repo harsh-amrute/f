@@ -63,16 +63,16 @@ export default forwardRef(({ ...props }: any, ref) => {
     setListSubBrand(newListSubBrand);
     setListCategory(newListCategory);
 
-    // Set initial selected values
+    
     setBrand(valueSelectPrd?.brand || []);
     setSubBrand(valueSelectPrd?.subBrand || []);
     setCategory(valueSelectPrd?.category || []);
   }, [valueSelectPrd, product]);
 
-  // Handle brand selection
+  
   const handleSelectBrand = (e: Option[]) => {
     setBrand(e);
-    // Reset subBrand and category whenever brand is changed
+    
     setSubBrand([]);
     setCategory([]);
 
@@ -126,14 +126,14 @@ export default forwardRef(({ ...props }: any, ref) => {
     setBrand,
   }));
 
-  // Function to reset permission values
+  
   const removePrdPermissionValue = () => {
     setBrand([]);
     setSubBrand([]);
     setCategory([]);
   };
 
-  // Function to get permission values
+  
   const getPrdPermissionValue = () => {
     return {
       brand,
@@ -142,7 +142,7 @@ export default forwardRef(({ ...props }: any, ref) => {
     };
   };
 
-  // Function to get setters for permission values
+  
   const getSetPrdPermission = () => {
     return {
       setBrand,
@@ -151,7 +151,7 @@ export default forwardRef(({ ...props }: any, ref) => {
     };
   };
 
-  // Define the permission fields with their options
+  
   const prdPermissions = [
     {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L1 || '',
@@ -182,8 +182,31 @@ export default forwardRef(({ ...props }: any, ref) => {
       value: category,
       setValue: setCategory,
       handleAction: handleSelectCategory,
-      disabled: subBrand.length === 0, // Disable if no sub-brand is selected
+      disabled: subBrand.length === 0, 
     },
+
+    // {
+    //   title: "P-L4",
+    //   placeholder: "",
+    //   options: [],
+    //   value: select,
+    //   setValue: setSelect,
+    //   handleAction: () => {
+    //     return;
+    //   },
+    //   disabled: false,
+    // },
+    // {
+    //   title: "P-L5",
+    //   placeholder: "",
+    //   options: [],
+    //   value: select,
+    //   setValue: setSelect,
+    //   handleAction: () => {
+    //     return;
+    //   },
+    //   disabled: false,
+    // },
   ];
 
   return (
