@@ -91,21 +91,29 @@ const PoogiEditDeleteCell = (params: any) => {
 
 
   return (
-    <div style={{display: 'flex', margin:'4px auto', width: '80px', justifyContent:'center'}}>
-        <button disabled={params.data.id} onClick={onEditClick} style={{background: 'transparent', opacity: `${params.data.id?0.2:1}`}}>
-            <img height={18} width={18} src="/assets/img/VectorFLOW/NMS/edit-draft.svg" />
+    
+
+      <div style={{display: 'flex', margin:'4px auto', width: '80px', justifyContent:'center'}}>
+        {(!activeMaster.colDefs.some((colDef: any) => colDef.field === 'actions')) &&
+        <>
+
+          <button disabled={params.data.id} onClick={onEditClick} style={{background: 'transparent', opacity: `${params.data.id?0.2:1}`}}>
+            <img height={16} width={16} src="/assets/img/VectorFLOW/NMS/edit-draft.svg" />
         </button>
         {(params.data.id) ?
-        <button onClick={onDeleteUndoClick} style={{background: 'transparent'}}>
-            <img  height={18} width={18} src="/assets/img/delete-undo.svg" alt="undo" />
-        </button>
-        :
-        <button onClick={onDeleteClick} style={{background: 'transparent'}}>
-            <img height={18} width={18} src="/assets/img/VectorFLOW/NMS/delete-draft.svg" />
+          <button onClick={onDeleteUndoClick} style={{background: 'transparent'}}>
+          <img  height={16} width={16} src="/assets/img/delete-undo.svg" alt="undo" />
+          </button>
+          :
+          <button onClick={onDeleteClick} style={{background: 'transparent'}}>
+          <img height={16} width={16} src="/assets/img/VectorFLOW/NMS/delete-draft.svg" />
         </button>
 
-        }
-    </div>
+}
+</>
+          }
+        </div>
+      
   )
 }
 
