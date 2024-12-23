@@ -58,7 +58,7 @@ const DynamicReleaseManagement = () => {
   const reportName = "DynamicReleaseManagement";
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState<any>(undefined);
   const [colDef, setColDef] = useState([{}]);
   const refGrid = useRef<GridRef | any>(null)
   const [selectedRows, setSelectedRows] = useState<any>([]);
@@ -96,7 +96,8 @@ const DynamicReleaseManagement = () => {
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Dynamic_Release_Management);
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-  const { colDefMap , getColDef} = useColDef();
+  const { colDefMap, getColDef } = useColDef();
+  const [dataUpdated, setDataUpdated] = useState(0);
 
   const setColumnDef = async () => {
     try {
@@ -174,22 +175,35 @@ const DynamicReleaseManagement = () => {
 
   useEffect(() => {
     getMastersData();
-    GetData();
-    getUserColumnConfig();
+    // GetData();
     setColumnDef();
-    getFilterData()
+    // getUserColumnConfig();
+    // getFilterData()
   }, [])
 
-  useEffect(()=>{
-    GetData();
-  },[appliedFilters])
+  useEffect(() => {
+    if (Object.entries(appliedFilters).length) {
+      setCurrentPage(1)
+      GetData();
+    }
+  }, [appliedFilters])
+  
+  useEffect(() => {
+    if (!showModal) {
+      GetData(table1 ? 1 : 0, currentPage, 0);
+    }
+  }, [dataUpdated])
 
   useEffect(()=>{
     getFilterData();
   },[table1])
   
   useEffect(()=>{
-    setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extras)) 
+    if (HeaderData.length > 0) {
+      setColDef(getColumnDefinations(HeaderData, colDefCustomizations, extras))
+      getUserColumnConfig();
+    }
+
   },[HeaderData])
 
 
@@ -380,11 +394,6 @@ const DynamicReleaseManagement = () => {
       },
     },
   };
-
-  const [dataUpdated, setDataUpdated] = useState(0);
-
-
-
 
   function convertData(input: InputData): OutputData[] {
     const result: OutputData[] = [];
@@ -654,12 +663,6 @@ const DynamicReleaseManagement = () => {
     }
   }
 
-  useEffect(() => {
-    if (!showModal) {
-
-      GetData(table1 ? 1 : 0, currentPage, 0);
-    }
-  }, [dataUpdated])
 
   const [isReleaseButtonDisabled, setIsReleaseButtonDisabled] = useState(true);
 
@@ -711,8 +714,16 @@ const DynamicReleaseManagement = () => {
   }
       
   
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (coldefs?:any) => {
       try {
+        if (coldefs) {
+          const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.ProdDynamicReleaseManagement,
+            cs: JSON.stringify(coldefs),
+          };
+          await updateUserUIReportConfigData([payload]);
+        } else {
           if(currentGridRef?.current?.api){
               const config = currentGridRef.current.api.getColumnState();
 
@@ -724,6 +735,8 @@ const DynamicReleaseManagement = () => {
               await updateUserUIReportConfigData([payload]);
               await getUserColumnConfig();
           }
+        }
+
       } catch (error) {
       console.error(error);
       }
@@ -734,25 +747,33 @@ const DynamicReleaseManagement = () => {
   }
 
   useEffect(()=>{ 
-      if (currentGridRef?.current && columnState?.length) {
-          const result = currentGridRef.current.api.applyColumnState({
-              state: columnState,
-              applyOrder: true
-          });
-          if (!result) {
-              console.error('Failed to apply column state');
-          }
+    if (currentGridRef?.current && columnState?.length) {
+      columnState.forEach((col: any) => {
+        if (col.initialHide != undefined) {
+          col.hide = col.initialHide;
+        }
+      });
+      const result = currentGridRef.current.api.applyColumnState({
+        state: columnState,
+        applyOrder: true
+      });
+      if (!result) {
+        console.error('Failed to apply column state 1');
       }
-  });
+    }
+  },[columnState]);
 
   useEffect(() => {
       if (isReset) {
-          setColumnState(colDef);
+          setColumnState([...colDef]);
           setIsReset(false)
       }else{
-          handleSaveClick();
+        if(isReset !== undefined){
+          handleSaveClick(colDef);
+        }
       }
   }, [isReset]);
+
   const ExcelData = () =>{
     GetData(table1 ? 1 : 0 , 0 , 0, true)
   }
@@ -807,7 +828,7 @@ const DynamicReleaseManagement = () => {
           onFirstDataRendered={onFirstDataRendered}
           onGridReady={onFirstDataRendered}
           onRowDataUpdated={onFirstDataRendered}
-
+          maintainColumnOrder={true}
         />
         <div style={{ width: '100%' }}>
 
@@ -821,9 +842,9 @@ const DynamicReleaseManagement = () => {
           />
         </div>
         <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
-        <div style={{ width: "100%", flex: !hide ? 1 : 0, minHeight: 0, marginBottom: hide ? "0" : "20px", boxShadow: "0px 6px 12px #81818129" }}>
-          <AgCharts ref={graph} options={chartoptions} />
-        </div>
+         <div className='chart-wrapper' style={{ width: "100%", maxHeight: '40vh', flex: !hide ? 1:0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129"}}>
+          <AgCharts ref={graph} options={chartoptions}/>
+        </div>       
         <EditRouteModal chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
         <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
       </Wrapper>

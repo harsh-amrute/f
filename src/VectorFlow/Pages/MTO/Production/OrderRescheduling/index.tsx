@@ -544,9 +544,7 @@ const OrderRescheduling = () => {
       });
       if (!result) {
         console.error("Failed to apply column state 1", result);
-      } else {
-        console.log("state applied");
-      }
+      } 
     }
   }, [columnState]);
 
