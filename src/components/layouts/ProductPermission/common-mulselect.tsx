@@ -2,6 +2,11 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import ProductPermission from "./index";
 import { useTranslation } from "react-i18next";
 
+type Option = {
+  label: string;
+  value: string;
+};
+
 export default forwardRef(({ ...props }: any, ref) => {
   const { t } = useTranslation();
   const {
@@ -11,65 +16,66 @@ export default forwardRef(({ ...props }: any, ref) => {
     handleSelectChild,
     handleSelectGrandChild,
   } = props;
-  const [listBrand, setListBrand] = useState<any>([]);
-  const [listSubBrand, setListSubBrand] = useState<any>([]);
-  const [listCategory, setListCategory] = useState<any>([]);
 
-  const [brand, setBrand] = useState<any>([]);
-  const [subBrand, setSubBrand] = useState<any>([]);
-  const [category, setCategory] = useState<any>([]);
-  // const [select, setSelect] = useState<any>();
+  const [listBrand, setListBrand] = useState<Option[]>([]);
+  const [listSubBrand, setListSubBrand] = useState<Option[]>([]);
+  const [listCategory, setListCategory] = useState<Option[]>([]);
 
-  
+  const [brand, setBrand] = useState<Option[]>([]);
+  const [subBrand, setSubBrand] = useState<Option[]>([]);
+  const [category, setCategory] = useState<Option[]>([]);
+
+  // Update the lists whenever the product data or initial values change
   useEffect(() => {
-    const newListBrand: any = [];
-    const newListSubBrand: any = [];
-    const newListCategory: any = [];
+    const newListBrand: Option[] = [];
+    const newListSubBrand: Option[] = [];
+    const newListCategory: Option[] = [];
 
-    Object.keys(product)?.forEach((keyBrand: any) => {
+    Object.keys(product)?.forEach((keyBrand: string) => {
       const dataBrand = { label: keyBrand, value: keyBrand };
       newListBrand.push(dataBrand);
 
-      Object.keys(product[keyBrand])?.forEach((keySubBrand: any) => {
+      Object.keys(product[keyBrand])?.forEach((keySubBrand: string) => {
         const valueSubBrand = `${keyBrand} > ${keySubBrand}`;
-        if(keySubBrand.length > 0){
+        if (keySubBrand.length > 0) {
           const dataSubBrand = {
             label: valueSubBrand,
             value: valueSubBrand,
           };
-  
+
           newListSubBrand.push(dataSubBrand);
         }
-       
 
         product[keyBrand][keySubBrand]?.forEach((eleCategory: any) => {
           const valueCategory = `${valueSubBrand} > ${eleCategory['product_hierarchy_3']}`;
-          if(eleCategory['product_hierarchy_3'].length > 0){
+          if (eleCategory['product_hierarchy_3'].length > 0) {
             const dataCategory = {
               label: valueCategory,
               value: valueCategory,
             };
             newListCategory.push(dataCategory);
           }
-       
         });
       });
     });
 
-    console.log('effect called')
-    console.log("ALL OPTIONS",newListBrand);
-    console.log("CURRENT SELECTED OPTIONS",valueSelectPrd?.brand)
-
     setListBrand(newListBrand);
     setListSubBrand(newListSubBrand);
     setListCategory(newListCategory);
-    console.log(valueSelectPrd?.brand)
-    setBrand(valueSelectPrd?.brand);
-    setSubBrand(valueSelectPrd?.subBrand);
-    setCategory(valueSelectPrd?.category);
-  }, [valueSelectPrd]);
 
-  const handleSelectBrand = (e: any) => {
+    
+    setBrand(valueSelectPrd?.brand || []);
+    setSubBrand(valueSelectPrd?.subBrand || []);
+    setCategory(valueSelectPrd?.category || []);
+  }, [valueSelectPrd, product]);
+
+  
+  const handleSelectBrand = (e: Option[]) => {
+    setBrand(e);
+    
+    setSubBrand([]);
+    setCategory([]);
+
     handleSelectParent({
       e,
       dataAll: product,
@@ -80,7 +86,12 @@ export default forwardRef(({ ...props }: any, ref) => {
     });
   };
 
-  const handleSelectSubBrand = (e: any) => {
+  // Handle subBrand selection
+  const handleSelectSubBrand = (e: Option[]) => {
+    setSubBrand(e);
+    // Reset category whenever subBrand is changed
+    setCategory([]);
+
     handleSelectChild({
       e,
       grandChild: category,
@@ -90,7 +101,9 @@ export default forwardRef(({ ...props }: any, ref) => {
     });
   };
 
-  const handleSelectCategory = (e: any) => {
+  // Handle category selection
+  const handleSelectCategory = (e: Option[]) => {
+    setCategory(e);
     handleSelectGrandChild({
       e,
       valueParent: brand,
@@ -113,12 +126,14 @@ export default forwardRef(({ ...props }: any, ref) => {
     setBrand,
   }));
 
+  
   const removePrdPermissionValue = () => {
     setBrand([]);
     setSubBrand([]);
     setCategory([]);
   };
 
+  
   const getPrdPermissionValue = () => {
     return {
       brand,
@@ -127,6 +142,7 @@ export default forwardRef(({ ...props }: any, ref) => {
     };
   };
 
+  
   const getSetPrdPermission = () => {
     return {
       setBrand,
@@ -135,10 +151,11 @@ export default forwardRef(({ ...props }: any, ref) => {
     };
   };
 
+  
   const prdPermissions = [
     {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L1 || '',
-      placeholder: "",
+      placeholder: "", 
       options: listBrand,
       value: brand,
       setValue: setBrand,
@@ -147,22 +164,27 @@ export default forwardRef(({ ...props }: any, ref) => {
     },
     {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L2 || '',
-      placeholder: "",
-      options: listSubBrand,
+      placeholder:"", 
+      options: brand.length === 0 ? [] : listSubBrand.filter((sub: Option) =>
+        brand.some((b) => sub.value.startsWith(b.value.split(' ')[0])) // Filter based on selected brand
+      ),
       value: subBrand,
       setValue: setSubBrand,
       handleAction: handleSelectSubBrand,
-      disabled: false,
+      disabled: brand.length === 0, // Disable if no brand is selected
     },
     {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L3 || '',
-      placeholder: "",
-      options: listCategory,
+      placeholder:"", 
+      options: subBrand.length === 0 ? [] : listCategory.filter((cat: Option) =>
+        subBrand.some((s) => cat.value.startsWith(s.value.split(' ')[0])) // Filter based on selected sub-brand
+      ),
       value: category,
       setValue: setCategory,
       handleAction: handleSelectCategory,
-      disabled: false,
+      disabled: subBrand.length === 0, 
     },
+
     // {
     //   title: "P-L4",
     //   placeholder: "",
@@ -186,8 +208,6 @@ export default forwardRef(({ ...props }: any, ref) => {
     //   disabled: false,
     // },
   ];
-
-  console.log(prdPermissions)
 
   return (
     <ProductPermission

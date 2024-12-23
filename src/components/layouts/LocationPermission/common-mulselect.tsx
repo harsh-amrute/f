@@ -16,10 +16,9 @@ export default forwardRef(({ ...props }: any, ref) => {
   const [listLcType, setListLcType] = useState<any>([]);
   const [listLcCluster, setListLcCluster] = useState<any>([]);
 
-  const [lcRegion, setLcRegion] = useState<any>([]);
+  const [lcRegion, setLcRegion] = useState<any>([]); 
   const [lcType, setLcType] = useState<any>([]);
   const [lcCluster, setLcCluster] = useState<any>([]);
-  // const [select, setSelect] = useState<any>();
 
   useEffect(() => {
     const newListLcRegion: any = [];
@@ -32,26 +31,24 @@ export default forwardRef(({ ...props }: any, ref) => {
 
       Object.keys(location[keyLcRegion])?.forEach((keyLcType: any) => {
         const valueLcType = `${keyLcRegion} > ${keyLcType}`;
-        if(keyLcType.length > 0){
+        if (keyLcType.length > 0) {
           const dataLcType = {
             label: valueLcType,
             value: valueLcType,
           };
-  
+
           newListLcType.push(dataLcType);
         }
-   
 
-        location[keyLcRegion][keyLcType]?.forEach((eleLcCluster: any) => {          
+        location[keyLcRegion][keyLcType]?.forEach((eleLcCluster: any) => {
           const valueLcCluster = `${valueLcType} > ${eleLcCluster['location_heirarchy_3']}`;
-          if(eleLcCluster['location_heirarchy_3'].length > 0){
+          if (eleLcCluster['location_heirarchy_3'].length > 0) {
             const dataLcCluster = {
               label: valueLcCluster,
               value: valueLcCluster,
             };
             newListLcCluster.push(dataLcCluster);
           }
-        
         });
       });
     });
@@ -60,13 +57,18 @@ export default forwardRef(({ ...props }: any, ref) => {
     setListLcType(newListLcType);
     setListLcCluster(newListLcCluster);
 
-
-    setLcRegion(valueSelectLc?.lcRegion);
-    setLcType(valueSelectLc?.lcType);
-    setLcCluster(valueSelectLc?.lcCluster);
+   
+    setLcRegion(valueSelectLc?.lcRegion || []);
+    setLcType(valueSelectLc?.lcType || []);
+    setLcCluster(valueSelectLc?.lcCluster || []);
   }, [valueSelectLc]);
 
+  // Handle region selection
   const handleSelectLcRegion = (e: any) => {
+    setLcRegion(e);
+    setLcType([]); 
+    setLcCluster([]); 
+
     handleSelectParent({
       e,
       dataAll: location,
@@ -77,7 +79,11 @@ export default forwardRef(({ ...props }: any, ref) => {
     });
   };
 
+  // Handle type selection
   const handleSelectLcType = (e: any) => {
+    setLcType(e);
+    setLcCluster([]); 
+
     handleSelectChild({
       e,
       grandChild: lcCluster,
@@ -87,7 +93,9 @@ export default forwardRef(({ ...props }: any, ref) => {
     });
   };
 
+  // Handle cluster selection
   const handleSelectLcCluster = (e: any) => {
+    setLcCluster(e);
     handleSelectGrandChild({
       e,
       valueParent: lcRegion,
@@ -132,22 +140,27 @@ export default forwardRef(({ ...props }: any, ref) => {
     },
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L2 || '',
-      placeholder: "",
-      options: listLcType,
+      placeholder: "", 
+      options: lcRegion.length === 0 ? [] : listLcType.filter((type: any) =>
+        lcRegion.some((region: any) => type.value.startsWith(region.value.split(' ')[0])) // Filter lcType based on selected lcRegion
+      ),
       value: lcType,
       setValue: setLcType,
       handleAction: handleSelectLcType,
-      disabled: false,
+      disabled: lcRegion.length === 0, 
     },
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L3 || '',
-      placeholder: "",
-      options: listLcCluster,
+      placeholder: "", 
+      options: lcType.length === 0 ? [] : listLcCluster.filter((cluster: any) =>
+        lcType.some((type: any) => cluster.value.startsWith(type.value.split(' ')[0])) // Filter lcCluster based on selected lcType
+      ),
       value: lcCluster,
       setValue: setLcCluster,
       handleAction: handleSelectLcCluster,
-      disabled: false,
+      disabled: lcType.length === 0, 
     },
+
     // {
     //   title: "P-L4",
     //   placeholder: "",
@@ -172,7 +185,6 @@ export default forwardRef(({ ...props }: any, ref) => {
     // },
   ];
 
-  console.log(prdPermissions);
   return (
     <LocationPermission
       title={t(
