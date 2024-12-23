@@ -2843,7 +2843,7 @@ const useViewModify = (pageType: string) => {
       ccrData: [],
       at: pageType==="add"?"Add":"Modify"
     }
-    const selectedRows:any = ref?.current?.api?.getSelectedRows();
+    const selectedRows:any = _.cloneDeep(activeMaster.rowData);
     let isValid= true;
     selectedRows.forEach((e:any)=>{
       const newVal = _.cloneDeep(e);
@@ -2868,15 +2868,21 @@ const useViewModify = (pageType: string) => {
     try{
       const response = await saveCCRMasterTask(CCRPostObj);
       if(response.status==200){
+        toast.dismiss();
         const allData = [...activeMaster.rowData];
         const indexesToRemove = selectedRows.map((row:any) => allData.indexOf(row));
         indexesToRemove.sort((a:any,b:any) => b - a);
+        // indexesToRemove.forEach((index:number) => allData.splice(index,1));
         const newData:any = [];
         allData.forEach((e:any,index: any)=>{
           if(!indexesToRemove.includes(index)) newData.push(e);
         })
+
         dispatch(UPDATE_ROW_DATA(newData));
-        toast.dismiss();
+        
+        navigate(-1);
+        resetMtoMasters();
+        RESET_MTO_STATE();
         notifySuccess("CCR task updated!!")
 
       }
