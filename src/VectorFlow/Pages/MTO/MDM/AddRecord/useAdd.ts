@@ -456,8 +456,7 @@ const useAdd=()=>{
             newVal[data.column.colId] = data.newValue;
           }
           finData.push(newVal);
-        })
-        ;
+        });
         finData.forEach((ele:any, index: any)=>{
 
           ele.err= getErrorForMaster(ele, index,finData);

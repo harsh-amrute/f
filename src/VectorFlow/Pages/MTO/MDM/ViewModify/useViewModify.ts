@@ -28,7 +28,7 @@ import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../Vect
 import { useGetCCRGroupMaster } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import MajReasonDescCell from './MajReasonDescCell';
 import MinReasonDescCell from './MinReasonDescCell';
-
+import { useNavigate } from 'react-router-dom';
 
 // Define TypeScript interfaces for the parameters
 interface mtaField {
@@ -198,14 +198,7 @@ const useViewModify = (pageType: string) => {
 
 
 
-  useEffect(()=>{
-    if(pageType==='add'){
-      if(bufferInitialData || ccrInitialData){
-        validateMTOMaster(activeMaster.id);
-      }
-    }
-
-  },[bufferInitialData, ccrInitialData])
+  
 
     
   const invalidDataColdefs: ColDef[] = [
@@ -486,91 +479,199 @@ const useViewModify = (pageType: string) => {
     }
   }, [activeMaster])
 
-  const validateMTOMaster = (masterId: number) => {
-    if (masterId === 501 && pageType === "add") {
-      const allRows = [...activeMaster.rowData];
-      // Check if the entered Buffer type is unique 
+// Validatio in process....
+
+  const validateMTOMaster = (masterId: number, newRowData:any) => {
+    if (masterId === 501) {
+      const allRows = [...newRowData];
       const newData:any = [];
+      console.log("validating this data...", newRowData);
 
       allRows.forEach((e, i) => {
-        const newVal = _.cloneDeep(e);
+      const newVal = _.cloneDeep(e);
 
-        // Validate for empty buffer size
+      if (e.bsz === "") {
+      newVal.err = { error: "Enter the Buffer Size!", warning: "" };
+      } 
+      // Validate for empty buffer type
+      else if (e.bt === "") {
+      newVal.err = { error: "Enter the Buffer Type!", warning: "" };
+      }
+      else if (Number(e.bsz) <= 0 || Number(e.bsz) >= 365 || e.bsz===null) {
+      newVal.err = { error: "Buffer Size must be a number between 1 and 364!", warning: "" };
+      } 
+      // Validate slt is numeric and within range
+      else if ( Number(e.slt) < 0 || Number(e.slt) >= 365 || e.slt===null) {
+      newVal.err = { error: "SLT must be a number between 0 and 364!", warning: "" };
+      } 
+      // Validate slt is not empty
+      else if (e.slt === "") {
+      newVal.err = { error: "SLT cannot be empty!", warning: "" };
+      }
+      else if (e.mlt === "") {
+      newVal.err = { error: "MLT cannot be empty!", warning: "" };
+      }
+      // Validate mlt is numeric and within range
+      else if ( Number(e.mlt) < 0 || Number(e.mlt) >= 365 || e.mlt===null) {
+      newVal.err = { error: "MLT must be a number between 0 and 364!", warning: "" };
+      }
+      // Validate data types
+      else if (isNaN(Number(e.bsz))) {
+      newVal.err = { error: "Buffer Size must be a number!", warning: "" };
+      }
+      else if (isNaN(Number(e.slt))) {
+      newVal.err = { error: "SLT must be a number!", warning: "" };
+      }
+      else if (isNaN(Number(e.mlt))) {
+      newVal.err = { error: "MLT must be a number!", warning: "" };
+      }
+      else if (typeof e.bcd !== 'string') {
+      newVal.err = { error: "Enter a valid Buffer Code!", warning: "" };
+      }
+      else if (typeof e.bd !== 'string') {
+      newVal.err = { error: "Enter a valid Buffer Description!", warning: "" };
+      }
+      else if ((e.ib !== 'true' && e.ib !== 'false')&& (typeof e.ib !== 'boolean')) {
+      newVal.err = { error: "Is Blue must be either 'true' or 'false'!", warning: "" };
+      }
+      // Check against bufferInitialData for duplicates
+      else {
+      bufferInitialData?.forEach((ele:any) => {
+      if (ele.bcd === e.bcd) {
+      newVal.err = { error: "Buffer code already exists in master", warning: "" };
+      }
+      if (ele.bt === e.bt && ele.bsz === e.bsz) {
+      newVal.err = { error: "Buffer size for the buffer type already exists in master", warning: "" };
+      }
+      });
+      
+      // Check for uniqueness within the current rows
+      allRows.forEach((ele, index) => {
+      if (index !== i && ele.bsz === e.bsz && e.bt === ele.bt) {
+      newVal.err = { error: "Buffer size must be unique!", warning: "" };
+      }
+      });
+      
+      const isBufferTypeValid = bufferTypeData?.some((btData:any) =>( (btData.dsc === e.bt || btData.id===e.bt)));
+      if (!isBufferTypeValid) {
+      newVal.err = { error: "Choose a valid buffer type from the drop down", warning: "" };
+      }
+      }
 
-        if (e.bsz === "") {
-          newVal.err = { error: "Enter the Buffer Size!", warning: "" };
-        } 
-        // Validate for empty buffer type
-        else if (e.bt === "") {
-          newVal.err = { error: "Enter the Buffer Type!", warning: "" };
-        }
-        else if (isNaN(e.bsz) || e.bsz <= 0 || e.bsz >= 365) {
-          newVal.err = { error: "Buffer Size must be a number between 1 and 364!", warning: "" };
-        } 
-        // Validate slt is numeric and within range
-        else if (isNaN(e.slt) || e.slt <= 0 || e.slt >= 365) {
-          newVal.err = { error: "SLT must be a number between 1 and 364!", warning: "" };
-        } 
-        // Validate mlt is numeric and within range
-        else if (isNaN(e.mlt) || e.mlt <= 0 || e.mlt >= 365) {
-          newVal.err = { error: "MLT must be a number between 1 and 364!", warning: "" };
-        }
-        // Check against bufferInitialData for duplicates
-        bufferInitialData?.forEach((ele:any) => {
-          if (ele.bcd === e.bcd) {
-            newVal.err = { error: "Buffer code already exists in master", warning: "" };
-          }
-          if (ele.bt === e.bt && ele.bsz === e.bsz) {
-            newVal.err = { error: "Buffer size for the buffer type already exists in master", warning: "" };
-          }
-        });
-    
-        // Check for uniqueness within the current rows
-        allRows.forEach((ele, index) => {
-          if (index !== i && ele.bsz === e.bsz && e.bt === ele.bt) {
-            newVal.err = { error: "Buffer size must be unique!", warning: "" };
-          }
-        });
-    
-        const isBufferTypeValid = bufferTypeData?.some((btData:any) => btData.dsc === e.bt);
-        if (!isBufferTypeValid) {
-          newVal.err = { error: "Choose a valid buffer type from the drop down", warning: "" };
-        }
-        newData.push(newVal);
+      // Additional validations
+      if (!e.bt || !e.bsz) {
+      newVal.err = { error: "Enter Buffer Type and Buffer Size", warning: "" };
+      }
+      if (Number(e.bsz) <= 0) {
+      newVal.err = { error: "Buffer size must be greater than 0", warning: "" };
+      }
+      if (Number(e.bsz) > 365) {
+      newVal.err = { error: "Buffer size cannot exceed for over a year", warning: "" };
+      }
+      const isBufferCodeDuplicate = bufferInitialData?.some(
+      (master: any) => master.bcd === e.bcd
+      );
+      const isbufferCodeDuplicateInCurr = allRows.some(
+      (row: any, index: any) => index !== i && row.bcd === e.bcd
+      );
+      if (isbufferCodeDuplicateInCurr) {
+      newVal.err = { error: "Buffer code must be unique within the current list!", warning: "" };
+      }
+      if (isBufferCodeDuplicate) {
+      newVal.err = { error: "Buffer code already exists in master", warning: "" };
+      }
+      const isBufferTypeAndSizeDuplicate = bufferInitialData?.some(
+      (master: any) => master.bt === e.bt && master.bsz === e.bsz
+      );
+      if (isBufferTypeAndSizeDuplicate) {
+      newVal.err = { error: "Buffer size for the buffer type already exists in master", warning: "" };
+      }
+      const isBszUnique = allRows.every((row: any, index: any) => {
+      if (index === i) return true;
+      return !(row.bt === e.bt && row.bsz === e.bsz);
+      });
+      if (!isBszUnique) {
+      newVal.err = { error: "Buffer size must be unique for a given buffer type", warning: "" };
+      }
+
+      if (!newVal.err.error) {
+      newVal.err = { error: "", warning: "" };
+      }
+
+      newData.push(newVal);
       });
       
       dispatch(UPDATE_ROW_DATA(newData));
     }
     
-    if (masterId === 502 && pageType === "add") { 
-      const allRows = [...activeMaster.rowData];
+    if (masterId === 502) { 
+      const allRows = [...newRowData];
+      console.log("allRows....", allRows)
       const newData: any = [];
     
-      allRows.forEach((e: any) => {
-        const newVal = _.cloneDeep(e);
+      allRows.forEach((e: any, index: number) => {
+      const newVal = _.cloneDeep(e);
+
+      if (typeof e.cnm !== 'string') {
+        newVal.err = { error: "CCR name must be a string!", warning: "" };
+      } else if (isNaN(Number(e.cpd))) {
+        newVal.err = { error: "CCR Capacity Per Day must be a number!", warning: "" };
+      } else if (isNaN(Number(e.whpd))) {
+        newVal.err = { error: "Working hours Per Day must be a number!", warning: "" };
+      } else if (isNaN(Number(e.sh))) {
+        newVal.err = { error: "Scheduling horizon must be a number!", warning: "" };
+      } else if (isNaN(Number(e.rb)) || Number(e.rb) < 0 || Number(e.rb) > 1) {
+        newVal.err = { error: "Resource buffer (rb) must be a decimal between 0 and 1!", warning: "" };
+      } else if (isNaN(Number(e.cwl))) {
+        newVal.err = { error: "Cumulative WIP Limit must be a number!", warning: "" };
+      }
+      else if (plantMaster && !plantMaster?.some((plant: any) => plant.plant_name === e.pl || plant.plant_id === e.pl)) {
+        newVal.err = { error: "Please select a valid plant from the dropdown", warning: "" };
+      } else if (deptMaster && !deptMaster?.some((dept: any) => ((dept.dept_name === e.dp) || (dept.dept_id === e.dp)))) {
+        newVal.err = { error: "Please select a valid department from the dropdown", warning: "" };
+      }
+      else if (ccrGroupMaster && !(Object?.values(ccrGroupMaster)?.some((group: any) => ((group.ccr_group_code === e.cgid) ||(group.ccr_group_id === e.cgid))))) {
+        newVal.err = { error: "Please select a valid CCR Group from the dropdown", warning: "" };
+      }
     
-        if (e.cnm === "" || !e.cnm) {
-          newVal.err = { error: "CCR name cannot be empty!", warning: "" };
-        } 
-        else if (e.cpd === "" || !e.cpd || e.cpd <= 0) {
-          newVal.err = { error: "CCR Capacity Per Day must be greater than 0!", warning: "" };
-        } 
-        else if (e.whpd === "" || !e.whpd || e.whpd <= 0) {
-          newVal.err = { error: "Working hours Per Day must be greater than 0!", warning: "" };
-        } 
-        else if (e.sh === "" || !e.sh) {
-          newVal.err = { error: "Scheduling horizon cannot be empty!", warning: "" };
-        } 
-        else if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
-          newVal.err = { error: "CCR code already exists in the master data!", warning: "" };
-        } 
-        else if (e.rb === undefined || e.rb < 0 || e.rb > 1) {
-          newVal.err = { error: "Residual must be between 0 and 1!", warning: "" };
-        } 
-        else if (e.cwl === "" || e.cwl === undefined || e.cwl <= 0) {
-          newVal.err = { error: "Cumulative WIP Limit must be greater than 0!", warning: "" };
+      if (e.cnm === "" || !e.cnm) {
+        newVal.err = { error: "CCR name cannot be empty!", warning: "" };
+      } 
+      else if (e.cpd === "" || !e.cpd || e.cpd <= 0) {
+        newVal.err = { error: "CCR Capacity Per Day must be greater than 0!", warning: "" };
+      } 
+      else if (e.whpd === "" || !e.whpd || e.whpd <= 0) {
+        newVal.err = { error: "Working hours Per Day must be greater than 0!", warning: "" };
+      } 
+      else if (e.sh === "" || !e.sh) {
+        newVal.err = { error: "Scheduling horizon cannot be empty!", warning: "" };
+      } 
+      else if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
+        newVal.err = { error: "CCR code already exists in the master data!", warning: "" };
+      } 
+      else if (e.rb === undefined || e.rb < 0 || e.rb > 1) {
+        newVal.err = { error: "Resource buffer (rb) must be between 0 and 1!", warning: "" };
+      } 
+      else if (e.cwl === "" || e.cwl === undefined || e.cwl <= 0) {
+        newVal.err = { error: "Cumulative WIP Limit must be greater than 0!", warning: "" };
+      }
+
+      else {
+        const isCcrCodeDuplicate = ccrInitialData?.some(
+        (master: any) => master.ccd === e.ccd
+        );
+        
+        const isCcrCodeDuplicateInCurr = allRows.some(
+        (row: any, i: any) => ((i < index) && (row.ccd === e.ccd))
+        );
+        if (isCcrCodeDuplicateInCurr) {
+        newVal.err = { error: "CCR code must be unique!", warning: "" };
         }
-        newData.push(newVal);
+        if (isCcrCodeDuplicate) {
+        newVal.err = { error: "CCR code exists in master data!", warning: "" };
+        }
+      }
+      newData.push(newVal);
       });
     
       // Dispatch the updated row data
@@ -618,11 +719,49 @@ const useViewModify = (pageType: string) => {
     // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
     loadingOverlayComponent: 'loadingOverlay',
     onFirstDataRendered: ()=>{
-      validateMTOMaster( activeMaster.id);
+
+      if(pageType==='add'){
+        const newRowData = _.cloneDeep(activeMaster.rowData);
+        newRowData.forEach((ele:any)=>{
+          if (typeof ele.err === 'string') {
+            ele.err = { error: '' };
+          } else {
+            ele.err.error = '';
+          }
+        })
+        validateMTOMaster(activeMaster.id, newRowData);
+        return;
+      }
+
+
     },
-    onCellValueChanged: ()=>{
-     
-      validateMTOMaster( activeMaster.id);
+    onCellValueChanged: (event)=>{
+      const data = event.data;
+      const field:any = event.colDef.field;
+      const newValue = event.newValue;
+      const newRow = { ...data };
+      newRow[field] = newValue;
+      // if(activeMaster.id===503){
+      //   return;
+      // }
+      if(pageType==='add'){
+        const newRowData = _.cloneDeep(activeMaster.rowData.map((row: any) => {
+          if (JSON.stringify(row) === JSON.stringify(data)) {
+              return newRow;
+            }
+            return row;
+          }));
+        newRowData.forEach((ele:any)=>{
+          if (typeof ele.err === 'string') {
+            ele.err = { error: '' };
+          } else {
+            ele.err.error = '';
+          }
+        })
+        validateMTOMaster(activeMaster.id, newRowData);
+        return;
+      }
+
       
     },
     onRowDataUpdated: (event: any) => {
@@ -676,36 +815,41 @@ const useViewModify = (pageType: string) => {
       }
     },
     onGridReady: (params: any) => {
-      if (activeMaster.id == 10) {
-        params.api.forEachNode((node: any) => {
-          const isSelected = node.data.IsSelected === "True";
-          node.setSelected(isSelected);
-        });
-      }
       if(activeMaster.id===501){
         params.api.sizeColumnsToFit();
       }
-      
     },
   
     onCellEditingStopped(event) {
-      if(pageType==='add'){
-        validateMTOMaster( activeMaster.id);
-      }
-        const data = event.data;
-      const field = event.colDef.field;
+      const data = event.data;
+      const field:any = event.colDef.field;
       const newValue = event.newValue;
+      const newRow = { ...data };
+      newRow[field] = newValue;
       // if(activeMaster.id===503){
       //   return;
       // }
-    
-      if (!field) {
+      if(pageType==='add'){
+        const newRowData = _.cloneDeep(activeMaster.rowData.map((row: any) => {
+          if (JSON.stringify(row) === JSON.stringify(data)) {
+              return newRow;
+            }
+            return row;
+          }));
+        newRowData.forEach((ele:any)=>{
+          if (typeof ele.err === 'string') {
+            ele.err = { error: '' };
+          } else {
+            ele.err.error = '';
+          }
+        })
+        validateMTOMaster(activeMaster.id, newRowData);
         return;
       }
-      const newRow = { ...data };
-      newRow[field] = newValue;
 
-      if(data.minId===undefined){
+     
+
+    if(data.minId===undefined){
 
         
       const newRowData = activeMaster.rowData.map((row: any) => {
@@ -717,7 +861,7 @@ const useViewModify = (pageType: string) => {
       // setEnableEditOnlineReset(true)
       dispatch(UPDATE_ROW_DATA([...newRowData]))
     }
-    else{
+    else if(activeMaster.id===503){
       const newRowData = activeMaster.rowData.map((row: any, index) => {
         if (JSON.stringify(row.majId) === JSON.stringify(data.majId)) {
             const newRow = row;
@@ -750,7 +894,11 @@ const useViewModify = (pageType: string) => {
   const tempAgGridProps: AgGridReactProps = {
     columnDefs: getTempGridColDefs(),
     onRowDataUpdated: (event) => {
-      if (tempDownloadData) event.api.exportDataAsExcel({ fileName: downloadFileName ? 'Error-' + downloadFileName : 'Error-' + activeMaster.name });
+      const Colparams: any = {
+        columnKeys: activeMaster.colDefs.filter((col: ColDef) => col.headerName !== "Warning" && col.headerName !== 'Error').map((col: ColDef) => col.field),
+      };
+      if (tempDownloadData) event.api.exportDataAsExcel({  fileName: downloadFileName ? 'Error-' + downloadFileName : 'Error-' + activeMaster.name, columnKeys: Colparams.columnKeys });
+      // if (tempDownloadData) event.api.exportDataAsExcel({  fileName: downloadFileName ? 'Error-' + downloadFileName : 'Error-' + activeMaster.name});
     }
   };
 
@@ -1327,7 +1475,7 @@ const useViewModify = (pageType: string) => {
       /////
       const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
         // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-        if(col.field==='iv')return {...col};
+        if(col.field==='iv')return {...col, cellRenderer: ToggleButton};
         if(col.field==='bt')return {...col, editable: true,  cellEditor: 'agRichSelectCellEditor',
         valueFormatter: myFormatter,
         cellEditorParams: {
@@ -1371,6 +1519,42 @@ const useViewModify = (pageType: string) => {
           cellEditor: 'agNumberCellEditor'
 
         }
+        if(col.field==='cpd') return{
+          ...col,
+          editable: true,
+          cellEditor: 'agNumberCellEditor'
+
+        }
+        if(col.field==='whpd') return{
+          ...col,
+          editable: true,
+          cellEditor: 'agNumberCellEditor'
+
+        }
+        if(col.field==='sh') return{
+          ...col,
+          editable: true,
+          cellEditor: 'agNumberCellEditor'
+
+        }
+        if(col.field==='rb') return{
+          ...col,
+          editable: true,
+          cellEditor: 'agNumberCellEditor'
+
+        }
+        if(col.field==='fh') return{
+          ...col,
+          editable: true,
+          cellEditor: 'agNumberCellEditor'
+
+        }
+        if(col.field==='cwl') return{
+          ...col,
+          editable: true,
+          cellEditor: 'agNumberCellEditor'
+
+        }
         
         else return {  ...col, editable: true, singleClickEdit: true }
         // return { ...col }
@@ -1378,7 +1562,7 @@ const useViewModify = (pageType: string) => {
 
 
 
-      dispatch(UPDATE_COLDEFS([{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, minWidth: 300, headerName: 'Error', pinned: 'left'  },{colId: '',headerCheckboxSelection: true, checkboxSelection: true, maxWidth: 80, pinned: 'left', lockPosition: 'left'},...updatedColdefs]))
+      dispatch(UPDATE_COLDEFS([{colId: 'err', field: 'err',cellRenderer: MTOErrorWarningCell, minWidth: 300, headerName: 'Error', pinned: 'left'  },...updatedColdefs]))
       
       ////
       const formData = new FormData();
@@ -1389,52 +1573,53 @@ const useViewModify = (pageType: string) => {
 
 
       // TODO: checked for buffer only make it dynamic
-      if(activeMaster.id!==501 && activeMaster.id!==502 && activeMaster.id!==503 && activeMaster.id!==504){
+    //   if(activeMaster.id!==501 && activeMaster.id!==502 && activeMaster.id!==503 && activeMaster.id!==504){
 
         
-        intervalID = setInterval(async () => {
-          const progress = await getUploadProgress(processId);
-          setUploadProgress(progress.data.progress);
-          setTotalProgress(progress.data.totalRows)
-        }, 1000)
+    //     intervalID = setInterval(async () => {
+    //       const progress = await getUploadProgress(processId);
+    //       setUploadProgress(progress.data.progress);
+    //       setTotalProgress(progress.data.totalRows)
+    //     }, 1000)
         
-        const response = await validateMaster({ formData, masterId: activeMaster.id });
-        clearInterval(intervalID);
-        let result = JSON.parse(response.data)
-        const errorAndWarningData = result.filter((data: any) => data.error.length > 0 || data.warning.length > 0)
-        result = [...errorAndWarningData, ...result.filter((data: any) => data.error.length === 0 && data.warning.length === 0)]
+    //     const response = await validateMaster({ formData, masterId: activeMaster.id });
+    //     clearInterval(intervalID);
+    //     let result = JSON.parse(response.data)
+    //     const errorAndWarningData = result.filter((data: any) => data.error.length > 0 || data.warning.length > 0)
+    //     result = [...errorAndWarningData, ...result.filter((data: any) => data.error.length === 0 && data.warning.length === 0)]
         
-        setIsOverlayVisible(false);
+    //     setIsOverlayVisible(false);
         
-      const ifErrorExists = result.find((data: any) => data.error.length > 1);
-      const ifWarningExists = result.find((data: any) => data.warning.length > 1);
+    //   const ifErrorExists = result.find((data: any) => data.error.length > 1);
+    //   const ifWarningExists = result.find((data: any) => data.warning.length > 1);
 
-      if (ifErrorExists) {
-        dispatch(UPDATE_PROGRESS_STATE('error'));
-        addInvalidDataColDefs('error');
-      }
-      if (ifWarningExists) {
-        // dispatch(UPDATE_PROGRESS_STATE('error'));
-        addInvalidDataColDefs('warning');
-      }
-      if (!ifErrorExists) {
-        if (activeMaster.progress === 'deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-        else dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-        addCheckBoxColDefs();
-      }
+    //   if (ifErrorExists) {
+    //     dispatch(UPDATE_PROGRESS_STATE('error'));
+    //     addInvalidDataColDefs('error');
+    //   }
+    //   if (ifWarningExists) {
+    //     // dispatch(UPDATE_PROGRESS_STATE('error'));
+    //     addInvalidDataColDefs('warning');
+    //   }
+    //   if (!ifErrorExists) {
+    //     if (activeMaster.progress === 'deleteView') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+    //     else dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+    //     addCheckBoxColDefs();
+    //   }
       
     
-      dispatch(SET_RECORD_COUNT(result.length));
-      dispatch(UPDATE_ROW_DATA(result));
-      dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-    }
-    else{
+    //   dispatch(SET_RECORD_COUNT(result.length));
+    //   dispatch(UPDATE_ROW_DATA(result));
+    //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+    // }
+    // else{
 
     dispatch(SET_RECORD_COUNT(buffData.length));
     dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+
     dispatch(UPDATE_ROW_DATA(buffData));
 
-    }
+    // }
       
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       dispatch(TOGGLE_UPLOAD_MODAL(false));
@@ -1495,7 +1680,7 @@ const useViewModify = (pageType: string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
-          if(data['error'].length > 0){
+          if(data.err.error.length > 0){
             erroneusData.push(data);
           }
           else{
@@ -1505,16 +1690,16 @@ const useViewModify = (pageType: string) => {
         setTempGridData(erroneusData);
         setTempDownloadData(true);
 
-        if(activeMaster.progress!=='submitted'){
+        // if(activeMaster.progress!=='submitted'){
           dispatch(UPDATE_ROW_DATA(validData));
         
-          dispatch(REMOVE_COLDEFS(['error','warning']));
-          addCheckBoxColDefs();
-          if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-          else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+          // dispatch(REMOVE_COLDEFS(['error','warning']));
+          // addCheckBoxColDefs();
+          // if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+          // else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
           dispatch(SET_RECORD_COUNT(validData.length))
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        }
+        // }
         
       }
       
@@ -1892,6 +2077,51 @@ const useViewModify = (pageType: string) => {
         notifySuccess("Status Updated Successfully");
 
       } 
+
+      const resetMtoMasters = ()=>{
+          dispatch(UPDATE_PROGRESS_STATE('default'));
+        dispatch(UPDATE_ROW_DATA([]));
+        dispatch(SET_BUFFER_INITIAL_DATA([]));
+        dispatch(SET_BUFFER_MODIFY_DATA([]));
+        dispatch(SET_CCR_INITIAL_DATA([]));
+        dispatch(SET_CCR_MODIFY_DATA([]));
+        dispatch(UPDATE_COLDEFS([]));
+        dispatch(REMOVE_ALL_FILTERS());
+        // dispatch(UPDATE_ACTIVE_MASTER([]))
+       
+        dispatch(ADD_FILTER())
+        setDownloadData(false);
+        setTempDownloadData(false);
+        dispatch(FILL_MASTERS([]));
+        setFilterButtonStatus([]);
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+        
+
+        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+
+       
+       
+        dispatch(RESET_MTO_STATE())
+        dispatch(UPDATE_PROGRESS_STATE('default'));
+        dispatch(UPDATE_ROW_DATA([]));
+        dispatch(SET_BUFFER_INITIAL_DATA([]));
+        dispatch(SET_BUFFER_MODIFY_DATA([]));
+        dispatch(UPDATE_COLDEFS([]));
+        dispatch(REMOVE_ALL_FILTERS());
+        dispatch(SET_CCR_INITIAL_DATA([]));
+        dispatch(SET_CCR_MODIFY_DATA([]));
+        // dispatch(UPDATE_ACTIVE_MASTER([]))
+       
+        dispatch(ADD_FILTER())
+        setDownloadData(false);
+        setTempDownloadData(false);
+        dispatch(FILL_MASTERS([]));
+        setFilterButtonStatus([]);
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+        
+
+        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+      }
 
       const onBackButton = () => {
 
@@ -2527,6 +2757,8 @@ const useViewModify = (pageType: string) => {
   const user = useUserData();
 
      
+  const navigate = useNavigate();
+
   const onMTOAddSaveBufferData= async()=>{
 
     notifyLoader("Saving Task...")
@@ -2540,7 +2772,7 @@ const useViewModify = (pageType: string) => {
 
     let isValid = true;
 
-    const selectedRows:any = ref?.current?.api?.getSelectedRows();
+    const selectedRows:any = _.cloneDeep(activeMaster.rowData);
     selectedRows.forEach((e:any)=>{
       const newVal = JSON.parse(JSON.stringify(e));
       bufferTypeData.forEach((ele:any)=>{
@@ -2550,6 +2782,7 @@ const useViewModify = (pageType: string) => {
       })
 
       newVal.ib= (e.ib==="false"?0: 1);
+      newVal.iv = (e.iv===true|| e.iv===false)? e.iv: true;
       newVal.mlt = parseInt(e.mlt);
       newVal.slt = parseInt(e.slt);
       newVal.bid = null;
@@ -2582,7 +2815,9 @@ const useViewModify = (pageType: string) => {
 
         dispatch(UPDATE_ROW_DATA(newData));
         
-        
+        navigate(-1);
+        resetMtoMasters();
+        RESET_MTO_STATE();
         notifySuccess("Buffer task updated!!")
       }
       else{
@@ -2927,12 +3162,15 @@ const useViewModify = (pageType: string) => {
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
       e.err="";
+      (!(e.iv===true || e.iv===false))&& (e.iv= false);
       if(!e.bid)e.bid=null;
 
       if(e.bid===null || e.iv===false){
         BufferPostObj.buffData.push(_.omit(e,['editable','error','warning']));
       }
     })
+
+    console.log("posting this as draft", BufferPostObj);
 
     try{
       
@@ -3077,6 +3315,29 @@ const useViewModify = (pageType: string) => {
 
   }
   }
+
+
+  useEffect(()=>{
+    if(pageType==='add'){
+      if(bufferInitialData || ccrInitialData){
+        if((ccrGroupMaster && plantMaster && deptMaster) || bufferTypeData){
+          
+            const newRowData = _.cloneDeep(activeMaster.rowData);
+            newRowData.forEach((ele:any)=>{
+              if (typeof ele.err === 'string') {
+                ele.err = { error: '' };
+              } else {
+                ele.err.error = '';
+              }
+            })
+            validateMTOMaster(activeMaster.id, newRowData);
+            return;
+          
+        }
+      }
+    }
+
+  },[bufferInitialData, ccrInitialData,bufferTypeData, ccrGroupMaster, plantMaster, deptMaster])
 
 
 

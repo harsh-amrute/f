@@ -261,7 +261,7 @@ const useSavedDrafts = ()=>{
                 {   isMTO: true,
                     "id": draftDetails.mid,
                     "name": draftDetails.dnm,
-                    "colDefs": [{checkboxSelection: true, pinned: 'left', maxWidth: 70, lockPosition: 'left', headerCheckboxSelection: true},...convertToColDefs(fields,draftDetails.ActionType),{colId: 'err',colPosition: 100, field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error' , pinned: 'left' }],
+                    "colDefs": [...convertToColDefs(fields,draftDetails.ActionType),{colId: 'err',colPosition: 100, field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error' , pinned: 'left' }],
                     "rowData": draftData,
                     "isChecked": true,
                     "filters": [{

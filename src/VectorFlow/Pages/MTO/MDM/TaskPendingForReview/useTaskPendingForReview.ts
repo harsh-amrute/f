@@ -1,7 +1,7 @@
 
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetBufferMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCCRMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetBufferMasterData, useGetCCRMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCCRMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -22,13 +22,22 @@ const useTaskPendingForReview = ()=>{
     const [tempMasterData, setTempMasterData]= useState<any>(undefined);
     const [mid,setMID] = useState<any>(undefined);
     const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
+    const {mutateAsync: getCCRMasterData} = useGetCCRMasterData();
 
     const GetInitialData = async(mid: any)=>{
         if(mid===501){
             try{
 
-                console.log("getting intial Dataa");
                 const result = await getBufferMasterData({});
+                setTempMasterData(result.data.data)
+            }
+            catch(e){
+                console.log(e);
+            }
+        }
+        else if(mid===502){
+            try{
+                const result = await getCCRMasterData({});
                 setTempMasterData(result.data.data)
             }
             catch(e){
@@ -583,8 +592,6 @@ const useTaskPendingForReview = ()=>{
     },[])
 
     const validateBeforeSubmit = (finData: any) => {
-        console.log("validating ....", finData);
-        console.log("thatData....", tempMasterData);
         if (mid === 501) {
           let hasMatchingBSZAndBT = false;
           let hasExistingBCD = false;
@@ -627,6 +634,35 @@ const useTaskPendingForReview = ()=>{
       
           // Return the validation result
           return !(hasMatchingBSZAndBT || hasExistingBCD);
+        }
+
+        if(mid===502){
+        let hasExistingCCD = false;
+        let ccd = null;
+
+        for (const newData of finData) {
+            if (newData.ia === true && newData.cid === null) {
+                if (!hasExistingCCD) {
+                    hasExistingCCD = tempMasterData.some(
+                        (masterData: any) => masterData.ccd === newData.ccd
+                    );
+                    if (hasExistingCCD) ccd = newData.ccd;
+                }
+
+                if (hasExistingCCD) {
+                    break;
+                }
+            }
+        }
+
+        // Handle errors
+        if (hasExistingCCD) {
+            toast.dismiss();
+            notifyError(`A CCR with the code ${ccd} exists in the CCR master`);
+        }
+
+        // Return the validation result
+        return !hasExistingCCD;
         }
       
         return true;
@@ -739,7 +775,6 @@ const useTaskPendingForReview = ()=>{
         }
         
         let isValid = validateBeforeSubmit(newApprovedData);
-        console.log("isvalid", isValid);
         newApprovedData.forEach((ele:any)=>{
             if(ele.ia===false && ele.cm===""){
                 (!isValid===false) && notifyError("Make sure you provide a comment for the rejected task!");
