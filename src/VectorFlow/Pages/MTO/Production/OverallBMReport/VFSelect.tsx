@@ -1,9 +1,8 @@
-import React from 'react'
 import Select from 'react-select';
 import { chooseThemeColor } from '../../../../../styles/global';
 
 
-const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
+const VFSelect = ({ options, themeUi, placeholder, ...rest }: any) => {
 
     
     return (
