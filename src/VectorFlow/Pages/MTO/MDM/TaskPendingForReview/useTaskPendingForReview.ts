@@ -138,15 +138,15 @@ const useTaskPendingForReview = ()=>{
                 visible: true
             },
             {
-                field: "plnm",
-                headerName: "Plant",
+                field: "mindsc",
+                headerName: "Minor Reason",
                 position: 2,
                 dataType: "string",
                 visible: true
             },
             {
-                field: "mindsc",
-                headerName: "Minor Reason",
+                field: "plnm",
+                headerName: "Plant",
                 position: 3,
                 dataType: "string",
                 visible: true

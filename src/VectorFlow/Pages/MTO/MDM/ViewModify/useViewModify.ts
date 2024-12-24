@@ -371,7 +371,8 @@ const useViewModify = (pageType: string) => {
       if (
         (params.data.majId?.toString().startsWith('m') || params.data.minId?.toString().startsWith('m')) ||
         params.data.iu === true ||
-        params.data.id === true
+        params.data.id === true ||
+        params.data.ie === false
       ) {
         return { color: "rgb(128, 0, 64)" };
       }
@@ -509,7 +510,6 @@ const useViewModify = (pageType: string) => {
     if (masterId === 501) {
       const allRows = [...newRowData];
       const newData:any = [];
-      console.log("validating this data...", newRowData);
 
       allRows.forEach((e, i) => {
       const newVal = _.cloneDeep(e);
@@ -699,6 +699,35 @@ const useViewModify = (pageType: string) => {
       });
     
       // Dispatch the updated row data
+      dispatch(UPDATE_ROW_DATA(newData));
+    }
+
+    if(activeMaster.id===503){
+
+      const allRows = [...newRowData];
+      const newData:any = [];
+      allRows.forEach((e:any,i:number)=>{
+        const newVal = _.cloneDeep(e);
+
+        if (plantMaster && !plantMaster.some((plant: any) => plant.plant_name === e.plnm || plant.plant_id === e.plnm)) {
+          newVal.err = { error: "Please select a valid plant from the dropdown", warning: "" };
+        } else if (e.plnm === "" || !e.plnm) {
+          newVal.err = { error: "Plant name cannot be empty!", warning: "" };
+        }
+        if (e.majdsc === "" || e.majdsc===null) {
+          newVal.err = { error: "Major reason description cannot be empty!", warning: "" };
+        } else if (e.mindsc === "" || e.mindsc===null) {
+          newVal.err = { error: "Each major reason must have at least one minor reason!", warning: "" };
+        }
+        if((e.mindsc!=="" && e.mindsc!==null) &&(e.majdsc===""|| e.majdsc===null)){
+          newVal.err = { error: "State the major reason to which the minor reason belongs!", warning: "" };
+        }
+
+        
+        newData.push(newVal);
+      })
+
+
       dispatch(UPDATE_ROW_DATA(newData));
     }
     
@@ -2600,7 +2629,8 @@ const useViewModify = (pageType: string) => {
               if (
                 (params.data.majId?.toString().startsWith('m') || params.data.minId?.toString().startsWith('m')) ||
                 params.data.iu === true ||
-                params.data.id === true
+                params.data.id === true ||
+                params.data.ie === false
               ) {
                 return { color: "rgb(128, 0, 64)" };
               }
@@ -2611,7 +2641,9 @@ const useViewModify = (pageType: string) => {
         return {
           ...colDef,
           cellStyle: (params:any)=>{
-            if(params.data.majId?.toString().startsWith('m')){
+            if(params.data.majId?.toString().startsWith('m') || params.data.minId?.toString().startsWith('m') || params.data.ie===false 
+              || params.data.iu===true || params.data.id===true
+          ){
               return {color: "rgb(128, 0, 64)"}
             }
           },
@@ -2667,7 +2699,10 @@ const useViewModify = (pageType: string) => {
         return {
           ...colDef,
           cellStyle: (params:any)=>{
-            if(params.data.majId?.toString().startsWith('m')){
+            if(params.data.majId?.toString().startsWith('m') || params.data.minId?.toString().startsWith('m') || params.data.ie===false 
+              || params.data.iu===true || params.data.id===true
+          )
+            {
               return {color: "rgb(128, 0, 64)"}
             }
           },
@@ -2752,8 +2787,9 @@ const useViewModify = (pageType: string) => {
         plnm: '',
         majdsc: '',
         majId: newId,
+        ie: false,
         minData: [
-          {majId:newId,mindsc: '', minId: newIdMin}
+          {majId:newId,mindsc: '', minId: newIdMin, ie: false}
         ]
       }
     }
@@ -2766,7 +2802,7 @@ const useViewModify = (pageType: string) => {
 
   const addRowToMtoMinGrid = () => {
     const newMinId = 'min'+uuidv4();
-    const newSelectedMajReason = {...selectedMajReason,minData: [{majId: selectedMajReason.majId,minId: newMinId, mindsc: ''},...selectedMajReason.minData]};
+    const newSelectedMajReason = {...selectedMajReason,minData: [{majId: selectedMajReason.majId,ie: false,minId: newMinId, mindsc: ''},...selectedMajReason.minData]};
     const newRowData:any = [];
     activeMaster.rowData.forEach(element => {
       if(element.majId===selectedMajReason.majId){
@@ -2936,8 +2972,9 @@ const useViewModify = (pageType: string) => {
       at: pageType==="add"?"Add":"Modify",
       reasonData: [],
     }
-    const selectedRows:any = ref?.current?.api?.getSelectedRows();
+    const selectedRows:any = _.cloneDeep(activeMaster.rowData)
     let isValid= true;
+
     selectedRows.forEach((e:any)=>{
       const newVal = _.cloneDeep(e);
       newVal.plid = e.plnm;
@@ -2953,18 +2990,58 @@ const useViewModify = (pageType: string) => {
       return;
     }
 
+    const finPoogiPostData:any = [];
+    const groupedData = _.groupBy(PoogiPostObj.reasonData, 'majdsc');
+
+    for (const [key, items] of Object.entries(groupedData)) {
+      items.forEach(item => {
+      const { plnm, plid, majdsc, mindsc } = item;
+      let existingMajor = finPoogiPostData.find((major:any) => major.plnm === plnm && major.majdsc === majdsc);
+
+      if (!existingMajor) {
+        existingMajor = {
+        majdsc,
+        majid: null,
+        majId: null,
+        majcd: "*",
+        minData: [],
+        iu: null,
+        ie: false,
+        id: null,
+        plnm,
+        pl: plid,
+        plid
+        };
+        finPoogiPostData.push(existingMajor);
+      }
+
+      existingMajor.minData.push({
+        mindsc,
+        minid: null,
+        majid: null,
+        majId: null,
+        minId: null,
+        mincd: "*",
+        iu: null,
+        ie: false,
+        id: null,
+      });
+      });
+    }
+    PoogiPostObj.reasonData = finPoogiPostData;
     try{
+      console.log("finPoogiPostdata...", PoogiPostObj);
       const response = await savePOOGIMasterTask(PoogiPostObj);
+      
       if(response.status===200){
-        const allData = [...activeMaster.rowData];
-        const indexesToRemove = selectedRows.map((row:any) => allData.indexOf(row));
-        indexesToRemove.sort((a:any,b:any) => b - a);
-        const newData:any = [];
-        allData.forEach((e:any,index: any)=>{
-          if(!indexesToRemove.includes(index)) newData.push(e);
-        })
-        dispatch(UPDATE_ROW_DATA(newData));
+        
+       
+        dispatch(UPDATE_ROW_DATA([]));
+        dispatch(SET_POOGI_MODIFY_DATA([]));
         toast.dismiss();
+        navigate(-1);
+        resetMtoMasters();
+        RESET_MTO_STATE();
         notifySuccess("Poogi task updated!!")
       }
       else{
@@ -3061,6 +3138,7 @@ const useViewModify = (pageType: string) => {
         e.ie = null;
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
           e.majId = null;
+          e.majid = null;
         }
         else{
           e.ie= true;
@@ -3068,19 +3146,22 @@ const useViewModify = (pageType: string) => {
         e.id = ele.id? ele.id: null;
         e.iu = ele.iu? ele.iu: null;
         e.majid = ele.majId;
+        e.majcd = ele.majcd? ele.majcd: "*";
       
         // Iterate through minData to check and update minId if it starts with 'm'
         e.minData.forEach((minElement: any) => {
           minElement.id = minElement.id?minElement.id: null;
           if (typeof minElement.minId === "string" && minElement.minId.startsWith("m")) {
             minElement.minId = null;
-            minElement.majId = null;
+            minElement.majid = null;
+            minElement.mincd = minElement.mincd? minElement.mincd: "*";
           }
           else{
             minElement.ie = true;
           }
           minElement.minid = minElement.minId;
           minElement.majid = minElement.majId;
+          minElement.mincd = minElement.mincd? minElement.mincd: "*";
           minElement.iu = minElement.iu? minElement.iu: null;
         });
 
@@ -3095,7 +3176,11 @@ const useViewModify = (pageType: string) => {
         if(response.status=== 200){
           toast.dismiss();
           notifySuccess("Saved POOGI Task Successfully");
-          dispatch(UPDATE_ROW_DATA(poogiInitialData));
+          const newPoogiInitialData = _.cloneDeep(poogiInitialData);
+          newPoogiInitialData
+          .filter((item: any) => !item.majId?.toString().startsWith('m') && !item.minData.some((minItem: any) => minItem.minId?.toString().startsWith('m')));
+          dispatch(UPDATE_ROW_DATA(newPoogiInitialData));
+          dispatch(SET_POOGI_INITIAL_DATA(newPoogiInitialData));
           dispatch(SET_POOGI_MODIFY_DATA([]));
           setMTOProgress("submitted Once");
         }
@@ -3109,11 +3194,7 @@ const useViewModify = (pageType: string) => {
         notifyError("Failed to create task!")
         console.log(error)
       }
-
-
       return;
-
-
     }
 
 
@@ -3306,67 +3387,77 @@ const useViewModify = (pageType: string) => {
 
     return;
   }
+
   else if(activeMaster.id===503){
+      notifyLoader("Saving POOGI Draft...");
 
-    notifyLoader("Saving POOGI Draft...");
-    const POOGIPostObj: any = {
-      mid: activeMaster.id,
-      uid: user.user.user.id.toString(),
-      unm: user.user.user.name,
-      reasonData: [],
-      at: pageType==="add"?"Add":"Modify"
-      
-    }
-
-
-    poogiModifyData?.forEach((ele:any)=>{
-      const e = _.cloneDeep(ele);
-      e.ie = null;
-      if (typeof e.majId === "string" && e.majId.startsWith("m")) {
-        e.majId = null;
+      const POOGIPostObj: any = {
+        mid: activeMaster.id,
+        uid: user.user.user.id.toString(),
+        unm: user.user.user.name,
+        reasonData: [],
+        at: pageType==="add"?"Add":"Modify"
+        
       }
-      else{
-        e.ie= true;
-      }
-      e.id = ele.id? ele.id: null;
-      e.iu = ele.iu? ele.iu: null;
-      e.majid = ele.majId;
-      e.err = "";
-    
-      // Iterate through minData to check and update minId if it starts with 'm'
-      e.minData.forEach((minElement: any) => {
-        minElement.id = minElement.id?minElement.id: null;
-        if (typeof minElement.minId === "string" && minElement.minId.startsWith("m")) {
-          minElement.minId = null;
-          minElement.majId = null;
+
+
+      poogiModifyData?.forEach((ele:any)=>{
+        const e = _.cloneDeep(ele);
+        e.ie = null;
+        if (typeof e.majId === "string" && e.majId.startsWith("m")) {
+          e.majId = null;
+          e.majid = null;
+          e.ie=false;
         }
         else{
-          minElement.ie = true;
+          e.ie= true;
         }
-        minElement.err= "";
-        minElement.minid = minElement.minId;
-        minElement.majid = minElement.majId;
-        minElement.iu = minElement.iu? minElement.iu: null;
-      });
+        e.id = ele.id? ele.id: null;
+        e.iu = ele.iu? ele.iu: null;
+        e.majid = ele.majId;
+        e.majcd = ele.majcd? ele.majcd: "*";
+        e.err= null;
+      
+        // Iterate through minData to check and update minId if it starts with 'm'
+        e.minData.forEach((minElement: any) => {
+          minElement.id = minElement.id?minElement.id: null;
+          if (typeof minElement.minId === "string" && minElement.minId.startsWith("m")) {
+            minElement.minId = null;
+            minElement.ie = false;
+            minElement.majId = null;
+            minElement.majid = null;
+            minElement.mincd = minElement.mincd? minElement.mincd: "*";
+          }
+          else{
+            minElement.ie = true;
+          }
+          minElement.minid = minElement.minId;
+          minElement.majid = minElement.majId;
+          minElement.mincd = minElement.mincd? minElement.mincd: "*";
+          minElement.iu = minElement.iu? minElement.iu: null;
+          minElement.err  = null;
+        });
 
-      plantMaster?.forEach((elm: any)=>{if(elm.plant_name===ele.plnm)e.pl = elm.plant_id})
-      POOGIPostObj.reasonData.push(_.omit(e,['editable','error','warning', 'plnm']));
-    })
+
+        plantMaster?.forEach((elm: any)=>{if(elm.plant_name===ele.plnm)e.pl = elm.plant_id})
+        POOGIPostObj.reasonData.push(_.omit(e,['editable','error','warning', 'plnm']));
+      })
+
 
     try{
       const response = await savePOOGIMasterDraft([POOGIPostObj]);
       if(response.status=== 200){
         toast.dismiss();
-        notifySuccess("Saved POOGI Task Successfully");
+        notifySuccess("Saved POOGI Draft Successfully");
       }
       else{
         toast.dismiss();
-        notifyError("Failed to create the task...")
+        notifyError("Failed to save as draft...")
       }
     }
     catch(error){
       toast.dismiss();
-      notifyError("Failed to create task!")
+      notifyError("Failed to save as draft!")
       console.log(error)
     }
 

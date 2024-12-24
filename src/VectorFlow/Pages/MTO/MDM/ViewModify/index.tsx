@@ -181,7 +181,6 @@ const MTOViewModify = () => {
                     <SCLegend>Filter</SCLegend>
                     {
                       activeMaster.filters.map((f: Filter) => {
-                        console.log("activeMaster filters in view mofidy", activeMaster.filters, "activeMaster id", activeMaster.id);
                         if (f.masterId == activeMaster?.id) {
                           return (
                             <VFFilter
@@ -288,9 +287,9 @@ const MTOViewModify = () => {
                     cursor: 'pointer',
                     background: '#fff'
                   }}
-                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoGrid()) }}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions' || x.field==='pactions'))  && (addRowToMtoGrid()) }}
                 >
-                  {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
+                  {((!activeMaster.colDefs.some((x) => x.field === 'actions' || x.field==='pactions'))) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"
@@ -317,9 +316,9 @@ const MTOViewModify = () => {
                     cursor: 'pointer',
                     background: '#fff'
                   }}
-                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actionsP')) && (addRowToMtoMinGrid()) }}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions' || x.field==='pactions')) && (ref && ref.current && ref?.current?.api?.getSelectedRows()?.length>0) && (addRowToMtoMinGrid()) }}
                 >
-                  {(!(activeMaster.colDefs.some((x) => x.field === 'actionsP'))) ?
+                  {((!activeMaster.colDefs.some((x) => x.field === 'actions' || x.field==='pactions')) && (ref && ref.current && ref?.current?.api?.getSelectedRows()?.length>0)) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"
