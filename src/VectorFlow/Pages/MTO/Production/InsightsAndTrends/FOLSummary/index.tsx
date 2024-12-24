@@ -44,6 +44,8 @@ const FOLSummary = () => {
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
   const themeUi = user.user.theme_ui;
   const gridRef = useRef<any>(null);
+  const [HeaderData, setHeaderData] = useState([]);
+  const [myColDefs, setMyColDefs] = useState([{}]);
 
 
   const handleNameChange = (arr: any) => {
@@ -537,12 +539,9 @@ const FOLSummary = () => {
     setFilterData(data?.data?.data);
   }, [tableData]);
 
-
-  const [HeaderData, setHeaderData] = useState([]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
   const reportName = "EnquiryResponse";
-  const [myColDefs, setMyColDefs] = useState([{}]);
 
   const setColumnDef = async () => {
     try {
