@@ -1,5 +1,5 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import './styles.css'
@@ -11,10 +11,11 @@ import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Load
 import { FilterPageName, pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport } from '../../../../../../../helpers/utils';
 
-const GridView = forwardRef(({ gridRef, colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters ,colDefMap}: any,ref) => {    
+const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters ,colDefMap}: any,ref) => {    
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
     const [data, setData] = useState([]);
+    const gridRef = useRef<any>(null);
     const { mutateAsync: getElapsedTimeData, isLoading } = useGetElapsedTimeData()
     const { mutateAsync : getElapsedTimeDataExcelExport } = useGetElapsedTimeDataForExcelExport();    
 

@@ -47,7 +47,6 @@ const ElapsedTime = () => {
     const [selectedPlant, setSelectedPlant] = useState<any>();
     const [selectedDept, setSelectedDept] = useState<any>();
     const elapsedTimeRef = useRef<any>(null);
-    const gridRef = useRef<any>(null);
     // const [filterData, setFilterData] = useState({});
     // const { 
     //     state: currFilter, 
@@ -297,7 +296,6 @@ const ElapsedTime = () => {
                     <>
                         <GridView
                             ref={elapsedTimeRef}
-                            gridRef={gridRef}
                             colDef={colDef}
                             setCurrentGridRef={setCurrentGridRef}
                             currentGridRef={currentGridRef}
