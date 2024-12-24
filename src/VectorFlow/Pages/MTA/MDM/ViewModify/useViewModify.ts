@@ -1368,53 +1368,57 @@ const useViewModify = (pageType:string) => {
       }
 
       const onSaveToDraft = async () => {
-        dispatch(UPDATE_IS_SAVING_DRAFT(true))
-        let newData:any = []
-        const errorOrWarning = activeMaster.rowData.find((row:any)=>(Object.keys(row).includes('error'))||(Object.keys(row).includes('warning')));
-        if(errorOrWarning){
-          newData = activeMaster.rowData.map((row:any)=>{
-            const temp = {...row};
-            if(!temp['error']){
-              temp['error'] = '';
-            }
-            if(!temp['warning']){
-              temp['warning'] = '';
-            }
-            return temp;
-          });
-        }
-        else{
-          newData = activeMaster.rowData;
-        }
-       
-        const selectedData = ref.current?.api.getSelectedRows();
-
-        if(activeMaster.id==10 || activeMaster.id==6){
-          newData = newData.map((row:any)=>{
-            const tempRow = {...row}
-            if(selectedData?.find((selectedRow:any)=>JSON.stringify(selectedRow)===JSON.stringify(row))){
-              tempRow.IsSelected = true
-              return tempRow
-            }
-            tempRow.IsSelected = false
-              return tempRow
-          })
-        }
-        
-        const res = await postDraftChunks(newData)
-        if(res){
-          if(draftID.length > 0){
-            return notifySuccess("Draft Updated Successfully")
+        try{
+          dispatch(UPDATE_IS_SAVING_DRAFT(true))
+          let newData:any = []
+          const errorOrWarning = activeMaster.rowData.find((row:any)=>(Object.keys(row).includes('error'))||(Object.keys(row).includes('warning')));
+          if(errorOrWarning){
+            newData = activeMaster.rowData.map((row:any)=>{
+              const temp = {...row};
+              if(!temp['error']){
+                temp['error'] = '';
+              }
+              if(!temp['warning']){
+                temp['warning'] = '';
+              }
+              return temp;
+            });
           }
           else{
-            return notifySuccess("Draft Created Successfully")
+            newData = activeMaster.rowData;
           }
+       
+          const selectedData = ref.current?.api.getSelectedRows();
+
+          if(activeMaster.id==10 || activeMaster.id==6){
+            newData = newData.map((row:any)=>{
+              const tempRow = {...row}
+              if(selectedData?.find((selectedRow:any)=>JSON.stringify(selectedRow)===JSON.stringify(row))){
+                tempRow.IsSelected = true
+                return tempRow
+              }
+              tempRow.IsSelected = false
+                return tempRow
+            })
+          }
+        
+          const res = await postDraftChunks(newData)
+          if(res){
+            if(draftID.length > 0){
+              return notifySuccess("Draft Updated Successfully")
+            }
+            else{
+              return notifySuccess("Draft Created Successfully")
+            }
+          }
+          notifyError("Something Went Wrong")
+          return false
+        }catch(err){
+          notifyError("Something Went Wrong")
+          return false
+        }finally{
+          dispatch(UPDATE_IS_SAVING_DRAFT(false))
         }
-        dispatch(UPDATE_IS_SAVING_DRAFT(false))
-        //isSavingToDraft
-         notifyError("Something Went Wrong")
-         return false
-      
     }
 
      
