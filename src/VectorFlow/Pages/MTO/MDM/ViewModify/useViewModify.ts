@@ -3177,9 +3177,9 @@ const useViewModify = (pageType: string) => {
           toast.dismiss();
           notifySuccess("Saved POOGI Task Successfully");
           const newPoogiInitialData = _.cloneDeep(poogiInitialData);
-          newPoogiInitialData
+          const finNewPoogiInitialData = newPoogiInitialData
           .filter((item: any) => !item.majId?.toString().startsWith('m') && !item.minData.some((minItem: any) => minItem.minId?.toString().startsWith('m')));
-          dispatch(UPDATE_ROW_DATA(newPoogiInitialData));
+          dispatch(UPDATE_ROW_DATA(finNewPoogiInitialData));
           dispatch(SET_POOGI_INITIAL_DATA(newPoogiInitialData));
           dispatch(SET_POOGI_MODIFY_DATA([]));
           setMTOProgress("submitted Once");
