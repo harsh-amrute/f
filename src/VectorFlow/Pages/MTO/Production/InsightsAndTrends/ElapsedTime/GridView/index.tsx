@@ -1,5 +1,5 @@
 import { GridOptions } from 'ag-grid-enterprise';
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import './styles.css'
@@ -11,8 +11,7 @@ import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Load
 import { FilterPageName, pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport } from '../../../../../../../helpers/utils';
 
-const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters ,colDefMap}: any,ref) => {
-    const gridRef = useRef(null);
+const GridView = forwardRef(({ gridRef, colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters ,colDefMap}: any,ref) => {    
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
     const [data, setData] = useState([]);
@@ -104,8 +103,13 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
         setCurrentPage(currPage)
     }
 
-    useEffect(()=>{ 
+    useEffect(() => {
         if (currentGridRef?.current && columnState?.length) {
+            columnState.forEach((col: any) => {
+                if (col.initialHide != undefined) {
+                    col.hide = col.initialHide;
+                }
+            });
             const result = currentGridRef.current.api.applyColumnState({
                 state: columnState,
                 applyOrder: true
@@ -114,8 +118,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                 console.error('Failed to apply column state');
             }
         }
-    });
-
+    }, [currentGridRef, columnState]);
     const ExcelExportData = () =>{
         if(data.length> 0){
             
@@ -135,8 +138,8 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                 sideBar={{
                     toolPanels: ['columns'],
                 }}
-                defaultColDef={defaultColDef}
                 columnDefs={colDef}
+                defaultColDef={defaultColDef}
                 disableZoomScaling
                 rowData={data}
                 tooltipHideDelay={100000}
@@ -148,6 +151,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
 
                     setCurrentGridRef(gridRef);
                 }}
+                maintainColumnOrder
             // statusBar={{
             //     statusPanels: [
             //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },

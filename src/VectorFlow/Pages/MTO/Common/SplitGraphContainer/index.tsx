@@ -793,7 +793,7 @@ const SplitGraphContainer = ({
 
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%" , height:"100%"}}>
 
 
       <SCChartContainer style={{ border: '1px solid #CCCCCC', margin: '2px', height: '100%', display: 'flex', flexDirection: 'column', paddingBottom: '20px' }} height={'100%'}>
@@ -818,6 +818,9 @@ const SplitGraphContainer = ({
                 <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
               </div>
 
+            </div>
+            <div className='chart-wrapper' style={{ flex: 1 , height:"90%"}}>
+              <AgCharts ref={chartRef} options={{ ...options, data: data }} />
             </div>
           </div>
         </ChartWrapper>
@@ -868,9 +871,6 @@ const SplitGraphContainer = ({
             />
           </div>
         </VFModalCard>
-        <div style={{ flex: 1 }}>
-          <AgCharts ref={chartRef} options={{ ...options, data: data }} />
-        </div>
       </SCChartContainer>
     </div>
 
