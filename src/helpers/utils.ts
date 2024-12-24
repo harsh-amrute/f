@@ -1511,11 +1511,12 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
             actionStatus: actionStatus
           },
           cellRenderer: TaskPendingActionRenderer,
-          width: 300,
+          width: 400,
+          resizable:false,  
           cellStyle: {
             "border-left": "solid 1px #B9B9B9"
           },
-          pinned: 'right'
+          pinned: 'right',
         }
         // {
         //     field:"reject",
