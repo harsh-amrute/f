@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { useDispatch,useSelector } from "react-redux"
 import { useNavigate } from "react-router"
-import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
-import { notifyError, notifyPromise, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
+import {useGetAllDrafts, useDeleteMTODraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration, useGetBufferTypeMaster } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { notifyError, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
 import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS} from "../../../../../redux/actions/MDM"
 import { createMastersStateFromDraftData, generateRandomId, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
@@ -11,7 +11,9 @@ import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
 import { useUserData } from "../../../../../context"
 import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
-import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA } from "../../../../../redux/actions/MTO"
+import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_MODIFY_DATA } from "../../../../../redux/actions/MTO"
+import { useGetDeptMasterData, useGetPlantMasterData } from "../../../../../VectorFlow/Services/MTO/Common/Masters"
+import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation"
 
 const useSavedDrafts = ()=>{
 
@@ -20,10 +22,10 @@ const useSavedDrafts = ()=>{
 
     const {mutateAsync:getDraftById} = useGetDraftById()
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
-    const {mutateAsync:deleteDraft} = useDeleteDraft()
+    const {mutateAsync:deleteDraft} = useDeleteMTODraft()
     const [isDeleteModalOpen,toggleDeleteModal] = useState<boolean>(false)
     const [deleteDraftId,setDeleteDraftId] = useState<string>("");
-    const {data,isLoading,refetch} = useGetAllDrafts();
+    const {data,isLoading} = useGetAllDrafts();
     const {mutateAsync:getDraftCount} = useGetDraftCount();
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
     const [allDrafts, setAllDrafts] = useState<any>(data?.data?.data);
@@ -121,9 +123,55 @@ const useSavedDrafts = ()=>{
 
 
     //   }
+    const {mutateAsync: GetBufferTypeMaster} = useGetBufferTypeMaster();
+    const {mutateAsync: getPlantMaster} = useGetPlantMasterData();
+    const {mutateAsync: getDeptMaster} = useGetDeptMasterData();
+    const {mutateAsync: getCCRGroupMaster} = useGetCCRGroupMaster();
+    const [plantMaster, setPlantMaster] = useState<any>();
+    const [deptMaster, setDeptMaster] = useState<any>();
+    const [ccrGroupMaster, setCcrGroupMaster] = useState<any>();
+    const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
+
+    const getInitalData = async()=>{
+            try{
+                const BufferTypeMaster = await GetBufferTypeMaster();
+                setBufferTypeMaster(BufferTypeMaster?.data?.data);
+            }
+            catch(e){
+                console.log(e)
+            }
+            try{
+                const response = await getCCRGroupMaster();
+                setCcrGroupMaster(response.data.data);
+
+            }
+            catch(e){
+                console.log(e)
+            }
+            try{
+
+                const response = await getDeptMaster();
+                setDeptMaster(response.data.data);
+            }
+            catch(e){
+                console.log(e)
+            }
+            try{
+                const response = await getPlantMaster();
+                setPlantMaster(response.data.data);
+                
+            }
+            catch(e){
+                console.log(e);
+            }
+       
+    }
+    useEffect(()=>{
+        getInitalData();
+    },[])
 
     const convertToColDefs = (data:any, ActionType: string) => {
-        return data
+        const newColDef =  data
           .sort((a:any, b:any) => (a.col_Position || 0) - (b.col_Position || 0))
           .map((item: any) => ({
             field: item?.key,                    // Use the "key" as the "field"
@@ -134,6 +182,41 @@ const useSavedDrafts = ()=>{
             autoHeight: true,
             editable: (ActionType == "Modify") ? false : true
           }));
+
+        return newColDef.map((col:any)=>{
+            if (col.field === 'pl') return {
+                ...col,
+                editable: (ActionType == "Modify") ? false : true,
+                cellEditor: 'agRichSelectCellEditor',
+                cellEditorParams: {
+                  values: plantMaster?.map((item: any) => item.plant_name),
+                },
+              };
+              
+              if (col.field === 'dp') return {
+                ...col,
+                editable: (ActionType == "Modify") ? false : true,
+                cellEditor: 'agRichSelectCellEditor',
+                cellEditorParams: {
+                  values: deptMaster?.map((item: any) => item.dept_name),
+                },
+              };
+              
+              if (col.field === 'cgid') return {
+                ...col,
+                editable: (ActionType == "Modify") ? false : true,
+                cellEditor: 'agRichSelectCellEditor',
+                cellEditorParams: {
+                  values: Object.values(ccrGroupMaster || {}).map((group: any) => group.ccr_group_code),
+                },
+              };
+              if(col.field==='bt')return {...col,  cellEditor: 'agRichSelectCellEditor',
+              editable: (ActionType == "Modify") ? false : true,
+              cellEditorParams: {
+                values: bufferTypeMaster?.map((item: any) =>  item.dsc), 
+              }, }
+              else return col;
+        })
       };
     
     const onEditDraft = async(draftDetails:any)=>{
@@ -145,6 +228,7 @@ const useSavedDrafts = ()=>{
                 const res: any = await getDraftByIdMTO({draftId: draftDetails.DraftId, mid: draftDetails.mid});
                 const draftData:any = res.data.data.results;
                 dispatch(SET_RECORD_COUNT(res.data.data.results.length));
+             
            
 
             const mastersDataRes= await getMTOMasterUIConfiguration();
@@ -169,12 +253,15 @@ const useSavedDrafts = ()=>{
             if(draftDetails.mid===502){
                 dispatch(SET_CCR_MODIFY_DATA(draftData))
             }
+            if(draftDetails.mid===503){
+                dispatch(SET_POOGI_MODIFY_DATA(draftData))
+            }
 
             const masterState:any = [
                 {   isMTO: true,
                     "id": draftDetails.mid,
                     "name": draftDetails.dnm,
-                    "colDefs": [{checkboxSelection: true, pinned: 'left', maxWidth: 70, lockPosition: 'left', headerCheckboxSelection: true},...convertToColDefs(fields,draftDetails.ActionType),{colId: 'err',colPosition: 100, field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error' , pinned: 'left' }],
+                    "colDefs": [...convertToColDefs(fields,draftDetails.ActionType),{colId: 'err',colPosition: 100, field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error' , pinned: 'left' }],
                     "rowData": draftData,
                     "isChecked": true,
                     "filters": [{
@@ -217,6 +304,20 @@ const useSavedDrafts = ()=>{
             }
             toast.dismiss();
             notifySuccess("Draft Loaded Successfully");
+
+            if(res.status===200){
+                try{
+                    const response = await deleteDraft(draftDetails.DraftId);
+                    if(response.status===200){
+                        toast.dismiss();
+                        setAllDrafts(allDrafts.filter((ele:any)=>{return( ele.DraftId!==deleteDraftId)}))
+                    }
+                }
+                catch(e){
+                    toast.dismiss()
+                }
+            }
+
 
         }
         catch(error){
@@ -296,9 +397,6 @@ const useSavedDrafts = ()=>{
             dispatch(UPDATE_ACTIVE_MASTER(masterState.indexOf(activeMaster)))
             dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
         }
-
-        
-        
         navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`);
         toast.dismiss();
         notifySuccess("Draft Loaded Successfully");
@@ -309,19 +407,24 @@ const useSavedDrafts = ()=>{
     }
     }
     
-    
-    
     const onDeleteDraft = async()=>{
-        closeDeleteModal();
-        await notifyPromise(
-            deleteDraft(deleteDraftId),
-            {
-                pending:'Deleting Draft',
-                success:'Draft has been deleted sucessfully',
-                error:'Something went wrong'
+
+        try{
+            const response = await deleteDraft(deleteDraftId);
+            if(response.status===200){
+                toast.dismiss();
+                notifySuccess("Draft deleted!");
+                setAllDrafts(allDrafts.filter((ele:any)=>{return( ele.DraftId!==deleteDraftId)}))
+                closeDeleteModal();
             }
-        )
-        refetch();
+            else{
+                notifyError("Failed to delete draft");
+            }
+        }
+        catch(e){
+            toast.dismiss()
+            notifyError("Failed to delete draft!");
+        }
     }
 
     return{

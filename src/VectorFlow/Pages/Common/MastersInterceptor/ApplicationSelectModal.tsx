@@ -1,5 +1,4 @@
 import React from 'react'
-import VFModalCard from '../../../../components/VectorFLOW/commons/VFModalCard'
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 
@@ -7,7 +6,12 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 20px;
+  fontFamily: roboto;
+  background:white;
+  padding: 40px 60px;
+  border-radius: 16px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+
 `;
 
 const OptionCard = styled.div`
@@ -24,6 +28,7 @@ const OptionCard = styled.div`
 
   &:hover {
     transform: translateY(-2px);
+    background: rgb(128, 0, 64, 0.3);
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
   }
 `;
@@ -68,6 +73,7 @@ const ActionSelectModal = ({redirectUrl}:any) => {
 
   return (
     <Container>
+      <span style={{fontSize: '16px', fontWeight: 'bold', fontFamily: 'roboto', }}>Select Application</span>
       {ref?.current?.appData.map((option, index) => (
         <OptionCard key={index} onClick={() => {navigate(option.link);}}>
           <Icon>
@@ -86,11 +92,12 @@ const ActionSelectModal = ({redirectUrl}:any) => {
 const ApplicationSelectModal = ({redirectUrl}: any) => {
     
   return (
-    <div>
+    <div style={{paddingTop:'40px', width: '100%', display: 'flex', alignItems: 'center', justifyContent:'center'}}>
 
-    <VFModalCard openModal={true} closeModal={() => {null}} headerText={"Choose Application"} headerIcon={""} closeIcon={""} >
+    {/* <div  headerText={"Choose Application"} headerIcon={""} closeIcon={""} > */}
+    <div style={{height: '40%', width: '50%',  zoom: 1.5}}>
         <ActionSelectModal redirectUrl={redirectUrl}/>
-    </VFModalCard>
+    </div>
     </div>
   )
 }

@@ -93,6 +93,13 @@ export const useDeleteDraft = () => {
   })
 }
 
+
+export const useDeleteMTODraft = () => {
+  return useMutation(async (id: string) => {
+    return await MDMService.deleteMTODraft(id)
+  })
+}
+
 export const useGetSeasonalityDetails = () => {
   return useMutation(QUERY_KEYS.useGetSeasonalityDetails, async (body: object) => {
     return await MDMService.getSeasonalityDetails(body)
@@ -250,6 +257,17 @@ export const useSaveCCRMasterTask = () => {
     return await MDMService.saveCCRMasterTask(body)
   })
 }
+
+export const useSavePOOGIMasterTask = ()=>{
+  return useMutation(async (body: any)=>{
+    return await MDMService.savePOOGIMasterTask(body);
+  })
+}
+export const useSavePOOGIMasterDraft= ()=>{
+  return useMutation(async (body: any)=>{
+    return await MDMService.savePOOGIMasterDraft(body);
+  })
+}
 export const useSaveBufferMasterDraft = () => {
   return useMutation(async (body: any) => {
     return await MDMService.saveBufferMasterDraft(body)
@@ -265,6 +283,11 @@ export const useSaveCCRMasterDraft = () => {
 export const usePutMtoBufferMasterData = () => {
   return useMutation(async (body: any) => {
     return await MDMService.putMTOAddBufferMaster(body);
+  })
+}
+export const usePutMtoCCRMasterData = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.putMTOAddCCRMaster(body);
   })
 }
 
@@ -293,13 +316,13 @@ export const useGetMTODraftById = () => {
 }
 
 export const useGetCCRMasterData = ()=>{
-  return useMutation(async ()=>{
-    return await MDMService.getCCRMasterData();
+  return useMutation(async (body:any)=>{
+    return await MDMService.getCCRMasterData(body);
   })
 }
 export const useGetPOOGIMasterData = ()=>{
-  return useMutation(async ()=>{
-    return await MDMService.getPOOGIMasterData();
+  return useMutation(async (body:any)=>{
+    return await MDMService.getPOOGIMasterData(body);
   })
 }
 

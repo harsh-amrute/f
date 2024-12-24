@@ -39,6 +39,18 @@ export const Wrapper = styled.div`
   & div[data-testid="vf_pagination"]{
     margin: 0 !important;
   }
+  & .chart-wrapper > div{
+    height: 100% !important;
+    & .ag-charts-wrapper{
+      max-height: 100% !important;
+      .ag-charts-canvas{
+        height: 100%;
+      }
+      & .ag-charts-canvas >canvas{
+        height:100% !important;
+      }
+    }
+  }
 `;
 
 export const Button = styled.button<{ themeUi: string; arrowName: string }>`

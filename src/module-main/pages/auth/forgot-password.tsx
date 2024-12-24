@@ -17,7 +17,6 @@ import {
   LogoAreaForgotPsw,
   ContainerLeft,
   GoBackButton,
-  LogoArvind,
   SuccessIcon,
   SuccessText,
   SuccessArea,
@@ -96,7 +95,11 @@ function ForgotPasswordContainer() {
             </SuccessArea>
           ) : (
             <>
-              <LogoArvind src="/assets/img/logoArvind.png" alt="logo" />
+            {
+              /* 
+              <LogoArvind src="/assets/img/logoArvind.png" alt="logo" />          
+              */
+            }
               <Tittle>{t("forgotPasswordPage.title")}</Tittle>
               <FormArea onSubmit={handleSubmit(onSave)}>
                 <InputArea error={errors.email}>

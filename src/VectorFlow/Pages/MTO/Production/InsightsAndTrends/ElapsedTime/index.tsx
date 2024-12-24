@@ -41,11 +41,12 @@ const ElapsedTime = () => {
     const [weeklyChartData, setWeeklyChartData] = useState([]);
     const [currentGridRef, setCurrentGridRef] = useState<any>(null);
     const [columnState, setColumnState] = useState<any>([]);
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState<any>(undefined);
     const [colDef, setColDef] = useState([{}]);
     const [HeaderData, setHeaderData] = useState();
     const [selectedPlant, setSelectedPlant] = useState<any>();
     const [selectedDept, setSelectedDept] = useState<any>();
+    const elapsedTimeRef = useRef<any>(null);
     // const [filterData, setFilterData] = useState({});
     // const { 
     //     state: currFilter, 
@@ -147,7 +148,7 @@ const ElapsedTime = () => {
     useEffect(() => {
         setColumnDef();
         getDeptWiseChartData();
-        getUserColumnConfig();
+        // getUserColumnConfig();
         // getFilterData();
     }, [])
 
@@ -175,17 +176,28 @@ const ElapsedTime = () => {
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-            const config = currentGridRef.current.api.getColumnState();
+            if (coldefs) {
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProdElapsedTime,
+                    cs: JSON.stringify(coldefs),
+                };
+                await updateUserUIReportConfigData([payload]);
+            } else {
+                if (currentGridRef?.current?.api) {
+                    const config = currentGridRef.current.api.getColumnState();
 
-            const payload = {
-                un: user.user.name,
-                rn_id: UIGridCode.ProdElapsedTime,
-                cs: JSON.stringify(config)
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.ProdElapsedTime,
+                        cs: JSON.stringify(config)
+                    }
+                    await updateUserUIReportConfigData([payload]);
+                    await getUserColumnConfig();
+                }
             }
-            await updateUserUIReportConfigData([payload]);
-            await getUserColumnConfig();
 
         } catch (error) {
             console.error(error);
@@ -212,21 +224,22 @@ const ElapsedTime = () => {
 
     useEffect(() => {
         setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+        getUserColumnConfig();
     }, [HeaderData])
 
     // const colDef = useMemo(() => getColumnDefinations(HeaderData, colDefCustomizations), [])
-
+    
     useEffect(() => {
         if (isReset) {
-            setColumnState(colDef);
+            setColumnState([...colDef]);
             setIsReset(false)
         } else {
-            handleSaveClick();
+            if (isReset !== undefined) {
+                handleSaveClick(colDef);
+            }
         }
     }, [isReset]);
-
-    const elapsedTimeRef = useRef<any>();
-
+    
     const ExcelExportRefCall =()=>{
         if(elapsedTimeRef?.current?.getExcelExport){
             elapsedTimeRef.current.getExcelExport();
@@ -254,43 +267,41 @@ const ElapsedTime = () => {
                 // onFilterRemove={onFilterRemove}
                 // isMfgSelected={isMfgSelected}
             />
-
+            {(isLoading || isLoading2 || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
             {
                 !isGridView ?
-                    <>
-                        {(isLoading || isLoading2 || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
-
-                        <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
-                            <BTRTableWrapper style={{ flex: '1', margin: '0' }}>
-                                <Allotment vertical={false} separator={false}   >
-                                    <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                        <BTRAllomentSection>
-                                            <DeptWiseGraph chartData={deptwiseChartData} chartTableData={deptwiseChartTableData} alertData={alertData} />
-                                        </BTRAllomentSection>
-                                    </Allotment.Pane>
-                                    <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                        <BTRAllomentSection>
-                                            <WeekWiseGraph handleSelectionChange={handleSelectionChange} chartTableData={weeklyChartTableData} chartData={weeklyChartData} plant={selectedPlant} dept={selectedDept} />
-                                        </BTRAllomentSection>
-                                    </Allotment.Pane>
-                                </Allotment>
+                    
+                    <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
+                        <BTRTableWrapper style={{ flex: '1', margin: '0' }}>
+                            <Allotment vertical={false} separator={false}   >
+                                <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
+                                    <BTRAllomentSection>
+                                        <DeptWiseGraph chartData={deptwiseChartData} chartTableData={deptwiseChartTableData} alertData={alertData} />
+                                    </BTRAllomentSection>
+                                </Allotment.Pane>
+                                <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
+                                    <BTRAllomentSection>
+                                        <WeekWiseGraph handleSelectionChange={handleSelectionChange} chartTableData={weeklyChartTableData} chartData={weeklyChartData} plant={selectedPlant} dept={selectedDept} />
+                                    </BTRAllomentSection>
+                                </Allotment.Pane>
+                            </Allotment>
 
 
 
-                            </BTRTableWrapper>
+                        </BTRTableWrapper>
 
-                        </HorizontalViewWrapper>
-                    </>
+                    </HorizontalViewWrapper>
+                    
                     :
                     <>
-                        <GridView 
-                            ref = {elapsedTimeRef}
+                        <GridView
+                            ref={elapsedTimeRef}
                             colDef={colDef}
                             setCurrentGridRef={setCurrentGridRef}
                             currentGridRef={currentGridRef}
                             columnState={columnState}
                             appliedFilters={null}
-                            colDefMap = {colDefMap}
+                            colDefMap={colDefMap}
                         />
                     </>
             }

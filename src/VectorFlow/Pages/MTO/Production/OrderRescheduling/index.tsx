@@ -255,7 +255,7 @@ const OrderRescheduling = () => {
       checkboxSelection: true,
       maxWidth: 50,
       flex: 1,
-      intialHide: false,
+      initialHide: false,
       pinned: "left",
       suppressMenu: true,
       floatingFilter: false,
@@ -544,9 +544,7 @@ const OrderRescheduling = () => {
       });
       if (!result) {
         console.error("Failed to apply column state 1", result);
-      } else {
-        console.log("state applied");
-      }
+      } 
     }
   }, [columnState]);
 

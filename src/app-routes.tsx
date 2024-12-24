@@ -91,26 +91,6 @@ const lazyLoad = (children: React.ReactNode) => {
     '/forgot-password',
     '/change-password',
     '/profile',
-    '/mto/master-data-management/control-panel',
-    '/master-data-management/mto-control-panel/view-modify',
-    '/master-data-management/mto-saved-drafts',
-    '/master-data-management/mto-task-status',
-    '/master-data-management/mto-task-pending',
-    '/master-data-management/mto-control-panel/add',
-    '/master-data-management/mto-control-panel/delete',
-    '/master-data-management/masters-interceptor',
-    '/masters-interceptor/control-panel',
-    "/masters-interceptor/saved-drafts",
-    "/mto/master-data-management/saved-drafts",
-    "/masters-interceptor/task-status",
-    "/mto/master-data-management/task-status",
-    '/masters-interceptor/task-pending',
-    "/mto/master-data-management/task-pending",
-    "/masters-interceptor/data-modification-history",
-    "/mto/master-data-management/data-modification-history",
-    "/mto/master-data-management/control-panel/view-modify",
-    "/mto/master-data-management/control-panel/add"
-
   ]
   const urlAllPage = [
     ...authenPage,
@@ -202,7 +182,20 @@ const lazyLoad = (children: React.ReactNode) => {
     '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
     '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
     '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
-    '/landing-page'
+    '/landing-page',
+
+    '/masters-interceptor/control-panel',
+    "/masters-interceptor/saved-drafts",
+    "/masters-interceptor/task-status",
+    '/masters-interceptor/task-pending',
+    "/masters-interceptor/data-modification-history",
+    '/mto/master-data-management/control-panel',
+    "/mto/master-data-management/control-panel/add",
+    "/mto/master-data-management/control-panel/view-modify",
+    "/mto/master-data-management/saved-drafts",
+    "/mto/master-data-management/task-status",
+    "/mto/master-data-management/task-pending",
+    "/mto/master-data-management/data-modification-history",
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
