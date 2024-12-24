@@ -800,7 +800,6 @@ const undoClicked = async (props:any,orderId: string) => {
                   : undefined,
             }
           : undefined,
-        pivot: child.cc === "BPP" ? true : false,
         cellStyle:
           child.cc === "Remark"
             ? {
@@ -1241,11 +1240,19 @@ const undoClicked = async (props:any,orderId: string) => {
         state: colState,
         applyOrder: true,
       });
-      tempGridRef.current?.api?.exportDataAsExcel({
-        fileName: "OverallBMReport",
-      });
 
-      console.log("tempgreid state", tempGridRef.current?.api.getColumnState());
+      const isPivotMode = refGraph2.current?.api?.isPivotMode()
+      if(isPivotMode){
+        refGraph2.current?.api?.exportDataAsExcel({
+          fileName: "OverallBMReport",
+        });
+      }
+      else{
+        tempGridRef.current?.api?.exportDataAsExcel({
+          fileName: "OverallBMReport",
+        });
+      }
+
     }
   }, [tempGridData]);
 
