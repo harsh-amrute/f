@@ -1103,7 +1103,7 @@ const useViewModify = (pageType:string) => {
 
         //check if errorneous Data
         const errorData = activeMaster.rowData.find((row:any)=>{
-          return (row.error || row.warning) &&( row.error!=='' || row.warning!=='')
+          return (row.error ) &&( row.error!=='' )
         });
         if(errorData){
           notifyError('Please Clear Errors Before Submitting');
