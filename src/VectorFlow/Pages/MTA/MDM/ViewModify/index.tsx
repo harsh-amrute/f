@@ -27,7 +27,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
-
+    const suppressMovable = true;
    
     // const disabled=true;
     // const dummyFn =()=>{return}
@@ -107,7 +107,6 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         tempRecordCount
 
     } = useViewModify('modify');
-
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -225,6 +224,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
                 <VFTable
                   ref={ref}
                   columnDefs={activeMaster.colDefs}
+                  suppressMovableColumns={suppressMovable}
                   rowData={activeMaster.rowData}
                   {...agGridProps}
                   suppressPaginationPanel={!isDataAvailableLocally}

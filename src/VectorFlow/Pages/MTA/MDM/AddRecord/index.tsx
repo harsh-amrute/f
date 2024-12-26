@@ -119,7 +119,7 @@ const AddRecord = () => {
       )
     }
     const dispatch = useDispatch();
-
+    const suppressMovable = true;
     return(
         <React.Fragment>
           <SCContainer>
@@ -136,6 +136,7 @@ const AddRecord = () => {
                     height={"calc(100% )"}
                     ref={ref}
                     columnDefs={activeMaster.colDefs}
+                    suppressMovableColumns={suppressMovable}
                     rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}

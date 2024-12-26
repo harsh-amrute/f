@@ -1511,10 +1511,10 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
             actionStatus: actionStatus
           },
           cellRenderer: TaskPendingActionRenderer,
-          width: 400,
-          resizable:false,  
+          width: 250,
+          resizable:false,
           cellStyle: {
-            "border-left": "solid 1px #B9B9B9"
+            "border-left": "solid 1px #B9B9B9",
           },
           pinned: 'right',
         }

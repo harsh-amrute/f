@@ -30,6 +30,7 @@ import { operators } from "../../../../../helpers/MDMConstants";
 
 const DeleteRecord = () => {
 
+  const suppressMovable = true;
   const {user} = useUserData()
   const themeUi = user?.user?.theme_ui;
  
@@ -208,6 +209,7 @@ const DeleteRecord = () => {
                     ref={ref}
                     height={getMDMTableHeight(activeMaster)}
                     columnDefs={activeMaster.colDefs}
+                    suppressMovableColumns={suppressMovable}
                     rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}
