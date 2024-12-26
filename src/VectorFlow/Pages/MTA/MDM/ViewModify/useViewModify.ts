@@ -1414,12 +1414,11 @@ const useViewModify = (pageType:string) => {
             }
           }
           notifyError("Something Went Wrong")
+          dispatch(UPDATE_IS_SAVING_DRAFT(false))
           return false
         }catch(err){
           notifyError("Something Went Wrong")
           return false
-        }finally{
-          dispatch(UPDATE_IS_SAVING_DRAFT(false))
         }
     }
 
