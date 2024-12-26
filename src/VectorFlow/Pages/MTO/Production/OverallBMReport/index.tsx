@@ -438,8 +438,8 @@ const OverallBmReport = () => {
 
   
   const handleActionChange = (option: any) => {
+    
     setSelectedAction(option);
-
   }
 
   const updateActionAPI = async (action: string, order_ids: any) => {
@@ -574,7 +574,6 @@ const undoClicked = async (props:any,orderId: string) => {
     throw (error)
   }
 };  
-  
   const WIPFilter: any = (
     <>
        <div
@@ -610,7 +609,7 @@ const undoClicked = async (props:any,orderId: string) => {
           themeUi={themeUi}
           placeholder="Select Action"
           value={selectedAction}
-          onActionChange={handleActionChange}
+          onChange={handleActionChange}
         />
       </div>
 
@@ -686,7 +685,8 @@ const undoClicked = async (props:any,orderId: string) => {
          value={
            actionOptions.find((opt) => opt.value === props.data?.oca) || null
         }
-        onActionChange={(option: any) => {
+        onChange={(option: any) => {
+
             onSelectChange(props, option, props.node.rowIndex);
          }}
        />
