@@ -62,8 +62,7 @@ const AddRecord = () => {
         onSaveToDraft,
         onEditOnlineSave,
         isDataAvailableLocally,
-        isOverlayVisible,
-        errorCount
+        isOverlayVisible
 
     } = useViewModify('add');
 
@@ -80,7 +79,8 @@ const AddRecord = () => {
         showMasterGroup,
         showMaster,
         options,
-        selectedOptions
+        selectedOptions,
+        errorCount
     } = useAdd()
     
     useEffect(()=>{
@@ -238,7 +238,7 @@ const AddRecord = () => {
               editOnline={editOnline}
               onEditOnline={()=>onEditOnline('editOnline')}
               onBack={onBackButton}
-              onClearAndExportErrors={()=>onClearExportError()}
+              onClearAndExportErrors={onClearExportError}
               onModifyData={()=>toggleUploadModal(true)}
               onExportData={exportToExcel}
               onSubmit={onSubmit}

@@ -38,7 +38,7 @@ const useAdd=()=>{
     
     const [TASK_ID,setTaskId] = useState<string>();
     const [conflictCount,setConflictCount] = useState<number>(0);
-    const [errorCount,setErrorCount] = useState<number>(0);
+    const [errorCounts,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
@@ -292,7 +292,7 @@ const useAdd=()=>{
           }
 
 
-          if(localErrorCount>0 || errorCount>0){
+          if(localErrorCount>0 || errorCounts>0){
             if(localErrorCount > 0){
               errorRowData = createErrorRowData(localErrorData,activeMaster.id)
             }
@@ -318,7 +318,7 @@ const useAdd=()=>{
 
             if(errorRowData.length && conflictCount){
               if(submittedRecordsCount === 0){
-                notifyError(`${errorRowData.length} records have error and ${conflictCount} recordshave conflicts. `)
+                notifyError(`${errorRowData.length} records have error and ${conflictCount} records have conflicts. `)
               }
               else notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error and ${conflictCount} records have conflicts. `)
             }
@@ -381,7 +381,7 @@ const useAdd=()=>{
         activeMaster,
         isSelectMasterOpen,
         conflictCount,
-        errorCount,
+        errorCount:errorCounts,
         onSubmit,
         handleOnClickMaster,
         handleSubmitSelectMaster,

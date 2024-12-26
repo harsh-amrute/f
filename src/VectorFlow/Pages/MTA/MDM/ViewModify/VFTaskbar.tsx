@@ -16,7 +16,7 @@ export interface VFTaskBarProps{
     onBack:()=>void
     onExportData:()=>void
     onModifyData:()=>void
-    onClearAndExportErrors:(skipClear?:boolean)=>void
+    onClearAndExportErrors:(source:string)=>void
     onSubmit:()=>void
     onSubmitConflictData:()=>void
     onEditOnline:()=>void
@@ -298,7 +298,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={isSavingToDraft} width={139}>
                         Save as draft
                         </VFButtonOutline>            
-                        <VFButton onClick={()=>onClearAndExportErrors(false)} themeUi={themeUi} disabled={false} width={183}>
+                        <VFButton onClick={()=>onClearAndExportErrors('Validation ')} themeUi={themeUi} disabled={false} width={183}>
                             Clear & Export Errors
                         </VFButton>
                     </VFTaskBarButtonGroup>
@@ -334,7 +334,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <div style={{display:'flex', gap:'20px'}}>
                     <BackButton/>
                     {showSubmittedExportError ? (
-                         <VFButton onClick={onClearAndExportErrors} themeUi={themeUi} disabled={false} width={183}>
+                         <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
                                 Export Errors
                         </VFButton>
                     ):

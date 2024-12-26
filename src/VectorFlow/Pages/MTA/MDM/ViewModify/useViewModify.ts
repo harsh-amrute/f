@@ -50,6 +50,7 @@ const useViewModify = (pageType:string) => {
     const [defaultToolPanel,setDefaultToolPanel] = useState<string>('');
     const [downloadData,setDownloadData] = useState<boolean>(false);
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
+    const [errorDownloadPrefix,setErrorDownloadPrefix] = useState<string>('')
     const [colDefs,setColDefs] = useState<ColDef[]>([]); 
     const [isUploadButtonDisabled,setIsUploadButtonDisabled] = useState<boolean>(true);
     const [chartData,setChartData] = useState<object>();
@@ -383,7 +384,7 @@ const useViewModify = (pageType:string) => {
     const tempAgGridProps:AgGridReactProps = {
       columnDefs:getTempGridColDefs(),
       onRowDataUpdated:(event)=>{
-        if(tempDownloadData) event.api.exportDataAsExcel({fileName:downloadFileName ? 'Error-' + downloadFileName : 'Error-'+ activeMaster.name});
+        if(tempDownloadData) event.api.exportDataAsExcel({fileName:downloadFileName ? `${errorDownloadPrefix}Error-` + downloadFileName : `${errorDownloadPrefix}Error-`+ activeMaster.name});
       }
     };
 
@@ -876,7 +877,7 @@ const useViewModify = (pageType:string) => {
         
       }
 
-      const onClearExportError = () => {
+      const onClearExportError = (source:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
@@ -889,6 +890,7 @@ const useViewModify = (pageType:string) => {
         });
         setTempGridData(erroneusData);
         setTempDownloadData(true);
+        setErrorDownloadPrefix(source)
 
         if(activeMaster.progress!=='submitted'){
           dispatch(UPDATE_ROW_DATA(validData));
