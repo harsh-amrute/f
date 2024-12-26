@@ -662,6 +662,7 @@ const undoClicked = async (props:any,orderId: string) => {
       newGridData.push(node.data);
     })
    
+    
     if(Array.isArray(newGridData)){
       const dup_gridData = [...newGridData]
       dup_gridData[index].oca = option.value;
