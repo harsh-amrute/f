@@ -55,6 +55,7 @@ const VFSelect = ({ options, themeUi, placeholder, ...rest }: any) => {
                     padding: "0 8px"
                 })
             }}
+            menuPortalTarget={document.body}
             theme={(theme) => ({
                 ...theme,
                 borderRadius: 0,
