@@ -4,7 +4,6 @@ import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENG
 const MIN_RLT_VALUE = 3;
 const MIN_RCP_VALUE = 3;
 const MIN_GCP_VALUE = 3;
-
 const SKULocationMessages = (key:string)=>({
     "any.rlt":"RLT value should be greater than or equal to " + MIN_RLT_VALUE,
     "any.rcp":"RCP value should be greater than or equal to " + MIN_RCP_VALUE,
@@ -51,7 +50,7 @@ export const SKULocationSchema = Joi.object({
     pd:Joi.string(),
     n:Joi.number().integer(),
     mn:Joi.number().integer(),
-    rlt:Joi.number().integer().min(1).max(MAX_DECIMAL_VAL).custom(RLTValidator).messages(SKULocationMessages('RLT')),
+    rlt:Joi.number().integer().min(1).max(MAX_DECIMAL_VAL).prefs({ abortEarly: true }).custom(RLTValidator).messages(SKULocationMessages('RLT')),
     rcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(RCPValidator).messages(SKULocationMessages('RCP')),
     gcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(GCPValidator).messages(SKULocationMessages('GCP')),
     ocp:Joi.number().integer().min(1),
