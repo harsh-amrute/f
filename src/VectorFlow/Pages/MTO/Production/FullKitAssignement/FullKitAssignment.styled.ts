@@ -4,6 +4,8 @@ import * as globalStyles from "../../../../../styles/global";
 export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,6 +38,18 @@ export const Wrapper = styled.div`
     flex: unset;
     width:100%;
     margin-top: -20px;
+  }
+  & .chart-wrapper > div{
+    height: 100% !important;
+    & .ag-charts-wrapper{
+      max-height: 100% !important;
+      .ag-charts-canvas{
+        height: 100%;
+      }
+      & .ag-charts-canvas >canvas{
+        height:100% !important;
+      }
+    }
   }
 `;
 
