@@ -108,6 +108,7 @@ const MTOViewModify = () => {
 
   const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
   const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
+  const editStatus:string = useSelector((state:any)=> state.mto.editStatus);
 
 
 
@@ -493,7 +494,7 @@ const MTOViewModify = () => {
           }}
           showSubmittedExportError={errorCount > 0}
           // masterProgress={(!bufferModifyData)?"initial":(bufferModifyData?"editOnline":"editOnlineSubmitted")}
-          masterProgress={(mtoProgress==='initial')?((!bufferModifyData || (bufferModifyData && bufferModifyData?.length===0))?'initial':"editOnline"):((bufferModifyData && bufferModifyData.length===0)?"editOnlineSubmitted":"editOnline")}
+          masterProgress={editStatus}
           disableSubmit={activeMaster.rowData.length === 0}
           enableEditOnlineReset={enableEditOnlineReset}
           disableDeleteSelected={activeMaster.rowData.length < 1}

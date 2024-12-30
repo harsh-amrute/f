@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
-import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
+import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_EDIT_STATUS, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 import _ from 'lodash';
 
 
@@ -60,7 +60,19 @@ const AddRemoveCellRenderer = (params: any) => {
         notifyError("CCR Capacity Workload (cwl) should be greater than 0!");
         return false;
       }
-    
+
+      if (params.data.cgid === "" || !params.data.cgid || params.data.cgid===null) {
+        notifyError("Choose a valid ccrgroup from the dropdown!");
+        return false;
+      }
+      if (params.data.pl === "" || !params.data.pl || params.data.pl===null) {
+        notifyError("Choose a valid plant from the dropdown!");
+        return false;
+      }
+      if (params.data.dp === "" || !params.data.dp || params.data.pl===null) {
+        notifyError("Choose a valid department from the dropdown!");
+        return false;
+      }
       return true;
     };
     const addRow = () => {
@@ -157,6 +169,7 @@ const AddRemoveCellRenderer = (params: any) => {
           })
           if(ccrModifyData && ccrModifyData.length) dispatch(SET_CCR_MODIFY_DATA([activeMaster.rowData[0], ...ccrModifyData]));
           else dispatch(SET_CCR_MODIFY_DATA([activeMaster.rowData[0]]));
+          // dispatch(SET_EDIT_STATUS("Edit online"))
           dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
         }
 
