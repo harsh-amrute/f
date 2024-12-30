@@ -420,6 +420,7 @@ const OverallBmReport = () => {
     { value: "Complete Close", label: "Complete Close" },
   ];
   
+  const [selectedRowCount, setSelectedRowCount] = useState(0); 
   const [selectedAction, setSelectedAction] = useState<any>(null)
   const [textAction,setTextAction] = useState<any>();
   
@@ -451,7 +452,7 @@ const OverallBmReport = () => {
        return response;
       }else{
         const response = await getShortOrderCompleteOrder({
-          close_type: action,
+          close_type: action==='Short Close'?"0":"1",
           order_keys: order_ids
         });
         return response;
@@ -463,8 +464,6 @@ const OverallBmReport = () => {
       throw error; 
     }
   };
-  
-
 
 
   const [showModal, setShowModal] = useState(false); // Renamed state
@@ -538,8 +537,15 @@ const OverallBmReport = () => {
         const response = await updateActionAPI(selectedAction.value, okValues);
   
         if (response?.status === 200) {
+
+          const newGridData = [...gridData];
+          newGridData.forEach((ele:any)=>{ele.ct=actionText;});
+          setGridData(newGridData);
+
+          notifySuccess("Order closed successfully!");
           console.log("Action updated successfully for selected rows");
         } else {
+          notifySuccess("something went wrong!");
           console.error("Failed to update action for selected rows");
         }
       }
@@ -574,6 +580,47 @@ const undoClicked = async (props:any,orderId: string) => {
     throw (error)
   }
 };  
+
+const onRowSelectionChanged = () => {
+  if (refGraph2?.current?.api) {
+    const selectedNodes = refGraph2.current.api.getSelectedNodes();
+    setSelectedRowCount(selectedNodes.length); 
+  } else {
+    console.error("Row selection ");
+  }
+};
+
+useEffect(()=>{
+  if(selectedAction){
+    setGridData(gridData.map((data: any) => {
+      return {...data, oca: selectedAction.value}
+    }));
+  }
+}, [selectedAction])
+
+
+
+
+
+useEffect(() => {
+  if (refGraph2?.current?.api) {
+    console.log("wow");
+    refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
+
+    return () => {
+      console.log("Hello bantai");
+      if (refGraph2?.current?.api) {
+        refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
+      }
+    };
+  } else {
+    console.error("errror hai bhai");
+  }
+}, [refGraph2?.current?.api]); 
+
+const isRightArrowEnabled = isCheckboxChecked || selectedRowCount > 1;
+
+
   const WIPFilter: any = (
     <>
        <div
@@ -616,7 +663,7 @@ const undoClicked = async (props:any,orderId: string) => {
       {/* Right Arrow - Disabled if Checkbox is Unchecked */}
       <div
         style={{
-          cursor: isCheckboxChecked ? "pointer" : "not-allowed",
+          cursor: isRightArrowEnabled ? "pointer" : "not-allowed",
           background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
           backgroundColor: ColorsMTO.darkPink.code,
           height: "43px",
@@ -626,8 +673,8 @@ const undoClicked = async (props:any,orderId: string) => {
           justifyContent: "center",
           alignContent: "center",
           display: "flex",
-          opacity: isCheckboxChecked ? 1 : 0.5, // Visual cue for disabled
-          pointerEvents: isCheckboxChecked ? "auto" : "none", // Prevent click when disabled
+          opacity: isRightArrowEnabled ? 1 : 0.5, // Visual cue for disabled
+          pointerEvents: isRightArrowEnabled ? "auto" : "none", // Prevent click when disabled
         }}
         data-testid={"isReleaseBtn"}
         onClick={handleRightArrowClick}
@@ -671,7 +718,7 @@ const undoClicked = async (props:any,orderId: string) => {
     handleActionChange(setSelectedAction);
   }
 
-  const DropDownCellRenderer= (props: any) =>  {
+const DropDownCellRenderer= (props: any) =>  {
       
   return (
   <>  {
@@ -1063,7 +1110,7 @@ const undoClicked = async (props:any,orderId: string) => {
   const existsInSelected = (reqOid: string): boolean => {
     for (let index = 0; index < masterSelectedRowData.length; index++) {
       const element: any = masterSelectedRowData[index];
-      if (element.oid === reqOid) {
+      if (element.ok === reqOid) {
         return true;
       }
     }
@@ -1071,14 +1118,17 @@ const undoClicked = async (props:any,orderId: string) => {
   };
 
   const onFirstDataRendered = (params: any) => {
+    console.log("masterselectedData", masterSelectedRowData);
     const nodesToSelect: IRowNode[] = [];
     params.api.forEachNode((node: any) => {
-      if (node.data && node.data.oid && existsInSelected(node.data.oid)) {
+      if (node.data && node.data.ok && existsInSelected(node.data.ok)) {
         node.data.Remark = masterSelectedRowData[0].Remark;
         for (let index = 0; index < masterSelectedRowData.length; index++) {
           const element = masterSelectedRowData[index];
-          if (element.oid === node.data.oid) {
+          if (element.ok === node.data.ok) {
+            console.log("this is also working ")
             node.data.Remark = element.Remark;
+            node.data.oca = element.oca;
           }
         }
         nodesToSelect.push(node);
