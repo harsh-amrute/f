@@ -86,7 +86,9 @@ const GridView = (props: IGridViewProps) => {
     }
 
     useEffect(() => {
-        getGridData({ graphflag: 0, page: currentPage });
+        getGridData({ graphflag: 0, page: 1 });
+        setCurrentPage(1);
+
     }, [appliedFilters])
 
     useEffect(() => {
@@ -139,6 +141,7 @@ const GridView = (props: IGridViewProps) => {
                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                     ]
                 }}
+                maintainColumnOrder
             />
             <VFPagination
                 selectedRows={0}

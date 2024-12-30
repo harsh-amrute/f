@@ -28,8 +28,8 @@ export enum OTIFTags {
     OTIFNone = 0,
     OT_False_IF_False = 1,
     OT_True_IF_True = 2,
-    OT_True_IF_False = 3,
-    OT_False_IF_True = 4,
+    OT_True_IF_False = 4,
+    OT_False_IF_True = 3,
 }
 
 export enum InputTypes {

@@ -1,7 +1,7 @@
 import { GridOptions, SideBarDef } from 'ag-grid-enterprise'
 import { format } from 'date-fns'
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import { useUpdateScheduleOrders } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+// import { useUpdateScheduleOrders } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import Radio from '../../../../../components/VectorFLOW/commons/MTO/Radio'
 import VFTable from '../../Common/VFTable';
 import { Arrow, BasketingContainer, BasketingLabel, BasketingLabelText, BasketingSection, DateRange, DateRangeLabel } from './DueDateQuotation.styled'
@@ -14,7 +14,7 @@ enum SchedulingType {
     Basket
 }
 
-const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, setStep, setDisabled, setSelectedRows, setMasters }: any, ref: any) => {
+const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, setStep, setDisabled, setSelectedRows, setMasters, updateScheduleOrders }: any, ref: any) => {
     
     useEffect(()=>{
         setDisabled(true);
@@ -76,7 +76,7 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
     const [dates, setDates] = useState<any>();
     const [schedulingType, setSchedulingType] = useState(SchedulingType.ItemLevel);
     const gridRef = useRef<any>();
-    const { mutateAsync: updateScheduleOrders, } = useUpdateScheduleOrders()
+    // const { mutateAsync: updateScheduleOrders, isLoading: isUpdateScheduleOrders } = useUpdateScheduleOrders();
 
     const calculateReleaseDateAndPostOrderBuffer = (maxDateLno: any, dueDateLno: any, schedulingType: any, order: any) => {
         let ddLno: any;
