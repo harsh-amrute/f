@@ -75,6 +75,7 @@ const OrderRescheduling = () => {
   const { mutateAsync: getOrderReschedulingExcelData } =
     useGetOrderSchedulingExcelData();
   const { getColDef, colDefMap } = useColDef();
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const GetData = async (isExcelExport = false) => {
     if (isExcelExport) {
@@ -273,7 +274,6 @@ const OrderRescheduling = () => {
     if (HeaderData.length > 0) {
       const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
       setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
-
       getUserColumnConfig();
     }
   }, [HeaderData, currTab]);
@@ -477,6 +477,8 @@ const OrderRescheduling = () => {
           cs: JSON.stringify(coldefs),
         };
         await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
+
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
@@ -502,12 +504,6 @@ const OrderRescheduling = () => {
 
   useEffect(() => {
     if (currentGridRef?.current && columnState?.length) {
-      columnState.forEach((col: any) => {
-        if (col.initialHide != undefined) {
-          col.hide = col.initialHide;
-        }
-      });
-
       const result = currentGridRef?.current?.api.applyColumnState({
         state: columnState,
         applyOrder: true,
@@ -520,14 +516,16 @@ const OrderRescheduling = () => {
 
   useEffect(() => {
     if (isReset) {
-      setColumnState([...colDef]);
+      handleSaveClick(masterUIConfig);
       setIsReset(false);
-    } else {
-      if (isReset !== undefined) {
-        handleSaveClick(colDef);
-      }
     }
   }, [isReset]);
+
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+    }
+  }, [colDef]);
 
   const [tempRowData] = useState<any>(undefined);
 
