@@ -18,9 +18,11 @@ interface IStep1Props {
   currentGridRef: any,
   columnState: any,
   colDef: any,
+  pageCallBack: any,
+  setPageCallBack:any
 }
 
-const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState }: IStep1Props, ref: any) => {
+const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState, pageCallBack, setPageCallBack }: IStep1Props, ref: any) => {
 
   const gridRef = useRef<any>();
 
@@ -41,18 +43,8 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
     return (params.data.dd == null || params.data.dd == undefined);
   }, []);
 
-
-
   useEffect(()=>{
-    if (currentGridRef?.current && columnState?.length ) { //&& colDef.length > 0
-      console.log(columnState);
-      columnState.forEach((col: any) => {
-        if (col.initialHide != undefined) {
-          col.hide = col.initialHide;
-        }
-      });
-      
-      
+    if (currentGridRef?.current && columnState?.length) { //&& colDef.length > 0
       const result = currentGridRef?.current?.api.applyColumnState({
         state: columnState,
         applyOrder: true
@@ -61,7 +53,7 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
         console.error('Failed to apply column state 1');
       }
     }
-  }, []);
+  },[columnState]);
 
   const sideBar = React.useMemo<
   SideBarDef | string | string[] | boolean | null
@@ -96,9 +88,18 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
         onGridReady={(params: any) => {
           params.api.autoSizeAllColumns();
           setCurrentGridRef(gridRef);
+
+          //persist last column state on page call back
+          if (pageCallBack) {
+            params.api.applyColumnState({
+              state: [...columnState],
+              applyOrder: true
+            });
+            setPageCallBack(false);
+          }
+
         }}        
         onRowDataUpdated={(params) => {
-          console.log("running row data update")
           const selectedRowIds = Array.from(selectedRows.keys());
           const newCurrentPageSelected: any = [];
           params.api.forEachNode(node => {

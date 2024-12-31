@@ -453,8 +453,17 @@ const FullKitAssignment = () => {
     if (loadDataParams && Object.entries(appliedFilters).length) {
       fetchOrders();
     }
-  }, [loadDataParams, appliedFilters])
-
+  }, [loadDataParams])
+  useEffect(() => {
+    if (Object.entries(appliedFilters).length) { 
+      if (currentPage === 1) {
+        fetchOrders();
+      }
+      else {
+        setCurrentPage(1);
+      }
+    } 
+  },[appliedFilters])
   useEffect(() => {
     setLoadDataParams({ ...loadDataParams, load_graph_data: false, page: currentPage })
   }, [currentPage])
