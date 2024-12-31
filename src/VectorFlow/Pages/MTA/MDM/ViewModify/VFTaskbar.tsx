@@ -310,13 +310,17 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                    <VFTaskBarButtonGroup>
                     <BackButton/>                      
-                        <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={disableDeleteSelected} width={139}>
-                        Delete Selected
-                        </VFButtonOutline>
-                        <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14 || isSavingToDraft} width={139}>
+                       {
+                        !isSavingToDraft && !disableSubmit && (
+                            <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={disableDeleteSelected} width={139}>
+                            Delete Selected
+                            </VFButtonOutline>
+                        )
+                       }
+                        <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14 || isSavingToDraft || disableSubmit} width={139}>
                         Save as draft
                         </VFButtonOutline>
-                        <VFButton onClick={onSubmit} themeUi={themeUi} disabled={disableSubmit} width={139}>
+                        <VFButton onClick={onSubmit} themeUi={themeUi} disabled={disableSubmit || isSavingToDraft} width={139}>
                             Submit All
                         </VFButton>
                    </VFTaskBarButtonGroup>
@@ -351,18 +355,31 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
 
                 </TaskBarContainer>
             )
+        case "savedToDraft":
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
+                    <div style={{display:'flex', gap:'20px'}}>
+                    <BackButton/>
+                    </div>
+                    <div >
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
+                </TaskBarContainer>
+            )
         case "editOnline":
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                         <BackButton/>
-                        <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset}>
+                        <VFButtonOutline themeUi={themeUi} onClick={onReset} disabled={!enableEditOnlineReset || isSavingToDraft || disableSubmit }>
                             Reset
                         </VFButtonOutline>
-                        <VFButton themeUi={themeUi} onClick={onEditOnlineSave} disabled={masterId > 14 || isSavingToDraft}>
+                        <VFButton themeUi={themeUi} onClick={onEditOnlineSave} disabled={masterId > 14 || isSavingToDraft || disableSubmit}>
                             Save as Draft
                         </VFButton>
-                        <VFButtonOutline themeUi={themeUi} onClick={onSubmit} >
+                        <VFButtonOutline themeUi={themeUi} onClick={onSubmit} disabled={disableSubmit || isSavingToDraft} >
                             Submit
                         </VFButtonOutline>
                     </VFTaskBarButtonGroup>
@@ -456,13 +473,13 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                         <BackButton/>
-                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineReset}>  
+                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineReset} disabled={isSavingToDraft || disableSubmit } >  
                         Reset
                     </VFButtonOutline >
-                    <VFButton themeUi={themeUi} onClick={onSaveToDraft} disabled={masterId > 14 || isSavingToDraft}>
+                    <VFButton themeUi={themeUi} onClick={onSaveToDraft} disabled={masterId > 14 || isSavingToDraft || disableSubmit}>
                             Save as draft
                         </VFButton>
-                        <VFButtonOutline themeUi={themeUi} onClick={onSubmit}>  
+                        <VFButtonOutline themeUi={themeUi} onClick={onSubmit} disabled={isSavingToDraft || disableSubmit } >  
                         Submit
                     </VFButtonOutline >
                     </VFTaskBarButtonGroup>
@@ -510,10 +527,10 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButtonOutline themeUi={themeUi} onClick={onDeleteSelected} width={139}>  
                             Remove Selected
                     </VFButtonOutline >
-                    <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={isSavingToDraft} width={139}>
+                    <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={isSavingToDraft || disableSubmit} width={139}>
                         Save as draft
                         </VFButtonOutline>
-                    <VFButton themeUi={themeUi} onClick={onSubmit}>
+                    <VFButton themeUi={themeUi} onClick={onSubmit} disabled={disableSubmit || isSavingToDraft }>
                             Delete All
                         </VFButton>
                    </VFTaskBarButtonGroup>

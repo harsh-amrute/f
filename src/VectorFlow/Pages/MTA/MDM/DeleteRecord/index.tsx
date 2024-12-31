@@ -99,7 +99,8 @@ const DeleteRecord = () => {
         options,
         selectedOptions,
         showMaster,
-        showMasterGroup
+        showMasterGroup,
+        isSubmitDisabled
     } = useDelete();
 
     useEffect(()=>{
@@ -296,6 +297,7 @@ const DeleteRecord = () => {
           !isSelectMasterOpen && 
           <div style={{zoom:'var(--nms-filter-zoom)'}}>
             <VFTaskBar
+              disableSubmit={isSubmitDisabled}
               showSubmittedExportError={errorCount>0}
               enableEditOnlineReset={enableEditOnlineReset}
               disableResumeSeasonality={()=>false}

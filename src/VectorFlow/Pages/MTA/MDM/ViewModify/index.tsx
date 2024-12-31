@@ -104,7 +104,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         submittedDataCount,
         uploadProgress,
         totalProgress,
-        tempRecordCount
+        tempRecordCount,
+        isSubmitDisabled
 
     } = useViewModify('modify');
     useEffect(()=>{
@@ -355,7 +356,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             }}
             showSubmittedExportError={errorCount>0}
             masterProgress={activeMaster.progress}
-            disableSubmit={activeMaster.rowData.length===0}
+            disableSubmit={activeMaster.rowData.length===0 || isSubmitDisabled}
             enableEditOnlineReset = {enableEditOnlineReset}
             disableDeleteSelected={activeMaster.rowData.length < 1}
             onReset={onReset}
