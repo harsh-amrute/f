@@ -36,8 +36,6 @@ import {
 } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { useUserData } from "../../../../../context/index";
 import useColDef from "../../../../../hooks/useColDef";
-import _ from "lodash";
-
 // const user = { user: { them_ui: 'pure' } };
 
 interface RowDataType {
@@ -71,7 +69,6 @@ const OrderRescheduling = () => {
   const { user } = useUserData();
   const [rowData, setRowData] = useState<RowDataType[]>([]);
   const [currData, setCurrData] = useState<any>(null);
-  const [initialData, setInitialData] = useState<any>(null);
   const { mutateAsync: getOrderReschedulingExcelData } =
     useGetOrderSchedulingExcelData();
   const { getColDef, colDefMap } = useColDef();
@@ -527,7 +524,6 @@ const OrderRescheduling = () => {
     }
   }, [colDef]);
 
-  const [tempRowData] = useState<any>(undefined);
 
   const GetExcelData = async () => {
     GetData(true);
@@ -656,7 +652,6 @@ const OrderRescheduling = () => {
             </VFTableWrapper>
           </div>
         </div>
-        {/* )} */}
       </OrderReschedulingWrapper>
     </>
   );
