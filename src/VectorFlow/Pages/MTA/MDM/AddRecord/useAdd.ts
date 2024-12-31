@@ -272,10 +272,10 @@ const useAdd=()=>{
       }
 
       const onSubmit = async(isOverWrite?:boolean) => {
+        try{
         if(isSubmitDisabled) return;
- 
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
-
+        dispatch(REMOVE_COLDEFS(['checkbox']));
         setIsSubmitDisabled(true)
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
@@ -306,7 +306,6 @@ const useAdd=()=>{
             dispatch(SET_RECORD_COUNT(errorRowData.length))
             
           }
-          dispatch(REMOVE_COLDEFS(['checkbox']));
 
           const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
 
@@ -336,11 +335,12 @@ const useAdd=()=>{
           if(draftID.length > 0){
             await deleteDraft(draftID);
           }
-          setIsSubmitDisabled(false)
-
-
-        
+      }catch(err){
+        notifyError("Something went wrong")
+      }finally{
+        setIsSubmitDisabled(false)
       }
+    }
 
       const showMasterGroup = (currMasterGroup:{name:string,masters:Array<any>})=>{
         if(selectedOptions.length===0)return true
@@ -391,6 +391,7 @@ const useAdd=()=>{
         showMaster,
         options,
         selectedOptions,
+        isSubmitDisabled
     }
 }
 

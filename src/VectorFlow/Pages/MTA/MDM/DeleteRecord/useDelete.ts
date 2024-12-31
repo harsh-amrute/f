@@ -289,8 +289,7 @@ const useDelete=()=>{
       }
 
       const onSubmit = async(ref:any,isOverWrite?:boolean) => {
-
-        
+       try{
         
         if(activeMaster.rowData.length === 0){
           notifyError("No Data to Submit")
@@ -304,6 +303,7 @@ const useDelete=()=>{
         
 
         if(isSubmitDisabled) return;
+        dispatch(REMOVE_COLDEFS(['checkbox']));
 
         setIsSubmitDisabled(true)
  
@@ -368,10 +368,11 @@ const useDelete=()=>{
               }
             
          }
-         dispatch(REMOVE_COLDEFS(['checkbox']));
-         
+        }catch(err){
+          notifyError("Something went wrong")
+        }finally{
          setIsSubmitDisabled(false)
-       
+        }
       }
 
       const showMasterGroup = (currMasterGroup:{name:string,masters:Array<any>})=>{
@@ -424,7 +425,8 @@ const useDelete=()=>{
         handleRadioButton,
         handleSubmitSelectMaster,
         showMaster,
-        showMasterGroup
+        showMasterGroup,
+        isSubmitDisabled
     }
 }
 

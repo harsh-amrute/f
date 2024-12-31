@@ -80,7 +80,8 @@ const AddRecord = () => {
         showMaster,
         options,
         selectedOptions,
-        errorCount
+        errorCount,
+        isSubmitDisabled
     } = useAdd()
     
     useEffect(()=>{
@@ -226,6 +227,7 @@ const AddRecord = () => {
           !isSelectMasterOpen && 
           <div style={{zoom:'var(--nms-filter-zoom)'}}>
             <VFTaskBar
+              disableSubmit={isSubmitDisabled}
               showSubmittedExportError={errorCount>0}
               enableEditOnlineReset={false}
               disableResumeSeasonality={()=>false}

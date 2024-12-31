@@ -1082,17 +1082,17 @@ const useViewModify = (pageType:string) => {
       }
           
       const onSubmit = async(isOverWrite?:boolean) => {
-        
+        try{
         if(activeMaster.rowData.length === 0) {
           notifyError("No Data to Submit") ;
           return 
         }
 
-        
+        if(isSubmitDisabled) return;
 
         setIsSubmitDisabled(true)
-
-        if(isSubmitDisabled) return;
+        dispatch(REMOVE_COLDEFS(['checkbox']));
+        
 
         if(activeMaster.progress === 'editOnline'){
           //remove Editable Coldefs
@@ -1115,7 +1115,6 @@ const useViewModify = (pageType:string) => {
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
-        dispatch(REMOVE_COLDEFS(['checkbox']));
         //let result;
  
         if(activeMaster.progress === 'editOnline'){
@@ -1239,9 +1238,12 @@ const useViewModify = (pageType:string) => {
           dispatch(UPDATE_PROGRESS_STATE('conflicts'))
         }
 
-
         }
-       setIsSubmitDisabled(false)
+      }catch(err){
+        notifyError("Something went wrong")
+      }finally{
+        setIsSubmitDisabled(false)
+      }
       }
 
       console.log(activeMaster.progress)
@@ -1371,6 +1373,7 @@ const useViewModify = (pageType:string) => {
 
       const onSaveToDraft = async () => {
         try{
+          dispatch(REMOVE_COLDEFS(['checkbox']))
           dispatch(UPDATE_IS_SAVING_DRAFT(true))
           let newData:any = []
           const errorOrWarning = activeMaster.rowData.find((row:any)=>(Object.keys(row).includes('error'))||(Object.keys(row).includes('warning')));
@@ -1406,6 +1409,7 @@ const useViewModify = (pageType:string) => {
         
           const res = await postDraftChunks(newData)
           if(res){
+            dispatch(UPDATE_PROGRESS_STATE("savedToDraft"))
             if(draftID.length > 0){
               return notifySuccess("Draft Updated Successfully")
             }
@@ -1414,11 +1418,14 @@ const useViewModify = (pageType:string) => {
             }
           }
           notifyError("Something Went Wrong")
-          dispatch(UPDATE_IS_SAVING_DRAFT(false))
+          addCheckBoxColDefs()
           return false
         }catch(err){
           notifyError("Something Went Wrong")
+          addCheckBoxColDefs()
           return false
+        }finally{
+          dispatch(UPDATE_IS_SAVING_DRAFT(false))
         }
     }
 
@@ -1688,7 +1695,8 @@ const useViewModify = (pageType:string) => {
         enableEditOnlineReset,
         uploadProgress,
         totalProgress,
-        tempRecordCount
+        tempRecordCount,
+        isSubmitDisabled
     }
 }
 
