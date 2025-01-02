@@ -438,8 +438,8 @@ const OverallBmReport = () => {
 
   
   const handleActionChange = (option: any) => {
+    
     setSelectedAction(option);
-
   }
 
   const updateActionAPI = async (action: string, order_ids: any) => {
@@ -574,7 +574,6 @@ const undoClicked = async (props:any,orderId: string) => {
     throw (error)
   }
 };  
-  
   const WIPFilter: any = (
     <>
        <div
@@ -610,7 +609,7 @@ const undoClicked = async (props:any,orderId: string) => {
           themeUi={themeUi}
           placeholder="Select Action"
           value={selectedAction}
-          onActionChange={handleActionChange}
+          onChange={handleActionChange}
         />
       </div>
 
@@ -663,6 +662,7 @@ const undoClicked = async (props:any,orderId: string) => {
       newGridData.push(node.data);
     })
    
+    
     if(Array.isArray(newGridData)){
       const dup_gridData = [...newGridData]
       dup_gridData[index].oca = option.value;
@@ -686,7 +686,8 @@ const undoClicked = async (props:any,orderId: string) => {
          value={
            actionOptions.find((opt) => opt.value === props.data?.oca) || null
         }
-        onActionChange={(option: any) => {
+        onChange={(option: any) => {
+
             onSelectChange(props, option, props.node.rowIndex);
          }}
        />
@@ -800,7 +801,6 @@ const undoClicked = async (props:any,orderId: string) => {
                   : undefined,
             }
           : undefined,
-        pivot: child.cc === "BPP" ? true : false,
         cellStyle:
           child.cc === "Remark"
             ? {
@@ -1241,11 +1241,19 @@ const undoClicked = async (props:any,orderId: string) => {
         state: colState,
         applyOrder: true,
       });
-      tempGridRef.current?.api?.exportDataAsExcel({
-        fileName: "OverallBMReport",
-      });
 
-      console.log("tempgreid state", tempGridRef.current?.api.getColumnState());
+      const isPivotMode = refGraph2.current?.api?.isPivotMode()
+      if(isPivotMode){
+        refGraph2.current?.api?.exportDataAsExcel({
+          fileName: "OverallBMReport",
+        });
+      }
+      else{
+        tempGridRef.current?.api?.exportDataAsExcel({
+          fileName: "OverallBMReport",
+        });
+      }
+
     }
   }, [tempGridData]);
 
