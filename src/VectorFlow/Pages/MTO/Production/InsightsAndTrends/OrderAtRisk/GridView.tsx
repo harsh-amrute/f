@@ -1,10 +1,8 @@
 import React, { useEffect, useRef } from "react"
 import VFTable from "../../../Common/VFTable";
-import useViewPort from "../../../../../../hooks/useViewPort";
 import { GridOptions } from "ag-grid-enterprise";
 
 const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGridRef}: any) => {
-    const { screenHeight } = useViewPort();
     const gridRef = useRef();
 
     const gridOptions: GridOptions = {
@@ -34,7 +32,7 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
         rowGroupPanelShow: "always",
     };
 
-    useEffect(()=>{ 
+    useEffect(() => {
         if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
             const result = currentGridRef.current.api.applyColumnState({
                 state: columnState,
@@ -44,10 +42,10 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                 console.error('Failed to apply column state');
             }
         }
-    });
+    }, [columnState]);
 
     return (
-        <div data-testid="grid-view" style={{ height: screenHeight - 200, width: '100%' }}>
+        <div data-testid="grid-view" style={{ height:"100%", width: '100%' }}>
             <VFTable
                 {...gridOptions}
                 columnDefs={colDef}
@@ -66,6 +64,7 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                         { statusPanel: "agTotalRowCountComponent", align: "left" },
                     ],
                 }}
+                maintainColumnOrder
             />
         </div>
     )

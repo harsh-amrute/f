@@ -14,7 +14,7 @@ enum SchedulingType {
     Basket
 }
 
-const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, setStep, setDisabled, setSelectedRows, setMasters, updateScheduleOrders }: any, ref: any) => {
+const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, setStep, setDisabled, setSelectedRows, setMasters, updateScheduleOrders, columnState }: any, ref: any) => {
     
     useEffect(()=>{
         setDisabled(true);
@@ -56,7 +56,9 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
             suppressMenu: true,
             maxWidth: 50,
             position: 0,
-            filter: false
+            filter: false,
+            colId: "checkbox",
+            pinned: 'left',
         }
     ]
 
@@ -174,7 +176,13 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
                 gridOptions={options}
                 rowData={confirmedRows}
                 onGridReady={(params)=>{
-                    params.api.selectAll()
+                    params.api.selectAll();
+                    if (columnState) {
+                        params.api.applyColumnState({
+                            state: [...columnState],
+                            applyOrder: true
+                        });
+                    }
                 }}
                 onRowSelected={(params: any) => {
                     const selected = params.api.getSelectedRows()
@@ -204,6 +212,7 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
                     });
                 }}
                 sideBar={sideBar}
+                maintainColumnOrder
             />
             {dates && <BasketingSection>
                 <BasketingContainer>

@@ -1,6 +1,5 @@
 import { Allotment } from "allotment";
 import { useEffect, useState } from "react";
-import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import {
   BTRAllomentSection,
@@ -45,7 +44,6 @@ const OrderBalance = () => {
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
-  const { screenHeight } = useViewPort();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
@@ -72,7 +70,8 @@ const OrderBalance = () => {
   const reportName = "OrderBalance";
   const { user } = useUserData();
   const {colDefMap , getColDef} = useColDef();
-  const { mutateAsync : getOrderBalanceGraphDataExcelExport} = useGetOrderBalanceDataExcelExport();
+  const { mutateAsync: getOrderBalanceGraphDataExcelExport } = useGetOrderBalanceDataExcelExport();
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const colDefCustomizations = {
     BPP: {
@@ -153,18 +152,30 @@ const OrderBalance = () => {
     }
   }
   
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (coldefs?: any) => {
     try {
-      const config = currentGridRef.current.api.getColumnState();
+      if (coldefs) {
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdStplAndFullKit,
+          cs: JSON.stringify(coldefs),
+        };
+        await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
 
-      const payload = {
-        un: user.user.name,
-        rn_id: UIGridCode.ProdOrderBalance,
-        cs: JSON.stringify(config)
+      } else {
+        if (currentGridRef?.current?.api) {
+          const config = currentGridRef.current.api.getColumnState();
+
+          const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.ProdOrderBalance,
+            cs: JSON.stringify(config)
+          }
+          await updateUserUIReportConfigData([payload]);
+          await getUserColumnConfig();
+        }
       }
-      await updateUserUIReportConfigData([payload]);
-      await getUserColumnConfig();
-
     } catch (error) {
       console.error(error);
     }
@@ -185,7 +196,6 @@ const OrderBalance = () => {
 
   useEffect(() => {
     setColumnDef();
-    getUserColumnConfig();
     getGraphData({ graphflag: 1});
     getFilterData();
     // <-------------- uncomment below code to enable dropdown for orderType    --------->  
@@ -203,19 +213,24 @@ const OrderBalance = () => {
 
   useEffect(() => {
     if (isReset) {
-      setColumnState(colDef);
-      setIsReset(false)
-    }else{
-      handleSaveClick();
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
     }
   }, [isReset]);
+
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+      getUserColumnConfig();
+    }
+  }, [colDef, currentGridRef]);
 
   const ExcelExportData = () => {
     getGraphData({isExcelExport : true})
   }
 
   return (
-    <div style={{}}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {
         (isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
       }
@@ -238,7 +253,7 @@ const OrderBalance = () => {
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
       />
-      <HorizontalViewWrapper style={{ marginTop: "20px", paddingLeft: '25px' }}>
+      <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
           <GridView
             getData={getOrderBalanceData}
@@ -252,7 +267,7 @@ const OrderBalance = () => {
             appliedFilters={appliedFilters}
           />
         ) : (
-          <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>
+          <BTRTableWrapper style={{ maxHeight:"95%", paddingLeft: "20px" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>

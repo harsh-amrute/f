@@ -245,7 +245,7 @@ export const LockBtn = styled.img`
 `
 
 export const HorizontalViewWrapper = styled.div`
-      display:flex;
+    //   display:flex;
       width:100%;
 `
 
