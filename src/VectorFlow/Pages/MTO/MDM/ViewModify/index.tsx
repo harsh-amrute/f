@@ -101,13 +101,13 @@ const MTOViewModify = () => {
     onMajReasonSelected,
     minReasonRowData,
     onMinReasonEditingStopped,
-    addRowToMtoMinGrid,
-    mtoProgress
+    addRowToMtoMinGrid
 
   } = useViewModify('modify');
 
   const bufferModifyData = useSelector((state: any)=> state.mto.bufferModifyData);
   const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
+  const editStatus:string = useSelector((state:any)=> state.mto.editStatus);
 
 
 
@@ -181,7 +181,6 @@ const MTOViewModify = () => {
                     <SCLegend>Filter</SCLegend>
                     {
                       activeMaster.filters.map((f: Filter) => {
-                        console.log("activeMaster filters in view mofidy", activeMaster.filters, "activeMaster id", activeMaster.id);
                         if (f.masterId == activeMaster?.id) {
                           return (
                             <VFFilter
@@ -288,9 +287,9 @@ const MTOViewModify = () => {
                     cursor: 'pointer',
                     background: '#fff'
                   }}
-                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions')) && (addRowToMtoGrid()) }}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions' || x.field==='pactions'))  && (addRowToMtoGrid()) }}
                 >
-                  {(!(activeMaster.colDefs.some((x) => x.field === 'actions'))) ?
+                  {((!activeMaster.colDefs.some((x) => x.field === 'actions' || x.field==='pactions'))) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"
@@ -317,9 +316,9 @@ const MTOViewModify = () => {
                     cursor: 'pointer',
                     background: '#fff'
                   }}
-                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actionsP')) && (addRowToMtoMinGrid()) }}
+                  onClick={() => { (!activeMaster.colDefs.some((x) => x.field === 'actions' || x.field==='pactions')) && (ref && ref.current && ref?.current?.api?.getSelectedRows()?.length>0) && (addRowToMtoMinGrid()) }}
                 >
-                  {(!(activeMaster.colDefs.some((x) => x.field === 'actionsP'))) ?
+                  {((!activeMaster.colDefs.some((x) => x.field === 'actions' || x.field==='pactions')) && (ref && ref.current && ref?.current?.api?.getSelectedRows()?.length>0)) ?
                     <>
                       <img
                         src="/assets/img/AddBufferMasterIcon.svg"
@@ -494,7 +493,7 @@ const MTOViewModify = () => {
           }}
           showSubmittedExportError={errorCount > 0}
           // masterProgress={(!bufferModifyData)?"initial":(bufferModifyData?"editOnline":"editOnlineSubmitted")}
-          masterProgress={(mtoProgress==='initial')?((!bufferModifyData || (bufferModifyData && bufferModifyData?.length===0))?'initial':"editOnline"):((bufferModifyData && bufferModifyData.length===0)?"editOnlineSubmitted":"editOnline")}
+          masterProgress={editStatus}
           disableSubmit={activeMaster.rowData.length === 0}
           enableEditOnlineReset={enableEditOnlineReset}
           disableDeleteSelected={activeMaster.rowData.length < 1}
