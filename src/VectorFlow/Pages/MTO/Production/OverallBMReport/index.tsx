@@ -428,19 +428,41 @@ const OverallBmReport = () => {
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   const onCheckBoxToggle = (e: any) => {
+
     const isChecked = e.target.checked;
     setIsCheckboxChecked(isChecked); // Update state based on checkbox
+      
     if (isChecked) {
       refGraph2.current.api.selectAll();
     } else {
       refGraph2.current.api.deselectAll();
     }
+    getSelectedRow();
+  };
+
+  const toggleCheckBox = () => {
+    
+    const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
+    const totalRows = refGraph2?.current?.api?.getDisplayedRowCount() 
+
+    setIsCheckboxChecked(selectedNodes?.length === totalRows);    
   };
 
   
   const handleActionChange = (option: any) => {
     
     setSelectedAction(option);
+    console.log("option", option.value);
+    // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
+    const newData:any = [];
+    gridData.forEach((ele:any)=>{
+      const newEle = _.cloneDeep(ele);
+      newEle.oca = option.value;
+      newData.push(newEle);
+    })
+
+    console.log("newData",newData)
+    setGridData([...newData]);
   }
 
   const updateActionAPI = async (action: string, order_ids: any) => {
@@ -590,15 +612,21 @@ const onRowSelectionChanged = () => {
   }
 };
 
-useEffect(()=>{
-  if(selectedAction){
-    setGridData(gridData.map((data: any) => {
-      return {...data, oca: selectedAction.value}
-    }));
-  }
-}, [selectedAction])
 
 
+
+// useEffect(()=>{
+//   if(selectedAction){
+//     const mySelectedNodes = refGraph2.current.api.getSelectedRows();
+//     setGridData(gridData?.map((data: any) => {
+//       if(mySelectedNodes.find((el:any)=>{data.ok===el.ok})){
+//         return {...data, oca: selectedAction.value}
+//       }
+//       return data;
+//     }));
+//   }
+  
+// }, [selectedAction])
 
 
 
@@ -618,7 +646,7 @@ useEffect(() => {
   }
 }, [refGraph2?.current?.api]); 
 
-const isRightArrowEnabled = isCheckboxChecked || selectedRowCount > 1;
+const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selectedAction!=null;
 
 
   const WIPFilter: any = (
@@ -650,10 +678,12 @@ const isRightArrowEnabled = isCheckboxChecked || selectedRowCount > 1;
           onChange={onCheckBoxToggle}
           type="checkbox"
           style={{ color: "pink" }}
+          checked={isCheckboxChecked}
         />
         <VFSelect
           options={actionOptions}
           themeUi={themeUi}
+          disabled={!(refGraph2.current?.api?.getSelectedRows()?.length>0)}
           placeholder="Select Action"
           value={selectedAction}
           onChange={handleActionChange}
@@ -713,38 +743,40 @@ const isRightArrowEnabled = isCheckboxChecked || selectedRowCount > 1;
     if(Array.isArray(newGridData)){
       const dup_gridData = [...newGridData]
       dup_gridData[index].oca = option.value;
+      console.log("dup grid Data", dup_gridData);
       setGridData(dup_gridData);
     }
-    handleActionChange(setSelectedAction);
+
+    console.log("dataaaa",option);  
+    
   }
 
 const DropDownCellRenderer= (props: any) =>  {
-      
+  
+  console.log("props.... seleced", props.node.selected)
   return (
   <>  {
        props.data?.ct === null ?
-      
        <>
-       {/* Dropdown Component */}
        <VFSelect
          options={actionOptions}
          themeUi={themeUi}
          placeholder="Select Action"
+         disabled={!props.node.selected}
          value={
-           actionOptions.find((opt) => opt.value === props.data?.oca) || null
+          props.node.selected? actionOptions.find((opt) => opt.value === props.data?.oca): null
         }
         onChange={(option: any) => {
 
             onSelectChange(props, option, props.node.rowIndex);
          }}
        />
-     
-       {/* Right Arrow Component */}
+        
        <div
          style={{
-           cursor: props.data?.oca ? "pointer" : "not-allowed", 
-           opacity: props.data?.oca ? 1 : 0.5,
-           background: props.data?.oca
+           cursor: (props.data?.oca && props.node.selected) ? "pointer" : "not-allowed", 
+           opacity: (props.data?.oca && props.node.selected) ? 1 : 0.5,
+           background: (props.data?.oca && props?.node?.selected)
              ? `linear-gradient(to right, ${ColorsMTO.darkPink.code}, ${ColorsMTO.Pink.code})`
              : "#ccc", 
            height: "43px",
@@ -756,7 +788,7 @@ const DropDownCellRenderer= (props: any) =>  {
          }}
          data-testid="isReleaseBtn"
          onClick={() => {
-           if (props.data?.oca) {
+           if (props.data?.oca && props.node.selected) {
              handleRightArrowClick1(
                props.data.oca === "Short Close" ? "Short Close" : "Complete Close",
                props.data.ok
@@ -775,7 +807,6 @@ const DropDownCellRenderer= (props: any) =>  {
      
      
      
-       
        : 
        <>
        <div style={{justifyContent:"space-between", display:"flex" , alignItems: "center", gap: "5px",margin:"10px" }}>
@@ -848,7 +879,6 @@ const DropDownCellRenderer= (props: any) =>  {
                   : undefined,
             }
           : undefined,
-        pivot: child.cc === "BPP" ? true : false,
         cellStyle:
           child.cc === "Remark"
             ? {
@@ -890,6 +920,9 @@ const DropDownCellRenderer= (props: any) =>  {
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
+      // pinned: section.scc==="scos"?'right':"",
+      pinned: section.scc === "scos" ? "right" : null,
+
       cellRenderer:
         section.cc === "ec" || (section.scc === "chckbx" && systemType >= 3)
           ? "agGroupCellRenderer"
@@ -1004,7 +1037,10 @@ const DropDownCellRenderer= (props: any) =>  {
 
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
-  }, []);
+    setIsCheckboxChecked(false);
+
+
+    }, []);
 
   const extractDepartmentNames = (orders: Orders): string[] => {
     const departmentNames: Set<string> = new Set();
@@ -1048,6 +1084,8 @@ const DropDownCellRenderer= (props: any) =>  {
   };
 
   const getSelectedRow = () => {
+
+    console.log("updateing selected rows....", refGraph2.current?.api.getSelectedRows())
     const selectedData = refGraph2.current?.api.getSelectedRows();
     if (selectedData.length == 0) {
       rowsSelected.current = false;
@@ -1055,15 +1093,16 @@ const DropDownCellRenderer= (props: any) =>  {
       rowsSelected.current = true;
     }
     /* To persist the state*/
-    if (selectedData) {
+    console.log("selected adta" , selectedData)
+    if (selectedData && selectedData.length) {
       let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
       selectedData.forEach((newItem: any) => {
         const index = mergedData.findIndex(
-          (item: any) => item.oid === newItem.oid
+          (item: any) => item.ok === newItem.ok
         );
         if (index !== -1) {
           // If the item exists, replace it
-          // mergedData[index] = newItem;
+          mergedData[index] = newItem;
         } else {
           // Otherwise, add the new item
           mergedData.push(newItem);
@@ -1073,21 +1112,23 @@ const DropDownCellRenderer= (props: any) =>  {
       gridData?.forEach((item: any) => {
         let isThere = 0;
         selectedData.forEach((selectedD: any) => {
-          if (selectedD.oid === item.oid) {
+          if (selectedD.ok === item.ok) {
             isThere = 1;
           }
         });
         if (isThere == 0) {
-          mergedData = mergedData.filter((e: any) => e.oid !== item.oid);
+          mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
         }
       });
 
-      // setMasterSelectedRowData(mergedData);
       if (!_.isEqual(mergedData, masterSelectedRowData)) {
+        console.log("merged Data", mergedData);
         setMasterSelectedRowData(mergedData);
       }
       /*persist data finised*/
     }
+    toggleCheckBox();
+    refGraph2.current.api.refreshCells();
   };
 
   useEffect(() => {
@@ -1126,15 +1167,16 @@ const DropDownCellRenderer= (props: any) =>  {
         for (let index = 0; index < masterSelectedRowData.length; index++) {
           const element = masterSelectedRowData[index];
           if (element.ok === node.data.ok) {
-            console.log("this is also working ")
             node.data.Remark = element.Remark;
-            node.data.oca = element.oca;
+            // node.data.oca = element.oca;
           }
         }
         nodesToSelect.push(node);
       }
     });
     params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+    toggleCheckBox();
+    params.api.refreshCells();
   };
 
   const cache = useRef<any>({});
@@ -1190,7 +1232,8 @@ const DropDownCellRenderer= (props: any) =>  {
       enterNavigatesVertically: true,
       enterNavigatesVerticallyAfterEdit: true,
       groupDefaultExpanded: 0,
-      onSelectionChanged: debounce(getSelectedRow, 1000),
+      // onSelectionChanged: debounce(getSelectedRow, 1000),
+      onSelectionChanged: getSelectedRow,
       onRowDataUpdated: onFirstDataRendered,
       detailCellRendererParams: {
         suppressMenu: true,
