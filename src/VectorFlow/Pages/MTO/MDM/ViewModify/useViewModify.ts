@@ -933,7 +933,7 @@ const useViewModify = (pageType: string) => {
     if (activeMaster.id === 503) {
       const allRows = [...newRowData];
       const newData: any = [];
-      allRows.forEach((e: any, i: number) => {
+      allRows.forEach((e: any) => {
         const newVal = _.cloneDeep(e);
 
         if (
@@ -3544,7 +3544,8 @@ const useViewModify = (pageType: string) => {
     const finPoogiPostData: any = [];
     const groupedData = _.groupBy(PoogiPostObj.reasonData, "majdsc");
 
-    for (const [key, items] of Object.entries(groupedData)) {
+    for (const [key,items] of Object.entries(groupedData)) {
+      console.log(key);
       items.forEach((item) => {
         const { plnm, plid, majdsc, mindsc } = item;
         let existingMajor = finPoogiPostData.find(

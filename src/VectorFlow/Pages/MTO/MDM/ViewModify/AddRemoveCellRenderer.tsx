@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
-import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_EDIT_STATUS, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
+import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 import _ from 'lodash';
 
 

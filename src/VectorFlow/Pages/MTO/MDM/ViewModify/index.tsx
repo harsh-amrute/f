@@ -101,8 +101,7 @@ const MTOViewModify = () => {
     onMajReasonSelected,
     minReasonRowData,
     onMinReasonEditingStopped,
-    addRowToMtoMinGrid,
-    mtoProgress
+    addRowToMtoMinGrid
 
   } = useViewModify('modify');
 
