@@ -56,7 +56,7 @@ const ReasonForDelayOrder = () => {
     const [rowDataCount, setRowDataCount] = useState<number>(0);
     const [currentGridRef, setCurrentGridRef] = useState<any>(null);
     const [columnState, setColumnState] = useState<any>([]);
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState<any>(undefined);
     const [colDef, setColDef] = useState([{}]);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
@@ -79,6 +79,7 @@ const ReasonForDelayOrder = () => {
     const { colDefMap , getColDef} = useColDef();
     const { mutateAsync : getPoogiReasonsDelayedOrderExcelExport} = useGetPoogReasonForDealyedOrderExcel();
     const themeUi = user?.user?.theme_ui;
+    const [masterUIConfig, setMasterUIConfig] = useState([]);
 
     const sideBar = useMemo(() => {
         return {
@@ -256,22 +257,33 @@ const ReasonForDelayOrder = () => {
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-            if(currentGridRef?.current?.api){
-                const config = currentGridRef?.current?.api?.getColumnState() || [];
-        
+            if (coldefs) {
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.PoogiReasonForDelayedOrders,
-                    cs: JSON.stringify(config)
-                }
+                    cs: JSON.stringify(coldefs),
+                };
                 await updateUserUIReportConfigData([payload]);
-                await getUserColumnConfig();
+                setColumnState([...coldefs]);
+        
+            } else {
+                if (currentGridRef?.current?.api) {
+                    const config = currentGridRef?.current?.api?.getColumnState() || [];
+        
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.PoogiReasonForDelayedOrders,
+                        cs: JSON.stringify(config)
+                    }
+                    await updateUserUIReportConfigData([payload]);
+                    await getUserColumnConfig();
+                }
             }
 
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
     }
 
@@ -289,7 +301,6 @@ const ReasonForDelayOrder = () => {
     }
 
     useEffect(() => {
-        getUserColumnConfig();
         getHeaderData();
     }, []);
     
@@ -383,12 +394,18 @@ const ReasonForDelayOrder = () => {
 
     useEffect(() => {
         if (isReset) {
-          setColumnState(colDef);
-          setIsReset(false)
-        }else{
-          handleSaveClick();
+            handleSaveClick(masterUIConfig);
+            setIsReset(false);
         }
     }, [isReset]);
+
+    useEffect(() => {
+        if (currentGridRef?.current) {
+            setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+          }
+          getUserColumnConfig();
+      }, [colDef]);
+    
 
       
     if (!rowData) {
