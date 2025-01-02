@@ -473,9 +473,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                         <BackButton/>
-                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineReset} disabled={isSavingToDraft || disableSubmit } >  
+                    {/* <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineReset} disabled={isSavingToDraft || disableSubmit } >  
                         Reset
-                    </VFButtonOutline >
+                    </VFButtonOutline > */}
                     <VFButton themeUi={themeUi} onClick={onSaveToDraft} disabled={masterId > 14 || isSavingToDraft || disableSubmit}>
                             Save as draft
                         </VFButton>
