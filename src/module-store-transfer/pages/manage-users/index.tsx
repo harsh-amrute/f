@@ -18,6 +18,7 @@ import {
   useGetAllRoles,
   useGetAllUsers,
   useGetAllPermissions,
+  useGetHeadersData
 } from "../../../services/profile";
 import Spinner from "../../../components/commons/Spinner";
 import { useTranslation } from "react-i18next";
@@ -60,6 +61,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const { data: dataFetch, refetch, isFetching } = useGetAllUsers();
   const { data: dataPermissions } = useGetAllPermissions();
+  const { mutateAsync : usegetHeaderData } = useGetHeadersData();
+  const [headers , setHeaders] = useState<any>();
 
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
@@ -70,6 +73,13 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     console.log("data...permissionms", dataPermissions);
   }, [dataPermissions]);
 
+  const getHeaderDatafunct = async() =>{
+    const reponse = await usegetHeaderData();
+    setHeaders(reponse.data);
+  }
+  useEffect(() => {
+    getHeaderDatafunct();
+  },[])
   const dataAllPermissions = dataPermissions?.data;
 
   const dataAllUsers = dataFetch?.data;
@@ -415,6 +425,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         storePermission={storePermission}
         setStorePermission={setStorePermission}
         setStepperDetails={setStepperDetails}
+        headers = {headers}
       />
     </>
   );
