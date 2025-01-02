@@ -174,6 +174,34 @@ const useTaskPendingForReview = ()=>{
         setSelectedRows(0)
     }
 
+    const ConvertToPoogiData = (data: any) => {
+        const result: any[] = [];
+    
+        data.forEach((item: any) => {
+            // Push the main object without minData
+            result.push({
+                majId: item.majId,
+                majdsc: item.majdsc,
+                plnm: item.plnm,
+            });
+    
+            // Push each minData object with the corresponding majId and plnm
+            if (item.minData && Array.isArray(item.minData)) {
+                item.minData.forEach((minItem: any) => {
+                    result.push({
+                        majId: minItem.majId,
+                        minId: minItem.minId,
+                        mindsc: minItem.mindsc,
+                        plnm: item.plnm,
+                    });
+                });
+            }
+        });
+    
+        return result;
+    };
+    
+
     const handleOnClick = async(taskData:TaskDataType|any)=>{
         let toastId;
         console.log("taskData.mid", taskData);
@@ -296,10 +324,17 @@ const useTaskPendingForReview = ()=>{
                         
                        
                         setDetailTableColDefs(newColDefs);
+
                         // dispatch(UPDATE_ROW_DATA(newData));
                         // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(1).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                         // setDetailTableRowData(taskDataStore);
-                        setDetailTableRowData(newData);
+                        if(taskData.mid===503){
+                            const poogiModifyData = ConvertToPoogiData(newData);
+                            setDetailTableRowData(poogiModifyData);
+                        }
+                        else{
+                            setDetailTableRowData(newData);
+                        }
                         // setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                     dispatch(SET_RECORD_COUNT(res.data.data.count));
                 }
