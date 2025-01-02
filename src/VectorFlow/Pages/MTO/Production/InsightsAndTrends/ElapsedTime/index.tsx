@@ -66,8 +66,9 @@ const ElapsedTime = () => {
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { user } = useUserData();
-    const { getColDef , colDefMap} = useColDef();
+    const { getColDef, colDefMap } = useColDef();
     const reportName = "Elapse Time";
+    const [masterUIConfig, setMasterUIConfig] = useState([]);
 
     const setColumnDef = async () => {
         try {
@@ -185,6 +186,8 @@ const ElapsedTime = () => {
                     cs: JSON.stringify(coldefs),
                 };
                 await updateUserUIReportConfigData([payload]);
+                setColumnState([...coldefs]);
+
             } else {
                 if (currentGridRef?.current?.api) {
                     const config = currentGridRef.current.api.getColumnState();
@@ -218,94 +221,89 @@ const ElapsedTime = () => {
             }
         },
         'BPP': {
-            cellRenderer: ColorRangeCellRenderer ,
+            cellRenderer: ColorRangeCellRenderer,
         },
     }
 
     useEffect(() => {
-        setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
-        getUserColumnConfig();
+        setColDef(getColumnDefinations(HeaderData, colDefCustomizations));
     }, [HeaderData])
 
     // const colDef = useMemo(() => getColumnDefinations(HeaderData, colDefCustomizations), [])
     
     useEffect(() => {
         if (isReset) {
-            setColumnState([...colDef]);
-            setIsReset(false)
-        } else {
-            if (isReset !== undefined) {
-                handleSaveClick(colDef);
-            }
+            handleSaveClick(masterUIConfig);
+            setIsReset(false);
         }
     }, [isReset]);
     
-    const ExcelExportRefCall =()=>{
-        if(elapsedTimeRef?.current?.getExcelExport){
+    useEffect(() => {
+        if (currentGridRef?.current) {
+            setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+            getUserColumnConfig();
+        }
+    }, [colDef, currentGridRef]);
+
+    const ExcelExportRefCall = () => {
+        if (elapsedTimeRef?.current?.getExcelExport) {
             elapsedTimeRef.current.getExcelExport();
         }
     }
 
     return (
-        <>
+        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            {(isLoading || isLoading2 || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
+
             <MTOActionToolBar
                 comp={"BTRMTO"}
                 // isAddFilterButton
                 isChartGridToggle
-                isExcelExport = {isGridView ? true : false}
-                onExcelExportClick = {ExcelExportRefCall}
+                isExcelExport={isGridView ? true : false}
+                onExcelExportClick={ExcelExportRefCall}
                 setIsGridView={setIsGridView}
                 isGridView={isGridView}
                 handleSaveClick={handleSaveClick}
                 handleResetClick={handleResetClick}
-                // isFilterOpen={isFilterOpen}
-                // onAddFilter={onAddFilter}
-                // toggleFilter={toggleFilter}
-                // onApplyFilter={onApplyFilter}
-                // multiFilter={currFilter}
-                // setMultiFilter={setCurrFilter}
-                // onFilterRemove={onFilterRemove}
-                // isMfgSelected={isMfgSelected}
+            // isFilterOpen={isFilterOpen}
+            // onAddFilter={onAddFilter}
+            // toggleFilter={toggleFilter}
+            // onApplyFilter={onApplyFilter}
+            // multiFilter={currFilter}
+            // setMultiFilter={setCurrFilter}
+            // onFilterRemove={onFilterRemove}
+            // isMfgSelected={isMfgSelected}
             />
-            {(isLoading || isLoading2 || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
-            {
-                !isGridView ?
-                    
-                    <HorizontalViewWrapper style={{ margin: '20px 14px', height: '85%', display: 'flex' }}>
-                        <BTRTableWrapper style={{ flex: '1', margin: '0' }}>
-                            <Allotment vertical={false} separator={false}   >
-                                <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                    <BTRAllomentSection>
-                                        <DeptWiseGraph chartData={deptwiseChartData} chartTableData={deptwiseChartTableData} alertData={alertData} />
-                                    </BTRAllomentSection>
-                                </Allotment.Pane>
-                                <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
-                                    <BTRAllomentSection>
-                                        <WeekWiseGraph handleSelectionChange={handleSelectionChange} chartTableData={weeklyChartTableData} chartData={weeklyChartData} plant={selectedPlant} dept={selectedDept} />
-                                    </BTRAllomentSection>
-                                </Allotment.Pane>
-                            </Allotment>
-
-
-
-                        </BTRTableWrapper>
-
-                    </HorizontalViewWrapper>
-                    
-                    :
-                    <>
-                        <GridView
-                            ref={elapsedTimeRef}
-                            colDef={colDef}
-                            setCurrentGridRef={setCurrentGridRef}
-                            currentGridRef={currentGridRef}
-                            columnState={columnState}
-                            appliedFilters={null}
-                            colDefMap={colDefMap}
-                        />
-                    </>
-            }
-        </>
+            <HorizontalViewWrapper style={{ flex: 1 }}>
+                {isGridView ? (
+                    <GridView
+                        ref={elapsedTimeRef}
+                        colDef={colDef}
+                        setCurrentGridRef={setCurrentGridRef}
+                        currentGridRef={currentGridRef}
+                        columnState={columnState}
+                        appliedFilters={null}
+                        colDefMap={colDefMap}
+                    />
+                ) : (
+                    <BTRTableWrapper style={{ maxHeight:"95%", paddingLeft: "20px" }}>
+                        <Allotment vertical={false} separator={false}   >
+                            <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
+                                <BTRAllomentSection>
+                                    <DeptWiseGraph chartData={deptwiseChartData} chartTableData={deptwiseChartTableData} alertData={alertData} />
+                                </BTRAllomentSection>
+                            </Allotment.Pane>
+                            <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
+                                <BTRAllomentSection>
+                                    <WeekWiseGraph handleSelectionChange={handleSelectionChange} chartTableData={weeklyChartTableData} chartData={weeklyChartData} plant={selectedPlant} dept={selectedDept} />
+                                </BTRAllomentSection>
+                            </Allotment.Pane>
+                        </Allotment>
+                    </BTRTableWrapper>
+                )}
+            </HorizontalViewWrapper>
+           
+        </div>
     )
 }
 

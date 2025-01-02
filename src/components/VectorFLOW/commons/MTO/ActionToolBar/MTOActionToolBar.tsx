@@ -89,7 +89,7 @@ interface MTOActionToolBarProps {
 
 const MTOActionToolBar = ({
     onDateChange,
-    isGridView,
+    isGridView = true,
     setIsGridView,
     onAddFilter,
     selectedFilters,
@@ -481,7 +481,7 @@ const MTOActionToolBar = ({
                         </SCViewContainerWithBg>
                     </>}
 
-                    {handleSaveClick && handleResetClick && <>
+                    {isGridView && handleSaveClick && handleResetClick && <>
                         <SCVerticalDividerGray />
                         <SCViewContainerWithBg onClick={() => handleSaveClick()}>
                             <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
@@ -496,6 +496,7 @@ const MTOActionToolBar = ({
                     {/* Toggle button for chartview/ grid view */}
                     {isChartGridToggle &&
                         <>
+                        {isAddFilterButton && <SCVerticalDividerGray />}
                             <SCViewContainerWithBgToggle >
                                 <SCViewContainer onClick={() => { isGridView && setIsGridView && (setIsGridView(!isGridView)) }}>
                                     <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(isGridView) ? 'chart-view-grey' : 'chart-view-pink'}.svg`} />

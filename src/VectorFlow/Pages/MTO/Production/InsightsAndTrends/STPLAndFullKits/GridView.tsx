@@ -117,11 +117,6 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
 
   useEffect(() => {
     if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-      columnState.forEach((col: any) => {
-        if (col.initialHide != undefined) {
-          col.hide = col.initialHide;
-        }
-      });
       const result = currentGridRef.current.api.applyColumnState({
         state: columnState,
         applyOrder: true

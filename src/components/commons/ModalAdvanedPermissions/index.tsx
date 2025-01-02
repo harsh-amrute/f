@@ -40,13 +40,13 @@ const ModalAdvanedPermissions = (props: any) => {
     updateAllPermissions,
     storePermission,
     setStorePermission,
-    setStepperDetails
+    setStepperDetails,
+    headers
   } = props;
 
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
   const { mutateAsync: mutateRegister } = useRegisterUser();
-  const { mutateAsync: mutatePutEditUser } = usePutEditUser();
-
+  const { mutateAsync: mutatePutEditUser } = usePutEditUser();  
   const backModalUser = () => {
  
     //Reset Current Application Permissions
@@ -154,10 +154,10 @@ const ModalAdvanedPermissions = (props: any) => {
       const formData: any = {
         ...infoUser,
         tc: true,
-        // product_permissions: productPermissions,
-        // location_permissions: locationPermissions
-        product_permissions: [],
-        location_permissions: []
+        product_permissions: productPermissions,
+        location_permissions: locationPermissions
+        // product_permissions: [],
+        // location_permissions: []
       };
 
 
@@ -345,6 +345,7 @@ const ModalAdvanedPermissions = (props: any) => {
                         valueSelectPrd={getCurrentProductPermission()}
                         handleSelectParent={handleSelectParent}
                         handleSelectChild={handleSelectChild}
+                        headers={ headers && headers[activeApplication] }
                         handleSelectGrandChild={handleSelectGrandChild}
                       />
                       <LcPermissions
@@ -354,6 +355,7 @@ const ModalAdvanedPermissions = (props: any) => {
                         handleSelectParent={handleSelectParent}
                         handleSelectChild={handleSelectChild}
                         handleSelectGrandChild={handleSelectGrandChild}
+                        headers={ headers && headers[activeApplication] }
                       />
 
                       <div className="modal-bottom upper-line">

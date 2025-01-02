@@ -72,3 +72,8 @@ export const useChangeThemeUser = () => {
     return await MainService.postChangeTheme(data)
   })
 }
+export const useGetHeadersData = () => {
+  return useMutation(async () => {
+    return await MainService.getHeadersData()
+  })
+}

@@ -17,7 +17,7 @@ import Tooltip from '../../Common/Tooltip';
 import { notifyError, notifyErrorWithoutAutoClose, notifySuccess } from '../../../../../helpers/notify';
 import * as globalStyles from "../../../../../styles/global";
 
-const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, masters, getMastersData, rowsSelectedForAssignment, setRowsSelectedForAssignment, confirmedRows, setConfirmedRows, lineCCR, setDisabled }: any, ref) => {
+const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, masters, getMastersData, rowsSelectedForAssignment, setRowsSelectedForAssignment, confirmedRows, setConfirmedRows, lineCCR, setDisabled, columnState }: any, ref) => {
     useEffect(() => {
         getMastersData();
         setRowsSelectedForAssignment(false);
@@ -179,7 +179,9 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             suppressMenu: true,
             maxWidth: 35,
             position: 0,
-            filter: false
+            filter: false,
+            colId: "checkbox",
+            pinned: 'left',
         },
         {
             field: "",
@@ -1095,8 +1097,15 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             }}
                             onGridReady={(params: any) => {
                                 params.api.autoSizeAllColumns();
+                                if (columnState) {
+                                    params.api.applyColumnState({
+                                        state: [...columnState],
+                                        applyOrder: true
+                                    });
+                                }
                             }}
                             sideBar={sideBar}
+                            maintainColumnOrder
                         />
                     </Wrapper>
                 </Allotment.Pane>

@@ -138,15 +138,15 @@ const useTaskPendingForReview = ()=>{
                 visible: true
             },
             {
-                field: "plnm",
-                headerName: "Plant",
+                field: "mindsc",
+                headerName: "Minor Reason",
                 position: 2,
                 dataType: "string",
                 visible: true
             },
             {
-                field: "mindsc",
-                headerName: "Minor Reason",
+                field: "plnm",
+                headerName: "Plant",
                 position: 3,
                 dataType: "string",
                 visible: true
@@ -173,6 +173,36 @@ const useTaskPendingForReview = ()=>{
         dispatch(SET_RECORD_COUNT(0))
         setSelectedRows(0)
     }
+
+    const ConvertToPoogiData = (data: any) => {
+        const result: any[] = [];
+        
+        console.log("data....", data);
+        data.forEach((item: any) => {
+            // Push the main object without minData
+            result.push({
+                majId: item.majId,
+                majdsc: item.majdsc,
+                plnm: item.plnm,
+                trmId: item.trmId? item.trmId: item.mintid
+            });
+    
+            // Push each minData object with the corresponding majId and plnm
+            if (item.minData && Array.isArray(item.minData)) {
+                item.minData.forEach((minItem: any) => {
+                    result.push({
+                        majId: minItem.majId,
+                        minId: minItem.minId,
+                        mindsc: minItem.mindsc,
+                        plnm: item.plnm,
+                    });
+                });
+            }
+        });
+    
+        return result;
+    };
+    
 
     const handleOnClick = async(taskData:TaskDataType|any)=>{
         let toastId;
@@ -296,10 +326,17 @@ const useTaskPendingForReview = ()=>{
                         
                        
                         setDetailTableColDefs(newColDefs);
+
                         // dispatch(UPDATE_ROW_DATA(newData));
                         // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(1).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                         // setDetailTableRowData(taskDataStore);
-                        setDetailTableRowData(newData);
+                        if(taskData.mid===503){
+                            const poogiModifyData = ConvertToPoogiData(newData);
+                            setDetailTableRowData(poogiModifyData);
+                        }
+                        else{
+                            setDetailTableRowData(newData);
+                        }
                         // setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                     dispatch(SET_RECORD_COUNT(res.data.data.count));
                 }

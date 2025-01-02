@@ -107,6 +107,7 @@ const FullKitAssignment = () => {
   const {colDefMap , getColDef} =  useColDef();
   const { mutateAsync : getFullKitAssignmentDataWithGraphExcelData } = useGetFullkitAssignmentExcelData();
   const reportName = "FullKitAssignment";
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const defaultColDefCustomisation = useRef({
     Route: {
@@ -411,6 +412,8 @@ const FullKitAssignment = () => {
           cs: JSON.stringify(coldefs),
         };
         await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
+
       } else {
 
         if (currentGridRef?.current?.api) {
@@ -455,14 +458,14 @@ const FullKitAssignment = () => {
     }
   }, [loadDataParams])
   useEffect(() => {
-    if (Object.entries(appliedFilters).length) { 
+    if (Object.entries(appliedFilters).length) {
       if (currentPage === 1) {
         fetchOrders();
       }
       else {
         setCurrentPage(1);
       }
-    } 
+    }
   },[appliedFilters])
   useEffect(() => {
     setLoadDataParams({ ...loadDataParams, load_graph_data: false, page: currentPage })
@@ -686,22 +689,20 @@ const FullKitAssignment = () => {
 
   useEffect(() => {
     if (isReset) {
-      setColumnState(colDef);
-      setIsReset(false)
-    } else {
-      if (isReset !== undefined) {
-        handleSaveClick(colDef);
-      }
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
     }
   }, [isReset]);
 
   useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+    }
+  }, [colDef]);
+
+
+  useEffect(() => {
     if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-      columnState.forEach((col: any) => {
-        if (col.initialHide != undefined) {
-          col.hide = col.initialHide;
-        }
-      });
       const result = currentGridRef?.current?.api.applyColumnState({
         state: columnState,
         applyOrder: true

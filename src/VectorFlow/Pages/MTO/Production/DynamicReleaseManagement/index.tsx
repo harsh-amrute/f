@@ -98,7 +98,7 @@ const DynamicReleaseManagement = () => {
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { colDefMap, getColDef } = useColDef();
   const [dataUpdated, setDataUpdated] = useState(0);
-  const [masterConfig, setMasterConfig] = useState([]);
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const setColumnDef = async () => {
     try {
@@ -763,14 +763,14 @@ const DynamicReleaseManagement = () => {
 
   useEffect(() => {
     if (isReset) {
-      handleSaveClick(masterConfig);
+      handleSaveClick(masterUIConfig);
       setIsReset(false);
     }
   }, [isReset]);
 
   useEffect(() => {
     if (currentGridRef?.current) {
-      setMasterConfig(currentGridRef?.current.api.getColumnState());
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
     }
   }, [colDef]);
 
