@@ -11,12 +11,10 @@ type OverallBMReportInputType = {
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OverallBMReportService {
 
-    export const getOverallBMReportData = async ({ page, appliedFilters, page_size, analytics = 0, user }: OverallBMReportInputType) => {
+    export const getOverallBMReportData = async ({ page, appliedFilters, page_size, analytics = 0 }: OverallBMReportInputType) => {
         // Create a new body object with the user info attached
         const requestBody = {
             ...appliedFilters, // Keep the existing applied filters
-            userId: user?.user?.id, // Attach the user ID
-            userName: user?.user?.name, // Attach the user name
         };
 
         if (analytics == 0) {

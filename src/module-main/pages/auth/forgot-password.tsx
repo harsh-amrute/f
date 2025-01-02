@@ -28,7 +28,7 @@ import { useForgotPassword } from "../../services";
 import { notifyError } from "../../../helpers/notify";
 import WelcomeBoard from "./welcome-board";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
-import {ReCAPTCHA} from "react-google-recaptcha";
+import ReCAPTCHA from "react-google-recaptcha";
 import { SITE_KEY } from "../../../helpers/constants";
 
 function ForgotPasswordContainer() {
@@ -36,7 +36,7 @@ function ForgotPasswordContainer() {
   localStorage.clear();
   const [requestSend, setRequestSend] = useState(false);
   const [loading, setLoading] = useState(false);
-  const recaptchaRef: any = useRef();
+  const recaptchaRef: any = useRef<any>();
 
   const form = useForm<LoginRequest>({
     defaultValues: {

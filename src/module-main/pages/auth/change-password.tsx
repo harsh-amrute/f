@@ -87,7 +87,7 @@ function ChangePasswordContainer() {
             </SuccessArea>
           ) : (
             <>
-              <LogoArvind src="/assets/img/logoArvind.png" alt="logo" />
+              {/* <LogoArvind src="/assets/img/logoArvind.png" alt="logo" /> */}
               <Tittle>{t("changePasswordPage.title")}</Tittle>
               <FormArea onSubmit={handleSubmit(onSave)}>
                 <InputArea error={errors.new_password}>

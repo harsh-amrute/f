@@ -23,7 +23,9 @@ export const setupAxios = () => {
       } else {
         config.headers = {
           ...config.headers,
-          Authorization: `Bearer ${token?.access}`
+          Authorization: `Bearer ${token?.access}`,
+          'User-ID': localStorage.getItem('User-ID'),
+          'User-Name': localStorage.getItem('User-Name')
         }
       }
     }
