@@ -176,13 +176,15 @@ const useTaskPendingForReview = ()=>{
 
     const ConvertToPoogiData = (data: any) => {
         const result: any[] = [];
-    
+        
+        console.log("data....", data);
         data.forEach((item: any) => {
             // Push the main object without minData
             result.push({
                 majId: item.majId,
                 majdsc: item.majdsc,
                 plnm: item.plnm,
+                trmId: item.trmId? item.trmId: item.mintid
             });
     
             // Push each minData object with the corresponding majId and plnm
