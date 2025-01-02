@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { ContainerRight, CircleForgotPassword, IputLogin, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, InputGroup, LogoAreaForgotPsw, ContainerLeft, LogoArvind, SuccessArea, SuccessIcon, SuccessText } from "./styles";
+import { ContainerRight, CircleForgotPassword, IputLogin, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, InputGroup, LogoAreaForgotPsw, ContainerLeft, SuccessArea, SuccessIcon, SuccessText } from "./styles";
 import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
 import { useChangePassword } from "../../services";

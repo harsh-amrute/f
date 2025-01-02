@@ -28,6 +28,7 @@ import { useForgotPassword } from "../../services";
 import { notifyError } from "../../../helpers/notify";
 import WelcomeBoard from "./welcome-board";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
+// eslint-disable-next-line import/no-named-as-default
 import ReCAPTCHA from "react-google-recaptcha";
 import { SITE_KEY } from "../../../helpers/constants";
 
