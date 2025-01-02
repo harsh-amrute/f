@@ -90,7 +90,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/login',
     '/forgot-password',
     '/change-password',
-    '/profile',
+    '/profile'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -196,6 +196,8 @@ const lazyLoad = (children: React.ReactNode) => {
     "/mto/master-data-management/task-status",
     "/mto/master-data-management/task-pending",
     "/mto/master-data-management/data-modification-history",
+
+  
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []

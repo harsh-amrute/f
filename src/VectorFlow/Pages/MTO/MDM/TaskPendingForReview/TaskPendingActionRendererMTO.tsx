@@ -34,7 +34,10 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
         <ActionRendererWrapper>
           <ActionButtonWrapper 
             src={
-              detailTableRowData.some((item:any) => item.tbmId === props.data.tbmId && item.appStatus === true)
+              detailTableRowData.some((item:any) => (item?.tbmId === props.data?.tbmId && item.appStatus === true)
+              || (item?.trmId === props.data?.trmId && item.appStatus === true) || 
+              (item?.tcmId === props?.data?.tcmId && item.appStatus === true)
+              )
                 ? "/assets/img/VectorFLOW/NMS/task-pending-approve.svg"
                 : "/assets/img/VectorFLOW/NMS/task-pending-approve-grey.svg"
             } 
@@ -44,7 +47,9 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
           />
           <ActionButtonWrapper 
             src={
-              detailTableRowData.some((item:any) => item.tbmId === props.data.tbmId && item.appStatus === true)
+              detailTableRowData.some((item:any) => (item?.tbmId === props.data?.tbmId && item.appStatus === true)
+              || (item?.trmId === props.data?.trmId && item.appStatus === true) || 
+              (item?.tcmId === props?.data?.tcmId && item.appStatus === true))
                 ? "/assets/img/VectorFLOW/NMS/task-pending-reject-grey.svg"
                 : "/assets/img/VectorFLOW/NMS/task-pending-reject.svg"
             } 

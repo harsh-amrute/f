@@ -18,7 +18,8 @@ const actions = {
     SET_CCR_MODIFY_DATA: createAction<any>("SET_CCR_MODIFY_DATA"),
     SET_TASK_PENDING_ROW_DATA: createAction<any>("SET_TASK_PENDING_ROW_DATA"),
     SET_POOGI_MODIFY_DATA: createAction<any>("SET_POOGI_MODIFY_DATA"),
-    RESET_MTO_STATE: createAction("RESET_MTO_STATE")
+    RESET_MTO_STATE: createAction("RESET_MTO_STATE"),
+    SET_EDIT_STATUS: createAction("SET_EDIT_STATUS")
     // UPDATE_DAILY_DATA: createAction<DailyDataGraph>("UPDATE_DAILY_DATA"),
     // TOGGLE_GRAPH_MODAL: createAction<boolean>("TOGGLE_GRAPH_MODAL"),
     // TOGGLE_NORM_CHANGE_HISTORY_TABLE: createAction<boolean>("TOGGLE_NORM_CHANGE_HISTORY_TABLE"),
@@ -44,5 +45,6 @@ export const {
     SET_CCR_INITIAL_DATA,
     SET_CCR_MODIFY_DATA,
     SET_POOGI_MODIFY_DATA,
-    RESET_MTO_STATE
+    RESET_MTO_STATE,
+    SET_EDIT_STATUS
 } = actions;

@@ -350,11 +350,21 @@ dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
       ) && (
         <>
           <button
-            disabled={params.data.id}
+            disabled={
+              activeMaster.rowData.some(
+                (element: any) =>
+                  element.majId === params.data.majId && element.id === true
+              ) || params.data.id
+
+
+            }
             onClick={onEditClick}
             style={{
               background: "transparent",
-              opacity: `${params.data.id ? 0.2 : 1}`,
+              opacity: `${  activeMaster.rowData.some(
+                (element: any) =>
+                  element.majId === params.data.majId && element.id === true
+              ) || params.data.id ? 0.2 : 1}`,
             }}
           >
             <img
@@ -365,8 +375,12 @@ dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
           </button>
           {params.data.id ? (
             <button
+              disabled={params.data.minId ? activeMaster.rowData.some((element:any)=> element.majId===params.data.majId && element.id===true) : false}
               onClick={onDeleteUndoClick}
-              style={{ background: "transparent" }}
+              style={{ background: "transparent",
+                opacity: 
+              `${  params.data.minId ? activeMaster.rowData.some((element:any)=> element.majId===params.data.majId && element.id===true) ? 0.2 : 1:1}`
+              }}
             >
               <img
                 height={16}
@@ -378,7 +392,19 @@ dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
           ) : (
             <button
               onClick={onDeleteClick}
-              style={{ background: "transparent" }}
+              disabled={
+              activeMaster.rowData.some(
+                (element: any) =>
+                  element.majId === params.data.majId && element.id === true
+              ) || params.data.id 
+              }
+              style={{ background: "transparent",
+                opacity: 
+              `${  activeMaster.rowData.some(
+                (element: any) =>
+                  element.majId === params.data.majId && element.id === true
+              ) || params.data.id ? 0.2 : 1}`
+               }}
             >
               <img
                 height={16}
