@@ -352,6 +352,7 @@ const DueDateQuotation = () => {
             confirmedRows={confirmedRows}
             setConfirmedRows={setConfirmedRows}
             setDisabled={setDisabled}
+            columnState={columnState}
           />
         )
       }
@@ -372,6 +373,7 @@ const DueDateQuotation = () => {
             setSelectedRows={setSelectedRows}
             setMasters={setMasters}
             updateScheduleOrders={updateScheduleOrders}
+            columnState={columnState}
           />
         )
       }
