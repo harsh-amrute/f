@@ -60,6 +60,7 @@ const STPLAndFullKits = () => {
   const { user } = useUserData();
   const { colDefMap,getColDef } = useColDef()
   const { mutateAsync : getSTPLandFullkitInDaysExcelData} = useGetSTPLAndFullKitExcelData();
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const getGraphData = async (params: any) => {
     const {isExcelExport,graphflag} = params;
@@ -134,6 +135,8 @@ const STPLAndFullKits = () => {
           cs: JSON.stringify(coldefs),
         };
         await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
+
       } else {
         if (currentGridRef?.current?.api) {
 
@@ -168,7 +171,6 @@ const STPLAndFullKits = () => {
 
   useEffect(() => {
     setColumnDef();
-    getUserColumnConfig();
     getGraphData({ graphflag: 1 });
     getFilterData();
   }, [])
@@ -184,14 +186,18 @@ const STPLAndFullKits = () => {
   
   useEffect(() => {
     if (isReset) {
-      setColumnState([...colDef]);
-      setIsReset(false)
-    } else {
-      if (isReset !== undefined) {
-        handleSaveClick(colDef);
-      }
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
     }
   }, [isReset]);
+
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+      getUserColumnConfig();
+    }
+  }, [colDef, currentGridRef]);
+  
   const GetExcelData = async () => {
     getGraphData({graphflag : 0 , isExcelExport : true , appliedFilters})
   }

@@ -91,7 +91,7 @@ const DueDateQuotation = () => {
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
 
   const [loading, setLoading] = useState(false);
-  const [masterConfig, setMasterConfig] = useState([]);
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const extras: any = [
     {
@@ -208,7 +208,7 @@ const DueDateQuotation = () => {
     if(UIConfig){
       getColDef(UIConfig)
       if (currentGridRef?.current) {
-        setMasterConfig(currentGridRef?.current.api.getColumnState());
+        setMasterUIConfig(currentGridRef?.current.api.getColumnState());
       }
       getUserColumnConfig();
     }
@@ -517,7 +517,7 @@ const DueDateQuotation = () => {
 
   useEffect(() => {
     if (isReset) {
-      handleSaveClick(masterConfig);
+      handleSaveClick(masterUIConfig);
       setIsReset(false);
     }
   }, [isReset]);
