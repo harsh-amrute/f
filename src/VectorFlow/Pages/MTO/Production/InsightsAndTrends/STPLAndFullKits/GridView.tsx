@@ -115,17 +115,17 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
     },
   };
 
-  useEffect(()=>{ 
+  useEffect(() => {
     if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-        const result = currentGridRef.current.api.applyColumnState({
-            state: columnState,
-            applyOrder: true
-        });
-        if (!result) {
-            console.error('Failed to apply column state');
-        }
+      const result = currentGridRef.current.api.applyColumnState({
+        state: columnState,
+        applyOrder: true
+      });
+      if (!result) {
+        console.error('Failed to apply column state');
+      }
     }
-  });
+  }, [currentGridRef, columnState]);
 
   return (
     <>
@@ -151,6 +151,7 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
               { statusPanel: 'agTotalRowCountComponent', align: 'left' },
             ]
           }}
+          maintainColumnOrder
         />
         <VFPagination
           selectedRows={0}

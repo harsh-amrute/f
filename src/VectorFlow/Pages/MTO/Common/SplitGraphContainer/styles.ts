@@ -14,7 +14,19 @@ export const ChartWrapper = styled.div`
     display:flex;
     justify-content:center;
     align-items:center;
-    // height:90%
+    height: 100%;
+    & .chart-wrapper > div{
+        height: 100% !important;
+        & .ag-charts-wrapper{
+          max-height: 100% !important;
+          .ag-charts-canvas{
+            height: 100%;
+          }
+          & .ag-charts-canvas >canvas{
+            height:100% !important;
+          }
+        }
+      }
 `
 
 export const SCChartContainer = styled.div<{ height?: string }>`
@@ -233,7 +245,7 @@ export const LockBtn = styled.img`
 `
 
 export const HorizontalViewWrapper = styled.div`
-      display:flex;
+    //   display:flex;
       width:100%;
 `
 

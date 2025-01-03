@@ -37,7 +37,7 @@ const OTAndIFAnalysis = () => {
     const [graphData, setGraphData] = useState<any>({});
     const [currentGridRef, setCurrentGridRef] = useState<any>(null);
     const [columnState, setColumnState] = useState<any>([]);
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState<any>(undefined);
     const [colDef, setColDef] = useState([{}]);
     const [HeaderData, setHeaderData] = useState([]);
     const [filterData, setFilterData] = useState({});
@@ -58,8 +58,9 @@ const OTAndIFAnalysis = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { user } = useUserData();
     const { colDefMap , getColDef} = useColDef();
-    const { mutateAsync : getOTAndIFAnalysisDataExcelExport} = useGetOTAndIFAnalysisDataExcelExport();
-
+    const { mutateAsync: getOTAndIFAnalysisDataExcelExport } = useGetOTAndIFAnalysisDataExcelExport();
+    const [masterUIConfig, setMasterUIConfig] = useState([]);
+    
     const getGraphData = async (params: any) => {
         if(params.isExcelExport){
             const headersdata = currentGridRef?.current?.api.getColumnState();
@@ -126,19 +127,30 @@ const OTAndIFAnalysis = () => {
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-            if(currentGridRef?.current?.api){
-                const config = currentGridRef.current.api.getColumnState();
-    
+            if (coldefs) {
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.PoogiOTAndIFAnalysis,
-                    cs: JSON.stringify(config)
-                }
-    
+                    cs: JSON.stringify(coldefs),
+                };
                 await updateUserUIReportConfigData([payload]);
-                await getUserColumnConfig();
+                setColumnState([...coldefs]);
+        
+            } else {
+                if (currentGridRef?.current?.api) {
+                    const config = currentGridRef.current.api.getColumnState();
+    
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.PoogiOTAndIFAnalysis,
+                        cs: JSON.stringify(config)
+                    }
+    
+                    await updateUserUIReportConfigData([payload]);
+                    await getUserColumnConfig();
+                }
             }
 
         } catch (error) {
@@ -160,12 +172,13 @@ const OTAndIFAnalysis = () => {
     }
 
     useEffect(() => {
-        setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+        if (HeaderData.length > 0) {
+            setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+        }
     }, [HeaderData])
 
     useEffect(() => {
         getGraphData({ graphflag: 1 });
-        getUserColumnConfig();
         setColumnDef();
         getFilterData();
     }, [])
@@ -181,12 +194,17 @@ const OTAndIFAnalysis = () => {
 
     useEffect(() => {
         if (isReset) {
-          setColumnState(colDef);
-          setIsReset(false)
-        }else{
-          handleSaveClick();
+            handleSaveClick(masterUIConfig);
+            setIsReset(false);
         }
     }, [isReset]);
+
+    useEffect(() => {
+        if (currentGridRef?.current) {
+            setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+            getUserColumnConfig();
+        }
+    }, [colDef, currentGridRef]);
 
     const ExportExcelData = () =>{
         getGraphData({ isExcelExport: true });

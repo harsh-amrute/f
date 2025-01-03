@@ -73,7 +73,7 @@ const BreadCrumb = () => {
   if (location.pathname === '/production-planning-scheduling/dynamic-release-mangement') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Dynamic Release Management </BoldSpan></span>
 
   if (location.pathname === '/production-planning-scheduling/deptwise-bm-report') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Dept-wise BM Report</BoldSpan></span>
-  if (location.pathname === '/production-planning-scheduling/full-kit-assignment') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Full Kit Assignement</BoldSpan></span>
+  if (location.pathname === '/production-planning-scheduling/full-kit-assignment') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Full Kit Assignment</BoldSpan></span>
   if (location.pathname === '/production-planning-scheduling/overall-bm-report') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Overall BM Report</BoldSpan></span>
 
   if (location.pathname === '/poogi/insight-and-trends/resource-utilization-wip-profile') return <span>Poogi<img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan> Resource Utilization & WIP Profile </BoldSpan></span>

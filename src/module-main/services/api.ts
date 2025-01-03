@@ -106,6 +106,14 @@ export namespace MainService {
           LOCAL_STORAGE_KEY.LANDING_PAGE,
           resp?.data?.data?.landing_page
         )
+        localStorage.setItem(
+          LOCAL_STORAGE_KEY.User_ID,
+          resp?.data?.data?.user?.id
+        )
+        localStorage.setItem(
+          LOCAL_STORAGE_KEY.User_Name,
+          resp?.data?.data?.user?.name
+        )
         return await Promise.resolve(resp)
       })
   }

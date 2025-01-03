@@ -44,6 +44,9 @@ const FOLSummary = () => {
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
   const themeUi = user.user.theme_ui;
   const gridRef = useRef<any>(null);
+  const [HeaderData, setHeaderData] = useState([]);
+  const [myColDefs, setMyColDefs] = useState([{}]);
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
 
   const handleNameChange = (arr: any) => {
@@ -492,6 +495,8 @@ const FOLSummary = () => {
           cs: JSON.stringify(coldefs),
         };
         await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
+
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
@@ -516,14 +521,16 @@ const FOLSummary = () => {
 
   useEffect(() => {
     if (isReset) {
-      setColumnState(myColDefs);
-      setIsReset(false)
-    } else {
-      if (isReset !== undefined) {
-        handleSaveClick(myColDefs);
-      }
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
     }
   }, [isReset]);
+
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+    }
+  }, [myColDefs]);
 
   useEffect(() => {
     notifyLoader("Loading Grid Data")
@@ -537,12 +544,9 @@ const FOLSummary = () => {
     setFilterData(data?.data?.data);
   }, [tableData]);
 
-
-  const [HeaderData, setHeaderData] = useState([]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
 
   const reportName = "EnquiryResponse";
-  const [myColDefs, setMyColDefs] = useState([{}]);
 
   const setColumnDef = async () => {
     try {

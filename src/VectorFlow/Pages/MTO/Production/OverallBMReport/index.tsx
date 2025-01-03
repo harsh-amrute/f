@@ -1316,9 +1316,18 @@ const DropDownCellRenderer= (props: any) =>  {
         state: colState,
         applyOrder: true,
       });
-      tempGridRef.current?.api?.exportDataAsExcel({
-        fileName: "OverallBMReport",
-      });
+
+      const isPivotMode = refGraph2.current?.api?.isPivotMode()
+      if(isPivotMode){
+        refGraph2.current?.api?.exportDataAsExcel({
+          fileName: "OverallBMReport",
+        });
+      }
+      else{
+        tempGridRef.current?.api?.exportDataAsExcel({
+          fileName: "OverallBMReport",
+        });
+      }
 
     }
   }, [tempGridData]);

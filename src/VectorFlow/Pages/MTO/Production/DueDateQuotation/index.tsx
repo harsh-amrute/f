@@ -4,7 +4,7 @@ import { useUserData } from '../../../../../context'
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { Footer, Wrapper } from './DueDateQuotation.styled'
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
-import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetDBRsettingsData, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetUIConfig, useGetFilteredOrdersForDDQ, useGetOrdersForExcelDDQ } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
+import { useGetBufferMasterData, useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetCCRMasterData, useGetDailyWorkingCalendar, useGetDBRsettingsData, useGetFOLData, useGetLineCCRDetails, useGetMarketOperatingLeadTimeMasterData, useGetUIConfig, useGetFilteredOrdersForDDQ, useGetOrdersForExcelDDQ, useUpdateScheduleOrders } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils'
 import { GridOptions } from 'ag-grid-enterprise'
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox'
@@ -51,6 +51,7 @@ const DueDateQuotation = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
+  const [pageCallBack, setPageCallBack] = useState<any>();
   const [isReset, setIsReset] = useState<any>();
   //Refs
   const totalRows = useRef(0);
@@ -71,6 +72,7 @@ const DueDateQuotation = () => {
   const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
   const { mutateAsync: getFilteredOrdersForDDQ, isLoading: isFilteredDataLoaded } = useGetFilteredOrdersForDDQ();
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: updateScheduleOrders, isLoading: isUpdateScheduleOrders } = useUpdateScheduleOrders();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const [filterData, setFilterData] = useState({});
   const {  mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
@@ -89,6 +91,7 @@ const DueDateQuotation = () => {
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_DDQ);
 
   const [loading, setLoading] = useState(false);
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const extras: any = [
     {
@@ -204,6 +207,10 @@ const DueDateQuotation = () => {
   useEffect(()=>{
     if(UIConfig){
       getColDef(UIConfig)
+      if (currentGridRef?.current) {
+        setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+      }
+      getUserColumnConfig();
     }
   },[UIConfig])
 
@@ -324,7 +331,8 @@ const DueDateQuotation = () => {
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
-            
+            pageCallBack={pageCallBack}
+            setPageCallBack={setPageCallBack}
           />
         )
       }
@@ -344,6 +352,7 @@ const DueDateQuotation = () => {
             confirmedRows={confirmedRows}
             setConfirmedRows={setConfirmedRows}
             setDisabled={setDisabled}
+            columnState={columnState}
           />
         )
       }
@@ -363,6 +372,8 @@ const DueDateQuotation = () => {
             setDisabled={setDisabled}
             setSelectedRows={setSelectedRows}
             setMasters={setMasters}
+            updateScheduleOrders={updateScheduleOrders}
+            columnState={columnState}
           />
         )
       }
@@ -423,13 +434,21 @@ const DueDateQuotation = () => {
     }
   }
 
-
   useEffect(() => {
     if (Object.entries(appliedFilters).length) {
       getUpdatedFilterData();
     }
-  }, [appliedFilters, currentPage, unScheduled, step == 1]);
+  }, [currentPage, unScheduled, step == 1]);
 
+  useEffect(() => {
+    if (Object.entries(appliedFilters).length) {
+      if (currentPage == 1) {
+        getUpdatedFilterData();
+      } else {
+        setCurrentPage(1);
+      }      
+    }
+  },[appliedFilters])
 
   const getUserColumnConfig = async () => {
     try {
@@ -458,6 +477,8 @@ const DueDateQuotation = () => {
           cs: JSON.stringify(coldefs),
         };
         await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
+
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
@@ -493,38 +514,15 @@ const DueDateQuotation = () => {
   };
 
   useEffect(() => {
-    getUserColumnConfig();
     getFilterData();
   }, []);
 
   useEffect(() => {
     if (isReset) {
-      setColumnState([...columnDefs]);
+      handleSaveClick(masterUIConfig);
       setIsReset(false);
-    } else {
-      if (isReset != undefined) {
-        handleSaveClick(columnDefs);
-      }
     }
   }, [isReset]);
-
-  useEffect(() => {
-    if (currentGridRef?.current && columnState?.length) {
-      columnState.forEach((col: any) => {
-        if (col.initialHide != undefined) {
-          col.hide = col.initialHide;
-        }
-      });
-      
-      const result = currentGridRef?.current?.api.applyColumnState({
-        state: columnState,
-        applyOrder: true,
-      });
-      if (!result) {
-        console.error("Failed to apply column state 1");
-      }
-    }
-  }, [columnState]);
   
  const ExcelData = ()=>{
     getUpdatedFilterData(true);
@@ -561,7 +559,7 @@ const DueDateQuotation = () => {
           disableRemoveFilter={true}
         />
       }
-      {(isFilteredDataLoaded || loading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
+      {(isFilteredDataLoaded || loading || isUpdateUserConfig || isGetUserConfig || isUpdateScheduleOrders) && <OverlayLoader />}
       {getCurrentStep()}
       <VFModalCard key={"key2"} openModal={showModal} closeModal={() => { setShowModal(false) }} headerText={'Warning'} headerIcon={'/assets/img/ist/warning.svg'} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
         <div style={{ margin: "0 2rem" }}>
@@ -618,6 +616,7 @@ const DueDateQuotation = () => {
           disabled={disabled}
           onClick={() => {
             if (step == 1) {
+              setPageCallBack(true);
               setStep(step + 1);
             }
             else if (assignmentRef.current?.onConfirm && step == 2) {

@@ -36,7 +36,6 @@ import {
 } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { useUserData } from "../../../../../context/index";
 import useColDef from "../../../../../hooks/useColDef";
-
 // const user = { user: { them_ui: 'pure' } };
 
 interface RowDataType {
@@ -73,6 +72,7 @@ const OrderRescheduling = () => {
   const { mutateAsync: getOrderReschedulingExcelData } =
     useGetOrderSchedulingExcelData();
   const { getColDef, colDefMap } = useColDef();
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const GetData = async (isExcelExport = false) => {
     if (isExcelExport) {
@@ -92,7 +92,11 @@ const OrderRescheduling = () => {
       try {
         const APIData = await getOrderSchedulingData(pagination.mtoPageSize);
         setCurrData(APIData);
-        setRowData(APIData.data.data.results);
+        const newRowData = [...APIData.data.data.results];
+        newRowData.forEach((el)=>{
+          el.oldDate = el.dd;
+        })
+        setRowData(newRowData);
       } catch (e) {
         notifyError("Failed to fetch Grid data!");
       }
@@ -100,62 +104,21 @@ const OrderRescheduling = () => {
     }
   };
 
+  console.log("grid Data", rowData)
+
+
   const getSelectedRowData = () => {
     const selectedData = refGraph1.current?.api.getSelectedRows();
 
     //  logic to get the unselected row and set the default date to it
 
-    // const unselectedRows: any = [];
-    // const lastUpdateSelectedRows: any = [];
-
-    // rowData.forEach((e) => {
-    //     selectedRowData.forEach((el) => {
-    //         if (e.oid === el.oid) {
-    //             lastUpdateSelectedRows.push(e);
-    //         }
-    //     })
+    // const newRowData:any= _.cloneDeep([...rowData]);
+    // newRowData.forEach((ele:any)=>{
+    //   if(!selectedData?.find((el:any)=>{ele.odk===el.odk})){
+    //     newRowData.dd = newRowData.oldDate; 
+    //   }
     // })
 
-    // lastUpdateSelectedRows.forEach((e: any) => {
-    //     let isThere = false;
-    //     selectedData?.forEach((el) => {
-    //         if (e.oid === el.oid) {
-    //             isThere = true;
-    //         }
-    //     }
-    //     )
-
-    //     if (!isThere) {
-    //         unselectedRows.push(e);
-    //     }
-
-    // })
-
-    // console.log("unselected Row...", unselectedRows)
-
-    // unselectedRows.forEach((e: any) => {
-    //     rowData.forEach((el: any) => {
-    //         if (el.oid === e.oid) {
-    //             e.oid = el.oid;
-    //         }
-    //     })
-    // })
-
-    // unselectedRows.forEach((unSec: any) => {
-
-    //     refGraph1?.current?.api.forEachNode((node) => {
-    //         if (node.data && node.data.oid) {
-
-    //             if (node.data.oid === unSec.oid) {
-    //                 console.log("yes")
-    //                 node.data.dd = unSec.dd;
-    //             }
-    //         }
-    //     });
-
-    // })
-
-    // setRowData(rowData);
 
     /////////////////
 
@@ -181,8 +144,9 @@ const OrderRescheduling = () => {
           }
         });
 
-        if (isThere == 0) {
+        if (isThere === 0) {
           mergedData = mergedData.filter((e) => e.odk !== item.odk);
+          
         }
       });
       setSelectedRowData(mergedData);
@@ -251,7 +215,7 @@ const OrderRescheduling = () => {
       colId: "",
       resizable: false,
       position: 0,
-      headerCheckboxSelection: false,
+      headerCheckboxSelection: true,
       checkboxSelection: true,
       maxWidth: 50,
       flex: 1,
@@ -307,7 +271,6 @@ const OrderRescheduling = () => {
     if (HeaderData.length > 0) {
       const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
       setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
-
       getUserColumnConfig();
     }
   }, [HeaderData, currTab]);
@@ -317,7 +280,10 @@ const OrderRescheduling = () => {
     setCurrentPage(pageNumber);
     const APIData = await getOrderSchedulingPageData(pageNumber.toString());
     setCurrData(APIData);
-    const newDat = APIData.data.data.results;
+    const newDat = [...APIData.data.data.results];
+        newDat.forEach((el)=>{
+          el.oldDate = el.dd;
+        })
     setRowData(newDat);
     setIsLoading(false);
     // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
@@ -426,7 +392,7 @@ const OrderRescheduling = () => {
   };
 
   const unschedule = async () => {
-    const finalData = convertJsonForUnschedule(selectedRowData, "Admin", 1);
+    const finalData = convertJsonForUnschedule(selectedRowData, user.user.name, 1);
     const isSuccesss = await PostData(
       finalData,
       "Order Unscheduled Successfully !"
@@ -439,7 +405,7 @@ const OrderRescheduling = () => {
   };
 
   const overwriteDD = async () => {
-    const finalData = convertJsonForDueDate(selectedRowData, "Admin", 0);
+    const finalData = convertJsonForDueDate(selectedRowData, user.user.name, 0);
     const isSuccess = await PostData(
       finalData,
       "Order Due date updated successfully !"
@@ -470,6 +436,7 @@ const OrderRescheduling = () => {
           if (element.odk === node.data.odk) {
             node.data.rs = element.rs;
             node.data.dd = element.dd;
+            node.data.oldDate = element.oldDate;
           }
         }
         nodesToSelect.push(node);
@@ -507,6 +474,8 @@ const OrderRescheduling = () => {
           cs: JSON.stringify(coldefs),
         };
         await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
+
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
@@ -532,12 +501,6 @@ const OrderRescheduling = () => {
 
   useEffect(() => {
     if (currentGridRef?.current && columnState?.length) {
-      columnState.forEach((col: any) => {
-        if (col.initialHide != undefined) {
-          col.hide = col.initialHide;
-        }
-      });
-
       const result = currentGridRef?.current?.api.applyColumnState({
         state: columnState,
         applyOrder: true,
@@ -550,30 +513,21 @@ const OrderRescheduling = () => {
 
   useEffect(() => {
     if (isReset) {
-      setColumnState([...colDef]);
+      handleSaveClick(masterUIConfig);
       setIsReset(false);
-    } else {
-      if (isReset !== undefined) {
-        handleSaveClick(colDef);
-      }
     }
   }, [isReset]);
 
-  const [tempRowData] = useState<any>(undefined);
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+    }
+  }, [colDef]);
+
 
   const GetExcelData = async () => {
     GetData(true);
   };
-
-  const tempRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (tempRowData) {
-      tempRef?.current?.api.exportDataAsExcel({
-        fileName: "OrderRescheduling",
-      });
-    }
-  }, [tempRowData]);
 
   return (
     <>
@@ -696,16 +650,8 @@ const OrderRescheduling = () => {
                 </div>
               </div>
             </VFTableWrapper>
-            <div style={{ display: "none" }}>
-              <VFTable
-                columnDefs={colDef}
-                rowData={tempRowData}
-                ref={tempRef}
-              />
-            </div>
           </div>
         </div>
-        {/* )} */}
       </OrderReschedulingWrapper>
     </>
   );

@@ -861,7 +861,17 @@ const DptWiseBMReport = () => {
                 applyOrder: true
             });
 
-            tempGraph.current?.api?.exportDataAsExcel({ fileName: "DepartmentWiseBMReport" })
+            const isPivotMode = refGraph1.current?.api?.isPivotMode()
+            if(isPivotMode){
+              refGraph1.current?.api?.exportDataAsExcel({
+                fileName: "DepartmentWiseBMReport",
+              });
+            }
+            else{
+              tempGraph.current?.api?.exportDataAsExcel({
+                fileName: "DepartmentWiseBMReport",
+              });
+            }
         }
     }, [tempGridData])
 

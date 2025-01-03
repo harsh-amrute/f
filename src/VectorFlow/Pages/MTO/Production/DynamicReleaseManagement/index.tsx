@@ -98,6 +98,7 @@ const DynamicReleaseManagement = () => {
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { colDefMap, getColDef } = useColDef();
   const [dataUpdated, setDataUpdated] = useState(0);
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const setColumnDef = async () => {
     try {
@@ -387,9 +388,9 @@ const DynamicReleaseManagement = () => {
 
       floatingFilterComponentParams: { suppressFilterButton: true },
       cellStyle: {
-        "font-size": "12px",
+        "fontSize": "12px",
         'display': 'flex',
-        'align-items': 'center',
+        'alignItems': 'center',
 
       },
     },
@@ -695,51 +696,53 @@ const DynamicReleaseManagement = () => {
     }
   
     
-    const getUserColumnConfig = async () => {
-      try {
-          const data = await getUserUIReportConfigData({
-          un: user.user.name,
-          rn_id: UIGridCode.ProdDynamicReleaseManagement
-          });
+  const getUserColumnConfig = async () => {
+    try {
+      const data = await getUserUIReportConfigData({
+        un: user.user.name,
+        rn_id: UIGridCode.ProdDynamicReleaseManagement
+      });
   
-          const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-          setColumnState(newConfig);
+      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+      setColumnState(newConfig);
   
-          if (!data) {
-          console.error('Failed to apply column state');
-          }
-      } catch (error) {
-          console.error(error);
+      if (!data) {
+        console.error('Failed to apply column state');
       }
+    } catch (error) {
+      console.error(error);
+    }
   }
       
   
-  const handleSaveClick = async (coldefs?:any) => {
-      try {
-        if (coldefs) {
+  const handleSaveClick = async (coldefs?: any) => {
+    try {
+      if (coldefs) {
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdDynamicReleaseManagement,
+          cs: JSON.stringify(coldefs),
+        };
+        await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
+        
+      } else {
+        if (currentGridRef?.current?.api) {
+          const config = currentGridRef.current.api.getColumnState();
+
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdDynamicReleaseManagement,
-            cs: JSON.stringify(coldefs),
-          };
-          await updateUserUIReportConfigData([payload]);
-        } else {
-          if(currentGridRef?.current?.api){
-              const config = currentGridRef.current.api.getColumnState();
-
-              const payload = {
-                  un: user.user.name,
-                  rn_id: UIGridCode.ProdDynamicReleaseManagement,
-                  cs: JSON.stringify(config)
-              }
-              await updateUserUIReportConfigData([payload]);
-              await getUserColumnConfig();
+            cs: JSON.stringify(config)
           }
+          await updateUserUIReportConfigData([payload]);
+          await getUserColumnConfig();
         }
-
-      } catch (error) {
-      console.error(error);
       }
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const handleResetClick = () => {
@@ -748,11 +751,6 @@ const DynamicReleaseManagement = () => {
 
   useEffect(()=>{ 
     if (currentGridRef?.current && columnState?.length) {
-      columnState.forEach((col: any) => {
-        if (col.initialHide != undefined) {
-          col.hide = col.initialHide;
-        }
-      });
       const result = currentGridRef.current.api.applyColumnState({
         state: columnState,
         applyOrder: true
@@ -764,16 +762,19 @@ const DynamicReleaseManagement = () => {
   },[columnState]);
 
   useEffect(() => {
-      if (isReset) {
-          setColumnState([...colDef]);
-          setIsReset(false)
-      }else{
-        if(isReset !== undefined){
-          handleSaveClick(colDef);
-        }
-      }
+    if (isReset) {
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
+    }
   }, [isReset]);
 
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+    }
+  }, [colDef]);
+
+  
   const ExcelData = () =>{
     GetData(table1 ? 1 : 0 , 0 , 0, true)
   }

@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import { MTOStore } from '../../../VectorFlow/types/MTO';
-import { SAVE_ANALYTICS_DATA, DAYWISE_COVERAGE_ANALYTICS, PROCPLANNING_ANALYTICS, RESOURCE_UTIL_ANALYTICS, BM_REPORT_ANALYTICS, SET_TASK_PENDING_SELECTED ,APPLIED_FILTERS, SET_POOGI_INITIAL_DATA, SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW, SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_TASK_PENDING_ROW_DATA, SET_CCR_INITIAL_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_MODIFY_DATA} from '../../actions/MTO';
+import { SAVE_ANALYTICS_DATA, DAYWISE_COVERAGE_ANALYTICS, PROCPLANNING_ANALYTICS, RESOURCE_UTIL_ANALYTICS, BM_REPORT_ANALYTICS, SET_TASK_PENDING_SELECTED ,APPLIED_FILTERS, SET_POOGI_INITIAL_DATA, SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW, SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_TASK_PENDING_ROW_DATA, SET_CCR_INITIAL_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_MODIFY_DATA, RESET_MTO_STATE, SET_EDIT_STATUS} from '../../actions/MTO';
 
 
 
@@ -69,6 +69,23 @@ const setPoogiModifyData = (state: any, action: PayloadAction<any>)=>{
     state.poogiModifyData = action.payload;
 }
 
+const setEditStatus = (state:any , action: PayloadAction<any>)=>{
+    state.editStatus = action.payload;
+}
+
+const resetMtoState = (state: any)=>{
+    state.poogiModifyData = null;
+    state.poogiIntialData  = null;
+    state.taskPendingRowData = null;
+    state.ccrModifyData = null;
+    state.ccrInitialData = null;
+    state.bufferInitialData = null;
+    state.bufferModifyData = null;
+    state.editableMajRow = null;
+    state.editableMinRow;
+    state.taskPendingSelected = null;
+}
+
 const mtoReducer = (initialState: MTOStore) => createReducer(initialState, (builder) => {
     builder.addCase(SAVE_ANALYTICS_DATA, setAnalyticsData)
     builder.addCase(DAYWISE_COVERAGE_ANALYTICS, setDayWiseCoverageAnalytics)
@@ -86,6 +103,8 @@ const mtoReducer = (initialState: MTOStore) => createReducer(initialState, (buil
     builder.addCase(SET_CCR_INITIAL_DATA, setCCRInitialData)
     builder.addCase(SET_CCR_MODIFY_DATA, setCCRModifyData)    
     builder.addCase(SET_POOGI_MODIFY_DATA, setPoogiModifyData)
+    builder.addCase(RESET_MTO_STATE, resetMtoState)
+    builder.addCase(SET_EDIT_STATUS, setEditStatus)
 })
 
 export default mtoReducer;

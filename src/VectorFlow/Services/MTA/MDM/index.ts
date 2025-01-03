@@ -93,6 +93,13 @@ export const useDeleteDraft = () => {
   })
 }
 
+
+export const useDeleteMTODraft = () => {
+  return useMutation(async (id: string) => {
+    return await MDMService.deleteMTODraft(id)
+  })
+}
+
 export const useGetSeasonalityDetails = () => {
   return useMutation(QUERY_KEYS.useGetSeasonalityDetails, async (body: object) => {
     return await MDMService.getSeasonalityDetails(body)
@@ -254,6 +261,11 @@ export const useSaveCCRMasterTask = () => {
 export const useSavePOOGIMasterTask = ()=>{
   return useMutation(async (body: any)=>{
     return await MDMService.savePOOGIMasterTask(body);
+  })
+}
+export const useSavePOOGIMasterDraft= ()=>{
+  return useMutation(async (body: any)=>{
+    return await MDMService.savePOOGIMasterDraft(body);
   })
 }
 export const useSaveBufferMasterDraft = () => {

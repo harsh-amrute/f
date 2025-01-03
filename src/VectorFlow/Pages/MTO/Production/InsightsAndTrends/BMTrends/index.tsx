@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import VFCapsule from '../../../../../../components/VectorFLOW/commons/VFCapsule'
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip'
 import SplitGraphContainer from '../../../Common/SplitGraphContainer'
-import { SCChartHeaderContainer, SCChartMainContainer, CapsuleWrapper, SCChartSliderContainer, BMTrendWrapper } from './styles'
+import { SCChartHeaderContainer, SCChartMainContainer, CapsuleWrapper, SCChartSliderContainer, BMTrendWrapper, BMTrendsChartWrapper } from './styles'
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import { useGetBMTrendsData } from '../../../../../Services/MTO/Production/InsightsAndTrends/BMTrends'
 import { BufferTrendData, TooltipValuesProps } from "../../../../../../../src/types/MTO/types";
@@ -11,7 +11,6 @@ import { convertToGraphData, convertToPercentage, filterDataByDaysGap } from '..
 import moment from 'moment'
 import { useGetDate } from '../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import VFRangeSlider from '../../../Common/VFRangeSlider'
-import useViewPort from '../../../../../../hooks/useViewPort'
 // import useFilter from "../../../../../../hooks/useFilter";
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import { ColorsMTO } from '../../../Common/Colors'
@@ -438,7 +437,6 @@ const BMTrends = () => {
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
     const date = apiResponseData?.data?.data;
-    const { screenHeight } = useViewPort();
 
     const graphTitleJSX = <div
         data-testid="ot-if-graph"
@@ -467,7 +465,7 @@ const BMTrends = () => {
                 // onFilterRemove={onFilterRemove}
                 // isMfgSelected={isMfgSelected}
             />
-            <div style={{ paddingLeft: '25px', height: screenHeight - 180, display: 'flex' }}>
+            <BMTrendsChartWrapper style={{ maxHeight: "95%", paddingLeft: "20px", paddingBottom:"10px" }}>
                 <SplitGraphContainer
                     tableLoading={tableLoading}
                     chartLoading={chartLoading}
@@ -487,7 +485,7 @@ const BMTrends = () => {
                     TooltipRenderer={TooltipRenderer}
                     graphType={1}
                 />
-            </div>
+            </BMTrendsChartWrapper>
         </BMTrendWrapper>
     )
 }

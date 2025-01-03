@@ -1,6 +1,5 @@
 import { Allotment } from "allotment";
 import { useEffect, useState } from "react";
-import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import STPLGraph from "./STPLGraph";
 import FullKitGraph from "./FullKitGraph";
@@ -39,7 +38,7 @@ const STPLAndFullKits = () => {
   const [graphData, setGraphData] = useState<any>({});
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState<any>(undefined);
   const [colDef, setColDef] = useState([{}]);
   const [filterData, setFilterData] = useState({});
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
@@ -56,12 +55,12 @@ const STPLAndFullKits = () => {
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_STPL_And_FullKits);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-  const { screenHeight } = useViewPort();
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
   const reportName = "STPLAndFullKits";
   const { user } = useUserData();
   const { colDefMap,getColDef } = useColDef()
   const { mutateAsync : getSTPLandFullkitInDaysExcelData} = useGetSTPLAndFullKitExcelData();
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const getGraphData = async (params: any) => {
     const {isExcelExport,graphflag} = params;
@@ -127,18 +126,31 @@ const STPLAndFullKits = () => {
     }
   }
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (coldefs?: any) => {
     try {
-      const config = currentGridRef.current.api.getColumnState();
+      if (coldefs) {
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdStplAndFullKit,
+          cs: JSON.stringify(coldefs),
+        };
+        await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
 
-      const payload = {
-        un: user.user.name,
-        rn_id: UIGridCode.ProdStplAndFullKit,
-        cs: JSON.stringify(config)
+      } else {
+        if (currentGridRef?.current?.api) {
+
+          const config = currentGridRef.current.api.getColumnState();
+
+          const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.ProdStplAndFullKit,
+            cs: JSON.stringify(config)
+          }
+          await updateUserUIReportConfigData([payload]);
+          await getUserColumnConfig();
+        }
       }
-      await updateUserUIReportConfigData([payload]);
-      await getUserColumnConfig();
-
     } catch (error) {
       console.error(error);
     }
@@ -159,7 +171,6 @@ const STPLAndFullKits = () => {
 
   useEffect(() => {
     setColumnDef();
-    getUserColumnConfig();
     getGraphData({ graphflag: 1 });
     getFilterData();
   }, [])
@@ -175,12 +186,18 @@ const STPLAndFullKits = () => {
   
   useEffect(() => {
     if (isReset) {
-      setColumnState(colDef);
-      setIsReset(false)
-    }else{
-      handleSaveClick();
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
     }
   }, [isReset]);
+
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+      getUserColumnConfig();
+    }
+  }, [colDef, currentGridRef]);
+  
   const GetExcelData = async () => {
     getGraphData({graphflag : 0 , isExcelExport : true , appliedFilters})
   }
@@ -218,7 +235,7 @@ const STPLAndFullKits = () => {
             appliedFilters={appliedFilters}
           />
         ) : (
-          <BTRTableWrapper style={{ height: screenHeight - 200, paddingLeft: "20px" }}>
+          <BTRTableWrapper style={{ maxHeight:"95%", paddingLeft: "20px" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>

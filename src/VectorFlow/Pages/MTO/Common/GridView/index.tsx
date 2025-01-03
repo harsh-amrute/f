@@ -86,7 +86,9 @@ const GridView = (props: IGridViewProps) => {
     }
 
     useEffect(() => {
-        getGridData({ graphflag: 0, page: currentPage });
+        getGridData({ graphflag: 0, page: 1 });
+        setCurrentPage(1);
+
     }, [appliedFilters])
 
     useEffect(() => {
@@ -98,7 +100,7 @@ const GridView = (props: IGridViewProps) => {
         }
     }, [isSuccess, isError]) 
 
-    useEffect(()=>{ 
+    useEffect(() => {
         if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
             const result = currentGridRef?.current?.api.applyColumnState({
                 state: columnState,
@@ -108,7 +110,7 @@ const GridView = (props: IGridViewProps) => {
                 console.error('Failed to apply column state');
             }
         }
-    });
+    }, [columnState]);
 
     return (
 
@@ -139,6 +141,7 @@ const GridView = (props: IGridViewProps) => {
                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                     ]
                 }}
+                maintainColumnOrder
             />
             <VFPagination
                 selectedRows={0}

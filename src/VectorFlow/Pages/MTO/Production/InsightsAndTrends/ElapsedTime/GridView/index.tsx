@@ -11,11 +11,11 @@ import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Load
 import { FilterPageName, pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport } from '../../../../../../../helpers/utils';
 
-const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters ,colDefMap}: any,ref) => {
-    const gridRef = useRef(null);
+const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters ,colDefMap}: any,ref) => {    
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
     const [data, setData] = useState([]);
+    const gridRef = useRef<any>(null);
     const { mutateAsync: getElapsedTimeData, isLoading } = useGetElapsedTimeData()
     const { mutateAsync : getElapsedTimeDataExcelExport } = useGetElapsedTimeDataForExcelExport();    
 
@@ -104,7 +104,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
         setCurrentPage(currPage)
     }
 
-    useEffect(()=>{ 
+    useEffect(() => {
         if (currentGridRef?.current && columnState?.length) {
             const result = currentGridRef.current.api.applyColumnState({
                 state: columnState,
@@ -114,8 +114,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                 console.error('Failed to apply column state');
             }
         }
-    });
-
+    }, [currentGridRef, columnState]);
     const ExcelExportData = () =>{
         if(data.length> 0){
             
@@ -135,8 +134,8 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                 sideBar={{
                     toolPanels: ['columns'],
                 }}
-                defaultColDef={defaultColDef}
                 columnDefs={colDef}
+                defaultColDef={defaultColDef}
                 disableZoomScaling
                 rowData={data}
                 tooltipHideDelay={100000}
@@ -148,6 +147,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
 
                     setCurrentGridRef(gridRef);
                 }}
+                maintainColumnOrder
             // statusBar={{
             //     statusPanels: [
             //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },

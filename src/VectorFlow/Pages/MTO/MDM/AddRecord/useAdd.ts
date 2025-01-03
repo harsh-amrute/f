@@ -1,7 +1,7 @@
 import { useSelector,useDispatch } from 'react-redux'
 import { RootState } from '../../../../../redux/store/store';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
-import { RESET_STATE, REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER,ADD_COLDEFS, UPDATE_PROGRESS_STATE, FILL_MASTERS, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN ,SYNC_ACTIVE_MASTER_TO_MASTER,REMOVE_COLDEFS,UPDATE_ROW_DATA,SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
+import { REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER,ADD_COLDEFS, UPDATE_PROGRESS_STATE, FILL_MASTERS, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN ,SYNC_ACTIVE_MASTER_TO_MASTER,REMOVE_COLDEFS,UPDATE_ROW_DATA,SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { useEffect, useState } from 'react';
 
@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import { useAddMasterData,useDeleteTask,useDeleteDraft,useAddMasterDataRetail, useGetBufferTypeMaster } from '../../../../../VectorFlow/Services/MTA/MDM';
 import { createErrorRowData} from '../../../../../helpers/utils'
 import { ColDef } from 'ag-grid-enterprise';
+import { RESET_MTO_STATE } from '../../../../../redux/actions/MTO';
 
 
 const useAdd=()=>{
@@ -52,7 +53,7 @@ const useAdd=()=>{
     const getBufferTypeMasterData = async()=>{
       try{
         const BufferTypeMaster = await getBufferTypeMaster();
-    setBufferTypeData(BufferTypeMaster?.data?.data);
+        setBufferTypeData(BufferTypeMaster?.data?.data);
       }
       catch(e){
         console.log(e)
@@ -101,7 +102,7 @@ const useAdd=()=>{
       }
 
     const onCancel=()=>{
-        dispatch(RESET_STATE());
+        dispatch(RESET_MTO_STATE());
         navigate('/mto/master-data-management/control-panel');
     }
 
@@ -145,7 +146,6 @@ const useAdd=()=>{
             dispatch(UPDATE_PROGRESS_STATE('view'))
             return 
         }
-
     }
     
 
@@ -351,6 +351,13 @@ const useAdd=()=>{
           if (!ele.bt || !ele.bsz) {
             return { error: "Enter Buffer Type and Buffer Size", warning: "" };
           }
+
+          if(Number(ele.bsz)<=0){
+            return { error: "Buffer size must be greater than 0", warning: ""};
+          }
+          if(Number(ele.bsz)>365){
+            return {error: "Buffer size cannot exceed for over a year", warning: ""};
+          }
       
           // Check if Buffer Code already exists in the master data
           const isBufferCodeDuplicate = bufferInitialData.some(
@@ -360,7 +367,7 @@ const useAdd=()=>{
             (row: any, i: any) => i !== index && row.bcd === ele.bcd
           );
           if (isbufferCodeDuplicateInCurr) {
-            return { error: "CCR code must be unique within the current list!", warning: "" };
+            return { error: "Buffer code must be unique within the current list!", warning: "" };
           }
           if (isBufferCodeDuplicate) {
             return { error: "Buffer code already exists in master", warning: "" };
@@ -449,8 +456,7 @@ const useAdd=()=>{
             newVal[data.column.colId] = data.newValue;
           }
           finData.push(newVal);
-        })
-        ;
+        });
         finData.forEach((ele:any, index: any)=>{
 
           ele.err= getErrorForMaster(ele, index,finData);

@@ -76,13 +76,15 @@ const MTOTaskPendingForReview = ()=>{
                 ref={ref}
                 columnDefs={detailTableColDefs}
                 gridOptions={{
+                    defaultColDef: {
+                      flex: 1
+                    },
                     readOnlyEdit:false,
                     getRowStyle: (params: any) => {
                         
                     if (params.node.rowIndex % 2 === 0) {
                         return { background: "#EBEBEB" };
                     }
-                    
                     return { background: "#F7F7F7" };
                     },
                     enableRangeSelection:true,
@@ -100,6 +102,7 @@ const MTOTaskPendingForReview = ()=>{
                 rowData={detailTableRowData}
                 suppressRowClickSelection 
                 pagination={true}
+                  
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
                 // suppressPaginationPanel={true}
                 disableZoomScaling

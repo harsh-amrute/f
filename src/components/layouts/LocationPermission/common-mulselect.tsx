@@ -10,6 +10,7 @@ export default forwardRef(({ ...props }: any, ref) => {
     handleSelectParent,
     handleSelectChild,
     handleSelectGrandChild,
+    headers
   } = props;
 
   const [listLcRegion, setListLcRegion] = useState<any>([]);
@@ -165,13 +166,16 @@ export default forwardRef(({ ...props }: any, ref) => {
     //   disabled: false,
     // },
   ];
-
+  const updatedPermissions =  prdPermissions.map((permission:any,index:any)=>({
+    ...permission,
+    title:  headers?.Location[index] ? (headers.Location[index]): permission.title
+  })) 
   return (
     <LocationPermission
-      title={t(
+      title={headers && Object.keys(headers)[1] + " Permissions" || t(
         "profile.tabContent.manageUsers.advancedPermission.locationPermission.title"
       )}
-      prdPermissions={prdPermissions}
+      prdPermissions={updatedPermissions}
     />
   );
 });

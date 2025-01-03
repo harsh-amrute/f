@@ -52,6 +52,25 @@ const EnquiryResponse = () => {
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { data } = useGetEnquiryResData() || {};
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
+  const { screenHeight } = useViewPort()
+
+  const [HeaderData, setHeaderData] = useState([]);
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const reportName = "EnquiryResponse";
+  const [myColDefs, setMyColDefs] = useState([{}]);
+  const gridRef = useRef<any>();
+
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      setHeaderData(response.data.data);
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
 
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
@@ -583,6 +602,8 @@ const EnquiryResponse = () => {
           cs: JSON.stringify(coldefs),
         };
         await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
+        
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
@@ -607,14 +628,16 @@ const EnquiryResponse = () => {
 
   useEffect(() => {
     if (isReset) {
-      setColumnState(myColDefs);
-      setIsReset(false)
-    } else {
-      if (isReset !== undefined) {
-        handleSaveClick(myColDefs);
-      }
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
     }
   }, [isReset]);
+
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+    }
+  }, [myColDefs]);
 
   useEffect(() => {
     notifyLoader("Loading Grid Data")
@@ -627,25 +650,6 @@ const EnquiryResponse = () => {
   useEffect(() => {
     setFilterData(data?.data?.data);
   }, [tableData]);
-
-  const { screenHeight } = useViewPort()
-
-  const [HeaderData, setHeaderData] = useState([]);
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-
-  const reportName = "EnquiryResponse";
-  const [myColDefs, setMyColDefs] = useState([{}]);
-  const gridRef = useRef<any>();
-
-  const setColumnDef = async () => {
-    try {
-      const response = await getUIConfigData(reportName);
-      setHeaderData(response.data.data);
-    }
-    catch (e) {
-      console.log(e);
-    }
-  }
 
   useEffect(() => {
     setColumnDef();

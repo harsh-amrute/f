@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import { HorizontalViewWrapper } from "./styles";
+import { HorizontalViewWrapper, OrderAtRiskChartWrapper } from "./styles";
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
 import { reasonColConfig } from "./MockData";
 import SplitGraphContainer from "../../../Common/SplitGraphContainer";
@@ -8,7 +8,6 @@ import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInf
 import { ProductionInsightsAndTrendsString } from "../../../Common/String";
 import { format } from "date-fns";
 import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
-import useViewPort from "../../../../../../hooks/useViewPort";
 import { useGetOrderRiskData, useGetOrderRiskDataExcelExport } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
 import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
@@ -42,7 +41,7 @@ const OrderAtRisk = () => {
   const [gridData, setGridData] = useState([]);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState<any>(undefined);
   const [colDef, setColDef] = useState([{}]);
   const [filterData, setFilterData] = useState({});
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
@@ -59,13 +58,13 @@ const OrderAtRisk = () => {
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_At_Risk);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-  const { screenHeight } = useViewPort();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { user } = useUserData();
   const reportName = "OrdersAtRisk";
   const { mutateAsync: getOrderAtRiskData, isLoading } = useGetOrderRiskData() || {};
   const {colDefMap ,getColDef} = useColDef();
   const { mutateAsync : getOrderAtRiskDataExcelExport} = useGetOrderRiskDataExcelExport();
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const setColumnDef = async () => {
     try {
@@ -96,17 +95,30 @@ const OrderAtRisk = () => {
     }
   }
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (coldefs?: any) => {
     try {
-      const config = currentGridRef.current.api.getColumnState();
+      if (coldefs) {
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdStplAndFullKit,
+          cs: JSON.stringify(coldefs),
+        };
+        await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
 
-      const payload = {
-        un: user.user.name,
-        rn_id: UIGridCode.ProdOrderAtRisk,
-        cs: JSON.stringify(config)
+      } else {
+        if (currentGridRef?.current?.api) {
+          const config = currentGridRef.current.api.getColumnState();
+
+          const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.ProdOrderAtRisk,
+            cs: JSON.stringify(config)
+          }
+          await updateUserUIReportConfigData([payload]);
+          await getUserColumnConfig();
+        }
       }
-      await updateUserUIReportConfigData([payload]);
-      await getUserColumnConfig();
 
     } catch (error) {
       console.error(error);
@@ -127,7 +139,6 @@ const OrderAtRisk = () => {
   }
 
   useEffect(() => {
-    getUserColumnConfig();
     setColumnDef();
     getFilterData();
   }, [])
@@ -356,18 +367,24 @@ const OrderAtRisk = () => {
 
   useEffect(() => {
     if (isReset) {
-      setColumnState(colDef);
-      setIsReset(false)
-    }else{
-      handleSaveClick();
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
     }
   }, [isReset]);
+
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+      getUserColumnConfig();
+    }
+  }, [colDef, currentGridRef]);
+
   const ExcelExport = () =>{
     getData(true)
   }
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <MTOActionToolBar
         comp={"orderAtRisk"}
         isGridView={isGridView}
@@ -388,33 +405,35 @@ const OrderAtRisk = () => {
         isMfgSelected={isMfgSelected}
       />
       {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
-      <HorizontalViewWrapper style={{ height: screenHeight - 200, display: 'flex', marginTop: "20px", paddingLeft: "25px" }}>
+      <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
-         <GridView
+          <GridView
             gridData={gridData}
             colDef={colDef}
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
-         />
-        ) : (
-          <SplitGraphContainer
-            tableLoading={tableLoading}
-            chartLoading={chartLoading}
-            setTableLoading={setTableLoading}
-            setChartLoading={setChartLoading}
-            data={rawData}
-            rowData={rawData}
-            graphTitle={""}
-            tableTitle={ProductionInsightsAndTrendsString.orderAtRisk}
-            options={options}
-            colDef={gridColDefs}
-            header={generateHeader}
-            hideChart={hideChart1}
-            toggleChart={toggleChart1}
-            TooltipRenderer={TooltipRenderer}
-            graphType={6}
           />
+        ) : (
+          <OrderAtRiskChartWrapper style={{ maxHeight: "95%", paddingLeft: "20px", paddingBottom:"20px" }}>
+            <SplitGraphContainer
+              tableLoading={tableLoading}
+              chartLoading={chartLoading}
+              setTableLoading={setTableLoading}
+              setChartLoading={setChartLoading}
+              data={rawData}
+              rowData={rawData}
+              graphTitle={""}
+              tableTitle={ProductionInsightsAndTrendsString.orderAtRisk}
+              options={options}
+              colDef={gridColDefs}
+              header={generateHeader}
+              hideChart={hideChart1}
+              toggleChart={toggleChart1}
+              TooltipRenderer={TooltipRenderer}
+              graphType={6}
+            />
+          </OrderAtRiskChartWrapper>
         )}
       </HorizontalViewWrapper>
     </div>

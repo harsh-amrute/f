@@ -3,7 +3,6 @@ import styled from 'styled-components'
 export const BTRTableWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    height:400px;
     width:100%;
     margin-top:20px;
     margin-bottom:20px;
@@ -19,6 +18,7 @@ export const BTRAllomentSection = styled.div`
 export const HorizontalViewWrapper = styled.div`
     //   display:flex;
       width:100%;
+      height:100%;
       & .ag-theme-alpine{
         height: 100%;
       }

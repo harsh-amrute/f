@@ -123,20 +123,19 @@ align-items:center;
 
 export const TaskPendingActionHeaderButton = styled.button<{ themeUi: string}>`
     background-color:${(props:any)=>globalStyles.chooseThemeColor[props.themeUi]?.color5};
-    height:26px;
-    width:72px;
+    height:10px;
+    width:78px;
     border-radius: 6px;
     display:flex;
     align-items:center;
     justify-content:center;
-  font-size:12px;
+  font-size:11px;
   font-family:'Roboto';
   letter-spacing:0px;
   font-weight:300;
   color: ${globalStyles.white};
   padding: 15px 7px;
   border: none;
-  box-shadow: -5px 4px 10px #919191B3;
   zoom:0.9;
 `
 

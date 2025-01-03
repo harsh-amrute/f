@@ -6,6 +6,7 @@ import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MD
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
 import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
+import _ from 'lodash';
 
 
 const AddRemoveCellRenderer = (params: any) => {
@@ -59,7 +60,19 @@ const AddRemoveCellRenderer = (params: any) => {
         notifyError("CCR Capacity Workload (cwl) should be greater than 0!");
         return false;
       }
-    
+
+      if (params.data.cgid === "" || !params.data.cgid || params.data.cgid===null) {
+        notifyError("Choose a valid ccrgroup from the dropdown!");
+        return false;
+      }
+      if (params.data.pl === "" || !params.data.pl || params.data.pl===null) {
+        notifyError("Choose a valid plant from the dropdown!");
+        return false;
+      }
+      if (params.data.dp === "" || !params.data.dp || params.data.pl===null) {
+        notifyError("Choose a valid department from the dropdown!");
+        return false;
+      }
       return true;
     };
     const addRow = () => {
@@ -69,16 +82,34 @@ const AddRemoveCellRenderer = (params: any) => {
         // Check if the entered Buffer type is unique 
         if(activeMaster.id===501){
 
-          if(params.data.bsz===0 || params.data.bsz==='0'){
-            notifyError("Buffer size cannot be 0!");
+          if (params.data.bsz % 1 !== 0) {
+            notifyError("Buffer size cannot be a fractional value!");
             return;
           }
 
-          if(params.data.bsz===""){
-            notifyError("Buffer size cannot be empty!")
+          if (Number(params.data.bsz) > 365) {
+            notifyError("Buffer size cannot exceed for over a year!");
             return;
           }
-          
+          if (Number(params.data.bsz) <= 0 || params.data.bsz === '0') {
+            notifyError("Buffer size must be greater than 0!");
+            return;
+          }
+
+          if (params.data.bsz === "") {
+            notifyError("Buffer size cannot be empty!");
+            return;
+          }
+
+          if (params.data.slt === null || params.data.slt < 0 || params.data.slt > 365) {
+            notifyError("SLT should be a value between 0 and 365!");
+            return;
+          }
+
+          if (params.data.mlt === null || params.data.mlt < 0 || params.data.mlt > 365) {
+            notifyError("MLT should be a value between 0 and 365!");
+            return;
+          }    
           
           let isValid = true;
           bufferInitialData?.forEach((e:any)=>{
@@ -138,6 +169,7 @@ const AddRemoveCellRenderer = (params: any) => {
           })
           if(ccrModifyData && ccrModifyData.length) dispatch(SET_CCR_MODIFY_DATA([activeMaster.rowData[0], ...ccrModifyData]));
           else dispatch(SET_CCR_MODIFY_DATA([activeMaster.rowData[0]]));
+          // dispatch(SET_EDIT_STATUS("Edit online"))
           dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
         }
 
@@ -145,6 +177,11 @@ const AddRemoveCellRenderer = (params: any) => {
       }
       else if(activeMaster.id=== 503){
         if(params.data.mindsc!==undefined){
+          if(params.data.mindsc===""){
+            notifyError("Add a minor reason for the selected major reason");
+            return;
+          }
+          
           const newColDefs:any = [];
           activeMaster.colDefs.forEach((ele:any)=>{
             const newColDef = {...ele};
@@ -176,8 +213,29 @@ const AddRemoveCellRenderer = (params: any) => {
             }
         }
 
+        const newInitialData = _.cloneDeep(poogiInitialData);
+        newInitialData.forEach((ele:any)=>{
+          if(ele.majId===params.data.majId){
+            ele.minData = [params.data,...ele.minData];
+          }
+        })
+        dispatch(SET_POOGI_INITIAL_DATA(newInitialData));
+
         }
         else{
+
+          if(params.data.majdsc===""){
+            notifyError("Major reason cannot be empty");
+            return;
+          }
+          else if(params.data.minData[0].mindsc===""){
+            notifyError("Add atleast one minor reason for the major reason");
+            return;
+          }
+          else if(params.data.plnm===""){
+            notifyError("Please select a valid plant from the dropdown");
+            return;
+          }
 
           const newColDefs:any = [];
           activeMaster.colDefs.forEach((ele:any)=>{
@@ -185,9 +243,9 @@ const AddRemoveCellRenderer = (params: any) => {
             delete newColDef.editable;   
             newColDefs.push(newColDef);
           })
-          if(poogiInitialData && poogiInitialData.length) dispatch(SET_POOGI_INITIAL_DATA([activeMaster.rowData[0], ...poogiInitialData]));
+          if(poogiInitialData && poogiInitialData.length) dispatch(SET_POOGI_INITIAL_DATA([params.data, ...poogiInitialData]));
           else dispatch(SET_POOGI_INITIAL_DATA([activeMaster.rowData[0]]));
-          if(poogiModifyData && poogiModifyData.length) dispatch(SET_POOGI_MODIFY_DATA([activeMaster.rowData[0], ...poogiModifyData]));
+          if(poogiModifyData && poogiModifyData.length) dispatch(SET_POOGI_MODIFY_DATA([params.data, ...poogiModifyData]));
           else dispatch(SET_POOGI_MODIFY_DATA([activeMaster.rowData[0]]));
 
           
