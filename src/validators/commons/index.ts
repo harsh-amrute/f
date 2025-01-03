@@ -39,14 +39,15 @@ export const generateCommonMessages = (key:string) => {
         'any.pipe':`${key} has pipe`,
         'any.comma':`${key} has comma`,
         'any.commapipe':`${key} has comma and pipe`,
-        'any.onlySpecialCharacters': `${key} contains only special characters`
+        'any.onlySpecialCharacters': `${key} contains only special characters`,
+        'any.specialCharacters': `${key} cannot contain special characters`
     }
 }
 
-const nonSpecialCharacterPattern = /[a-zA-Z0-9]/;
-export const specialCharacterValidator = (data:any) => {
+export const specialCharacterValidator = (data:any,pattern:any) => {
+    console.log("QWERTYU")
     let result = false;
-    if (!nonSpecialCharacterPattern.test(data)) {
+    if (!pattern.test(data)) {
         result = true;
         return result;
     }
@@ -62,11 +63,19 @@ export const commonValidator = (value:any,helper:any)=>{
 }
 
 export const commonValidatorWithSeperator = (value:any,helper:any)=>{
-    if(specialCharacterValidator(value)) return helper.error('any.onlySpecialCharacters');
+    const pattern = /[a-zA-Z0-9]/
+    if(specialCharacterValidator(value,pattern)) return helper.error('any.onlySpecialCharacters');
     if(IsInputHasComma(value) && IsInputHasPipe(value)) return helper.error('any.commapipe');
     if(IsInputHasComma(value)) return helper.error('any.comma');
     if(IsInputHasPipe(value)) return helper.error('any.pipe');
+}
 
+export const supplyCodeChecks = (value:any,helper:any)=>{
+    const pattern = /^[a-zA-Z0-9- ]*$/
+    if(specialCharacterValidator(value,pattern)) return helper.error('any.specialCharacters');
+    if(IsInputHasComma(value) && IsInputHasPipe(value)) return helper.error('any.commapipe');
+    if(IsInputHasComma(value)) return helper.error('any.comma');
+    if(IsInputHasPipe(value)) return helper.error('any.pipe');
 }
 
 export const MAX_CUSTOM_ATTRIBUTES_COUNT = 15;
