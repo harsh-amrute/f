@@ -38,12 +38,31 @@ export const generateCommonMessages = (key:string) => {
     return {
         'any.pipe':`${key} has pipe`,
         'any.comma':`${key} has comma`,
-        'any.commapipe':`${key} has comma and pipe`
+        'any.commapipe':`${key} has comma and pipe`,
+        'any.onlySpecialCharacters': `${key} contains only special characters`
     }
+}
+
+const nonSpecialCharacterPattern = /[a-zA-Z0-9]/;
+export const specialCharacterValidator = (data:any) => {
+    let result = false;
+    if (!nonSpecialCharacterPattern.test(data)) {
+        result = true;
+        return result;
+    }
+    return result;
 }
 
 export const commonValidator = (value:any,helper:any)=>{
 
+    if(IsInputHasComma(value) && IsInputHasPipe(value)) return helper.error('any.commapipe');
+    if(IsInputHasComma(value)) return helper.error('any.comma');
+    if(IsInputHasPipe(value)) return helper.error('any.pipe');
+
+}
+
+export const commonValidatorWithSeperator = (value:any,helper:any)=>{
+    if(specialCharacterValidator(value)) return helper.error('any.onlySpecialCharacters');
     if(IsInputHasComma(value) && IsInputHasPipe(value)) return helper.error('any.commapipe');
     if(IsInputHasComma(value)) return helper.error('any.comma');
     if(IsInputHasPipe(value)) return helper.error('any.pipe');
