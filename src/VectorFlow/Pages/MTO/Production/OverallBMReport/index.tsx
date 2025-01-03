@@ -632,17 +632,15 @@ const onRowSelectionChanged = () => {
 
 useEffect(() => {
   if (refGraph2?.current?.api) {
-    console.log("wow");
     refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
 
     return () => {
-      console.log("Hello bantai");
       if (refGraph2?.current?.api) {
         refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
       }
     };
   } else {
-    console.error("errror hai bhai");
+    console.error("something went wrong");
   }
 }, [refGraph2?.current?.api]); 
 
@@ -743,17 +741,14 @@ const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selec
     if(Array.isArray(newGridData)){
       const dup_gridData = [...newGridData]
       dup_gridData[index].oca = option.value;
-      console.log("dup grid Data", dup_gridData);
       setGridData(dup_gridData);
     }
 
-    console.log("dataaaa",option);  
     
   }
 
 const DropDownCellRenderer= (props: any) =>  {
   
-  console.log("props.... seleced", props.node.selected)
   return (
   <>  {
        props.data?.ct === null ?
@@ -1070,7 +1065,6 @@ const DropDownCellRenderer= (props: any) =>  {
       const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
       const highAgeingData = await getHighAgeingData(selectedOrderKeys);
       sethighAgeing(highAgeingData?.data?.data);
-      //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
       setDeptWiseWipData(DeptWiseWipData?.data?.data);
       const departmentNames = extractDepartmentNames(
         DeptWiseWipData?.data?.data
@@ -1085,7 +1079,6 @@ const DropDownCellRenderer= (props: any) =>  {
 
   const getSelectedRow = () => {
 
-    console.log("updateing selected rows....", refGraph2.current?.api.getSelectedRows())
     const selectedData = refGraph2.current?.api.getSelectedRows();
     if (selectedData.length == 0) {
       rowsSelected.current = false;
@@ -1093,7 +1086,6 @@ const DropDownCellRenderer= (props: any) =>  {
       rowsSelected.current = true;
     }
     /* To persist the state*/
-    console.log("selected adta" , selectedData)
     if (selectedData && selectedData.length) {
       let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
       selectedData.forEach((newItem: any) => {
@@ -1120,9 +1112,7 @@ const DropDownCellRenderer= (props: any) =>  {
           mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
         }
       });
-
       if (!_.isEqual(mergedData, masterSelectedRowData)) {
-        console.log("merged Data", mergedData);
         setMasterSelectedRowData(mergedData);
       }
       /*persist data finised*/
@@ -1133,12 +1123,10 @@ const DropDownCellRenderer= (props: any) =>  {
 
   useEffect(() => {
     if (masterSelectedRowData.length > 0) {
-      //console.log('selected', masterSelectedRowData.length)
       const selectedOrderKeys: orderkeyObj[] = [];
       masterSelectedRowData.map((ele: any) => {
         selectedOrderKeys.push(ele.ok);
       });
-      //console.log('slectedOrder', selectedOrderKeys)
 
       fetchDeptWiseWiphData(selectedOrderKeys);
       setIsOrderElapsedGrid(true);
