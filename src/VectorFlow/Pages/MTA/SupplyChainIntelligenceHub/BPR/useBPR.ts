@@ -88,6 +88,7 @@ const useBPR =()=>{
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
     const [gridState,setGridState] = useState<any>()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
+    const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
 
 
   
@@ -137,6 +138,7 @@ const useBPR =()=>{
             suppressRowTransform:true,
             // rowSelection:'single',
             readOnlyEdit:false,
+            enableColResize: true,
             sideBar:defaultAgGridSideBarForBPR,
             paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
             onRowClicked:(params:any)=>{
@@ -152,6 +154,16 @@ const useBPR =()=>{
                     return { background: "#EBEBEB" };
                 }
                 return { background: "#F7F7F7" };
+                },
+                onColumnMoved: (event:any) => {
+                    const columnState = event.api.getColumnState();
+                    columnState.forEach((state:any) => {
+                      if (state.pinned && (state.colId!=='remarks' && state.colId!=='rh')) {
+                        // Reset the pin to null
+                        state.pinned = null;
+                      }
+                    });
+                    event.api.applyColumnState({ state: columnState });
                 },
             },
             suppressRowClickSelection:true,
@@ -184,7 +196,7 @@ const useBPR =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>key!=='dailydatagraph')});
+        if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key))});
         }
       };
 
