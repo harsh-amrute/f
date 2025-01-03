@@ -52,7 +52,7 @@ import { useDispatch } from "react-redux";
 import { BM_REPORT_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { modifyAnalyticsData } from "../DepartmentWiseBMReport/helper";
 import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
-import _, { debounce } from "lodash";
+import _, {  } from "lodash";
 import {
   useGetUserUIConfigData,
   useUpdateUserUIConfigData,
