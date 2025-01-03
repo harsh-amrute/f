@@ -1511,7 +1511,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
             actionStatus: actionStatus
           },
           cellRenderer: TaskPendingActionRenderer,
-          width: 250,
+          width: 290,
           resizable:false,
           cellStyle: {
             "border-left": "solid 1px #B9B9B9",
@@ -2338,7 +2338,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     {
       colId: 'remarks',
       field: 'remarks',
-      headerName: 'Remarks',
+      headerName: 'Edit Remarks',
       cellRenderer: 'submitRemarkCellRenderer',
       cellRendererParams: {
         onClick: onOpenSubmitRemark
@@ -2346,9 +2346,14 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       pinned: 'right',
       cellStyle: {
         overflow: 'visible',
-        'min-width': 180,
+        'min-width': 145,
+        'padding-left':0,
+        'padding-right':0
       },
-      editable: true
+      editable: true,
+      resizable:false,
+      lockPosition:'right',
+      maxWidth:145,
     },
     {
       colId: 'rh',
@@ -2362,8 +2367,13 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       pinned: 'right',
       cellStyle: {
         overflow: 'visible',
-        'min-width': 180,
-      }
+        'min-width': 145,
+        'padding-left':0,
+        'padding-right':0
+      },
+      resizable:false,
+      lockPosition:'right',
+      maxWidth:145,
     }
   ]
 
@@ -2388,7 +2398,8 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
           'min-width': 180,
         },
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
+        filter: getCellFilter(f.DataType),
+        pinned:null
       }
     }
     if (f.Col_Code === 'EcoPen') {
@@ -2403,7 +2414,8 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
           'min-width': 180,
         },
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
+        filter: getCellFilter(f.DataType),
+        pinned:null
       }
     }
     return {
@@ -2416,7 +2428,8 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         'min-width': 180,
       },
       cellDataType: getCellDataType(f.DataType),
-      filter: getCellFilter(f.DataType)
+      filter: getCellFilter(f.DataType),
+      pinned:null
     }
   })
   return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result, ...BPRSpecificColumns]
