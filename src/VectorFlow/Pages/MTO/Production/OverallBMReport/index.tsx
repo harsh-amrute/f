@@ -452,7 +452,6 @@ const OverallBmReport = () => {
   const handleActionChange = (option: any) => {
     
     setSelectedAction(option);
-    console.log("option", option.value);
     // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
     const newData:any = [];
     gridData.forEach((ele:any)=>{
@@ -461,7 +460,6 @@ const OverallBmReport = () => {
       newData.push(newEle);
     })
 
-    console.log("newData",newData)
     setGridData([...newData]);
   }
 
@@ -554,7 +552,6 @@ const OverallBmReport = () => {
           .map((item) => item?.ok)
           .filter((value) => value !== undefined);
   
-        console.log("Submitting API call with:", selectedAction.value, okValues);
   
         const response = await updateActionAPI(selectedAction.value, okValues);
   
@@ -565,10 +562,8 @@ const OverallBmReport = () => {
           setGridData(newGridData);
 
           notifySuccess("Order closed successfully!");
-          console.log("Action updated successfully for selected rows");
         } else {
           notifySuccess("something went wrong!");
-          console.error("Failed to update action for selected rows");
         }
       }
       
@@ -832,7 +827,6 @@ const DropDownCellRenderer= (props: any) =>  {
       
 </>)}
 
-console.log(gridData)
 
   const mapApiResponseToColDefs = (
     apiResponse: ApiResponseItem[],
@@ -845,9 +839,6 @@ console.log(gridData)
     ): ColDefChild[] => {
       return children.map((child: ApiResponse) => ({
         field: child.scc.trim(),
-        // getFilterValue: child.scc == "oca" ? (params: any) => {
-        //   return params.data.oca; // the value that the filter will use
-        // }: undefined,
         headerName: child.hd,
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
@@ -1150,7 +1141,6 @@ console.log(gridData)
   };
 
   const onFirstDataRendered = (params: any) => {
-    console.log("masterselectedData", masterSelectedRowData);
     const nodesToSelect: IRowNode[] = [];
     params.api.forEachNode((node: any) => {
       if (node.data && node.data.ok && existsInSelected(node.data.ok)) {
@@ -1165,7 +1155,6 @@ console.log(gridData)
         nodesToSelect.push(node);
       }
     });
-    console.log("nodes to selected", nodesToSelect)
     params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
     params.api.refreshCells();
     toggleCheckBox();
@@ -1331,7 +1320,6 @@ console.log(gridData)
         fileName: "OverallBMReport",
       });
 
-      console.log("tempgreid state", tempGridRef.current?.api.getColumnState());
     }
   }, [tempGridData]);
 
