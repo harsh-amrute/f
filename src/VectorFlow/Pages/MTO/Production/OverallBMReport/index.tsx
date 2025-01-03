@@ -366,12 +366,12 @@ const OverallBmReport = () => {
     };
 
     const short_complete_OrderColumn: ApiResponseItem = {
-        cc: "short_complete_order_status",
+        cc: "oca",
         cp: maxCp + 2,
         hd: "Order Close Action",
         v: true,
         cla: "Centre",
-        scc: "scos",
+        scc: "oca",
         ch: [],
     }
 
@@ -748,7 +748,6 @@ const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selec
   }
 
 const DropDownCellRenderer= (props: any) =>  {
-  
   return (
   <>  {
        props.data?.ct === null ?
@@ -807,22 +806,21 @@ const DropDownCellRenderer= (props: any) =>  {
        <div style={{justifyContent:"space-between", display:"flex" , alignItems: "center", gap: "5px",margin:"10px" }}>
 
        <p>    
-           Marked As {props.data?.ct}            
+           {props.data?.ct}            
            </p>
-        <div style={{marginLeft:"10px", display: "flex", alignItems: "center"}}>
+        <div onClick={() => {
+            undoClicked(props,props.data.ok);
+          }} style={{marginLeft:"10px", display: "flex", alignItems: "center", cursor:"pointer"}}>
           <img
           style={{transform:"rotateY(180deg)", margin: '4px',cursor:"pointer"}}
           src="/assets/img/VectorFLOW/reset.svg"
-
+          alt="Undo"
+          title="Undo"
           height={14}
           width={14}
-          onClick={() => {
-            undoClicked(props,props.data.ok);
-          }}
+          
           />
-          <span style={{ color: "#bc3d81", fontSize: "14px", fontWeight: "500" ,fontFamily:"roboto" }}>
-            Undo
-      </span>
+         
         </div>
         
 
@@ -833,6 +831,8 @@ const DropDownCellRenderer= (props: any) =>  {
     
       
 </>)}
+
+console.log(gridData)
 
   const mapApiResponseToColDefs = (
     apiResponse: ApiResponseItem[],
@@ -845,6 +845,9 @@ const DropDownCellRenderer= (props: any) =>  {
     ): ColDefChild[] => {
       return children.map((child: ApiResponse) => ({
         field: child.scc.trim(),
+        // getFilterValue: child.scc == "oca" ? (params: any) => {
+        //   return params.data.oca; // the value that the filter will use
+        // }: undefined,
         headerName: child.hd,
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
@@ -854,7 +857,7 @@ const DropDownCellRenderer= (props: any) =>  {
             ? "agGroupCellRenderer"
             : child.cc === "ic"
             ? "AgeingCellRenderer"
-            : child.cc === "BPP"
+            : child.cc === "BPP"  
             ? "colorCellRenderer"
             : child.cc === "RemarksHistory"
             ? "RemarkHistoryRenderer"
@@ -865,7 +868,7 @@ const DropDownCellRenderer= (props: any) =>  {
             : undefined,
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
-          child.cc === "ec" ? false : child.cc === "ic" ? false : true,
+          child.cc === "ec" ? false : (child.cc === "ic" || child.cc==="oca") ? false : true,
         cellRendererParams: child.hd.includes("Remark")
           ? {
               onClick:
@@ -911,21 +914,21 @@ const DropDownCellRenderer= (props: any) =>  {
       maxWidth:
         section.scc === "chckbx" || section.scc == "ic" ? 60 : undefined,
       floatingFilter:
-        section.scc === "chckbx" || section.scc == "ic" ? false : undefined,
+        section.scc === "chckbx" || section.scc == "ic" || section.scc==="oca"? false : undefined,
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
       // pinned: section.scc==="scos"?'right':"",
-      pinned: section.scc === "scos" ? "right" : null,
+      pinned: section.scc === "oca" ? "right" : null,
 
       cellRenderer:
         section.cc === "ec" || (section.scc === "chckbx" && systemType >= 3)
           ? "agGroupCellRenderer"
           : section.cc === "ic"
           ? "AgeingCellRenderer"
-          : section.scc == "scos" ? "DropDownCellRenderer" : undefined,
+          : section.scc == "oca" ? "DropDownCellRenderer" : undefined,
         cellRendererParams: 
-          section.scc == "scos" ? {
+          section.scc == "oca" ? {
             data: {
               setSelectedAction
             }
@@ -938,7 +941,7 @@ const DropDownCellRenderer= (props: any) =>  {
           ? false
           : true,
       children:
-        section.scc === "chckbx" || section.scc == "scos"
+        section.scc === "chckbx" || section.scc == "oca"
           ? undefined
           : section.ch
           ? mapChildren(section.cc, section.ch)
@@ -1086,7 +1089,7 @@ const DropDownCellRenderer= (props: any) =>  {
       rowsSelected.current = true;
     }
     /* To persist the state*/
-    if (selectedData && selectedData.length) {
+    if (selectedData && selectedData.length>=0) {
       let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
       selectedData.forEach((newItem: any) => {
         const index = mergedData.findIndex(
@@ -1094,7 +1097,7 @@ const DropDownCellRenderer= (props: any) =>  {
         );
         if (index !== -1) {
           // If the item exists, replace it
-          mergedData[index] = newItem;
+          // mergedData[index] = newItem;
         } else {
           // Otherwise, add the new item
           mergedData.push(newItem);
@@ -1112,9 +1115,9 @@ const DropDownCellRenderer= (props: any) =>  {
           mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
         }
       });
-      if (!_.isEqual(mergedData, masterSelectedRowData)) {
+      // if (!_.isEqual(mergedData, masterSelectedRowData)) {
         setMasterSelectedRowData(mergedData);
-      }
+      // }
       /*persist data finised*/
     }
     toggleCheckBox();
@@ -1162,9 +1165,10 @@ const DropDownCellRenderer= (props: any) =>  {
         nodesToSelect.push(node);
       }
     });
+    console.log("nodes to selected", nodesToSelect)
     params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-    toggleCheckBox();
     params.api.refreshCells();
+    toggleCheckBox();
   };
 
   const cache = useRef<any>({});
