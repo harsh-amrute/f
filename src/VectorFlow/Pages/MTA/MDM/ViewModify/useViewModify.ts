@@ -342,7 +342,7 @@ const useViewModify = (pageType:string) => {
               warn = warning;
             }
             //check if there is any errorenous column
-            const ifErrorExists = activeMaster.rowData.some((row:any)=>("error" in row)&&row["error"].length > 0);
+            const ifErrorExists = activeMaster.rowData.some((row:any)=>("error" in row) && row["error"].length > 0);
             if(err || ifErrorExists){
               newRow.error = err
               addInvalidDataColDefs('error');
