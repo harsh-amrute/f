@@ -18,14 +18,14 @@ import { useUserData } from "../../../../../context"
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
-
+import { getBPRDataForExcelDownload } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR/api"
 
 
 const useBPR =()=>{
 
 
     const ref = useRef<GridRef>()
-    const tempRef = useRef()
+    const tempRef = useRef<GridRef>()
 
     const [internalRef,setInternalRef] = useState<any>()
 
@@ -49,6 +49,7 @@ const useBPR =()=>{
     const [recordCount,setRecordCount] = useState<number>(0)
     const [activeRow,setActiveRow] = useState<any>()
     const [BPRRowData,setBPRRowData] = useState<any[]>([])
+    const [BPRColumns,setBPRColumns] = useState<any[]>([])
 
 
     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
@@ -120,7 +121,7 @@ const useBPR =()=>{
             internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
         }
     },[internalRef,gridState])
-  
+
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         colorTechCellRenderer:BPRTechColorCellRenderer,
@@ -129,6 +130,18 @@ const useBPR =()=>{
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
         remarksCellRenderer:BPRRemarksCellRenderer
       }), []);
+
+
+      const onColumnVisible = (event: any) => {
+        const { column, visible } = event;
+        
+        // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
+        setBPRColumns((prevColumns:any) =>
+          prevColumns.map((col:any) =>
+            col.field === column.getColId() ? { ...col, hide:!visible } : col
+          )
+        );
+      };
 
   
     const agGridProps:AgGridReactProps = useMemo(()=>{
@@ -155,6 +168,7 @@ const useBPR =()=>{
                 }
                 return { background: "#F7F7F7" };
                 },
+                onColumnVisible: onColumnVisible,
                 onColumnMoved: (event:any) => {
                     const columnState = event.api.getColumnState();
                     columnState.forEach((state:any) => {
@@ -196,7 +210,11 @@ const useBPR =()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-        if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key))});
+            const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
+            if(tempDownloadData){
+                event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:columnsToBeIncluded})
+                setTempDownloadData(false)
+            }
         }
       };
 
@@ -367,7 +385,7 @@ const useBPR =()=>{
     }
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const data =  await getBPRData({
+        const rowDta =  await getBPRDataForExcelDownload({
             id:1,
             name:'',
             fields:[],
@@ -377,8 +395,7 @@ const useBPR =()=>{
                 recordsPerPage:5000
             }
         })
-        
-        return data.data.data
+        return rowDta.data.data
     }
 
 
@@ -399,10 +416,21 @@ const useBPR =()=>{
         onApplyFilter(updatedFilter)
     }
 
-    const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[])
-
-    const BPRColumns =useMemo(()=>mapBPRFieldsToColDefs(data?.data.data,onOpenSubmitRemark,onOpenRemarkHistory,onOpenDailyDataGraph),[data])
+    const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[]) 
     
+    const BPRColumnData = useMemo(() => {
+        return mapBPRFieldsToColDefs(
+          data?.data?.data, 
+          onOpenSubmitRemark, 
+          onOpenRemarkHistory, 
+          onOpenDailyDataGraph
+        );
+      }, [data]);
+      // Update columns state only if there is a change
+      useEffect(() => {
+        // Check if the columns data has changed before setting state
+        setBPRColumns(BPRColumnData);
+      }, [BPRColumnData, setBPRColumns]); 
     
     return {
         isSubGridOpen,
@@ -443,7 +471,7 @@ const useBPR =()=>{
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
-        getBPRRowData,
+        // getBPRRowData,
         onExportToExcelCallBack,
         currFilter,
         onDelete,
