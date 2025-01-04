@@ -133,6 +133,7 @@ const BPR = ()=>{
             <Allotment vertical defaultSizes={[300,150]}>
               <Allotment.Pane className="planning-grid-allotment">
               <VFTable
+                 key={'ref'}
                 disableZoomScaling
                 ref={ref}
                 height={"95%"}
@@ -244,6 +245,7 @@ const BPR = ()=>{
             />
             <div style={{display:'none'}}>                
                   <VFTable
+                    key={'temp'}
                     ref={tempRef}
                     columnDefs={BPRColumns}
                     rowData={exportExcelRowData}

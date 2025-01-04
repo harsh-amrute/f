@@ -111,4 +111,10 @@ export namespace BPRService {
   }
 }
 
+export const getBPRDataForExcelDownload = async (payload:BPRDataPayload) => {
+  return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetBPRData`,payload,{
+    headers:{ 'Content-Type': 'application/json' }
+  });
+}
+
 
