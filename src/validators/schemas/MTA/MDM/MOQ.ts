@@ -11,7 +11,7 @@ const SuppCodeValidator = (value:any,helper:any)=>{
 export const MOQSchema = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).messages(generateCommonMessages('WhCode')),
-    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator),
+    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator).required().messages(generateCommonMessages('SupplierCode')),
     mq:Joi.number().integer().min(0).messages({'number.unsafe':`MOQ should be less than ${MAX_INT_VAL}`}),
 
 }).preferences(defaultJOIOptions)
@@ -19,5 +19,5 @@ export const MOQSchema = Joi.object({
 export const MOQSchemaDelete = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
-    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator)
+    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator).required().messages(generateCommonMessages('SupplierCode')),
 }).preferences(defaultJOIOptions)

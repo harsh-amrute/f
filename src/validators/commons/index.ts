@@ -45,7 +45,6 @@ export const generateCommonMessages = (key:string) => {
 }
 
 export const specialCharacterValidator = (data:any,pattern:any) => {
-    console.log("QWERTYU")
     let result = false;
     if (!pattern.test(data)) {
         result = true;

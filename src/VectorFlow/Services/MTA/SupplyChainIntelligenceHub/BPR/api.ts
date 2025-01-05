@@ -62,13 +62,13 @@ export namespace BPRService {
     }); 
   }
 
-  export const getState = async (payload:string) => {
+  export const getState = async (payload:any) => {
     return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetState`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     }); 
   }
 
-  export const resetState = async (payload:string) => {
+  export const resetState = async (payload:any) => {
     return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/ResetState`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     }); 

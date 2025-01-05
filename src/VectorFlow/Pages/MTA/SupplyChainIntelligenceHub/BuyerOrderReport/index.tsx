@@ -42,7 +42,8 @@ const BuyerOrderReport = ()=>{
         isRemarkHistoryToolTipOpen,
         remarkHistory,
         generalFilterOptions,
-        onCloseRemarkHistory
+        onCloseRemarkHistory,
+        onResetCallback
     } = useBOR()
 
 
@@ -57,7 +58,8 @@ const BuyerOrderReport = ()=>{
           tempDownloadData: tempDownloadData,
           setTempDownloadData: setTempDownloadData,
           exportExcelRowData: exportExcelRowData,
-          setExportExcelRowData: setExportExcelRowData
+          setExportExcelRowData: setExportExcelRowData,
+          onResetCallback:onResetCallback
         }}
       >
         <div style={{ marginLeft: '10px' }}>
@@ -129,13 +131,13 @@ const BuyerOrderReport = ()=>{
 
               </div>
             )}
-          <div style={{ display: 'none' }}>
+          {/* <div style={{ display: 'none' }}>
             <VFTable
               ref={tempRef}
               columnDefs={BORColumns}
               rowData={exportExcelRowData}
               {...tempAgGridProps} />
-          </div>
+          </div> */}
 
 
 

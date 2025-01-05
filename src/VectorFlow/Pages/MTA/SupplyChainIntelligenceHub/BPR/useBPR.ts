@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData, updateCommonAttributes } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -94,7 +94,7 @@ const useBPR =()=>{
 
   
     useEffect(()=>{
-        
+        console.log(data)
         getInitialBPRRowData()
         setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
     },[isBPRUILoading])
@@ -102,9 +102,12 @@ const useBPR =()=>{
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("BPR")
-            console.log(data)
-            setGridState(JSON.parse(data.data.data))
+            const data =  await getState({"reportname":"BPR"})
+            console.log("SAVED DATAA",data)
+            const parsedContent = JSON.parse(data.data.data)
+            console.log("STORED",parsedContent)
+            setGridState(parsedContent)
+            console.log("BPRR",BPRColumns)
           }catch(err:any){
             setGridState({
                 charts:[],
@@ -118,6 +121,11 @@ const useBPR =()=>{
 
     useEffect(()=>{
         if(internalRef && gridState && gridState.columns){
+            console.log("CHANGING",internalRef.api)
+            const StateColumns = updateCommonAttributes(gridState.columns,BPRColumns,'colId')
+            console.log(StateColumns)
+            setBPRColumns(StateColumns)
+            // setBPRColumns(gridState.columns)
             internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
         }
     },[internalRef,gridState])
@@ -134,13 +142,15 @@ const useBPR =()=>{
 
       const onColumnVisible = (event: any) => {
         const { column, visible } = event;
-        
+        console.log(column)
         // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
+        if(column!==null){
         setBPRColumns((prevColumns:any) =>
           prevColumns.map((col:any) =>
-            col.field === column.getColId() ? { ...col, hide:!visible } : col
+            col.field === column.colId ? { ...col, hide:!visible } : col
           )
         );
+        }
       };
 
   
@@ -179,6 +189,9 @@ const useBPR =()=>{
                     });
                     event.api.applyColumnState({ state: columnState });
                 },
+                getRowId: (params) => {
+                    return `${params.data.SKUCode}-${params.data.WHCode}`
+                },
             },
             suppressRowClickSelection:true,
             components:customCellRenderers,
@@ -202,7 +215,7 @@ const useBPR =()=>{
                     'white-space':'nowrap'
                 },
             },
-            onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode"),
+            onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode"),
             onGridReady:(params)=>setInternalRef(params)
         }
     },[])
@@ -242,22 +255,24 @@ const useBPR =()=>{
         setRecordCount(countData.data.recordCount)
     }
 
-    const onCellValueChanged = (newRow: any, primaryKey: string) => {
+    const onCellValueChanged = (newRow: any, primaryKey1: string,primaryKey2:string) => {
         setEditedRows((prev) => {
           let found = false; // Flag to track if the row has been updated
           const updatedRows = prev.map((row) => {
-            if (row[primaryKey] === newRow[primaryKey]) {
+            if (row[primaryKey1] === newRow[primaryKey1] && row[primaryKey2]===newRow[primaryKey2]) {
               found = true;
-              return { ...newRow }; // Return updated row
+              return newRow.remarks.length === 0 ? null : { ...newRow }; // Return updated row
             }
             return row; // Return unchanged row
           });
+
+          const filteredUpdatedRows = updatedRows.filter(row => row !== null);
       
-          if (!found) {
+          if (!found && newRow.remarks.length > 0) {
             // If no existing row was found, add the new row
-            return [...updatedRows, {...newRow}];
+            return [...filteredUpdatedRows, {...newRow}];
           }
-          return updatedRows;
+          return filteredUpdatedRows;
         });
       };
 
@@ -308,6 +323,7 @@ const useBPR =()=>{
 
     const onSubmitRemarks = async()=>{
        try{
+        console.log("EDITED ROWSSS",editedRows)
         const toastId = notifyLoader("Submitting Remark")
         const payload = editedRows.map((e)=>{
             return {
@@ -318,6 +334,17 @@ const useBPR =()=>{
             
         })
         const {data} = await submitRemark({data:payload})
+        editedRows.forEach((editedRow) => {
+            // Find the row node using both SKUCode and WHCode as unique identifiers
+            const rowNode = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WHCode}`);
+            if (rowNode) {
+              // Update the 'Remarks' column with the new remark
+              rowNode.setDataValue('Remark', editedRow.remarks);
+      
+              // Clear the 'Edit Remarks' column after submission
+              rowNode.setDataValue('remarks', '');
+            }
+          });
         toast.dismiss(toastId)
         notifySuccess(data.msg)
         setEditedRows([])
@@ -370,6 +397,7 @@ const useBPR =()=>{
             WHCode:params.data['WHCode']
         }
         const result = await getDailyData(payload)
+        console.log("RESULT",result)
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
             rowData:params.data,
@@ -379,7 +407,7 @@ const useBPR =()=>{
             suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
             monitoringData:data['MonitoringData']
         }
-
+        console.log(dailyData)
         dispatch(UPDATE_DAILY_DATA(dailyData));
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
@@ -396,6 +424,16 @@ const useBPR =()=>{
             }
         })
         return rowDta.data.data
+    }
+
+    const onResetCallback = async()=>{
+        const ResetColumns = BPRColumns.map((t:any) => {
+            return {
+              ...t,
+              hide: false,
+            };
+          });
+        setBPRColumns([...ResetColumns])
     }
 
 
@@ -483,7 +521,8 @@ const useBPR =()=>{
         isRowDataLoading,
         gridState,
         lastRunDate,
-        generalFilterOptions
+        generalFilterOptions,
+        onResetCallback
 
     }
 }
