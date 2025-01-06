@@ -303,7 +303,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       }
     })
     validApplicationPermissions.sort((a:any,b:any)=>a.id-b.id);
-    console.log("Valid Application Permissions",validApplicationPermissions);
     setStorePermission(validApplicationPermissions);
 
     setvalueSelect(_.cloneDeep(validApplicationPermissions));
