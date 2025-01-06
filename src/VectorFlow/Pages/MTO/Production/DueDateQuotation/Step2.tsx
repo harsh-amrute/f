@@ -460,19 +460,18 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         console.log('lineCCR', lineCCR);
 
                         const lineCCRPendingQty = lineCCR[order.ok]?.[ccrId]?.pcqty || 0;
-                        const orderPendingQty = order.pcqty || 0
+                        const orderPendingCCRQty = order.pcqty || 0
 
                         console.log("lineCCRPendingQty", lineCCRPendingQty)
-                        console.log("orderPendingQty", orderPendingQty)
+                        console.log("orderPendingQty", orderPendingCCRQty)
 
                         if (lineCCRPendingQty!==null && lineCCRPendingQty<0 && lineCCRPendingQty===undefined) {
-                            if (!orderPendingQty) {
+                            if (!orderPendingCCRQty) {
                                 errors.push(`Missing Pending Qty for CCR: ${ccrNames[index]} for Order: ${order.oid}`)
                             }
                         }
 
-
-                        const orderLoad = Math.ceil(((ccrItem?.tt || 0) * (lineCCRPendingQty || orderPendingQty)));
+                        const orderLoad = Math.ceil(((ccrItem?.tt || 0) * (lineCCRPendingQty && lineCCRPendingQty >= 0 ? lineCCRPendingQty : orderPendingCCRQty)));
                         console.log('ccrItem?.tt', ccrItem?.tt);
 
                         console.log('orderLoad', orderLoad);
@@ -511,7 +510,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             ccrgrp: ccr?.ccr_group,
                             orderLoad: orderLoad || 0,
                             pos: index + 1,
-                            pcQty: lineCCRPendingQty || orderPendingQty,
+                            pcQty: lineCCRPendingQty || orderPendingCCRQty,
                             folSpan: ((ccr_prev_pending[ccrId].prevPend)) / (ccrWorkingHoursPerDay * 60),
                         }
 
