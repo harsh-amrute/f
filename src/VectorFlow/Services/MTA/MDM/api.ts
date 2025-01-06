@@ -50,9 +50,12 @@ export namespace MDMService {
   }
 
   export const getDraftById = async(id:string,body:any)=>{
-    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/draft/${id}`,body,{
-      headers: { 'Content-Type': 'application/json' }
+    const result =  await axios.post(process.env.REACT_APP_API_HOST + `api/mta/draft/${id}`,body,{
+      headers: { 'Content-Type': 'application/json'  },
+      responseType: 'text'
     })
+    const responseJson = JSON.parse(result.data)
+    return responseJson
   }
 
   export const createDraft = async (body: any) => {
