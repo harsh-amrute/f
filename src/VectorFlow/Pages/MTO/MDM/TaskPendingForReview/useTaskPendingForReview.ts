@@ -1,7 +1,7 @@
 
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetBufferMasterData, useGetCCRMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCCRMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetBufferMasterData, useGetCCRMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCCRMasterData, usePutMtoPoogiMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
@@ -125,6 +125,7 @@ const useTaskPendingForReview = ()=>{
   const [mtoTask, setMTOTask] = useState<any>(undefined);
   
   const {mutateAsync: putMTOBufferData} = usePutMtoBufferMasterData();
+  const {mutateAsync: putMTOAddPoogiMaster} = usePutMtoPoogiMasterData();
   const {mutateAsync: putMTOCCRData} = usePutMtoCCRMasterData();
 
   const convertColumnsFormat = (columns:any, mid: any) => {
@@ -835,6 +836,25 @@ const useTaskPendingForReview = ()=>{
             console.log(error)
         }
     }}
+
+    else if(mtoTask.mid===503){
+
+
+        const postObj = detailTableRowData;
+        console.log("Poogi post obj", postObj);
+        try{
+            const response = await putMTOAddPoogiMaster([postObj]);
+            if(response.status=== 200){
+                notifySuccess("DB Updated Successfully");
+                dispatch(SET_TASK_PENDING_ROW_DATA([]));
+                setIsViewTableOpen(true);
+                GetInitialData(mid);
+            }
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
     }
     
     return{
