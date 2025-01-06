@@ -180,7 +180,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         themeUi:themeUi
       }) : undefined).filter((element:any) => element !== undefined);
       fillStepperDetails.sort((a:any,b:any)=>a.id-b.id)
-      fillStepperDetails[0].currentState = 'active';
+      fillStepperDetails && fillStepperDetails[0] &&  (fillStepperDetails[0].currentState = 'active');
       
 
       const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
@@ -303,7 +303,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       }
     })
     validApplicationPermissions.sort((a:any,b:any)=>a.id-b.id);
-
+    console.log("Valid Application Permissions",validApplicationPermissions);
     setStorePermission(validApplicationPermissions);
 
     setvalueSelect(_.cloneDeep(validApplicationPermissions));
