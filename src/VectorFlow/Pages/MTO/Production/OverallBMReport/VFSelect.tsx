@@ -2,7 +2,7 @@ import Select from 'react-select';
 import { chooseThemeColor } from '../../../../../styles/global';
 
 
-const VFSelect = ({ options, themeUi, placeholder, ...rest }: any) => {
+const VFSelect = ({ options, themeUi, disabled,placeholder, ...rest }: any) => {
 
     
     return (
@@ -12,7 +12,8 @@ const VFSelect = ({ options, themeUi, placeholder, ...rest }: any) => {
                 IndicatorSeparator: () => null
             }}
             menuPlacement={"auto"}
-            placeholder="select action"
+            placeholder={placeholder}
+            isDisabled={disabled}
             width='200px'
             // menuIsOpen={true}
             styles={{
