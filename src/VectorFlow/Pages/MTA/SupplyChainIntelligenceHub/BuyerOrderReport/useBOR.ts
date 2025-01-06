@@ -1,6 +1,6 @@
 import { useGetBORUIConfiguration, useBORData, useBORDataCount,useSubmitBORRemark,useGetBORRemarkHistory } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBORFieldsToColDefs, updateCommonAttributes } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
@@ -27,7 +27,7 @@ import { BORRemarksCellRenderer } from "./BORCellRenderers"
 
 export const useBOR =()=>{
     const ref=  useRef<GridRef>()
-    const tempRef = useRef()
+    const tempRef = useRef<GridRef>()
 
     const [internalRef,setInternalRef] = useState<any>()
 
@@ -45,6 +45,8 @@ export const useBOR =()=>{
      const [currGridPage,setCurrGridPage] = useState<number>(1)
 
      const [rowData,setRowData] = useState([]);
+
+     const [BORColumns,setBORColumns] = useState<any[]>([])
 
      const [recordCount,setRecordCount] = useState<number>(0)
      const [currentPage,setCurrentPage] = useState(1);
@@ -64,6 +66,8 @@ export const useBOR =()=>{
      const [remarkHistory,setRemarkHistory] = useState<any[]>([])
      const [editedRows,setEditedRows] = useState<Array<any>>([])
      const [remark,setRemark] = useState<string>('')
+
+     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
 
      const {mutateAsync:submitRemark} = useSubmitBORRemark()
 
@@ -144,25 +148,49 @@ export const useBOR =()=>{
     }
     }
 
-    const onCellValueChanged = (newRow: any, primaryKey: string) => {
-      console.log('ghsuiag')
-      setEditedRows((prev:any) => {
+    // const onCellValueChanged = (newRow: any, primaryKey: string) => {
+    //   console.log('ghsuiag')
+    //   setEditedRows((prev:any) => {
+    //     let found = false; // Flag to track if the row has been updated
+    //     const updatedRows = prev.map((row:any) => {
+    //       if (row[primaryKey] === newRow[primaryKey]) {
+    //         found = true;
+    //         return { ...newRow }; // Return updated row
+    //       }
+    //       return row; // Return unchanged row
+    //     });
+    
+    //     if (!found) {
+    //       // If no existing row was found, add the new row
+    //       return [...updatedRows, {...newRow}];
+    //     }
+    //     return updatedRows;
+    //   });
+    // };
+
+    const onCellValueChanged = (newRow: any, primaryKey1: string,primaryKey2:string) => {
+      setEditedRows((prev) => {
         let found = false; // Flag to track if the row has been updated
-        const updatedRows = prev.map((row:any) => {
-          if (row[primaryKey] === newRow[primaryKey]) {
+        const updatedRows = prev.map((row) => {
+          if (row[primaryKey1] === newRow[primaryKey1] && row[primaryKey2]===newRow[primaryKey2]) {
             found = true;
-            return { ...newRow }; // Return updated row
+            return newRow.remarks.length === 0 ? null : { ...newRow }; // Return updated row
           }
           return row; // Return unchanged row
         });
+
+        const filteredUpdatedRows = updatedRows.filter(row => row !== null);
     
-        if (!found) {
+        if (!found && newRow.remarks.length > 0) {
           // If no existing row was found, add the new row
-          return [...updatedRows, {...newRow}];
+          return [...filteredUpdatedRows, {...newRow}];
         }
-        return updatedRows;
+        return filteredUpdatedRows;
       });
     };
+
+
+
     const onSubmitRemarks = async()=>{
       try{
        const toastId = notifyLoader("Submitting Remark")
@@ -190,19 +218,38 @@ export const useBOR =()=>{
 
    const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
  
-      const BORColumns = useMemo(()=>mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,onOpenSubmitRemark, onOpenRemarkHistory),[data])
+  // const BORColumns = useMemo(()=>mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,onOpenSubmitRemark, onOpenRemarkHistory),[data])
+
+      const BORColumnData = useMemo(() => {
+          return mapBORFieldsToColDefs(
+                data?.data?.data, 
+                onOpenSubmitRemark, 
+                onOpenRemarkHistory, 
+                onOpenDailyDataGraph
+          );
+        }, [data]);
+            // Update columns state only if there is a change
+        useEffect(() => {
+          console.log("DAAATAAAAA",data?.data.data)
+          console.log("BOOORRRCOLUMNNN",BORColumnData)
+              // Check if the columns data has changed before setting state
+          setBORColumns(BORColumnData);
+        }, [BORColumnData, setBORColumns]); 
+
+
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
       const [gridState,setGridState] = useState<any>()
 
       useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("BOR")
-            setGridState(JSON.parse(data.data.data))
+            const data =  await getState({"reportname":"BOR"})
+            const parsedContent = JSON.parse(data.data.data)
+            setGridState(parsedContent)
           }catch(err:any){
             setGridState({
                 charts:[],
-                columns:[],
+                columns:BORColumns,
                 pivot:false
             })
           }
@@ -213,7 +260,10 @@ export const useBOR =()=>{
   
     useEffect(()=>{
       if(internalRef && gridState && gridState.columns){
-          internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+        const StateColumns = updateCommonAttributes(gridState.columns,BORColumns,'colId')
+        console.log(StateColumns)
+        setBORColumns(StateColumns)
+        internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
       }
   },[internalRef,gridState])
 
@@ -228,6 +278,21 @@ export const useBOR =()=>{
         setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
 
     }, [isBORUILoading]);
+
+
+
+    const onColumnVisible = (event: any) => {
+      const { column, visible } = event;
+      console.log(column)
+      // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
+      if(column!==null){
+      setBORColumns((prevColumns:any) =>
+        prevColumns.map((col:any) =>
+          col.field === column.colId ? { ...col, hide:!visible } : col
+        )
+      );
+      }
+    };
 
 
       const getRecordsCount=async(filter?:any)=>{
@@ -291,6 +356,20 @@ export const useBOR =()=>{
             }
             return { background: "#F7F7F7" };
             },
+            onColumnVisible: onColumnVisible,
+            onColumnMoved: (event:any) => {
+              const columnState = event.api.getColumnState();
+              columnState.forEach((state:any) => {
+                if (state.pinned && (state.colId!=='remarks' && state.colId!=='rh')) {
+                  // Reset the pin to null
+                  state.pinned = null;
+                }
+              });
+              event.api.applyColumnState({ state: columnState });
+          },
+          // getRowId: (params) => {
+          //     return `${params.data.SKUCode}-${params.data.WHCode}`
+          // },
         },
          pagination:false,
          sideBar:defaultAgGridSideBarForBPR,
@@ -312,7 +391,7 @@ export const useBOR =()=>{
            
         },
         // onGridReady:(params)=>setInternalRef(params)
-        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode"),
+        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode"),
         onGridReady:(params)=>setInternalRef(params)
       }
      },[])
@@ -334,9 +413,14 @@ export const useBOR =()=>{
 
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+          const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
+         if(tempDownloadData){
+          event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:columnsToBeIncluded});
+          setTempDownloadData(false)
+         }
         }
       };
+
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getBorData({
             filters:currFilter,
@@ -348,6 +432,17 @@ export const useBOR =()=>{
         
         return data.data.data
     }
+
+
+    const onResetCallback = async()=>{
+      const ResetColumns = BORColumns.map((t:any) => {
+          return {
+            ...t,
+            hide: false,
+          };
+        });
+      setBORColumns([...ResetColumns])
+  }
 
   
      return {   
@@ -391,6 +486,7 @@ export const useBOR =()=>{
         updateRemark,
         onCloseRemarkHistory,
         onCloseSubmitRemark,
+        onResetCallback
 
     }
 }

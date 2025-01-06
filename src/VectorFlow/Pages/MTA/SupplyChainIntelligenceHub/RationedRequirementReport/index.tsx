@@ -33,7 +33,8 @@ const RRR = () => {
   onDeleteFilter,
   isSavedDataLoading,
   ref,
-  generalFilterOptions
+  generalFilterOptions,
+  onResetCallback
 } = useRRR();
 
 
@@ -47,7 +48,8 @@ const RRR = () => {
     tempDownloadData:tempDownloadData,
     setTempDownloadData:setTempDownloadData,
     exportExcelRowData:exportExcelRowData,
-    setExportExcelRowData:setExportExcelRowData
+    setExportExcelRowData:setExportExcelRowData,
+    onResetCallback:onResetCallback
 }}
   >
     <div style={{marginLeft:'10px'}}>

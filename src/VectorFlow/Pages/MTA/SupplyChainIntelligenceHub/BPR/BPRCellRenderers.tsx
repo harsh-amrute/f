@@ -184,7 +184,7 @@ export const BPRSubmitRemarkCellRenderer = (params:any)=>{
             //     };
             // }}
             >
-                {params.value?params.value:params.data.Remark}
+                {params.value?params.value:params.data.remarks}
             </BPRSubmitRemarkInput>
         </BPRRemarksCellRendererWrapper>
     )

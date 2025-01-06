@@ -56,7 +56,8 @@ const BPR = ()=>{
         editedRows,
         onDeleteFilter,
         lastRunDate,
-        generalFilterOptions
+        generalFilterOptions,
+        onResetCallback
     } = useBPR();
 
     
@@ -76,7 +77,8 @@ const BPR = ()=>{
                 tempDownloadData:tempDownloadData,
                 setTempDownloadData:setTempDownloadData,
                 exportExcelRowData:exportExcelRowData,
-                setExportExcelRowData:setExportExcelRowData
+                setExportExcelRowData:setExportExcelRowData,
+                onResetCallback:onResetCallback
     
             }}
         >

@@ -74,13 +74,13 @@ export const useSaveState = () => {
 }
 
 export const useGetState = () => {
-  return useMutation(async (payload:string) => {
+  return useMutation(async (payload:any) => {
     return await BPRService.getState(payload);
   });
 }
 
 export const useResetState = () => {
-  return useMutation(async (payload:string) => {
+  return useMutation(async (payload:any) => {
     return await BPRService.resetState(payload);
   });
 }

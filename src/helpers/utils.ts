@@ -2238,6 +2238,22 @@ export const navigateWithPrompt = (onRouteChange: () => void, url: any, state: a
 
 }
 
+export const FormatDateFunction =(dateStr:string)=>{
+  const date = new Date(dateStr);
+
+// Format to MM/DD/YYYY HH:mm:ss
+const formattedDate = date.toLocaleString('en-US', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false
+});
+return formattedDate
+}
+
 
 export const createTaskPendingSubmitPayload = (rowData: any[], actionType: number, masterId: number): any[] => {
   const result: any[] = []
@@ -2393,7 +2409,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         headerName: f.Header,
         hide: !f.Visible,
         cellRenderer: 'colorTechCellRenderer',
-        tooltipField: f.Col_Code,
+        // tooltipField: f.Col_Code,
         cellStyle: {
           'min-width': 180,
         },
@@ -2409,7 +2425,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         headerName: f.Header,
         hide: !f.Visible,
         cellRenderer: 'colorEcoCellRenderer',
-        tooltipField: f.Col_Code,
+        // tooltipField: f.Col_Code,
         cellStyle: {
           'min-width': 180,
         },
@@ -2423,7 +2439,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       field: f.Col_Code,
       headerName: f.Header,
       hide: !f.Visible,
-      tooltipField: f.Col_Code,
+      // tooltipField: f.Col_Code,
       cellStyle: {
         'min-width': 180,
       },
@@ -2447,6 +2463,68 @@ export const mapBPRRowData = (rowData: Array<any>) => {
     return tempRow
   })
 }
+
+
+
+// export const updateCommonAttributes= (array1:any[], array2:any[], colId:string)=> {
+//   // Create a new array to store the updated objects
+//   const updatedArray:any[] = [];
+
+//   // Iterate through array2 to find matching objects in array1 by colId
+//   array2.forEach(obj2 => {
+//     // Find the corresponding object in array1 by colId
+//     const obj1 = array1.find(obj => obj[colId] === obj2[colId]);
+    
+//     if (obj1) {
+//       // Create a copy of obj2 to update it without modifying the original
+//       let updatedObj = { ...obj2 };
+      
+//       // Iterate over keys of obj1 (excluding colId) to find common attributes
+//       Object.keys(obj1).forEach(key => {
+//         if (key !== colId && key in obj2) {
+//           // Replace common attributes in obj2 with those from obj1
+//           updatedObj[key] = obj1[key];
+//         }
+//       });
+      
+//       // Push the updated obj2 to the result array
+//       updatedArray.push(updatedObj);
+//     } else {
+//       // If no matching object is found, just push obj2 as it is
+//       updatedArray.push(obj2);
+//     }
+//   });
+
+//   // Return the updated array of objects
+//   return updatedArray;
+// }
+
+export const updateCommonAttributes=(array1:any[], array2:any[], colId:string)=> {
+  // Create a dictionary (map) of objects from array1 by colId
+  const array1Dict:any = {};
+  array1.forEach(obj => {
+    array1Dict[obj[colId]] = obj;
+  });
+
+  // Iterate through array2 and update common attributes from array1
+  array2.forEach(obj2 => {
+    const obj1 = array1Dict[obj2[colId]]; // Find corresponding object in array1 by colId
+
+    if (obj1) {
+      // For the common object, find common keys (excluding colId)
+      Object.keys(obj1).forEach(key => {
+        if (key !== colId && key in obj2) {
+          // Replace common attributes in obj2 with those from obj1
+          obj2[key] = obj1[key];
+        }
+      });
+    }
+  });
+
+  // Return the updated array2
+  return array2;
+}
+
 
 export const mapResearchInsightsFieldsToColDefs = (fields: BPRField[], onOpenDailyDataGraph: any): ColDef[] => {
 
@@ -2557,11 +2635,16 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
       onClick:onOpenSubmitRemark
      },
      pinned:'right',
-     cellStyle:{
-      overflow:'visible',
-      'min-width':180,
+     cellStyle: {
+      overflow: 'visible',
+      'min-width': 145,
+      'padding-left':0,
+      'padding-right':0
     },
-    editable:true
+    editable: true,
+    resizable:false,
+    lockPosition:'right',
+    maxWidth:145,
     },
     {
       colId:'rh',
@@ -2572,11 +2655,16 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
       cellRendererParams:{
         onClick:onOpenRemarkHistory
        },
-       pinned:'right',
-      cellStyle:{
-        overflow:'visible',
-        'min-width':180,
-      }
+       pinned: 'right',
+       cellStyle: {
+         overflow: 'visible',
+         'min-width': 145,
+         'padding-left':0,
+         'padding-right':0
+       },
+       resizable:false,
+       lockPosition:'right',
+       maxWidth:145,
     }
   ]
 

@@ -111,7 +111,7 @@ export const RemarkModalTableHeaderContainer = styled.div`
     display:grid;
     grid-template-columns:60px 300px 90px 90px;
     border-bottom:solid 1px #707070;
-    padding:0 10px;
+    padding:0 14px;
 `
 
 export const RemarkModalTableHeader = styled.p`
@@ -149,8 +149,8 @@ export const RemarkModalTableCell = styled.div`
 `
 
 export const RemarkModalUserIcon = styled.div`
-    width: 50px;
-    height: 50px;
+    width:42px;
+    height:42px;
     background: #CCCCCC 0% 0% no-repeat padding-box;
     border-radius:50%;
     font-family:Roboto;

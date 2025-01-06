@@ -4,7 +4,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import { convertUiConfigToOptions, mapRRRFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapRRRFieldsToColDefs, updateCommonAttributes } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
@@ -20,10 +20,11 @@ const useRRR =()=>{
 
     const {isSideBarOpen} = useUserData()
     const [RRRRowData,setRRRRowData] = useState<any[]>([])
+    const [RRRColumns,setRRRColumns] = useState<any[]>([])
     const [RRRDataCount, setRRRDataCount]=useState<any>();
 
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
-    const tempRef = useRef()
+    const tempRef = useRef<GridRef>()
     const ref = useRef<GridRef>()
 
    
@@ -50,7 +51,18 @@ const useRRR =()=>{
 
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
 
-    const RRRColumns = useMemo(()=>mapRRRFieldsToColDefs(data?.data.data),[data])
+    const RRRColumnData = useMemo(() => {
+            return mapRRRFieldsToColDefs(
+              data?.data?.data, 
+            );
+          }, [data]);
+          // Update columns state only if there is a change
+          useEffect(() => {
+            // Check if the columns data has changed before setting state
+            setRRRColumns(RRRColumnData);
+          }, [RRRColumnData, setRRRColumns]); 
+
+    // const RRRColumns = useMemo(()=>mapRRRFieldsToColDefs(data?.data.data),[data])
 
   
     useEffect(()=>{       
@@ -65,8 +77,9 @@ const useRRR =()=>{
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("RRR")
-            setGridState(JSON.parse(data.data.data))
+            const data =  await getState({reportname:"RRR"})
+            const parsedContent = JSON.parse(data.data.data)
+            setGridState(parsedContent)
           }catch(err:any){
             setGridState({
                 charts:[],
@@ -80,6 +93,10 @@ const useRRR =()=>{
   
     useEffect(()=>{
         if(internalRef && gridState && gridState.columns){
+            console.log("CHANGING",internalRef.api)
+            const StateColumns = updateCommonAttributes(gridState.columns,RRRColumns,'colId')
+            console.log(StateColumns)
+            setRRRColumns(StateColumns)
             internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
         }
     },[internalRef,gridState])
@@ -105,6 +122,16 @@ const useRRR =()=>{
     // setRRRRowData(result?.data.data)
 
     // }
+
+    const onResetCallback = async()=>{
+        const ResetColumns = RRRColumns.map((t:any) => {
+            return {
+              ...t,
+              hide: false,
+            };
+          });
+        setRRRColumns([...ResetColumns])
+    }
 
     const getDataCount=async (filter?:any) => {
         const rowDataCount =await getRRRDataCount({
@@ -172,6 +199,19 @@ const useRRR =()=>{
         onApplyFilter(updatedFilter)
     }
 
+    const onColumnVisible = (event: any) => {
+        const { column, visible } = event;
+        console.log(column)
+        // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
+        if(column!==null){
+        setRRRColumns((prevColumns:any) =>
+          prevColumns.map((col:any) =>
+            col.field === column.colId ? { ...col, hide:!visible } : col
+          )
+        );
+        }
+    };
+
     const customCellRenderers = useMemo(() => (   
         {
         grapCellRenderer:'',
@@ -194,6 +234,7 @@ const useRRR =()=>{
                 return { background: "#F7F7F7" };
                 },
             },
+            onColumnVisible: onColumnVisible,
             pagination:false,
             sideBar:defaultAgGridSideBarForBPR,
             // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
@@ -297,7 +338,8 @@ const useRRR =()=>{
         onDeleteFilter,
         isSavedDataLoading,
         ref,
-        generalFilterOptions
+        generalFilterOptions,
+        onResetCallback
     }
 }
 

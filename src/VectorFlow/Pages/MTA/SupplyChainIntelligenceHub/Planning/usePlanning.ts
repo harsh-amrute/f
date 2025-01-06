@@ -282,7 +282,7 @@ const usePlanning = ()=>{
 
     const fetchPlanningDataCount = async (filter?:any) => {
         setIsOverlayVisible(true);
-        const result = await getPlanningDataCount({...filter} || {});
+        const result = await getPlanningDataCount({...filter});
         setIsOverlayVisible(false);
         const data = result.data.data;
         const tempPlanningCount = {...initialPlanningCounts};

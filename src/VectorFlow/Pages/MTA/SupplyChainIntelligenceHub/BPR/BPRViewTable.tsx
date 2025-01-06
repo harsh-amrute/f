@@ -174,10 +174,11 @@ const BPRViewTable = (props:BPRViewTableProps)=>{
                     </TableHeader>
                 )} */}
                 <BPRViewTableHeaderContainer>
-                    {colDefs.map((colDef)=>{
+                    {colDefs.map((colDef,index)=>{
                         const currFilter = filters.find((f)=>f.colId===colDef.colId)
                         return (
                             <BPRViewTableColumnHeader 
+                                key={index}
                                 colDef={{
                                     ...colDef,
                                     filterValue:currFilter?.filterValue || '',
