@@ -1855,9 +1855,9 @@ export const formatAndValidateDraftRowData = (colDefs:Array<ColDef>,rowData:Arra
   result.forEach((row)=>{
     colDefs.forEach((col)=>{
       if(col.colId && row[col.colId]){
-        if(col.cellDataType === "number"){
-          row[col.colId] = parseFloat(row[col.colId])
-        }
+        // if(col.cellDataType === "number"){
+        //   row[col.colId] = parseFloat(row[col.colId])
+        // }
       }
     })
   })
@@ -1873,10 +1873,18 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
     const existingMaster = fields.find((m: Master) => m.id == master.MasterId)
     if (existingMaster) {
       const colDefs = master.GridState.length > 0 ? JSON.parse(master.GridState) : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id)
+      const updatedColDefs = colDefs.map((colDef: any) => {
+        if (colDef.cellDataType) {
+          colDef.cellDataType = 'text';
+        }
+        return colDef;
+      });
+
+      console.log(colDefs)
       masters.push({
         id: existingMaster.id,
         name: existingMaster.name,
-        colDefs: master.GridState.length > 0 ? JSON.parse(master.GridState) : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id),
+        colDefs: updatedColDefs,
         rowData:formatAndValidateDraftRowData(colDefs,master.DataMaster)  || [],
         isChecked: true,
         filters: [{
