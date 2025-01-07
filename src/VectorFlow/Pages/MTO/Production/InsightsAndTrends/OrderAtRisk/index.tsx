@@ -385,6 +385,7 @@ const OrderAtRisk = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       <MTOActionToolBar
         comp={"orderAtRisk"}
         isGridView={isGridView}
@@ -404,7 +405,6 @@ const OrderAtRisk = () => {
         onFilterRemove={onFilterRemove}
         isMfgSelected={isMfgSelected}
       />
-      {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
           <GridView
