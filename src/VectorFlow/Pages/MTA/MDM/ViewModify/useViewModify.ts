@@ -1089,6 +1089,7 @@ const useViewModify = (pageType:string) => {
           notifyError("No Data to Submit") ;
           return 
         }
+        const totalRecords = activeMaster.rowData.length
 
         if(isSubmitDisabled) return;
 
@@ -1121,6 +1122,7 @@ const useViewModify = (pageType:string) => {
  
         if(activeMaster.progress === 'editOnline'){
           const {isDisaster,isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          let errorRowData
           //result = !isConflicts
           if(isDisaster){
             setIsSubmitDisabled(false)
@@ -1128,7 +1130,7 @@ const useViewModify = (pageType:string) => {
           } 
           if(!isConflicts){
             if(localErrorCount>0 || errorCount>0){
-              let errorRowData
+             
               if(localErrorCount>0){
                 errorRowData = createErrorRowData(localErrorData,activeMaster.id)
               }
@@ -1143,9 +1145,9 @@ const useViewModify = (pageType:string) => {
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
               }
             }
-            notifySuccess(`Modifications Submitted Successfully`);
             setSelectedRowsCount(0);
-            dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
+            sendErrorToastMessage(totalRecords,errorRowData,localConflictData.length,'editOnlineSubmitted')
+            // dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
             if(draftID.length > 0){
               await deleteDraft(draftID);
@@ -1180,14 +1182,14 @@ const useViewModify = (pageType:string) => {
         }
         else{
           const {isDisaster,isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          
+          let errorRowData
           if(isDisaster){
             setIsSubmitDisabled(false)
             return 
           } 
          if(!isConflicts){
           if(localErrorCount>0 || errorCount>0){
-            let errorRowData
+            
             if(localErrorCount>0){
               errorRowData = createErrorRowData(localErrorData,activeMaster.id)
             }
@@ -1204,9 +1206,8 @@ const useViewModify = (pageType:string) => {
             
           }
          
-          notifySuccess(`Modifications Submitted Successfully`);
           setSelectedRowsCount(0);
-          dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          sendErrorToastMessage(totalRecords,errorRowData,localConflictData.length,'submitted')
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           if(draftID.length > 0){
             await deleteDraft(draftID);
@@ -1284,6 +1285,34 @@ const useViewModify = (pageType:string) => {
 
         
       } 
+
+
+      const sendErrorToastMessage = (totalRecords:any,errorRowData:any,conflictCount:any,state:any) =>{
+        const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
+
+        if(submittedRecordsCount === totalRecords){
+          notifySuccess("Addition Successfull")
+        }
+
+        else if(errorRowData.length > 0 || conflictCount > 0){
+
+          if(errorRowData.length && conflictCount){
+            if(submittedRecordsCount === 0){
+              notifyError(`${errorRowData.length} records have error and ${conflictCount} records have conflicts. `)
+            }
+            else notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error and ${conflictCount} records have conflicts. `)
+          }
+
+          else if(errorRowData.length){
+            notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error. `)
+          }
+          else{
+            notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${conflictCount} records have conflicts. `)
+          }
+        }
+        else notifySuccess("Modification done Successfull")
+        dispatch(UPDATE_PROGRESS_STATE(state));
+      }
 
       const onPIPOStatusUpdate = async () => {
         const selectedRows = ref.current?.api.getSelectedRows();
