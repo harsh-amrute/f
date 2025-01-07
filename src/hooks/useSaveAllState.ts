@@ -119,9 +119,9 @@ const useSaveAllState = (isPlanning?:boolean) => {
   const onSaveState = async (name: string) => {
     try {
       
-      const columnState = ref.current.api.getColumnState();
-      const chartsState =  ref.current.api.getChartModels()
-      const isPivot = ref.current.api.isPivotMode()
+      const columnState = ref.current?.api.getColumnState();
+      const chartsState =  ref.current?.api.getChartModels()
+      const isPivot = ref.current?.api.isPivotMode()
       const gridState:GridState = {
         pivot:isPivot,
         charts:chartsState,
@@ -132,9 +132,9 @@ const useSaveAllState = (isPlanning?:boolean) => {
         state: JSON.stringify(gridState),
       });
       notifySuccess("State has been saved");
-      ref.api.applyColumnState({ state: columnState });
-      ref.api.restoreChart(chartsState)
-      ref.api.setGridOption('pivotMode',isPivot)
+      ref.current?.api.applyColumnState({ state: columnState });
+      ref.current?.api.restoreChart(chartsState)
+      ref.current?.api.setGridOption('pivotMode',isPivot)
     } catch (err: any) {
         console.error(err)
       notifyError(err);
