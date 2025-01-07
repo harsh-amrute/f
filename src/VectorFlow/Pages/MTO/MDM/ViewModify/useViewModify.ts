@@ -862,14 +862,11 @@ const useViewModify = (pageType: string) => {
           };
         } else if (
           ccrGroupMaster &&
-          !Object?.values(ccrGroupMaster)?.some(
-            (group: any) =>
-              group.ccr_group_code === e.cgid || group.ccr_group_id === e.cgid
-          )
+          !Object.keys(ccrGroupMaster).includes(e.cgid)
         ) {
           newVal.err = {
             error: "Please select a valid CCR Group from the dropdown",
-            warning: "",
+            warning: ""
           };
         }
 
@@ -3936,6 +3933,103 @@ const useViewModify = (pageType: string) => {
       return;
     } else if (activeMaster.id === 503) {
       notifyLoader("Saving POOGI Draft...");
+
+      if(pageType==='add'){
+        notifyLoader("Saving Poogi Draft...");
+    
+        const PoogiPostObj: any = {
+          mid: activeMaster.id,
+          uid: user.user.user.id.toString(),
+          unm: user.user.user.name,
+          at: pageType === "add" ? "Add" : "Modify",
+          reasonData: [],
+        };
+        const selectedRows: any = _.cloneDeep(activeMaster.rowData);
+        let isValid = true;
+    
+        selectedRows.forEach((e: any) => {
+          const newVal = _.cloneDeep(e);
+          newVal.plid = e.plnm;
+          plantMaster.forEach((elm: any) => {
+            if (elm.plant_name === e.plnm) newVal.plid = elm.plant_id;
+          });
+          if (newVal.err.error !== "") {
+            isValid = false;
+          }
+          PoogiPostObj.reasonData.push(_.omit(newVal, ["editable", "err"]));
+        });
+        if (!isValid) {
+          toast.dismiss();
+          notifyError(
+            "Make sure you have resolved the error for the selected row!"
+          );
+          return;
+        }
+    
+        const finPoogiPostData: any = [];
+        const groupedData = _.groupBy(PoogiPostObj.reasonData, "majdsc");
+    
+        for (const [key,items] of Object.entries(groupedData)) {
+          console.log(key);
+          items.forEach((item) => {
+            const { plnm, plid, majdsc, mindsc } = item;
+            let existingMajor = finPoogiPostData.find(
+              (major: any) => major.plnm === plnm && major.majdsc === majdsc
+            );
+    
+            if (!existingMajor) {
+              existingMajor = {
+                majdsc,
+                majid: null,
+                majId: null,
+                majcd: "*",
+                minData: [],
+                iu: false,
+                ie: false,
+                id: false,
+                plnm,
+                pl: plid,
+                plid,
+                err:""
+              };
+              finPoogiPostData.push(existingMajor);
+            }
+    
+            existingMajor.minData.push({
+              mindsc,
+              minid: null,
+              majid: null,
+              majId: null,
+              minId: null,
+              mincd: "*",
+              iu: false,
+              ie: false,
+              id: false,
+              err: ""
+            });
+          });
+        }
+        PoogiPostObj.reasonData = finPoogiPostData;
+        try {
+          console.log("finPoogiPostdata...", PoogiPostObj);
+          const response = await savePOOGIMasterDraft([PoogiPostObj]);
+    
+          if (response.status === 200) {
+            toast.dismiss();
+            notifySuccess("Poogi Draft updated!!");
+          } else {
+            toast.dismiss();
+            notifyError(
+              "Failed to create the draft....Please check your validations!"
+            );
+          }
+        } catch (error) {
+          toast.dismiss();
+          notifyError("Failed to save draft");
+          console.log(error);
+        }
+        return;
+      }
 
       const POOGIPostObj: any = {
         mid: activeMaster.id,

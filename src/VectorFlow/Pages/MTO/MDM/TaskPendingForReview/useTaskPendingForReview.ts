@@ -932,10 +932,10 @@ const useTaskPendingForReview = ()=>{
 
         const finData ={
             "tid": mtoTask.TaskID,
-            "ti_id": newApprovedData[0].ti_id,
+            "ti_id": detailTableRowData[0].ti_id,
             "uid": user.user.id,
             "unm": user.user.name,
-            "mmid": mtoTask.mid,
+            "mmid": 3,
             "reasonData": newApprovedData
         }
         
@@ -947,8 +947,12 @@ const useTaskPendingForReview = ()=>{
                 setIsViewTableOpen(true);
                 GetInitialData(mid);
             }
+            else{
+                notifyError("Failed to update DB!");
+            }
         }
         catch(error){
+            notifyError("Failed to update DB!");
             console.log(error)
         }
     }
