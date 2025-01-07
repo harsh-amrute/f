@@ -184,7 +184,7 @@ const useSavedDrafts = ()=>{
           }));
 
         return newColDef.map((col:any)=>{
-            if (col.field === 'pl') return {
+            if (col.field === 'pl' || col.field === 'plnm') return {
                 ...col,
                 editable: (ActionType == "Modify") ? false : true,
                 cellEditor: 'agRichSelectCellEditor',
@@ -262,7 +262,7 @@ const useSavedDrafts = ()=>{
                     "id": draftDetails.mid,
                     "name": draftDetails.dnm,
                     "colDefs": [...convertToColDefs(fields,draftDetails.ActionType),{colId: 'err',colPosition: 100, field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error' , pinned: 'left' }],
-                    "rowData": draftData,
+                    "rowData": draftDetails.mid?draftData: [],
                     "isChecked": true,
                     "filters": [{
                         id: generateRandomId(),

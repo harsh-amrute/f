@@ -1632,18 +1632,63 @@ const useViewModify = (pageType: string) => {
     dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
   };
 
-  const handleOnDeleteFilter = (id: string) => {
+  const handleOnDeleteFilter = async(id: string) => {
     if (activeMaster.filters.length === 1) {
       // dispatch(REMOVE_FILTER(id));
       // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       dispatch(RESET_FILTERS());
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-
+      
       // dispatch(UPDATE_FILTER(emptyFilter))
       return;
       // return notifyError("Cannot Delete this Filter Instance")
     }
 
+    const currMasterFilters = activeMaster.filters;
+    
+    const payloadFilters = mapStateFiltersToPayload(currMasterFilters);
+    const payloadFields: any = getCurrentVisbileColumns();
+
+    setIsTableDataLoading(true);
+
+    let result;
+    try {
+        console.log("filter is this", payloadFilters)
+        result = await queryFilteredData({
+          filters: payloadFilters.filter((e:any)=>e.id!=id),
+          fields: payloadFields,
+          pagination: false,
+          count: true,
+          rowsPerPage,
+        });
+    } catch (err) {
+      console.log(err);
+    }
+
+    setIsTableDataLoading(false);
+    if (activeMaster.isMTO) {
+      if (
+        !result?.data?.data?.count ||
+        result?.data?.data?.count == 0 ||
+        result?.data?.data?.count == ""
+      ) {
+        setTempRecordCount(result?.data.data.length);
+      } else {
+        setTempRecordCount(result?.data?.data?.count);
+      }
+    } else {
+      if (
+        !result?.data.recordCount ||
+        result?.data.recordCount == 0 ||
+        result.data.recordCount == ""
+      ) {
+        setTempRecordCount(0);
+      } else {
+        setTempRecordCount(result.data.recordCount);
+      }
+    }
+    toggleWarningModal(true);
+    
     dispatch(REMOVE_FILTER(id));
     dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
   };
@@ -1707,8 +1752,8 @@ const useViewModify = (pageType: string) => {
         setTempRecordCount(result.data.recordCount);
       }
     }
-
-    toggleWarningModal(true);
+  
+      toggleWarningModal(true);
   };
 
   const onWarningModalClose = () => {
