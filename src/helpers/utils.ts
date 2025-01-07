@@ -608,7 +608,7 @@ export const handleDownloadVF = async (reportName: string, downloadName:string) 
   console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
-    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
       headers: {
         Authorization: `Bearer ${token?.access}`
       }
