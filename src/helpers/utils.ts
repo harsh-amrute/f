@@ -2406,7 +2406,8 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     field: 'tags',
     headerName: "Tags",
     cellRenderer: 'tagsCellRenderer',
-    width: 100
+    width: 100,
+    hide:false
   }
 
   result = fields.map((f: BPRField) => {
@@ -2508,6 +2509,9 @@ export const mapBPRRowData = (rowData: Array<any>) => {
 // }
 
 export const updateCommonAttributes=(array1:any[], array2:any[], colId:string)=> {
+
+  console.log(array1,"ARRAY1")
+  console.log(array2,"ARRAY2")
   // Create a dictionary (map) of objects from array1 by colId
   const array1Dict:any = {};
   array1.forEach(obj => {
@@ -2526,6 +2530,10 @@ export const updateCommonAttributes=(array1:any[], array2:any[], colId:string)=>
           obj2[key] = obj1[key];
         }
       });
+
+      if("hide" in obj1){
+        obj2['hide']=obj1['hide']
+      }
     }
   });
 

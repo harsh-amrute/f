@@ -14,7 +14,7 @@ import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions
 import { type DailyDataGraph } from "../../../../types/MTA";
 import useBPRFilter from "../../../../../hooks/useBPRFilter"
 import { useUserData } from "../../../../../context"
-
+import _ from 'lodash'
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
@@ -120,13 +120,13 @@ const useBPR =()=>{
     },[])
 
     useEffect(()=>{
-        if(internalRef && gridState && gridState.columns){
+        if(internalRef && gridState && gridState.columns && gridState.columns.length!==0){
             console.log("CHANGING",internalRef.api)
             const StateColumns = updateCommonAttributes(gridState.columns,BPRColumns,'colId')
             console.log(StateColumns)
             setBPRColumns(StateColumns)
             // setBPRColumns(gridState.columns)
-            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+            internalRef.api.applyColumnState({state:StateColumns,applyOrder:true})
         }
     },[internalRef,gridState])
 
@@ -141,17 +141,68 @@ const useBPR =()=>{
 
 
       const onColumnVisible = (event: any) => {
-        const { column, visible } = event;
-        console.log(column)
+        const { column, visible , columns } = event;
+        // console.log(column)
         // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
-        if(column!==null){
-        setBPRColumns((prevColumns:any) =>
-          prevColumns.map((col:any) =>
-            col.field === column.colId ? { ...col, hide:!visible } : col
-          )
+        if(column!==null && column.colId!=="dailydatagraph" && event.source==='toolPanelUi'){
+        setBPRColumns((prevColumns:any) =>{
+            const updatedColumns = prevColumns.map((col: any) =>
+                col.field === column.colId
+                  ? { ...col, hide: !visible }
+                  : col
+              );
+            
+              // Check if any columns, except the one with colId === "dailydatagraph", have hide: false
+              const anyColumnWithHideFalse = updatedColumns.some(
+                (col: any) => col.colId !== "dailydatagraph" && col.hide === false
+              );
+            
+              // Now map over the updated columns and ensure dailydatagraph's hide is updated accordingly
+              return updatedColumns.map((col: any) =>
+                col.colId === "dailydatagraph"
+                  ? { ...col, hide: anyColumnWithHideFalse ? false : col.hide }
+                  : col
+              );
+        }
         );
+        }else if(columns.length>1 && event.source==='toolPanelUi'){
+            setBPRColumns((prevColumns: any) => {
+                // Create a new array with updated columns, excluding 'dailydatagraph
+                if(visible===true){
+                    return  prevColumns.map((col: any) => ({ ...col, hide: false }))
+                }else{
+                    const updatedColumns = prevColumns.map((col: any) =>
+                        col.colId === "dailydatagraph"
+                          ? col // Exclude this column for now
+                          : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
+                          ? { ...col, hide: !visible }
+                          : col
+                      );
+                    
+                      // Check if all columns except 'dailydatagraph' have `hide: true`
+                      const allHidden = updatedColumns.every(
+                        (col: any) => col.colId === "dailydatagraph" || col.hide
+                      );
+                    
+                      // Update 'dailydatagraph' column's `hide` property if all others are hidden
+                      return updatedColumns.map((col: any) =>
+                        col.colId === "dailydatagraph" && allHidden ? { ...col, hide: true } : col
+                      );
+                }
+              });
+              
+            // setBPRColumns((prevColumns:any) =>
+            //     prevColumns.map((col: any) =>
+            //         col.colId === "dailydatagraph"
+            //         ? col // Exclude this column from being updated
+            //         : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
+            //         ? { ...col, hide: !visible }
+            //         : col
+            //       )              
+            //   );
         }
       };
+
 
   
     const agGridProps:AgGridReactProps = useMemo(()=>{
