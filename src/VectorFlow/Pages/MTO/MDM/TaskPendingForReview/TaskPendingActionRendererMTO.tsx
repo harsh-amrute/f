@@ -15,7 +15,6 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
     const dispatch = useDispatch();
 
     const detailTableRowData = useSelector((state: any)=> state.mto.taskPendingRowData)
-  console.log("props", props);
 
     const onClick = (status:string)=>{
         if(status==='Approved'){
@@ -25,7 +24,7 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
         }
         else{
             const newData = _.cloneDeep(detailTableRowData);
-            newData[props.node.rowIndex].appStatus = true;
+            newData[props.node.rowIndex].appStatus = false;
             dispatch(SET_TASK_PENDING_ROW_DATA(newData));
         }
     }
@@ -34,7 +33,7 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
         <ActionRendererWrapper>
           <ActionButtonWrapper 
             src={
-              detailTableRowData.some((item:any) => (item?.tbmId === props.data?.tbmId && item.appStatus === true))
+              detailTableRowData[props.node.rowIndex]?.appStatus===true
                 ? "/assets/img/VectorFLOW/NMS/task-pending-approve.svg"
                 : "/assets/img/VectorFLOW/NMS/task-pending-approve-grey.svg"
             } 
@@ -44,7 +43,7 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
           />
           <ActionButtonWrapper 
             src={
-              detailTableRowData.some((item:any) => (item?.tbmId === props.data?.tbmId && item.appStatus === true))
+              detailTableRowData[props.node.rowIndex]?.appStatus===true
                 ? "/assets/img/VectorFLOW/NMS/task-pending-reject-grey.svg"
                 : "/assets/img/VectorFLOW/NMS/task-pending-reject.svg"
             } 

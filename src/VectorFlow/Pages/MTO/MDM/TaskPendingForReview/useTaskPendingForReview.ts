@@ -17,6 +17,9 @@ import TaskPendingActionHeaderMTO from "./TaskPendingActionHeaderMTO"
 import _ from "lodash"
 import { SET_TASK_PENDING_ROW_DATA } from "../../../../../redux/actions/MTO"
 import CommentCellRenderer from "./CommentCellRenderer"
+import { v4 as uuidv4 } from "uuid";
+
+
 
 const useTaskPendingForReview = ()=>{
     const [tempMasterData, setTempMasterData]= useState<any>(undefined);
@@ -181,21 +184,47 @@ const useTaskPendingForReview = ()=>{
         console.log("data....", data);
         data.forEach((item: any) => {
             // Push the main object without minData
+            const tempMajId = "maj_"+ uuidv4();
             result.push({
-                majId: item.majId,
+                majId: item.majId? item.majId: tempMajId,
                 majdsc: item.majdsc,
                 plnm: item.plnm,
-                trmId: item.trmId? item.trmId: item.mintid
+                trmId: item.trmId? item.trmId: item.mintid,
+                tid: item.tid,
+                ti_id: item.ti_id,
+                ie: item.ie || false,
+                id: item.id || false,
+                iu: item.iu || false,
+                pl: item.pl,
+                majcd: item.majcd,
+                aon: item.aon,
+                aid: item.aid,
+                anm: item.anm,
+                st: item.st,
+                stnm: item.stnm
             });
     
             // Push each minData object with the corresponding majId and plnm
             if (item.minData && Array.isArray(item.minData)) {
+            const tempMinId = "min_"+uuidv4();
+
                 item.minData.forEach((minItem: any) => {
                     result.push({
-                        majId: minItem.majId,
-                        minId: minItem.minId,
+                        majId: minItem.majId || tempMajId,
+                        minId: minItem.minId || tempMinId,
                         mindsc: minItem.mindsc,
+                        mintid: minItem.mintid,
+                        mincd: minItem.mincd,
                         plnm: item.plnm,
+                        ie: minItem.ie || false,
+                        id: minItem.id || false,
+                        iu: minItem.iu || false,
+                        pl: item.pl,
+                        aon: minItem.aon,
+                        aid: minItem.aid,
+                        anm: minItem.anm,
+                        st: minItem.st,
+                        stnm: minItem.stnm
                     });
                 });
             }
@@ -203,6 +232,63 @@ const useTaskPendingForReview = ()=>{
     
         return result;
     };
+
+    const ConvertFromPoogiData = (data: any) => {
+        const result: any = [];
+    
+        // Create a map to track majId and its corresponding object in the result
+        const majIdMap = new Map();
+    
+        data.forEach((item: any) => {
+            // Check and set majId to null if it starts with 'm'
+            const majId = item.majId && item.majId.startsWith('m') ? null : item.majId;
+    
+            if (item.minId) {
+                // Check and set minId to null if it starts with 'm'
+                const minId = item.minId.startsWith('m') ? null : item.minId;
+    
+                // Handle minData objects
+                const parent = majIdMap.get(majId);
+    
+                if (parent) {
+                    // Add minData to the corresponding parent object
+                    parent.minData.push({
+                        minid: minId,
+                        mindsc: item.mindsc,
+                        mintid: item.mintid,
+                        ie: item.ie || false,
+                        id: item.id || false,
+                        ia: item.appStatus === true ? true : false,
+                        iu: item.iu || false,
+                        mincd: item.mincd,
+                        cm: item.cm || "",
+
+                    });
+                }
+            } else {
+                // Handle main objects
+                const mainObject = {
+                    majdsc: item.majdsc,
+                    majid: majId,
+                    trmId: item.trmId,
+                    ia: item.appStatus === true ? true : false,
+                    ie: item.ie || false,
+                    id: item.id || false,
+                    iu: item.iu || false,
+                    cm: item.cm|| "",
+                    majcd: item.majcd,
+                    pl: item.pl,
+                    minData: [], // Initialize an empty array for minData
+                };
+    
+                result.push(mainObject);
+                majIdMap.set(majId, mainObject); // Add to the map for reference
+            }
+        });
+    
+        return result;
+    };
+    
     
 
     const handleOnClick = async(taskData:TaskDataType|any)=>{
@@ -778,7 +864,7 @@ const useTaskPendingForReview = ()=>{
         detailTableRowData.forEach((ele:any)=>{
             console.log("ele...",ele);
         const newEle = {
-            cid: ele.cid? ele.bid: null,
+            cid: ele.cid? ele.cid: null,
             ccd: ele.ccd,
             cnm:ele.cnm,
             cpd: ele.cpd,
@@ -797,6 +883,7 @@ const useTaskPendingForReview = ()=>{
             mmid: ele.mmid,
             tcmId: ele.tcmId,
             cm: ele.cm? ele.cm: "",
+            iv: ele.iv? ele.iv: false,
             ia: (ele.appStatus && ele.appStatus===true)?true:false,
         }
         newApprovedData.push(newEle);
@@ -839,11 +926,21 @@ const useTaskPendingForReview = ()=>{
 
     else if(mtoTask.mid===503){
 
+        notifyLoader("Updating Task...")
 
-        const postObj = detailTableRowData;
-        console.log("Poogi post obj", postObj);
+        const newApprovedData = ConvertFromPoogiData(detailTableRowData);
+
+        const finData ={
+            "tid": mtoTask.TaskID,
+            "ti_id": newApprovedData[0].ti_id,
+            "uid": user.user.id,
+            "unm": user.user.name,
+            "mmid": mtoTask.mid,
+            "reasonData": newApprovedData
+        }
+        
         try{
-            const response = await putMTOAddPoogiMaster([postObj]);
+            const response = await putMTOAddPoogiMaster([finData]);
             if(response.status=== 200){
                 notifySuccess("DB Updated Successfully");
                 dispatch(SET_TASK_PENDING_ROW_DATA([]));
@@ -884,6 +981,7 @@ const useTaskPendingForReview = ()=>{
         actionStatus,
         mtoSubmitTask,
         setDetailTableRowData,
+        currentMaster: mtoTask?.mid
     }
 }
 

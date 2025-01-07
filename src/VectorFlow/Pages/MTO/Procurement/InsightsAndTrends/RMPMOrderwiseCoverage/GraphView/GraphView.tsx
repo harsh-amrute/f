@@ -143,6 +143,10 @@ const GraphView = ({ shortageData }: any) => {
         if (e.start_date === '1') {
             e.start_date = '0-7 Days';
         }
+        else if(isNaN(Number(e.start_date))){
+            console.log("in here", e.start_date);
+            e.start_date = "";
+        }
         else {
             e.start_date = e.start_date + '-' + (Number(e.start_date) + 6) + ' Days';
         }

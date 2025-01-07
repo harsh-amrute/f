@@ -714,7 +714,7 @@ const useViewModify = (pageType: string) => {
           });
 
           // Check for uniqueness within the current rows
-          allRows.forEach((ele, index) => {
+          allRows?.forEach((ele, index) => {
             if (index !== i && ele.bsz === e.bsz && e.bt === ele.bt) {
               newVal.err = {
                 error: "Buffer size must be unique!",
@@ -756,7 +756,7 @@ const useViewModify = (pageType: string) => {
         const isBufferCodeDuplicate = bufferInitialData?.some(
           (master: any) => master.bcd === e.bcd
         );
-        const isbufferCodeDuplicateInCurr = allRows.some(
+        const isbufferCodeDuplicateInCurr = allRows?.some(
           (row: any, index: any) => index !== i && row.bcd === e.bcd
         );
         if (isbufferCodeDuplicateInCurr) {
@@ -780,7 +780,7 @@ const useViewModify = (pageType: string) => {
             warning: "",
           };
         }
-        const isBszUnique = allRows.every((row: any, index: any) => {
+        const isBszUnique = allRows?.every((row: any, index: any) => {
           if (index === i) return true;
           return !(row.bt === e.bt && row.bsz === e.bsz);
         });
@@ -1914,7 +1914,7 @@ const useViewModify = (pageType: string) => {
       getInitialData();
 
       /////
-      const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
+      const updatedColdefs = activeMaster?.colDefs?.map((col: ColDef) => {
         // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
         if (col.field === "iv") return { ...col, cellRenderer: ToggleButton };
         if (col.field === "bt")
@@ -1953,9 +1953,7 @@ const useViewModify = (pageType: string) => {
             editable: true,
             cellEditor: "agRichSelectCellEditor",
             cellEditorParams: {
-              values: Object.values(ccrGroupMaster || {}).map(
-                (group: any) => group.ccr_group_code
-              ),
+              values: Object.keys(ccrGroupMaster || {}),
             },
           };
         if (col.field === "slt")
@@ -2071,7 +2069,7 @@ const useViewModify = (pageType: string) => {
       // }
       // else{
 
-      dispatch(SET_RECORD_COUNT(buffData.length));
+      dispatch(SET_RECORD_COUNT(buffData?.length));
       dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
 
       dispatch(UPDATE_ROW_DATA(buffData));
@@ -2095,7 +2093,7 @@ const useViewModify = (pageType: string) => {
 
   const exportToExcel = async (fromUploadModal?: boolean) => {
     try {
-      const currMasterFilters = activeMaster.filters;
+      const currMasterFilters = activeMaster?.filters;
       const payloadFilters = areMasterFiltersValid(currMasterFilters)
         ? mapStateFiltersToPayload(currMasterFilters)
         : [];
@@ -3134,6 +3132,7 @@ const useViewModify = (pageType: string) => {
             cellEditor: "agNumberCellEditor",
             cellEditorParams: {
               min: 0,
+              max: 1000000
             },
           };
         }
@@ -3451,9 +3450,10 @@ const useViewModify = (pageType: string) => {
     selectedRows.forEach((e: any) => {
       const newVal = _.cloneDeep(e);
       newVal.cid = e.cid ? e.cid : null;
+      console.log("CCR group master", ccrGroupMaster, ">>>>", ccrGroupMaster[e.cgid],">>>>",e.cgid,">>>>", e.cg);
       const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id
-        ? ccrGroupMaster[e.cgid]?.ccr_group_id
-        : e.cgid;
+      ? ccrGroupMaster[e.cgid]?.ccr_group_id
+      : e.cgid;
       newVal.cgid = ccrGid;
       newVal.plid = e.pl;
       newVal.dpid = e.dp;
@@ -3559,9 +3559,9 @@ const useViewModify = (pageType: string) => {
             majId: null,
             majcd: "*",
             minData: [],
-            iu: null,
+            iu: false,
             ie: false,
-            id: null,
+            id: false,
             plnm,
             pl: plid,
             plid,
@@ -3576,9 +3576,9 @@ const useViewModify = (pageType: string) => {
           majId: null,
           minId: null,
           mincd: "*",
-          iu: null,
+          iu: false,
           ie: false,
-          id: null,
+          id: false,
         });
       });
     }
@@ -3681,27 +3681,30 @@ const useViewModify = (pageType: string) => {
 
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
-        e.ie = null;
+        e.majid = ele.majId;
+        e.majcd = ele.majcd ? ele.majcd : "*";
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
           e.majId = null;
           e.majid = null;
+          e.ie = false;
         } else {
           e.ie = true;
         }
-        e.id = ele.id ? ele.id : null;
-        e.iu = ele.iu ? ele.iu : null;
-        e.majid = ele.majId;
-        e.majcd = ele.majcd ? ele.majcd : "*";
+        e.id = ele.id ? ele.id : false;
+        e.iu = ele.iu ? ele.iu : false;
 
         // Iterate through minData to check and update minId if it starts with 'm'
         e.minData.forEach((minElement: any) => {
-          minElement.id = minElement.id ? minElement.id : null;
+          minElement.id = minElement.id ? minElement.id : false;
           if (
             typeof minElement.minId === "string" &&
             minElement.minId.startsWith("m")
           ) {
             minElement.minId = null;
+            minElement.majId = null;
+            minElement.minid = null;
             minElement.majid = null;
+            minElement.ie = false;
             minElement.mincd = minElement.mincd ? minElement.mincd : "*";
           } else {
             minElement.ie = true;
@@ -3709,7 +3712,7 @@ const useViewModify = (pageType: string) => {
           minElement.minid = minElement.minId;
           minElement.majid = minElement.majId;
           minElement.mincd = minElement.mincd ? minElement.mincd : "*";
-          minElement.iu = minElement.iu ? minElement.iu : null;
+          minElement.iu = minElement.iu ? minElement.iu : false;
         });
 
         plantMaster?.forEach((elm: any) => {
@@ -3836,7 +3839,7 @@ const useViewModify = (pageType: string) => {
           }
         });
       } else {
-        bufferModifyData.rowData.forEach((ele: any) => {
+        bufferModifyData.forEach((ele: any) => {
           const e = _.cloneDeep(ele);
           let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
@@ -3944,7 +3947,6 @@ const useViewModify = (pageType: string) => {
 
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
-        e.ie = null;
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
           e.majId = null;
           e.majid = null;
@@ -3952,15 +3954,14 @@ const useViewModify = (pageType: string) => {
         } else {
           e.ie = true;
         }
-        e.id = ele.id ? ele.id : null;
-        e.iu = ele.iu ? ele.iu : null;
-        e.majid = ele.majId;
+        e.id = ele.id ? ele.id : false;
+        e.iu = ele.iu ? ele.iu : false;
         e.majcd = ele.majcd ? ele.majcd : "*";
-        e.err = null;
+        e.err = "";
 
         // Iterate through minData to check and update minId if it starts with 'm'
         e.minData.forEach((minElement: any) => {
-          minElement.id = minElement.id ? minElement.id : null;
+          minElement.id = minElement.id ? minElement.id : false;
           if (
             typeof minElement.minId === "string" &&
             minElement.minId.startsWith("m")
@@ -3976,8 +3977,8 @@ const useViewModify = (pageType: string) => {
           minElement.minid = minElement.minId;
           minElement.majid = minElement.majId;
           minElement.mincd = minElement.mincd ? minElement.mincd : "*";
-          minElement.iu = minElement.iu ? minElement.iu : null;
-          minElement.err = null;
+          minElement.iu = minElement.iu ? minElement.iu : false;
+          minElement.err = "";
         });
 
         plantMaster?.forEach((elm: any) => {

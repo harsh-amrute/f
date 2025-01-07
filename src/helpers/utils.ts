@@ -3745,26 +3745,26 @@ export const mapDraftDataToMTOTableRowData = (rowData: any[]) => {
 
 export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageType: string, selectedColumns: any) => {
 
-  const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
+  const currMasterKeys = master?.fields?.map((field: Field) => field.key); //array containing keys of current master fields
   const result: object[] = [];
-  const buffer = await file.arrayBuffer();
+  const buffer = await file?.arrayBuffer();
 
   let selectedKeys:any;
 
   //Selected Columns Keys
   if(pageType==='add'){
-    selectedKeys = master.fields.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+    selectedKeys = master?.fields?.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
   }
   else{
-    selectedKeys = selectedColumns.map((col:any)=>col.colId);
+    selectedKeys = selectedColumns?.map((col:any)=>col.colId);
   }
    
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
   });
   //displayName to key mapper
-  const headerKeys = data[0].map((headerName: any) => {
-    const fieldObj = master.fields.find((field: Field) => field.displayName === headerName);
+  const headerKeys = data[0]?.map((headerName: any) => {
+    const fieldObj = master?.fields?.find((field: Field) => field.displayName === headerName);
     if (fieldObj) return fieldObj.key;
     else return '';
   })
@@ -3772,12 +3772,12 @@ export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageT
 
   if(master.id===501 || master.id===502 || master.id===503 || master.id===504){
     const objKeys: string[] = [];
-    selectedColumns.forEach((ele:any)=>{
+    selectedColumns?.forEach((ele:any)=>{
       objKeys.push(ele.colId);
     })
 
     const bufferData:any = [];
-    for(let i=1; i< data.length; i++){
+    for(let i=1; i< data?.length; i++){
       const buffData:any = {};
       for(let j=0; j< data[i].length; j++){
         buffData[objKeys[j]]= data[i][j];
@@ -3815,7 +3815,7 @@ export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageT
     const fieldObj = master.fields.find((field: Field) => field.key === key)
     if (!headerKeys.includes(key) && fieldObj?.isDownload) {
       error = true;
-      headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+      headers?.push(master.fields.find((field: Field) => field.key === key)?.displayName)
     }
   })
 
@@ -3826,8 +3826,6 @@ export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageT
   error = false;
   headers = [];
 
-  console.log("headerKeys", headerKeys);
-  console.log("selectedKys", selectedKeys);
   headerKeys.forEach((key: string) => {
 
     if (!currMasterKeys.includes(key)) {
