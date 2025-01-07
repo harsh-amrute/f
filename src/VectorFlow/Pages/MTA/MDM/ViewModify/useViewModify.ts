@@ -342,30 +342,32 @@ const useViewModify = (pageType:string) => {
               warn = warning;
             }
             //check if there is any errorenous column
-            const ifErrorExists = activeMaster.rowData.some((row:any)=>("error" in row) && row["error"].length > 0);
-            if(err || ifErrorExists){
+            if(err!==undefined){
               newRow.error = err
-              addInvalidDataColDefs('error');
-            
             }
             else{
-              newRow.error = ''
+              newRow.error = ""
             }
             //check if there is any warning column
-            const ifWarningExists = activeMaster.rowData.some((row:any)=>("warning" in row)&&row["warning"].length > 0);
-            if(warn || ifWarningExists){
+            if(warn!==undefined){
               newRow.warning = warn
-              addInvalidDataColDefs('warning');
-            
             }
             else{
-              newRow.warning = ''
+              newRow.warning = ""
             }
               return newRow;
         
           }
           return row;
         })
+        const ifErrorExists = newRowData.some((row:any)=>("error" in row) && row["error"].length > 0);
+        if(ifErrorExists){
+           addInvalidDataColDefs('error');
+        }
+        const ifWarningExists = newRowData.some((row:any)=>("warning" in row)&&row["warning"].length > 0);
+        if(ifWarningExists){
+           addInvalidDataColDefs('warning');
+        }
         setEnableEditOnlineReset(true)
         dispatch(UPDATE_ROW_DATA([...newRowData]))
       },
@@ -1432,6 +1434,7 @@ const useViewModify = (pageType:string) => {
      
       const onReset = () => {
         const currentMasterData = masters.find((master:MDMMasterState)=>master.id === activeMaster.id)
+        console.log("CURRENTMATTER",currentMasterData?.rowData)
         if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
         dispatch(REMOVE_COLDEFS(['error','warning']));
         dispatch(UPDATE_PROGRESS_STATE('editOnline'));
