@@ -3884,4 +3884,25 @@ export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageT
   return result;
 }
 
+export const generateMTOFilterOptions = (data: Master[], currentFilters:any) => {
+  const temp: string[] = [];
+  const options: Option[] = [];
+  if (!data) return options
+  data.forEach((master: Master) => {
+    const tempMasterFields = [...master.fields]
+    const tempFields = tempMasterFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
+    tempFields.forEach((field: Field) => {
+      if (!temp.includes(field.displayName) && field.visible) {
+        temp.push(field.displayName);
+        options.push({ value: field.key, label: field.displayName, })
+      }
+    })
+  });
+  const finOptions: any[] = options.filter((ele: any) => {
+    return !currentFilters.some((e: any) => e.field === ele.value);
+  });
+  console.log('fin options', finOptions);
+  return finOptions;
+}
+
 // ===================================================================================================
