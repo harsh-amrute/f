@@ -1122,7 +1122,7 @@ const useViewModify = (pageType:string) => {
  
         if(activeMaster.progress === 'editOnline'){
           const {isDisaster,isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          let errorRowData
+          let errorRowData:any[]=[];
           //result = !isConflicts
           if(isDisaster){
             setIsSubmitDisabled(false)
@@ -1182,7 +1182,7 @@ const useViewModify = (pageType:string) => {
         }
         else{
           const {isDisaster,isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          let errorRowData
+          let errorRowData:any[]=[];
           if(isDisaster){
             setIsSubmitDisabled(false)
             return 
@@ -1291,7 +1291,7 @@ const useViewModify = (pageType:string) => {
         const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
 
         if(submittedRecordsCount === totalRecords){
-          notifySuccess("Addition Successfull")
+          notifySuccess("Modification done Successfull")
         }
 
         else if(errorRowData.length > 0 || conflictCount > 0){
