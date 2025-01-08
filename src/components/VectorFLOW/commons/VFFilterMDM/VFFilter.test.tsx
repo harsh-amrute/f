@@ -1,10 +1,9 @@
-import React from 'react';
 import { render, fireEvent,waitFor } from '@testing-library/react';
 import VFFilter from '.';
 import {select} from 'react-select-event'
 import { store } from '../../../../redux/store/store';
 import { Provider } from 'react-redux';
-import { ReactNode } from 'react';
+import React,{ ReactNode } from 'react';
 import { UserDataContext } from '../../../../context';
 
 // Mock the onClick function
