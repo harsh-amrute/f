@@ -22,7 +22,8 @@ const MTOTaskPendingForReview = ()=>{
         onCancel,
         onTaskSubmit,
         mtoPendingTaskData,
-        mtoSubmitTask
+        mtoSubmitTask,
+        currentMaster
     } = useTaskPendingForReview()
 
     if(showLoader) return <VFLoader/>
@@ -77,7 +78,7 @@ const MTOTaskPendingForReview = ()=>{
                 columnDefs={detailTableColDefs}
                 gridOptions={{
                     defaultColDef: {
-                      flex: 1
+                      flex: currentMaster===503?  1: 0
                     },
                     readOnlyEdit:false,
                     getRowStyle: (params: any) => {

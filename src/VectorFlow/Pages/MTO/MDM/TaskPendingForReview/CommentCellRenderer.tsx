@@ -7,13 +7,9 @@ const CommentCellRenderer = (props: any) => {
   const detailTableRowData = useSelector((state: any) => state.mto.taskPendingRowData);
   const dispatch = useDispatch();
   const debouncedDispatch = useCallback(
-    _.debounce((tbmId: string, newComment: string) => {
+    _.debounce((rowIndex: string, newComment: string) => {
       const newData = _.cloneDeep(detailTableRowData);
-      newData.forEach((e: any) => {
-        if (e.tbmId === tbmId) {
-          e.cm = newComment;
-        }
-      });
+      newData[rowIndex].cm = newComment;
       dispatch(SET_TASK_PENDING_ROW_DATA(newData));
     }, 800),
     [detailTableRowData, dispatch]
@@ -21,7 +17,7 @@ const CommentCellRenderer = (props: any) => {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newComment = e.target.value;
-    debouncedDispatch(props.data.tbmId, newComment);
+    debouncedDispatch(props.node.rowIndex, newComment);
   };
 
   return (

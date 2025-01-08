@@ -151,7 +151,7 @@ const MTOAddRecord = () => {
                     [],
                   }}
                   defaultColDef= {
-                    {flex: activeMaster.id===501? 1: 0}
+                    {flex: (activeMaster.id===501 || activeMaster.id===503)? 1: 0}
                   }
                   // onCellEditingStopped={ onDataChange}
                   maintainColumnOrder
@@ -258,10 +258,10 @@ const MTOAddRecord = () => {
             masterId={activeMaster.id}
             mtoSaveData={true}
             onMTOSaveData={ onMTOSaveBufferData}
-            isMTOSaveDataDisabled={((activeMaster.rowData.some((row:any)=>row.err.error!=='')))}
+            isMTOSaveDataDisabled={((activeMaster?.rowData?.some((row:any)=>row?.err?.error!=='')))}
             onMTOSaveAsDraft={onMTOSaveAsDraft}
-            isMTODraftDisabled={((activeMaster.rowData.some((row:any)=>row.err.error!=='')))}
-            isMTOExcludeButton={activeMaster.rowData.some((row:any)=>row.err.error!=='')}
+            isMTODraftDisabled={((activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')))}
+            isMTOExcludeButton={activeMaster?.rowData.some((row:any)=>row?.err?.error!=='')}
           />
         }
         </React.Fragment>
