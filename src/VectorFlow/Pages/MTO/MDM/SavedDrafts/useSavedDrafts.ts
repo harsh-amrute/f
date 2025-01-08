@@ -14,6 +14,8 @@ import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
 import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_MODIFY_DATA } from "../../../../../redux/actions/MTO"
 import { useGetDeptMasterData, useGetPlantMasterData } from "../../../../../VectorFlow/Services/MTO/Common/Masters"
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation"
+import { v4 as uuidv4 } from "uuid";
+
 
 const useSavedDrafts = ()=>{
 
@@ -218,11 +220,70 @@ const useSavedDrafts = ()=>{
               else return col;
         })
       };
+
+    const convertToPoogiDraftData = (data:any, page:any)=>{
+        if(page==="Modify"){
+            return data;
+        }
+
+        const result: any[] = [];
+        
+        data.forEach((item: any) => {
+            // Push the main object without minData
+            const tempMajId = "maj_"+ uuidv4();
+            result.push({
+                majId: item.majId? item.majId: tempMajId,
+                majdsc: item.majdsc,
+                plnm: item.plnm,
+                trmId: item.trmId? item.trmId: item.mintid,
+                tid: item.tid,
+                ti_id: item.ti_id,
+                ie: item.ie || false,
+                id: item.id || false,
+                iu: item.iu || false,
+                pl: item.pl,
+                majcd: item.majcd,
+                aon: item.aon,
+                aid: item.aid,
+                anm: item.anm,
+                st: item.st,
+                stnm: item.stnm
+            });
+    
+            // Push each minData object with the corresponding majId and plnm
+            if (item.minData && Array.isArray(item.minData)) {
+            const tempMinId = "min_"+uuidv4();
+
+                item.minData.forEach((minItem: any) => {
+                    result.push({
+                        majId: minItem.majId || tempMajId,
+                        minId: minItem.minId || tempMinId,
+                        mindsc: minItem.mindsc,
+                        mintid: minItem.mintid,
+                        mincd: minItem.mincd,
+                        plnm: item.plnm,
+                        ie: minItem.ie || false,
+                        id: minItem.id || false,
+                        iu: minItem.iu || false,
+                        pl: item.pl,
+                        aon: minItem.aon,
+                        aid: minItem.aid,
+                        anm: minItem.anm,
+                        st: minItem.st,
+                        stnm: minItem.stnm
+                    });
+                });
+            }
+        });
+    
+        return result;
+
+    }
     
     const onEditDraft = async(draftDetails:any)=>{
         let toastId;
         if(draftDetails.isMTO){
-            console.log("draftDetail......", draftDetails);
+            // console.log("draftDetail......", draftDetails);
             
             try{
                 const res: any = await getDraftByIdMTO({draftId: draftDetails.DraftId, mid: draftDetails.mid});
@@ -257,12 +318,13 @@ const useSavedDrafts = ()=>{
                 dispatch(SET_POOGI_MODIFY_DATA(draftData))
             }
 
+
             const masterState:any = [
                 {   isMTO: true,
                     "id": draftDetails.mid,
                     "name": draftDetails.dnm,
                     "colDefs": [...convertToColDefs(fields,draftDetails.ActionType),{colId: 'err',colPosition: 100, field: 'err',cellRenderer: MTOErrorWarningCell, headerName: 'Error' , pinned: 'left' }],
-                    "rowData": draftDetails.mid?draftData: [],
+                    "rowData": (draftDetails.mid!==503)?draftData: convertToPoogiDraftData(draftData,draftDetails.ActionType),
                     "isChecked": true,
                     "filters": [{
                         id: generateRandomId(),
