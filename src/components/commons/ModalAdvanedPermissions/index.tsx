@@ -62,7 +62,7 @@ const ModalAdvanedPermissions = (props: any) => {
       })])
     }
     
-    if(getActiveApplicationIndex() === 0){
+    if(getActiveApplicationIndex() <= 0){
       setIsOpenUser(true);
       setIsOpenAdvanced(false);
     }
@@ -154,8 +154,8 @@ const ModalAdvanedPermissions = (props: any) => {
       const formData: any = {
         ...infoUser,
         tc: true,
-        product_permissions: productPermissions,
-        location_permissions: locationPermissions
+        product_permissions: productPermissions || [],
+        location_permissions: locationPermissions || [],
         // product_permissions: [],
         // location_permissions: []
       };
@@ -269,12 +269,12 @@ const ModalAdvanedPermissions = (props: any) => {
 
 
   const getCurrentProductPermission = ()=>{
-    if(storePermission.length > 0) return _.cloneDeep(storePermission.find((app:any)=>app.application_id === activeApplication).productPermission);
+    if(storePermission?.length > 0) return _.cloneDeep(storePermission?.find((app:any)=>app.application_id === activeApplication)?.productPermission);
     return {};
   }
 
   const getCurrentLocationPermission = ()=>{
-    if(storePermission.length > 0) return {...storePermission.find((app:any)=>app.application_id === activeApplication).locationPermission};
+    if(storePermission?.length > 0) return {...storePermission?.find((app:any)=>app.application_id === activeApplication)?.locationPermission};
     return {};
   }
 

@@ -168,11 +168,11 @@ export default forwardRef(({ ...props }: any, ref) => {
   ];
   const updatedPermissions =  prdPermissions.map((permission:any,index:any)=>({
     ...permission,
-    title:  headers?.Location[index] ? (headers.Location[index]): permission.title
+    title: headers && headers?.Location &&  headers?.Location[index] ? (headers.Location[index]): permission.title
   })) 
   return (
     <LocationPermission
-      title={headers && Object.keys(headers)[1] + " Permissions" || t(
+      title={headers && Object.keys(headers).length > 0 ? Object.keys(headers)[1] + " Permissions" : t(
         "profile.tabContent.manageUsers.advancedPermission.locationPermission.title"
       )}
       prdPermissions={updatedPermissions}

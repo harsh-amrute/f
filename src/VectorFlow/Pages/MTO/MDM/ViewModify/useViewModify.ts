@@ -3379,7 +3379,7 @@ const useViewModify = (pageType: string) => {
         }
       });
 
-      newVal.ib = e.ib === "false" ? 0 : 1;
+      newVal.ib = (e.ib === "false"|| e.ib===false) ? false : true;
       newVal.iv = e.iv === true || e.iv === false ? e.iv : true;
       newVal.mlt = parseInt(e.mlt);
       newVal.slt = parseInt(e.slt);
@@ -3766,7 +3766,7 @@ const useViewModify = (pageType: string) => {
           e.bt = elm.id;
         }
       });
-      e.ib = e.ib === "false" ? 0 : 1;
+      e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
       if (!e.bid) e.bid = null;
@@ -3822,7 +3822,7 @@ const useViewModify = (pageType: string) => {
           if (isBuffChanged === false) {
             e.bt = bufferTypeData[0].id;
           }
-          e.ib = e.ib === "false" ? 0 : 1;
+          e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
           e.err = "";
@@ -3848,7 +3848,7 @@ const useViewModify = (pageType: string) => {
           if (isBuffChanged === false) {
             e.bt = bufferTypeData[0].id;
           }
-          e.ib = e.ib === "false" ? 0 : 1;
+          e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
           e.err = "";

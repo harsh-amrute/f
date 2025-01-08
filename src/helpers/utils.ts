@@ -360,12 +360,20 @@ export const handleDownload = async (nameApi: string, nameFile: string) => {
 export const handleDownloadMTOVF = async (reportName: string, downloadName: string) => {
   try{
     const token = await MainService.refreshToken();
+    const userid = localStorage.getItem('User-ID');
+    const username = localStorage.getItem('User-Name');
+    
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token?.access}`,
+    };
+    
+    if (userid) headers['User-ID'] = userid;
+    if (username) headers['User-Name'] = username;
+    
     const response = await fetch(`${process.env.REACT_APP_VF_API_HOST_MTO}/DownloadReportData/?report_name=${reportName}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token?.access}`
-      }
-    })
+      headers,
+    });
     if (!response.ok) {
       notifyError("Error while downloading")
     } else {
