@@ -116,6 +116,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     });
     newMenu[index].status = true;
     setListMenu(newMenu);
+    handleItemLeave();
   };
 
   const handleLogout = async () => {
