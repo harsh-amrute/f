@@ -1016,7 +1016,7 @@ const useViewModify = (pageType: string) => {
       if (pageType === "add") {
         const newRowData = _.cloneDeep(activeMaster.rowData);
         newRowData.forEach((ele: any) => {
-          if (typeof ele.err === "string") {
+          if (!ele.err || typeof ele.err === "string") {
             ele.err = { error: "" };
           } else {
             ele.err.error = "";
@@ -1632,7 +1632,7 @@ const useViewModify = (pageType: string) => {
     dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
   };
 
-  const handleOnDeleteFilter = async(id: string) => {
+  const handleOnDeleteFilter = (id: string) => {
     if (activeMaster.filters.length === 1) {
       // dispatch(REMOVE_FILTER(id));
       // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
@@ -3447,7 +3447,6 @@ const useViewModify = (pageType: string) => {
     selectedRows.forEach((e: any) => {
       const newVal = _.cloneDeep(e);
       newVal.cid = e.cid ? e.cid : null;
-      console.log("CCR group master", ccrGroupMaster, ">>>>", ccrGroupMaster[e.cgid],">>>>",e.cgid,">>>>", e.cg);
       const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id
       ? ccrGroupMaster[e.cgid]?.ccr_group_id
       : e.cgid;

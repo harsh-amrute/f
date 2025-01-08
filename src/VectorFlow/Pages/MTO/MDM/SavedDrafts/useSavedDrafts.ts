@@ -231,24 +231,24 @@ const useSavedDrafts = ()=>{
         data.forEach((item: any) => {
             // Push the main object without minData
             const tempMajId = "maj_"+ uuidv4();
-            result.push({
-                majId: item.majId? item.majId: tempMajId,
-                majdsc: item.majdsc,
-                plnm: item.plnm,
-                trmId: item.trmId? item.trmId: item.mintid,
-                tid: item.tid,
-                ti_id: item.ti_id,
-                ie: item.ie || false,
-                id: item.id || false,
-                iu: item.iu || false,
-                pl: item.pl,
-                majcd: item.majcd,
-                aon: item.aon,
-                aid: item.aid,
-                anm: item.anm,
-                st: item.st,
-                stnm: item.stnm
-            });
+            // result.push({
+            //     majId: item.majId? item.majId: tempMajId,
+            //     majdsc: item.majdsc,
+            //     plnm: item.plnm,
+            //     trmId: item.trmId? item.trmId: item.mintid,
+            //     tid: item.tid,
+            //     ti_id: item.ti_id,
+            //     ie: item.ie || false,
+            //     id: item.id || false,
+            //     iu: item.iu || false,
+            //     pl: item.pl,
+            //     majcd: item.majcd,
+            //     aon: item.aon,
+            //     aid: item.aid,
+            //     anm: item.anm,
+            //     st: item.st,
+            //     stnm: item.stnm
+            // });
     
             // Push each minData object with the corresponding majId and plnm
             if (item.minData && Array.isArray(item.minData)) {
@@ -256,6 +256,7 @@ const useSavedDrafts = ()=>{
 
                 item.minData.forEach((minItem: any) => {
                     result.push({
+                        majdsc: item.majdsc,
                         majId: minItem.majId || tempMajId,
                         minId: minItem.minId || tempMinId,
                         mindsc: minItem.mindsc,
