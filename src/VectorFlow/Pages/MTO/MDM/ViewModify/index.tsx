@@ -251,10 +251,15 @@ const MTOViewModify = () => {
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ] 
                   }}
+                  defaultColDef={
+                  {...agGridProps.defaultColDef,
+                    flex: 1}
+                  }
                   rowSelection ={"single"}
                   suppressRowClickSelection={activeMaster.colDefs.some((colDef) => (colDef.field === 'actions'|| colDef.field==='pactions'))? true: false}
                   onSelectionChanged={onMajReasonSelected}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
+                
                   />
                  <VFTable
               
@@ -270,6 +275,10 @@ const MTOViewModify = () => {
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ] 
                     }}
+                    defaultColDef={
+                      {...agGridProps.defaultColDef,
+                        flex: 1}
+                      }
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
                   overlayNoRowsTemplate={"Select a major reason to see the corresponding minor reason"}
                   onCellEditingStopped={onMinReasonEditingStopped}

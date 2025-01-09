@@ -1523,14 +1523,13 @@ const useViewModify = (pageType: string) => {
         master.progress !== "editOnlineSubmitted"
     );
 
-    console.log("bufferModifyData", bufferModifyData);
-    if(((bufferModifyData?.length===undefined || bufferModifyData?.length==0))){
+    if(((bufferModifyData?.length===undefined || bufferModifyData?.length==0) && (ccrModifyData?.length===undefined || ccrModifyData?.length==0))){
       if (activeMaster.isMTO) {
         dispatch(UPDATE_ACTIVE_MASTER(currMaster));
         return;
       }
     }
-    else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
+    else return notifyError(`Please Complete the current Master`);  
   };
 
   const generateDraftPayload = (rowData: any, draftId?: string) => {
@@ -3977,7 +3976,6 @@ const useViewModify = (pageType: string) => {
         }
         PoogiPostObj.reasonData = finPoogiPostData;
         try {
-          console.log("finPoogiPostdata...", PoogiPostObj);
           const response = await savePOOGIMasterDraft([PoogiPostObj]);
     
           if (response.status === 200) {
@@ -4004,7 +4002,7 @@ const useViewModify = (pageType: string) => {
         reasonData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
-
+      console.log("Poogi modify data", poogiModifyData);
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
