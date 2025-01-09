@@ -20,9 +20,6 @@ import {
   parseMTOExcelData,
 } from "../../../../../helpers/utils";
 import {
-  useGetMasterData,
-  useGetMasterUIConfiguration,
-  useGetCount,
   useCreateDraft,
   useModifyDraft,
   useGetSeasonalityDetails,
@@ -220,11 +217,9 @@ const useViewModify = (pageType: string) => {
   );
   const [seasonalityRowData, setSeasonalityRowData] = useState<any>([]);
 
-  const { mutateAsync: masterUIConfiguration, isLoading } =
-    useGetMasterUIConfiguration();
 
   const {
-    mutateAsync: MTOMasterUIConfiguration /*isLoading: MTOBufferLoading*/,
+    mutateAsync: MTOMasterUIConfiguration, isLoading /*isLoading: MTOBufferLoading*/,
   } = useGetMTOMasterUIConfiguration();
   const { mutateAsync: saveBufferMasterTask } = useSaveBufferMasterTask();
   const { mutateAsync: saveCCRMasterTask } = useSaveCCRMasterTask();
@@ -251,15 +246,12 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: getSeasonalityDetails } = useGetSeasonalityDetails();
 
-  const { mutateAsync: getMasterData } = useGetMasterData();
 
   const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
 
   const { mutateAsync: getCCRMasterData } = useGetCCRMasterData();
 
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
-
-  const { mutateAsync: getCount } = useGetCount();
 
   const { mutateAsync: createDraft } = useCreateDraft();
 
@@ -355,20 +347,13 @@ const useViewModify = (pageType: string) => {
     setColDefs(activeMaster.colDefs);
 
     if (filterButtonStatus.length !== 0) return;
-
-    if (activeMaster.id === 0) {
-      if (!isLoading) {
-        const allOptions: Option[] = generateOptions(allMastersState);
-        dispatch(STORE_ALL_MASTERS(allMastersState));
-        dispatch(FILL_OPTIONS(allOptions));
-      }
-
-      const temp: MDMMasterState[] = [];
-      if (selectedOptions.length > 0 && pageType === "modify")
-        dispatch(FILL_MASTERS([...getSelectedMasters(temp)]));
-    }
+    
+    const allOptions: Option[] = generateOptions(allMastersState);
+    dispatch(STORE_ALL_MASTERS(allMastersState));
+    dispatch(FILL_OPTIONS(allOptions));
+   
     // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
-  }, [selectedOptions, isLoading, activeMaster, allMastersState]);
+  }, [selectedOptions, activeMaster, allMastersState]);
 
   const getInitialData = async () => {
     if (activeMaster.id === 501) {
@@ -435,6 +420,7 @@ const useViewModify = (pageType: string) => {
           }
           if (col.colId === "iv") {
             col.cellRenderer = ToggleButton;
+            col.pinned = 'right';
           }
         });
         newColDef.forEach((ele: any) => {
@@ -455,7 +441,7 @@ const useViewModify = (pageType: string) => {
 
   useEffect(() => {
     if (
-      (activeMaster.id === 502 || activeMaster.id === 503) &&
+      (activeMaster.id===501 || activeMaster.id === 502 || activeMaster.id === 503) &&
       ccrGroupMaster &&
       plantMaster &&
       deptMaster &&
@@ -468,6 +454,10 @@ const useViewModify = (pageType: string) => {
       newColDef.forEach((col: any) => {
         if (col.colId === "iv") {
           col.cellRenderer = ToggleButton;
+          col.pinned = 'right';
+        }
+        if(col.colId === "bt"){
+          col.valueFormatter = myFormatter
         }
       });
 
@@ -503,7 +493,7 @@ const useViewModify = (pageType: string) => {
 
       dispatch(UPDATE_COLDEFS([...newColDef]));
     }
-  }, [ccrGroupMaster, plantMaster, deptMaster]);
+  }, [ccrGroupMaster, plantMaster, deptMaster, activeMaster.id]);
 
   useEffect(() => {
     if (masters.length > 0 && filterButtonStatus.length !== 0) {
@@ -520,19 +510,6 @@ const useViewModify = (pageType: string) => {
     }
   }, [activeMaster.progress]);
 
-  useEffect(() => {
-    //Effect to Add chart handler when seasonality master
-    if (activeMaster.id === 10)
-      dispatch(
-        UPDATE_COLDEFS(
-          mapMasterToColumnDefs(
-            activeMaster.fields,
-            activeMaster.id,
-            onShowChart
-          )
-        )
-      );
-  }, []);
 
   const concatenateFields = (
     params1: Parameter[],
@@ -542,7 +519,7 @@ const useViewModify = (pageType: string) => {
     const resultMap: { [key: string]: ConcatenatedResult } = {};
 
     // Process params1
-    params1.forEach((param) => {
+    params1?.forEach((param) => {
       resultMap[param.name] = {
         id: param.id,
         name: param.name,
@@ -551,7 +528,7 @@ const useViewModify = (pageType: string) => {
     });
 
     // Process params2
-    params2.forEach((param) => {
+    params2?.forEach((param) => {
       if (resultMap[param.name]) {
         // Merge fields if the name already exists
         resultMap[param.name].fields = [
@@ -568,6 +545,8 @@ const useViewModify = (pageType: string) => {
         };
       }
     });
+
+    console.log("final ui master states....", Object.values(resultMap));
     // Convert the result map to an array of objects
     return Object.values(resultMap);
   };
@@ -575,7 +554,7 @@ const useViewModify = (pageType: string) => {
   useEffect(() => {
     const getMasterUIConfigurationData = async () => {
       try {
-        const { data } = await masterUIConfiguration(pageType);
+        const { data } = await MTOMasterUIConfiguration();
         setAllMasterState(mapMasterToMasterState(data.data, onShowChart));
       } catch (e) {
         console.error(e);
@@ -588,8 +567,8 @@ const useViewModify = (pageType: string) => {
     const getMasterUIConfigurationData = async () => {
       let data = undefined;
       let MtoBufferdata = undefined;
-      try {
-        const { data: myData } = await masterUIConfiguration(pageType);
+        try {
+        const myData:any = [];
         data = myData;
       } catch (e) {
         console.log(e);
@@ -601,19 +580,11 @@ const useViewModify = (pageType: string) => {
         }
       }
 
-      if (data) {
-        const concatenatedResult = concatenateFields(
-          data?.data,
-          MtoBufferdata?.data?.data
-        );
-        setAllMasterState(
-          mapMasterToMasterState(concatenatedResult, onShowChart)
-        );
-      } else {
         setAllMasterState(
           mapMasterToMasterState(MtoBufferdata?.data?.data, onShowChart)
         );
-      }
+
+  
     };
 
     getMasterUIConfigurationData();
@@ -1490,11 +1461,7 @@ const useViewModify = (pageType: string) => {
             return col;
           });
 
-          dispatch(UPDATE_COLDEFS(finColDefs));
-        }
-      } else {
-        if (!activeMaster.isMTO) {
-          resultData = await getCount(payload);
+          dispatch(UPDATE_COLDEFS(finColDefs))
         }
       }
     } else {
@@ -1509,8 +1476,6 @@ const useViewModify = (pageType: string) => {
         dispatch(SET_POOGI_INITIAL_DATA(resultData.data.data));
       } else if (activeMaster.id === 504 && activeMaster.isMTO) {
         resultData = await getCalendarMasterData();
-      } else {
-        resultData = await getMasterData(payload);
       }
     }
 
@@ -1551,22 +1516,21 @@ const useViewModify = (pageType: string) => {
   const handleTabChange = (currMaster: MDMMasterState) => {
     if (currMaster.progress === "submitted")
       return notifyError(`The ${currMaster.name} is already submitted`);
-    if (activeMaster.isMTO) {
-      dispatch(UPDATE_ACTIVE_MASTER(currMaster));
-      return;
-    }
+    
     const nextMasterIndex = masters.findIndex(
       (master: MDMMasterState) =>
         master.progress !== "submitted" &&
         master.progress !== "editOnlineSubmitted"
     );
 
-    if (currMaster.id === masters[nextMasterIndex].id)
-      return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
-    else
-      return notifyError(
-        `Please Complete the ${masters[nextMasterIndex].name}`
-      );
+    console.log("bufferModifyData", bufferModifyData);
+    if(((bufferModifyData?.length===undefined || bufferModifyData?.length==0))){
+      if (activeMaster.isMTO) {
+        dispatch(UPDATE_ACTIVE_MASTER(currMaster));
+        return;
+      }
+    }
+    else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
   };
 
   const generateDraftPayload = (rowData: any, draftId?: string) => {
@@ -1911,9 +1875,9 @@ const useViewModify = (pageType: string) => {
       getInitialData();
 
       /////
-      const updatedColdefs = activeMaster?.colDefs?.map((col: ColDef) => {
+      const updatedColdefs:any = activeMaster?.colDefs?.map((col: ColDef) => {
         // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-        if (col.field === "iv") return { ...col, cellRenderer: ToggleButton };
+        if (col.field === "iv") return { ...col, cellRenderer: ToggleButton, pinned: 'right' };
         if (col.field === "bt")
           return {
             ...col,
@@ -2970,7 +2934,7 @@ const useViewModify = (pageType: string) => {
     let val = params.value;
     if (bufferTypeData) {
       bufferTypeData.forEach((ele: any) => {
-        if (ele.id.toString() === currBuff.toString()) {
+        if (ele.id.toString() === currBuff?.toString()) {
           val = ele.dsc;
         }
       });
@@ -3450,9 +3414,10 @@ const useViewModify = (pageType: string) => {
       const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id
       ? ccrGroupMaster[e.cgid]?.ccr_group_id
       : e.cgid;
-      newVal.cgid = ccrGid;
+      newVal.cgid = isNaN(ccrGid)?e.ccr_group: ccrGid;
       newVal.plid = e.pl;
       newVal.dpid = e.dp;
+      newVal.iv = (e.iv===true||e.iv==false)?e.iv: true;
       deptMaster.forEach((elm: any) => {
         if (elm.dept_name === e.dp) newVal.dpid = elm.dept_id;
       });
@@ -3632,7 +3597,7 @@ const useViewModify = (pageType: string) => {
         const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id
           ? ccrGroupMaster[e.cgid]?.ccr_group_id
           : e.cgid;
-        e.cgid = ccrGid;
+        e.cgid = ccrGid || e.ccr_group;
         e.plid = e.pl;
         e.dpid = e.dp;
         deptMaster.forEach((elm: any) => {
@@ -3768,6 +3733,7 @@ const useViewModify = (pageType: string) => {
       e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
+      e.iv = (e?.iv ===false|| e?.iv===true)? e.iv : true
       if (!e.bid) e.bid = null;
 
       if (e.bid === null || e.iv === false) {
@@ -3895,7 +3861,7 @@ const useViewModify = (pageType: string) => {
           ? ccrGroupMaster[e.cgid]?.ccr_group_id
           : e.cgid;
         e.cid = ele.cid ? ele.cid : null;
-        e.cgid = ccrGid;
+        e.cgid = isNaN(ccrGid)?e.ccr_group: ccrGid;
         e.plid = e.pl;
         e.dpid = e.dp;
         deptMaster.forEach((elm: any) => {
@@ -3910,6 +3876,7 @@ const useViewModify = (pageType: string) => {
         e.rb = Number(e.rb);
         e.cwl = parseInt(e.cwl);
         e.sh = parseInt(e.sh);
+        e.iv = (e.iv===true||e.iv==false)?e.iv: true;
         e.err = "";
         CCRPostObj.ccrData.push(_.omit(e, ["editable", "error", "warning"]));
       });
@@ -4164,7 +4131,6 @@ const useViewModify = (pageType: string) => {
     handleOnDeleteFilter,
     allMastersState,
     handleApplyFilter,
-    isLoading,
     isWarningModalOpen,
     toggleWarningModal,
     onWarningModalClose,
@@ -4201,6 +4167,7 @@ const useViewModify = (pageType: string) => {
     // onSaveToDraft,
     onSeasonalityQuickFilter,
     handleChangePage,
+    isLoading,
     onReset,
     onEditOnlineSave,
     chartData,
