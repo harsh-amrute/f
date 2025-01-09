@@ -7,12 +7,12 @@ export const getAvaialabilityTrend = async (body:{horison:number}) => {
     })
   }
   export const getChronicUnavailabilityLoc = async () => {
-    return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/ChronicUnavailabilityLoc`,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/ChronicUnavailabilityLoc`,{},{
       headers: { 'Content-Type': 'application/json' }
     })
   }
   export const getChronicUnavailabilitySku = async () => {
-    return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/ChronicUnavailabilitySku`,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/ChronicUnavailabilitySku`,{},{
       headers: { 'Content-Type': 'application/json' }
     })
   }
