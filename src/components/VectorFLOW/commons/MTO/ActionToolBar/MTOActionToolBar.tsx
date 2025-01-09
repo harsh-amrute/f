@@ -142,7 +142,6 @@ const MTOActionToolBar = ({
 
     const { user } = useUserData();
     const themes = user?.user?.theme_ui;
-    console.log("action tool bar theme",themes);
     
 
     
@@ -485,9 +484,7 @@ const MTOActionToolBar = ({
                         <SCViewContainerWithBg onClick={onExcelExportClick}
                          >
                             <>
-                                {/* <SCViewImage
-                                    src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" 
-                                /> */}
+                               
                                 <ExportExcelSVG theme={themes}/>
                                 <p>Excel Export</p>
                             </>
@@ -497,15 +494,13 @@ const MTOActionToolBar = ({
                     {isGridView && handleSaveClick && handleResetClick && <>
                         <SCVerticalDividerGray />
                         <SCViewContainerWithBg onClick={() => handleSaveClick()}>
-                            {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
-                             */}
+                           
 
                             <SaveSVG theme={themes}/>
 
                             <p>Save</p>
                         </SCViewContainerWithBg>
                         <SCViewContainerWithBg onClick={() => handleResetClick()}>
-                            {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" /> */}
                             <ResetSVG theme={themes}/>
                             <p>Reset</p>
                         </SCViewContainerWithBg>

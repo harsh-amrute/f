@@ -18,7 +18,7 @@ const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
             styles={{
                 container: (base) => ({
                     ...base,
-                    width: placeholder == "Select Action" ? 170 : "100%"
+                    width: placeholder == "Select Order Type" ? 170 : "100%"
                 }),
                 control: (base: any, state: any) => ({
                     ...base,

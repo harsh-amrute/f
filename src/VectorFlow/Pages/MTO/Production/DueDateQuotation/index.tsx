@@ -37,7 +37,6 @@ const DueDateQuotation = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
-  // console.log("theee theemes", themeUi);
   
   //States
   const [currentPage, setCurrentPage] = useState<number>(1);
