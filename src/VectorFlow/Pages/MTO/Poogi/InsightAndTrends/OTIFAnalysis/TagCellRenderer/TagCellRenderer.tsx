@@ -9,10 +9,10 @@ const TagCellToolTip = (params: any) => {
   const allTags = OTIFTags[params.value].split('_');
   const tags: string[] = [];
   
-  if (allTags[1] === 'True') {
+  if (allTags[1] === 'False') {
     tags.push('ot');
   }
-  if (allTags[3] === 'True') {
+  if (allTags[3] === 'False') {
     tags.push('if');
   }
 
