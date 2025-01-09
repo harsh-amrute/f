@@ -1,6 +1,9 @@
-import './styles.css'
 import { useState} from 'react';
 import moment from 'moment';
+import { useUserData } from "../../../../../context/index";
+import { DatePickerWrapper } from "./styles"
+
+// in these component i need to change the color theme dynamically i.e the color of the date picker should be changed dynamically
 
 const DueDateCellRenderer = (params: any) => {
 
@@ -9,8 +12,13 @@ const DueDateCellRenderer = (params: any) => {
     const d = new Date();
     const [datetime] = useState(moment(d).format(format2));
 
+    const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
+
+    console.log()
+
     return (
-        <div style={{width: '100%', height: '100%', padding: '1%', position: 'relative'}}>
+        <DatePickerWrapper theme={themeUi}>
             <input type="date"
                 className='date-pick'
                 id='dateField'
@@ -34,8 +42,10 @@ const DueDateCellRenderer = (params: any) => {
                     pointerEvents: (!params.node.selected) ? 'none' : 'unset',
                     cursor: (!params.node.selected) ? 'not-allowed' : 'pointer'
                 }}
-                min={datetime}
 
+                
+
+                min={datetime}
                 disabled={!params.node.selected}
                 onChange={(e) => { params.data.dd = e.target.value,params.data.addChangeDate(e.currentTarget.value, params.data.odk), setCurrDate(e.target.value) }}
                 value={(!params.node.selected)?params.data.oldDate:currDate}
@@ -44,7 +54,7 @@ const DueDateCellRenderer = (params: any) => {
             <p style={{position: 'absolute', zIndex: '2', top: '9%', left: '25%', padding: '0.8% 6%', background: 'transparent'}}>
                 {(!params.node.selected)?params.data.oldDate:currDate}
             </p>
-        </div>
+        </DatePickerWrapper>
 
 
 

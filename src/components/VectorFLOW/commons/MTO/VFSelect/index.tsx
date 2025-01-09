@@ -10,6 +10,7 @@ const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
             isSearchable={true}
             components={{
                 IndicatorSeparator: () => null,
+                
                 DropdownIndicator: icon ? icon : null,
             }}
             menuPlacement={"auto"}
