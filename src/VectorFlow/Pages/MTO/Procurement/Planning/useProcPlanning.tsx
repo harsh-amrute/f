@@ -130,7 +130,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 cs: JSON.stringify(config)
             }
             await updateUserUIReportConfigData([payload]);
-            !isReset && notifySuccess("Saved Successfullyu")
+            !isReset && notifySuccess("Saved Successfully")
                 
 
         } catch (error) {
