@@ -90,10 +90,10 @@ const VerticalSplitView = (props: SplitViewProps) => {
     return (
         <BTRTableWrapper>
             <Allotment defaultSizes={[600, 300]} vertical={false} onChange={handleChange}>
-                <Allotment.Pane >
+                <Allotment.Pane minSize={500}>
                     <BTRTableHeader style={{ display: 'flex', justifyContent: 'flex-start', marginLeft: '50%' }}>{techTable.header}</BTRTableHeader>
                     <VerticalViewLeftTableWrapper>
-                        <div style={{ marginTop: -10, height: '85%', width: '100%' }}>
+                        <div style={{ marginTop: -10, height: '85%', width: '100%',minWidth:'50%' }}>
                             <CustomVFTable
                                 ref={ref3}
                                 rowHeight={25}
@@ -120,7 +120,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 />
                             </div>
                         </div>
-                        <div style={{ marginTop: -10, height: '85%', width: '100%' }}>
+                        <div style={{ marginTop: -10, height: '85%', width: '100%' ,minWidth:'50%'}}>
                             <CustomVFTable
                                 ref={ref1}
                                 rowHeight={25}
@@ -160,7 +160,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                         />
                     </VFTableWrapper> */}
                 </Allotment.Pane>
-                <Allotment.Pane>
+                <Allotment.Pane minSize={300}>
                     <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
                     <div style={{ marginTop: -10, height: '85%', paddingLeft: '17px' }}>
                         <CustomVFTable
