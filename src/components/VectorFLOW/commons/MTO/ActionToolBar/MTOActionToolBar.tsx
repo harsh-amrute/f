@@ -102,7 +102,6 @@ const MTOActionToolBar = ({
     submitDate,
     date,
     handleGoBack,
-    themeUi,
     isGoBackButton,
     isReleaseDate,
     isAsOnDate,

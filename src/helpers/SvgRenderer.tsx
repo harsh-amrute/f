@@ -4,7 +4,7 @@ interface SvgRendererProps {
   alt?: string;
 }
 
-export const ExportExcelSVG: React.FC<SvgRendererProps> = ({ theme, alt = '' }) => {
+export const ExportExcelSVG: React.FC<SvgRendererProps> = ({ theme }) => {
   const fillColor = theme === 'REGALBLAZE' ? "#FCA311" : "#BC3D81";
 
   return (
@@ -41,7 +41,7 @@ export const ExportExcelSVG: React.FC<SvgRendererProps> = ({ theme, alt = '' }) 
 
 
 
-export const SaveSVG: React.FC<SvgRendererProps> = ({theme, alt = '' }) => {
+export const SaveSVG: React.FC<SvgRendererProps> = ({theme }) => {
 
   const fillColor = theme === 'REGALBLAZE' ? "#FCA311" : "#BC3D81";
 
@@ -54,7 +54,7 @@ export const SaveSVG: React.FC<SvgRendererProps> = ({theme, alt = '' }) => {
 };
 
 
-export const ResetSVG: React.FC<SvgRendererProps> = ({theme, alt = '' }) => {
+export const ResetSVG: React.FC<SvgRendererProps> = ({theme }) => {
 
   const fillColor = theme === 'REGALBLAZE' ? "#FCA311" : "#BC3D81";
 
