@@ -77,17 +77,17 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const useProcPlanning = (date: string, appliedFilters: any) => {
-    const [HeaderData, setHeaderData] = useState([{}]);
-    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+    const [HeaderData, setHeaderData] = useState<any>([]);
+    const gridRef = useRef<AgGridReact>(null);
     const [columnState, setColumnState] = useState<any>([]);
-    const [isReset, setIsReset] = useState(false);
-    const [colDef, setColDef] = useState([{}]);
+    const [isReset, setIsReset] = useState<boolean|undefined>(undefined);
+    const [colDef, setColDef] = useState<any>([{}]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { colDefMap , getColDef} = useColDef();
     const reportName = "ProcurementPlanningShortage";
-
+    const [defaultColState,setDefaultColState] = useState<any>([])
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
@@ -98,6 +98,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             console.log(e);
         }
     }
+
 
     const getUserColumnConfig = async () => {
         try {
@@ -117,22 +118,24 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (isReset = false) => {
+    
+        const config = isReset ?  defaultColState : gridRef?.current?.api?.getColumnState();
+
         try {
-            if (currentGridRef?.current?.api) {
-                const config = currentGridRef.current.api.getColumnState();
-                console.log(config, 'CONFIG')
-                const payload = {
-                    un: user.user.name,
-                    rn_id: UIGridCode.ProcPlanning,
-                    cs: JSON.stringify(config)
-                }
-                await updateUserUIReportConfigData([payload]);
-                await getUserColumnConfig();
+            
+            const payload = {
+                un: user.user.name,
+                rn_id: UIGridCode.ProcPlanning,
+                cs: JSON.stringify(config)
             }
+            await updateUserUIReportConfigData([payload]);
+            !isReset && notifySuccess("Saved Successfullyu")
+                
 
         } catch (error) {
             console.error(error);
+            notifyError("Error while saving")
         }
     }
 
@@ -141,20 +144,26 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }
 
     useEffect(() => {
+
         if (isReset) {
-            setColumnState(colDef);
+            setColumnState(defaultColState);
             setIsReset(false)
+            notifySuccess("Reset Successfully")
         } else {
-            handleSaveClick();
+            if(isReset===false){
+                handleSaveClick(true);
+            }
         }
     }, [isReset]);
 
     useEffect(() => {
-        getUserColumnConfig();
         setColumnDef();
     }, [])
 
-    const gridRef = useRef<AgGridReact>(null);
+    useEffect(()=>{
+        getUserColumnConfig();
+    },[colDef])
+
     const { isSideBarOpen } = useUserData()
     const navigate = useNavigate();
     const [datas, setData] = useState<any>([]);
@@ -192,7 +201,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         setIsLoading(true);
         if(isExcelExport){
             try {
-                const headersdata = currentGridRef?.current?.api.getColumnState();
+                const headersdata = gridRef?.current?.api.getColumnState();
                 const formattedFilters = formatFilterJSON(appliedFilters)
                 const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
                 const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning });
@@ -330,11 +339,18 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     ]
 
     useEffect(() => {
-        if (currentTab.label === 'Shortage') {
-            setColDef(getColumnDefinations(HeaderData, customHeader, extras))
-        }
-        else {
-            setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
+        if(HeaderData && HeaderData.length>0){
+
+            console.log("header data....", HeaderData);
+
+            if (currentTab.label === 'Shortage') {
+                
+                setColDef(getColumnDefinations(HeaderData, customHeader, extras))
+            }
+            else {
+                console.log("coldef with extras", getColumnDefinations(HeaderData,customHeader,extras, ["ExpAdd.StockToday"]))
+                setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
+            }
         }
     }, [HeaderData])
 
@@ -366,7 +382,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
 
     }, [currentTab])
-
 
 
     const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
@@ -499,8 +514,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     };
 
     useEffect(() => {
-        if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
-            const result = currentGridRef?.current?.api?.applyColumnState({
+        if (gridRef?.current && columnState?.length && colDef.length > 0) {
+            const result = gridRef?.current?.api?.applyColumnState({
                 state: columnState,
                 applyOrder: true
             });
@@ -508,7 +523,15 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 console.error('Failed to apply column state');
             }
         }
-    });
+    },[columnState]);
+
+    useEffect(()=>{
+
+        if(colDef){
+            setDefaultColState(gridRef?.current?.api?.getColumnState());
+            
+        }
+    },[colDef])
 
     const renderView = () => {
         switch (currentTab.id) {
@@ -517,6 +540,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                     <TableWrapper>
                         <VFTable
                             {...agGridProps}
+                            key={isReset?3: 4}
                             columnDefs={colDef}
                             rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}
@@ -525,9 +549,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             ref={gridRef}
                             onGridReady={(params: any) => {
                                 params.api.autoSizeAllColumns();
-
-                                setCurrentGridRef(gridRef);
+                                // setDefaultColState(params?.api?.getColumnState())
+                                
                             }}
+                            maintainColumnOrder={true}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -561,9 +586,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             ref={gridRef}
                             onGridReady={(params: any) => {
                                 params.api.autoSizeAllColumns();
-
-                                setCurrentGridRef(gridRef);
                             }}
+                            maintainColumnOrder={true}
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
