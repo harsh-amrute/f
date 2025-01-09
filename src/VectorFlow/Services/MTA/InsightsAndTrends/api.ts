@@ -24,22 +24,22 @@ export const getAvaialabilityTrend = async (body:{horison:number}) => {
     })
   }
   export const getDBMNormSuggestionLoc = async () => {
-    return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/DBMNormSuggestionLoc`,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/DBMNormSuggestionLoc`,{},{
       headers: { 'Content-Type': 'application/json' }
     })
   }
   export const getDBMNormSuggestionPie = async () => {
-    return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/DBMNormSuggestionPie`,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/DBMNormSuggestionPie`,{},{
       headers: { 'Content-Type': 'application/json' }
     })
   }
   export const getDBMNormSuggestionSKUs = async () => {
-    return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/DBMNormSuggestionSKUs`,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/DBMNormSuggestionSKUs`,{},{
       headers: { 'Content-Type': 'application/json' }
     })
   }
   export const getDBMNormSuggestionAgeing = async () => {
-    return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/DBMNormSuggestionAgeing`,{
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/DBMNormSuggestionAgeing`,{},{
       headers: { 'Content-Type': 'application/json' }
     })
   }
