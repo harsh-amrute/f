@@ -789,6 +789,7 @@ const DynamicReleaseManagement = () => {
           isExcelExport 
           onExcelExportClick={ExcelData}
           isAddFilterButton 
+          themeUi={themeUi}
           isReleaseButton 
           isReleaseButtonDisabled={isReleaseButtonDisabled} 
           onOrderRelease={onOrderRelease} 

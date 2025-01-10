@@ -4,9 +4,9 @@ import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/A
 import { SaveBtnWrapper, SaveBtn, Wrapper } from './styles';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks, useGetPoogReasonForDealyedOrderExcel } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
+import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks, useGetPoogReasonForDealyedOrderExcel, useGetPoogiMajorMinorReason } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import { toast } from 'react-toastify';
-import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers/notify';
+import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import { AgGridReactProps } from 'ag-grid-react';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useUserData } from '../../../../../context';
@@ -42,12 +42,13 @@ type MyObject = {
 };
 
 const ReasonForDelayOrder = () => {
+    const { data: reasonData, isLoading: isGetPoogiMajorMinorReason } = useGetPoogiMajorMinorReason();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-    const { mutateAsync: getPoogiReasonsDelayedOrder, isLoading } = useGetReasonForDelayOrder();
+    const { mutateAsync: getPoogiReasonsDelayedOrder, isLoading: isPoogiReasonsDelayedOrder } = useGetReasonForDelayOrder();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
-    const { mutateAsync: updatePoogiRemarks } = usePutPoogiRemarks();
+    const { mutateAsync: updatePoogiRemarks, isLoading: isPutPoogiRemarks} = usePutPoogiRemarks();
     const [rowData, setRowData] = useState<any>();
-    const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
+    const [isWIPChecked, setWIPChecked] = useState<boolean>(true);
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     //const [items, setItems] = useState<any[]>([]);
@@ -56,29 +57,31 @@ const ReasonForDelayOrder = () => {
     const [rowDataCount, setRowDataCount] = useState<number>(0);
     const [currentGridRef, setCurrentGridRef] = useState<any>(null);
     const [columnState, setColumnState] = useState<any>([]);
-    const [isReset, setIsReset] = useState(false);
+    const [isReset, setIsReset] = useState<any>(undefined);
     const [colDef, setColDef] = useState([{}]);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { 
-        state: currFilter, 
-        setState: setCurrFilter, 
-        onFilterRemove, 
-        isFilterOpen, 
+    const {
+        state: currFilter,
+        setState: setCurrFilter,
+        onFilterRemove,
+        isFilterOpen,
         isMfgSelected,
-        onAddFilter, 
-        onApplyFilter, 
+        onAddFilter,
+        onApplyFilter,
         toggleFilter,
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Reason_For_Delayed_Orders);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();  
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const reportName = 'ReasonForDelayedOrders';
     const tableRowRef = useRef<any>(null);
     const { user } = useUserData();
-    const { colDefMap , getColDef} = useColDef();
-    const { mutateAsync : getPoogiReasonsDelayedOrderExcelExport} = useGetPoogReasonForDealyedOrderExcel();
+    const { colDefMap, getColDef } = useColDef();
+    const { mutateAsync: getPoogiReasonsDelayedOrderExcelExport } = useGetPoogReasonForDealyedOrderExcel();
     const themeUi = user?.user?.theme_ui;
+    const [masterUIConfig, setMasterUIConfig] = useState([]);
+    const unsavedUserData = useRef(new Map());
 
     const sideBar = useMemo(() => {
         return {
@@ -100,16 +103,20 @@ const ReasonForDelayOrder = () => {
             enableRangeSelection: true,
             pagination: true,
             defaultColDef: {
+                cellRendererParams: {
+                    isWip: isWIPChecked,
+                    reasonData: reasonData,
+                },
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
                 cellStyle: {
-                    'text-align': 'center',
+                    'textAlign': 'center',
                     //'height': '50px',
                     //"font-style": "Roboto",
                     //"font-variant": "normal",
-                    "font-size": "18px",
-                    "font-family": "Roboto",
-                    'white-space': 'nowrap',
+                    "fontSize": "18px",
+                    "fontFamily": "Roboto",
+                    'whiteSpace': 'nowrap',
                     'resizable': 'true',
                     'color': '#000'
                 },
@@ -124,8 +131,17 @@ const ReasonForDelayOrder = () => {
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
-        pivotMode: false
-    };
+        pivotMode: false,
+        onCellValueChanged: (params) => onCellValueChanged(params.data),
+    }
+
+    const onCellValueChanged = (newRow: any) => {
+        if (newRow.maj !== null) {
+            unsavedUserData.current.set(newRow.ok, newRow);
+        } else {
+            unsavedUserData.current.delete(newRow.ok);
+        }
+    }
 
     const customHeader = {
         RemarksHistory: {
@@ -141,8 +157,12 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             initialWidth: 300,
+            cellStyle: {
+                'background': 'none',
+                'border': "none",
+            },    
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} isWip={isWIPChecked} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
+                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min}
                 />
             }
         },
@@ -150,8 +170,12 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             minWidth: 300,
+            cellStyle: {
+                'background': 'none',
+                'border': "none",
+            },
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} rowData={rowData} isWip={isWIPChecked} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
+                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min}
                 />
             },
 
@@ -185,31 +209,29 @@ const ReasonForDelayOrder = () => {
     }
 
     //to get the rowdata for Aggrid
-    const getInitialData = async (wipval: boolean, page: number, isExcelExport = false) => {
-        if(isExcelExport){
+    const getInitialData = async (wipval = isWIPChecked, page = 1, isExcelExport = false) => {
+        if (isExcelExport) {
             try {
                 const headersdata = currentGridRef?.current?.api.getColumnState();
                 const formattedFilters = formatFilterJSON(appliedFilters);
-                const body = getBodyForExcelExport({headersdata,appliedFilters : formattedFilters,colDefMap});
-                const apiResponse = await getPoogiReasonsDelayedOrderExcelExport({ wip : wipval == true ? 1 : 0,body, isExcelExport : 1, report_name : FilterPageName.Poogi_Reason_For_Delayed_Orders})
-                if(apiResponse.status == 200) {
-                    DownloadExcel(apiResponse,FilterPageName.Poogi_Reason_For_Delayed_Orders)
-                }else{
+                const body = getBodyForExcelExport({ headersdata, appliedFilters: formattedFilters, colDefMap });
+                const apiResponse = await getPoogiReasonsDelayedOrderExcelExport({ wip: wipval == true ? 1 : 0, body, isExcelExport: 1, report_name: FilterPageName.Poogi_Reason_For_Delayed_Orders })
+                if (apiResponse.status == 200) {
+                    DownloadExcel(apiResponse, FilterPageName.Poogi_Reason_For_Delayed_Orders)
+                } else {
                     notifyError("Error downloading")
                 }
             } catch (error) {
                 notifyError("An error occurred")
                 console.log(error)
             }
-        }else{
+        } else {
 
             try {
-                setCurrentPage(page);
-                setWIPCheck(wipval);
                 const formatedFilters = formatFilterJSON(appliedFilters);
                 const apiResponse = await getPoogiReasonsDelayedOrder({ 'wip': wipval === true ? 0 : 1, 'curr': page, appliedFilters: formatedFilters });
                 setRowDataCount(apiResponse.data?.data?.count);
-                setRowData(apiResponse?.data?.data?.results)
+                setRowData(apiResponse?.data?.data?.results);
             }
             catch (e) {
                 console.log(e)
@@ -240,38 +262,49 @@ const ReasonForDelayOrder = () => {
 
     const getUserColumnConfig = async () => {
         try {
-          const data = await getUserUIReportConfigData({
-            un: user.user.name,
-            rn_id: UIGridCode.PoogiReasonForDelayedOrders
-          });
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.PoogiReasonForDelayedOrders
+            });
     
-          const newConfig =  data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-          setColumnState(newConfig);
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+            setColumnState(newConfig);
     
-          if (!data) {
-            console.error('Failed to apply column state');
-          }
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-            if(currentGridRef?.current?.api){
-                const config = currentGridRef?.current?.api?.getColumnState() || [];
-        
+            if (coldefs) {
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.PoogiReasonForDelayedOrders,
-                    cs: JSON.stringify(config)
-                }
+                    cs: JSON.stringify(coldefs),
+                };
                 await updateUserUIReportConfigData([payload]);
-                await getUserColumnConfig();
+                setColumnState([...coldefs]);
+        
+            } else {
+                if (currentGridRef?.current?.api) {
+                    const config = currentGridRef?.current?.api?.getColumnState() || [];
+        
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.PoogiReasonForDelayedOrders,
+                        cs: JSON.stringify(config)
+                    }
+                    await updateUserUIReportConfigData([payload]);
+                    await getUserColumnConfig();
+                }
             }
 
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
     }
 
@@ -281,80 +314,71 @@ const ReasonForDelayOrder = () => {
 
     const getFilterData = async () => {
         try {
-          const response = await getPageWiseFilterData({ page_name: FilterPageName.Poogi_Reason_For_Delayed_Orders, isAssigned: isWIPChecked ? 0 : 1 });
-          setFilterData(response?.data.data);
+            const response = await getPageWiseFilterData({ page_name: FilterPageName.Poogi_Reason_For_Delayed_Orders, isAssigned: isWIPChecked ? 0 : 1 });
+            setFilterData(response?.data.data);
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
     useEffect(() => {
-        getUserColumnConfig();
         getHeaderData();
     }, []);
     
-    useEffect(()=>{
-        getInitialData(true, 1);
-    },[appliedFilters])
-    
-    useEffect(()=>{
-        getFilterData();
-    },[isWIPChecked])
-
     useEffect(() => {
-        if (isLoading) {
-            toast.dismiss();
-            notifyLoader("Loading Data ...")
+        if (Object.entries(appliedFilters).length) {
+            setCurrentPage(1);
+            getInitialData();
         }
-        else {
-            toast.dismiss();
-        }
-    }, [isLoading, isWIPChecked])
+    }, [appliedFilters])
+    
+    useEffect(() => {
+        getFilterData();
+    }, [isWIPChecked])
 
-    const checkForNullMinid = async (data: any): Promise<boolean> => {
+    const checkForNullMinid = async (data: any): Promise<any> => {
         return new Promise((resolve) => {
-            const hasNullMinid = data.some((item: any) => item.minid === null);
+            const hasNullMinid = data.find((item: any) => item.minid === null);
             resolve(hasNullMinid);
         });
     };
 
     const updateMajorMinorReason = async () => {
-        //console.log('body to api = ', tableRowRef.current.props.rowData)
-        const allRows = tableRowRef?.current?.props?.rowData;
         let putData: MyObject[] = [];
-        allRows.forEach((e: any) => {
+
+        unsavedUserData.current.forEach((updatedRow) => {
             const singleData: any = {
-                'ok': e.ok,
+                'ok': updatedRow.ok,
                 minid: null,
                 majid: null
             }
-            if (e.maj) {
-                singleData['majid'] = Number(e.maj);
-                if (e.min) {
-                    singleData.minid = Number(e.min);
+            if (updatedRow.maj) {
+                singleData['majid'] = Number(updatedRow.maj);
+                if (updatedRow.min) {
+                    singleData.minid = Number(updatedRow.min);
                 }
                 putData.push(singleData);
             }
-        })
-        // console.log('put', putData)
+        });
+
         if (putData.length === 0) {
-            notifyError("Please Select Minor Reason ")
+            notifyError("Please Select Reason")
         } else {
             const checkData = async () => {
                 const result = await checkForNullMinid(putData);
                 // Execute further code if `minid` is null
                 if (result) {
                     // Place your further code here
-                    notifyError('Please select Minor Reason');
+                    notifyError('Please select Minor Reason For Order Id: ' + result.ok.split("_")[0]);
                 } else {
                     const RemarkHistory = await updatePoogiRemarks(putData);
-                    //console.log('remarkHistory', RemarkHistory)
                     if (RemarkHistory.status == 200) {
                         toast.dismiss();
                         notifySuccess('Successfull');
                         if (isWIPChecked) {
                             getInitialData(isWIPChecked, 1)
                         }
+                        unsavedUserData.current.clear();
                         putData = [];
                     }
                 }
@@ -366,10 +390,23 @@ const ReasonForDelayOrder = () => {
 
     const handlePageChange = (currPage: number) => {
         setCurrentPage(currPage);
-        getInitialData(isWIPChecked ? true : false, currPage)
+        getInitialData(isWIPChecked, currPage);
     }
 
-    useEffect(()=>{ 
+    const updateUserChanges = (params: any) => {
+        if (unsavedUserData.current.size > 0) {
+            // Update grid
+            params.api.forEachNode((node: any) => {
+                unsavedUserData.current.forEach((updatedRow) => {
+                    if (node.data.ok === updatedRow.ok) {
+                        node.setData(updatedRow);
+                    }
+                }); 
+            });
+        }
+    }
+    
+    useEffect(() => {
         if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
             const result = currentGridRef?.current?.api?.applyColumnState({
                 state: columnState,
@@ -379,36 +416,45 @@ const ReasonForDelayOrder = () => {
                 console.error('Failed to apply column state');
             }
         }
-    });
+    },[columnState]);
 
     useEffect(() => {
         if (isReset) {
-          setColumnState(colDef);
-          setIsReset(false)
-        }else{
-          handleSaveClick();
+            handleSaveClick(masterUIConfig);
+            setIsReset(false);
         }
     }, [isReset]);
 
+    useEffect(() => {
+        if (colDef.length > 0) {
+            if (currentGridRef?.current) {
+                setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+                getUserColumnConfig();
+            }
+        }
+    }, [colDef]);
       
-    if (!rowData) {
-        return null;
+    // if (!rowData) {
+    //     return null;
+    // }
+
+    const ExcelData = () => {
+        getInitialData(isWIPChecked, 0, true);
     }
-    const ExcelData = ()=>{
-        getInitialData(isWIPChecked,0,true)
-    }
+
 
     return (
         <div>
             <MTOActionToolBar
                 quickFilter={
                     <div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>
-                        <Checkbox checked={isWIPChecked} onChange={(e) => getInitialData(e.target.checked, 1)} theme={themeUi} /> &nbsp;&nbsp; <strong>
+                        <Checkbox checked={isWIPChecked} onChange={(e) => setWIPChecked(e.target.checked)} theme={themeUi} /> &nbsp;&nbsp; <strong>
                             Show Only Unassigned Orders
                         </strong>
                     </div>
                 }
                 isAddFilterButton
+                themeUi={themeUi}
                 isExcelExport
                 onExcelExportClick={ExcelData}
                 handleSaveClick={handleSaveClick}
@@ -422,44 +468,45 @@ const ReasonForDelayOrder = () => {
                 onFilterRemove={onFilterRemove}
                 isMfgSelected={isMfgSelected}
             />
-            {(isLoading || isUpdateUserConfig || isGetUserConfig) ?
-                <OverlayLoader /> :
-                <Wrapper>
-                    <VFTable
-                        {...agGridProps}
-                        paginationPageSize={10}
-                        height='480px'
-                        columnDefs={colDef}
-                        rowData={rowData}
-                        pagination={false}
-                        ref={tableRowRef}
-                        onGridReady={(params: any) => {
-                            params?.api.autoSizeAllColumns();
-                            setCurrentGridRef(tableRowRef);
-                        }}
-                    />
-                    <VFPagination
-                        selectedRows={0}
-                        rowsPerPage={pagination.mtoPageSize}
-                        totalRows={rowDataCount}
-                        currentPage={currentPage}
-                        handleChangePage={handlePageChange}
-                    />
+            {(isPoogiReasonsDelayedOrder || isUpdateUserConfig || isGetUserConfig || isGetPoogiMajorMinorReason || isPutPoogiRemarks) && (<OverlayLoader />)}
+            <Wrapper>
+                <VFTable
+                    {...agGridProps}
+                    paginationPageSize={10}
+                    height='480px'
+                    columnDefs={colDef}
+                    rowData={rowData}
+                    pagination={false}
+                    ref={tableRowRef}
+                    onGridReady={(params: any) => {
+                        params?.api.autoSizeAllColumns();
+                        setCurrentGridRef(tableRowRef);
+                    }}
+                    onRowDataUpdated={(params: any) => { updateUserChanges(params); }}
+                    maintainColumnOrder
+                />
+                <VFPagination
+                    selectedRows={0}
+                    rowsPerPage={pagination.mtoPageSize}
+                    totalRows={rowDataCount}
+                    currentPage={currentPage}
+                    handleChangePage={handlePageChange}
+                />
 
 
-                    <SaveBtnWrapper>
-                        <SaveBtn onClick={() => updateMajorMinorReason()}>
-                            Save Reasons
-                        </SaveBtn>
-                    </SaveBtnWrapper>
+                <SaveBtnWrapper>
+                    <SaveBtn onClick={() => updateMajorMinorReason()}>
+                        Save Reasons
+                    </SaveBtn>
+                </SaveBtnWrapper>
 
-                    <MTORemarkHistoryModal
-                        data={remarkHistory}
-                        isOpen={isRemarkHistoryOpen}
-                        onClose={() => setIsRemarkHistoryOpen(false)}
-                    />
-                </Wrapper>
-            }
+                <MTORemarkHistoryModal
+                    data={remarkHistory}
+                    isOpen={isRemarkHistoryOpen}
+                    onClose={() => setIsRemarkHistoryOpen(false)}
+                />
+            </Wrapper>
+            
         </div>
 
     )

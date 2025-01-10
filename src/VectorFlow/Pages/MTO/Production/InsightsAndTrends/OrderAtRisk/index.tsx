@@ -66,6 +66,9 @@ const OrderAtRisk = () => {
   const { mutateAsync : getOrderAtRiskDataExcelExport} = useGetOrderRiskDataExcelExport();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+  const themeUi = user?.user?.theme_ui;
+
+
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
@@ -385,9 +388,11 @@ const OrderAtRisk = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       <MTOActionToolBar
         comp={"orderAtRisk"}
         isGridView={isGridView}
+        themeUi={themeUi}
         isExcelExport = {isGridView ? true : false} 
         onExcelExportClick={ExcelExport}
         isChartGridToggle
@@ -404,7 +409,6 @@ const OrderAtRisk = () => {
         onFilterRemove={onFilterRemove}
         isMfgSelected={isMfgSelected}
       />
-      {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
       <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
           <GridView

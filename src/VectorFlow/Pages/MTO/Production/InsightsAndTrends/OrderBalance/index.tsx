@@ -229,6 +229,9 @@ const OrderBalance = () => {
     getGraphData({isExcelExport : true})
   }
 
+  const themeUi = user?.user?.theme_ui;
+
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {
@@ -237,6 +240,7 @@ const OrderBalance = () => {
       <MTOActionToolBar
         comp={"orderBalance"}
         isGridView={isGridView}
+        themeUi={themeUi}
         setIsGridView={setIsGridView}
         isExcelExport = {isGridView ? true : false}
         onExcelExportClick = {ExcelExportData}

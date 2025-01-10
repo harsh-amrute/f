@@ -62,6 +62,8 @@ const STPLAndFullKits = () => {
   const { mutateAsync : getSTPLandFullkitInDaysExcelData} = useGetSTPLAndFullKitExcelData();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+  const themeUi = user?.user?.theme_ui;
+
   const getGraphData = async (params: any) => {
     const {isExcelExport,graphflag} = params;
     if(isExcelExport) {
@@ -212,6 +214,7 @@ const STPLAndFullKits = () => {
         setIsGridView={setIsGridView}
         isChartGridToggle
         isAddFilterButton
+        themeUi={themeUi}
         isExcelExport={isGridView?true:false}
         onExcelExportClick = {GetExcelData}
         handleSaveClick={handleSaveClick}

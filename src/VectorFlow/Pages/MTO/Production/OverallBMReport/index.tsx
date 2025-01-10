@@ -60,7 +60,7 @@ import {
 import { useUserData } from "../../../../../context";
 import { useGetDate } from "../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import moment from "moment";
-import VFSelect from "./VFSelect";
+import VFSelect from "../../../../../../src/components/VectorFLOW/commons/MTO/VFSelect";
 import ConfirmationModal from "./ConfirmationModal";
 
 interface ApiResponse {
@@ -642,6 +642,22 @@ useEffect(() => {
 const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selectedAction!=null;
 
 
+const DropdownArrowIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    fill="none"
+  >
+    <path
+      d="M7 10l5 5 5-5H7z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
+
   const WIPFilter: any = (
     <>
        <div
@@ -676,6 +692,7 @@ const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selec
         <VFSelect
           options={actionOptions}
           themeUi={themeUi}
+          icon={DropdownArrowIcon}
           disabled={!(refGraph2.current?.api?.getSelectedRows()?.length>0)}
           placeholder="Select Action"
           value={selectedAction}
@@ -750,6 +767,7 @@ const DropDownCellRenderer= (props: any) =>  {
        <VFSelect
          options={actionOptions}
          themeUi={themeUi}
+         icon={DropdownArrowIcon}
          placeholder="Select Action"
          disabled={!props.node.selected}
          value={

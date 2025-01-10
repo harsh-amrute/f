@@ -1065,7 +1065,7 @@ const DptWiseBMReport = () => {
                 <MTOActionToolBar
                     comp={'DeptWiseBMReport'}
                     isAddFilterButton
-
+                    themeUi={themeUi}
                     isExcelExport
                     onExcelExportClick={onExcelExport}
                     quickFilter={<div style={{ background: "#EFEFEF", borderRadius: "4px", padding: "1rem", display: "flex", alignItems: "center" }}>

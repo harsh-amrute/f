@@ -45,7 +45,7 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
     }, [columnState]);
 
     return (
-        <div data-testid="grid-view" style={{ height:"100%", width: '100%' }}>
+        <div data-testid="grid-view" style={{ height:"95%", width: '100%', margin:"20px", paddingRight:"20px", paddingBottom:"10px"}}>
             <VFTable
                 {...gridOptions}
                 columnDefs={colDef}

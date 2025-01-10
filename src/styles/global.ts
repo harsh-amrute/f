@@ -80,3 +80,5 @@ export const chooseThemeColor: any = {
 export const mainFontSize = "2rem";
 export const responsiveFontSize = "1.6rem";
 export const customTransition = "all 0.3s ease";
+
+export type Theme = 'NOIRFUSION' | 'PUREELEGANCE' | 'CHARCOALCHIC' | 'REGALBLAZE' | undefined; 
