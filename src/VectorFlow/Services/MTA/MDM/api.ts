@@ -207,6 +207,9 @@ export namespace MDMService {
   export const putMTOAddBufferMaster = async (body:any)=>{
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/AddBufferMaster/', body )
   }
+  export const putMTOAddPoogiMaster = async (body:any)=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/AddPOOGIReasonMaster/', body )
+  }
   export const putMTOAddCCRMaster = async (body:any)=>{
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/AddCCRMaster/', body )
   }

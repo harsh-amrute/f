@@ -59,7 +59,7 @@ const SelectMaster = (
 
     const onClickFilterButton = (currMaster: MDMMasterState) => {
 
-        if (getFilterButtonStatus(currMaster.id) && toggledFromAddMaster()) {
+        if (toggledFromAddMaster()) {
             notifyError('You can only add new master')
             return
         }
