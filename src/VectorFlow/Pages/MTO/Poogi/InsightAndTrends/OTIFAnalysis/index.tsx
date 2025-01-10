@@ -1,6 +1,5 @@
 import { Allotment } from "allotment";
 import { useEffect, useState } from "react";
-import useViewPort from "../../../../../../hooks/useViewPort";
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
 import OTIFTrendsGraph from "./OTIFTrendsGraph";
 import OTAndIFTrendsGraph from "./OTAndIFTrendsGraph";
@@ -37,7 +36,6 @@ const APIFilterConfig = {
 
 const OTIFAnalysis = () => {
   const [isGridView, setIsGridView] = useState(false);
-  const { screenHeight } = useViewPort();
   const { mutateAsync: getOTIFAnalysisData, isLoading, isError, isSuccess } = useGetOTIFAnalysisData()
   const [graphData, setGraphData] = useState<any>({});
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
@@ -47,14 +45,14 @@ const OTIFAnalysis = () => {
   const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
   const [HeaderData, setHeaderData] = useState([]);
-  const { 
-    state: currFilter, 
-    setState: setCurrFilter, 
-    onFilterRemove, 
-    isFilterOpen, 
+  const {
+    state: currFilter,
+    setState: setCurrFilter,
+    onFilterRemove,
+    isFilterOpen,
     isMfgSelected,
-    onAddFilter, 
-    onApplyFilter, 
+    onAddFilter,
+    onApplyFilter,
     toggleFilter,
     appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_OTIF_Analysis);
@@ -63,8 +61,9 @@ const OTIFAnalysis = () => {
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { user } = useUserData();
-  const { mutateAsync : getOTIFAnalysisDataExcelExport} = useGetOTIFAnalysisDataExcelExport();
-  const { colDefMap , getColDef} = useColDef();
+  const { mutateAsync: getOTIFAnalysisDataExcelExport } = useGetOTIFAnalysisDataExcelExport();
+  const { colDefMap, getColDef } = useColDef();
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const colDefCustomizations = {
     Tags: {
@@ -81,18 +80,18 @@ const OTIFAnalysis = () => {
   }
 
   const getGraphData = async (params: any) => {
-    if(params.isExcelExport){
+    if (params.isExcelExport) {
       const headersdata = currentGridRef?.current?.api.getColumnState();
       const formattedFilters = formatFilterJSON(appliedFilters);
-      const body = getBodyForExcelExport({headersdata,filterData : formattedFilters, colDefMap})
-      const response = await getOTIFAnalysisDataExcelExport({body , report_name : FilterPageName.Poogi_OTIF_Analysis, isExcelExport : 1, graphflag : 0 })
-      if(response.status === 200){
-        DownloadExcel(response,FilterPageName.Poogi_OTIF_Analysis)
-      }else{
+      const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
+      const response = await getOTIFAnalysisDataExcelExport({ body, report_name: FilterPageName.Poogi_OTIF_Analysis, isExcelExport: 1, graphflag: 0 })
+      if (response.status === 200) {
+        DownloadExcel(response, FilterPageName.Poogi_OTIF_Analysis)
+      } else {
         notifyError('Failed to export Excel file!');
       }
     }
-    else{
+    else {
 
       try {
         const response = await getOTIFAnalysisData(params);
@@ -107,7 +106,7 @@ const OTIFAnalysis = () => {
 
   const getFilterData = async () => {
     try {
-      const response = await getPageWiseFilterData({page_name: FilterPageName.Poogi_OTIF_Analysis});
+      const response = await getPageWiseFilterData({ page_name: FilterPageName.Poogi_OTIF_Analysis });
       setFilterData(response?.data.data);
     } catch (error) {
       console.error(error);
@@ -148,20 +147,30 @@ const OTIFAnalysis = () => {
     }
   }
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (coldefs?: any) => {
     try {
-      if(currentGridRef?.current?.api){
-        const config = currentGridRef.current.api.getColumnState();
-  
+      if (coldefs) {
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.PoogiOTIFAnalysis,
-          cs: JSON.stringify(config)
-        }
+          cs: JSON.stringify(coldefs),
+        };
         await updateUserUIReportConfigData([payload]);
-        await getUserColumnConfig();
-      }
+        setColumnState([...coldefs]);
 
+      } else {
+        if (currentGridRef?.current?.api) {
+          const config = currentGridRef.current.api.getColumnState();
+  
+          const payload = {
+            un: user.user.name,
+            rn_id: UIGridCode.PoogiOTIFAnalysis,
+            cs: JSON.stringify(config)
+          }
+          await updateUserUIReportConfigData([payload]);
+          await getUserColumnConfig();
+        }
+      }
     } catch (error) {
       console.error(error);
     }
@@ -176,7 +185,6 @@ const OTIFAnalysis = () => {
   }, [HeaderData])
 
   useEffect(() => {
-    getUserColumnConfig();
     setColumnDef();
   }, [])
 
@@ -191,22 +199,27 @@ const OTIFAnalysis = () => {
 
   useEffect(() => {
     if (isReset) {
-      setColumnState(colDef);
-      setIsReset(false)
-    }else{
-      handleSaveClick();
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
     }
   }, [isReset]);
 
-  const ExcelData = ()=>{
-    getGraphData({isExcelExport : true})
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+      getUserColumnConfig();
+    }
+  }, [colDef, currentGridRef]);
+
+  const ExcelData = () => {
+    getGraphData({ isExcelExport: true })
   }
   const themeUi = user?.user?.theme_ui;
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {
-        (isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
+        (isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
       }
       <MTOActionToolBar
         isGridView={isGridView}
@@ -227,7 +240,7 @@ const OTIFAnalysis = () => {
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
       />
-      <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
+      <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
           <GridView
             getData={getOTIFAnalysisData}
@@ -242,7 +255,7 @@ const OTIFAnalysis = () => {
           />
 
         ) : (
-          <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>
+          <BTRTableWrapper style={{ maxHeight: "95%", paddingLeft: "20px" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>
