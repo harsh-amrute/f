@@ -11,6 +11,8 @@ import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import { FilterPageName } from '../../../Common/Enum'
 import { formatFilterJSON } from '../../../../../../helpers/utils'
+import { useUserData } from "../../../../../../context/index";
+
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -40,7 +42,9 @@ const TrendsOfFailureReason = () => {
         toggleFilter,
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Trend_Of_Failure_Reasons);
-    
+  const { user } = useUserData();
+
+    const themeUi = user?.user?.theme_ui;
     const getGraphData = async () => {
         try {
           const formatedFilters = formatFilterJSON(appliedFilters);
@@ -79,6 +83,8 @@ const TrendsOfFailureReason = () => {
         }
       }, [isSuccess, isError])
       
+
+
     return (
         <>
             {
@@ -89,6 +95,7 @@ const TrendsOfFailureReason = () => {
                 isFilterOpen={isFilterOpen}
                 onAddFilter={onAddFilter}
                 toggleFilter={toggleFilter}
+                themeUi={themeUi}
                 onApplyFilter={onApplyFilter}
                 multiFilter={currFilter}
                 setMultiFilter={setCurrFilter}

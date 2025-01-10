@@ -109,6 +109,7 @@ const FullKitAssignment = () => {
   const reportName = "FullKitAssignment";
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+
   const defaultColDefCustomisation = useRef({
     Route: {
       // tooltipField: "r"
@@ -215,6 +216,9 @@ const FullKitAssignment = () => {
   }
 
   // const noOfCalls = useRef(0);
+
+  
+
 
   const fetchOrders = async (isExcelExport = false) => {
     // if(noOfCalls.current == 0){
@@ -723,6 +727,7 @@ const FullKitAssignment = () => {
         isExcelExport
         onExcelExportClick={ExcelData}
         isAddFilterButton
+        themeUi={themeUi}
         isFilterOpen={isFilterOpen}
         isMfgSelected={isMfgSelected}
         onAddFilter={onAddFilter}
