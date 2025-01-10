@@ -37,12 +37,13 @@ import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
 import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
+import { ExportExcelSVG, ResetSVG, SaveSVG } from '../../../../../helpers/SvgRenderer';
+import { Theme } from '../../../../../styles/global';
 
 type filterType = {
     label: string,
     values: string[]
 }
-
 
 
 interface MTOActionToolBarProps {
@@ -57,7 +58,7 @@ interface MTOActionToolBarProps {
     disableRemoveFilter?: boolean | undefined;
     date?: string
     handleGoBack?: () => void;
-    themeUi?: string;
+    themeUi?: Theme | any;
     quickFilter?: ReactElement | null
     WIPFilter?: ReactElement | null
 
@@ -87,6 +88,8 @@ interface MTOActionToolBarProps {
     //// new props
 }
 
+ 
+
 const MTOActionToolBar = ({
     onDateChange,
     isGridView = true,
@@ -96,10 +99,10 @@ const MTOActionToolBar = ({
     removeFilters,
     disableRemoveFilter,
     isMfgSelected,
+    themeUi,
     submitDate,
     date,
     handleGoBack,
-    themeUi,
     isGoBackButton,
     isReleaseDate,
     isAsOnDate,
@@ -126,6 +129,7 @@ const MTOActionToolBar = ({
 
 }: MTOActionToolBarProps) => {
 
+
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
             removeFilters(category, name);
@@ -135,6 +139,9 @@ const MTOActionToolBar = ({
     const format2 = "MM-dd-yyyy"
     const d = new Date();
     const datetime = moment(d).format(format2);
+    
+ 
+    
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
     return (
@@ -456,7 +463,7 @@ const MTOActionToolBar = ({
                 </div>}
                 {isAddFilterButton && (onAddFilter ?
                     <VFButton onClick={() => onAddFilter()}
-                        themeUi={themeUi || ''}
+                        themeUi={themeUi}
                         disabled={false}
                         width={110}
                     >{(selectedFilters || newFilters) && (selectedFilters?.length || Object.keys(newFilters).length) ?
@@ -471,11 +478,12 @@ const MTOActionToolBar = ({
                 }
                 <>
                     {isExcelExport && <>
-                        <SCVerticalDivider />
-                        <SCViewContainerWithBg onClick={onExcelExportClick} >
+                        <SCVerticalDivider  />
+                        <SCViewContainerWithBg onClick={onExcelExportClick}
+                         >
                             <>
-                                <SCViewImage
-                                    src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" />
+                               
+                                <ExportExcelSVG theme={themeUi}/>
                                 <p>Excel Export</p>
                             </>
                         </SCViewContainerWithBg>
@@ -484,11 +492,14 @@ const MTOActionToolBar = ({
                     {isGridView && handleSaveClick && handleResetClick && <>
                         <SCVerticalDividerGray />
                         <SCViewContainerWithBg onClick={() => handleSaveClick()}>
-                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/diskette.svg"} alt="" />
+                           
+
+                            <SaveSVG theme={themeUi}/>
+
                             <p>Save</p>
                         </SCViewContainerWithBg>
                         <SCViewContainerWithBg onClick={() => handleResetClick()}>
-                            <SCViewImage src={"/assets/img/VectorFLOW/BPR/refresh.svg"} alt="" />
+                            <ResetSVG theme={themeUi}/>
                             <p>Reset</p>
                         </SCViewContainerWithBg>
                     </>}

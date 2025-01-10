@@ -442,6 +442,7 @@ const ReasonForDelayOrder = () => {
         getInitialData(isWIPChecked, 0, true);
     }
 
+
     return (
         <div>
             <MTOActionToolBar
@@ -453,6 +454,7 @@ const ReasonForDelayOrder = () => {
                     </div>
                 }
                 isAddFilterButton
+                themeUi={themeUi}
                 isExcelExport
                 onExcelExportClick={ExcelData}
                 handleSaveClick={handleSaveClick}

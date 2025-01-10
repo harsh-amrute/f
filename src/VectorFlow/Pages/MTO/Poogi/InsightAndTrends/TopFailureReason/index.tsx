@@ -192,6 +192,8 @@ const TopFailureReasons = () => {
     }
   }, [isReset]);
 
+  const themeUi = user?.user?.theme_ui;
+
   return (
     <div>
       {
@@ -200,6 +202,7 @@ const TopFailureReasons = () => {
       <MTOActionToolBar
         isGridView={isGridView}
         setIsGridView={setIsGridView}
+        themeUi={themeUi}
         // isChartGridToggle //commented for grid view
         // isAddFilterButton
         handleSaveClick={handleSaveClick}

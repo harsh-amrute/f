@@ -66,6 +66,9 @@ const OrderAtRisk = () => {
   const { mutateAsync : getOrderAtRiskDataExcelExport} = useGetOrderRiskDataExcelExport();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+  const themeUi = user?.user?.theme_ui;
+
+
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
@@ -389,6 +392,7 @@ const OrderAtRisk = () => {
       <MTOActionToolBar
         comp={"orderAtRisk"}
         isGridView={isGridView}
+        themeUi={themeUi}
         isExcelExport = {isGridView ? true : false} 
         onExcelExportClick={ExcelExport}
         isChartGridToggle

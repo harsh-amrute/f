@@ -61,3 +61,17 @@ export const ETACellValue = styled.p`
     width:100%;
     padding:4px;
 `
+
+
+export const DatePickerWrapper = styled.div<{ theme: string }>`
+  & > ::-webkit-calendar-picker-indicator {
+    background: ${(props) =>
+      props.theme === 'REGALBLAZE'
+        ? "url('/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg') no-repeat"
+        : "url('/assets/img/mto/OrderRescheduling/edit-calendar.svg') no-repeat"};
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+

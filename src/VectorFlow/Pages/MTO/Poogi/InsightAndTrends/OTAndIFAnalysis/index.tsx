@@ -209,6 +209,9 @@ const OTAndIFAnalysis = () => {
     const ExportExcelData = () =>{
         getGraphData({ isExcelExport: true });
     }
+
+    const themeUi = user?.user?.theme_ui;
+
     return (
         <>
             {
@@ -217,6 +220,7 @@ const OTAndIFAnalysis = () => {
             <MTOActionToolBar
                 isAddFilterButton
                 isChartGridToggle
+                themeUi={themeUi}
                 setIsGridView={setIsGridView}
                 isExcelExport = {isGridView ? true : false}
                 onExcelExportClick ={ExportExcelData}

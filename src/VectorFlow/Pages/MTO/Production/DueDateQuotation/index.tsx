@@ -36,6 +36,8 @@ const APIFilterConfig = {
 const DueDateQuotation = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+
+  
   //States
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [unScheduled, setUnScheduled] = useState(true);
@@ -547,6 +549,7 @@ const DueDateQuotation = () => {
           onApplyFilter={onApplyFilter}
           multiFilter={currFilter}
           setMultiFilter={setCurrFilter}
+          themeUi={themeUi}
           onFilterRemove={onFilterRemove}
           isMfgSelected={isMfgSelected}
           handleSaveClick={handleSaveClick}

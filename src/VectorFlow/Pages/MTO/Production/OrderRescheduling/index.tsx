@@ -36,7 +36,6 @@ import {
 } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { useUserData } from "../../../../../context/index";
 import useColDef from "../../../../../hooks/useColDef";
-// const user = { user: { them_ui: 'pure' } };
 
 interface RowDataType {
   odk: string;
@@ -74,6 +73,10 @@ const OrderRescheduling = () => {
   const { getColDef, colDefMap } = useColDef();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+
+
+  const themeUi = user?.user?.theme_ui;
+
   const GetData = async (isExcelExport = false) => {
     if (isExcelExport) {
       const headersdata = refGraph1?.current?.api?.getColumnState();
@@ -105,8 +108,6 @@ const OrderRescheduling = () => {
   };
 
   console.log("grid Data", rowData)
-
-
   const getSelectedRowData = () => {
     const selectedData = refGraph1.current?.api.getSelectedRows();
 
@@ -542,6 +543,7 @@ const OrderRescheduling = () => {
       >
         <MTOActionToolBar
           comp={"orderReschedule"}
+          themeUi={themeUi}
           isExcelExport
           onExcelExportClick={GetExcelData}
           handleSaveClick={handleSaveClick}
@@ -629,7 +631,7 @@ const OrderRescheduling = () => {
                           selectedRowData && selectedRowData[0] ? false : true
                         }
                         style={{ width: "150px" }}
-                        themeUi={"pure"}
+                        themeUi={themeUi}
                         onClick={unschedule}
                       >
                         Unschedule
@@ -640,7 +642,7 @@ const OrderRescheduling = () => {
                           selectedRowData && selectedRowData[0] ? false : true
                         }
                         style={{ width: "200px" }}
-                        themeUi={"pure"}
+                        themeUi={themeUi}
                         onClick={overwriteDD}
                       >
                         Overwrite Due Date

@@ -201,7 +201,7 @@ const OTIFAnalysis = () => {
   const ExcelData = ()=>{
     getGraphData({isExcelExport : true})
   }
-
+  const themeUi = user?.user?.theme_ui;
 
   return (
     <div>
@@ -210,6 +210,7 @@ const OTIFAnalysis = () => {
       }
       <MTOActionToolBar
         isGridView={isGridView}
+        themeUi={themeUi}
         setIsGridView={setIsGridView}
         isChartGridToggle
         isAddFilterButton
