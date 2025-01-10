@@ -27,69 +27,81 @@ const APIFilterConfig = {
     }
 };
 const LeadTime = () => {
-    const [isGridView, setIsGridView] = useState(false);
+  const [isGridView, setIsGridView] = useState(false);
 
-    const [HeaderData, setHeaderData] = useState();
-    const [chartTableData, setChartTableData] = useState([]);
-    const [chartData, setChartData] = useState([]);
-    const reportName = "LeadTime";
-    const [currentGridRef, setCurrentGridRef] = useState<any>(null);
-    const [columnState, setColumnState] = useState<any>([]);
-    const [colDef, setColDef] = useState([{}]);
-    const [isReset, setIsReset] = useState(false);
-    const [filterData, setFilterData] = useState({});
-    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { 
-        state: currFilter, 
-        setState: setCurrFilter, 
-        onFilterRemove, 
-        isFilterOpen, 
-        isMfgSelected,
-        onAddFilter, 
-        onApplyFilter, 
-        toggleFilter,
-        appliedFilters
-    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Lead_Time);
-    const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-    const { user } = useUserData();
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-    const { mutateAsync: getLeadTimeData, isLoading} = useGetLeadTimeData()
-    const {colDefMap,getColDef} = useColDef();
-    const {mutateAsync : getLeadTimeExcelData} = useGetLeadTimeExcelData();
-
-    const setColumnDef = async () => {
-        try {
-            const response = await getUIConfigData(reportName);
-            getColDef(response)
-            setHeaderData(response?.data?.data);
-        }
-        catch (e) {
-            console.log(e);
-        }
+  const [HeaderData, setHeaderData] = useState();
+  const [chartTableData, setChartTableData] = useState([]);
+  const [chartData, setChartData] = useState([]);
+  const reportName = "LeadTime";
+  const [currentGridRef, setCurrentGridRef] = useState<any>(null);
+  const [columnState, setColumnState] = useState<any>([]);
+  const [colDef, setColDef] = useState([{}]);
+  const [isReset, setIsReset] = useState(false);
+  const [filterData, setFilterData] = useState({});
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  const {
+    state: currFilter,
+    setState: setCurrFilter,
+    onFilterRemove,
+    isFilterOpen,
+    isMfgSelected,
+    onAddFilter,
+    onApplyFilter,
+    toggleFilter,
+    appliedFilters
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Poogi_Lead_Time);
+  const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
+  const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
+  const { user } = useUserData();
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
+  const { mutateAsync: getLeadTimeData, isLoading } = useGetLeadTimeData()
+  const { colDefMap, getColDef } = useColDef();
+  const { mutateAsync: getLeadTimeExcelData } = useGetLeadTimeExcelData();
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
+  
+  const setColumnDef = async () => {
+    try {
+      const response = await getUIConfigData(reportName);
+      getColDef(response)
+      setHeaderData(response?.data?.data);
     }
+    catch (e) {
+      console.log(e);
+    }
+  }
 
-    const getUserColumnConfig = async () => {
-        try {
-          const data = await getUserUIReportConfigData({
-            un: user.user.name,
-            rn_id: UIGridCode.PoogiLeadTime
-          });
+  const getUserColumnConfig = async () => {
+    try {
+      const data = await getUserUIReportConfigData({
+        un: user.user.name,
+        rn_id: UIGridCode.PoogiLeadTime
+      });
     
-          const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-          console.log(newConfig, 'GET');
-          setColumnState(newConfig);
+      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+      console.log(newConfig, 'GET');
+      setColumnState(newConfig);
     
-          if (!data) {
-            console.error('Failed to apply column state');
-          }
-        } catch (error) {
-          console.error(error);
-        }
+      if (!data) {
+        console.error('Failed to apply column state');
       }
+    } catch (error) {
+      console.error(error);
+    }
+  }
     
-    const handleSaveClick = async () => {
-        try {
+  const handleSaveClick = async (coldefs?: any) => {
+    try {
+      if (coldefs) {
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.PoogiLeadTime,
+          cs: JSON.stringify(coldefs),
+        };
+        await updateUserUIReportConfigData([payload]);
+        setColumnState([...coldefs]);
+
+      } else {
+        if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
     
           const payload = {
@@ -99,140 +111,146 @@ const LeadTime = () => {
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
-    
-        } catch (error) {
-          console.error(error);
         }
       }
+    } catch (error) {
+      console.error(error);
+    }
+  }
     
-      const handleResetClick = () => {
-        setIsReset(true);
+  const handleResetClick = () => {
+    setIsReset(true);
+  }
+    
+  const getFilterData = async () => {
+    try {
+      const response = await getPageWiseFilterData({ page_name: FilterPageName.Poogi_Lead_Time });
+      setFilterData(response?.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+    
+  useEffect(() => {
+    setColumnDef();
+    getGridData();
+    getFilterData();
+  }, [])
+
+  const getGridData = async (isExcelExport = false) => {
+    if (isExcelExport) {
+      const headersdata = currentGridRef?.current?.api?.getColumnState();
+      const formatedFilters = formatFilterJSON(appliedFilters)
+      const body = getBodyForExcelExport({ headersdata, appliedFilters: formatedFilters, colDefMap })
+      try {
+        const response = await getLeadTimeExcelData({ body, isExcelExport: 1, report_name: FilterPageName.Poogi_Lead_Time })
+        console.log('api response: ', response)
+        DownloadExcel(response, FilterPageName.Poogi_Lead_Time)
+      } catch (error) {
+        console.log(error);
       }
-    
-    const getFilterData = async () => {
-        try {
-          const response = await getPageWiseFilterData({page_name: FilterPageName.Poogi_Lead_Time});
-          setFilterData(response?.data.data);
-        } catch (error) {
-          console.error(error);
-        }
-    }
-    
-    useEffect(() => {
-        setColumnDef();
-        getGridData();
-        getFilterData();
-    }, [])
+    } else {
 
-    const getGridData = async (isExcelExport = false) => {
-      if(isExcelExport){
-        const headersdata = currentGridRef?.current?.api?.getColumnState();
-        const formatedFilters = formatFilterJSON(appliedFilters)
-        const body = getBodyForExcelExport({headersdata,appliedFilters:formatedFilters,colDefMap})
-        try {
-          const response = await getLeadTimeExcelData({body, isExcelExport : 1,report_name : FilterPageName.Poogi_Lead_Time})
-          console.log('api response: ', response)
-          DownloadExcel(response,FilterPageName.Poogi_Lead_Time)
-        } catch (error) {
-          console.log(error);
-        }
-      }else{
-
-        try{
-          const data = await getLeadTimeData({graphflag: 1});
-          const chartData: any = []
-          const tableData: any = []
-          Object.entries(data.data.data).forEach((entry: any)=>{
-            // console.log(entry1);
-            chartData.push({x: entry[0], y: Object.values(entry[1]).sort((a: any,b: any)=> a - b)})
-            tableData.push({...entry[1], week: entry[0]})
-          })
-          setChartTableData(tableData);
-          setChartData(chartData)
-          notifySuccess("Data Fetched Successfully!");
-        }
-        catch(err: any){
-          console.log(err)
-          notifyError("Something Went Wrong")
-        }
+      try {
+        const data = await getLeadTimeData({ graphflag: 1 });
+        const chartData: any = []
+        const tableData: any = []
+        Object.entries(data.data.data).forEach((entry: any) => {
+          // console.log(entry1);
+          chartData.push({ x: entry[0], y: Object.values(entry[1]).sort((a: any, b: any) => a - b) })
+          tableData.push({ ...entry[1], week: entry[0] })
+        })
+        setChartTableData(tableData);
+        setChartData(chartData)
+        notifySuccess("Data Fetched Successfully!");
+      }
+      catch (err: any) {
+        console.log(err)
+        notifyError("Something Went Wrong")
       }
     }
+  }
     
-    const colDefCustomizations = {
-        'Tag': {
-            tooltipValueGetter: (params: any) => params.value,
-            cellRenderer: TagCellToolTip,
-            cellStyle: {
-                display: 'flex',
-                justifyContent: "center",
-            }
-        },
-        'BPP': {
-            cellRenderer: ColorCellRenderer,
-        },
+  const colDefCustomizations = {
+    'Tag': {
+      tooltipValueGetter: (params: any) => params.value,
+      cellRenderer: TagCellToolTip,
+      cellStyle: {
+        display: 'flex',
+        justifyContent: "center",
+      }
+    },
+    'BPP': {
+      cellRenderer: ColorCellRenderer,
+    },
+  }
+
+  useEffect(() => {
+    setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
+  }, [HeaderData])
+
+  useEffect(() => {
+    if (isReset) {
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
     }
+  }, [isReset]);
 
-    useEffect(() => {
-        setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
-      }, [HeaderData])
-
-    useEffect(() => {
-        if (isReset) {
-          setColumnState(colDef);
-          setIsReset(false)
-        }else{
-          handleSaveClick();
-        }
-      }, [isReset]);
-
-    const GetExcelData = () =>{
-      getGridData(true);
+  useEffect(() => {
+    if (currentGridRef?.current) {
+      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+      getUserColumnConfig();
     }
+  }, [colDef, currentGridRef]);
 
-    const themeUi = user?.user?.theme_ui;
+  const GetExcelData = () => {
+    getGridData(true);
+  }
+
+  const themeUi = user?.user?.theme_ui;
     
-    return (
-        <>
-            <MTOActionToolBar  
-                handleSaveClick={handleSaveClick}
-                handleResetClick={handleResetClick} 
-                handleGoBack={() => { setIsGridView(false) }} 
-                isGoBackButton={isGridView} 
-                themeUi={themeUi}
-                isChartGridToggle 
-                isGridView={isGridView} 
-                setIsGridView={setIsGridView} 
-                isExcelExport = {isGridView ? true : false}
-                onExcelExportClick={GetExcelData}
-                isAddFilterButton
-                isFilterOpen={isFilterOpen}
-                onAddFilter={onAddFilter}
-                toggleFilter={toggleFilter}
-                onApplyFilter={onApplyFilter}
-                multiFilter={currFilter}
-                setMultiFilter={setCurrFilter}
-                onFilterRemove={onFilterRemove}
-                isMfgSelected={isMfgSelected}
+  return (
+    <>
+      <MTOActionToolBar
+        handleSaveClick={handleSaveClick}
+        handleResetClick={handleResetClick}
+        handleGoBack={() => { setIsGridView(false) }}
+        isGoBackButton={isGridView}
+        themeUi={themeUi}
+        isChartGridToggle
+        isGridView={isGridView}
+        setIsGridView={setIsGridView}
+        isExcelExport={isGridView ? true : false}
+        onExcelExportClick={GetExcelData}
+        isAddFilterButton
+        isFilterOpen={isFilterOpen}
+        onAddFilter={onAddFilter}
+        toggleFilter={toggleFilter}
+        onApplyFilter={onApplyFilter}
+        multiFilter={currFilter}
+        setMultiFilter={setCurrFilter}
+        onFilterRemove={onFilterRemove}
+        isMfgSelected={isMfgSelected}
+      />
+      {(isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
+      {
+        isGridView ?
+          <>
+            <GridView
+              colDef={colDef}
+              setCurrentGridRef={setCurrentGridRef}
+              currentGridRef={currentGridRef}
+              columnState={columnState}
+              appliedFilters={appliedFilters}
             />
-            {(isLoading|| isUpdateUserConfig || isGetUserConfig) && <OverlayLoader/>}
-            {
-                isGridView ?
-                    <>
-                        <GridView 
-                            colDef={colDef} 
-                            setCurrentGridRef={setCurrentGridRef} 
-                            currentGridRef={currentGridRef}
-                            columnState={columnState}
-                            appliedFilters={appliedFilters}
-                        />
-                    </>
-                    :
-                    <>
-                        <ChartView chartData={chartData} chartTableData={chartTableData}/>
-                    </>
-            }
-        </>
-    )
-}
+          </>
+          :
+          <>
+            <ChartView chartData={chartData} chartTableData={chartTableData} />
+          </>
+      }
+    </>
+  )
+};
 
 export default LeadTime
