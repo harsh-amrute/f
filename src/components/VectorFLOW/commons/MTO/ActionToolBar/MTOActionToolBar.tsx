@@ -37,7 +37,6 @@ import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
 import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
-import { useUserData } from '../../../../../../src/context/index'
 import { ExportExcelSVG, ResetSVG, SaveSVG } from '../../../../../helpers/SvgRenderer';
 import { Theme } from '../../../../../styles/global';
 
@@ -140,14 +139,6 @@ const MTOActionToolBar = ({
     const format2 = "MM-dd-yyyy"
     const d = new Date();
     const datetime = moment(d).format(format2);
-
-
-
-
-    const { user } = useUserData();
-    const themes = user?.user?.theme_ui;
-
-    console.log("themess", themeUi);
     
 
     
