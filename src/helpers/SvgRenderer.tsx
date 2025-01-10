@@ -1,5 +1,5 @@
 import React from 'react';
-import { Theme } from '../../../vflow-frontend/src/styles/global';
+import { Theme } from '../styles/global';
 interface SvgRendererProps {
   theme: Theme
   alt?: string;
