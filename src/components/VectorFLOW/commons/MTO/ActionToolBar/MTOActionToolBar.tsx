@@ -39,6 +39,7 @@ import { getSelectedFilters } from '../../../../../helpers/utils';
 import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
 import { useUserData } from '../../../../../../src/context/index'
 import { ExportExcelSVG, ResetSVG, SaveSVG } from '../../../../../helpers/SvgRenderer';
+import { Theme } from '../../../../../styles/global';
 
 type filterType = {
     label: string,
@@ -58,7 +59,7 @@ interface MTOActionToolBarProps {
     disableRemoveFilter?: boolean | undefined;
     date?: string
     handleGoBack?: () => void;
-    themeUi?: string;
+    themeUi?: Theme | any;
     quickFilter?: ReactElement | null
     WIPFilter?: ReactElement | null
 
@@ -99,6 +100,7 @@ const MTOActionToolBar = ({
     removeFilters,
     disableRemoveFilter,
     isMfgSelected,
+    themeUi,
     submitDate,
     date,
     handleGoBack,
@@ -140,8 +142,12 @@ const MTOActionToolBar = ({
     const datetime = moment(d).format(format2);
 
 
+
+
     const { user } = useUserData();
     const themes = user?.user?.theme_ui;
+
+    console.log("themess", themeUi);
     
 
     
@@ -465,7 +471,7 @@ const MTOActionToolBar = ({
                 </div>}
                 {isAddFilterButton && (onAddFilter ?
                     <VFButton onClick={() => onAddFilter()}
-                        themeUi={themes || ''}
+                        themeUi={themeUi}
                         disabled={false}
                         width={110}
                     >{(selectedFilters || newFilters) && (selectedFilters?.length || Object.keys(newFilters).length) ?
@@ -485,7 +491,7 @@ const MTOActionToolBar = ({
                          >
                             <>
                                
-                                <ExportExcelSVG theme={themes}/>
+                                <ExportExcelSVG theme={themeUi}/>
                                 <p>Excel Export</p>
                             </>
                         </SCViewContainerWithBg>
@@ -496,12 +502,12 @@ const MTOActionToolBar = ({
                         <SCViewContainerWithBg onClick={() => handleSaveClick()}>
                            
 
-                            <SaveSVG theme={themes}/>
+                            <SaveSVG theme={themeUi}/>
 
                             <p>Save</p>
                         </SCViewContainerWithBg>
                         <SCViewContainerWithBg onClick={() => handleResetClick()}>
-                            <ResetSVG theme={themes}/>
+                            <ResetSVG theme={themeUi}/>
                             <p>Reset</p>
                         </SCViewContainerWithBg>
                     </>}

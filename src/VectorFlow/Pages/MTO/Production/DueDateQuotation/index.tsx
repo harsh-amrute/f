@@ -549,6 +549,7 @@ const DueDateQuotation = () => {
           onApplyFilter={onApplyFilter}
           multiFilter={currFilter}
           setMultiFilter={setCurrFilter}
+          themeUi={themeUi}
           onFilterRemove={onFilterRemove}
           isMfgSelected={isMfgSelected}
           handleSaveClick={handleSaveClick}

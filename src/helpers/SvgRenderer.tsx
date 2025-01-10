@@ -1,6 +1,7 @@
 import React from 'react';
+import { Theme } from '../../../vflow-frontend/src/styles/global';
 interface SvgRendererProps {
-  theme: 'NOIRFUSION' | 'PUREELEGANCE' | 'CHARCOALCHIC' | 'REGALBLAZE'; 
+  theme: Theme
   alt?: string;
 }
 

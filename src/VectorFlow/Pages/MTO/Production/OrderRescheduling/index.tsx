@@ -543,6 +543,7 @@ const OrderRescheduling = () => {
       >
         <MTOActionToolBar
           comp={"orderReschedule"}
+          themeUi={themeUi}
           isExcelExport
           onExcelExportClick={GetExcelData}
           handleSaveClick={handleSaveClick}
