@@ -4,7 +4,6 @@ import { chooseThemeColor } from '../../../../../styles/global';
 
 
 const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
-    // console.log(rest);
 
     return (
         <Select

@@ -714,7 +714,7 @@ const useViewModify = (pageType: string) => {
           });
 
           // Check for uniqueness within the current rows
-          allRows.forEach((ele, index) => {
+          allRows?.forEach((ele, index) => {
             if (index !== i && ele.bsz === e.bsz && e.bt === ele.bt) {
               newVal.err = {
                 error: "Buffer size must be unique!",
@@ -756,7 +756,7 @@ const useViewModify = (pageType: string) => {
         const isBufferCodeDuplicate = bufferInitialData?.some(
           (master: any) => master.bcd === e.bcd
         );
-        const isbufferCodeDuplicateInCurr = allRows.some(
+        const isbufferCodeDuplicateInCurr = allRows?.some(
           (row: any, index: any) => index !== i && row.bcd === e.bcd
         );
         if (isbufferCodeDuplicateInCurr) {
@@ -780,7 +780,7 @@ const useViewModify = (pageType: string) => {
             warning: "",
           };
         }
-        const isBszUnique = allRows.every((row: any, index: any) => {
+        const isBszUnique = allRows?.every((row: any, index: any) => {
           if (index === i) return true;
           return !(row.bt === e.bt && row.bsz === e.bsz);
         });
@@ -862,14 +862,11 @@ const useViewModify = (pageType: string) => {
           };
         } else if (
           ccrGroupMaster &&
-          !Object?.values(ccrGroupMaster)?.some(
-            (group: any) =>
-              group.ccr_group_code === e.cgid || group.ccr_group_id === e.cgid
-          )
+          !Object.keys(ccrGroupMaster).includes(e.cgid)
         ) {
           newVal.err = {
             error: "Please select a valid CCR Group from the dropdown",
-            warning: "",
+            warning: ""
           };
         }
 
@@ -1019,7 +1016,7 @@ const useViewModify = (pageType: string) => {
       if (pageType === "add") {
         const newRowData = _.cloneDeep(activeMaster.rowData);
         newRowData.forEach((ele: any) => {
-          if (typeof ele.err === "string") {
+          if (!ele.err || typeof ele.err === "string") {
             ele.err = { error: "" };
           } else {
             ele.err.error = "";
@@ -1641,12 +1638,12 @@ const useViewModify = (pageType: string) => {
       // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       dispatch(RESET_FILTERS());
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-
+      
       // dispatch(UPDATE_FILTER(emptyFilter))
       return;
       // return notifyError("Cannot Delete this Filter Instance")
     }
-
+    
     dispatch(REMOVE_FILTER(id));
     dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
   };
@@ -1710,8 +1707,8 @@ const useViewModify = (pageType: string) => {
         setTempRecordCount(result.data.recordCount);
       }
     }
-
-    toggleWarningModal(true);
+  
+      toggleWarningModal(true);
   };
 
   const onWarningModalClose = () => {
@@ -1914,7 +1911,7 @@ const useViewModify = (pageType: string) => {
       getInitialData();
 
       /////
-      const updatedColdefs = activeMaster.colDefs.map((col: ColDef) => {
+      const updatedColdefs = activeMaster?.colDefs?.map((col: ColDef) => {
         // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
         if (col.field === "iv") return { ...col, cellRenderer: ToggleButton };
         if (col.field === "bt")
@@ -1953,9 +1950,7 @@ const useViewModify = (pageType: string) => {
             editable: true,
             cellEditor: "agRichSelectCellEditor",
             cellEditorParams: {
-              values: Object.values(ccrGroupMaster || {}).map(
-                (group: any) => group.ccr_group_code
-              ),
+              values: Object.keys(ccrGroupMaster || {}),
             },
           };
         if (col.field === "slt")
@@ -2071,7 +2066,7 @@ const useViewModify = (pageType: string) => {
       // }
       // else{
 
-      dispatch(SET_RECORD_COUNT(buffData.length));
+      dispatch(SET_RECORD_COUNT(buffData?.length));
       dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
 
       dispatch(UPDATE_ROW_DATA(buffData));
@@ -2095,7 +2090,7 @@ const useViewModify = (pageType: string) => {
 
   const exportToExcel = async (fromUploadModal?: boolean) => {
     try {
-      const currMasterFilters = activeMaster.filters;
+      const currMasterFilters = activeMaster?.filters;
       const payloadFilters = areMasterFiltersValid(currMasterFilters)
         ? mapStateFiltersToPayload(currMasterFilters)
         : [];
@@ -3134,6 +3129,7 @@ const useViewModify = (pageType: string) => {
             cellEditor: "agNumberCellEditor",
             cellEditorParams: {
               min: 0,
+              max: 1000000
             },
           };
         }
@@ -3383,7 +3379,7 @@ const useViewModify = (pageType: string) => {
         }
       });
 
-      newVal.ib = e.ib === "false" ? 0 : 1;
+      newVal.ib = (e.ib === "false"|| e.ib===false) ? false : true;
       newVal.iv = e.iv === true || e.iv === false ? e.iv : true;
       newVal.mlt = parseInt(e.mlt);
       newVal.slt = parseInt(e.slt);
@@ -3452,8 +3448,8 @@ const useViewModify = (pageType: string) => {
       const newVal = _.cloneDeep(e);
       newVal.cid = e.cid ? e.cid : null;
       const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id
-        ? ccrGroupMaster[e.cgid]?.ccr_group_id
-        : e.cgid;
+      ? ccrGroupMaster[e.cgid]?.ccr_group_id
+      : e.cgid;
       newVal.cgid = ccrGid;
       newVal.plid = e.pl;
       newVal.dpid = e.dp;
@@ -3559,9 +3555,9 @@ const useViewModify = (pageType: string) => {
             majId: null,
             majcd: "*",
             minData: [],
-            iu: null,
+            iu: false,
             ie: false,
-            id: null,
+            id: false,
             plnm,
             pl: plid,
             plid,
@@ -3576,9 +3572,9 @@ const useViewModify = (pageType: string) => {
           majId: null,
           minId: null,
           mincd: "*",
-          iu: null,
+          iu: false,
           ie: false,
-          id: null,
+          id: false,
         });
       });
     }
@@ -3681,27 +3677,30 @@ const useViewModify = (pageType: string) => {
 
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
-        e.ie = null;
+        e.majid = ele.majId;
+        e.majcd = ele.majcd ? ele.majcd : "*";
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
           e.majId = null;
           e.majid = null;
+          e.ie = false;
         } else {
           e.ie = true;
         }
-        e.id = ele.id ? ele.id : null;
-        e.iu = ele.iu ? ele.iu : null;
-        e.majid = ele.majId;
-        e.majcd = ele.majcd ? ele.majcd : "*";
+        e.id = ele.id ? ele.id : false;
+        e.iu = ele.iu ? ele.iu : false;
 
         // Iterate through minData to check and update minId if it starts with 'm'
         e.minData.forEach((minElement: any) => {
-          minElement.id = minElement.id ? minElement.id : null;
+          minElement.id = minElement.id ? minElement.id : false;
           if (
             typeof minElement.minId === "string" &&
             minElement.minId.startsWith("m")
           ) {
             minElement.minId = null;
+            minElement.majId = null;
+            minElement.minid = null;
             minElement.majid = null;
+            minElement.ie = false;
             minElement.mincd = minElement.mincd ? minElement.mincd : "*";
           } else {
             minElement.ie = true;
@@ -3709,7 +3708,7 @@ const useViewModify = (pageType: string) => {
           minElement.minid = minElement.minId;
           minElement.majid = minElement.majId;
           minElement.mincd = minElement.mincd ? minElement.mincd : "*";
-          minElement.iu = minElement.iu ? minElement.iu : null;
+          minElement.iu = minElement.iu ? minElement.iu : false;
         });
 
         plantMaster?.forEach((elm: any) => {
@@ -3766,7 +3765,7 @@ const useViewModify = (pageType: string) => {
           e.bt = elm.id;
         }
       });
-      e.ib = e.ib === "false" ? 0 : 1;
+      e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
       e.mlt = parseInt(e.mlt);
       e.slt = parseInt(e.slt);
       if (!e.bid) e.bid = null;
@@ -3822,7 +3821,7 @@ const useViewModify = (pageType: string) => {
           if (isBuffChanged === false) {
             e.bt = bufferTypeData[0].id;
           }
-          e.ib = e.ib === "false" ? 0 : 1;
+          e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
           e.err = "";
@@ -3836,7 +3835,7 @@ const useViewModify = (pageType: string) => {
           }
         });
       } else {
-        bufferModifyData.rowData.forEach((ele: any) => {
+        bufferModifyData.forEach((ele: any) => {
           const e = _.cloneDeep(ele);
           let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
@@ -3848,7 +3847,7 @@ const useViewModify = (pageType: string) => {
           if (isBuffChanged === false) {
             e.bt = bufferTypeData[0].id;
           }
-          e.ib = e.ib === "false" ? 0 : 1;
+          e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
           e.err = "";
@@ -3934,6 +3933,103 @@ const useViewModify = (pageType: string) => {
     } else if (activeMaster.id === 503) {
       notifyLoader("Saving POOGI Draft...");
 
+      if(pageType==='add'){
+        notifyLoader("Saving Poogi Draft...");
+    
+        const PoogiPostObj: any = {
+          mid: activeMaster.id,
+          uid: user.user.user.id.toString(),
+          unm: user.user.user.name,
+          at: pageType === "add" ? "Add" : "Modify",
+          reasonData: [],
+        };
+        const selectedRows: any = _.cloneDeep(activeMaster.rowData);
+        let isValid = true;
+    
+        selectedRows.forEach((e: any) => {
+          const newVal = _.cloneDeep(e);
+          newVal.plid = e.plnm;
+          plantMaster.forEach((elm: any) => {
+            if (elm.plant_name === e.plnm) newVal.plid = elm.plant_id;
+          });
+          if (newVal.err.error !== "") {
+            isValid = false;
+          }
+          PoogiPostObj.reasonData.push(_.omit(newVal, ["editable", "err"]));
+        });
+        if (!isValid) {
+          toast.dismiss();
+          notifyError(
+            "Make sure you have resolved the error for the selected row!"
+          );
+          return;
+        }
+    
+        const finPoogiPostData: any = [];
+        const groupedData = _.groupBy(PoogiPostObj.reasonData, "majdsc");
+    
+        for (const [key,items] of Object.entries(groupedData)) {
+          console.log(key);
+          items.forEach((item) => {
+            const { plnm, plid, majdsc, mindsc } = item;
+            let existingMajor = finPoogiPostData.find(
+              (major: any) => major.plnm === plnm && major.majdsc === majdsc
+            );
+    
+            if (!existingMajor) {
+              existingMajor = {
+                majdsc,
+                majid: null,
+                majId: null,
+                majcd: "*",
+                minData: [],
+                iu: false,
+                ie: false,
+                id: false,
+                plnm,
+                pl: plid,
+                plid,
+                err:""
+              };
+              finPoogiPostData.push(existingMajor);
+            }
+    
+            existingMajor.minData.push({
+              mindsc,
+              minid: null,
+              majid: null,
+              majId: null,
+              minId: null,
+              mincd: "*",
+              iu: false,
+              ie: false,
+              id: false,
+              err: ""
+            });
+          });
+        }
+        PoogiPostObj.reasonData = finPoogiPostData;
+        try {
+          console.log("finPoogiPostdata...", PoogiPostObj);
+          const response = await savePOOGIMasterDraft([PoogiPostObj]);
+    
+          if (response.status === 200) {
+            toast.dismiss();
+            notifySuccess("Poogi Draft updated!!");
+          } else {
+            toast.dismiss();
+            notifyError(
+              "Failed to create the draft....Please check your validations!"
+            );
+          }
+        } catch (error) {
+          toast.dismiss();
+          notifyError("Failed to save draft");
+          console.log(error);
+        }
+        return;
+      }
+
       const POOGIPostObj: any = {
         mid: activeMaster.id,
         uid: user.user.user.id.toString(),
@@ -3944,7 +4040,6 @@ const useViewModify = (pageType: string) => {
 
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
-        e.ie = null;
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
           e.majId = null;
           e.majid = null;
@@ -3952,15 +4047,14 @@ const useViewModify = (pageType: string) => {
         } else {
           e.ie = true;
         }
-        e.id = ele.id ? ele.id : null;
-        e.iu = ele.iu ? ele.iu : null;
-        e.majid = ele.majId;
+        e.id = ele.id ? ele.id : false;
+        e.iu = ele.iu ? ele.iu : false;
         e.majcd = ele.majcd ? ele.majcd : "*";
-        e.err = null;
+        e.err = "";
 
         // Iterate through minData to check and update minId if it starts with 'm'
         e.minData.forEach((minElement: any) => {
-          minElement.id = minElement.id ? minElement.id : null;
+          minElement.id = minElement.id ? minElement.id : false;
           if (
             typeof minElement.minId === "string" &&
             minElement.minId.startsWith("m")
@@ -3976,8 +4070,8 @@ const useViewModify = (pageType: string) => {
           minElement.minid = minElement.minId;
           minElement.majid = minElement.majId;
           minElement.mincd = minElement.mincd ? minElement.mincd : "*";
-          minElement.iu = minElement.iu ? minElement.iu : null;
-          minElement.err = null;
+          minElement.iu = minElement.iu ? minElement.iu : false;
+          minElement.err = "";
         });
 
         plantMaster?.forEach((elm: any) => {

@@ -20,9 +20,9 @@ const LocationPermission = ({ ...props }: any) => {
         </SCtitle>
 
         <SCSwapContent className="scroll-style">
-          {prdPermissions.map((item: any) => {
+          {prdPermissions.map((item: any, index: any) => {
             return (
-              <SCSwapItem className="role-item" key={crypto.randomUUID()}>
+              <SCSwapItem className="role-item" key={index}>
                 <SCFlexCenter className="role-item-per--content">
                   <SCItemTitle className="role-item--text">{item.title}</SCItemTitle>
                   <SCItemMulSelect className="role-item--input">
@@ -33,7 +33,7 @@ const LocationPermission = ({ ...props }: any) => {
                       setValue={item.setValue}
                       handleListChild={item.handleAction}
                       disabled={false}
-                      key={crypto.randomUUID()}
+                      key={index}
                     />
                   </SCItemMulSelect>
                 </SCFlexCenter>

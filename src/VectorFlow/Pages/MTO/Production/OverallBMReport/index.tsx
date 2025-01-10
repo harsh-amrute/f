@@ -52,7 +52,7 @@ import { useDispatch } from "react-redux";
 import { BM_REPORT_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { modifyAnalyticsData } from "../DepartmentWiseBMReport/helper";
 import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
-import _, { debounce } from "lodash";
+import _, {  } from "lodash";
 import {
   useGetUserUIConfigData,
   useUpdateUserUIConfigData,
@@ -366,12 +366,12 @@ const OverallBmReport = () => {
     };
 
     const short_complete_OrderColumn: ApiResponseItem = {
-        cc: "short_complete_order_status",
+        cc: "oca",
         cp: maxCp + 2,
         hd: "Order Close Action",
         v: true,
         cla: "Centre",
-        scc: "scos",
+        scc: "oca",
         ch: [],
     }
 
@@ -420,6 +420,7 @@ const OverallBmReport = () => {
     { value: "Complete Close", label: "Complete Close" },
   ];
   
+  const [selectedRowCount, setSelectedRowCount] = useState(0); 
   const [selectedAction, setSelectedAction] = useState<any>(null)
   const [textAction,setTextAction] = useState<any>();
   
@@ -427,19 +428,39 @@ const OverallBmReport = () => {
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   const onCheckBoxToggle = (e: any) => {
+
     const isChecked = e.target.checked;
     setIsCheckboxChecked(isChecked); // Update state based on checkbox
+      
     if (isChecked) {
       refGraph2.current.api.selectAll();
     } else {
       refGraph2.current.api.deselectAll();
     }
+    getSelectedRow();
+  };
+
+  const toggleCheckBox = () => {
+    
+    const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
+    const totalRows = refGraph2?.current?.api?.getDisplayedRowCount() 
+
+    setIsCheckboxChecked(selectedNodes?.length === totalRows);    
   };
 
   
   const handleActionChange = (option: any) => {
     
     setSelectedAction(option);
+    // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
+    const newData:any = [];
+    gridData.forEach((ele:any)=>{
+      const newEle = _.cloneDeep(ele);
+      newEle.oca = option.value;
+      newData.push(newEle);
+    })
+
+    setGridData([...newData]);
   }
 
   const updateActionAPI = async (action: string, order_ids: any) => {
@@ -451,7 +472,7 @@ const OverallBmReport = () => {
        return response;
       }else{
         const response = await getShortOrderCompleteOrder({
-          close_type: action,
+          close_type: action==='Short Close'?"0":"1",
           order_keys: order_ids
         });
         return response;
@@ -463,8 +484,6 @@ const OverallBmReport = () => {
       throw error; 
     }
   };
-  
-
 
 
   const [showModal, setShowModal] = useState(false); // Renamed state
@@ -533,14 +552,18 @@ const OverallBmReport = () => {
           .map((item) => item?.ok)
           .filter((value) => value !== undefined);
   
-        console.log("Submitting API call with:", selectedAction.value, okValues);
   
         const response = await updateActionAPI(selectedAction.value, okValues);
   
         if (response?.status === 200) {
-          console.log("Action updated successfully for selected rows");
+
+          const newGridData = [...gridData];
+          newGridData.forEach((ele:any)=>{ele.ct=actionText;});
+          setGridData(newGridData);
+
+          notifySuccess("Order closed successfully!");
         } else {
-          console.error("Failed to update action for selected rows");
+          notifySuccess("something went wrong!");
         }
       }
       
@@ -574,6 +597,51 @@ const undoClicked = async (props:any,orderId: string) => {
     throw (error)
   }
 };  
+
+const onRowSelectionChanged = () => {
+  if (refGraph2?.current?.api) {
+    const selectedNodes = refGraph2.current.api.getSelectedNodes();
+    setSelectedRowCount(selectedNodes.length); 
+  } else {
+    console.error("Row selection ");
+  }
+};
+
+
+
+
+// useEffect(()=>{
+//   if(selectedAction){
+//     const mySelectedNodes = refGraph2.current.api.getSelectedRows();
+//     setGridData(gridData?.map((data: any) => {
+//       if(mySelectedNodes.find((el:any)=>{data.ok===el.ok})){
+//         return {...data, oca: selectedAction.value}
+//       }
+//       return data;
+//     }));
+//   }
+  
+// }, [selectedAction])
+
+
+
+useEffect(() => {
+  if (refGraph2?.current?.api) {
+    refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
+
+    return () => {
+      if (refGraph2?.current?.api) {
+        refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
+      }
+    };
+  } else {
+    console.error("something went wrong");
+  }
+}, [refGraph2?.current?.api]); 
+
+const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selectedAction!=null;
+
+
   const WIPFilter: any = (
     <>
        <div
@@ -603,10 +671,12 @@ const undoClicked = async (props:any,orderId: string) => {
           onChange={onCheckBoxToggle}
           type="checkbox"
           style={{ color: "pink" }}
+          checked={isCheckboxChecked}
         />
         <VFSelect
           options={actionOptions}
           themeUi={themeUi}
+          disabled={!(refGraph2.current?.api?.getSelectedRows()?.length>0)}
           placeholder="Select Action"
           value={selectedAction}
           onChange={handleActionChange}
@@ -616,7 +686,7 @@ const undoClicked = async (props:any,orderId: string) => {
       {/* Right Arrow - Disabled if Checkbox is Unchecked */}
       <div
         style={{
-          cursor: isCheckboxChecked ? "pointer" : "not-allowed",
+          cursor: isRightArrowEnabled ? "pointer" : "not-allowed",
           background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
           backgroundColor: ColorsMTO.darkPink.code,
           height: "43px",
@@ -626,8 +696,8 @@ const undoClicked = async (props:any,orderId: string) => {
           justifyContent: "center",
           alignContent: "center",
           display: "flex",
-          opacity: isCheckboxChecked ? 1 : 0.5, // Visual cue for disabled
-          pointerEvents: isCheckboxChecked ? "auto" : "none", // Prevent click when disabled
+          opacity: isRightArrowEnabled ? 1 : 0.5, // Visual cue for disabled
+          pointerEvents: isRightArrowEnabled ? "auto" : "none", // Prevent click when disabled
         }}
         data-testid={"isReleaseBtn"}
         onClick={handleRightArrowClick}
@@ -668,36 +738,34 @@ const undoClicked = async (props:any,orderId: string) => {
       dup_gridData[index].oca = option.value;
       setGridData(dup_gridData);
     }
-    handleActionChange(setSelectedAction);
+
+    
   }
 
-  const DropDownCellRenderer= (props: any) =>  {
-      
+const DropDownCellRenderer= (props: any) =>  {
   return (
   <>  {
        props.data?.ct === null ?
-      
        <>
-       {/* Dropdown Component */}
        <VFSelect
          options={actionOptions}
          themeUi={themeUi}
          placeholder="Select Action"
+         disabled={!props.node.selected}
          value={
-           actionOptions.find((opt) => opt.value === props.data?.oca) || null
+          props.node.selected? actionOptions.find((opt) => opt.value === props.data?.oca): null
         }
         onChange={(option: any) => {
 
             onSelectChange(props, option, props.node.rowIndex);
          }}
        />
-     
-       {/* Right Arrow Component */}
+        
        <div
          style={{
-           cursor: props.data?.oca ? "pointer" : "not-allowed", 
-           opacity: props.data?.oca ? 1 : 0.5,
-           background: props.data?.oca
+           cursor: (props.data?.oca && props.node.selected) ? "pointer" : "not-allowed", 
+           opacity: (props.data?.oca && props.node.selected) ? 1 : 0.5,
+           background: (props.data?.oca && props?.node?.selected)
              ? `linear-gradient(to right, ${ColorsMTO.darkPink.code}, ${ColorsMTO.Pink.code})`
              : "#ccc", 
            height: "43px",
@@ -709,7 +777,7 @@ const undoClicked = async (props:any,orderId: string) => {
          }}
          data-testid="isReleaseBtn"
          onClick={() => {
-           if (props.data?.oca) {
+           if (props.data?.oca && props.node.selected) {
              handleRightArrowClick1(
                props.data.oca === "Short Close" ? "Short Close" : "Complete Close",
                props.data.ok
@@ -728,28 +796,26 @@ const undoClicked = async (props:any,orderId: string) => {
      
      
      
-       
        : 
        <>
        <div style={{justifyContent:"space-between", display:"flex" , alignItems: "center", gap: "5px",margin:"10px" }}>
 
        <p>    
-           Marked As {props.data?.ct}            
+           {props.data?.ct}            
            </p>
-        <div style={{marginLeft:"10px", display: "flex", alignItems: "center"}}>
+        <div onClick={() => {
+            undoClicked(props,props.data.ok);
+          }} style={{marginLeft:"10px", display: "flex", alignItems: "center", cursor:"pointer"}}>
           <img
           style={{transform:"rotateY(180deg)", margin: '4px',cursor:"pointer"}}
           src="/assets/img/VectorFLOW/reset.svg"
-
+          alt="Undo"
+          title="Undo"
           height={14}
           width={14}
-          onClick={() => {
-            undoClicked(props,props.data.ok);
-          }}
+          
           />
-          <span style={{ color: "#bc3d81", fontSize: "14px", fontWeight: "500" ,fontFamily:"roboto" }}>
-            Undo
-      </span>
+         
         </div>
         
 
@@ -760,6 +826,7 @@ const undoClicked = async (props:any,orderId: string) => {
     
       
 </>)}
+
 
   const mapApiResponseToColDefs = (
     apiResponse: ApiResponseItem[],
@@ -781,7 +848,7 @@ const undoClicked = async (props:any,orderId: string) => {
             ? "agGroupCellRenderer"
             : child.cc === "ic"
             ? "AgeingCellRenderer"
-            : child.cc === "BPP"
+            : child.cc === "BPP"  
             ? "colorCellRenderer"
             : child.cc === "RemarksHistory"
             ? "RemarkHistoryRenderer"
@@ -792,7 +859,7 @@ const undoClicked = async (props:any,orderId: string) => {
             : undefined,
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
-          child.cc === "ec" ? false : child.cc === "ic" ? false : true,
+          child.cc === "ec" ? false : (child.cc === "ic" || child.cc==="oca") ? false : true,
         cellRendererParams: child.hd.includes("Remark")
           ? {
               onClick:
@@ -838,18 +905,21 @@ const undoClicked = async (props:any,orderId: string) => {
       maxWidth:
         section.scc === "chckbx" || section.scc == "ic" ? 60 : undefined,
       floatingFilter:
-        section.scc === "chckbx" || section.scc == "ic" ? false : undefined,
+        section.scc === "chckbx" || section.scc == "ic" || section.scc==="oca"? false : undefined,
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
+      // pinned: section.scc==="scos"?'right':"",
+      pinned: section.scc === "oca" ? "right" : null,
+
       cellRenderer:
         section.cc === "ec" || (section.scc === "chckbx" && systemType >= 3)
           ? "agGroupCellRenderer"
           : section.cc === "ic"
           ? "AgeingCellRenderer"
-          : section.scc == "scos" ? "DropDownCellRenderer" : undefined,
+          : section.scc == "oca" ? "DropDownCellRenderer" : undefined,
         cellRendererParams: 
-          section.scc == "scos" ? {
+          section.scc == "oca" ? {
             data: {
               setSelectedAction
             }
@@ -862,7 +932,7 @@ const undoClicked = async (props:any,orderId: string) => {
           ? false
           : true,
       children:
-        section.scc === "chckbx" || section.scc == "scos"
+        section.scc === "chckbx" || section.scc == "oca"
           ? undefined
           : section.ch
           ? mapChildren(section.cc, section.ch)
@@ -956,7 +1026,10 @@ const undoClicked = async (props:any,orderId: string) => {
 
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
-  }, []);
+    setIsCheckboxChecked(false);
+
+
+    }, []);
 
   const extractDepartmentNames = (orders: Orders): string[] => {
     const departmentNames: Set<string> = new Set();
@@ -986,7 +1059,6 @@ const undoClicked = async (props:any,orderId: string) => {
       const DeptWiseWipData = await getDeptWiseWipData(selectedOrderKeys);
       const highAgeingData = await getHighAgeingData(selectedOrderKeys);
       sethighAgeing(highAgeingData?.data?.data);
-      //console.log('DeptWiseWipData', DeptWiseWipData?.data?.data);
       setDeptWiseWipData(DeptWiseWipData?.data?.data);
       const departmentNames = extractDepartmentNames(
         DeptWiseWipData?.data?.data
@@ -1000,6 +1072,7 @@ const undoClicked = async (props:any,orderId: string) => {
   };
 
   const getSelectedRow = () => {
+
     const selectedData = refGraph2.current?.api.getSelectedRows();
     if (selectedData.length == 0) {
       rowsSelected.current = false;
@@ -1007,11 +1080,11 @@ const undoClicked = async (props:any,orderId: string) => {
       rowsSelected.current = true;
     }
     /* To persist the state*/
-    if (selectedData) {
+    if (selectedData && selectedData.length>=0) {
       let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
       selectedData.forEach((newItem: any) => {
         const index = mergedData.findIndex(
-          (item: any) => item.oid === newItem.oid
+          (item: any) => item.ok === newItem.ok
         );
         if (index !== -1) {
           // If the item exists, replace it
@@ -1025,31 +1098,29 @@ const undoClicked = async (props:any,orderId: string) => {
       gridData?.forEach((item: any) => {
         let isThere = 0;
         selectedData.forEach((selectedD: any) => {
-          if (selectedD.oid === item.oid) {
+          if (selectedD.ok === item.ok) {
             isThere = 1;
           }
         });
         if (isThere == 0) {
-          mergedData = mergedData.filter((e: any) => e.oid !== item.oid);
+          mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
         }
       });
-
-      // setMasterSelectedRowData(mergedData);
-      if (!_.isEqual(mergedData, masterSelectedRowData)) {
+      // if (!_.isEqual(mergedData, masterSelectedRowData)) {
         setMasterSelectedRowData(mergedData);
-      }
+      // }
       /*persist data finised*/
     }
+    toggleCheckBox();
+    refGraph2.current.api.refreshCells();
   };
 
   useEffect(() => {
     if (masterSelectedRowData.length > 0) {
-      //console.log('selected', masterSelectedRowData.length)
       const selectedOrderKeys: orderkeyObj[] = [];
       masterSelectedRowData.map((ele: any) => {
         selectedOrderKeys.push(ele.ok);
       });
-      //console.log('slectedOrder', selectedOrderKeys)
 
       fetchDeptWiseWiphData(selectedOrderKeys);
       setIsOrderElapsedGrid(true);
@@ -1062,7 +1133,7 @@ const undoClicked = async (props:any,orderId: string) => {
   const existsInSelected = (reqOid: string): boolean => {
     for (let index = 0; index < masterSelectedRowData.length; index++) {
       const element: any = masterSelectedRowData[index];
-      if (element.oid === reqOid) {
+      if (element.ok === reqOid) {
         return true;
       }
     }
@@ -1072,18 +1143,21 @@ const undoClicked = async (props:any,orderId: string) => {
   const onFirstDataRendered = (params: any) => {
     const nodesToSelect: IRowNode[] = [];
     params.api.forEachNode((node: any) => {
-      if (node.data && node.data.oid && existsInSelected(node.data.oid)) {
+      if (node.data && node.data.ok && existsInSelected(node.data.ok)) {
         node.data.Remark = masterSelectedRowData[0].Remark;
         for (let index = 0; index < masterSelectedRowData.length; index++) {
           const element = masterSelectedRowData[index];
-          if (element.oid === node.data.oid) {
+          if (element.ok === node.data.ok) {
             node.data.Remark = element.Remark;
+            // node.data.oca = element.oca;
           }
         }
         nodesToSelect.push(node);
       }
     });
     params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+    params.api.refreshCells();
+    toggleCheckBox();
   };
 
   const cache = useRef<any>({});
@@ -1139,7 +1213,8 @@ const undoClicked = async (props:any,orderId: string) => {
       enterNavigatesVertically: true,
       enterNavigatesVerticallyAfterEdit: true,
       groupDefaultExpanded: 0,
-      onSelectionChanged: debounce(getSelectedRow, 1000),
+      // onSelectionChanged: debounce(getSelectedRow, 1000),
+      onSelectionChanged: getSelectedRow,
       onRowDataUpdated: onFirstDataRendered,
       detailCellRendererParams: {
         suppressMenu: true,

@@ -184,13 +184,13 @@ export default forwardRef(({ ...props }: any, ref) => {
 
   const updatedPermissions =prdPermissions.map((permission:any,index:any)=>({
     ...permission,
-    title: headers?.Orders[index] ? headers.Orders[index] :  permission.title
+    title: headers && headers?.Orders && headers?.Orders[index] ? headers.Orders[index] :  permission.title
   })) 
   console.log(prdPermissions)
 
   return (
     <ProductPermission
-      title={ headers && Object.keys(headers)[0] + " Permissions" || t(
+      title={ headers && Object.keys(headers).length > 0 ? Object.keys(headers)[0] + " Permissions" : t(
         "profile.tabContent.manageUsers.advancedPermission.productPermission.title"
       )}
       prdPermissions={updatedPermissions }

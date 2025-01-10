@@ -3,9 +3,9 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText, MTOPoogiTableContainer, PoogiSection, PoogiAddButtonWrapper } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMasterMTO";
-import { generateOptions } from "../../../../../helpers/utils";
+import { areMasterFiltersValid, generateMTOFilterOptions} from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
-import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
+import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilterMDM";
 import useViewModify from "./useViewModify";
 import { operators, seasonalityQuickFilterData } from "../../../../../helpers/MDMConstants";
 import { SeasonalityQuickFilterType, type Filter } from '../../../../types/MDM';
@@ -184,10 +184,10 @@ const MTOViewModify = () => {
                         if (f.masterId == activeMaster?.id) {
                           return (
                             <VFFilter
-                              onDelete={() => handleOnDeleteFilter(f.id)}
+                              onDelete={() => {handleOnDeleteFilter(f.id)}}
                               operators={operators}
                               filters={activeMaster.filters}
-                              fields={generateOptions([activeMaster])}
+                              fields={generateMTOFilterOptions([activeMaster],activeMaster.filters)}
                               currFilter={f}
                               key={f.id}
                               isDisabled={false}
@@ -203,7 +203,7 @@ const MTOViewModify = () => {
                         return (
                           <SCFilterAddButtonWrapper>
                             <SCFilterAddButton
-                              onClick={handleOnAddFilter}
+                              onClick={()=>{handleOnAddFilter()}}
                               src={themeUi === "REGALBLAZE" ? "/assets/img/VectorFLOW/NMS/add-filter-regal.svg" : "/assets/img/VectorFLOW/NMS/add-filter.svg"}
                               key={f.id}
                               data-testid="add-filter"
@@ -217,9 +217,9 @@ const MTOViewModify = () => {
                   <SCFilterSeperator />
                   <SCFilterButtonGroup>
                     <VFButton
+                      disabled={!areMasterFiltersValid(activeMaster.filters)}
                       themeUi={themeUi}
                       onClick={() => { handleApplyFilter() }}
-                      disabled={false}
                     >
                       Apply Filter
                     </VFButton>
@@ -228,7 +228,7 @@ const MTOViewModify = () => {
                       themeUi={themeUi}
 
                     >
-                      Show All
+                      {areMasterFiltersValid(activeMaster.filters)?"Clear Filters":"Show All"}
                     </VFButtonOutline>
                   </SCFilterButtonGroup>
                 </SCFilterContainer>

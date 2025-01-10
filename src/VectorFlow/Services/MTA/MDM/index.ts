@@ -285,6 +285,12 @@ export const usePutMtoBufferMasterData = () => {
     return await MDMService.putMTOAddBufferMaster(body);
   })
 }
+
+export const usePutMtoPoogiMasterData = ()=>{
+  return useMutation(async (body: any)=>{
+    return await MDMService.putMTOAddPoogiMaster(body);
+  })
+}
 export const usePutMtoCCRMasterData = () => {
   return useMutation(async (body: any) => {
     return await MDMService.putMTOAddCCRMaster(body);

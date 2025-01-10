@@ -60,8 +60,8 @@ export const operators:Option[] = [
   ]
 
 export const operatorDataTypeMapper:any = {
-    'String':['=','contains','startsWith','endsWith','hasValue','hasNoValue'],
-    'Number':['=','!=','>','>=','<','<=']
+    'string':['=','contains','startsWith','endsWith','hasValue','hasNoValue'],
+    'integer':['=','!=','>','>=','<','<=']
 }
 
 export const masterIdToSchemaMapper:MasterIdToSchema = {
