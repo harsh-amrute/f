@@ -14,7 +14,6 @@ import {
   mapMasterToMasterState,
   generateSesonalityChartData,
   getActionId,
-  mapMasterToColumnDefs,
   createConflictRowData,
   createErrorRowData,
   parseMTOExcelData,
@@ -511,45 +510,45 @@ const useViewModify = (pageType: string) => {
   }, [activeMaster.progress]);
 
 
-  const concatenateFields = (
-    params1: Parameter[],
-    params2: Parameter[]
-  ): ConcatenatedResult[] => {
-    // Prepare a result map to avoid duplicates and merge fields
-    const resultMap: { [key: string]: ConcatenatedResult } = {};
+  // const concatenateFields = (
+  //   params1: Parameter[],
+  //   params2: Parameter[]
+  // ): ConcatenatedResult[] => {
+  //   // Prepare a result map to avoid duplicates and merge fields
+  //   const resultMap: { [key: string]: ConcatenatedResult } = {};
 
-    // Process params1
-    params1?.forEach((param) => {
-      resultMap[param.name] = {
-        id: param.id,
-        name: param.name,
-        fields: param.fields,
-      };
-    });
+  //   // Process params1
+  //   params1?.forEach((param) => {
+  //     resultMap[param.name] = {
+  //       id: param.id,
+  //       name: param.name,
+  //       fields: param.fields,
+  //     };
+  //   });
 
-    // Process params2
-    params2?.forEach((param) => {
-      if (resultMap[param.name]) {
-        // Merge fields if the name already exists
-        resultMap[param.name].fields = [
-          ...resultMap[param.name].fields,
-          ...param.fields,
-        ];
-      } else {
-        // Otherwise, add the new entry
-        resultMap[param.name] = {
-          id: param.id,
-          name: param.name,
-          fields: param.fields,
-          isMTO: true, // Add isMTO property
-        };
-      }
-    });
+  //   // Process params2
+  //   params2?.forEach((param) => {
+  //     if (resultMap[param.name]) {
+  //       // Merge fields if the name already exists
+  //       resultMap[param.name].fields = [
+  //         ...resultMap[param.name].fields,
+  //         ...param.fields,
+  //       ];
+  //     } else {
+  //       // Otherwise, add the new entry
+  //       resultMap[param.name] = {
+  //         id: param.id,
+  //         name: param.name,
+  //         fields: param.fields,
+  //         isMTO: true, // Add isMTO property
+  //       };
+  //     }
+  //   });
 
-    console.log("final ui master states....", Object.values(resultMap));
-    // Convert the result map to an array of objects
-    return Object.values(resultMap);
-  };
+  //   console.log("final ui master states....", Object.values(resultMap));
+  //   // Convert the result map to an array of objects
+  //   return Object.values(resultMap);
+  // };
 
   useEffect(() => {
     const getMasterUIConfigurationData = async () => {
@@ -565,11 +564,9 @@ const useViewModify = (pageType: string) => {
 
   useEffect(() => {
     const getMasterUIConfigurationData = async () => {
-      let data = undefined;
       let MtoBufferdata = undefined;
         try {
         const myData:any = [];
-        data = myData;
       } catch (e) {
         console.log(e);
       } finally {
@@ -1517,13 +1514,13 @@ const useViewModify = (pageType: string) => {
     if (currMaster.progress === "submitted")
       return notifyError(`The ${currMaster.name} is already submitted`);
     
-    const nextMasterIndex = masters.findIndex(
-      (master: MDMMasterState) =>
-        master.progress !== "submitted" &&
-        master.progress !== "editOnlineSubmitted"
-    );
+    // const nextMasterIndex = masters.findIndex(
+    //   (master: MDMMasterState) =>
+    //     master.progress !== "submitted" &&
+    //     master.progress !== "editOnlineSubmitted"
+    // );
 
-    if(((bufferModifyData?.length===undefined || bufferModifyData?.length==0) && (ccrModifyData?.length===undefined || ccrModifyData?.length==0))){
+    if(((bufferModifyData?.length===undefined || bufferModifyData?.length==0) && (ccrModifyData?.length===undefined || ccrModifyData?.length==0) && (poogiModifyData?.length===undefined || poogiModifyData?.length==0))){
       if (activeMaster.isMTO) {
         dispatch(UPDATE_ACTIVE_MASTER(currMaster));
         return;
