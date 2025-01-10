@@ -68,7 +68,7 @@ const ProcurementPlanning = () => {
     const ExcelExportData = ()=>{
         fetchData(date ,1 , currentTab.label === 'Shortage' ? '0' : '1', true)
     }
-
+    
     return (
         <>
 
