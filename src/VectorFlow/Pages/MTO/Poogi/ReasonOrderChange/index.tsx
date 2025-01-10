@@ -4,7 +4,7 @@ import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/A
 import { SaveBtnWrapper, SaveBtn, Wrapper } from './styles';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks, useGetPoogReasonForDealyedOrderExcel } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
+import { useGetReasonForDelayOrder, useGetPoogiRemarks, usePutPoogiRemarks, useGetPoogReasonForDealyedOrderExcel, useGetPoogiMajorMinorReason } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
 import { toast } from 'react-toastify';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import { AgGridReactProps } from 'ag-grid-react';
@@ -42,10 +42,11 @@ type MyObject = {
 };
 
 const ReasonForDelayOrder = () => {
+    const { data: reasonData, isLoading: isGetPoogiMajorMinorReason } = useGetPoogiMajorMinorReason();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: getPoogiReasonsDelayedOrder, isLoading: isPoogiReasonsDelayedOrder } = useGetReasonForDelayOrder();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
-    const { mutateAsync: updatePoogiRemarks } = usePutPoogiRemarks();
+    const { mutateAsync: updatePoogiRemarks, isLoading: isPutPoogiRemarks} = usePutPoogiRemarks();
     const [rowData, setRowData] = useState<any>();
     const [isWIPChecked, setWIPChecked] = useState<boolean>(true);
     const [remarkHistory, setRemarkHistory] = useState<any>();
@@ -80,6 +81,7 @@ const ReasonForDelayOrder = () => {
     const { mutateAsync: getPoogiReasonsDelayedOrderExcelExport } = useGetPoogReasonForDealyedOrderExcel();
     const themeUi = user?.user?.theme_ui;
     const [masterUIConfig, setMasterUIConfig] = useState([]);
+    const unsavedUserData = useRef(new Map());
 
     const sideBar = useMemo(() => {
         return {
@@ -101,6 +103,10 @@ const ReasonForDelayOrder = () => {
             enableRangeSelection: true,
             pagination: true,
             defaultColDef: {
+                cellRendererParams: {
+                    isWip: isWIPChecked,
+                    reasonData: reasonData,
+                },
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
                 cellStyle: {
@@ -125,8 +131,17 @@ const ReasonForDelayOrder = () => {
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
-        pivotMode: false
-    };
+        pivotMode: false,
+        onCellValueChanged: (params) => onCellValueChanged(params.data),
+    }
+
+    const onCellValueChanged = (newRow: any) => {
+        if (newRow.maj !== null) {
+            unsavedUserData.current.set(newRow.ok, newRow);
+        } else {
+            unsavedUserData.current.delete(newRow.ok);
+        }
+    }
 
     const customHeader = {
         RemarksHistory: {
@@ -142,8 +157,12 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             initialWidth: 300,
+            cellStyle: {
+                'background': 'none',
+                'border': "none",
+            },    
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} isWip={isWIPChecked} rowData={rowData} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
+                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min}
                 />
             }
         },
@@ -151,8 +170,12 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             minWidth: 300,
+            cellStyle: {
+                'background': 'none',
+                'border': "none",
+            },
             cellRenderer: (props: any) => {
-                return <CustomCellEditor {...props} rowData={rowData} isWip={isWIPChecked} selectedValue={props.data.maj} selectedMinorReason={props.data.min} setRowData={setRowData}
+                return <CustomCellEditor {...props} selectedValue={props.data.maj} selectedMinorReason={props.data.min}
                 />
             },
 
@@ -304,11 +327,8 @@ const ReasonForDelayOrder = () => {
     
     useEffect(() => {
         if (Object.entries(appliedFilters).length) {
-            if (currentPage == 1) {
-                getInitialData();
-            } else {
-                setCurrentPage(1);
-            }
+            setCurrentPage(1);
+            getInitialData();
         }
     }, [appliedFilters])
     
@@ -316,50 +336,49 @@ const ReasonForDelayOrder = () => {
         getFilterData();
     }, [isWIPChecked])
 
-    const checkForNullMinid = async (data: any): Promise<boolean> => {
+    const checkForNullMinid = async (data: any): Promise<any> => {
         return new Promise((resolve) => {
-            const hasNullMinid = data.some((item: any) => item.minid === null);
+            const hasNullMinid = data.find((item: any) => item.minid === null);
             resolve(hasNullMinid);
         });
     };
 
     const updateMajorMinorReason = async () => {
-        //console.log('body to api = ', tableRowRef.current.props.rowData)
-        const allRows = tableRowRef?.current?.props?.rowData;
         let putData: MyObject[] = [];
-        allRows.forEach((e: any) => {
+
+        unsavedUserData.current.forEach((updatedRow) => {
             const singleData: any = {
-                'ok': e.ok,
+                'ok': updatedRow.ok,
                 minid: null,
                 majid: null
             }
-            if (e.maj) {
-                singleData['majid'] = Number(e.maj);
-                if (e.min) {
-                    singleData.minid = Number(e.min);
+            if (updatedRow.maj) {
+                singleData['majid'] = Number(updatedRow.maj);
+                if (updatedRow.min) {
+                    singleData.minid = Number(updatedRow.min);
                 }
                 putData.push(singleData);
             }
-        })
-        // console.log('put', putData)
+        });
+
         if (putData.length === 0) {
-            notifyError("Please Select Minor Reason ")
+            notifyError("Please Select Reason")
         } else {
             const checkData = async () => {
                 const result = await checkForNullMinid(putData);
                 // Execute further code if `minid` is null
                 if (result) {
                     // Place your further code here
-                    notifyError('Please select Minor Reason');
+                    notifyError('Please select Minor Reason For Order Id: ' + result.ok.split("_")[0]);
                 } else {
                     const RemarkHistory = await updatePoogiRemarks(putData);
-                    //console.log('remarkHistory', RemarkHistory)
                     if (RemarkHistory.status == 200) {
                         toast.dismiss();
                         notifySuccess('Successfull');
                         if (isWIPChecked) {
                             getInitialData(isWIPChecked, 1)
                         }
+                        unsavedUserData.current.clear();
                         putData = [];
                     }
                 }
@@ -370,23 +389,20 @@ const ReasonForDelayOrder = () => {
     }
 
     const handlePageChange = (currPage: number) => {
-        saveChanges();
         setCurrentPage(currPage);
-        getInitialData(isWIPChecked ? true : false, currPage)
+        getInitialData(isWIPChecked, currPage);
     }
 
-    const saveChanges = () => {
-        const allData: any = [];
-        currentGridRef.current.api.forEachNode((node: any) => allData.push(node.data));
-        console.log("All data:", allData);
-        // Save `allData` to your server or file
-    }
-
-    const updateRowData = (updatedRow: any) => {
-        const index = rowData.findIndex((row :any) => row.id === updatedRow.id); // Assuming 'id' is a unique key
-        if (index !== -1) {
-            rowData[index] = updatedRow; // Update the row data
-            currentGridRef.current.api.setRowData(rowData); // Update grid data
+    const updateUserChanges = (params: any) => {
+        if (unsavedUserData.current.size > 0) {
+            // Update grid
+            params.api.forEachNode((node: any) => {
+                unsavedUserData.current.forEach((updatedRow) => {
+                    if (node.data.ok === updatedRow.ok) {
+                        node.setData(updatedRow);
+                    }
+                }); 
+            });
         }
     }
     
@@ -413,10 +429,10 @@ const ReasonForDelayOrder = () => {
         if (colDef.length > 0) {
             if (currentGridRef?.current) {
                 setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+                getUserColumnConfig();
             }
-            getUserColumnConfig();
         }
-    }, [colDef, currentGridRef]);
+    }, [colDef]);
       
     // if (!rowData) {
     //     return null;
@@ -450,7 +466,7 @@ const ReasonForDelayOrder = () => {
                 onFilterRemove={onFilterRemove}
                 isMfgSelected={isMfgSelected}
             />
-            {(isPoogiReasonsDelayedOrder || isUpdateUserConfig || isGetUserConfig) && (<OverlayLoader />)}
+            {(isPoogiReasonsDelayedOrder || isUpdateUserConfig || isGetUserConfig || isGetPoogiMajorMinorReason || isPutPoogiRemarks) && (<OverlayLoader />)}
             <Wrapper>
                 <VFTable
                     {...agGridProps}
@@ -464,6 +480,7 @@ const ReasonForDelayOrder = () => {
                         params?.api.autoSizeAllColumns();
                         setCurrentGridRef(tableRowRef);
                     }}
+                    onRowDataUpdated={(params: any) => { updateUserChanges(params); }}
                     maintainColumnOrder
                 />
                 <VFPagination
