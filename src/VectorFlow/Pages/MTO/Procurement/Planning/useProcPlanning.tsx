@@ -341,14 +341,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     useEffect(() => {
         if(HeaderData && HeaderData.length>0){
 
-            console.log("header data....", HeaderData);
-
             if (currentTab.label === 'Shortage') {
-                
                 setColDef(getColumnDefinations(HeaderData, customHeader, extras))
             }
             else {
-                console.log("coldef with extras", getColumnDefinations(HeaderData,customHeader,extras, ["ExpAdd.StockToday"]))
                 setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
             }
         }
@@ -489,7 +485,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
     useEffect(() => {
         if (date) {
-            fetchData(date);
+            fetchData(date,1,currentTab.label === "Shortage" ? '0':'1');
         }
     }, [appliedFilters])
 
@@ -540,7 +536,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                     <TableWrapper>
                         <VFTable
                             {...agGridProps}
-                            key={isReset?3: 4}
+                            
                             columnDefs={colDef}
                             rowData={CompleteAvailableDatas}
                             tooltipHideDelay={100000}
