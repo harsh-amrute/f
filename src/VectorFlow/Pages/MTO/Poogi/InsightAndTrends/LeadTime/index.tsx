@@ -189,6 +189,8 @@ const LeadTime = () => {
       getGridData(true);
     }
 
+    const themeUi = user?.user?.theme_ui;
+    
     return (
         <>
             <MTOActionToolBar  
@@ -196,6 +198,7 @@ const LeadTime = () => {
                 handleResetClick={handleResetClick} 
                 handleGoBack={() => { setIsGridView(false) }} 
                 isGoBackButton={isGridView} 
+                themeUi={themeUi}
                 isChartGridToggle 
                 isGridView={isGridView} 
                 setIsGridView={setIsGridView} 
