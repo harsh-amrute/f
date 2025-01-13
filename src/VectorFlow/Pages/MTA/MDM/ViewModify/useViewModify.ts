@@ -143,6 +143,11 @@ const useViewModify = (pageType:string) => {
         suppressColumnsToolPanel:true,
         wrapText:true,
         autoHeight:true,
+        pinned:'left',
+        cellStyle:{
+          overflow:'visible',
+          'min-width':180,
+        }
       },
       {
         field:'error',
@@ -153,6 +158,11 @@ const useViewModify = (pageType:string) => {
         suppressColumnsToolPanel:true,
         wrapText:true,
         autoHeight:true,
+        pinned:'left',
+        cellStyle:{
+          overflow:'visible',
+          'min-width':180,
+        }
       }
   ];
 
