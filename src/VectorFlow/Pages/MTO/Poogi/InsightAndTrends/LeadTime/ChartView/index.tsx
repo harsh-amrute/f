@@ -200,7 +200,7 @@ const ChartView = ({ chartData, chartTableData }: any) => {
 
 
     return (
-        <div style={{ height: "85%", paddingBottom: '20px', marginLeft: '20px', marginTop: '10px', display: 'flex' }}>
+        <div style={{ height: "90%", paddingBottom: '20px', marginLeft: '20px', paddingTop: '20px', display: 'flex' }}>
             {isLoading && <OverlayLoader />}
 
             <BoxPlotContainer
