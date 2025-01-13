@@ -740,7 +740,6 @@ const useViewModify = (pageType: string) => {
 
     if (masterId === 502) {
       const allRows = [...newRowData];
-      console.log("allRows....", allRows);
       const newData: any = [];
 
       allRows.forEach((e: any, index: number) => {
@@ -3510,7 +3509,6 @@ const useViewModify = (pageType: string) => {
     }
     PoogiPostObj.reasonData = finPoogiPostData;
     try {
-      console.log("finPoogiPostdata...", PoogiPostObj);
       const response = await savePOOGIMasterTask(PoogiPostObj);
 
       if (response.status === 200) {
@@ -3968,7 +3966,6 @@ const useViewModify = (pageType: string) => {
         reasonData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
-      console.log("Poogi modify data", poogiModifyData);
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {

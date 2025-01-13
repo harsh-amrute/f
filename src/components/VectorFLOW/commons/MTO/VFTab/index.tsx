@@ -36,7 +36,6 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
   }
 
   const finMasters:any = isAdd? [masters[0]]: masters;
-  console.log("this are the masters in add", masters);
 
   return(
       <SCTabArea>

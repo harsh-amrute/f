@@ -274,7 +274,6 @@ const useSavedDrafts = ()=>{
           }
         });
 
-        console.log('result....poogi reason', result);
       
         return result;
       };
@@ -283,7 +282,6 @@ const useSavedDrafts = ()=>{
     const onEditDraft = async(draftDetails:any)=>{
         let toastId;
         if(draftDetails.isMTO){
-            // console.log("draftDetail......", draftDetails);
             
             try{
                 const res: any = await getDraftByIdMTO({draftId: draftDetails.DraftId, mid: draftDetails.mid});
@@ -293,7 +291,6 @@ const useSavedDrafts = ()=>{
            
 
             const mastersDataRes= await getMTOMasterUIConfiguration();
-            console.log("mastersData res.....",mastersDataRes.data.data)
             const mastersData = mastersDataRes?.data?.data?.find(
                 (item: any) => item.id === draftDetails.mid
               );    

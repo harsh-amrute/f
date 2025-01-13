@@ -923,7 +923,7 @@ export const mapStateFiltersToPayload = (filters: Filter[]) => {
 
 export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMasterState[] => {
 
-  const val:any =  masters.map((master: Master) => ({
+  return  masters.map((master: Master) => ({
     id: master.id,
     name: master.name,
     fields: master.fields,
@@ -941,9 +941,6 @@ export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMa
     isChecked: true,
     isMTO: true
   }))
-  console.log("val", val);
-
-  return val;
 }
 
 export const mapDraftToColumnDefs = (fields: Field[], customParams?: ColDef) => {
