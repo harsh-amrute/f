@@ -62,7 +62,8 @@ const AddRecord = () => {
         onSaveToDraft,
         onEditOnlineSave,
         isDataAvailableLocally,
-        isOverlayVisible
+        isOverlayVisible,
+        onDiscardDraftCallback
 
     } = useViewModify('add');
 
@@ -254,6 +255,8 @@ const AddRecord = () => {
               onSubmitConflictData={()=>console.log('')}
               onDeleteOnlineSubmit={()=>console.log('')}
               masterId={activeMaster.id}
+              DataCount={activeMaster.rowData.length}
+              onDiscardDraftCallback={onDiscardDraftCallback}
             />
           </div>
         }

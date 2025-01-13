@@ -42,7 +42,8 @@ const OpenExpeditingRequests = () => {
     onApplyFilter,
     editedRows,
     onSubmitEditedRows,
-    themeUi
+    themeUi,
+    onResetCallback
   } = useOpenExpeditingRequests()
 
   return (
@@ -54,7 +55,8 @@ const OpenExpeditingRequests = () => {
         tempDownloadData: tempDownloadData,
         setTempDownloadData: setTempDownloadData,
         exportExcelRowData: exportExcelRowData,
-        setExportExcelRowData: setExportExcelRowData
+        setExportExcelRowData: setExportExcelRowData,
+        onResetCallback:onResetCallback
 
       }}
     >

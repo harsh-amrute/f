@@ -35,7 +35,9 @@ export interface VFTaskBarProps{
     enableEditOnlineReset:boolean
     showSubmittedExportError:boolean
     masterId:number,
-    isSavingToDraft:boolean
+    isSavingToDraft:boolean,
+    DataCount?:number,
+    onDiscardDraftCallback?:()=>void
 }
 
 
@@ -69,7 +71,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         disableStopSeasonality,
         disableResumeSeasonality,
         onPhaseInPhaseOutStop,
-        masterId
+        masterId,
+        DataCount,
+        onDiscardDraftCallback
     } = props
 
     const {user,isSideBarOpen} = useUserData()
@@ -306,12 +310,13 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 )
 
         case "uploaded":
+            console.log("DAATCOYNT",DataCount)
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                    <VFTaskBarButtonGroup>
                     <BackButton/>                      
                        {
-                        !isSavingToDraft && !disableSubmit && (
+                        !isSavingToDraft && !disableSubmit && DataCount!==0 && (
                             <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={disableDeleteSelected} width={139}>
                             Delete Selected
                             </VFButtonOutline>
@@ -361,6 +366,39 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <div style={{display:'flex', gap:'20px'}}>
                     <BackButton/>
                     </div>
+                    <div >
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
+                </TaskBarContainer>
+            )
+        case "Discard":
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
+                    <div style={{display:'flex', gap:'20px'}}>
+                    <BackButton/>
+                    </div>
+                    <div >
+                        <VFStepper
+                            items={getStepperState()}
+                        />
+                    </div>
+                </TaskBarContainer>
+            )
+        case "DiscardDraft":
+            return(
+                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
+                    <VFTaskBarButtonGroup>
+                        <BackButton/>
+                        <VFButtonOutline themeUi={themeUi} onClick={()=>{
+                            if(onDiscardDraftCallback){
+                                onDiscardDraftCallback()
+                            }
+                        }} >
+                            Discard Draft
+                        </VFButtonOutline>
+                    </VFTaskBarButtonGroup>
                     <div >
                         <VFStepper
                             items={getStepperState()}
@@ -542,13 +580,16 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 </TaskBarContainer>
             )
         case "conflicts":
+            console.log("DAATCOYNT",DataCount)
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                         <BackButton/>
+                        {DataCount!==0 && (
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
                         Delete Selected
                         </VFButtonOutline>
+                        )}
                         <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
                             Submit All
                         </VFButton>
@@ -565,9 +606,11 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                         <BackButton/>
+                        {DataCount!==0 && (
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
                         Delete Selected
                         </VFButtonOutline>
+                        )}
                         <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
                             Submit All
                         </VFButton>

@@ -103,11 +103,8 @@ const useBPR =()=>{
         const getTableState = async()=>{
           try{
             const data =  await getState({"reportname":"BPR"})
-            console.log("SAVED DATAA",data)
             const parsedContent = JSON.parse(data.data.data)
-            console.log("STORED",parsedContent)
             setGridState(parsedContent)
-            console.log("BPRR",BPRColumns)
           }catch(err:any){
             setGridState({
                 charts:[],

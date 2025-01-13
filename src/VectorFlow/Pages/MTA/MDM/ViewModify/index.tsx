@@ -105,7 +105,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         uploadProgress,
         totalProgress,
         tempRecordCount,
-        isSubmitDisabled
+        isSubmitDisabled,
+        onDiscardDraftCallback
 
     } = useViewModify('modify');
     useEffect(()=>{
@@ -380,6 +381,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             onDeleteOnlineSubmit={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
             masterId={activeMaster.id}
+            DataCount={activeMaster.rowData.length}
+            onDiscardDraftCallback={onDiscardDraftCallback}
           />
           </div>
         }

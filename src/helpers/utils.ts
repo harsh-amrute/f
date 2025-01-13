@@ -2617,7 +2617,7 @@ export const mapResearchInsightsFieldsToColDefs = (fields: BPRField[], onOpenDai
   return [checkboxColDef, { ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result]
 }
 
-export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any, onOpenSubmitRemark:(params:any,e:any)=>void,onOpenRemarkHistory:(e:any,params:any)=>void):ColDef[]=>{
+export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark: (params: any, e: any) => void, onOpenRemarkHistory: (e: any, params: any) => void, onOpenDailyDataGraph: (params: any) => void): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return []
@@ -2627,25 +2627,9 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
 
   const BORSpecificColumns: ColDef[] = [
     {
-      colId: 'dailydatagraph',
-      field: '',
-      headerName: '',
-      width: 40,
-      lockPosition: 'left',
-      floatingFilter: false,
-      tooltipField: "DailyDataGraph",
-      cellRenderer: 'grapCellRenderer',
-      cellRendererParams: {
-        onOpenDailyDataGraph: onOpenDailyDataGraph
-      }
-
-
-      // tooltipComponent:'remarksToolTipComponent'
-    },
-    {
       colId:'remarks',
       field:'remarks',
-      headerName:'Remarks',
+      headerName:'Edit Remarks',
      cellRenderer:'submitRemarkCellRenderer',
      cellRendererParams:{
       onClick:onOpenSubmitRemark
@@ -2711,7 +2695,8 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGrap
       cellDataType: getCellDataType(f.DataType)
     }
   })
-  return [...result, ...BORSpecificColumns]
+  //return [...result, ...BORSpecificColumns]
+  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, ...result, ...BORSpecificColumns]
 }
 
 export const BPRColorMapper = (color: string): { bg: string, text: string } => {
