@@ -89,7 +89,7 @@ const useOpenExpeditingRequests = () => {
     useEffect(()=>{
       const getTableState = async()=>{
         try{
-          const data =  await getState({"reportname":"OpenExpeditingRequests"})
+          const data =  await getState({reportname:"OpenExpeditingRequests"})
           const parsedContent = JSON.parse(data.data.data)
           setGridState(parsedContent)
         }catch(err:any){
@@ -116,6 +116,10 @@ const useOpenExpeditingRequests = () => {
           try{
             notifyLoader("Loading Grid Data")
             const data = await getData(currentFilter)
+
+            //// idar_issue_hai_
+            //// need_a_new_api_route_to_get_OER_Configurations
+            //// currently_not_avaiable
             const ColumnDefinitions = mapFieldsToColDefs(data.data.data.config)
             setColDefs(ColumnDefinitions)
             setOERColumns(ColumnDefinitions);
@@ -150,7 +154,6 @@ const useOpenExpeditingRequests = () => {
 
     const onColumnVisible = (event: any) => {
       const { column, visible , columns } = event;
-      // console.log(column)
       // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
       if(column!==null && column.colId!=="dailydatagraph" && event.source==='toolPanelUi'){
       setOERColumns((prevColumns:any) =>{
@@ -419,7 +422,8 @@ const useOpenExpeditingRequests = () => {
               headerName: col.header,
               colId: col.colCode,
               field: col.colCode,
-              cellRenderer:'colorCellRenderer'
+              cellRenderer:'colorCellRenderer',
+              // hide: !col.Visible,
             }
           }
           if(col.colCode==='eta'){
@@ -431,14 +435,16 @@ const useOpenExpeditingRequests = () => {
               cellRenderer:'etaCellRenderer',
               floatingFilter:false,
               editable:true,
-              cellDataType:'date'
+              cellDataType:'date',
+              // hide: !col.Visible,
               
           }
           }
           return{
             headerName: col.header,
             colId: col.colCode,
-            field: col.colCode
+            field: col.colCode,
+            // hide: !col.Visible,
         }
         })
         result = [...result,{
