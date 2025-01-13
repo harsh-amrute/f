@@ -146,7 +146,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     useEffect(() => {
 
         if (isReset) {
-            setColumnState(defaultColState);
+            setColumnState([...defaultColState]);
             setIsReset(false)
             notifySuccess("Reset Successfully")
         } else {
@@ -334,7 +334,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             filter: false,
             maxWidth: 35,
             minWidth: 35,
-            cellRenderer: 'agGroupCellRenderer'
+            cellRenderer: 'agGroupCellRenderer',
+            pinned:"left"
         }
     ]
 

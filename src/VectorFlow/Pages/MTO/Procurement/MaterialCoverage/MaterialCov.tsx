@@ -49,7 +49,7 @@ const MaterialCov = () => {
   const [filterData, setFilterData] = useState({});
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState<boolean | undefined>(undefined);
   const [colDef, setColDef] = useState<any>([]);
   const [HeaderData, setHeaderData] = useState([]);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
@@ -57,6 +57,7 @@ const MaterialCov = () => {
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { user } = useUserData();
   const { getColDef , colDefMap} = useColDef();
+  const [defaultColState,setDefaultColState] = useState<any>([])
     const { 
     state: currFilter, 
     setState: setCurrFilter, 
@@ -83,6 +84,7 @@ const MaterialCov = () => {
 
   const handleToggleComponent = (value: boolean) => {
     setToggleComponent(value);
+    getUserColumnConfig();
   }
 
   const handleParameterData = (data: any) => {
@@ -137,19 +139,25 @@ const MaterialCov = () => {
     }
   }
 
-  const handleSaveClick = async () => {
-    try {
-      if(currentGridRef?.current?.api){
-        const config = currentGridRef.current.api.getColumnState();
+  useEffect(()=>{
+    if(colDef.length > 0 && currentGridRef?.current?.api && !defaultColState.length){
+      setDefaultColState(currentGridRef?.current?.api?.getColumnState())
+    }
+  },[colDef,currentGridRef])
+
   
+
+  const handleSaveClick = async (isReset = false) => {
+    try {
+      const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState();
+
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProcMaterialCovOpenSales,
           cs: JSON.stringify(config)
         }
-        await updateUserUIReportConfigData([payload]);
-        await getUserColumnConfig();
-      }
+      await updateUserUIReportConfigData([payload]);
+     
 
     } catch (error) {
       console.error(error);
@@ -159,6 +167,8 @@ const MaterialCov = () => {
   const handleResetClick = () => {
     setIsReset(true);
   }
+
+
 
   const reportName = 'MaterialCoverageforOpenSalesOrder';
   const getHeaderData = async () => {
@@ -203,6 +213,7 @@ const MaterialCov = () => {
           filter: false,
           width: 50,
           maxWidth: 50,
+          pinned:"left",
           cellRenderer: CustomGroupCellRenderer
       }
   ]
@@ -222,17 +233,30 @@ const MaterialCov = () => {
   }, [HeaderData])
 
   useEffect(() => {
-    getUserColumnConfig();
     getHeaderData();
     getFilterData()
   }, [])
 
+  useEffect(()=>{
+    if(defaultColState && defaultColState.length){
+      getUserColumnConfig();
+    }
+
+  },[defaultColState])
+
   useEffect(() => {
     if (isReset) {
-      setColumnState(colDef);
-      setIsReset(false)
+
+      setColumnState([...defaultColState])
+
+      setIsReset(false) 
+      
     }else{
-      handleSaveClick();
+
+      if(isReset == false){
+        handleSaveClick(true);
+      }
+
     }
   }, [isReset]);
 
@@ -257,7 +281,6 @@ const MaterialCov = () => {
 
           <ActionToolBar
             comp={'MaterialCov'}
-            isExcelExport
             isAddFilterButton
             isFilterOpen={isFilterOpen}
             onAddFilter={onAddFilter}
