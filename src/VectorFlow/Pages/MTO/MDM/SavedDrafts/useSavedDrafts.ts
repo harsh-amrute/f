@@ -221,70 +221,67 @@ const useSavedDrafts = ()=>{
         })
       };
 
-    const convertToPoogiDraftData = (data:any, page:any)=>{
-        if(page==="Modify"){
-            return data;
-        }
-
+      const convertToPoogiDraftData = (data: any, page: any) => {
         const result: any[] = [];
-        
+      
         data.forEach((item: any) => {
-            // Push the main object without minData
-            const tempMajId = "maj_"+ uuidv4();
-            // result.push({
-            //     majId: item.majId? item.majId: tempMajId,
-            //     majdsc: item.majdsc,
-            //     plnm: item.plnm,
-            //     trmId: item.trmId? item.trmId: item.mintid,
-            //     tid: item.tid,
-            //     ti_id: item.ti_id,
-            //     ie: item.ie || false,
-            //     id: item.id || false,
-            //     iu: item.iu || false,
-            //     pl: item.pl,
-            //     majcd: item.majcd,
-            //     aon: item.aon,
-            //     aid: item.aid,
-            //     anm: item.anm,
-            //     st: item.st,
-            //     stnm: item.stnm
-            // });
-    
-            // Push each minData object with the corresponding majId and plnm
-            if (item.minData && Array.isArray(item.minData)) {
-            const tempMinId = "min_"+uuidv4();
-
-                item.minData.forEach((minItem: any) => {
-                    result.push({
-                        majdsc: item.majdsc,
-                        majId: minItem.majId || tempMajId,
-                        minId: minItem.minId || tempMinId,
-                        mindsc: minItem.mindsc,
-                        mintid: minItem.mintid,
-                        mincd: minItem.mincd,
-                        plnm: item.plnm,
-                        ie: minItem.ie || false,
-                        id: minItem.id || false,
-                        iu: minItem.iu || false,
-                        pl: item.pl,
-                        aon: minItem.aon,
-                        aid: minItem.aid,
-                        anm: minItem.anm,
-                        st: minItem.st,
-                        stnm: minItem.stnm
-                    });
-                });
+          const tempMajId = "maj_" + uuidv4();
+          
+          // Create a shallow copy of the item to avoid modifying the original object
+          const copiedItem = { ...item };
+      
+          if (page === "Modify") {
+            // Ensure majId is set
+            copiedItem.majId = copiedItem?.majId || tempMajId;
+      
+            // Ensure minId is set for each minData item
+            if (copiedItem.minData && Array.isArray(copiedItem.minData)) {
+              copiedItem.minData = copiedItem.minData.map((minItem: any) => {
+                // Create a shallow copy of minItem
+                const copiedMinItem = { ...minItem };
+                copiedMinItem.minId = copiedMinItem?.minId || "min_" + uuidv4();
+                return copiedMinItem;
+              });
             }
+      
+            result.push(copiedItem); // Add the modified item
+          } else {
+            // Handle other page types
+            if (item.minData && Array.isArray(item.minData)) {
+              const tempMinId = "min_" + uuidv4();
+      
+              item.minData.forEach((minItem: any) => {
+                result.push({
+                  majdsc: item.majdsc,
+                  majId: minItem?.majId || tempMajId,
+                  minId: minItem?.minId || tempMinId,
+                  mindsc: minItem.mindsc,
+                  mintid: minItem.mintid,
+                  mincd: minItem.mincd,
+                  plnm: item.plnm,
+                  ie: minItem.ie || false,
+                  id: minItem.id || false,
+                  iu: minItem.iu || false,
+                  pl: item.pl,
+                  aon: minItem.aon,
+                  aid: minItem.aid,
+                  anm: minItem.anm,
+                  st: minItem.st,
+                  stnm: minItem.stnm,
+                });
+              });
+            }
+          }
         });
-    
-        return result;
 
-    }
+      
+        return result;
+      };
+      
     
     const onEditDraft = async(draftDetails:any)=>{
         let toastId;
         if(draftDetails.isMTO){
-            // console.log("draftDetail......", draftDetails);
             
             try{
                 const res: any = await getDraftByIdMTO({draftId: draftDetails.DraftId, mid: draftDetails.mid});
@@ -294,7 +291,6 @@ const useSavedDrafts = ()=>{
            
 
             const mastersDataRes= await getMTOMasterUIConfiguration();
-            console.log("mastersData res.....",mastersDataRes.data.data)
             const mastersData = mastersDataRes?.data?.data?.find(
                 (item: any) => item.id === draftDetails.mid
               );    
@@ -316,7 +312,7 @@ const useSavedDrafts = ()=>{
                 dispatch(SET_CCR_MODIFY_DATA(draftData))
             }
             if(draftDetails.mid===503){
-                dispatch(SET_POOGI_MODIFY_DATA(draftData))
+                dispatch(SET_POOGI_MODIFY_DATA(convertToPoogiDraftData(draftData,draftDetails.ActionType)))
             }
 
 

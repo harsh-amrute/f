@@ -125,6 +125,7 @@ const MTOAddRecord = () => {
               <VFTab 
                 activeMaster={activeMaster}
                 themeUi={themeUi}
+                isAdd={true}
                 onTabChange={handleTabChange}
                 onTabClose={(e)=>handleTabClose(e,activeMaster)}
                 newTabTitle={"Add Master"}
