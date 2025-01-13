@@ -110,19 +110,6 @@ import MinReasonDescCell from "./MinReasonDescCell";
 import { useNavigate } from "react-router-dom";
 import DaysOfWeekRenderer from "./DaysOfWeekRenderer";
 
-// Define TypeScript interfaces for the parameters
-interface mtaField {
-  displayName: string;
-  key: string;
-  col_Position: string;
-  visible: boolean;
-  isAdd?: boolean;
-  isEdit?: boolean;
-  isDownload?: boolean;
-  isApplicable?: boolean;
-  dataType: string;
-}
-
 
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
