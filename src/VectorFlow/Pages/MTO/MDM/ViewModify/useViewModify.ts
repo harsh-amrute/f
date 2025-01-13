@@ -123,19 +123,6 @@ interface mtaField {
   dataType: string;
 }
 
-interface Parameter {
-  id: string;
-  name: string;
-
-  fields: mtaField[];
-}
-
-interface ConcatenatedResult {
-  id: string;
-  name: string;
-  fields: mtaField[];
-  isMTO?: boolean;
-}
 
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
@@ -565,17 +552,12 @@ const useViewModify = (pageType: string) => {
   useEffect(() => {
     const getMasterUIConfigurationData = async () => {
       let MtoBufferdata = undefined;
-        try {
-        const myData:any = [];
-      } catch (e) {
-        console.log(e);
-      } finally {
+      
         try {
           MtoBufferdata = await MTOMasterUIConfiguration();
         } catch (e) {
           console.log(e);
         }
-      }
 
         setAllMasterState(
           mapMasterToMasterState(MtoBufferdata?.data?.data, onShowChart)
