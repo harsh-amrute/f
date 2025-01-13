@@ -81,7 +81,7 @@ export const MAX_CUSTOM_ATTRIBUTES_COUNT = 15;
 export const MAX_CODE_LENGTH = 50;
 export const MAX_NAME_LENGTH = 125;
 export const MAX_CUSTOM_ATTRIBUTE_LENGTH = 50;
-export const MAX_DECIMAL_VAL = 99999999.99;
+export const MAX_DECIMAL_VAL = 100000000;
 export const MIN_DECIMAL_VAL = 0;
 export const MAX_INT_VAL = 1000000000;
 

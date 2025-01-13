@@ -80,7 +80,8 @@ const DeleteRecord = () => {
         isDataAvailableLocally,
         enableEditOnlineReset,
         errorCount,
-        tempRecordCount
+        tempRecordCount,
+        onDiscardDraftCallback
     } = useViewModify('remove');
     
 
@@ -325,6 +326,8 @@ const DeleteRecord = () => {
               onDeleteOnlineReset={onDeleteOnlineReset}
               onDeleteOnlineSubmit={onDeleteOnlineSubmit}
               masterId={activeMaster.id}
+              DataCount={activeMaster.rowData.length}
+              onDiscardDraftCallback={onDiscardDraftCallback}
             />
           </div>
         }

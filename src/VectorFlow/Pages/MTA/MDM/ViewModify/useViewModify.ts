@@ -1,4 +1,5 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
+import { useNavigate } from "react-router";
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail, useGetUploadProgress } from "../../../../Services/MTA/MDM";
@@ -22,6 +23,7 @@ import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 const useViewModify = (pageType:string) => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const options = useSelector((state: RootState) => state.mdm.options);
     const selectedOptions = useSelector((state: RootState) => state.mdm.selectedOptions);
@@ -35,6 +37,8 @@ const useViewModify = (pageType:string) => {
     const recordCount = useSelector((state:RootState) => state.mdm.recordCount)
     const isDataAvailableLocally = useSelector((state:RootState) => state.mdm.isDataAvailableLocally)
     const isSavingToDraft = useSelector((state:RootState) => state.mdm.isSavingToDraft)
+
+    const draftId = useSelector((state:RootState) => state.mdm.draftId)
 
     const [tempRecordCount,setTempRecordCount] = useState<number>(0)
 
@@ -392,6 +396,9 @@ const useViewModify = (pageType:string) => {
 
 
     const addCheckBoxColDefs = () => {
+      if(activeMaster.rowData.length===0){
+        return
+      }
       const checkboxColDefs:ColDef[] = [
         {
           field:'checkbox',
@@ -898,14 +905,24 @@ const useViewModify = (pageType:string) => {
           dispatch(UPDATE_ROW_DATA(validData));
         
           dispatch(REMOVE_COLDEFS(['error','warning']));
-          addCheckBoxColDefs();
           if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-          else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+          else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+          else if(validData.length===0){
+            if(draftID.length===0){
+              dispatch(UPDATE_PROGRESS_STATE('Discard'))
+            }else{
+              dispatch(UPDATE_PROGRESS_STATE('DiscardDraft'))
+            }
+          }
           dispatch(SET_RECORD_COUNT(validData.length))
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          if(validData.length!==0){
+            addCheckBoxColDefs();
+          }
         }
         
       }
+
       
       const deleteSelected = () => {
         const selectedRows = ref.current?.api.getSelectedRows();
@@ -1322,6 +1339,34 @@ const useViewModify = (pageType:string) => {
 
       } 
 
+      const onDiscardDraftCallback = async () =>{
+        if(draftId.length!==0){
+          const toastId = notifyLoader(`Deleting Draft`);
+          const result = await deleteDraft(draftID);
+          if(result.status===200){
+            toast.dismiss(toastId)
+            notifySuccess("Deleted Draft")
+          }else{
+            toast.dismiss(toastId)
+            notifyError("Something Went Wrong")
+          }
+          // dispatch()
+          dispatch(UPDATE_PROGRESS_STATE('default'));
+          dispatch(UPDATE_ROW_DATA([]));
+          dispatch(UPDATE_COLDEFS([]));
+          dispatch(REMOVE_ALL_FILTERS());
+          dispatch(ADD_FILTER())
+          dispatch(SET_DRAFT_ID(''))
+          setDownloadData(false);
+          setTempDownloadData(false);
+          dispatch(FILL_MASTERS([]));
+          setFilterButtonStatus([]);
+          dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+          navigate('/master-data-management/saved-drafts')
+          return
+        }
+      }
+
       const onBackButton = () => {
        if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
        {
@@ -1728,7 +1773,8 @@ const useViewModify = (pageType:string) => {
         uploadProgress,
         totalProgress,
         tempRecordCount,
-        isSubmitDisabled
+        isSubmitDisabled,
+        onDiscardDraftCallback
     }
 }
 

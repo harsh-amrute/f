@@ -168,11 +168,11 @@ export const useBOR =()=>{
     //   });
     // };
 
-    const onCellValueChanged = (newRow: any, primaryKey1: string,primaryKey2:string) => {
+    const onCellValueChanged = (newRow: any, primaryKey1: string,primaryKey2:string,primaryKey3:string) => {
       setEditedRows((prev) => {
         let found = false; // Flag to track if the row has been updated
         const updatedRows = prev.map((row) => {
-          if (row[primaryKey1] === newRow[primaryKey1] && row[primaryKey2]===newRow[primaryKey2]) {
+          if (row[primaryKey1] === newRow[primaryKey1] && row[primaryKey2]===newRow[primaryKey2] && row[primaryKey3]===newRow[primaryKey3]) {
             found = true;
             return newRow.remarks.length === 0 ? null : { ...newRow }; // Return updated row
           }
@@ -193,17 +193,43 @@ export const useBOR =()=>{
 
     const onSubmitRemarks = async()=>{
       try{
-       const toastId = notifyLoader("Submitting Remark")
-       const payload = editedRows.map((e)=>{
-           return {
-               remark:e.remarks,
-               whcode:e.WHCode,
-               skucode:e.SKUCode,
-               spc:e.SupplierCode
-           }
+      //  const toastId = notifyLoader("Submitting Remark")
+      //  const payload = editedRows.map((e)=>{
+      //      return {
+      //          remark:e.remarks,
+      //          whcode:e.WHCode,
+      //          skucode:e.SKUCode,
+      //          spc:e.SupplierCode
+      //      }
            
-       })
-       const {data} = await submitRemark({data:payload})
+      //  })
+      //  const {data} = await submitRemark({data:payload})
+      //  toast.dismiss(toastId)
+      console.log("EDITED ROWSSS",editedRows)
+      const toastId = notifyLoader("Submitting Remark")
+      console.log("EDITEDROWS",editedRows)
+      const payload = editedRows.map((e)=>{
+          return {
+              remark:e.remarks,
+              whcode:e.WHCode,
+              skucode:e.SKUCode,
+              spc:e.SupplierCode
+          }
+          
+      })
+      const {data} = await submitRemark({data:payload})
+      editedRows.forEach((editedRow) => {
+          // Find the row node using both SKUCode and WHCode as unique identifiers
+          const rowNode = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WHCode}-${editedRow.SupplierCode}`);
+          console.log("ROWNODE",rowNode)
+          if (rowNode) {
+            // Update the 'Remarks' column with the new remark
+            rowNode.setDataValue('Remark', editedRow.remarks);
+    
+            // Clear the 'Edit Remarks' column after submission
+            rowNode.setDataValue('remarks', '');
+          }
+        });
        toast.dismiss(toastId)
        notifySuccess(data.msg)
        setEditedRows([])
@@ -282,15 +308,65 @@ export const useBOR =()=>{
 
 
     const onColumnVisible = (event: any) => {
-      const { column, visible } = event;
-      console.log(column)
+      const { column, visible , columns } = event;
+      // console.log(column)
       // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
-      if(column!==null){
-      setBORColumns((prevColumns:any) =>
-        prevColumns.map((col:any) =>
-          col.field === column.colId ? { ...col, hide:!visible } : col
-        )
+      if(column!==null && column.colId!=="dailydatagraph" && event.source==='toolPanelUi'){
+      setBORColumns((prevColumns:any) =>{
+          const updatedColumns = prevColumns.map((col: any) =>
+              col.field === column.colId
+                ? { ...col, hide: !visible }
+                : col
+            );
+          
+            // Check if any columns, except the one with colId === "dailydatagraph", have hide: false
+            const anyColumnWithHideFalse = updatedColumns.some(
+              (col: any) => col.colId !== "dailydatagraph" && col.hide === false
+            );
+          
+            // Now map over the updated columns and ensure dailydatagraph's hide is updated accordingly
+            return updatedColumns.map((col: any) =>
+              col.colId === "dailydatagraph"
+                ? { ...col, hide: anyColumnWithHideFalse ? false : col.hide }
+                : col
+            );
+      }
       );
+      }else if(columns.length>1 && event.source==='toolPanelUi'){
+          setBORColumns((prevColumns: any) => {
+              // Create a new array with updated columns, excluding 'dailydatagraph
+              if(visible===true){
+                  return  prevColumns.map((col: any) => ({ ...col, hide: false }))
+              }else{
+                  const updatedColumns = prevColumns.map((col: any) =>
+                      col.colId === "dailydatagraph"
+                        ? col // Exclude this column for now
+                        : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
+                        ? { ...col, hide: !visible }
+                        : col
+                    );
+                  
+                    // Check if all columns except 'dailydatagraph' have `hide: true`
+                    const allHidden = updatedColumns.every(
+                      (col: any) => col.colId === "dailydatagraph" || col.hide
+                    );
+                  
+                    // Update 'dailydatagraph' column's `hide` property if all others are hidden
+                    return updatedColumns.map((col: any) =>
+                      col.colId === "dailydatagraph" && allHidden ? { ...col, hide: true } : col
+                    );
+              }
+            });
+            
+          // setBPRColumns((prevColumns:any) =>
+          //     prevColumns.map((col: any) =>
+          //         col.colId === "dailydatagraph"
+          //         ? col // Exclude this column from being updated
+          //         : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
+          //         ? { ...col, hide: !visible }
+          //         : col
+          //       )              
+          //   );
       }
     };
 
@@ -367,9 +443,9 @@ export const useBOR =()=>{
               });
               event.api.applyColumnState({ state: columnState });
           },
-          // getRowId: (params) => {
-          //     return `${params.data.SKUCode}-${params.data.WHCode}`
-          // },
+          getRowId: (params) => {
+              return `${params.data.SKUCode}-${params.data.WHCode}-${params.data.SupplierCode}`
+          },
         },
          pagination:false,
          sideBar:defaultAgGridSideBarForBPR,
@@ -391,7 +467,7 @@ export const useBOR =()=>{
            
         },
         // onGridReady:(params)=>setInternalRef(params)
-        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode"),
+        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode","SupplierCode"),
         onGridReady:(params)=>setInternalRef(params)
       }
      },[])
