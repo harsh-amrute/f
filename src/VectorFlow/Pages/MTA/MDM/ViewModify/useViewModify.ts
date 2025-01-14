@@ -941,6 +941,13 @@ const useViewModify = (pageType:string) => {
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           notifySuccess(`${selectedRows?.length} records deleted successfully`);
           setSelectedRowsCount(0);
+          if(recordCount===selectedRows.length){
+            if(draftID.length===0){
+              dispatch(UPDATE_PROGRESS_STATE('Discard'))
+            }else{
+              dispatch(UPDATE_PROGRESS_STATE('DiscardDraft'))
+            }
+          }
           dispatch(SET_RECORD_COUNT(recordCount-selectedRows.length));
         }
         else{
@@ -1390,6 +1397,8 @@ const useViewModify = (pageType:string) => {
         setDownloadData(false);
         setTempDownloadData(false);
         dispatch(FILL_MASTERS([]));
+        /// riskycodehere !!
+        dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
         setFilterButtonStatus([]);
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
         
@@ -1504,11 +1513,15 @@ const useViewModify = (pageType:string) => {
             }
           }
           notifyError("Something Went Wrong")
-          addCheckBoxColDefs()
+          if(activeMaster.progress==='uploaded'){
+            addCheckBoxColDefs()
+          }
           return false
         }catch(err){
           notifyError("Something Went Wrong")
-          addCheckBoxColDefs()
+          if(activeMaster.progress==='uploaded'){
+            addCheckBoxColDefs()
+          }
           return false
         }finally{
           dispatch(UPDATE_IS_SAVING_DRAFT(false))
