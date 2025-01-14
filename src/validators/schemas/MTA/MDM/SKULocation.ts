@@ -22,6 +22,9 @@ const ParentWhCodeValidator = (value:any,helper:any)=>{
 }
 
 const RLTValidator = (value:any,helper:any)=>{
+    if(!Number.isInteger(value)){
+        return value
+    }
     if(value <=0){
         return helper.error("any.greaterthanZero")
     }else if (value>0 && value <=2) {
@@ -31,6 +34,9 @@ const RLTValidator = (value:any,helper:any)=>{
 }
 
 const RCPValidator = (value:any,helper:any)=>{
+    if(!Number.isInteger(value)){
+        return value
+    }
     if(value <=0){
         return helper.error("any.greaterthanZero")
     }else if (value>0 && value <=2) {
@@ -40,6 +46,9 @@ const RCPValidator = (value:any,helper:any)=>{
 }
 
 const GCPValidator = (value:any,helper:any)=>{
+    if(!Number.isInteger(value)){
+        return value
+    }
     if(value <=0){
         return helper.error("any.greaterthanZero")
     }else if (value>0 && value <=2) {
@@ -49,6 +58,9 @@ const GCPValidator = (value:any,helper:any)=>{
 }
 
 const OCPValidator = (value:any,helper:any)=>{
+    if(!Number.isInteger(value)){
+        return value
+    }
     if(value <=0){
         return helper.error("any.greaterthanZero")
     }
@@ -56,6 +68,9 @@ const OCPValidator = (value:any,helper:any)=>{
 }
 
 const MOCValidator = (value:any,helper:any)=>{
+    if(!Number.isInteger(value)){
+        return value
+    }
     if(value <=0){
         return helper.error("any.greaterthanZero")
     }
@@ -64,6 +79,9 @@ const MOCValidator = (value:any,helper:any)=>{
 
 
 const MNValidator = (value:any,helper:any)=>{
+    if(!Number.isInteger(value)){
+        return value
+    }
     if(value<=0){
         return helper.error("any.mnerror")
     }else if(value<2){
