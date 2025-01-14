@@ -12,6 +12,9 @@ const SKULocationMessages = (key:string)=>({
     "any.mnwarn":"MinNorm should be greater than or equal to 2",
     "any.mnerror":"MinNorm should be greater than 0",
     "any.greaterthanZero":`${key} should be greater than 0`,
+    'any.empty': `${key} should not be empty`,
+    'any.FGRM': `${key} must be one of [fg, rm]`,
+    'any.DBMACTIVE':`${key} must be one of ["YES", "NO", "Y", "N", "1", "0"]`
 })
 
 const ParentWhCodeValidator = (value:any,helper:any)=>{
@@ -90,6 +93,26 @@ const MNValidator = (value:any,helper:any)=>{
     return value
 }
 
+const FMRMContainsValidation = (value:any,helper:any)=>{
+    const data = ['fg','rm',"FG","RM","Rm",'Fg']
+    if(value===null || value.length===0){
+        return helper.error('any.empty')
+    }else if(!data.includes(value)){
+        return helper.error('any.FGRM')
+    }
+    return value
+}
+
+const DBMActiveContainsValidation = (value:any,helper:any)=>{
+    const data = ["yes", "no", "y", "n","Yes","No", 1, 0, "1", "0","YES",'NO','Y','N']
+    if(value===null || value.length===0){
+         return helper.error('any.empty')
+    }else if(!data.includes(value)){
+        return helper.error('any.DBMACTIVE')
+    }
+    return value
+}
+
 export const SKULocationSchema = Joi.object({
     SrNo:Joi.string(),
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
@@ -111,8 +134,8 @@ export const SKULocationSchema = Joi.object({
     pt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`Modified PSO Threshold should be less than ${MAX_DECIMAL_VAL}`}),
     dpt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`Default PSO Threshold should be less than ${MAX_DECIMAL_VAL}`}),
     npr:Joi.number(),
-    frf:Joi.string().valid("fg", "rm").insensitive().allow("").messages({'any.only':'FG/RM must be one of [fg, rm]','string.empty': 'FG/RM must be one of [fg, rm]',}), //make this case insensitive
-    da:Joi.string().valid("yes", "no", "y", "n", 1, 0, "1", "0").insensitive().default(1),
+    frf:Joi.custom(FMRMContainsValidation).messages(SKULocationMessages('FG/RM')), //make this case insensitive
+    da:Joi.custom(DBMActiveContainsValidation).messages(SKULocationMessages('DBM Active')).default(1),
     // StockPercentForRationing:Joi.number().integer().min(0).max(100).default(0),
     // NormPercentReservation:Joi.number().integer().min(0).max(100).default(0),
     ...CommonSchema
