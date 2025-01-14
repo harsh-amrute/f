@@ -241,6 +241,10 @@
     width: 100% !important;
 } */
 
+.ag-panel-title-bar-button-icon{
+  color: white !important;
+}
+
 .ag-theme-alpine .ag-header-row:nth-child(2) {
   background-color: #F7F7F7;
   color: black;
