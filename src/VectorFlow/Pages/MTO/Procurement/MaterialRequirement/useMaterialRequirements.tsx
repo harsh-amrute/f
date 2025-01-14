@@ -71,7 +71,7 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const useMaterialReq = (appliedFilters: any, forDate?: string) => {
-
+    
     const format2 = "YYYY-MM-DD"
     const d = forDate ? new Date(forDate) : new Date();
     const datetime = moment(d).format(format2);
@@ -81,11 +81,12 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([{}]);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData(); 
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { user } = useUserData();
-    const { colDefMap , getColDef } = useColDef()
-    const { mutateAsync : getMaterialRequirementDataExcelExport } = useGetMaterialRequirementDetailsForExcelExport();
+    const { colDefMap, getColDef } = useColDef()
+    const { mutateAsync: getMaterialRequirementDataExcelExport } = useGetMaterialRequirementDetailsForExcelExport();
+    const [masterUIConfig, setMasterUIConfig] = useState([]);
 
     const reportName = "MaterialRequirement";
 
@@ -102,37 +103,48 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
     const getUserColumnConfig = async () => {
         try {
-          const data = await getUserUIReportConfigData({
-            un: user.user.name,
-            rn_id: UIGridCode.ProcMaterialRequirement
-          });
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProcMaterialRequirement
+            });
     
-          const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-          setColumnState(newConfig);
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+            setColumnState(newConfig);
     
-          if (!data) {
-            console.error('Failed to apply column state');
-          }
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-          if(currentGridRef?.current?.api){
-            const config = currentGridRef.current.api.getColumnState();
-            const payload = {
-              un: user.user.name,
-              rn_id: UIGridCode.ProcMaterialRequirement,
-              cs: JSON.stringify(config)
+            if (coldefs) {
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcMaterialRequirement,
+                    cs: JSON.stringify(coldefs),
+                };
+                await updateUserUIReportConfigData([payload]);
+                setColumnState([...coldefs]);
+                
+            } else {
+                if (currentGridRef?.current?.api) {
+                    const config = currentGridRef.current.api.getColumnState();
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.ProcMaterialRequirement,
+                        cs: JSON.stringify(config)
+                    }
+                    await updateUserUIReportConfigData([payload]);
+                    await getUserColumnConfig();
+                }
             }
-            await updateUserUIReportConfigData([payload]);
-            await getUserColumnConfig();
-          }
     
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
@@ -142,17 +154,22 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
     useEffect(() => {
         if (isReset) {
-          setColumnState(colDef);
-          setIsReset(false)
-        }else{
-          handleSaveClick();
+            handleSaveClick(masterUIConfig);
+            setIsReset(false);
         }
     }, [isReset]);
+    
+    useEffect(() => {
+        if (colDef.length > 1 && currentGridRef?.current) {
+            setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+            getUserColumnConfig();
+        }
+    }, [colDef]);
 
     useEffect(() => {
-        getUserColumnConfig();
         setColumnDef();
     }, [])
+
     const gridRef = useRef<AgGridReact>(null);
     // const { isSideBarOpen } = useUserData()
     const tabs: Array<VFFloatingTabItemProps> = [
@@ -200,7 +217,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     const [CumulativeData, SetCumulativeData] = useState<any[]>([]);
     const [DayWiseData, setDayWiseData] = useState<any[]>([]);
     const { mutateAsync: getMaterialRequirementData, isLoading: isMatReqLoading } = useGetMaterialRequirementDetails();
-    const { mutateAsync: getMaterialRequirementDataDayWise,isLoading: isMatReqDayWiseLoading } = useGetMaterialRequirementDetailsDatewise();
+    const { mutateAsync: getMaterialRequirementDataDayWise, isLoading: isMatReqDayWiseLoading } = useGetMaterialRequirementDetailsDatewise();
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [currentCumPage, setcurrentCumPage] = useState<number>(1);
     const [dayWiseRecordCount, setDayWiseRecordCount] = useState<number>(0);
@@ -208,18 +225,20 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     const [date, setDate] = useState<string>(datetime);
     
 
-    useEffect(()=>{
-        if (currentTab.label === 'Shortage') {
-            setColDef(getColumnDefinations(HeaderData, customHeader))
-        }
-        else {
-            setColDef(getColumnDefinations(HeaderData, customHeader));
-        }
-    },[HeaderData])
+    useEffect(() => {
+        setColDef(getColumnDefinations(HeaderData, customHeader));
+    }, [HeaderData]);
 
 
     useEffect(() => {
-        getInitialData()
+        if (Object.entries(appliedFilters).length) {
+            if (currentTab.id === 'sdv') {
+                setCurrentPage(1);
+            } else if (currentTab.id === 'cv') {
+                setcurrentCumPage(1);
+            }
+            getInitialData();
+        }
     }, [currentTab, appliedFilters])
 
     useEffect(() => {
@@ -237,55 +256,54 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     }
 
     const onDateSubmitReq = () => {
-        getInitialData()
+        // getInitialData()
     }
 
-    const onExcelExportClickReq = () => { 
-        getInitialData(0,date,true)
+    const onExcelExportClickReq = () => {
+        getInitialData(0, date, true)
     }
 
     const getInitialData = async (currPage?: number, releaseDate?: string, isExcelExport = false) => {
-        currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport) : getCumulativeDateWise(currPage, releaseDate,isExcelExport);
+        currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport) : getCumulativeDateWise(currPage, releaseDate, isExcelExport);
     }
 
     const getSelectedDateWise = async (currPage?: number, releaseDate: string = date, isExcelExport = false) => {
 
         const formatedFilters = formatFilterJSON(appliedFilters);
-        if(isExcelExport){
+        if (isExcelExport) {
             const headersdata = currentGridRef?.current?.api.getColumnState();
-            const body = getBodyForExcelExport({headersdata: headersdata,filterData: formatedFilters,colDefMap})
-            console.log('date of release',releaseDate);
+            const body = getBodyForExcelExport({ headersdata: headersdata, filterData: formatedFilters, colDefMap })
             
-            const response = await getMaterialRequirementDataDayWise({releaseDate : releaseDate,body ,isExcelExport : 1 ,report_name : FilterPageName.Proc_Material_Requirement})
-            if(response.status === 200){
-                DownloadExcel(response,FilterPageName.Proc_Material_Requirement)
+            const response = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, body, isExcelExport: 1, report_name: FilterPageName.Proc_Material_Requirement })
+            if (response.status === 200) {
+                DownloadExcel(response, FilterPageName.Proc_Material_Requirement)
                 notifySuccess("Excel exported successfully")
-            }else{
+            } else {
                 notifyError("Failed to export excel")
             }
-        }else{
+        } else {
 
-            const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage, appliedFilters: formatedFilters  });
+            const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage, appliedFilters: formatedFilters });
             const dayWiseOutput = datWiseData.data?.data?.results;
             setDayWiseRecordCount(datWiseData.data?.data?.count)
             setDayWiseData(dayWiseOutput)
         }
     }
 
-    const getCumulativeDateWise = async (currPage?: number, releaseDate: string = date, isExcelExport = false ) => {
+    const getCumulativeDateWise = async (currPage = 1, releaseDate: string = date, isExcelExport = false) => {        
         const formatedFilters = formatFilterJSON(appliedFilters);
-        if(isExcelExport){
+        if (isExcelExport) {
             const headersdata = currentGridRef?.current?.api.getColumnState();
-            const body = getBodyForExcelExport({headersdata: headersdata, filterData: formatedFilters, colDefMap})
-            const response = await getMaterialRequirementDataExcelExport({releaseDate : releaseDate, body ,isExcelExport : 1 ,report_name : FilterPageName.Proc_Material_Requirement})
-            if(response.status === 200){
-                DownloadExcel(response,FilterPageName.Proc_Material_Requirement)
+            const body = getBodyForExcelExport({ headersdata: headersdata, filterData: formatedFilters, colDefMap })
+            const response = await getMaterialRequirementDataExcelExport({ releaseDate: releaseDate, body, isExcelExport: 1, report_name: FilterPageName.Proc_Material_Requirement })
+            if (response.status === 200) {
+                DownloadExcel(response, FilterPageName.Proc_Material_Requirement)
                 notifySuccess("Excel exported successfully")
-            }else{
+            } else {
                 notifyError("Failed to export excel")
             }
         }
-        else{
+        else {
 
             const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage, appliedFilters: formatedFilters });
             const cumulativeOutput = cumulativeData.data?.data?.results
@@ -432,7 +450,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
         };
 
-        useEffect(()=>{ 
+        useEffect(() => {
             if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
                 const result = currentGridRef?.current?.api?.applyColumnState({
                     state: columnState,
@@ -442,7 +460,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                     console.error('Failed to apply column state');
                 }
             }
-        });
+        }, [columnState]);
 
         switch (currentTab.id) {
             case "sdv":
@@ -470,6 +488,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                     ]
                                 }}
+                                maintainColumnOrder
 
                             />
                             <VFPagination
@@ -507,7 +526,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                     ]
                                 }}
-
+                                maintainColumnOrder
                             />
                             <VFPagination
                                 selectedRows={0}

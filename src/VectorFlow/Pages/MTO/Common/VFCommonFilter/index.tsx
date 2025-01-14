@@ -78,10 +78,10 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
     }
 
 
-    if(filterState.customers.filters[0].value.length===0){
+    if(filterState.customers?.filters[0].value.length===0){
       setIsCNDisabled(false);
     }
-    if(filterState.customers.filters[1].value.length===0){
+    if(filterState.customers?.filters[1].value.length===0){
       setIsCCDisabled(false);
     }
 
@@ -126,10 +126,10 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   }, []);
 
   useEffect(() => {
-    if(Object.keys(multiFilter).length){
+    if (Object.keys(multiFilter).length) {
       setFilterState(JSON.parse(JSON.stringify(multiFilter)));
     }
-  },[multiFilter]);
+  }, [multiFilter]);
 
   const filterKeys = Object.keys(filterState) || [];
   return (
