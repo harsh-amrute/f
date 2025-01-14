@@ -80,7 +80,8 @@ interface MaterialSODetailedProps {
 
     useEffect(()=>{ 
         
-        if (columnState?.length && colDef.length > 0) {
+        if (columnState?.length && colDef.length > 0 && currentGridRef?.current) {
+       
             const result = currentGridRef?.current?.api.applyColumnState({
                 state: columnState,
                 applyOrder: true
@@ -91,7 +92,7 @@ interface MaterialSODetailedProps {
             }
         }
 
-    },[columnState]);
+    },[columnState,currentGridRef?.current]);
     
     return (
         <>

@@ -84,7 +84,8 @@ const MaterialCov = () => {
 
   const handleToggleComponent = (value: boolean) => {
     setToggleComponent(value);
-    getUserColumnConfig();
+
+    
   }
 
   const handleParameterData = (data: any) => {
@@ -122,21 +123,21 @@ const MaterialCov = () => {
   const defaultTab = tabs.findIndex(tab => tab.value === currTab)
 
   const getUserColumnConfig = async () => {
-    try {
-      const data = await getUserUIReportConfigData({
-        un: user.user.name,
-        rn_id: UIGridCode.ProcMaterialCovOpenSales
-      });
-
-      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-      setColumnState(newConfig);
-
-      if (!data) {
-        console.error('Failed to apply column state');
+      try {
+        const data = await getUserUIReportConfigData({
+          un: user.user.name,
+          rn_id: UIGridCode.ProcMaterialCovOpenSales
+        });
+  
+        const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+        setColumnState(newConfig)
+  
+        if (!data) {
+          console.error('Failed to apply column state');
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   useEffect(()=>{
@@ -157,7 +158,10 @@ const MaterialCov = () => {
           cs: JSON.stringify(config)
         }
       await updateUserUIReportConfigData([payload]);
-     
+
+      if(!isReset){
+        setColumnState([...config])
+      }
 
     } catch (error) {
       console.error(error);
@@ -246,20 +250,14 @@ const MaterialCov = () => {
 
   useEffect(() => {
     if (isReset) {
-
       setColumnState([...defaultColState])
 
+      handleSaveClick(true);
+
       setIsReset(false) 
-      
-    }else{
-
-      if(isReset == false){
-        handleSaveClick(true);
-      }
-
     }
   }, [isReset]);
-
+  
   const materialSoDetailRef = useRef<any>();
   const callExportExcel = () => {
       const headersdata = currentGridRef?.current?.api.getColumnState();
