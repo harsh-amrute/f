@@ -13,7 +13,7 @@ import MaterialSODetailed from './MaterialSODetailed';
 import { DetailsObj } from './CommonFunc';
 import { useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
 import { toast } from 'react-toastify';
-import { notifyError, notifyLoader } from '../../../../../helpers/notify';
+import { notifyError, notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useFilter from "../../../../../hooks/useFilter";
 // import { APIResponseMock } from '../../Production/InsightsAndTrends/OrderBalance/OrderBalanceMockData';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
@@ -158,7 +158,7 @@ const MaterialCov = () => {
           cs: JSON.stringify(config)
         }
       await updateUserUIReportConfigData([payload]);
-
+      !isReset && notifySuccess("Saved successfully")
       if(!isReset){
         setColumnState([...config])
       }
@@ -255,6 +255,7 @@ const MaterialCov = () => {
       handleSaveClick(true);
 
       setIsReset(false) 
+      notifySuccess("Reset successfully")
     }
   }, [isReset]);
   

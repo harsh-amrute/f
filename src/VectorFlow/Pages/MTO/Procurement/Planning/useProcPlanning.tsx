@@ -147,13 +147,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
         if (isReset) {
             setColumnState([...defaultColState]);
+            handleSaveClick(true);
             setIsReset(false)
             notifySuccess("Reset Successfully")
-        } else {
-            if(isReset===false){
-                handleSaveClick(true);
-            }
-        }
+        } 
     }, [isReset]);
 
     useEffect(() => {
