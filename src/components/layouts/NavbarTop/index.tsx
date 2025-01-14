@@ -48,7 +48,7 @@ const NavbarTop = ({
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/supply-chain-intelligence-hub/planning"); // Navigating to the desired route
+    navigate("/landing-page"); // Navigating to the desired route
   };
 
   return (
