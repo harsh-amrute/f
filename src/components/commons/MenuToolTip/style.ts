@@ -6,16 +6,20 @@ export const WrapToolTip = styled.div`
   .tooltip_list {
     pointer-events: auto;
     background: ${globalStyles.white};
-    opacity: 1;
     top: 0 !important;
   }
+
 `;
+
+
+
 
 export const TooltipContainer = styled.div`
   color: ${globalStyles.black};
   text-align: left;
   cursor: pointer;
-  max-height:300px;
+  // max-height:300px;
+  max-height: ${props => props.style?.maxHeight || "200px"};
   overflow-y:auto;
   @media (min-width: ${gridSystem
     .size.desktop}) {
