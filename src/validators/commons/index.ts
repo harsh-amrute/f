@@ -40,7 +40,9 @@ export const generateCommonMessages = (key:string) => {
         'any.comma':`${key} should not contain comma`,
         'any.commapipe':`${key} should not contain comma and pipe`,
         'any.onlySpecialCharacters': `${key} should not contains only special characters`,
-        'any.specialCharacters': `${key} cannot contain special characters`
+        'any.specialCharacters': `${key} cannot contain special characters`,
+        'any.empty': `${key} should not be empty`,
+        'any.exceed50char': `${key} should not exceed 50 characters.`
     }
 }
 

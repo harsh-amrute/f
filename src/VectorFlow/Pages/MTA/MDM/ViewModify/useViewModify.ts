@@ -1283,7 +1283,6 @@ const useViewModify = (pageType:string) => {
       }
       }
 
-      console.log(activeMaster.progress)
       const onSeasonalityStatusUpdate = async (status:string) => {
         const selectedRows = ref.current?.api.getSelectedRows();
         let error = false;

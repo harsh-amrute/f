@@ -4,6 +4,12 @@ import { commonValidator,supplyCodeChecks, generateCommonMessages,defaultJOIOpti
 const SuppCodeValidator = (value:any,helper:any)=>{
 
     if(helper.prefs.context.WhCode === value) throw new Error('Supplier code and Location code are same');
+    if(value===null){
+        return helper.error(`any.empty`)
+    }
+    if(value.length>MAX_CODE_LENGTH){
+        return helper.error(`any.exceed50char`)
+    }
     return supplyCodeChecks(value,helper);
 
 }
@@ -11,7 +17,7 @@ const SuppCodeValidator = (value:any,helper:any)=>{
 export const MOQSchema = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).messages(generateCommonMessages('WhCode')),
-    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator).required().messages(generateCommonMessages('SupplierCode')),
+    spc:Joi.custom(SuppCodeValidator).required().messages(generateCommonMessages('SupplierCode')),
     mq:Joi.number().integer().min(0).messages({'number.unsafe':`MOQ should be less than ${MAX_INT_VAL}`}),
 
 }).preferences(defaultJOIOptions)
@@ -19,5 +25,5 @@ export const MOQSchema = Joi.object({
 export const MOQSchemaDelete = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
-    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator).required().messages(generateCommonMessages('SupplierCode')),
+    spc:Joi.custom(SuppCodeValidator).required().messages(generateCommonMessages('SupplierCode')),
 }).preferences(defaultJOIOptions)
