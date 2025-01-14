@@ -514,6 +514,13 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     {/* <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnlineReset} disabled={isSavingToDraft || disableSubmit } >  
                         Reset
                     </VFButtonOutline > */}
+                    {
+                        !isSavingToDraft && !disableSubmit && DataCount!==0 && (
+                            <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={disableDeleteSelected} width={139}>
+                              Remove Selected
+                            </VFButtonOutline>
+                        )
+                       }
                     <VFButton themeUi={themeUi} onClick={onSaveToDraft} disabled={masterId > 14 || isSavingToDraft || disableSubmit}>
                             Save as draft
                         </VFButton>

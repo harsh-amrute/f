@@ -2378,6 +2378,8 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       resizable:false,
       lockPosition:'right',
       maxWidth:145,
+      menuTabs: [] ,
+      suppressMenu: true
     },
     {
       colId: 'rh',
@@ -2398,6 +2400,8 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       resizable:false,
       lockPosition:'right',
       maxWidth:145,
+      menuTabs: [] ,
+      suppressMenu: true
     }
   ]
 
