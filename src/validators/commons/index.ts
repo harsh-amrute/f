@@ -42,7 +42,7 @@ export const generateCommonMessages = (key:string) => {
         'any.onlySpecialCharacters': `${key} should not contains only special characters`,
         'any.specialCharacters': `${key} cannot contain special characters`,
         'any.empty': `${key} should not be empty`,
-        'any.exceed50char': `${key} should not exceed 50 characters.`
+        'string.base': `${key} should not be empty`
     }
 }
 
