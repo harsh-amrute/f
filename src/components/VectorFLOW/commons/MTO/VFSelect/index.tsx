@@ -3,11 +3,12 @@ import Select from 'react-select';
 import { chooseThemeColor } from '../../../../../styles/global';
 
 
-const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
+const VFSelect = ({ options, themeUi, icon, placeholder,disabled, ...rest }: any) => {
 
     return (
         <Select
             isSearchable={true}
+            isDisabled={disabled}
             components={{
                 IndicatorSeparator: () => null,
                 ...(icon && {DropdownIndicator: icon})
