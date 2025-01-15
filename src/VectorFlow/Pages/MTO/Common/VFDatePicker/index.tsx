@@ -31,6 +31,7 @@ const VFDatePicker = (props: any) => {
                 value={props.date}
                 min={props.datetime}
                 onChange={(e) => props.onDateChange(e.target.value)}
+                data-testid={"datepicker"}
             />
             <ButtonWrapper type="button">
                 <ImageWrapper
