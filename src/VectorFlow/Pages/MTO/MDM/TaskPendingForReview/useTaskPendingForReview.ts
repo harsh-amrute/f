@@ -808,6 +808,7 @@ const useTaskPendingForReview = ()=>{
                 bsz: ele.bsz,
                 bt: ele.bt,
                 bt_id: ele.bt_id, 
+                iv: ele.iv? ele.iv: false,
                 btd: ele.btd,
                 ib: ele.ib,
                 ti_id: ele.ti_id,
@@ -851,8 +852,12 @@ const useTaskPendingForReview = ()=>{
                         setIsViewTableOpen(true);
                         GetInitialData(mid);
                     }
+                    else{
+                        notifyError("Failed to update DB!");
+                    }
                 }
             catch(error){
+                notifyError("Failed to update DB!");
                 console.log(error)
             }
         }
@@ -917,8 +922,12 @@ const useTaskPendingForReview = ()=>{
                     setIsViewTableOpen(true);
                     GetInitialData(mid);
                 }
+                else{
+                    notifyError("Failed to Update DB!")
+                }
             }
         catch(error){
+            notifyError("Failed to Update DB!")
             console.log(error)
         }
     }}
@@ -928,6 +937,22 @@ const useTaskPendingForReview = ()=>{
         notifyLoader("Updating Task...")
 
         const newApprovedData = ConvertFromPoogiData(detailTableRowData);
+
+        let isValid:any = true;
+
+        detailTableRowData.forEach((el:any)=>{
+            if(el.ia===false && el.cm===""){
+                isValid = false;
+            }
+            el.minData.forEach((e:any)=>{
+                if(e.ia===false && e.cm===""){
+                    isValid = false;
+                }
+            })
+        })
+        if(isValid===false){
+            notifyError("Make sure you provide a comment for the rejected task!")
+        }
 
         const finData ={
             "tid": mtoTask.TaskID,

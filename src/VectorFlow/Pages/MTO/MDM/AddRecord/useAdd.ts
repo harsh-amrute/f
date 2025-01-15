@@ -1,7 +1,7 @@
 import { useSelector,useDispatch } from 'react-redux'
 import { RootState } from '../../../../../redux/store/store';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
-import { REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER,ADD_COLDEFS, UPDATE_PROGRESS_STATE, FILL_MASTERS, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN ,SYNC_ACTIVE_MASTER_TO_MASTER,REMOVE_COLDEFS,UPDATE_ROW_DATA,SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
+import { REMOVE_MASTER,UPDATE_ACTIVE_MASTER,ADD_COLDEFS, UPDATE_PROGRESS_STATE, FILL_MASTERS, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN ,SYNC_ACTIVE_MASTER_TO_MASTER,REMOVE_COLDEFS,UPDATE_ROW_DATA,SET_RECORD_COUNT, RESET_STATE} from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { useEffect, useState } from 'react';
 
@@ -102,38 +102,19 @@ const useAdd=()=>{
       }
 
     const onCancel=()=>{
+        dispatch(RESET_STATE());
         dispatch(RESET_MTO_STATE());
         navigate('/mto/master-data-management/control-panel');
     }
 
     const handleOnClickMaster=(master:MDMMasterState)=>{
 
-        //For seasonality
-        if(master.id==11){
-            const doesSeasonalityMasterExist = selectedMasters.find((m:MDMMasterState)=>m.id==11 || m.id==12)
-            if(doesSeasonalityMasterExist){
-                dispatch(REMOVE_MASTER(doesSeasonalityMasterExist.id))
-                return
-            }
-            return dispatch(ADD_MASTER({...master,name:'Seasonality'}))
-        }
-        
-
-        //for PIPO
-        if(master.id==7){
-            const doesPIPOMasterExist = selectedMasters.find((m:MDMMasterState)=>m.id==7 || m.id==8 || m.id==9)
-            if(doesPIPOMasterExist){
-                dispatch(REMOVE_MASTER(doesPIPOMasterExist.id))
-                return
-            }
-            return dispatch(ADD_MASTER({...master,name:'Phase In Phase Out'}))
-        }
 
         if(selectedMasters.find((m:MDMMasterState)=>m.id===master.id)){
             dispatch(REMOVE_MASTER(master.id))
             return
         }        
-        dispatch(ADD_MASTER(master))
+        dispatch(FILL_MASTERS([master]))
        
     }
 

@@ -107,12 +107,12 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
     //     dispatch(FILL_SELECTED_OPTIONS(data))
     // }
     // console.log(selectedOptions)
-   
+
  return(
     <ContentWrapper style={{zoom: 0.75}}>
         <TextFilterWrapper>
             <TextContainer>
-             <p>What kind of records do you want to {text}?</p>
+             <p>What kind of record do you want to {text}?</p>
             </TextContainer>
             {/* <VFMasterFieldSearch 
                     value={selectedOptions} 
@@ -128,6 +128,7 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
 
         <VFMasterGroupCardContainer> 
         {
+
         masterGroupMapper.map(masterGroup=>{
          if(masterGroup.masters.length<1 )return 
             // console.log(masterGroup.name,shouldShowMaster(masterGroup))

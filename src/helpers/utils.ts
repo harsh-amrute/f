@@ -923,8 +923,7 @@ export const mapStateFiltersToPayload = (filters: Filter[]) => {
 
 export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMasterState[] => {
 
-  console.log("masters mere masters.....",masters)
-  return masters.map((master: Master) => ({
+  return  masters.map((master: Master) => ({
     id: master.id,
     name: master.name,
     fields: master.fields,

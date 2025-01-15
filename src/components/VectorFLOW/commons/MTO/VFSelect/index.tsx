@@ -10,11 +10,11 @@ const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
             isSearchable={true}
             components={{
                 IndicatorSeparator: () => null,
-                
-                DropdownIndicator: icon ? icon : null,
+                ...(icon && {DropdownIndicator: icon})
             }}
             menuPlacement={"auto"}
             // menuIsOpen={true}
+            menuPortalTarget={document.body}
             styles={{
                 container: (base) => ({
                     ...base,
@@ -53,6 +53,11 @@ const VFSelect = ({ options, themeUi, icon, placeholder, ...rest }: any) => {
                 indicatorsContainer: (base) => ({
                     ...base,
                     padding: "0 8px"
+                }),
+                input: (base) => ({
+                    ...base,
+                    padding: "0px",
+                    margin:"0px"
                 })
             }}
             theme={(theme) => ({

@@ -13,7 +13,7 @@ interface MaterialSODetailedProps {
     columnState: any,
     colDef: any,
     isUpdateUserConfig: any,
-    isGetUserConfig: any
+    isGetUserConfig: any,
 }
 
     const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef}: MaterialSODetailedProps, ref) => {
@@ -79,16 +79,20 @@ interface MaterialSODetailedProps {
     // }, [colDef])
 
     useEffect(()=>{ 
-        if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+        
+        if (columnState?.length && colDef.length > 0 && currentGridRef?.current) {
+       
             const result = currentGridRef?.current?.api.applyColumnState({
                 state: columnState,
                 applyOrder: true
             });
+
             if (!result) {
                 console.error('Failed to apply column state');
             }
         }
-    });
+
+    },[columnState,currentGridRef?.current]);
     
     return (
         <>
@@ -117,6 +121,7 @@ interface MaterialSODetailedProps {
                             { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                         ]
                     }}
+                    maintainColumnOrder
                 />
                 <VFPagination
                     selectedRows={0}
