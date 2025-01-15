@@ -3,6 +3,8 @@ import { Theme } from '../styles/global';
 interface SvgRendererProps {
   theme: Theme
   alt?: string;
+  view?:boolean
+
 }
 
 export const ExportExcelSVG: React.FC<SvgRendererProps> = ({ theme }) => {
@@ -68,3 +70,52 @@ export const ResetSVG: React.FC<SvgRendererProps> = ({theme }) => {
 
   );
 };
+
+export const GridView: React.FC<SvgRendererProps> = ({theme,view }) => {
+
+  const activeFillColor = theme === 'REGALBLAZE' ? "#FCA311" : "#BC3D81";
+  const inactiveFillColor = "#a8a8a8";
+  const fillColor = view ? activeFillColor : inactiveFillColor;
+
+
+  console.log('Theme:', theme);
+  console.log('View:', view);
+
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="37" height="22" viewBox="0 0 37 22">
+      <g id="Group_4112" data-name="Group 4112" transform="translate(-0.348 0.002)">
+        <rect id="Rectangle_11420" data-name="Rectangle 11420" width="37" height="5" rx="1" transform="translate(0.348 -0.002)" fill={fillColor} />
+        <rect id="Rectangle_11421" data-name="Rectangle 11421" width="37" height="5" rx="1" transform="translate(0.348 7.998)" fill={fillColor} />
+        <rect id="Rectangle_11422" data-name="Rectangle 11422" width="37" height="5" rx="1" transform="translate(0.348 16.998)" fill={fillColor} />
+      </g>
+    </svg>
+  );
+};
+
+
+
+
+export const ChartView: React.FC<SvgRendererProps> = ({theme,view }) => {
+
+  const activeFillColor = theme === 'REGALBLAZE' ? "#FCA311" : "#BC3D81";
+  const inactiveFillColor = "#a8a8a8";
+  const fillColor = view ? activeFillColor : inactiveFillColor;
+
+
+  return (
+    
+    <svg xmlns="http://www.w3.org/2000/svg" width="26.2" height="26.792" viewBox="0 0 26.2 26.792">
+  <g id="_8a4e174b3b44e8626dd24d036a35900f" data-name="8a4e174b3b44e8626dd24d036a35900f" transform="translate(0.244 0.223)">
+    <path id="Path_11013" data-name="Path 11013" d="M22.042,9.771A10.715,10.715,0,0,0,11.775.778a.92.92,0,0,0-.956.885h0v.083L11.4,10.4a1.062,1.062,0,0,0,1.121.991l8.674-.578a.92.92,0,0,0,.85-.991Z" transform="translate(2.911)" fill='none' stroke={fillColor} stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill-rule="evenodd"/>
+    <path id="Path_11014" data-name="Path 11014" d="M8.679,4.776a1.18,1.18,0,0,1,1.345.673,1.062,1.062,0,0,1,.106.389c.118,1.676.366,5.346.507,7.328a1.345,1.345,0,0,0,1.44,1.251h0l7.281-.448a1.18,1.18,0,0,1,1.251,1.18h0a9.925,9.925,0,0,1-18.6,4.119,9.441,9.441,0,0,1-1.18-3.611,6.089,6.089,0,0,1-.071-1.18,9.936,9.936,0,0,1,7.907-9.7" transform="translate(0 1.148)" fill="none" stroke={fillColor} stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill-rule="evenodd"/>
+  </g>
+</svg>
+      
+  );
+};
+
+
+
+
+
+
