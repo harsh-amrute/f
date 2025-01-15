@@ -37,7 +37,7 @@ import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
 import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
-import { ExportExcelSVG, ResetSVG, SaveSVG } from '../../../../../helpers/SvgRenderer';
+import { ExportExcelSVG, ResetSVG, SaveSVG,GridView,ChartView } from '../../../../../helpers/SvgRenderer';
 import { Theme } from '../../../../../styles/global';
 
 type filterType = {
@@ -510,7 +510,8 @@ const MTOActionToolBar = ({
                         {isAddFilterButton && <SCVerticalDividerGray />}
                             <SCViewContainerWithBgToggle >
                                 <SCViewContainer onClick={() => { isGridView && setIsGridView && (setIsGridView(!isGridView)) }}>
-                                    <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(isGridView) ? 'chart-view-grey' : 'chart-view-pink'}.svg`} />
+
+                                <ChartView theme={themeUi} view={!isGridView}/>
                                     <p>Chart View</p>
 
                                 </SCViewContainer>
@@ -518,7 +519,7 @@ const MTOActionToolBar = ({
                                 <SCHorizontalDivison />
 
                                 <SCViewContainer onClick={() => { !isGridView && setIsGridView && (setIsGridView(!isGridView)) }}>
-                                    <SCViewImage src={`/assets/img/VectorFLOW/BPR/${(!isGridView) ? 'grid-view-grey' : 'grid-view-pink'}.svg`} />
+                                    <GridView theme={themeUi} view={isGridView}/>
                                     <p>Grid View</p>
 
                                 </SCViewContainer>

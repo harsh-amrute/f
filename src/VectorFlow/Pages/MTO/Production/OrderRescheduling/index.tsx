@@ -78,6 +78,7 @@ const OrderRescheduling = () => {
   const themeUi = user?.user?.theme_ui;
 
   const GetData = async (isExcelExport = false) => {
+    setIsLoading(true); 
     if (isExcelExport) {
       const headersdata = refGraph1?.current?.api?.getColumnState();
       const body = getBodyForExcelExport({ headersdata, colDefMap });
@@ -96,23 +97,27 @@ const OrderRescheduling = () => {
         const APIData = await getOrderSchedulingData(pagination.mtoPageSize);
         setCurrData(APIData);
         const newRowData = [...APIData.data.data.results];
-        newRowData.forEach((el)=>{
-          el.oldDate = el.dd;
-        })
-        setRowData(newRowData);
+        if (newRowData.length === 0) {
+          refGraph1.current?.api.showNoRowsOverlay(); 
+        } else {
+          refGraph1.current?.api.hideOverlay(); 
+          newRowData.forEach((el) => {
+            el.oldDate = el.dd;
+          });
+          setRowData(newRowData);
+        }
       } catch (e) {
         notifyError("Failed to fetch Grid data!");
       }
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
-
+  
   console.log("grid Data", rowData)
   const getSelectedRowData = () => {
     const selectedData = refGraph1.current?.api.getSelectedRows();
 
     //  logic to get the unselected row and set the default date to it
-
     // const newRowData:any= _.cloneDeep([...rowData]);
     // newRowData.forEach((ele:any)=>{
     //   if(!selectedData?.find((el:any)=>{ele.odk===el.odk})){
@@ -348,6 +353,7 @@ const OrderRescheduling = () => {
   }
 
   const reasonCheck = (data: any): boolean => {
+    return true;
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
       if (element.r.toString().length === 0) {
@@ -429,6 +435,7 @@ const OrderRescheduling = () => {
   const onFirstDataRendered = (params: any) => {
     const nodesToSelect: IRowNode[] = [];
 
+    
     params.api.forEachNode((node: any) => {
       if (node.data && node.data.odk && existsInSelected(node.data.odk)) {
         node.data.rs = selectedRowData[0].r;
@@ -444,8 +451,9 @@ const OrderRescheduling = () => {
       }
     });
     params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-    params.api.autoSizeAllColumns();
+    // params.api.autoSizeAllColumns();
     setCurrentGridRef(refGraph1);
+    params.api.sizeColumnsToFit();
   };
 
   const getUserColumnConfig = async () => {
@@ -608,7 +616,7 @@ const OrderRescheduling = () => {
               <VFPagination
                 selectedRows={0}
                 rowsPerPage={pagination.mtoPageSize}
-                totalRows={currData ? currData.data.data.count : 0}
+                totalRows={currData ? currData?.data?.data?.count : 0}
                 currentPage={currentPage}
                 handleChangePage={handlePageChangeCumulative}
               />
