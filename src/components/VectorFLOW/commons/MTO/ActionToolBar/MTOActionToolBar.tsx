@@ -5,7 +5,6 @@ import {
     SCGoBackText,
     SCVerticalDivider,
     SCVerticalDividerGray,
-    SCViewImage,
     SCCustomActionsContainer,
     SCViewContainerWithBg,
     SCTaskFilterContainer,
