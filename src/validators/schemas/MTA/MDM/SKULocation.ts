@@ -7,7 +7,7 @@ const MIN_GCP_VALUE = 3;
 const SKULocationMessages = (key:string)=>({
     "any.rlt":"RLT value should be greater than or equal to " + MIN_RLT_VALUE,
     "any.rcp":"RCP value should be greater than or equal to " + MIN_RCP_VALUE,
-    "any.gcp":"RCP value should be greater than or equal to " + MIN_GCP_VALUE,
+    "any.gcp":"GCP value should be greater than or equal to " + MIN_GCP_VALUE,
     "number.unsafe":`${key} should be less than ${MAX_INT_VAL}`,
     "any.mnwarn":"MinNorm should be greater than or equal to 2",
     "any.mnerror":"MinNorm should be greater than 0",
@@ -93,25 +93,8 @@ const MNValidator = (value:any,helper:any)=>{
     return value
 }
 
-const FMRMContainsValidation = (value:any,helper:any)=>{
-    const data = ['fg','rm',"FG","RM","Rm",'Fg']
-    if(value===null || value.length===0){
-        return helper.error('any.empty')
-    }else if(!data.includes(value)){
-        return helper.error('any.FGRM')
-    }
-    return value
-}
 
-const DBMActiveContainsValidation = (value:any,helper:any)=>{
-    const data = ["yes", "no", "y", "n","Yes","No", 1, 0, "1", "0","YES",'NO','Y','N']
-    if(value===null || value.length===0){
-         return helper.error('any.empty')
-    }else if(!data.includes(value)){
-        return helper.error('any.DBMACTIVE')
-    }
-    return value
-}
+
 
 export const SKULocationSchema = Joi.object({
     SrNo:Joi.string(),
