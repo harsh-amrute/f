@@ -82,7 +82,7 @@ interface ColDefChild {
   initialWidth?: number;
   floatingFilter?: boolean;
   columnGroupShow?: string;
-  pinned?: string;
+  pinned?: any;
   cellRendererParams?: {
     onClick?: (data: string) => Promise<void>;
   };
@@ -193,6 +193,7 @@ const OverallBmReport = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
+  const isOrderCloseEnabled = process.env.REACT_APP_ORDER_CLOSE === 'enabled'? true: false;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -365,19 +366,38 @@ const OverallBmReport = () => {
       ch: [],
     };
 
+    // const short_complete_OrderColumn: ApiResponseItem = {
+    //     cc: "oca",
+    //     cp: maxCp + 2,
+    //     hd: "Order Close Action",
+    //     v: true,
+    //     cla: "Centre",
+    //     scc: "oca",
+    //     ch: [],
+    // }
     const short_complete_OrderColumn: ApiResponseItem = {
-        cc: "oca",
-        cp: maxCp + 2,
-        hd: "Order Close Action",
-        v: true,
-        cla: "Centre",
-        scc: "oca",
-        ch: [],
-    }
+      cc: "",
+      cp: maxCp + 2, // Set cp based on the maximum cp value
+      hd: " ",
+      v: true,
+      cla: "Centre",
+      scc: "",
+      ch: [
+        {
+              cc: "ct",
+              cp: maxCp + 2,
+              hd: "Order Close Action",
+              v: true,
+              cla: "Centre",
+              scc: "ct",
+          }
+      ]
+  };
 
     // Add the additional object to the end of the modified response
     modifiedResponse.push(additionalObject);
-    modifiedResponse.push(short_complete_OrderColumn);
+
+    if(isOrderCloseEnabled)  modifiedResponse.push(short_complete_OrderColumn);
 
     return modifiedResponse;
   };
@@ -658,7 +678,7 @@ const DropdownArrowIcon = () => (
 );
 
 
-  const WIPFilter: any = (
+  const OrderCloseHeader: any = (
     <>
        <div
       style={{
@@ -774,7 +794,6 @@ const DropDownCellRenderer= (props: any) =>  {
           props.node.selected? actionOptions.find((opt) => opt.value === props.data?.oca): null
         }
         onChange={(option: any) => {
-
             onSelectChange(props, option, props.node.rowIndex);
          }}
        />
@@ -861,6 +880,7 @@ const DropDownCellRenderer= (props: any) =>  {
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
+        pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
           child.cc === "ec" && systemType >= 3
             ? "agGroupCellRenderer"
@@ -869,7 +889,8 @@ const DropDownCellRenderer= (props: any) =>  {
             : child.cc === "BPP"  
             ? "colorCellRenderer"
             : child.cc === "RemarksHistory"
-            ? "RemarkHistoryRenderer"
+            ? "RemarkHistoryRenderer":
+            child.cc === "ct"? "DropDownCellRenderer"
             : undefined,
         maxWidth:
           child.cc === "ec" || child.cc === "ic" || child.scc === "bpp"
@@ -877,7 +898,7 @@ const DropDownCellRenderer= (props: any) =>  {
             : undefined,
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
-          child.cc === "ec" ? false : (child.cc === "ic" || child.cc==="oca") ? false : true,
+          child.cc === "ec" ? false : (child.cc === "ic" ) ? false : true,
         cellRendererParams: child.hd.includes("Remark")
           ? {
               onClick:
@@ -923,12 +944,12 @@ const DropDownCellRenderer= (props: any) =>  {
       maxWidth:
         section.scc === "chckbx" || section.scc == "ic" ? 60 : undefined,
       floatingFilter:
-        section.scc === "chckbx" || section.scc == "ic" || section.scc==="oca"? false : undefined,
+        section.scc === "chckbx" || section.scc == "ic"? false : undefined,
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
       // pinned: section.scc==="scos"?'right':"",
-      pinned: section.scc === "oca" ? "right" : null,
+      
 
       cellRenderer:
         section.cc === "ec" || (section.scc === "chckbx" && systemType >= 3)
@@ -936,6 +957,10 @@ const DropDownCellRenderer= (props: any) =>  {
           : section.cc === "ic"
           ? "AgeingCellRenderer"
           : section.scc == "oca" ? "DropDownCellRenderer" : undefined,
+          // : undefined,
+
+          // TODO: remove this
+      // valueFormatter: (props:any)=>{console.log("value formater val", props); return props.data.ct},
         cellRendererParams: 
           section.scc == "oca" ? {
             data: {
@@ -949,8 +974,10 @@ const DropDownCellRenderer= (props: any) =>  {
           : section.scc === "rmk"
           ? false
           : true,
+
+          ////////this could be some problem
       children:
-        section.scc === "chckbx" || section.scc == "oca"
+        section.scc === "chckbx" || section.scc === "oca"
           ? undefined
           : section.ch
           ? mapChildren(section.cc, section.ch)
@@ -1503,7 +1530,7 @@ const DropDownCellRenderer= (props: any) =>  {
           toggleFilter={toggleFilter}
           onApplyFilter={onApplyFilter}
           multiFilter={currFilter}
-          WIPFilter={WIPFilter}
+          WIPFilter={isOrderCloseEnabled? OrderCloseHeader: null}
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
           isMfgSelected={isMfgSelected}
