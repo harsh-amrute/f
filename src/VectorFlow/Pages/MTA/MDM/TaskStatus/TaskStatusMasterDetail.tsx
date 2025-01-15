@@ -193,7 +193,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
 
 
     return (
-        <VFTaskStatusWrapper data-testid="task-status-master-detail">
+        <VFTaskStatusWrapper data-testid="task-status-master-detail" style={{paddingBottom:"0px"}}>
             {(Approvers && Approvers.length>0)?Approvers?.map((approver:any,index:number)=>{
                 return(
                     <VFTaskStatusContentWrapper key={index}>
