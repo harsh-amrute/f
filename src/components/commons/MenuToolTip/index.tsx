@@ -10,10 +10,11 @@ import {
   SCIcon,
 } from "./style";
 import { handleDownloadMTOVF, handleDownloadVF, navigateWithPrompt } from "../../../helpers/utils";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import { RESET_MTO_STATE } from "../../../redux/actions/MTO";
+import { useRef, useLayoutEffect, useState } from "react";
 
 const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoading, setIsHide, setWidthResponsive, reportUrls }: any) => {
   const { t } = useTranslation();
@@ -24,128 +25,126 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
   const mdm = useSelector((state: RootState) => state.mdm);
   const dispatch = useDispatch();
 
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [tooltipMaxHeight, setTooltipMaxHeight] = useState<string>("");
 
   const resetState = () => {
     dispatch(RESET_STATE());
     dispatch(RESET_MTO_STATE());
-  }
+  };
 
+  const calculateTooltipHeight = () => {
+    const tooltipElement = tooltipRef.current;
+    if (!tooltipElement) {
+      console.error("Tooltip ref not found");
+      return;
+    }
+    const tooltipTop = tooltipElement.getBoundingClientRect().top; 
+    const viewportHeight = window.innerHeight; 
+    const availableHeight = viewportHeight - tooltipTop - 10; 
+    setTooltipMaxHeight(`${availableHeight}px`);
+  };
 
-  const handleTooltipClick = async (url: string, isMTO: boolean, downloadName?: any,) => {
-    
+  useLayoutEffect(() => {
+    calculateTooltipHeight();
+    window.addEventListener("resize", calculateTooltipHeight);
+    return () => {
+      window.removeEventListener("resize", calculateTooltipHeight);
+    };
+  }, []);
+
+  const handleTooltipClick = async (url: string, isMTO: boolean, downloadName?: any) => {
     if (reportUrls.includes(url)) {
       setTempUrls([...tempUrls].concat(url));
       setIsLoading(true);
-      if(isMTO){
-        await handleDownloadMTOVF(url, downloadName)
-        setIsLoading(false);
-        const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
-        setTempUrls([...tempArr]);
-      }else{
-        if (await handleDownloadVF(url, downloadName)) {
-          setIsLoading(false);
-          const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
-          setTempUrls([...tempArr]);
-        } else {
-          setIsLoading(false);
-          const tempArr = tempUrls.filter((tempUrl: string) => tempUrl === url)
-          setTempUrls([...tempArr]);
-        }
+      if (isMTO) {
+        await handleDownloadMTOVF(url, downloadName);
+      } else {
+        await handleDownloadVF(url, downloadName);
       }
-    }
-    else {
-      // navigate(url, { replace: true })
+      setIsLoading(false);
+      const tempArr = tempUrls.filter((tempUrl: string) => tempUrl !== url);
+      setTempUrls([...tempArr]);
+    } else {
       navigateWithPrompt(() => {
         navigate(url, { replace: true });
         if (isHide) {
-          setWidthResponsive({
-            widthLeft: "0%",
-            widthRight: "95%",
-          });
+          setWidthResponsive({ widthLeft: "0%", widthRight: "95%" });
         }
         setIsHide(false);
-        toggleSideBar(false)
+        toggleSideBar(false);
       }, url, mdm, resetState);
     }
-  }
+  };
 
   const getNestedChildren = (children: Array<any>): any => {
     const stack = [...children];
     const result = [];
-
     while (stack.length > 0) {
       const current = stack.pop();
-
       if (current.child) {
         stack.push(...current.child);
-      }
-
-      else {
+      } else {
         result.push(current);
       }
     }
-
     return result.reverse();
   };
 
-
-
   const renderToolTipContent = (items: any): any => {
-    const result = getNestedChildren(items.child)
-    return (
-      result.map((itemChild: any, index: number) => {
-        const checkRole = user?.roles?.permission?.some((value: any) =>
-          itemChild?.role?.includes(value)
+    const result = getNestedChildren(items.child);
+    return result.map((itemChild: any, index: number) => {
+      const checkRole = user?.roles?.permission?.some((value: any) =>
+        itemChild?.role?.includes(value)
+      );
+      if (
+        (user.url_permission.includes(itemChild.url) ||
+          itemChild.url === "" ||
+          itemChild.url === "/profile" || reportUrls.includes(itemChild.url)) && checkRole
+      ) {
+        return (
+          <TooltipContent
+            key={index}
+            action={itemChild.url === location.pathname}
+            themeUi={themeUi}
+            onClick={() => handleTooltipClick(itemChild.url, itemChild.isMTO, itemChild.downloadName)}
+          >
+            {t(itemChild.name) || itemChild.name}
+            {itemChild.url !== location.pathname && (
+              <SCIcon
+                src={
+                  isLoading && tempUrls.includes(itemChild.url)
+                    ? "/assets/img/nav/loader.svg"
+                    : itemChild.imgHover
+                      ? itemChild.imgHover
+                      : "/assets/img/nav/arrow_down.svg"
+                }
+                alt="arrow"
+              />
+            )}
+          </TooltipContent>
         );
-        if (
-          (user.url_permission.includes(itemChild.url) ||
-            itemChild.url === "" ||
-            itemChild.url === "/profile" || reportUrls.includes(itemChild.url)) && checkRole
-        ) {
-          return (
-
-            <TooltipContent
-              key={index}
-              action={itemChild.url === location.pathname}
-              themeUi={themeUi}
-              onClick={() => handleTooltipClick(itemChild.url, itemChild.isMTO ,itemChild.downloadName)}
-            >
-              {t(itemChild.name) || itemChild.name}
-              {itemChild.url !== location.pathname && (
-                <SCIcon
-                  src={
-                    isLoading && tempUrls.includes(itemChild.url) ? "/assets/img/nav/loader.svg" :
-                      itemChild.imgHover
-                        ? itemChild.imgHover
-                        : "/assets/img/nav/arrow_down.svg"
-                  }
-                  alt="arrow"
-                />
-              )}
-            </TooltipContent>
-          );
-        }
-      })
-    )
-  }
-
+      }
+    });
+  };
 
   return (
+  <div ref={tooltipRef}>
     <WrapToolTip>
-      <Tooltip
+      <Tooltip 
         id={item.name}
         place="right"
         className="tooltip_list"
         noArrow
         isOpen
-
       >
-        <TooltipContainer className="custom-scrollbar">
+        <TooltipContainer style={{ maxHeight: tooltipMaxHeight }} className="custom-scrollbar">
           <TooltipTitle>{t(item.name)}</TooltipTitle>
           {renderToolTipContent(item)}
         </TooltipContainer>
       </Tooltip>
     </WrapToolTip>
+    </div>
   );
 };
 
