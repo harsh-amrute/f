@@ -21,10 +21,11 @@ interface VFTabProps{
   newTabIcon?:string,
   newTabHandler?:() => void,
   children?:ReactNode,
+  isAdd?: boolean
 
 }
 
-const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
+const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIcon,newTabHandler,children, isAdd}:VFTabProps) => {
 
   const masters = useSelector((state:RootState)=>state.mdm.masters);
 
@@ -34,12 +35,14 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
 
   }
 
+  const finMasters:any = isAdd? [masters[0]]: masters;
+
   return(
       <SCTabArea>
         <SCTabHeader style={{zoom: 0.8}}>
             <SCTabHeaderLeft>
               {
-                masters.map((master:MDMMasterState,index:number)=>{
+                finMasters.map((master:MDMMasterState,index:number)=>{
                   return(
                     <SCTabButton 
                       status={getTabStatus(master)} 
@@ -54,13 +57,16 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
                       >
                         <SCTabContent>
                           <SCTabTitle status={getTabStatus(master)}>{master.name}</SCTabTitle>
+                          {
+                            !isAdd && 
                           <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onTabClose(e,master)}} src={getTabStatus(master) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : (master.progress === 'submitted' || master.progress === 'editOnlineSubmitted') ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
+                          }
                         </SCTabContent>
                     </SCTabButton>
                   )
                 })
               }
-              <SCTabButton
+              {(!isAdd )&&<SCTabButton
                 status={''}
                 zIndex={0}
                 marLeft={true}
@@ -74,7 +80,7 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
                     <img style={{marginRight:'18px'}} src={newTabIcon}/>
                     <SCTabTitle status={''}>{newTabTitle}</SCTabTitle>
                   </SCTabContent>
-              </SCTabButton>
+              </SCTabButton>}
             </SCTabHeaderLeft>
 
         </SCTabHeader>

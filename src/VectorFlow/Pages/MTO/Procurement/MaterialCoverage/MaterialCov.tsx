@@ -13,7 +13,7 @@ import MaterialSODetailed from './MaterialSODetailed';
 import { DetailsObj } from './CommonFunc';
 import { useGetSOSummaydetails } from '../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage';
 import { toast } from 'react-toastify';
-import { notifyError, notifyLoader } from '../../../../../helpers/notify';
+import { notifyError, notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useFilter from "../../../../../hooks/useFilter";
 // import { APIResponseMock } from '../../Production/InsightsAndTrends/OrderBalance/OrderBalanceMockData';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
@@ -49,7 +49,7 @@ const MaterialCov = () => {
   const [filterData, setFilterData] = useState({});
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState<boolean | undefined>(undefined);
   const [colDef, setColDef] = useState<any>([]);
   const [HeaderData, setHeaderData] = useState([]);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
@@ -57,6 +57,7 @@ const MaterialCov = () => {
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { user } = useUserData();
   const { getColDef , colDefMap} = useColDef();
+  const [defaultColState,setDefaultColState] = useState<any>([])
     const { 
     state: currFilter, 
     setState: setCurrFilter, 
@@ -83,6 +84,8 @@ const MaterialCov = () => {
 
   const handleToggleComponent = (value: boolean) => {
     setToggleComponent(value);
+
+    
   }
 
   const handleParameterData = (data: any) => {
@@ -120,35 +123,44 @@ const MaterialCov = () => {
   const defaultTab = tabs.findIndex(tab => tab.value === currTab)
 
   const getUserColumnConfig = async () => {
-    try {
-      const data = await getUserUIReportConfigData({
-        un: user.user.name,
-        rn_id: UIGridCode.ProcMaterialCovOpenSales
-      });
-
-      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-      setColumnState(newConfig);
-
-      if (!data) {
-        console.error('Failed to apply column state');
+      try {
+        const data = await getUserUIReportConfigData({
+          un: user.user.name,
+          rn_id: UIGridCode.ProcMaterialCovOpenSales
+        });
+  
+        const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+        setColumnState(newConfig)
+  
+        if (!data) {
+          console.error('Failed to apply column state');
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
   }
 
-  const handleSaveClick = async () => {
-    try {
-      if(currentGridRef?.current?.api){
-        const config = currentGridRef.current.api.getColumnState();
+  useEffect(()=>{
+    if(colDef.length > 0 && currentGridRef?.current?.api && !defaultColState.length){
+      setDefaultColState(currentGridRef?.current?.api?.getColumnState())
+    }
+  },[colDef,currentGridRef])
+
   
+
+  const handleSaveClick = async (isReset = false) => {
+    try {
+      const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState();
+
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProcMaterialCovOpenSales,
           cs: JSON.stringify(config)
         }
-        await updateUserUIReportConfigData([payload]);
-        await getUserColumnConfig();
+      await updateUserUIReportConfigData([payload]);
+      !isReset && notifySuccess("Saved successfully")
+      if(!isReset){
+        setColumnState([...config])
       }
 
     } catch (error) {
@@ -159,6 +171,8 @@ const MaterialCov = () => {
   const handleResetClick = () => {
     setIsReset(true);
   }
+
+
 
   const reportName = 'MaterialCoverageforOpenSalesOrder';
   const getHeaderData = async () => {
@@ -203,6 +217,7 @@ const MaterialCov = () => {
           filter: false,
           width: 50,
           maxWidth: 50,
+          pinned:"left",
           cellRenderer: CustomGroupCellRenderer
       }
   ]
@@ -222,20 +237,28 @@ const MaterialCov = () => {
   }, [HeaderData])
 
   useEffect(() => {
-    getUserColumnConfig();
     getHeaderData();
     getFilterData()
   }, [])
 
+  useEffect(()=>{
+    if(defaultColState && defaultColState.length){
+      getUserColumnConfig();
+    }
+
+  },[defaultColState])
+
   useEffect(() => {
     if (isReset) {
-      setColumnState(colDef);
-      setIsReset(false)
-    }else{
-      handleSaveClick();
+      setColumnState([...defaultColState])
+
+      handleSaveClick(true);
+
+      setIsReset(false) 
+      notifySuccess("Reset successfully")
     }
   }, [isReset]);
-
+  
   const materialSoDetailRef = useRef<any>();
   const callExportExcel = () => {
       const headersdata = currentGridRef?.current?.api.getColumnState();
@@ -257,7 +280,6 @@ const MaterialCov = () => {
 
           <ActionToolBar
             comp={'MaterialCov'}
-            isExcelExport
             isAddFilterButton
             isFilterOpen={isFilterOpen}
             onAddFilter={onAddFilter}

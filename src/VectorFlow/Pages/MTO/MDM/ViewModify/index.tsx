@@ -11,7 +11,6 @@ import { operators, seasonalityQuickFilterData } from "../../../../../helpers/MD
 import { SeasonalityQuickFilterType, type Filter } from '../../../../types/MDM';
 import VFTable from "../../Common/VFTable";
 import WarningModal from './WarningModal'
-import UploadModal from "./UploadModal";
 import React, {useEffect} from "react";
 import VFTaskBar from "./VFTaskbar";
 import SubmitConflictModal from "./SubmitConflictModal";
@@ -48,18 +47,11 @@ const MTOViewModify = () => {
     isLoading,
     handleApplyFilter,
     isWarningModalOpen,
-    isUploadModalOpen,
     toggleUploadModal,
     onWarningModalClose,
     onWarningModalSuccess,
-    downloadFileName,
-    setDownloadFileName,
-    onUploadMaster,
     isOverlayVisible,
-    file,
-    setFile,
     isTableDataLoading,
-    exportToExcel,
     onBackButton,
     onClearExportError,
     agGridProps,
@@ -252,10 +244,15 @@ const MTOViewModify = () => {
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ] 
                   }}
+                  defaultColDef={
+                  {...agGridProps.defaultColDef,
+                    flex: 1}
+                  }
                   rowSelection ={"single"}
                   suppressRowClickSelection={activeMaster.colDefs.some((colDef) => (colDef.field === 'actions'|| colDef.field==='pactions'))? true: false}
                   onSelectionChanged={onMajReasonSelected}
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
+                
                   />
                  <VFTable
               
@@ -271,6 +268,10 @@ const MTOViewModify = () => {
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ] 
                     }}
+                    defaultColDef={
+                      {...agGridProps.defaultColDef,
+                        flex: 1}
+                      }
                   height={activeMaster.rowData.length > 0 ? activeMaster.progress === 'view' ? "90%" : "95%" : "90%"}
                   overlayNoRowsTemplate={"Select a major reason to see the corresponding minor reason"}
                   onCellEditingStopped={onMinReasonEditingStopped}
@@ -426,20 +427,6 @@ const MTOViewModify = () => {
           onSuccess={() => onWarningModalSuccess()}
           showAll={isShowAll}
           rowsPerPage={rowsPerPage}
-        />
-      }
-      {isUploadModalOpen &&
-        <UploadModal
-          header={"Modification"}
-          openModal={isUploadModalOpen}
-          onCloseModal={() => toggleUploadModal(false)}
-          onDownload={() => exportToExcel(true)}
-          onUpload={onUploadMaster}
-          inputText={downloadFileName}
-          setInputText={setDownloadFileName}
-          file={file}
-          setFile={setFile}
-          uploadButtonStatus={false}
         />
       }
       {isConflictModalOpen &&
