@@ -613,7 +613,8 @@ const ChronicUnavailabilityCharts = ({filter}:{filter:any}) => {
                                             { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                                             { statusPanel: 'agAggregationComponent', align:'left' },
                                         ],
-                                        }}                                             onRowDataUpdated={()=>generateChart(1)}
+                                        }}   
+                                        onGridReady={()=>generateChart(1)}                                          onRowDataUpdated={()=>generateChart(1)}
                                     getChartToolbarItems={getChartToolbarItems}
                                     chartToolPanelsDef={
                                         {

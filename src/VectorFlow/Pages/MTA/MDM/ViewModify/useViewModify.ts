@@ -1210,6 +1210,7 @@ const useViewModify = (pageType:string) => {
             setConflictCount(tempCon.length)
             setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
             setIsConflictModalOpen(true)
+            addCheckBoxColDefs()
             dispatch(UPDATE_PROGRESS_STATE('editOnlineConflicts'))
           }
  
@@ -1272,6 +1273,7 @@ const useViewModify = (pageType:string) => {
           setConflictCount(tempCon.length)
           setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
           setIsConflictModalOpen(true)
+          addCheckBoxColDefs()
           dispatch(UPDATE_PROGRESS_STATE('conflicts'))
         }
 
