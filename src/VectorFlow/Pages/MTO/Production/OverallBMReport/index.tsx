@@ -1409,10 +1409,6 @@ const DropDownCellRenderer= (props: any) =>  {
   };
 
   const handleSaveClick = async (coldefs?: any) => {
-    console.log("column def",coldefs);
-    console.log("colstate", refGraph2.current.api.getColumnState());
-    console.log("grid dat...", gridData);
-    return
     try {
       if (coldefs) {
         const payload = {
