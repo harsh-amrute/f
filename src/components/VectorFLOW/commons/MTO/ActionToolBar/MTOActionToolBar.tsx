@@ -30,7 +30,6 @@ import {
     DateTitle,
     DateValue,
     VFSelectedFilterLabel,
-    DatePickerWrapper,
 } from './styles';
 import moment from 'moment';
 import { ReactElement } from 'react';
@@ -40,6 +39,7 @@ import { getSelectedFilters } from '../../../../../helpers/utils';
 import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
 import { ExportExcelSVG, ResetSVG, SaveSVG } from '../../../../../helpers/SvgRenderer';
 import { Theme } from '../../../../../styles/global';
+import VFDatePicker from '../../../../../VectorFlow/Pages/MTO/Common/VFDatePicker';
 
 type filterType = {
     label: string,
@@ -275,37 +275,7 @@ const MTOActionToolBar = ({
                             <p>Release Date Till</p>
                             &nbsp;
                             &nbsp;
-                            <DatePickerWrapper>
-                            <input type="date"
-                                    required
-                                    data-testid="datepicker"
-                                    style={{
-                                        top: '141px',
-                                        left: '651px',
-                                        width: '100%',
-                                        height: '100%',
-                                        textAlign: 'left',
-                                        font: '24px',
-                                        letterSpacing: '0px',
-                                        color: 'transparent',
-                                        opacity: 1,
-                                        fontSize: '18px',
-                                        padding: '4px',
-                                        fontWeight: 'bold',
-                                        fontFamily: 'Roboto',
-                                        border: '0.5px solid #ACACAC',
-                                        background: 'transparent',
-
-                                    }}
-
-                                    value={date}
-                                    min={datetime}
-                                    onChange={(e) => { if (onDateChange) onDateChange(e.target.value) }}
-                                />
-                                <p style={{position: 'absolute', zIndex: '2', height:'100%', top: '10%', left: '10%',  fontSize: '18px', fontWeight: 'bold', background: 'transparent'}}>
-                                    {date}
-                                </p>
-                            </DatePickerWrapper>
+                            <VFDatePicker date={date} min={datetime} onDateChange={onDateChange} />
                             
                             &nbsp;
                             {/* <div style={{ display: 'flex', alignItems: 'center' }}>
