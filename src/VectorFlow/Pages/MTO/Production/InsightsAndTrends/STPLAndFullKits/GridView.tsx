@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState ,useCallback,useMemo} from "react";
 import VFTable from "../../../Common/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
 import OverlayLoader from '../../../Common/Loader';
@@ -54,8 +54,12 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
     }
   }, [isSuccess, isError])
 
+  const getDetailRowData = useCallback(async (params: any) => {
+    const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
+    params.successCallback(data?.data?.data || []);
+  }, [getBOMExplosionData]);
 
-  const gridOptions: GridOptions = {
+  const gridOptions: GridOptions = useMemo(() => ({
     sideBar: {
       toolPanels: [
         {
@@ -66,7 +70,7 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
           toolPanel: 'agColumnsToolPanel',
           minWidth: 225,
           maxWidth: 225,
-          width: 225
+          width: 225,
         },
       ],
     },
@@ -81,39 +85,37 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
       suppressMenu: true,
       detailGridOptions: {
         rowHeight: 30,
-        domLayout: "autoHeight",
+        domLayout: 'autoHeight',
         autoGroupColumnDef: {
-          headerName: "Item Name",
+          headerName: 'Item Name',
           cellRendererParams: {
-            suppressCount: true
-          }
+            suppressCount: true,
+          },
         },
         columnDefs: [
-          { field: "qty", headerName: "Requirement", },
-          { field: "soh", headerName: "Stock", },
-          { field: "wip", headerName: "WIP", },
-          { field: "gap", headerName: "Gap", },
+          { field: 'qty', headerName: 'Requirement' },
+          { field: 'soh', headerName: 'Stock' },
+          { field: 'wip', headerName: 'WIP' },
+          { field: 'gap', headerName: 'Gap' },
         ],
         defaultColDef: {
           flex: 1,
           suppressMenu: true,
           cellStyle: {
-            fontSize: "14px",
-            display: "flex",
-            alignItems: "center"
-          }
+            fontSize: '14px',
+            display: 'flex',
+            alignItems: 'center',
+          },
         },
         treeData: true,
         getDataPath: (data: any) => {
           return data.path;
         },
       },
-      getDetailRowData: async (params: any) => {
-        const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
-        params.successCallback(data.data.data)
-      }
+      getDetailRowData,
     },
-  };
+  }), [getDetailRowData]);
+  
 
   useEffect(() => {
     if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
