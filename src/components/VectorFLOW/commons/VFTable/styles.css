@@ -163,6 +163,12 @@
   /* Any other styles */
 }
 
+.ag-filter-toolpanel-group-title{
+  color:black !important;
+  font-weight: 400 !important;
+  font-size: 12px !important;
+}
+
 .ag-row {
   overflow: visible;
 }

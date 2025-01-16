@@ -272,7 +272,7 @@ const useViewModify = (pageType:string) => {
         
         },
       ],
-      defaultToolPanel:defaultToolPanel,
+      defaultToolPanel:'',
     }
 
     const agGridProps:AgGridReactProps = {
@@ -1674,18 +1674,19 @@ const useViewModify = (pageType:string) => {
     //     dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSaved'))
     // }
     const onReviewConflicts = ()=>{
-      
+      console.log("ACTIVEMASTER",activeMaster.colDefs)
       const newColDefs:ColDef[] = activeMaster.colDefs.map((colDef:ColDef)=>{
         return {
           ...colDef,
           // cellRenderer:'conflictErrorCellRenderer',
           // tooltipField:colDef.field,
           cellRenderer:'conflictErrorCellRenderer',
-          cellStyle:(params)=>{
-            return{
-              ...params.colDef.cellStyle,
-              padding:0
+          ccellStyle: (params:any) => {
+            const baseStyle = { ...params.colDef.cellStyle };
+            if (params.colDef.colId !== 'checkbox') {
+              baseStyle.padding = 0;
             }
+            return baseStyle;
           }
           // onCellClicked:(params:any)=>console.log(params)
           // tooltipField:colDef.field
@@ -1694,7 +1695,10 @@ const useViewModify = (pageType:string) => {
       })
 
      if(newColDefs) dispatch(UPDATE_COLDEFS(newColDefs))
-      addCheckBoxColDefs()
+      const exists = activeMaster.colDefs.some(obj => obj.colId === "checkbox");
+       if(!exists){
+        addCheckBoxColDefs()
+      }
       dispatch(UPDATE_ROW_DATA(conflictData))
       setIsConflictModalOpen(false)
       dispatch(SET_RECORD_COUNT(conflictData.length))

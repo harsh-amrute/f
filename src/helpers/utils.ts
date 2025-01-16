@@ -1040,7 +1040,6 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
   let result: any[] = []
   const tempFields = [...fields]
   tempFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
-
   result = tempFields.map((f: any) => {
 
     const cellFilter = getCellFilter(f.dataType)
@@ -2473,6 +2472,7 @@ export const mapBPRRowData = (rowData: Array<any>) => {
       tempRow.EcoColor = null
       tempRow.TechColor = null
     }
+    
     return tempRow
   })
 }
@@ -2746,17 +2746,25 @@ export const BPRColorMapper = (color: string): { bg: string, text: string } => {
 
 export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => {
   return rows.map((r) => {
-    // const NewCategoryString = r.Category? r.Category.replace(/\d/g, (match:string) => BTRCategoryNumberToTextMapper[match] || match) :  ""
-    const NewCategoryString = r.Category
-    const tempRow = { ...r, Category: NewCategoryString }
-    let tempAvailabilty = 0
-    let nonBlackCount = 0
-    for (let index = 90; index > 90 - horizon; index--) {
-
-      if (tempRow[`D${index}`] && tempRow[`D${index}`] < 100) {
-        nonBlackCount = nonBlackCount + 1
+    const transformedRow = Object.keys(r).reduce((acc, key) => {
+      const value = r[key];
+      if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+        acc[key] = parseFloat(value);
+      } else {
+        acc[key] = value;
       }
+      return acc;
+    }, {} as any);
 
+  
+    const NewCategoryString = transformedRow.Category;
+    const tempRow = { ...transformedRow, Category: NewCategoryString };
+    let tempAvailabilty = 0;
+    let nonBlackCount = 0;
+    for (let index = 90; index > 90 - horizon; index--) {
+      if (tempRow[`D${index}`] && tempRow[`D${index}`] < 100) {
+        nonBlackCount = nonBlackCount + 1;
+      }
     }
 
     tempAvailabilty = parseFloat(((nonBlackCount / horizon) * 100).toFixed(2))
