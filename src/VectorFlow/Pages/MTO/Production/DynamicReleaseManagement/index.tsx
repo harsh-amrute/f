@@ -27,6 +27,7 @@ import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useColDef from '../../../../../hooks/useColDef';
 
+
 const APIFilterConfig = {
   filSecVisConfig: {
     "Prod_Dynamic_Release_Management" : {
@@ -134,7 +135,7 @@ const DynamicReleaseManagement = () => {
       try {
         const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
-        setRowData(APIData.data.data.results);
+        setRowData(APIData?.data?.data?.results? APIData?.data?.data?.results: []);
       }
       catch (e) {
         notifyError("Failed to fetch Grid data!")
@@ -144,7 +145,7 @@ const DynamicReleaseManagement = () => {
       try {
         const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
-        setRowData(APIData.data.data.results);
+        setRowData(APIData?.data?.data?.results? APIData?.data?.data?.results: []);
       }
       catch (e) {
         notifyError("Failed to fetch Grid data!")
@@ -191,7 +192,7 @@ const DynamicReleaseManagement = () => {
   
   useEffect(() => {
     if (!showModal) {
-      GetData(table1 ? 1 : 0, currentPage, 0);
+      GetData(table1 ? 0 : 1, currentPage, 0);
     }
   }, [dataUpdated])
 
@@ -776,7 +777,7 @@ const DynamicReleaseManagement = () => {
 
   
   const ExcelData = () =>{
-    GetData(table1 ? 1 : 0 , 0 , 0, true)
+    GetData(table1 ? 0 : 1 , 0 , 0, true)
   }
   return (
     <>
@@ -837,7 +838,7 @@ const DynamicReleaseManagement = () => {
           <VFPagination
             selectedRows={0}
             rowsPerPage={pagination.mtoPageSize}
-            totalRows={currData ? currData?.data?.data?.count : 0}
+            totalRows = {currData?.data?.data?.count || currData?.data?.data?.length || 0}
             currentPage={currentPage}
             handleChangePage={handlePageChangeCumulative}
             showPagination
