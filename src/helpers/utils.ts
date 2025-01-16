@@ -1040,8 +1040,6 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
   let result: any[] = []
   const tempFields = [...fields]
   tempFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
-console.log("HHHHHH");
-
   result = tempFields.map((f: any) => {
 
     const cellFilter = getCellFilter(f.dataType)
@@ -2474,7 +2472,6 @@ export const mapBPRRowData = (rowData: Array<any>) => {
       tempRow.EcoColor = null
       tempRow.TechColor = null
     }
-    console.log("THIS IS BPR TEMP ROW",tempRow);
     
     return tempRow
   })
