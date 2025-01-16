@@ -2472,7 +2472,6 @@ export const mapBPRRowData = (rowData: Array<any>) => {
       tempRow.EcoColor = null
       tempRow.TechColor = null
     }
-    console.log("THIS IS BPR TEMP ROW",tempRow);
     
     return tempRow
   })
