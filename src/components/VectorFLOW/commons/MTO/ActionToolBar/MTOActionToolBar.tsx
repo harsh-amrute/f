@@ -38,6 +38,7 @@ import { getSelectedFilters } from '../../../../../helpers/utils';
 import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
 import { ExportExcelSVG, ResetSVG, SaveSVG,GridView,ChartView } from '../../../../../helpers/SvgRenderer';
 import { Theme } from '../../../../../styles/global';
+import VFDatePicker from '../../../../../VectorFlow/Pages/MTO/Common/VFDatePicker';
 
 type filterType = {
     label: string,
@@ -135,12 +136,9 @@ const MTOActionToolBar = ({
         }
     }
 
-    const format2 = "MM-dd-yyyy"
+    const format2 = "yyyy-MM-dd"
     const d = new Date();
-    const datetime = moment(d).format(format2);
-    
- 
-    
+    const datetime = moment(d).format(format2); 
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
     return (
@@ -276,43 +274,8 @@ const MTOActionToolBar = ({
                             <p>Release Date Till</p>
                             &nbsp;
                             &nbsp;
-                            <div style={{
-                                top: '133px',
-                                left: '638px',
-                                width: '204px',
-                                height: '43px',
-
-                                background: '#FFFFFF 0% 0% no-repeat padding-box',
-                                border: '0.5px solid #ACACAC',
-                                borderRadius: '4px',
-                                opacity: 1,
-                            }}>
-                                <input type="date"
-                                    required
-                                    data-testid="datepicker"
-                                    style={{
-                                        top: '141px',
-                                        left: '651px',
-                                        width: '100%',
-                                        height: '100%',
-                                        textAlign: 'left',
-                                        font: '24px',
-                                        letterSpacing: '0px',
-                                        color: '#000',
-                                        opacity: 1,
-                                        fontSize: '18px',
-                                        padding: '4px',
-                                        fontWeight: 'bold',
-                                        fontFamily: 'Roboto',
-                                        border: '0.5px solid #ACACAC',
-
-                                    }}
-
-                                    value={date}
-                                    min={datetime}
-                                    onChange={(e) => { if (onDateChange) onDateChange(e.target.value) }}
-                                />
-                            </div>
+                            <VFDatePicker date={date} min={datetime} onDateChange={onDateChange} />
+                            
                             &nbsp;
                             {/* <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <img
@@ -534,7 +497,7 @@ const MTOActionToolBar = ({
                         onGoBack={() => toggleFilter(false)}
                         multiFilter={multiFilter}
                         setMultiFilter={setMultiFilter}
-                        isFilterOpen={isFilterOpen}
+                    isFilterOpen={isFilterOpen}
                     />
                 }
 
