@@ -231,7 +231,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
 
     useEffect(() => {
-        if (Object.entries(appliedFilters).length) {
+        if (appliedFilters !== null && Object.entries(appliedFilters).length) {
             if (currentTab.id === 'sdv') {
                 setCurrentPage(1);
             } else if (currentTab.id === 'cv') {
