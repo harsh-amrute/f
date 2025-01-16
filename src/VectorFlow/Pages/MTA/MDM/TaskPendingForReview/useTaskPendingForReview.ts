@@ -56,8 +56,6 @@ const useTaskPendingForReview = ()=>{
     const [TASK_ID,setTaskId] = useState<string>('')
 
 
-<<<<<<< HEAD
-=======
     useEffect(() => {
         console.log("Side Effect")
         if (ref.current && detailTableRowData.length > 0) {
@@ -68,7 +66,6 @@ const useTaskPendingForReview = ()=>{
           });
         }
       }, [detailTableRowData]);
->>>>>>> V_1.0
 
     const resetState = ()=>{
         setDetailTableColDefs([])
