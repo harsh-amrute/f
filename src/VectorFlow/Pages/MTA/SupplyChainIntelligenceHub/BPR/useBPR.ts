@@ -201,6 +201,14 @@ const useBPR =()=>{
       };
 
 
+      const getContextMenuItems = (params:any) => {
+        console.log(params)
+        // const defaultItems = params.defaultItems;
+        // console.log(defaultItems)
+        // return defaultItems.filter((item:any) => item !== 'pinRight');
+      };
+
+
   
     const agGridProps:AgGridReactProps = useMemo(()=>{
 
@@ -211,6 +219,7 @@ const useBPR =()=>{
             readOnlyEdit:false,
             enableColResize: true,
             sideBar:defaultAgGridSideBarForBPR,
+            onColumnMenuVisibleChanged:getContextMenuItems,
             paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
             onRowClicked:(params:any)=>{
                 if(params.data.intransit && params.data.intransit.length>0){
