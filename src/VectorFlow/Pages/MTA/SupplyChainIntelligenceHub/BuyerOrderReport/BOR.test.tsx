@@ -1,5 +1,5 @@
 import {  render } from '@testing-library/react';
-import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
+import { useGetBORUIConfiguration, useBORData, useBORDataCount} from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import { mockBORData,mockBORCountData,mockBORUIConfigData} from "../../../../../mock-data/BOR";
 import BuyerOrderReport from './';
 jest.mock("../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport");
@@ -24,6 +24,14 @@ const useGetBORUIConfigurationMock = useGetBORUIConfiguration as jest.MockedFunc
     const useBORDataCountMock = useBORDataCount as jest.MockedFunction<
     typeof useBORDataCount
   >;
+
+//   const useSubmitBORRemarkMock = useSubmitBORRemark as jest.MockedFunction<
+//   typeof useSubmitBORRemark
+// >
+
+// const useGetBORRemarkHistoryMock = useGetBORRemarkHistory as jest.MockedFunction<
+//   typeof useGetBORRemarkHistory
+// >
 
   window.URL.createObjectURL = jest.fn();
 

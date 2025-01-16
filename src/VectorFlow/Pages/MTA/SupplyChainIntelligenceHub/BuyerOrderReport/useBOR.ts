@@ -1,7 +1,7 @@
-import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
+import { useGetBORUIConfiguration, useBORData, useBORDataCount,useSubmitBORRemark,useGetBORRemarkHistory } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapBORFieldsToColDefs } from "../../../../../helpers/utils"
-import { useState,useMemo, useEffect,useRef } from "react"
+import { convertUiConfigToOptions, mapBORFieldsToColDefs, updateCommonAttributes } from "../../../../../helpers/utils"
+import { useState,useMemo, useEffect,useRef, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
 import BPRGraphCellRenderer from "../../../../Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -12,18 +12,22 @@ import { useSelector,useDispatch } from "react-redux"
 import { RootState } from "../../../../../redux/store/store"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
-import { notifyError, notifyLoader} from "../../../../../helpers/notify"
+import { notifyError, notifyLoader,notifySuccess} from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
+import {  BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers"
+import useViewPort from "../../../../../hooks/useViewPort"
+import { BORRemarksCellRenderer } from "./BORCellRenderers"
+
 
 
 
 export const useBOR =()=>{
     const ref=  useRef<GridRef>()
-    const tempRef = useRef()
+    const tempRef = useRef<GridRef>()
 
     const [internalRef,setInternalRef] = useState<any>()
 
@@ -32,10 +36,17 @@ export const useBOR =()=>{
      const {data,isLoading:isBORUILoading} = useGetBORUIConfiguration();
      const dispatch = useDispatch();
    
+     const {getGridZoom,getScreenZoomValue} = useViewPort()
+ 
+     const gridZoom = getGridZoom()
+     const screenZoom = getScreenZoomValue() 
+
     //  const [toggleSubGrid] = useState<boolean>(false);
      const [currGridPage,setCurrGridPage] = useState<number>(1)
 
      const [rowData,setRowData] = useState([]);
+
+     const [BORColumns,setBORColumns] = useState<any[]>([])
 
      const [recordCount,setRecordCount] = useState<number>(0)
      const [currentPage,setCurrentPage] = useState(1);
@@ -46,6 +57,21 @@ export const useBOR =()=>{
  
      const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
      const [generalFilterOptions,setGeneralFilterOptions] = useState();
+
+     const [isSubmitRemarkToolTipOpen,setIsSubmitRemarkToolTipOpen] = useState<boolean>(false)
+     const [submitRemarkToolTipPosition,setSubmitRemarkToolipPosition] = useState<CSSProperties>({})
+     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
+     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
+     const {mutateAsync:getBORRemarkHistory} = useGetBORRemarkHistory();
+     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
+     const [editedRows,setEditedRows] = useState<Array<any>>([])
+     const [remark,setRemark] = useState<string>('')
+
+     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
+
+     const {mutateAsync:submitRemark} = useSubmitBORRemark()
+
+
 
 
      const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
@@ -66,6 +92,8 @@ export const useBOR =()=>{
      const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         colorDispatchCellRenderer:DispatchColorCellRenderer,
+        submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
+        remarksCellRenderer:BORRemarksCellRenderer
 
         
       }), []);
@@ -90,20 +118,164 @@ export const useBOR =()=>{
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
 
-      
-      const BORColumns = useMemo(()=>mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph),[data])
+    const onOpenSubmitRemark = (e:React.MouseEvent<HTMLElement>)=>{
+      const {top,left} = e.currentTarget.getBoundingClientRect()
+      setSubmitRemarkToolipPosition({
+          top: top * gridZoom * screenZoom,
+          left: left * gridZoom * screenZoom,
+      })
+      setIsSubmitRemarkToolTipOpen(true)
+
+  }
+
+  const onOpenRemarkHistory = async(e:React.MouseEvent<HTMLElement>,row:any)=>{
+    try{
+        setIsRemarkHistoryToolTipOpen(false)
+        const toastId = notifyLoader("Getting remark history")
+        const {top,left} = e.currentTarget.getBoundingClientRect()
+        setRemarkHistoryToolipPosition({
+            top: top *  gridZoom * screenZoom,
+            left: left *  gridZoom * screenZoom,
+            height:360,
+            width:350
+        })
+        const {data} = await getBORRemarkHistory(row)
+        toast.dismiss(toastId)
+        setRemarkHistory(data.data)
+        setIsRemarkHistoryToolTipOpen(true)
+    }catch(err:any){
+        notifyError(err.message)
+    }
+    }
+
+    // const onCellValueChanged = (newRow: any, primaryKey: string) => {
+    //   console.log('ghsuiag')
+    //   setEditedRows((prev:any) => {
+    //     let found = false; // Flag to track if the row has been updated
+    //     const updatedRows = prev.map((row:any) => {
+    //       if (row[primaryKey] === newRow[primaryKey]) {
+    //         found = true;
+    //         return { ...newRow }; // Return updated row
+    //       }
+    //       return row; // Return unchanged row
+    //     });
+    
+    //     if (!found) {
+    //       // If no existing row was found, add the new row
+    //       return [...updatedRows, {...newRow}];
+    //     }
+    //     return updatedRows;
+    //   });
+    // };
+
+    const onCellValueChanged = (newRow: any, primaryKey1: string,primaryKey2:string,primaryKey3:string) => {
+      setEditedRows((prev) => {
+        let found = false; // Flag to track if the row has been updated
+        const updatedRows = prev.map((row) => {
+          if (row[primaryKey1] === newRow[primaryKey1] && row[primaryKey2]===newRow[primaryKey2] && row[primaryKey3]===newRow[primaryKey3]) {
+            found = true;
+            return newRow.remarks.length === 0 ? null : { ...newRow }; // Return updated row
+          }
+          return row; // Return unchanged row
+        });
+
+        const filteredUpdatedRows = updatedRows.filter(row => row !== null);
+    
+        if (!found && newRow.remarks.length > 0) {
+          // If no existing row was found, add the new row
+          return [...filteredUpdatedRows, {...newRow}];
+        }
+        return filteredUpdatedRows;
+      });
+    };
+
+
+
+    const onSubmitRemarks = async()=>{
+      try{
+      //  const toastId = notifyLoader("Submitting Remark")
+      //  const payload = editedRows.map((e)=>{
+      //      return {
+      //          remark:e.remarks,
+      //          whcode:e.WHCode,
+      //          skucode:e.SKUCode,
+      //          spc:e.SupplierCode
+      //      }
+           
+      //  })
+      //  const {data} = await submitRemark({data:payload})
+      //  toast.dismiss(toastId)
+      console.log("EDITED ROWSSS",editedRows)
+      const toastId = notifyLoader("Submitting Remark")
+      console.log("EDITEDROWS",editedRows)
+      const payload = editedRows.map((e)=>{
+          return {
+              remark:e.remarks,
+              whcode:e.WHCode,
+              skucode:e.SKUCode,
+              spc:e.SupplierCode
+          }
+          
+      })
+      const {data} = await submitRemark({data:payload})
+      editedRows.forEach((editedRow) => {
+          // Find the row node using both SKUCode and WHCode as unique identifiers
+          const rowNode = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WHCode}-${editedRow.SupplierCode}`);
+          console.log("ROWNODE",rowNode)
+          if (rowNode) {
+            // Update the 'Remarks' column with the new remark
+            rowNode.setDataValue('Remark', editedRow.remarks);
+    
+            // Clear the 'Edit Remarks' column after submission
+            rowNode.setDataValue('remarks', '');
+          }
+        });
+       toast.dismiss(toastId)
+       notifySuccess(data.msg)
+       setEditedRows([])
+      }catch(err:any){
+       notifyError(err.message)
+      }
+   }
+
+   const onCloseSubmitRemark =()=>setIsSubmitRemarkToolTipOpen(false)
+
+   const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
+
+   const updateRemark = (e:any)=>setRemark(e.currentTarget.value)
+ 
+  // const BORColumns = useMemo(()=>mapBORFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,onOpenSubmitRemark, onOpenRemarkHistory),[data])
+
+      const BORColumnData = useMemo(() => {
+          return mapBORFieldsToColDefs(
+                data?.data?.data, 
+                onOpenSubmitRemark, 
+                onOpenRemarkHistory, 
+                onOpenDailyDataGraph
+          );
+        }, [data]);
+            // Update columns state only if there is a change
+        useEffect(() => {
+          console.log("DAAATAAAAA",data?.data.data)
+          console.log("BOOORRRCOLUMNNN",BORColumnData)
+              // Check if the columns data has changed before setting state
+          setBORColumns(BORColumnData);
+        }, [BORColumnData, setBORColumns]); 
+
+
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
       const [gridState,setGridState] = useState<any>()
 
       useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("BOR")
-            setGridState(JSON.parse(data.data.data))
+            const data =  await getState({"reportname":"BOR"})
+            const parsedContent = JSON.parse(data.data.data)
+            setGridState(parsedContent)
           }catch(err:any){
             setGridState({
                 charts:[],
-                columns:[],
+                columns:BORColumns,
                 pivot:false
             })
           }
@@ -113,11 +285,13 @@ export const useBOR =()=>{
     },[])
   
     useEffect(()=>{
-        if(internalRef){
-            console.log('in if')
-            internalRef.api.applyColumnState({state:gridState.columns })
-        }
-    },[internalRef,gridState])
+      if(internalRef && gridState && gridState.columns){
+        const StateColumns = updateCommonAttributes(gridState.columns,BORColumns,'colId')
+        console.log(StateColumns)
+        setBORColumns(StateColumns)
+        internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+      }
+  },[internalRef,gridState])
 
       useEffect(()=>{       
         const fetchData = async () => {
@@ -130,6 +304,71 @@ export const useBOR =()=>{
         setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
 
     }, [isBORUILoading]);
+
+
+
+    const onColumnVisible = (event: any) => {
+      const { column, visible , columns } = event;
+      // console.log(column)
+      // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
+      if(column!==null && column.colId!=="dailydatagraph" && event.source==='toolPanelUi'){
+      setBORColumns((prevColumns:any) =>{
+          const updatedColumns = prevColumns.map((col: any) =>
+              col.field === column.colId
+                ? { ...col, hide: !visible }
+                : col
+            );
+          
+            // Check if any columns, except the one with colId === "dailydatagraph", have hide: false
+            const anyColumnWithHideFalse = updatedColumns.some(
+              (col: any) => col.colId !== "dailydatagraph" && col.hide === false
+            );
+          
+            // Now map over the updated columns and ensure dailydatagraph's hide is updated accordingly
+            return updatedColumns.map((col: any) =>
+              col.colId === "dailydatagraph"
+                ? { ...col, hide: anyColumnWithHideFalse ? false : col.hide }
+                : col
+            );
+      }
+      );
+      }else if(columns.length>1 && event.source==='toolPanelUi'){
+          setBORColumns((prevColumns: any) => {
+              // Create a new array with updated columns, excluding 'dailydatagraph
+              if(visible===true){
+                  return  prevColumns.map((col: any) => ({ ...col, hide: false }))
+              }else{
+                  const updatedColumns = prevColumns.map((col: any) =>
+                      col.colId === "dailydatagraph"
+                        ? col // Exclude this column for now
+                        : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
+                        ? { ...col, hide: !visible }
+                        : col
+                    );
+                  
+                    // Check if all columns except 'dailydatagraph' have `hide: true`
+                    const allHidden = updatedColumns.every(
+                      (col: any) => col.colId === "dailydatagraph" || col.hide
+                    );
+                  
+                    // Update 'dailydatagraph' column's `hide` property if all others are hidden
+                    return updatedColumns.map((col: any) =>
+                      col.colId === "dailydatagraph" && allHidden ? { ...col, hide: true } : col
+                    );
+              }
+            });
+            
+          // setBPRColumns((prevColumns:any) =>
+          //     prevColumns.map((col: any) =>
+          //         col.colId === "dailydatagraph"
+          //         ? col // Exclude this column from being updated
+          //         : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
+          //         ? { ...col, hide: !visible }
+          //         : col
+          //       )              
+          //   );
+      }
+    };
 
 
       const getRecordsCount=async(filter?:any)=>{
@@ -180,7 +419,7 @@ export const useBOR =()=>{
       return {
         tooltipShowDelay:0,
         tooltipTrigger:"focus",
-        readOnlyEdit:true,
+        readOnlyEdit:false,
         suppressRowClickSelection:true,
         components:customCellRenderers,
         enableBrowserTooltips:true,
@@ -193,6 +432,20 @@ export const useBOR =()=>{
             }
             return { background: "#F7F7F7" };
             },
+            onColumnVisible: onColumnVisible,
+            onColumnMoved: (event:any) => {
+              const columnState = event.api.getColumnState();
+              columnState.forEach((state:any) => {
+                if (state.pinned && (state.colId!=='remarks' && state.colId!=='rh')) {
+                  // Reset the pin to null
+                  state.pinned = null;
+                }
+              });
+              event.api.applyColumnState({ state: columnState });
+          },
+          getRowId: (params) => {
+              return `${params.data.SKUCode}-${params.data.WHCode}-${params.data.SupplierCode}`
+          },
         },
          pagination:false,
          sideBar:defaultAgGridSideBarForBPR,
@@ -213,6 +466,8 @@ export const useBOR =()=>{
             },
            
         },
+        // onGridReady:(params)=>setInternalRef(params)
+        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode","SupplierCode"),
         onGridReady:(params)=>setInternalRef(params)
       }
      },[])
@@ -234,9 +489,14 @@ export const useBOR =()=>{
 
       const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+          const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
+         if(tempDownloadData){
+          event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:columnsToBeIncluded});
+          setTempDownloadData(false)
+         }
         }
       };
+
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getBorData({
             filters:currFilter,
@@ -248,6 +508,17 @@ export const useBOR =()=>{
         
         return data.data.data
     }
+
+
+    const onResetCallback = async()=>{
+      const ResetColumns = BORColumns.map((t:any) => {
+          return {
+            ...t,
+            hide: false,
+          };
+        });
+      setBORColumns([...ResetColumns])
+  }
 
   
      return {   
@@ -279,6 +550,19 @@ export const useBOR =()=>{
         currFilter,
         setCurrFilter,
         onDeleteFilter,
-        generalFilterOptions
+        generalFilterOptions,
+        isSubmitRemarkToolTipOpen,
+        isRemarkHistoryToolTipOpen,
+        remarkHistory,
+        remark,
+        submitRemarkToolTipPosition,
+        remarkHistoryToolipPosition,
+        onSubmitRemarks,
+        editedRows,
+        updateRemark,
+        onCloseRemarkHistory,
+        onCloseSubmitRemark,
+        onResetCallback
+
     }
 }

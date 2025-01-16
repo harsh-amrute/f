@@ -87,7 +87,6 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
             floatingFilter: true,
             filter: "agMultiColumnFilter",
             cellDataType:false,
-            resizable:false,
             cellStyle:{
                 "flex":1,
                 'text-align':'center',
@@ -95,7 +94,6 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
                 "font-style":"normal",
                 " font-variant":"normal",
                 " font-weight":"300",
-                " font-size":"20px",
                 " font-family":"Roboto",
                 "display":"block",
                 'text-overflow':'ellipsis',
@@ -105,6 +103,7 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
     }
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
+        if(!columns)return 
         let colDefs = [];
         const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
         const tagsColDef =  {

@@ -1,7 +1,7 @@
 import VFButton from "../VFButton"
 import VFModalCard from "../VFModalCard"
 import { useUserData } from "../../../../context";
-import { ButtonFilterWrapper, FilterCardWrapper, FilterBody, FilterHeader, ButtonContainer, FilterComponent, SelectDropdownComponent, DropdownGroupWrapper, MultiSelectCheckBoxComponent,TextFieldHeader, RangeSliderComponent,VFHorizonText } from "./style";
+import { ButtonFilterWrapper, FilterCardWrapper, FilterBody, FilterHeader, ButtonContainer, FilterComponent, SelectDropdownComponent, DropdownGroupWrapper, MultiSelectCheckBoxComponent,TextFieldHeader, RangeSliderComponent,VFHorizonText, SkeletonWrapper, SkeletonGroup, SkeletonContainer, SkeletonFooter } from "./style";
 import VFButtonOutline from "../VFButtonOutline";
 import React, { useState } from "react";
 import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
@@ -11,10 +11,10 @@ import './styles.css';
 
 import { useGetAllSKUs,  useGetAllLocations } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
-import VFLoader from "../../../../components/VectorFLOW/commons/VFLoader";
 import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
 import { BTRCategoryNumberToTextMapper } from "../../../../helpers/BPRConstants";
+import { Skeleton } from "../../../../components/commons/styled";
 
 // import { generalFilterOptions } from '../../utils';
 
@@ -77,8 +77,6 @@ const FilterCheckboxAccordian = ({filterType,filterKey,isOpen,setOpenStatus,chil
                 transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
             },
             config: { duration: "120" }
-            
-            
       });
 
     return(
@@ -132,7 +130,7 @@ const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:
 
 const FilterSelectDropdown = ({placeholder,options,hideDropdownArrow,onChange,filterId,value}:any) => {
     
-    console.log(options)
+    // console.log(options)
     const customStylesClose = {
         control: (baseStyles:any)=>(
             {
@@ -443,7 +441,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
         
     } = props
-    console.log(currentTab)
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string,updateLabel?:boolean)=>{
 
         // if(filterId==="Horizon"){
@@ -752,12 +749,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     const getOptions = (data:Array<any>,isSku?:boolean)=>{
             
         if(isSku){
-            return data.map((sku: any) => {
+            return data?.map((sku: any) => {
                 return { label:  `${sku.sc} (${sku.sd})`, value: sku.sc };
             }) 
         }
         
-        return data.map((location: any) => {
+        return data?.map((location: any) => {
             return { label:  `${location.wc} (${location.wd})`, value: location.wc };
         }) 
         
@@ -780,13 +777,133 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         })
     }
 
+    const loading = (isLoading || isLocationDataLoading)
+
     return(
         <>
-        <VFModalCard zoom={'0.73'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
+        <VFModalCard zoom={'0.73'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={loading?<Skeleton style={{height:20,width:80}}/>:'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
            {
-            (isLoading || isLocationDataLoading)
+            (loading)
             ?
-            <VFLoader/>
+            <SkeletonWrapper>
+                <SkeletonContainer>
+                <SkeletonGroup>
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                </SkeletonGroup>
+                <SkeletonGroup>
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:200,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:100,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    
+                </SkeletonGroup>
+                <SkeletonGroup>
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                </SkeletonGroup>
+                <SkeletonGroup>
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:50,
+                            width:'100%',
+                            marginTop:10
+                        }}
+                    />
+                </SkeletonGroup>
+                </SkeletonContainer>
+                <SkeletonFooter>
+                    <Skeleton
+                        style={{
+                            height:40,
+                            width:160,
+                        }}
+                    />
+                    <Skeleton
+                        style={{
+                            height:40,
+                            width:160,
+                            marginLeft:20
+                        }}
+                    />
+                </SkeletonFooter>
+            </SkeletonWrapper>
             :
             <React.Fragment>
             {onChangeHorizon ? 
@@ -971,7 +1088,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         {/* <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
                             <AvailabilityFilter placeholder={"Availabilty"} onChange={(e:any,key:string)=>onFilterChange('AF4',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF4'}></AvailabilityFilter>
                         </FilterComponent> */}
-                        {(currentTab==='on-hand' || currentTab==='both' || currCategory==='BPR'  ) && (
+                        {(currentTab==='on-hand' || currentTab==='both' || currCategory==='BPR'|| currCategory ==='RRR' || currCategory==='BOR' ) && (
                              <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tech_color?'unset' : '50px'}}>
                              <FilterCheckboxAccordian filterType="On Hand Inventory Color" filterKey="availabilty_tech_color" isOpen={openStatus.availabilty_tech_color} setOpenStatus={setOpenStatus}>
                              <FilterMultiSelectCheckbox header={'OHIC'} filterOptions={[
@@ -992,7 +1109,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
 
                         )}
-                        {(currentTab==='pipeline'|| currentTab==='both' || currCategory==='BOR' || currCategory==='BPR'|| currCategory==='RRR') &&  (
+                        {(currentTab==='pipeline'|| currentTab==='both' || currCategory==='BOR' || currCategory==='BPR' || currCategory ==='RRR' ) &&  (
                             <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_eco_color?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Pipeline Inventory Color" filterKey="availabilty_eco_color" isOpen={openStatus.availabilty_eco_color} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'PIC'}filterOptions={[
@@ -1010,8 +1127,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         </FilterComponent>
 
                         )}
-                        
-                        <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tags?'unset' : '50px'}}>
+                        {(currCategory==="BPR" || currentTab ==="both" || currentTab==='pipeline' || currentTab==='on-hand') && (
+                            <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tags?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Tags(PIPO, Seasonality)" filterKey="availabilty_tags" isOpen={openStatus.availabilty_tags} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'PIPO,Seasonality'} filterOptions={[ 
                                 { label: 'PIPO', id: '1' },
@@ -1022,6 +1139,20 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                 onChange={(e:any,key:string)=>onFilterChange('AF7',e,'4',key)} filterId={'AF7'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
+                            
+                        )}
+                        
+                        {/* <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.availabilty_tags?'unset' : '50px'}}>
+                            <FilterCheckboxAccordian filterType="Tags(PIPO, Seasonality)" filterKey="availabilty_tags" isOpen={openStatus.availabilty_tags} setOpenStatus={setOpenStatus}>
+                            <FilterMultiSelectCheckbox header={'PIPO,Seasonality'} filterOptions={[ 
+                                { label: 'PIPO', id: '1' },
+                                { label: 'Seasonality', id: '2' },
+                                ]} 
+                                
+                                filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF7')}
+                                onChange={(e:any,key:string)=>onFilterChange('AF7',e,'4',key)} filterId={'AF7'}/> 
+                            </FilterCheckboxAccordian>
+                        </FilterComponent> */}
                        {location.pathname==='/insights-and-trends/buffer-trend-report' && (
                             <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.btrCategory?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Category" filterKey="btrCategory" isOpen={openStatus.btrCategory} setOpenStatus={setOpenStatus}>

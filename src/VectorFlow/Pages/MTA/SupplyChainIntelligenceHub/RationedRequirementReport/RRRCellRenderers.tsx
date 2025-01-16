@@ -39,7 +39,7 @@ const colorMapper = (color: string) => {
 export const RRRTechColorCellRenderer = (params: any) => {
     const techColor = params.data.cp != undefined ? params.data.cp : params.data.TCol
 
-    const cellColor = colorMapper("Black")
+    const cellColor = colorMapper(techColor)
 
 
     if (!techColor || techColor.lenght < 1) {

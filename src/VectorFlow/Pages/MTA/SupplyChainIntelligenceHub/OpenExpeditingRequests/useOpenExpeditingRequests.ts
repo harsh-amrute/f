@@ -23,11 +23,13 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { updateCommonAttributes } from "../../../../../helpers/utils"
+import { GridRef } from "../../../../../VectorFlow/types/MDM"
 
 const useOpenExpeditingRequests = () => {
 
-    const ref = useRef()
-    const tempRef = useRef()
+    const ref = useRef<GridRef>()
+    const tempRef = useRef<GridRef>()
 
     const [internalRef,setInternalRef] = useState<any>()
 
@@ -45,6 +47,7 @@ const useOpenExpeditingRequests = () => {
     const [editedRows,setEditedRows] = useState<Array<any>>([])
     const [remark,setRemark] = useState<string>('')
     const [rowData,setRowData] = useState<Array<any>>([])
+    const [OERColumns,setOERColumns] = useState<any>([])
     const [colDefs,setColDefs] = useState<Array<any>>([])
     const [activeRow,setActiveRow] = useState<any>({
       sc:'',
@@ -81,15 +84,18 @@ const useOpenExpeditingRequests = () => {
     const [gridState,setGridState] = useState<any>()
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
+    const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
+
     useEffect(()=>{
       const getTableState = async()=>{
         try{
-          const data =  await getState("OpenExpeditingRequests")
-          setGridState(JSON.parse(data.data.data))
+          const data =  await getState({reportname:"OpenExpeditingRequests"})
+          const parsedContent = JSON.parse(data.data.data)
+          setGridState(parsedContent)
         }catch(err:any){
           setGridState({
               charts:[],
-              columns:[],
+              columns:OERColumns,
               pivot:false
           })
         }
@@ -98,21 +104,36 @@ const useOpenExpeditingRequests = () => {
   },[])
 
   useEffect(()=>{
-      if(internalRef){
-          internalRef.api.applyColumnState({state:gridState?.columns || []})
-      }
-  },[internalRef,gridState])
+    if(internalRef && gridState && gridState.columns){
+      const StateColumns = updateCommonAttributes(gridState.columns,OERColumns,'colId')
+      setOERColumns(StateColumns)
+      internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+    }
+},[internalRef,gridState])
 
       useEffect(()=>{
         const getRowData = async()=>{
           try{
             notifyLoader("Loading Grid Data")
             const data = await getData(currentFilter)
-            setRowData(data.data.data.data.map((r:any,index:number)=>({...r,id:index,action:''})))
-            setColDefs(mapFieldsToColDefs(data.data.data.config))
+
+            //// idar_issue_hai_
+            //// need_a_new_api_route_to_get_OER_Configurations
+            //// currently_not_avaiable
+            const ColumnDefinitions = mapFieldsToColDefs(data.data.data.config)
+            setColDefs(ColumnDefinitions)
+            setOERColumns(ColumnDefinitions);
+            const tempRowData = data?.data?.data?.data || [];
             toast.dismiss()
-            notifySuccess("Data Loaded Successfully")
+            if(!tempRowData.length){
+              setRowData([])
+            }else{
+              setRowData(tempRowData.map((r:any,index:number)=>({...r,id:index,action:''})))
+              notifySuccess("Data Loaded Successfully")
+            }
+            // notifySuccess("Data Loaded Successfully")
           }catch(err:any){
+            console.error(err)
             notifyError(err)
           }
         }
@@ -131,6 +152,58 @@ const useOpenExpeditingRequests = () => {
     //     getTableState()
     // },[currentGridState])
 
+    const onColumnVisible = (event: any) => {
+      const { column, visible , columns } = event;
+      // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
+      if(column!==null && column.colId!=="dailydatagraph" && event.source==='toolPanelUi'){
+      setOERColumns((prevColumns:any) =>{
+          const updatedColumns = prevColumns.map((col: any) =>
+              col.field === column.colId
+                ? { ...col, hide: !visible }
+                : col
+            );
+          
+            // Check if any columns, except the one with colId === "dailydatagraph", have hide: false
+            const anyColumnWithHideFalse = updatedColumns.some(
+              (col: any) => col.colId !== "dailydatagraph" && col.hide === false
+            );
+          
+            // Now map over the updated columns and ensure dailydatagraph's hide is updated accordingly
+            return updatedColumns.map((col: any) =>
+              col.colId === "dailydatagraph"
+                ? { ...col, hide: anyColumnWithHideFalse ? false : col.hide }
+                : col
+            );
+      }
+      );
+      }else if(columns.length>1 && event.source==='toolPanelUi'){
+          setOERColumns((prevColumns: any) => {
+              // Create a new array with updated columns, excluding 'dailydatagraph
+              if(visible===true){
+                  return  prevColumns.map((col: any) => ({ ...col, hide: false }))
+              }else{
+                  const updatedColumns = prevColumns.map((col: any) =>
+                      col.colId === "dailydatagraph"
+                        ? col // Exclude this column for now
+                        : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
+                        ? { ...col, hide: !visible }
+                        : col
+                    );
+                  
+                    // Check if all columns except 'dailydatagraph' have `hide: true`
+                    const allHidden = updatedColumns.every(
+                      (col: any) => col.colId === "dailydatagraph" || col.hide
+                    );
+                  
+                    // Update 'dailydatagraph' column's `hide` property if all others are hidden
+                    return updatedColumns.map((col: any) =>
+                      col.colId === "dailydatagraph" && allHidden ? { ...col, hide: true } : col
+                    );
+              }
+            });
+      }
+    };
+
     const agGridProps: AgGridReactProps =useMemo(()=>{
       return{
         suppressRowTransform: true,
@@ -148,6 +221,17 @@ const useOpenExpeditingRequests = () => {
                 return { background: "#F7F7F7" };
             },
         },
+        onColumnVisible: onColumnVisible,
+                onColumnMoved: (event:any) => {
+                    const columnState = event.api.getColumnState();
+                    columnState.forEach((state:any) => {
+                      if (state.pinned && (state.colId!=='remarks' && state.colId!=='rh')) {
+                        // Reset the pin to null
+                        state.pinned = null;
+                      }
+                    });
+                    event.api.applyColumnState({ state: columnState });
+                },
         sideBar:defaultAgGridSideBarForBPR,
         pagination: true,
         suppressRowClickSelection: true,
@@ -156,7 +240,6 @@ const useOpenExpeditingRequests = () => {
             floatingFilter: true,
             filter: "agMultiColumnFilter",
             cellDataType: false,
-            resizable: false,
             minWidth:140,
             cellStyle: {
               "text-align": "center",
@@ -191,7 +274,12 @@ const useOpenExpeditingRequests = () => {
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        //  if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
+        const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
+            if(tempDownloadData){
+                event.api.exportDataAsExcel({fileName:'OpenExpeditingReport',columnKeys:columnsToBeIncluded})
+                setTempDownloadData(false)
+            }
         }
       };
 
@@ -297,6 +385,33 @@ const useOpenExpeditingRequests = () => {
      }
     }
 
+
+    
+    const onResetCallback = async()=>{
+      const ResetColumns = OERColumns.map((t:any) => {
+          return {
+            ...t,
+            hide: false,
+          };
+        });
+      setOERColumns([...ResetColumns])
+  }
+
+      // const BPRColumnData = useMemo(() => {
+      //     return mapBPRFieldsToColDefs(
+      //       data?.data?.data, 
+      //       onOpenSubmitRemark, 
+      //       onOpenRemarkHistory, 
+      //       onOpenDailyDataGraph
+      //     );
+      //   }, [data]);
+      //   // Update columns state only if there is a change
+      //   useEffect(() => {
+      //     // Check if the columns data has changed before setting state
+      //     setBPRColumns(BPRColumnData);
+      //   }, [BPRColumnData, setBPRColumns]); 
+
+
     const mapFieldsToColDefs  = (fields:Array<any>):Array<ColDef>=>{
       const config = fields
       let result:Array<ColDef> = []
@@ -307,7 +422,8 @@ const useOpenExpeditingRequests = () => {
               headerName: col.header,
               colId: col.colCode,
               field: col.colCode,
-              cellRenderer:'colorCellRenderer'
+              cellRenderer:'colorCellRenderer',
+              // hide: !col.Visible,
             }
           }
           if(col.colCode==='eta'){
@@ -319,14 +435,16 @@ const useOpenExpeditingRequests = () => {
               cellRenderer:'etaCellRenderer',
               floatingFilter:false,
               editable:true,
-              cellDataType:'date'
+              cellDataType:'date',
+              // hide: !col.Visible,
               
           }
           }
           return{
             headerName: col.header,
             colId: col.colCode,
-            field: col.colCode
+            field: col.colCode,
+            // hide: !col.Visible,
         }
         })
         result = [...result,{
@@ -384,7 +502,8 @@ const useOpenExpeditingRequests = () => {
         onApplyFilter,
         onSubmitEditedRows,
         editedRows,
-        themeUi
+        themeUi,
+        onResetCallback
     }
 }
 

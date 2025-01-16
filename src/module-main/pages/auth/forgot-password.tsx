@@ -37,7 +37,7 @@ function ForgotPasswordContainer() {
   localStorage.clear();
   const [requestSend, setRequestSend] = useState(false);
   const [loading, setLoading] = useState(false);
-  const recaptchaRef: any = useRef<any>();
+  const recaptchaRefFP: any = useRef();
 
   const form = useForm<LoginRequest>({
     defaultValues: {
@@ -54,7 +54,7 @@ function ForgotPasswordContainer() {
   const { mutateAsync: mutateForgotPassword } = useForgotPassword();
 
   const onSave = () => {
-    const recaptchaValue = recaptchaRef.current.getValue();
+    const recaptchaValue = recaptchaRefFP.current.getValue();
     setLoading(true);
     const formData = getValues();
     const data = { email: formData.email.trim() };
@@ -63,7 +63,7 @@ function ForgotPasswordContainer() {
       mutateForgotPassword(data, {
         onSuccess: (data: any) => {
           if (data?.status === 400) {
-            recaptchaRef.current?.reset();
+            recaptchaRefFP.current?.reset();
             notifyError(data?.response?.msg[0]);
           } else {
             setRequestSend(true);
@@ -71,11 +71,15 @@ function ForgotPasswordContainer() {
           setLoading(false);
         },
         onError: (data: any) => {
-          recaptchaRef.current?.reset();
+          recaptchaRefFP.current?.reset();
           notifyError(data.error);
           setLoading(false);
         },
       });
+    } else {
+      // recaptchaRef.current?.reload();
+      setLoading(false);
+      notifyError(t("loginPage.notify.completeReCaptcha"));
     }
   };
 
@@ -124,7 +128,7 @@ function ForgotPasswordContainer() {
 
                 <ReCAPTCHA
                   className="recaptcha"
-                  ref={recaptchaRef}
+                  ref={recaptchaRefFP}
                   // sitekey={process.env.REACT_APP_ENV === 'test' ? TEST_SITE_KEY : SITE_KEY}
                   sitekey={SITE_KEY}
                 />

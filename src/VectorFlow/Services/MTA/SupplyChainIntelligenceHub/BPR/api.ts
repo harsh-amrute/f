@@ -62,13 +62,13 @@ export namespace BPRService {
     }); 
   }
 
-  export const getState = async (payload:string) => {
+  export const getState = async (payload:any) => {
     return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetState`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     }); 
   }
 
-  export const resetState = async (payload:string) => {
+  export const resetState = async (payload:any) => {
     return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/ResetState`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     }); 
@@ -99,10 +99,22 @@ export namespace BPRService {
   }
 
   export const getlastRunDate = async()=>{
-    return await axios.get(process.env.REACT_APP_API_HOST + '/api/mta/GetLastRunDate',{
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/GetLastRunDate',{
       headers:{ 'Content-Type': 'application/json' }
     })
   }
+
+  export const getUiConfig = async(reportName:string)=>{
+    return await axios.get(process.env.REACT_APP_API_HOST + `api/mta/GetUIConfig?reportName=${reportName}`,{
+      headers:{ 'Content-Type': 'application/json' }
+    })
+  }
+}
+
+export const getBPRDataForExcelDownload = async (payload:BPRDataPayload) => {
+  return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetBPRData`,payload,{
+    headers:{ 'Content-Type': 'application/json' }
+  });
 }
 
 

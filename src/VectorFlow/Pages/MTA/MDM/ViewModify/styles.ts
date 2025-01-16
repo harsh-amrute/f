@@ -3,17 +3,19 @@ import styled,{keyframes} from 'styled-components'
 const fadeIn = keyframes`
   from {
    opacity:0;
+   transform:translateY(10px)
   }
 
   to {
   opacity:1;
+  transform:translateY(0px)
   }
 `;
 
 export const SCContainer = styled.div`
     margin-left:50px;
-    padding-bottom:90px;
-    height:85%;
+    padding-bottom:100px; // for taskbar
+    height:calc(100% - 15px); // 15px for useless header
 `
 
 export const SCFilterContainer = styled.div`
@@ -104,9 +106,10 @@ export const TaskBarContainer = styled.div`
     right:0;
     width:97%;
     bottom:0;
-    height:95px;
-    padding-top:23px;
-    padding-bottom:22px;
+    /* border-top:black 1px solid; */
+    /* height:95px; */
+    padding-top:10px;
+    padding-bottom:10px;
     padding-left:38px;
     padding-right:30px;
     gap:30px;
@@ -253,16 +256,18 @@ export const SeasonalityQuickFilterHeader = styled.p`
 
 export const SeasonalityQuickFilter = styled.button<{stateColor:string,isActive:boolean}>`
     margin-left:20px;
+    padding-left:10px;
     position:relative;
     background-color:white;
     display:flex;
     align-items:center;
     justify-content:center;
-    width: 90px;
-    height: 40px;
-    border: ${(props)=> props.isActive ? '1px solid transperent' : '1px solid #929292'};
+    min-width: 70px;
+    height: 30px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    /* border: ${(props)=> props.isActive ? '1px solid transperent' : '2px solid #929292'}; */
     transition:0.3s ease-in-out;
-    border-radius: 6px;
+    border-radius: 4px;
     
     color:${(props)=>props.isActive?'white':'#929292'};
     &:before{
@@ -270,10 +275,10 @@ export const SeasonalityQuickFilter = styled.button<{stateColor:string,isActive:
         position:absolute;
         left:0;
         top:0;
-        bottom:0;
+        height:30px;
         width:${(props)=>props.isActive?'100%':'8px'};
         background-color:${(props)=>props.stateColor};
-        transition:0.3s ease-in-out;
+        transition:0.3s ease-out;
     }
     overflow:hidden;
     cursor:pointer;
@@ -324,7 +329,7 @@ export const SubmitDataButtonWrapper = styled.div`
 `
 
 export const ConflictErrorToolTipWrapper = styled.div`
-    position:fixed;
+    position:absolute;
     min-width:140px;
     background-color:white;
     display:flex;
@@ -333,8 +338,9 @@ export const ConflictErrorToolTipWrapper = styled.div`
     z-index:10000;
     border-radius:4px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    /* transform:translate(-50%,10px) ; */
     animation:${fadeIn} 0.2s ease-in;
-    transform:translateX(-50%);
+    
    
 `
 export const ConflictErrorToolTipSection = styled.div`

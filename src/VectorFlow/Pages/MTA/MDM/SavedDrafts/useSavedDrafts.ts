@@ -9,6 +9,7 @@ import { createMastersStateFromDraftData, getActionName, mapMasterToMasterState 
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
+import _ from 'lodash';
 
 const useSavedDrafts = ()=>{
 
@@ -41,7 +42,7 @@ const useSavedDrafts = ()=>{
         const res:any = await getDraftCount(draftDetails.DraftId);
         const draftCount = JSON.parse(res.data.recordCount)[0].recordCount;
         dispatch(SET_RECORD_COUNT(draftCount));
-        let draftDataRaw = [];
+        let draftDataRaw:any[]=[];
         const payload = {
             pageNumber:1,
             recordsPerPage:chunkSize
@@ -51,14 +52,15 @@ const useSavedDrafts = ()=>{
 
         if(draftCount <= chunkSize){
             const result = await getDraftById({id:draftDetails.DraftId,body:payload});
-            draftDataRaw = result.data.data;
+            const clonedData = _.cloneDeep(result.data[0]);
+            draftDataRaw = [clonedData]
         }
         else{
             const numberOfPages = Math.ceil(draftCount/chunkSize);
             for(let i=1; i<=numberOfPages; i++){
                 payload.pageNumber = i;
                 const result = await getDraftById({id:draftDetails.DraftId,body:payload})
-                draftDataRaw.push(...result.data.data);
+                draftDataRaw.push(...result);
                 if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${draftCount} / ${draftCount}`})
                 else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${draftCount}`})
             }
@@ -69,20 +71,21 @@ const useSavedDrafts = ()=>{
     
         // toast.update(toastId,{render:"Getting Draft Ready"});
        
-        const draftData:any = [];
-        draftDataRaw.forEach((data:any)=>{
-        const masterIndex = draftData.findIndex((draftObj:any) => draftObj.MasterId == data.MasterId);
-            if(masterIndex >= 0){
-                if(("DataMaster" in data)){
-                    draftData[masterIndex].DataMaster = [...draftData[masterIndex].DataMaster,...data.DataMaster];
-                }
-                return;
-            }
-            else{
-                draftData.push(data);
-            }
+        const draftData:any[]=[];
+        draftDataRaw.forEach((data: any) => {
+            const masterIndex = draftData.findIndex((draftObj:any) => draftObj.MasterId === data.MasterId);
             
-        })
+            if (masterIndex >= 0) {
+              if (data.DataMaster) {
+                draftData[masterIndex].DataMaster = [
+                  ...(draftData[masterIndex].DataMaster || []), 
+                  ...data.DataMaster
+                ];
+              }
+            } else {
+              draftData.push(_.cloneDeep(data));
+            }
+        });
  
         const mastersData= await getMasterUIConfiguration(getActionName(draftDetails.ActionType).value)
 

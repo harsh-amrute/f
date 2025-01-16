@@ -36,10 +36,23 @@ export const defaultJOIOptions = {
 }
 export const generateCommonMessages = (key:string) => {
     return {
-        'any.pipe':`${key} has pipe`,
-        'any.comma':`${key} has comma`,
-        'any.commapipe':`${key} has comma and pipe`
+        'any.pipe':`${key} should not contain pipe`,
+        'any.comma':`${key} should not contain comma`,
+        'any.commapipe':`${key} should not contain comma and pipe`,
+        'any.onlySpecialCharacters': `${key} should not contains only special characters`,
+        'any.specialCharacters': `${key} cannot contain special characters`,
+        'any.empty': `${key} should not be empty`,
+        'string.base': `${key} should not be empty`
     }
+}
+
+export const specialCharacterValidator = (data:any,pattern:any) => {
+    let result = false;
+    if (!pattern.test(data)) {
+        result = true;
+        return result;
+    }
+    return result;
 }
 
 export const commonValidator = (value:any,helper:any)=>{
@@ -50,12 +63,29 @@ export const commonValidator = (value:any,helper:any)=>{
 
 }
 
+export const commonValidatorWithSeperator = (value:any,helper:any)=>{
+    const pattern = /[a-zA-Z0-9]/
+    if(specialCharacterValidator(value,pattern)) return helper.error('any.onlySpecialCharacters');
+    if(IsInputHasComma(value) && IsInputHasPipe(value)) return helper.error('any.commapipe');
+    if(IsInputHasComma(value)) return helper.error('any.comma');
+    if(IsInputHasPipe(value)) return helper.error('any.pipe');
+}
+
+export const supplyCodeChecks = (value:any,helper:any)=>{
+    const pattern = /^[a-zA-Z0-9- ]*$/
+    if(specialCharacterValidator(value,pattern)) return helper.error('any.specialCharacters');
+    if(IsInputHasComma(value) && IsInputHasPipe(value)) return helper.error('any.commapipe');
+    if(IsInputHasComma(value)) return helper.error('any.comma');
+    if(IsInputHasPipe(value)) return helper.error('any.pipe');
+}
+
 export const MAX_CUSTOM_ATTRIBUTES_COUNT = 15;
 export const MAX_CODE_LENGTH = 50;
 export const MAX_NAME_LENGTH = 125;
 export const MAX_CUSTOM_ATTRIBUTE_LENGTH = 50;
-export const MAX_DECIMAL_VAL = 99999999.99;
+export const MAX_DECIMAL_VAL = 100000000;
 export const MIN_DECIMAL_VAL = 0;
+export const MAX_INT_VAL = 1000000000;
 
 export const CommonSchema = {
     c1:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),

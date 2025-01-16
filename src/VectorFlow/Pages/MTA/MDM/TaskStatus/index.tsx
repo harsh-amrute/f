@@ -124,8 +124,23 @@ const TaskStatus = ()=>{
                 detailCellRendererParams={{
                     onDownload:onDownloadTaskDetails
                 }}
-                rowHeight={60}
-                detailRowAutoHeight
+                // rowHeight={60}
+                // detailRowAutoHeight
+                getRowHeight={(params: any) => {
+                    console.log("props", params);
+                    console.log("Row Index:", params.node.rowIndex, "Expanded:", params.node.expanded);
+   
+                    if (params.node.expanded === undefined) {
+                        if (params?.data?.Approvers?.length) {
+                            console.log("Expanded with Approvers", params?.data?.Approvers?.length);
+                            return params?.data?.Approvers?.length * 150;
+                        } else {
+                            return 150;
+                        }
+                    } else {
+                        return 35;
+                    }
+                }}
                 gridOptions={{
                     getRowStyle: (params: any) => {
                         if (params.node.rowIndex % 2 === 0) {

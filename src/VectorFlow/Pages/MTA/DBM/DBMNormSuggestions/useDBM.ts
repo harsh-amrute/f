@@ -88,11 +88,9 @@ const useDBM =()=>{
     },[])
   
     useEffect(()=>{
-        if(internalRef){
-            internalRef.api.applyColumnState({state:gridState?.columns })
-
+        if(internalRef && gridState && gridState.columns){
+            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
         }
-        
     },[internalRef,gridState])
 
     const onOpenDailyDataGraph = async (params:any) => {

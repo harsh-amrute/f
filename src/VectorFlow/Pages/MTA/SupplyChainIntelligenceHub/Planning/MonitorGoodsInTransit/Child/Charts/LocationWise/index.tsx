@@ -37,7 +37,6 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
           }))
     },[data]);
 
-    console.log(seriesData)
 
     const series = [           
         {

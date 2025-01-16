@@ -22,7 +22,7 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 
 
 
-import { getUploadModalRadioButtons,generateOptions } from "../../../../../helpers/utils";
+import { getUploadModalRadioButtons,generateOptions, getMDMTableHeight } from "../../../../../helpers/utils";
 import { Filter } from "../../../../../VectorFlow/types/MDM";
 import { operators } from "../../../../../helpers/MDMConstants";
 
@@ -30,6 +30,7 @@ import { operators } from "../../../../../helpers/MDMConstants";
 
 const DeleteRecord = () => {
 
+  const suppressMovable = true;
   const {user} = useUserData()
   const themeUi = user?.user?.theme_ui;
  
@@ -47,6 +48,7 @@ const DeleteRecord = () => {
         isWarningModalOpen,
         recordCount,
         isUploadModalOpen,
+        isSavingToDraft,
         toggleUploadModal,
         onWarningModalClose,
         onWarningModalSuccess,
@@ -78,7 +80,8 @@ const DeleteRecord = () => {
         isDataAvailableLocally,
         enableEditOnlineReset,
         errorCount,
-        tempRecordCount
+        tempRecordCount,
+        onDiscardDraftCallback
     } = useViewModify('remove');
     
 
@@ -97,7 +100,8 @@ const DeleteRecord = () => {
         options,
         selectedOptions,
         showMaster,
-        showMasterGroup
+        showMasterGroup,
+        isSubmitDisabled
     } = useDelete();
 
     useEffect(()=>{
@@ -147,7 +151,7 @@ const DeleteRecord = () => {
                 >
                   { (activeMaster.progress ==='default' || activeMaster.progress ==='deleteView') 
                     &&
-                  <SCFilterContainer>
+                  <SCFilterContainer style={{zoom:'var(--nms-filter-zoom)'}}>
                     <SCFilterControls>
                       <SCLegend>Filter</SCLegend>
                       {activeMaster.filters.map((f:Filter)=>{
@@ -205,8 +209,9 @@ const DeleteRecord = () => {
                 }
                   <VFTable
                     ref={ref}
-                    height={activeMaster.rowData.length > 0 ? activeMaster.progress==='deleteView' ? "65%" : "95%" : "75%"}
+                    height={getMDMTableHeight(activeMaster)}
                     columnDefs={activeMaster.colDefs}
+                    suppressMovableColumns={suppressMovable}
                     rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}
@@ -291,34 +296,40 @@ const DeleteRecord = () => {
         }
         {
           !isSelectMasterOpen && 
-          <VFTaskBar
-            showSubmittedExportError={errorCount>0}
-            enableEditOnlineReset={enableEditOnlineReset}
-            disableResumeSeasonality={()=>false}
-            disableStopSeasonality={()=>false}
-            masterProgress={activeMaster.progress}
-            onReset={onReset}
-            onSaveToDraft={onSaveToDraft}
-            onEditOnlineSave={onEditOnlineSave}
-            editOnline={false}
-            deleteOnline={editOnline}
-            onBack={onBackButton}
-            onClearAndExportErrors={onClearExportError}
-            onModifyData={()=>toggleUploadModal(true)}
-            onExportData={exportToExcel}
-            onSubmit={()=>onSubmit(ref)}
-            onDeleteSelected={deleteSelected}
-            onEditOnline={()=>console.log('')}
-            onPhaseInPhaseOutStop={()=>console.log('')}
-            onSeasonalityResume={()=>console.log('')}
-            onSeasonalityStop={()=>console.log('')}
-            onSubmitConflictData={()=>console.log('')}
-            onDeleteData={onDeleteData}
-            onDeleteOnline={onDeleteOnline}
-            onDeleteOnlineReset={onDeleteOnlineReset}
-            onDeleteOnlineSubmit={onDeleteOnlineSubmit}
-            masterId={activeMaster.id}
-          />
+          <div style={{zoom:'var(--nms-filter-zoom)'}}>
+            <VFTaskBar
+              disableSubmit={isSubmitDisabled}
+              showSubmittedExportError={errorCount>0}
+              enableEditOnlineReset={enableEditOnlineReset}
+              disableResumeSeasonality={()=>false}
+              disableStopSeasonality={()=>false}
+              masterProgress={activeMaster.progress}
+              onReset={onReset}
+              onSaveToDraft={onSaveToDraft}
+              isSavingToDraft={isSavingToDraft ?? false}
+              onEditOnlineSave={onEditOnlineSave}
+              editOnline={false}
+              deleteOnline={editOnline}
+              onBack={onBackButton}
+              onClearAndExportErrors={onClearExportError}
+              onModifyData={()=>toggleUploadModal(true)}
+              onExportData={exportToExcel}
+              onSubmit={()=>onSubmit(ref)}
+              onDeleteSelected={deleteSelected}
+              onEditOnline={()=>console.log('')}
+              onPhaseInPhaseOutStop={()=>console.log('')}
+              onSeasonalityResume={()=>console.log('')}
+              onSeasonalityStop={()=>console.log('')}
+              onSubmitConflictData={()=>console.log('')}
+              onDeleteData={onDeleteData}
+              onDeleteOnline={onDeleteOnline}
+              onDeleteOnlineReset={onDeleteOnlineReset}
+              onDeleteOnlineSubmit={onDeleteOnlineSubmit}
+              masterId={activeMaster.id}
+              DataCount={activeMaster.rowData.length}
+              onDiscardDraftCallback={onDiscardDraftCallback}
+            />
+          </div>
         }
         </React.Fragment>
     ) 

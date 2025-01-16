@@ -17,6 +17,7 @@ import {
   SCCustomActionsContainer,
   SCViewContainerWithBg,
   SCTaskFilterContainer,
+  LastRunDateHeader,
 } from "./styles";
 import { useUserData } from "../../../../../../context/UserDataContext";
 import { DBMApplyNormChange } from "../../../DBM/DBMNormSuggestions/applyNormButton";
@@ -27,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { UPDATE_PLANNING_DATA } from "../../../../../../redux/actions/MTA";
 import { RootState } from "../../../../../../redux/store/store";
 import useGetLocation from "../../../../../../hooks/useGetLocation";
+import { Skeleton } from "../../../../../../components/commons/styled";
 
 interface ActionToolBarProps {
   view: string;
@@ -53,7 +55,7 @@ interface ActionToolBarProps {
   hideUpdateInsightsBtn?: boolean;
   onSubmitEditedRows?: () => void;
   disableSubmitEditedRowsBtn?: boolean;
-  lastRunDate?:string
+  lastRunDate?:string 
   isPlanning?:boolean,
   generalFilterOptions?:any
 }
@@ -92,7 +94,7 @@ const ActionToolBar = ({
 
   const {locations} = useGetLocation()
   // const {state:multiFilter,setState:setMultiFilter,onDelete} = useBPRFilter()
-  const { onSaveState, onResetAllState, onExportToExcel ,onExportToExcelOld} = useSaveAllState(isPlanning);
+  const { onSaveState, onResetAllState,onExportToExcelOld} = useSaveAllState(isPlanning);
   const { currentCategory } = useSelector(
     (state: RootState) => state.mta.planning
   );
@@ -135,14 +137,14 @@ const ActionToolBar = ({
       });
     }
 
-    else if(pathname  === '/supply-chain-intelligence-hub/bpr'){
-      onExportToExcel({
-        // pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
-        // callBack: onExportToExcelCallBack,
-        name:currCategory + currentTab,
-        filters:multiFilter
-      });
-    }
+    // else if(pathname  === '/supply-chain-intelligence-hub/bpr'){
+    //   onExportToExcel({
+    //     // pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
+    //     // callBack: onExportToExcelCallBack,
+    //     name:currCategory + currentTab,
+    //     filters:multiFilter
+    //   });
+    // }
 
     else{
       onExportToExcelOld({
@@ -320,6 +322,32 @@ const ActionToolBar = ({
           );
         }
         break;
+      case "RRRColorBandwise":
+        if (pathname === "/supply-chain-intelligence-hub/rrr-color-bandwise") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={true}
+              availabilityFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+              currCategory={currCategory}
+
+            />
+          );
+        }
+        break;
       case "SDR":
         if (pathname === "/supply-chain-intelligence-hub/sdr") {
           return (
@@ -354,10 +382,62 @@ const ActionToolBar = ({
               setMultiFilter={setMultiFilter}
               productFilterActive={true}
               supplyChainNodeFilterActive={true}
-              locationFilterActive={false}
+              locationFilterActive={true}
               generalFilterOptions={generalFilterOptions}
               generalFilterActive={false}
               availabilityFilterActive={true}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+              currCategory={currCategory}
+
+            />
+          );
+        }
+        break;
+      case "BORColorBandwise":
+        if (pathname === "/supply-chain-intelligence-hub/bor-color-bandwise") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={true}
+              availabilityFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
+              supplyChainForLocationCheckBoxList={
+                locations
+              }
+              supplyChainForChildrenOfCheckBoxList={
+                locations
+              }
+              currCategory={currCategory}
+
+            />
+          );
+        }
+        break;
+      case "OrderAllocationReport":
+        if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
+          return (
+            <VFMultiFilter
+              onApplyFilter={handleApplyFilter}
+              onGoBack={() => toggleFilter(false)}
+              multiFilter={multiFilter}
+              setMultiFilter={setMultiFilter}
+              productFilterActive={true}
+              supplyChainNodeFilterActive={true}
+              locationFilterActive={true}
+              availabilityFilterActive={true}
+              generalFilterActive={false}
+              generalFilterOptions={generalFilterOptions}
               supplyChainForLocationCheckBoxList={
                 locations
               }
@@ -831,7 +911,16 @@ const ActionToolBar = ({
               ></VFSelectedFilters>
             )}
 
-            {currCategory === "BPR" && onSubmitEditedRows && (
+            {/* {currCategory === "BPR" && onSubmitEditedRows && (
+              <VFButtonOutline
+                onClick={onSubmitEditedRows}
+                themeUi={themeUi}
+                disabled={disableSubmitEditedRowsBtn}
+              >
+                Save Remarks
+              </VFButtonOutline>
+            )} */}
+            {(currCategory === "BPR" || currCategory === "BOR" || currCategory === "BORColorBandwise") && onSubmitEditedRows && (
               <VFButtonOutline
                 onClick={onSubmitEditedRows}
                 themeUi={themeUi}
@@ -840,6 +929,7 @@ const ActionToolBar = ({
                 Save Remarks
               </VFButtonOutline>
             )}
+
 
             {currCategory === "ResearchInsight" && (
               <>
@@ -862,7 +952,11 @@ const ActionToolBar = ({
             )}
           </SCTaskFilterContainer>
           {(currCategory==='BPR' && lastRunDate) && (
-            <h2>{lastRunDate}</h2>
+            lastRunDate === "Loading"?(
+              <Skeleton style={{height:30,width:150}}/>
+            ):(
+              <LastRunDateHeader>{lastRunDate}</LastRunDateHeader>
+            )
           )}
           <SCCustomActionsContainer>
             <VFButton

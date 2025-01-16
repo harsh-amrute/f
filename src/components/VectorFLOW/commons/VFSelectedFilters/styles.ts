@@ -33,6 +33,7 @@ export const VFSelectedFiltersPlaceHolder = styled.p`
     color: #313131;
     padding:5px 15px;
     text-wrap:nowrap;
+    white-space:nowrap;
    // margin-right:-15px;
 //    min-width:140px;
 `

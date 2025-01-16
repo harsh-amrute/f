@@ -56,7 +56,8 @@ const BPR = ()=>{
         editedRows,
         onDeleteFilter,
         lastRunDate,
-        generalFilterOptions
+        generalFilterOptions,
+        onResetCallback
     } = useBPR();
 
     
@@ -76,7 +77,8 @@ const BPR = ()=>{
                 tempDownloadData:tempDownloadData,
                 setTempDownloadData:setTempDownloadData,
                 exportExcelRowData:exportExcelRowData,
-                setExportExcelRowData:setExportExcelRowData
+                setExportExcelRowData:setExportExcelRowData,
+                onResetCallback:onResetCallback
     
             }}
         >
@@ -133,6 +135,8 @@ const BPR = ()=>{
             <Allotment vertical defaultSizes={[300,150]}>
               <Allotment.Pane className="planning-grid-allotment">
               <VFTable
+                 key={'ref'}
+                disableZoomScaling
                 ref={ref}
                 height={"95%"}
                 {...agGridProps}
@@ -150,6 +154,7 @@ const BPR = ()=>{
                     ],
                   }}
             />
+
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
@@ -161,7 +166,7 @@ const BPR = ()=>{
               <Allotment.Pane maxSize={220} minSize={200}>
               <div style={{marginTop:'20px'}}>
               {isSubGridOpen && (
-                <div style={{marginLeft:'15px'}}>
+                <div style={{marginLeft:'15px',zoom:0.8}}>
                     <BPRViewTable
                 tableHeader="In Transit/WIP"
                     tablePrefixSrc="/assets/img/VectorFLOW/BPR/in-transit.svg"
@@ -242,6 +247,7 @@ const BPR = ()=>{
             />
             <div style={{display:'none'}}>                
                   <VFTable
+                    key={'temp'}
                     ref={tempRef}
                     columnDefs={BPRColumns}
                     rowData={exportExcelRowData}

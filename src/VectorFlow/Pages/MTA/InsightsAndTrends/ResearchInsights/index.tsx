@@ -1,3 +1,5 @@
+import React,{useCallback} from 'react'
+
 import {DayPicker} from 'react-day-picker'
 import { Player } from '@lottiefiles/react-lottie-player'
 
@@ -16,7 +18,6 @@ import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader'
 import 'react-day-picker/dist/style.css';
 import './styles.css'
 import { AgCharts } from 'ag-charts-react'
-import React from 'react'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
@@ -25,6 +26,7 @@ import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/Da
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import { useUserData } from '../../../../../context'
+import { Skeleton } from '../../../../../components/commons/styled'
 
 
 const ResearchInsights = ()=>{
@@ -77,6 +79,7 @@ const ResearchInsights = ()=>{
         currentFilter,
         setCurrentFilter,
         historicalAvailabilityData,
+        isHistoricalAvailabilityLoading,
         continuousBlack,
         continuousBlackAndRed,
         continuousWhite,
@@ -86,9 +89,11 @@ const ResearchInsights = ()=>{
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
 
-    const getFormattedPercentage = (number:number)=>{
-        return number.toFixed(2)
-    }
+    const getFormattedPercentage = useCallback((number: number) => {
+        if (number === 0) return "0"; 
+        if (number == null || isNaN(number)) return "-"; 
+        return number.toFixed(2);
+    }, []);
 
     return(
         <GridStateContext.Provider value={{
@@ -131,7 +136,7 @@ const ResearchInsights = ()=>{
             {
                 showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
             }
-            <ResearchInsightsTableWrapper style={{zoom:0.8, marginTop:'-15px'}}>
+            <ResearchInsightsTableWrapper style={{ marginRight:'15px'}}>
                 {(isLoading || isSavedDataLoading)?(
                     <VFLoader/>
                 ):(
@@ -191,32 +196,38 @@ const ResearchInsights = ()=>{
                     <HistoricalAvailabiltyHeader>
                         Historical Availability
                     </HistoricalAvailabiltyHeader>
-                    <HistoricalAvailabiltyContent>
-                        <HistoricalAvailabiltyContentSection>
-                            <HistoricalAvailabiltyContentSectionHeader>
-                                90-60 Days
-                            </HistoricalAvailabiltyContentSectionHeader>
-                            <HistoricalAvailabiltyContentSectionData>
-                                {getFormattedPercentage(historicalAvailabilityData.Availability_61_90)}%
-                            </HistoricalAvailabiltyContentSectionData>
-                        </HistoricalAvailabiltyContentSection>
-                        <HistoricalAvailabiltyContentSection>
-                            <HistoricalAvailabiltyContentSectionHeader>
-                                60-30 Days
-                            </HistoricalAvailabiltyContentSectionHeader>
-                            <HistoricalAvailabiltyContentSectionData>
-                                {getFormattedPercentage(historicalAvailabilityData.Availability_31_60)}%
-                            </HistoricalAvailabiltyContentSectionData>
-                        </HistoricalAvailabiltyContentSection>
-                        <HistoricalAvailabiltyContentSection style={{border:"none"}}>
-                            <HistoricalAvailabiltyContentSectionHeader>
-                                30-0 Days
-                            </HistoricalAvailabiltyContentSectionHeader>
-                            <HistoricalAvailabiltyContentSectionData>
-                                {getFormattedPercentage(historicalAvailabilityData.Availability_01_30)}%
-                            </HistoricalAvailabiltyContentSectionData>
-                        </HistoricalAvailabiltyContentSection>
-                    </HistoricalAvailabiltyContent>
+                    {(isHistoricalAvailabilityLoading)?(
+                    <Skeleton
+                        style={{height:35,width:'100%'}}
+                    />
+                    ):(
+                        <HistoricalAvailabiltyContent>
+                            <HistoricalAvailabiltyContentSection>
+                                <HistoricalAvailabiltyContentSectionHeader>
+                                    90-60 Days
+                                </HistoricalAvailabiltyContentSectionHeader>
+                                <HistoricalAvailabiltyContentSectionData>
+                                    {getFormattedPercentage(historicalAvailabilityData.Availability_61_90)}%
+                                </HistoricalAvailabiltyContentSectionData>
+                            </HistoricalAvailabiltyContentSection>
+                            <HistoricalAvailabiltyContentSection>
+                                <HistoricalAvailabiltyContentSectionHeader>
+                                    60-30 Days
+                                </HistoricalAvailabiltyContentSectionHeader>
+                                <HistoricalAvailabiltyContentSectionData>
+                                    {getFormattedPercentage(historicalAvailabilityData.Availability_31_60)}%
+                                </HistoricalAvailabiltyContentSectionData>
+                            </HistoricalAvailabiltyContentSection>
+                            <HistoricalAvailabiltyContentSection style={{border:"none"}}>
+                                <HistoricalAvailabiltyContentSectionHeader>
+                                    30-0 Days
+                                </HistoricalAvailabiltyContentSectionHeader>
+                                <HistoricalAvailabiltyContentSectionData>
+                                    {getFormattedPercentage(historicalAvailabilityData.Availability_01_30)}%
+                                </HistoricalAvailabiltyContentSectionData>
+                            </HistoricalAvailabiltyContentSection>
+                        </HistoricalAvailabiltyContent>
+                    )}
                 </AvailabilityTrendSection>
                 {(graphState==='default')?(
                     <AvailabilityTrendSection style={{display:'flex',flexDirection:'row',marginBottom:'5px',zoom:0.7,alignItems:'center',padding:0}}>
@@ -405,6 +416,19 @@ const ResearchInsights = ()=>{
                                     label:{
                                         fontSize:8
                                     }
+                                },
+                                {
+                                    type: "number",
+                                    position: 'left',
+                                    label: {
+                                        fontSize: 8
+                                    },
+                                    title: {
+                                        text: "Count of Item", 
+                                        enabled: true,         
+                                        fontSize: 10,     
+                                        fontFamily: "Roboto",
+                                    }
                                 }
                             ],
                             series: [
@@ -505,6 +529,7 @@ const ResearchInsights = ()=>{
                             }
                             
                         }
+                        
                     }}/>
                     </ChartWrapper>
                     </AvailabilityTrendSection>
@@ -560,7 +585,21 @@ const ResearchInsights = ()=>{
                                     label:{
                                         fontSize:8
                                     }
+                                },
+                                {
+                                    type: "number",
+                                    position: 'left',
+                                    label: {
+                                        fontSize: 8
+                                    },
+                                    title: {
+                                        text: "Count of Item", 
+                                        enabled: true,         
+                                        fontSize: 10,     
+                                        fontFamily: "Roboto",
+                                    }
                                 }
+
                             ],
                             series: [
                                 {

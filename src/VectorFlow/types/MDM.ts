@@ -4,7 +4,7 @@ import {
 } from 'ag-grid-enterprise'
 import Joi from 'joi'
 
-export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted" | "editOnline"  | "editOnlineSubmitted" | "seasonality" | "phaseInPhaseOut" | "deleteUploaded" | "deleteView"| "deleteOnline"  | "deleteOnlineSubmitted" | "conflicts" | "editOnlineConflicts" | "mtoView";
+export type ViewModifyProgressState = "default" | "view" | "error" | "uploaded" | "submitted" | "savedToDraft" | "editOnline"  | "editOnlineSubmitted" | "seasonality" | "phaseInPhaseOut" | "deleteUploaded" | "deleteView"| "deleteOnline"  | "deleteOnlineSubmitted" | 'Discard' | "DiscardDraft" | "conflicts" | "editOnlineConflicts" | "mtoView";
 export interface MDMStore{
     allMasters:MDMMasterState[],
     masters:MDMMasterState[],
@@ -17,7 +17,8 @@ export interface MDMStore{
     chunkSize:number,
     recordCount:number,
     isDataAvailableLocally:boolean
-    lastRunDate:string
+    lastRunDate:string,
+    isSavingToDraft?:boolean
 }
 
 export interface MDMMasterState {

@@ -5,7 +5,7 @@ import { LOCAL_STORAGE_KEY, ROUTES } from './constants'
 import { MainService } from '../module-main/services/api'
 import { notifyError} from './notify'
 import { type Master, type Option, type Field, type Filter, MDMMasterState, DraftActionType,type NormHistory, type DailyData } from '../VectorFlow/types/MDM';
-import readXlsxFile from 'read-excel-file'
+import readXlsxFile,{readSheetNames} from 'read-excel-file';
 import { ColDef, ColGroupDef, CellClickedEvent } from 'ag-grid-community';
 import { defaultColDefs, masterIdToDeleteSchemaMapper, masterIdToSchemaMapper, TaskPendingAvoidColumnsMapper, taskStatusCustomColDefs, mdmRoutes, seasonalityQuickFilterData, BTRDefaultColDefs, TaskPendingStopPIPOCustomColumns } from './MDMConstants';
 import ActionRenderer from '../VectorFlow/Pages/MTA/MDM/SavedDrafts/ActionRenderer';
@@ -251,6 +251,217 @@ export const mapVDRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
 }
 
+export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const specificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+    }
+  ]
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result,...specificColumns]
+}
+
+export const mapOrderAllocationReportFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='OrderColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
+export const mapBORColorBandWiseFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  const BORSpecificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+      
+      
+
+      // tooltipComponent:'remarksToolTipComponent'
+    },
+    {
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     pinned:'right',
+     editable:true,
+     cellStyle:{
+      overflow:'visible',
+      'min-width':180,
+    }
+  }
+  ]
+
+
+
+  result =  fields.map((f:UiConfigField)=>{
+
+
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        floatingFilter:true,
+        cellRenderer:'colorCellRenderer',
+        filter:getCellFilter(f.DataType),
+        cellDataType:getCellDataType(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      hide:!f.Visible,
+      floatingFilter:true,
+      filter:getCellFilter(f.DataType),
+      cellDataType:getCellDataType(f.DataType)
+    }
+  })
+  return [...result,...BORSpecificColumns]
+}
+
+export const mapTotalRequirementFieldsToColDefs = (fields:RRRField[]):ColDef[]=>{
+
+  if(!fields || fields.length<1){
+    return []
+  }
+
+  let result:ColDef[] = []
+
+  result =  fields.map((f:RRRField)=>{
+    
+    if(f.Col_Code==='DispatchColor'){
+      return{
+        colId:f.Col_Code,
+        field:f.Col_Code,
+        headerName:f.Header,
+        hide:!f.Visible,
+        cellRenderer:'colorCellRenderer',
+        cellDataType:getCellDataType(f.DataType),
+        filter:getCellFilter(f.DataType)
+      }
+    }
+    return{
+      colId:f.Col_Code,
+      field:f.Col_Code,
+      headerName:f.Header,
+      // hide:!f.Visible,
+      cellDataType:getCellDataType(f.DataType),
+      filter:getCellFilter(f.DataType)
+    }
+  })
+  return [...result]
+}
+
+
 export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
   if (!fields || fields.length < 1) {
@@ -259,20 +470,19 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
   let result: ColDef[] = []
 
-  const RRRSpecificColumns: ColDef[] = [
-    {
-      colId: 'remarks',
-      field: 'ramarks',
-      headerName: 'Remarks',
-      tooltipField: "tags"
-      // tooltipComponent:'remarksToolTipComponent'
-    },
-    {
-      colId: 'rh',
-      field: 'rh',
-      headerName: 'Remark History',
-    }
-  ]
+  // const RRRSpecificColumns: ColDef[] = [
+  //   {
+  //     colId: 'remarks',
+  //     field: 'ramarks',
+  //     headerName: 'Remarks',
+  //     tooltipField: "tags"
+  //   },
+  //   {
+  //     colId: 'rh',
+  //     field: 'rh',
+  //     headerName: 'Remark History',
+  //   }
+  // ]
 
   result = fields.map((f: RRRField) => {
 
@@ -319,7 +529,7 @@ export const mapRRRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
       filter: getCellFilter(f.DataType)
     }
   })
-  return [...result, ...RRRSpecificColumns]
+  return [...result]
 }
 
 export const handleDownload = async (nameApi: string, nameFile: string) => {
@@ -407,7 +617,7 @@ export const handleDownloadVF = async (reportName: string, downloadName:string) 
   console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
-    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/DownloadReports/${encodeURIComponent(reportName)}`, {
+    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
       headers: {
         Authorization: `Bearer ${token?.access}`
       }
@@ -663,7 +873,7 @@ export const generateRandomId = (length?: number) => {
 }
 
 export const replaceKeyWithDisplayName = (message: string, master: MDMMasterState) => {
-  return new String(message).replaceAll(/",*?"/g, (m) => {
+  return new String(message).replaceAll(/"([^"]+)"/g, (m) => {
     const displayName = master.fields.find((f: Field) => f.key === m.replaceAll('"', ''))?.displayName;
     if (displayName) return displayName
     return m;
@@ -693,6 +903,20 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   else{
     selectedKeys = selectedColumns.map((col:any)=>col.colId);
   }
+
+
+  const numberOfSheets = await readSheetNames(file);
+  if(numberOfSheets.length > 1){
+    throw new Error('File cannot contain multiple sheets') 
+  }
+
+  if(numberOfSheets[0]!='ag-grid'){
+    throw new Error('Sheet Name is changed') 
+  }
+
+ 
+
+
    
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
@@ -755,14 +979,12 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   })
 
   if (error) {
-    throw new Error(`File is Missing ${headers.join(', ')}`);
+    throw new Error(`File is missing the following columns: ${headers.join(', ')}`);
   }
 
   error = false;
   headers = [];
 
-  console.log("headerKeys", headerKeys);
-  console.log("selectedKys", selectedKeys);
   headerKeys.forEach((key: string) => {
 
     if (!currMasterKeys.includes(key)) {
@@ -821,20 +1043,25 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   return result;
 }
 
-export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShowChart?: any) => {
+export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShowChart?: any,pageType?:string) => {
   let result: any[] = []
   const tempFields = [...fields]
   tempFields.sort((a: Field, b: Field) => parseInt(a.col_Position) - parseInt(b.col_Position))
 
   result = tempFields.map((f: any) => {
+
+    const cellFilter = getCellFilter(f.dataType)
+    const cellDataType = getCellDataType(f.dataType)
+
     return {
       field: f.key,
       colId: f.key,
       headerName: f.displayName,
-      hide: !f.visible,
+      hide: pageType==='add' ? !f.isAdd : !f.visible ,
       floatingFilter: true,
-      filter: getCellFilter(f.dataType),
-      cellDataType: getCellDataType(f.dataType),
+      filter: cellFilter,
+      cellDataType: cellDataType,
+      onCellClicked:(params:any)=>console.log(params.data),
       tooltipComponent: 'conflictErrorToolTip',
       suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
@@ -846,6 +1073,13 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
           return seasonalityQuickFilterData.find((s) => s.id.includes(id))?.label
 
         }
+
+        // if (cellDataType === 'number') {
+        //   return params.value === null || params.value === undefined
+        //     ? ''
+        //     : parseFloat(params.value).toLocaleString(); // Format number properly
+        // }
+
         return params.data[f.key]
       },
       // suppressColumnsToolPanel: f.isEdit ? false : true,
@@ -921,12 +1155,12 @@ export const mapStateFiltersToPayload = (filters: Filter[]) => {
 
 }
 
-export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMasterState[] => {
+export const mapMasterToMasterState = (masters: any[], onShowChart?: any,pageType?:string): MDMMasterState[] => {
 
   return  masters.map((master: Master) => ({
     id: master.id,
     name: master.name,
-    fields: master.fields,
+    fields: master.fields.sort((a:Field,b:Field)=>parseInt(a.col_Position) - parseInt(b.col_Position)),
     filters: [
       {
         id: generateRandomId(),
@@ -935,7 +1169,7 @@ export const mapMasterToMasterState = (masters: any[], onShowChart?: any): MDMMa
         operator: '',
         text: ''
       }],
-    colDefs: mapMasterToColumnDefs(master.fields, master.id, onShowChart),
+    colDefs: mapMasterToColumnDefs(master.fields, master.id, onShowChart,pageType),
     rowData: [],
     progress: 'default',
     isChecked: true,
@@ -974,7 +1208,7 @@ export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
         'overflow': 'hidden',
         'text-overflow': 'ellipsis',
         'white-space': 'nowrap',
-        'padding-top': '7px',
+        // 'padding-top': '7px',
         'font-weight': t.colId === 'TaskStatus' ? '500' : 'auto',
         'color': t.colId === 'TaskStatus' ? color : 'black',
         'cursor': t.colId === 'TaskStatus' ? 'pointer' : 'default'
@@ -1284,11 +1518,12 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
             actionStatus: actionStatus
           },
           cellRenderer: TaskPendingActionRenderer,
-          width: 300,
+          width: 290,
+          resizable:false,
           cellStyle: {
-            "border-left": "solid 1px #B9B9B9"
+            "border-left": "solid 1px #B9B9B9",
           },
-          pinned: 'right'
+          pinned: 'right',
         }
         // {
         //     field:"reject",
@@ -1495,7 +1730,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
       return {
         ...oldDataPrefixed,
         ...newDataPrefixed,
-        status: '',
+        status:!isRowModified?"Rejected" :"",
         comments: isRowModified ? '' : 'No modifications made in this record',
         isModified: isRowModified
       };
@@ -1621,6 +1856,22 @@ export const getActionId = (actionName: string): DraftActionType => {
   throw new Error('Invalid action Name')
 }
 
+export const formatAndValidateDraftRowData = (colDefs:Array<ColDef>,rowData:Array<any>):Array<any>=>{
+  const result = [...rowData]
+  
+  result.forEach((row)=>{
+    colDefs.forEach((col)=>{
+      if(col.colId && row[col.colId]){
+        // if(col.cellDataType === "number"){
+        //   row[col.colId] = parseFloat(row[col.colId])
+        // }
+      }
+    })
+  })
+
+  return result
+}
+
 
 export const createMastersStateFromDraftData = (draftData: any[], fields: Master[]): MDMMasterState[] => {
 
@@ -1628,11 +1879,20 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
   draftData.map((master) => {
     const existingMaster = fields.find((m: Master) => m.id == master.MasterId)
     if (existingMaster) {
+      const colDefs = master.GridState.length > 0 ? JSON.parse(master.GridState) : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id)
+      const updatedColDefs = colDefs.map((colDef: any) => {
+        if (colDef.cellDataType) {
+          colDef.cellDataType = 'text';
+        }
+        return colDef;
+      });
+
+      console.log(colDefs)
       masters.push({
         id: existingMaster.id,
         name: existingMaster.name,
-        colDefs: master.GridState.length > 0 ? JSON.parse(master.GridState) : mapMasterToColumnDefs(existingMaster.fields, existingMaster.id),
-        rowData: master.DataMaster || [],
+        colDefs: updatedColDefs,
+        rowData:formatAndValidateDraftRowData(colDefs,master.DataMaster)  || [],
         isChecked: true,
         filters: [{
           id: generateRandomId(),
@@ -1993,6 +2253,22 @@ export const navigateWithPrompt = (onRouteChange: () => void, url: any, state: a
 
 }
 
+export const FormatDateFunction =(dateStr:string)=>{
+  const date = new Date(dateStr);
+
+// Format to MM/DD/YYYY HH:mm:ss
+const formattedDate = date.toLocaleString('en-US', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false
+});
+return formattedDate
+}
+
 
 export const createTaskPendingSubmitPayload = (rowData: any[], actionType: number, masterId: number): any[] => {
   const result: any[] = []
@@ -2064,6 +2340,7 @@ export const createIconColumn = (params: any): ColDef => {
     minWidth: 40,
     colId: id,
     headerName: label,
+    filter:false,
     cellRenderer: cellRenderer,
     floatingFilter: false,
     suppressColumnsToolPanel: true
@@ -2092,7 +2369,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     {
       colId: 'remarks',
       field: 'remarks',
-      headerName: 'Remarks',
+      headerName: 'Edit Remarks',
       cellRenderer: 'submitRemarkCellRenderer',
       cellRendererParams: {
         onClick: onOpenSubmitRemark
@@ -2100,9 +2377,16 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       pinned: 'right',
       cellStyle: {
         overflow: 'visible',
-        'min-width': 180,
+        'min-width': 145,
+        'padding-left':0,
+        'padding-right':0
       },
-      editable: true
+      editable: true,
+      resizable:false,
+      lockPosition:'right',
+      maxWidth:145,
+      menuTabs: [] ,
+      suppressMenu: true
     },
     {
       colId: 'rh',
@@ -2116,8 +2400,15 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       pinned: 'right',
       cellStyle: {
         overflow: 'visible',
-        'min-width': 180,
-      }
+        'min-width': 145,
+        'padding-left':0,
+        'padding-right':0
+      },
+      resizable:false,
+      lockPosition:'right',
+      maxWidth:145,
+      menuTabs: [] ,
+      suppressMenu: true
     }
   ]
 
@@ -2126,7 +2417,8 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     field: 'tags',
     headerName: "Tags",
     cellRenderer: 'tagsCellRenderer',
-    width: 100
+    width: 100,
+    hide:false
   }
 
   result = fields.map((f: BPRField) => {
@@ -2137,12 +2429,13 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         headerName: f.Header,
         hide: !f.Visible,
         cellRenderer: 'colorTechCellRenderer',
-        tooltipField: f.Col_Code,
+        // tooltipField: f.Col_Code,
         cellStyle: {
           'min-width': 180,
         },
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
+        filter: getCellFilter(f.DataType),
+        pinned:null
       }
     }
     if (f.Col_Code === 'EcoPen') {
@@ -2152,12 +2445,13 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         headerName: f.Header,
         hide: !f.Visible,
         cellRenderer: 'colorEcoCellRenderer',
-        tooltipField: f.Col_Code,
+        // tooltipField: f.Col_Code,
         cellStyle: {
           'min-width': 180,
         },
         cellDataType: getCellDataType(f.DataType),
-        filter: getCellFilter(f.DataType)
+        filter: getCellFilter(f.DataType),
+        pinned:null
       }
     }
     return {
@@ -2165,12 +2459,13 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       field: f.Col_Code,
       headerName: f.Header,
       hide: !f.Visible,
-      tooltipField: f.Col_Code,
+      // tooltipField: f.Col_Code,
       cellStyle: {
         'min-width': 180,
       },
       cellDataType: getCellDataType(f.DataType),
-      filter: getCellFilter(f.DataType)
+      filter: getCellFilter(f.DataType),
+      pinned:null
     }
   })
   return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result, ...BPRSpecificColumns]
@@ -2188,6 +2483,75 @@ export const mapBPRRowData = (rowData: Array<any>) => {
     return tempRow
   })
 }
+
+
+
+// export const updateCommonAttributes= (array1:any[], array2:any[], colId:string)=> {
+//   // Create a new array to store the updated objects
+//   const updatedArray:any[] = [];
+
+//   // Iterate through array2 to find matching objects in array1 by colId
+//   array2.forEach(obj2 => {
+//     // Find the corresponding object in array1 by colId
+//     const obj1 = array1.find(obj => obj[colId] === obj2[colId]);
+    
+//     if (obj1) {
+//       // Create a copy of obj2 to update it without modifying the original
+//       let updatedObj = { ...obj2 };
+      
+//       // Iterate over keys of obj1 (excluding colId) to find common attributes
+//       Object.keys(obj1).forEach(key => {
+//         if (key !== colId && key in obj2) {
+//           // Replace common attributes in obj2 with those from obj1
+//           updatedObj[key] = obj1[key];
+//         }
+//       });
+      
+//       // Push the updated obj2 to the result array
+//       updatedArray.push(updatedObj);
+//     } else {
+//       // If no matching object is found, just push obj2 as it is
+//       updatedArray.push(obj2);
+//     }
+//   });
+
+//   // Return the updated array of objects
+//   return updatedArray;
+// }
+
+export const updateCommonAttributes=(array1:any[], array2:any[], colId:string)=> {
+
+  console.log(array1,"ARRAY1")
+  console.log(array2,"ARRAY2")
+  // Create a dictionary (map) of objects from array1 by colId
+  const array1Dict:any = {};
+  array1.forEach(obj => {
+    array1Dict[obj[colId]] = obj;
+  });
+
+  // Iterate through array2 and update common attributes from array1
+  array2.forEach(obj2 => {
+    const obj1 = array1Dict[obj2[colId]]; // Find corresponding object in array1 by colId
+
+    if (obj1) {
+      // For the common object, find common keys (excluding colId)
+      Object.keys(obj1).forEach(key => {
+        if (key !== colId && key in obj2) {
+          // Replace common attributes in obj2 with those from obj1
+          obj2[key] = obj1[key];
+        }
+      });
+
+      if("hide" in obj1){
+        obj2['hide']=obj1['hide']
+      }
+    }
+  });
+
+  // Return the updated array2
+  return array2;
+}
+
 
 export const mapResearchInsightsFieldsToColDefs = (fields: BPRField[], onOpenDailyDataGraph: any): ColDef[] => {
 
@@ -2264,7 +2628,7 @@ export const mapResearchInsightsFieldsToColDefs = (fields: BPRField[], onOpenDai
   return [checkboxColDef, { ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result]
 }
 
-export const mapBORFieldsToColDefs = (fields: UiConfigField[], onOpenDailyDataGraph: any): ColDef[] => {
+export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark: (params: any, e: any) => void, onOpenRemarkHistory: (e: any, params: any) => void, onOpenDailyDataGraph: (params: any) => void): ColDef[] => {
 
   if (!fields || fields.length < 1) {
     return []
@@ -2274,20 +2638,44 @@ export const mapBORFieldsToColDefs = (fields: UiConfigField[], onOpenDailyDataGr
 
   const BORSpecificColumns: ColDef[] = [
     {
-      colId: 'dailydatagraph',
-      field: '',
-      headerName: '',
-      width: 40,
-      lockPosition: 'left',
-      floatingFilter: false,
-      tooltipField: "DailyDataGraph",
-      cellRenderer: 'grapCellRenderer',
-      cellRendererParams: {
-        onOpenDailyDataGraph: onOpenDailyDataGraph
-      }
-
-
-      // tooltipComponent:'remarksToolTipComponent'
+      colId:'remarks',
+      field:'remarks',
+      headerName:'Edit Remarks',
+     cellRenderer:'submitRemarkCellRenderer',
+     cellRendererParams:{
+      onClick:onOpenSubmitRemark
+     },
+     pinned:'right',
+     cellStyle: {
+      overflow: 'visible',
+      'min-width': 145,
+      'padding-left':0,
+      'padding-right':0
+    },
+    editable: true,
+    resizable:false,
+    lockPosition:'right',
+    maxWidth:145,
+    },
+    {
+      colId:'rh',
+      field:'rh',
+      headerName:'Remark History',
+      cellRenderer:'remarksCellRenderer',
+      
+      cellRendererParams:{
+        onClick:onOpenRemarkHistory
+       },
+       pinned: 'right',
+       cellStyle: {
+         overflow: 'visible',
+         'min-width': 145,
+         'padding-left':0,
+         'padding-right':0
+       },
+       resizable:false,
+       lockPosition:'right',
+       maxWidth:145,
     }
   ]
 
@@ -2318,7 +2706,8 @@ export const mapBORFieldsToColDefs = (fields: UiConfigField[], onOpenDailyDataGr
       cellDataType: getCellDataType(f.DataType)
     }
   })
-  return [...result, ...BORSpecificColumns]
+  //return [...result, ...BORSpecificColumns]
+  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, ...result, ...BORSpecificColumns]
 }
 
 export const BPRColorMapper = (color: string): { bg: string, text: string } => {
@@ -3911,5 +4300,3 @@ export const generateMTOFilterOptions = (data: Master[], currentFilters:any) => 
   console.log('fin options', finOptions);
   return finOptions;
 }
-
-// ===================================================================================================

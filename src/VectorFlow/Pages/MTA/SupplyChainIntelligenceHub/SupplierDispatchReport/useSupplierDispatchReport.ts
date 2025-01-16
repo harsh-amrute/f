@@ -88,7 +88,7 @@ const useSupplierDispatchReport= ()=>{
     
         defaultColDef: {
           floatingFilter: true,
-          resizable: false,
+          resizable: true,
           cellStyle: {
             flex: 1,
             "text-align": "center",
@@ -136,8 +136,8 @@ const useSupplierDispatchReport= ()=>{
     },[])
   
     useEffect(()=>{
-        if(internalRef){
-            internalRef.api.applyColumnState({state:gridState.columns })
+        if(internalRef && gridState && gridState.columns){
+            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
         }
     },[internalRef,gridState])
 

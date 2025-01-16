@@ -20,7 +20,7 @@ interface exportToExcelParameters {
 }
 
 const useSaveAllState = (isPlanning?:boolean) => {
-  const { ref,setTempDownloadData,setExportExcelRowData,tempDownloadData } = useContext(GridStateContext);
+  const { ref,setTempDownloadData,setExportExcelRowData,tempDownloadData, onResetCallback } = useContext(GridStateContext);
 
   const { mutateAsync: saveState } = useSaveState();
   const { mutateAsync: resetState } = useResetState();
@@ -119,9 +119,9 @@ const useSaveAllState = (isPlanning?:boolean) => {
   const onSaveState = async (name: string) => {
     try {
       
-      const columnState = ref.current.api.getColumnState();
-      const chartsState =  ref.current.api.getChartModels()
-      const isPivot = ref.current.api.isPivotMode()
+      const columnState = ref.current?.api.getColumnState();
+      const chartsState =  ref.current?.api.getChartModels()
+      const isPivot = ref.current?.api.isPivotMode()
       const gridState:GridState = {
         pivot:isPivot,
         charts:chartsState,
@@ -132,9 +132,9 @@ const useSaveAllState = (isPlanning?:boolean) => {
         state: JSON.stringify(gridState),
       });
       notifySuccess("State has been saved");
-      ref.api.applyColumnState({ state: columnState });
-      ref.api.restoreChart(chartsState)
-      ref.api.setGridOption('pivotMode',isPivot)
+      ref.current?.api.applyColumnState({ state: columnState });
+      ref.current?.api.restoreChart(chartsState)
+      ref.current?.api.setGridOption('pivotMode',isPivot)
     } catch (err: any) {
         console.error(err)
       notifyError(err);
@@ -145,7 +145,7 @@ const useSaveAllState = (isPlanning?:boolean) => {
     notifyLoader("Reseting Data");
     try {
       
-      await resetState(name);
+      await resetState({"reportname":name});
       let tempCurrentGridState = ref.current?.api.getColumnState()
       tempCurrentGridState = tempCurrentGridState.map((t:any) => {
         return {
@@ -154,7 +154,8 @@ const useSaveAllState = (isPlanning?:boolean) => {
         };
       });
       ref.current.api.applyColumnState({state:tempCurrentGridState})
-      ref.current.api.resetColumnState()
+      onResetCallback()
+      // ref.current.api.resetColumnState()
       ref.current.api.setGridOption('pivotMode',false)
       const charts  = ref.current.api.getChartModels()
       charts.forEach((c:any)=>{

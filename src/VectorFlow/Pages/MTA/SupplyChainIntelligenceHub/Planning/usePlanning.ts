@@ -282,7 +282,7 @@ const usePlanning = ()=>{
 
     const fetchPlanningDataCount = async (filter?:any) => {
         setIsOverlayVisible(true);
-        const result = await getPlanningDataCount({...filter} || {});
+        const result = await getPlanningDataCount({...filter});
         setIsOverlayVisible(false);
         const data = result.data.data;
         const tempPlanningCount = {...initialPlanningCounts};
@@ -377,6 +377,7 @@ const usePlanning = ()=>{
                         filters:[]
                     }
                     const result = await getPlanningDataGraph(body);
+                    if(!result.data.data.data)throw new Error("Data Not Available") 
                     setIsSelectCategoryOpen(false);
                     setCurrentGraphData(result.data.data.data)
                     console.log(currentGraphData)
@@ -459,9 +460,9 @@ const usePlanning = ()=>{
                     
             }
             
-        } catch (error) {
+        } catch (error:any) {
             toast.dismiss();
-            notifyError("Something Went Wrong")
+            notifyError(error.message)
         }
 
     }
@@ -478,10 +479,8 @@ const usePlanning = ()=>{
     //     }
     // }
 
-   
 
     const fetchAndUpdateGridData = async (currentPage:number,fromPagination:boolean,filter?:any,tab?:string) => {
-      
         try {
             setIsDataLoading(true);
             // await getAndApplyGridState()
@@ -581,6 +580,7 @@ const usePlanning = ()=>{
                     }
                     
                     const result = await getPlanningDataGrid(body);
+
                     const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data[0];
                     const uiConfig = result.data.data.uiConfig;
                     const customData = {"createAvailabilityAtParent":{"data":createAvailabilityAtParent,"uiConfig":uiConfig},"expediteDispatches":{"data":expediteDispatches,"uiConfig":uiConfig}};
@@ -703,6 +703,7 @@ const usePlanning = ()=>{
             
         } catch (error) {
             toast.dismiss();
+            console.error(error)
             notifyError('Something Went Wrong')
             setIsDataLoading(false);
         }

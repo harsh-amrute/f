@@ -3,10 +3,10 @@ import styled from "styled-components";
 export const PaginationWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    padding:0 15px;
-    
+    /* padding:0px 15px;
+     */
     border-radius:inherit;
-    margin-top:-15px;
+    /* margin-top:-15px; */
     position:relative;
     // z-index:20;
 `
@@ -72,7 +72,7 @@ export const StatusBarLabel = styled.div`
     flex-direction:row;
     font-variant:normal;
     align-items:center;
-    font-size:13px;
+    font-size:11px;
     font-family:Roboto;
     line-height:19px;
     letter-spacing: 0px;

@@ -504,7 +504,6 @@
         },
         "title": "Profile Details",
         "fullName": "Full Name",
-        "contactNo": "Contact No",
         "role": "Role",
         "signInDetails": "Sign In Details",
         "email": "Email Address",

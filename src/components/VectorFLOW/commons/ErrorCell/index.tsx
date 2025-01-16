@@ -1,4 +1,4 @@
-import { SCContainer, SCErrorToolTipLi, SCErrorToolTipUl, SCToolTipWrapper } from "./styles"
+import { ErrorText, SCContainer, SCErrorToolTipLi, SCErrorToolTipUl, SCToolTipWrapper } from "./styles"
 import { ICellRendererParams } from "ag-grid-enterprise"
 import React, { CSSProperties, useState } from "react";
 import Portal from "../../layouts/Portal";
@@ -21,9 +21,45 @@ const ErrorCell = (props:ICellRendererParams)=>{
     const [isToolTipOpen,setIsToolTipOpen] = useState<boolean>(false)
 
     const message = props.data.error;
+    if(!message)return null
 
-    const messages = message?.split('.').filter((msg:string)=>msg.length > 1)
+    function customSplitter(str:string,exec:(s:number)=>boolean){
+        const result:Array<string> = []
+        let currStr = ""
+        for (let index = 0; index < str.length; index++) {
+            if(exec(index)){
+                result.push(currStr)
+                currStr = ""
+            }
+            else{
+                currStr += str[index]
+            }
+        }
+        if (currStr.length > 0)result.push(currStr);
+            
+        return result
+    }
+
+    // const messages = message?.split('.').filter((msg:string)=>msg.length > 1)
+
+    const messages = customSplitter(message, (s) => {
+        try {
+            const prevChar = message[s - 1];
+            const nextChar = message[s + 1];
     
+    
+            return (
+                message[s] === "." &&
+                (isNaN(parseInt(prevChar)) ||
+                isNaN(parseInt(nextChar)))
+            );
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    });
+
+
     const getFomattedMessage = (msg:string) => {
         if(msg.length > 30) {
             return msg.slice(0,30)+'...'
@@ -37,11 +73,11 @@ const ErrorCell = (props:ICellRendererParams)=>{
         const tooltipHeight =messages.length * 33 /* Height of your tooltip */;
         const viewportHeight = window.innerHeight;
     
-        let tooltipTop = (bottom * currGridZoom * currScreenZoom) + 10;
+        let tooltipTop = (bottom) + 10;
     
         // Check if tooltip overflows on the bottom side
         if (tooltipTop + tooltipHeight > viewportHeight) {
-            tooltipTop = (top * currGridZoom * currScreenZoom) - tooltipHeight;
+            tooltipTop = (top) - tooltipHeight;
         }
     
         setErrorCellPosition({
@@ -59,23 +95,27 @@ const ErrorCell = (props:ICellRendererParams)=>{
 
     return(
         <>
-        {message &&
+        
             <SCContainer style={{overflow:'visible'}}  themeUi={themeUi}>
-                <img src={themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/error-regal.svg":"/assets/img/VectorFLOW/NMS/error.svg"} width={17} height={17} style={{marginRight:'7px',marginLeft:'5px',cursor:"pointer"}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
-                <p  >{getFomattedMessage(message)}</p>
+                <img src={"/assets/img/VectorFLOW/NMS/error.svg"} width={17} height={17} style={{marginRight:'7px',marginLeft:'5px'}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
+                <ErrorText  >{getFomattedMessage(message)}</ErrorText>
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">
                         <SCToolTipWrapper themeUi={themeUi} data-testid='tooltip-wrapper' style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
-                            <SCErrorToolTipUl>
-                                {(messages && messages.length>0) &&  messages.map((sentence:string,index:number)=>{
-                                    return <SCErrorToolTipLi key={index}>{sentence}</SCErrorToolTipLi>
+                        <SCErrorToolTipUl>
+                            {(messages && messages.length > 0) &&
+                                messages.map((sentence: string, index: number) => {
+                                    if (sentence.trim() !== '') {
+                                        return <SCErrorToolTipLi key={index}>{sentence}</SCErrorToolTipLi>;
+                                    }
+                                    return null; 
                                 })}
-                            </SCErrorToolTipUl>
+                        </SCErrorToolTipUl>
                         </SCToolTipWrapper>
                     </Portal>
                 )}
             </SCContainer>
-        }
+        
         </>
         
     )

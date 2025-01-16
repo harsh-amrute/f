@@ -86,7 +86,6 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,currentCategor
                 "font-style":"normal",
                 " font-variant":"normal",
                 " font-weight":"300",
-                " font-size":"20px",
                 " font-family":"Roboto",
                 "display":"block",
                 'text-overflow':'ellipsis',

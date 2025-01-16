@@ -38,7 +38,7 @@ export const CardText = styled.p<{themeUi:string}>`
     align-items:center;
     font-style:normal;
     font-variant:normal;
-    font-size:24px;
+    font-size:20px;
     line-height:40px;
     font-family:'Roboto';
     font-weight:500;
@@ -60,7 +60,10 @@ export const CardButton = styled.button<{themeUi:string}>`
     width: 100%;
     height: 50px;
     border-radius:6px;
-    font: normal normal 500 24px/28px Roboto;
+    font-size:20px;
+    line-height:28px;
+    font-family:Roboto;
+    font-weight:500;
     letter-spacing: 0.34px;
     color: #6C696A;
     box-shadow: inset 0px 0px 2px #00000029, 0px 3px 6px #00000029;

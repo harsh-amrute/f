@@ -24,7 +24,6 @@ const useAdd=()=>{
     const navigate = useNavigate();
 
 
-
     const isSelectMasterOpen = useSelector((state:RootState)=>state.mdm.isSelectMasterOpen)
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
 
@@ -39,7 +38,7 @@ const useAdd=()=>{
     
     const [TASK_ID,setTaskId] = useState<string>();
     const [conflictCount,setConflictCount] = useState<number>(0);
-    const [errorCount,setErrorCount] = useState<number>(0);
+    const [errorCounts,setErrorCount] = useState<number>(0);
     const [errorData,setErrorData] = useState<Array<any>>([]);
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
@@ -273,50 +272,75 @@ const useAdd=()=>{
       }
 
       const onSubmit = async(isOverWrite?:boolean) => {
+        try{
         if(isSubmitDisabled) return;
- 
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
-
+        dispatch(REMOVE_COLDEFS(['checkbox']));
         setIsSubmitDisabled(true)
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
      
         //let result;
- 
+          const totalRecords = activeMaster.rowData.length
         
-          const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          const {isDisaster,errorCount:localErrorCount,errorData:localErrorData,conflictCount} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
           let errorRowData = [];
 
-          if(isDisaster)return
-            if(localErrorCount>0 || errorCount>0){
-              if(localErrorCount > 0){
-                errorRowData = createErrorRowData(localErrorData,activeMaster.id)
-              }
-              else{
-                errorRowData = createErrorRowData(errorData,activeMaster.id)
-              }
-              if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
-                addInvalidDataColDefs('error')
-              }
-              dispatch(UPDATE_ROW_DATA(errorRowData))
-              dispatch(SET_RECORD_COUNT(errorRowData.length))
-             
+          if(isDisaster){
+            notifyError("Something went wrong !")
+            return
+          }
+
+
+          if(localErrorCount>0 || errorCounts>0){
+            if(localErrorCount > 0){
+              errorRowData = createErrorRowData(localErrorData,activeMaster.id)
             }
-            dispatch(REMOVE_COLDEFS(['checkbox']));
-
-
-            if(errorRowData.length > 0) notifyError("Addition Unsuccessfull")
-            else notifySuccess(`Additions Submitted Successfully`);
-            dispatch(UPDATE_PROGRESS_STATE('submitted'));
-            dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-            if(draftID.length > 0){
-              await deleteDraft(draftID);
+            else{
+              errorRowData = createErrorRowData(errorData,activeMaster.id)
             }
-            setIsSubmitDisabled(false)
+            if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+              addInvalidDataColDefs('error')
+            }
+            dispatch(UPDATE_ROW_DATA(errorRowData))
+            dispatch(SET_RECORD_COUNT(errorRowData.length))
+            
+          }
 
+          const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
 
-          
+          if(submittedRecordsCount === totalRecords){
+            notifySuccess("Addition Successfull")
+          }
+
+          else if(errorRowData.length > 0 || conflictCount > 0){
+
+            if(errorRowData.length && conflictCount){
+              if(submittedRecordsCount === 0){
+                notifyError(`${errorRowData.length} records have error and ${conflictCount} records have conflicts. `)
+              }
+              else notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error and ${conflictCount} records have conflicts. `)
+            }
+
+            else if(errorRowData.length){
+              notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error. `)
+            }
+            else{
+              notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${conflictCount} records have conflicts. `)
+            }
+          }
+          else notifySuccess("Addition Successfull")
+          dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          if(draftID.length > 0){
+            await deleteDraft(draftID);
+          }
+      }catch(err){
+        notifyError("Something went wrong")
+      }finally{
+        setIsSubmitDisabled(false)
       }
+    }
 
       const showMasterGroup = (currMasterGroup:{name:string,masters:Array<any>})=>{
         if(selectedOptions.length===0)return true
@@ -357,7 +381,7 @@ const useAdd=()=>{
         activeMaster,
         isSelectMasterOpen,
         conflictCount,
-        errorCount,
+        errorCount:errorCounts,
         onSubmit,
         handleOnClickMaster,
         handleSubmitSelectMaster,
@@ -366,7 +390,8 @@ const useAdd=()=>{
         showMasterGroup,
         showMaster,
         options,
-        selectedOptions
+        selectedOptions,
+        isSubmitDisabled
     }
 }
 

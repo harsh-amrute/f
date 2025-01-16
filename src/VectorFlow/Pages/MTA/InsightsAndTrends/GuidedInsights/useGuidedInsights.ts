@@ -22,13 +22,13 @@ const ref = useRef()
 const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
 
 
-const {mutateAsync:getDBMNormSuggestionLoc} = useGetDBMNormSuggestionLoc();
-const {mutateAsync:getDBMNormSuggestionPie} = useGetDBMNormSuggestionPie();
-const {mutateAsync:getDBMNormSuggestionSKUs} = useGetDBMNormSuggestionSKUs();
-const {mutateAsync:getDBMNormSuggestionAgeing} = useGetDBMNormSuggestionAgeing();
-const {mutateAsync:getChronicUnavailabilityLoc} = useGetChronicUnavailabilityLoc();
-const {mutateAsync:getChronicUnavailabilitySku} = useGetChronicUnavailabilitySku();
-const {mutateAsync:getChronicUnavailabilityGrid} = useGetChronicUnavailabilityGridView();
+const {mutateAsync:getDBMNormSuggestionLoc} = useGetDBMNormSuggestionLoc() || {};
+const {mutateAsync:getDBMNormSuggestionPie} = useGetDBMNormSuggestionPie() || {};
+const {mutateAsync:getDBMNormSuggestionSKUs} = useGetDBMNormSuggestionSKUs() || {};
+const {mutateAsync:getDBMNormSuggestionAgeing} = useGetDBMNormSuggestionAgeing() || {};
+const {mutateAsync:getChronicUnavailabilityLoc} = useGetChronicUnavailabilityLoc() || {} ;
+const {mutateAsync:getChronicUnavailabilitySku} = useGetChronicUnavailabilitySku() || {};
+const {mutateAsync:getChronicUnavailabilityGrid} = useGetChronicUnavailabilityGridView() || {};
 const [chroniceRowData,setChronicRowData] = useState<Array<any>>([])
 
 const [horizon,setHorizon] = useState<number>(9)

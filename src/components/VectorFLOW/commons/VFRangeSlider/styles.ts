@@ -12,8 +12,8 @@ export const RangeSliderInput = styled.input<{progressValue:number,theme:string}
   -webkit-appearance: none;
   width: 100%;
   height: 11px;
-box-shadow: 0px 3px 12px #7C7C7C29;
-border-radius: 30px;
+  box-shadow: 0px 3px 12px #7C7C7C29;
+  border-radius: 30px;
   background: transparent;
   outline: none;
   cursor:pointer;
@@ -32,12 +32,16 @@ border-radius: 30px;
     border:4px solid white;
     box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
     cursor: pointer;
+    outline:solid 2px transparent;
+    transition:0.3s ease-in-out;
+  }
 
+  &::-webkit-slider-thumb:active{
+    outline:solid 2px ${(props)=>globalStyles.chooseThemeColor[props.theme].color5};
   }
 
   &::-webkit-slider-runnable-track {
     height:9px;
-    cursor: pointer;
     background: linear-gradient(to right,  ${(props)=>props.theme==="REGALBLAZE"?globalStyles.chooseThemeColor[props.theme].color1:'black'} 0%,${(props)=>props.theme==="REGALBLAZE"?globalStyles.chooseThemeColor[props.theme].color1:'black'} ${(props)=>props.progressValue}%,#ffffff ${(props)=>props.progressValue}%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     border-radius: 30px;
     border: none;
@@ -46,19 +50,27 @@ border-radius: 30px;
   &:hover {
     opacity: 1;
   }
+
+  &:disabled{
+    opacity:0.2;
+    cursor:not-allowed;
+  }
 `;
 
 export const ValueLabel = styled.div<{ left: number,top:number }>`
   position: absolute;
   text-align:center;
-  background-color:white;
+  background-color:rgb(255,255,255,0.4);
+  backdrop-filter:blur(4px);
   top:${(props)=>props.top}px;
   left: ${(props) => props.left}px;
+  border-radius:6px;
 //   transform: translateX(-50%);
   font-size: 10px;
   font-weight:500;
   padding: 0px 5px;
   z-index:10;
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
 `;
 
 export const MilestonesContainer = styled.div`

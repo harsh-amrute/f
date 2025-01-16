@@ -42,7 +42,8 @@ const OpenExpeditingRequests = () => {
     onApplyFilter,
     editedRows,
     onSubmitEditedRows,
-    themeUi
+    themeUi,
+    onResetCallback
   } = useOpenExpeditingRequests()
 
   return (
@@ -54,11 +55,12 @@ const OpenExpeditingRequests = () => {
         tempDownloadData: tempDownloadData,
         setTempDownloadData: setTempDownloadData,
         exportExcelRowData: exportExcelRowData,
-        setExportExcelRowData: setExportExcelRowData
+        setExportExcelRowData: setExportExcelRowData,
+        onResetCallback:onResetCallback
 
       }}
     >
-      <div style={{ marginLeft: '10px' }}>
+      <div style={{ marginLeft: '10px',marginBottom:'10px' }}>
         <ActionToolBar
           view={'grid'}
           setCurrentTab={''}

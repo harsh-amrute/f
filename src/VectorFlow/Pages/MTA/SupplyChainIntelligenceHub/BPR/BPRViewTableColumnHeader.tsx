@@ -19,7 +19,7 @@ const BPRViewTableColumnHeader = ({colDef,query}:{colDef:BPRViewTableColDef,quer
 
     const handleClick = (e:React.MouseEvent<HTMLDivElement>)=>{
         const {top, left} = e.currentTarget.getBoundingClientRect()
-        setFilterPosition({top:(top * 0.75) + 20, left:(left * 0.75) - 85})
+        setFilterPosition({top:(top * 0.8) + 20, left:(left * 0.8) - 85})
         setFilterOpen((prev)=>!prev)
         e.stopPropagation()
     }

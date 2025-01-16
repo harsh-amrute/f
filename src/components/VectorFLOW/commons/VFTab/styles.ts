@@ -16,6 +16,7 @@ export const SCTabHeader = styled.div`
   align-items: center;
   place-content: space-between;
   overflow: overlay;
+  zoom:var(--default-zoom);
 
 
   &::-webkit-scrollbar{

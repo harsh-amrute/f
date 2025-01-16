@@ -7,6 +7,8 @@ import VFMultiFilter from "../../../../components/VectorFLOW/commons/VFMultiFilt
 import * as globalStyles from '../../../../styles/global'
 import useGetLocation from "../../../../hooks/useGetLocation";
 import useGetlastRunData from "../../../../hooks/useGetLastRunData";
+import { Skeleton } from "../../../../components/commons/styled";
+import { LastRunDateHeader } from "../../../../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/Planning/ActionToolBar/styles";
 
 
 
@@ -90,7 +92,14 @@ const SelectCategory = (props: CountProp) => {
 
 
             <DateContainer>
-                <DateWrapper><b>{formattedDate}</b></DateWrapper>
+                <DateWrapper>
+                    {formattedDate === "Loading"?(
+                        <Skeleton style={{height:30,width:150}}/>
+                    ):(
+                    <LastRunDateHeader>{formattedDate}</LastRunDateHeader>
+                    )}
+
+                </DateWrapper>
                 <CategoryWrapper><p>Please select a category</p></CategoryWrapper>
             </DateContainer>
 

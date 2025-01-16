@@ -84,12 +84,12 @@ const Overview = ({ themeUi }: any) => {
             </SCOverviewItemTitle>
             <SCSubTitleSpan>{user?.user?.name}</SCSubTitleSpan>
           </SCOverviewItem>
-          <SCOverviewItem>
+          {/* <SCOverviewItem>
             <SCOverviewItemTitle>
               {t("profile.tabContent.overview.contactNo")}
             </SCOverviewItemTitle>
             <SCSubTitleSpan></SCSubTitleSpan>
-          </SCOverviewItem>
+          </SCOverviewItem> */}
           <SCOverviewItem>
             <SCOverviewItemTitle>
               {t("profile.tabContent.overview.role")}

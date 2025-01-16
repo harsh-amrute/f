@@ -34,13 +34,14 @@ const TaskPendingForReview = ()=>{
     } = useTaskPendingForReview()
 
     if(showLoader) return <VFLoader/>
-
+    const suppressMovable = true;
     if(isViewTableOpen){
         return(
             <TaskPendingWrapper>
                 <VFTable
                 height={"100%"}
                 columnDefs={viewTableColDefs}
+                suppressMovableColumns={suppressMovable}
                 gridOptions={{
                     getRowStyle: (params: any) => {
                       if (params.node.rowIndex % 2 === 0) {
@@ -105,6 +106,7 @@ const TaskPendingForReview = ()=>{
                 }}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
+                // paginationPageSize={50}
                 // suppressPaginationPanel={true}
             />
                     

@@ -71,8 +71,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
     },[])
 
     useEffect(()=>{
-        if(internalRef){
-            internalRef.api.applyColumnState({state:gridState?.columns})
+        if(internalRef && gridState && gridState.columns){
+            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
         }
     },[internalRef,gridState])
 
@@ -145,7 +145,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
 
     return(
         <GridViewLayout>
-            <div style={{height:'100vh',zoom:0.75}}>
+            <div style={{height:'100vh'}}>
                 <Allotment defaultSizes={[350,150]} vertical>
                 {
                     (isSubGridOpen || showStockGrid ) && (
@@ -188,7 +188,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                 }
                 {isSubGridOpen && (
                     <Allotment.Pane minSize={180} maxSize={350}>
-                        <div style={{marginTop:'20px',height:'100%'}}>
+                        <div style={{marginTop:'20px',height:'100%',zoom:'var(--default-zoom)'}}>
                             {renderSubGrid()}
                         </div>
                     </Allotment.Pane>

@@ -5,6 +5,7 @@ export const VFTaskStatusWrapper = styled.div`
     flex-direction:column;
     background-color:white;
     padding-bottom:30px;
+    zoom:var(--default-zoom);
 `
 export const VFTaskStatusContentWrapper = styled.div`
     display:flex;

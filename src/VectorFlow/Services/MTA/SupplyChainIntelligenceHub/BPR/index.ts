@@ -74,13 +74,13 @@ export const useSaveState = () => {
 }
 
 export const useGetState = () => {
-  return useMutation(async (payload:string) => {
+  return useMutation(async (payload:any) => {
     return await BPRService.getState(payload);
   });
 }
 
 export const useResetState = () => {
-  return useMutation(async (payload:string) => {
+  return useMutation(async (payload:any) => {
     return await BPRService.resetState(payload);
   });
 }
@@ -109,8 +109,14 @@ export const useGetLocationTypes = ()=>{
   })
 }
 
-export const useGetlastRunDate = ()=>{
-  return useQuery(QUERY_KEYS.useGetlastRunDate,async()=>{
+export const useGetLastRunDate = ()=>{
+  return useMutation(async()=>{
     return await BPRService.getlastRunDate()
+  })
+}
+
+export const useGetUiConfig = ()=>{
+  return useMutation(async(reportName:string)=>{
+    return await BPRService.getUiConfig(reportName)
   })
 }

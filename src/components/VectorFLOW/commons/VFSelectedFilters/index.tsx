@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react'
+import { CSSProperties, useCallback } from 'react'
 import { BPRFilter, BPRFilterGroup, BPRFilterState } from '../../../.././VectorFlow/types/BPR'
 import {VFSelectedFiltersChip, VFSelectedFiltersFilterCloseIcon, VFSelectedFiltersFilterContent, VFSelectedFiltersFilterLabel, VFSelectedFiltersFilterValue, VFSelectedFiltersPlaceHolder,VFSelectedFiltersWrapper,VFFilterScrollBar} from './styles'
 
@@ -17,9 +17,9 @@ const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
         onRemoveFilter,
         style
     } = props
-    const areFiltersValid = (groupedFilters:Array<BPRFilter>):boolean=>{
+    const areFiltersValid = useCallback((groupedFilters:Array<BPRFilter>):boolean=>{
         return groupedFilters.some((f:BPRFilter)=>f.attributeName!="" && f.value!="" && f.operator!="")
-    }
+    },[])
  
     return (
         <VFSelectedFiltersWrapper style={style}>
@@ -40,7 +40,7 @@ const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
                     {currGroup.filters.map((filter:BPRFilter,index:number)=>{
                         const filterLength = currGroup.filters.length
                         return(
-                            <VFSelectedFiltersFilterContent style={{borderRight:index===filterLength-1?'none':'solid 2px black'}}>
+                            <VFSelectedFiltersFilterContent style={{borderRight:index===filterLength-1?'none':'solid 2px gray'}}>
                                 <VFSelectedFiltersFilterValue>
                                     <p>{filter.label}</p> 
                                     <p style={{margin:'0px 5px 0px 5px'}}>:</p>

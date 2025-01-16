@@ -3,6 +3,7 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import { ButtonWrapper, RemarkDate, RemarkModalContentWrapper, RemarkModalRemarkCelLRenderer, RemarkModalTable, RemarkModalTableCell, RemarkModalTableHeader, RemarkModalTableHeaderContainer, RemarkModalTableRow, RemarkModalTableRowContainer, RemarkText } from "../../Logistics/InTransitWhereAbouts/styles"
 import UserIcon from "../../Logistics/InTransitWhereAbouts/UserIcon"
+import { FormatDateFunction } from '../../../../../helpers/utils'
 
 interface RemarkModalProps{
     isOpen:boolean
@@ -26,7 +27,7 @@ const BPRRemarkHistoryModal = (props:RemarkModalProps)=>{
             <RemarkModalContentWrapper>
                 <RemarkModalTable className="custom-scrollbar">
                     <RemarkModalTableHeaderContainer>
-                        <RemarkModalTableHeader style={{textAlign:'center', paddingRight:'5px'}}>
+                        <RemarkModalTableHeader style={{textAlign:'center', paddingRight:'10px'}}>
                             Name
                         </RemarkModalTableHeader>
                         <RemarkModalTableHeader>
@@ -41,13 +42,13 @@ const BPRRemarkHistoryModal = (props:RemarkModalProps)=>{
                                 return(
                                 <RemarkModalTableRow key={index} style={{borderTop:index===0?'none':'dashed 1px gray'}}>
                                     <UserIcon data={d.un}/>
-                                    <RemarkModalTableCell>
+                                    <RemarkModalTableCell style={{ paddingLeft:'5px'}}>
                                         <RemarkModalRemarkCelLRenderer>
                                             <RemarkText>
                                                {d.r}
                                             </RemarkText>
                                             <RemarkDate>
-                                               {d.rd}
+                                               {FormatDateFunction(d.rd)}
                                             </RemarkDate>
                                         </RemarkModalRemarkCelLRenderer>
                                     </RemarkModalTableCell>

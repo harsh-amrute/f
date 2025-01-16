@@ -20,8 +20,8 @@ const ConflictErrorCellRenderer = (params:any)=>{
     const conflictTextColor = themeUi==="REGALBLAZE"?"rgb(164 104 6)":"rgb(130, 15, 76)"
 
 
-    const currScreenZoom = 0.75
-    const currGridZoom = 0.75
+    const currScreenZoom = 1
+    const currGridZoom = 1
 
     const [isToolTipOpen,setIsToolTipOpen] = useState(false)
     const [tooltipPosition,setToolTipPosition] = useState<CSSProperties>()
@@ -62,7 +62,7 @@ const ConflictErrorCellRenderer = (params:any)=>{
         const viewportHeight = window.innerHeight;
         // const viewPortWidth = window.innerWidth
 
-        const {height:toolTipHeight} = toolTipRef.current.getBoundingClientRect()
+        const {height:toolTipHeight,width:tooltipWidth} = toolTipRef.current.getBoundingClientRect()
 
         
         const { left, top,height:targetHeight,width:targetWidth} = e.target.getBoundingClientRect();
@@ -72,9 +72,9 @@ const ConflictErrorCellRenderer = (params:any)=>{
         // const viewPortWidth = window.innerWidth
     
     
-        let tooltipTop = (top * currGridZoom * currScreenZoom) +targetHeight;
+        let tooltipTop = (top * currGridZoom * currScreenZoom) +targetHeight + 10;
         // let tooltipLeft = (left *  currGridZoom * currScreenZoom) +((targetWidth/2)*  currGridZoom * currScreenZoom) - (toolTipWidth/2);
-        const tooltipLeft = (left *  currGridZoom * currScreenZoom) +((targetWidth/2)*  currGridZoom * currScreenZoom) ;
+        const tooltipLeft = (left *  currGridZoom * currScreenZoom) +((targetWidth/2)*  currGridZoom * currScreenZoom) - (tooltipWidth/2) ;
 
 
     
@@ -101,7 +101,6 @@ const ConflictErrorCellRenderer = (params:any)=>{
         }
         
        },0)
-       
     }
 
     
@@ -126,9 +125,8 @@ const ConflictErrorCellRenderer = (params:any)=>{
            {params.data.users && isToolTipOpen && (
              <Portal wrapperId="conflict-tooltip">
                 <ConflictErrorToolTipWrapper id={'tooltipWrapper'} ref={toolTipRef} style={{...tooltipPosition}}>
-                    {!isToolTipOverflowing && (
-                        
-                            <ToolTipTriangle style={{top:-13}}/>
+                    {!isToolTipOverflowing && (    
+                        <ToolTipTriangle style={{top:-13}}/>
                     )}
                     {params.data.users.map((user:any,index:number)=>{
                         return (

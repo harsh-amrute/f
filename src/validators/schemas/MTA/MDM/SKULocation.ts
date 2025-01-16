@@ -1,15 +1,21 @@
 import Joi from "joi";
-import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MIN_DECIMAL_VAL,MAX_NAME_LENGTH,MAX_DECIMAL_VAL,CommonSchema} from "../../../commons";
+import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MIN_DECIMAL_VAL,MAX_NAME_LENGTH,MAX_DECIMAL_VAL,CommonSchema,MAX_INT_VAL} from "../../../commons";
 
 const MIN_RLT_VALUE = 3;
 const MIN_RCP_VALUE = 3;
 const MIN_GCP_VALUE = 3;
-
-const SKULocationMessages = {
+const SKULocationMessages = (key:string)=>({
     "any.rlt":"RLT value should be greater than or equal to " + MIN_RLT_VALUE,
     "any.rcp":"RCP value should be greater than or equal to " + MIN_RCP_VALUE,
-    "any.gcp":"RCP value should be greater than or equal to " + MIN_GCP_VALUE
-}
+    "any.gcp":"GCP value should be greater than or equal to " + MIN_GCP_VALUE,
+    "number.unsafe":`${key} should be less than ${MAX_INT_VAL}`,
+    "any.mnwarn":"MinNorm should be greater than or equal to 2",
+    "any.mnerror":"MinNorm should be greater than 0",
+    "any.greaterthanZero":`${key} should be greater than 0`,
+    'any.empty': `${key} should not be empty`,
+    'any.FGRM': `${key} must be one of [fg, rm]`,
+    'any.DBMACTIVE':`${key} must be one of ["YES", "NO", "Y", "N", "1", "0"]`
+})
 
 const ParentWhCodeValidator = (value:any,helper:any)=>{
 
@@ -19,25 +25,76 @@ const ParentWhCodeValidator = (value:any,helper:any)=>{
 }
 
 const RLTValidator = (value:any,helper:any)=>{
-    if (value < MIN_RLT_VALUE) {
+    if(!Number.isInteger(value)){
+        return value
+    }
+    if(value <=0){
+        return helper.error("any.greaterthanZero")
+    }else if (value>0 && value <=2) {
         return helper.warn('any.rlt');
     }
     return value;
 }
 
 const RCPValidator = (value:any,helper:any)=>{
-    if (value < MIN_RCP_VALUE) {
+    if(!Number.isInteger(value)){
+        return value
+    }
+    if(value <=0){
+        return helper.error("any.greaterthanZero")
+    }else if (value>0 && value <=2) {
         return helper.warn('any.rcp');
     }
     return value;
 }
 
 const GCPValidator = (value:any,helper:any)=>{
-    if (value < MIN_GCP_VALUE) {
+    if(!Number.isInteger(value)){
+        return value
+    }
+    if(value <=0){
+        return helper.error("any.greaterthanZero")
+    }else if (value>0 && value <=2) {
         return helper.warn('any.gcp');
     }
     return value;
 }
+
+const OCPValidator = (value:any,helper:any)=>{
+    if(!Number.isInteger(value)){
+        return value
+    }
+    if(value <=0){
+        return helper.error("any.greaterthanZero")
+    }
+    return value;
+}
+
+const MOCValidator = (value:any,helper:any)=>{
+    if(!Number.isInteger(value)){
+        return value
+    }
+    if(value <=0){
+        return helper.error("any.greaterthanZero")
+    }
+    return value;
+}
+
+
+const MNValidator = (value:any,helper:any)=>{
+    if(!Number.isInteger(value)){
+        return value
+    }
+    if(value<=0){
+        return helper.error("any.mnerror")
+    }else if(value<2){
+        return helper.warn('any.mnwarn')
+    }
+    return value
+}
+
+
+
 
 export const SKULocationSchema = Joi.object({
     SrNo:Joi.string(),
@@ -45,23 +102,23 @@ export const SKULocationSchema = Joi.object({
     sd:Joi.string().empty().max(MAX_NAME_LENGTH),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
     wd:Joi.string().empty().max(MAX_NAME_LENGTH),
-    pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(ParentWhCodeValidator).required().messages({...generateCommonMessages('ParentWhCode')}),
+    pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(ParentWhCodeValidator).required().messages(generateCommonMessages('ParentWhCode')),
     pd:Joi.string(),
     n:Joi.number().integer(),
-    mn:Joi.number().integer(),
-    rlt:Joi.number().integer().custom(RLTValidator).messages(SKULocationMessages),
-    rcp:Joi.number().integer().custom(RCPValidator).messages(SKULocationMessages),
-    gcp:Joi.number().integer().custom(GCPValidator).messages(SKULocationMessages),
-    ocp:Joi.number().integer().min(1),
-    moc:Joi.number().integer().min(1),
-    ps:Joi.number().integer().min(1),
-    st:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
-    dst:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
-    pt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
-    dpt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL),
+    mn:Joi.number().integer().custom(MNValidator).messages(SKULocationMessages('MinNorm')),
+    rlt:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(RLTValidator).messages(SKULocationMessages('RLT')),
+    rcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(RCPValidator).messages(SKULocationMessages('RCP')),
+    gcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(GCPValidator).messages(SKULocationMessages('GCP')),
+    ocp:Joi.number().integer().max(MAX_INT_VAL).allow(null, '').custom(OCPValidator).messages(SKULocationMessages('OCP')),
+    moc:Joi.number().integer().max(MAX_INT_VAL).allow(null, '').custom(MOCValidator).messages(SKULocationMessages('Min Order Count')),
+    ps:Joi.number().integer().min(1).max(MAX_INT_VAL).messages(SKULocationMessages('PackSize')),
+    st:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`Modified Spike Threshold should be less than ${MAX_DECIMAL_VAL}`}),
+    dst:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`DefaultSpikeThreshold should be less than ${MAX_DECIMAL_VAL}`}),
+    pt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`Modified PSO Threshold should be less than ${MAX_DECIMAL_VAL}`}),
+    dpt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`Default PSO Threshold should be less than ${MAX_DECIMAL_VAL}`}),
     npr:Joi.number(),
-    frf:Joi.string().valid("fg", "rm").insensitive(), //make this case insensitive
-    da:Joi.string().valid("yes", "no", "y", "n", 1, 0, "1", "0").insensitive().default(1),
+    frf:Joi.string().valid("fg", "rm").insensitive().messages({'any.only':'FG/RM must be one of [fg, rm]','string.base': 'FG/RM must be one of [fg, rm]',}), //make this case insensitive
+    da:Joi.string().valid("yes", "no", "y", "n", 1, 0, "1", "0").insensitive().default(1).messages({'any.only':'DBM Active must be one of [yes, no, y, n, 1, 0]', 'string.base': 'DBM Active must be one of [yes, no, y, n, 1, 0]'}),
     // StockPercentForRationing:Joi.number().integer().min(0).max(100).default(0),
     // NormPercentReservation:Joi.number().integer().min(0).max(100).default(0),
     ...CommonSchema

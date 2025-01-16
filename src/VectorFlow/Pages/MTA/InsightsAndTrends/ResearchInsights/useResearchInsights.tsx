@@ -53,7 +53,7 @@ const useResearchInsights = () => {
 
     const { mutateAsync: getBPRDataCount, isLoading: isBPRDataCountLoading } = useGetBPRDataCount()
 
-    const { data: historicalAvailabilityResponse } = useGetHistroricalAvailabilityData()
+    const { data: historicalAvailabilityResponse ,isLoading:isHistoricalAvailabilityLoading } = useGetHistroricalAvailabilityData()
 
 
 
@@ -162,7 +162,6 @@ const useResearchInsights = () => {
             components:customCellRenderers,
             defaultColDef:{
                 floatingFilter: true,
-                resizable:false,
                 cellStyle:{
                     "flex":1,
                     'text-align':'center',
@@ -636,6 +635,7 @@ const useResearchInsights = () => {
         currentFilter,
         setCurrentFilter,
         historicalAvailabilityData,
+        isHistoricalAvailabilityLoading,
         continuousBlack,
         continuousBlackAndRed,
         continuousWhite,

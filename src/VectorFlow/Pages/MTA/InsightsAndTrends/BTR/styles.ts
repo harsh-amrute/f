@@ -48,10 +48,10 @@ export const BTRTableHeader = styled.p`
 
 export const BTRAvailabiltyCellRendererWrapper = styled.div`
     height:100%;
-    width:150px;
+    /* width:150px; */
     display:flex;
     align-items:center;
-    justify-content:right;
+    justify-content:center;
 `
 
 export const BTRAvailabiltyCellRenderer = styled.div<{ value: number }>`

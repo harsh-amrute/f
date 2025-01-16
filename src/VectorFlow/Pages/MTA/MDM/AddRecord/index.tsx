@@ -41,6 +41,7 @@ const AddRecord = () => {
         file,
         setFile,
         isTableDataLoading,
+        isSavingToDraft,
         exportToExcel,
         onBackButton,
         onClearExportError,
@@ -62,7 +63,7 @@ const AddRecord = () => {
         onEditOnlineSave,
         isDataAvailableLocally,
         isOverlayVisible,
-        errorCount
+        onDiscardDraftCallback
 
     } = useViewModify('add');
 
@@ -79,7 +80,9 @@ const AddRecord = () => {
         showMasterGroup,
         showMaster,
         options,
-        selectedOptions
+        selectedOptions,
+        errorCount,
+        isSubmitDisabled
     } = useAdd()
     
     useEffect(()=>{
@@ -118,7 +121,7 @@ const AddRecord = () => {
       )
     }
     const dispatch = useDispatch();
-
+    const suppressMovable = true;
     return(
         <React.Fragment>
           <SCContainer>
@@ -132,9 +135,10 @@ const AddRecord = () => {
                 newTabHandler={addNewMaster}
                 >
                   <VFTable
-                    height={"95%"}
+                    height={"calc(100% )"}
                     ref={ref}
                     columnDefs={activeMaster.colDefs}
+                    suppressMovableColumns={suppressMovable}
                     rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}
@@ -222,33 +226,39 @@ const AddRecord = () => {
         }
         {
           !isSelectMasterOpen && 
-          <VFTaskBar
-          showSubmittedExportError={errorCount>0}
-            enableEditOnlineReset={false}
-            disableResumeSeasonality={()=>false}
-            disableStopSeasonality={()=>false}
-            masterProgress={activeMaster.progress}
-            onReset={onReset}
-            onSaveToDraft={onSaveToDraft}
-            onEditOnlineSave={onEditOnlineSave}
-            editOnline={editOnline}
-            onEditOnline={()=>onEditOnline('editOnline')}
-            onBack={onBackButton}
-            onClearAndExportErrors={()=>onClearExportError()}
-            onModifyData={()=>toggleUploadModal(true)}
-            onExportData={exportToExcel}
-            onSubmit={onSubmit}
-            onDeleteSelected={deleteSelected}
-            onPhaseInPhaseOutStop={()=>console.log('')}
-            onSeasonalityResume={()=>console.log('')}
-            onSeasonalityStop={()=>console.log('')}
-            onDeleteData={()=>console.log('')}
-            onDeleteOnline={()=>console.log('')}
-            onDeleteOnlineReset={()=>console.log('')}
-            onSubmitConflictData={()=>console.log('')}
-            onDeleteOnlineSubmit={()=>console.log('')}
-            masterId={activeMaster.id}
-          />
+          <div style={{zoom:'var(--nms-filter-zoom)'}}>
+            <VFTaskBar
+              disableSubmit={isSubmitDisabled}
+              showSubmittedExportError={errorCount>0}
+              enableEditOnlineReset={false}
+              disableResumeSeasonality={()=>false}
+              disableStopSeasonality={()=>false}
+              masterProgress={activeMaster.progress}
+              onReset={onReset}
+              onSaveToDraft={onSaveToDraft}
+              isSavingToDraft={isSavingToDraft ?? false}
+              onEditOnlineSave={onEditOnlineSave}
+              editOnline={editOnline}
+              onEditOnline={()=>onEditOnline('editOnline')}
+              onBack={onBackButton}
+              onClearAndExportErrors={onClearExportError}
+              onModifyData={()=>toggleUploadModal(true)}
+              onExportData={exportToExcel}
+              onSubmit={onSubmit}
+              onDeleteSelected={deleteSelected}
+              onPhaseInPhaseOutStop={()=>console.log('')}
+              onSeasonalityResume={()=>console.log('')}
+              onSeasonalityStop={()=>console.log('')}
+              onDeleteData={()=>console.log('')}
+              onDeleteOnline={()=>console.log('')}
+              onDeleteOnlineReset={()=>console.log('')}
+              onSubmitConflictData={()=>console.log('')}
+              onDeleteOnlineSubmit={()=>console.log('')}
+              masterId={activeMaster.id}
+              DataCount={activeMaster.rowData.length}
+              onDiscardDraftCallback={onDiscardDraftCallback}
+            />
+          </div>
         }
         </React.Fragment>
     )

@@ -231,6 +231,12 @@ const ExcessInventoryTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:st
           title: {
             text: 'Value In Lakhs',
           },
+          label: {
+            formatter: (params:any) => {
+              const valueInLakhs = params.value / 100000; // Divide by 100,000 to convert to lakhs
+              return `${valueInLakhs} L`; // Return the value followed by 'L' for lakhs
+            },
+          },
           
         },
       ],

@@ -350,7 +350,6 @@
         },
         "title": "detalles del perfil",
         "fullName": "Nombre completo",
-        "contactNo": "Número de contacto",
         "role": "Role",
         "signInDetails": "Detalles de inicio de sesión",
         "email": "Dirección de correo electrónico",

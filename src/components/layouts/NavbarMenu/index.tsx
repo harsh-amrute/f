@@ -8,11 +8,11 @@ import { useUserData } from "../../../context";
 import { useNavigate } from "react-router";
 import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
 import _ from 'lodash'
-import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
+// import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
 
 const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
   const { mutateAsync: getAllReports } = useGetAllReports();
-  const {mutateAsync: getAllMTOReports} = useGetAllMTOReports()
+  // const {mutateAsync: getAllMTOReports} = useGetAllMTOReports()
   const [listMenu, setListMenu] = useState(listMenuParent);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
@@ -26,59 +26,82 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
 
 
 
-  const getReportFields = async () => {
+  // const getReportFields = async () => {
 
-    let transformedData: any = undefined;
+  //   let transformedData: any = undefined;
     
-    try{
-      const reports = await getAllReports();
-      const rawDailyReport = reports.data.data
-      transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
-        name: attributes.reportName,
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: key,
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
-        downloadName: attributes.downloadName
-      }));
-
+  //   try{
+  //     const reports = await getAllReports();
+  //     const rawDailyReport = reports.data.data
+  //     transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
+  //       name: attributes.reportName,
+  //       img: "/assets/img/nav/arrow_down.svg",
+  //       imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+  //       url: key,
+  //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+  //       downloadName: attributes.downloadName
+  //     }));
+  //     console.log(transformedData);
+  //     setListMenu(transformedData);
   
-    }
-    catch(err){
+  //   }
+  //   catch(err){
       
-      console.error("Error fetching reports", err);
-    }
-    finally{
-      try{
-        const mtoReports = await getAllMTOReports();
-        const rawMTOReports = mtoReports.data.data;
-        const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
-          name: attributes.reportName,
-          img: "/assets/img/nav/arrow_down.svg",
-          imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-          url: key,
-          role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager","MasterScheduler"],
-          isMTO: true,
-          downloadName: attributes.downloadName
-        }));
+  //     console.error("Error fetching reports", err);
+  //   }
+  //   finally{
+  //     try{
+  //       const mtoReports = await getAllMTOReports();
+  //       const rawMTOReports = mtoReports.data.data;
+  //       const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
+  //         name: attributes.reportName,
+  //         img: "/assets/img/nav/arrow_down.svg",
+  //         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+  //         url: key,
+  //         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
+  //         isMTO: true,
+  //         downloadName: attributes.downloadName
+  //       }));
 
-        const extractedNewMenu = _.cloneDeep(localStorage.getItem("ListMenu")? JSON.parse(localStorage.getItem("ListMenu") || ""): listMenuParent)
-        const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
-        if (targetObject) {
-          if(transformedData){
+  //       const extractedNewMenu = _.cloneDeep(listMenuParent)
+  //       const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
+  //       if (targetObject) {
+  //         if(transformedData){
 
-            targetObject.child.push(...transformedData);
-          }
-          targetObject.child.push(...transformedMTOData);
-          const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
-          setReportUrls(reporturls)
-      }
-      setListMenu(extractedNewMenu);
-      }
-      catch(error){
-        console.log(error)
-      }
+  //           targetObject.child.push(...transformedData);
+  //         }
+  //         targetObject.child.push(...transformedMTOData);
+  //         const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+  //         setReportUrls(reporturls)
+  //     }
+  //     setListMenu(extractedNewMenu);
+  //     }
+  //     catch(error){
+  //       console.log(error)
+  //     }
+  //   }
+  // }
+
+  const getReportFields = async ()=>{
+    const reports = await getAllReports();
+    const rawDailyReport = reports.data.data
+    const transformedData = Object.entries(rawDailyReport).map(([key, attributes]:[string , any]) => ({
+      name: attributes.reportName,
+      img: "/assets/img/nav/arrow_down.svg", 
+      imgHover: "/assets/img/nav/DownloadReport-Icon.svg", 
+      url: key, 
+      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","DBMManager","BPRManager","MasterUpdater","MasterApprover"],
+      downloadName: attributes.downloadName
+    }));
+    const extractedNewMenu = _.cloneDeep(listMenuParent)
+    const targetObject = extractedNewMenu.find((item:any) => item.id === 8);
+    if (targetObject) {
+      console.log(targetObject)
+      targetObject.child.push(...transformedData);
+      const reporturls = targetObject.child.map((child:any) => child.url).filter((url:string) => url);
+      setReportUrls(reporturls)
     }
+    setListMenu(extractedNewMenu);
   }
 
   
@@ -103,6 +126,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     localStorage.setItem("ListItem",JSON.stringify(item));
     localStorage.setItem("ListMenu", JSON.stringify(newMenu));
     setListMenu(newMenu);
+    handleItemLeave();
   };
 
   const handleLogout = async () => {

@@ -78,8 +78,8 @@ border-bottom:solid 0.5px #ECECEC;
 
 export const VFMasterCardCheckBox = styled.input<{themeUi: string}>`
 appearance:none;
-width:20px;
-height:20px;
+width:20px !important;
+height:20px !important;
 border-radius:50%;
 outline:none;
 border:1px solid grey;  

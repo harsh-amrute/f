@@ -74,6 +74,17 @@ import MTOTaskPendingForReview from './VectorFlow/Pages/MTO/MDM/TaskPendingForRe
 import MTOAddRecord from './VectorFlow/Pages/MTO/MDM/AddRecord'
 import MTODataModificationHistory from './VectorFlow/Pages/MTO/MDM/DataModificationHistory'
 import MastersInterceptor from './VectorFlow/Pages/Common/MastersInterceptor'
+import {AuthGate,UnAuthGate} from './components/VectorFLOW/layouts/VectorAdmin/AuthGate'
+import VectorAdminLogin from './components/VectorFLOW/layouts/VectorAdmin/Login'
+import Tools from './components/VectorFLOW/layouts/VectorAdmin/Tools'
+import ManageRoles from './components/VectorFLOW/layouts/VectorAdmin/ManageRoles'
+import ManageURLs from './components/VectorFLOW/layouts/VectorAdmin/ManageURLs'
+
+import RRRColorBandwise from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport  Color Bandwise'
+import BuyerOrderReportColorBandwise from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport Color Bandwise'
+import OrderAllocationReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OrderAllocationReport'
+import TotalRequirementReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/TotalRequirementReport'
+
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -122,6 +133,12 @@ const lazyLoad = (children: React.ReactNode) => {
     '/supply-chain-intelligence-hub/planning',
     '/supply-chain-intelligence-hub/rrr',
     "/supply-chain-intelligence-hub/open-expediting-requests",
+
+    '/supply-chain-intelligence-hub/rrr-color-bandwise',
+    '/supply-chain-intelligence-hub/bor-color-bandwise',
+    '/supply-chain-intelligence-hub/order-allocation-report',
+    '/supply-chain-intelligence-hub/total-requirement-report',
+
     '/insights-and-trends/buffer-trends',
     '/insights-and-trends/guided-insights',
     '/insights-and-trends/research-insights',
@@ -646,6 +663,50 @@ export const initRoutes = (): RouteObject[] => {
           index: true,
           element: lazyLoad(<ResearchInsights />)
         },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/rrr-color-bandwise',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<RRRColorBandwise/>)
+        } ,
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/bor-color-bandwise',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<BuyerOrderReportColorBandwise/>)
+        } ,
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/order-allocation-report',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<OrderAllocationReport/>)
+        } ,
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/total-requirement-report',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<TotalRequirementReport/>)
+        } ,
         ...getStoreTransferModuleRoutes()
       ]
     },
@@ -1215,6 +1276,37 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<LandingPage />)
+
+        }
+      ]},
+      {
+      path: '/vector-admin',
+      element: <AuthGate />,
+      children: [
+        {
+          index: true,
+          element: <Tools/>,
+          path:'/vector-admin'
+        },
+        {
+          index: true,
+          element: <ManageRoles/>,
+          path:'/vector-admin/manage-roles'
+        },
+        {
+          index: true,
+          element: <ManageURLs/>,
+          path:'/vector-admin/manage-urls'
+        }
+      ]
+    },
+    {
+      path: '/vector-admin/login',
+      element: <UnAuthGate />,
+      children: [
+        {
+          index: true,
+          element: <VectorAdminLogin/>,
         }
       ]
     }

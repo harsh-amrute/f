@@ -3,7 +3,7 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { SCContainer, SCFilterContainer, SCFilterControls, SCLegend, SCFilterAddControls, SCFilterAddButton, SCFilterAddButtonWrapper, SCFilterSeperator, SCFilterButtonGroup, SeasonalityQuickFilterWrapper, SeasonalityQuickFilter, SeasonalityQuickFilterHeader, SeasonalityQuickFilterText } from "./styles";
 import { useUserData } from "../../../../../context";
 import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMaster";
-import { generateOptions } from "../../../../../helpers/utils";
+import { generateOptions, getMDMTableHeight } from "../../../../../helpers/utils";
 import VFTab from "../../../../../components/VectorFLOW/commons/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilter";
 import useViewModify from "./useViewModify"; 
@@ -27,13 +27,14 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
   const ViewModify = () => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
-
+    const suppressMovable = true;
    
     // const disabled=true;
     // const dummyFn =()=>{return}
 
     const {
         isSelectMasterOpen,
+        isSavingToDraft,
         options,
         selectedOptions,
         activeMaster,
@@ -103,13 +104,11 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         submittedDataCount,
         uploadProgress,
         totalProgress,
-        tempRecordCount
+        tempRecordCount,
+        isSubmitDisabled,
+        onDiscardDraftCallback
 
     } = useViewModify('modify');
-
-
-
-    
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -168,7 +167,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
               >
                 { (activeMaster.progress ==='default' || activeMaster.progress ==='view') 
                     &&
-                  <SCFilterContainer>
+                  <SCFilterContainer style={{zoom:'var(--nms-filter-zoom)'}}>
                     <SCFilterControls>
                       <SCLegend>Filter</SCLegend>
                       {activeMaster.filters.map((f:Filter)=>{
@@ -227,6 +226,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
                 <VFTable
                   ref={ref}
                   columnDefs={activeMaster.colDefs}
+                  suppressMovableColumns={suppressMovable}
                   rowData={activeMaster.rowData}
                   {...agGridProps}
                   suppressPaginationPanel={!isDataAvailableLocally}
@@ -240,7 +240,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
                     ]:
                     [],
                   }}
-                  height={activeMaster.rowData.length > 0 ? activeMaster.progress==='view' ? "65%" : "95%" : "75%"}
+                  height={getMDMTableHeight(activeMaster)}
                 />
                 {
             (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
@@ -331,7 +331,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         }
         {
           !isSelectMasterOpen && 
-          <VFTaskBar
+          <div style={{zoom:'var(--nms-filter-zoom)'}}>
+            <VFTaskBar
             disableStopSeasonality={()=>{
               const flatState=_.flatMap(seasonalityActiveQuickFilter)
               let error = false;
@@ -356,11 +357,12 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             }}
             showSubmittedExportError={errorCount>0}
             masterProgress={activeMaster.progress}
-            disableSubmit={activeMaster.rowData.length===0}
+            disableSubmit={activeMaster.rowData.length===0 || isSubmitDisabled}
             enableEditOnlineReset = {enableEditOnlineReset}
             disableDeleteSelected={activeMaster.rowData.length < 1}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
+            isSavingToDraft={isSavingToDraft ?? false}
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
             onEditOnline={()=>onEditOnline('editOnline')}
@@ -379,7 +381,10 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             onDeleteOnlineSubmit={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
             masterId={activeMaster.id}
+            DataCount={activeMaster.rowData.length}
+            onDiscardDraftCallback={onDiscardDraftCallback}
           />
+          </div>
         }
         
       </>

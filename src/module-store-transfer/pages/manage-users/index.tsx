@@ -101,6 +101,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       name: "",
       email: "",
       roles: [],
+      edit:false
     });
     setContentModal({
       callApi: 1,
@@ -324,6 +325,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       name: item.name,
       email: item.email,
       roles: roles,
+      edit:true
     });
 
     setContentModal({
