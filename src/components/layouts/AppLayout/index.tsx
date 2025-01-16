@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router";
+import { Outlet} from "react-router";
 import { useLocation } from 'react-router-dom';
 import {
   Header,
@@ -54,21 +54,6 @@ const AppLayout = () => {
   const [menuItem, setMenuItem] = useState<any>();
   const [colorTheme, setColorTheme] = useState<string>("NOIRFUSION");
   const [isHide, setIsHide] = useState<boolean>(false);
-
-  const navigate = useNavigate()
-
-  useEffect(()=>{
-    (()=>{
-      const landingPage = localStorage.getItem("landing_page")
-
-      if(landingPage){
-        if( typeof landingPage === "string"){
-          navigate(landingPage)
-        }
-        else localStorage.removeItem("landing_page")
-      }
-    })()
-  },[])
 
   return (
     <AuthenticationTemplate

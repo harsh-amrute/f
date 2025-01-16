@@ -167,9 +167,9 @@
   overflow: visible;
 }
 
-.ag-header-group-cell .ag-header-cell-comp-wrapper {
+/* .ag-header-group-cell .ag-header-cell-comp-wrapper {
   justify-content:center;
-}
+} */
 
 .ag-header-row:nth-child(2) {
   background-color: #f7f7f7;
@@ -284,10 +284,10 @@
 
 
 
-.ag-pinned-right-cols-container {
+/* .ag-pinned-right-cols-container {
   margin-right: -12px !important;
   min-width: 301px !important;
-}
+} */
 /* 
 
 .ag-theme-alpine .ag-body-horizontal-scroll {
