@@ -380,15 +380,3 @@ export const ChartHeaderRadioGroup = styled.div<{ theme: string }>`
     line-height:19px;
     font-family:Roboto;
 `
-export const DatePickerWrapper = styled.div<{ theme: string }>`
-  position: relative;
-  height:100%;
-  & > ::-webkit-calendar-picker-indicator {
-    background: ${(props) =>
-      props.theme === 'REGALBLAZE'
-        ? "url('/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg') no-repeat"
-        : "url('/assets/img/mto/OrderRescheduling/edit-calendar.svg') no-repeat"};
-    width: 16px;
-    height: 16px;
-  }
-`
