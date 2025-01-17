@@ -139,7 +139,7 @@ export const useBORColorBandwise =()=>{
       useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("BOR_Color_Bandwise")
+            const data =  await getState({"reportname": "BOR_Color_Bandwise"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({

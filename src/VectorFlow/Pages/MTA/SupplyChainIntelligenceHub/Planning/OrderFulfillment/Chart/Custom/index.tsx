@@ -53,7 +53,7 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("OrderFulfillmentcustom")
+            const data =  await getState({reportname: "OrderFulfillmentcustom"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({

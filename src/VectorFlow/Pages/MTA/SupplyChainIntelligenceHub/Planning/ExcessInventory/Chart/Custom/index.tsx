@@ -51,7 +51,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("ExcessInventorycustom")
+            const data =  await getState({reportname: "ExcessInventorycustom"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
