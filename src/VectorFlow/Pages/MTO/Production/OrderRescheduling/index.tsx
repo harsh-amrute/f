@@ -8,7 +8,6 @@ import {
 } from "./styles";
 import VFTable from "../../Common/VFTable";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import ReasonCellRenderer from "./ReasonCellRenderer";
 import DueDateCellRenderer from "./DueDateCellRenderer";
 import {
   usePutUpdateOrderDueDate,
@@ -112,8 +111,7 @@ const OrderRescheduling = () => {
     }
     setIsLoading(false);
   };
-  
-  console.log("grid Data", rowData)
+
   const getSelectedRowData = () => {
     const selectedData = refGraph1.current?.api.getSelectedRows();
 
@@ -164,7 +162,7 @@ const OrderRescheduling = () => {
     tooltipShowDelay: 0.3,
     tooltipTrigger: "focus",
     tooltipInteraction: true,
-    readOnlyEdit: true,
+    readOnlyEdit: false,
     pagination: true,
     suppressRowClickSelection: true,
     rowHeight: 40,
@@ -185,6 +183,7 @@ const OrderRescheduling = () => {
       flex: 1,
     },
     onSelectionChanged: getSelectedRowData,
+    enableFillHandle: true,
   };
 
   const [currTab, setCurrTab] = useState("Unschedule");
@@ -265,10 +264,22 @@ const OrderRescheduling = () => {
       autoHeaderHeight: true,
       wrapHeaderText: true,
       flex: 1,
-      // initialWidth: 210,
-      // width: 210,
+      cellStyle: (params : any)=> {
+        if(params.node.isSelected()){
+        return {
+          backgroundColor: 'white',
+          border: '1px solid #b9bdba',
+          color: 'black',
+          padding: '1px',
+        }
+      }else{
+        return {
+          backgroundColor: 'white',
+        }
+      }
+    },
       filter: "agMultiColumnFilter",
-      cellRenderer: ReasonCellRenderer,
+      editable: (params: any) => params.node.isSelected(),
       floatingFilter: true,
     },
   };
@@ -450,7 +461,7 @@ const OrderRescheduling = () => {
       }
     });
     params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-    // params.api.autoSizeAllColumns();
+    params.api.sizeColumnsToFit();
     setCurrentGridRef(refGraph1);
     params.api.sizeColumnsToFit();
   };
