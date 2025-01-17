@@ -4,6 +4,27 @@ interface ChronicGridViewProps {
     currentGridData:any
 }
 const ChronicGridView=({currentGridData}:ChronicGridViewProps)=>{
+
+  const sideBarForChronicGrid = {
+    toolPanels: [
+      {
+        id: "columns",
+        labelDefault: "Columns",
+        labelKey: "columns",
+        iconKey: "columns",
+        toolPanel: "agColumnsToolPanel",
+        // toolPanelParams: {},
+      },
+      {
+        id: 'filters',
+        labelDefault: 'Filters',
+        labelKey: 'filters',
+        iconKey: 'filter',
+        toolPanel: 'agFiltersToolPanel',
+      }
+    ],
+    defaultToolPanel:'',
+    }
     
     const agGridProps:AgGridReactProps = {
         
@@ -16,7 +37,7 @@ const ChronicGridView=({currentGridData}:ChronicGridViewProps)=>{
         tooltipInteraction:true,
         readOnlyEdit:true,
         gridOptions:{
-            sideBar:'columns',
+            sideBar:sideBarForChronicGrid,
             rowHeight:50,
             getRowStyle: (params: any) => {
             if (params.node.rowIndex % 2 === 0) {

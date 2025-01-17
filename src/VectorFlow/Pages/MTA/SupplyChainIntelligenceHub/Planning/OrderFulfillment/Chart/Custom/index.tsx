@@ -114,6 +114,27 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
         return <VFLoader/>
     }
 
+    const sideBarForOrderFullFillment = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            // toolPanelParams: {},
+          },
+          {
+            id: 'filters',
+            labelDefault: 'Filters',
+            labelKey: 'filters',
+            iconKey: 'filter',
+            toolPanel: 'agFiltersToolPanel',
+          }
+        ],
+        defaultToolPanel:'',
+        }
+
     
     return(
         <>
@@ -123,7 +144,7 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
-                sideBar={true}
+                sideBar={sideBarForOrderFullFillment}
                 enableCharts={true}
                 enableRangeSelection={true} 
                 rowSelection="multiple"
