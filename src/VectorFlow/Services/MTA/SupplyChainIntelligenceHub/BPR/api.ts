@@ -74,7 +74,7 @@ export namespace BPRService {
     }); 
   }
 
-  export const getAnalyticsData = async (payload:string) => {
+  export const getAnalyticsData = async (payload:object) => {
     return await axios.post(process.env.REACT_APP_API_HOST + `api/mta/GetAnalyticsData`,payload,{
       headers:{ 'Content-Type': 'application/json' }
     }); 
