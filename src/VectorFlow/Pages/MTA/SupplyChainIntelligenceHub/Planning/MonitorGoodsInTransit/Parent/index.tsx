@@ -116,7 +116,7 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
         const ageingColDef =  {
             colId:'AgeingOrder',
             field:'AgeingOrder',
-            headerName:"",
+            headerName:"Ageing Order",
             cellRenderer:'ageingCellRenderer',
             width:100,
             floatingFilter:false

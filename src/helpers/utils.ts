@@ -2346,7 +2346,9 @@ export const getCellDataType = (dataType: "Number" | "String" | "Boolean"): stri
 
 export const getCellFilter = (dataType: "Number" | "String" | "Boolean"): string => {
   if (dataType === 'Number') return "agNumberColumnFilter"
-  return 'agMultiColumnFilter'
+  else if(dataType==='String') return 'agTextColumnFilter'
+  else if(dataType==='Boolean') return "agSetColumnFilter"
+  return 'agTextColumnFilter'
 }
 
 export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (params: any, e: any) => void, onOpenRemarkHistory: (e: any, params: any) => void, onOpenDailyDataGraph: (params: any) => void): ColDef[] => {
@@ -2378,7 +2380,10 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       lockPosition:'right',
       maxWidth:145,
       menuTabs: [] ,
-      suppressMenu: true
+      suppressMenu: true,
+      filterParams: {
+        buttons: ['reset','apply'], // Adds Apply and Clear buttons
+      },
     },
     {
       colId: 'rh',
@@ -2410,7 +2415,11 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     headerName: "Tags",
     cellRenderer: 'tagsCellRenderer',
     width: 100,
-    hide:false
+    hide:false,
+    filter:true,
+    filterParams: {
+      buttons: ['reset','apply'], // Adds Apply and Clear buttons
+    },
   }
 
   result = fields.map((f: BPRField) => {
@@ -2427,7 +2436,11 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         },
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
-        pinned:null
+        pinned:null,
+        filterParams: {
+          buttons: ['reset','apply'], // Adds Apply and Clear buttons
+          excelMode: 'windows',
+        },
       }
     }
     if (f.Col_Code === 'EcoPen') {
@@ -2443,7 +2456,11 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         },
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
-        pinned:null
+        pinned:null,
+        filterParams: {
+          buttons: ['reset','apply'], // Adds Apply and Clear buttons
+          excelMode: 'windows',
+        },
       }
     }
     return {
@@ -2457,7 +2474,10 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       },
       cellDataType: getCellDataType(f.DataType),
       filter: getCellFilter(f.DataType),
-      pinned:null
+      pinned:null,
+      filterParams: {
+        buttons: ['reset','apply'], // Adds Apply and Clear buttons
+      },
     }
   })
   return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result, ...BPRSpecificColumns]
