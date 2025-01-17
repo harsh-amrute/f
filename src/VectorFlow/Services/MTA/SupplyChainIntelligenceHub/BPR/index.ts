@@ -86,7 +86,7 @@ export const useResetState = () => {
 }
 
 export const useGetAnalyticsData = () => {
-  return useMutation(async (payload:string) => {
+  return useMutation(async (payload:object) => {
     return await BPRService.getAnalyticsData(payload);
   });
 }

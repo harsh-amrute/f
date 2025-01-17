@@ -219,7 +219,14 @@ const useBPR =()=>{
             readOnlyEdit:false,
             enableColResize: true,
             sideBar:defaultAgGridSideBarForBPR,
-            onColumnMenuVisibleChanged:getContextMenuItems,
+            getMainMenuItems: (params) => {
+                const defaultItems = params.defaultItems;
+                // Remove a specific item by filtering
+                const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
+                const modifiedItems = defaultItems.filter(item => !itemsToRemove.includes(item));
+                 
+                return modifiedItems;
+              },
             paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
             onRowClicked:(params:any)=>{
                 if(params.data.intransit && params.data.intransit.length>0){
