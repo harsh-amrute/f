@@ -2369,16 +2369,9 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         onClick: onOpenSubmitRemark
       },
       pinned: 'right',
-      cellStyle: {
-        overflow: 'visible',
-        'min-width': 145,
-        'padding-left':0,
-        'padding-right':0
-      },
       editable: true,
-      resizable:false,
+      minWidth:180,
       lockPosition:'right',
-      maxWidth:145,
       menuTabs: [] ,
       suppressMenu: true,
       filterParams: {
@@ -2395,15 +2388,8 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         onClick: onOpenRemarkHistory
       },
       pinned: 'right',
-      cellStyle: {
-        overflow: 'visible',
-        'min-width': 145,
-        'padding-left':0,
-        'padding-right':0
-      },
-      resizable:false,
+      minWidth:180,
       lockPosition:'right',
-      maxWidth:145,
       menuTabs: [] ,
       suppressMenu: true
     }
@@ -2431,9 +2417,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         hide: !f.Visible,
         cellRenderer: 'colorTechCellRenderer',
         // tooltipField: f.Col_Code,
-        cellStyle: {
-          'min-width': 180,
-        },
+        minWidth:180,
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
         pinned:null,
@@ -2451,9 +2435,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         hide: !f.Visible,
         cellRenderer: 'colorEcoCellRenderer',
         // tooltipField: f.Col_Code,
-        cellStyle: {
-          'min-width': 180,
-        },
+        minWidth:180,
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
         pinned:null,
@@ -2469,9 +2451,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       headerName: f.Header,
       hide: !f.Visible,
       // tooltipField: f.Col_Code,
-      cellStyle: {
-        'min-width': 180,
-      },
+      minWidth:180,
       cellDataType: getCellDataType(f.DataType),
       filter: getCellFilter(f.DataType),
       pinned:null,
