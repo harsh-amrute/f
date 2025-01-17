@@ -52,7 +52,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("ExpediteToChildcustom")
+            const data =  await getState({reportname: "ExpediteToChildcustom"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({

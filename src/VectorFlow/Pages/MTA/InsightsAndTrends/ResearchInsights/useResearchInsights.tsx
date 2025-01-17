@@ -98,7 +98,7 @@ const useResearchInsights = () => {
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("ResearchInsight")
+            const data =  await getState({"reportname": "ResearchInsight"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({

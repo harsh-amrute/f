@@ -53,7 +53,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("GITToChildcustom")
+            const data =  await getState({reportname: "GITToChildcustom"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({

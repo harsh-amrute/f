@@ -122,7 +122,7 @@ const useSupplierDispatchReport= ()=>{
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("SDR")
+            const data =  await getState({reportname: "SDR"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({

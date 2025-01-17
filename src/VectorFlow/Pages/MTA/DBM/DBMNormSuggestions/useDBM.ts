@@ -72,7 +72,7 @@ const useDBM =()=>{
       useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("DBMNorm")
+            const data =  await getState({"reportname": "DBMNorm"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({

@@ -109,7 +109,7 @@ const useOrderAllocation =()=>{
       useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("OrderAllocationReport")
+            const data =  await getState({reportname: "OrderAllocationReport"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({

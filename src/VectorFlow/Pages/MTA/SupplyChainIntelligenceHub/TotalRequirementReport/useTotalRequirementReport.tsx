@@ -82,7 +82,7 @@ const useTotalRequirementReport =()=>{
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("RRRColorBandWise")
+            const data =  await getState({reportname: "RRRColorBandWise"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
