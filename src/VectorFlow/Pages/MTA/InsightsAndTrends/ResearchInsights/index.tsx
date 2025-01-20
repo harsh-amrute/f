@@ -718,6 +718,7 @@ const ResearchInsights = ()=>{
                 data={expandedGraphId===1?selfGraphData:locationGraphData}
                 isOpen={isGraphOneOpen}
                 onClose={()=>setIsGraphOneOpen(false)}
+                horizon={horizon}
             />
            <div style={{display:'none'}}>                
                   <VFTable

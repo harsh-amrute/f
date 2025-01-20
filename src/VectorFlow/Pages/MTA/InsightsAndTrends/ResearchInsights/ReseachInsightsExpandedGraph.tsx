@@ -1,12 +1,12 @@
 import { AgCharts } from "ag-charts-react"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-
+ 
 import { ExpandedChartFilterWrapper, ExpandedChartSelectWrapper, ExpandedChartSelectLabel, ExpandedChartCapsuleWrapper } from "./styles"
-
+ 
 import Select from 'react-select'
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule"
 import { ReseachInsightsGraphState } from "../../../../../VectorFlow/types/BPR"
-
+ 
 interface ExpandedGraphProps {
     id: number
     data: any
@@ -15,11 +15,12 @@ interface ExpandedGraphProps {
     onClose: () => void
     options: any
     onTogglePen: (data: any) => void
-    onUpdateGraphs: any
+    onUpdateGraphs: any,
+    horizon:any
 }
-
+ 
 const ExpandedGraph = (props: ExpandedGraphProps) => {
-
+ 
     const {
         data,
         graphs,
@@ -28,12 +29,13 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
         onClose,
         isOpen,
         onTogglePen,
-        onUpdateGraphs
+        onUpdateGraphs,
+        horizon
     } = props
-
-
+ 
+ 
     const activeCapsuleIndex = graphs[id-1].pen
-
+ 
     const onChange = (e: any, key: string) => {
         const doesFilterExist = graphs[id - 1].filters.find((filter) => filter.key === key)
         if (doesFilterExist) {
@@ -42,7 +44,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
         const tempFilters = [...graphs[id - 1].filters, { key: key, value: e.value }]
         onUpdateGraphs(id, 'filters', tempFilters)
     }
-
+ 
     const handleClose = () => {
         onClose()
         onUpdateGraphs(id, 'filters', [])
@@ -53,7 +55,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
             openModal={isOpen}
             headerIcon=""
             headerBgColor="white"
-            headerText="Technical Trend | Horizon - 7 Days"
+            headerText={`Technical Trend | Horizon - ${horizon} Days`}
             headerTextColor="black"
             closeIcon='/assets/img/VectorFLOW/NMS/close-dark.svg'
             closeModal={handleClose}
@@ -64,19 +66,19 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     <ExpandedChartSelectLabel>Search By Location</ExpandedChartSelectLabel>
                     <Select
                         styles={{
-
+ 
                             container: ((baseStyles: any) => ({
                                 ...baseStyles,
                                 width: 250,
                                 // border:'1px solid red',
-
-
+ 
+ 
                             })),
                             option: (baseStyles, { isSelected }) => ({
                                 ...baseStyles,
                                 backgroundColor: isSelected ? "#BC3D80" : "white",
-
-
+ 
+ 
                                 "&:hover": {
                                     backgroundColor: '#bc3d814d',
                                     color: "black",
@@ -91,13 +93,13 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                                     boxShadow: 'none',
                                     "&:hover": {
                                         borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-
+ 
                                     }
                                 }),
                         }}
                         options={options.whcodes}
                         onChange={(e) => onChange(e, 'Whcode')}
-
+ 
                     />
                 </ExpandedChartSelectWrapper>
                 <ExpandedChartSelectWrapper>
@@ -111,8 +113,8 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                             option: (baseStyles, { isSelected }) => ({
                                 ...baseStyles,
                                 backgroundColor: isSelected ? "#BC3D80" : "white",
-
-
+ 
+ 
                                 "&:hover": {
                                     backgroundColor: '#bc3d814d',
                                     color: "black",
@@ -127,9 +129,9 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                                     boxShadow: 'none',
                                     "&:hover": {
                                         borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-
+ 
                                     }
-
+ 
                                 }),
                         }}
                         options={options.skus}
@@ -164,7 +166,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                             xKey: "date",
                             yKey: "Red",
                             yName: "Red",
-
+ 
                             marker: {
                                 fill: 'red',
                                 size: 2,
@@ -241,7 +243,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     ]
                 }}
             /> */}
-
+ 
 <AgCharts
     options={{
         height: 400,
@@ -329,20 +331,39 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
         ],
         axes: [
             {
+                                   
+                type:"category",
+                position:'bottom',
+                label:{
+                    fontSize:8
+                }
+            },
+            {
+                type:"number",
+                position:'left',
+                label:{
+                    fontSize:8
+                }
+            },
+            {
                 type: "number",
-                position: "left",
+                position: 'left',
+                label: {
+                    fontSize: 8
+                },
                 title: {
-                    text: "Count of Item", 
-                    fontSize: 11,  
-                    fontFamily: "Roboto",      
+                    text: "Count of Item",
+                    enabled: true,        
+                    fontSize: 10,    
+                    fontFamily: "Roboto",
                 }
             }
         ]
     }}
 />
-
+ 
         </VFModalCard>
     )
 }
-
+ 
 export default ExpandedGraph
