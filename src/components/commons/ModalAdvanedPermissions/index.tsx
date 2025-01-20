@@ -159,12 +159,13 @@ const ModalAdvanedPermissions = (props: any) => {
 
       formData.location_permissions.forEach((element:any) => {
         if(!element.permissions){
-          element.permissions = [];
+          element.permissions = [{location_heirarchy_1: "", location_heirarchy_2: "", location_heirarchy_3: ""}]
         }
       })
       formData.product_permissions.forEach((element:any) => {
         if(!element.permissions){
-          element.permissions = [];
+          element.permissions = [ 
+            {product_hierarchy_1: "", product_hierarchy_2: "", product_hierarchy_3: ""}];
         }
       })
 
