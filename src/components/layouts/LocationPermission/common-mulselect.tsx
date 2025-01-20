@@ -43,7 +43,7 @@ export default forwardRef(({ ...props }: any, ref) => {
 
         location[keyLcRegion][keyLcType]?.forEach((eleLcCluster: any) => {
           const valueLcCluster = `${valueLcType} > ${eleLcCluster['location_heirarchy_3']}`;
-          if (eleLcCluster['location_heirarchy_3'].length > 0) {
+          if (eleLcCluster['location_heirarchy_3']?.length > 0) {
             const dataLcCluster = {
               label: valueLcCluster,
               value: valueLcCluster,

@@ -50,7 +50,7 @@ export default forwardRef(({ ...props }: any, ref) => {
 
         product[keyBrand][keySubBrand]?.forEach((eleCategory: any) => {
           const valueCategory = `${valueSubBrand} > ${eleCategory['product_hierarchy_3']}`;
-          if (eleCategory['product_hierarchy_3'].length > 0) {
+          if (eleCategory['product_hierarchy_3']?.length > 0) {
             const dataCategory = {
               label: valueCategory,
               value: valueCategory,
