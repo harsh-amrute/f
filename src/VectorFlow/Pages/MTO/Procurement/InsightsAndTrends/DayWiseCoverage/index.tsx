@@ -259,7 +259,6 @@ const DayWiseCoverage = () => {
           });
     
           const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-          console.log("newconfig",newConfig)
           setColumnState(newConfig);
     
           if (!data) {
@@ -274,7 +273,6 @@ const DayWiseCoverage = () => {
         if (colDef?.length && currentGridRef?.current) {
             
           setMasterUIConfig(currentGridRef?.current.api.getColumnState());
-          console.log("col",masterUIConfig);
           
         }
       }, [colDef,currentGridRef]);
@@ -286,29 +284,9 @@ const DayWiseCoverage = () => {
     },[masterUIConfig])
 
 
-    // const handleSaveClick = async () => {
-    //     try {
-    //         if(currentGridRef?.current?.api){
-    //             const config = currentGridRef.current.api.getColumnState();
-            
-    //             const payload = {
-    //                 un: user.user.name,
-    //                 rn_id: UIGridCode.ProcDayWiseCov,
-    //                 cs: JSON.stringify(config)
-    //             }
-    //             await updateUserUIReportConfigData([payload]);
-    //             await getUserColumnConfig();
-    //         }
-
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
     const handleSaveClick = async (coldefs?:any) => {
         try {
           if (coldefs) {
-            console.log(coldefs)
             const payload = {
               un: user.user.name,
               rn_id: UIGridCode.ProcDayWiseCov,
@@ -327,7 +305,6 @@ const DayWiseCoverage = () => {
                   cs: JSON.stringify(config)
                 }
                 await updateUserUIReportConfigData([payload]);
-                // await getUserColumnConfig();
               } 
           }
         } catch (error) {
@@ -355,35 +332,8 @@ const DayWiseCoverage = () => {
     // }
     // }
 
-    // useEffect(() => {
-    //     // getUserColumnConfig();
-    //     // setColumnDef();
-    //     // getFilterData()
-    // }, [])
-
-
-    useEffect(()=>{
-        if(columnState && columnState?.length){
-            const result = currentGridRef?.current?.api?.applyColumnState({
-                state: columnState,
-                applyOrder: true
-              });
-
-            console.log(result);
-        }
-    },[columnState])
-
-    // useEffect(() => {
-    //     if (isReset) {
-    //       setColumnState(colDef);
-    //       setIsReset(false)
-    //     }else{
-    //       handleSaveClick();
-    //     }
-    // }, [isReset]);
 
     const ExcelExport =()=>{
-        console.log("calling excel expot");
         currentGridRef?.current?.api?.exportDataAsExcel({ fileName: `Day_Wise_Coverage${format(Date.now(), "dd/MM/yyyy")}` })
       }
 
