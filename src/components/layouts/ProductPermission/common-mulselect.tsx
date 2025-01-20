@@ -155,7 +155,7 @@ export default forwardRef(({ ...props }: any, ref) => {
   
   const prdPermissions = [
     {
-      title: process.env.REACT_APP_PRODsUCT_PERMISSION_L1 || '',
+      title: process.env.REACT_APP_PRODUCT_PERMISSION_L1 || '',
       placeholder: "", 
       options: listBrand,
       value: brand,
