@@ -310,7 +310,7 @@ const useResearchInsights = () => {
 
     const getColorData = (array: Array<any>) => {
         const colorFrequencyArray: any = [];
-        for (let day = 1; day <= horizon; day++) {
+        for (let day = 90-horizon; day <= 90; day++) {
             const colorFrequency: any = {
                 Red: 0,
                 Blue: 0,
