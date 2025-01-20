@@ -66,7 +66,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onSeasonalityResume,
         onSeasonalityStop,
         onDeleteOnline,
-        onDeleteOnlineReset,
+        // onDeleteOnlineReset,
         onDeleteData,
         disableStopSeasonality,
         disableResumeSeasonality,
