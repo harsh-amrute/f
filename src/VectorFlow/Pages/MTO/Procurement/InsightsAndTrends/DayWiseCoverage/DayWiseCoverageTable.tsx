@@ -1,6 +1,6 @@
 import { GridOptions } from "ag-grid-enterprise";
 import { useEffect, useRef, useState } from "react";
-import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
 import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
@@ -95,7 +95,7 @@ const DayWiseCoverageTable = ({
             console.error('Failed to apply column state');
         }
     }
-  });
+  },[columnState,currentGridRef]);
 
   return (
 
