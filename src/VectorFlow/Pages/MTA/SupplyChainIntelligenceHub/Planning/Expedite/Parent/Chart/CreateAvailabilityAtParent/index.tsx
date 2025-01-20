@@ -222,6 +222,20 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                   },
                   
               },
+              bar:{
+                series:{
+                    tooltip:{
+                        enabled:true,
+                        renderer:(params:any)=>{
+                            const datum = params.datum
+                            return {
+                                title: `${params.yName}`,
+                                content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+                            }
+                        },
+                    }
+                }
+              }
           };
       }, []);
 

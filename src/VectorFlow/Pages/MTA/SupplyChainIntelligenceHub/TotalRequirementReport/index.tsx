@@ -113,7 +113,7 @@ const TotalRequirementReport = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                  height={"90%"}
+                  height={"80%"}
               />  
               <VFPagination 
                 selectedRows={0} 

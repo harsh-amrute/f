@@ -11,7 +11,7 @@ import RequestExpeditingModal from '../../../../../BPR/RequestExpeditingModal';
 import { useSubmitOpenExpediteRequest } from '../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../../helpers/notify';
 import { toast } from 'react-toastify';
-
+import { MainMenuItemsCustomization } from '../../../../../../../../../helpers/utils'
 const ExpediteChildCreateAvailabilityAtParentGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
     const [isExpeditingModalOpen,toggleExpeditingModal] =  useState<boolean>(false)
 
@@ -77,6 +77,7 @@ const ExpediteChildCreateAvailabilityAtParentGrid = ({data,paginationProps,onOpe
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         onRowClicked:(params:any)=>{
             if(params.data.intransit && params.data.intransit.length>0){
                 setActiveRow(params.data.intransit)

@@ -226,6 +226,21 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                   },
                   
               },
+            //   bar:{
+            //     series:{
+            //         tooltip:{
+            //             enabled:true,
+            //             renderer:(params:any)=>{
+            //                 const datum = params.datum
+            //                 console.log(params)
+            //                 return {
+            //                     title: `${params.yName}`,
+            //                     // content: `${datum.WHDescription.value}: ${datum.SKUCounts}`,
+            //                 }
+            //             },
+            //         }
+            //     }
+            //   }
           };
       }, []);
 
@@ -271,6 +286,20 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                   },
                   
               },
+              bar:{
+                series:{
+                    tooltip:{
+                        enabled:true,
+                        renderer:(params:any)=>{
+                            const datum = params.datum
+                            return {
+                                title: `${params.yName}`,
+                                content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+                            }
+                        },
+                    }
+                }
+              }
           };
       }, []);
 

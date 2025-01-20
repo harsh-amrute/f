@@ -414,6 +414,20 @@ const colDefs3: ColDef[] = [
           },
         },
       },
+      bar:{
+        series:{
+            tooltip:{
+                enabled:true,
+                renderer:(params:any)=>{
+                    const datum = params.datum
+                    return {
+                        title: `${params.yName}`,
+                        content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+                    }
+                },
+            }
+        }
+      }
     };
   }, []);
 
@@ -452,10 +466,21 @@ const colDefs3: ColDef[] = [
             },
           },
         },
-        tooltip: {
-          renderer: (params: any) => console.log("params", params),
-        },
       },
+      bar:{
+        series:{
+            tooltip:{
+                enabled:true,
+                renderer:(params:any)=>{
+                    const datum = params.datum
+                    return {
+                        title: `${params.yName}`,
+                        content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+                    }
+                },
+            }
+        }
+      }
     };
   }, []);
 

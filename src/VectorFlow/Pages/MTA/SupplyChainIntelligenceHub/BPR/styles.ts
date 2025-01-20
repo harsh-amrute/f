@@ -253,7 +253,8 @@ export const BPRColorCellRendererWrapper = styled.div`
 export const BPRTagsCellRendererWrapper = styled.div`
     display:block;
     padding:4px 5px;
-    width: 55px;
+    // width: 55px;
+    max-width:90px;
     height: 25px;
     background: #8E8E8E 0% 0% no-repeat padding-box;
     color: #FFFFFF;

@@ -1,16 +1,17 @@
-import {useState,useMemo} from 'react';
+import {useState,useMemo, useEffect} from 'react';
 import GridViewTable from "../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../components/VectorFLOW/commons/VFPagination";
-import { SideBarDef } from 'ag-grid-enterprise';
-import { createIconColumn, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../helpers/utils';
+import { ColDef, SideBarDef } from 'ag-grid-enterprise';
+import { createIconColumn, getProductAndLocationHeirarchiesFromEnv, MainMenuItemsCustomization } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { useDispatch, useSelector } from 'react-redux';
 import { UPDATE_GRID_STATE } from '../../../../../../../redux/actions/MTA';
 import { RootState } from '../../../../../../../redux/store/store';
 import { AgeingCellRenderer } from '../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
+
 const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [activeRow,setActiveRow] = useState<any>();
@@ -54,6 +55,7 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         onRowClicked:(params:any)=>{
             if(params.data.transit && params.data.transit.length>0){
                 setActiveRow(params.data.transit)
@@ -107,7 +109,7 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
         let colDefs = [];
         const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
         const tagsColDef =  {
-            colId:'tags',
+            colId:'t',
             field:'t',
             headerName:"Tags",
             cellRenderer:'tagsCellRenderer',
@@ -152,9 +154,11 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
     }
 
     const colDefs = useMemo(()=>{
-        
-        return currentGridState.length>0?currentGridState:  mapUIConfigToColdefs(data['uiConfig'])
-    },[currentGridState])
+        if(data!==null){
+            return mapUIConfigToColdefs(data['uiConfig'])
+        } 
+    },[data])
+
 
 
     // if(isLoading){
@@ -222,7 +226,7 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
             currentCategory={currentCategory}
             currentTab={currentTab}
             agGridProps={agGridProps} 
-            agGridColDefs={colDefs} 
+            agGridColDefs={colDefs ?? []} 
             agGridRowData={data['data']} 
             customGridRowData={activeRow} 
             customGridColDef={customGridColDef} 

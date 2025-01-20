@@ -205,6 +205,20 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                   },
                   
               },
+              bar:{
+                series:{
+                    tooltip:{
+                        enabled:true,
+                        renderer:(params:any)=>{
+                            const datum = params.datum
+                            return {
+                                title: `${params.yName}`,
+                                content: `${datum.WHDescription.value}: ${datum.SKUCounts}`,
+                            }
+                        },
+                    }
+                }
+              }
           };
       }, []);
 
@@ -249,6 +263,22 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                   },
                   
               },
+              // need_work
+            //   bar:{
+            //     series:{
+            //         tooltip:{
+            //             enabled:true,
+            //             renderer:(params:any)=>{
+            //                 const datum = params.datum
+            //                 console.log(datum)
+            //                 return {
+            //                     title: `${params.yName}`,
+            //                     content: `${datum.WHDescription.value}: ${datum.SKUCounts}`,
+            //                 }
+            //             },
+            //         }
+            //     }
+            //   }
           };
       }, []);
 

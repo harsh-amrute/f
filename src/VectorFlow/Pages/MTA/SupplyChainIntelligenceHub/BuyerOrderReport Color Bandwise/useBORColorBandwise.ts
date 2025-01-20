@@ -1,6 +1,6 @@
 // import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData, useGetUiConfig} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapBORColorBandWiseFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBORColorBandWiseFieldsToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
@@ -232,14 +232,7 @@ export const useBORColorBandwise =()=>{
         suppressRowClickSelection:true,
         components:customCellRenderers,
         enableBrowserTooltips:true,
-        getMainMenuItems: (params) => {
-          const defaultItems = params.defaultItems;
-          // Remove a specific item by filtering
-          const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
-          const modifiedItems = defaultItems.filter(item => !itemsToRemove.includes(item));
-           
-          return modifiedItems;
-        },
+        getMainMenuItems: MainMenuItemsCustomization,
         paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,

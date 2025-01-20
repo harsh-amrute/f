@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import { useGetState } from "../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../context/GridStateContext";
 import { GridState } from "../../../../../../../../VectorFlow/types/BPR";
-import {getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
+import {getProductAndLocationHeirarchiesFromEnv, convertStringNumToNumber} from '../../../../../../../../helpers/utils';
 
 
 
@@ -90,7 +90,8 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
                     if(uiconfig.length < 1){
                         uiconfig = result.data.data['uiConfig']
                     }
-                    rows.push(...result.data.data.data)
+                    const rowDataAfterTypeCasting = convertStringNumToNumber(result.data.data.data)
+                    rows.push(...rowDataAfterTypeCasting)
                     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
                     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
                 }
