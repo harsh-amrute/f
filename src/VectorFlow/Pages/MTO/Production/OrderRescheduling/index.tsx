@@ -463,7 +463,6 @@ const OrderRescheduling = () => {
     params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
     params.api.sizeColumnsToFit();
     setCurrentGridRef(refGraph1);
-    params.api.sizeColumnsToFit();
   };
 
   const getUserColumnConfig = async () => {
