@@ -1,5 +1,6 @@
 import GridViewTable from "../../../SupplyChainIntelligenceHub/Planning/GridView/GridViewTable";
 import { AgGridReactProps } from "ag-grid-react";
+import { MainMenuItemsCustomization } from '../../../../../../helpers/utils'
 interface ChronicGridViewProps {
     currentGridData:any
 }
@@ -46,6 +47,7 @@ const ChronicGridView=({currentGridData}:ChronicGridViewProps)=>{
             return { background: "#F7F7F7" };
             },     
         },
+       getMainMenuItems: MainMenuItemsCustomization,
        enableRangeSelection:true,
        rowSelection:"multiple",
        statusBar :{
@@ -121,7 +123,7 @@ const ChronicGridView=({currentGridData}:ChronicGridViewProps)=>{
       headerName:"RationedStockatparent",  enablePivot:true}
     ]
 
-    return <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={currentGridData} customGridRowData={[]} customGridColDef={[]} isSubGridOpen={false} currentCategory={"GuidedInsightchronicunavailability"} currentTab={''} gridHeight={'95%'}/>
+    return <GridViewTable agGridProps={agGridProps} agGridColDefs={PlanningColumns} agGridRowData={currentGridData} customGridRowData={[]} customGridColDef={[]} isSubGridOpen={false} currentCategory={"GuidedInsightchronicunavailability"} currentTab={''} gridHeight={'80%'}/>
     
    
 }

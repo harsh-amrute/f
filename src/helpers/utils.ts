@@ -2346,9 +2346,9 @@ export const getCellDataType = (dataType: "Number" | "String" | "Boolean"): stri
 
 export const getCellFilter = (dataType: "Number" | "String" | "Boolean"): string => {
   if (dataType === 'Number') return "agNumberColumnFilter"
-  else if(dataType==='String') return 'agTextColumnFilter'
-  else if(dataType==='Boolean') return "agSetColumnFilter"
-  return 'agTextColumnFilter'
+  // else if(dataType==='String') return 'agTextColumnFilter'
+  // else if(dataType==='Boolean') return "agSetColumnFilter"
+  return 'agMultiColumnFilter'
 }
 
 export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (params: any, e: any) => void, onOpenRemarkHistory: (e: any, params: any) => void, onOpenDailyDataGraph: (params: any) => void): ColDef[] => {
@@ -2370,28 +2370,26 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       },
       pinned: 'right',
       editable: true,
-      minWidth:180,
+      minWidth:130,
       lockPosition:'right',
       menuTabs: [] ,
       suppressMenu: true,
-      filterParams: {
-        buttons: ['reset','apply'], // Adds Apply and Clear buttons
-      },
+      resizable:false
     },
     {
       colId: 'rh',
       field: 'rh',
       headerName: 'Remark History',
       cellRenderer: 'remarksCellRenderer',
-
       cellRendererParams: {
         onClick: onOpenRemarkHistory
       },
       pinned: 'right',
-      minWidth:180,
+      minWidth:130,
       lockPosition:'right',
       menuTabs: [] ,
-      suppressMenu: true
+      suppressMenu: true,
+      resizable:false
     }
   ]
 
@@ -2423,7 +2421,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         pinned:null,
         filterParams: {
           buttons: ['reset','apply'], // Adds Apply and Clear buttons
-          excelMode: 'windows',
+          // excelMode: 'windows',
         },
       }
     }
@@ -2441,7 +2439,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         pinned:null,
         filterParams: {
           buttons: ['reset','apply'], // Adds Apply and Clear buttons
-          excelMode: 'windows',
+          // excelMode: 'windows',
         },
       }
     }
@@ -2453,14 +2451,40 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       // tooltipField: f.Col_Code,
       minWidth:180,
       cellDataType: getCellDataType(f.DataType),
-      filter: getCellFilter(f.DataType),
+      // filter:true,
       pinned:null,
-      filterParams: {
-        buttons: ['reset','apply'], // Adds Apply and Clear buttons
-      },
+      filter: getCellFilter(f.DataType),
+        filterParams: {
+          filters: [
+            {
+              filter: 'agTextColumnFilter',
+              filterParams: {
+                buttons: ['apply', 'reset'],
+              }
+            },
+            {
+              filter: 'agSetColumnFilter',
+              filterParams: {
+                buttons: ['apply', 'reset'],
+              }
+            },
+          ]
+        },
+      // filterParams: {
+      //   buttons: ['reset','apply'], // Adds Apply and Clear buttons
+      // },
     }
   })
   return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result, ...BPRSpecificColumns]
+}
+
+export const MainMenuItemsCustomization = (params:any) => {
+  const defaultItems = params.defaultItems;
+  // Remove a specific item by filtering
+  const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
+  const modifiedItems = defaultItems.filter((item:any) => !itemsToRemove.includes(item));
+   
+  return modifiedItems;
 }
 
 export const mapBPRRowData = (rowData: Array<any>) => {
@@ -2512,10 +2536,24 @@ export const mapBPRRowData = (rowData: Array<any>) => {
 //   return updatedArray;
 // }
 
+export function convertStringNumToNumber(objects: any[]): any[] {
+  return objects.map((obj) => {
+    const updatedObj = { ...obj };
+
+    // Check if 'actualStock' is a string and can be converted to a number
+    if (updatedObj.sla2!==undefined && typeof updatedObj.sla2 === 'string') {
+      const parsedNumber = parseFloat(updatedObj.sla2);
+      if (!isNaN(parsedNumber)) {
+        updatedObj.sla2 = parsedNumber;
+      }
+    }
+
+    return updatedObj;
+  });
+}
+
 export const updateCommonAttributes=(array1:any[], array2:any[], colId:string)=> {
 
-  console.log(array1,"ARRAY1")
-  console.log(array2,"ARRAY2")
   // Create a dictionary (map) of objects from array1 by colId
   const array1Dict:any = {};
   array1.forEach(obj => {

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { AgGridReactProps } from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-import { convertUiConfigToOptions, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
+import { convertUiConfigToOptions, mapResearchInsightsFieldsToColDefs, MainMenuItemsCustomization } from '../../../../../helpers/utils'
 
 import { BPRTagsCellRenderer, BPRTechColorCellRenderer, BPREcoColorCellRenderer } from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
@@ -157,6 +157,7 @@ const useResearchInsights = () => {
             },
             sideBar:defaultAgGridSideBarForBPR,
             // paginationPageSize:25,
+            getMainMenuItems: MainMenuItemsCustomization,
             paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
             suppressRowClickSelection:true,
             components:customCellRenderers,

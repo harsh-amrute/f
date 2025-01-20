@@ -6,7 +6,7 @@ import { VFPaginationProps } from "../../../../../../../../../components/VectorF
 import { ColDef, SideBarDef } from 'ag-grid-enterprise';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { AgeingCellRenderer } from '../../../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
-import { getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
+import { getProductAndLocationHeirarchiesFromEnv, MainMenuItemsCustomization } from '../../../../../../../../../helpers/utils';
 
 const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -45,6 +45,7 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,currentCategor
         tooltipShowDelay:0.1,
         // rowSelection:'single',
         readOnlyEdit:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         onRowClicked:(params:any)=>{
             if(params.data.transit && params.data.transit.length>0){
                 setActiveRow(params.data.transit)

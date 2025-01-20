@@ -565,6 +565,7 @@ const usePlanning = ()=>{
                     }
                     if(!fromPagination){
                         const count = await getPlanningDataGridCount(body)
+                        console.log(count)
                         const {createAvailabilityAtParent,expediteDispatches} = JSON.parse(count.data.data)[0]
                         const tempTab =tab?tab:currentTab
                         if(tempTab==="createAvailabilityAtParent"){

@@ -432,6 +432,20 @@ const mapDataToRowData = (data: any) => {
           },
         },
       },
+      bar:{
+        series:{
+            tooltip:{
+                enabled:true,
+                renderer:(params:any)=>{
+                    const datum = params.datum
+                    return {
+                        title: `${params.yName}`,
+                        content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+                    }
+                },
+            }
+        }
+      }
     };
   }, []);
 
@@ -470,10 +484,21 @@ const mapDataToRowData = (data: any) => {
             },
           },
         },
-        tooltip: {
-          renderer: (params: any) => console.log("params", params),
-        },
       },
+      bar:{
+        series:{
+            tooltip:{
+                enabled:true,
+                renderer:(params:any)=>{
+                    const datum = params.datum
+                    return {
+                        title: `${params.yName}`,
+                        content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+                    }
+                },
+            }
+        }
+      }
     };
   }, []);
 

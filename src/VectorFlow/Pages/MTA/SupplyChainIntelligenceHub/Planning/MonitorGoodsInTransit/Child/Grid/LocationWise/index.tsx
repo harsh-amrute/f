@@ -8,6 +8,7 @@ import { createIconColumn,getProductAndLocationHeirarchiesFromEnv } from '../../
 import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { AgeingCellRenderer } from '../../../../../../../../../components/VectorFLOW/commons/AgeingCellRenderer';
+import { MainMenuItemsCustomization } from '../../../../../../../../../helpers/utils'
 
 const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
@@ -49,6 +50,7 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         onRowClicked:(params:any)=>{
             if(params.data.transit && params.data.transit.length>0){
                 setActiveRow(params.data.transit)

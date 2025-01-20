@@ -522,7 +522,8 @@ const ActionToolBar = ({
         }
         break;
       case "GuidedInsight":
-        if (pathname === "/insights-and-trends/guided-insights") {
+        console.log(view)
+        if (pathname === "/insights-and-trends/guided-insights" && view==='grid') {
           return (
             <VFMultiFilter
               onApplyFilter={handleApplyFilter}
@@ -612,6 +613,7 @@ const ActionToolBar = ({
         }
         break;
       case "chronicunavailability":
+        console.log(view)
         return (
           <VFMultiFilter
             onApplyFilter={handleApplyFilter}
@@ -651,7 +653,7 @@ const ActionToolBar = ({
       />
     );
   };
-
+   console.log(view)
   return (
     <>
       {view === "chart" && (
@@ -690,14 +692,15 @@ const ActionToolBar = ({
           </SCTaskFilterContainer>
 
           <SCCustomActionsContainer>
-            {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
+            {/* {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
                <>
-                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                  
+                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit nmk</VFButton>
                   {isFilterOpen && renderFilter()}
                                
 
                 </>
-            }
+            } */}
             {currentTab === "dbmnormsuggestions" && (
               <>
                 <Link

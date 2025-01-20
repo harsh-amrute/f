@@ -12,8 +12,8 @@ import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagi
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { GridStateContext } from "../../../../../../context/GridStateContext";
 import { useGetState } from "../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-
-
+import { updateCommonAttributes } from '../../../../../../helpers/utils'
+import _ from 'lodash'
 
 // import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 
@@ -42,6 +42,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
     const [gridState,setGridState] = useState<any>()
 
     const [internalRef,setInternalRef] = useState<any>()
+    const [Columns,setColumns] = useState<any[]>(_.cloneDeep(agGridColDefs))
+
     // useEffect(()=>{
     //     const getTableState = async()=>{
     //       try{
@@ -57,12 +59,14 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState(`${currentCategory}${currentTab}`)
-            setGridState(JSON.parse(data.data.data))
+            const data =  await getState({reportname:`${currentCategory}${currentTab}`})
+            const parsedContent = JSON.parse(data.data.data)
+            // console.log(parsedContent)
+            setGridState(parsedContent)
           }catch(err:any){
             setGridState({
                 charts:[],
-                columns:[],
+                columns:Columns,
                 pivot:false
             })
           }
@@ -71,7 +75,9 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
     },[])
 
     useEffect(()=>{
-        if(internalRef && gridState && gridState.columns){
+        if(internalRef && gridState && gridState.columns && gridState.columns.length!==0){
+            const StateColumns = updateCommonAttributes(gridState.columns,Columns,'colId')
+            setColumns(StateColumns)
             internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
         }
     },[internalRef,gridState])
@@ -154,7 +160,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                         <VFTable
                             ref={ref}
                             {...agGridProps}
-                            columnDefs={agGridColDefs}
+                            columnDefs={Columns}
                             rowData={agGridRowData}
                             height={gridHeight ? gridHeight : '380px'}
                             onGridReady={(params)=>setInternalRef(params)}
