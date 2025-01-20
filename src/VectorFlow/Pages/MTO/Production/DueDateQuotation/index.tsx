@@ -282,7 +282,6 @@ const DueDateQuotation = () => {
 
 
       const CCRMasterData = await getCCRMasterData();
-      console.log("CCRMasterData", CCRMasterData)
       const CCRMaster = CCRMasterData?.data?.data;
 
       const WorkingCalenderData = await getDailyWorkingCalendar();
