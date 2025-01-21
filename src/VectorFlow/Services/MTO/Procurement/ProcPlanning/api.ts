@@ -40,6 +40,19 @@ export namespace ProcPlanningService {
         });
     }
 
+    export const GetProcDataAfterSimulationForExcelData = async ({ date, body, eas, report_name, isExcelExport }: { date: string, body: any, eas: string, report_name: any, isExcelExport: any }) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getProdDataAfterSimulation/?releaseDate=${date}&eas=${eas}`,
+            body,
+            {
+                headers: { 'Content-Type': 'application/json' },
+                params: {
+                    report_name,
+                    export: isExcelExport
+                },
+                responseType: 'blob'
+            });
+    }
+
 }
 
 

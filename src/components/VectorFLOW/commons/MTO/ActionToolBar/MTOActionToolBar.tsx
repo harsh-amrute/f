@@ -375,7 +375,7 @@ const MTOActionToolBar = ({
 
             </SCTaskFilterContainer>
             {/**New Selected Filter start */}
-            {newFilters && Object.keys(newFilters)?.length > 0 &&
+            {isAddFilterButton && newFilters && Object.keys(newFilters)?.length > 0 &&
                 <VFSelectedFiltersWrapper>
                     <VFSelectedFiltersPlaceHolder>
                         Selected Filters

@@ -707,6 +707,7 @@ const DptWiseBMReport = () => {
                 suppressRowClickSelection: true,
                 enableBrowserTooltips: true,
                 enableRangeSelection: true,
+                enableFillHandle: true,
                 components: customCellRenderers,
                 pagination: true,
                 defaultColDef: {

@@ -14,6 +14,7 @@ import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import moment from "moment";
 import _ from "lodash";
+import { ChartWrapper } from "./styles";
 
 const GraphView = ({ shortageData }: any) => {
 
@@ -242,89 +243,89 @@ const GraphView = ({ shortageData }: any) => {
         })
     }
 
-
-
     return (
-
-
-        <>
-            <SCChartContainer height={"70vh"} style={{ border: "1px solid #CCCCCC" }}>
-                <div style={{ height: '60vh', width: '100%' }}>
-                    <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                        <div style={{ fontSize: '12px', margin: '0 auto', fontWeight: 500, textAlign: 'center' }}>
-                            {`${InsightsAndTrendsString.rmpmOrderwiseCoverage}  (${date})`}
+        <div style={{ width: "100%", height: "100%", padding: "20px" }}>
+            <SCChartContainer height={'100%'} style={{ border: '1px solid #CCCCCC', margin: '2px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
+                    <div style={{ fontSize: '12px', margin: '0 auto', fontWeight: 500, textAlign: 'center' }}>
+                        {`${InsightsAndTrendsString.rmpmOrderwiseCoverage}  (${date})`}
+                    </div>
+                    <div style={{ display: 'flex' }}>
+                        <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
+                            <VFInfoToolTip infoList={['The graph highlights the Full kit position of Raw material and Packing material of unreleased orders.']} />
                         </div>
-                        <div style={{ display: 'flex' }}>
-                            <div style={{ marginLeft: 30, marginBottom: '-5px' }}>
-                                <VFInfoToolTip infoList={['The graph highlights the Full kit position of Raw material and Packing material of unreleased orders.']} />
-                            </div>
-                            <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px' }}>
-                                <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
-                            </div>
+                        <div onClick={() => { toggleChart1(!hideChart1) }} style={{ marginLeft: 10, marginBottom: '-5px', marginRight: '10px', cursor:"pointer" }}>
+                            <img src='/assets/img/VectorFLOW/BPR/minimize.svg' height={13} width={13} color={"#CCCCCC"} />
                         </div>
                     </div>
-                    <SCHorizontalDivider />
-                    <div style={{ display: 'flex', justifyContent: "right" }}>
-
-                        <div style={{ paddingRight: '10px' }} onClick={() => {
-
-                            (chartRef && chartRef.current) && chartRef?.current.download({
-                                type: 'png',
-                                filename: 'RMPM Orderwise Coverage',
-
-                            });
-                        }}> <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" /></div>
-                    </div>
-                    <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText={`RM / PM Orderwise Coverage ( ${date})`} headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-                        <div className="ag-theme-planning" style={{ width: '1000px' }}>
-                            <VFTable
-
-                                ref={refGraph1}
-                                columnDefs={ColdDefs}
-                                // rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
-                                rowData={TableData}
-                                enableCharts={true}
-                                enableRangeSelection={true}
-                                rowSelection="multiple"
-
-                                statusBar={{
-                                    statusPanels: [
-                                        { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                        { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                                        { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                                        { statusPanel: 'agAggregationComponent', align: 'left' },
-                                    ],
-                                }} onGridReady={() => { generateChart() }}
-                                // getChartToolbarItems={getChartToolbarItems}
-                                chartToolPanelsDef={
-                                    {
-                                        panels: []
-                                    }
-                                }
-                                // chartThemeOverrides={chartThemeOverridesG1}
-                                chartThemes={['myCustomTheme']}
-                                customChartThemes={{
-                                    'myCustomTheme': myCustomTheme
-                                }}
-                                disableZoomScaling={true}
-                                defaultColDef={{
-                                    floatingFilter: true,
-                                    filter: "agMultiColumnFilter",
-                                    flex: 1
-                                }}
-                                height={'480px'}
-                            />
-                        </div>
-                    </VFModalCard>
-                    <AgCharts ref={chartRef} options={options} />
-
                 </div>
 
+                <SCHorizontalDivider />
+
+                <ChartWrapper>
+                    <div style={{ height: '100%', width: '100%' }}>
+                        <div style={{ display: 'flex', justifyContent: "right" }}>
+
+                            <div style={{ paddingRight: '10px', cursor:"pointer" }} onClick={() => {
+
+                                (chartRef && chartRef.current) && chartRef?.current.download({
+                                    type: 'png',
+                                    filename: 'RMPM Orderwise Coverage',
+
+                                });
+                            }}> <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" /></div>
+                        </div>
+
+                        <div className='chart-wrapper' style={{ flex: 1, height: "90%" }}>
+                            <AgCharts ref={chartRef} options={options} />
+                        </div>
+                    </div>
+                </ChartWrapper>
+
+                <VFModalCard openModal={hideChart1} closeModal={() => toggleChart1(false)} headerIcon='' headerText={`RM / PM Orderwise Coverage ( ${date})`} headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
+                    <div className="ag-theme-planning" style={{ width: '1000px' }}>
+                        <VFTable
+
+                            ref={refGraph1}
+                            columnDefs={ColdDefs}
+                            // rowData={sortData(convertToInt(data['maxTechBlackRedColumn']['data']))}
+                            rowData={TableData}
+                            enableCharts={true}
+                            enableRangeSelection={true}
+                            rowSelection="multiple"
+
+                            statusBar={{
+                                statusPanels: [
+                                    { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                    { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                                    { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                                    { statusPanel: 'agAggregationComponent', align: 'left' },
+                                ],
+                            }} onGridReady={() => { generateChart() }}
+                            // getChartToolbarItems={getChartToolbarItems}
+                            chartToolPanelsDef={
+                                {
+                                    panels: []
+                                }
+                            }
+                            // chartThemeOverrides={chartThemeOverridesG1}
+                            chartThemes={['myCustomTheme']}
+                            customChartThemes={{
+                                'myCustomTheme': myCustomTheme
+                            }}
+                            disableZoomScaling={true}
+                            defaultColDef={{
+                                floatingFilter: true,
+                                filter: "agMultiColumnFilter",
+                                flex: 1
+                            }}
+                            height={'480px'}
+                        />
+                    </div>
+                </VFModalCard>
             </SCChartContainer>
-
-
-        </>
+        </div>
 
     )
 };

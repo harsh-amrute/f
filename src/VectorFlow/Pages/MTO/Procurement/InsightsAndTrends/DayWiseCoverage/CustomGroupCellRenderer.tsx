@@ -29,7 +29,7 @@ const CustomGroupCellRenderer = (props: CustomCellRendererProps) => {
 
     return (
         node.group ?
-            <button data-testid='collapsable' style={{ fontSize: "18px", background: "transparent", fontWeight: "bold" }} onClick={onClick}>
+            <button data-testid='collapsable' style={{ fontSize: "12px", background: "transparent", fontWeight: "bold" }} onClick={onClick}>
                 {DayWiseCoverageMap[value] ? DayWiseCoverageMap[value] : value}&nbsp;({props.node.allChildrenCount})&nbsp;&nbsp;<Icon src={expanded ? "/assets/img/mto/dayWiseCoverage/arrow_down.svg" : "/assets/img/mto/dayWiseCoverage/arrow_right.svg"} />
             </button>
             :
