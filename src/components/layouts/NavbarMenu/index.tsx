@@ -82,36 +82,34 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   //   }
   // }
 
-  const getReportFields = async ()=>{
+  const getReportFields = async () => {
     const reports = await getAllReports();
     const rawDailyReport = reports.data.data
-    const transformedData = Object.entries(rawDailyReport).map(([key, attributes]:[string , any]) => ({
+    const transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
       name: attributes.reportName,
-      img: "/assets/img/nav/arrow_down.svg", 
-      imgHover: "/assets/img/nav/DownloadReport-Icon.svg", 
-      url: key, 
-      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison","Admin","VectorConsultant","DBMManager","BPRManager","MasterUpdater","MasterApprover"],
+      img: "/assets/img/nav/arrow_down.svg",
+      imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+      url: key,
+      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "DBMManager", "BPRManager", "MasterUpdater", "MasterApprover"],
       downloadName: attributes.downloadName
     }));
     const extractedNewMenu = _.cloneDeep(listMenuParent)
-    const targetObject = extractedNewMenu.find((item:any) => item.id === 8);
+    const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
     if (targetObject) {
-      console.log(targetObject)
       targetObject.child.push(...transformedData);
-      const reporturls = targetObject.child.map((child:any) => child.url).filter((url:string) => url);
+      const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
       setReportUrls(reporturls)
     }
     setListMenu(extractedNewMenu);
   }
 
-  
   useEffect(() => {
     getReportFields();
-    if(localStorage.getItem("ListItem")){
+    if (localStorage.getItem("ListItem")) {
       setMenuItem(JSON.parse(localStorage.getItem("ListItem") || ""))
     }
-    if(localStorage.getItem("ListMenu")){
-      setListMenu(JSON.parse(localStorage.getItem("ListMenu")|| "[]"))
+    if (localStorage.getItem("ListMenu")) {
+      setListMenu(JSON.parse(localStorage.getItem("ListMenu") || "[]"))
     }
   }, [listMenuParent])
 
@@ -123,7 +121,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
       itemMenu.status = false;
     });
     newMenu[index].status = true;
-    localStorage.setItem("ListItem",JSON.stringify(item));
+    localStorage.setItem("ListItem", JSON.stringify(item));
     localStorage.setItem("ListMenu", JSON.stringify(newMenu));
     setListMenu(newMenu);
     handleItemLeave();
@@ -155,6 +153,37 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     return srcImg;
   };
 
+  const getChild = (item: any): { url: string } | undefined => {
+    let childMenuItem;
+  
+    const result = getNestedChildren(item.child);
+
+    result.some((itemChild: any) => {
+      if (
+        (user.url_permission.includes(itemChild.url) ||
+          reportUrls.includes(itemChild.url))
+      ) {
+        childMenuItem = itemChild;
+        return true;
+      }
+    })
+    
+    return childMenuItem;
+  }
+
+  const getNestedChildren = (children: Array<any>): any => {
+    const stack = [...children];
+    const result = [];
+    while (stack.length > 0) {
+      const current = stack.pop();
+      if (current.child) {
+        stack.push(...current.child);
+      } else {
+        result.push(current);
+      }
+    }
+    return result.reverse();
+  };
 
   const navigate = useNavigate();
 
@@ -162,11 +191,10 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     <NavStyle.SCGridNav id="vector_nav" className="list-roles-per--content">
       <NavStyle.SCNavBox>
         {listMenu.map((item: any, index: number) => {
-          const checkRole = user?.roles?.permission?.some((value: any) =>
-            item?.role?.includes(value)
-          );
 
-          if (checkRole) {
+          const childMenu = getChild(item);
+
+          if (childMenu) {
             return (
               <NavStyle.SCMenuItem
                 key={item.id}
@@ -184,7 +212,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
                     alt="logo"
                     style={{ zoom: item.id == `11` || item.id == `12` ? 1.2 : 1 }}
                     widthIcon={item.widthIcon}
-                    onClick={() => { navigate(item.url) }}
+                    onClick={() => { item.id !== 8 ? navigate(childMenu.url): '' }}
 
                   />
                   {!item.status && activeTooltip === item.id && (
