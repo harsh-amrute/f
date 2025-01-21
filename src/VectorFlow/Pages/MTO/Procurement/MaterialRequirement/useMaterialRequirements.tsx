@@ -22,6 +22,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../.
 import { useUserData } from "../../../../../context"
 import useColDef from "../../../../../hooks/useColDef";
 import { notifyError, notifySuccess } from "../../../../../helpers/notify";
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -466,12 +467,13 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
             case "sdv":
                 return (
                     <>
+                        {/* {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader/>} */}
                         <TableWrapper>
-                        
                             <VFTable
                                 paginationPageSize={10}
                                 {...agGridProps}
                                 columnDefs={colDef}
+
                                 rowData={DayWiseData}
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
@@ -504,6 +506,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
             case "cv":
                 return (
                     <>
+                        {/* {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader/>} */}
                         <TableWrapper>
                            
                             <VFTable
