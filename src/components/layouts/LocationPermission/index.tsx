@@ -19,7 +19,7 @@ const LocationPermission = ({ ...props }: any) => {
       <SCSwapPermission>
         <SCtitle>{title}</SCtitle>
         <SCSwapContent className="scroll-style">
-          {prdPermissions.map((item: any, index: any) => {
+          {prdPermissions.map((item: any) => {
             return (
               <SCSwapItem className="role-item" key={uuidv4()}>
                 <SCFlexCenter className="role-item-per--content">

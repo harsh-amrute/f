@@ -1778,6 +1778,7 @@ const useViewModify = (pageType:string) => {
         onReset,
         onEditOnlineSave,
         chartData,
+        defaultToolPanel,
         isSeasonalityChartModalOpen,
         normChangeData,
         toggleSeasonalityChartModal,
