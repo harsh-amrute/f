@@ -332,9 +332,15 @@ const usePlanning = ()=>{
         }
         if(currentPageData.category==='expedite' && currentPageData.type==='child'){
             if(currentTab==='expediteDispatches'){
-                return data.data.data.data[0].expediteDispatches
+                return data.data.data.data.expediteDispatches
             }
-            return data.data.data.data[0].createAvailabilityAtParent
+            return data.data.data.data.createAvailabilityAtParent
+        }
+        if(currentPageData.category==='expedite' && currentPageData.type==='parent'){
+            if(currentTab==='expediteDispatches'){
+                return data.data.data.data.expediteDispatches
+            }
+            return data.data.data.data.createAvailabilityAtParent
         }
         return data.data.data.data
     }
