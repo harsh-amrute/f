@@ -94,13 +94,9 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
   const renderToolTipContent = (items: any): any => {
     const result = getNestedChildren(items.child);
     return result.map((itemChild: any, index: number) => {
-      const checkRole = user?.roles?.permission?.some((value: any) =>
-        itemChild?.role?.includes(value)
-      );
       if (
         (user.url_permission.includes(itemChild.url) ||
-          itemChild.url === "" ||
-          itemChild.url === "/profile" || reportUrls.includes(itemChild.url)) && checkRole
+          reportUrls.includes(itemChild.url))
       ) {
         return (
           <TooltipContent
