@@ -103,6 +103,7 @@ import ToggleButton from "./ToggleButton";
 import {
   useGetDeptMasterData,
   useGetPlantMasterData,
+  useGetCCRMasterData as useGetCCRMasterDataForCalender
 } from "../../../../../VectorFlow/Services/MTO/Common/Masters";
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
 import MajReasonDescCell from "./MajReasonDescCell";
@@ -120,6 +121,7 @@ const useViewModify = (pageType: string) => {
   const activeMaster = useSelector(
     (state: RootState) => state.mdm.activeMaster
   );
+
   const masters = useSelector((state: RootState) => state.mdm.masters);
 
   const isSelectMasterOpen = useSelector(
@@ -222,7 +224,6 @@ const useViewModify = (pageType: string) => {
 
   const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
 
-  const { mutateAsync: getCCRMasterData } = useGetCCRMasterData();
 
   const { mutateAsync: getMasterDataRetail } = useGetMasterDataRetail();
 
@@ -343,18 +344,48 @@ const useViewModify = (pageType: string) => {
     }
   };
 
+  const { mutateAsync: getCCRMasterData } = useGetCCRMasterData();
+  const { mutateAsync: getCCRMasterDataForCalender } = useGetCCRMasterDataForCalender();
+
   const { mutateAsync: getPlantMaster } = useGetPlantMasterData();
   const { mutateAsync: getDeptMaster } = useGetDeptMasterData();
   const { mutateAsync: getCCRGroupMaster } = useGetCCRGroupMaster();
 
   const [plantMaster, setPlantMaster] = useState<any>([]);
+  // const [ccrMaster, setCCRMaster] = useState<any>([]);
   const [deptMaster, setDeptMaster] = useState<any>([]);
   const [ccrGroupMaster, setCCRGroupMaster] = useState<any>([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [plantNames, setPlantNames] =  useState([]);
+  const [ccrNames, setCCRNames]= useState([]);
+
+  const [selectedData, setSelectedData] = useState<any>({});
+  
+
+
+  const [selectedDays, setSelectedDays] = useState<any>({});
+
+  const toggleDay = (day:any) => {
+    setSelectedDays((prev:any) => ({ ...prev, [day]: !prev[day] }));
+  };
+
+  const [calendarFormData,setCalendarFormData] = useState({})
 
   const getPlantMasterData = async () => {
     const response = await getPlantMaster();
     setPlantMaster(response.data.data);
+    setPlantNames(response.data.data || [])
   };
+
+  const getCCRMasterDataForm  = async () =>{
+    const response = await getCCRMasterDataForCalender();
+    setCCRNames(response.data.data);
+    setCCRNames(response.data.data|| [])
+  }
+  
+
   const getDeptMasterData = async () => {
     const response = await getDeptMaster();
     setDeptMaster(response.data.data);
@@ -374,6 +405,7 @@ const useViewModify = (pageType: string) => {
       activeMaster.id === 504
     ) {
       getPlantMasterData();
+      getCCRMasterDataForm();
     }
     if (activeMaster.id === 502) {
       getDeptMasterData();
@@ -1326,6 +1358,37 @@ const useViewModify = (pageType: string) => {
     return resultData;
   };
 
+  // const onCalenderSave = (data: any) => {
+  //   console.log(data);
+  //   console.log(activeMaster);
+  // }
+
+    const onSaveHandler = () => {
+      const index = activeMaster.rowData.findIndex((row) => row.hid === selectedData.hid);
+        const rowData = _.cloneDeep(activeMaster.rowData);
+        if(index != -1){
+          rowData[index] = selectedData
+          dispatch(UPDATE_ROW_DATA(rowData))
+        }
+        else{
+          rowData.unshift(selectedData);
+          dispatch(UPDATE_ROW_DATA(rowData))
+        }
+        // dispatch(UPDATE_ROW_DATA(rowData))
+        setIsModalOpen(false)
+    }
+
+    const onDeleteHandler = (index: any) => {
+    
+      const rowData = _.cloneDeep(activeMaster.rowData);
+    
+      if (index !== -1) {
+        rowData.splice(index, 1);  // Removes 1 item at the found index
+        // dispatch(UPDATE_ROW_DATA(rowData));  // Dispatch action to update the state
+      }
+    }
+    
+
   const queryAllData = async (configs: QueryFilteredDataConfigs) => {
     const newColDefs: any = [];
     activeMaster.colDefs.forEach((ele: any) => {
@@ -1382,7 +1445,7 @@ const useViewModify = (pageType: string) => {
                 (modifiedBuffer: any) => modifiedBuffer.cid === buffer.cid
               )
           );
-          updatedData.data.data = updatedData.data.data = [
+          updatedData.data.data = [
             ...ccrModifyData,
             ...filteredDataBuffer,
           ];
@@ -1414,7 +1477,14 @@ const useViewModify = (pageType: string) => {
         ) {
           const newColDefs = [
             ...activeMaster.colDefs,
-            { headerName: "Action", cellRenderer: MTOCalendarEditCellRenderer },
+            { headerName: "Action", cellRenderer: MTOCalendarEditCellRenderer, cellRendererParams:{
+              handleOpenClick: (index: number, data: any) => {
+                setIsModalOpen(true);
+                setCalendarFormData(data)
+              },
+              onDeleteHandler: onDeleteHandler
+              // onSave: onCalenderSave
+            } },
           ];
           const finColDefs = newColDefs.map((col: any) => {
             if (col.field === "dow") {
@@ -4098,6 +4168,7 @@ const useViewModify = (pageType: string) => {
     onWarningModalSuccess,
     isUploadModalOpen,
     toggleUploadModal,
+    calendarFormData,
     recordCount,
     downloadFileName,
     setDownloadFileName,
@@ -4153,11 +4224,23 @@ const useViewModify = (pageType: string) => {
     onPIPOStatusUpdate,
     enableEditOnlineReset,
     uploadProgress,
+    plantNames,
+    ccrNames,
+    isModalOpen,
+    setIsModalOpen,
     totalProgress,
     tempRecordCount,
     addRowToMtoGrid,
     onMTOSaveBufferData,
+    selectedDays,
+    setSelectedDays,
+    toggleDay,
+    onSaveHandler,
+    onDeleteHandler,
+    selectedData,
+    setSelectedData,
     onMTOSaveAsDraft,
+    setCalendarFormData,
     MTOPoogiMinorColdef: [
       {
         headerName: "Sr No.",
