@@ -364,7 +364,6 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                         const tooltipItems = Object.entries(datum)
                             .filter(([key]) => key !== xKey  && key !== "undefined")
                             .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
-                        console.log("THESE ARE TOOL ITEMS",tooltipItems);
                         
                         return {
                             content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
