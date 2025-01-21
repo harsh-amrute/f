@@ -69,9 +69,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setListRoles(dataAllRoles);
   });
 
-  useEffect(() => {
-    console.log("data...permissionms", dataPermissions);
-  }, [dataPermissions]);
 
   const getHeaderDatafunct = async() =>{
     const reponse = await usegetHeaderData();
