@@ -15,7 +15,7 @@ export const userGetProcPlanningData = () => {
 
 export const userGetProcAfterSimulationPlanningData = () => {
     return useMutation(async (props: {date: string, eas: string, pageNumber: string}) => {
-        return await ProcPlanningService.GetProcDataAfterSimulation(props.date,props.eas, props.pageNumber);
+        return await ProcPlanningService.GetProcDataAfterSimulation(props.date, props.eas, props.pageNumber);
     });
 }
 
@@ -34,6 +34,12 @@ export const putUpdateProcurementSimulationData = () => {
 export const useGetProcurementPlanningDataForExcelExport = () => {
     return useMutation(async (params: any) => {
         return await ProcPlanningService.GetProcPlanningDataForExcelData(params);
+    })
+}
+
+export const useGetProcAfterSimulationPlanningDataForExcelExport = () => {
+    return useMutation(async (params: any) => {
+        return await ProcPlanningService.GetProcDataAfterSimulationForExcelData(params);
     })
 }
 

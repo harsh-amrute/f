@@ -7,16 +7,17 @@ import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/
 import VFTable from "../../../Common/VFTable";
 import { useLocation } from 'react-router-dom';
 import ColorCellRenderer from "../../../Common/ColorCellRenderer";
-import { getColumnDefinations } from '../../../../../../helpers/utils';
+import { DownloadExcel, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
-import { userGetProcAfterSimulationPlanningData } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
+import { useGetProcAfterSimulationPlanningDataForExcelExport, userGetProcAfterSimulationPlanningData } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
 import OverlayLoader from "../../../Common/Loader";
 import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import { toast } from "react-toastify";
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
-import { UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
+import useColDef from "../../../../../../hooks/useColDef";
 
 
 const useSimFullKit = () => {
@@ -24,14 +25,13 @@ const useSimFullKit = () => {
     const { isSideBarOpen } = useUserData()
     const [currentPage, setCurrentPage] = useState<any>(1);
     const location = useLocation();
-    const rowsData = location.state?.ShortageDatas;
     const date = location.state?.date;
     const [currentGridRef, setCurrentGridRef] = useState<any>(null);
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState(false);
     const [colDef, setColDef] = useState([{}]);
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
-    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();  
+    const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const [data, setData] = useState([]);
     const [incOrderFullkitData, setIncOrderFullKitData] = useState<any[]>([]);
     const [cumulativeFullKitData, setCumulativeFullKitDara] = useState<any[]>([]);
@@ -39,37 +39,32 @@ const useSimFullKit = () => {
     const reportName = "SimulateFullkit";
     const gridRef = useRef<AgGridReact>(null);
     const { user } = useUserData();
-    
-    if (rowsData) {
-        rowsData.forEach((item: any) => {
-            if (Array.isArray(item.children)) {
-                item.children.sort((a: any, b: any) => a.bpp - b.bpp);
-                let remainingEas = 0;
-                item.children.forEach((child: any, index: number) => {
-                    const penDValue = child.pend;
-                    const easValue = item.eas;
-                    if (index === 0) {
-                        remainingEas = easValue;
-                    }
-                    if (remainingEas > 0) {
-                        if (penDValue <= remainingEas) {
-                            child.remq = penDValue;
-                            remainingEas -= penDValue;
-                        } else {
-                            child.remq = remainingEas;
-                            remainingEas = 0;
-                        }
-                    } else {
-                        child.remq = 0;
-                    }
-                });
-            }
-        });
-    }
+    const [masterUIConfig, setMasterUIConfig] = useState([]);
+    const { colDefMap, getColDef } = useColDef();
+    const [totalRows, setTotalRows] = useState(0);
+
+    const { mutateAsync: userGetProcAfterSimulationData, isLoading, isSuccess, isError } = userGetProcAfterSimulationPlanningData();
+    const { mutateAsync: userGetProcAfterSimulationDataForExcelExport } = useGetProcAfterSimulationPlanningDataForExcelExport();
+    const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
+    const tabs: Array<VFFloatingTabItemProps> = [
+        {
+            id: 'iof',
+            label: 'Incremental Order In Full Kit',
+            value: 'iof'
+        },
+        {
+            id: 'cf',
+            label: 'Cumulative Full Kit',
+            value: 'cf'
+        }
+    ];
+    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
+
 
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
+            getColDef(response)
             setHeaderData(response.data.data);
         }
         catch (e) {
@@ -77,62 +72,50 @@ const useSimFullKit = () => {
         }
     }
 
-    // const Save = () => {
-    //     const newData: { sno: string; on: string; lid: string; item: string; easa: number }[] = [];
-    //     if (rowsData) {
-    //         rowsData.forEach((item: any) => {
-    //             if (Array.isArray(item.children)) {
-    //                 item.children.forEach((child: any) => {
-    //                     const newEntry = {
-    //                         sno: child.sno,
-    //                         on: child.on,
-    //                         lid: child.lid,
-    //                         item: item.rm,
-    //                         easa: item.eas,
-    //                         // remq: child.remq
-    //                     };
-    //                     newData.push(newEntry);
-    //                 });
-    //             }
-    //         });
-    //     }
-    //     return newData;
-    // };
-
     const getUserColumnConfig = async () => {
         try {
-          const data = await getUserUIReportConfigData({
-            un: user.user.name,
-            rn_id: UIGridCode.ProcPlanningSimulation
-          });
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProcPlanningSimulation
+            });
     
-          const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-          setColumnState(newConfig);
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+            setColumnState(newConfig);
     
-          if (!data) {
-            console.error('Failed to apply column state');
-          }
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-          if(currentGridRef?.current?.api){
-            const config = currentGridRef.current.api.getColumnState();
-            console.log(config, 'CONFIG')
-            const payload = {
-              un: user.user.name,
-              rn_id: UIGridCode.ProcPlanningSimulation,
-              cs: JSON.stringify(config)
+            if (coldefs) {
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcMaterialRequirement,
+                    cs: JSON.stringify(coldefs),
+                };
+                await updateUserUIReportConfigData([payload]);
+                setColumnState([...coldefs]);
+                
+            } else {
+                if (currentGridRef?.current?.api) {
+                    const config = currentGridRef.current.api.getColumnState();
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.ProcPlanningSimulation,
+                        cs: JSON.stringify(config)
+                    }
+                    await updateUserUIReportConfigData([payload]);
+                    await getUserColumnConfig();
+                }
             }
-            await updateUserUIReportConfigData([payload]);
-            await getUserColumnConfig();
-          }
     
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
@@ -142,57 +125,56 @@ const useSimFullKit = () => {
 
     useEffect(() => {
         if (isReset) {
-          setColumnState(colDef);
-          setIsReset(false)
-        }else{
-          handleSaveClick();
+            handleSaveClick(masterUIConfig);
+            setIsReset(false);
         }
     }, [isReset]);
+    
+    useEffect(() => {
+        if (colDef.length > 1 && currentGridRef?.current) {
+            setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+            getUserColumnConfig();
+        }
+    }, [colDef]);
 
     useEffect(() => {
-        getUserColumnConfig();
         setColumnDef();
     }, [])
 
-    const [totalRows, setTotalRows] = useState(0);
-
-
-
-
-    const { mutateAsync: userGetProcAfterSimulationData, isLoading, isSuccess, isError } = userGetProcAfterSimulationPlanningData();
-    //isLoading: isProcPlanningUILoading, isError
-
-    const fetchData = useCallback(async (date: string, eas: string, pageNumber = '1') => {
-        try {
-            const response = await userGetProcAfterSimulationData({ date, eas, pageNumber });
-            setData(response?.data?.data?.results);
-            setTotalRows(response?.data?.data.count);
-            setCurrentPage(pageNumber)
-
-        } catch (error) {
-            console.log("error ", error);
-        }
-    }, [rowsData, userGetProcAfterSimulationData]);
-
-    useEffect(() => {
-        if ('' !== date) {
-            const selectedDate = date;
-            if (rowsData) {
-                if (currentTab.id === 'iof') {
-
-                    fetchData(selectedDate, '0', currentPage);
+    const fetchData = useCallback(async (date: string, eas: string, pageNumber = '1', isExcelExport = false) => {
+        if (isExcelExport) {
+            try {
+                const headersdata = gridRef?.current?.api.getColumnState();
+                const body = getBodyForExcelExport({ headersdata, colDefMap })
+                const response = await userGetProcAfterSimulationDataForExcelExport({ date, body, eas, report_name: FilterPageName.Proc_Procurement_Planning, isExcelExport: 1 });
+                if (response.status === 200) {
+                    DownloadExcel(response);
+                    notifySuccess('Excel Export Successfully')
+                } else {
+                    notifyError('Failed to export Excel')
                 }
-                else {
-                    fetchData(selectedDate, '1', currentPage);
-                }
+            } catch (error) {
+                notifyError("Failed to export")
+            }
+        } else {
+            try {
+                const response = await userGetProcAfterSimulationData({ date, eas, pageNumber });
+                setData(response?.data?.data?.results);
+                setTotalRows(response?.data?.data.count);
+                setCurrentPage(pageNumber)
+
+            } catch (error) {
+                console.log("error ", error);
             }
         }
-    }, [rowsData, fetchData]);
+    }, [userGetProcAfterSimulationData]);
 
-
+    const ExcelExportData = () => {
+        fetchData(date, currentTab.id === 'iof' ? '0' : '1', '1', true);
+    }
 
     useEffect(() => {
-        if (data.length !== undefined && HeaderData.length !== undefined) {
+        if (data && data.length !== undefined && HeaderData.length !== undefined) {
             const initilizeData = (data: any) => {
                 const calculateData = data.map((item: any) => ({
                     ...item,
@@ -214,19 +196,6 @@ const useSimFullKit = () => {
             initilizeData(data);
         }
     }, [data]);
-
-    const tabs: Array<VFFloatingTabItemProps> = [
-        {
-            id: 'iof',
-            label: 'Incremental Order In Full Kit',
-            value: 'iof'
-        },
-        {
-            id: 'cf',
-            label: 'Cumulative Full Kit',
-            value: 'cf'
-        }
-    ];
 
     const CustomDef = {
         ic: {
@@ -264,8 +233,6 @@ const useSimFullKit = () => {
     useEffect(() => {
         setColDef(getColumnDefinations(HeaderData, CustomDef, []))
     }, [HeaderData])
-
-    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
 
     const icons = useMemo(() => {
         return {
@@ -324,19 +291,15 @@ const useSimFullKit = () => {
 
 
     useEffect(() => {
-
         if (currentTab.id === 'iof') {
             fetchData(date, '0');
         }
         else {
             fetchData(date, '1');
         }
-
     }, [currentTab])
-
-    const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab);
     
-    useEffect(()=>{ 
+    useEffect(() => {
         if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
             const result = currentGridRef?.current?.api?.applyColumnState({
                 state: columnState,
@@ -445,15 +408,15 @@ const useSimFullKit = () => {
                 resizable: true,
                 filter: "agMultiColumnFilter",
                 cellStyle: {
-                    'text-align': 'center',
+                    'textAlign': 'center',
                     'height': '50px',
-                    "font-style": "normal",
-                    "font-variant": "normal",
-                    "font-weight": "300",
-                    "font-size": "20px",
-                    "font-family": "Roboto",
-                    'text-overflow': 'ellipsis',
-                    'white-space': 'nowrap',
+                    "fontStyle": "normal",
+                    "fontVariant": "normal",
+                    "fontWeight": "300",
+                    "fontSize": "20px",
+                    "fontFamily": "Roboto",
+                    'textOverflow': 'ellipsis',
+                    'whiteSpace': 'nowrap',
                     'resizable': 'true',
                     'width': '200px'
                 },
@@ -476,7 +439,8 @@ const useSimFullKit = () => {
         renderView,
         currentTab,
         handleSaveClick,
-        handleResetClick
+        handleResetClick,
+        ExcelExportData
     }
 }
 
