@@ -266,7 +266,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     renderer: (params: any) => {
                         const { datum, xKey } = params;
                         const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
                             .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
                         
                         return {
@@ -290,7 +290,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                    renderer: (params: any) => {
                         const { datum, xKey } = params;
                         const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
                             .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
                         
                         return {
@@ -314,7 +314,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     renderer: (params: any) => {
                         const { datum, xKey } = params;
                         const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
                             .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
                         
                         return {
@@ -338,7 +338,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     renderer: (params: any) => {
                         const { datum, xKey } = params;
                         const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
                             .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
                         
                         return {
@@ -359,11 +359,10 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                 },
                 stroke: 'blue',
                 tooltip: {
-    
                     renderer: (params: any) => {
                         const { datum, xKey } = params;
                         const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey)
+                            .filter(([key]) => key !== xKey  && key !== "undefined")
                             .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
                         
                         return {
@@ -387,7 +386,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     renderer: (params: any) => {
                         const { datum, xKey } = params;
                         const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
                             .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
                         
                         return {
