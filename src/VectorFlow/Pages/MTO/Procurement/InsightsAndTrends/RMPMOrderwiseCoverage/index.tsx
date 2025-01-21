@@ -258,8 +258,8 @@ const RMPMOrderwiseCoverage = () => {
                 const APIData = await getOrderwiseCoverageData({ graph, page: page ? page : currentPage, appliedFilters: formatedFilters });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
-                    setApiGridData(APIData?.data?.data?.results);
-                    setOrderWiseRecordCount(APIData.data?.data?.count);
+                    setApiGridData(APIData?.data?.data?.results || []);
+                    setOrderWiseRecordCount(APIData.data?.data?.count || 0);
                     notifySuccess("Data Fetched Successfully!")
                 }
                
