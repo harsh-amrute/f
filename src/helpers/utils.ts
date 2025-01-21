@@ -4305,7 +4305,7 @@ export const generateMTOFilterOptions = (data: Master[], currentFilters:any) => 
   const finOptions: any[] = options.filter((ele: any) => {
     return !currentFilters.some((e: any) => e.field === ele.value);
   });
-  console.log('fin options', finOptions);
+  // console.log('fin options', finOptions);
   return finOptions;
 
 }
