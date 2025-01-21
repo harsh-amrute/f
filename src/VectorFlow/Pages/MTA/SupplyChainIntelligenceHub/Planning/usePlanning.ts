@@ -608,7 +608,7 @@ const usePlanning = ()=>{
                     if(!fromPagination){
                         body.paginationParameter.pageNumber  = 1
                         const count = await getPlanningDataGridCount(body)
-                        const {createAvailabilityAtParent,expediteDispatches} = JSON.parse(count.data.data)[0]
+                        const {createAvailabilityAtParent,expediteDispatches} = count.data.data
                         const tempTab =tab?tab:currentTab
                         if(tempTab==="createAvailabilityAtParent"){
                             setPlanningCounts({...planningCounts,childExpediteCount:createAvailabilityAtParent})
@@ -623,7 +623,7 @@ const usePlanning = ()=>{
                         setCurrentPage(1)
                     }
                     const result = await getPlanningDataGrid(body);
-                    const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data[0];
+                    const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data;
                     const uiConfig = result.data.data.uiConfig;
                     const customData = {"createAvailabilityAtParent":{"data":createAvailabilityAtParent,"uiConfig":uiConfig},"expediteDispatches":{"data":expediteDispatches,"uiConfig":uiConfig}};
                     setCurrentGridData(customData);
