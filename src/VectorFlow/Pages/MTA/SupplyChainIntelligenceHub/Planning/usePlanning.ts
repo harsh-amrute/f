@@ -566,7 +566,7 @@ const usePlanning = ()=>{
                     if(!fromPagination){
                         const count = await getPlanningDataGridCount(body)
                         console.log(count)
-                        const {createAvailabilityAtParent,expediteDispatches} = JSON.parse(count.data.data)[0]
+                        const {createAvailabilityAtParent,expediteDispatches} = count.data.data
                         const tempTab =tab?tab:currentTab
                         if(tempTab==="createAvailabilityAtParent"){
                             setPlanningCounts({...planningCounts,parentExpediteCount:createAvailabilityAtParent})
@@ -581,9 +581,8 @@ const usePlanning = ()=>{
                     }
                     
                     const result = await getPlanningDataGrid(body);
-
-                    const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data[0];
                     const uiConfig = result.data.data.uiConfig;
+                    const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data;
                     const customData = {"createAvailabilityAtParent":{"data":createAvailabilityAtParent,"uiConfig":uiConfig},"expediteDispatches":{"data":expediteDispatches,"uiConfig":uiConfig}};
                     setCurrentGridData(customData);
                     if(fromPagination){
@@ -754,13 +753,18 @@ const usePlanning = ()=>{
     }
 
     const onViewChange = async (view:string) => {
-        const activeTab = getFloatingTabsList(view)[0];
-        if(activeTab){
-             setCurrentTab(getFloatingTabsList(view)[0].value);
+        if(currentTab===''){
+            const activeTab = getFloatingTabsList(view)[0];
+            if(activeTab){
+                setCurrentTab(getFloatingTabsList(view)[0].value);
+            }
+            if(view==='grid') await fetchAndUpdateGridData(currentPage,false,currentFilter);
+            setCurrentView(view);
+        }else{
+            const activeTab = getFloatingTabsList(view).find(tab => tab.value === currentTab);
+            if(view==='grid') await fetchAndUpdateGridData(currentPage,false,currentFilter);
+            setCurrentView(view);
         }
-        if(view==='grid') await fetchAndUpdateGridData(currentPage,false,currentFilter);
-        setCurrentView(view);
-        
     }
 
     const onOpenDailyDataGraph = async (params:any) => {
