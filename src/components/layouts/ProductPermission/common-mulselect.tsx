@@ -50,7 +50,7 @@ export default forwardRef(({ ...props }: any, ref) => {
 
         product[keyBrand][keySubBrand]?.forEach((eleCategory: any) => {
           const valueCategory = `${valueSubBrand} > ${eleCategory['product_hierarchy_3']}`;
-          if (eleCategory['product_hierarchy_3'].length > 0) {
+          if (eleCategory['product_hierarchy_3']?.length > 0) {
             const dataCategory = {
               label: valueCategory,
               value: valueCategory,
@@ -155,7 +155,7 @@ export default forwardRef(({ ...props }: any, ref) => {
   
   const prdPermissions = [
     {
-      title: process.env.REACT_APP_PRODsUCT_PERMISSION_L1 || '',
+      title: process.env.REACT_APP_PRODUCT_PERMISSION_L1 || '',
       placeholder: "", 
       options: listBrand,
       value: brand,
