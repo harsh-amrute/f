@@ -351,7 +351,6 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                 type: "line",
                 xKey: "date",
                 yKey: "Blue",
-                xName:"blue",
                 marker: {
                     fill: 'blue',
                     size: 2,
