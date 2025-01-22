@@ -2479,9 +2479,14 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
 }
 
 export const MainMenuItemsCustomization = (params:any) => {
+  console.log(params)
   const defaultItems = params.defaultItems;
-  // Remove a specific item by filtering
+  const conditionalItemsToRemove = ['remarks','rh']
   const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
+  if(conditionalItemsToRemove.includes(params.column.colId)){
+    // itemsToRemove.push()
+    itemsToRemove.push("pinSubMenu")
+  }
   const modifiedItems = defaultItems.filter((item:any) => !itemsToRemove.includes(item));
    
   return modifiedItems;

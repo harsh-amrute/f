@@ -598,6 +598,7 @@ const useResearchInsights = () => {
         whiteCount,
         isGraphOneOpen,
         graphs,
+        setGraphs,
         locationGraphData,
         selfGraphData,
         expandedGraphId,

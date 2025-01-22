@@ -791,6 +791,16 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         return emptyFilters;
       };
       
+      
+      const resetFilters = () => {
+        const resetMultiFilter = { ...multiFilter };
+      
+        Object.keys(resetMultiFilter).forEach((key) => {
+          resetMultiFilter[key as keyof BPRFilterState].filters = [];
+        });
+      
+        setMultiFilter(resetMultiFilter);
+      };
 
     return(
         <>
@@ -1223,7 +1233,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             
             <ButtonFilterWrapper>
                 <ButtonContainer>
-                    <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
+                    <VFButtonOutline themeUi={user.user.theme_ui} onClick={resetFilters}>
+                       Reset Filters
+                    </VFButtonOutline>
                     <VFButton
                         themeUi={user.user.theme_ui}
                         onClick={() => {

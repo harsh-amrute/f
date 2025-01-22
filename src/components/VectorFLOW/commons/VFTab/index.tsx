@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import {ReactNode, useState} from 'react';
 import {
     SCTabArea,
     SCTabHeader,
@@ -11,7 +11,7 @@ import {
 import {type MDMMasterState} from '../../../../VectorFlow/types/MDM';
 import { useSelector } from 'react-redux';
 import { RootState } from "../../../../redux/store/store";
-
+ 
 interface VFTabProps{
   activeMaster:MDMMasterState,
   themeUi:string,
@@ -21,19 +21,45 @@ interface VFTabProps{
   newTabIcon?:string,
   newTabHandler?:() => void,
   children?:ReactNode,
-
+ 
 }
-
+ 
 const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIcon,newTabHandler,children}:VFTabProps) => {
-
+ 
   const masters = useSelector((state:RootState)=>state.mdm.masters);
-
+ 
   const getTabStatus = (currMaster:MDMMasterState) => {
     if(currMaster.progress === 'submitted' || currMaster.progress === 'editOnlineSubmitted' || currMaster.progress === 'deleteOnlineSubmitted') return 'completed';
     return activeMaster.id === currMaster.id ? 'active' : currMaster.progress;
-
+ 
   }
-
+ 
+  const [isHovered, setIsHovered] = useState(false);
+ 
+  const handleMouseEnter = (master:any) => {
+   if( getTabStatus(master) === 'active') { setIsHovered(true);}
+  };
+ 
+  const handleMouseLeave = () => {
+    
+    setIsHovered(false);
+  };
+ 
+  const getImageSrc = (master: MDMMasterState) => {
+    if (isHovered && getTabStatus(master) === 'active') {
+      return '/assets/img/VectorFLOW/NMS/close-icon-hover.svg';
+    }
+    if (getTabStatus(master) === 'active') {
+      return '/assets/img/VectorFLOW/NMS/close-icon.svg';
+    }
+    if (master.progress === 'submitted' || master.progress === 'editOnlineSubmitted') {
+      return '/assets/img/VectorFLOW/NMS/tick.svg';
+    }
+    else{
+    return '/assets/img/VectorFLOW/NMS/close.svg';
+    }
+  };
+ 
   return(
       <SCTabArea>
         <SCTabHeader>
@@ -41,20 +67,32 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
               {
                 masters.map((master:MDMMasterState,index:number)=>{
                   return(
-                    <SCTabButton 
-                      status={getTabStatus(activeMaster)} 
-                      zIndex={masters.length-index} 
-                      marLeft={index !== 0} 
+                    <SCTabButton
+                      status={getTabStatus(master)}
+                      zIndex={masters.length-index}
+                      marLeft={index !== 0}
                       themeUi={themeUi}
-                      onClick={() => { 
-                        onTabChange(master) 
+                      onClick={() => {
+                        onTabChange(master)
                       }}
                       key={master.id}
                       data-testid="tab-button"
                       >
                         <SCTabContent>
                           <SCTabTitle status={getTabStatus(master)}>{master.name}</SCTabTitle>
-                          <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onTabClose(e,master)}} src={getTabStatus(master) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : (master.progress === 'submitted' || master.progress === 'editOnlineSubmitted') ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
+                          {/* <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onTabClose(e,master)}} src={getTabStatus(master) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : (master.progress === 'submitted' || master.progress === 'editOnlineSubmitted') ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/> */}
+                          <img
+                            data-testid="tab-close"
+                            onClick={(e: React.MouseEvent<HTMLElement>)=>{
+                              onTabClose(e, master)
+                              setIsHovered(false);
+
+                            }}
+                            onMouseEnter={() => handleMouseEnter( master)}
+                            onMouseLeave={handleMouseLeave}
+                            src={getImageSrc(master)}
+                            alt="Tab Icon"
+                          />
                         </SCTabContent>
                     </SCTabButton>
                   )
@@ -76,7 +114,7 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
                   </SCTabContent>
               </SCTabButton>
             </SCTabHeaderLeft>
-
+ 
         </SCTabHeader>
         <SCTabBody>
           {children}
@@ -84,5 +122,5 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
     </SCTabArea>
   )
 }
-
+ 
 export default VFTab;

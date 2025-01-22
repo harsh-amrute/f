@@ -1,12 +1,19 @@
 import { AgCharts } from "ag-charts-react"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
- 
 import { ExpandedChartFilterWrapper, ExpandedChartSelectWrapper, ExpandedChartSelectLabel, ExpandedChartCapsuleWrapper } from "./styles"
- 
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline" 
 import Select from 'react-select'
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule"
 import { ReseachInsightsGraphState } from "../../../../../VectorFlow/types/BPR"
- 
+import { useUserData } from "../../../../../context"
+import { useState } from "react"
+import {
+
+    SCViewImage,
+    SCViewContainerWithBg,
+
+  } from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles";
+
 interface ExpandedGraphProps {
     id: number
     data: any
@@ -16,14 +23,19 @@ interface ExpandedGraphProps {
     options: any
     onTogglePen: (data: any) => void
     onUpdateGraphs: any,
-    horizon:any
+    horizon:any,
+    setGraphs: any
 }
  
+
+
+
 const ExpandedGraph = (props: ExpandedGraphProps) => {
  
     const {
         data,
         graphs,
+        setGraphs,
         id,
         options,
         onClose,
@@ -37,6 +49,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
     const activeCapsuleIndex = graphs[id-1].pen
  
     const onChange = (e: any, key: string) => {
+        console.log(graphs)
         const doesFilterExist = graphs[id - 1].filters.find((filter) => filter.key === key)
         if (doesFilterExist) {
             return onUpdateGraphs(id, 'filters', graphs[id - 1].filters.map((filter) => filter.key === key ? { key: key, value: e.value } : filter))
@@ -44,14 +57,31 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
         const tempFilters = [...graphs[id - 1].filters, { key: key, value: e.value }]
         onUpdateGraphs(id, 'filters', tempFilters)
     }
+
+    
  
     const handleClose = () => {
         onClose()
         onUpdateGraphs(id, 'filters', [])
     }
 
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    
+    const onreset = (e: any) => {
+        onUpdateGraphs(id, "filters", []);
+        
+        setSelectedLocation(null);
+        setSelectedProduct(null);
+      };
+
+    const {user} = useUserData();
+    const themeUi = user?.user?.theme_ui;
+
+
     return (
         <VFModalCard
+
             openModal={isOpen}
             headerIcon=""
             headerBgColor="white"
@@ -98,7 +128,11 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                                 }),
                         }}
                         options={options.whcodes}
-                        onChange={(e) => onChange(e, 'Whcode')}
+                        onChange={(e) => {
+                            setSelectedLocation(e); 
+                            onChange(e, "Whcode");
+                          }}
+                          value={selectedLocation}
  
                     />
                 </ExpandedChartSelectWrapper>
@@ -135,9 +169,43 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                                 }),
                         }}
                         options={options.skus}
-                        onChange={(e) => onChange(e, 'SKUCode')}
+                        onChange={(e) => {
+                            setSelectedProduct(e); 
+                            onChange(e, "SKUCode");
+                          }}
+                          value={selectedProduct} 
                     />
                 </ExpandedChartSelectWrapper>
+                {/* <RIButtonOutline themeUi={user.user.theme_ui} onClick={onreset}>
+                       Reset Filters
+                    </RIButtonOutline> */}
+                    <ExpandedChartCapsuleWrapper>
+                        
+                    <SCViewContainerWithBg
+                                          style={{
+                                            width:'50px',
+                                            height: '50px',
+                                            padding: '3px',
+                                            // minWidth: '40px',
+                                            boxShadow: 'none',   
+                                            marginLeft:'-40px',        
+                                          }}
+                                        onClick={onreset}
+                                      >
+                                        <SCViewImage
+                                          src={
+                                            themeUi === "REGALBLAZE"
+                                              ? "/assets/img/VectorFLOW/BPR/refresh-regal.svg"
+                                              : "/assets/img/VectorFLOW/BPR/refresh.svg"
+                                          }
+                                          style={{height:'30px'}}
+                                          alt=""
+                                        />
+                                        {/* <p>Reset</p> */}
+                                      </SCViewContainerWithBg>
+                    </ExpandedChartCapsuleWrapper>
+
+
                 <ExpandedChartCapsuleWrapper>
                     <VFCapsule
                         activeBtn={activeCapsuleIndex}

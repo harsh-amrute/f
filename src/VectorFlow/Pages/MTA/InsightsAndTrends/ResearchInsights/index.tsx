@@ -52,6 +52,7 @@ const ResearchInsights = ()=>{
         selfGraphData,
         locationGraphData,
         graphs,
+        setGraphs,
         calenderType,
         expandedGraphAllFilterValues,
         toggleGraphModal,
@@ -94,6 +95,8 @@ const ResearchInsights = ()=>{
         if (number == null || isNaN(number)) return "-"; 
         return number.toFixed(2);
     }, []);
+
+
 
     return(
         <GridStateContext.Provider value={{
@@ -713,6 +716,7 @@ const ResearchInsights = ()=>{
                 onUpdateGraphs={updateGraphState}
                 options={expandedGraphAllFilterValues}
                 graphs={graphs}
+                setGraphs={setGraphs}
                 id={expandedGraphId}
                 onTogglePen={(e)=>updateGraphState(expandedGraphId,"pen",e)}
                 data={expandedGraphId===1?selfGraphData:locationGraphData}

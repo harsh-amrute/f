@@ -1141,10 +1141,10 @@ const useViewModify = (pageType:string) => {
         }
 
         //check if errorneous Data
-        const errorData = activeMaster.rowData.find((row:any)=>{
+        const errorData1 = activeMaster.rowData.find((row:any)=>{
           return (row.error ) &&( row.error!=='' )
         });
-        if(errorData){
+        if(errorData1){
           notifyError('Please Clear Errors Before Submitting');
           return;
         }
@@ -1210,7 +1210,7 @@ const useViewModify = (pageType:string) => {
             setConflictCount(tempCon.length)
             setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
             setIsConflictModalOpen(true)
-            addCheckBoxColDefs()
+            //addCheckBoxColDefs()
             dispatch(UPDATE_PROGRESS_STATE('editOnlineConflicts'))
           }
  
