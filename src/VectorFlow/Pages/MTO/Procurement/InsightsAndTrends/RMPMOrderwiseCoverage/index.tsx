@@ -46,14 +46,14 @@ const RMPMOrderwiseCoverage = () => {
     const [colDef, setColDef] = useState([{}]);
     const [filterData, setFilterData] = useState({});
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const { 
-        state: currFilter, 
-        setState: setCurrFilter, 
-        onFilterRemove, 
-        isFilterOpen, 
+    const {
+        state: currFilter,
+        setState: setCurrFilter,
+        onFilterRemove,
+        isFilterOpen,
         isMfgSelected,
-        onAddFilter, 
-        onApplyFilter, 
+        onAddFilter,
+        onApplyFilter,
         toggleFilter,
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_OrderWise);
@@ -62,9 +62,12 @@ const RMPMOrderwiseCoverage = () => {
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: getOrderwiseCoverageData } = useGetOrderwiseCoverageData();
     const { user } = useUserData();
-    const { mutateAsync : getOrderwiseCoverageDataForExcelExport} = useGetOrderwiseCoverageDataForExcelExport();
-    const {colDefMap , getColDef} = useColDef()
+    const { mutateAsync: getOrderwiseCoverageDataForExcelExport } = useGetOrderwiseCoverageDataForExcelExport();
+    const { colDefMap, getColDef } = useColDef()
     const reportName = "RMPMOrderWiseCoverage";
+    const [masterUIConfig, setMasterUIConfig] = useState([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [orderWiseRecordCount, setOrderWiseRecordCount] = useState<number>(0);
 
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
@@ -215,15 +218,15 @@ const RMPMOrderwiseCoverage = () => {
     };
 
     const GetData = async (graph: any, page: any, isExcelExport = false) => {
-        if(isExcelExport) {
+        if (isExcelExport) {
             try {
                 const headersdata = currentGridRef?.current?.api.getColumnState();
                 const formatedFilters = formatFilterJSON(appliedFilters)
-                const body = getBodyForExcelExport({headersdata,filterData : formatedFilters,colDefMap})
-                const response = await getOrderwiseCoverageDataForExcelExport({body , isExcelExport : 1, report_name : FilterPageName.Proc_RM_PM_OrderWise,  graph});
-                if(response.status === 200) {
+                const body = getBodyForExcelExport({ headersdata, filterData: formatedFilters, colDefMap })
+                const response = await getOrderwiseCoverageDataForExcelExport({ body, isExcelExport: 1, report_name: FilterPageName.Proc_RM_PM_OrderWise, graph });
+                if (response.status === 200) {
                     DownloadExcel(response, FilterPageName.Proc_RM_PM_OrderWise,);
-                }else{
+                } else {
                     notifyError("An error occurred while downloading")
                 }
                 
@@ -252,10 +255,11 @@ const RMPMOrderwiseCoverage = () => {
             try {
                 notifyLoader("Loading Data...")
                 const formatedFilters = formatFilterJSON(appliedFilters);
-                const APIData = await getOrderwiseCoverageData({ graph, page, appliedFilters: formatedFilters });
+                const APIData = await getOrderwiseCoverageData({ graph, page: page ? page : currentPage, appliedFilters: formatedFilters });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
-                    setApiGridData(APIData?.data?.data?.results);
+                    setApiGridData(APIData?.data?.data?.results || []);
+                    setOrderWiseRecordCount(APIData.data?.data?.count || 0);
                     notifySuccess("Data Fetched Successfully!")
                 }
                
@@ -268,40 +272,56 @@ const RMPMOrderwiseCoverage = () => {
 
     }
 
+    const handlePageChangeDayWise = async (currPage: number) => {
+        setCurrentPage(currPage);
+        await GetData(0, currPage);
+    }
+
     const getUserColumnConfig = async () => {
         try {
-          const data = await getUserUIReportConfigData({
-            un: user.user.name,
-            rn_id: UIGridCode.ProcRMPMOrderCov
-          });
+            const data = await getUserUIReportConfigData({
+                un: user.user.name,
+                rn_id: UIGridCode.ProcRMPMOrderCov
+            });
     
-          const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-          setColumnState(newConfig);
+            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+            setColumnState(newConfig);
     
-          if (!data) {
-            console.error('Failed to apply column state');
-          }
+            if (!data) {
+                console.error('Failed to apply column state');
+            }
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
     }
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-        if(currentGridRef?.current?.api){
-            const config = currentGridRef.current.api.getColumnState();
+            if (coldefs) {
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcRMPMOrderCov,
+                    cs: JSON.stringify(coldefs),
+                };
+                await updateUserUIReportConfigData([payload]);
+                setColumnState([...coldefs]);
+        
+            } else {
+                if (currentGridRef?.current?.api) {
+                    const config = currentGridRef.current.api.getColumnState();
     
-            const payload = {
-            un: user.user.name,
-            rn_id: UIGridCode.ProcRMPMOrderCov,
-            cs: JSON.stringify(config)
-            }
-            await updateUserUIReportConfigData([payload]);
-            await getUserColumnConfig();
-        }
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.ProcRMPMOrderCov,
+                        cs: JSON.stringify(config)
+                    }
+                    await updateUserUIReportConfigData([payload]);
+                    await getUserColumnConfig();
+                }
 
+            }
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
     }
 
@@ -310,24 +330,26 @@ const RMPMOrderwiseCoverage = () => {
     }
    
     const getFilterData = async () => {
-    try {
-        const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_RM_PM_OrderWise});
-        setFilterData(response?.data?.data);
-    } catch (error) {
-        console.error(error);
-    }
+        try {
+            const response = await getPageWiseFilterData({ page_name: FilterPageName.Proc_RM_PM_OrderWise });
+            setFilterData(response?.data?.data);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     useEffect(() => {
-        getUserColumnConfig();
         setColumnDef();
         GetData(1, 1);
         getFilterData()
     }, [])
 
-    useEffect(()=>{
-        GetData(0, 1);
-    },[appliedFilters]);
+    useEffect(() => {
+        if (Object.entries(appliedFilters).length > 1) {
+            setCurrentPage(1);
+            GetData(0, 1);
+        }
+    }, [appliedFilters]);
 
     useEffect(() => {
         setConvertedData(mapDataToColumns(apiGridData, columnData));
@@ -339,15 +361,20 @@ const RMPMOrderwiseCoverage = () => {
 
     useEffect(() => {
         if (isReset) {
-          setColumnState(colDef);
-          setIsReset(false)
-        }else{
-          handleSaveClick();
+            handleSaveClick(masterUIConfig);
+            setIsReset(false);
         }
     }, [isReset]);
 
-    const ExcelExport = () =>{
-        GetData(0,0,true)
+    useEffect(() => {
+        if (currentGridRef?.current) {
+            setMasterUIConfig(currentGridRef?.current.api.getColumnState());
+            getUserColumnConfig();
+        }
+    }, [colDef, currentGridRef]);
+
+    const ExcelExport = () => {
+        GetData(0, 0, true)
     }
 
     return (
@@ -355,17 +382,16 @@ const RMPMOrderwiseCoverage = () => {
             {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
             <div style={{ display: 'flex', flexDirection: 'column', height: "100%" }}>
 
-
-                <ActionToolBar 
-                    comp={"rmpm"} 
-                    isGoBackButton={isGridView} 
-                    handleGoBack={() => { (setIsGridView(false)) }} 
-                    isAddFilterButton 
-                    isChartGridToggle 
-                    isExcelExport = {isGridView ? true : false}
-                    onExcelExportClick = {ExcelExport}
-                    isGridView={isGridView} 
-                    setIsGridView={setIsGridView} 
+                <ActionToolBar
+                    comp={"rmpm"}
+                    isGoBackButton={isGridView}
+                    handleGoBack={() => { (setIsGridView(false)) }}
+                    isAddFilterButton={isGridView ? true : false}
+                    isChartGridToggle
+                    isExcelExport={isGridView ? true : false}
+                    onExcelExportClick={ExcelExport}
+                    isGridView={isGridView}
+                    setIsGridView={setIsGridView}
                     isFilterOpen={isFilterOpen}
                     onAddFilter={onAddFilter}
                     toggleFilter={toggleFilter}
@@ -380,14 +406,17 @@ const RMPMOrderwiseCoverage = () => {
 
                 <div style={{ flex: '1' }}>
 
-                    {(isGridView) ? 
-                        <GridView 
-                            agGridProps={agGridProps} 
-                            colDef={colDef} 
-                            ShortageDatas={convertedData} 
+                    {(isGridView) ?
+                        <GridView
+                            agGridProps={agGridProps}
+                            colDef={colDef}
+                            ShortageDatas={convertedData}
                             setCurrentGridRef={setCurrentGridRef}
                             currentGridRef={currentGridRef}
                             columnState={columnState}
+                            orderWiseRecordCount={orderWiseRecordCount}
+                            currentPage={currentPage}
+                            handlePageChangeDayWise={handlePageChangeDayWise}
                         /> : <GraphView shortageData={GraphDatas} />}
                 </div>
             </div>

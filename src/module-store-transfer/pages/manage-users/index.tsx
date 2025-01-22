@@ -69,9 +69,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setListRoles(dataAllRoles);
   });
 
-  useEffect(() => {
-    console.log("data...permissionms", dataPermissions);
-  }, [dataPermissions]);
 
   const getHeaderDatafunct = async() =>{
     const reponse = await usegetHeaderData();
@@ -86,7 +83,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const [stepperDetails,setStepperDetails] = useState();
   const [activeApplication,setActiveApplication] = useState<number>(0);
-  const [allPermissions,setAllPermissions] = useState([]);
+  const [allPermissions,setAllPermissions] = useState<any>([]);
   const [storePermission,setStorePermission] = useState([]);
   const [currentItem,setCurrentItem] = useState();
   
@@ -159,8 +156,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   };
 
   useEffect(()=>{
-    console.log("data....all...permissions.", allPermissions);
-  },[allPermissions])
+    console.log("data....store...permissions.", storePermission);
+  },[storePermission])
 
   const fillAdvancedPermissionsModalData = (item?:any)=>{
     //Application Ids with valid Selected Roles

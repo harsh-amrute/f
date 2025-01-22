@@ -33,7 +33,7 @@ const MaterialRequirementComponent = ({ currentTab, toggleCurrentTab, renderView
                     {moment(date).format('Do MMMM YYYY')}
                 </MaterialRequirementDate>
             </MaterialRequirementHeading>
-            <MaterialRequiremetLayout style={{ marginLeft: '30px', flex: "1" }}>
+            <MaterialRequiremetLayout style={{ position: 'relative', marginLeft: '30px', flex: "1" }}>
                 {renderView()}
             </MaterialRequiremetLayout>
 
