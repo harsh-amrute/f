@@ -70,18 +70,18 @@ export const Text = styled.div`
 `;
 
 export const Calender = styled.table`
-  font-size: 16px;
+  font-size: 10px;
   width: 100%;
   overflow: auto;
   display: block;
   border-collapse: collapse;
 `;
 export const Day = styled.td<{ color: string }>`
-  padding: 16px;
+  padding: 8px;
   border: none;
-  margin: 1rem;
-  width: 30px;
-  height: 30px;
+  margin: 1rem 0.65rem;
+  width: 22px;
+  height:22px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -131,8 +131,6 @@ export const HelperText = styled.div`
   width: 65%;
   text-align: center;
 `
-
-
 export const AnalyticsTable = styled.table`
     background: rgb(56, 55, 55);
     color: white;
@@ -156,10 +154,10 @@ export const AnalyticsCol = styled.td`
   text-align: center;
 `
 
-export const PageWrapper = styled.div`
-& .ag-header-cell-text {
-  font-size: 17px;
-}
-`
+// export const PageWrapper = styled.div`
+// & .ag-header-cell-text {
+//   font-size: 17px;
+// }
+// `
 
 

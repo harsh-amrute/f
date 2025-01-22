@@ -5,7 +5,6 @@ export const CapsuleWrapper = styled.div`
     // max-width:120px;
     margin-left:auto;
 `
-
 export const ChartWrapper = styled.div`
     position:relative;
     width:100%;
@@ -13,5 +12,17 @@ export const ChartWrapper = styled.div`
     display:flex;
     justify-content:center;
     align-items:center;
-    // height:90%
+    height: 100%;
+    & .chart-wrapper > div{
+        height: 100% !important;
+        & .ag-charts-wrapper{
+          max-height: 100% !important;
+          .ag-charts-canvas{
+            height: 100%;
+          }
+          & .ag-charts-canvas >canvas{
+            height:100% !important;
+          }
+        }
+      }
 `

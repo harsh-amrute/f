@@ -7,15 +7,17 @@ import { useNavigate } from 'react-router';
 
 
 const SimulateFullKit = () => {
-    const { renderView, toggleCurrentTab, handleResetClick, handleSaveClick } = useSimFullKit();
-    const { user } = useUserData()
+    const { renderView, toggleCurrentTab, handleResetClick, handleSaveClick, ExcelExportData } = useSimFullKit();
+    const { user } = useUserData();
     const navigate = useNavigate();
-    const themeUi = user.user.theme_ui
+    const themeUi = user.user.theme_ui;
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingBottom: "2rem" }}>
 
             <ActionToolBar
-                isExcelExport
+                // excel export api is not available for now , once api ready uncomment bellow line
+                // isExcelExport 
+                onExcelExportClick={ExcelExportData}
                 isGoBackButton
                 handleGoBack={() => {
                     navigate('/procurement-planning/planning')
@@ -55,5 +57,3 @@ const SimulateFullKit = () => {
 }
 
 export default SimulateFullKit
-
-
