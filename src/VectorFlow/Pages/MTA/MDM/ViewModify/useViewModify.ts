@@ -576,6 +576,8 @@ const useViewModify = (pageType:string) => {
     
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
         e.stopPropagation();
+        const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+        if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
         if(masters.length === 1){
           return notifyError("There Should be atleast one selected Master")
         }

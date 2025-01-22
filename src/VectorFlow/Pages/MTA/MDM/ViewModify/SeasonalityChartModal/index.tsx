@@ -183,7 +183,6 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
         // },
         title:{
           display:true,
-          text:'Date 2023',
           color:'#000000',
           font:{
             size:16,
