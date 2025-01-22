@@ -401,7 +401,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
   }
 
   const getValue = ()=>{
-      return filterState ? filterState?.value[0]?.value : ''
+      console.log("filterSTate", filterState.value[0]?.value);
+      return filterState? filterState?.value[0]?.value: ""
   }
 
   const getOptions = (type: string) => {
@@ -418,7 +419,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
           <FilterSelectDropdown className="custom-scrollbar" placeholder={filterState.type === InputTypes.TextCompare ? "Equal to" : "<="} options={getOptions(filterState.type)} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue(filterState.type)}/>    
         </SelectDropdownComponent>
         <SelectDropdownComponent data-testid="filter-dropdown">
-          <FilterTextInput name={header} type={filterState.type === InputTypes.TextCompare ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()||''}/>    
+          <FilterTextInput name={header} type={filterState.type === InputTypes.TextCompare ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
         </SelectDropdownComponent>  
       </DropdownGroupWrapper>  
     </>     

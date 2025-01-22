@@ -6,6 +6,7 @@ import OverlayLoader from '../../Common/Loader';
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { FilterPageName } from "../../Common/Enum";
+import { useUserData } from "../../../../../../../vflow-frontend/src/context";
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -61,13 +62,18 @@ const MaterialRequirement = () => {
         getFilterData()
     }, []);
 
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingBottom: "2rem" }}>
             {(isMatReqLoading || isMatReqDayWiseLoading || isUpdateUserConfig || isGetUserConfig) && (
-                <OverlayLoader />
+                <OverlayLoader/>
             )}
             <ActionToolBar
                 isReleaseDate
+                themeUi={themeUi}
                 isAddFilterButton
                 isExcelExport
                 comp={"MaterialRequirement"}

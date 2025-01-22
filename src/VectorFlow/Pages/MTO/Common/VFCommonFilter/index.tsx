@@ -51,7 +51,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
         if( type === InputTypes.TextCompare || type === InputTypes.NumberCompare){
           let val = e?.value;
           if(property === 'value'){
-            const updatedvalue = type === InputTypes.NumberCompare ? Number(e?.target?.value) || '' : e?.target?.value;
+            const updatedvalue = type === InputTypes.NumberCompare ? e.target.value !== ''  && e.target.value != undefined  ? Number(e?.target?.value): e?.target?.value: e.target.value;
             val =  [{label: updatedvalue, value: updatedvalue}];
           }
           updatedFilters[i][property as keyof Filter]= val;

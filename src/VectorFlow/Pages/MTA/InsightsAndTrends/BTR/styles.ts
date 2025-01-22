@@ -69,7 +69,7 @@ export const BTRAvailabiltyCellRenderer = styled.div<{ value: number }>`
         bottom:0;
         max-width: 45px;
         width:${(props) => props.value}%;
-        background: transparent linear-gradient(270deg, #EB73B3 0%, #820F4C 100%) 0% 0% no-repeat padding-box;
+        background: balck;
       }
 `
 
