@@ -175,18 +175,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
 
     const dispatch = useDispatch()
-    const tabs: Array<VFFloatingTabItemProps> = [
-        {
-            id: 'ca',
-            label: 'Completely Available',
-            value: 'ca'
-        },
-        {
-            id: 'short',
-            label: 'Shortage',
-            value: 'short'
-        }
-    ];
 
     dispatch(PROCPLANNING_ANALYTICS({ date }));
     dispatch(APPLIED_FILTERS( {...formatFilterJSON(appliedFilters)} ));
