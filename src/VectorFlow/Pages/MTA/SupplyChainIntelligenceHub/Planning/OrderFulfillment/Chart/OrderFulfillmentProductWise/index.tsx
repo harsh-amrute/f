@@ -317,7 +317,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
 
       const graph2 = [
         'This Graph highlights the top 10 products with max no of locations where Gap in the product > 67% of requirement.',
-        'Gap = Requirement - Stock - GIT - Rationed Qty',
+        'Gap = Requirement - Rationed Qty',
         'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
       ]
 
