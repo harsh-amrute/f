@@ -1,6 +1,5 @@
 import { Allotment } from "allotment"
 import React, { useEffect, useState } from "react"
-import useViewPort from "../../../../../../hooks/useViewPort"
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import '../RMPMBufferTrends/style.css';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from "../RMPMBufferTrends/styles";
@@ -43,9 +42,6 @@ const RMExpeditionSuppliers = () => {
 
     const { data, /*isLoading, refetch*/ } = useGetDate();
 
-
-    const { screenHeight } = useViewPort()
-
     const getFilterData = async () => {
         try {
             const response = await getPageWiseFilterData({
@@ -64,7 +60,7 @@ const RMExpeditionSuppliers = () => {
     },[])
 
     return (
-        <div style={{ zoom: 1.33, marginLeft: '30px' }}>
+        <div style={{ height: "85%", marginLeft: '30px' }}>
             <MTOActionToolBar 
                 comp={"BTRMTO"} 
                 isAddFilterButton 
@@ -77,15 +73,15 @@ const RMExpeditionSuppliers = () => {
                 onFilterRemove={onFilterRemove}
                 isMfgSelected={isMfgSelected}
             />
-            <HorizontalViewWrapper style={{ marginTop: '20px' }}>
-                <BTRTableWrapper style={{ height: screenHeight - 160, margin: '0' }}>
+            <HorizontalViewWrapper>
+                <BTRTableWrapper>
                     {
                         (isMTO) ?
                             (<Allotment
                                 vertical={false}
                                 separator={false}   >
                                 <Allotment.Pane
-                                    minSize={350}
+                                    minSize={460}
                                     preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <ExpeditingMTO
@@ -100,7 +96,7 @@ const RMExpeditionSuppliers = () => {
                                 </Allotment.Pane>
 
                                 <Allotment.Pane
-                                    minSize={350}
+                                    minSize={460}
                                     preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <ExpeditingMTA

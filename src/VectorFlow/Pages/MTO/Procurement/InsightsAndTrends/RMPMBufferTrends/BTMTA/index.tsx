@@ -529,7 +529,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     </div>
 
     return (
-        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '8px', paddingBottom: '20px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '12px', paddingBottom: '5px' }}>
 
 
             <SplitGraphContainer
