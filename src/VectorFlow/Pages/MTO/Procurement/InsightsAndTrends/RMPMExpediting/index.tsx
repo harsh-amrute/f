@@ -10,7 +10,7 @@ import { useGetDate } from '../../../../../Services/MTO/Production/InsightsAndTr
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import { FilterPageName } from "../../../Common/Enum";
-import { useUserData } from "../../../../../../../../vflow-frontend/src/context";
+import { useUserData } from "../../../../../../context";
 
 
 const APIFilterConfig = {

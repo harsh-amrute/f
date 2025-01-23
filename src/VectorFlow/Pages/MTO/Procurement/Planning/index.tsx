@@ -7,7 +7,7 @@ import OverlayLoader from '../../Common/Loader';
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { FilterPageName } from "../../Common/Enum";
-import { useUserData } from '../../../../../../../../VFlowFrontend/vflow-frontend/src/context/UserDataContext'
+import { useUserData } from '../../../../../context'
 
 
 const APIFilterConfig = {

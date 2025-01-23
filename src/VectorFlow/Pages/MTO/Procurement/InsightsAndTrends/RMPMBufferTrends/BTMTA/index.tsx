@@ -8,7 +8,7 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import moment from 'moment'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
-import { useUserData } from '../../../../../../../../../../VFlowFrontend/vflow-frontend/src/context/UserDataContext'
+import { useUserData } from '../../../../../../../context'
 
 
 const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {

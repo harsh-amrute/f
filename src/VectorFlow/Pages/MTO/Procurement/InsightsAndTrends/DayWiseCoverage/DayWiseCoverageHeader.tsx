@@ -4,7 +4,7 @@ import DatePicker from '../../../../../../components/VectorFLOW/commons/MTO/Date
 import { DayWiseCoverageHeaderContainer, DayWiseCoverageStatus, Divider, Text } from './style'
 import { format } from 'date-fns'
 import { ColorsMTO } from '../../../Common/Colors'
-import { useUserData } from '../../../../../../../../../VFlowFrontend/vflow-frontend/src/context/UserDataContext'
+import { useUserData } from '../../../../../../context'
 
 interface IDayWiseCoverageHeaderProps {
     startDate: string,
