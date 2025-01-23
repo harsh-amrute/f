@@ -133,6 +133,7 @@ const MTOActionToolBar = ({
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
             removeFilters(category, name);
+            console.log("value should be this as name; ::", name);
         }
     }
 
@@ -147,7 +148,6 @@ const MTOActionToolBar = ({
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
 
-    console.log("newFilters", newFilters);
     return (
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer

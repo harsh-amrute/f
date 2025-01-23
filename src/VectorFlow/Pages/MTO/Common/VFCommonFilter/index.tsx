@@ -34,7 +34,6 @@ interface VFCommonFilterProps {
 
 const VFCommonFilter = (props: VFCommonFilterProps) => {
   const { onGoBack, multiFilter, setMultiFilter, onApplyFilter, isFilterOpen } = props;
-  console.log("multifilter", multiFilter);
   const [filterState, setFilterState] = useState<any>({});
   const [openStatus, setOpenStatus] = useState<any>({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -97,7 +96,6 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const clearFilters = (currFilters: any) => {
     const emptyFilterState = { ...currFilters };
     for(const key in emptyFilterState){
-      console.log("emptyfilter",emptyFilterState);
       
       const { filters } = emptyFilterState[key];
       for(let i = 0; i < filters.length; i++){
