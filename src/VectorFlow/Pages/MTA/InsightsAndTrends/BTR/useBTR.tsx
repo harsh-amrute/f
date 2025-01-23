@@ -5,7 +5,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 
 import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
@@ -119,6 +119,7 @@ const useBTR = () => {
 
     const gridProps = useMemo(():AgGridReactProps=>{
         return {
+            getMainMenuItems: MainMenuItemsCustomization,
             gridOptions: {
                 components: {
                     graphCellRenderer: SeasonalityGraphCellRenderer,

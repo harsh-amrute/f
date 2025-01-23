@@ -23,7 +23,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-import { updateCommonAttributes } from "../../../../../helpers/utils"
+import { updateCommonAttributes, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
 
 const useOpenExpeditingRequests = () => {
@@ -233,6 +233,7 @@ const useOpenExpeditingRequests = () => {
                     event.api.applyColumnState({ state: columnState });
                 },
         sideBar:defaultAgGridSideBarForBPR,
+        getMainMenuItems: MainMenuItemsCustomization,
         pagination: true,
         suppressRowClickSelection: true,
         components: customCellRenderers,

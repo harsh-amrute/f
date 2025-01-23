@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData, updateCommonAttributes } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData, updateCommonAttributes, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -201,12 +201,6 @@ const useBPR =()=>{
       };
 
 
-      const getContextMenuItems = (params:any) => {
-        console.log(params)
-        // const defaultItems = params.defaultItems;
-        // console.log(defaultItems)
-        // return defaultItems.filter((item:any) => item !== 'pinRight');
-      };
 
 
   
@@ -219,7 +213,7 @@ const useBPR =()=>{
             readOnlyEdit:false,
             enableColResize: true,
             sideBar:defaultAgGridSideBarForBPR,
-            onColumnMenuVisibleChanged:getContextMenuItems,
+            getMainMenuItems: MainMenuItemsCustomization,
             paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
             onRowClicked:(params:any)=>{
                 if(params.data.intransit && params.data.intransit.length>0){

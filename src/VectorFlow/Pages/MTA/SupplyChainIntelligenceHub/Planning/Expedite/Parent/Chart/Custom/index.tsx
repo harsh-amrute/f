@@ -55,7 +55,7 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("ExpediteFromParentcustom")
+            const data =  await getState({reportname: "InTransitWhereAbouts"})
             setColumnState(JSON.parse(data.data.data))
           }catch(err:any){
             setColumnState(colDefs)

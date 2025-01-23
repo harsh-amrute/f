@@ -93,7 +93,7 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
             return column1.colPosition - column2.colPosition;
         })
         const tagsColDef =  {
-            colId:'tags',
+            colId:'t',
             field:'t',
             headerName:"Tags",
             cellRenderer:'tagsCellRenderer',

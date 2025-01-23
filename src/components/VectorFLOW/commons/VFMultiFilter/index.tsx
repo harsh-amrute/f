@@ -8,6 +8,7 @@ import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import { useSpring, animated } from "react-spring";
 import Select from "react-select";
 import './styles.css';
+import { notifyError} from "../../../../helpers/notify";
 
 import { useGetAllSKUs,  useGetAllLocations } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
@@ -775,9 +776,31 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                 }
             }
         })
-    }
+    } 
 
     const loading = (isLoading || isLocationDataLoading)
+
+    const validation = () => {
+        const requiredFilters = ['Norm', 'Git', 'Stock'];
+        const emptyFilters = requiredFilters.filter(filterName =>
+          multiFilter.availabilityFilter.filters.some(
+            filter => filter.attributeName === filterName && filter.value === ''
+          )
+        );
+      
+        return emptyFilters;
+      };
+      
+      
+      const resetFilters = () => {
+        const resetMultiFilter = { ...multiFilter };
+      
+        Object.keys(resetMultiFilter).forEach((key) => {
+          resetMultiFilter[key as keyof BPRFilterState].filters = [];
+        });
+      
+        setMultiFilter(resetMultiFilter);
+      };
 
     return(
         <>
@@ -1210,8 +1233,24 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             
             <ButtonFilterWrapper>
                 <ButtonContainer>
-                    <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
-                    <VFButton themeUi={user.user.theme_ui} onClick={()=>onApplyFilter(multiFilter)}>Apply Filter</VFButton>
+                    <VFButtonOutline themeUi={user.user.theme_ui} onClick={resetFilters}>
+                       Reset Filters
+                    </VFButtonOutline>
+                    <VFButton
+                        themeUi={user.user.theme_ui}
+                        onClick={() => {
+                            const validationResult = validation()
+                            if (validationResult.length === 0) {
+                            onApplyFilter(multiFilter);
+                            } else {
+                            const errorMessage = `The following filters cannot be empty: ${validationResult.join(', ')}`;
+                            notifyError(errorMessage);
+                            console.log(errorMessage);
+                            }
+                        }}
+                        >
+                        Apply Filter
+                    </VFButton>
                 </ButtonContainer>
             </ButtonFilterWrapper>
             </React.Fragment>

@@ -123,7 +123,7 @@ const useInTransitWhereAbouts = ()=>{
     useEffect(() => {
       const getTableState = async () => {
         try {
-          const data = await getState("InTransitWhereAbouts");
+          const data = await getState({reportname: "InTransitWhereAbouts"});
           
           let parsedData;
           try {

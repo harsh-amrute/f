@@ -223,6 +223,20 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                   },
                   
               },
+            //   bar:{
+            //     series:{
+            //         tooltip:{
+            //             enabled:true,
+            //             renderer:(params:any)=>{
+            //                 const datum = params.datum
+            //                 return {
+            //                     title: `${params.yName}`,
+            //                     content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+            //                 }
+            //             },
+            //         }
+            //     }
+            //   }
           };
       }, []);
 
@@ -264,6 +278,20 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                   },
                   
               },
+              bar:{
+                series:{
+                    tooltip:{
+                        enabled:true,
+                        renderer:(params:any)=>{
+                            const datum = params.datum
+                            return {
+                                title: `${params.yName}`,
+                                content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+                            }
+                        },
+                    }
+                }
+              }
           };
       }, []);
 
@@ -289,7 +317,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
 
       const graph2 = [
         'This Graph highlights the top 10 products with max no of locations where Gap in the product > 67% of requirement.',
-        'Gap = Requirement - Stock - GIT - Rationed Qty',
+        'Gap = Requirement - Rationed Qty',
         'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
       ]
 

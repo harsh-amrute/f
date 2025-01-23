@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { AgGridReactProps } from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-import { convertUiConfigToOptions, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
+import { convertUiConfigToOptions, mapResearchInsightsFieldsToColDefs, MainMenuItemsCustomization } from '../../../../../helpers/utils'
 
 import { BPRTagsCellRenderer, BPRTechColorCellRenderer, BPREcoColorCellRenderer } from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
@@ -98,7 +98,7 @@ const useResearchInsights = () => {
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("ResearchInsight")
+            const data =  await getState({"reportname": "ResearchInsight"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
@@ -157,6 +157,7 @@ const useResearchInsights = () => {
             },
             sideBar:defaultAgGridSideBarForBPR,
             // paginationPageSize:25,
+            getMainMenuItems: MainMenuItemsCustomization,
             paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
             suppressRowClickSelection:true,
             components:customCellRenderers,
@@ -309,7 +310,7 @@ const useResearchInsights = () => {
 
     const getColorData = (array: Array<any>) => {
         const colorFrequencyArray: any = [];
-        for (let day = 1; day <= horizon; day++) {
+        for (let day = 90-horizon; day <= 90; day++) {
             const colorFrequency: any = {
                 Red: 0,
                 Blue: 0,
@@ -597,6 +598,7 @@ const useResearchInsights = () => {
         whiteCount,
         isGraphOneOpen,
         graphs,
+        setGraphs,
         locationGraphData,
         selfGraphData,
         expandedGraphId,

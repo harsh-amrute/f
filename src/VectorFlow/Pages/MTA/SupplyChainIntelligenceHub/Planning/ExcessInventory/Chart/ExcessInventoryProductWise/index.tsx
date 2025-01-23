@@ -204,6 +204,20 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                   },
                   
               },
+            bar:{
+                series:{
+                    tooltip:{
+                        enabled:true,
+                        renderer:(params:any)=>{
+                            const datum = params.datum
+                            return {
+                                title: `${params.yName}`,
+                                content: `${datum.SKUDescription.value}: ${datum.WHCount}`
+                            }
+                        },
+                    }
+                }
+              }
           };
       }, []);
 

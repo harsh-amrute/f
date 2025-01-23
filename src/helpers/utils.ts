@@ -2353,6 +2353,8 @@ export const getCellDataType = (dataType: "Number" | "String" | "Boolean"): stri
 
 export const getCellFilter = (dataType: "Number" | "String" | "Boolean"): string => {
   if (dataType === 'Number') return "agNumberColumnFilter"
+  // else if(dataType==='String') return 'agTextColumnFilter'
+  // else if(dataType==='Boolean') return "agSetColumnFilter"
   return 'agMultiColumnFilter'
 }
 
@@ -2374,40 +2376,27 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         onClick: onOpenSubmitRemark
       },
       pinned: 'right',
-      cellStyle: {
-        overflow: 'visible',
-        'min-width': 145,
-        'padding-left':0,
-        'padding-right':0
-      },
       editable: true,
-      resizable:false,
+      minWidth:130,
       lockPosition:'right',
-      maxWidth:145,
       menuTabs: [] ,
-      suppressMenu: true
+      suppressMenu: true,
+      resizable:false
     },
     {
       colId: 'rh',
       field: 'rh',
       headerName: 'Remark History',
       cellRenderer: 'remarksCellRenderer',
-
       cellRendererParams: {
         onClick: onOpenRemarkHistory
       },
       pinned: 'right',
-      cellStyle: {
-        overflow: 'visible',
-        'min-width': 145,
-        'padding-left':0,
-        'padding-right':0
-      },
-      resizable:false,
+      minWidth:130,
       lockPosition:'right',
-      maxWidth:145,
       menuTabs: [] ,
-      suppressMenu: true
+      suppressMenu: true,
+      resizable:false
     }
   ]
 
@@ -2417,7 +2406,11 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     headerName: "Tags",
     cellRenderer: 'tagsCellRenderer',
     width: 100,
-    hide:false
+    hide:false,
+    filter:true,
+    filterParams: {
+      buttons: ['reset','apply'], // Adds Apply and Clear buttons
+    },
   }
 
   result = fields.map((f: BPRField) => {
@@ -2429,12 +2422,14 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         hide: !f.Visible,
         cellRenderer: 'colorTechCellRenderer',
         // tooltipField: f.Col_Code,
-        cellStyle: {
-          'min-width': 180,
-        },
+        minWidth:180,
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
-        pinned:null
+        pinned:null,
+        filterParams: {
+          buttons: ['reset','apply'], // Adds Apply and Clear buttons
+          // excelMode: 'windows',
+        },
       }
     }
     if (f.Col_Code === 'EcoPen') {
@@ -2445,12 +2440,14 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         hide: !f.Visible,
         cellRenderer: 'colorEcoCellRenderer',
         // tooltipField: f.Col_Code,
-        cellStyle: {
-          'min-width': 180,
-        },
+        minWidth:180,
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
-        pinned:null
+        pinned:null,
+        filterParams: {
+          buttons: ['reset','apply'], // Adds Apply and Clear buttons
+          // excelMode: 'windows',
+        },
       }
     }
     return {
@@ -2459,15 +2456,47 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       headerName: f.Header,
       hide: !f.Visible,
       // tooltipField: f.Col_Code,
-      cellStyle: {
-        'min-width': 180,
-      },
+      minWidth:180,
       cellDataType: getCellDataType(f.DataType),
+      // filter:true,
+      pinned:null,
       filter: getCellFilter(f.DataType),
-      pinned:null
+        filterParams: {
+          filters: [
+            {
+              filter: 'agTextColumnFilter',
+              filterParams: {
+                buttons: ['apply', 'reset'],
+              }
+            },
+            {
+              filter: 'agSetColumnFilter',
+              filterParams: {
+                buttons: ['apply', 'reset'],
+              }
+            },
+          ]
+        },
+      // filterParams: {
+      //   buttons: ['reset','apply'], // Adds Apply and Clear buttons
+      // },
     }
   })
   return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result, ...BPRSpecificColumns]
+}
+
+export const MainMenuItemsCustomization = (params:any) => {
+  console.log(params)
+  const defaultItems = params.defaultItems;
+  const conditionalItemsToRemove = ['remarks','rh']
+  const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
+  if(conditionalItemsToRemove.includes(params.column.colId)){
+    // itemsToRemove.push()
+    itemsToRemove.push("pinSubMenu")
+  }
+  const modifiedItems = defaultItems.filter((item:any) => !itemsToRemove.includes(item));
+   
+  return modifiedItems;
 }
 
 export const mapBPRRowData = (rowData: Array<any>) => {
@@ -2519,10 +2548,24 @@ export const mapBPRRowData = (rowData: Array<any>) => {
 //   return updatedArray;
 // }
 
+export function convertStringNumToNumber(objects: any[]): any[] {
+  return objects.map((obj) => {
+    const updatedObj = { ...obj };
+
+    // Check if 'actualStock' is a string and can be converted to a number
+    if (updatedObj.sla2!==undefined && typeof updatedObj.sla2 === 'string') {
+      const parsedNumber = parseFloat(updatedObj.sla2);
+      if (!isNaN(parsedNumber)) {
+        updatedObj.sla2 = parsedNumber;
+      }
+    }
+
+    return updatedObj;
+  });
+}
+
 export const updateCommonAttributes=(array1:any[], array2:any[], colId:string)=> {
 
-  console.log(array1,"ARRAY1")
-  console.log(array2,"ARRAY2")
   // Create a dictionary (map) of objects from array1 by colId
   const array1Dict:any = {};
   array1.forEach(obj => {

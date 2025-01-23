@@ -136,7 +136,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         }
         else payloadString = routerToAnalyticsStringMap[pathname]
         try{
-            const data = await getAnalyticsData(payloadString)
+            const data = await getAnalyticsData({reportname :payloadString})
             setRowData(calculatePercentIncrease(data.data.data))
             // setRowData(calculatePercentIncrease([
             //     {

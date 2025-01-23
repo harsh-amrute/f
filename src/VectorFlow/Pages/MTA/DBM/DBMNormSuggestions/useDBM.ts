@@ -16,7 +16,7 @@ import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import SuggestionCategoryCellRenderer from "./SuggestionCategoryCellRendere"
-
+import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 
 const useDBM =()=>{
     //const [DBMApplySelectedNormData,setDBMApplySelectedNormData] = useState<any[]>([])
@@ -72,7 +72,8 @@ const useDBM =()=>{
       useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("DBMNorm")
+            const data =  await getState({"reportname": "DBMNorm"})
+            console.log(data)
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
@@ -253,6 +254,7 @@ const useDBM =()=>{
                 return { background: "#F7F7F7" };
                 },
             },
+            sideBar:defaultAgGridSideBarForBPR,
             pagination:false,
             defaultColDef:{
                 floatingFilter: true,

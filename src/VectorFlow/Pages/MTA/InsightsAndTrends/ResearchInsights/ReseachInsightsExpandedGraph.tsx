@@ -1,11 +1,18 @@
 import { AgCharts } from "ag-charts-react"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
-
 import { ExpandedChartFilterWrapper, ExpandedChartSelectWrapper, ExpandedChartSelectLabel, ExpandedChartCapsuleWrapper } from "./styles"
-
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline" 
 import Select from 'react-select'
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule"
 import { ReseachInsightsGraphState } from "../../../../../VectorFlow/types/BPR"
+import { useUserData } from "../../../../../context"
+import { useState } from "react"
+import {
+
+    SCViewImage,
+    SCViewContainerWithBg,
+
+  } from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles";
 
 interface ExpandedGraphProps {
     id: number
@@ -15,26 +22,34 @@ interface ExpandedGraphProps {
     onClose: () => void
     options: any
     onTogglePen: (data: any) => void
-    onUpdateGraphs: any
+    onUpdateGraphs: any,
+    horizon:any,
+    setGraphs: any
 }
+ 
+
+
 
 const ExpandedGraph = (props: ExpandedGraphProps) => {
-
+ 
     const {
         data,
         graphs,
+        setGraphs,
         id,
         options,
         onClose,
         isOpen,
         onTogglePen,
-        onUpdateGraphs
+        onUpdateGraphs,
+        horizon
     } = props
-
-
+ 
+ 
     const activeCapsuleIndex = graphs[id-1].pen
-
+ 
     const onChange = (e: any, key: string) => {
+        console.log(graphs)
         const doesFilterExist = graphs[id - 1].filters.find((filter) => filter.key === key)
         if (doesFilterExist) {
             return onUpdateGraphs(id, 'filters', graphs[id - 1].filters.map((filter) => filter.key === key ? { key: key, value: e.value } : filter))
@@ -43,17 +58,34 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
         onUpdateGraphs(id, 'filters', tempFilters)
     }
 
+    
+ 
     const handleClose = () => {
         onClose()
         onUpdateGraphs(id, 'filters', [])
     }
 
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    
+    const onreset = (e: any) => {
+        onUpdateGraphs(id, "filters", []);
+        
+        setSelectedLocation(null);
+        setSelectedProduct(null);
+      };
+
+    const {user} = useUserData();
+    const themeUi = user?.user?.theme_ui;
+
+
     return (
         <VFModalCard
+
             openModal={isOpen}
             headerIcon=""
             headerBgColor="white"
-            headerText="Technical Trend | Horizon - 7 Days"
+            headerText={`Technical Trend | Horizon - ${horizon} Days`}
             headerTextColor="black"
             closeIcon='/assets/img/VectorFLOW/NMS/close-dark.svg'
             closeModal={handleClose}
@@ -64,19 +96,19 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     <ExpandedChartSelectLabel>Search By Location</ExpandedChartSelectLabel>
                     <Select
                         styles={{
-
+ 
                             container: ((baseStyles: any) => ({
                                 ...baseStyles,
                                 width: 250,
                                 // border:'1px solid red',
-
-
+ 
+ 
                             })),
                             option: (baseStyles, { isSelected }) => ({
                                 ...baseStyles,
                                 backgroundColor: isSelected ? "#BC3D80" : "white",
-
-
+ 
+ 
                                 "&:hover": {
                                     backgroundColor: '#bc3d814d',
                                     color: "black",
@@ -91,13 +123,17 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                                     boxShadow: 'none',
                                     "&:hover": {
                                         borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-
+ 
                                     }
                                 }),
                         }}
                         options={options.whcodes}
-                        onChange={(e) => onChange(e, 'Whcode')}
-
+                        onChange={(e) => {
+                            setSelectedLocation(e); 
+                            onChange(e, "Whcode");
+                          }}
+                          value={selectedLocation}
+ 
                     />
                 </ExpandedChartSelectWrapper>
                 <ExpandedChartSelectWrapper>
@@ -111,8 +147,8 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                             option: (baseStyles, { isSelected }) => ({
                                 ...baseStyles,
                                 backgroundColor: isSelected ? "#BC3D80" : "white",
-
-
+ 
+ 
                                 "&:hover": {
                                     backgroundColor: '#bc3d814d',
                                     color: "black",
@@ -127,15 +163,49 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                                     boxShadow: 'none',
                                     "&:hover": {
                                         borderColor: isFocused ? "none" : "hsl(0, 0%, 80%);",
-
+ 
                                     }
-
+ 
                                 }),
                         }}
                         options={options.skus}
-                        onChange={(e) => onChange(e, 'SKUCode')}
+                        onChange={(e) => {
+                            setSelectedProduct(e); 
+                            onChange(e, "SKUCode");
+                          }}
+                          value={selectedProduct} 
                     />
                 </ExpandedChartSelectWrapper>
+                {/* <RIButtonOutline themeUi={user.user.theme_ui} onClick={onreset}>
+                       Reset Filters
+                    </RIButtonOutline> */}
+                    <ExpandedChartCapsuleWrapper>
+                        
+                    <SCViewContainerWithBg
+                                          style={{
+                                            width:'50px',
+                                            height: '50px',
+                                            padding: '3px',
+                                            // minWidth: '40px',
+                                            boxShadow: 'none',   
+                                            marginLeft:'-40px',        
+                                          }}
+                                        onClick={onreset}
+                                      >
+                                        <SCViewImage
+                                          src={
+                                            themeUi === "REGALBLAZE"
+                                              ? "/assets/img/VectorFLOW/BPR/refresh-regal.svg"
+                                              : "/assets/img/VectorFLOW/BPR/refresh.svg"
+                                          }
+                                          style={{height:'30px'}}
+                                          alt=""
+                                        />
+                                        {/* <p>Reset</p> */}
+                                      </SCViewContainerWithBg>
+                    </ExpandedChartCapsuleWrapper>
+
+
                 <ExpandedChartCapsuleWrapper>
                     <VFCapsule
                         activeBtn={activeCapsuleIndex}
@@ -164,7 +234,7 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                             xKey: "date",
                             yKey: "Red",
                             yName: "Red",
-
+ 
                             marker: {
                                 fill: 'red',
                                 size: 2,
@@ -241,83 +311,138 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     ]
                 }}
             /> */}
-
+ 
 <AgCharts
     options={{
         height: 400,
         width: 1000,
         data: data,
         series: [
+
             {
                 type: "line",
                 xKey: "date",
                 yKey: "Red",
-                yName: "Red",
                 marker: {
                     fill: 'red',
                     size: 2,
                     shape: 'square',
                     stroke: "red"
                 },
-                stroke: 'red'
+                stroke: 'red',
+                tooltip: {
+                    renderer: (params: any) => {
+                        const { datum, xKey } = params;
+                        const tooltipItems = Object.entries(datum)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
+                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
+                        
+                        return {
+                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
+                        };
+                    }
+                }
             },
             {
                 type: "line",
                 xKey: "date",
                 yKey: "Green",
-                yName: "Green",
                 marker: {
                     fill: 'green',
                     size: 2,
                     shape: 'square',
                     stroke: "green"
                 },
-                stroke: 'green'
+                stroke: 'green',
+                tooltip: {
+                   renderer: (params: any) => {
+                        const { datum, xKey } = params;
+                        const tooltipItems = Object.entries(datum)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
+                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
+                        
+                        return {
+                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
+                        };
+                    }
+                }
             },
             {
                 type: "line",
                 xKey: "date",
                 yKey: "Yellow",
-                yName: "Yellow",
                 marker: {
                     fill: '#FFBF00',
                     size: 2,
                     shape: 'square',
                     stroke: "#FFBF00"
                 },
-                stroke: '#FFBF00'
+                stroke: '#FFBF00',
+                tooltip: {
+                    renderer: (params: any) => {
+                        const { datum, xKey } = params;
+                        const tooltipItems = Object.entries(datum)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
+                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
+                        
+                        return {
+                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
+                        };
+                    }
+                }
             },
             {
                 type: "line",
                 xKey: "date",
                 yKey: "Black",
-                yName: "Black",
                 marker: {
                     fill: 'black',
                     size: 2,
                     shape: 'square',
                     stroke: "black"
                 },
-                stroke: 'black'
+                stroke: 'black',
+                tooltip: {
+                    renderer: (params: any) => {
+                        const { datum, xKey } = params;
+                        const tooltipItems = Object.entries(datum)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
+                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
+                        
+                        return {
+                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
+                        };
+                    }
+                }
             },
             {
                 type: "line",
                 xKey: "date",
                 yKey: "Blue",
-                yName: "Blue",
                 marker: {
                     fill: 'blue',
                     size: 2,
                     shape: 'square',
-                    stroke: "blue"
+                    stroke: "date"
                 },
-                stroke: 'blue'
+                stroke: 'blue',
+                tooltip: {
+                    renderer: (params: any) => {
+                        const { datum, xKey } = params;
+                        const tooltipItems = Object.entries(datum)
+                            .filter(([key]) => key !== xKey  && key !== "undefined")
+                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
+                        
+                        return {
+                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
+                        };
+                    }
+                }
             },
             {
                 type: "line",
                 xKey: "date",
                 yKey: "White",
-                yName: "White",
                 marker: {
                     fill: 'gray',
                     size: 2,
@@ -325,24 +450,55 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     stroke: "gray"
                 },
                 stroke: 'gray',
+                tooltip: {
+                    renderer: (params: any) => {
+                        const { datum, xKey } = params;
+                        const tooltipItems = Object.entries(datum)
+                            .filter(([key]) => key !== xKey && key !== "undefined")
+                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
+                        
+                        return {
+                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
+                        };
+                    }
+                }
             }
         ],
         axes: [
             {
+                                   
+                type:"category",
+                position:'bottom',
+                label:{
+                    fontSize:8
+                }
+            },
+            {
+                type:"number",
+                position:'left',
+                label:{
+                    fontSize:8
+                }
+            },
+            {
                 type: "number",
-                position: "left",
+                position: 'left',
+                label: {
+                    fontSize: 8
+                },
                 title: {
-                    text: "Count of Item", 
-                    fontSize: 11,  
-                    fontFamily: "Roboto",      
+                    text: "Count of Item",
+                    enabled: true,        
+                    fontSize: 10,    
+                    fontFamily: "Roboto",
                 }
             }
         ]
     }}
 />
-
+ 
         </VFModalCard>
     )
 }
-
+ 
 export default ExpandedGraph

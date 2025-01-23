@@ -100,7 +100,7 @@ const OpenExpeditingRequests = () => {
         />
           )
         } */}
-      <div style={{ marginLeft: '15px', height: '75%' }}>
+      <div style={{ marginLeft: '15px', height: '80%' }}>
         <VFTable
           columnDefs={colDefs}
           rowData={rowData}

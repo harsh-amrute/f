@@ -1,5 +1,5 @@
 import {useGetState,useGetDailyData, useGetUiConfig} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapOrderAllocationReportFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapOrderAllocationReportFieldsToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
@@ -109,7 +109,7 @@ const useOrderAllocation =()=>{
       useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("OrderAllocationReport")
+            const data =  await getState({reportname: "OrderAllocationReport"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
@@ -202,6 +202,7 @@ const useOrderAllocation =()=>{
         suppressRowClickSelection:true,
         components:customCellRenderers,
         enableBrowserTooltips:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,

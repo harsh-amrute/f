@@ -92,7 +92,7 @@ const DBM = () => {
                   columnDefs={DBMColumns}
                   rowData={DBMRowData}
                   ref={gridRef}
-                  height={"98%"}
+                  height={"90%"}
                   enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {{

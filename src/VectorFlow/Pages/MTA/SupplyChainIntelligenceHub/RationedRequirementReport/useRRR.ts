@@ -4,7 +4,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import { convertUiConfigToOptions, mapRRRFieldsToColDefs, updateCommonAttributes } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapRRRFieldsToColDefs, updateCommonAttributes, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
@@ -236,7 +236,8 @@ const useRRR =()=>{
             },
             onColumnVisible: onColumnVisible,
             pagination:false,
-            sideBar:defaultAgGridSideBarForBPR,
+            sideBar:defaultAgGridSideBarForBPR,       
+            getMainMenuItems: MainMenuItemsCustomization,
             // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
             // rowSelection:'multiple',
             paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),
