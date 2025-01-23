@@ -75,9 +75,15 @@ export const TableWrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin-left: 2rem;
+    padding-bottom: 20px;
 
     & > .ag-theme-alpine {
         flex: 1;
+        margin-bottom: 0 !important;
+    }
+    
+    & div[data-testid="vf_pagination"]{
+      margin-top: 0 !important;
     }
     
 `

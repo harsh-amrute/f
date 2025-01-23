@@ -53,7 +53,7 @@ const DayWiseCoverageCalender = ({
                                             const content = getToolTipContent(formattedDate)
                                             return (
                                                 <Day style={{opacity: (selectedDate == "" || selectedDate === formattedDate) ? "1"  : "0.5", cursor: !content ? "not-allowed" :"pointer"}} key={index} color={getColor(formattedDate)} onClick={() => selectedDate === formattedDate ? setSelectedDate("") : setSelectedDate(formattedDate)}>
-                                                    {content ? <Tooltip content={content} zoom={0.75}>
+                                                    {content ? <Tooltip content={content}>
                                                         {day + 1}
                                                     </Tooltip> : day + 1 }
                                                     

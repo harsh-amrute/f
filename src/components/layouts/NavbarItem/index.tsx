@@ -123,12 +123,10 @@ const NavbarItem = ({
 
   const renderListMenuChild = (listChild: any, status: boolean) => {
     return listChild.map((item: any) => {
-      ``
-      const checkRole = permission?.some((value: any) => {
-        return item.role.includes(value)
-      });
 
-      if (checkRole) {
+      const checkForUrl = user?.url_permission.includes(item?.url);
+
+      if (checkForUrl) {
         return (
           <SCItemChild
             key={item.url}

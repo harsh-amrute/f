@@ -466,12 +466,13 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
             case "sdv":
                 return (
                     <>
+                        {/* {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader/>} */}
                         <TableWrapper>
-                        
                             <VFTable
                                 paginationPageSize={10}
                                 {...agGridProps}
                                 columnDefs={colDef}
+
                                 rowData={DayWiseData}
                                 tooltipHideDelay={100000}
                                 tooltipShowDelay={0}
@@ -504,6 +505,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
             case "cv":
                 return (
                     <>
+                        {/* {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader/>} */}
                         <TableWrapper>
                            
                             <VFTable
