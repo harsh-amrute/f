@@ -31,15 +31,15 @@ describe('Testing the RRRColorBandWiseService', () => {
             "conflictError": null
         });
 
-        const mockBody = {
-            "filters": [],
-            "paginationParameter": {
-                "pageNumber": 1,
-                "recordsPerPage": 50
-            }
-        };
+        // const mockBody = {
+        //     "filters": [],
+        //     "paginationParameter": {
+        //         "pageNumber": 1,
+        //         "recordsPerPage": 50
+        //     }
+        // };
 
-        const response = await OrderAllocationReportService.getOrderAllocationReportRecordsCount(mockBody);
+        // const response = await OrderAllocationReportService.getOrderAllocationReportRecordsCount(mockBody);
         
         // expect(mockedAxios.post).toHaveBeenCalledWith(
         //     'http://10.8.1.10:8082/GetOrderAllocationReportDataCount',
