@@ -4,7 +4,7 @@ import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
 import { LoginRequest } from "../../../module-main/types";
 import { useLoginAccount } from "../../../module-main/services";
-import { useNavigate } from "react-router";
+import {  useNavigate } from "react-router";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useEffect, useRef, useState } from "react";
 // eslint-disable-next-line import/no-named-as-default
@@ -13,6 +13,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { SITE_KEY} from "../../../helpers/constants";
 import WelcomeBoard from "./welcome-board";
 import { hashPassword } from '../../../helpers/utils'
+import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
 
 function LoginContainer() {
   const { t } = useTranslation();
@@ -44,7 +45,7 @@ function LoginContainer() {
     formState: { errors },
   } = form;
 
-  const { mutate: mutateLogin } = useLoginAccount();
+  const { mutate: mutateLogin,isLoading } = useLoginAccount();
   const [remember, setRemember] = useState(true);
   const recaptchaRef: any = useRef();
 
@@ -92,15 +93,25 @@ function LoginContainer() {
         <ContainerLeft>
           <CircleLogin />
           <LogoAreaLogin>
-            <img src="/assets/img/auth/login-left.png" className="icon-head left-icon" />
-            <img src="/assets/img/auth/login-right.png" className="icon-head right-icon" />
+            <img
+              src="/assets/img/auth/login-left.png"
+              className="icon-head left-icon"
+            />
+            <img
+              src="/assets/img/auth/login-right.png"
+              className="icon-head right-icon"
+            />
             <WelcomeBoard />
           </LogoAreaLogin>
         </ContainerLeft>
       </SignInContainer>
       <SignInContainer>
         <ContainerRight>
-          <LogoArvind style={{opacity:0,visibility:'hidden'}} src="" alt="logo" />
+          <LogoArvind
+            style={{ opacity: 0, visibility: "hidden" }}
+            src=""
+            alt="logo"
+          />
           <Tittle>{t("loginPage.title")}</Tittle>
           <FormArea onSubmit={handleSubmit(onSave)}>
             <InputArea error={errors.email}>
@@ -112,9 +123,7 @@ function LoginContainer() {
                     required: true,
                     maxLength: {
                       value: 255,
-                      message: t(
-                        "loginPage.validate.emailMaxLength"
-                      ),
+                      message: t("loginPage.validate.emailMaxLength"),
                     },
                   })}
                   placeholder={t("loginPage.placeholder.email")}
@@ -156,9 +165,7 @@ function LoginContainer() {
                   }}
                   defaultChecked={true}
                 />
-                <KeepMe>
-                  {t("loginPage.keepMeSignedIn")}
-                </KeepMe>
+                <KeepMe>{t("loginPage.keepMeSignedIn")}</KeepMe>
               </div>
               <ChangePassText>
                 <LinkRouter to={"/forgot-password"}>
@@ -167,13 +174,35 @@ function LoginContainer() {
               </ChangePassText>
             </KeepSingIn>
 
-            <SCButtonLogin>
+            <SCButtonLogin disabled={isLoading}>
               <ButtonSubmit>
-                <ButtonSubmitText>{t("loginPage.submitBtn")}</ButtonSubmitText>
-                <ArrowArea>
-                  <img src="/assets/img/auth/arrow.svg" className="arrow arrow-in" />
-                  <img src="/assets/img/auth/arrow-hover.svg" className="arrow arrow-out" />
-                </ArrowArea>
+                <ButtonSubmitText isLoading={isLoading}>
+                  {isLoading ? "Logging in" : t("loginPage.submitBtn")}
+                </ButtonSubmitText>
+                {isLoading ? (
+                  <div
+                    style={{
+                      width: "30px",
+                      height: "20px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <VFLoader styles={{ width: "50px", height: "50px" }} />
+                  </div>
+                ) : (
+                  <ArrowArea>
+                    <img
+                      src="/assets/img/auth/arrow.svg"
+                      className="arrow arrow-in"
+                    />
+                    <img
+                      src="/assets/img/auth/arrow-hover.svg"
+                      className="arrow arrow-out"
+                    />
+                  </ArrowArea>
+                )}
               </ButtonSubmit>
             </SCButtonLogin>
           </FormArea>
