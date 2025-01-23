@@ -59,9 +59,12 @@ function LoginContainer() {
       formData.password = await hashPassword(formData.password)
       mutateLogin(formData, {
         onSuccess: (data: any) => {
-          if (data?.status === 400) {
+          if (data?.status !== 200) {
+            if(data?.status === 400){
+              notifyError(data?.error?.non_field_errors[0] )
+            }
             recaptchaRef.current?.reset();
-            notifyError(data?.error?.non_field_errors[0])
+            notifyError("Something went wrong")
             localStorage.removeItem("token")
             localStorage.removeItem("url_permission")
           } else {
