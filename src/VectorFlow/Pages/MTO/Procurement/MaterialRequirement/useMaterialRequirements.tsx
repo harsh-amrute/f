@@ -22,7 +22,6 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../.
 import { useUserData } from "../../../../../context"
 import useColDef from "../../../../../hooks/useColDef";
 import { notifyError, notifySuccess } from "../../../../../helpers/notify";
-import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [

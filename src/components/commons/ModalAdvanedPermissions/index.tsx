@@ -146,6 +146,9 @@ const ModalAdvanedPermissions = (props: any) => {
       // eslint-disable-next-line no-unsafe-optional-chaining
       lcPermissionRef.current?.getLcPermissionValue();
 
+      console.log(brand,"brand");
+      console.log(lcRegion,"lcRegion")
+      
     // if(brand?.length > 0 && lcRegion?.length > 0) {
       // setIsLoadSpinner(true);
       const formData: any = {
