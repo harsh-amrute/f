@@ -24,7 +24,9 @@ const useFilter=(filterData: any, page: any)=>{
             const { attributeName } = updatedFilters[i];
             if(attributeName === filterId){
                 updatedFilters[i].value = updatedFilters[i]?.value?.filter((val: any) => { 
-                    const newVal = val.value || val.id;
+                    
+                    const newVal = val.value;
+                    console.log("value", val);
                     if(newVal !== value){
                         return val;
                     }

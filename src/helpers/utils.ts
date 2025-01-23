@@ -4030,6 +4030,7 @@ export const checkValue = (filters: any, value: any) => {
 
 export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   const selectedFilter: any = {};
+  console.log("Filter", filter);
   for (const key in filter) {
     const { filters, label } = filter[key];
     const newFilter: any = {
@@ -4047,7 +4048,8 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
         }
       } else {
         if (value.length > 0) {
-          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
+          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: (value[0]?.value===0)?  
+            [{value: '0', label: '0'}]: value?.filter((v: any) => v.value || v.id) });
         }
       }
     }
@@ -4055,6 +4057,9 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
     if (newFilter?.filters?.length > 0) {
       selectedFilter[key] = { ...newFilter };
     }
+
+
+    console.log("selectedFilters", selectedFilter);
 
   }
 

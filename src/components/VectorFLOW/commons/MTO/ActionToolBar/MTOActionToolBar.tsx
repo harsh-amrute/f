@@ -146,6 +146,8 @@ const MTOActionToolBar = ({
 
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
+
+    console.log("newFilters", newFilters);
     return (
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer

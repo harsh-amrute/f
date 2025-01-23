@@ -34,6 +34,7 @@ interface VFCommonFilterProps {
 
 const VFCommonFilter = (props: VFCommonFilterProps) => {
   const { onGoBack, multiFilter, setMultiFilter, onApplyFilter, isFilterOpen } = props;
+  console.log("multifilter", multiFilter);
   const [filterState, setFilterState] = useState<any>({});
   const [openStatus, setOpenStatus] = useState<any>({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -42,7 +43,6 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const [isCNDisabled, setIsCNDisabled] = useState(props.multiFilter.customers?.filters[0]?.value?.length > 0);
 
   const onFilterChange = (type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any) => {
-
     const updatedFilters = filterState[parent as keyof FilterState]?.filters || [];
     for (let i = 0; i < updatedFilters.length; i++) {
       const { attributeName } = updatedFilters[i];
@@ -97,12 +97,15 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const clearFilters = (currFilters: any) => {
     const emptyFilterState = { ...currFilters };
     for(const key in emptyFilterState){
+      console.log("emptyfilter",emptyFilterState);
+      
       const { filters } = emptyFilterState[key];
       for(let i = 0; i < filters.length; i++){
         const { attributeName, options } = filters[i];
         filters[i].value = attributeName === 'ms' ? [...options] : [];
       }
     }
+    
     setMultiFilter(emptyFilterState);
     setFilterState(emptyFilterState);
   }
