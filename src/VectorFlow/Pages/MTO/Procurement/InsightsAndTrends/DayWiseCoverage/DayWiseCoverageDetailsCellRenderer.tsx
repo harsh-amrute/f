@@ -1,6 +1,7 @@
 import React from 'react'
 import { GridOptions } from 'ag-grid-enterprise'
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
+import { VFTableWrapper } from '../../../../../../components/VectorFLOW/commons/VFTable/styles'
 
 const DayWiseCoverageDetailsCellRenderer = (params: any) => {
 
@@ -12,6 +13,7 @@ const DayWiseCoverageDetailsCellRenderer = (params: any) => {
                     justifyContent: "center",
                     alignItems: "center",
                     display: "flex",
+
                 },
                 cellRenderer: (params: any) => {
                     return (<div style={{ borderRadius: "50%", background: params.data.rmq == params.data.rmal ? "#33800B" : "#E53F3F", width: "30px", height: "30px", display: "flex", justifyContent: "center", alignItems: "center", padding: "1.5rem", color: "white" }}>
@@ -37,20 +39,20 @@ const DayWiseCoverageDetailsCellRenderer = (params: any) => {
 
     return (
         // <div>{params.data.status}</div>
-        <div style={{ padding: "2rem" }}>
-            <h4 style={{ margin: "0" }}>Raw Material Details</h4>
+        <VFTableWrapper style={{ padding: "2rem" }}>
+            <h4 style={{ margin: "0",padding: "0.25rem 0 1rem 0" ,fontSize: '1.6rem'}}>Raw Material Details</h4>
             <VFTable
                 className='child-grid'
                 pagination={true}
                 gridOptions={options}
                 rowData={params.data?.children}
-                height={"300px"}
+                height={"470px"}
                 disableZoomScaling={true}
                 onGridReady={(params: any) => {
                     params?.api?.autoSizeAllColumns()
                 }}
             />
-        </div>
+        </VFTableWrapper>
     )
 }
 

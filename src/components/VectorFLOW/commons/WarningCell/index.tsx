@@ -9,7 +9,7 @@ const WarningCell = (props:ICellRendererParams)=>{
     const {user} = useUserData()
 
     const message = props.data.warning;
-    const themeUi = user.user.theme_ui
+    const themeUi = user?.user?.theme_ui
 
     const {getGridZoom,getScreenZoomValue} = useViewPort()
 

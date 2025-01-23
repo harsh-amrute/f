@@ -83,7 +83,7 @@ const ModalAdvanedPermissions = (props: any) => {
   const handleSubmit = () => {
     let product:any;
     let location:any;
-    
+
     const productPermissions:any = [];
     const locationPermissions:any = [];
 
@@ -146,11 +146,11 @@ const ModalAdvanedPermissions = (props: any) => {
       // eslint-disable-next-line no-unsafe-optional-chaining
       lcPermissionRef.current?.getLcPermissionValue();
 
+      console.log(brand,"brand");
+      console.log(lcRegion,"lcRegion")
+      
     // if(brand?.length > 0 && lcRegion?.length > 0) {
       // setIsLoadSpinner(true);
-      console.log(brand);
-      console.log(lcRegion);
-      console.log(productPermissions);
       const formData: any = {
         ...infoUser,
         tc: true,
@@ -160,6 +160,16 @@ const ModalAdvanedPermissions = (props: any) => {
         // location_permissions: []
       };
 
+      formData.location_permissions.forEach((element:any) => {
+        if(!element.permissions){
+          element.permissions = []
+        }
+      })
+      formData.product_permissions.forEach((element:any) => {
+        if(!element.permissions){
+          element.permissions = [];
+        }
+      })
 
       setIsLoadSpinner(true);
  
@@ -242,18 +252,17 @@ const ModalAdvanedPermissions = (props: any) => {
     const currentProductPermission = prdPermissionRef.current?.getPrdPermissionValue();
     const currentLocationPermission = lcPermissionRef.current?.getLcPermissionValue();
 
-    console.log(currentPermission, currentProductPermission, currentLocationPermission);
 
 
     // if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
     //   t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
     // );
 
-    // if(currentPermission){
-    //   currentPermission.productPermission = currentProductPermission;
-    //   currentPermission.locationPermission = currentLocationPermission;
-    //   setStorePermission(storePermissionCopy)
-    // }
+    if(currentPermission){
+      currentPermission.productPermission = currentProductPermission;
+      currentPermission.locationPermission = currentLocationPermission;
+      setStorePermission(storePermissionCopy)
+    }
     
     const newApplicationId = storePermission[getActiveApplicationIndex()+1].application_id;
     setStepperDetails([...stepperDetails.map((step:any)=>{
