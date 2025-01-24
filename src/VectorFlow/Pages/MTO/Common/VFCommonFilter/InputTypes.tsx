@@ -401,8 +401,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
   }
 
   const getValue = ()=>{
-      console.log("filterSTate", filterState.value[0]?.value);
-      return filterState? filterState?.value[0]?.value: ""
+    return filterState? filterState?.value[0]?.value: ""
   }
 
   const getOptions = (type: string) => {

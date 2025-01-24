@@ -69,7 +69,7 @@ export const BTRAvailabiltyCellRenderer = styled.div<{ value: number }>`
         bottom:0;
         max-width: 45px;
         width:${(props) => props.value}%;
-        background: balck;
+        background: black;
       }
 `
 
