@@ -61,7 +61,6 @@ const AuthenticatedTemplate = (
     if(token){
       MainService.getProfile()
       .then((res) => {
-        console.log(res)
         setUserData(res.data.data)
         setLoading(false)
         props.setMenuItem(getSelectedMenuItem(res.data.data.roles.permission))

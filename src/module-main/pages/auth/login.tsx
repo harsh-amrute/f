@@ -62,9 +62,10 @@ function LoginContainer() {
           if (data?.status !== 200) {
             if(data?.status === 400){
               notifyError(data?.error?.non_field_errors[0] )
+            }else{
+              notifyError("Something went wrong")
             }
             recaptchaRef.current?.reset();
-            notifyError("Something went wrong")
             localStorage.removeItem("token")
             localStorage.removeItem("url_permission")
           } else {
@@ -110,11 +111,11 @@ function LoginContainer() {
       </SignInContainer>
       <SignInContainer>
         <ContainerRight>
-          <LogoArvind
+          {/* <LogoArvind
             style={{ opacity: 0, visibility: "hidden" }}
             src=""
             alt="logo"
-          />
+          /> */}
           <Tittle>{t("loginPage.title")}</Tittle>
           <FormArea onSubmit={handleSubmit(onSave)}>
             <InputArea error={errors.email}>
