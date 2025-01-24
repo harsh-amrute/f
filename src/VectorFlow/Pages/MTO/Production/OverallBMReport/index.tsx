@@ -578,7 +578,11 @@ const OverallBmReport = () => {
         if (response?.status === 200) {
 
           const newGridData = [...gridData];
-          newGridData.forEach((ele:any)=>{ele.ct=actionText;});
+          newGridData.forEach((ele: any) => {
+            if (okValues.includes(ele.ok)) {
+              ele.ct = actionText;
+            }
+          });
           setGridData(newGridData);
 
           notifySuccess("Order closed successfully!");
@@ -659,7 +663,7 @@ useEffect(() => {
   }
 }, [refGraph2?.current?.api]); 
 
-const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selectedAction!=null;
+const isRightArrowEnabled = (isCheckboxChecked || masterSelectedRowData.length> 1) && selectedAction!=null;
 
 
 const DropdownArrowIcon = () => (
@@ -961,13 +965,13 @@ const DropDownCellRenderer= (props: any) =>  {
 
           // TODO: remove this
       // valueFormatter: (props:any)=>{console.log("value formater val", props); return props.data.ct},
-        cellRendererParams: 
-          section.scc == "oca" ? {
-            data: {
-              setSelectedAction
-            }
-          } : undefined
-        ,
+        // cellRendererParams: 
+        //   section.scc == "oca" ? {
+        //     data: {
+        //       setSelectedAction
+        //     }
+        //   } : undefined
+        // ,
       openByDefault:
         section.scc === "chckbx"
           ? undefined
