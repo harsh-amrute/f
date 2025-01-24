@@ -133,7 +133,6 @@ const MTOActionToolBar = ({
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
             removeFilters(category, name);
-            console.log("value should be this as name; ::", name);
         }
     }
 
