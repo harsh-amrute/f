@@ -440,7 +440,7 @@ const OverallBmReport = () => {
     { value: "Complete Close", label: "Complete Close" },
   ];
   
-  const [selectedRowCount, setSelectedRowCount] = useState(0); 
+  // const [selectedRowCount, setSelectedRowCount] = useState(0); 
   const [selectedAction, setSelectedAction] = useState<any>(null)
   const [textAction,setTextAction] = useState<any>();
   
@@ -622,14 +622,13 @@ const undoClicked = async (props:any,orderId: string) => {
   }
 };  
 
-const onRowSelectionChanged = () => {
-  if (refGraph2?.current?.api) {
-    const selectedNodes = refGraph2.current.api.getSelectedNodes();
-    setSelectedRowCount(selectedNodes.length); 
-  } else {
-    console.error("Row selection ");
-  }
-};
+// const onRowSelectionChanged = () => {
+//   if (refGraph2?.current?.api) {
+//     const selectedNodes = refGraph2.current.api.getSelectedNodes();
+//   } else {
+//     console.error("Row selection ");
+//   }
+// };
 
 
 
@@ -649,19 +648,19 @@ const onRowSelectionChanged = () => {
 
 
 
-useEffect(() => {
-  if (refGraph2?.current?.api) {
-    refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
+// useEffect(() => {
+//   if (refGraph2?.current?.api) {
+//     refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
 
-    return () => {
-      if (refGraph2?.current?.api) {
-        refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
-      }
-    };
-  } else {
-    console.error("something went wrong");
-  }
-}, [refGraph2?.current?.api]); 
+//     return () => {
+//       if (refGraph2?.current?.api) {
+//         refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
+//       }
+//     };
+//   } else {
+//     console.error("something went wrong");
+//   }
+// }, [refGraph2?.current?.api]); 
 
 const isRightArrowEnabled = (isCheckboxChecked || masterSelectedRowData.length> 1) && selectedAction!=null;
 
