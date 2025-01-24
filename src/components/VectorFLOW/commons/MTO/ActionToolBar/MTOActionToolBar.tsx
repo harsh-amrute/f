@@ -139,8 +139,14 @@ const MTOActionToolBar = ({
     const format2 = "yyyy-MM-dd"
     const d = new Date();
     const datetime = moment(d).format(format2); 
+
+    const userTheme = themeUi === 'REGALBLAZE';
+    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
+
     return (
         <SCTaskBarContainer className='toolbar-container'>
             <SCTaskFilterContainer
@@ -291,8 +297,8 @@ const MTOActionToolBar = ({
                             <div
                                 style={{
                                     cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    background: `linear-gradient(to right, ${gradientColor}})`,
+                                    backgroundColor:backgroundColor,
                                     height: '43px',
                                     width: '59px',
                                     borderRadius: '4px',

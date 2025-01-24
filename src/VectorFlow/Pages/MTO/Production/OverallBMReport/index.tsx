@@ -1048,7 +1048,7 @@ const DropDownCellRenderer= (props: any) =>  {
         appliedFilters: formatedFilters,
         user
       });
-      if (!gridData.data.data || gridData.data.data.length === 0) {
+      if (!gridData?.data?.data || gridData?.data?.data?.length === 0) {
         setGridDataCount(0);
         setGridData([]);
         setIsGridLoading(false);
@@ -1064,6 +1064,9 @@ const DropDownCellRenderer= (props: any) =>  {
       setGridDataCount(gridData?.data?.data?.count);
       setIsGridLoading(false);
     } catch (e) {
+      notifyError("No Records found for the selected filter!")
+      setGridDataCount(0);
+      setGridData([]);
       setIsGridLoading(false);
       console.log(e);
     }

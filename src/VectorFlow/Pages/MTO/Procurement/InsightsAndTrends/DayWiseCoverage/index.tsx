@@ -81,6 +81,8 @@ const DayWiseCoverage = () => {
     const { user } = useUserData();
     const reportName = "DayWiseCoverage";
 
+    const themeUi = user?.user?.theme_ui;
+
     const getCalenderData = async () => {
         const data = await getData({ startDate: format(startOfMonth(startDate), "yyyy-MM-dd"), endDate: format(endOfMonth(endDate), "yyyy-MM-dd") });
         setCalenderData(data?.data?.data);
@@ -342,6 +344,7 @@ const DayWiseCoverage = () => {
             <div >
                 <MTOActionToolBar 
                     isExcelExport 
+                    themeUi={themeUi}
                     // isAddFilterButton
                     // isFilterOpen={isFilterOpen}
                     // onAddFilter={onAddFilter}
