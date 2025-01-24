@@ -26,3 +26,11 @@ export const ChartWrapper = styled.div`
         }
       }
 `
+
+export const GraphViewWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  padding-left: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+`

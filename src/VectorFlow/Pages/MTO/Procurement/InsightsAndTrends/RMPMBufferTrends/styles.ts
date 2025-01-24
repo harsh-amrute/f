@@ -152,7 +152,8 @@ export const HorizontalViewWrapper = styled.div`
       width:100%;
       height:100%;
       margin-top:10px;
-      padding-bottom: 10px;
+      padding-bottom: 20px;
+      padding-top: 10px
 `
 
 

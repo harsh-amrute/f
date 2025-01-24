@@ -60,7 +60,7 @@ const RMExpeditionSuppliers = () => {
     },[])
 
     return (
-        <div style={{ height: "85%", marginLeft: '30px' }}>
+        <div style={{ height: "90%", marginLeft: '20px' }}>
             <MTOActionToolBar 
                 comp={"BTRMTO"} 
                 isAddFilterButton 

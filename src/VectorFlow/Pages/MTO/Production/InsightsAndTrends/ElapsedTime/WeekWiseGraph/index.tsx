@@ -354,7 +354,7 @@ const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant
 
 
     return (
-        <div style={{ height: "100%", paddingBottom: '10px', display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
+        <div style={{ height: "100%", paddingBottom: '10px', display: 'flex', justifyContent: 'left', marginLeft: '12px' }}>
 
 
             <BoxPlotContainer

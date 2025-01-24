@@ -271,7 +271,7 @@ const OrderBalance = () => {
             appliedFilters={appliedFilters}
           />
         ) : (
-          <BTRTableWrapper style={{ maxHeight:"95%", paddingLeft: "20px" }}>
+          <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom:"10px" }}>
             <Allotment vertical={false} separator={false}>
               <Allotment.Pane preferredSize={"50%"}>
                 <BTRAllomentSection>

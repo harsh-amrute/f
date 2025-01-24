@@ -158,7 +158,7 @@ const RMPMBufferTrends = () => {
 
 
     return (
-        <div style={{ height: "90%", marginLeft: '30px' }}>
+        <div style={{ height: "90%", marginLeft: '20px', paddingTop: "20px" }}>
 
             <MTOActionToolBar 
                 comp={"BTRMTO"} 
