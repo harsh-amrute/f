@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { ContainerRight, ChangePassText, CircleLogin, IputLogin, KeepSingIn, KeepMe, LinkRouter, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, CheckboxButton, InputGroup, LogoAreaLogin, ContainerLeft, LogoArvind } from "./styles";
+import { ContainerRight, ChangePassText, CircleLogin, IputLogin, KeepSingIn, KeepMe, LinkRouter, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, CheckboxButton, InputGroup, LogoAreaLogin, ContainerLeft } from "./styles";
 import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
 import { LoginRequest } from "../../../module-main/types";
