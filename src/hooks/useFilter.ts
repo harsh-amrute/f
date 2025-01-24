@@ -17,6 +17,7 @@ const useFilter=(filterData: any, page: any)=>{
     // console.log("page", page);
     
     const onFilterRemove = (parentId:string, filterId:any, value:any) => {
+        
         const updatedMultiFilter = { ...multiFilter };
        const updatedFilters = updatedMultiFilter[parentId as keyof FilterState]?.filters || [];
 
@@ -24,8 +25,10 @@ const useFilter=(filterData: any, page: any)=>{
             const { attributeName } = updatedFilters[i];
             if(attributeName === filterId){
                 updatedFilters[i].value = updatedFilters[i]?.value?.filter((val: any) => { 
-                    const newVal = val.value || val.id;
-                    if(newVal !== value){
+             
+                    const newVal = val.value; 
+                    const compareValue = value === "0" && typeof(val.value) === "number"? Number(value):value; // Ensure type consistency
+                    if(newVal !== compareValue){
                         return val;
                     }
                 });
@@ -33,6 +36,7 @@ const useFilter=(filterData: any, page: any)=>{
        }
 
        updatedMultiFilter[parentId as keyof FilterState].filters = [...updatedFilters];
+
         setMultiFilter(updatedMultiFilter);
         return updatedMultiFilter
     };

@@ -69,6 +69,8 @@ const RMPMOrderwiseCoverage = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [orderWiseRecordCount, setOrderWiseRecordCount] = useState<number>(0);
 
+    const themeUi = user?.user?.theme_ui;
+
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
@@ -382,16 +384,18 @@ const RMPMOrderwiseCoverage = () => {
             {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
             <div style={{ display: 'flex', flexDirection: 'column', height: "100%" }}>
 
-                <ActionToolBar
-                    comp={"rmpm"}
-                    isGoBackButton={isGridView}
-                    handleGoBack={() => { (setIsGridView(false)) }}
+
+                <ActionToolBar 
+                    comp={"rmpm"} 
+                    isGoBackButton={isGridView} 
+                    handleGoBack={() => { (setIsGridView(false)) }} 
                     isAddFilterButton={isGridView ? true : false}
                     isChartGridToggle
-                    isExcelExport={isGridView ? true : false}
-                    onExcelExportClick={ExcelExport}
-                    isGridView={isGridView}
-                    setIsGridView={setIsGridView}
+                    themeUi={themeUi}
+                    isExcelExport = {isGridView ? true : false}
+                    onExcelExportClick = {ExcelExport}
+                    isGridView={isGridView} 
+                    setIsGridView={setIsGridView} 
                     isFilterOpen={isFilterOpen}
                     onAddFilter={onAddFilter}
                     toggleFilter={toggleFilter}

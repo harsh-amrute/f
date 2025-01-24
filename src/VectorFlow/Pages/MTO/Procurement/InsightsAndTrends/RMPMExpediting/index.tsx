@@ -9,6 +9,8 @@ import { useGetDate } from '../../../../../Services/MTO/Production/InsightsAndTr
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import { FilterPageName } from "../../../Common/Enum";
+import { useUserData } from "../../../../../../context";
+
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -41,7 +43,9 @@ const RMExpeditionSuppliers = () => {
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Expediting_RM_And_Suppliers);
 
     const { data, /*isLoading, refetch*/ } = useGetDate();
-
+    
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
     const getFilterData = async () => {
         try {
             const response = await getPageWiseFilterData({
@@ -63,6 +67,7 @@ const RMExpeditionSuppliers = () => {
         <div style={{ height: "90%", marginLeft: '20px' }}>
             <MTOActionToolBar 
                 comp={"BTRMTO"} 
+                themeUi = {themeUi}
                 isAddFilterButton 
                 isFilterOpen={isFilterOpen}
                 onAddFilter={onAddFilter}
