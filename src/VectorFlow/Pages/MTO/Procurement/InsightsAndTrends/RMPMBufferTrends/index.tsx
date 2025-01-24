@@ -11,6 +11,7 @@ import { useGetRMPMBufferTrendsData } from "../../../../../../VectorFlow/Service
 import { BufferTrendData } from "../../../../../../types/MTO/types"
 import { toast } from "react-toastify"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../../helpers/notify"
+import { useUserData } from "../../../../../../context"
 // import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';
 // import { FilterPageName } from "../../../Common/Enum";
@@ -50,7 +51,8 @@ const RMPMBufferTrends = () => {
         return `${day}-${month}-${year}`;
     }
 
-
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
 
     const convertToGraphData = (apiData: any) => {
         try {
@@ -165,6 +167,7 @@ const RMPMBufferTrends = () => {
 
             <MTOActionToolBar 
                 comp={"BTRMTO"} 
+                themeUi={themeUi}
                 // isAddFilterButton 
                 // isFilterOpen={isFilterOpen}
                 // onAddFilter={onAddFilter}

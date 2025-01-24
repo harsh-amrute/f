@@ -34,7 +34,6 @@ export interface CustomInputProps{
 
 const VFFilter = (props:VFFilterProps)=>{
     const dispatch = useDispatch();
-   
     const{
         fields,
         operators,
