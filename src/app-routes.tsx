@@ -498,7 +498,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor url={"/master-data-management/control-panel"}/>)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/control-panel" url={"/master-data-management/control-panel"}/>)
         },
         {
           index: true,
@@ -514,7 +514,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor url={'/master-data-management/saved-drafts'} />)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/saved-drafts" url={'/master-data-management/saved-drafts'} />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -525,7 +525,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor url={"/master-data-management/task-status"} />)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/task-status" url={"/master-data-management/task-status"} />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -536,7 +536,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor url={'/master-data-management/task-pending'} />)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/task-pending" url={'/master-data-management/task-pending'} />)
         },
         ...getStoreTransferModuleRoutes()
       ]
@@ -558,7 +558,7 @@ export const initRoutes = (): RouteObject[] => {
       children: [
         {
           index: true,
-          element: lazyLoad(<MastersInterceptor url={'/master-data-management/data-modification-history'} />)
+          element: lazyLoad(<MastersInterceptor key="master-data-management/data-modification-history" url={'/master-data-management/data-modification-history'} />)
         },
         ...getStoreTransferModuleRoutes()
       ]
