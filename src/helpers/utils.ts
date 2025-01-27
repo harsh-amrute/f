@@ -617,7 +617,7 @@ export const handleDownloadVF = async (reportName: string, downloadName:string) 
   console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
-    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
       headers: {
         Authorization: `Bearer ${token?.access}`
       }
@@ -1208,9 +1208,9 @@ export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
         'text-overflow': 'ellipsis',
         'white-space': 'nowrap',
         // 'padding-top': '7px',
-        'font-weight': t.colId === 'TaskStatus' ? '500' : 'auto',
-        'color': t.colId === 'TaskStatus' ? color : 'black',
-        'cursor': t.colId === 'TaskStatus' ? 'pointer' : 'default'
+        'font-weight': t?.colId === 'TaskStatus' ? '500' : 'auto',
+        'color': t?.colId === 'TaskStatus' ? color : 'black',
+        'cursor': t?.colId === 'TaskStatus' ? 'pointer' : 'default'
       },
       onCellClicked: (params: CellClickedEvent) => {
         if (params.colDef.colId === 'TaskStatus') {
@@ -1891,7 +1891,7 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
         id: existingMaster.id,
         name: existingMaster.name,
         colDefs: updatedColDefs,
-        rowData:formatAndValidateDraftRowData(colDefs,master.DataMaster)  || [],
+        rowData: master.DataMaster? formatAndValidateDraftRowData(colDefs,master?.DataMaster)  : [],
         isChecked: true,
         filters: [{
           id: generateRandomId(),
@@ -3411,7 +3411,7 @@ export const handleDownloadVFReports = async (payload:{name:string,filters:any})
   try {
     const {name} = payload
     const token = await MainService.refreshToken();
-    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/download-excel`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}/download-excel`, {
       headers: {
         Authorization: `Bearer ${token?.access}`,
         'Content-Type': 'application/json'

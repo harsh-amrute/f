@@ -14,7 +14,7 @@ import {
 
  import {type NormChangeHistory, DailyDataChart } from '../../../../VectorFlow/types/BPR';
 //  import {enIN} from 'date-fns/locale';
- import { useState } from "react";
+ import { useEffect, useState } from "react";
 
 import VFRangeSlider from '../VFRangeSlider'
 import Select from 'react-select'
@@ -88,58 +88,80 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         {label:'Downward Consumption Based',value:'downwardConsumptionBased'}
 
     ]
-    const [horizon,setHorizon] = useState<number>(30);
+    const [horizon,setHorizon] = useState<number>(chartData.length);
     const [suspensionType,setSuspensionType] = useState('')
+    const [normData,setNormData] = useState<any[]>([])
+    const [adjustedChartData,setadjustedChartData] = useState<any[]>([])
 
     const generateChartOptions = () => {
-        const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
-        console.log(adjustedChartData);
-        const sortedNormChangeData = normChangeData
-          ? [...normChangeData].sort(
-              (a: NormChangeHistory, b: NormChangeHistory) => 
-                new Date(a.nCD).getTime() - new Date(b.nCD).getTime()
-            )
-          : [];
-        let tempNorm = 0;
 
-        let normData = chartData.map((dailyData:DailyDataChart) => {
-
-            //Find Closest Norm Change History to current Date
-            let closestNormChangeIndex = -1;
-
-            sortedNormChangeData.forEach((o:NormChangeHistory,index:number) => {
-              if(new Date(dailyData.dt).getTime() >= new Date(o.nCD).getTime()){
-                closestNormChangeIndex = index;
-              }
-            });
+        
+        useEffect(()=>{
+          if(chartData.length<horizon){
+            setNormData([])
+            setadjustedChartData([])
+          }else{
+            const newadjustedChartData = chartData.map((data:any,index:number)=>{
+              return {
+                ...data,
+                cs: data.cs === 0 ? null : data.cs, // Adjust `cs` based on the condition
+                git: data.git === 0 ? null : data.git,
+                rp: data.rp === 0 ? null : data.rp
+              };
+            }).slice(chartData.length-horizon,chartData.length);
             
-            if(normChangeData?.length > 0 && closestNormChangeIndex !== -1){
-              tempNorm = sortedNormChangeData[closestNormChangeIndex]['nN'];
-            }
-            else{
-              tempNorm = masterData['nm'];
-            }
-              
-            return {date:dailyData.dt,norm:tempNorm};
-        }).slice(chartData.length-horizon,chartData.length);
-
-      
-        normData = normData.map((data:NormData,index:number)=>{
-          const normBand = parseFloat((data.norm/3).toFixed(2))
-
-          const normObj = {
-            ...data,normRed:normBand,
-            normGreen:normBand,
-            normYellow:normBand,
-            normBlue:data.norm + parseInt(adjustedChartData[index]['bz'],10),
-            upwardStockBasedNorm:adjustedChartData[index]['rrs'] > 0 ? data.norm : 0,
-            downwardStockBasedNorm:adjustedChartData[index]['grs'] > 0 ? data.norm : 0,
-            upwardConsumptionBasedNorm:adjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
-            downwardConsumptionBasedNorm:adjustedChartData[index]['grc'] > 0 ? data.norm : 0
+            setadjustedChartData(newadjustedChartData)
+            console.log(newadjustedChartData);
+            const sortedNormChangeData = normChangeData
+              ? [...normChangeData].sort(
+                  (a: NormChangeHistory, b: NormChangeHistory) => 
+                    new Date(a.nCD).getTime() - new Date(b.nCD).getTime()
+                )
+              : [];
+            let tempNorm = 0;
+            let updateNormData:any[] = []
+            updateNormData = chartData.map((dailyData:DailyDataChart) => {
+    
+                //Find Closest Norm Change History to current Date
+                let closestNormChangeIndex = -1;
+    
+                sortedNormChangeData.forEach((o:NormChangeHistory,index:number) => {
+                  if(new Date(dailyData.dt).getTime() >= new Date(o.nCD).getTime()){
+                    closestNormChangeIndex = index;
+                  }
+                });
+                
+                if(normChangeData?.length > 0 && closestNormChangeIndex !== -1){
+                  tempNorm = sortedNormChangeData[closestNormChangeIndex]['nN'];
+                }
+                else{
+                  tempNorm = masterData['nm'];
+                }
+                  
+                return {date:dailyData.dt,norm:tempNorm};
+            }).slice(chartData.length-horizon,chartData.length);
+    
+          
+            updateNormData = updateNormData.map((data:NormData,index:number)=>{
+              const normBand = parseFloat((data.norm/3).toFixed(2))
+    
+              const normObj = {
+                ...data,normRed:normBand,
+                normGreen:normBand,
+                normYellow:normBand,
+                normBlue:data.norm + parseInt(newadjustedChartData[index]['bz'],10),
+                upwardStockBasedNorm:newadjustedChartData[index]['rrs'] > 0 ? data.norm : 0,
+                downwardStockBasedNorm:newadjustedChartData[index]['grs'] > 0 ? data.norm : 0,
+                upwardConsumptionBasedNorm:newadjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
+                downwardConsumptionBasedNorm:newadjustedChartData[index]['grc'] > 0 ? data.norm : 0
+              }
+    
+              return normObj
+            })
+            setNormData(updateNormData)
           }
+        },[horizon])
 
-          return normObj
-        })
 
         function generateSuspensionReasons(rrs:number,grs:number,rrc:number,grc:number){
           const suspensionReasons:Array<string> = [];

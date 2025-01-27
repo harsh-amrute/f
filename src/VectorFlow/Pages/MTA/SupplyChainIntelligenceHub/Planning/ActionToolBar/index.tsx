@@ -159,6 +159,7 @@ const ActionToolBar = ({
       case "GITFromParent":
         return (
           <VFMultiFilter
+            isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -178,6 +179,7 @@ const ActionToolBar = ({
       case "GITToChild":
         return (
           <VFMultiFilter
+           isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -197,6 +199,7 @@ const ActionToolBar = ({
       case "ExpediteFromParent":
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -216,6 +219,7 @@ const ActionToolBar = ({
       case "ExpediteToChild":
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -235,6 +239,7 @@ const ActionToolBar = ({
       case "ExcessInventory":
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -254,6 +259,7 @@ const ActionToolBar = ({
       case "OrderFulfillment":
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -274,6 +280,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/bpr") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -300,6 +307,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/rrr") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -326,6 +334,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/rrr-color-bandwise") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -352,6 +361,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/sdr") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -376,6 +386,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/bor") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -402,6 +413,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/bor-color-bandwise") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -428,6 +440,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -454,6 +467,7 @@ const ActionToolBar = ({
         if (pathname === "/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -480,6 +494,7 @@ const ActionToolBar = ({
         if (pathname === "/insights-and-trends/buffer-trends") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -501,6 +516,7 @@ const ActionToolBar = ({
         if (pathname === "/insights-and-trends/research-insights") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -526,6 +542,7 @@ const ActionToolBar = ({
         if (pathname === "/insights-and-trends/guided-insights" && view==='grid') {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -547,6 +564,7 @@ const ActionToolBar = ({
         if (pathname === "/dbm/dbm-norm-suggestions") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -572,6 +590,7 @@ const ActionToolBar = ({
         ) {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -595,6 +614,7 @@ const ActionToolBar = ({
         if (pathname === "/logistics/intransit-whereabouts") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -616,6 +636,7 @@ const ActionToolBar = ({
         console.log(view)
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
