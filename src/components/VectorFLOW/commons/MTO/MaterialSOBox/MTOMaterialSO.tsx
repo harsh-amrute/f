@@ -16,6 +16,7 @@ import {
 import { MaterialCoverageString } from '../../../../../VectorFlow/Pages/MTO/Common/String';
 import Tooltip from '../../../../../VectorFlow/Pages/MTO/Common/Tooltip';
 import { getToolTipContent, formatNumber } from '../../../../../VectorFlow/Pages/MTO/Procurement/MaterialCoverage/CommonFunc'
+import { useUserData } from '../../../../../context';
 
 interface MaterialSOProps {
     kit: string,
@@ -41,6 +42,10 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
         // Perform the rounding operation if percent is not NaN or 0
         return `${Math.round(percent * 100).toString()}%`;
     };
+     
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+
 
     return (
         <>
@@ -114,7 +119,7 @@ const MTOMaterialSO = ({ kit, colors, height, text, orderCount, cutCount, orderV
                 </Percentborder>
             </PercentBorderContainer>
 
-            <ViewOrder>
+            <ViewOrder theme={themeUi}>
                 {MaterialCoverageString.viewAllRecords}
             </ViewOrder>
 

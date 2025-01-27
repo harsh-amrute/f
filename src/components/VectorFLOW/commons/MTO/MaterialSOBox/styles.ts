@@ -42,17 +42,22 @@ export const Btns = styled.button`
     align-items: center;
 `
 
-export const ViewOrder = styled.button`
+export const ViewOrder = styled.button<{theme:string}>`
     font-size:8px;
-    color:#BC3D81;
+    color:${(props) =>
+        props.theme === 'REGALBLAZE'
+          ? "#CB830E"
+          : "#BC3D81"};
     margin-bottom:22px;
-    background-color:#fcf0f7;
+    background-color: ${(props) =>
+      props.theme === 'REGALBLAZE'
+        ? "#fcf4f0"
+        : "#fcf0f7"};
     width:70%;
     padding:7px;
     text-align:center;
     border-radius:8px;
 `
-
 export const TextOnBox = styled.div`
     position:absolute;
     bottom:100%;
@@ -68,7 +73,6 @@ export const TextOnBox = styled.div`
     align-items: center;
     justify-content: center;
 `
-
 export const ImgDiv = styled.div`
     display: flex;
     gap: 10px;

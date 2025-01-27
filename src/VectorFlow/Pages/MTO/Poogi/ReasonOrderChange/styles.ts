@@ -12,15 +12,15 @@ export const SaveBtnWrapper = styled.div`
     margin-top:30px;
 `
 
-export const SaveBtn=styled.button`
+export const SaveBtn=styled.div<{ theme: string }>`
     display:flex;
     height:40px;
     width:169px;
     align-items:center;
     justify-content:center;
-    color:${ColorsMTO.Pink.code};
+    color:${(props)=>props.theme ==='REGALBLAZE'? '#CB830E' :'#BC3D81'};
     background-color:#fff;
-    border:1px solid #B93B7E;
+    border:1px solid ${(props)=>props.theme ==='REGALBLAZE'? '#CB830E' :'#BC3D81'};
     border-radius:4px;
     font-size:14px;
     font-family: 'Roboto', sans-serif;
