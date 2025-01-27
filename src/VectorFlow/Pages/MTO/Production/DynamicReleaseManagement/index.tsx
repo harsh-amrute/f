@@ -115,7 +115,6 @@ const DynamicReleaseManagement = () => {
 
   const userTheme = themeUi === 'REGALBLAZE';
   const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-  const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
 
 
 

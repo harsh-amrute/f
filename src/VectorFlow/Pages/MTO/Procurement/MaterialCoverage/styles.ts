@@ -337,12 +337,13 @@ export const ProcPlanningChildrenColor = styled.div`
     alignItems: 'center',
     justifyContent: 'center'
 `
-const determineColor = (value: any) => {
-    if (value === "Red") return 'Red';
-    if (value === "Yellow") return 'Yellow';
-    if (value === "Black") return 'Black';
-    if (value === "Green") return 'Green';
-};
+// const determineColor = (value: any) => {
+//     if (value === "Red") return 'Red';
+//     if (value === "Yellow") return 'Yellow';
+//     if (value === "Black") return 'Black';
+//     if (value === "Green") return 'Green';
+// };
+
 export const ChildrenColorCellRenderer = styled.div<{ theme: string }>`
         display: flex;
         align-items: center;

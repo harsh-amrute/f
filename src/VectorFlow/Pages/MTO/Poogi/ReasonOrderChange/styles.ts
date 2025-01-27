@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { ColorsMTO } from "../../Common/Colors";
 
 export const SaveBtnWrapper = styled.div`
     height:50px;

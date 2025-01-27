@@ -2,7 +2,6 @@ import { Player } from '@lottiefiles/react-lottie-player'
 import React from 'react'
 import VFOverlay from '../../../../../components/VectorFLOW/commons/VFOverlay'
 import {useUserData} from '../../../../../context'
-import { ColorsMTO } from '../Colors'
 
 interface Props {
     message?: string
