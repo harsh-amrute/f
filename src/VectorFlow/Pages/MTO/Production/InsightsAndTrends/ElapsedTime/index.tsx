@@ -290,7 +290,7 @@ const ElapsedTime = () => {
                         colDefMap={colDefMap}
                     />
                 ) : (
-                    <BTRTableWrapper style={{ maxHeight:"95%", paddingLeft: "20px" }}>
+                    <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px" }}>
                         <Allotment vertical={false} separator={false}   >
                             <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                 <BTRAllomentSection>

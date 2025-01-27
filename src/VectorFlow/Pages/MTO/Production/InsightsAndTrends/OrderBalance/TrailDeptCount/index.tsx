@@ -152,7 +152,7 @@ const TrailDeptCount = (props: any) => {
   return (
     <div
       data-testid="count-graph"
-      style={{ height: "100%", display: "flex", justifyContent: "left", marginRight: '8px', paddingBottom: '10px' }}
+      style={{ height: "100%", display: "flex", justifyContent: "left", marginRight: '4px', paddingBottom: '10px' }}
     >
       <SplitGraphContainer
         tableLoading={tableLoading}

@@ -1,7 +1,6 @@
 
 import { Allotment } from "allotment"
 import { useEffect, useState } from "react"
-import useViewPort from "../../../../../../hooks/useViewPort"
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import BTMTA from "./BTMTA"
 import BTMTO from "./BTMTO"
@@ -114,7 +113,6 @@ const RMPMBufferTrends = () => {
     }
 
     const [isMTO] = useState(true);
-    const { screenHeight } = useViewPort()
 
     const { mutateAsync: getRMPMBufferTrendsData } = useGetRMPMBufferTrendsData();
 
@@ -162,8 +160,7 @@ const RMPMBufferTrends = () => {
 
 
     return (
-        <div style={{ marginLeft: '30px' }}>
-
+        <div style={{ height: "90%", marginLeft: '20px', paddingTop: "20px" }}>
 
             <MTOActionToolBar 
                 comp={"BTRMTO"} 
@@ -178,8 +175,8 @@ const RMPMBufferTrends = () => {
                 // onFilterRemove={onFilterRemove}
                 // isMfgSelected={isMfgSelected}
             />
-            <HorizontalViewWrapper style={{ marginTop: '20px' }}>
-                <BTRTableWrapper style={{ height: screenHeight - 165, margin: '0' }}>
+            <HorizontalViewWrapper>
+                <BTRTableWrapper>
                     {
                         (isMTO) ?
                             (<Allotment vertical={false} separator={false}   >

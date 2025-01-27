@@ -296,7 +296,7 @@ const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.c
     </div>
 
     return (
-        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '12px', paddingBottom: '5px' }}>
 
 
 

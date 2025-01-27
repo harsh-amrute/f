@@ -334,7 +334,7 @@ const TrailDeptBalance = (props: any) => {
   return (
     <div
       data-testid="mfg-disp-graph"
-      style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '10px', paddingBottom: '10px' }}
+      style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '12px', paddingBottom: '10px' }}
     >
 
       <SplitGraphContainer
