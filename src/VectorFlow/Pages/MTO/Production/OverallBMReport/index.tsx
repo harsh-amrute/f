@@ -440,7 +440,7 @@ const OverallBmReport = () => {
     { value: "Complete Close", label: "Complete Close" },
   ];
   
-  const [selectedRowCount, setSelectedRowCount] = useState(0); 
+  // const [selectedRowCount, setSelectedRowCount] = useState(0); 
   const [selectedAction, setSelectedAction] = useState<any>(null)
   const [textAction,setTextAction] = useState<any>();
   
@@ -578,7 +578,11 @@ const OverallBmReport = () => {
         if (response?.status === 200) {
 
           const newGridData = [...gridData];
-          newGridData.forEach((ele:any)=>{ele.ct=actionText;});
+          newGridData.forEach((ele: any) => {
+            if (okValues.includes(ele.ok)) {
+              ele.ct = actionText;
+            }
+          });
           setGridData(newGridData);
 
           notifySuccess("Order closed successfully!");
@@ -618,14 +622,13 @@ const undoClicked = async (props:any,orderId: string) => {
   }
 };  
 
-const onRowSelectionChanged = () => {
-  if (refGraph2?.current?.api) {
-    const selectedNodes = refGraph2.current.api.getSelectedNodes();
-    setSelectedRowCount(selectedNodes.length); 
-  } else {
-    console.error("Row selection ");
-  }
-};
+// const onRowSelectionChanged = () => {
+//   if (refGraph2?.current?.api) {
+//     const selectedNodes = refGraph2.current.api.getSelectedNodes();
+//   } else {
+//     console.error("Row selection ");
+//   }
+// };
 
 
 
@@ -645,21 +648,21 @@ const onRowSelectionChanged = () => {
 
 
 
-useEffect(() => {
-  if (refGraph2?.current?.api) {
-    refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
+// useEffect(() => {
+//   if (refGraph2?.current?.api) {
+//     refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
 
-    return () => {
-      if (refGraph2?.current?.api) {
-        refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
-      }
-    };
-  } else {
-    console.error("something went wrong");
-  }
-}, [refGraph2?.current?.api]); 
+//     return () => {
+//       if (refGraph2?.current?.api) {
+//         refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
+//       }
+//     };
+//   } else {
+//     console.error("something went wrong");
+//   }
+// }, [refGraph2?.current?.api]); 
 
-const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selectedAction!=null;
+const isRightArrowEnabled = (isCheckboxChecked || masterSelectedRowData.length> 1) && selectedAction!=null;
 
 
 const DropdownArrowIcon = () => (
@@ -961,13 +964,13 @@ const DropDownCellRenderer= (props: any) =>  {
 
           // TODO: remove this
       // valueFormatter: (props:any)=>{console.log("value formater val", props); return props.data.ct},
-        cellRendererParams: 
-          section.scc == "oca" ? {
-            data: {
-              setSelectedAction
-            }
-          } : undefined
-        ,
+        // cellRendererParams: 
+        //   section.scc == "oca" ? {
+        //     data: {
+        //       setSelectedAction
+        //     }
+        //   } : undefined
+        // ,
       openByDefault:
         section.scc === "chckbx"
           ? undefined
