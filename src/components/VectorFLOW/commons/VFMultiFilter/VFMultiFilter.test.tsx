@@ -45,6 +45,7 @@ const useGetAllLocationsMock = useGetAllLocations as jest.MockedFunction<
 >;
 
 const dummyprops={
+    isFilterOpen:true,
     onApplyFilter:mockFunction,
     onGoBack:mockFunction,
     onChangeHorizon:mockFunction,

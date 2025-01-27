@@ -88,7 +88,7 @@ const SelectMaster = (
 
     const onCancel = () => {
         dispatch(RESET_STATE());
-        navigate('/smaster-data-management/control-panel');
+        navigate('/master-data-management/control-panel');
     }
 
     const isAnyMasterChecked = masters.length > 0 && masters.every(master => !master.isChecked);

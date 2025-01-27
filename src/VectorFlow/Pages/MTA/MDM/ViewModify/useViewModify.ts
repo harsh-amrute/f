@@ -417,15 +417,20 @@ const useViewModify = (pageType:string) => {
           width:40,
           checkboxSelection:true,
           headerCheckboxSelection:true,
-          headerCheckboxSelectionCurrentPageOnly:true
+          headerCheckboxSelectionCurrentPageOnly:true,
+          resizable:false,
+          suppressMenu: true,
+          maxWidth: 30,
+          pinned: 'left',
+          filter: false
         },
-        // {
-        //   field:'checkbox',
-        //   he
-        //   headerName:'Select Across All Pages',
-        //   // checkboxSelection:true,
-        //   headerCheckboxSelection:true
-        // },
+      //   // {
+      //   //   field:'checkbox',
+      //   //   he
+      //   //   headerName:'Select Across All Pages',
+      //   //   // checkboxSelection:true,
+      //   //   headerCheckboxSelection:true
+      //   // },
       ]
       dispatch(ADD_COLDEFS({colDefs:checkboxColDefs}));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
@@ -1197,7 +1202,7 @@ const useViewModify = (pageType:string) => {
             const tempResult:any = []
 
             tempCon.forEach((t:any)=>{
-              const exist = tempError.find((e:any)=>e.sc===t.sc)
+              const exist = tempError.find((e:any)=>e.sc===t?.sc)
               if(exist)tempResult.push(exist)
             })
             
@@ -1260,7 +1265,7 @@ const useViewModify = (pageType:string) => {
           const tempResult:any = []
 
           tempCon.forEach((t:any)=>{
-            const exist = tempError.find((e:any)=>e.sc===t.sc)
+            const exist = tempError.find((e:any)=>e.sc===t?.sc)
             if(exist)tempResult.push(exist)
           })
           
