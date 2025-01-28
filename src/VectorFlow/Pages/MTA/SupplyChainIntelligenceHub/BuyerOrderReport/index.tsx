@@ -9,7 +9,14 @@ import { GridStateContext } from "../../../../../context/GridStateContext";
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
+import { useUserData } from "../../../../../context/UserDataContext";
+import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
+
+
 const BuyerOrderReport = ()=>{
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
 
     const {     
      isLoading,      
@@ -121,13 +128,15 @@ const BuyerOrderReport = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ],
                   }}
-                  height={"80%"} />
+                  height={"60%"} />
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
                   rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
                   handleChangePage={(e) => handleChangePage(e)} />
+
+                <VFSaveRemark onSubmitRemarks={onSubmitRemarks} themeUi={themeUi}  />
 
               </div>
             )}

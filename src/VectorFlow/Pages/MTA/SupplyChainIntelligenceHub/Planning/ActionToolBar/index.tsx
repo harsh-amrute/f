@@ -944,7 +944,8 @@ const ActionToolBar = ({
                 Save Remarks
               </VFButtonOutline>
             )} */}
-            {(currCategory === "BPR" || currCategory === "BOR" || currCategory === "BORColorBandwise") && onSubmitEditedRows && (
+            
+            {/* {(currCategory === "BPR" || currCategory === "BOR" || currCategory === "BORColorBandwise") && onSubmitEditedRows && (
               <VFButtonOutline
                 onClick={onSubmitEditedRows}
                 themeUi={themeUi}
@@ -952,7 +953,7 @@ const ActionToolBar = ({
               >
                 Save Remarks
               </VFButtonOutline>
-            )}
+            )} */}
 
 
             {currCategory === "ResearchInsight" && (
@@ -975,13 +976,13 @@ const ActionToolBar = ({
               </>
             )}
           </SCTaskFilterContainer>
-          {(currCategory==='BPR' && lastRunDate) && (
+          {/* {(currCategory==='BPR' && lastRunDate) && (
             lastRunDate === "Loading"?(
               <Skeleton style={{height:30,width:150}}/>
             ):(
               <LastRunDateHeader>{lastRunDate}</LastRunDateHeader>
             )
-          )}
+          )} */}
           <SCCustomActionsContainer>
             <VFButton
               onClick={() => toggleFilter(true)}

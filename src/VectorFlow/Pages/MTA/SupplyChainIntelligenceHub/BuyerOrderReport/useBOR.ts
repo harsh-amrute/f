@@ -193,18 +193,10 @@ export const useBOR =()=>{
 
     const onSubmitRemarks = async()=>{
       try{
-      //  const toastId = notifyLoader("Submitting Remark")
-      //  const payload = editedRows.map((e)=>{
-      //      return {
-      //          remark:e.remarks,
-      //          whcode:e.WHCode,
-      //          skucode:e.SKUCode,
-      //          spc:e.SupplierCode
-      //      }
-           
-      //  })
-      //  const {data} = await submitRemark({data:payload})
-      //  toast.dismiss(toastId)
+        if(editedRows.length===0){
+          notifyError('Please add remarks/remark to save')
+          return
+        }
       console.log("EDITED ROWSSS",editedRows)
       const toastId = notifyLoader("Submitting Remark")
       console.log("EDITEDROWS",editedRows)
