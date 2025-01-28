@@ -15,8 +15,7 @@ import { GridStateContext } from "../../../../../context/GridStateContext"
 import BPRRemarkHistoryModal from "./BPRRemarkHistoryModal"
 import { Skeleton } from "../../../../../components/commons/styled";
 import { useUserData } from "../../../../../context/UserDataContext";
-import VFSaveButton from "../../../../../components/VectorFLOW/commons/VFSaveButton"
-import { SaveBtnWrapper } from '../../../../../components/VectorFLOW/commons/VFSaveButton/styles'
+import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
 
 const BPR = ()=>{
 
@@ -146,7 +145,7 @@ const BPR = ()=>{
                 </VFButton>
             </BPRTaskBar> */}
             <div style={{height:'100vh',marginLeft:'15px'}}>
-            <Allotment vertical defaultSizes={[310,140]}>
+            <Allotment vertical defaultSizes={[300,150]}>
               <Allotment.Pane className="planning-grid-allotment">
               <VFTable
                 
@@ -177,18 +176,20 @@ const BPR = ()=>{
                     rowsPerPage={rowsPerPage}
                     handleChangePage={handleOnPageChange}
                 />
-              {onSubmitRemarks && (
-                 <SaveBtnWrapper style={{ margin: '1rem 0', padding: 0 }}>
-                    <VFSaveButton 
+                <VFSaveRemark onSubmitRemarks={onSubmitRemarks} themeUi={themeUi}  />
+              {/* {onSubmitRemarks && (
+                 <CustomizedOutlineWrapper style={{ margin: '1rem 0', padding: 0 }}>
+                    <VFButtonOutline 
+                    style={{height:'30px',width:'159px',borderRadius:'4px',fontSize:'14px',fontWeight:'400',cursor:'pointer'}}
                         themeUi={themeUi} 
                         onClick={onSubmitRemarks}
                             >
                         Save Remark
-                        </VFSaveButton>
-                  </SaveBtnWrapper>
-               )}
+                        </VFButtonOutline>
+                  </CustomizedOutlineWrapper>
+               )} */}
               </Allotment.Pane>
-              <Allotment.Pane maxSize={220} minSize={200}>
+              <Allotment.Pane maxSize={350} minSize={200}>
               <div style={{marginTop:'20px'}}>
               {isSubGridOpen && (
                 <div style={{marginLeft:'15px',zoom:0.8}}>
