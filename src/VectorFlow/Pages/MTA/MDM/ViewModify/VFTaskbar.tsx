@@ -317,7 +317,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                        {
                         !isSavingToDraft && !disableSubmit && DataCount!==0 && (
                             <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={disableDeleteSelected} width={139}>
-                            Delete Selected
+                            Remove Selected
                             </VFButtonOutline>
                         )
                        }
@@ -592,7 +592,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <BackButton/>
                         {DataCount!==0 && (
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
-                        Delete Selected
+                        Remove Selected
                         </VFButtonOutline>
                         )}
                         <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
@@ -613,7 +613,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <BackButton/>
                         {DataCount!==0 && (
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
-                        Delete Selected
+                        Remove Selected
                         </VFButtonOutline>
                         )}
                         <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
