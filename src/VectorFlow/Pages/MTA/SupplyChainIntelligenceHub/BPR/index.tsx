@@ -163,7 +163,7 @@ const BPR = ()=>{
                     handleChangePage={handleOnPageChange}
                 />
               </Allotment.Pane>
-              <Allotment.Pane maxSize={220} minSize={200}>
+              <Allotment.Pane maxSize={350} minSize={200}>
               <div style={{marginTop:'20px'}}>
               {isSubGridOpen && (
                 <div style={{marginLeft:'15px',zoom:0.8}}>
