@@ -406,31 +406,24 @@ const useViewModify = (pageType:string) => {
 
 
     const addCheckBoxColDefs = () => {
-      if(activeMaster.rowData.length===0){
-        return
-      }
+      // if(activeMaster.rowData.length===0){
+      //   return
+      // }
       const checkboxColDefs:ColDef[] = [
         {
           field:'checkbox',
           colId:'checkbox',
           headerName:'',
-          width:40,
+          width:70,
           checkboxSelection:true,
           headerCheckboxSelection:true,
           headerCheckboxSelectionCurrentPageOnly:true,
           resizable:false,
           suppressMenu: true,
-          maxWidth: 30,
+          maxWidth: 40,
           pinned: 'left',
           filter: false
         },
-      //   // {
-      //   //   field:'checkbox',
-      //   //   he
-      //   //   headerName:'Select Across All Pages',
-      //   //   // checkboxSelection:true,
-      //   //   headerCheckboxSelection:true
-      //   // },
       ]
       dispatch(ADD_COLDEFS({colDefs:checkboxColDefs}));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
@@ -827,6 +820,11 @@ const useViewModify = (pageType:string) => {
           const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
           result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
           
+          dispatch(SET_RECORD_COUNT(result.length));
+          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+          dispatch(UPDATE_ROW_DATA(result));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          dispatch(TOGGLE_UPLOAD_MODAL(false));
           setIsOverlayVisible(false);
 
           const ifErrorExists = result.find((data:any)=>data.error.length > 1);
@@ -846,11 +844,6 @@ const useViewModify = (pageType:string) => {
             addCheckBoxColDefs();
            }
           
-          dispatch(SET_RECORD_COUNT(result.length));
-          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-          dispatch(UPDATE_ROW_DATA(result));
-          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-          dispatch(TOGGLE_UPLOAD_MODAL(false));
           setIsOverlayVisible(false)
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
