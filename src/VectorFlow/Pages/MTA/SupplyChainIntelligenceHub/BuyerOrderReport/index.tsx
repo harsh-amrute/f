@@ -9,7 +9,15 @@ import { GridStateContext } from "../../../../../context/GridStateContext";
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
+import { SaveBtnWrapper } from '../../../../../components/VectorFLOW/commons/VFSaveButton/styles'
+import VFSaveButton from "../../../../../components/VectorFLOW/commons/VFSaveButton"
+import { useUserData } from "../../../../../context/UserDataContext";
+
+
 const BuyerOrderReport = ()=>{
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
 
     const {     
      isLoading,      
@@ -121,13 +129,24 @@ const BuyerOrderReport = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ],
                   }}
-                  height={"80%"} />
+                  height={"60%"} />
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
                   rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
                   handleChangePage={(e) => handleChangePage(e)} />
+
+                {onSubmitRemarks && (
+                 <SaveBtnWrapper style={{ margin: '1rem 0', padding: 0 }}>
+                    <VFSaveButton 
+                        themeUi={themeUi} 
+                        onClick={onSubmitRemarks}
+                            >
+                        Save Remark
+                        </VFSaveButton>
+                  </SaveBtnWrapper>
+               )}
 
               </div>
             )}

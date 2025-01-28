@@ -2,8 +2,50 @@ import styled from "styled-components";
 import * as globalStyles from "../../../../../styles/global";
 
 export const BPRLayout = styled.div`
-   margin-top:25px;
+   margin-top:0px;
  //   margin-bottom:40px;
+`
+
+
+export const SaveBtnWrapper = styled.div`
+    height:40px;
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    // background-color:#23232f;
+    align-items:center;
+`
+
+export const SaveBtn= styled.button<{themeUi: string}>`
+    display:flex;
+    height:40px;
+    width:169px;
+    align-items:center;
+    justify-content:center;
+    color:#B93B7E;
+    background-color:#fff;
+    border:1px solid #B93B7E;
+    border-radius:4px;
+    font-size:14px;
+    font-family: 'Roboto', sans-serif;
+    font-weight:400;
+    curser:pointer;
+`
+
+
+
+export const LastRunDate = styled.div`
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding-top:1px;
+    padding-bottom:1px;
+`
+
+export const LastRunDateHeader = styled.div`
+    font-size:14px;
+    font-weight:500;
 `
 
 export const BPRTaskBar  = styled.div`
@@ -289,7 +331,7 @@ export const BPRRemarksCellRendererWrapper = styled.div`
 
 export const BPRSubmitRemarkInput = styled.div`
     height:20px;
-    width:90%;
+    width:100%;
     background-color:white;
     border:solid 1px black;
     display:flex;

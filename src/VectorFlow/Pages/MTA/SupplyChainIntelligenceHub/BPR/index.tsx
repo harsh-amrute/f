@@ -1,6 +1,6 @@
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-import { BPRLayout } from "./styles"
+import { BPRLayout, LastRunDateHeader, LastRunDate } from "./styles"
 import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
@@ -13,12 +13,15 @@ import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import { GridStateContext } from "../../../../../context/GridStateContext"
 import BPRRemarkHistoryModal from "./BPRRemarkHistoryModal"
-
-
+import { Skeleton } from "../../../../../components/commons/styled";
+import { useUserData } from "../../../../../context/UserDataContext";
+import VFSaveButton from "../../../../../components/VectorFLOW/commons/VFSaveButton"
+import { SaveBtnWrapper } from '../../../../../components/VectorFLOW/commons/VFSaveButton/styles'
 
 const BPR = ()=>{
 
-
+  const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
 
   const {
         // isSideBarOpen,
@@ -104,6 +107,17 @@ const BPR = ()=>{
             generalFilterOptions={generalFilterOptions}
         />
         </div>
+        {(lastRunDate) && (
+                    lastRunDate === "Loading"?(
+                      <LastRunDate>
+                          <Skeleton style={{height:30,width:150}}/>
+                      </LastRunDate>
+                    ):(
+                      <LastRunDate>
+                        <LastRunDateHeader>{lastRunDate}</LastRunDateHeader>
+                      </LastRunDate>
+                    )
+        )}
         {
             showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
         }
@@ -132,13 +146,14 @@ const BPR = ()=>{
                 </VFButton>
             </BPRTaskBar> */}
             <div style={{height:'100vh',marginLeft:'15px'}}>
-            <Allotment vertical defaultSizes={[300,150]}>
+            <Allotment vertical defaultSizes={[310,140]}>
               <Allotment.Pane className="planning-grid-allotment">
               <VFTable
+                
                  key={'ref'}
                 disableZoomScaling
                 ref={ref}
-                height={"95%"}
+                height={"90%"}
                 {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}
@@ -162,6 +177,16 @@ const BPR = ()=>{
                     rowsPerPage={rowsPerPage}
                     handleChangePage={handleOnPageChange}
                 />
+              {onSubmitRemarks && (
+                 <SaveBtnWrapper style={{ margin: '1rem 0', padding: 0 }}>
+                    <VFSaveButton 
+                        themeUi={themeUi} 
+                        onClick={onSubmitRemarks}
+                            >
+                        Save Remark
+                        </VFSaveButton>
+                  </SaveBtnWrapper>
+               )}
               </Allotment.Pane>
               <Allotment.Pane maxSize={220} minSize={200}>
               <div style={{marginTop:'20px'}}>
