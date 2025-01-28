@@ -64,6 +64,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         isTableDataLoading,
         exportToExcel,
         onBackButton,
+        onBackButton1,
         onClearExportError,
         agGridProps,
         ref,
@@ -367,6 +368,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             editOnline={editOnline}
             onEditOnline={()=>onEditOnline('editOnline')}
             onBack={onBackButton}
+            onBack1={onBackButton1}
             onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}

@@ -1386,6 +1386,29 @@ const useViewModify = (pageType:string) => {
         }
       }
 
+      
+      const onBackButton1 = () => {
+    
+         dispatch(UPDATE_PROGRESS_STATE('default'));
+         dispatch(UPDATE_ROW_DATA([]));
+         dispatch(UPDATE_COLDEFS([]));
+         dispatch(REMOVE_ALL_FILTERS());
+         // dispatch(UPDATE_ACTIVE_MASTER([]))
+        
+         dispatch(ADD_FILTER())
+         setDownloadData(false);
+         setTempDownloadData(false);
+         dispatch(FILL_MASTERS([]));
+         /// riskycodehere !!
+         dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
+         setFilterButtonStatus([]);
+         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+         
+ 
+         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+         
+       }
+
       const onBackButton = () => {
        if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
        {
@@ -1757,6 +1780,7 @@ const useViewModify = (pageType:string) => {
         exportToExcel,
         onColumnChange,
         onBackButton,
+        onBackButton1,
         onClearExportError,
         agGridProps,
         ref,
