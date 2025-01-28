@@ -5,6 +5,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 // import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFTable from '../../Common/VFTable';
 import { memo } from 'react';
+import { useUserData } from '../../../../../context';
 interface GridProps {
     agGridProps: any
     columDef: any
@@ -31,6 +32,11 @@ const GridView = memo(({
     saveBtn = true }: GridProps) => {
 
     const rowsPerPage = Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
+
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+  
 
     return (
         <>
@@ -78,7 +84,7 @@ const GridView = memo(({
             {
                 saveBtn && (
                     <SaveBtnWrapper style={{ margin: '1rem 0', padding: 0 }}>
-                        <SaveBtn onClick={updateReason}>
+                        <SaveBtn onClick={updateReason} theme={themeUi}>
                             Save Remark
                         </SaveBtn>
                     </SaveBtnWrapper>

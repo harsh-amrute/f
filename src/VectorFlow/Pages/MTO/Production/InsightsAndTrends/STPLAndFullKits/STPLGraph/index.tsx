@@ -191,9 +191,8 @@ const STPLGraph = (props: any) => {
         <div
           data-testid="stpl-graph"
           style={{
-            fontSize: "16px",
+            fontSize: "14px",
             margin: "0 auto",
-
             textAlign: "center",
           }}>
           <span style={{ fontWeight: 500, }}>
@@ -247,7 +246,7 @@ const STPLGraph = (props: any) => {
   }, [graphData])
 
   return (
-    <div style={{ height: "100%", display: "flex", justifyContent: "left", paddingBottom: '10px', marginRight: '8px' }}>
+    <div style={{ height: "100%", display: "flex", justifyContent: "left", paddingBottom: '10px', marginRight: '4px' }}>
       <SplitGraphContainer
         tableLoading={tableLoading}
         chartLoading={chartLoading}

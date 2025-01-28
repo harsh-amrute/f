@@ -172,7 +172,7 @@ const OrderAtRisk = () => {
         <div
           data-testid="stpl-graph"
           style={{
-            fontSize: "16px",
+            fontSize: "14px",
             margin: "0 auto",
 
             textAlign: "center",

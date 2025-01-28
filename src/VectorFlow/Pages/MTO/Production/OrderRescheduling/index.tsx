@@ -73,7 +73,6 @@ const OrderRescheduling = () => {
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
 
-
   const themeUi = user?.user?.theme_ui;
 
   const GetData = async (isExcelExport = false) => {

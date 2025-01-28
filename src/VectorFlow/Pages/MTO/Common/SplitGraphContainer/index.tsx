@@ -796,7 +796,7 @@ const SplitGraphContainer = ({
     <div style={{ width: "100%" , height:"100%"}}>
 
 
-      <SCChartContainer style={{ border: '1px solid #CCCCCC', margin: '2px', height: '100%', display: 'flex', flexDirection: 'column', paddingBottom: '20px' }} height={'100%'}>
+      <SCChartContainer style={{ border: '1px solid #CCCCCC', margin: '2px', height: '100%', display: 'flex', flexDirection: 'column'}} height={'100%'}>
         <SCChartMainContainer style={{ zoom: 1 }}>
           {header()}
         </SCChartMainContainer>

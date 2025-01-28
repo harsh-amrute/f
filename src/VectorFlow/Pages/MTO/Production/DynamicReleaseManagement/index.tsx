@@ -26,6 +26,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useColDef from '../../../../../hooks/useColDef';
+import { ColorsMTO } from '../../Common/Colors';
 
 
 const APIFilterConfig = {
@@ -111,6 +112,11 @@ const DynamicReleaseManagement = () => {
       console.log(e);
     }
   }
+
+  const userTheme = themeUi === 'REGALBLAZE';
+  const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+
+
 
   const GetData = async (allOrders = 0, page = 1, graph = 1,isExcelExport = false) => {
     const formatedFilters = formatFilterJSON(appliedFilters);
@@ -227,9 +233,9 @@ const DynamicReleaseManagement = () => {
       suppressMenu: true,
       cellRenderer: (params: any) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#BC3D81', fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
-            <div>Release &nbsp; </div>
-            <img height={14} width={14} src='/assets/img/mto/dynamicReleaseManagement/arrow-icon.svg' alt='arrow-icon' />
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: backgroundColor, fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
+            <div >Release &nbsp; </div>
+            <img height={14} width={14} src= {userTheme ? '/assets/img/mto/dynamicReleaseManagement/arrow-icon-yellow.svg' : '/assets/img/mto/dynamicReleaseManagement/arrow-icon.svdpeg'} alt='arrow-icon' />
           </div>
         )
       }
@@ -243,7 +249,7 @@ const DynamicReleaseManagement = () => {
         return (
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
-            <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
+            <img height={12} width={12} alt="edit icon" src={userTheme ? "/assets/img/mto/fullKitAssignment/edit_icon_yellow.svg":"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
               setRouteNum(params.data.rid)
               setOrderKey(params.data.ok)
               setRouteTrigger(!routeTrigger);
