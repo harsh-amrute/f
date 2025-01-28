@@ -31,7 +31,7 @@ const DataModificationHistory = ()=>{
     
 } = useDataModificationHistory()
 
-  
+
 const styles={
     option:(baseStyles:any, { isSelected }:any) => ({
       ...baseStyles,
@@ -105,8 +105,8 @@ const theme_ui = user.user.theme_ui
         </SelectSearchWrapper>
         <VerticalDivider />
         <ButtonWrapper>
-          <VFButton onClick={()=>handleChange()} themeUi={theme_ui} width={175}>Submit</VFButton>
-          <VFButtonOutline onClick={handleReset} themeUi={theme_ui} width={175}>Reset</VFButtonOutline>
+          <VFButton onClick={()=>handleChange()} themeUi={theme_ui}  style={{ fontSize: '12px',height:'40px'}}>Submit</VFButton>
+          <VFButtonOutline onClick={handleReset} themeUi={theme_ui} style={{ fontSize: '12px',height:'40px'}}>Reset</VFButtonOutline>
         </ButtonWrapper>
     </FilterWrapper>
 
