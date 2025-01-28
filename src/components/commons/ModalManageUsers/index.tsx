@@ -137,9 +137,13 @@ const ModalManageUsers = ({
                             }`}
                             {...register("username", {
                               required: true,
+                              minLength: {
+                                value: 4,
+                                message: "The username must be more than 4 characters",
+                              },
                               maxLength: {
-                                value: 8,
-                                message: "The username must be 8 characters or fewer.",
+                                value: 15,
+                                message: "The username must be less than 15 characters",
                               },
                               pattern: {
                                 value:
