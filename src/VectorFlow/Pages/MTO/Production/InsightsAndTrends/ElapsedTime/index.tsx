@@ -69,6 +69,9 @@ const ElapsedTime = () => {
     const { getColDef, colDefMap } = useColDef();
     const reportName = "Elapse Time";
     const [masterUIConfig, setMasterUIConfig] = useState([]);
+    
+    const themeUi = user?.user?.theme_ui
+
 
     const setColumnDef = async () => {
         try {
@@ -258,6 +261,7 @@ const ElapsedTime = () => {
             <MTOActionToolBar
                 comp={"BTRMTO"}
                 // isAddFilterButton
+                themeUi={themeUi}
                 isChartGridToggle
                 isExcelExport={isGridView ? true : false}
                 onExcelExportClick={ExcelExportRefCall}
@@ -286,7 +290,7 @@ const ElapsedTime = () => {
                         colDefMap={colDefMap}
                     />
                 ) : (
-                    <BTRTableWrapper style={{ maxHeight:"95%", paddingLeft: "20px" }}>
+                    <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px" }}>
                         <Allotment vertical={false} separator={false}   >
                             <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                 <BTRAllomentSection>

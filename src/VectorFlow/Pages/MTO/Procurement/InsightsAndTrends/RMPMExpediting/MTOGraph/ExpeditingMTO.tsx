@@ -252,7 +252,7 @@ const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.c
 
 
     return (
-        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginRight: '8px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginRight: '4px', paddingBottom: "5px" }}>
 
 
             <SplitGraphContainer

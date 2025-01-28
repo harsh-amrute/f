@@ -54,7 +54,7 @@ export const BTRAvailabiltyCellRendererWrapper = styled.div`
     justify-content:center;
 `
 
-export const BTRAvailabiltyCellRenderer = styled.div<{ value: number }>`
+export const BTRAvailabiltyCellRenderer = styled.div<{ value: number , theme:string}>`
     position:relative;
     height:100%;
     max-height:15px;
@@ -69,7 +69,7 @@ export const BTRAvailabiltyCellRenderer = styled.div<{ value: number }>`
         bottom:0;
         max-width: 45px;
         width:${(props) => props.value}%;
-        background: black;
+        background: ${(props)=>props.theme ==='REGALBLAZE'? '#CB830E' :'#BC3D81'};
       }
 `
 

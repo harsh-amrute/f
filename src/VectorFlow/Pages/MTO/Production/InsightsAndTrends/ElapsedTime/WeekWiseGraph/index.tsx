@@ -23,6 +23,9 @@ const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
+    const userTheme = themeUi === 'REGALBLAZE';
+    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
 
     const [selectedPlant, setSelectedPlant] = useState(plant);
     const [selectedDept, setSelectedDept] = useState(dept);
@@ -127,8 +130,8 @@ const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant
                             <div
                                 style={{
                                     cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    background: `linear-gradient(to right, ${gradientColor})`,
+                                    backgroundColor: backgroundColor,
                                     height: '30px',
                                     width: '50px',
                                     borderRadius: '4px',
@@ -354,7 +357,7 @@ const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant
 
 
     return (
-        <div style={{ height: "100%", paddingBottom: '10px', display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
+        <div style={{ height: "100%", paddingBottom: '10px', display: 'flex', justifyContent: 'left', marginLeft: '12px' }}>
 
 
             <BoxPlotContainer
