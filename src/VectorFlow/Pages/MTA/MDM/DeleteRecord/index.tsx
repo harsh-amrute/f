@@ -76,6 +76,7 @@ const DeleteRecord = () => {
         onReset,
         onEditOnlineSave,
         onBackButton,
+        onBackButton1,
         isOverlayVisible,
         isDataAvailableLocally,
         enableEditOnlineReset,
@@ -311,6 +312,7 @@ const DeleteRecord = () => {
               editOnline={false}
               deleteOnline={editOnline}
               onBack={onBackButton}
+              onBack1={onBackButton1}
               onClearAndExportErrors={onClearExportError}
               onModifyData={()=>toggleUploadModal(true)}
               onExportData={exportToExcel}

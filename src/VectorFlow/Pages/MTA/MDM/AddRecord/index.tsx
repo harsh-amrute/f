@@ -44,6 +44,7 @@ const AddRecord = () => {
         isSavingToDraft,
         exportToExcel,
         onBackButton,
+        onBackButton1,
         onClearExportError,
         agGridProps,
         ref,
@@ -241,6 +242,7 @@ const AddRecord = () => {
               editOnline={editOnline}
               onEditOnline={()=>onEditOnline('editOnline')}
               onBack={onBackButton}
+              onBack1={onBackButton1}
               onClearAndExportErrors={onClearExportError}
               onModifyData={()=>toggleUploadModal(true)}
               onExportData={exportToExcel}
