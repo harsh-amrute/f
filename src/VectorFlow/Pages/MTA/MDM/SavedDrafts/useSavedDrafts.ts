@@ -104,7 +104,6 @@ const useSavedDrafts = ()=>{
             dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
         }
         
-        
         navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`, {
             state:{
                 backUrl: "/master-data-management/saved-drafts"

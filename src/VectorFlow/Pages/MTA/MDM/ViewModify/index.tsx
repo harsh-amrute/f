@@ -124,7 +124,6 @@ import { useLocation } from "react-router";
       }
     },[isTableDataLoading])
 
-
     return (
       <>
         <SCContainer>
@@ -371,7 +370,7 @@ import { useLocation } from "react-router";
             editOnline={editOnline}
             onEditOnline={()=>onEditOnline('editOnline')}
             onBack={() => onBackButton(location?.state?.backUrl)}
-            onBack1={onBackButton1}
+            onBack1={() => onBackButton1(location?.state?.backUrl)}
             onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}

@@ -1386,8 +1386,12 @@ const useViewModify = (pageType:string) => {
         }
       }
 
-      const onBackButton1 = () => {
+      const onBackButton1 = (backUrl?: string) => {
     
+        console.log("backUrl 1", backUrl)
+        if(backUrl){
+          navigate(backUrl)
+        }
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
         dispatch(UPDATE_COLDEFS([]));
@@ -1411,6 +1415,7 @@ const useViewModify = (pageType:string) => {
       const onBackButton = (backUrl?: string) => {
        if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
        {
+        console.log("onBackBtn", backUrl)
         if(backUrl){
           navigate(backUrl)
         }

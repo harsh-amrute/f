@@ -23,11 +23,14 @@ import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
 import { MDMMasterState,Field } from "../../../../types/MDM";
+import { useLocation } from "react-router";
 
 const AddRecord = () => {
 
     const {user} = useUserData()
     const themeUi = user?.user?.theme_ui;
+
+    const location = useLocation();
 
     const {
         activeMaster,
@@ -241,8 +244,8 @@ const AddRecord = () => {
               onEditOnlineSave={onEditOnlineSave}
               editOnline={editOnline}
               onEditOnline={()=>onEditOnline('editOnline')}
-              onBack={onBackButton}
-              onBack1={onBackButton1}
+              onBack={() => onBackButton(location?.state?.backUrl)}
+              onBack1={() => onBackButton1(location?.state?.backUrl)}
               onClearAndExportErrors={onClearExportError}
               onModifyData={()=>toggleUploadModal(true)}
               onExportData={exportToExcel}
