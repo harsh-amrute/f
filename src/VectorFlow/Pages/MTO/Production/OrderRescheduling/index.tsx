@@ -230,26 +230,13 @@ const OrderRescheduling = () => {
       floatingFilter: false,
     },
   ];
-  const addChangeDate = (date: string, key: string) => {
-    const newData = rowData;
-    newData.forEach((item) => {
-      if (item.odk === key) {
-        item.dd = date;
-      }
-    });
-    setRowData(newData);
-  };
+
 
   const customHeader = {
     DueDate: {
       autoHeaderHeight: true,
       wrapHeaderText: true,
       cellRenderer: currTab === "Unschedule" ? "" : DueDateCellRenderer,
-      cellRendererParams: {
-        data: {
-          addChangeDate: addChangeDate,
-        },
-      },
       flex: 1,
       // initialWidth: 200,
       // width: 200,
@@ -301,6 +288,7 @@ const OrderRescheduling = () => {
         newDat.forEach((el)=>{
           el.oldDate = el.dd;
         })
+    console.log(newDat,"this is newdata")
     setRowData(newDat);
     setIsLoading(false);
     // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
@@ -409,26 +397,44 @@ const OrderRescheduling = () => {
   };
 
   const unschedule = async () => {
-    const finalData = convertJsonForUnschedule(selectedRowData, user.user.name, 1);
-    const isSuccesss = await PostData(
-      finalData,
-      "Order Unscheduled Successfully !"
-    );
-    if (isSuccesss) {
-      setSelectedRowData([]);
-      await handlePageChangeCumulative(currentPage);
-      handlePageChangeCumulative(currentPage);
+    setIsLoading(true);
+    try {
+      const finalData = convertJsonForUnschedule(selectedRowData, user.user.name, 1);
+      const isSuccesss = await PostData(
+        finalData,
+        "Order Unscheduled Successfully !"
+      );
+      if (isSuccesss) {
+        setSelectedRowData([]);
+        await handlePageChangeCumulative(currentPage);
+        handlePageChangeCumulative(currentPage);
+      }
+    } catch (error) {
+      notifyError("Failed to unschedule order!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const overwriteDD = async () => {
-    const finalData = convertJsonForDueDate(selectedRowData, user.user.name, 0);
-    const isSuccess = await PostData(
-      finalData,
-      "Order Due date updated successfully !"
-    );
-    if (isSuccess) {
-      setSelectedRowData([]);
+    setIsLoading(true);
+    try {
+      const finalData = convertJsonForDueDate(
+        selectedRowData,
+        user.user.name,
+        0
+      );
+      const isSuccess = await PostData(
+        finalData,
+        "Order Due date updated successfully !"
+      );
+      if (isSuccess) {
+        setSelectedRowData([]);
+      }
+    } catch (error) {
+      notifyError("Failed to update Due Date!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
