@@ -235,7 +235,7 @@ const DynamicReleaseManagement = () => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: backgroundColor, fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
             <div >Release &nbsp; </div>
-            <img height={14} width={14} src= {userTheme ? '/assets/img/mto/dynamicReleaseManagement/arrow-icon-yellow.svg' : '/assets/img/mto/dynamicReleaseManagement/arrow-icon.svdpeg'} alt='arrow-icon' />
+            <img height={14} width={14} src= {userTheme ? '/assets/img/mto/dynamicReleaseManagement/arrow-icon-yellow.svg' : '/assets/img/mto/dynamicReleaseManagement/arrow-icon.svg'} alt='arrow-icon' />
           </div>
         )
       }
