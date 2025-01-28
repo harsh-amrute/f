@@ -883,7 +883,7 @@ const DropDownCellRenderer= (props: any) =>  {
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
-        pinned: child.cc === "ct" ? "right" : null,
+        pinned: child.cc === "ct" ? "right" : child.scc === "chckbx"? "left": undefined,
         cellRenderer:
           child.cc === "ec" && systemType >= 3
             ? "agGroupCellRenderer"
@@ -957,6 +957,7 @@ const DropDownCellRenderer= (props: any) =>  {
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
+      pinned: section.cc === "ct" ? "right" : section.scc === "chckbx"? "left": undefined,
       valueFormatter: (props: any) => { 
         if (typeof props.value === "number") {
           return props.value.toFixed(2);
