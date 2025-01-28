@@ -316,6 +316,7 @@ const useViewModify = (pageType:string) => {
           }
           if(currentMaster){
             event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys: validColumnKeys});
+            setDownloadData(false);
           }
         }
       },
