@@ -374,6 +374,10 @@ const useBPR =()=>{
 
     const onSubmitRemarks = async()=>{
        try{
+        if(editedRows.length===0){
+            notifyError('Please add remarks/remark to save')
+            return
+        }
         console.log("EDITED ROWSSS",editedRows)
         const toastId = notifyLoader("Submitting Remark")
         const payload = editedRows.map((e)=>{

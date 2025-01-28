@@ -617,7 +617,7 @@ export const handleDownloadVF = async (reportName: string, downloadName:string) 
   console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
-    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
       headers: {
         Authorization: `Bearer ${token?.access}`
       }
@@ -1208,9 +1208,9 @@ export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
         'text-overflow': 'ellipsis',
         'white-space': 'nowrap',
         // 'padding-top': '7px',
-        'font-weight': t.colId === 'TaskStatus' ? '500' : 'auto',
-        'color': t.colId === 'TaskStatus' ? color : 'black',
-        'cursor': t.colId === 'TaskStatus' ? 'pointer' : 'default'
+        'font-weight': t?.colId === 'TaskStatus' ? '500' : 'auto',
+        'color': t?.colId === 'TaskStatus' ? color : 'black',
+        'cursor': t?.colId === 'TaskStatus' ? 'pointer' : 'default'
       },
       onCellClicked: (params: CellClickedEvent) => {
         if (params.colDef.colId === 'TaskStatus') {
@@ -1891,7 +1891,7 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
         id: existingMaster.id,
         name: existingMaster.name,
         colDefs: updatedColDefs,
-        rowData:formatAndValidateDraftRowData(colDefs,master.DataMaster)  || [],
+        rowData: master.DataMaster? formatAndValidateDraftRowData(colDefs,master?.DataMaster)  : [],
         isChecked: true,
         filters: [{
           id: generateRandomId(),
@@ -2378,6 +2378,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       pinned: 'right',
       editable: true,
       minWidth:130,
+      maxWidth:160,
       lockPosition:'right',
       menuTabs: [] ,
       suppressMenu: true,
@@ -2392,7 +2393,8 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         onClick: onOpenRemarkHistory
       },
       pinned: 'right',
-      minWidth:130,
+      minWidth:120,
+      maxWidth:120,
       lockPosition:'right',
       menuTabs: [] ,
       suppressMenu: true,
@@ -2409,7 +2411,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     hide:false,
     filter:true,
     filterParams: {
-      buttons: ['reset','apply'], // Adds Apply and Clear buttons
+      buttons: ['reset'], // Adds Apply and Clear buttons
     },
   }
 
@@ -2427,7 +2429,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         filter: getCellFilter(f.DataType),
         pinned:null,
         filterParams: {
-          buttons: ['reset','apply'], // Adds Apply and Clear buttons
+          buttons: ['reset'], // Adds Apply and Clear buttons
           // excelMode: 'windows',
         },
       }
@@ -2445,7 +2447,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         filter: getCellFilter(f.DataType),
         pinned:null,
         filterParams: {
-          buttons: ['reset','apply'], // Adds Apply and Clear buttons
+          buttons: ['reset'], // Adds Apply and Clear buttons
           // excelMode: 'windows',
         },
       }
@@ -2466,13 +2468,13 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
             {
               filter: 'agTextColumnFilter',
               filterParams: {
-                buttons: ['apply', 'reset'],
+                buttons: [ 'reset'],
               }
             },
             {
               filter: 'agSetColumnFilter',
               filterParams: {
-                buttons: ['apply', 'reset'],
+                buttons: ['reset'],
               }
             },
           ]
@@ -2482,7 +2484,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       // },
     }
   })
-  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result, ...BPRSpecificColumns]
+  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } , pinned:'left'  }, tagsColDef, ...result, ...BPRSpecificColumns]
 }
 
 export const MainMenuItemsCustomization = (params:any) => {
@@ -2688,37 +2690,30 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark
      cellRendererParams:{
       onClick:onOpenSubmitRemark
      },
-     pinned:'right',
-     cellStyle: {
-      overflow: 'visible',
-      'min-width': 145,
-      'padding-left':0,
-      'padding-right':0
-    },
-    editable: true,
-    resizable:false,
-    lockPosition:'right',
-    maxWidth:145,
+     pinned: 'right',
+     editable: true,
+     minWidth:130,
+     maxWidth:160,
+     lockPosition:'right',
+     menuTabs: [] ,
+     suppressMenu: true,
+     resizable:false
     },
     {
       colId:'rh',
       field:'rh',
       headerName:'Remark History',
       cellRenderer:'remarksCellRenderer',
-      
       cellRendererParams:{
         onClick:onOpenRemarkHistory
        },
        pinned: 'right',
-       cellStyle: {
-         overflow: 'visible',
-         'min-width': 145,
-         'padding-left':0,
-         'padding-right':0
-       },
-       resizable:false,
+       minWidth:120,
+       maxWidth:120,
        lockPosition:'right',
-       maxWidth:145,
+       menuTabs: [] ,
+       suppressMenu: true,
+       resizable:false
     }
   ]
 
@@ -2750,7 +2745,7 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark
     }
   })
   //return [...result, ...BORSpecificColumns]
-  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, ...result, ...BORSpecificColumns]
+  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },pinned:'left' }, ...result, ...BORSpecificColumns]
 }
 
 export const BPRColorMapper = (color: string): { bg: string, text: string } => {
@@ -3411,7 +3406,7 @@ export const handleDownloadVFReports = async (payload:{name:string,filters:any})
   try {
     const {name} = payload
     const token = await MainService.refreshToken();
-    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/download-excel`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}/download-excel`, {
       headers: {
         Authorization: `Bearer ${token?.access}`,
         'Content-Type': 'application/json'

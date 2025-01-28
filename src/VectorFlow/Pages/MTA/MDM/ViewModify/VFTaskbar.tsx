@@ -14,6 +14,7 @@ export interface VFTaskBarProps{
     deleteOnline?:boolean
     onReset:()=>void
     onBack:()=>void
+    onBack1:()=>void
     onExportData:()=>void
     onModifyData:()=>void
     onClearAndExportErrors:(source:string)=>void
@@ -53,6 +54,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         enableEditOnlineReset,
         showSubmittedExportError,
         onBack,
+        onBack1,
         onExportData,
         onModifyData,
         onClearAndExportErrors,
@@ -246,13 +248,13 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
     }
 
 
-    const BackButton =()=> {
+    const BackButton =({isAlert=false})=> {
 
         const {user} = useUserData()
         const themeUi = user.user.theme_ui
 
         return(
-            <VFButtonOutline onClick={onBack} themeUi={themeUi} width={50} onHoverChild={
+            <VFButtonOutline onClick={isAlert ? onBack1: onBack} themeUi={themeUi} width={50} onHoverChild={
                 <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                     <img src={"/assets/img/VectorFLOW/NMS/back-btn-white.svg"} data-testid="back-btn"/>
                 </div>
@@ -265,6 +267,15 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
     }
 
     switch(masterProgress){
+        case "default": 
+        return(
+        <TaskBarContainer data-testid="taskbar" style={{width:width}}>
+            <VFTaskBarButtonGroup>
+            <BackButton isAlert={true}/>
+            </VFTaskBarButtonGroup>
+        </TaskBarContainer>
+         )
+
         case "view":
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
@@ -317,7 +328,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                        {
                         !isSavingToDraft && !disableSubmit && DataCount!==0 && (
                             <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={disableDeleteSelected} width={139}>
-                            Delete Selected
+                            Remove Selected
                             </VFButtonOutline>
                         )
                        }
@@ -592,7 +603,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <BackButton/>
                         {DataCount!==0 && (
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
-                        Delete Selected
+                        Remove Selected
                         </VFButtonOutline>
                         )}
                         <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>
@@ -613,7 +624,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         <BackButton/>
                         {DataCount!==0 && (
                         <VFButtonOutline onClick={onDeleteSelected} themeUi={themeUi} disabled={false} width={139}>
-                        Delete Selected
+                        Remove Selected
                         </VFButtonOutline>
                         )}
                         <VFButton onClick={onSubmitConflictData} themeUi={themeUi} disabled={disableSubmit} width={139}>

@@ -316,6 +316,7 @@ const useViewModify = (pageType:string) => {
           }
           if(currentMaster){
             event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys: validColumnKeys});
+            setDownloadData(false);
           }
         }
       },
@@ -406,26 +407,24 @@ const useViewModify = (pageType:string) => {
 
 
     const addCheckBoxColDefs = () => {
-      if(activeMaster.rowData.length===0){
-        return
-      }
+      // if(activeMaster.rowData.length===0){
+      //   return
+      // }
       const checkboxColDefs:ColDef[] = [
         {
           field:'checkbox',
           colId:'checkbox',
           headerName:'',
-          width:40,
+          width:70,
           checkboxSelection:true,
           headerCheckboxSelection:true,
-          headerCheckboxSelectionCurrentPageOnly:true
+          headerCheckboxSelectionCurrentPageOnly:true,
+          resizable:false,
+          suppressMenu: true,
+          maxWidth: 40,
+          pinned: 'left',
+          filter: false
         },
-        // {
-        //   field:'checkbox',
-        //   he
-        //   headerName:'Select Across All Pages',
-        //   // checkboxSelection:true,
-        //   headerCheckboxSelection:true
-        // },
       ]
       dispatch(ADD_COLDEFS({colDefs:checkboxColDefs}));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
@@ -822,6 +821,11 @@ const useViewModify = (pageType:string) => {
           const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
           result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
           
+          dispatch(SET_RECORD_COUNT(result.length));
+          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+          dispatch(UPDATE_ROW_DATA(result));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          dispatch(TOGGLE_UPLOAD_MODAL(false));
           setIsOverlayVisible(false);
 
           const ifErrorExists = result.find((data:any)=>data.error.length > 1);
@@ -841,11 +845,6 @@ const useViewModify = (pageType:string) => {
             addCheckBoxColDefs();
            }
           
-          dispatch(SET_RECORD_COUNT(result.length));
-          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-          dispatch(UPDATE_ROW_DATA(result));
-          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-          dispatch(TOGGLE_UPLOAD_MODAL(false));
           setIsOverlayVisible(false)
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
@@ -1197,7 +1196,7 @@ const useViewModify = (pageType:string) => {
             const tempResult:any = []
 
             tempCon.forEach((t:any)=>{
-              const exist = tempError.find((e:any)=>e.sc===t.sc)
+              const exist = tempError.find((e:any)=>e.sc===t?.sc)
               if(exist)tempResult.push(exist)
             })
             
@@ -1260,7 +1259,7 @@ const useViewModify = (pageType:string) => {
           const tempResult:any = []
 
           tempCon.forEach((t:any)=>{
-            const exist = tempError.find((e:any)=>e.sc===t.sc)
+            const exist = tempError.find((e:any)=>e.sc===t?.sc)
             if(exist)tempResult.push(exist)
           })
           
@@ -1385,6 +1384,28 @@ const useViewModify = (pageType:string) => {
           navigate('/master-data-management/saved-drafts')
           return
         }
+      }
+
+      const onBackButton1 = () => {
+    
+        dispatch(UPDATE_PROGRESS_STATE('default'));
+        dispatch(UPDATE_ROW_DATA([]));
+        dispatch(UPDATE_COLDEFS([]));
+        dispatch(REMOVE_ALL_FILTERS());
+        // dispatch(UPDATE_ACTIVE_MASTER([]))
+       
+        dispatch(ADD_FILTER())
+        setDownloadData(false);
+        setTempDownloadData(false);
+        dispatch(FILL_MASTERS([]));
+        /// riskycodehere !!
+        dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
+        setFilterButtonStatus([]);
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+        
+
+        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+        
       }
 
       const onBackButton = (backUrl?: string) => {
@@ -1761,6 +1782,7 @@ const useViewModify = (pageType:string) => {
         exportToExcel,
         onColumnChange,
         onBackButton,
+        onBackButton1,
         onClearExportError,
         agGridProps,
         ref,

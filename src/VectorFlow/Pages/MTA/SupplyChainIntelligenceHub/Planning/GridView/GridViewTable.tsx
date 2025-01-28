@@ -151,7 +151,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
 
     return(
         <GridViewLayout>
-            <div style={{height:'100vh'}}>
+            <div style={{height:'90vh'}}>
                 <Allotment defaultSizes={[350,150]} vertical>
                 {
                     (isSubGridOpen || showStockGrid ) && (

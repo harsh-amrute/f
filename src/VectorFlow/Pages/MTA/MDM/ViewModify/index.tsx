@@ -67,6 +67,7 @@ import { useLocation } from "react-router";
         isTableDataLoading,
         exportToExcel,
         onBackButton,
+        onBackButton1,
         onClearExportError,
         agGridProps,
         ref,
@@ -370,6 +371,7 @@ import { useLocation } from "react-router";
             editOnline={editOnline}
             onEditOnline={()=>onEditOnline('editOnline')}
             onBack={() => onBackButton(location?.state?.backUrl)}
+            onBack1={onBackButton1}
             onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}
