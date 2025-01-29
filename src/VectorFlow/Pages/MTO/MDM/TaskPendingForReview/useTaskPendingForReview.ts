@@ -336,7 +336,15 @@ const useTaskPendingForReview = ()=>{
                         
                         const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
                         const newColDefs = convertColumnsFormat(existingColumnFields, taskData.mid);
-                        console.log("detail table coldef....", newColDefs);
+                        newColDefs.push(
+                            {
+                                colId: "cm",
+                                field: "cm",
+                                headerName: "Comments",
+                                cellRenderer: CommentCellRenderer,
+                                pinned: 'right'
+                            }
+                        )
                         newColDefs.push(
                             {
                                 colId: 'selectStatus',
@@ -364,43 +372,10 @@ const useTaskPendingForReview = ()=>{
                                   "border-left": "solid 1px #B9B9B9"
                                 },
                                 pinned: 'right'
-                              }
-                           
-                            
+                              }  
                         )
 
-                        newColDefs.push(
-                            {
-                                colId: "cm",
-                                field: "cm",
-                                headerName: "Comments",
-                                cellRenderer: CommentCellRenderer,
-                                // editable: true,
-                                // onCellEdittingStopped: (props: any) => {
-                                //     console.log("props", props);
-                                //     const newComment = props.value;
-                                
-                                //     // Create a deep clone of the row data
-                                //     const newData = detailTableRowData.map((row: any) => {
-                                //         if (row.tbmId === props.data.tbmId) {
-                                //             return {
-                                //                 ...row,
-                                //                 cm: newComment, // Update the 'cm' property
-                                //             };
-                                //         }
-                                //         return row; // Keep other rows unchanged
-                                //     });
-                                
-                                //     // Dispatch the updated data
-                                //     dispatch(SET_TASK_PENDING_ROW_DATA(newData));
-                                // },
-                                
-                                
-                                pinned: 'right'
-
-
-                            }
-                        )
+                       
 
                         const newData:any = [];
 

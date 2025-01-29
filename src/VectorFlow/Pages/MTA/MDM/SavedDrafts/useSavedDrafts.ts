@@ -114,7 +114,12 @@ const useSavedDrafts = ()=>{
         }
         
         dispatch(TOGGLE_UPLOAD_MODAL(false))
-        navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`);
+        navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`, {
+            state:{
+                backUrl: "/master-data-management/saved-drafts"
+            }
+        });
+
         toast.dismiss();
         notifySuccess("Draft Loaded Successfully");
 

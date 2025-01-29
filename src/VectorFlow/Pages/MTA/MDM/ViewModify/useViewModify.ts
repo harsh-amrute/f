@@ -172,7 +172,7 @@ const useViewModify = (pageType:string) => {
       if (ref.current && localColDefs) {
         dispatch(UPDATE_COLDEFS(localColDefs))
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        setDefaultToolPanel('columns')
+        setDefaultToolPanel(ref.current?.api.isToolPanelShowing() ? 'columns' : '');
       }
 
     }
@@ -272,7 +272,7 @@ const useViewModify = (pageType:string) => {
         
         },
       ],
-      defaultToolPanel:'',
+      defaultToolPanel:defaultToolPanel,
     }
 
     const agGridProps:AgGridReactProps = {
@@ -292,6 +292,9 @@ const useViewModify = (pageType:string) => {
       paginationPageSize:rowsPerPage,
       // suppressPaginationPanel:true,
       onColumnVisible:onColumnChange,
+      onToolPanelVisibleChanged:()=>{
+        setDefaultToolPanel(ref.current?.api.isToolPanelShowing() ? 'columns' : '');
+      },
       // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       loadingOverlayComponent:'loadingOverlay',
       onRowDataUpdated:(event:any)=>{
@@ -552,10 +555,10 @@ const useViewModify = (pageType:string) => {
 
     const generateDraftPayload = (rowData:any,draftId?:string)=>{
       const pathName = window.location.pathname.split('/')
-      let instanceName = ''
-      masters.map((master:MDMMasterState)=>{
-        instanceName += ` ${master.name}`
-      })
+      const instanceName = masters?.[0]?.name || '';
+      // masters.map((master:MDMMasterState)=>{
+      //   instanceName += ` ${master.name}`
+      // })
       return{
         instanceName:instanceName,
         searchKey:activeMaster.name,
@@ -738,7 +741,7 @@ const useViewModify = (pageType:string) => {
           return;
         }
         
-        const tempRowData = result.data.data.map((row:any)=>{
+        const tempRowData = result?.data?.data?.map((row:any)=>{
           const newRow = {...row};
           
           Object.keys(newRow).map((key)=>{
@@ -1388,32 +1391,39 @@ const useViewModify = (pageType:string) => {
         }
       }
 
-      
-      const onBackButton1 = () => {
+      const onBackButton1 = (backUrl?: string) => {
     
-         dispatch(UPDATE_PROGRESS_STATE('default'));
-         dispatch(UPDATE_ROW_DATA([]));
-         dispatch(UPDATE_COLDEFS([]));
-         dispatch(REMOVE_ALL_FILTERS());
-         // dispatch(UPDATE_ACTIVE_MASTER([]))
+        console.log("backUrl 1", backUrl)
+        if(backUrl){
+          navigate(backUrl)
+        }
+        dispatch(UPDATE_PROGRESS_STATE('default'));
+        dispatch(UPDATE_ROW_DATA([]));
+        dispatch(UPDATE_COLDEFS([]));
+        dispatch(REMOVE_ALL_FILTERS());
+        // dispatch(UPDATE_ACTIVE_MASTER([]))
+       
+        dispatch(ADD_FILTER())
+        setDownloadData(false);
+        setTempDownloadData(false);
+        dispatch(FILL_MASTERS([]));
+        /// riskycodehere !!
+        dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
+        setFilterButtonStatus([]);
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
         
-         dispatch(ADD_FILTER())
-         setDownloadData(false);
-         setTempDownloadData(false);
-         dispatch(FILL_MASTERS([]));
-         /// riskycodehere !!
-         dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
-         setFilterButtonStatus([]);
-         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-         
- 
-         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
-         
-       }
 
-      const onBackButton = () => {
+        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+        
+      }
+
+      const onBackButton = (backUrl?: string) => {
        if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
        {
+        console.log("onBackBtn", backUrl)
+        if(backUrl){
+          navigate(backUrl)
+        }
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
         dispatch(UPDATE_COLDEFS([]));

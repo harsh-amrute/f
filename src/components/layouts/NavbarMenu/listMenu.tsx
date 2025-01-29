@@ -286,7 +286,7 @@ export const listMenuParent: any = [
             url: "/supply-chain-intelligence-hub/open-expediting-requests",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
-
+ 
           // {
           //   name: "Vendor Dispatch Report",
           //   img: "/assets/img/nav/arrow_down.svg",
@@ -298,21 +298,49 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/rrr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
-
+ 
+          },
+          {
+            name: "Rationed Requirement Report - Color Bandwise",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/rrr-color-bandwise",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+ 
           },
           {
             name: "Buyer Order Report",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/bor",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
-
+ 
+          },
+          {
+            name: "Buyer Order Report - Color Bandwise",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/bor-color-bandwise",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+ 
+          },
+          {
+            name: "Order Allocation Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/order-allocation-report",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+ 
+          },
+          {
+            name: "Total Requirement Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/total-requirement-report",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+ 
           },
           {
             name: "Supplier Dispatch Report",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/sdr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
-
+ 
           },
           {
             name: "Merchandising Grid",
@@ -327,7 +355,7 @@ export const listMenuParent: any = [
         img: "/assets/img/nav/arrow_down.svg",
         url: "/logistics",
         role: ["IST Admin", "IST Requestor"],
-
+ 
         child: [
           {
             name: "InTransit Whereabouts",
@@ -335,7 +363,7 @@ export const listMenuParent: any = [
             url: "/logistics/intransit-whereabouts",
             // role: ["IST Admin", "IST Requestor"],
             role: ["Admin", "VectorConsultant", "BPRManager"],
-
+ 
           }
         ]
       },
@@ -397,6 +425,7 @@ export const listMenuParent: any = [
       }
     ],
   },
+ 
   // {
   //   id: 7,
   //   name: "navbar.listMenuParent.velocityAnalysis.title",
