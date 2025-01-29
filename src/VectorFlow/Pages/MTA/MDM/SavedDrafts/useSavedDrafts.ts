@@ -89,7 +89,10 @@ const useSavedDrafts = ()=>{
         const draftDataInSequence:any[] = [];
 
         draftData.forEach((Master:any)=>{
-            const DataInSequence:any[] = transformDataInSequencialFormat(Master.DataMaster);
+          let DataInSequence:any[] =[];
+          if(Master?.DataMaster!==undefined){
+            DataInSequence = transformDataInSequencialFormat(Master.DataMaster);
+          }
             draftDataInSequence.push({
                 ...Master,
                 DataMaster:DataInSequence
@@ -132,11 +135,11 @@ const useSavedDrafts = ()=>{
 
     const transformDataInSequencialFormat=(data:any)=>{
         return data.sort((a:any, b:any) => {
-            const aHasError = a.error.length > 0;
-            const aHasWarning = a.warning.length > 0;
-            const bHasError = b.error.length > 0;
-            const bHasWarning = b.warning.length > 0;
-        
+            const aHasError = a.error===undefined ? false : a.error.length > 0;
+            const aHasWarning = a.warning===undefined ? false :  a.warning.length > 0;
+            const bHasError = b.error===undefined ? false :  b.error.length > 0;
+            const bHasWarning = b.warning===undefined ? false :  b.warning.length > 0;
+       
             if (aHasError && aHasWarning && (!bHasError || !bHasWarning)) {
               return -1; // a should come before b
             }

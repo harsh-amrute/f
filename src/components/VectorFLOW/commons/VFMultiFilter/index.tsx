@@ -482,7 +482,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
         if(filterId==='LF6'){
             filterObj.attributeName='Location'; 
-            filterObj.label='Location';
+            filterObj.label='WHCode';
             //location
             filterObj.operator='='
         }

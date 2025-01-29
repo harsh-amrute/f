@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MIN_DECIMAL_VAL,MAX_NAME_LENGTH,MAX_DECIMAL_VAL,CommonSchema,MAX_INT_VAL} from "../../../commons";
+import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MIN_DECIMAL_VAL,MAX_NAME_LENGTH,MAX_DECIMAL_VAL,CommonSchema,MAX_INT_VAL, specialCharacterValidator, commonValidatorWithSeperator} from "../../../commons";
 
 const MIN_RLT_VALUE = 3;
 const MIN_RCP_VALUE = 3;
@@ -20,7 +20,7 @@ const SKULocationMessages = (key:string)=>({
 const ParentWhCodeValidator = (value:any,helper:any)=>{
 
     if(helper.prefs.context.wc === value) throw new Error('Source location code and destination location code are same');
-    return commonValidator(value,helper);
+    return commonValidatorWithSeperator(value,helper);
 
 }
 
@@ -98,9 +98,9 @@ const MNValidator = (value:any,helper:any)=>{
 
 export const SKULocationSchema = Joi.object({
     SrNo:Joi.string(),
-    sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
+    sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('SKUCode')),
     sd:Joi.string().empty().max(MAX_NAME_LENGTH),
-    wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
+    wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('WhCode')),
     wd:Joi.string().empty().max(MAX_NAME_LENGTH),
     pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(ParentWhCodeValidator).required().messages(generateCommonMessages('ParentWhCode')),
     pd:Joi.string(),
