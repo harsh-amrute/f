@@ -552,10 +552,10 @@ const useViewModify = (pageType:string) => {
 
     const generateDraftPayload = (rowData:any,draftId?:string)=>{
       const pathName = window.location.pathname.split('/')
-      let instanceName = ''
-      masters.map((master:MDMMasterState)=>{
-        instanceName += ` ${master.name}`
-      })
+      const instanceName = masters?.[0]?.name || '';
+      // masters.map((master:MDMMasterState)=>{
+      //   instanceName += ` ${master.name}`
+      // })
       return{
         instanceName:instanceName,
         searchKey:activeMaster.name,
