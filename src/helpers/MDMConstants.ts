@@ -228,11 +228,7 @@ export const masterGroupMapper:masterGroupMapperType[] = [
     {
       name:"SKU Location",
       masters:['11','7','13','5','4','3','16','24']
-    },
-    {
-      name:"Plant/CCR",
-      masters:['501', '502','503','504']
-    },
+    }
   ]
 
   export const ImageMapper:any={
@@ -257,11 +253,6 @@ export const masterGroupMapper:masterGroupMapperType[] = [
     '16':'/assets/img/VectorFLOW/NMS/AddRecords/deployment.svg',
     '18':'/assets/img/VectorFLOW/NMS/AddRecords/IST.svg',
     '17':'/assets/img/VectorFLOW/NMS/AddRecords/discount-period.svg',
-    '501': '/assets/img/VectorFLOW/NMS/AddRecords/ccr-master-logo.svg',
-    '502': '/assets/img/VectorFLOW/NMS/AddRecords/buffer-master-logo.svg',
-    '503': '/assets/img/VectorFLOW/NMS/AddRecords/poogi-master-logo.svg',
-    '504': '/assets/img/VectorFLOW/NMS/AddRecords/calendar-master-logo.svg',
-  
 }
 
 export const ImageMapperHover:any={
@@ -285,12 +276,7 @@ export const ImageMapperHover:any={
     '25':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1-hover.svg',
     '16':'/assets/img/VectorFLOW/NMS/AddRecords/deployment-hover.svg',
     '18':'/assets/img/VectorFLOW/NMS/AddRecords/IST-hover.svg',
-    '17':'/assets/img/VectorFLOW/NMS/AddRecords/discount-period-hover.svg',
-    '501':'/assets/img/VectorFLOW/NMS/AddRecords/ccr-master-logo-hover.svg',
-    '502': '/assets/img/VectorFLOW/NMS/AddRecords/buffer-master-logo-hover.svg',
-    '503': '/assets/img/VectorFLOW/NMS/AddRecords/poogi-master-logo-hover.svg',
-    '504': '/assets/img/VectorFLOW/NMS/AddRecords/calendar-master-logo-hover.svg',
-
+    '17':'/assets/img/VectorFLOW/NMS/AddRecords/discount-period-hover.svg'
 }
 
 export const TaskPendingAvoidColumnsMapper:any ={
