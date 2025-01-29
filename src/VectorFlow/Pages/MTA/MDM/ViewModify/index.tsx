@@ -360,9 +360,9 @@ import { useLocation } from "react-router";
             }}
             showSubmittedExportError={errorCount>0}
             masterProgress={activeMaster.progress}
-            disableSubmit={activeMaster.rowData.length===0 || isSubmitDisabled}
+            disableSubmit={activeMaster.rowData?.length===0 || isSubmitDisabled}
             enableEditOnlineReset = {enableEditOnlineReset}
-            disableDeleteSelected={activeMaster.rowData.length < 1}
+            disableDeleteSelected={activeMaster.rowData?.length < 1}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
             isSavingToDraft={isSavingToDraft ?? false}
@@ -385,7 +385,7 @@ import { useLocation } from "react-router";
             onDeleteOnlineSubmit={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
             masterId={activeMaster.id}
-            DataCount={activeMaster.rowData.length}
+            DataCount={activeMaster.rowData?.length}
             onDiscardDraftCallback={onDiscardDraftCallback}
           />
           </div>
