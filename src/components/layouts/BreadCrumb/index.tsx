@@ -195,7 +195,8 @@ const BreadCrumb = () => {
   if (location.pathname === "/manual-upload") {
     return <span> {t("breadCrumb.ist")} <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> {t("header.manualUpload")}</span>;
   } else if (location.pathname === "/") {
-    return <span> {t("breadCrumb.ist")} <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> {t("header.pendingISTRequests")}</span>;
+    // return <span> {t("breadCrumb.ist")} <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> {t("header.pendingISTRequests")}</span>;
+    return <></>;
   } else if (location.pathname === "/ist-forced-closure") {
     return <span> {t("breadCrumb.ist")} <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> {t("header.ISTForcedClosure")}</span>;
   } else if (location.pathname === "/ist-status") {
