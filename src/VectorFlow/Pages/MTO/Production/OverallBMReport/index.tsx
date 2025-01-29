@@ -883,7 +883,7 @@ const DropDownCellRenderer= (props: any) =>  {
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
-        pinned: child.cc === "ct" ? "right" : null,
+        pinned: child.cc === "ct" ? "right" : child.scc === "chckbx"? "left": undefined,
         cellRenderer:
           child.cc === "ec" && systemType >= 3
             ? "agGroupCellRenderer"
@@ -902,6 +902,12 @@ const DropDownCellRenderer= (props: any) =>  {
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
           child.cc === "ec" ? false : (child.cc === "ic" ) ? false : true,
+        valueFormatter: (props: any) => { 
+        if (typeof props.value === "number") {
+          return props.value.toFixed(2);
+        }
+        return props.value;
+      },
         cellRendererParams: child.hd.includes("Remark")
           ? {
               onClick:
@@ -951,6 +957,14 @@ const DropDownCellRenderer= (props: any) =>  {
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
+      pinned: section.cc === "ct" ? "right" : section.scc === "chckbx"? "left": undefined,
+      valueFormatter: (props: any) => { 
+        if (typeof props.value === "number") {
+          return props.value.toFixed(2);
+        }
+        return props.value;
+      },
+
       // pinned: section.scc==="scos"?'right':"",
       
 
