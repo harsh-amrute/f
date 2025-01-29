@@ -32,7 +32,7 @@ const usePlanning = ()=>{
     const dispatch = useDispatch(); 
 
     const ref = useRef<GridRef>()
-    const tempRef:any = useRef()
+    const tempRef:any = useRef<GridRef>()
 
     const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
    
@@ -98,8 +98,10 @@ const usePlanning = ()=>{
 
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
-            
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`, columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+          if(tempDownloadData){
+            event?.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`, columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+            setTempDownloadData(false)  
+          }
         }
       };
   

@@ -214,6 +214,7 @@ const useBPR =()=>{
             enableColResize: true,
             sideBar:defaultAgGridSideBarForBPR,
             getMainMenuItems: MainMenuItemsCustomization,
+            enableFillHandle: true,
             paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
             onRowClicked:(params:any)=>{
                 if(params.data.intransit && params.data.intransit.length>0){

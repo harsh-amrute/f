@@ -814,8 +814,10 @@ const useViewModify = (pageType:string) => {
 
           intervalID = setInterval(async ()=>{
             const progress = await getUploadProgress(processId);
-            setUploadProgress(progress.data.progress);
-            setTotalProgress(progress.data.totalRows)
+            if(progress.data!==undefined){
+              setUploadProgress(progress.data.progress);
+              setTotalProgress(progress.data.totalRows)
+            }
           },1000)
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
@@ -824,12 +826,6 @@ const useViewModify = (pageType:string) => {
           const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
           result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
           
-          dispatch(SET_RECORD_COUNT(result.length));
-          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-          dispatch(UPDATE_ROW_DATA(result));
-          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-          dispatch(TOGGLE_UPLOAD_MODAL(false));
-          setIsOverlayVisible(false);
 
           const ifErrorExists = result.find((data:any)=>data.error.length > 1);
           const ifWarningExists = result.find((data:any)=>data.warning.length > 1);
@@ -848,6 +844,12 @@ const useViewModify = (pageType:string) => {
             addCheckBoxColDefs();
            }
           
+          dispatch(SET_RECORD_COUNT(result.length));
+          dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
+          dispatch(UPDATE_ROW_DATA(result));
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+          dispatch(TOGGLE_UPLOAD_MODAL(false));
+          setIsOverlayVisible(false);
           setIsOverlayVisible(false)
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
@@ -1501,6 +1503,8 @@ const useViewModify = (pageType:string) => {
 
       }
 
+      console.log(activeMaster.progress)
+
       const onSaveToDraft = async () => {
         try{
           dispatch(REMOVE_COLDEFS(['checkbox']))
@@ -1536,7 +1540,7 @@ const useViewModify = (pageType:string) => {
                 return tempRow
             })
           }
-        
+          console.log(newData)
           const res = await postDraftChunks(newData)
           if(res){
             dispatch(UPDATE_PROGRESS_STATE("savedToDraft"))
