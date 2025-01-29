@@ -172,7 +172,6 @@ const useViewModify = (pageType:string) => {
       if (ref.current && localColDefs) {
         dispatch(UPDATE_COLDEFS(localColDefs))
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        console.log("toolspanel showing",ref.current?.api.isToolPanelShowing())
         setDefaultToolPanel(ref.current?.api.isToolPanelShowing() ? 'columns' : '');
       }
 
@@ -1782,7 +1781,7 @@ const useViewModify = (pageType:string) => {
         setFile,
         isTableDataLoading,
         exportToExcel,
-        // onColumnChange,
+        onColumnChange,
         onBackButton,
         onBackButton1,
         onClearExportError,
