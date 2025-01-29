@@ -172,7 +172,8 @@ const useViewModify = (pageType:string) => {
       if (ref.current && localColDefs) {
         dispatch(UPDATE_COLDEFS(localColDefs))
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        setDefaultToolPanel('columns')
+        console.log("toolspanel showing",ref.current?.api.isToolPanelShowing())
+        setDefaultToolPanel(ref.current?.api.isToolPanelShowing() ? 'columns' : '');
       }
 
     }
@@ -272,7 +273,7 @@ const useViewModify = (pageType:string) => {
         
         },
       ],
-      defaultToolPanel:'',
+      defaultToolPanel:defaultToolPanel,
     }
 
     const agGridProps:AgGridReactProps = {
@@ -291,7 +292,10 @@ const useViewModify = (pageType:string) => {
       pagination:true,
       paginationPageSize:rowsPerPage,
       // suppressPaginationPanel:true,
-      // onColumnVisible:onColumnChange,
+      onColumnVisible:onColumnChange,
+      onToolPanelVisibleChanged:()=>{
+        setDefaultToolPanel(ref.current?.api.isToolPanelShowing() ? 'columns' : '');
+      },
       // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       loadingOverlayComponent:'loadingOverlay',
       onRowDataUpdated:(event:any)=>{
@@ -738,7 +742,7 @@ const useViewModify = (pageType:string) => {
           return;
         }
         
-        const tempRowData = result.data.data.map((row:any)=>{
+        const tempRowData = result?.data?.data?.map((row:any)=>{
           const newRow = {...row};
           
           Object.keys(newRow).map((key)=>{
