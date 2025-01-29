@@ -25,6 +25,7 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import { getUploadModalRadioButtons,generateOptions, getMDMTableHeight } from "../../../../../helpers/utils";
 import { Filter } from "../../../../../VectorFlow/types/MDM";
 import { operators } from "../../../../../helpers/MDMConstants";
+import { useLocation } from "react-router";
 
 
 
@@ -33,6 +34,7 @@ const DeleteRecord = () => {
   const suppressMovable = true;
   const {user} = useUserData()
   const themeUi = user?.user?.theme_ui;
+  const location = useLocation();
  
 
     const {
@@ -311,8 +313,8 @@ const DeleteRecord = () => {
               onEditOnlineSave={onEditOnlineSave}
               editOnline={false}
               deleteOnline={editOnline}
-              onBack={onBackButton}
-              onBack1={onBackButton1}
+              onBack={() => onBackButton(location?.state?.backUrl)}
+              onBack1={() => onBackButton1(location?.state?.backUrl)}
               onClearAndExportErrors={onClearExportError}
               onModifyData={()=>toggleUploadModal(true)}
               onExportData={exportToExcel}

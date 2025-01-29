@@ -20,6 +20,7 @@ import SubmitConflictModal from "./SubmitConflictModal";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import _ from "lodash";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import { useLocation } from "react-router";
 
 
 
@@ -31,6 +32,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
    
     // const disabled=true;
     // const dummyFn =()=>{return}
+
+    const location = useLocation();
 
     const {
         isSelectMasterOpen,
@@ -120,7 +123,6 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         }
       }
     },[isTableDataLoading])
-
 
     return (
       <>
@@ -367,8 +369,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
             onEditOnline={()=>onEditOnline('editOnline')}
-            onBack={onBackButton}
-            onBack1={onBackButton1}
+            onBack={() => onBackButton(location?.state?.backUrl)}
+            onBack1={() => onBackButton1(location?.state?.backUrl)}
             onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}
