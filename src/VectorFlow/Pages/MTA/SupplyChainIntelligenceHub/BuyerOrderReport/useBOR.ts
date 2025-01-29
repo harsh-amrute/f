@@ -415,6 +415,7 @@ export const useBOR =()=>{
         suppressRowClickSelection:true,
         components:customCellRenderers,
         enableBrowserTooltips:true,
+        enableFillHandle: true,
         getMainMenuItems: MainMenuItemsCustomization,
         paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
         gridOptions:{

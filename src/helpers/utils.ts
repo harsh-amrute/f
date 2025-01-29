@@ -1886,7 +1886,6 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
         return colDef;
       });
 
-      console.log(colDefs)
       masters.push({
         id: existingMaster.id,
         name: existingMaster.name,
@@ -2325,6 +2324,19 @@ export const createTaskPendingSubmitPayload = (rowData: any[], actionType: numbe
 }
 
 
+export const generateDailyDataGraphCell = (onOpenDailyDataGraph:any):ColDef=>{
+
+  return {
+    ...createIconColumn({id:'dailydatagraph',label:'',cellRenderer:'grapCellRenderer'}),
+    cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph},
+    pinned: 'left',
+    minWidth:45,
+    resizable:false
+  }
+        // const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+}
+
+
 
 export const createIconColumn = (params: any): ColDef => {
 
@@ -2371,9 +2383,15 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       colId: 'remarks',
       field: 'remarks',
       headerName: 'Edit Remarks',
-      cellRenderer: 'submitRemarkCellRenderer',
-      cellRendererParams: {
-        onClick: onOpenSubmitRemark
+      // cellRenderer: 'submitRemarkCellRenderer',
+      // cellRendererParams: {
+      //   onClick: onOpenSubmitRemark
+      // },
+      cellStyle:{
+        backgroundColor: 'white',
+        border: '1px solid #b9bdba',
+        color: 'black',
+        padding: '1px'
       },
       pinned: 'right',
       editable: true,
@@ -2484,7 +2502,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       // },
     }
   })
-  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } , pinned:'left'  }, tagsColDef, ...result, ...BPRSpecificColumns]
+  return [generateDailyDataGraphCell(onOpenDailyDataGraph), tagsColDef, ...result, ...BPRSpecificColumns]
 }
 
 export const MainMenuItemsCustomization = (params:any) => {
@@ -2686,10 +2704,16 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark
       colId:'remarks',
       field:'remarks',
       headerName:'Edit Remarks',
-     cellRenderer:'submitRemarkCellRenderer',
-     cellRendererParams:{
-      onClick:onOpenSubmitRemark
-     },
+            // cellRenderer: 'submitRemarkCellRenderer',
+      // cellRendererParams: {
+      //   onClick: onOpenSubmitRemark
+      // },
+      cellStyle:{
+        backgroundColor: 'white',
+        border: '1px solid #b9bdba',
+        color: 'black',
+        padding: '1px'
+      },
      pinned: 'right',
      editable: true,
      minWidth:130,
@@ -2745,7 +2769,7 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark
     }
   })
   //return [...result, ...BORSpecificColumns]
-  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },pinned:'left' }, ...result, ...BORSpecificColumns]
+  return [generateDailyDataGraphCell(onOpenDailyDataGraph), ...result, ...BORSpecificColumns]
 }
 
 export const BPRColorMapper = (color: string): { bg: string, text: string } => {
