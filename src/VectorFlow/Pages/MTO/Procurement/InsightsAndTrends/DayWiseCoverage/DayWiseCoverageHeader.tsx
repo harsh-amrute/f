@@ -4,6 +4,7 @@ import DatePicker from '../../../../../../components/VectorFLOW/commons/MTO/Date
 import { DayWiseCoverageHeaderContainer, DayWiseCoverageStatus, Divider, Text } from './style'
 import { format } from 'date-fns'
 import { ColorsMTO } from '../../../Common/Colors'
+import { useUserData } from '../../../../../../context'
 
 interface IDayWiseCoverageHeaderProps {
     startDate: string,
@@ -27,6 +28,15 @@ const DayWiseCoverageHeader = ({
 
     const [minEndDate, setMinEndDate] = useState(format(min, "yyyy-MM"));
     const [maxStartDate, setMaxStartDate] = useState(format(max, "yyyy-MM"))
+
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+    const userTheme = themeUi === 'REGALBLAZE';
+
+    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+    
 
     useEffect(() => {
         if (!(start.length && end.length)) {
@@ -83,8 +93,8 @@ const DayWiseCoverageHeader = ({
             <div
                 style={{
                     cursor: 'pointer',
-                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-                    backgroundColor: ColorsMTO.darkPink.code,
+                    background: `linear-gradient(to right, ${gradientColor})`,
+                    backgroundColor: backgroundColor,
                     height: '43px',
                     width: '59px',
                     borderRadius: '4px',

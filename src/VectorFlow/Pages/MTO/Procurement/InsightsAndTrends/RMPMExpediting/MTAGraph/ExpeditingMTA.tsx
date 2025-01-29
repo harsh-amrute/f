@@ -8,6 +8,8 @@ import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Productio
 import moment from 'moment'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 import { formatFilterJSON } from '../../../../../../../helpers/utils'
+import { useUserData } from '../../../../../../../../src/context'
+
 
 interface SupplierData {
     [key: string]: {
@@ -82,6 +84,16 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
         </div>
     `;
     }
+
+
+
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+    const userTheme = themeUi === 'REGALBLAZE';
+
+    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
 
 
 
@@ -233,8 +245,8 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
                             <div
                                 style={{
                                     cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    background: `linear-gradient(to right, ${gradientColor})`,
+                                    backgroundColor: backgroundColor,
                                     height: '35px',
                                     width: '55px',
                                     borderRadius: '4px',
@@ -284,7 +296,7 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
     </div>
 
     return (
-        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '10px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '12px', paddingBottom: '5px' }}>
 
 
 

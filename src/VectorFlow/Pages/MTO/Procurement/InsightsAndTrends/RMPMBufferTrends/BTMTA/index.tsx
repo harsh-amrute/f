@@ -8,6 +8,7 @@ import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Commo
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import moment from 'moment'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
+import { useUserData } from '../../../../../../../context'
 
 
 const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
@@ -23,6 +24,15 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     }, [data])
 
     const [numericData, setNumericData] = useState<BufferTrendData[]>([]);
+
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+    const userTheme = themeUi === 'REGALBLAZE';
+
+    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+    
 
 
     const TooltipRenderer = ({ datum, xKey }: any) => {
@@ -455,8 +465,8 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
                             <div
                                 style={{
                                     cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    background: `linear-gradient(to right, ${gradientColor}})`,
+                                    backgroundColor:backgroundColor,
                                     height: '35px',
                                     width: '55px',
                                     borderRadius: '4px',
@@ -529,7 +539,7 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
     </div>
 
     return (
-        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '8px', paddingBottom: '20px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '12px', paddingBottom: '5px' }}>
 
 
             <SplitGraphContainer

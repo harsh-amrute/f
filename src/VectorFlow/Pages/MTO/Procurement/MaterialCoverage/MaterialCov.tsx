@@ -27,6 +27,7 @@ import ColorCellRenderer from "../../Common/ColorCellRenderer";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import useColDef from '../../../../../hooks/useColDef';
 
+
 const APIFilterConfig = {
   filSecVisConfig: {
     "Proc_Material_Coverage_For_OpenSO": {
@@ -69,6 +70,9 @@ const MaterialCov = () => {
     toggleFilter,
     appliedFilters
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
+
+    const themeUi = user?.user?.theme_ui;
+
 
   useEffect(() => {
     if (isLoading) {
@@ -281,6 +285,7 @@ const MaterialCov = () => {
           <ActionToolBar
             comp={'MaterialCov'}
             isAddFilterButton
+            themeUi={themeUi}
             isFilterOpen={isFilterOpen}
             onAddFilter={onAddFilter}
             toggleFilter={toggleFilter}
@@ -347,6 +352,7 @@ const MaterialCov = () => {
 
           <ActionToolBar
             isGoBackButton
+            themeUi={themeUi}
             isExcelExport
             comp={'MaterialCovDetailData'}
             onDateChange={() => { console.log('') }}

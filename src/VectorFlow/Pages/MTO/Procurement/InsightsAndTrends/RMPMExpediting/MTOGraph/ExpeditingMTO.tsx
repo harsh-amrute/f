@@ -9,6 +9,7 @@ import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Productio
 import moment from 'moment'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 import { formatFilterJSON } from '../../../../../../../helpers/utils'
+import { useUserData } from '../../../../../../../../src/context'
 
 const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, setRmHorizon: (day: any) => void, getFilterData: () => void, appliedFilters: any }) => {
     const { date, rmHorizon, setRmHorizon, getFilterData, appliedFilters } = props;
@@ -33,6 +34,12 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
         `;
     }
 
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+    const userTheme = themeUi === 'REGALBLAZE';
+
+    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
 
     const options: AgChartOptions = {
         //Porperties to set here for x and y axises
@@ -191,8 +198,8 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
                             <div
                                 style={{
                                     cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    background: `linear-gradient(to right, ${gradientColor})`,
+                                    backgroundColor: backgroundColor,
                                     height: '35px',
                                     width: '55px',
                                     borderRadius: '4px',
@@ -245,7 +252,7 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
 
 
     return (
-        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginRight: '8px' }}>
+        <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginRight: '4px', paddingBottom: "5px" }}>
 
 
             <SplitGraphContainer

@@ -122,45 +122,58 @@ export const ChangePassText: any = styled.div`
   padding-top: 5px;
 `;
 
-export const SCButtonLogin = styled.button`
-  cursor: pointer;
+export const SCButtonLogin = styled.button<{ disabled?: boolean }>`
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   font-size: 1vw;
   font-weight: bold;
   padding: 10px 0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align: center;
   transition: all 0.2s ease;
-  background: #f0f1f4;
+  background: ${({ disabled }) => (disabled ? "#E3DFDF" : "#ffffff")};
   box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
   border-radius: 40px;
   width: 17vw;
   height: 7vh;
   margin: 4vh 0 0 0;
   color: #575f6b;
+
   .arrow {
     height: 1.8vh;
   }
+
   .arrow-out {
     visibility: hidden;
   }
+
   &:hover {
-    background: #ac3072;
-    color: #ffffff !important;
-    position: relative;
-    transition: all 0.9s ease;
+    ${({ disabled }) =>
+      !disabled &&
+      `
+      background: #ac3072;
+      color: #ffffff !important;
+      position: relative;
+      transition: all 0.9s ease;
 
-    span {
-      color: #ffffff;
-    }
+      span {
+        color: #ffffff;
+      }
 
-    .arrow-in {
-      display: none;
-    }
-    .arrow {
-      transform: translate(30px, 0px);
-      transition: all 0.5s ease-in;
-    }
-    .arrow-out {
-      visibility: visible;
-    }
+      .arrow-in {
+        display: none;
+      }
+
+      .arrow {
+        transform: translate(30px, 0px);
+        transition: all 0.5s ease-in;
+      }
+
+      .arrow-out {
+        visibility: visible;
+      }
+    `}
   }
 `;
 
@@ -185,18 +198,20 @@ export const FormArea: any = styled.form`
 
 export const ButtonSubmit: any = styled.div`
   display: flex;
-  width: 100%;
-  transform: translate(40%, 0);
+  justify-content:center;
+  align-items:center;
+  // width: 100%;
+  // transform: translate(40%, 0);
 `;
 
-export const ButtonSubmitText: any = styled.span`
+export const ButtonSubmitText: any = styled.span<{ isLoading?: boolean }>`
   margin-right: 1rem;
-  color: #575f6b;
+  color: ${({ isLoading }) => (isLoading ? "#808080" : "#575f6b")};
   font-size: 1vw;
   font-weight: bold;
   font-family: "Roboto", sans-serif;
   &:hover {
-    color: #ffffff;
+    ${({ isLoading }) => !isLoading && `color: #ffffff ;`}
   }
 `;
 

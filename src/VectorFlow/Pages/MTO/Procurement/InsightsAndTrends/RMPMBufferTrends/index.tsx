@@ -1,7 +1,6 @@
 
 import { Allotment } from "allotment"
 import { useEffect, useState } from "react"
-import useViewPort from "../../../../../../hooks/useViewPort"
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import BTMTA from "./BTMTA"
 import BTMTO from "./BTMTO"
@@ -11,6 +10,7 @@ import { useGetRMPMBufferTrendsData } from "../../../../../../VectorFlow/Service
 import { BufferTrendData } from "../../../../../../types/MTO/types"
 import { toast } from "react-toastify"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../../helpers/notify"
+import { useUserData } from "../../../../../../context"
 // import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';
 // import { FilterPageName } from "../../../Common/Enum";
@@ -50,7 +50,8 @@ const RMPMBufferTrends = () => {
         return `${day}-${month}-${year}`;
     }
 
-
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
 
     const convertToGraphData = (apiData: any) => {
         try {
@@ -112,7 +113,6 @@ const RMPMBufferTrends = () => {
     }
 
     const [isMTO] = useState(true);
-    const { screenHeight } = useViewPort()
 
     const { mutateAsync: getRMPMBufferTrendsData } = useGetRMPMBufferTrendsData();
 
@@ -160,11 +160,11 @@ const RMPMBufferTrends = () => {
 
 
     return (
-        <div style={{ marginLeft: '30px' }}>
-
+        <div style={{ height: "90%", marginLeft: '20px', paddingTop: "20px" }}>
 
             <MTOActionToolBar 
                 comp={"BTRMTO"} 
+                themeUi={themeUi}
                 // isAddFilterButton 
                 // isFilterOpen={isFilterOpen}
                 // onAddFilter={onAddFilter}
@@ -175,8 +175,8 @@ const RMPMBufferTrends = () => {
                 // onFilterRemove={onFilterRemove}
                 // isMfgSelected={isMfgSelected}
             />
-            <HorizontalViewWrapper style={{ marginTop: '20px' }}>
-                <BTRTableWrapper style={{ height: screenHeight - 165, margin: '0' }}>
+            <HorizontalViewWrapper>
+                <BTRTableWrapper>
                     {
                         (isMTO) ?
                             (<Allotment vertical={false} separator={false}   >

@@ -14,7 +14,7 @@ import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import moment from "moment";
 import _ from "lodash";
-import { ChartWrapper } from "./styles";
+import { ChartWrapper, GraphViewWrapper } from "./styles";
 
 const GraphView = ({ shortageData }: any) => {
 
@@ -244,7 +244,7 @@ const GraphView = ({ shortageData }: any) => {
     }
 
     return (
-        <div style={{ width: "100%", height: "100%", padding: "20px" }}>
+        <GraphViewWrapper>
             <SCChartContainer height={'100%'} style={{ border: '1px solid #CCCCCC', margin: '2px', height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
                     <div style={{ fontSize: '12px', margin: '0 auto', fontWeight: 500, textAlign: 'center' }}>
@@ -325,7 +325,7 @@ const GraphView = ({ shortageData }: any) => {
                     </div>
                 </VFModalCard>
             </SCChartContainer>
-        </div>
+        </GraphViewWrapper>
 
     )
 };

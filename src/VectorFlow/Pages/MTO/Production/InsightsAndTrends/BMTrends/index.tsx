@@ -14,6 +14,7 @@ import VFRangeSlider from '../../../Common/VFRangeSlider'
 // import useFilter from "../../../../../../hooks/useFilter";
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import { ColorsMTO } from '../../../Common/Colors'
+import { useUserData } from '../../../../../../context'
 
 export const APIFilterConfig = {
     filSecVisConfig: {
@@ -136,6 +137,12 @@ const BMTrends = () => {
         </div>
         </div>`;
     }
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+    const userTheme = themeUi === 'REGALBLAZE';
+    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+
 
     const getSeriesData = () => {
         const series: AgCartesianSeriesOptions[] = [];
@@ -351,8 +358,8 @@ const BMTrends = () => {
                             <div
                                 style={{
                                     cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-                                    backgroundColor: ColorsMTO.darkPink.code,
+                                    background: `linear-gradient(to right, ${gradientColor})`,
+                                    backgroundColor: backgroundColor,
                                     height: '43px',
                                     width: '59px',
                                     borderRadius: '4px',

@@ -42,7 +42,6 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const [isCNDisabled, setIsCNDisabled] = useState(props.multiFilter.customers?.filters[0]?.value?.length > 0);
 
   const onFilterChange = (type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any) => {
-
     const updatedFilters = filterState[parent as keyof FilterState]?.filters || [];
     for (let i = 0; i < updatedFilters.length; i++) {
       const { attributeName } = updatedFilters[i];
@@ -51,7 +50,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
         if( type === InputTypes.TextCompare || type === InputTypes.NumberCompare){
           let val = e?.value;
           if(property === 'value'){
-            const updatedvalue = type === InputTypes.NumberCompare ? Number(e?.target?.value) || '' : e?.target?.value;
+            const updatedvalue = type === InputTypes.NumberCompare ? e.target.value !== ''  && e.target.value != undefined  ? Number(e?.target?.value): e?.target?.value: e.target.value;
             val =  [{label: updatedvalue, value: updatedvalue}];
           }
           updatedFilters[i][property as keyof Filter]= val;
@@ -97,12 +96,14 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const clearFilters = (currFilters: any) => {
     const emptyFilterState = { ...currFilters };
     for(const key in emptyFilterState){
+      
       const { filters } = emptyFilterState[key];
       for(let i = 0; i < filters.length; i++){
         const { attributeName, options } = filters[i];
         filters[i].value = attributeName === 'ms' ? [...options] : [];
       }
     }
+    
     setMultiFilter(emptyFilterState);
     setFilterState(emptyFilterState);
   }

@@ -192,7 +192,7 @@ const DeptWiseGraph = ({chartTableData, chartData, alertData}: any) => {
 
 
     return (
-        <div style={{ height: "100%", paddingBottom: '10px', display: 'flex', justifyContent: 'left', marginRight: '7px' }}>
+        <div style={{ height: "100%", paddingBottom: '10px', display: 'flex', justifyContent: 'left', marginRight: '4px' }}>
 
 
             <BoxPlotContainer

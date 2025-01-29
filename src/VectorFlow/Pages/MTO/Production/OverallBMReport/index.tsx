@@ -434,7 +434,7 @@ const OverallBmReport = () => {
     { value: "Complete Close", label: "Complete Close" },
   ];
   
-  const [selectedRowCount] = useState(0); 
+  // const [selectedRowCount, setSelectedRowCount] = useState(0); 
   const [selectedAction, setSelectedAction] = useState<any>(null)
   const [textAction,setTextAction] = useState<any>();
   
@@ -572,7 +572,11 @@ const OverallBmReport = () => {
         if (response?.status === 200) {
 
           const newGridData = [...gridData];
-          newGridData.forEach((ele:any)=>{ele.ct=actionText;});
+          newGridData.forEach((ele: any) => {
+            if (okValues.includes(ele.ok)) {
+              ele.ct = actionText;
+            }
+          });
           setGridData(newGridData);
 
           notifySuccess("Order closed successfully!");
@@ -653,7 +657,7 @@ const undoClicked = async (props:any,orderId: string) => {
 //   }
 // }, [refGraph2?.current?.api]); 
 
-const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selectedAction!=null;
+const isRightArrowEnabled = (isCheckboxChecked || masterSelectedRowData.length> 1) && selectedAction!=null;
 
 
 const DropdownArrowIcon = () => (
@@ -892,6 +896,12 @@ const DropDownCellRenderer= (props: any) =>  {
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
           child.cc === "ec" ? false : (child.cc === "ic" ) ? false : true,
+        valueFormatter: (props: any) => { 
+        if (typeof props.value === "number") {
+          return props.value.toFixed(2);
+        }
+        return props.value;
+      },
         cellRendererParams: child.hd.includes("Remark")
           ? {
               onClick:
@@ -945,6 +955,14 @@ const DropDownCellRenderer= (props: any) =>  {
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
+      // pinned: section.cc === "ct" ? "right" : section.scc === "chckbx"? "left": undefined,
+      valueFormatter: (props: any) => { 
+        if (typeof props.value === "number") {
+          return props.value.toFixed(2);
+        }
+        return props.value;
+      },
+
       // pinned: section.scc==="scos"?'right':"",
       
       cellRenderer:
@@ -957,13 +975,13 @@ const DropDownCellRenderer= (props: any) =>  {
 
           // TODO: remove this
       // valueFormatter: (props:any)=>{console.log("value formater val", props); return props.data.ct},
-        cellRendererParams: 
-          section.scc == "oca" ? {
-            data: {
-              setSelectedAction
-            }
-          } : undefined
-        ,
+        // cellRendererParams: 
+        //   section.scc == "oca" ? {
+        //     data: {
+        //       setSelectedAction
+        //     }
+        //   } : undefined
+        // ,
       openByDefault:
         section.scc === "chckbx"
           ? undefined
@@ -1040,7 +1058,7 @@ const DropDownCellRenderer= (props: any) =>  {
         appliedFilters: formatedFilters,
         user
       });
-      if (!gridData.data.data || gridData.data.data.length === 0) {
+      if (!gridData?.data?.data || gridData?.data?.data?.length === 0) {
         setGridDataCount(0);
         setGridData([]);
         setIsGridLoading(false);
@@ -1056,6 +1074,9 @@ const DropDownCellRenderer= (props: any) =>  {
       setGridDataCount(gridData?.data?.data?.count);
       setIsGridLoading(false);
     } catch (e) {
+      notifyError("No Records found for the selected filter!")
+      setGridDataCount(0);
+      setGridData([]);
       setIsGridLoading(false);
       console.log(e);
     }

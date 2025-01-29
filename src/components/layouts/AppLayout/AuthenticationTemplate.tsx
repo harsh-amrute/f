@@ -54,10 +54,12 @@ const AuthenticatedTemplate = (
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState<any>({})
   const [isSideBarOpen,toggleSidebar] = useState<boolean>(false)
+  const token = localStorage.getItem('token');
 
   const { children, loadingComponent: Loading } = props
   useEffect(() => {
-    MainService.getProfile()
+    if(token){
+      MainService.getProfile()
       .then((res) => {
         setUserData(res.data.data)
         setLoading(false)
@@ -68,6 +70,9 @@ const AuthenticatedTemplate = (
         loginRedirect(navigate)
         setLoading(false)
       })
+    }else{
+      navigate('/login')
+    }
   }, [])
 
   const changeColorTheme = (color: string) => {
