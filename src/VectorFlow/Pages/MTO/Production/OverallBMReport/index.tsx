@@ -45,14 +45,14 @@ import OverlayLoader from "../../Common/Loader";
 import { ColorsMTO } from "../../Common/Colors";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../hooks/useFilter";
-import { formatFilterJSON } from "../../../../../helpers/utils";
+import { formatFilterJSON} from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { BM_REPORT_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { modifyAnalyticsData } from "../DepartmentWiseBMReport/helper";
 import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
-import _, {  } from "lodash";
+import _ from "lodash";
 import {
   useGetUserUIConfigData,
   useUpdateUserUIConfigData,
@@ -72,6 +72,7 @@ interface ApiResponse {
   scc: string;
   children?: ApiResponse[];
   cgs?: string;
+  pinned?:string;
 }
 
 interface ColDefChild {
@@ -115,7 +116,8 @@ interface ApiResponseItem {
   hd: string; // Header description (will be set to the name of cc)
   cla: string; // Class alignment (fixed value)
   scc: string; // Sub-channel code (will be set to the name of cc)
-  ch?: ApiResponse[]; // Array of channel items
+  ch?: ApiResponse[]; 
+  pinned?:string;// Array of channel items
 }
 
 
@@ -152,13 +154,16 @@ const OverallBmReport = () => {
     useState<boolean>(false);
   const [remarkHistory, setRemarkHistory] = useState<any>();
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [masterUIConfig, setMasterUIConfig] = useState([]);
+
+
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
       return [];
     }
   );
-  const [intialColumnState, setInitialColumnState] = useState<any>();
   const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
+
   const [deptName, setDeptName] = useState<any>([]);
   const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
   const [filterData, setFilterData] = useState({});
@@ -181,7 +186,7 @@ const OverallBmReport = () => {
     APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport
   );
   const [highAgeing, sethighAgeing] = useState<any>();
-  const [tempColdef, setTempColdef] = useState<any>();
+  const [tempColdef] = useState<any>();
 
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
     useGetUserUIConfigData();
@@ -211,15 +216,6 @@ const OverallBmReport = () => {
       dispatch(BM_REPORT_ANALYTICS([]));
     }
   }, []);
-
-  useEffect(() => {
-    if (coldefs) {
-      const tempcoldeflatest = _.cloneDeep(coldefs);
-      tempcoldeflatest.shift();
-      tempcoldeflatest.shift();
-      setTempColdef(tempcoldeflatest);
-    }
-  }, [coldefs]);
 
   const onOpenRemarkHistory = async (data: any) => {
     // Function implementation for remark history
@@ -254,48 +250,48 @@ const OverallBmReport = () => {
 
   const mapInitalColumnDefs = async () => {
     try {
-      const data = await getUserUIConfigData({
-        un: user.user.name,
-        rn_id: UIGridCode.ProdOverallBMReport,
-      });
+      // const data = await getUserUIConfigData({
+      //   un: user.user.name,
+      //   rn_id: UIGridCode.ProdOverallBMReport,
+      // });
 
-      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-      setInitialColumnState(newConfig);
+      // const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      // setInitialColumnState(newConfig);
     } catch (error) {
       console.error(error);
     }
   };
+  
 
   useEffect(() => {
     mapInitalColumnDefs();
   }, [systemType]);
 
-  useEffect(() => {
-    if (intialColumnState) {
-      setColumnDef();
-    }
-  }, [intialColumnState]);
-
-  const [resetColDef, setResetColDef] = useState<any>(undefined);
-
   const setColumnDef = async () => {
     try {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
-      const modifiedResponse = addDefaultAttributes(response?.data?.data);
-      // const coldef = mapApiResponseToColDefs(modifiedResponse);
-      setResetColDef(modifiedResponse);
+    
+      const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(response?.data?.data);
+
       const coldef = mapApiResponseToColDefs(
         modifiedResponse,
-        intialColumnState
+
       );
-      // getUserColumnConfig();
+
+      /*getUserColumnConfig();*/
       setColdef(coldef);
+    
     } catch (e) {
       console.log(e);
     }
   };
 
+
+  useEffect(() => {
+    setColumnDef();
+  }, [])
+  
   const addDefaultAttributes = (
     apiResponse: ApiResponseItem[]
   ): ApiResponseItem[] => {
@@ -338,7 +334,6 @@ const OverallBmReport = () => {
       // Push the modified item to the response array
       modifiedResponse.push(modifiedItem);
     });
-
     // Add a default object outside each main object
     const defaultOuterObject: ApiResponseItem = {
       cc: "chckbx",
@@ -347,6 +342,7 @@ const OverallBmReport = () => {
       hd: "",
       cla: "Centre",
       scc: "chckbx",
+      pinned:'left',
     };
 
     // Prepend the default outer object
@@ -363,6 +359,7 @@ const OverallBmReport = () => {
       v: true,
       cla: "Centre",
       scc: "rmk",
+      pinned:'right',
       ch: [],
     };
 
@@ -382,6 +379,7 @@ const OverallBmReport = () => {
       v: true,
       cla: "Centre",
       scc: "",
+      pinned:'right',
       ch: [
         {
               cc: "ct",
@@ -390,6 +388,7 @@ const OverallBmReport = () => {
               v: true,
               cla: "Centre",
               scc: "ct",
+              pinned:'right'
           }
       ]
   };
@@ -402,31 +401,27 @@ const OverallBmReport = () => {
     return modifiedResponse;
   };
 
-  const updateInitialHide = (res: any[], columnState: any) => {
-    res.forEach((resParent: any) => {
-      const parentColumn = columnState.find(
-        (state: any) => state.colId === resParent.colId
-      );
-      if (parentColumn) {
-        resParent.initialHide = parentColumn.hide;
-      }
-      resParent.children?.forEach((resChild: any) => {
-        const childColumn = columnState.find(
-          (state: any) => state.colId === resChild.colId
-        );
-        if (childColumn) {
-          resChild.initialHide = childColumn.hide;
-        }
-      });
-    });
-    return res;
-  };
+  // const updateInitialHide = (res: any[], columnState: any) => {
 
+  //   res.forEach((resParent: any) => {
+  //     const parentColumn = columnState.find(
+  //       (state: any) => state.colId === resParent.colId
+  //     );
+  //     if (parentColumn) {
+  //       resParent.initialHide = parentColumn.hide;
+  //     }
+  //     resParent.children?.forEach((resChild: any) => {
+  //       const childColumn = columnState.find(
+  //         (state: any) => state.colId === resChild.colId
+  //       );
+  //       if (childColumn) {
+  //         resChild.initialHide = childColumn.hide;
+  //       }
+  //     });
+  //   });
+  //   return res;
+  // };
 
-
-
-
-  
 
   interface ActionOption {
     value: string;
@@ -434,13 +429,12 @@ const OverallBmReport = () => {
   }
 
 
-  
   const actionOptions:ActionOption[] = [
     { value: "Short Close", label: "Short Close" },
     { value: "Complete Close", label: "Complete Close" },
   ];
   
-  const [selectedRowCount, setSelectedRowCount] = useState(0); 
+  const [selectedRowCount] = useState(0); 
   const [selectedAction, setSelectedAction] = useState<any>(null)
   const [textAction,setTextAction] = useState<any>();
   
@@ -618,14 +612,14 @@ const undoClicked = async (props:any,orderId: string) => {
   }
 };  
 
-const onRowSelectionChanged = () => {
-  if (refGraph2?.current?.api) {
-    const selectedNodes = refGraph2.current.api.getSelectedNodes();
-    setSelectedRowCount(selectedNodes.length); 
-  } else {
-    console.error("Row selection ");
-  }
-};
+// const onRowSelectionChanged = () => {
+//   if (refGraph2?.current?.api) {
+//     const selectedNodes = refGraph2.current.api.getSelectedNodes();
+//     setSelectedRowCount(selectedNodes.length); 
+//   } else {
+//     console.error("Row selection ");
+//   }
+// };
 
 
 
@@ -645,19 +639,19 @@ const onRowSelectionChanged = () => {
 
 
 
-useEffect(() => {
-  if (refGraph2?.current?.api) {
-    refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
+// useEffect(() => {
+//   if (refGraph2?.current?.api) {
+//     refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
 
-    return () => {
-      if (refGraph2?.current?.api) {
-        refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
-      }
-    };
-  } else {
-    console.error("something went wrong");
-  }
-}, [refGraph2?.current?.api]); 
+//     return () => {
+//       if (refGraph2?.current?.api) {
+//         refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
+//       }
+//     };
+//   } else {
+//     console.error("something went wrong");
+//   }
+// }, [refGraph2?.current?.api]); 
 
 const isRightArrowEnabled = (isCheckboxChecked || selectedRowCount > 1) && selectedAction!=null;
 
@@ -867,10 +861,9 @@ const DropDownCellRenderer= (props: any) =>  {
 
   const mapApiResponseToColDefs = (
     apiResponse: ApiResponseItem[],
-    initialColumnState: any,
-    isReset = false
+    // initialColumnState: any,
   ): any => {
-    const mapChildren = (
+    const mapChildren:any = (
       parent: any,
       children: ApiResponse[]
     ): ColDefChild[] => {
@@ -881,7 +874,7 @@ const DropDownCellRenderer= (props: any) =>  {
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
         pinned: child.cc === "ct" ? "right" : null,
-        cellRenderer:
+              cellRenderer:
           child.cc === "ec" && systemType >= 3
             ? "agGroupCellRenderer"
             : child.cc === "ic"
@@ -929,8 +922,12 @@ const DropDownCellRenderer= (props: any) =>  {
       }));
     };
 
+    console.log('Column State Before Applying anything:', columnState);
+
     const res = apiResponse.map((section) => ({
       headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+      // pinned: section.cc='left',
+      pinned: section.pinned || null,
       floatingFilterComponentParams:
         section.scc === "chckbx" || section.scc == "ic"
           ? { suppressFilterButton: false }
@@ -950,7 +947,6 @@ const DropDownCellRenderer= (props: any) =>  {
       colId: section.cc,
       // pinned: section.scc==="scos"?'right':"",
       
-
       cellRenderer:
         section.cc === "ec" || (section.scc === "chckbx" && systemType >= 3)
           ? "agGroupCellRenderer"
@@ -984,11 +980,7 @@ const DropDownCellRenderer= (props: any) =>  {
           : undefined,
     }));
 
-    if (isReset || !initialColumnState) {
-      return res;
-    }
-
-    return updateInitialHide(res, initialColumnState);
+    return res;
   };
 
   const getFilterData = async () => {
@@ -1205,6 +1197,7 @@ const DropDownCellRenderer= (props: any) =>  {
     toggleCheckBox();
   };
 
+
   const cache = useRef<any>({});
 
   const agGridProps: AgGridReactProps = useMemo(() => {
@@ -1379,26 +1372,24 @@ const DropDownCellRenderer= (props: any) =>  {
 
   // for save and reset
 
-  useEffect(() => {
-    if (coldefs) {
-      getUserColumnConfig();
-    }
-  }, [coldefs]);
-
   const [isReset, setIsReset] = useState<any>();
   const [columnState, setColumnState] = useState<any>();
 
+ 
+
   const getUserColumnConfig = async () => {
     try {
+      console.log("getUserColumnConfig");
       const data = await getUserUIConfigData({
         un: user.user.name,
         rn_id: UIGridCode.ProdOverallBMReport,
       });
 
-      const newConfig =
-        JSON.parse(data?.data?.data?.[0]?.columns_settings) || [];
+      const newConfig = JSON.parse(data?.data?.data?.[0]?.columns_settings) || [];
 
       setColumnState(newConfig);
+      console.log('set column state', newConfig)
+
 
       if (!data) {
         console.error("Failed to apply column state");
@@ -1408,7 +1399,11 @@ const DropDownCellRenderer= (props: any) =>  {
     }
   };
 
-  const handleSaveClick = async (coldefs?: any) => {
+   console.log('column state ', columnState)
+
+
+
+  const handleSaveClick = async (coldefs?: any) => {    
     try {
       if (coldefs) {
         const payload = {
@@ -1416,16 +1411,26 @@ const DropDownCellRenderer= (props: any) =>  {
           rn_id: UIGridCode.ProdOverallBMReport,
           cs: JSON.stringify(coldefs),
         };
+
         await updateUserUIConfigData([payload]);
+        setColumnState([...coldefs]); 
+
       } else {
         if (refGraph2?.current?.api) {
           const config = refGraph2.current.api.getColumnState();
+
+          console.log('Current column state after saving:', config);
+
+         setColumnState(config)
+          console.log('after setColumnState', config)
+
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOverallBMReport,
             cs: JSON.stringify(config),
           };
           await updateUserUIConfigData([payload]);
+          await getUserColumnConfig();/////////
         }
       }
       notifySuccess("Changes saved successfully");
@@ -1435,86 +1440,47 @@ const DropDownCellRenderer= (props: any) =>  {
     }
   };
 
+
   const handleResetClick = () => {
     setIsReset(true);
   };
 
+  useEffect(() => {          
+    if (isReset) {
+      handleSaveClick(masterUIConfig);
+      setIsReset(false);
+    }
+  }, [isReset]);
+
+   useEffect(() => {
+    if (refGraph2?.current?.api) {
+      setMasterUIConfig(refGraph2?.current?.api.getColumnState());
+      getUserColumnConfig();
+    }
+  }, [coldefs]);
 
   
 
   useEffect(() => {
-    applyColumnState(true);
+
+    // applyColumnState(true);
+    if (refGraph2?.current && columnState?.length) {
+      const result = refGraph2.current.api.applyColumnState({
+        state: columnState,
+        applyOrder: true
+      });
+      if (!result) {
+        console.error('Failed to apply column state');
+      }
+    }
+
   }, [columnState]);
 
-  const applyColumnState = useCallback(
-    (flag = false) => {
-      if (refGraph2?.current && columnState?.length) {
-        let colState = [...columnState];
-        if (flag) {
-          const arr: any = [];
-          colState.forEach((col: any) => {
-            if (col.children) {
-              col.children.forEach((child: any) => {
-                arr.push({
-                  colId: child.colId,
-                  initialHide: false,
-                  pinned: null,
-                  sort: null,
-                  sortIndex: null,
-                  aggFunc: null,
-                  rowGroup: false,
-                  rowGroupIndex: null,
-                  pivot: false,
-                  pivotIndex: null,
-                  flex: null,
-                });
-              });
-            } else {
-              arr.push({
-                colId: col.colId,
-                initialHide: false,
-                pinned: null,
-                sort: null,
-                sortIndex: null,
-                aggFunc: null,
-                rowGroup: false,
-                rowGroupIndex: null,
-                pivot: false,
-                pivotIndex: null,
-                flex: null,
-              });
-            }
-            colState = arr;
-          });
-        }
-        refGraph2.current.api?.applyColumnState({
-          state: colState,
-          applyOrder: true,
-        });
-      }
-    },
-    [columnState]
-  );
-
+  
   const { data: apiResponseData /*isLoading, refetch*/ } = useGetDate();
 
   const date = apiResponseData?.data?.data;
 
-  useEffect(() => {
-    if (isReset) {
-      setColumnState(
-        mapApiResponseToColDefs(resetColDef, intialColumnState, true)
-      );
-      setColdef(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
-      setIsReset(false);
-    } else {
-      if (isReset != undefined) {
-        handleSaveClick(
-          mapApiResponseToColDefs(resetColDef, intialColumnState, true)
-        );
-      }
-    }
-  }, [isReset]);
 
   return (
     <BMDepWrapper>
@@ -1568,7 +1534,6 @@ const DropDownCellRenderer= (props: any) =>  {
             >
               <BTRAllomentSection>
                 <GridView
-                  key={isReset ? 1 : 2}
                   reference={refGraph2}
                   agGridProps={agGridProps}
                   columDef={coldefs}
@@ -1577,7 +1542,7 @@ const DropDownCellRenderer= (props: any) =>  {
                   saveBtn={false}
                   totalRow={gridDataCount}
                   currentPage={currentPage}
-                  onGridReady={applyColumnState}
+                  // onGridReady={applyColumnState}
                 />
                 {/* This Grid is only for the user to download the excel report */}
                 <div style={{ display: "none" }}>

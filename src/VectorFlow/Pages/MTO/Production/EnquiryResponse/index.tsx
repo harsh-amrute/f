@@ -62,15 +62,21 @@ const EnquiryResponse = () => {
   const [myColDefs, setMyColDefs] = useState([{}]);
   const gridRef = useRef<any>();
 
-  const setColumnDef = async () => {
+  const setColumnDef = async () => {          //intial column names and set kr rha hai in headerData
     try {
       const response = await getUIConfigData(reportName);
       setHeaderData(response.data.data);
+
+      console.log('headddddddd', HeaderData)
+
+      // console.log('column def',response.data.data)
+
     }
     catch (e) {
       console.log(e);
     }
   }
+
 
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
@@ -575,7 +581,7 @@ const EnquiryResponse = () => {
     });
   };
 
-  const getUserColumnConfig = async () => {
+  const getUserColumnConfig = async () => {   //state handle user jo change krega voh store krkre dikhaega after save reload pe
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
@@ -584,7 +590,7 @@ const EnquiryResponse = () => {
 
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
       setColumnState(newConfig);
-
+console.log('userconfig changes',newConfig )
       if (!data) {
         console.error('Failed to apply column state');
       }
@@ -601,12 +607,18 @@ const EnquiryResponse = () => {
           rn_id: UIGridCode.ProdEnquiryResponse,
           cs: JSON.stringify(coldefs),
         };
+        console.log('Saving column definitions:', coldefs);
+
+
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
         
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
+
+          console.log('Current column state after saving:', config);
+
 
           const payload = {
             un: user.user.name,
@@ -615,8 +627,12 @@ const EnquiryResponse = () => {
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
+
+          console.log('Current column state before saving:',columnState)
+
         }
       }
+
     } catch (error) {
       console.error(error);
     }
@@ -626,7 +642,7 @@ const EnquiryResponse = () => {
     setIsReset(true);
   }
 
-  useEffect(() => {
+  useEffect(() => {           //by default pass krna masterui
     if (isReset) {
       handleSaveClick(masterUIConfig);
       setIsReset(false);
@@ -667,6 +683,7 @@ const EnquiryResponse = () => {
       getUserColumnConfig();
     }
   }, [HeaderData])
+  // console.log('header', HeaderData)
 
   const ExcelExport =()=>{
     gridRef.current?.api?.exportDataAsExcel({ fileName: `Enquiry_Response_${format(Date.now(), "dd/MM/yyyy")}` })
