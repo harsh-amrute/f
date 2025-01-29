@@ -32,15 +32,15 @@
 
 .vfwrap .ag-icon-filter, .vfwrap .ag-icon-menu-alt, .vfwrap .ag-icon-expanded, .vfwrap .ag-icon-contracted, .vfwrap .ag-icon-desc, .vfwrap .ag-icon-asc{
   zoom: 1;
-  color: white;
+  color: black !important;
 }
 
 .vfwrap .ag-header-row-column-filter .ag-icon-filter{
-  color: black;
+  color: black !important;
 }
 
 .vfwrap .ag-menu-list .ag-icon-asc,  .vfwrap .ag-menu-list .ag-icon-desc{
-  color: black;
+  color: black !important;
 }
 
 .vfwrap .ag-status-bar {
