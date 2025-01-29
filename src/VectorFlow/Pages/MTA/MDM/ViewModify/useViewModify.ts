@@ -564,15 +564,31 @@ const useViewModify = (pageType:string) => {
         searchKey:activeMaster.name,
         actionType:getActionId(pathName[pathName.length-1]).id,
         draftId:draftId,
-        draftData:masters.map((master:MDMMasterState)=>{
-
-          return {
-            masterId:master.id,
-            status:master.progress,
-            gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
-            dataMaster:master.id===activeMaster.id?rowData:[]
-          }
-        })
+        // draftData:masters.map((master:MDMMasterState)=>{
+ 
+        //   return {
+        //     masterId:master.id,
+        //     status:master.progress,
+        //     gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
+        //     dataMaster:master.id===activeMaster.id?rowData:[]
+        //   }
+        // })
+        draftData:[{
+          masterId:activeMaster.id,
+          status:activeMaster.progress,
+          gridState:JSON.stringify(activeMaster.colDefs),
+          dataMaster:rowData
+      }]
+       
+        // masters.map((master:MDMMasterState)=>{
+ 
+        //   return {
+        //     masterId:master.id,
+        //     status:master.progress,
+        //     gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
+        //     dataMaster:master.id===activeMaster.id?rowData:[]
+        //   }
+        // })
       }
     }
     
