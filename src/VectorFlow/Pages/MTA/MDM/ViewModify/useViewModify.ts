@@ -291,7 +291,7 @@ const useViewModify = (pageType:string) => {
       pagination:true,
       paginationPageSize:rowsPerPage,
       // suppressPaginationPanel:true,
-      onColumnVisible:onColumnChange,
+      // onColumnVisible:onColumnChange,
       // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       loadingOverlayComponent:'loadingOverlay',
       onRowDataUpdated:(event:any)=>{
@@ -1778,7 +1778,7 @@ const useViewModify = (pageType:string) => {
         setFile,
         isTableDataLoading,
         exportToExcel,
-        onColumnChange,
+        // onColumnChange,
         onBackButton,
         onBackButton1,
         onClearExportError,
