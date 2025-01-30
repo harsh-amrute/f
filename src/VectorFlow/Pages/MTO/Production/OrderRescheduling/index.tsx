@@ -36,6 +36,7 @@ import {
 import { useUserData } from "../../../../../context/index";
 import useColDef from "../../../../../hooks/useColDef";
 
+
 interface RowDataType {
   odk: string;
   dd?: string;
@@ -247,6 +248,12 @@ const OrderRescheduling = () => {
       field: "rs",
       headerName: "Reason",
       hide: false,
+      cellRenderer: (params: any) => {
+        if (!params.node.isSelected()) {
+          params.data.rs = "";
+        }
+        return params.data.rs;
+      },
       autoHeaderHeight: true,
       wrapHeaderText: true,
       flex: 1,
@@ -275,6 +282,9 @@ const OrderRescheduling = () => {
       const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
       setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
       getUserColumnConfig();
+      if(refGraph1){
+        refGraph1.current?.api.deselectAll();
+      }
     }
   }, [HeaderData, currTab]);
 
@@ -287,7 +297,6 @@ const OrderRescheduling = () => {
         newDat.forEach((el)=>{
           el.oldDate = el.dd;
         })
-    console.log(newDat,"this is newdata")
     setRowData(newDat);
     setIsLoading(false);
     // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
@@ -429,6 +438,7 @@ const OrderRescheduling = () => {
       );
       if (isSuccess) {
         setSelectedRowData([]);
+        await handlePageChangeCumulative(currentPage); // Refresh the grid data
       }
     } catch (error) {
       notifyError("Failed to update Due Date!");
