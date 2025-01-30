@@ -555,7 +555,7 @@ const useViewModify = (pageType:string) => {
 
     const generateDraftPayload = (rowData:any,draftId?:string)=>{
       const pathName = window.location.pathname.split('/')
-      const instanceName = masters?.[0]?.name || '';
+      const instanceName = activeMaster?.name || '';
       // masters.map((master:MDMMasterState)=>{
       //   instanceName += ` ${master.name}`
       // })
