@@ -283,7 +283,6 @@ const OverallBmReport = () => {
       const coldef = mapApiResponseToColDefs(
         modifiedResponse,
       );
-      /*getUserColumnConfig();*/
       setColdef(coldef);
     } catch (e) {
       console.log(e);
@@ -1474,8 +1473,6 @@ const DropDownCellRenderer= (props: any) =>  {
   
 
   useEffect(() => {
-
-    // applyColumnState(true);
     if (refGraph2?.current && columnState?.length) {
       const result = refGraph2.current.api.applyColumnState({
         state: columnState,
@@ -1485,7 +1482,6 @@ const DropDownCellRenderer= (props: any) =>  {
         console.error('Failed to apply column state');
       }
     }
-
   }, [columnState]);
 
   
