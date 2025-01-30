@@ -121,6 +121,7 @@ const AddRecord = () => {
               shouldShowMaster={showMaster}
               options={options}
               selectedOptions={selectedOptions}
+              isAdd={true}
           />
       )
     }

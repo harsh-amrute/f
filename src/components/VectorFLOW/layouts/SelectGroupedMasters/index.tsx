@@ -7,7 +7,7 @@ import { MDMMasterState, Option } from "../../../../VectorFlow/types/MDM";
 import {ImageMapper,ImageMapperHover, masterGroupMapper} from "../../../../helpers/MDMConstants"
 import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import * as globalStyles from "../../../../styles/global";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FILL_SELECTED_OPTIONS } from "../../../../redux/actions/MDM";
 
 export interface SelectGroupedMastersProps {
@@ -21,7 +21,8 @@ export interface SelectGroupedMastersProps {
     shouldShowMasterGroup:any
     shouldShowMaster:any
     options:Array<Option>
-    selectedOptions:Array<Option>
+    selectedOptions:Array<Option>,
+    isAdd?:boolean
 }
 interface CardProps{
     master:MDMMasterState
@@ -99,7 +100,8 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
         shouldShowMasterGroup,
         shouldShowMaster,
         selectedOptions,
-        options
+        options,
+        isAdd
     } = props
 
     const {user} = useUserData();
@@ -109,7 +111,69 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
     const handleClick = (data:any)=>{
         dispatch(FILL_SELECTED_OPTIONS(data))
     }
-    // console.log(selectedOptions)
+
+    function removeFromSelectedMaster(valueToRemove:any) {
+        let currentUrl = window.location.href;
+        const paramName = 'selectedMaster';
+        
+        const regex = new RegExp(`[?&]${paramName}=([^&]*)`);
+        const match = currentUrl.match(regex);
+        
+        if (match) {
+            let currentValues = match[1].split(',');
+            currentValues = currentValues.filter(value => value !== valueToRemove);
+            
+            const newParamString = currentValues.length ? `${paramName}=${currentValues.join(',')}` : '';
+            if (newParamString) {
+                currentUrl = currentUrl.replace(regex, `${match[0][0]}${newParamString}`);
+            } else {
+                currentUrl = currentUrl.replace(regex, '');
+                currentUrl = currentUrl.replace(/([?&])$/, '');
+            }
+            window.history.replaceState(null, '', currentUrl);
+        }
+    }
+
+    function addToSelectedMaster(masterId:any) {
+        const currentUrl = window.location.href;
+        const paramName = 'selectedMaster';
+ 
+        if (currentUrl.includes('/delete')) {
+            const baseUrl = currentUrl.split('?')[0];
+            let newUrl = currentUrl;
+    
+
+            const regex = new RegExp('/delete\\?' + paramName + '=([^&]*)');
+            const match = currentUrl.match(regex);
+    
+            if (match) {
+                let queryParams = match[1];
+                if (!queryParams.split(',').includes(masterId)) {
+                    queryParams += ',' + masterId;
+                }
+                newUrl = baseUrl + '?' + paramName + '=' + queryParams;
+            } else {
+                if (!currentUrl.includes('?')) {
+                    newUrl = baseUrl + '?' + paramName + '=' + masterId;
+                } else {
+                    newUrl = baseUrl + window.location.search + '&' + paramName + '=' + masterId;
+                }
+            }
+    
+            window.history.replaceState(null, '', newUrl);
+        }
+    }
+    
+
+    const handleClickWrapper = (props:MDMMasterState)=>{
+        if( !isAdd){
+
+            const exists = selectedMasters.some((master)=>master.id === props.id)
+
+            exists ? removeFromSelectedMaster(props.id) :  addToSelectedMaster(props.id) 
+        }
+        handleOnClickMaster(props)
+    }
    
  return(
     <ContentWrapper style={{zoom:'var(--default-zoom)'}}>
@@ -150,7 +214,7 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
                     {allMasters.map((currentMaster)=>{
                                 if(shouldShowMaster(currentMaster) && masterGroup.masters.includes(currentMaster.id.toString())){
                                 return(
-                                <Card master={currentMaster} handleOnClickMaster={handleOnClickMaster} selectedMasters={selectedMasters}/>
+                                <Card master={currentMaster} handleOnClickMaster={handleClickWrapper} selectedMasters={selectedMasters}/>
                             )}})} 
                                         </div>
     
