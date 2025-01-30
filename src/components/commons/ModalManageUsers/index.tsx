@@ -153,6 +153,7 @@ const ModalManageUsers = ({
                               },
                             })}
                             autoComplete="off"
+                            disabled={infoUser.edit}
                           />
                           {errors.username != null && (
                             <Errors errors={errors} name="username" />
@@ -185,6 +186,7 @@ const ModalManageUsers = ({
                               },
                             })}
                             autoComplete="new-password"
+                            disabled={infoUser.edit}
                           />
                           {errors.email_id != null && (
                             <Errors errors={errors} name="email_id" />
