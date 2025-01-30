@@ -1,5 +1,5 @@
 
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { Container, QuickFilterHeader, SCButtonContainer, SCCardContainer } from "./styles"
 
 import VFMasterCard from "../../commons/VFMasterCard";
@@ -39,7 +39,12 @@ const SelectMaster = (
     }: SelectMasterProps) => {
 
 
-
+useEffect(()=>{
+    const masterIdsArray = getSelectedMasterValues();
+    if(masterIdsArray.length > 0) {
+        masterIdsArray.map((item:any)=>setFilterButtonStatus([...filterButtonStatus, item]))
+    }
+},[])
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const masters = useSelector((state: RootState) => state.mdm.masters);
@@ -56,6 +61,60 @@ const SelectMaster = (
         )
     }
 
+    function removeFromSelectedMaster(valueToRemove:any) {
+        let currentUrl = window.location.href;
+        const paramName = 'selectedMaster';
+
+        const regex = new RegExp(`[?&]${paramName}=([^&]*)`);
+        const match = currentUrl.match(regex);
+        
+        if (match) {
+            let currentValues = match[1].split(',');
+            currentValues = currentValues.filter(value => value !== valueToRemove);
+            const newParamString = currentValues.length ? `${paramName}=${currentValues.join(',')}` : '';
+    
+
+            if (newParamString) {
+                currentUrl = currentUrl.replace(regex, `${match[0][0]}${newParamString}`);
+            } else {
+                currentUrl = currentUrl.replace(regex, '');
+                currentUrl = currentUrl.replace(/([?&])$/, '');
+            }
+    
+            window.history.replaceState(null, '', currentUrl);
+        }
+    }
+
+    function addToSelectedMaster(masterId:any) {
+        const currentUrl = window.location.href;
+        const paramName = 'selectedMaster';
+       
+        if (currentUrl.includes('/view-modify')) {
+            const baseUrl = currentUrl.split('?')[0];
+            let newUrl = currentUrl;
+    
+            const regex = new RegExp('/view-modify\\?' + paramName + '=([^&]*)');
+            const match = currentUrl.match(regex);
+    
+            if (match) {
+                let queryParams = match[1];
+                if (!queryParams.split(',').includes(masterId)) {
+                    queryParams += ',' + masterId;
+                }
+                newUrl = baseUrl + '?' + paramName + '=' + queryParams;
+            } else {
+                if (!currentUrl.includes('?')) {
+                    newUrl = baseUrl + '?' + paramName + '=' + masterId;
+                } else {
+                    newUrl = baseUrl + window.location.search + '&' + paramName + '=' + masterId;
+                }
+            }
+            window.history.replaceState(null, '', newUrl);
+        }
+    }
+    
+   
+
     const onClickFilterButton = (currMaster: MDMMasterState) => {
 
         if (getFilterButtonStatus(currMaster.id) && toggledFromAddMaster()) {
@@ -66,10 +125,12 @@ const SelectMaster = (
         dispatch(FILL_SELECTED_OPTIONS([]));
 
         if (getFilterButtonStatus(currMaster.id) || masters.find((selectedMaster: MDMMasterState) => selectedMaster.id === currMaster.id)) {
+            removeFromSelectedMaster(currMaster.id)
             setFilterButtonStatus(filterButtonStatus.filter((masterId: number) => masterId !== currMaster.id));
             dispatch(REMOVE_MASTER(currMaster.id))
         }
         else {
+            addToSelectedMaster(currMaster.id);
             setFilterButtonStatus([...filterButtonStatus, currMaster.id]);
             dispatch(ADD_MASTER(currMaster));
         }
@@ -89,6 +150,22 @@ const SelectMaster = (
     const onCancel = () => {
         dispatch(RESET_STATE());
         navigate('/master-data-management/control-panel');
+    }
+
+    function getSelectedMasterValues() {
+        // Get the current URL
+        const currentUrl = window.location.href;
+        const paramName = 'selectedMaster';
+        
+        // Regex to find 'selectedMaster' and capture its values
+        const regex = new RegExp(`[?&]${paramName}=([^&]*)`);
+        const match = currentUrl.match(regex);
+    
+        if (match) {
+            return match[1].split(',');
+        }
+        
+        return [];
     }
 
     const isAnyMasterChecked = masters.length > 0 && masters.every(master => !master.isChecked);

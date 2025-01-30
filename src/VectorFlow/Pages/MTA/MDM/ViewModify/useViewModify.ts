@@ -4,7 +4,7 @@ import { type Option, type Field,type GetMasterDataPayload, type GridRef, type Q
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail, useGetUploadProgress } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS, UPDATE_IS_SAVING_DRAFT} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS, UPDATE_IS_SAVING_DRAFT, ADD_MASTER} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -240,11 +240,41 @@ const useViewModify = (pageType:string) => {
 
       },[])
 
-
+      function getSelectedMasterValues() {
+        const currentUrl = window.location.href;
+        const paramName = 'selectedMaster';
+        const regex = new RegExp(`[?&]${paramName}=([^&]*)`);
+        const match = currentUrl.match(regex);
+    
+        if (match) {
+            return match[1].split(',');
+        }
+        
+        return [];
+    }
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
           const {data} = await masterUIConfiguration(pageType);
-          setAllMasterState(mapMasterToMasterState(data.data,onShowChart,pageType))
+
+          const allMasterData = mapMasterToMasterState(data.data,onShowChart,pageType)
+          
+          setAllMasterState(allMasterData)
+          
+        const masterIdsArray = getSelectedMasterValues();
+        
+          if(masterIdsArray.length > 0 ){
+            if(masters?.length)return;
+            const matchedItems = allMasterData.filter((item:any) => masterIdsArray.includes(String(item.id)));
+            if (matchedItems.length < masterIdsArray.length) {
+               window.location.href = "/master-data-management/control-panel";
+          }
+          
+            matchedItems.forEach((item:any)=>{
+              dispatch(ADD_MASTER(item))
+            })
+            dispatch(UPDATE_ACTIVE_MASTER(0));
+            dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
+          }
          }
          getMasterUIConfigurationData()
       },[])
@@ -592,7 +622,41 @@ const useViewModify = (pageType:string) => {
       }
     }
     
+    function removeSelectedMasterValue(masterId:any) {
+      const currentUrl = window.location.href;
+      const paramName = 'selectedMaster';
+  
+      const regex = new RegExp(`[?&]${paramName}=([^&]*)`);
+      const match = currentUrl.match(regex);
+  
+      if (match) {
+          const currentValues = match[1].split(',');
+
+          if (currentValues.length === 1) {
+              console.log('Only one value present in selectedMaster. No changes made.');
+              return;
+          }
+
+          const newValues = currentValues.filter(value => value !== masterId);
+  
+          const newParamString = newValues.length ? `${paramName}=${newValues.join(',')}` : '';
+  
+          let newUrl;
+          if (newParamString) {
+              newUrl = currentUrl.replace(regex, `${match[0][0]}${newParamString}`);
+          } else {
+              newUrl = currentUrl.replace(regex, '');
+              newUrl = newUrl.replace(/[?&]$/, '');
+          }
+  
+          window.history.replaceState(null, '', newUrl);
+      } else {
+          console.log('No "selectedMaster" parameter found in the URL.');
+      }
+  }
+
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
+        removeSelectedMasterValue(String(currMaster.id));
         e.stopPropagation();
         const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
         if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
@@ -848,7 +912,9 @@ const useViewModify = (pageType:string) => {
 
           if(ifErrorExists) {
             dispatch(UPDATE_PROGRESS_STATE('error'));
-            addInvalidDataColDefs('error');
+             if(!activeMaster.colDefs.some((colDef:ColDef)=>colDef.colId === "error")){
+              addInvalidDataColDefs('error');
+            }
           }
           if(ifWarningExists){
             // dispatch(UPDATE_PROGRESS_STATE('error'));
@@ -1408,30 +1474,28 @@ const useViewModify = (pageType:string) => {
       }
 
       const onBackButton1 = (backUrl?: string) => {
-    
-        console.log("backUrl 1", backUrl)
+        // dispatch(FILL_MASTERS([]));
         if(backUrl){
           navigate(backUrl)
         }
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
-        dispatch(UPDATE_COLDEFS([]));
+        // dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
         // dispatch(UPDATE_ACTIVE_MASTER([]))
        
         dispatch(ADD_FILTER())
         setDownloadData(false);
         setTempDownloadData(false);
-        dispatch(FILL_MASTERS([]));
         /// riskycodehere !!
-        dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
+        // dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
         setFilterButtonStatus([]);
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
         
 
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
         
-      }
+     }
 
       const onBackButton = (backUrl?: string) => {
        if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
@@ -1442,16 +1506,15 @@ const useViewModify = (pageType:string) => {
         }
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
-        dispatch(UPDATE_COLDEFS([]));
+        // dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
         // dispatch(UPDATE_ACTIVE_MASTER([]))
        
         dispatch(ADD_FILTER())
         setDownloadData(false);
         setTempDownloadData(false);
-        dispatch(FILL_MASTERS([]));
         /// riskycodehere !!
-        dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
+        // dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
         setFilterButtonStatus([]);
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
         

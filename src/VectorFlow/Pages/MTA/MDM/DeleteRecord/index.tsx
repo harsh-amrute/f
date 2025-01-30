@@ -40,6 +40,7 @@ const DeleteRecord = () => {
     const {
         isSelectMasterOpen,
         activeMaster,
+        allMastersState,
         handleTabChange,
         handleTabClose,
         addNewMaster,
@@ -90,7 +91,6 @@ const DeleteRecord = () => {
 
     const {
         onCancel,
-        allMasters,
         selectedMasters, 
         onDeleteData,
         onSubmit,
@@ -129,7 +129,7 @@ const DeleteRecord = () => {
               onSubmit={handleSubmitSelectMaster}  
               onCancel={onCancel}
               handleOnClickMaster={handleOnClickMaster}
-              allMasters={allMasters}
+              allMasters={allMastersState}
               selectedMasters={selectedMasters}
               text="delete"
               selectedOptions={selectedOptions}
