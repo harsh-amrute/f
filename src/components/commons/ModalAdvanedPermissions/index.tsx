@@ -184,7 +184,9 @@ const ModalAdvanedPermissions = (props: any) => {
               res?.response?.name?.forEach((element: any) => {
                 notifyError(element);
               });
-              
+              res?.response?.password?.forEach((element: any) => {
+                notifyError(element);
+              });
               notifyError(res?.response?.msg);
             } else {
               notifySuccess(res?.data?.msg);
@@ -199,6 +201,9 @@ const ModalAdvanedPermissions = (props: any) => {
               notifyError(element);
             });
             error.response?.name?.forEach((element: any) => {
+              notifyError(element);
+            });
+            error?.response?.password?.forEach((element: any) => {
               notifyError(element);
             });
           },
