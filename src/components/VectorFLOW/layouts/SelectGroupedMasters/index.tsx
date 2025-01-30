@@ -104,8 +104,6 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
         isAdd
     } = props
 
-    console.log(selectedMasters)
-
     const {user} = useUserData();
 
     const dispatch = useDispatch()

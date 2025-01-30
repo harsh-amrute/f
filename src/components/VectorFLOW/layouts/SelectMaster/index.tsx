@@ -153,11 +153,9 @@ useEffect(()=>{
     }
 
     function getSelectedMasterValues() {
-        // Get the current URL
         const currentUrl = window.location.href;
         const paramName = 'selectedMaster';
         
-        // Regex to find 'selectedMaster' and capture its values
         const regex = new RegExp(`[?&]${paramName}=([^&]*)`);
         const match = currentUrl.match(regex);
     
