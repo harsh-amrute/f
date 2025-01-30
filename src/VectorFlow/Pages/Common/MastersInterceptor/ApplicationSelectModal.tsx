@@ -74,7 +74,7 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
     const allOptions = [
       { text: 'Make to Availability (MTA)', icon: theme === "REGALBLAZE" ? '/assets/img/planning1.svg' : '/assets/img/planning.svg', link: redirectUrl },
       { text: 'Make to Order (MTO)', icon: theme === "REGALBLAZE" ? '/assets/img/Prod-icon1.svg' : '/assets/img/Prod-icon.svg', link: "/mto" + redirectUrl },
-      { text: 'Inter Store Transfer (IST)', icon: theme === "REGALBLAZE" ? '/assets/img/IST 2.svg' : '/assets/img/IST 1.svg', link: redirectUrl },
+      { text: 'Inter Store Transfer (IST)', icon: theme === "REGALBLAZE" ? '/assets/img/IST 2.svg' : '/assets/img/IST 1.svg', link:"/ist"+ redirectUrl },
     ];
   
     ref.current.appData = allOptions.filter(option => urlPermissionArr.includes(option.link));
@@ -88,7 +88,13 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
         ref.current.appData = ref.current.appData.filter((item: any) => item.text !== 'Make to Order (MTO)');
       }
     }
-  }, [urlPermissionArr, redirectUrl]);
+  
+    // Auto-redirect if only one option remains
+    if (ref.current.appData.length === 1) {
+      navigate(ref.current.appData[0].link);
+    }
+  }, [urlPermissionArr, redirectUrl, navigate]);
+  
 
 
   return (

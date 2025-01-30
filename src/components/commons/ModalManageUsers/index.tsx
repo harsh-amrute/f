@@ -175,7 +175,7 @@ const ModalManageUsers = ({
                               pattern: {
                                 value: 
                                 // eslint-disable-next-line no-useless-escape
-                                /^[a-zA-Z0-9][a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|org|co\.in)$/, 
+                                /^[a-zA-Z0-9][a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|org|co\.in|in)$/, 
                                 message: t("loginPage.validate.email"),
                               },
                               maxLength: {
