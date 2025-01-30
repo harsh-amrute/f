@@ -415,7 +415,6 @@ const OrderRescheduling = () => {
       if (isSuccesss) {
         setSelectedRowData([]);
         await handlePageChangeCumulative(currentPage);
-        handlePageChangeCumulative(currentPage);
       }
     } catch (error) {
       notifyError("Failed to unschedule order!");
