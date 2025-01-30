@@ -41,7 +41,6 @@ const MaterialCellRenderer = (params: any) => {
                         flex: 1,
                     floatingFilter: true, 
                     filter: true, 
-
                     menuTabs: ["filterMenuTab"],       
                     }}
                     rowData={params.data.children}

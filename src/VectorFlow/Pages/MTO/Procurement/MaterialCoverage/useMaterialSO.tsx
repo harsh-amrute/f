@@ -135,7 +135,6 @@ const useMaterialSO = (data: any) => {
             enableRangeSelection: true,
             components: customCellRenderers,
             defaultColDef: {
-                suppressMenu: true,
                 resizable: true,
                 flex: 1,
                 filter: 'agTextColumnFilter',
@@ -154,7 +153,6 @@ const useMaterialSO = (data: any) => {
                 },
 
             },
-
         },
 
         sideBar: sideBar,
