@@ -67,9 +67,7 @@ const EnquiryResponse = () => {
       const response = await getUIConfigData(reportName);
       setHeaderData(response.data.data);
 
-      console.log('headddddddd', HeaderData)
 
-      // console.log('column def',response.data.data)
 
     }
     catch (e) {
@@ -590,7 +588,6 @@ const EnquiryResponse = () => {
 
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
       setColumnState(newConfig);
-console.log('userconfig changes',newConfig )
       if (!data) {
         console.error('Failed to apply column state');
       }
@@ -607,7 +604,6 @@ console.log('userconfig changes',newConfig )
           rn_id: UIGridCode.ProdEnquiryResponse,
           cs: JSON.stringify(coldefs),
         };
-        console.log('Saving column definitions:', coldefs);
 
 
         await updateUserUIReportConfigData([payload]);
@@ -617,7 +613,6 @@ console.log('userconfig changes',newConfig )
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
 
-          console.log('Current column state after saving:', config);
 
 
           const payload = {
@@ -628,7 +623,6 @@ console.log('userconfig changes',newConfig )
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
 
-          console.log('Current column state before saving:',columnState)
 
         }
       }
@@ -683,7 +677,6 @@ console.log('userconfig changes',newConfig )
       getUserColumnConfig();
     }
   }, [HeaderData])
-  // console.log('header', HeaderData)
 
   const ExcelExport =()=>{
     gridRef.current?.api?.exportDataAsExcel({ fileName: `Enquiry_Response_${format(Date.now(), "dd/MM/yyyy")}` })

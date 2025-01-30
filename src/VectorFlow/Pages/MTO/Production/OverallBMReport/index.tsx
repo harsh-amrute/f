@@ -116,8 +116,8 @@ interface ApiResponseItem {
   hd: string; // Header description (will be set to the name of cc)
   cla: string; // Class alignment (fixed value)
   scc: string; // Sub-channel code (will be set to the name of cc)
-  ch?: ApiResponse[]; 
-  pinned?:string;// Array of channel items
+  ch?: ApiResponse[]; // Array of channel items
+  pinned?:string; // Pin property
 }
 
 
@@ -149,7 +149,6 @@ const OverallBmReport = () => {
   const [gridData, setGridData] = useState<any>();
   const [gridDataCount, setGridDataCount] = useState<number>(0);
   const rowsSelected = useRef(false);
-
   const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] =
     useState<boolean>(false);
   const [remarkHistory, setRemarkHistory] = useState<any>();
@@ -186,7 +185,7 @@ const OverallBmReport = () => {
     APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport
   );
   const [highAgeing, sethighAgeing] = useState<any>();
-  const [tempColdef] = useState<any>();
+  const [tempColdef,setTempColdef] = useState<any>();
 
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
     useGetUserUIConfigData();
@@ -216,6 +215,15 @@ const OverallBmReport = () => {
       dispatch(BM_REPORT_ANALYTICS([]));
     }
   }, []);
+
+  useEffect(() => {
+    if (coldefs) {
+      const tempcoldeflatest = _.cloneDeep(coldefs);
+      tempcoldeflatest.shift();
+      tempcoldeflatest.shift();
+      setTempColdef(tempcoldeflatest);
+    }
+  }, [coldefs]);
 
   const onOpenRemarkHistory = async (data: any) => {
     // Function implementation for remark history
@@ -248,8 +256,8 @@ const OverallBmReport = () => {
     // setColumnDef();
   };
 
-  const mapInitalColumnDefs = async () => {
-    try {
+  // const mapInitalColumnDefs = async () => {
+  //   try {
       // const data = await getUserUIConfigData({
       //   un: user.user.name,
       //   rn_id: UIGridCode.ProdOverallBMReport,
@@ -257,31 +265,26 @@ const OverallBmReport = () => {
 
       // const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
       // setInitialColumnState(newConfig);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   
 
-  useEffect(() => {
-    mapInitalColumnDefs();
-  }, [systemType]);
+  // useEffect(() => {
+  //   mapInitalColumnDefs();
+  // }, [systemType]);
 
   const setColumnDef = async () => {
     try {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
-    
       const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(response?.data?.data);
-
       const coldef = mapApiResponseToColDefs(
         modifiedResponse,
-
       );
-
       /*getUserColumnConfig();*/
       setColdef(coldef);
-    
     } catch (e) {
       console.log(e);
     }
@@ -401,7 +404,6 @@ const OverallBmReport = () => {
     return modifiedResponse;
   };
 
-  // const updateInitialHide = (res: any[], columnState: any) => {
 
   //   res.forEach((resParent: any) => {
   //     const parentColumn = columnState.find(
@@ -422,12 +424,10 @@ const OverallBmReport = () => {
   //   return res;
   // };
 
-
   interface ActionOption {
     value: string;
     label: string;
   }
-
 
   const actionOptions:ActionOption[] = [
     { value: "Short Close", label: "Short Close" },
@@ -865,7 +865,6 @@ const DropDownCellRenderer= (props: any) =>  {
 
   const mapApiResponseToColDefs = (
     apiResponse: ApiResponseItem[],
-    // initialColumnState: any,
   ): any => {
     const mapChildren:any = (
       parent: any,
@@ -932,11 +931,9 @@ const DropDownCellRenderer= (props: any) =>  {
       }));
     };
 
-    console.log('Column State Before Applying anything:', columnState);
 
     const res = apiResponse.map((section) => ({
       headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
-      // pinned: section.cc='left',
       pinned: section.pinned || null,
       floatingFilterComponentParams:
         section.scc === "chckbx" || section.scc == "ic"
@@ -955,7 +952,6 @@ const DropDownCellRenderer= (props: any) =>  {
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
-      // pinned: section.cc === "ct" ? "right" : section.scc === "chckbx"? "left": undefined,
       valueFormatter: (props: any) => { 
         if (typeof props.value === "number") {
           return props.value.toFixed(2);
@@ -1400,7 +1396,6 @@ const DropDownCellRenderer= (props: any) =>  {
 
   const getUserColumnConfig = async () => {
     try {
-      console.log("getUserColumnConfig");
       const data = await getUserUIConfigData({
         un: user.user.name,
         rn_id: UIGridCode.ProdOverallBMReport,
@@ -1409,7 +1404,6 @@ const DropDownCellRenderer= (props: any) =>  {
       const newConfig = JSON.parse(data?.data?.data?.[0]?.columns_settings) || [];
 
       setColumnState(newConfig);
-      console.log('set column state', newConfig)
 
 
       if (!data) {
@@ -1420,7 +1414,6 @@ const DropDownCellRenderer= (props: any) =>  {
     }
   };
 
-   console.log('column state ', columnState)
 
 
 
@@ -1440,10 +1433,8 @@ const DropDownCellRenderer= (props: any) =>  {
         if (refGraph2?.current?.api) {
           const config = refGraph2.current.api.getColumnState();
 
-          console.log('Current column state after saving:', config);
 
          setColumnState(config)
-          console.log('after setColumnState', config)
 
           const payload = {
             un: user.user.name,
@@ -1451,7 +1442,7 @@ const DropDownCellRenderer= (props: any) =>  {
             cs: JSON.stringify(config),
           };
           await updateUserUIConfigData([payload]);
-          await getUserColumnConfig();/////////
+          await getUserColumnConfig();
         }
       }
       notifySuccess("Changes saved successfully");
@@ -1563,7 +1554,6 @@ const DropDownCellRenderer= (props: any) =>  {
                   saveBtn={false}
                   totalRow={gridDataCount}
                   currentPage={currentPage}
-                  // onGridReady={applyColumnState}
                 />
                 {/* This Grid is only for the user to download the excel report */}
                 <div style={{ display: "none" }}>
