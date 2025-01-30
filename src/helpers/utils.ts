@@ -4059,8 +4059,6 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
     }
 
 
-    console.log("selectedFilters", selectedFilter);
-
   }
 
   return selectedFilter;

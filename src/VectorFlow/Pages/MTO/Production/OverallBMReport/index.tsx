@@ -1265,9 +1265,9 @@ const DropDownCellRenderer= (props: any) =>  {
             resizable: "true",
             color: "#000",
           },
-          floatingFilterComponentParams: {
-            suppressFilterButton: true,
-          },
+          // floatingFilterComponentParams: {
+          //   // suppressFilterButton: true,
+          // },
         },
       },
       sideBar: sideBar,
