@@ -23,8 +23,9 @@ import { getDatesBetween, getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
 import { useDispatch } from 'react-redux';
 import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
-import {subDays} from 'date-fns';
+import {eachDayOfInterval, format, subDays} from 'date-fns';
 import { useUserData } from "../../../../context";
+import useGetLastRunData from "../../../../hooks/useGetLastRunData";
 interface DailyDataGraphModalProps{
   rowData:any,
   chartData:any[]
@@ -42,19 +43,33 @@ interface NormData{
   date:string
 }
 
-
-
-
-
-
 const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,monitoringData,skuKey,whKey}:DailyDataGraphModalProps) => {
 
   const {user} = useUserData()
 
-  const themeUi = user.user.theme_ui
+  // console.log("normChangeData", normChangeData);
 
+  const themeUi = user.user.theme_ui;
+  const {date:lastRunDate} = useGetLastRunData()
+
+    const dispatch = useDispatch();
+    const suspensionOptions = [
+        {label:'Select Suspension Type',value:''},
+        {label:'Upward Stock Based',value:'upwardStockBased'},
+        {label:'Downward Stock Based',value:'downwardStockBased'},
+        {label:'Upward Consumption Based',value:'upwardConsumptionBased'},
+        {label:'Downward Consumption Based',value:'downwardConsumptionBased'}
+    ]
+
+    const [horizon,setHorizon] = useState<number>(chartData.length);
+    const [suspensionType,setSuspensionType] = useState('')
+    const [normData,setNormData] = useState<any[]>([])
+    const [adjustedChartData,setadjustedChartData] = useState<any[]>([]);
+    const [missingData, setMissingData] = useState<any[]>([]);
+
+    
     const fillNotAvailableDates = (data:any)=>{
-      const lastNinetyDates = getDatesBetween(subDays(new Date(),89),new Date());
+      const lastNinetyDates = eachDayOfInterval({start: subDays(new Date(lastRunDate),89),end: new Date(lastRunDate)});
       const lastNinetyDaysData:DailyDataChart[] = [];
       lastNinetyDates.forEach((date:Date)=>{
         const dailyData = data.find((data:DailyDataChart)=>{
@@ -66,8 +81,8 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         else{
           lastNinetyDaysData.push({
             cs:null,
-            dt:getFormattedDate(date),
-            git:null,
+            dt:format(date, "yyyy-MM-dd"),
+            git:0,
             rp:null,
             stk:null,
             rrs:null,
@@ -77,41 +92,32 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           })
         }
       })
+      return lastNinetyDaysData
     }
-    fillNotAvailableDates(chartData);
-    const dispatch = useDispatch();
-    const suspensionOptions = [
-        {label:'Select Suspension Type',value:''},
-        {label:'Upward Stock Based',value:'upwardStockBased'},
-        {label:'Downward Stock Based',value:'downwardStockBased'},
-        {label:'Upward Consumption Based',value:'upwardConsumptionBased'},
-        {label:'Downward Consumption Based',value:'downwardConsumptionBased'}
-
-    ]
-    const [horizon,setHorizon] = useState<number>(chartData.length);
-    const [suspensionType,setSuspensionType] = useState('')
-    const [normData,setNormData] = useState<any[]>([])
-    const [adjustedChartData,setadjustedChartData] = useState<any[]>([])
+    
+    useEffect(()=>{
+      if(lastRunDate)
+        setMissingData(fillNotAvailableDates(chartData))
+    }, [lastRunDate, chartData])
 
     const generateChartOptions = () => {
-
-        
         useEffect(()=>{
-          if(chartData.length<horizon){
-            setNormData([])
-            setadjustedChartData([])
-          }else{
-            const newadjustedChartData = chartData.map((data:any,index:number)=>{
-              return {
-                ...data,
-                cs: data.cs === 0 ? null : data.cs, // Adjust `cs` based on the condition
-                git: data.git === 0 ? null : data.git,
-                rp: data.rp === 0 ? null : data.rp
-              };
-            }).slice(chartData.length-horizon,chartData.length);
+         {
+            const lastIndex = missingData.length - 1;
+            // Calculate the start index based on the horizon
+            const startIndex = Math.max(0, lastIndex - horizon + 1);  
+            console.log(startIndex, lastIndex)
+            const newadjustedChartData = missingData.slice(startIndex, lastIndex + 1)
+            // const newadjustedChartData = chartData.map((data:any,index:number)=>{
+            //   return {
+            //     ...data,
+            //     cs: data.cs === 0 ? null : data.cs, // Adjust `cs` based on the condition
+            //     git: data.git === 0 ? null : data.git,
+            //     rp: data.rp === 0 ? null : data.rp
+            //   };
+            // }).slice(chartData.length-horizon,chartData.length);
             
             setadjustedChartData(newadjustedChartData)
-            console.log(newadjustedChartData);
             const sortedNormChangeData = normChangeData
               ? [...normChangeData].sort(
                   (a: NormChangeHistory, b: NormChangeHistory) => 
@@ -120,8 +126,8 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
               : [];
             let tempNorm = 0;
             let updateNormData:any[] = []
-            updateNormData = chartData.map((dailyData:DailyDataChart) => {
-    
+            updateNormData = missingData.map((dailyData:DailyDataChart) => {
+
                 //Find Closest Norm Change History to current Date
                 let closestNormChangeIndex = -1;
     
@@ -139,28 +145,32 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                 }
                   
                 return {date:dailyData.dt,norm:tempNorm};
-            }).slice(chartData.length-horizon,chartData.length);
+            }).slice(startIndex, lastIndex + 1);
+            
+            console.log("updateNormData", updateNormData);
     
           
+            let prevValueNormValue = parseInt(chartData[0]['bz'], 10) || 0
             updateNormData = updateNormData.map((data:NormData,index:number)=>{
               const normBand = parseFloat((data.norm/3).toFixed(2))
+              const normBlue = data.norm + ( parseInt(newadjustedChartData[index]['bz'],10) || prevValueNormValue || 0)
     
               const normObj = {
                 ...data,normRed:normBand,
                 normGreen:normBand,
                 normYellow:normBand,
-                normBlue:data.norm + parseInt(newadjustedChartData[index]['bz'],10),
+                normBlue:normBlue,
                 upwardStockBasedNorm:newadjustedChartData[index]['rrs'] > 0 ? data.norm : 0,
                 downwardStockBasedNorm:newadjustedChartData[index]['grs'] > 0 ? data.norm : 0,
                 upwardConsumptionBasedNorm:newadjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
                 downwardConsumptionBasedNorm:newadjustedChartData[index]['grc'] > 0 ? data.norm : 0
               }
-    
+              prevValueNormValue = parseInt(newadjustedChartData[index]['bz'],10)
               return normObj
             })
             setNormData(updateNormData)
           }
-        },[horizon])
+        },[horizon, missingData])
 
 
         function generateSuspensionReasons(rrs:number,grs:number,rrc:number,grc:number){
@@ -178,6 +188,8 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           })
           return suspensionReasonsHTML;
         }
+
+        console.log("normData", normData)
 
         const generateRevisionSuggestedBlock = (oldNorm:number,newNorm:number,reason:string) => `
             <div style="padding:5px;">
@@ -201,7 +213,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           </div>
         `
 
-        const generateDailyDataBlock = (stock:number,receipt:number,git:number,consumption:number,redNorm:number,yellowNorm:number,greenNorm:number) => `
+        const generateDailyDataBlock = (stock:number,receipt:number,git:number,consumption:number,redNorm:number,yellowNorm:number,greenNorm:number, blueNorm: number) => `
           <div style="padding:5px;">
             <div style="display:flex;justify-content:flex-start;flex-wrap:wrap;gap:5px;margin-bottom:5px;">
               <div style="display:flex;align-items:center;gap:5px;">
@@ -239,13 +251,17 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                 <div style="width:10px;height:10px;background-color:#418D18;"></div>
                 <span>${greenNorm}</span>
               </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#355FD3;"></div>
+                <span>${blueNorm}</span>
+              </div>
             </div>
           <div>
         `
 
         function renderer(params: any) {
           const suggestionObject = suggestionData.find((data:any)=>new Date(data['sdate']).getTime() === new Date(params.datum['date']).getTime())
-          const dailyDataObject = chartData.find((data:any)=>new Date(data['dt']).getTime() === new Date(params.datum['date']).getTime())
+          const dailyDataObject = missingData.find((data:any)=>new Date(data['dt']).getTime() === new Date(params.datum['date']).getTime())
           const suspensionReasons = generateSuspensionReasons(params.datum.upwardStockBasedNorm,params.datum.downwardStockBasedNorm,params.datum.upwardConsumptionBasedNorm,params.datum.downwardConsumptionBasedNorm)
        
           let tooltip = `
@@ -257,7 +273,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
           if(suspensionReasons.length > 0 && suspensionType!=='') tooltip += generateSuspensionReasonsBlock(suspensionReasons);
 
-          tooltip += generateDailyDataBlock(dailyDataObject.stk,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.ceil(params.datum.normYellow*3))
+          tooltip += generateDailyDataBlock(dailyDataObject.stk,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.floor(params.datum.normYellow*3), params.datum.normBlue)
 
           const finalTooltipHTML = `
             <div style="background-color:white;border:1px solid #777777;border-radius:5px;max-width:400px;">
