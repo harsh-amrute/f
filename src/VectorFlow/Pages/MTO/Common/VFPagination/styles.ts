@@ -64,6 +64,7 @@ export const PaginationContainer = styled.div`
     box-shadow:0px 6px 12px #95959529;
     border-top:none;
     background-color:white;
+    margin-top:-20px;
 `
 
 export const StatusBarLabel = styled.div`
