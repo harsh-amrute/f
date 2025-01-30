@@ -66,15 +66,11 @@ const EnquiryResponse = () => {
     try {
       const response = await getUIConfigData(reportName);
       setHeaderData(response.data.data);
-
-
-
     }
     catch (e) {
       console.log(e);
     }
   }
-
 
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
@@ -579,7 +575,7 @@ const EnquiryResponse = () => {
     });
   };
 
-  const getUserColumnConfig = async () => {   //state handle user jo change krega voh store krkre dikhaega after save reload pe
+  const getUserColumnConfig = async () => {   
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
@@ -636,7 +632,7 @@ const EnquiryResponse = () => {
     setIsReset(true);
   }
 
-  useEffect(() => {           //by default pass krna masterui
+  useEffect(() => {
     if (isReset) {
       handleSaveClick(masterUIConfig);
       setIsReset(false);
