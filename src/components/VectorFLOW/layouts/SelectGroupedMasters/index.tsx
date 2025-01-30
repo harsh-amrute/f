@@ -166,7 +166,7 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
     
 
     const handleClickWrapper = (props:MDMMasterState)=>{
-        if(isAdd === undefined ||  !isAdd){
+        if( !isAdd){
 
             const exists = selectedMasters.some((master)=>master.id === props.id)
 

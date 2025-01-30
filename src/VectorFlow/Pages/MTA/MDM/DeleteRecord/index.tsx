@@ -136,7 +136,7 @@ const DeleteRecord = () => {
               options={options}
               shouldShowMaster={showMaster}
               shouldShowMasterGroup={showMasterGroup}
-
+              isAdd={false}
           />
       )
     }
