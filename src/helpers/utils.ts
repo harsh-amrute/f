@@ -2968,18 +2968,21 @@ export const BPRColorMapper = (color: string): { bg: string, text: string } => {
 }
 
 export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => {
+  const columnsNotBeConverted = ['SKUCode','SKUDescription','Whcode','WhCode','LocationName','pc','pn']
   return rows.map((r) => {
     const transformedRow = Object.keys(r).reduce((acc, key) => {
       const value = r[key];
-      if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+      if(columnsNotBeConverted.includes(key)){
+        acc[key]=value+"";
+      }else if (typeof value === 'string' && !isNaN(parseFloat(value))) {
         acc[key] = parseFloat(value);
       } else {
         acc[key] = value;
       }
       return acc;
     }, {} as any);
-
-  
+ 
+ 
     const NewCategoryString = transformedRow.Category;
     const tempRow = { ...transformedRow, Category: NewCategoryString };
     let tempAvailabilty = 0;
@@ -2989,16 +2992,15 @@ export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => 
         nonBlackCount = nonBlackCount + 1;
       }
     }
-
+ 
     tempAvailabilty = parseFloat(((nonBlackCount / horizon) * 100).toFixed(2))
     return {
       ...tempRow,
       Availability: tempAvailabilty
     }
   })
-
+ 
 }
-
 
 export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: number, pinCatergory: boolean, excludeColumns?: Array<string>,): Array<ColDef> => {
   // const graphCellRenderer:ColDef={
