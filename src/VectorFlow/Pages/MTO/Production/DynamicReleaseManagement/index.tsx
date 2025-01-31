@@ -11,7 +11,7 @@ import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/A
 import EditRouteModal from './EditRouteModal';
 import * as globalStyles from "../../../../../styles/global";
 import { Rectangle } from './RectangleMarker';
-import { BPRViewTableHeaderTab, SCTabHeader } from './styles';
+import { BPRViewTableHeaderTab, InputCheckBox, SCTabHeader } from './styles';
 import ReleaseModal from './ReleaseModal';
 import './styles.css'
 import { useGetDynamicReleaseData, useGetDynamicReleaseExcelData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
@@ -99,8 +99,21 @@ const DynamicReleaseManagement = () => {
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { colDefMap, getColDef } = useColDef();
-  const [dataUpdated, setDataUpdated] = useState(0);
+  const [dataUpdated, setDataUpdated] = useState(false);
   const [masterUIConfig, setMasterUIConfig] = useState([]);
+  const userTheme = themeUi === 'REGALBLAZE';
+  const backgroundColor = userTheme ? ColorsMTO.Orange.code : ColorsMTO.darkPink.code;
+  const [routeTrigger, setRouteTrigger] = useState(false);
+  const [finalGraphData, setFinalGraphData] = useState<any>([]);
+  const { mutateAsync: getRouteDetails, isLoading: isGetRouteDetails} = useGetRouteDetails();
+  const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
+  const { mutateAsync: getLineCCRDetails } = useGetLineCCRDetails();
+  const [route, setRoute] = useState<any>();
+  const [orderKey, setOrderKey] = useState<any>();
+  const [lineCCR, setLineCCR] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isReleaseButtonDisabled, setIsReleaseButtonDisabled] = useState(true);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   const setColumnDef = async () => {
     try {
@@ -113,22 +126,18 @@ const DynamicReleaseManagement = () => {
     }
   }
 
-  const userTheme = themeUi === 'REGALBLAZE';
-  const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-
-
-
-  const GetData = async (allOrders = 0, page = 1, graph = 1,isExcelExport = false) => {
+  const GetData = async (allOrders = 0, page = 1, graph = 1, isExcelExport = false) => {
+    console.log("getdata");
     const formatedFilters = formatFilterJSON(appliedFilters);
-    if(isExcelExport){
+    if (isExcelExport) {
       try {
         const headersdata = currentGridRef?.current?.api.getColumnState();
         const formatedFilters = formatFilterJSON(appliedFilters)
-        const body = getBodyForExcelExport({headersdata,filterData :  formatedFilters, colDefMap})
-        const response = await getDynamicReleaseExcelData({isExcelExport : 1 , body , graph : 0 , ao : allOrders,report_name : FilterPageName.Prod_Dynamic_Release_Management})
-        if(response.status === 200){
-          DownloadExcel(response,FilterPageName.Prod_Dynamic_Release_Management);
-        }else{
+        const body = getBodyForExcelExport({ headersdata, filterData: formatedFilters, colDefMap })
+        const response = await getDynamicReleaseExcelData({ isExcelExport: 1, body, graph: 0, ao: allOrders, report_name: FilterPageName.Prod_Dynamic_Release_Management })
+        if (response.status === 200) {
+          DownloadExcel(response, FilterPageName.Prod_Dynamic_Release_Management);
+        } else {
           notifyError("Failed to export to Excel");
           console.log(response)
         }
@@ -141,7 +150,7 @@ const DynamicReleaseManagement = () => {
       try {
         const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
-        setRowData(APIData?.data?.data?.results? APIData?.data?.data?.results: []);
+        setRowData(APIData?.data?.data?.results ? APIData?.data?.data?.results : []);
       }
       catch (e) {
         notifyError("Failed to fetch Grid data!")
@@ -151,7 +160,7 @@ const DynamicReleaseManagement = () => {
       try {
         const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
         setCurrData(APIData);
-        setRowData(APIData?.data?.data?.results? APIData?.data?.data?.results: []);
+        setRowData(APIData?.data?.data?.results ? APIData?.data?.data?.results : []);
       }
       catch (e) {
         notifyError("Failed to fetch Grid data!")
@@ -191,14 +200,18 @@ const DynamicReleaseManagement = () => {
 
   useEffect(() => {
     if (Object.entries(appliedFilters).length) {
-      setCurrentPage(1)
+      setCurrentPage(1);
       GetData();
     }
   }, [appliedFilters])
   
   useEffect(() => {
-    if (!showModal) {
-      GetData(table1 ? 0 : 1, currentPage, 0);
+    if (dataUpdated && !showModal) {
+      setCurrentPage(1);
+      setSelectedRows([]);
+      setDataUpdated(false);
+      setIsCheckboxChecked(false)
+      GetData(table1 ? 0 : 1, 1, 0);
     }
   }, [dataUpdated])
 
@@ -224,8 +237,6 @@ const DynamicReleaseManagement = () => {
     }
   }, [isSuccess, isError])
 
-  const [routeTrigger, setRouteTrigger] = useState(false);
-
   const colDefCustomizations = {
     Action: {
       floatingFilter: false,
@@ -235,7 +246,7 @@ const DynamicReleaseManagement = () => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: backgroundColor, fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
             <div >Release &nbsp; </div>
-            <img height={14} width={14} src= {userTheme ? '/assets/img/mto/dynamicReleaseManagement/arrow-icon-yellow.svg' : '/assets/img/mto/dynamicReleaseManagement/arrow-icon.svdpeg'} alt='arrow-icon' />
+            <img height={14} width={14} src= {userTheme ? '/assets/img/mto/dynamicReleaseManagement/arrow-icon-yellow.svg' : '/assets/img/mto/dynamicReleaseManagement/arrow-icon.svg'} alt='arrow-icon' />
           </div>
         )
       }
@@ -285,10 +296,15 @@ const DynamicReleaseManagement = () => {
 
   ];
 
-
-
   useEffect(() => {
     const newData = convertData(graphData);
+    if (selectedRows.length) {
+      setIsReleaseButtonDisabled(false);
+    }
+    else {
+      setIsReleaseButtonDisabled(true);
+
+    }
 
     if (selectedRows.length) {
 
@@ -309,23 +325,16 @@ const DynamicReleaseManagement = () => {
       });
     });
 
-    if (selectedRows.length) {
-      setIsReleaseButtonDisabled(false);
-    }
-    else {
-      setIsReleaseButtonDisabled(true);
-
-    }
-
     setFinalGraphData(newData);
   }, [selectedRows]);
 
   const updateGraphOnSelect = () => {
-
+    
     const selectedData = refGrid.current?.api.getSelectedRows();
     if (selectedData) {
       let mergedData: any = [...selectedRows]; // Start with the existing selected data
 
+      //add newly selected rows in all selectedData
       selectedData.forEach((newItem: any) => {
         const index = mergedData.findIndex((item: any) => item.ok === newItem.ok);
 
@@ -338,6 +347,7 @@ const DynamicReleaseManagement = () => {
         }
       });
 
+      //remove unselected rows from all selectedData
       rowData.forEach((item: any) => {
         let isThere = 0;
         selectedData.forEach((selectedD: any) => {
@@ -351,9 +361,32 @@ const DynamicReleaseManagement = () => {
         }
       })
 
-      setSelectedRows(mergedData);
+        setSelectedRows(mergedData);
     }
+    toggleCheckBox();
+    refGrid.current.api.refreshCells();
   };
+
+  const onFirstDataRendered =
+    (params: any) => {
+      const nodesToSelect: IRowNode[] = [];
+      console.log(selectedRows, "updateUserData selectedRows");
+      params.api.forEachNode((node: any) => {
+        if (node.data && node.data.oid && existsInSelected(node.data.ok)) {
+          console.log(node.data, "exist");
+          console.log(selectedRows, "selectedRows exist");
+          node.data.ok = selectedRows[0].ok;
+          nodesToSelect.push(node);
+        }
+
+      });
+      params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+      params.api.refreshCells();
+      setCurrentGridRef(refGrid);
+      toggleCheckBox();
+      updateGraphOnSelect();
+
+    }
 
   const options: GridOptions<any> = {
     getRowStyle: (params: any) => {
@@ -364,9 +397,7 @@ const DynamicReleaseManagement = () => {
     rowHeight: 28,
     suppressRowClickSelection: true,
     suppressPaginationPanel: true,
-    onSelectionChanged: updateGraphOnSelect,
     sideBar: {
-
       toolPanels: [
         {
           id: 'columns',
@@ -523,7 +554,7 @@ const DynamicReleaseManagement = () => {
     },
 
   }
-  )
+)
 
 
   const onOrderRelease = () => {
@@ -533,22 +564,14 @@ const DynamicReleaseManagement = () => {
     setShowReleaseModal(true);
   }
 
-  const [finalGraphData, setFinalGraphData] = useState<any>([]);
-
   useEffect(() => {
     setFinalGraphData(convertData(graphData));
 
   }, [graphData])
 
-
   useEffect(() => {
     setChartOptions({ ...chartoptions, data: finalGraphData })
   }, [finalGraphData])
-
-
-  const { mutateAsync: getRouteDetails, } = useGetRouteDetails();
-  const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
-  const { mutateAsync: getLineCCRDetails } = useGetLineCCRDetails();
 
   const getMastersData = async () => {
     try {
@@ -570,9 +593,6 @@ const DynamicReleaseManagement = () => {
     }
   };
 
-  const [route, setRoute] = useState<any>();
-  const [orderKey, setOrderKey] = useState<any>();
-
   useEffect(() => {
 
     if (routeNum !== '') {
@@ -580,8 +600,6 @@ const DynamicReleaseManagement = () => {
     }
 
   }, [routeTrigger, orderKey, routeNum])
-
-  const [lineCCR, setLineCCR] = useState();
 
   const getRoute = async (route: any, orderKey: any) => {
     await getMastersData();
@@ -615,7 +633,6 @@ const DynamicReleaseManagement = () => {
     if (orderKey) {
       try {
         const data = await getLineCCRDetails([orderKey]);
-
         setLineCCR(data.data.data)
         // setRoute(newRoute);
         setShowModal(true);
@@ -628,9 +645,6 @@ const DynamicReleaseManagement = () => {
     }
   };
 
-
-  const [currentPage, setCurrentPage] = useState(1);
-
   const handlePageChangeCumulative = async (pageNumber: number) => {
     setCurrentPage(pageNumber);
     if (table1) {
@@ -641,38 +655,26 @@ const DynamicReleaseManagement = () => {
     }
   };
 
-  const setAllRows = (e: any) => {
-    if (e.target.checked) {
+  const onCheckBoxToggle = (e: any) => {
+    const isChecked = e.target.checked;
+    console.log(isChecked);
+    setIsCheckboxChecked(isChecked); 
 
-      const nodesToSelect: any = [];
-
-      refGrid.current.api.forEachNode((node: any) => {
-
-        nodesToSelect.push(node);
-
-      })
+    if (isChecked) {
       refGrid.current.api.selectAll();
-      // refGrid.current.api.setNodesSelected({ nodes: nodesToSelect, newValue: true })
-    }
-    else {
-      const nodesToSelect: any = [];
-
-      refGrid.current.api.forEachNode((node: any, index: any) => {
-
-        if (index === 0) {
-
-          nodesToSelect.push(node);
-        }
-
-
-      })
+    } else {
       refGrid.current.api.deselectAll();
-
     }
+    updateGraphOnSelect();
   }
 
+  const toggleCheckBox = () => {
+    
+    const selectedNodes = refGrid?.current?.api?.getSelectedRows();
+    const totalRows = refGrid?.current?.api?.getDisplayedRowCount() 
 
-  const [isReleaseButtonDisabled, setIsReleaseButtonDisabled] = useState(true);
+    setIsCheckboxChecked(selectedNodes?.length > 0 && selectedNodes?.length === totalRows); 
+  };
 
 
   const existsInSelected = (ok: string): boolean => {
@@ -685,22 +687,6 @@ const DynamicReleaseManagement = () => {
     }
     return false;
   }
-
-  const onFirstDataRendered =
-    (params: any) => {
-      const nodesToSelect: IRowNode[] = [];
-
-      params.api.forEachNode((node: any) => {
-        if (node.data && node.data.oid && existsInSelected(node.data.ok)) {
-          node.data.ok = selectedRows[0].ok;
-
-          nodesToSelect.push(node);
-        }
-
-      });
-      params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-      setCurrentGridRef(refGrid);
-    }
   
     
   const getUserColumnConfig = async () => {
@@ -785,11 +771,75 @@ const DynamicReleaseManagement = () => {
   const ExcelData = () =>{
     GetData(table1 ? 0 : 1 , 0 , 0, true)
   }
+
+  const ReleaseOrderHeader: any = (
+    <>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold', gap: '15px' }}>
+
+        <div style={{ borderRadius: '5px', background: 'white', padding: '10px 30px', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: 'rgba(133, 132, 132, 0.247) -5px 4px 10px', gap: '10px' }}>
+          <InputCheckBox checked={isCheckboxChecked} onChange={onCheckBoxToggle} type="checkbox" theme={themeUi} />
+          <p>Release</p>
+        </div>
+        {
+          isReleaseButtonDisabled ?
+            <div
+              style={{
+                cursor: "not-allowed",
+                background: `linear-gradient(to right, ${backgroundColor})`,
+                backgroundColor: backgroundColor,
+                height: "43px",
+                width: "59px",
+                borderRadius: "4px",
+                alignItems: "center",
+                justifyContent: "center",
+                alignContent: "center",
+                display: "flex",
+                opacity: 0.5, // Visual cue for disabled
+                pointerEvents: "none", // Prevent click when disabled
+              }}
+              data-testid={'isReleaseBtn'}
+            >
+              <img
+                style={{}}
+                src="/assets/img/rightArrowHorizontal.svg"
+                height={13}
+                width={7}
+              />
+            </div>
+            :
+            <div
+              style={{
+                cursor: 'pointer',
+                background: `linear-gradient(to right, ${backgroundColor})`,
+                backgroundColor: backgroundColor,
+                height: '43px',
+                width: '59px',
+                borderRadius: '4px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                alignContent: 'center',
+                display: 'flex'
+              }}
+              data-testid={'isReleaseBtn'}
+              onClick={onOrderRelease}>
+              <img
+                style={{}}
+                src="/assets/img/rightArrowHorizontal.svg"
+                height={13}
+                width={7}
+              />
+            </div>
+        }
+
+      </div>
+    </>
+  );
+
   return (
     <>
       <Wrapper>
         {
-          (isLoading || isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />
+          (isLoading || isUpdateUserConfig || isGetUserConfig || isGetRouteDetails) && <OverlayLoader />
         }
         <MTOActionToolBar 
           comp="FullKitAssignment" 
@@ -797,10 +847,6 @@ const DynamicReleaseManagement = () => {
           onExcelExportClick={ExcelData}
           isAddFilterButton 
           themeUi={themeUi}
-          isReleaseButton 
-          isReleaseButtonDisabled={isReleaseButtonDisabled} 
-          onOrderRelease={onOrderRelease} 
-          onCheckBoxToggle={setAllRows}
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
           isFilterOpen={isFilterOpen}
@@ -811,6 +857,7 @@ const DynamicReleaseManagement = () => {
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
           isMfgSelected={isMfgSelected}
+          ReleaseOrderHeader={ReleaseOrderHeader}
         />
 
         <SCTabHeader style={{ marginTop: '5px' }}>
@@ -834,8 +881,7 @@ const DynamicReleaseManagement = () => {
             ]
           }}
           rowSelection="multiple"
-          onFirstDataRendered={onFirstDataRendered}
-          onGridReady={onFirstDataRendered}
+          onSelectionChanged={updateGraphOnSelect}
           onRowDataUpdated={onFirstDataRendered}
           maintainColumnOrder={true}
         />
@@ -853,9 +899,10 @@ const DynamicReleaseManagement = () => {
         <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
          <div className='chart-wrapper' style={{ width: "100%", maxHeight: '40vh', flex: !hide ? 1:0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129"}}>
           <AgCharts ref={graph} options={chartoptions}/>
-        </div>       
-        <EditRouteModal chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} />
-        <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />
+        </div>
+        {showModal && <EditRouteModal chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} orderKey={orderKey} />}
+        
+        {showReleaseModal && <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setResetReleaseCheckbox={setIsCheckboxChecked} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />}
       </Wrapper>
     </>
   )
