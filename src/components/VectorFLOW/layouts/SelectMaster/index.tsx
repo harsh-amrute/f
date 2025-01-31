@@ -24,6 +24,7 @@ interface SelectMasterProps {
     themeUi: string,
     isLoading: boolean,
     handleSubmit: () => void
+    canToggleMaster:boolean
 }
 
 const SelectMaster = (
@@ -36,6 +37,7 @@ const SelectMaster = (
         themeUi,
         isLoading,
         handleSubmit,
+        canToggleMaster
     }: SelectMasterProps) => {
 
 
@@ -117,7 +119,7 @@ useEffect(()=>{
 
     const onClickFilterButton = (currMaster: MDMMasterState) => {
 
-        if (getFilterButtonStatus(currMaster.id) && toggledFromAddMaster()) {
+        if (getFilterButtonStatus(currMaster.id) && !canToggleMaster) {
             notifyError('You can only add new master')
             return
         }

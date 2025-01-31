@@ -110,8 +110,9 @@ import { useLocation } from "react-router";
         totalProgress,
         tempRecordCount,
         isSubmitDisabled,
-        onDiscardDraftCallback
-
+        onDiscardDraftCallback,
+        canToggleMaster,
+        setCanToggleMaster
     } = useViewModify('modify');
     useEffect(()=>{
       if(ref.current && ref.current.api){
@@ -137,6 +138,7 @@ import { useLocation } from "react-router";
                 themeUi={themeUi}
                 isLoading={isLoading}
                 handleSubmit={()=>{handleSelectMasterSubmit()}}
+                canToggleMaster={canToggleMaster}
             />
           }
           {!isSelectMasterOpen && 
