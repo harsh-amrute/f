@@ -152,64 +152,6 @@ export const isTrue = (value?: string | number) => {
   )
 }
 
-// export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
-
-//   if(!fields || fields.length<1){
-//     return []
-//   }
-
-//   let result:ColDef[] = []
-
-//   const BPRSpecificColumns:ColDef[] =[
-//     {
-//       colId:'remarks',
-//       field:'ramarks',
-//       headerName:'Remarks',
-//       tooltipField:"tags"
-//       // tooltipComponent:'remarksToolTipComponent'
-//     },
-//     {
-//       colId:'rh',
-//       field:'rh',
-//       headerName:'Remark History',
-//     }
-//   ]
-
-//   const tagsColDef:ColDef =  {
-//     colId:'tags',
-//     field:'tags',
-//     headerName:"Tags",
-//     cellRenderer:'tagsCellRenderer'
-//   }
-
-//   result =  fields.map((f:BPRField)=>{
-//     if(f.Col_Code==='TechPen'){
-//       return{
-//         colId:f.Col_Code,
-//         field:f.Col_Code,
-//         headerName:f.Header,
-//         hide:!f.Visible,
-//         cellRenderer:'colorTechCellRenderer'
-//       }
-//     }
-//     if(f.Col_Code==='EcoPen'){
-//       return{
-//         colId:f.Col_Code,
-//         field:f.Col_Code,
-//         headerName:f.Header,
-//         hide:!f.Visible,
-//         cellRenderer:'colorEcoCellRenderer'
-//       }
-//     }
-//     return{
-//       colId:f.Col_Code,
-//       field:f.Col_Code,
-//       headerName:f.Header,
-//       hide:!f.Visible
-//     }
-//   })
-//   return [tagsColDef,...result,...BPRSpecificColumns]
-// }
 
 export const mapVDRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
@@ -1700,7 +1642,7 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields: Fiel
 
 
 export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], existingColumnFields: Field[], taskType: string, masterId: number) => {
-  const response = dirtyRowData.map(entry => {
+  const response = dirtyRowData?.map(entry => {
 
     if (((taskType === 'modify' && masterId !== 6 && masterId !== 10) || masterId === 13)) {
       const oldData = JSON.parse(entry.old);
@@ -1777,7 +1719,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
   });
 
   // sort the rows wrt the isModified flag
-  response.sort((a: any, b: any) => {
+  response?.sort((a: any, b: any) => {
     return b.isModified - a.isModified
   })
   return response
@@ -2354,7 +2296,7 @@ export const createIconColumn = (params: any): ColDef => {
     filter:false,
     cellRenderer: cellRenderer,
     floatingFilter: false,
-    suppressColumnsToolPanel: true
+    suppressColumnsToolPanel: false
   }
 }
 
@@ -2369,6 +2311,218 @@ export const getCellFilter = (dataType: "Number" | "String" | "Boolean"): string
   // else if(dataType==='Boolean') return "agSetColumnFilter"
   return 'agMultiColumnFilter'
 }
+
+
+// export const mapColumnsWithConfigs = (CurrentState:any,initialState:ColDef[]) : ColDef[] =>{
+//   // return CurrentState.map((col:any) => {
+//   //   const matchedCol = initialState.find((initCol:any) => initCol.colId === col.colId);
+//   //   return matchedCol ? { ...matchedCol, ...col, initialHide: col.hide !== undefined ? col.hide : false } : col;
+//   // });
+//   return CurrentState.map((col:any) => {
+//   const matchedCol = initialState.find((initCol:any) => initCol.colId === col.colId);
+//   return matchedCol ? { ...matchedCol, ...col } : col;
+// });  
+// }
+
+// return CurrentState.map((col:any) => {
+//   const matchedCol = initialState.find((initCol:any) => initCol.colId === col.colId);
+//   return matchedCol ? { ...matchedCol, ...col } : col;
+// });  
+
+export const mapColumnsWithConfigs = (CurrentState: any, initialState: ColDef[]): ColDef[] => {
+  return CurrentState.map((col: any) => {
+    const matchedCol = initialState.find((initCol: any) => initCol.colId === col.colId);
+    
+    if (matchedCol) {
+      const { hide, ...restCol } = col; // Exclude `hide` from col
+      return { ...matchedCol, ...restCol, initialHide: hide !== undefined ? hide : matchedCol.initialHide };
+    }
+
+    return col;
+  });
+};
+
+
+export const addCheckBoxColumn = ():ColDef =>{
+  return  {
+    field:'checkbox',
+    colId:'checkbox',
+    headerName:'',
+    width:70,
+    checkboxSelection:true,
+    headerCheckboxSelection:true,
+    headerCheckboxSelectionCurrentPageOnly:true,
+    resizable:false,
+    suppressMenu: true,
+    maxWidth: 40,
+    pinned: 'left',
+    filter: false
+  }
+}
+
+export const getRemarkRelatedColumns = (onOpenRemarkHistory: (params: any, e: any) => void) : ColDef[] => {
+  return [
+    {
+      colId: 'remarks',
+      field: 'remarks',
+      headerName: 'Edit Remarks',
+      cellStyle:{
+        backgroundColor: 'white',
+        border: '1px solid #b9bdba',
+        color: 'black',
+        padding: '1px'
+      },
+      pinned: 'right',
+      editable: true,
+      minWidth:130,
+      maxWidth:160,
+      initialHide:false,
+      lockPosition:'right',
+      menuTabs: [] ,
+      suppressMenu: true,
+      resizable:false
+    },
+    {
+      colId: 'rh',
+      field: 'rh',
+      headerName: 'Remark History',
+      cellRenderer: 'remarksCellRenderer',
+      cellRendererParams: {
+        onClick: onOpenRemarkHistory
+      },
+      pinned: 'right',
+      minWidth:120,
+      maxWidth:120,
+      initialHide:false,
+      lockPosition:'right',
+      menuTabs: [] ,
+      suppressMenu: true,
+      resizable:false
+    }
+  ]
+}
+
+const filterParams =  {
+  filters: [
+    {
+      filter: 'agTextColumnFilter',
+      filterParams: {
+        buttons: [ 'reset'],
+      }
+    },
+    {
+      filter: 'agSetColumnFilter',
+      filterParams: {
+        buttons: ['reset'],
+      }
+    },
+  ]
+}
+
+
+
+const CellRenderersMapping:any = {
+  'DispatchPen':'colorDispatchRender',
+  'TechPen':'colorTechCellRenderer',
+  'EcoPen':'colorEcoCellRenderer',
+  'TPen':'colorTechCellRenderer',
+  'EPen':'colorEcoCellRenderer'
+}
+
+const aggridDefaultColumnProps = {
+  sort: null,
+  sortIndex: null,
+  aggFunc: null,
+  rowGroup: false,
+  rowGroupIndex: null,
+  pivot: false,
+  pivotIndex: null,
+  flex: undefined,
+}
+
+// function getCellRendererForKey(key:string) {
+//   const renderer = CellRenderersMapping[key];
+//   return renderer !== undefined ? renderer : 'string'; // If the renderer is undefined, return the key as string
+// }
+
+
+export const generateAndMapColumns = (reportName:string,fields:any ,includeRemarks:boolean,includeGraph:boolean,includeTags:boolean,onOpenSubmitRemark?:any,  onOpenRemarkHistory?:any, onOpenDailyDataGraph?:any) =>{
+  
+  if (!fields || fields.length < 1) {
+    return []
+  }
+  let Columns:ColDef[] = [];
+
+  console.log("FIELDFS",fields)
+  Columns = fields.map((f:any,index:number)=>{
+    if(f.Col_Code==='t' || f.Col_Code==='tags'){
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        cellRenderer: 'tagsCellRenderer',
+        width: 100,
+        pinned:null,
+        // hide: !f.Visible,
+        initialHide: !f.Visible,
+        filter:true,
+        filterParams: {
+          buttons: ['reset'], // Adds Apply and Clear buttons
+        },
+        ...aggridDefaultColumnProps
+      }
+    }
+    return {
+      colId: f.Col_Code,
+      field: f.Col_Code,
+      headerName: f.Header,
+      // hide: !f.Visible,
+      initialHide: !f.Visible,
+      cellRenderer: CellRenderersMapping[f.Col_Code] !== undefined ? CellRenderersMapping[f.Col_Code] : 'string' ,
+      cellDataType: getCellDataType(f.DataType),
+      filter: getCellFilter(f.DataType),
+      minWidth:180,
+      pinned:null,
+      ...aggridDefaultColumnProps,
+      filterParams:filterParams
+    }
+  })
+
+  if(reportName==='ResearchInsight'){ // Add other reportName in || condition if checkbox is required
+    Columns.push(addCheckBoxColumn())  /// required Checkbox for RI 
+  }
+
+  if(includeRemarks){ // If Remark is required in any reports then provide boolean as true
+    Columns.unshift(...getRemarkRelatedColumns(onOpenRemarkHistory))
+  }
+
+
+  if(includeTags && ( reportName==='BPR' || reportName==='ResearchInsight' )){
+    Columns.unshift({
+      colId: 'tags',
+      field: 'tags',
+      headerName: "Tags",
+      cellRenderer: 'tagsCellRenderer',
+      width: 100,
+      initialHide:false,
+      filter:true,
+      pinned:null,
+      ...aggridDefaultColumnProps,
+      filterParams: {
+        buttons: ['reset'], // Adds Apply and Clear buttons
+      },
+    })
+  }
+
+  if(includeGraph){
+    Columns.unshift(generateDailyDataGraphCell(onOpenDailyDataGraph))
+  }
+
+
+  return Columns
+}
+
+
 
 export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (params: any, e: any) => void, onOpenRemarkHistory: (e: any, params: any) => void, onOpenDailyDataGraph: (params: any) => void): ColDef[] => {
 
@@ -2818,18 +2972,21 @@ export const BPRColorMapper = (color: string): { bg: string, text: string } => {
 }
 
 export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => {
+  const columnsNotBeConverted = ['SKUCode','SKUDescription','Whcode','WhCode','LocationName','pc','pn']
   return rows.map((r) => {
     const transformedRow = Object.keys(r).reduce((acc, key) => {
       const value = r[key];
-      if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+      if(columnsNotBeConverted.includes(key)){
+        acc[key]=value+"";
+      }else if (typeof value === 'string' && !isNaN(parseFloat(value))) {
         acc[key] = parseFloat(value);
       } else {
         acc[key] = value;
       }
       return acc;
     }, {} as any);
-
-  
+ 
+ 
     const NewCategoryString = transformedRow.Category;
     const tempRow = { ...transformedRow, Category: NewCategoryString };
     let tempAvailabilty = 0;
@@ -2839,16 +2996,15 @@ export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => 
         nonBlackCount = nonBlackCount + 1;
       }
     }
-
+ 
     tempAvailabilty = parseFloat(((nonBlackCount / horizon) * 100).toFixed(2))
     return {
       ...tempRow,
       Availability: tempAvailabilty
     }
   })
-
+ 
 }
-
 
 export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: number, pinCatergory: boolean, excludeColumns?: Array<string>,): Array<ColDef> => {
   // const graphCellRenderer:ColDef={
@@ -3417,6 +3573,9 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
 
   return undefined;
 }
+
+
+
 
 export const convertUiConfigToOptions = (data:any) => {
   console.log(data);

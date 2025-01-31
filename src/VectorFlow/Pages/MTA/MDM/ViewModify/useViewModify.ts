@@ -30,6 +30,8 @@ const useViewModify = (pageType:string) => {
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
     const masters = useSelector((state:RootState)=>state.mdm.masters);
 
+    const [canToggleMaster,setCanToggleMaster] = useState<boolean>(true)
+
     const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
     const isUploadModalOpen = useSelector((state:RootState)=>state.mdm.isUploadModalOpen)
     const draftID = useSelector((state:RootState) => state.mdm.draftId);
@@ -685,6 +687,7 @@ const useViewModify = (pageType:string) => {
         notifyError('All Masters have already been selected. Cannot add more masters');
         return;
       }
+      setCanToggleMaster(false)
       dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
       setDownloadData(false);
       setTempDownloadData(false);
@@ -1217,6 +1220,15 @@ const useViewModify = (pageType:string) => {
 
         setIsSubmitDisabled(true)
         dispatch(REMOVE_COLDEFS(['checkbox']));
+
+        //check if errorneous Data
+        const errorData1 = activeMaster.rowData.find((row:any)=>{
+          return (row.error ) &&( row.error!=='' )
+        });
+        if(errorData1){
+          notifyError('Please Clear Errors Before Submitting');
+          return;
+        }
         
 
         if(activeMaster.progress === 'editOnline'){
@@ -1228,14 +1240,6 @@ const useViewModify = (pageType:string) => {
           // dispatch(REMOVE_COLDEFS(['error','warning']))
         }
 
-        //check if errorneous Data
-        const errorData1 = activeMaster.rowData.find((row:any)=>{
-          return (row.error ) &&( row.error!=='' )
-        });
-        if(errorData1){
-          notifyError('Please Clear Errors Before Submitting');
-          return;
-        }
         
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
@@ -1475,6 +1479,7 @@ const useViewModify = (pageType:string) => {
 
       const onBackButton1 = (backUrl?: string) => {
         // dispatch(FILL_MASTERS([]));
+        setCanToggleMaster(true)
         if(backUrl){
           navigate(backUrl)
         }
@@ -1504,6 +1509,7 @@ const useViewModify = (pageType:string) => {
         if(backUrl){
           navigate(backUrl)
         }
+        setCanToggleMaster(true)
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
         // dispatch(UPDATE_COLDEFS([]));
@@ -1921,7 +1927,9 @@ const useViewModify = (pageType:string) => {
         totalProgress,
         tempRecordCount,
         isSubmitDisabled,
-        onDiscardDraftCallback
+        onDiscardDraftCallback,
+        canToggleMaster,
+        setCanToggleMaster
     }
 }
 

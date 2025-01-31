@@ -72,13 +72,13 @@ const SupplierDispatchReport = () => {
       {(isLoading )?(
           <VFLoader/>
         ):
-      (<div style={{height:'100vh'}}>
+      (<div style={{height:'70vh'}}>
        <VFTable
                   ref={ref}
                   {...agGridProps}
                   columnDefs={VDRColumns}
                   rowData={RowData}
-                  height={'90%'}
+                  height={'100%'}
         />
         <VFPagination 
                 selectedRows={0} 

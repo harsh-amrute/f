@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData, updateCommonAttributes, MainMenuItemsCustomization } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData, updateCommonAttributes, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -90,11 +90,11 @@ const useBPR =()=>{
     const [gridState,setGridState] = useState<any>()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
+    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
 
 
   
     useEffect(()=>{
-        console.log(data)
         getInitialBPRRowData()
         setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
     },[isBPRUILoading])
@@ -102,10 +102,33 @@ const useBPR =()=>{
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState({"reportname":"BPR"})
-            const parsedContent = JSON.parse(data.data.data)
-            setGridState(parsedContent)
+            if(data?.data.data){
+                setInitialColumnState(data?.data.data)
+            }
+            const stateData =  await getState({"reportname":"BPR"})
+            console.log(stateData)
+            if(stateData.data.data.length!==0){
+                const parsedContent = JSON.parse(stateData.data.data)
+                const generatedColumns = generateAndMapColumns('BPR',data?.data.data,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
+                setGridState({
+                    pivot:parsedContent.pivot,
+                    charts:parsedContent.charts,
+                    columns:coldefs
+                })
+                console.log(parsedContent)
+                setBPRColumns(coldefs)
+            }else{
+                const MappedColumns = generateAndMapColumns('BPR',data?.data.data,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                setGridState({
+                    charts:[],
+                    columns:MappedColumns,
+                    pivot:false
+                })
+                setBPRColumns(MappedColumns)
+            }
           }catch(err:any){
+            console.log(err)
             setGridState({
                 charts:[],
                 columns:BPRColumns,
@@ -113,17 +136,20 @@ const useBPR =()=>{
             })
           }
         }
-        getTableState()
-    },[])
+        if(data!==undefined){
+            getTableState()
+        }
+    },[data])
 
     useEffect(()=>{
         if(internalRef && gridState && gridState.columns && gridState.columns.length!==0){
-            console.log("CHANGING",internalRef.api)
-            const StateColumns = updateCommonAttributes(gridState.columns,BPRColumns,'colId')
-            console.log(StateColumns)
-            setBPRColumns(StateColumns)
+            const colState = internalRef.current?.api?.getColumnState();
+            // console.log("CHANGING",internalRef.api)
+            // const StateColumns = updateCommonAttributes(gridState.columns,BPRColumns,'colId')
+            // console.log(StateColumns)
+            // setBPRColumns(StateColumns)
             // setBPRColumns(gridState.columns)
-            internalRef.api.applyColumnState({state:StateColumns,applyOrder:true})
+            internalRef.api.applyColumnState({state:colState,applyOrder:true})
         }
     },[internalRef,gridState])
 
@@ -201,6 +227,22 @@ const useBPR =()=>{
       };
 
 
+      const defaultColDefObject = useMemo(()=>{
+        return {
+            floatingFilter: true,
+            cellStyle:{
+                "flex":1,
+                'text-align':'center',
+                'height':'50px',
+                "font-style":"normal",
+                "display":"block",
+                'text-overflow':'ellipsis',
+                'white-space':'nowrap'
+            },
+        }
+      },[])
+
+
 
 
   
@@ -215,8 +257,9 @@ const useBPR =()=>{
             sideBar:defaultAgGridSideBarForBPR,
             getMainMenuItems: MainMenuItemsCustomization,
             enableFillHandle: true,
+            rowSelection:"single",
             paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
-            onRowClicked:(params:any)=>{
+            onRowSelected:(params:any)=>{
                 if(params.data.intransit && params.data.intransit.length>0){
                     setActiveRow(params.data.intransit)
                     toggleSubGrid(true)
@@ -230,58 +273,31 @@ const useBPR =()=>{
                 }
                 return { background: "#F7F7F7" };
                 },
-                onColumnVisible: onColumnVisible,
-                onColumnMoved: (event:any) => {
-                    const columnState = event.api.getColumnState();
-                    columnState.forEach((state:any) => {
-                      if (state.pinned && (state.colId!=='remarks' && state.colId!=='rh')) {
-                        // Reset the pin to null
-                        state.pinned = null;
-                      }
-                    });
-                    event.api.applyColumnState({ state: columnState });
-                },
+                // onColumnVisible: onColumnVisible,
                 getRowId: (params) => {
                     return `${params.data.SKUCode}-${params.data.WHCode}`
                 },
             },
-            suppressRowClickSelection:true,
+            // suppressRowClickSelection:true,
             components:customCellRenderers,
-            defaultColDef:{
-                
-                floatingFilter: true,
-                // filter: "agMultiColumnFilter",
-                cellDataType:false,
-                resizable:true,
-                cellStyle:{
-                    "flex":1,
-                    'text-align':'center',
-                    'height':'50px',
-                    "font-style":"normal",
-                    " font-variant":"normal",
-                    " font-weight":"300",
-                    " font-size":"20px",
-                    " font-family":"Roboto",
-                    "display":"block",
-                    'text-overflow':'ellipsis',
-                    'white-space':'nowrap'
-                },
-            },
+            defaultColDef:defaultColDefObject,
             onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode"),
             onGridReady:(params)=>setInternalRef(params)
         }
     },[])
 
 
-    const tempAgGridProps:AgGridReactProps = {
-        onRowDataUpdated:(event)=>{
-            const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
-            if(tempDownloadData){
-                event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:columnsToBeIncluded})
-                setTempDownloadData(false)
+    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
+        return  {
+            onRowDataUpdated:(event)=>{
+                const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
+                if(tempDownloadData){
+                    event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:columnsToBeIncluded})
+                    setTempDownloadData(false)
+                }
             }
-        }
-      };
+          };
+    },[])
 
       const getInitialBPRRowData=async()=>{
         try{
@@ -483,13 +499,15 @@ const useBPR =()=>{
     }
 
     const onResetCallback = async()=>{
-        const ResetColumns = BPRColumns.map((t:any) => {
-            return {
-              ...t,
-              hide: false,
-            };
-          });
-        setBPRColumns([...ResetColumns])
+        const MappedColumns = generateAndMapColumns('BPR',intialColumnState,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
+        console.log(MappedColumns)
+        // const ResetColumns = BPRColumns.map((t:any) => {
+        //     return {
+        //       ...t,
+        //       hide: false,
+        //     };
+        //   });
+        setBPRColumns(MappedColumns)
     }
 
 
@@ -512,19 +530,19 @@ const useBPR =()=>{
 
     const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[]) 
     
-    const BPRColumnData = useMemo(() => {
-        return mapBPRFieldsToColDefs(
-          data?.data?.data, 
-          onOpenSubmitRemark, 
-          onOpenRemarkHistory, 
-          onOpenDailyDataGraph
-        );
-      }, [data]);
-      // Update columns state only if there is a change
-      useEffect(() => {
-        // Check if the columns data has changed before setting state
-        setBPRColumns(BPRColumnData);
-      }, [BPRColumnData, setBPRColumns]); 
+    // const BPRColumnData = useMemo(() => {
+    //     return mapBPRFieldsToColDefs(
+    //       data?.data?.data, 
+    //       onOpenSubmitRemark, 
+    //       onOpenRemarkHistory, 
+    //       onOpenDailyDataGraph
+    //     );
+    //   }, [data]);
+    //   // Update columns state only if there is a change
+    //   useEffect(() => {
+    //     // Check if the columns data has changed before setting state
+    //     setBPRColumns(BPRColumnData);
+    //   }, [BPRColumnData, setBPRColumns]); 
     
     return {
         isSubGridOpen,

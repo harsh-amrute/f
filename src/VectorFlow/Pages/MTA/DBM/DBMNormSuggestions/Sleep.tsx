@@ -2,72 +2,80 @@ import { DBMGraphCellRendererWrapper,DBMSleepCellRendererWrapper } from "./style
 import {useGetDBMUpdateSleepTbl} from "../../../../Services/MTA/DBM"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import { useState } from "react";
+import ConfirmationDataModal from "./ConfirmationModal";
 
+export const DBMGraphCellRenderer = (params: any) => {
+  const onChartClick = () => {
+    params.onShowChart(params.data);
+  };
 
- export const DBMGraphCellRenderer = (params:any)=>{
+  return (
+    <DBMGraphCellRendererWrapper>
+      <img
+        src="/assets/img/VectorFLOW/NMS/seasonality-graph-icon.svg"
+        height={28}
+        width={28}
+        onClick={onChartClick}
+        data-testid="graph-icon"
+      />
+    </DBMGraphCellRendererWrapper>
+  );
+};
 
-      const onChartClick = () => {
-        params.onShowChart(params.data);
-    }
-    
-    return(
-        <DBMGraphCellRendererWrapper >
-            <img src="/assets/img/VectorFLOW/NMS/seasonality-graph-icon.svg" height={28} width={28} onClick={onChartClick} data-testid="graph-icon"/>
-        </DBMGraphCellRendererWrapper>
-    )
-}
+export const DBMSleepCellRenderer = (params: any) => {
+  const { mutateAsync: getDBMUpdateSleepTbl, isLoading: isDBMUpdateSleepTbl } =
+    useGetDBMUpdateSleepTbl();
+  const [iconEnabled, setIconEnabled] = useState(true);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
-export const DBMSleepCellRenderer = (params:any)=>{
+  if (isDBMUpdateSleepTbl) {
+    return <VFLoader />;
+  }
 
-    const {mutateAsync:getDBMUpdateSleepTbl,isLoading:isDBMUpdateSleepTbl} =useGetDBMUpdateSleepTbl();
-    const [iconEnabled, setIconEnabled] = useState(true);
-    // const gridRef = useRef<GridRef>();
-    //const {mutateAsync:getDBMUpdateSleepTbl,isLoading:isDBMApplySelectedNorm} =useGetDBMUpdateSleepTbl();
+  const onSleepClick = () => {
+    if (!iconEnabled) return;
+    setIsConfirmationModalOpen(true);
+  };
 
-    if(isDBMUpdateSleepTbl){
-        return (
-          <VFLoader/>
-        )
-      }
+  const closeModal = () => {
+    setIsConfirmationModalOpen(false);
+    setIconEnabled(true);
+  };
 
-    const onSleepClick = async() => {
-        if (!iconEnabled) return;
-        const SKUCode = params.data.SKUCode;
-        const WHCode = params.data.LocCode;
-        const dataObject = { SKUCode, WHCode };
-        //const jsonData = JSON.stringify(dataObject);
-        //console.log(jsonData);
-        setIconEnabled(false);
+  const handleSuccess = async () => {
+    const SKUCode = params.data.SKUCode;
+    const WHCode = params.data.LocCode;
+    const dataObject = { SKUCode, WHCode };
 
-        await getDBMUpdateSleepTbl({
-            data:dataObject,
-        })
-        params.callBack()
-    }
+    await getDBMUpdateSleepTbl({
+      data: dataObject,
+    });
+    params.callBack();
+    closeModal();
+  };
 
-    const enableIcon = () => {
-        setIconEnabled(true);
-    }
-    
-    
-    return(
-        <DBMSleepCellRendererWrapper >
-            {/* <img src="/assets/img/VectorFLOW/NMS/search.svg" height={28} width={28} onClick={onSleepClick} data-testid="graph-icon"/> */}
-            {/* <DBMSleepCellRendererWrapper> */}
-            <img 
-                src="/assets/img/SleepIconDBM.svg" 
-                height={28} 
-                width={28} 
-                onClick={onSleepClick} 
-                //data-testid="graph-icon"
-                style={{ opacity: iconEnabled ? 1 : 0.3 }} 
-                onAnimationEnd={enableIcon} 
-            />
-        {/* </DBMSleepCellRendererWrapper> */}
-        </DBMSleepCellRendererWrapper>
-    )
-}
+  const handleFailure = () => {
+    closeModal();
+  };
 
-
-
-
+  return (
+    <DBMSleepCellRendererWrapper>
+      <img
+        src="/assets/img/SleepIconDBM.svg"
+        height={28}
+        width={28}
+        onClick={onSleepClick}
+        style={{ opacity: iconEnabled ? 1 : 0.3 }}
+      />
+      {isConfirmationModalOpen && (
+        <ConfirmationDataModal
+          SKUCode={params.data.SKUCode}
+          WHCode={params.data.LocCode}
+          onSuccess={handleSuccess}
+          onFailure={handleFailure}
+          onCloseModal={closeModal}
+        />
+      )}
+    </DBMSleepCellRendererWrapper>
+  );
+};

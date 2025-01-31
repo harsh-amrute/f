@@ -4,7 +4,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import { convertUiConfigToOptions, mapRRRFieldsToColDefs, updateCommonAttributes, MainMenuItemsCustomization } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapRRRFieldsToColDefs, updateCommonAttributes, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs} from "../../../../../helpers/utils"
 import { notifyError, notifyLoader} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
@@ -47,20 +47,22 @@ const useRRR =()=>{
     const [gridState,setGridState] = useState<any>()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
 
+    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
+
     // const [rowData,setRowData] = useState([]);
 
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
 
-    const RRRColumnData = useMemo(() => {
-            return mapRRRFieldsToColDefs(
-              data?.data?.data, 
-            );
-          }, [data]);
-          // Update columns state only if there is a change
-          useEffect(() => {
-            // Check if the columns data has changed before setting state
-            setRRRColumns(RRRColumnData);
-          }, [RRRColumnData, setRRRColumns]); 
+    // const RRRColumnData = useMemo(() => {
+    //         return mapRRRFieldsToColDefs(
+    //           data?.data?.data, 
+    //         );
+    //       }, [data]);
+    //       // Update columns state only if there is a change
+    //       useEffect(() => {
+    //         // Check if the columns data has changed before setting state
+    //         setRRRColumns(RRRColumnData);
+    //       }, [RRRColumnData, setRRRColumns]); 
 
     // const RRRColumns = useMemo(()=>mapRRRFieldsToColDefs(data?.data.data),[data])
 
@@ -74,30 +76,68 @@ const useRRR =()=>{
         fetchData();
     }, [isRRRConfigLoading]);
     
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({reportname:"RRR"})
-            const parsedContent = JSON.parse(data.data.data)
-            setGridState(parsedContent)
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:[],
-                pivot:false
-            })
-          }
-        }
-        getTableState()
-    },[])
+    // useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState({reportname:"RRR"})
+    //         const parsedContent = JSON.parse(data.data.data)
+    //         setGridState(parsedContent)
+    //       }catch(err:any){
+    //         setGridState({
+    //             charts:[],
+    //             columns:[],
+    //             pivot:false
+    //         })
+    //       }
+    //     }
+    //     getTableState()
+    // },[])
+
+        useEffect(()=>{
+            const getTableState = async()=>{
+              try{
+                if(data?.data.data){
+                    setInitialColumnState(data?.data.data)
+                }
+                const stateData =  await getState({"reportname":"RRR"})
+                console.log(stateData)
+                if(stateData.data.data.length!==0){
+                    const parsedContent = JSON.parse(stateData.data.data)
+                    const generatedColumns = generateAndMapColumns('RRR',data?.data.data,false,false,false,undefined,undefined,undefined)
+                    const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
+                    setGridState({
+                        pivot:parsedContent.pivot,
+                        charts:parsedContent.charts,
+                        columns:coldefs
+                    })
+                    console.log(parsedContent)
+                    setRRRColumns(coldefs)
+                }else{
+                    const MappedColumns = generateAndMapColumns('RRR',data?.data.data,false,false,false,undefined,undefined,undefined)
+                    setGridState({
+                        charts:[],
+                        columns:MappedColumns,
+                        pivot:false
+                    })
+                    setRRRColumns(MappedColumns)
+                }
+              }catch(err:any){
+                console.log(err)
+                setGridState({
+                    charts:[],
+                    columns:RRRColumns,
+                    pivot:false
+                })
+              }
+            }
+            if(data!==undefined){
+              getTableState()
+            }
+        },[data])
   
     useEffect(()=>{
         if(internalRef && gridState && gridState.columns){
-            console.log("CHANGING",internalRef.api)
-            const StateColumns = updateCommonAttributes(gridState.columns,RRRColumns,'colId')
-            console.log(StateColumns)
-            setRRRColumns(StateColumns)
-            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+            internalRef.api.applyColumnState({state:RRRColumns,applyOrder:true})
         }
     },[internalRef,gridState])
     // const getRecordsCount=async(filter?:any)=>{
@@ -124,13 +164,14 @@ const useRRR =()=>{
     // }
 
     const onResetCallback = async()=>{
-        const ResetColumns = RRRColumns.map((t:any) => {
-            return {
-              ...t,
-              hide: false,
-            };
-          });
-        setRRRColumns([...ResetColumns])
+      const MappedColumns = generateAndMapColumns('BPR',intialColumnState,false,false,false,undefined,undefined,undefined)
+        // const ResetColumns = RRRColumns.map((t:any) => {
+        //     return {
+        //       ...t,
+        //       hide: false,
+        //     };
+        //   });
+        setRRRColumns(MappedColumns)
     }
 
     const getDataCount=async (filter?:any) => {
@@ -220,6 +261,23 @@ const useRRR =()=>{
         colorDispatchRender:RRRDispatchColorCellRenderer
       }), []);
 
+      
+  const defaultColDefObject = useMemo(()=>{
+    return {
+        floatingFilter: true,
+        cellStyle:{
+            "flex":1,
+            'text-align':'center',
+            'height':'50px',
+            "font-style":"normal",
+            "display":"block",
+            'text-overflow':'ellipsis',
+            'white-space':'nowrap'
+        },
+    }
+  },[])
+  
+
     const agGridProps:AgGridReactProps = useMemo(()=>{
         return{
             tooltipShowDelay:0,
@@ -234,43 +292,15 @@ const useRRR =()=>{
                 return { background: "#F7F7F7" };
                 },
             },
-            onColumnVisible: onColumnVisible,
+            // onColumnVisible: onColumnVisible,
             pagination:false,
             sideBar:defaultAgGridSideBarForBPR,       
             getMainMenuItems: MainMenuItemsCustomization,
-            // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
-            // rowSelection:'multiple',
             paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),
             suppressRowClickSelection:true,
             components:customCellRenderers,
             enableBrowserTooltips:true,
-            defaultColDef:{
-                floatingFilter: true,
-                // filter: "agMultiColumnFilter",
-                // tooltipComponent:'remarksToolTipComponent',
-                cellStyle:{
-                    'text-align':'center',
-                    'height':'50px',
-                    "font-style":"normal",
-                " font-variant":"normal",
-                " font-weight":"300",
-                " font-size":"20px",
-                " font-family":"Roboto",
-                "display":"block",
-                'text-overflow':'ellipsis',
-                'white-space':'nowrap'
-                }
-                // ,
-                // onCellClicked:(params:any)=>{
-                //     console.log(params)
-                //     if(params.data.transit && params.data.transit.length>0){
-                //         setActiveRow(params.data.transit)
-                //         toggleSubGrid(true)
-                //         return 
-                //     }
-                //     return setActiveRow(null)
-                // }
-            },
+            defaultColDef:defaultColDefObject,
             onGridReady:(params)=>setInternalRef(params)      
         }
     
@@ -297,11 +327,13 @@ const useRRR =()=>{
     // }
 
 
-    const tempAgGridProps:AgGridReactProps = {
-        onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
+        return {
+          onRowDataUpdated:(event)=>{
+            if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+           }
         }
-      };
+      },[])
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getRRRData({

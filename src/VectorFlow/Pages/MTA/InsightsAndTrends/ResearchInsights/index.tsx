@@ -84,7 +84,8 @@ const ResearchInsights = ()=>{
         continuousBlack,
         continuousBlackAndRed,
         continuousWhite,
-        generalFilterOptions
+        generalFilterOptions,
+        onResetCallback
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -106,7 +107,8 @@ const ResearchInsights = ()=>{
             tempDownloadData:tempDownloadData,
             setTempDownloadData:setTempDownloadData,
             exportExcelRowData:exportExcelRowData,
-            setExportExcelRowData:setExportExcelRowData
+            setExportExcelRowData:setExportExcelRowData,
+            onResetCallback:onResetCallback
 
         }}>
             <div style={{zoom:0.8, paddingLeft:'20px'}}>

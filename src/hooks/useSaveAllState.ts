@@ -5,7 +5,6 @@ import {
 } from "../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../context/GridStateContext";
 import { notifyError, notifyLoader, notifySuccess } from "../helpers/notify";
-
 import {toast} from 'react-toastify'
 import { GridState } from "../VectorFlow/types/BPR";
 import { handleDownloadVFReports } from "../helpers/utils";
@@ -151,9 +150,17 @@ const useSaveAllState = (isPlanning?:boolean) => {
         return {
           ...t,
           hide: false,
+          sort: null,
+          sortIndex: null,
+          aggFunc: null,
+          rowGroup: false,
+          rowGroupIndex: null,
+          pivot: false,
+          pivotIndex: null,
+          flex: undefined,
         };
       });
-      ref.current.api.applyColumnState({state:tempCurrentGridState})
+      ref.current.api.applyColumnState({state:tempCurrentGridState,applyOrder:true})
       onResetCallback()
       // ref.current.api.resetColumnState()
       ref.current.api.setGridOption('pivotMode',false)

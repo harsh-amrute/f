@@ -56,3 +56,33 @@ export const SuggestionCategoryIcon = styled.img`
     height:18px;
     width:18px;
 `
+
+export const ConfirmationDataTextContainer = styled.div`
+    font-style:normal;
+    font-variant:normal;
+    font-weight:300;
+    font-size:14px;
+    line-height:12px;
+    font-family:Roboto;
+    color: #000000;
+    opacity: 1;
+    dispay:flex;
+    text-align:center;
+    justify-content:center;
+    margin-top:26px;  //42
+`
+ 
+export const ConfirmationDataButtonWrapper = styled.div`
+    // margin-bottom:59px; // 87
+    // margin-left:100px;  //192
+    // margin-right:100px;  //189
+    margin-left:-140px;
+    margin-right:-140px;
+    padding:15px 20px 0px 10px;
+    display:flex;
+    justify-content:flex-end;
+    border-top:dashed 1px gray;
+    flex-direction:row;
+    gap:28px;
+    transform:scale(0.8);
+`
