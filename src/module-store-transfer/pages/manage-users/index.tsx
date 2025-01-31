@@ -239,8 +239,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         };
 
         locationPermissionAllApp.push({
-          'application_id':app.application_id,
-          'application_name':app.application_name,
+          'application_id':app?.application_id,
+          'application_name':app?.application_name,
           'locationPermission':locationPermission
         })
 
@@ -260,7 +260,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     //Enable Product Permissions of Applications With Selected Roles
     const newStepperDetails:any = validApplications?.map((valid_id:any,index:number)=>{
       //Find if Application Permission Already Exist
-      const oldPermissions = initialPermissions?.find((app:any)=>app.application_id === valid_id);
+      const oldPermissions = initialPermissions?.find((app:any)=>app?.application_id === valid_id);
       if(oldPermissions){
         return {
           label:oldPermissions.application_name,
@@ -272,7 +272,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       }
       else{
         return {
-          label:dataAllPermissions.find((app:any)=>app.application_id === valid_id).application_name,
+          label:dataAllPermissions.find((app:any)=>app.application_id === valid_id)?.application_name,
           id:valid_id,
           currentState:'pending',
           isLast:index===initialPermissions.length-1,
