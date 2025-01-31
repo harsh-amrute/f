@@ -742,9 +742,9 @@ const DptWiseBMReport = () => {
                         'resizable': 'true',
                         'color': '#000'
                     },
-                    floatingFilterComponentParams: {
-                        suppressFilterButton: true
-                    }
+                    // floatingFilterComponentParams: {
+                    //     suppressFilterButton: true
+                    // }
                 },
             },
             sideBar: sideBar,
