@@ -56,6 +56,7 @@ const useDBM =()=>{
     const dispatch = useDispatch();
 
     const recordsPerPage = parseInt(process.env.REACT_APP_DBM_ROWS_PER_PAGE || '50');
+    const columnsToBeExcluded = ['checkbox', 'dailydatagraph', '0', 'sleep']
 
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
@@ -182,7 +183,9 @@ const useDBM =()=>{
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
             console.log(event,'from tempGridProps',{tempDownloadData:tempDownloadData})
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:gridRef.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+           const columnsToBeIncluded = event?.api?.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsToBeExcluded.includes(key));
+            console.log(gridRef.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()))
+         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:columnsToBeIncluded});
         }
       };
 
