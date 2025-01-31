@@ -227,7 +227,7 @@
   .ag-theme-btr-pure-elegance .btr_cell_style,
   .ag-theme-btr-charcoal-chic .btr_cell_style{
     font-size: 10px;
-    height:25px !important;
+    height:100% !important;
     }
 /*     
     .ag-paging-panel{
