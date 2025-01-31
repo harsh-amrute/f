@@ -538,7 +538,6 @@ const ActionToolBar = ({
         }
         break;
       case "GuidedInsight":
-        console.log(view)
         if (pathname === "/insights-and-trends/guided-insights" && view==='grid') {
           return (
             <VFMultiFilter
@@ -633,7 +632,6 @@ const ActionToolBar = ({
         }
         break;
       case "chronicunavailability":
-        console.log(view)
         return (
           <VFMultiFilter
           isFilterOpen={isFilterOpen}
@@ -674,15 +672,10 @@ const ActionToolBar = ({
       />
     );
   };
-   console.log(view)
   return (
     <>
       {view === "chart" && (
         <SCTaskBarContainer>
-
-          
-
-
           {currCategory === "GuidedInsight" ? null : (
             <SCGoBackContainer onClick={onGoBack}>
               <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" />

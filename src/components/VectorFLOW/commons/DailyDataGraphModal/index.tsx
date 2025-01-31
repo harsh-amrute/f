@@ -19,11 +19,11 @@ import {
 import VFRangeSlider from '../VFRangeSlider'
 import Select from 'react-select'
 import { AgCharts} from "ag-charts-react";
-import { getDatesBetween, getFormattedDate } from "../../../../helpers/utils";
+import { getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
 import { useDispatch } from 'react-redux';
 import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
-import {addDays, eachDayOfInterval, format, subDays} from 'date-fns';
+import {eachDayOfInterval, format, subDays} from 'date-fns';
 import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
 interface DailyDataGraphModalProps{
@@ -160,10 +160,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             }).slice(startIndex, lastIndex + 1);
     
           
-            let prevValueNormValue = parseInt(chartData[0]['bz'], 10) || 0
+            let prevValueNormValue = parseInt(chartData?.[0]?.['bz'], 10) || 0
             updateNormData = updateNormData.map((data:NormData,index:number)=>{
               const normBand = parseFloat((data.norm/3).toFixed(2))
-              const normBlue = data.norm + ( parseInt(newadjustedChartData[index]['bz'],10) || prevValueNormValue || 0)
+              const normBlue = data.norm + ( parseInt(newadjustedChartData?.[index]?.['bz'],10) || prevValueNormValue || 0)
     
               const normObj = {
                 ...data,normRed:normBand,
