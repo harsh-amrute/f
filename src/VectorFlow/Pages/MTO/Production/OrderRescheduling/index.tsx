@@ -36,6 +36,7 @@ import {
 import { useUserData } from "../../../../../context/index";
 import useColDef from "../../../../../hooks/useColDef";
 
+
 interface RowDataType {
   odk: string;
   dd?: string;
@@ -229,26 +230,13 @@ const OrderRescheduling = () => {
       floatingFilter: false,
     },
   ];
-  const addChangeDate = (date: string, key: string) => {
-    const newData = rowData;
-    newData.forEach((item) => {
-      if (item.odk === key) {
-        item.dd = date;
-      }
-    });
-    setRowData(newData);
-  };
+
 
   const customHeader = {
     DueDate: {
       autoHeaderHeight: true,
       wrapHeaderText: true,
       cellRenderer: currTab === "Unschedule" ? "" : DueDateCellRenderer,
-      cellRendererParams: {
-        data: {
-          addChangeDate: addChangeDate,
-        },
-      },
       flex: 1,
       // initialWidth: 200,
       // width: 200,
@@ -260,6 +248,12 @@ const OrderRescheduling = () => {
       field: "rs",
       headerName: "Reason",
       hide: false,
+      cellRenderer: (params: any) => {
+        if (!params.node.isSelected()) {
+          params.data.rs = "";
+        }
+        return params.data.rs;
+      },
       autoHeaderHeight: true,
       wrapHeaderText: true,
       flex: 1,
@@ -288,6 +282,9 @@ const OrderRescheduling = () => {
       const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
       setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
       getUserColumnConfig();
+      if(refGraph1){
+        refGraph1.current?.api.deselectAll();
+      }
     }
   }, [HeaderData, currTab]);
 
@@ -408,26 +405,44 @@ const OrderRescheduling = () => {
   };
 
   const unschedule = async () => {
-    const finalData = convertJsonForUnschedule(selectedRowData, user.user.name, 1);
-    const isSuccesss = await PostData(
-      finalData,
-      "Order Unscheduled Successfully !"
-    );
-    if (isSuccesss) {
-      setSelectedRowData([]);
-      await handlePageChangeCumulative(currentPage);
-      handlePageChangeCumulative(currentPage);
+    setIsLoading(true);
+    try {
+      const finalData = convertJsonForUnschedule(selectedRowData, user.user.name, 1);
+      const isSuccesss = await PostData(
+        finalData,
+        "Order Unscheduled Successfully !"
+      );
+      if (isSuccesss) {
+        setSelectedRowData([]);
+        await handlePageChangeCumulative(currentPage);
+      }
+    } catch (error) {
+      notifyError("Failed to unschedule order!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const overwriteDD = async () => {
-    const finalData = convertJsonForDueDate(selectedRowData, user.user.name, 0);
-    const isSuccess = await PostData(
-      finalData,
-      "Order Due date updated successfully !"
-    );
-    if (isSuccess) {
-      setSelectedRowData([]);
+    setIsLoading(true);
+    try {
+      const finalData = convertJsonForDueDate(
+        selectedRowData,
+        user.user.name,
+        0
+      );
+      const isSuccess = await PostData(
+        finalData,
+        "Order Due date updated successfully !"
+      );
+      if (isSuccess) {
+        setSelectedRowData([]);
+        await handlePageChangeCumulative(currentPage); // Refresh the grid data
+      }
+    } catch (error) {
+      notifyError("Failed to update Due Date!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
