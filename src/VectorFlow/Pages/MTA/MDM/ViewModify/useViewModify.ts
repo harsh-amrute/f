@@ -1269,7 +1269,7 @@ const useViewModify = (pageType:string) => {
               }
             }
             setSelectedRowsCount(0);
-            sendErrorToastMessage(totalRecords,errorRowData,localConflictData.length,'editOnline')
+            sendErrorToastMessage(totalRecords,errorRowData,localConflictData.length,'editOnlineSubmitted')
             // dispatch(UPDATE_PROGRESS_STATE('editOnlineSubmitted'));
             dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
             if(draftID.length > 0){
