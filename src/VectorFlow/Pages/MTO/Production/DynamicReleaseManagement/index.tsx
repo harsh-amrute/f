@@ -127,7 +127,6 @@ const DynamicReleaseManagement = () => {
   }
 
   const GetData = async (allOrders = 0, page = 1, graph = 1, isExcelExport = false) => {
-    console.log("getdata");
     const formatedFilters = formatFilterJSON(appliedFilters);
     if (isExcelExport) {
       try {
@@ -657,7 +656,6 @@ const DynamicReleaseManagement = () => {
 
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
-    console.log(isChecked);
     setIsCheckboxChecked(isChecked); 
 
     if (isChecked) {
