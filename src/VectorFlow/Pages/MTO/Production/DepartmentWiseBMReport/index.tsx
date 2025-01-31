@@ -427,6 +427,12 @@ const DptWiseBMReport = () => {
                   pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
+                valueFormatter: (params: any) => {
+                    if (params.value && typeof params.value === 'number') {
+                        return params.value.toFixed(2).toLocaleString();
+                    }
+                    return params.value;
+                },
                 cellRendererParams: child.hd.includes("Remark") ? {
                     // visible: {
                     //     flag: child.scc === 'Remark' ? true : child.scc === 'Latest Remark' ? false : undefined,
@@ -459,6 +465,12 @@ const DptWiseBMReport = () => {
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
             children: section.scc === "chckbx" || section.cc === 'ic' ? undefined : mapChildren(section.cc, section.ch || []),
             cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3 ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
+            valueFormatter: (params: any) => {
+                if (params.value && typeof params.value === 'number') {
+                    return params.value.toFixed(2).toLocaleString();
+                }
+                return params.value;
+            },
         }));
 
         if(isReset){
@@ -730,9 +742,9 @@ const DptWiseBMReport = () => {
                         'resizable': 'true',
                         'color': '#000'
                     },
-                    floatingFilterComponentParams: {
-                        suppressFilterButton: true
-                    }
+                    // floatingFilterComponentParams: {
+                    //     suppressFilterButton: true
+                    // }
                 },
             },
             sideBar: sideBar,

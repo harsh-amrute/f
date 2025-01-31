@@ -122,7 +122,6 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
         }
       }
     }
-
     setOpenStatus(openFilters);
   }, []);
 
@@ -161,7 +160,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                     </FilterHeader>
                     <FilterWrapper className="drop-down-options">
                       {filterState[category as keyof FilterState]?.filters.map((filter: Filter) => {
-                        
+                        console.log(filter,"this is filter",filter.type,"this is filter type")
                         if (filter?.type === InputTypes.TextCompare || filter?.type === InputTypes.NumberCompare) {
                           return (
                             <FilterComponent data-testid="" style={{ borderTop: "0.5px solid #B7B7B7" }}>
@@ -263,7 +262,8 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
                           );
                         }
                         
-                        if (filter.type === InputTypes.MultiSelect) {
+                        if (filter.type === InputTypes.MultiSelect && filter.options?.length !== 0) {
+                        
                           return (
                             <FilterComponent
                               style={{
