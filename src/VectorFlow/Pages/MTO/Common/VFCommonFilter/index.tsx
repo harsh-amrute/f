@@ -20,7 +20,6 @@ import { AvailabilityFilter, FilterCheckboxAccordian, FilterMultiSelectCheckbox,
 import VFMasterFieldSearch from "../../../../../components/VectorFLOW/commons/VFMasterFieldSearch";
 import { checkValue } from "../../../../../helpers/utils";
 import { InputTypes } from "../Enum";
-import { log } from "node:console";
 
 interface VFCommonFilterProps {
   onApplyFilter: (params: any) => void;
