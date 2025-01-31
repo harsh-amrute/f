@@ -87,9 +87,10 @@ const MNValidator = (value:any,helper:any)=>{
     }
     if(value<=0){
         return helper.error("any.mnerror")
-    }else if(value<2){
-        return helper.warn('any.mnwarn')
     }
+    // }else if(value<2){
+    //     return helper.warn('any.mnwarn')
+    // }
     return value
 }
 
@@ -117,7 +118,7 @@ export const SKULocationSchema = Joi.object({
     pt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`Modified PSO Threshold should be less than ${MAX_DECIMAL_VAL}`}),
     dpt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`Default PSO Threshold should be less than ${MAX_DECIMAL_VAL}`}),
     npr:Joi.number(),
-    frf:Joi.string().valid("fg", "rm").insensitive().messages({'any.only':'FG/RM must be one of [fg, rm]','string.base': 'FG/RM must be one of [fg, rm]',}), //make this case insensitive
+    frf:Joi.string().valid("fg", "rm").insensitive().allow(null, '').messages({'any.only':'FG/RM must be one of [fg, rm]','string.base': 'FG/RM must be one of [fg, rm]',}), //make this case insensitive
     da:Joi.string().valid("yes", "no", "y", "n", 1, 0, "1", "0").insensitive().default(1).messages({'any.only':'DBM Active must be one of [yes, no, y, n, 1, 0]', 'string.base': 'DBM Active must be one of [yes, no, y, n, 1, 0]'}),
     // StockPercentForRationing:Joi.number().integer().min(0).max(100).default(0),
     // NormPercentReservation:Joi.number().integer().min(0).max(100).default(0),
