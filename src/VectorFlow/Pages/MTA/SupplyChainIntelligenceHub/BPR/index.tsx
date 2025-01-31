@@ -16,6 +16,7 @@ import BPRRemarkHistoryModal from "./BPRRemarkHistoryModal"
 import { Skeleton } from "../../../../../components/commons/styled";
 import { useUserData } from "../../../../../context/UserDataContext";
 import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
+import { useMemo } from "react"
 
 const BPR = ()=>{
 
@@ -68,6 +69,18 @@ const BPR = ()=>{
     //     <VFLoader/>
     //   )
     // }
+
+    const Statusbar = useMemo(()=>{
+        return {
+            statusPanels: [
+              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+              { statusPanel: 'agAggregationComponent', align:'left' },
+            ],
+          }
+    },[])
 
 
     return(
@@ -152,21 +165,14 @@ const BPR = ()=>{
                  key={'ref'}
                 disableZoomScaling
                 ref={ref}
+                debug
                 height={"90%"}
                 {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}
                 enableRangeSelection={true} 
                 rowSelection="multiple"
-                statusBar = {{
-                    statusPanels: [
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                      { statusPanel: 'agAggregationComponent', align:'left' },
-                    ],
-                  }}
+                statusBar = {Statusbar}
             />
 
                 <VFPagination
@@ -273,6 +279,7 @@ const BPR = ()=>{
             />
             <div style={{display:'none'}}>                
                   <VFTable
+                  
                     key={'temp'}
                     ref={tempRef}
                     columnDefs={BPRColumns}
