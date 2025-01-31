@@ -2520,17 +2520,21 @@ export const MainMenuItemsCustomization = (params:any) => {
 }
 
 export const mapBPRRowData = (rowData: Array<any>) => {
-  return rowData.map((r) => {
-    const tempRow = { ...r }
-    if (r.Norm === 0) {
-      tempRow.TechPen = null
-      tempRow.EcoPen = null
-      tempRow.EcoColor = null
-      tempRow.TechColor = null
-    }
+  //Logic is breaking, doesn't show the grey color on TechColor and EcoColor
+  
+  // return rowData.map((r) => {
+  //   const tempRow = { ...r }
+  //   if (r.Norm === 0) {
+  //     tempRow.TechPen = null
+  //     tempRow.EcoPen = null
+  //     tempRow.EcoColor = null
+  //     tempRow.TechColor = null
+  //   }
     
-    return tempRow
-  })
+  //   return tempRow
+  // })
+  
+  return rowData
 }
 
 

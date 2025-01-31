@@ -23,7 +23,7 @@ import { getDatesBetween, getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
 import { useDispatch } from 'react-redux';
 import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
-import {eachDayOfInterval, format, subDays} from 'date-fns';
+import {addDays, eachDayOfInterval, format, subDays} from 'date-fns';
 import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
 interface DailyDataGraphModalProps{
@@ -46,9 +46,6 @@ interface NormData{
 const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,monitoringData,skuKey,whKey}:DailyDataGraphModalProps) => {
 
   const {user} = useUserData()
-
-  // console.log("normChangeData", normChangeData);
-
   const themeUi = user.user.theme_ui;
   const {date:lastRunDate} = useGetLastRunData()
 
@@ -67,7 +64,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
     const [adjustedChartData,setadjustedChartData] = useState<any[]>([]);
     const [missingData, setMissingData] = useState<any[]>([]);
 
-    
+
     const fillNotAvailableDates = (data:any)=>{
       const lastNinetyDates = eachDayOfInterval({start: subDays(new Date(lastRunDate),89),end: new Date(lastRunDate)});
       const lastNinetyDaysData:DailyDataChart[] = [];
@@ -94,6 +91,25 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
       })
       return lastNinetyDaysData
     }
+
+    // const addBoundaryDataPoints = (data: any) => {
+    //   if (data.length === 0) return data;
+  
+    //   const firstDate = new Date(data[0].dt);
+    //   const lastDate = new Date(data[data.length - 1].dt);
+  
+    //   const startPoint = {
+    //     dt: format(subDays(firstDate, 1), "yyyy-MM-dd"),
+    //     hideTooltip: true // Special flag to hide tooltip
+    //   };
+  
+    //   const endPoint = {
+    //     dt: format(addDays(lastDate, 1), "yyyy-MM-dd"),
+    //     hideTooltip: true // Special flag to hide tooltip
+    //   };
+  
+    //   return [startPoint, ...data, endPoint];
+    // };
     
     useEffect(()=>{
       if(lastRunDate)
@@ -106,16 +122,12 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             const lastIndex = missingData.length - 1;
             // Calculate the start index based on the horizon
             const startIndex = Math.max(0, lastIndex - horizon + 1);  
-            console.log(startIndex, lastIndex)
+
             const newadjustedChartData = missingData.slice(startIndex, lastIndex + 1)
-            // const newadjustedChartData = chartData.map((data:any,index:number)=>{
-            //   return {
-            //     ...data,
-            //     cs: data.cs === 0 ? null : data.cs, // Adjust `cs` based on the condition
-            //     git: data.git === 0 ? null : data.git,
-            //     rp: data.rp === 0 ? null : data.rp
-            //   };
-            // }).slice(chartData.length-horizon,chartData.length);
+
+            // if(newadjustedChartData.length){
+            //   newadjustedChartData = addBoundaryDataPoints(newadjustedChartData);
+            // }
             
             setadjustedChartData(newadjustedChartData)
             const sortedNormChangeData = normChangeData
@@ -146,8 +158,6 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   
                 return {date:dailyData.dt,norm:tempNorm};
             }).slice(startIndex, lastIndex + 1);
-            
-            console.log("updateNormData", updateNormData);
     
           
             let prevValueNormValue = parseInt(chartData[0]['bz'], 10) || 0
@@ -188,8 +198,6 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           })
           return suspensionReasonsHTML;
         }
-
-        console.log("normData", normData)
 
         const generateRevisionSuggestedBlock = (oldNorm:number,newNorm:number,reason:string) => `
             <div style="padding:5px;">
@@ -260,8 +268,12 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         `
 
         function renderer(params: any) {
+          
           const suggestionObject = suggestionData.find((data:any)=>new Date(data['sdate']).getTime() === new Date(params.datum['date']).getTime())
           const dailyDataObject = missingData.find((data:any)=>new Date(data['dt']).getTime() === new Date(params.datum['date']).getTime())
+          // if(!dailyDataObject.stk && !dailyDataObject.rp && !dailyDataObject.git && !dailyDataObject.cs){
+          //   return ""
+          // }
           const suspensionReasons = generateSuspensionReasons(params.datum.upwardStockBasedNorm,params.datum.downwardStockBasedNorm,params.datum.upwardConsumptionBasedNorm,params.datum.downwardConsumptionBasedNorm)
        
           let tooltip = `
@@ -273,7 +285,9 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
           if(suspensionReasons.length > 0 && suspensionType!=='') tooltip += generateSuspensionReasonsBlock(suspensionReasons);
 
-          tooltip += generateDailyDataBlock(dailyDataObject.stk,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.floor(params.datum.normYellow*3), params.datum.normBlue)
+          if(dailyDataObject.stk != null && dailyDataObject.rp != null && dailyDataObject.git != null && dailyDataObject.cs != null){
+            tooltip += generateDailyDataBlock(dailyDataObject.stk,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.floor(params.datum.normYellow*3), params.datum.normBlue)
+          }
 
           const finalTooltipHTML = `
             <div style="background-color:white;border:1px solid #777777;border-radius:5px;max-width:400px;">

@@ -104,14 +104,12 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         let payloadString = ""
         if(location.pathname==='/supply-chain-intelligence-hub/planning'){
             if(currentCategory!==""){
-                
                 switch(currentCategory){
                     case "GITFromParent":
                         payloadString = "gitparent"
                         break
                     case "GITToChild":
-                        if(currentTab==="locationWise")payloadString = "gitchildlocation"
-                        else payloadString = "gitchildtransporter"
+                        payloadString = currentTab==="locationWise" ? "gitchildlocation" : "gitchildtransporter"
                         break
                     case "ExpediteFromParent":
                         payloadString = "expediteparent"
