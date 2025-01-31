@@ -165,7 +165,6 @@ const BPR = ()=>{
                  key={'ref'}
                 disableZoomScaling
                 ref={ref}
-                debug
                 height={"90%"}
                 {...agGridProps}
                 columnDefs={BPRColumns}

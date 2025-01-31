@@ -111,7 +111,6 @@ const useBPR =()=>{
                 const parsedContent = JSON.parse(stateData.data.data)
                 const generatedColumns = generateAndMapColumns('BPR',data?.data.data,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
                 const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
-                console.log("COLDEFS",coldefs)
                 setGridState({
                     pivot:parsedContent.pivot,
                     charts:parsedContent.charts,
@@ -144,7 +143,6 @@ const useBPR =()=>{
 
     useEffect(()=>{
         if(internalRef && gridState && gridState.columns && gridState.columns.length!==0){
-            console.log("ERTYUUYTR")
             const colState = internalRef.current?.api?.getColumnState();
             // console.log("CHANGING",internalRef.api)
             // const StateColumns = updateCommonAttributes(gridState.columns,BPRColumns,'colId')
