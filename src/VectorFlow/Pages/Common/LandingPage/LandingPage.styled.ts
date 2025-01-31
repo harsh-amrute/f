@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Rectangle = styled.div<{text?:string}>`
+export const Rectangle = styled.div<{text?:string , theme?:string}>`
 
   display: flex;
   width: 98%;
@@ -33,7 +33,7 @@ export const Rectangle = styled.div<{text?:string}>`
     border-radius: 12px 12px 0px 0px;
     transform: rotate(-90deg);
     z-index: -1;
-    background: rgb(188, 61, 129);
+    background: ${(props)=>props.theme==="REGALBLAZE"?"#CB830E":"rgb(188, 61, 129)"};
 }
   &::after {
     content: "";
@@ -44,7 +44,7 @@ export const Rectangle = styled.div<{text?:string}>`
     left: -6px;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 10px solid rgb(188, 61, 129);
+    border-bottom: 10px solid ${(props)=>props.theme==="REGALBLAZE"?"#CB830E":"rgb(188, 61, 129)"};;
     transform: rotate(90deg);
     z-index : 3; 
 }
@@ -92,7 +92,7 @@ export const AppBox = styled.div`
   z-index : 1;
 `;
 
-export const ImageHolder = styled.div`
+export const ImageHolder =  styled.div<{theme: string}>`
  position: relative;
  display: flex;
  align-items: center;
@@ -104,7 +104,8 @@ export const ImageHolder = styled.div`
     content: "";
     height: 90%; 
     width: 27%; 
-    background: #FFEFF7 0% 0% no-repeat padding-box;
+    background: ${(props)=>props.theme==="REGALBLAZE"?"#FFEED3 0% 0% no-repeat padding-box":"#FFEFF7 0% 0% no-repeat padding-box"};
+   
     border-radius: 50%;
     position: absolute;
     top: 20%;

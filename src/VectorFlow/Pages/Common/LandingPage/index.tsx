@@ -24,6 +24,7 @@ const LandingPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const themeUi = user?.user?.theme_ui;
 
   const findUrl = (item: any)=>{
     const checkUrl = user?.url_permission?.some((value : any)=>{
@@ -53,7 +54,8 @@ const LandingPage = () => {
           !currentList.some(
             (existingItem: any) => existingItem.name === item.name
           )
-        ) {
+        ) 
+        {
           const checkUrl = user?.url_permission?.some((value : any)=>{
             return item.url == value;
           })
@@ -73,13 +75,21 @@ const LandingPage = () => {
           if(url != null && url != undefined){
             currentList.push({
               name: item.name,
-              img: item.lp_img,
+              img: themeUi === "REGALBLAZE" ? item.rp_img : item.lp_img,
+              // img:item.lp_img,
               url: url,
             });
           }
           map.current.set(app_id, currentList);
-        }
+        
       }
+       else{
+        const curr = currentList.find((existingItem: any) => existingItem.name == item.name)
+        if(curr){
+          curr.img = themeUi === "REGALBLAZE" ? item.rp_img : item.lp_img;
+        }   
+      }
+    }  
     } else if (item?.child) {
       item?.child.forEach((child: any) => {
         CreateMenuFunction(app_id, child);
@@ -104,18 +114,23 @@ const LandingPage = () => {
 
   useEffect(() => {
     createMenu();
-  }, []);
+  }, [themeUi]);
 
 
   const [myMap, setMyMap] = useState<any>(null);
   useEffect(()=>{
     setMyMap(map);
   },[map])
+
+
+  const imageSrc = themeUi === "REGALBLAZE" 
+  ? "/assets/img/Clicktoview1.svg" 
+  : "/assets/img/Clicktoview.svg"; 
   return (
     <LandingContainer>
       <h1 style={{ fontSize: "2rem" }}>
         Welcome to{" "}
-        <span style={{ color: "#BC3D81", marginBottom: 0 }}>VectorFlow</span>
+        <span style={{ color: themeUi === "REGALBLAZE" ? "rgb(199, 129, 14)" : "#BC3D81", marginBottom: 0 }}>VectorFlow</span>
       </h1>
       <h3 style={{ color: "#707070", top: 0, marginTop: "-2%" }}>
         A seamless, end to end supply chain management system
@@ -126,13 +141,13 @@ const LandingPage = () => {
             if (item[1]?.length > 0) {
               return (
                 <>
-                  <Rectangle key={item[0]} text={ApplicationName[item[0]]}>
+                  <Rectangle key={item[0]} text={ApplicationName[item[0]]} theme={themeUi}>
                     <CardContainer>
                       {item[1].map((subItem: any, subIndex: number) => {
                         return (
                           <AppBox key={subIndex}>
                             <AppBoxDiv>
-                              <ImageHolder>
+                              <ImageHolder theme={themeUi}>
                                 <Image src={subItem.img} alt="Product" />
                               </ImageHolder>
                               <h3
@@ -147,7 +162,7 @@ const LandingPage = () => {
                               <ClickBox onClick={()=>{
                                 navigate(subItem?.url);
                               }}>
-                                <p style={{ color: "#820F4C" }}>
+                                <p style={{ color: themeUi === "REGALBLAZE" ? "rgb(199, 129, 14)" : "#820F4C" }}>
                                   Click to view{" "}
                                 </p>
                                 <img
@@ -156,7 +171,7 @@ const LandingPage = () => {
                                     width: "7%",
                                     marginLeft: "1rem",
                                   }}
-                                  src="/assets/img/Clicktoview.svg"
+                                  src={imageSrc}
                                 />
                               </ClickBox>
                             </AppBoxDiv>
