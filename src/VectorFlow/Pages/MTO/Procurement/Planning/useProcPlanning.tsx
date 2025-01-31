@@ -687,7 +687,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             enableRangeSelection: true,
             icons: icons,
             defaultColDef: {
-                suppressMenu: true,
                 resizable: true,
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",

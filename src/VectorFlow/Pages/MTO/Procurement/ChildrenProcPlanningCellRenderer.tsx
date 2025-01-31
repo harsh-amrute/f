@@ -47,11 +47,9 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
                     suppressRowClickSelection={true}
                     enableRangeSelection={true}
                     paginationPageSize={3}
-                    statusBar={{
-                        statusPanels: [
-                            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                        ]
-                    }}
+                    
+                    hideStatusBar={true} 
+                    sideBar={false} 
                 />
             </ChildTableWrapper>
         </div>

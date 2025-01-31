@@ -334,10 +334,6 @@ export const CheckBoxDiv = styled.div`
 
 `
 
-export const InputCheckBox = styled.input`
-    display:inline;
-`
-
 export const InputCheckBoxTitle = styled.div`
   font-size:16px;
   color:#000000;

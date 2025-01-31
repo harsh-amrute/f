@@ -355,6 +355,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
   const textComparatorConfig: any = {
     et : {value:'et',label:'Equal to'},
     net : {value:'net',label:'Not Equal to'},
+    cn: {value:'cn',label:'Contains'},
     dnc : {value:'dnc',label:'Does not contain'},
     cn: {value:'cn',label:'Contains'},
     sw: {value:'sw',label:'Starts with'},
@@ -376,6 +377,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
   const textComparators = [
     {value:'et',label:'Equal to'},
     {value:'net',label:'Not Equal to'},
+    {value: "cn", label: "Contains"},
     {value:'dnc',label:'Does not contain'},
     {value:'cn',label:'Contains'},
     {value:'sw',label:'Starts with'},
