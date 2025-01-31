@@ -73,3 +73,9 @@ export const SCTabHeader = styled.div`
       opacity: 1;
   }
 `
+export const InputCheckBox = styled.input<{ theme: string }>`
+    display:inline;
+    width: 2em;
+    height: 2rem;
+    accent-color:${(props) => globalStyles.chooseThemeColor[props.theme].color5};
+`

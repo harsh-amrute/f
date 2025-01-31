@@ -250,26 +250,29 @@ const FullKitAssignment = () => {
     else if (loadDataParams.load_graph_data) {
       const graph: any = [];
       const newGraphdata = data?.data?.data?.results?.graphdata;
-      //underload
-      newGraphdata["underloaded"].forEach((row: any) => {
-        graph.push({ ...row })
-        graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
-      })
-      //overload
-      newGraphdata["overloaded"].forEach((row: any) => {
-        graph.push(row)
-        graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
-      })
-      //balanced
-      newGraphdata["balanced"].forEach((row: any) => {
-        graph.push(row)
-        graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
-      })
-      //modify griddata for adding tags
-      const newRows = calculateTagsAndOrderinFullkitToday(griddata, newGraphdata)
-      setOrders(newRows);
-      setGraphData(graph)
-      graphDataOgFormat.current = newGraphdata;
+      if (newGraphdata) {
+        //underload
+        newGraphdata["underloaded"].forEach((row: any) => {
+          graph.push({ ...row })
+          graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
+        })
+        //overload
+        newGraphdata["overloaded"].forEach((row: any) => {
+          graph.push(row)
+          graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
+        })
+        //balanced
+        newGraphdata["balanced"].forEach((row: any) => {
+          graph.push(row)
+          graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
+        })
+        //modify griddata for adding tags
+        const newRows = calculateTagsAndOrderinFullkitToday(griddata, newGraphdata)
+        setOrders(newRows);
+        setGraphData(graph)
+        graphDataOgFormat.current = newGraphdata;
+      }
+     
     }
     else {
       const newRows = calculateTagsAndOrderinFullkitToday(griddata, graphDataOgFormat.current) // already fetched graph data

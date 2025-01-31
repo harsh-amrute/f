@@ -77,14 +77,11 @@ interface MTOActionToolBarProps {
     onApplyFilter?: (params: any) => void;
     onFilterRemove?: any;
     isMfgSelected?: boolean;
-    isReleaseButton?: boolean
-    onOrderRelease?: () => void;
-    onCheckBoxToggle?: any;
-    isReleaseButtonDisabled?: boolean
     utilityBtns?: ReactElement | null,
     handleSaveClick?: () => void
     handleResetClick?: () => void
     onExcelExportClick?: () => void
+    ReleaseOrderHeader?: ReactElement | null;
     //// new props
 }
 
@@ -116,16 +113,13 @@ const MTOActionToolBar = ({
     setMultiFilter,
     onApplyFilter,
     onFilterRemove,
-    isReleaseButton,
-    onOrderRelease,
     quickFilter,
-    onCheckBoxToggle,
-    isReleaseButtonDisabled,
     utilityBtns,
     WIPFilter,
     handleSaveClick,
     handleResetClick,
-    onExcelExportClick
+    onExcelExportClick,
+    ReleaseOrderHeader
 
 }: MTOActionToolBarProps) => {
 
@@ -156,78 +150,9 @@ const MTOActionToolBar = ({
                     justifyContent: 'unset'
                 }}>
                 <>
-                    {isReleaseButton &&
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold', gap: '15px' }}>
-
-                            <div style={{ borderRadius: '5px', background: 'white', padding: '10px 30px', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: 'rgba(133, 132, 132, 0.247) -5px 4px 10px', gap: '10px' }}>
-                                <input onChange={(e) => { onCheckBoxToggle(e) }} type="checkbox" style={{ color: 'pink' }} />
-                                <p>Release</p>
-                            </div>
-                            {
-                                isReleaseButtonDisabled ?
-                                    // <img
-                                    //     style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
-                                    //     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
-                                    //     height={50}
-                                    //     width={60}
-                                    //     alt="Group 627"
-                                    // // onClick={onOrderRelease}
-                                    // />
-                                    <div
-                                        style={{
-                                            cursor: 'pointer',
-                                            background: `linear-gradient(to right, ${gradientColor})`,
-                                            backgroundColor: backgroundColor,
-                                            height: '43px',
-                                            width: '59px',
-                                            borderRadius: '4px',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            alignContent: 'center',
-                                            display: 'flex'
-                                        }}
-                                        data-testid={'isReleaseBtn'}
-                                    >
-                                        <img
-                                            style={{}}
-                                            src="/assets/img/rightArrowHorizontal.svg"
-                                            height={13}
-                                            width={7}
-                                        />
-                                    </div>
-                                    :
-                                    <div
-                                        style={{
-                                            cursor: 'pointer',
-                                            background: `linear-gradient(to right, ${gradientColor})`,
-                                            backgroundColor: backgroundColor,
-                                            height: '43px',
-                                            width: '59px',
-                                            borderRadius: '4px',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            alignContent: 'center',
-                                            display: 'flex'
-                                        }}
-                                        data-testid={'isReleaseBtn'}
-                                        onClick={onOrderRelease}>
-                                        <img
-                                            style={{}}
-                                            src="/assets/img/rightArrowHorizontal.svg"
-                                            height={13}
-                                            width={7}
-                                        />
-                                    </div>
-                                // <img
-                                //     style={{ cursor: 'pointer', opacity: `${isReleaseButtonDisabled ? "0.8" : '1'}` }}
-                                //     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
-                                //     height={50}
-                                //     width={60}
-                                //     alt="Group 627"
-                                //     onClick={onOrderRelease}
-                                // />
-                            }
-
+                    {ReleaseOrderHeader &&
+                        <div>
+                            {ReleaseOrderHeader}
                         </div>
                     }
                 </>

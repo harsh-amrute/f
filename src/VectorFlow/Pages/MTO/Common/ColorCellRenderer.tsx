@@ -31,16 +31,18 @@ const colorMapper = (color: string) => {
 
 const ColorCellRenderer = (params: any) => {
     // const color = params.data?.cp;
-
     const color = params.value;
     const cellColor = colorMapper(color);
 
     return (
-        <BPRColorCellRendererWrapper
-            style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: '80px' }}
-            data-testid='color-cell'>
-            {color}
-        </BPRColorCellRendererWrapper>
+        <>
+            {color && <BPRColorCellRendererWrapper
+                style={{ backgroundColor: cellColor.bg, color: cellColor.text, maxWidth: '80px' }}
+                data-testid='color-cell'>
+                {color}
+            </BPRColorCellRendererWrapper>}
+        
+        </>
     );
 }
 

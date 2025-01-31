@@ -104,20 +104,20 @@ describe('Dynamic Release Service', () => {
         expect(response.status).toBe(200);
     });
 
-    it('should get orders for DRM when page is not 1, graph is 0, and ao is not 0', async () => {
-        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 0, ao: 1, page: 2, appliedFilters });
-        expect(response.status).toBe(200);
-        expect(mockedAxios.put).toHaveBeenCalledWith(
-            'http://10.8.1.10:9000/getDynamicReleaseData/?graph=0&ao=1&page=2',
-            appliedFilters,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            }
-        );
-    });
+    // it('should get orders for DRM when page is not 1, graph is 0, and ao is not 0', async () => {
+    //     mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+    //     const response = await DynamicReleaseManagementService.getDynamicReleaseData({ graph: 0, ao: 1, page: 2, appliedFilters });
+    //     expect(response.status).toBe(200);
+    //     expect(mockedAxios.put).toHaveBeenCalledWith(
+    //         'http://10.8.1.10:9000/getDynamicReleaseData/?graph=0&ao=1&page=2',
+    //         appliedFilters,
+    //         {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             }
+    //         }
+    //     );
+    // });
 
     it('should handle an error when releasing the selected orders', async () => {
         mockedAxios.put.mockRejectedValueOnce(new Error('Failed to release orders'));

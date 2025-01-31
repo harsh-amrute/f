@@ -4027,7 +4027,7 @@ export const formatFilterJSON = (filter: any) => {
       delete formatFilter[key];
     }
   });
-  console.log("formate filter", formatFilter);
+  // console.log("formate filter", formatFilter);
   return formatFilter;
 }
 
@@ -4043,7 +4043,6 @@ export const checkValue = (filters: any, value: any) => {
 
 export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   const selectedFilter: any = {};
-  console.log("Filter", filter);
   for (const key in filter) {
     const { filters, label } = filter[key];
     const newFilter: any = {
@@ -4070,9 +4069,6 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
     if (newFilter?.filters?.length > 0) {
       selectedFilter[key] = { ...newFilter };
     }
-
-
-    console.log("selectedFilters", selectedFilter);
 
   }
 

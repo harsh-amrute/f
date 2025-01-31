@@ -255,16 +255,16 @@ describe('MTOActionToolBar Component', () => {
   });
 
 
-  it('renders isReleaseButton button', () => {
-    const { getByTestId } = render(<MTOActionToolBar isReleaseButton />);
-    const button = getByTestId('isReleaseBtn');
-    expect(button).toBeInTheDocument();
-    const arrowImage = button.querySelector('img');
-    expect(arrowImage).toBeInTheDocument();
-    expect(arrowImage).toHaveAttribute('src', '/assets/img/rightArrowHorizontal.svg');
-    expect(arrowImage).toHaveAttribute('height', '13');
-    expect(arrowImage).toHaveAttribute('width', '7');
-  });
+  // it('renders isReleaseButton button', () => {
+  //   const { getByTestId } = render(<MTOActionToolBar isReleaseButton />);
+  //   const button = getByTestId('isReleaseBtn');
+  //   expect(button).toBeInTheDocument();
+  //   const arrowImage = button.querySelector('img');
+  //   expect(arrowImage).toBeInTheDocument();
+  //   expect(arrowImage).toHaveAttribute('src', '/assets/img/rightArrowHorizontal.svg');
+  //   expect(arrowImage).toHaveAttribute('height', '13');
+  //   expect(arrowImage).toHaveAttribute('width', '7');
+  // });
 
 
   it('renders with different themes', () => {
