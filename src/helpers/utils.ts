@@ -1642,7 +1642,7 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields: Fiel
 
 
 export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], existingColumnFields: Field[], taskType: string, masterId: number) => {
-  const response = dirtyRowData.map(entry => {
+  const response = dirtyRowData?.map(entry => {
 
     if (((taskType === 'modify' && masterId !== 6 && masterId !== 10) || masterId === 13)) {
       const oldData = JSON.parse(entry.old);
@@ -1719,7 +1719,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
   });
 
   // sort the rows wrt the isModified flag
-  response.sort((a: any, b: any) => {
+  response?.sort((a: any, b: any) => {
     return b.isModified - a.isModified
   })
   return response
