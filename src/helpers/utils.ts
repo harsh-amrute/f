@@ -4030,7 +4030,6 @@ export const checkValue = (filters: any, value: any) => {
 
 export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   const selectedFilter: any = {};
-  console.log("Filter", filter);
   for (const key in filter) {
     const { filters, label } = filter[key];
     const newFilter: any = {
@@ -4059,7 +4058,6 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
     }
 
 
-    console.log("selectedFilters", selectedFilter);
 
   }
 
