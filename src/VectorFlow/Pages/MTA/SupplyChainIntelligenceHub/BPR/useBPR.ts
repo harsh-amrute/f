@@ -472,12 +472,12 @@ const useBPR =()=>{
         console.log("RESULT",result)
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
-            rowData:params.data,
-            chartData:data['StockData'],
-            normChangeData:data['NormChangeHistoryData'],
-            masterData:data['MasterData'][0],
+            rowData:params.data || [],
+            chartData:data['StockData'] || [],
+            normChangeData:data['NormChangeHistoryData'] || [],
+            masterData:data['MasterData']?.[0] || [],
             suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-            monitoringData:data['MonitoringData']
+            monitoringData:data['MonitoringData'] || []
         }
         console.log(dailyData)
         dispatch(UPDATE_DAILY_DATA(dailyData));
