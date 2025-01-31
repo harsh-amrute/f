@@ -1217,6 +1217,15 @@ const useViewModify = (pageType:string) => {
 
         setIsSubmitDisabled(true)
         dispatch(REMOVE_COLDEFS(['checkbox']));
+
+        //check if errorneous Data
+        const errorData1 = activeMaster.rowData.find((row:any)=>{
+          return (row.error ) &&( row.error!=='' )
+        });
+        if(errorData1){
+          notifyError('Please Clear Errors Before Submitting');
+          return;
+        }
         
 
         if(activeMaster.progress === 'editOnline'){
@@ -1228,14 +1237,6 @@ const useViewModify = (pageType:string) => {
           // dispatch(REMOVE_COLDEFS(['error','warning']))
         }
 
-        //check if errorneous Data
-        const errorData1 = activeMaster.rowData.find((row:any)=>{
-          return (row.error ) &&( row.error!=='' )
-        });
-        if(errorData1){
-          notifyError('Please Clear Errors Before Submitting');
-          return;
-        }
         
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())

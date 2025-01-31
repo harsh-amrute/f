@@ -108,7 +108,7 @@ const BuyerOrderReport = ()=>{
             <VFLoader />
           ) :
             (
-              <div style={{ height: '100vh' }}>
+              <div style={{ height: '78vh' }}>
                 {showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHDescription'} />}
                 {showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />}
 
@@ -128,7 +128,7 @@ const BuyerOrderReport = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ],
                   }}
-                  height={"60%"} />
+                  height={"80%"} />
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
