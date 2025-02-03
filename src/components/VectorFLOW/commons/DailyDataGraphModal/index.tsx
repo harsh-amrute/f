@@ -77,15 +77,15 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         }
         else{
           lastNinetyDaysData.push({
-            cs:null,
+            cs: null,
             dt:format(date, "yyyy-MM-dd"),
-            git:0,
-            rp:null,
-            stk:null,
-            rrs:null,
-            grs:null,
-            rrc:null,
-            grc:null
+            git: null,
+            rp: null,
+            stk: null,
+            rrs: null,
+            grs: null,
+            rrc: null,
+            grc: null
           })
         }
       })
@@ -153,7 +153,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   tempNorm = sortedNormChangeData[closestNormChangeIndex]['nN'];
                 }
                 else{
-                  tempNorm = masterData['nm'];
+                  tempNorm = masterData?.['nm'] || "";
                 }
                   
                 return {date:dailyData.dt,norm:tempNorm};
@@ -224,26 +224,32 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         const generateDailyDataBlock = (stock:number,receipt:number,git:number,consumption:number,redNorm:number,yellowNorm:number,greenNorm:number, blueNorm: number) => `
           <div style="padding:5px;">
             <div style="display:flex;justify-content:flex-start;flex-wrap:wrap;gap:5px;margin-bottom:5px;">
-              <div style="display:flex;align-items:center;gap:5px;">
+              ${stock != null || stock != undefined ? `<div style="display:flex;align-items:center;gap:5px;">
                 <div style="width:10px;height:10px;background-color:#5D148B;"></div>
                 <span style="font-family:Roboto;font-weight:700;">Stock :</span>
                 <span>${stock}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
+              </div>` : ""}
+              ${
+                git != null || git != undefined ? `<div style="display:flex;align-items:center;gap:5px;">
                 <div style="width:10px;height:10px;background-color:#8137BC;"></div>
                 <span style="font-family:Roboto;font-weight:700;">GIT :</span>
                 <span>${git}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
+              </div>`: ""
+              }
+              ${
+                receipt != null || receipt != undefined ? `<div style="display:flex;align-items:center;gap:5px;">
                 <div style="width:10px;height:10px;background-color:#67B6E8;"></div>
                 <span style="font-family:Roboto;font-weight:700;">Receipt :</span>
                 <span>${receipt}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
+              </div>`: ""
+              }
+              ${
+                consumption != null || consumption != undefined ? `<div style="display:flex;align-items:center;gap:5px;">
                 <div style="width:10px;height:10px;background-color:#EDB04D;"></div>
                 <span style="font-family:Roboto;font-weight:700;">Consumption :</span>
                 <span>${consumption}</span>
-              </div>
+              </div>` : ""
+              }
               
             </div>
             <div style="display:flex;gap:5px;">
@@ -285,7 +291,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
           if(suspensionReasons.length > 0 && suspensionType!=='') tooltip += generateSuspensionReasonsBlock(suspensionReasons);
 
-          if(dailyDataObject.stk != null && dailyDataObject.rp != null && dailyDataObject.git != null && dailyDataObject.cs != null){
+          if(dailyDataObject.stk != null || dailyDataObject.rp != null || dailyDataObject.git != null || dailyDataObject.cs != null){
             tooltip += generateDailyDataBlock(dailyDataObject.stk,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.floor(params.datum.normYellow*3), params.datum.normBlue)
           }
 
@@ -538,6 +544,9 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
     }
 
     const getMonitoringDate = () => {
+        if(monitoringData.length == 0){
+          return '';
+        }
         if(suspensionType === 'upwardStockBased') return monitoringData[0]['srrd'];
         if(suspensionType === 'downwardStockBased') return monitoringData[0]['sgrd'];
         if(suspensionType === 'upwardConsumptionBased') return monitoringData[0]['crrd'];
@@ -620,31 +629,31 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>RLT :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['rlt']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rlt'] || ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Current Norm :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['nm']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['nm'] || ""}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Min Norm :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['mn']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['mn'] || ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>RCP :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['rcp']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rcp'] || ""}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>GCP :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['gcp']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['gcp'] || ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>

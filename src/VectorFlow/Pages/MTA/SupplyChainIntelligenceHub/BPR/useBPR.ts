@@ -469,7 +469,6 @@ const useBPR =()=>{
             WHCode:params.data['WHCode']
         }
         const result = await getDailyData(payload)
-        console.log("RESULT",result)
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
             rowData:params.data || [],
@@ -479,7 +478,6 @@ const useBPR =()=>{
             suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
             monitoringData:data['MonitoringData'] || []
         }
-        console.log(dailyData)
         dispatch(UPDATE_DAILY_DATA(dailyData));
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
