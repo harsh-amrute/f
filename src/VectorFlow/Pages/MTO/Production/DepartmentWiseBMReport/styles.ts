@@ -218,6 +218,14 @@ export const VFWrapper = styled.div`
     padding: 0 !important;
     margin-top: -20px !important;
   }
+  & .ag-header-cell-resize {
+    position: absolute;
+    z-index: 0 !important;
+    height: 100%;
+    width: 8px;
+    top: 0;
+    cursor: ew-resize;
+  }
 
 `
 

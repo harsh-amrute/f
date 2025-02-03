@@ -62,6 +62,7 @@ import { useGetDate } from "../../../../../VectorFlow/Services/MTO/Production/In
 import moment from "moment";
 import VFSelect from "../../../../../../src/components/VectorFLOW/commons/MTO/VFSelect";
 import ConfirmationModal from "./ConfirmationModal";
+import { InputCheckBox } from "./styles";
 
 interface ApiResponse {
   cc: string;
@@ -189,10 +190,10 @@ const OverallBmReport = () => {
 
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
     useGetUserUIConfigData();
-  const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
+  const { mutateAsync: updateUserUIConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
 
 
-  const { mutateAsync: getShortOrderCompleteOrder} = useShortOrderCompleteOrder();
+  const { mutateAsync: getShortOrderCompleteOrder, isLoading: isShortOrderCompleteOrder} = useShortOrderCompleteOrder();
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
@@ -541,6 +542,7 @@ const OverallBmReport = () => {
 
   const handleModalConfirm = async (orderId?: any, actionText?: any) => {
     try {
+      setShowModal(false);
 
       if (orderId && orderId !== "") {
    
@@ -577,15 +579,13 @@ const OverallBmReport = () => {
             }
           });
           setGridData(newGridData);
+          setMasterSelectedRowData([]); // after short/complete close reset selected rows 
 
           notifySuccess("Order closed successfully!");
         } else {
           notifySuccess("something went wrong!");
         }
-      }
-      
-      setShowModal(false);
-  
+      }  
   
     } catch (error) {
       console.error("Failed to perform action:", error);
@@ -700,10 +700,10 @@ const DropdownArrowIcon = () => (
           gap: "10px",
         }}
       >
-        <input
+        <InputCheckBox
           onChange={onCheckBoxToggle}
-          type="checkbox"
-          style={{ color: "pink" }}
+            type="checkbox"
+            theme={themeUi}
           checked={isCheckboxChecked}
         />
         <VFSelect
@@ -1244,13 +1244,13 @@ const DropDownCellRenderer= (props: any) =>  {
           floatingFilter: true,
           //suppressFiltersToolPanel:true,
           cellStyle: {
-            "text-align": "center",
+            "textAlign": "center",
             //'height': '50px',
-            //"font-style": "Roboto",
-            //"font-variant": "normal",
-            "font-size": "18px",
-            "font-family": "Roboto",
-            "white-space": "nowrap",
+            //"fontStyle": "Roboto",
+            //"fontVariant": "normal",
+            "fontSize": "18px",
+            "fontFamily": "Roboto",
+            "whiteSpace": "nowrap",
             resizable: "true",
             color: "#000",
           },
@@ -1390,8 +1390,7 @@ const DropDownCellRenderer= (props: any) =>  {
 
   const [isReset, setIsReset] = useState<any>();
   const [columnState, setColumnState] = useState<any>();
-
- 
+  const [isPivot, setIsPivot] = useState<any>(false);
 
   const getUserColumnConfig = async () => {
     try {
@@ -1402,7 +1401,8 @@ const DropDownCellRenderer= (props: any) =>  {
 
       const newConfig = JSON.parse(data?.data?.data?.[0]?.columns_settings) || [];
 
-      setColumnState(newConfig);
+      setColumnState(newConfig.cs);
+      setIsPivot(newConfig.pivot);
 
 
       if (!data) {
@@ -1419,26 +1419,29 @@ const DropDownCellRenderer= (props: any) =>  {
   const handleSaveClick = async (coldefs?: any) => {    
     try {
       if (coldefs) {
+        const fullConfig = { pivot: false, cs: coldefs };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOverallBMReport,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
 
         await updateUserUIConfigData([payload]);
-        setColumnState([...coldefs]); 
+        setColumnState([...coldefs]);
+        setIsPivot(false);
 
       } else {
         if (refGraph2?.current?.api) {
           const config = refGraph2.current.api.getColumnState();
+          const isPivot = refGraph2.current?.api.isPivotMode();
+          const fullConfig = { pivot: isPivot, cs: config };
 
-
-         setColumnState(config)
+          // setColumnState(config);
 
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOverallBMReport,
-            cs: JSON.stringify(config),
+            cs: JSON.stringify(fullConfig),
           };
           await updateUserUIConfigData([payload]);
           await getUserColumnConfig();
@@ -1478,7 +1481,10 @@ const DropDownCellRenderer= (props: any) =>  {
         state: columnState,
         applyOrder: true
       });
-      if (!result) {
+      
+      const applyPivot = refGraph2.current?.api.setGridOption('pivotMode', isPivot);
+      
+      if (!result || !applyPivot) {
         console.error('Failed to apply column state');
       }
     }
@@ -1520,12 +1526,13 @@ const DropDownCellRenderer= (props: any) =>  {
           fontSize: "14px",
           fontWeight: "bold",
           fontFamily: "Roboto",
+          marginTop:"10px"
         }}
       >
         <p>{date && date.length ? moment(date).format("D MMM YYYY") : " "}</p>
       </div>
 
-      {(isGridLoading || isExcelLoading || isGetStateLoading) && (
+      {(isGridLoading || isExcelLoading || isGetStateLoading || isShortOrderCompleteOrder || isUpdateUserConfig) && (
         <OverlayLoader />
       )}
 
