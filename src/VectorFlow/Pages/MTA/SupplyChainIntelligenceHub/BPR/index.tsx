@@ -14,14 +14,11 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import { GridStateContext } from "../../../../../context/GridStateContext"
 import BPRRemarkHistoryModal from "./BPRRemarkHistoryModal"
 import { Skeleton } from "../../../../../components/commons/styled";
-import { useUserData } from "../../../../../context/UserDataContext";
 import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
 import { useMemo } from "react"
 
 const BPR = ()=>{
 
-  const { user } = useUserData();
-  const themeUi = user?.user?.theme_ui;
 
   const {
         // isSideBarOpen,
@@ -181,7 +178,7 @@ const BPR = ()=>{
                     rowsPerPage={rowsPerPage}
                     handleChangePage={handleOnPageChange}
                 />
-                <VFSaveRemark onSubmitRemarks={onSubmitRemarks} themeUi={themeUi}  />
+                <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
               {/* {onSubmitRemarks && (
                  <CustomizedOutlineWrapper style={{ margin: '1rem 0', padding: 0 }}>
                     <VFButtonOutline 

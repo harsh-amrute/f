@@ -1,7 +1,7 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import { useGetDBMUIConfiguration,useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
-import { convertUiConfigToOptions, mapDBMFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapDBMFieldsToColDefs, mapColumnsWithConfigs  } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -17,6 +17,7 @@ import { notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import SuggestionCategoryCellRenderer from "./SuggestionCategoryCellRendere"
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
+import { ColDef } from 'ag-grid-community';
 
 const useDBM =()=>{
     //const [DBMApplySelectedNormData,setDBMApplySelectedNormData] = useState<any[]>([])
@@ -57,6 +58,8 @@ const useDBM =()=>{
 
     const recordsPerPage = parseInt(process.env.REACT_APP_DBM_ROWS_PER_PAGE || '50');
     const columnsToBeExcluded = ['checkbox', 'dailydatagraph', '0', 'sleep']
+    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [DBMColumns,setDBMColumns] = useState<ColDef[]>([])
 
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
@@ -70,24 +73,65 @@ const useDBM =()=>{
 
       },[isDBMConfigLoading])
 
-      useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({"reportname": "DBMNorm"})
-            console.log(data)
-            setGridState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:[],
-                pivot:false
-            })
-          }
-        }
-        getTableState()
+    //   useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState({"reportname": "DBMNorm"})
+    //         setGridState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         setGridState({
+    //             charts:[],
+    //             columns:[],
+    //             pivot:false
+    //         })
+    //       }
+    //     }
+    //     getTableState()
 
 
-    },[])
+    // },[])
+
+        useEffect(()=>{
+            const getTableState = async()=>{
+              try{
+                if(data?.data.data){
+                    setInitialColumnState(data?.data.data)
+                }
+                const stateData =  await getState({"reportname":"DBMNorm"})
+                console.log(stateData)
+                if(stateData.data.data.length!==0){
+                    const parsedContent = JSON.parse(stateData.data.data)
+                    const generatedColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
+                    const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
+                    setGridState({
+                        pivot:parsedContent.pivot,
+                        charts:parsedContent.charts,
+                        columns:coldefs
+                    })
+                    console.log(parsedContent)
+                    setDBMColumns(coldefs)
+                }else{
+                    const MappedColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
+                    setGridState({
+                        charts:[],
+                        columns:MappedColumns,
+                        pivot:false
+                    })
+                    setDBMColumns(MappedColumns)
+                }
+              }catch(err:any){
+                console.log(err)
+                setGridState({
+                    charts:[],
+                    columns:DBMColumns,
+                    pivot:false
+                })
+              }
+            }
+            if(data!==undefined){
+                getTableState()
+            }
+        },[data])
   
     useEffect(()=>{
         if(internalRef && gridState && gridState.columns){
@@ -120,7 +164,7 @@ const useDBM =()=>{
         getDataCount(currentFilter);
         getDBMRowData(currentFilter,currentPage);
     }
-    const DBMColumns = useMemo(()=>mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter),[data])
+    // const DBMColumns = useMemo(()=>mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter),[data])
 
     const showAllCheckbox = () => {
         const rows:any[] = []
@@ -139,6 +183,12 @@ const useDBM =()=>{
                 gridRef.current?.api.selectAll();
             }
     }
+
+        const onResetCallback = async()=>{
+            const MappedColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
+            console.log(MappedColumns)
+            setDBMColumns(MappedColumns)
+        }
 
     const handleChangePage = async (pageNo:any) => {
         setCurrentPage(pageNo);
@@ -308,7 +358,8 @@ const useDBM =()=>{
         onDeleteFilter,
         onExportToExcelCallBack,
         recordsPerPage,
-        generalFilterOptions
+        generalFilterOptions,
+        onResetCallback
     }
 }
 
