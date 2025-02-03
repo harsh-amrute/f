@@ -4,6 +4,7 @@ import { DBMSuggestionsReasonsToIdMapper } from "../../../../../helpers/BPRConst
 import Portal from "../../.././../../components/VectorFLOW/layouts/Portal"
 import {  BPRViewTableToolTip } from "../../SupplyChainIntelligenceHub/BPR/styles"
 import { SuggestionCategoryIcon } from "./styles"
+import Tooltip from "../../../../../VectorFlow/Pages/MTO/Common/Tooltip"
 
 
 const SuggestionCategoryCellRenderer = (params:any)=>{
@@ -36,17 +37,11 @@ const SuggestionCategoryCellRenderer = (params:any)=>{
         setIsOpen(false)
     }
     return(
+        <Tooltip content={<p style={{textAlign:'center', fontSize: '10px', padding: '12px'}}>{Comment}</p>}>
         <React.Fragment>
            {(upwards.includes(CommentId))?<SuggestionCategoryIcon src='/assets/img/VectorFLOW/BPR/analytics-increase.svg' onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}/> :<SuggestionCategoryIcon style={{transform:'rotate(90deg)'}} src='/assets/img/VectorFLOW/BPR/analytics-decrease.svg' onMouseEnter={onMouseIn} onMouseLeave={onMouseOut}/>}
-           {isOpen && (
-                    <Portal wrapperId="viewtable">
-                        <BPRViewTableToolTip ref={ref} onMouseEnter={()=>{
-                            setIsOpen(true)}} onMouseLeave={()=>setIsOpen(false)} style={{top:toolTipPosition.top,left:toolTipPosition.left,transform:'translate(-50%,-100%)'}}>
-                            <p style={{textAlign:'center'}}>{Comment}</p>
-                        </BPRViewTableToolTip>
-                    </Portal>
-                )}
         </React.Fragment>
+        </Tooltip>
     )
 }
 
