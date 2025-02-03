@@ -1485,6 +1485,7 @@ const useViewModify = (pageType:string) => {
         }
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
+        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
         // dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
         // dispatch(UPDATE_ACTIVE_MASTER([]))
@@ -1512,6 +1513,7 @@ const useViewModify = (pageType:string) => {
         setCanToggleMaster(true)
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
+        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
         // dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
         // dispatch(UPDATE_ACTIVE_MASTER([]))
