@@ -287,17 +287,15 @@ const useBPR =()=>{
     },[])
 
 
-    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
-        return  {
-            onRowDataUpdated:(event)=>{
-                const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
-                if(tempDownloadData){
-                    event.api.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:columnsToBeIncluded})
-                    setTempDownloadData(false)
-                }
+    const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+            const columnsToBeIncluded = ref?.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
+            if(tempDownloadData){
+                event?.api?.exportDataAsExcel({fileName:'BufferPenetrationReport',columnKeys:columnsToBeIncluded})
+                setTempDownloadData(false)
             }
-          };
-    },[])
+        }
+    }
 
       const getInitialBPRRowData=async()=>{
         try{

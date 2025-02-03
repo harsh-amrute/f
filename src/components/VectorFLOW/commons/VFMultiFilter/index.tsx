@@ -398,7 +398,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
                     <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionIntegerOptions)}/>    
 
                     : 
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/>    
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/>    
 
                     }
                     {/* <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue()}/>     */}
@@ -680,7 +680,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                     label:"",
                     name:filterId
                 }
+    
                 filterObj[property as keyof BPRFilter] = finalValue
+                filterObj.label = String(filterObj.type)
                 setFilterState({
                     ...filterState,
                     [currGroupKey]:{
