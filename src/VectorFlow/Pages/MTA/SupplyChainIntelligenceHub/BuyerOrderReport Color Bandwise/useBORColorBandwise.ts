@@ -1,6 +1,6 @@
 // import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData, useGetUiConfig} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapBORColorBandWiseFieldsToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBORColorBandWiseFieldsToColDefs, MainMenuItemsCustomization, generateAndMapColumns ,mapColumnsWithConfigs  } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
@@ -81,6 +81,8 @@ export const useBORColorBandwise =()=>{
      const {mutateAsync:getDataCount} = useGetBORColorBandWiseRecordCount();
 
      const {mutateAsync:getDailyData} = useGetDailyData();
+     const [intialColumnState,setInitialColumnState] = useState<any>(undefined)
+     const [BORCBColumns , setBORCBColumns] =  useState<ColDef[]>([])
 
      const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -117,11 +119,11 @@ export const useBORColorBandwise =()=>{
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
             rowData:params.data,
-            chartData:data['StockData'],
-            normChangeData:data['NormChangeHistoryData'],
-            masterData:data['MasterData'][0],
+            chartData:data['StockData'] ? data['StockData'] : [],
+            normChangeData:data['NormChangeHistoryData'] ? data['NormChangeHistoryData'] : [],
+            masterData: Array.isArray(data['MasterData']) && data['MasterData']?.length > 0 ? data['MasterData'][0] : undefined,
             suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-            monitoringData:data['MonitoringData']
+            monitoringData:data['MonitoringData'] ? data['MonitoringData'] : []
         }
   
         dispatch(UPDATE_DAILY_DATA(dailyData));
@@ -136,28 +138,66 @@ export const useBORColorBandwise =()=>{
 
       const [gridState,setGridState] = useState<any>()
 
-      useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({"reportname": "BOR_Color_Bandwise"})
-            setGridState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:[],
-                pivot:false
-            })
-          }
-        }
-        getTableState()
+    //   useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState({"reportname": "BOR_Color_Bandwise"})
+    //         setGridState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         setGridState({
+    //             charts:[],
+    //             columns:[],
+    //             pivot:false
+    //         })
+    //       }
+    //     }
+    //     getTableState()
 
-    },[])
+    // },[])
+
+
+        useEffect(()=>{
+            const getTableState = async()=>{
+              try{
+                const stateData =  await getState({"reportname":"BORColorBandwise"})
+                if(stateData.data.data.length!==0){
+                    const parsedContent = JSON.parse(stateData.data.data)
+                    const generatedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  undefined, onOpenDailyDataGraph)
+                    const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
+                    setGridState({
+                        pivot:parsedContent.pivot,
+                        charts:parsedContent.charts,
+                        columns:coldefs
+                    })
+                    setBORCBColumns(coldefs)
+                }else{
+                    const MappedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  undefined, onOpenDailyDataGraph)
+                    setGridState({
+                        charts:[],
+                        columns:MappedColumns,
+                        pivot:false
+                    })
+                    setBORCBColumns(MappedColumns)
+                }
+              }catch(err:any){
+                console.log(err)
+                setGridState({
+                    charts:[],
+                    columns:BORCBColumns,
+                    pivot:false
+                })
+              }
+            }
+            if(intialColumnState!==undefined){
+                getTableState()
+            }
+        },[intialColumnState])
   
-    useEffect(()=>{
-      if(internalRef && gridState && gridState.columns){
-          internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
-      }
-  },[internalRef,gridState])
+        useEffect(()=>{
+          if(internalRef && gridState && gridState.columns){
+              internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+          }
+      },[internalRef,gridState])
 
       useEffect(()=>{       
         const fetchData = async () => {
@@ -203,10 +243,17 @@ export const useBORColorBandwise =()=>{
 
     }
 
+
+    const onResetCallback = async()=>{
+      const MappedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  undefined, onOpenDailyDataGraph)
+      setBORCBColumns(MappedColumns)
+  }
+
     const getBORColorBandWiseUiConfig = async()=>{
       try{
           const response = await getUiConfig('BOR_OA')
-          setColDefs(mapBORColorBandWiseFieldsToColDefs(response.data.data,onOpenDailyDataGraph))
+          setInitialColumnState(response.data.data)
+          //setColDefs(mapBORColorBandWiseFieldsToColDefs(response.data.data,onOpenDailyDataGraph))
       }catch(err:any){
           notifyError("Something Went Wrong")
       }
@@ -223,6 +270,23 @@ export const useBORColorBandwise =()=>{
       const updatedFilter = onDelete(parentId,filterId,value)
       onApplyFilter(updatedFilter)
   }
+
+    
+    const defaultColDefObject = useMemo(()=>{
+      return {
+          floatingFilter: true,
+          cellStyle:{
+              "flex":1,
+              'text-align':'center',
+              'height':'50px',
+              "font-style":"normal",
+              "display":"block",
+              'text-overflow':'ellipsis',
+              'white-space':'nowrap'
+          },
+      }
+    },[])
+
 
      const agGridProps:AgGridReactProps = useMemo(()=>{
       return {
@@ -246,22 +310,7 @@ export const useBORColorBandwise =()=>{
          pagination:false,
          sideBar:defaultAgGridSideBarForBPR,
         // pivotMode:true,
-         defaultColDef:{
-            floatingFilter: true,
-            cellStyle:{
-                'text-align':'center',
-                'height':'50px',
-                "font-style":"normal",
-            " font-variant":"normal",
-            " font-weight":"300",
-            " font-size":"20px",
-            " font-family":"Roboto",
-            "display":"block",
-            'text-overflow':'ellipsis',
-            'white-space':'nowrap'
-            },
-           
-        },
+         defaultColDef:defaultColDefObject,
         onGridReady:(params)=>setInternalRef(params),
         onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode")
       }
@@ -282,11 +331,14 @@ export const useBORColorBandwise =()=>{
         }
     }
 
-      const tempAgGridProps:AgGridReactProps = {
-        onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport-ColorBandWise',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+      const tempAgGridProps:AgGridReactProps = useMemo(()=>{
+        return{
+          onRowDataUpdated:(event)=>{
+            if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport-ColorBandWise',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+           }
         }
-      };
+      },[])
+
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getData({
             filters:currFilter,
@@ -321,14 +373,16 @@ export const useBORColorBandwise =()=>{
    }
 
       const generalFilterOptions = useMemo(()=>{
-        return convertUiConfigToOptions(colDefs)
-    },[colDefs])
+        if(BORCBColumns.length!==0){
+          return convertUiConfigToOptions(BORCBColumns)
+        }
+    },[BORCBColumns])
 
   
      return {   
         ref,    
         isLoading :isBORUILoading,      
-        colDefs,
+        BORCBColumns,
         agGridProps,
         rowData ,
         currentPage,
@@ -356,6 +410,7 @@ export const useBORColorBandwise =()=>{
         onDeleteFilter,
         generalFilterOptions,
         onSubmitRemarks,
-        editedRows
+        editedRows,
+        onResetCallback
     }
 }

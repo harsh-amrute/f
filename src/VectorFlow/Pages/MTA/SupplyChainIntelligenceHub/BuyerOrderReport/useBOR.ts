@@ -174,14 +174,14 @@ export const useBOR =()=>{
         const updatedRows = prev.map((row) => {
           if (row[primaryKey1] === newRow[primaryKey1] && row[primaryKey2]===newRow[primaryKey2] && row[primaryKey3]===newRow[primaryKey3]) {
             found = true;
-            return newRow.remarks.length === 0 ? null : { ...newRow }; // Return updated row
+            return newRow.remarks && newRow.remarks.length !== 0 ? { ...newRow } : null; // Return updated row
           }
           return row; // Return unchanged row
         });
 
         const filteredUpdatedRows = updatedRows.filter(row => row !== null);
     
-        if (!found && newRow.remarks.length > 0) {
+        if (!found && newRow.remarks && newRow.remarks.length > 0) {
           // If no existing row was found, add the new row
           return [...filteredUpdatedRows, {...newRow}];
         }
@@ -197,9 +197,7 @@ export const useBOR =()=>{
           notifyError('Please add remarks/remark to save')
           return
         }
-      console.log("EDITED ROWSSS",editedRows)
       const toastId = notifyLoader("Submitting Remark")
-      console.log("EDITEDROWS",editedRows)
       const payload = editedRows.map((e)=>{
           return {
               remark:e.remarks,
@@ -212,10 +210,13 @@ export const useBOR =()=>{
       const {data} = await submitRemark({data:payload})
       editedRows.forEach((editedRow) => {
           // Find the row node using both SKUCode and WHCode as unique identifiers
-          const rowNode = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WHCode}-${editedRow.SupplierCode}`);
-          console.log("ROWNODE",rowNode)
+          const rowNode:any = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WHCode}-${editedRow.SupplierCode}`);
           if (rowNode) {
-            // Update the 'Remarks' column with the new remark
+            const RemarkColumn = BORColumns.find(obj => obj.colId === "Remark");
+            if(rowNode?.data?.Remark!==undefined && RemarkColumn!==undefined){
+              // Check if Remark column exist in both columnDef and RowData , only then update its value for better ui
+              rowNode?.setDataValue('Remark', editedRow?.remarks);
+            }
             rowNode.setDataValue('Remark', editedRow.remarks);
     
             // Clear the 'Edit Remarks' column after submission
