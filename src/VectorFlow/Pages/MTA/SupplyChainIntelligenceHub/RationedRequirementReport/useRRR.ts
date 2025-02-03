@@ -327,13 +327,12 @@ const useRRR =()=>{
     // }
 
 
-    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
-        return {
+    const tempAgGridProps:AgGridReactProps =  {
           onRowDataUpdated:(event)=>{
-            if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+            if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'RationedRequirementReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
            }
         }
-      },[])
+      
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getRRRData({
