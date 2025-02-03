@@ -223,13 +223,12 @@ const useInTransitWhereAbouts = ()=>{
       }
     },[])
 
-    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
-      return {
+    const tempAgGridProps:AgGridReactProps =  {
         onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'InTransitWhereAbouts',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+         if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'InTransitWhereAbouts',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
         }
       }
-    },[])
+    
 
 
       const onCellValueChanged = (newRow: any, primaryKey: string) => {
