@@ -1485,6 +1485,7 @@ const useViewModify = (pageType:string) => {
         }
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
+        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
         // dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
         // dispatch(UPDATE_ACTIVE_MASTER([]))
@@ -1512,6 +1513,7 @@ const useViewModify = (pageType:string) => {
         setCanToggleMaster(true)
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
+        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
         // dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
         // dispatch(UPDATE_ACTIVE_MASTER([]))
@@ -1592,7 +1594,11 @@ const useViewModify = (pageType:string) => {
 
       const onSaveToDraft = async () => {
         try{
-          dispatch(REMOVE_COLDEFS(['checkbox']))
+          const colDefs = ref.current?.api.getColumnDefs() || [];
+          const checkboxExists = colDefs.some((col: any) => col.field === "checkbox");
+          if (checkboxExists) {
+            dispatch(REMOVE_COLDEFS(["checkbox"]));
+          }
           dispatch(UPDATE_IS_SAVING_DRAFT(true))
           let newData:any = []
           const errorOrWarning = activeMaster.rowData.find((row:any)=>(Object.keys(row).includes('error'))||(Object.keys(row).includes('warning')));
@@ -1627,8 +1633,11 @@ const useViewModify = (pageType:string) => {
           }
           console.log(newData)
           const res = await postDraftChunks(newData)
+          if(checkboxExists){
+            addCheckBoxColDefs()
+          }
           if(res){
-            dispatch(UPDATE_PROGRESS_STATE("savedToDraft"))
+            //dispatch(UPDATE_PROGRESS_STATE("savedToDraft"))
             if(draftID.length > 0){
               return notifySuccess("Draft Updated Successfully")
             }
@@ -1637,15 +1646,15 @@ const useViewModify = (pageType:string) => {
             }
           }
           notifyError("Something Went Wrong")
-          if(activeMaster.progress==='uploaded'){
-            addCheckBoxColDefs()
-          }
+          // if(activeMaster.progress==='uploaded'){
+          //   addCheckBoxColDefs()
+          // }
           return false
         }catch(err){
           notifyError("Something Went Wrong")
-          if(activeMaster.progress==='uploaded'){
-            addCheckBoxColDefs()
-          }
+          // if(activeMaster.progress==='uploaded'){
+          //   addCheckBoxColDefs()
+          // }
           return false
         }finally{
           dispatch(UPDATE_IS_SAVING_DRAFT(false))
@@ -1657,7 +1666,16 @@ const useViewModify = (pageType:string) => {
         const currentMasterData = masters.find((master:MDMMasterState)=>master.id === activeMaster.id)
         console.log("CURRENTMATTER",currentMasterData?.rowData)
         if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
-        dispatch(REMOVE_COLDEFS(['error','warning']));
+          const errorExist = currentMasterData?.rowData?.some((row: any) => row?.error !== undefined) || false;
+          const warningExist = currentMasterData?.rowData?.some((row: any) => row?.warning !== undefined) || false;
+        
+          if(!errorExist){
+            dispatch(REMOVE_COLDEFS(['error']));
+          }
+          if(!warningExist){
+            dispatch(REMOVE_COLDEFS(['warning']));
+          }
+        //dispatch(REMOVE_COLDEFS(['error','warning']));
         dispatch(UPDATE_PROGRESS_STATE('editOnline'));
         setEnableEditOnlineReset(false)
       }

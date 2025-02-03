@@ -2365,7 +2365,7 @@ export const getRemarkRelatedColumns = (onOpenRemarkHistory: (params: any, e: an
     {
       colId: 'remarks',
       field: 'remarks',
-      headerName: 'Edit Remarks',
+      headerName: 'Enter new remark',
       cellStyle:{
         backgroundColor: 'white',
         border: '1px solid #b9bdba',
@@ -2536,7 +2536,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     {
       colId: 'remarks',
       field: 'remarks',
-      headerName: 'Edit Remarks',
+      headerName: 'Enter new remark',
       // cellRenderer: 'submitRemarkCellRenderer',
       // cellRendererParams: {
       //   onClick: onOpenSubmitRemark
@@ -2861,7 +2861,7 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark
     {
       colId:'remarks',
       field:'remarks',
-      headerName:'Edit Remarks',
+      headerName:'Enter new remark',
             // cellRenderer: 'submitRemarkCellRenderer',
       // cellRendererParams: {
       //   onClick: onOpenSubmitRemark

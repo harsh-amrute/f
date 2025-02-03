@@ -523,17 +523,15 @@ export const useBOR =()=>{
         }
     }
 
-      const tempAgGridProps:AgGridReactProps = useMemo(()=>{
-        return {
-          onRowDataUpdated:(event)=>{
-            const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
-           if(tempDownloadData){
-            event.api.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:columnsToBeIncluded});
+      const tempAgGridProps:AgGridReactProps = {
+        onRowDataUpdated:(event)=>{
+          const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
+          if(tempDownloadData){
+            event?.api?.exportDataAsExcel({fileName:'BuyerOrderReport',columnKeys:columnsToBeIncluded});
             setTempDownloadData(false)
-           }
           }
         }
-      },[])
+      }
 
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getBorData({
