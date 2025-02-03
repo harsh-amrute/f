@@ -3244,6 +3244,7 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     checkboxSelection: true,
     headerCheckboxSelectionCurrentPageOnly: true,
     width: 60,
+    pinned: 'left',
     lockPosition: 'left',
   }
 

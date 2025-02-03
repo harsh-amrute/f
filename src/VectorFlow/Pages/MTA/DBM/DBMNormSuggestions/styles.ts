@@ -53,8 +53,8 @@ export const DBMApplyNormButton = styled.div`
 
 
 export const SuggestionCategoryIcon = styled.img`
-    height:18px;
-    width:18px;
+    height:12px;
+    width:12px;
 `
 
 export const ConfirmationDataTextContainer = styled.div`
