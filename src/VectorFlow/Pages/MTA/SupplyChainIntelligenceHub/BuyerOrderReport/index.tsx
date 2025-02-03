@@ -165,6 +165,7 @@ const BuyerOrderReport = ()=>{
             />
             <div style={{display:'none'}}>                
                   <VFTable
+                    key={'temp'} 
                     ref={tempRef}
                     columnDefs={BORColumns}
                     rowData={exportExcelRowData}
