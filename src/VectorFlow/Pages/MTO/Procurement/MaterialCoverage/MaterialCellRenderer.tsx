@@ -17,12 +17,12 @@ const MaterialCellRenderer = (params: any) => {
             <h3 style={{ marginLeft: 20, fontSize: 12 }}>Raw Material Details</h3>
 
             <SCDynamicContainer>
-
                 <VFTable
                     className='child-grid'
                     columnDefs={columnDef}
                     disableZoomScaling
                     defaultColDef={{
+
                         cellStyle: {
                             'flex': 1,
                             'text-align': 'center',
@@ -39,6 +39,9 @@ const MaterialCellRenderer = (params: any) => {
                             "display": "block",
                         },
                         flex: 1,
+                    floatingFilter: true, 
+                    filter: true, 
+                    menuTabs: ["filterMenuTab"],       
                     }}
                     rowData={params.data.children}
                     height={'180px'}
@@ -52,11 +55,8 @@ const MaterialCellRenderer = (params: any) => {
                     enableRangeSelection={true}
                     // paginationAutoPageSize={true}
                     // suppressPaginationPanel
-                    statusBar={{
-                        statusPanels: [
-                            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                        ]
-                    }}
+                    hideStatusBar={true} 
+                    sideBar={false} 
                 />
             </SCDynamicContainer>
         </div>

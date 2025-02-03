@@ -1,5 +1,5 @@
 import { AgCharts } from 'ag-charts-react'
-import { useEffect, } from 'react'
+import React, { useEffect, } from 'react'
 import { useSaveRouteData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
@@ -8,8 +8,8 @@ import OverlayLoader from '../../Common/Loader'
 import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
 
-const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, themeUi }: any) => {
-
+const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, themeUi, orderKey }: any) => {
+    
     const { mutateAsync: saveRouteData, isLoading, isSuccess, isError } = useSaveRouteData();
 
     type Route = {
@@ -68,7 +68,7 @@ const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum
                 "orders": [
                     {
                         "route": routeName,
-                        "ok": Object.keys(lineCCRDetails)[0],
+                        "ok": orderKey,
                         "ccrdetails": myCCRDetails
                     }
                 ]
@@ -206,4 +206,4 @@ const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum
     )
 }
 
-export default EditRouteModal
+export default React.memo(EditRouteModal);

@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useEffect, useState} from 'react';
 import moment from 'moment';
 import { useUserData } from "../../../../../context/index";
 import { DatePickerWrapper } from "./styles"
@@ -15,50 +15,61 @@ const DueDateCellRenderer = (params: any) => {
     const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
-    console.log()
+    useEffect(()=>{
+        if(!params.node.selected){
+            params.data.dd = params.data.oldDate
+            setCurrDate(params.data.oldDate)
+        }
+    },[params.node.selected])
 
     return (
-        <DatePickerWrapper theme={themeUi}>
-            <input type="date"
-                className='date-pick'
-                id='dateField'
-                data-testid="datepicker"
-                style={{
-                    // top: '141px',
-                    left: '651px',
-                    // width: '80%',
-                    // height: '100%',
-                    textAlign: 'left',
-                    background: 'transparent',
-                    font: '24px',
-                    zoom: 0.75,
-                    letterSpacing: '0px',
-                    color: 'transparent',
-                    opacity: 1,
-                    fontSize: '15px',
-                    padding: '2%',
-                    fontFamily: 'Roboto',
-                    border: '0px solid white',
-                    pointerEvents: (!params.node.selected) ? 'none' : 'unset',
-                    cursor: (!params.node.selected) ? 'not-allowed' : 'pointer'
-                }}
-
-                
-
-                min={datetime}
-                disabled={!params.node.selected}
-                onChange={(e) => { params.data.dd = e.target.value,params.data.addChangeDate(e.currentTarget.value, params.data.odk), setCurrDate(e.target.value) }}
-                value={(!params.node.selected)?params.data.oldDate:currDate}
-
-            />
-            <p style={{position: 'absolute', zIndex: '2', top: '9%', left: '25%', padding: '0.8% 6%', background: 'transparent'}}>
-                {(!params.node.selected)?params.data.oldDate:currDate}
-            </p>
-        </DatePickerWrapper>
-
-
-
-    )
+      <DatePickerWrapper theme={themeUi}>
+        <input
+          type="date"
+          className="date-pick"
+          id="dateField"
+          data-testid="datepicker"
+          style={{
+            // top: '141px',
+            left: "651px",
+            // width: '80%',
+            // height: '100%',
+            textAlign: "left",
+            background: "transparent",
+            font: "24px",
+            zoom: 0.75,
+            letterSpacing: "0px",
+            color: "transparent",
+            opacity: 1,
+            fontSize: "15px",
+            padding: "2%",
+            fontFamily: "Roboto",
+            border: "0px solid white",
+            pointerEvents: !params.node.selected ? "none" : "unset",
+            cursor: !params.node.selected ? "not-allowed" : "pointer",
+          }}
+          min={datetime}
+          disabled={!params.node.selected}
+          onChange={(e) => {
+            params.data.dd = e.target.value;
+            setCurrDate(e.target.value);
+          }}
+          value={!params.node.selected ? params.data.oldDate : currDate}
+        />
+        <p
+          style={{
+            position: "absolute",
+            zIndex: "2",
+            top: "9%",
+            left: "25%",
+            padding: "0.8% 6%",
+            background: "transparent",
+          }}
+        >
+          {!params.node.selected ? params.data.oldDate : currDate}
+        </p>
+      </DatePickerWrapper>
+    );
 }
 
 export default DueDateCellRenderer

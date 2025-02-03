@@ -3,12 +3,12 @@ import { SCButton } from '../../../../../components/layouts/NavbarRight/styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import { ContentWrapper, Text } from './DynamicReleaseManagement.styled'
 import OverlayLoader from '../../Common/Loader'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
 
-const EditRouteModal = ({ dataUpdated, setDataUpdated, rowRelase, order_key, message, themeUi, showModal, selectedOrders, setShowModal }: any) => {
-
+const EditRouteModal = ({ setDataUpdated, setResetReleaseCheckbox, rowRelase, order_key, message, themeUi, showModal, selectedOrders, setShowModal }: any) => {
+    
     const { mutateAsync: updateDynamicReleaseData, isLoading, isSuccess, isError } = useUpdateDynamicReleaseData();
 
 
@@ -35,7 +35,8 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, rowRelase, order_key, mes
         try {
             const response = await updateDynamicReleaseData(body)
             if (response.status === 200) {
-                setDataUpdated(!dataUpdated)
+                setDataUpdated(true);
+                setResetReleaseCheckbox(true);
                 setShowModal(false);
             }
         }
@@ -80,4 +81,4 @@ const EditRouteModal = ({ dataUpdated, setDataUpdated, rowRelase, order_key, mes
     )
 }
 
-export default EditRouteModal
+export default React.memo(EditRouteModal);

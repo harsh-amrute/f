@@ -30,17 +30,35 @@
   --ag-header-cell-moving-background-color: rgb(80, 40, 140) !important; */
 }
 
-.vfwrap .ag-icon-filter, .vfwrap .ag-icon-menu-alt, .vfwrap .ag-icon-expanded, .vfwrap .ag-icon-contracted, .vfwrap .ag-icon-desc, .vfwrap .ag-icon-asc{
+.vfwrap .ag-icon-filter, .vfwrap , .vfwrap .ag-icon-expanded, .vfwrap .ag-icon-contracted, .vfwrap .ag-icon-desc, .vfwrap .ag-icon-asc{
   zoom: 1;
-  color: white;
+  color: black;
+  
+}
+
+.ag-icon-filter:hover{
+  color: black !important;
+}
+
+.ag-grid-inner-table-icon{
+  color: black;
+
+}
+.ag-icon-menu-alt{
+  background-color: black;
+}
+
+.child-grid .ag-icon-menu-alt{
+  background-color: white !important;
+  color: black !important;
 }
 
 .vfwrap .ag-header-row-column-filter .ag-icon-filter{
-  color: black;
+  color: black !important;
 }
 
 .vfwrap .ag-menu-list .ag-icon-asc,  .vfwrap .ag-menu-list .ag-icon-desc{
-  color: black;
+  color: black !important;
 }
 
 .vfwrap .ag-status-bar {
