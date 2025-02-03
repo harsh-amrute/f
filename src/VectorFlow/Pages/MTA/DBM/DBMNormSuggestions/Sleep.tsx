@@ -62,8 +62,8 @@ export const DBMSleepCellRenderer = (params: any) => {
     <DBMSleepCellRendererWrapper>
       <img
         src="/assets/img/SleepIconDBM.svg"
-        height={28}
-        width={28}
+        height={14}
+        width={14}
         onClick={onSleepClick}
         style={{ opacity: iconEnabled ? 1 : 0.3 }}
       />

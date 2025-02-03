@@ -1,17 +1,19 @@
 import React from 'react';
 import { SaveRemarkWrapper } from "./styles";
 import VFButtonOutline from '../VFButtonOutline';
+import { useUserData } from "../../../../context/UserDataContext";
 
 interface VFSaveRemarkProps {
     onSubmitRemarks: () => void;
-    themeUi: string;
 }
 
 const VFSaveRemark = (props: VFSaveRemarkProps) => {
     const {
         onSubmitRemarks,
-        themeUi
     } = props;
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
 
     return (
         <SaveRemarkWrapper style={{ margin: '1rem 0', padding: 0 }}>
