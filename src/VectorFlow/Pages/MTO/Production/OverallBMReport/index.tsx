@@ -1256,7 +1256,7 @@ const DropDownCellRenderer= (props: any) =>  {
             color: "#000",
           },
           // floatingFilterComponentParams: {
-          //   suppressFilterButton: true,
+          //   // suppressFilterButton: true,
           // },
         },
       },
