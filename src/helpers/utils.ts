@@ -4070,6 +4070,8 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
       selectedFilter[key] = { ...newFilter };
     }
 
+
+
   }
 
   return selectedFilter;
