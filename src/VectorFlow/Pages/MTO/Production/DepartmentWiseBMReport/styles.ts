@@ -11,7 +11,7 @@ import * as globalstyles from '../../../../../styles/global'
 //     background-color:red;
 //   }
 export const BMDepWrapper = styled.div`
-margin-left: 3rem;
+// margin-left: 3rem;
 @media only screen and (min-width: ${gridSystem.size.mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
    margin-left: -40px;
    margin-top: -40px;
