@@ -1248,7 +1248,7 @@ const OverallBmReport = () => {
             color: "#000",
           },
           // floatingFilterComponentParams: {
-          //   suppressFilterButton: true,
+          //   // suppressFilterButton: true,
           // },
         },
       },
