@@ -58,7 +58,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         {label:'Downward Consumption Based',value:'downwardConsumptionBased'}
     ]
 
-    const [horizon,setHorizon] = useState<number>(chartData.length);
+    const [horizon,setHorizon] = useState<number>(14);
     const [suspensionType,setSuspensionType] = useState('')
     const [normData,setNormData] = useState<any[]>([])
     const [adjustedChartData,setadjustedChartData] = useState<any[]>([]);
