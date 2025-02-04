@@ -7,6 +7,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import DailyDataGraphModal from '../../../../../components/VectorFLOW/commons/DailyDataGraphModal';
 import NormChangeHistoryTable from '../../../../../components/VectorFLOW/commons/NormChangeHistoryTable';
 import { GridStateContext } from '../../../../../context/GridStateContext';
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 const DBM = () => {
 
@@ -39,7 +40,8 @@ const DBM = () => {
   onExportToExcelCallBack,
   recordsPerPage,
   generalFilterOptions,
-  onResetCallback
+  onResetCallback,
+  lastRunDate
 } = useDBM();
 
  if(isLoading){
@@ -77,9 +79,13 @@ const DBM = () => {
         onApplyFilter={handleApplyFilter}
         multiFilter={currentFilter}
         setMultiFilter={setCurrentFilter}
+        lastRunDate={lastRunDate}
         generalFilterOptions={generalFilterOptions}
         onDelete={onDeleteFilter}
       />
+      {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
       <DBMLayout>
         <div style={{height:'70vh'}}>
             {

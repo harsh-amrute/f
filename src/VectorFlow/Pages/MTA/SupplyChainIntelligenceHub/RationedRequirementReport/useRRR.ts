@@ -12,6 +12,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 
 const useRRR =()=>{
@@ -52,6 +53,8 @@ const useRRR =()=>{
     // const [rowData,setRowData] = useState([]);
 
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+
+    const {date:lastRunDate} = useGetLastRunData()
 
     // const RRRColumnData = useMemo(() => {
     //         return mapRRRFieldsToColDefs(
@@ -371,7 +374,8 @@ const useRRR =()=>{
         isSavedDataLoading,
         ref,
         generalFilterOptions,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     }
 }
 

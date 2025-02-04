@@ -13,6 +13,7 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import { ButtonWrapper } from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/styles"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 
 
@@ -67,7 +68,8 @@ const InTransitWhereAbouts = ()=>{
         handlePageChange,
         editedRows,
         onSubmitEditedRows,
-        themeUi
+        themeUi,
+        lastRunDate
     } = useInTransitWhereAbouts()
 
     return(
@@ -96,6 +98,7 @@ const InTransitWhereAbouts = ()=>{
                 genericRecordCount={recordCount}
                 onExportToExcelCallBack={onExportToExcelCallBack}
                 multiFilter={currentFilter}
+                lastRunDate={lastRunDate}
                 setMultiFilter={setCurrFilter}
                 onDelete={onDeleteFilter}
                 onApplyFilter={onApplyFilter}
@@ -104,6 +107,9 @@ const InTransitWhereAbouts = ()=>{
                 disableChartAndGridViewToggle
               />
               </div>
+              {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
           
         {
             isLoading

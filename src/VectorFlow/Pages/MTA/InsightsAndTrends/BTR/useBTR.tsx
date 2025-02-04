@@ -29,6 +29,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context"
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
 import { BTRCategoryTextToNumberMapper } from "../../../../../helpers/BPRConstants"
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 import _ from 'lodash'
 
@@ -92,6 +93,7 @@ const useBTR = () => {
     const [verticalView, setVerticalView] = useState<boolean>(true)
     const [techRowData, setTechRowData] = useState<Array<any>>([])
     const [ecoRowData, setEcoRowData] = useState<Array<any>>([])
+    const {date:lastRunDate} = useGetLastRunData()
 
     const techPaginationProps: VFPaginationProps = {
         selectedRows: 0,
@@ -411,7 +413,8 @@ const useBTR = () => {
         onApplyFilter,
         horizon,
         ecoColDefs,
-        setHorizon
+        setHorizon,
+        lastRunDate
     }
 }
 

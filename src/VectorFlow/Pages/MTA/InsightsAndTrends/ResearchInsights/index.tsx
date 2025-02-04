@@ -27,6 +27,7 @@ import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import { useUserData } from '../../../../../context'
 import { Skeleton } from '../../../../../components/commons/styled'
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 
 const ResearchInsights = ()=>{
@@ -85,7 +86,8 @@ const ResearchInsights = ()=>{
         continuousBlackAndRed,
         continuousWhite,
         generalFilterOptions,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -111,7 +113,7 @@ const ResearchInsights = ()=>{
             onResetCallback:onResetCallback
 
         }}>
-            <div style={{zoom:0.8, paddingLeft:'20px'}}>
+            <div style={{zoom:0.9, paddingLeft:'20px'}}>
        <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
@@ -127,11 +129,15 @@ const ResearchInsights = ()=>{
             multiFilter={currentFilter}
             setMultiFilter={setCurrentFilter}
             onDelete={onDeleteFilter}
+            lastRunDate={lastRunDate}
             generalFilterOptions={generalFilterOptions}
             onUpdateInsight={handleOnUpdateGraph}
             hideUpdateInsightsBtn={graphState==='default'}
         />
         </div>
+        {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
         
         
             <ResearchInsightsLayout>

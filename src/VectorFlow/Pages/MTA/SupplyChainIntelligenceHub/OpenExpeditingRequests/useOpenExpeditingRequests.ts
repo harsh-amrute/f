@@ -25,6 +25,7 @@ import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants"
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { updateCommonAttributes, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 const useOpenExpeditingRequests = () => {
 
@@ -68,6 +69,7 @@ const useOpenExpeditingRequests = () => {
 
     const gridZoom = getGridZoom()
     const screenZoom = getScreenZoomValue()
+    const {date:lastRunDate} = useGetLastRunData()
 
     const customCellRenderers = useMemo(() => ({
         // grapCellRenderer:BPRGraphCellRenderer,
@@ -504,7 +506,8 @@ const useOpenExpeditingRequests = () => {
         onSubmitEditedRows,
         editedRows,
         themeUi,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     }
 }
 
