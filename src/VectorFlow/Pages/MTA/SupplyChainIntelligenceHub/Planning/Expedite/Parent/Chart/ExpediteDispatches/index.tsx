@@ -787,8 +787,10 @@ const colDefs3: ColDef[] = [
                             defaultColDef={{
                                 floatingFilter:true,
                                 filter: "agMultiColumnFilter",
+                                flex:1
                               }}
                             height={'480px'}
+           
                           />
                         </div>
                 </VFModalCard>
