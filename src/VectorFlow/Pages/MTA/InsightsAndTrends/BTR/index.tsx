@@ -6,6 +6,7 @@ import { GridStateContext } from "../../../../../context/GridStateContext";
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 const BufferTrendReport = () => {
 
@@ -36,6 +37,7 @@ const BufferTrendReport = () => {
         horizon,
         ecoColDefs,
         setHorizon,
+        lastRunDate
     } = useBTR()
 
     
@@ -52,7 +54,7 @@ const BufferTrendReport = () => {
                 setExportExcelRowData: setExportExcelRowData
             }}
         >
-            <div style={{zoom:0.8,marginLeft:'10px'}}>
+            <div style={{zoom:0.9,marginLeft:'10px'}}>
                 <ActionToolBar 
                     view={'grid'} 
                     setCurrentTab={''} 
@@ -65,21 +67,21 @@ const BufferTrendReport = () => {
                     onExportToExcelCallBack={(pageNumber:number)=>{return onExportToExcelCallBack(pageNumber,currentTab.value)}}
                     genericRecordCount={parseInt(techTotalRows)}
                     multiFilter={currFilter}
+                    lastRunDate={lastRunDate}
                     setMultiFilter={setCurrFilter}
                     onDelete={onDeleteFilter}
                     onApplyFilter={onApplyFilter}
                     horizon={horizon}
                     onChangeHorizon={(value:number)=>setHorizon(value)}
+ 
                 />
             </div>
+            {lastRunDate && (
+                <LastRunDateComponent lastRunDate={lastRunDate} />
+            )}
         <BTRLayoutWrapper>
-
-        
-
-            
-
                 <BTRLayoutTabsWrapper>
-                    <div style={{ zoom: 0.6, marginTop: '-92px'}}>
+                    <div style={{ zoom: 0.6}}>
                         <VFFloatingTab
                             handleClick={(tab: any) => toggleCurrentTab(tab)}
                             tabs={[

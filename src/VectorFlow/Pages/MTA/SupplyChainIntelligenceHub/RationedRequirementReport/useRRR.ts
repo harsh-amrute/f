@@ -12,6 +12,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 
 const useRRR =()=>{
@@ -52,6 +53,8 @@ const useRRR =()=>{
     // const [rowData,setRowData] = useState([]);
 
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+
+    const {date:lastRunDate} = useGetLastRunData()
 
     // const RRRColumnData = useMemo(() => {
     //         return mapRRRFieldsToColDefs(
@@ -327,13 +330,12 @@ const useRRR =()=>{
     // }
 
 
-    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
-        return {
+    const tempAgGridProps:AgGridReactProps =  {
           onRowDataUpdated:(event)=>{
-            if(tempDownloadData) event.api.exportDataAsExcel({fileName:'RationedRequirementReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+            if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'RationedRequirementReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
            }
         }
-      },[])
+      
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getRRRData({
@@ -372,7 +374,8 @@ const useRRR =()=>{
         isSavedDataLoading,
         ref,
         generalFilterOptions,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     }
 }
 

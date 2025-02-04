@@ -78,6 +78,9 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
     ];
   
     ref.current.appData = allOptions.filter(option => urlPermissionArr.includes(option.link));
+    if (ref.current.appData.length === 0) {
+      ref.current.appData.push(allOptions[0]);
+    }
   };
   updateAppData(themeUi)
 
@@ -88,7 +91,7 @@ const ActionSelectModal = ({ redirectUrl }: any) => {
         ref.current.appData = ref.current.appData.filter((item: any) => item.text !== 'Make to Order (MTO)');
       }
     }
-  
+      
     // Auto-redirect if only one option remains
     if (ref.current.appData.length === 1) {
       navigate(ref.current.appData[0].link);

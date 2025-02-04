@@ -18,6 +18,7 @@ import { toast } from "react-toastify"
 import SuggestionCategoryCellRenderer from "./SuggestionCategoryCellRendere"
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { ColDef } from 'ag-grid-community';
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 const useDBM =()=>{
     //const [DBMApplySelectedNormData,setDBMApplySelectedNormData] = useState<any[]>([])
@@ -60,6 +61,7 @@ const useDBM =()=>{
     const columnsToBeExcluded = ['checkbox', 'dailydatagraph', '0', 'sleep']
     const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [DBMColumns,setDBMColumns] = useState<ColDef[]>([])
+    const {date:lastRunDate} = useGetLastRunData()
 
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
@@ -359,7 +361,8 @@ const useDBM =()=>{
         onExportToExcelCallBack,
         recordsPerPage,
         generalFilterOptions,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     }
 }
 

@@ -22,6 +22,7 @@ import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCe
 import { ColDef } from "ag-grid-enterprise"
 import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
 import { useSubmitBORRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 
 
@@ -69,6 +70,8 @@ export const useBORColorBandwise =()=>{
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     //  const rowsPerPage=50;
      const rowsPerPage = parseInt(process.env.REACT_APP_BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
+
+     const {date:lastRunDate} = useGetLastRunData()
 
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
@@ -409,6 +412,7 @@ export const useBORColorBandwise =()=>{
         generalFilterOptions,
         onSubmitRemarks,
         editedRows,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     }
 }

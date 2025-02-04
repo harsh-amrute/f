@@ -312,7 +312,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={"95%"} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations With Excess Inventory: Count Of SKUs</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center' , overflow:"hidden"}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations With Excess Inventory: Count Of SKUs</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                                     {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
@@ -397,7 +397,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={"95%"} style={{marginLeft:'18px'}}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center' , overflow:"hidden"}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
                                     {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(2)}/>}

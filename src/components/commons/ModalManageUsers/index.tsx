@@ -81,7 +81,7 @@ const ModalManageUsers = ({
     <>
       {
         <Transition appear show={openModal} as={Fragment}>
-          <Dialog as="div" className="modal-box" onClose={closeModal}>
+          <Dialog style={{zoom: 0.9}} as="div" className="modal-box" onClose={closeModal}>
             <Transition.Child
               as={Fragment}
               enter="transition"
@@ -120,7 +120,7 @@ const ModalManageUsers = ({
                       </span>
                     </Dialog.Title>
 
-                    <form onSubmit={handleSubmit(onSubmit)} autoComplete="new-password">
+                    <form onSubmit={handleSubmit(onSubmit)}>
                       <div className="modal-content-user">
                         <div className="modal-Per-input--box">
                           <label
@@ -132,6 +132,7 @@ const ModalManageUsers = ({
                           <input
                             id="user-name"
                             type="text"
+                            autoComplete="off"
                             className={`modal-Per-input ${
                               errors.username != null ? "modal-input--error" : ""
                             }`}
@@ -152,7 +153,6 @@ const ModalManageUsers = ({
                                 message: "The username must contain at least one alphabetical character and  cannot contain @, ., spaces, or -.",
                               },
                             })}
-                            autoComplete="off"
                             disabled={infoUser.edit}
                           />
                           {errors.username != null && (
