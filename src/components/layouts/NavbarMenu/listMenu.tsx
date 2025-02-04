@@ -199,7 +199,7 @@ export const listMenuParent: any = [
     id: 6,
     name: "navbar.listMenuParent.innerStoreTransfers.title",
     img: "/assets/img/nav/IST",
-    url: "/",
+    url: "/ist-requests",
     status: false,
     lp_attr : true,
     lp_img : "/assets/img/IST 1.svg",
@@ -215,7 +215,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.innerStoreTransfers.pendingISTRequests",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/",
+        url: "/ist-requests",
         role: ["IST Admin", "IST Governor"],
       },
       {
