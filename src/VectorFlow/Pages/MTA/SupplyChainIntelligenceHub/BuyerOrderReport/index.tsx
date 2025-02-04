@@ -10,6 +10,7 @@ import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/Da
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
 import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 
 const BuyerOrderReport = ()=>{
@@ -47,7 +48,8 @@ const BuyerOrderReport = ()=>{
         remarkHistory,
         generalFilterOptions,
         onCloseRemarkHistory,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     } = useBOR()
 
 
@@ -83,9 +85,13 @@ const BuyerOrderReport = ()=>{
             setMultiFilter={setCurrFilter}
             onSubmitEditedRows={onSubmitRemarks}
             disableSubmitEditedRowsBtn={editedRows.length===0}
+            lastRunDate={lastRunDate}
             generalFilterOptions={generalFilterOptions}
             onDelete={onDeleteFilter} />
         </div>
+        {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
         <BORLayout>
           {/* <BORTaskBar style={{width:'74%'}}>
         <VFButtonOutline

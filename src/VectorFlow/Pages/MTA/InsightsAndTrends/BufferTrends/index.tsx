@@ -9,6 +9,7 @@ import BPRViewTable, {
   BPRViewTableColDef,
 } from "../../SupplyChainIntelligenceHub/BPR/BPRViewTable";
 import { AvailabilityContainer, AvailabilityContent, AvailabilityHeader, SummaryTableColumn } from "./styles";
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 const BufferTrends = () => {
   const {
@@ -32,7 +33,8 @@ const BufferTrends = () => {
     multiFilterState,
     setMultiFilterState,
     onDeleteFilter,
-    themeUI
+    themeUI,
+    lastRunDate
   } = useBufferTrends();
 
   const summaryColumnDefs: BPRViewTableColDef[] = [
@@ -114,9 +116,13 @@ const BufferTrends = () => {
         onExportToExcelCallBack
         genericRecordCount={0}
         multiFilter={multiFilterState}
+        lastRunDate={lastRunDate}
         setMultiFilter={setMultiFilterState}
         onDelete={onDeleteFilter}
       />
+      {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
 
       <div
         style={{
