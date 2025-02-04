@@ -754,7 +754,6 @@ const OverallBmReport = () => {
   const DropDownCellRenderer = (props: any) => {
     return (
       <>
-        {" "}
         {props.data?.ct === null ? (
           <>
             <VFSelect
