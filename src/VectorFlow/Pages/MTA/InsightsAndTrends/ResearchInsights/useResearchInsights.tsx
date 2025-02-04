@@ -22,6 +22,7 @@ import { TOGGLE_GRAPH_MODAL, UPDATE_DAILY_DATA } from '../../../../../redux/acti
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants'
 import { ColDef } from 'ag-grid-enterprise'
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 const useResearchInsights = () => {
 
@@ -93,6 +94,7 @@ const useResearchInsights = () => {
 
 
     const [selectedRowsDates, setSelectedRowsDates] = useState<Array<any>>([])
+    const {date:lastRunDate} = useGetLastRunData()
 
     useEffect (()=>{
         setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
@@ -689,7 +691,8 @@ const useResearchInsights = () => {
         continuousBlackAndRed,
         continuousWhite,
         generalFilterOptions,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     }
 }
 

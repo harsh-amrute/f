@@ -9,6 +9,7 @@ import { GridStateContext } from "../../../../../context/GridStateContext";
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 
 const BuyerOrderReportColorBandwise = ()=>{
@@ -42,7 +43,8 @@ const BuyerOrderReportColorBandwise = ()=>{
         generalFilterOptions,
         onSubmitRemarks,
         editedRows,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     } = useBORColorBandwise()
 
 
@@ -77,12 +79,16 @@ const BuyerOrderReportColorBandwise = ()=>{
             multiFilter={currFilter}
             setMultiFilter={setCurrFilter}
             disableChartAndGridViewToggle
+            lastRunDate={lastRunDate}
             generalFilterOptions={generalFilterOptions}
             onDelete={onDeleteFilter} 
             onSubmitEditedRows={onSubmitRemarks}
             disableSubmitEditedRowsBtn={editedRows.length===0}
             />
         </div>
+        {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
         <BORLayout>
           {/* <BORTaskBar style={{width:'74%'}}>
         <VFButtonOutline

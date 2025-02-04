@@ -768,11 +768,11 @@ const mapDataToRowData = (data: any) => {
               </Allotment.Pane>
             </Allotment>
           </Allotment.Pane>
-          <Allotment.Pane>
+          <Allotment.Pane maxSize={470}>
             <SCHorizontalAllignmentWrapper style={{paddingBottom:'5px'}}>
             <SCChartContainer height={"100%"}>
               <SCChartHeaderContainer>
-                <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
+                <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center' , overflow:"hidden"}}>
                   <SCChartHeader style={{marginRight:10}}>
                     Comparision of Availability: Pre Rationing vs Post Rationing
                   </SCChartHeader>

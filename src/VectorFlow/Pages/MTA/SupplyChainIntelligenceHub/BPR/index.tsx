@@ -16,6 +16,7 @@ import BPRRemarkHistoryModal from "./BPRRemarkHistoryModal"
 import { Skeleton } from "../../../../../components/commons/styled";
 import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
 import { useMemo } from "react"
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 const BPR = ()=>{
 
@@ -116,17 +117,9 @@ const BPR = ()=>{
             generalFilterOptions={generalFilterOptions}
         />
         </div>
-        {(lastRunDate) && (
-                    lastRunDate === "Loading"?(
-                      <LastRunDate>
-                          <Skeleton style={{height:30,width:150}}/>
-                      </LastRunDate>
-                    ):(
-                      <LastRunDate>
-                        <LastRunDateHeader>{lastRunDate}</LastRunDateHeader>
-                      </LastRunDate>
-                    )
-        )}
+        {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
         {
             showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
         }

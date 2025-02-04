@@ -22,6 +22,7 @@ import { ColDef } from "ag-grid-enterprise";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridRef } from "../../../../../VectorFlow/types/MDM";
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 
 
@@ -99,6 +100,7 @@ const useInTransitWhereAbouts = ()=>{
     const [isSubmitETAToolTipOpen,setIsSubmitETAToolTipOpen] = useState<boolean>(false)
     const [isSubmitCurrentLocationTipOpen,setIsSubmitCurrentLocationToolTipOpen] = useState<boolean>(false)
     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
+    const {date:lastRunDate} = useGetLastRunData()
 
 
 
@@ -630,7 +632,8 @@ const useInTransitWhereAbouts = ()=>{
         handlePageChange,
         editedRows,
         onSubmitEditedRows,
-        themeUi
+        themeUi,
+        lastRunDate
     }
 }
 

@@ -21,6 +21,7 @@ import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import {  BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers"
 import useViewPort from "../../../../../hooks/useViewPort"
 import { BORRemarksCellRenderer } from "./BORCellRenderers"
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 
 
@@ -70,6 +71,7 @@ export const useBOR =()=>{
      const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
 
      const {mutateAsync:submitRemark} = useSubmitBORRemark()
+     const {date:lastRunDate} = useGetLastRunData()
 
 
 
@@ -599,7 +601,8 @@ export const useBOR =()=>{
         updateRemark,
         onCloseRemarkHistory,
         onCloseSubmitRemark,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
 
     }
 }
