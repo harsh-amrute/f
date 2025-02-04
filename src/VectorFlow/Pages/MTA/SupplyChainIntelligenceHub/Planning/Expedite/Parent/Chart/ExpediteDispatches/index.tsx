@@ -731,12 +731,12 @@ const colDefs3: ColDef[] = [
               </Allotment.Pane>
             </Allotment>
           </Allotment.Pane>
-          <Allotment.Pane>
-            <SCHorizontalAllignmentWrapper style={{paddingBottom:'5px'}}>
+          <Allotment.Pane maxSize={470}>
+            <SCHorizontalAllignmentWrapper style={{paddingBottom:'5px' , maxWidth:"470px"}}>
               <SCChartContainer height={"100%"}>
                 <SCChartHeaderContainer>
                   <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
-                    <SCChartHeader style={{marginRight:10}}>
+                    <SCChartHeader style={{marginRight:10,overflow:"hidden"}}>
                       Comparision of Availability: Pre Rationing vs Post Rationing
                     </SCChartHeader>
                   </div>
@@ -754,7 +754,7 @@ const colDefs3: ColDef[] = [
                   </div>
                 </SCChartHeaderContainer>
                 <SCHorizontalDivider />
-                <div style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px'}}>
+                <div style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px' , overflow:"hidden"}}>
                 <img src={imgSrc}  height={13} width={13} onClick={()=>download()} style={{cursor:'pointer'}} onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)} ></img>                    </div>
                 <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
@@ -787,8 +787,10 @@ const colDefs3: ColDef[] = [
                             defaultColDef={{
                                 floatingFilter:true,
                                 filter: "agMultiColumnFilter",
+                                flex:1
                               }}
                             height={'480px'}
+           
                           />
                         </div>
                 </VFModalCard>
