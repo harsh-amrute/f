@@ -11,7 +11,7 @@ export const BTRLayoutWrapper = styled.div`
 export const BTRLayoutTabsWrapper = styled.div`
     display:flex;
     justify-content:center;
-    margin-top:25px;
+    margin-top:5px;
     z-index:200;
 `
 
