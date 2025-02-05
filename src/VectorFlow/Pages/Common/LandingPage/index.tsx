@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useUserData } from "../../../../context";
 import { listMenuParent } from "../../../../../src/components/layouts/NavbarMenu/listMenu";
 import {
@@ -140,8 +140,8 @@ const LandingPage = () => {
           (item: any, index: number, array: any[]) => {
             if (item[1]?.length > 0) {
               return (
-                <>
-                  <Rectangle key={item[0]} text={ApplicationName[item[0]]} theme={themeUi}>
+                <Fragment key={index}>
+                  <Rectangle  text={ApplicationName[item[0]]}>
                     <CardContainer>
                       {item[1].map((subItem: any, subIndex: number) => {
                         return (
@@ -183,7 +183,7 @@ const LandingPage = () => {
                   {index < array.length - 1 && item.length > 0 && (
                     <LandingPageDivider />
                   )}
-                </>
+                </Fragment>
               );
             }
           }

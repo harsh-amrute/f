@@ -11,7 +11,7 @@ import {
   DashedCard,
   EnquiryWrapper,
   EstimatedWrapper,
-  FilterWrapper,
+  // FilterWrapper,
   MessageText,
   RmUICont,
   TabSwitchContainer,
@@ -62,7 +62,7 @@ const EnquiryResponse = () => {
   const [myColDefs, setMyColDefs] = useState([{}]);
   const gridRef = useRef<any>();
 
-  const setColumnDef = async () => {
+  const setColumnDef = async () => {          //intial column names and set kr rha hai in headerData
     try {
       const response = await getUIConfigData(reportName);
       setHeaderData(response.data.data);
@@ -575,7 +575,7 @@ const EnquiryResponse = () => {
     });
   };
 
-  const getUserColumnConfig = async () => {
+  const getUserColumnConfig = async () => {   
     try {
       const data = await getUserUIReportConfigData({
         un: user.user.name,
@@ -584,7 +584,6 @@ const EnquiryResponse = () => {
 
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
       setColumnState(newConfig);
-
       if (!data) {
         console.error('Failed to apply column state');
       }
@@ -601,12 +600,16 @@ const EnquiryResponse = () => {
           rn_id: UIGridCode.ProdEnquiryResponse,
           cs: JSON.stringify(coldefs),
         };
+
+
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
         
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
+
+
 
           const payload = {
             un: user.user.name,
@@ -615,8 +618,11 @@ const EnquiryResponse = () => {
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
+
+
         }
       }
+
     } catch (error) {
       console.error(error);
     }
@@ -674,7 +680,7 @@ const EnquiryResponse = () => {
   return (
     <EnquiryWrapper>
       {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
-      <FilterWrapper>
+      
         <MTOActionToolBar
           comp={"EnquiryResponse"}
           isAddFilterButton
@@ -688,7 +694,7 @@ const EnquiryResponse = () => {
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
         />
-      </FilterWrapper>
+      
       <div style={{ paddingLeft: '25px' }}>
 
 

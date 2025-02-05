@@ -11,7 +11,7 @@ import * as globalstyles from '../../../../../styles/global'
 //     background-color:red;
 //   }
 export const BMDepWrapper = styled.div`
-margin-left: 3rem;
+// margin-left: 3rem;
 @media only screen and (min-width: ${gridSystem.size.mobileS}) and (max-width: ${gridSystem.size.mobileL}) {
    margin-left: -40px;
    margin-top: -40px;
@@ -217,6 +217,14 @@ export const VFWrapper = styled.div`
   & > div[data-testid="vf_pagination"]{
     padding: 0 !important;
     margin-top: -20px !important;
+  }
+  & .ag-header-cell-resize {
+    position: absolute;
+    z-index: 0 !important;
+    height: 100%;
+    width: 8px;
+    top: 0;
+    cursor: ew-resize;
   }
 
 `

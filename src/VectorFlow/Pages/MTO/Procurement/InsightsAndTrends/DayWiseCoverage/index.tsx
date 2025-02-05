@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import DayWiseCoverageCalender from './DayWiseCoverageCalender';
 import DayWiseCoverageHeader from './DayWiseCoverageHeader'
 import DayWiseCoverageTable from './DayWiseCoverageTable';
@@ -80,6 +80,8 @@ const DayWiseCoverage = () => {
     // } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Day_Wise_Coverage);
     const { user } = useUserData();
     const reportName = "DayWiseCoverage";
+
+    const themeUi = user?.user?.theme_ui;
 
     const getCalenderData = async () => {
         const data = await getData({ startDate: format(startOfMonth(startDate), "yyyy-MM-dd"), endDate: format(endOfMonth(endDate), "yyyy-MM-dd") });
@@ -342,6 +344,7 @@ const DayWiseCoverage = () => {
             <div >
                 <MTOActionToolBar 
                     isExcelExport 
+                    themeUi={themeUi}
                     // isAddFilterButton
                     // isFilterOpen={isFilterOpen}
                     // onAddFilter={onAddFilter}

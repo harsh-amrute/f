@@ -3758,6 +3758,8 @@ export const mapProcPlanningChildrenFieldsToColDefs = (fields: ColumnHeaderConfi
         headerName: f.hdr,
         hide: !f.vs,
         cellRenderer: 'coloPriorityOfBall',
+        filter: 'agMultiColumnFilter',
+        floatingFilter: false,
         initialWidth: 20,
         headerClass: "child-header",
         autoHeaderHeight: true,
@@ -3769,6 +3771,8 @@ export const mapProcPlanningChildrenFieldsToColDefs = (fields: ColumnHeaderConfi
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
+        filter: 'agMultiColumnFilter',
+        floatingFilter: false,
         hide: !f.vs,
         headerClass: "child-header",
         // autoHeaderHeight: true,
@@ -3782,6 +3786,8 @@ export const mapProcPlanningChildrenFieldsToColDefs = (fields: ColumnHeaderConfi
       field: f.jf,
       headerName: f.hdr,
       hide: !f.vs,
+      filter: 'agMultiColumnFilter',
+      floatingFilter: false,
       headerClass: "child-header",
       autoHeaderHeight: true,
       wrapHeaderText: true,
@@ -3905,6 +3911,7 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
         maxWidth: 50,
         headerName: f.hdr,
         hide: !f.vs,
+        floatingFilter: false,
         cellRenderer: 'coloPriorityOfBall',
 
         initialWidth: 20,
@@ -3915,6 +3922,8 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
       return {
         colId: f.jf,
         field: f.jf,
+        filter: 'agMultiColumnFilter',
+        floatingFilter: false,
         headerName: f.hdr,
         hide: !f.vs,
         headerClass: "simchild-header",
@@ -3925,6 +3934,8 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
         colId: f.jf,
         field: f.jf,
         headerName: f.hdr,
+        filter: 'agMultiColumnFilter',
+        floatingFilter: false,
         hide: !f.vs,
         initialWidth: 300,
         headerClass: "simchild-header",
@@ -3935,6 +3946,8 @@ export const mapSimulateHedaerChildrenFieldsToColDefs = (fields: ColumnHeaderCon
       [f.jf]: f.val,
       field: f.jf,
       headerName: f.hdr,
+      filter: "agMultiColumnFilter",
+      floatingFilter: false,
       hide: !f.vs,
       headerClass: "simchild-header",
     }
@@ -4240,7 +4253,7 @@ export const formatFilterJSON = (filter: any) => {
       delete formatFilter[key];
     }
   });
-  console.log("formate filter", formatFilter);
+  // console.log("formate filter", formatFilter);
   return formatFilter;
 }
 
@@ -4273,7 +4286,8 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
         }
       } else {
         if (value.length > 0) {
-          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
+          newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: (value[0]?.value===0)?  
+            [{value: '0', label: '0'}]: value?.filter((v: any) => v.value || v.id) });
         }
       }
     }
@@ -4281,6 +4295,8 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
     if (newFilter?.filters?.length > 0) {
       selectedFilter[key] = { ...newFilter };
     }
+
+
 
   }
 

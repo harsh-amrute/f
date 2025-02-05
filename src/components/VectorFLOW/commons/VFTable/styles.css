@@ -114,11 +114,10 @@
 }
 
 .ag-icon-menu-alt{
-  color: white !important;
+  color: white ;
   background-color:rgb(0,0,0,0.1);
   border-radius: 2px;
 }
-
 /* .simchild-header {
   /* background-color: rgb(255, 255, 255) !important; */
 /* --ag-header-foreground-color: rgb(255, 255, 255); */

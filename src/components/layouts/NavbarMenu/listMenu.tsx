@@ -464,7 +464,7 @@ export const listMenuParent: any = [
     rp_img : "/assets/img/Prourment1.svg",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
-    avoidHeader: true,
+    // avoidHeader: true,
     child: [
       {
         name: "Material Coverage For Open Sales",
@@ -777,6 +777,7 @@ export const listMenuParent: any = [
     img: "/assets/img/nav/machine2",
     lp_attr : true , 
     app_id : 3,
+    avoidHeader: true,
     lp_img : "/assets/img/Manufacturing.svg",
     rp_img : "/assets/img/Manufacturing1.svg",
     url: "/manufacturing-intelligence-hub/delivery-performance/bm-trends",

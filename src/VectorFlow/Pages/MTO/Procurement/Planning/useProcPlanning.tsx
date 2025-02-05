@@ -158,7 +158,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }, [])
 
     useEffect(()=>{
-        getUserColumnConfig();
+        if(colDef.length>1){
+            getUserColumnConfig();
+        }
     },[colDef])
 
     const { isSideBarOpen } = useUserData()
@@ -173,23 +175,11 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
 
     const dispatch = useDispatch()
-    const tabs: Array<VFFloatingTabItemProps> = [
-        {
-            id: 'ca',
-            label: 'Completely Available',
-            value: 'ca'
-        },
-        {
-            id: 'short',
-            label: 'Shortage',
-            value: 'short'
-        }
-    ];
 
     dispatch(PROCPLANNING_ANALYTICS({ date }));
     dispatch(APPLIED_FILTERS( {...formatFilterJSON(appliedFilters)} ));
 
-    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps>(tabs[0]);
+    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps | undefined>(undefined);
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
@@ -280,6 +270,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const customHeader = {
         ColorPriority: {
             cellRenderer: 'coloPriority',
+            floatingFilter: false,
+            suppressHeaderFilterButton: true,
             tooltipValueGetter: (params: any) => {
                 const cpData = params.data.cp[0];
                 const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
@@ -339,7 +331,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     useEffect(() => {
         if(HeaderData && HeaderData.length>0){
 
-            if (currentTab.label === 'Shortage') {
+            if (currentTab?.label === 'Shortage') {
                 setColDef(getColumnDefinations(HeaderData, customHeader, extras))
             }
             else {
@@ -482,8 +474,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }, []);
 
     useEffect(() => {
-        if (date) {
-            fetchData(date,1,currentTab.label === "Shortage" ? '0':'1');
+        if (date && Object.keys(appliedFilters).length>0) {
+            fetchData(date,1,currentTab?.label === "Shortage" ? '0':'1');
         }
     }, [appliedFilters])
 
@@ -497,7 +489,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         // // setData(APIData?.data?.data?.results || []);
         // setData(newDat);
         // setIsLoading(false);
-        if (currentTab.id === 'ca') {
+        if (currentTab?.id === 'ca') {
             fetchData(date, pageNumber, '1');
         }
         else {
@@ -528,7 +520,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     },[colDef])
 
     const renderView = () => {
-        switch (currentTab.id) {
+        switch (currentTab?.id) {
             case "ca":
                 return (
                     <TableWrapper>
@@ -596,7 +588,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             handleChangePage={handlePageChangeCumulative}
 
                         />
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
+                        <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
                                 onClick={() => { (!isDisabled) && fetchData(date, 1, '0') }}
@@ -643,22 +635,39 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                     </TableWrapper>
                 );
             default:
-                return (
-                    <>
-                        <VFTable columnDefs={[]} rowData={[]} {...agGridProps} />
-
-
+                return(
+                    <TableWrapper>
+                        <VFTable
+                            {...agGridProps}
+                            
+                            columnDefs={colDef}
+                            rowData={CompleteAvailableDatas}
+                            tooltipHideDelay={100000}
+                            tooltipShowDelay={0}
+                            tooltipMouseTrack={true}
+                            ref={gridRef}
+                            onGridReady={(params: any) => {
+                                params.api.autoSizeAllColumns();
+                                // setDefaultColState(params?.api?.getColumnState())
+                                
+                            }}
+                            maintainColumnOrder={true}
+                            statusBar={{
+                                statusPanels: [
+                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                                ]
+                            }}
+                        />
                         <VFPagination
-
+                            key={1}
                             selectedRows={0}
                             rowsPerPage={Math.min(500, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
-
                         />
-                    </>
-                )
+                    </TableWrapper>
+                );
         }
     }
     const agGridProps: AgGridReactProps = {
@@ -678,7 +687,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             enableRangeSelection: true,
             icons: icons,
             defaultColDef: {
-                suppressMenu: true,
                 resizable: true,
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",
@@ -715,7 +723,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         sideBar: sideBar,
         onCellEditingStopped(event: any) {
             const field = event.colDef.field;
-            const newValue = event.newValue;
+            const newValue = +event.newValue;
             const rowIndex = event.rowIndex;
 
             if (!field || rowIndex == null) {

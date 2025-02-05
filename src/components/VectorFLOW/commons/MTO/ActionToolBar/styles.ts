@@ -176,6 +176,7 @@ export const VFSelectedFiltersWrapper = styled.div`
     box-shadow: 0px 6px 12px #95959529;
     border-radius: 30px;
     margin-right: 20px;
+    margin-left:20px;
 `;
 
 export const VFSelectedFiltersPlaceHolder = styled.p`
@@ -312,7 +313,6 @@ export const DateWrapper = styled.div`
   font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 18px;
-  margin-left: -65px;
   color: #000000;
   letter-spacing: 0;
   line-height: 21px;
@@ -332,10 +332,6 @@ export const CheckBoxDiv = styled.div`
     text-wrap: nowrap;
     background-color:pink;
 
-`
-
-export const InputCheckBox = styled.input`
-    display:inline;
 `
 
 export const InputCheckBoxTitle = styled.div`

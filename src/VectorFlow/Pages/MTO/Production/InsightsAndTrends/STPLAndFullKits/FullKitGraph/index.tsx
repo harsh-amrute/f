@@ -114,9 +114,8 @@ const FullKitGraph = (props: any) => {
         <div
           data-testid="fullKit-graph"
           style={{
-            fontSize: "16px",
+            fontSize: "14px",
             margin: "0 auto",
-
             textAlign: "center",
           }}>
           <span style={{ fontWeight: 500, }}>
@@ -164,7 +163,7 @@ const FullKitGraph = (props: any) => {
   },[graphData])
 
   return (
-    <div style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '10px', paddingBottom: '10px' }}>
+    <div style={{ height: "100%", display: "flex", justifyContent: "left", marginLeft: '12px', paddingBottom: '10px' }}>
 
       <SplitGraphContainer
         tableLoading={tableLoading}

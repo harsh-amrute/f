@@ -174,6 +174,9 @@ const ModalAdvanedPermissions = (props: any) => {
       // eslint-disable-next-line no-unsafe-optional-chaining
       lcPermissionRef.current?.getLcPermissionValue();
 
+      console.log(brand,"brand");
+      console.log(lcRegion,"lcRegion")
+      
     // if(brand?.length > 0 && lcRegion?.length > 0) {
       // setIsLoadSpinner(true);
       const formData: any = {
@@ -212,6 +215,9 @@ const ModalAdvanedPermissions = (props: any) => {
               });
               
               res?.response?.msg &&  notifyError(res?.response?.msg);
+              res?.response?.password?.forEach((element: any) => {
+                notifyError(element);
+              });
             } else {
               notifySuccess(res?.data?.msg);
               closeModal();
@@ -225,6 +231,9 @@ const ModalAdvanedPermissions = (props: any) => {
               notifyError(element);
             });
             error.response?.name?.forEach((element: any) => {
+              notifyError(element);
+            });
+            error?.response?.password?.forEach((element: any) => {
               notifyError(element);
             });
           },

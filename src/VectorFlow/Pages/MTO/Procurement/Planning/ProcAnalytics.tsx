@@ -23,11 +23,11 @@ const ProcAnalytics = () => {
                 const response1 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '1', appliedFilters })
                 const response2 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '0', appliedFilters })
 
-            setShortageCount(response1?.data?.data?.count)
-            setAvailCount(response2?.data?.data?.count)
-        }
+            setShortageCount(response1?.data?.data?.count || 0)
+            setAvailCount(response2?.data?.data?.count || 0)
+            }
+
             
-         
         }
         catch(error){
             console.log(error)
@@ -35,8 +35,10 @@ const ProcAnalytics = () => {
     }
 
     useEffect(()=>{
+      if(data && !shortageCount && !availCount){
         GetData();
-    },[data])
+      }
+    },[data.date])
    
     
   return (

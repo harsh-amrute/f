@@ -65,6 +65,9 @@ const ResourceUtilization = () => {
   });
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
+  const userTheme = themeUi === 'REGALBLAZE';
+  const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
+  const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
   const { mutateAsync: getResourceUtilizationData, isLoading, isSuccess, isError } = useGetResourceUtilizationData();
   const { mutateAsync: getPlantMaster } = useGetPlantMasterData();
   const { mutateAsync: getDeptMaster } = useGetDeptMasterData();
@@ -898,8 +901,8 @@ const ResourceUtilization = () => {
               <div
                 style={{
                   cursor: 'pointer',
-                  background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-                  backgroundColor: ColorsMTO.darkPink.code,
+                  background: `linear-gradient(to right, ${gradientColor})`,
+                  backgroundColor: backgroundColor,
                   height: '30px',
                   width: '50px',
                   borderRadius: '4px',

@@ -8,11 +8,11 @@ import { useUserData } from "../../../context";
 import { useNavigate } from "react-router";
 import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
 import _ from 'lodash'
-// import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
+import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
 
 const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
   const { mutateAsync: getAllReports } = useGetAllReports();
-  // const {mutateAsync: getAllMTOReports} = useGetAllMTOReports()
+  const {mutateAsync: getAllMTOReports} = useGetAllMTOReports()
   const [listMenu, setListMenu] = useState(listMenuParent);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
@@ -23,34 +23,89 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   const [tempUrls, setTempUrls] = useState([]); //temp url is used to show downloading
   const [reportUrls, setReportUrls] = useState<string[]>([]);
 
-
-
+  const getReportFields = async () => {
+    try {
+      const [reportsResponse, mtoReportsResponse] = await Promise.allSettled([
+        getAllReports(),
+        getAllMTOReports(),
+      ]);
+  
+      let transformedData: any[] = [];
+      let transformedMTOData: any[] = [];
+  
+      // Process normal reports if the request succeeded
+      if (reportsResponse.status === "fulfilled") {
+        const rawDailyReport = reportsResponse.value.data.data;
+        transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
+          name: attributes.reportName,
+          img: "/assets/img/nav/arrow_down.svg",
+          imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+          url: key,
+          role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "DBMManager", "BPRManager", "MasterUpdater", "MasterApprover"],
+          downloadName: attributes.downloadName
+        }));
+      } else {
+        console.error("Error fetching reports:", reportsResponse.reason);
+      }
+  
+      // Process MTO reports if the request succeeded
+      if (mtoReportsResponse.status === "fulfilled") {
+        const rawMTOReports = mtoReportsResponse.value.data.data;
+        transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
+          name: attributes.reportName,
+          img: "/assets/img/nav/arrow_down.svg",
+          imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+          url: key,
+          role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
+          isMTO: true,
+          downloadName: attributes.downloadName
+        }));
+      } else {
+        console.error("Error fetching MTO reports:", mtoReportsResponse.reason);
+      }
+  
+      // Clone the menu once and update it
+      const updatedMenu = _.cloneDeep(listMenuParent);
+      const targetObject = updatedMenu.find((item: any) => item.id === 8);
+  
+      if (targetObject) {
+        targetObject.child.push(...transformedData, ...transformedMTOData);
+        const reportUrls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+        setReportUrls(reportUrls);
+      }
+  
+      setListMenu(updatedMenu);
+    } catch (err) {
+      console.error("Unexpected error in getReportFields:", err);
+    }
+  };
 
   // const getReportFields = async () => {
-
   //   let transformedData: any = undefined;
-    
-  //   try{
+
+  //   try {
   //     const reports = await getAllReports();
-  //     const rawDailyReport = reports.data.data
+  //     const rawDailyReport = reports.data.data;
   //     transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
   //       name: attributes.reportName,
   //       img: "/assets/img/nav/arrow_down.svg",
   //       imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
   //       url: key,
-  //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+  //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "DBMManager", "BPRManager", "MasterUpdater", "MasterApprover"],
   //       downloadName: attributes.downloadName
   //     }));
-  //     console.log(transformedData);
-  //     setListMenu(transformedData);
-  
-  //   }
-  //   catch(err){
-      
+  //     const extractedNewMenu = _.cloneDeep(listMenuParent)
+  //     const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
+  //     if (targetObject) {
+  //       targetObject.child.push(...transformedData);
+  //       const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+  //       setReportUrls(reporturls)
+  //     }
+  //     setListMenu(extractedNewMenu);
+  //   } catch (err) {
   //     console.error("Error fetching reports", err);
-  //   }
-  //   finally{
-  //     try{
+  //   } finally {
+  //     try {
   //       const mtoReports = await getAllMTOReports();
   //       const rawMTOReports = mtoReports.data.data;
   //       const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
@@ -63,48 +118,47 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   //         downloadName: attributes.downloadName
   //       }));
 
-  //       const extractedNewMenu = _.cloneDeep(listMenuParent)
+  //       const extractedNewMenu = _.cloneDeep(listMenuParent);
   //       const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
   //       if (targetObject) {
-  //         if(transformedData){
-
+  //         if (transformedData) {
   //           targetObject.child.push(...transformedData);
   //         }
   //         targetObject.child.push(...transformedMTOData);
   //         const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
-  //         setReportUrls(reporturls)
-  //     }
-  //     setListMenu(extractedNewMenu);
-  //     }
-  //     catch(error){
-  //       console.log(error)
+  //         setReportUrls(reporturls);
+  //       }
+  //       setListMenu(extractedNewMenu);
+  //     } catch (error) {
+  //       console.log(error);
   //     }
   //   }
-  // }
+  // };
 
-  const getReportFields = async () => {
-    const reports = await getAllReports();
-    const rawDailyReport = reports.data.data
-    const transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
-      name: attributes.reportName,
-      img: "/assets/img/nav/arrow_down.svg",
-      imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-      url: key,
-      role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "DBMManager", "BPRManager", "MasterUpdater", "MasterApprover"],
-      downloadName: attributes.downloadName
-    }));
-    const extractedNewMenu = _.cloneDeep(listMenuParent)
-    const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
-    if (targetObject) {
-      targetObject.child.push(...transformedData);
-      const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
-      setReportUrls(reporturls)
-    }
-    setListMenu(extractedNewMenu);
-  }
+  // const getReportFields = async () => {
+  //   const reports = await getAllReports();
+  //   const rawDailyReport = reports.data.data
+  //   const transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
+  //     name: attributes.reportName,
+  //     img: "/assets/img/nav/arrow_down.svg",
+  //     imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+  //     url: key,
+  //     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "DBMManager", "BPRManager", "MasterUpdater", "MasterApprover"],
+  //     downloadName: attributes.downloadName
+  //   }));
+  //   const extractedNewMenu = _.cloneDeep(listMenuParent)
+  //   const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
+  //   if (targetObject) {
+  //     targetObject.child.push(...transformedData);
+  //     const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+  //     setReportUrls(reporturls)
+  //   }
+  //   setListMenu(extractedNewMenu);
+  // }
 
   useEffect(() => {
     getReportFields();
+  
     if (localStorage.getItem("ListItem")) {
       setMenuItem(JSON.parse(localStorage.getItem("ListItem") || ""))
     }
@@ -172,7 +226,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   }
 
   const getNestedChildren = (children: Array<any>): any => {
-    const stack = [...children];
+    const stack = children? [...children]:[];
     const result = [];
     while (stack.length > 0) {
       const current = stack.pop();

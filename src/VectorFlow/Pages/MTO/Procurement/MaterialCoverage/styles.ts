@@ -189,8 +189,8 @@ export const ProcurementLayout = styled.div`
     flex-direction: column;
 
     & div[data-testid="vf_pagination"]{
-        margin: -20px -15px !important;
-        margin-bottom: 0px !important; 
+        width:100%;
+        margin: -20px 0 0 0;
     }
 
     & > .ag-theme-alpine{
@@ -337,13 +337,14 @@ export const ProcPlanningChildrenColor = styled.div`
     alignItems: 'center',
     justifyContent: 'center'
 `
-const determineColor = (value: any) => {
-    if (value === "Red") return 'Red';
-    if (value === "Yellow") return 'Yellow';
-    if (value === "Black") return 'Black';
-    if (value === "Green") return 'Green';
-};
-export const ChildrenColorCellRenderer = styled.div<{ value: string }>`
+// const determineColor = (value: any) => {
+//     if (value === "Red") return 'Red';
+//     if (value === "Yellow") return 'Yellow';
+//     if (value === "Black") return 'Black';
+//     if (value === "Green") return 'Green';
+// };
+
+export const ChildrenColorCellRenderer = styled.div<{ theme: string }>`
         display: flex;
         align-items: center;
         justify-content: center;
@@ -351,7 +352,7 @@ export const ChildrenColorCellRenderer = styled.div<{ value: string }>`
         height: 15px;
         border-radius: 50%;
         margin-top: 14px;
-        background-color: ${(props) => determineColor(props.value)};
+        background-color:${(props)=>props.theme ==='REGALBLAZE'? '#CB830E' :'#BC3D81'};
 `;
 
 

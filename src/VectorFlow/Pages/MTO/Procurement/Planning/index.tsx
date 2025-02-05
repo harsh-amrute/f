@@ -7,6 +7,8 @@ import OverlayLoader from '../../Common/Loader';
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { FilterPageName } from "../../Common/Enum";
+import { useUserData } from '../../../../../context'
+
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -52,6 +54,9 @@ const ProcurementPlanning = () => {
         selectedDate(date);
     };
 
+    const {user} = useUserData();
+    const themeUi = user?.user?.theme_ui
+
     const getFilterData = async () => {
         try {
           const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Procurement_Planning, release_date: date});
@@ -66,7 +71,7 @@ const ProcurementPlanning = () => {
     }, []);
 
     const ExcelExportData = ()=>{
-        fetchData(date ,1 , currentTab.label === 'Shortage' ? '0' : '1', true)
+        fetchData(date ,1 , currentTab?.label === 'Shortage' ? '0' : '1', true)
     }
     
     return (
@@ -82,10 +87,11 @@ const ProcurementPlanning = () => {
                     onDateChange={handleDateChange}
                     isReleaseDate
                     isAddFilterButton
+                    themeUi={themeUi}
                     isExcelExport
                     onExcelExportClick={ExcelExportData}
                     submitDate={() => { 
-                        fetchData(date, 1, currentTab.label === 'Shortage' ? '0' : '1') 
+                        fetchData(date, 1, currentTab?.label === 'Shortage' ? '0' : '1') 
                         getFilterData()
                     }}
                     date={date}

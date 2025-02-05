@@ -1,6 +1,5 @@
 import { Allotment } from "allotment"
 import React, { useEffect, useState } from "react"
-import useViewPort from "../../../../../../hooks/useViewPort"
 import MTOActionToolBar from "../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar"
 import '../RMPMBufferTrends/style.css';
 import { BTRAllomentSection, BTRTableWrapper, HorizontalViewWrapper } from "../RMPMBufferTrends/styles";
@@ -10,6 +9,8 @@ import { useGetDate } from '../../../../../Services/MTO/Production/InsightsAndTr
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import { FilterPageName } from "../../../Common/Enum";
+import { useUserData } from "../../../../../../context";
+
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -42,10 +43,9 @@ const RMExpeditionSuppliers = () => {
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Expediting_RM_And_Suppliers);
 
     const { data, /*isLoading, refetch*/ } = useGetDate();
-
-
-    const { screenHeight } = useViewPort()
-
+    
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
     const getFilterData = async () => {
         try {
             const response = await getPageWiseFilterData({
@@ -64,9 +64,10 @@ const RMExpeditionSuppliers = () => {
     },[])
 
     return (
-        <div style={{ zoom: 1.33, marginLeft: '30px' }}>
+        <div style={{ height: "90%", marginLeft: '20px' }}>
             <MTOActionToolBar 
                 comp={"BTRMTO"} 
+                themeUi = {themeUi}
                 isAddFilterButton 
                 isFilterOpen={isFilterOpen}
                 onAddFilter={onAddFilter}
@@ -77,15 +78,15 @@ const RMExpeditionSuppliers = () => {
                 onFilterRemove={onFilterRemove}
                 isMfgSelected={isMfgSelected}
             />
-            <HorizontalViewWrapper style={{ marginTop: '20px' }}>
-                <BTRTableWrapper style={{ height: screenHeight - 160, margin: '0' }}>
+            <HorizontalViewWrapper>
+                <BTRTableWrapper>
                     {
                         (isMTO) ?
                             (<Allotment
                                 vertical={false}
                                 separator={false}   >
                                 <Allotment.Pane
-                                    minSize={350}
+                                    minSize={460}
                                     preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <ExpeditingMTO
@@ -100,7 +101,7 @@ const RMExpeditionSuppliers = () => {
                                 </Allotment.Pane>
 
                                 <Allotment.Pane
-                                    minSize={350}
+                                    minSize={460}
                                     preferredSize={'50%'}>
                                     <BTRAllomentSection>
                                         <ExpeditingMTA

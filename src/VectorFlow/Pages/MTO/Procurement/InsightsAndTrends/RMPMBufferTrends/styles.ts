@@ -26,10 +26,7 @@ export const ToggleViewBtnWrapper = styled.div`
 export const BTRTableWrapper = styled.div`
     display:flex;
     flex-direction:column;
-    height:400px;
     width:100%;
-    margin-top:20px;
-    margin-bottom:20px;
     height:100%;
 `
 
@@ -153,6 +150,10 @@ export const LockBtn = styled.img`
 export const HorizontalViewWrapper = styled.div`
       display:flex;
       width:100%;
+      height:100%;
+      margin-top:10px;
+      padding-bottom: 20px;
+      padding-top: 10px
 `
 
 
