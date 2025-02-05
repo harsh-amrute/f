@@ -39,17 +39,27 @@ const ExpediteDispatches = ({ data }: ExpediteChildDispatchesProps) => {
     ? '/assets/img/downlod-icon-hover.svg'
     : '/assets/img/downlod-icon.svg';
 
-  // const [hideChart3,toggleChart3] = useState<boolean>(false);
+  function downloadBase64Image(base64Data: any, fileName: string) {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = base64Data;
+    downloadLink.download = fileName;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
 
-  const download = () => {
-    console.log(chartRef);
-    chartRef?.current.download({
-      type: 'png',
-      filename: 'pie-chart',
-    });
+  const [chartId1, setChartId1] = useState<any>("");
+  const [chartId2, setChartId2] = useState<any>("");
 
+  const download = async () => {
+
+    
+    downloadBase64Image(await chartRef.current.getImageDataURL(), "Comparision of Availability");
   };
-  
+
+
+
+
   const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
     let colDefs = [];
 
@@ -277,12 +287,13 @@ const mapDataToRowData = (data: any) => {
       },
     ],
   };
+
   
   const generateChart = (graphNo: number, withOutContainer?: boolean) => {
 
     if (graphNo === 1) {
       if (withOutContainer) {
-        refGraph1.current?.api.createRangeChart({
+        const chart = refGraph1.current?.api.createRangeChart({
           chartType: "stackedColumn",
           cellRange: {
             columns: ["WHDescription", 'BlackCount','RedCount'],
@@ -294,7 +305,7 @@ const mapDataToRowData = (data: any) => {
       const container1 = document.getElementById(
         "ExpediteDispatchesG1"
       ) as HTMLElement;
-      refGraph1.current?.api.createRangeChart({
+      const chart = refGraph1.current?.api.createRangeChart({
         chartType: "stackedColumn",
         cellRange: {
           columns: ["WHDescription", 'BlackCount','RedCount'],
@@ -303,6 +314,8 @@ const mapDataToRowData = (data: any) => {
         },
         chartContainer: container1,
       });
+      setChartId1(chart?.chartId);
+      
     }
   }
   if (graphNo === 2) {
@@ -324,7 +337,7 @@ const mapDataToRowData = (data: any) => {
       const container2 = document.getElementById(
         "ExpediteDispatchesG2"
       ) as HTMLElement;
-      refGraph2.current?.api.createRangeChart({
+      const chart2 = refGraph2.current?.api.createRangeChart({
         chartType: "stackedColumn",
         cellRange: {
           columns: [
@@ -338,6 +351,8 @@ const mapDataToRowData = (data: any) => {
         },
         chartContainer: container2,
       });
+      setChartId2(chart2?.chartId);
+
     }
   }
 };
@@ -386,7 +401,7 @@ const mapDataToRowData = (data: any) => {
     }
   };
 
-  const getChartToolbarItems: any = () => ["chartDownload"];
+  const getChartToolbarItems: any = () => [""];
 
   const chartThemeOverridesG1 = useMemo<any>(() => {
     return {
@@ -574,6 +589,19 @@ const mapDataToRowData = (data: any) => {
                         </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
+
+                    <div  className = "download-icon" style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px'}}>
+                     <img 
+                        src={imgSrc}  
+                        height={13} 
+                        width={13} 
+                        onClick={() => {
+                        downloadBase64Image(refGraph1.current?.api.getChartImageDataURL({chartId: chartId1, fileFormat: 'image/jpg'}), "Top 10 Parent Location");
+                      }} 
+                      style={{cursor:'pointer'}} onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)} ></img>
+                    </div>
+
                     <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red SKUs With
                           Available Rationed Qty For Receiving Locations" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{width:'1000px'}}>
@@ -647,6 +675,8 @@ const mapDataToRowData = (data: any) => {
                   </div> */}
                 </SCHorizontalAllignmentWrapper>
               </Allotment.Pane>
+
+
               <Allotment.Pane preferredSize={"50%"}>
                 <SCHorizontalAllignmentWrapper>
                   <SCChartContainer style={{marginTop:'10px'}} height={"100%"}>
@@ -671,6 +701,19 @@ const mapDataToRowData = (data: any) => {
                         </div>
                     </SCChartHeaderContainer>
                     <SCHorizontalDivider />
+
+                    <div  className = "download-icon" style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px'}}>
+                     <img 
+                     src={imgSrc}  
+                     height={13} 
+                     width={13} 
+                     onClick={() => {
+                      downloadBase64Image(refGraph2.current?.api.getChartImageDataURL({chartId: chartId2, fileFormat: 'image/jpg'}), "Top 10 Receiving Locations");
+                     }} 
+                     style={{cursor:'pointer'}} onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)} ></img>
+                    </div>
+
                     <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
                           SKUs With Rationed Quantity Available At Parent" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{width:'1000px'}}>
@@ -792,7 +835,12 @@ const mapDataToRowData = (data: any) => {
               </SCChartHeaderContainer>
               <SCHorizontalDivider />
               <div  className = "download-icon" style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px'}}>
-                     <img src={imgSrc}  height={13} width={13} onClick={()=>download()} style={{cursor:'pointer'}} onMouseEnter={() => setIsHovered(true)}
+                     <img 
+                     src={imgSrc}  
+                     height={13} 
+                     width={13} 
+                     onClick={download} 
+                     style={{cursor:'pointer'}} onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)} ></img>
                     </div>
               <VFModalCard openModal={hideChart3} closeModal={()=>toggleChart3(false)} headerIcon='' headerText="Comparision of Availability: Pre Rationing vs Post Rationing" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>

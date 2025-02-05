@@ -9,7 +9,7 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import {GraphSeriesOverrides} from '../../../../../../../../../helpers/BPRConstants';
 import VFModalCard from "../../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import VFInfoToolTip from "../../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../../helpers/utils';
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv, downloadBase64Image} from '../../../../../../../../../helpers/utils';
 
 import Chart from 'react-apexcharts';
 
@@ -25,7 +25,12 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     const [hideChart2,toggleChart2] = useState<boolean>(false);
 
+    const [isHovered, setIsHovered] = useState(false);
+    const imgSrc = isHovered
+    ? '/assets/img/downlod-icon-hover.svg'
+    : '/assets/img/downlod-icon.svg';
 
+    const [chartId1, setChartId1] = useState<any>("");
     
 
     const seriesData = useMemo(()=>{
@@ -172,7 +177,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
             }
             else{
                 const container1 = document.getElementById('LocationWiseG1') as HTMLElement
-                refGraph1.current?.api.createRangeChart({
+                const chart1 = refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
                     columns: ['name','superdelay','delay'],
@@ -180,7 +185,8 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                     rowEndIndex:9
                     },
                   chartContainer: container1 
-                })    
+                })
+                setChartId1(chart1?.chartId);    
             }
         }
      
@@ -199,7 +205,7 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
     }
     }
 
-      const getChartToolbarItems:any = () => ['chartDownload'];
+      const getChartToolbarItems:any = () => [''];
 
       const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
@@ -277,6 +283,18 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
                                 </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
+
+                            <div style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px' , overflow:"hidden"}}>
+                                                                                                                <img 
+                                                                                                                    src={imgSrc}  
+                                                                                                                    height={13} 
+                                                                                                                    width={13} 
+                                                                                                                    onClick={() => {
+                                                                                                                        downloadBase64Image(refGraph1.current?.api.getChartImageDataURL({chartId: chartId1, fileFormat: 'image/jpg'}), "Top 10 Locations");
+                                                                                                                    }}
+                                                                                                                    style={{cursor:'pointer'}} 
+                                                                                                        onMouseEnter={() => setIsHovered(true)}
+                                                                                                        onMouseLeave={() => setIsHovered(false)} ></img>                    </div>
                             <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing" headerBgColor="" headerTextColor="#00000" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
