@@ -104,10 +104,20 @@ const ActionToolBar = ({
   const themeUi = user?.user?.theme_ui;
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
 
+  const [filterApplied, setFilterApplied] = useState<boolean>(false);
+ 
+ 
   const handleApplyFilter = (params: any) => {
     if (onApplyFilter) onApplyFilter(params);
     toggleFilter(false);
+    setFilterApplied(true);
   };
+ 
+  const handleResetAllState = () => {
+    onResetAllState(`${currCategory}${currentTab}`);
+    setFilterApplied(false); // Reset the filter state when reset is triggered
+  };
+ 
 
   const currentPageRecordCount = useMemo(() => {
     switch (currCategory) {
@@ -791,7 +801,7 @@ const ActionToolBar = ({
                   </SCViewContainerWithBg>
                   <SCViewContainerWithBg
                     onClick={() =>
-                      onResetAllState(`${currCategory}${currentTab}`)
+                      handleResetAllState()
                     }
                   >
                     <SCViewImage
@@ -982,8 +992,8 @@ const ActionToolBar = ({
               themeUi={themeUi}
               disabled={false}
             >
-              Edit Filter
-            </VFButton>
+                {filterApplied ? "Edit Filter" : "Add Filter"}
+           </VFButton>
             {isFilterOpen && renderFilter()}
 
             {/* <VFButton themeUi={themeUi} onClick={()=>console.log("test")}>   Edit Filter</VFButton> */}
@@ -1033,7 +1043,7 @@ const ActionToolBar = ({
                     </SCViewContainerWithBg>
                     <SCViewContainerWithBg
                       onClick={() =>
-                        onResetAllState(`${currCategory}${currentTab}`)
+                        handleResetAllState()
                       }
                     >
                       <SCViewImage

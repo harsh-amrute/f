@@ -117,7 +117,7 @@ const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:
                 return(
                     <>
                     <MultiSelectCheckBoxComponent key={option.id} theme={themeUi}>
-                        <input type="checkbox" name={option.label} style={{ width:'15px',height:'20px',marginRight:'14px',borderRadius: '2px'}} onChange={(e:any)=>onChange(e,'value')} checked={filterState.find((filter)=>option.label===filter.value && header===filter.attributeName)}/>
+                        <input type="checkbox" name={option.label} style={{ width:'15px',height:'20px',marginRight:'14px',borderRadius: '2px'}} onChange={(e:any)=>onChange(e,'value')} checked={!!filterState.find((filter)=>option.label===filter.value && header===filter.attributeName)}/>
                         {header==='Coverage' ? 
                             <div style={{height:'12px', width:'12px', backgroundColor:color}} ></div>
                         :null}
@@ -347,8 +347,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
         }
         return '';
     }
+    
 
-   
     const getDropDownValue = (options:any)=>{
         const doesFilterExist = filterState.find((m:any)=>m.name==filterId)
        if(doesFilterExist){
@@ -364,9 +364,10 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
         } 
        
        }
+       return '';
            
     }
-   
+
 
      
     return(
@@ -770,7 +771,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
 
 
-
+    
 
     const getAPIValue = (filterId:any, filterState:any) => {
        
@@ -804,9 +805,8 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         Object.keys(resetMultiFilter).forEach((key) => {
           resetMultiFilter[key as keyof BPRFilterState].filters = [];
         });
-        
-        setFilterState(resetMultiFilter);
-        setMultiFilter(resetMultiFilter);
+      
+        setMultiFilter({...resetMultiFilter});
       };
 
     //   useEffect(() => {

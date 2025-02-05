@@ -619,9 +619,10 @@ const colDefs3: ColDef[] = [
                   </div> */}
                 </SCHorizontalAllignmentWrapper>
               </Allotment.Pane>
+
               <Allotment.Pane preferredSize={"50%"}>
                 <SCHorizontalAllignmentWrapper>
-                <SCChartContainer className="ag-theme-planning" style={{marginTop:'20px'}} height={"100%"}>
+                <SCChartContainer style={{marginTop:'10px'}} height={"100%"}>
                   <SCChartHeaderContainer>
                     <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                       <SCChartHeader style={{marginRight:10}}>
@@ -642,7 +643,9 @@ const colDefs3: ColDef[] = [
                       )}
                     </div>
                   </SCChartHeaderContainer>
+
                   <SCHorizontalDivider />
+                  
                   <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
                         SKUs With Rationed Quantity Available At Parent" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                       <div className="ag-theme-planning" style={{width:'1000px'}}>
@@ -691,6 +694,7 @@ const colDefs3: ColDef[] = [
                         />
                       </div>
                   </VFModalCard>
+                  
                   <div style={{ display: "none" }}>
                     <VFTable
                       ref={refGraph2}
@@ -722,6 +726,7 @@ const colDefs3: ColDef[] = [
                       disableZoomScaling={true}
                     />
                   </div>
+
                   <div id="ExpediteDispatchesG2" style={{ height: "80%" }}></div>
                 </SCChartContainer>
                 {/* <div style={{ marginLeft: "10px", marginRight: "10px",zoom:"0.7" }}>
