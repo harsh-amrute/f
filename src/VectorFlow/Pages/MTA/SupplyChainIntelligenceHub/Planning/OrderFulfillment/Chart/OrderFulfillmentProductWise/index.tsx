@@ -10,7 +10,7 @@ import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/V
 
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv,downloadBase64Image} from '../../../../../../../../helpers/utils';
 
 interface OrderFulfillmentProps{
     data:any
@@ -24,6 +24,14 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
     
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     const [hideChart2,toggleChart2] = useState<boolean>(false);
+
+    const [isHovered, setIsHovered] = useState(false);
+    const imgSrc = isHovered
+    ? '/assets/img/downlod-icon-hover.svg'
+    : '/assets/img/downlod-icon.svg';
+
+    const [chartId1, setChartId1] = useState<any>("");
+    const [chartId2, setChartId2] = useState<any>("");
  
     const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
@@ -129,7 +137,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
             }
             else{
                 const container1 = document.getElementById('OrderFulfillmentProductG1') as HTMLElement
-                refGraph1.current?.api.createRangeChart({
+                const chart1 = refGraph1.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
                         columns: ['product','overdue','due','others'],
@@ -138,6 +146,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                     },
                     chartContainer:container1
                 })
+                setChartId1(chart1?.chartId);
             }
             
         }
@@ -155,7 +164,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
             }
             else{
                 const container2 = document.getElementById('OrderFulfillmentProductG2') as HTMLElement
-                refGraph2.current?.api.createRangeChart({
+                const chart2 = refGraph2.current?.api.createRangeChart({
                     chartType:'stackedColumn',
                     cellRange: {
                         columns: ['product','greater','between','smaller'],
@@ -164,6 +173,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                     },
                     chartContainer:container2
                 })
+                setChartId2(chart2?.chartId);
             }
             
         }
@@ -183,7 +193,7 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
       }
 
 
-      const getChartToolbarItems:any = () => ['chartDownload'];
+      const getChartToolbarItems:any = () => [''];
 
       const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
@@ -336,6 +346,18 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                 </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
+
+                            <div style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px' , overflow:"hidden"}}>
+                                                                                    <img 
+                                                                                        src={imgSrc}  
+                                                                                        height={13} 
+                                                                                        width={13} 
+                                                                                        onClick={() => {
+                                                                                            downloadBase64Image(refGraph1.current?.api.getChartImageDataURL({chartId: chartId1, fileFormat: 'image/jpg'}), "Categorization of Pending Quantity");
+                                                                                        }}
+                                                                                        style={{cursor:'pointer'}} 
+                                                                            onMouseEnter={() => setIsHovered(true)}
+                                                                            onMouseLeave={() => setIsHovered(false)} ></img>                    </div>
                             <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Products: Categorization of Pending Quantity" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
@@ -421,6 +443,18 @@ const OrderFulfillmentProductWise = ({data}:OrderFulfillmentProps) => {
                                 </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
+
+                            <div style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px' , overflow:"hidden"}}>
+                            <img 
+                                src={imgSrc}  
+                                height={13} 
+                                width={13} 
+                                onClick={() => {
+                                    downloadBase64Image(refGraph2.current?.api.getChartImageDataURL({chartId: chartId2, fileFormat: 'image/jpg'}), "Max No Of Locations With Gap > 67% of Requirement");
+                                }}
+                                style={{cursor:'pointer'}} 
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)} ></img>                    </div>
                             <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Products: Max No Of Locations with Gap &gt; 67% of Requirement" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
