@@ -160,10 +160,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             }).slice(startIndex, lastIndex + 1);
     
           
-            let prevValueNormValue = parseInt(chartData?.[0]?.['bz'], 10) || 0
+            // let prevValueNormValue = parseInt(chartData?.[0]?.['bz'], 10) || 0
             updateNormData = updateNormData.map((data:NormData,index:number)=>{
               const normBand = parseFloat((data.norm/3).toFixed(2))
-              const normBlue = data.norm + ( parseInt(newadjustedChartData?.[index]?.['bz'],10) || prevValueNormValue || 0)
+              const normBlue = (parseInt(newadjustedChartData?.[index]?.['bz'],10) || 0)
     
               const normObj = {
                 ...data,normRed:normBand,
@@ -175,7 +175,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                 upwardConsumptionBasedNorm:newadjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
                 downwardConsumptionBasedNorm:newadjustedChartData[index]['grc'] > 0 ? data.norm : 0
               }
-              prevValueNormValue = parseInt(newadjustedChartData[index]['bz'],10)
+              // prevValueNormValue = parseInt(newadjustedChartData[index]['bz'],10)
               return normObj
             })
             setNormData(updateNormData)
