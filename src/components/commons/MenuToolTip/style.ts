@@ -8,8 +8,8 @@ export const WrapToolTip = styled.div`
     background: ${globalStyles.white};
     top: 0 !important;
     opacity:1;
-    visibility: hidden;
-    transition: 100ms visibility ease-in;
+    // visibility: hidden;
+    // transition: 100ms visibility ease-in;
     &.react-tooltip__show{
         visibility: visible;
     }

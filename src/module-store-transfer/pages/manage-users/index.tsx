@@ -129,17 +129,17 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       const valueChild = `${valueParent} > ${item[txtChild]}`;
       const valueGrandChild = `${valueChild} > ${item[txtGrandChild]}`;
 
-      if (!checkAddParent.includes(valueParent) && valueParent.length > 0) {
+      if (!checkAddParent?.includes(valueParent) && valueParent?.length > 0) {
         checkAddParent.push(valueParent);
         parent.push({ label: valueParent, value: valueParent });
       }
 
-      if (!checkAddChild.includes(valueChild) && item[txtChild].length > 0) {
+      if (!checkAddChild?.includes(valueChild) && item[txtChild]?.length > 0) {
         checkAddChild.push(valueChild);
         child.push({ label: valueChild, value: valueChild });
       }
 
-      if (!checkAddGrandChild.includes(valueGrandChild) && item[txtGrandChild].length > 0) {
+      if (!checkAddGrandChild?.includes(valueGrandChild) && item[txtGrandChild]?.length > 0) {
         checkAddGrandChild.push(valueGrandChild);
         grandChild.push({ label: valueGrandChild, value: valueGrandChild });
       }
@@ -208,8 +208,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         const productPermission = {
           brand: getProductPermissions.parent,
           subBrand: getProductPermissions.child,
-          category: getProductPermissions.grandChild,
-          checkAddBrand: getProductPermissions.checkAddParent,
+          category: getProductPermissions?.grandChild,
+          checkAddBrand: getProductPermissions?.checkAddParent,
           checkAddSubBrand: getProductPermissions.checkAddChild,
           checkAddCategory: getProductPermissions.checkAddGrandChild,
         };
