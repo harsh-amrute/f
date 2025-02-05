@@ -4569,4 +4569,14 @@ export const getMDMTableHeight = (activeMaster:MDMMasterState):string=>{
 
 }
 
+
+export const downloadBase64Image = (base64Data: any, fileName: string):any => {
+  const downloadLink = document.createElement('a');
+  downloadLink.href = base64Data;
+  downloadLink.download = fileName;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+}
+
 // ===================================================================================================
