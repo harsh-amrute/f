@@ -134,44 +134,46 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
         }
     }
 
-    function addToSelectedMaster(masterId:any) {
+    function addToSelectedMaster(masterId: any) {
         const currentUrl = window.location.href;
         const paramName = 'selectedMaster';
- 
-        if (currentUrl.includes('/delete')) {
-            const baseUrl = currentUrl.split('?')[0];
-            let newUrl = currentUrl;
-    
+        
 
-            const regex = new RegExp('/delete\\?' + paramName + '=([^&]*)');
-            const match = currentUrl.match(regex);
-    
-            if (match) {
-                let queryParams = match[1];
-                if (!queryParams.split(',').includes(masterId)) {
-                    queryParams += ',' + masterId;
-                }
-                newUrl = baseUrl + '?' + paramName + '=' + queryParams;
-            } else {
-                if (!currentUrl.includes('?')) {
-                    newUrl = baseUrl + '?' + paramName + '=' + masterId;
-                } else {
-                    newUrl = baseUrl + window.location.search + '&' + paramName + '=' + masterId;
-                }
+        
+        const baseUrl = currentUrl.split('?')[0];
+        let newUrl = currentUrl;
+        
+        const regex = new RegExp(`[?&]${paramName}=([^&]*)`);
+        const match = currentUrl.match(regex);
+        
+        if (match) {
+            let queryParams = match[1];
+            
+            // Split and check the existing IDs
+            const queryParamsArray = queryParams.split(',');
+            if (!queryParamsArray.includes(masterId)) {
+                queryParamsArray.push(masterId);
             }
     
-            window.history.replaceState(null, '', newUrl);
+            queryParams = queryParamsArray.join(',');
+            newUrl = baseUrl + '?' + paramName + '=' + queryParams;
+        } else {
+            if (!currentUrl.includes('?')) {
+                newUrl = baseUrl + '?' + paramName + '=' + masterId;
+            } else {
+                newUrl = baseUrl + window.location.search + '&' + paramName + '=' + masterId;
+            }
         }
+        
+        window.history.replaceState(null, '', newUrl);
     }
     
 
     const handleClickWrapper = (props:MDMMasterState)=>{
-        if( !isAdd){
 
-            const exists = selectedMasters.some((master)=>master.id === props.id)
+        const exists = selectedMasters.some((master)=>master.id === props.id)
 
             exists ? removeFromSelectedMaster(props.id) :  addToSelectedMaster(props.id) 
-        }
         handleOnClickMaster(props)
     }
    
