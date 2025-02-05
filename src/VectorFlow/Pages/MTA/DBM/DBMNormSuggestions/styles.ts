@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const DBMLayout = styled.div`
-    margin-top:20px;
+    // margin-top:20px;
     margin-bottom:40px;
 `
 
