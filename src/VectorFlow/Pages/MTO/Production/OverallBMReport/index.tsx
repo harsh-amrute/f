@@ -206,6 +206,8 @@ const OverallBmReport = () => {
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+  const userTheme = themeUi === 'REGALBLAZE';
+  const backgroundColor = userTheme ? ColorsMTO.Orange.code : ColorsMTO.darkPink.code;
 
   const isOrderCloseEnabled =
     process.env.REACT_APP_ORDER_CLOSE === "enabled" ? true : false;
@@ -701,8 +703,8 @@ const OverallBmReport = () => {
         <div
           style={{
             cursor: isRightArrowEnabled ? "pointer" : "not-allowed",
-            background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-            backgroundColor: ColorsMTO.darkPink.code,
+            background: `linear-gradient(to right, ${backgroundColor})`,
+            backgroundColor: backgroundColor,
             height: "43px",
             width: "59px",
             borderRadius: "4px",

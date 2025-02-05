@@ -1,8 +1,0 @@
-.ag-header-cell-resize {
-    position: absolute;
-    z-index: 0;
-    height: 100%;
-    width: 8px;
-    top: 0;
-    cursor: ew-resize;
-}

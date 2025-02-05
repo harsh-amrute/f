@@ -23,38 +23,35 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   const [tempUrls, setTempUrls] = useState([]); //temp url is used to show downloading
   const [reportUrls, setReportUrls] = useState<string[]>([]);
 
-
-
-
   const getReportFields = async () => {
-    let transformedData: any = undefined;
-
     try {
-      const reports = await getAllReports();
-      const rawDailyReport = reports.data.data;
-      transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
-        name: attributes.reportName,
-        img: "/assets/img/nav/arrow_down.svg",
-        imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
-        url: key,
-        role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "DBMManager", "BPRManager", "MasterUpdater", "MasterApprover"],
-        downloadName: attributes.downloadName
-      }));
-      const extractedNewMenu = _.cloneDeep(listMenuParent)
-      const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
-      if (targetObject) {
-        targetObject.child.push(...transformedData);
-        const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
-        setReportUrls(reporturls)
+      const [reportsResponse, mtoReportsResponse] = await Promise.allSettled([
+        getAllReports(),
+        getAllMTOReports(),
+      ]);
+  
+      let transformedData: any[] = [];
+      let transformedMTOData: any[] = [];
+  
+      // Process normal reports if the request succeeded
+      if (reportsResponse.status === "fulfilled") {
+        const rawDailyReport = reportsResponse.value.data.data;
+        transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
+          name: attributes.reportName,
+          img: "/assets/img/nav/arrow_down.svg",
+          imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+          url: key,
+          role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "DBMManager", "BPRManager", "MasterUpdater", "MasterApprover"],
+          downloadName: attributes.downloadName
+        }));
+      } else {
+        console.error("Error fetching reports:", reportsResponse.reason);
       }
-      setListMenu(extractedNewMenu);
-    } catch (err) {
-      console.error("Error fetching reports", err);
-    } finally {
-      try {
-        const mtoReports = await getAllMTOReports();
-        const rawMTOReports = mtoReports.data.data;
-        const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
+  
+      // Process MTO reports if the request succeeded
+      if (mtoReportsResponse.status === "fulfilled") {
+        const rawMTOReports = mtoReportsResponse.value.data.data;
+        transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
           name: attributes.reportName,
           img: "/assets/img/nav/arrow_down.svg",
           imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
@@ -63,23 +60,80 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
           isMTO: true,
           downloadName: attributes.downloadName
         }));
-
-        const extractedNewMenu = _.cloneDeep(listMenuParent);
-        const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
-        if (targetObject) {
-          if (transformedData) {
-            targetObject.child.push(...transformedData);
-          }
-          targetObject.child.push(...transformedMTOData);
-          const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
-          setReportUrls(reporturls);
-        }
-        setListMenu(extractedNewMenu);
-      } catch (error) {
-        console.log(error);
+      } else {
+        console.error("Error fetching MTO reports:", mtoReportsResponse.reason);
       }
+  
+      // Clone the menu once and update it
+      const updatedMenu = _.cloneDeep(listMenuParent);
+      const targetObject = updatedMenu.find((item: any) => item.id === 8);
+  
+      if (targetObject) {
+        targetObject.child.push(...transformedData, ...transformedMTOData);
+        const reportUrls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+        setReportUrls(reportUrls);
+      }
+  
+      setListMenu(updatedMenu);
+    } catch (err) {
+      console.error("Unexpected error in getReportFields:", err);
     }
   };
+
+  // const getReportFields = async () => {
+  //   let transformedData: any = undefined;
+
+  //   try {
+  //     const reports = await getAllReports();
+  //     const rawDailyReport = reports.data.data;
+  //     transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
+  //       name: attributes.reportName,
+  //       img: "/assets/img/nav/arrow_down.svg",
+  //       imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+  //       url: key,
+  //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "DBMManager", "BPRManager", "MasterUpdater", "MasterApprover"],
+  //       downloadName: attributes.downloadName
+  //     }));
+  //     const extractedNewMenu = _.cloneDeep(listMenuParent)
+  //     const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
+  //     if (targetObject) {
+  //       targetObject.child.push(...transformedData);
+  //       const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+  //       setReportUrls(reporturls)
+  //     }
+  //     setListMenu(extractedNewMenu);
+  //   } catch (err) {
+  //     console.error("Error fetching reports", err);
+  //   } finally {
+  //     try {
+  //       const mtoReports = await getAllMTOReports();
+  //       const rawMTOReports = mtoReports.data.data;
+  //       const transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
+  //         name: attributes.reportName,
+  //         img: "/assets/img/nav/arrow_down.svg",
+  //         imgHover: "/assets/img/nav/DownloadReport-Icon.svg",
+  //         url: key,
+  //         role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "BMReportManager"],
+  //         isMTO: true,
+  //         downloadName: attributes.downloadName
+  //       }));
+
+  //       const extractedNewMenu = _.cloneDeep(listMenuParent);
+  //       const targetObject = extractedNewMenu.find((item: any) => item.id === 8);
+  //       if (targetObject) {
+  //         if (transformedData) {
+  //           targetObject.child.push(...transformedData);
+  //         }
+  //         targetObject.child.push(...transformedMTOData);
+  //         const reporturls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+  //         setReportUrls(reporturls);
+  //       }
+  //       setListMenu(extractedNewMenu);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // };
 
   // const getReportFields = async () => {
   //   const reports = await getAllReports();

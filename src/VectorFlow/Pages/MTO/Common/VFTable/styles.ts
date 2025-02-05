@@ -13,4 +13,13 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
     & > .ag-theme-noir-fusion{
       margin: 0 !important;
     }
+
+    & > .ag-header-cell-resize {
+      position: absolute;
+      z-index: 0;
+      height: 100%;
+      width: 8px;
+      top: 0;
+      cursor: ew-resize;
+    }
 ` 
