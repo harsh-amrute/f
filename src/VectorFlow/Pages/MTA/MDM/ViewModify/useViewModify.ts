@@ -273,9 +273,11 @@ const useViewModify = (pageType:string) => {
           
             matchedItems.forEach((item:any)=>{
               dispatch(ADD_MASTER(item))
-            })
+            })            
+            const currentUrl = window.location.href;
+            if(currentUrl.includes('&isModalOpen=true')){
             dispatch(UPDATE_ACTIVE_MASTER(0));
-            dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
+            dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));}
           }
          }
          getMasterUIConfigurationData()
@@ -557,8 +559,27 @@ const useViewModify = (pageType:string) => {
         });
         return temp;
       }
+      function updateUrlIsModalOpen() {
 
+        const currentUrl = window.location.href;
+        
+
+        const hasParameter = currentUrl.includes("isModalOpen=true");
+
+        if (!hasParameter) {
+
+            const [baseUrl, queryString] = currentUrl.split("?");
+            
+
+            const newQueryString = queryString ? `${queryString}&isModalOpen=true` : "isModalOpen=true";
+            const newUrl = `${baseUrl}?${newQueryString}`;
+            
+
+            window.history.replaceState(null,'', newUrl);
+        }
+    }
     const handleSelectMasterSubmit = () => {
+      updateUrlIsModalOpen();
       masters.forEach((master:MDMMasterState)=>{
         if(!master.isChecked){
           dispatch(REMOVE_MASTER(master.id));
@@ -658,16 +679,16 @@ const useViewModify = (pageType:string) => {
   }
 
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
-        removeSelectedMasterValue(String(currMaster.id));
-        e.stopPropagation();
-        const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
-        if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
-        if(masters.length === 1){
-          return notifyError("There Should be atleast one selected Master")
-        }
-        dispatch(REMOVE_MASTER(currMaster.id));
-        setDownloadData(false);
-        if(currMaster.id === activeMaster.id){
+      e.stopPropagation();
+      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+      if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
+      if(masters.length === 1){
+        return notifyError("There Should be atleast one selected Master")
+      }
+      dispatch(REMOVE_MASTER(currMaster.id));
+      setDownloadData(false);
+      if(currMaster.id === activeMaster.id){
+          removeSelectedMasterValue(String(currMaster.id));
           const mastersLength = masters.length
           for (let index = 0; index < mastersLength; index++) {
             
@@ -1477,7 +1498,22 @@ const useViewModify = (pageType:string) => {
         }
       }
 
+      function removeModalOpenParameterWithoutReload() {
+        const parameterToRemove = '&isModalOpen=true';
+        const currentUrl = window.location.href;
+      
+        // Check if the parameter exists
+        if (currentUrl.includes(parameterToRemove)) {
+          // Remove the parameter
+          const updatedUrl = currentUrl.split(parameterToRemove).join('');
+          
+          // Update the browser's URL without reloading the page
+          window.history.replaceState(null, '', updatedUrl);
+        }
+      }
+
       const onBackButton1 = (backUrl?: string) => {
+        removeModalOpenParameterWithoutReload()
         // dispatch(FILL_MASTERS([]));
         setCanToggleMaster(true)
         if(backUrl){
@@ -1510,7 +1546,8 @@ const useViewModify = (pageType:string) => {
         if(backUrl){
           navigate(backUrl)
         }
-        setCanToggleMaster(true)
+        removeModalOpenParameterWithoutReload();
+        setCanToggleMaster(true);
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
         dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
