@@ -158,9 +158,10 @@ const DptWiseBMReport = () => {
     const [gridDataCount, setGridDataCount] = useState<number>(0);
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
     const [filterData, setFilterData] = useState({});
+    const [isReset, setIsReset] = useState<any>();
+    const [columnState, setColumnState] = useState<any>();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
-
-    
+    const [isPivot, setIsPivot] = useState<any>(false);
     
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
@@ -853,10 +854,6 @@ const DptWiseBMReport = () => {
         }
     }, [coldefs])
 
-    const [isReset, setIsReset] = useState<any>();
-    const [columnState, setColumnState] = useState<any>();
-
-
     const getUserColumnConfig = async () => {
         try {
             const data = await getUserUIConfigData({
@@ -865,7 +862,9 @@ const DptWiseBMReport = () => {
             });
 
             const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-            setColumnState(newConfig);
+            
+            setColumnState(newConfig.cs);
+            setIsPivot(newConfig.pivot);
 
             if (!data) {
                 console.error('Failed to apply column state');
@@ -875,38 +874,42 @@ const DptWiseBMReport = () => {
         }
     }
 
-    const handleSaveClick = async (coldefs?: any) => {    
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-          if (coldefs) {
-            const payload = {
-              un: user.user.name,
-              rn_id: UIGridCode.ProdDeptWiseBMReport,
-              cs: JSON.stringify(coldefs),
-            };
+            if (coldefs) {
+                const fullConfig = { pivot: false, cs: coldefs };
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProdDeptWiseBMReport,
+                    cs: JSON.stringify(fullConfig),
+                };
     
-
-            await updateUserUIConfigData([payload]);
-            setColumnState([...coldefs]); 
-    
-          } else {
-            if (refGraph1?.current?.api) {
-              const config = refGraph1.current.api.getColumnState();
-             setColumnState(config)    
-              const payload = {
-                un: user.user.name,
-                rn_id: UIGridCode.ProdDeptWiseBMReport,
-                cs: JSON.stringify(config),
-              };
-              await updateUserUIConfigData([payload]);
-              await getUserColumnConfig();
+                await updateUserUIConfigData([payload]);
+                setColumnState([...coldefs]);
+                setIsPivot(false);
+              
+            } else {
+                if (refGraph1?.current?.api) {
+                    const config = refGraph1.current.api.getColumnState();
+                    
+                    const isPivot = refGraph1.current?.api.isPivotMode();
+                    const fullConfig = { pivot: isPivot, cs: config };
+                    // setColumnState(config)
+                    const payload = {
+                        un: user.user.name,
+                        rn_id: UIGridCode.ProdDeptWiseBMReport,
+                        cs: JSON.stringify(fullConfig),
+                    };
+                    await updateUserUIConfigData([payload]);
+                    await getUserColumnConfig();
+                }
             }
-          }
-          notifySuccess("Changes saved successfully");
+            notifySuccess("Changes saved successfully");
         } catch (error) {
-          console.error(error);
-          notifyError("Error saving changes");
+            console.error(error);
+            notifyError("Error saving changes");
         }
-      };
+    };
 
    const handleResetClick = () => {
       setIsReset(true);
@@ -928,14 +931,16 @@ const DptWiseBMReport = () => {
 
     useEffect(() => {
         if (refGraph1?.current && columnState?.length) {
-          const result = refGraph1.current.api.applyColumnState({
-            state: columnState,
-            applyOrder: true
-        });
-        if (!result) {
-          console.error('Failed to apply column state');
+            const result = refGraph1.current.api.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            const applyPivot = refGraph1.current?.api.setGridOption('pivotMode', isPivot);
+            
+            if (!result || !applyPivot) {
+                console.error('Failed to apply column state');
+            }
         }
-      }
     }, [columnState]);
   
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
@@ -973,14 +978,14 @@ const DptWiseBMReport = () => {
                     isMfgSelected={isMfgSelected}
                 />
             </BMDepHeaderWraper>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto', marginTop: "10px",}}>
             <p>{(date && date.length)? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
             <>
                 {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }
 
-                        <HorizontalViewWrapper style={{ marginTop: '0px' }}>
+                        <HorizontalViewWrapper style={{ marginTop: '0px', paddingLeft:"25px" }}>
                             <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
                                 <Allotment vertical={true} separator={true} ref={allotementRef}>
                                     <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
