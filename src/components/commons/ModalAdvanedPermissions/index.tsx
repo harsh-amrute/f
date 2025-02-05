@@ -81,6 +81,9 @@ const ModalAdvanedPermissions = (props: any) => {
   };
 
   const isValidPermission = (storePermission: any[]): boolean => {
+    if (!storePermission.some((permission) => permission.application_id === 1)) {
+      return true;
+    }
     return storePermission.some((permission) => 
       permission.application_id === 1 &&
       permission.productPermission?.brand?.length > 0 && 
