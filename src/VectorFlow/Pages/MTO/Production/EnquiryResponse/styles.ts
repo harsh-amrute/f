@@ -10,9 +10,9 @@ export const EnquiryWrapper = styled.div`
   }
 `;
 
-export const FilterWrapper = styled.div`
-  padding: 0px 20px 15px;
-`;
+// export const FilterWrapper = styled.div`
+//   padding: 0px 20px 15px;
+// `;
 
 export const EditFilterBtn = styled.button`
   color: white;
@@ -106,7 +106,7 @@ export const EstimatedWrapper = styled.div`
 `;
 export const BlurCover = styled.div`
   top: 0;
-  left: 1%;
+  // left: 1%;
   position: absolute;
   background: #80808080;
   width: 98%;
