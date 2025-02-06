@@ -3,7 +3,7 @@ import * as globalStyles from '../../../../../styles/global'
 
 export const ResearchInsightsLayout = styled.div`
     // margin-top:10px
-    margin-top:20px;
+    margin-top:5px;
     margin-left:20px;
     min-height:100vh;
     display:grid;

@@ -8,7 +8,7 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/VFModalCard";
 import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
 import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv, downloadBase64Image} from '../../../../../../../../helpers/utils';
 interface ExcessInventoryProps{
     data:any
 }
@@ -21,6 +21,14 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
     
     const [hideChart1,toggleChart1] = useState<boolean>(false);
     const [hideChart2,toggleChart2] = useState<boolean>(false);
+
+    const [isHovered, setIsHovered] = useState(false);
+    const imgSrc = isHovered
+    ? '/assets/img/downlod-icon-hover.svg'
+    : '/assets/img/downlod-icon.svg';
+
+    const [chartId1, setChartId1] = useState<any>("");
+    const [chartId2, setChartId2] = useState<any>("");
      
     const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
@@ -106,7 +114,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             }
             else{
                 const container1 = document.getElementById('ExcessInventoryProductG1') as HTMLElement
-                refGraph1.current?.api.createRangeChart({
+                const chart1 = refGraph1.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
                         columns: ['SKUDescription','WHCount'],
@@ -115,6 +123,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     },
                     chartContainer:container1
                 })
+                setChartId1(chart1?.chartId);
             }
             
         }
@@ -132,7 +141,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             }
             else{
                 const container2 = document.getElementById('ExcessInventoryProductG2') as HTMLElement
-                refGraph2.current?.api.createRangeChart({
+                const chart2 = refGraph2.current?.api.createRangeChart({
                     chartType:'column',
                     cellRange: {
                         columns: ['SKUDescription','SumAmount'],
@@ -141,6 +150,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     },
                     chartContainer:container2
                 })
+                setChartId2(chart2?.chartId);
             }
             
         }
@@ -160,7 +170,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
       }
 
 
-      const getChartToolbarItems:any = () => ['chartDownload'];
+      const getChartToolbarItems:any = () => [''];
 
       const chartThemeOverridesG1 = useMemo<any>(() => { 
         return {
@@ -204,6 +214,20 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                   },
                   
               },
+            bar:{
+                series:{
+                    tooltip:{
+                        enabled:true,
+                        renderer:(params:any)=>{
+                            const datum = params.datum
+                            return {
+                                title: `${params.yName}`,
+                                content: `${datum.SKUDescription.value}: ${datum.WHCount}`
+                            }
+                        },
+                    }
+                }
+              }
           };
       }, []);
 
@@ -282,13 +306,25 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={"95%"} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: Number Of Locations</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center'  , overflow:"hidden"}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: Number Of Locations</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
                                     {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
                                 </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
+
+                            <div style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px' , overflow:"hidden"}}>
+                            <img 
+                                src={imgSrc}  
+                                height={13} 
+                                width={13} 
+                                onClick={() => {
+                                    downloadBase64Image(refGraph1.current?.api.getChartImageDataURL({chartId: chartId1, fileFormat: 'image/jpg'}), "Top 10 Products with Excess Inventory: Number Of Locations");
+                                }}
+                                style={{cursor:'pointer'}} 
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)} ></img>                    </div>
                             <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Products with Excess Inventory: Number of Locations" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable
@@ -368,13 +404,25 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={'95%'} style={{marginLeft:'18px'}}>
                             <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
+                                <div style={{display:'flex',width:'100%',justifyContent:'center' , overflow:"hidden"}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
                                     {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(2)}/>}
                                 </div>
                             </SCChartHeaderContainer>
                             <SCHorizontalDivider/>
+
+                            <div style={{display:'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'20px' , overflow:"hidden"}}>
+                            <img 
+                                src={imgSrc}  
+                                height={13} 
+                                width={13} 
+                                onClick={() => {
+                                    downloadBase64Image(refGraph2.current?.api.getChartImageDataURL({chartId: chartId2, fileFormat: 'image/jpg'}), "Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)");
+                                }}
+                                style={{cursor:'pointer'}} 
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)} ></img>                    </div>
                             <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                                 <div className="ag-theme-planning" style={{width:'1000px'}}>
                                     <VFTable

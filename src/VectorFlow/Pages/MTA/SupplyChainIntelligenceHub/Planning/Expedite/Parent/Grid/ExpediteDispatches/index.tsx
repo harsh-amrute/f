@@ -11,6 +11,7 @@ import RequestExpeditingModal from '../../../../../BPR/RequestExpeditingModal';
 import { useSubmitOpenExpediteRequest } from '../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../../helpers/notify';
 import { toast } from 'react-toastify';
+import { MainMenuItemsCustomization, generateDailyDataGraphCell } from '../../../../../../../../../helpers/utils'
 
 const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
     const [isExpeditingModalOpen,toggleExpeditingModal] =  useState<boolean>(false)
@@ -77,6 +78,7 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
         tooltipInteraction:true,
         // rowSelection:'single',
         readOnlyEdit:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         onRowClicked:(params:any)=>{
             if(params.data.intransit && params.data.intransit.length>0){
                 setActiveRow(params.data.intransit)
@@ -130,7 +132,8 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
 
     const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
         let colDefs = [];
-        const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+        const dailyDataColDef = generateDailyDataGraphCell(onOpenDailyDataGraph)
+        // const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
         columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
             return column1.colPosition - column2.colPosition;
         })

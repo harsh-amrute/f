@@ -7,6 +7,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import DailyDataGraphModal from '../../../../../components/VectorFLOW/commons/DailyDataGraphModal';
 import NormChangeHistoryTable from '../../../../../components/VectorFLOW/commons/NormChangeHistoryTable';
 import { GridStateContext } from '../../../../../context/GridStateContext';
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 const DBM = () => {
 
@@ -38,7 +39,9 @@ const DBM = () => {
   onDeleteFilter,
   onExportToExcelCallBack,
   recordsPerPage,
-  generalFilterOptions
+  generalFilterOptions,
+  onResetCallback,
+  lastRunDate
 } = useDBM();
 
  if(isLoading){
@@ -56,7 +59,8 @@ const DBM = () => {
       tempDownloadData:tempDownloadData,
       setTempDownloadData:setTempDownloadData,
       exportExcelRowData:exportExcelRowData,
-      setExportExcelRowData:setExportExcelRowData
+      setExportExcelRowData:setExportExcelRowData,
+      onResetCallback:onResetCallback
 
   }}>
       <ActionToolBar 
@@ -75,11 +79,15 @@ const DBM = () => {
         onApplyFilter={handleApplyFilter}
         multiFilter={currentFilter}
         setMultiFilter={setCurrentFilter}
+        lastRunDate={lastRunDate}
         generalFilterOptions={generalFilterOptions}
         onDelete={onDeleteFilter}
       />
+      {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
       <DBMLayout>
-        <div style={{height:'90vh'}}>
+        <div style={{height:'70vh'}}>
             {
                 showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHCode'} />
             }
@@ -92,7 +100,7 @@ const DBM = () => {
                   columnDefs={DBMColumns}
                   rowData={DBMRowData}
                   ref={gridRef}
-                  height={"98%"}
+                  height={"100%"}
                   enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {{

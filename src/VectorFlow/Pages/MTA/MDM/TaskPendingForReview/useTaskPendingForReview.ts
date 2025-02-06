@@ -57,8 +57,7 @@ const useTaskPendingForReview = ()=>{
 
 
     useEffect(() => {
-        console.log("Side Effect")
-        if (ref.current && detailTableRowData.length > 0) {
+        if (ref.current && detailTableRowData?.length > 0) {
           ref.current.api.forEachNode((rowNode) => {
             if (rowNode.data.status === "Rejected") {
               rowNode.setSelected(true);
@@ -134,9 +133,10 @@ const useTaskPendingForReview = ()=>{
             if(currentMasterFields){
                 // console.log(currentTaskMaster.data[0].new)
                 const existingColumns = getExistingColumns(
+                    currentTaskMaster.data?
                     (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
-                    ? JSON.parse(currentTaskMaster.data[0].new)
-                    : currentTaskMaster.data[0]
+                    ? JSON.parse(currentTaskMaster?.data[0].new)
+                    : currentTaskMaster?.data[0]:[]
                 );
                                
                 const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)

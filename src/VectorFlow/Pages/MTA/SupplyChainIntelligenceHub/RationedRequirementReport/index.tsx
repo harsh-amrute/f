@@ -5,6 +5,7 @@ import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 
 
@@ -34,7 +35,8 @@ const RRR = () => {
   isSavedDataLoading,
   ref,
   generalFilterOptions,
-  onResetCallback
+  onResetCallback,
+  lastRunDate
 } = useRRR();
 
 
@@ -66,11 +68,15 @@ const RRR = () => {
         genericRecordCount={RRRDataCount}
         onExportToExcelCallBack={onExportToExcelCallBack}
         multiFilter={currFilter}
+        lastRunDate={lastRunDate}
         generalFilterOptions={generalFilterOptions}
         setMultiFilter={setCurrFilter}
         onDelete={onDeleteFilter}
       />
     </div>
+    {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
     <RRRLayout>
         {/* <RRRTaskBar style={{width:isSideBarOpen? '77%':'97%'}}>
             <VFButtonOutline
@@ -96,7 +102,7 @@ const RRR = () => {
           <VFLoader/>
         ):
         (
-          <div style={{height:'100vh'}}>
+          <div style={{height:'70vh'}}>
 
           <VFTable
                   ref={ref}
@@ -114,7 +120,7 @@ const RRR = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                  height={"90%"}
+                  height={"100%"}
               />  
               <VFPagination 
                 selectedRows={0} 

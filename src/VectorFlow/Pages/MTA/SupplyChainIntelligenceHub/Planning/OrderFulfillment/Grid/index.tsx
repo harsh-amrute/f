@@ -2,7 +2,7 @@ import {useMemo, useState} from 'react';
 import GridViewTable from "../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import { createIconColumn, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../helpers/utils';
+import { createIconColumn, getProductAndLocationHeirarchiesFromEnv, MainMenuItemsCustomization } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { OrderCoverageCellRenderer } from '../../../../../../../components/VectorFLOW/commons/OrderCoverageCellRenderer';
@@ -30,6 +30,7 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
         tooltipTrigger: 'focus',
         tooltipInteraction: true,
         readOnlyEdit: true,
+        getMainMenuItems: MainMenuItemsCustomization,
         gridOptions: {
             rowHeight: 50,
             getRowStyle: (params: any) => {
@@ -83,13 +84,13 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
             return column1.colPosition - column2.colPosition;
         });
         const dailyDataColDef = {...createIconColumn({id:'graph', label:'', cellRenderer:'grapCellRenderer'}), cellRendererParams: {onOpenDailyDataGraph: onOpenDailyDataGraph}};
-        const tagsColDef = {
-            colId: 'tags',
-            field: 'tags',
-            headerName: "Tags",
-            cellRenderer: 'tagsCellRenderer',
-            width: 100
-        };
+        // const tagsColDef = {
+        //     colId: 'tags',
+        //     field: 'tags',
+        //     headerName: "Tags",
+        //     cellRenderer: 'tagsCellRenderer',
+        //     width: 100
+        // };
 
         colDefs = columns.map((column:any) => {
             if (['plp', 'pip'].includes(column.colCode)) {
@@ -109,6 +110,15 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
                     minWidth: 250,
                 }
             }
+            if(column.colCode==='t'){
+                return {
+                    field: column['colCode'],
+                    colId: column['colCode'],
+                    headerName: column['header'],
+                    cellRenderer: 'tagsCellRenderer',
+                    width: 100
+                }
+            }
             const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
             if(customColdef) return customColdef;
             return {
@@ -117,7 +127,7 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
                 headerName: column['header'],
             }
         });
-        return [dailyDataColDef, tagsColDef, ...colDefs];
+        return [dailyDataColDef, ...colDefs];
     }
 
     const colDefs = mapUIConfigToColdefs(data['uiConfig']);

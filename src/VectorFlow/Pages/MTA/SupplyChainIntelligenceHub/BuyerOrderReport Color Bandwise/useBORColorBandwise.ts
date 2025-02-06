@@ -1,6 +1,6 @@
 // import { useGetBORUIConfiguration, useBORData, useBORDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData, useGetUiConfig} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapBORColorBandWiseFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBORColorBandWiseFieldsToColDefs, MainMenuItemsCustomization, generateAndMapColumns ,mapColumnsWithConfigs  } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
@@ -21,7 +21,11 @@ import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCe
 
 import { ColDef } from "ag-grid-enterprise"
 import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
-import { useSubmitBORRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
+import { useGetBORRemarkHistory, useSubmitBORRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
+import { BORRemarksCellRenderer } from "../BuyerOrderReport/BORCellRenderers"
+import { CSSProperties } from 'styled-components'
+import useViewPort from '../../../../../hooks/useViewPort'
 
 
 
@@ -70,6 +74,8 @@ export const useBORColorBandwise =()=>{
     //  const rowsPerPage=50;
      const rowsPerPage = parseInt(process.env.REACT_APP_BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
 
+     const {date:lastRunDate} = useGetLastRunData()
+
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
@@ -81,32 +87,51 @@ export const useBORColorBandwise =()=>{
      const {mutateAsync:getDataCount} = useGetBORColorBandWiseRecordCount();
 
      const {mutateAsync:getDailyData} = useGetDailyData();
+     const [intialColumnState,setInitialColumnState] = useState<any>(undefined)
+     const [BORCBColumns , setBORCBColumns] =  useState<ColDef[]>([])
+     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
+     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
+        
+     const {getGridZoom,getScreenZoomValue} = useViewPort()
+     const screenZoom = getScreenZoomValue() 
+ 
+     const gridZoom = getGridZoom()
+    const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
+     
+      const {mutateAsync:getBORRemarkHistory} = useGetBORRemarkHistory();
+
+   const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
+
 
      const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
-        colorCellRenderer:TextToTextColorMapper
+        colorCellRenderer:TextToTextColorMapper,
+        remarksCellRenderer:BORRemarksCellRenderer
         
       }), []);
 
-      const onCellValueChanged = (newRow: any, primaryKey: string) => {
+      const onCellValueChanged = (newRow: any, primaryKey1: string,primaryKey2:string,primaryKey3:string) => {
         setEditedRows((prev) => {
           let found = false; // Flag to track if the row has been updated
           const updatedRows = prev.map((row) => {
-            if (row[primaryKey] === newRow[primaryKey]) {
+            if (row[primaryKey1] === newRow[primaryKey1] && row[primaryKey2]===newRow[primaryKey2] && row[primaryKey3]===newRow[primaryKey3]) {
               found = true;
-              return { ...newRow }; // Return updated row
+              return newRow.remarks && newRow.remarks.length !== 0 ? { ...newRow } : null; // Return updated row
             }
             return row; // Return unchanged row
           });
+  
+          const filteredUpdatedRows = updatedRows.filter(row => row !== null);
       
-          if (!found) {
+          if (!found && newRow.remarks && newRow.remarks.length > 0) {
             // If no existing row was found, add the new row
-            return [...updatedRows, {...newRow}];
+            return [...filteredUpdatedRows, {...newRow}];
           }
-          return updatedRows;
+          return filteredUpdatedRows;
         });
       };
+  
 
       const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -117,11 +142,11 @@ export const useBORColorBandwise =()=>{
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
             rowData:params.data,
-            chartData:data['StockData'],
-            normChangeData:data['NormChangeHistoryData'],
-            masterData:data['MasterData'][0],
+            chartData:data['StockData'] ? data['StockData'] : [],
+            normChangeData:data['NormChangeHistoryData'] ? data['NormChangeHistoryData'] : [],
+            masterData: Array.isArray(data['MasterData']) && data['MasterData']?.length > 0 ? data['MasterData'][0] : undefined,
             suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-            monitoringData:data['MonitoringData']
+            monitoringData:data['MonitoringData'] ? data['MonitoringData'] : []
         }
   
         dispatch(UPDATE_DAILY_DATA(dailyData));
@@ -136,28 +161,85 @@ export const useBORColorBandwise =()=>{
 
       const [gridState,setGridState] = useState<any>()
 
-      useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState("BOR_Color_Bandwise")
-            setGridState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:[],
-                pivot:false
-            })
-          }
-        }
-        getTableState()
+    //   useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState({"reportname": "BOR_Color_Bandwise"})
+    //         setGridState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         setGridState({
+    //             charts:[],
+    //             columns:[],
+    //             pivot:false
+    //         })
+    //       }
+    //     }
+    //     getTableState()
 
-    },[])
-  
-    useEffect(()=>{
-      if(internalRef && gridState && gridState.columns){
-          internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+    // },[])
+    const onOpenRemarkHistory = async(e:React.MouseEvent<HTMLElement>,row:any)=>{
+      try{
+          setIsRemarkHistoryToolTipOpen(false)
+          const toastId = notifyLoader("Getting remark history")
+          const {top,left} = e.currentTarget.getBoundingClientRect()
+          setRemarkHistoryToolipPosition({
+              top: top *  gridZoom * screenZoom,
+              left: left *  gridZoom * screenZoom,
+              height:360,
+              width:350
+          })
+          const {data} = await getBORRemarkHistory(row)
+          toast.dismiss(toastId)
+          setRemarkHistory(data.data)
+          setIsRemarkHistoryToolTipOpen(true)
+      }catch(err:any){
+          notifyError(err.message)
       }
-  },[internalRef,gridState])
+      }
+
+
+        useEffect(()=>{
+            const getTableState = async()=>{
+              try{
+                const stateData =  await getState({"reportname":"BORColorBandwise"})
+                if(stateData.data.data.length!==0){
+                    const parsedContent = JSON.parse(stateData.data.data)
+                    const generatedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                    const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
+                    setGridState({
+                        pivot:parsedContent.pivot,
+                        charts:parsedContent.charts,
+                        columns:coldefs
+                    })
+                    setBORCBColumns(coldefs)
+                }else{
+                    const MappedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  undefined, onOpenDailyDataGraph)
+                    setGridState({
+                        charts:[],
+                        columns:MappedColumns,
+                        pivot:false
+                    })
+                    setBORCBColumns(MappedColumns)
+                }
+              }catch(err:any){
+                console.log(err)
+                setGridState({
+                    charts:[],
+                    columns:BORCBColumns,
+                    pivot:false
+                })
+              }
+            }
+            if(intialColumnState!==undefined){
+                getTableState()
+            }
+        },[intialColumnState])
+  
+        useEffect(()=>{
+          if(internalRef && gridState && gridState.columns){
+              internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+          }
+      },[internalRef,gridState])
 
       useEffect(()=>{       
         const fetchData = async () => {
@@ -203,10 +285,17 @@ export const useBORColorBandwise =()=>{
 
     }
 
+
+    const onResetCallback = async()=>{
+      const MappedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  undefined, onOpenDailyDataGraph)
+      setBORCBColumns(MappedColumns)
+  }
+
     const getBORColorBandWiseUiConfig = async()=>{
       try{
           const response = await getUiConfig('BOR_OA')
-          setColDefs(mapBORColorBandWiseFieldsToColDefs(response.data.data,onOpenDailyDataGraph))
+          setInitialColumnState(response.data.data)
+          //setColDefs(mapBORColorBandWiseFieldsToColDefs(response.data.data,onOpenDailyDataGraph))
       }catch(err:any){
           notifyError("Something Went Wrong")
       }
@@ -224,6 +313,23 @@ export const useBORColorBandwise =()=>{
       onApplyFilter(updatedFilter)
   }
 
+    
+    const defaultColDefObject = useMemo(()=>{
+      return {
+          floatingFilter: true,
+          cellStyle:{
+              "flex":1,
+              'text-align':'center',
+              'height':'50px',
+              "font-style":"normal",
+              "display":"block",
+              'text-overflow':'ellipsis',
+              'white-space':'nowrap'
+          },
+      }
+    },[])
+
+
      const agGridProps:AgGridReactProps = useMemo(()=>{
       return {
         tooltipShowDelay:0,
@@ -232,6 +338,7 @@ export const useBORColorBandwise =()=>{
         suppressRowClickSelection:true,
         components:customCellRenderers,
         enableBrowserTooltips:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,
@@ -245,24 +352,9 @@ export const useBORColorBandwise =()=>{
          pagination:false,
          sideBar:defaultAgGridSideBarForBPR,
         // pivotMode:true,
-         defaultColDef:{
-            floatingFilter: true,
-            cellStyle:{
-                'text-align':'center',
-                'height':'50px',
-                "font-style":"normal",
-            " font-variant":"normal",
-            " font-weight":"300",
-            " font-size":"20px",
-            " font-family":"Roboto",
-            "display":"block",
-            'text-overflow':'ellipsis',
-            'white-space':'nowrap'
-            },
-           
-        },
+         defaultColDef:defaultColDefObject,
         onGridReady:(params)=>setInternalRef(params),
-        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode")
+        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode","SupplierCode")
       }
      },[])
 
@@ -282,10 +374,11 @@ export const useBORColorBandwise =()=>{
     }
 
       const tempAgGridProps:AgGridReactProps = {
-        onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'BuyerOrderReport-ColorBandWise',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+          onRowDataUpdated:(event)=>{
+            if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'BuyerOrderReport-ColorBandWise',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+           }
         }
-      };
+
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getData({
             filters:currFilter,
@@ -299,35 +392,59 @@ export const useBORColorBandwise =()=>{
     }
 
     const onSubmitRemarks = async()=>{
-      try{
-        const toastId = notifyLoader("Submitting Remark")
-        const payload = editedRows.map((e)=>{
-            return {
-                remark:e.remarks,
-                whcode:e.WHCode,
-                skucode:e.SKUCode,
-                spc:e.SupplierCode
+          try{
+            if(editedRows.length===0){
+              notifyError('Please add remarks/remark to save')
+              return
             }
+          const toastId = notifyLoader("Submitting Remark")
+          const payload = editedRows.map((e)=>{
+              return {
+                  remark:e.remarks,
+                  whcode:e.WHCode,
+                  skucode:e.SKUCode,
+                  spc:e.SupplierCode
+              }
+              
+          })
+          const {data} = await submitRemark({data:payload})
+          editedRows.forEach((editedRow) => {
+              // Find the row node using both SKUCode and WHCode as unique identifiers
+              const rowNode:any = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WHCode}-${editedRow.SupplierCode}`);
+              if (rowNode) {
+                const RemarkColumn = BORCBColumns.find(obj => obj.colId === "Remark");
+                if(rowNode?.data?.Remark!==undefined && RemarkColumn!==undefined){
+                  // Check if Remark column exist in both columnDef and RowData , only then update its value for better ui
+                  rowNode?.setDataValue('Remark', editedRow?.remarks);
+                }
+                rowNode.setDataValue('Remark', editedRow.remarks);
+        
+                // Clear the 'Edit Remarks' column after submission
+                rowNode.setDataValue('remarks', '');
+              }
+            });
             
-        })
-        const {data} = await submitRemark({data:payload})
-        toast.dismiss(toastId)
-        notifySuccess(data.msg)
-        setEditedRows([])
-       }catch(err:any){
-        notifyError(err.message)
+           toast.dismiss(toastId)
+           notifySuccess(data.msg)
+           setEditedRows([])
+          }catch(err:any){
+           notifyError(err.message)
+          }
        }
-   }
 
       const generalFilterOptions = useMemo(()=>{
-        return convertUiConfigToOptions(colDefs)
-    },[colDefs])
+        if(BORCBColumns.length!==0){
+
+          console.log("BORCBColumns", BORCBColumns);
+          return convertUiConfigToOptions(BORCBColumns)
+        }
+    },[BORCBColumns])
 
   
      return {   
         ref,    
         isLoading :isBORUILoading,      
-        colDefs,
+        BORCBColumns,
         agGridProps,
         rowData ,
         currentPage,
@@ -355,6 +472,12 @@ export const useBORColorBandwise =()=>{
         onDeleteFilter,
         generalFilterOptions,
         onSubmitRemarks,
-        editedRows
+        editedRows,
+        onResetCallback,
+        lastRunDate,
+        isRemarkHistoryToolTipOpen,
+        setIsRemarkHistoryToolTipOpen,
+        remarkHistory,
+        onCloseRemarkHistory
     }
 }

@@ -199,7 +199,7 @@ export const listMenuParent: any = [
     id: 6,
     name: "navbar.listMenuParent.innerStoreTransfers.title",
     img: "/assets/img/nav/IST",
-    url: "/",
+    url: "/ist-requests",
     status: false,
     lp_attr : true,
     lp_img : "/assets/img/IST 1.svg",
@@ -215,7 +215,7 @@ export const listMenuParent: any = [
       {
         name: "navbar.listMenuParent.innerStoreTransfers.pendingISTRequests",
         img: "/assets/img/nav/arrow_down.svg",
-        url: "/",
+        url: "/ist-requests",
         role: ["IST Admin", "IST Governor"],
       },
       {
@@ -265,6 +265,7 @@ export const listMenuParent: any = [
             lp_attr : true,
             img: "/assets/img/nav/arrow_down.svg",
             lp_img : "/assets/img/planning.svg",
+            rp_img : "/assets/img/planning1.svg",
             url: "/supply-chain-intelligence-hub/planning",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
@@ -286,7 +287,7 @@ export const listMenuParent: any = [
             url: "/supply-chain-intelligence-hub/open-expediting-requests",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
-
+ 
           // {
           //   name: "Vendor Dispatch Report",
           //   img: "/assets/img/nav/arrow_down.svg",
@@ -298,21 +299,49 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/rrr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
-
+ 
+          },
+          {
+            name: "Rationed Requirement Report - Color Bandwise",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/rrr-color-bandwise",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+ 
           },
           {
             name: "Buyer Order Report",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/bor",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
-
+ 
+          },
+          {
+            name: "Buyer Order Report - Color Bandwise",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/bor-color-bandwise",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+ 
+          },
+          {
+            name: "Order Allocation Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/order-allocation-report",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+ 
+          },
+          {
+            name: "Total Requirement Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/total-requirement-report",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+ 
           },
           {
             name: "Supplier Dispatch Report",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/sdr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
-
+ 
           },
           {
             name: "Merchandising Grid",
@@ -327,7 +356,7 @@ export const listMenuParent: any = [
         img: "/assets/img/nav/arrow_down.svg",
         url: "/logistics",
         role: ["IST Admin", "IST Requestor"],
-
+ 
         child: [
           {
             name: "InTransit Whereabouts",
@@ -335,7 +364,7 @@ export const listMenuParent: any = [
             url: "/logistics/intransit-whereabouts",
             // role: ["IST Admin", "IST Requestor"],
             role: ["Admin", "VectorConsultant", "BPRManager"],
-
+ 
           }
         ]
       },
@@ -369,6 +398,7 @@ export const listMenuParent: any = [
             lp_attr : true,
             url: "/insights-and-trends/guided-insights",
             lp_img : "/assets/img/Guided-In.svg",
+            rp_img : "/assets/img/Guided-In1.svg",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           {
@@ -377,6 +407,7 @@ export const listMenuParent: any = [
             lp_attr : true,
             url: "/insights-and-trends/research-insights",
             lp_img : "/assets/img/Reasearch-in.svg",
+            rp_img : "/assets/img/Reasearch-in1.svg",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           }
         ]
@@ -397,6 +428,7 @@ export const listMenuParent: any = [
       }
     ],
   },
+ 
   // {
   //   id: 7,
   //   name: "navbar.listMenuParent.velocityAnalysis.title",
@@ -429,6 +461,7 @@ export const listMenuParent: any = [
     app_id : 3,
     url: "/procurement/material-coverage-open-sales",
     lp_img : "/assets/img/Prourment.svg",
+    rp_img : "/assets/img/Prourment1.svg",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant"],
     // avoidHeader: true,
@@ -493,6 +526,7 @@ export const listMenuParent: any = [
     lp_attr : true,
     app_id : 3,
     lp_img : "/assets/img/Prod-icon.svg",
+    rp_img : "/assets/img/Prod-icon1.svg",
     url: "/production-planning-scheduling/deptwise-bm-report",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater", "BMReportManager","MasterScheduler"],
@@ -680,6 +714,7 @@ export const listMenuParent: any = [
     lp_attr : true ,
     app_id : 3,
     lp_img :"/assets/img/Poogi 3.svg",
+    rp_img :"/assets/img/Poogi 4.svg",
     url: "/poogi/reasons-for-delayed-orders",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
@@ -744,6 +779,7 @@ export const listMenuParent: any = [
     app_id : 3,
     avoidHeader: true,
     lp_img : "/assets/img/Manufacturing.svg",
+    rp_img : "/assets/img/Manufacturing1.svg",
     url: "/manufacturing-intelligence-hub/delivery-performance/bm-trends",
     status: false,
     role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],

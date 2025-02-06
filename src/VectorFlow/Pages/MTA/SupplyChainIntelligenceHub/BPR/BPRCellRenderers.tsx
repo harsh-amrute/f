@@ -93,8 +93,14 @@ const colorMapper =(color:string)=> {
                 "bg":"#000000",
                 "text":"white"
             }
+        case "Grey":{
+            return {
+                "bg":"grey",
+                "text":"black"
+            }
+        }
         default:
-            return{
+            return{  
                 "bg":"white",
                 "text":"black"
             }
@@ -103,7 +109,8 @@ const colorMapper =(color:string)=> {
 
 export const BPRTechColorCellRenderer = (params:any)=>{
 
-    const techColor = params.data.TechColor
+    const techColor = params.data.TechColor;
+    // console.log("techColor", params.data)
     const cellColor = colorMapper(params.data.TechColor)
 
     if(!techColor || techColor.length<0 ){

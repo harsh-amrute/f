@@ -25,6 +25,7 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import { getUploadModalRadioButtons,generateOptions, getMDMTableHeight } from "../../../../../helpers/utils";
 import { Filter } from "../../../../../VectorFlow/types/MDM";
 import { operators } from "../../../../../helpers/MDMConstants";
+import { useLocation } from "react-router";
 
 
 
@@ -33,11 +34,13 @@ const DeleteRecord = () => {
   const suppressMovable = true;
   const {user} = useUserData()
   const themeUi = user?.user?.theme_ui;
+  const location = useLocation();
  
 
     const {
         isSelectMasterOpen,
         activeMaster,
+        allMastersState,
         handleTabChange,
         handleTabClose,
         addNewMaster,
@@ -76,6 +79,7 @@ const DeleteRecord = () => {
         onReset,
         onEditOnlineSave,
         onBackButton,
+        onBackButton1,
         isOverlayVisible,
         isDataAvailableLocally,
         enableEditOnlineReset,
@@ -87,7 +91,6 @@ const DeleteRecord = () => {
 
     const {
         onCancel,
-        allMasters,
         selectedMasters, 
         onDeleteData,
         onSubmit,
@@ -126,14 +129,14 @@ const DeleteRecord = () => {
               onSubmit={handleSubmitSelectMaster}  
               onCancel={onCancel}
               handleOnClickMaster={handleOnClickMaster}
-              allMasters={allMasters}
+              allMasters={allMastersState}
               selectedMasters={selectedMasters}
               text="delete"
               selectedOptions={selectedOptions}
               options={options}
               shouldShowMaster={showMaster}
               shouldShowMasterGroup={showMasterGroup}
-
+              isAdd={false}
           />
       )
     }
@@ -310,7 +313,8 @@ const DeleteRecord = () => {
               onEditOnlineSave={onEditOnlineSave}
               editOnline={false}
               deleteOnline={editOnline}
-              onBack={onBackButton}
+              onBack={() => onBackButton(location?.state?.backUrl)}
+              onBack1={() => onBackButton1(location?.state?.backUrl)}
               onClearAndExportErrors={onClearExportError}
               onModifyData={()=>toggleUploadModal(true)}
               onExportData={exportToExcel}

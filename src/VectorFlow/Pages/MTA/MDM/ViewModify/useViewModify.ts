@@ -4,7 +4,7 @@ import { type Option, type Field,type GetMasterDataPayload, type GridRef, type Q
 import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail, useGetUploadProgress } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
-import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS, UPDATE_IS_SAVING_DRAFT} from '../../../../../redux/actions/MDM';
+import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS, UPDATE_IS_SAVING_DRAFT, ADD_MASTER} from '../../../../../redux/actions/MDM';
 import type { RootState } from '../../../../../redux/store/store';
 import { notifyError, notifyLoader, notifyPromise, notifySuccess } from '../../../../../helpers/notify';
 import ErrorCell from '../../../../../components/VectorFLOW/commons/ErrorCell';
@@ -29,6 +29,8 @@ const useViewModify = (pageType:string) => {
     const selectedOptions = useSelector((state: RootState) => state.mdm.selectedOptions);
     const activeMaster = useSelector((state:RootState) => state.mdm.activeMaster);
     const masters = useSelector((state:RootState)=>state.mdm.masters);
+
+    const [canToggleMaster,setCanToggleMaster] = useState<boolean>(true)
 
     const isSelectMasterOpen = useSelector((state:RootState) => state.mdm.isSelectMasterOpen);
     const isUploadModalOpen = useSelector((state:RootState)=>state.mdm.isUploadModalOpen)
@@ -172,7 +174,7 @@ const useViewModify = (pageType:string) => {
       if (ref.current && localColDefs) {
         dispatch(UPDATE_COLDEFS(localColDefs))
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-        setDefaultToolPanel('columns')
+        setDefaultToolPanel(ref.current?.api.isToolPanelShowing() ? 'columns' : '');
       }
 
     }
@@ -240,11 +242,43 @@ const useViewModify = (pageType:string) => {
 
       },[])
 
-
+      function getSelectedMasterValues() {
+        const currentUrl = window.location.href;
+        const paramName = 'selectedMaster';
+        const regex = new RegExp(`[?&]${paramName}=([^&]*)`);
+        const match = currentUrl.match(regex);
+    
+        if (match) {
+            return match[1].split(',');
+        }
+        
+        return [];
+    }
       useEffect(()=>{
         const getMasterUIConfigurationData = async()=>{
           const {data} = await masterUIConfiguration(pageType);
-          setAllMasterState(mapMasterToMasterState(data.data,onShowChart,pageType))
+
+          const allMasterData = mapMasterToMasterState(data.data,onShowChart,pageType)
+          
+          setAllMasterState(allMasterData)
+          
+        const masterIdsArray = getSelectedMasterValues();
+        
+          if(masterIdsArray.length > 0 ){
+            if(masters?.length)return;
+            const matchedItems = allMasterData.filter((item:any) => masterIdsArray.includes(String(item.id)));
+            if (matchedItems.length != masterIdsArray.length) {
+               window.location.href = "/master-data-management/control-panel";
+          }
+          
+            matchedItems.forEach((item:any)=>{
+              dispatch(ADD_MASTER(item))
+            })            
+            const currentUrl = window.location.href;
+            if(currentUrl.includes('&isModalOpen=true')){
+            dispatch(UPDATE_ACTIVE_MASTER(0));
+            dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));}
+          }
          }
          getMasterUIConfigurationData()
       },[])
@@ -272,7 +306,7 @@ const useViewModify = (pageType:string) => {
         
         },
       ],
-      defaultToolPanel:'',
+      defaultToolPanel:defaultToolPanel,
     }
 
     const agGridProps:AgGridReactProps = {
@@ -292,6 +326,9 @@ const useViewModify = (pageType:string) => {
       paginationPageSize:rowsPerPage,
       // suppressPaginationPanel:true,
       onColumnVisible:onColumnChange,
+      onToolPanelVisibleChanged:()=>{
+        setDefaultToolPanel(ref.current?.api.isToolPanelShowing() ? 'columns' : '');
+      },
       // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       loadingOverlayComponent:'loadingOverlay',
       onRowDataUpdated:(event:any)=>{
@@ -316,6 +353,7 @@ const useViewModify = (pageType:string) => {
           }
           if(currentMaster){
             event.api.exportDataAsExcel({fileName:downloadFileName ==='' ? currentMaster.name : downloadFileName,columnKeys: validColumnKeys});
+            setDownloadData(false);
           }
         }
       },
@@ -406,26 +444,24 @@ const useViewModify = (pageType:string) => {
 
 
     const addCheckBoxColDefs = () => {
-      if(activeMaster.rowData.length===0){
-        return
-      }
+      // if(activeMaster.rowData.length===0){
+      //   return
+      // }
       const checkboxColDefs:ColDef[] = [
         {
           field:'checkbox',
           colId:'checkbox',
           headerName:'',
-          width:40,
+          width:70,
           checkboxSelection:true,
           headerCheckboxSelection:true,
-          headerCheckboxSelectionCurrentPageOnly:true
+          headerCheckboxSelectionCurrentPageOnly:true,
+          resizable:false,
+          suppressMenu: true,
+          maxWidth: 40,
+          pinned: 'left',
+          filter: false
         },
-        // {
-        //   field:'checkbox',
-        //   he
-        //   headerName:'Select Across All Pages',
-        //   // checkboxSelection:true,
-        //   headerCheckboxSelection:true
-        // },
       ]
       dispatch(ADD_COLDEFS({colDefs:checkboxColDefs}));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
@@ -523,8 +559,27 @@ const useViewModify = (pageType:string) => {
         });
         return temp;
       }
+      function updateUrlIsModalOpen() {
 
+        const currentUrl = window.location.href;
+        
+
+        const hasParameter = currentUrl.includes("isModalOpen=true");
+
+        if (!hasParameter) {
+
+            const [baseUrl, queryString] = currentUrl.split("?");
+            
+
+            const newQueryString = queryString ? `${queryString}&isModalOpen=true` : "isModalOpen=true";
+            const newUrl = `${baseUrl}?${newQueryString}`;
+            
+
+            window.history.replaceState(null,'', newUrl);
+        }
+    }
     const handleSelectMasterSubmit = () => {
+      updateUrlIsModalOpen();
       masters.forEach((master:MDMMasterState)=>{
         if(!master.isChecked){
           dispatch(REMOVE_MASTER(master.id));
@@ -553,35 +608,87 @@ const useViewModify = (pageType:string) => {
 
     const generateDraftPayload = (rowData:any,draftId?:string)=>{
       const pathName = window.location.pathname.split('/')
-      let instanceName = ''
-      masters.map((master:MDMMasterState)=>{
-        instanceName += ` ${master.name}`
-      })
+      const instanceName = activeMaster?.name || '';
+      // masters.map((master:MDMMasterState)=>{
+      //   instanceName += ` ${master.name}`
+      // })
       return{
         instanceName:instanceName,
         searchKey:activeMaster.name,
         actionType:getActionId(pathName[pathName.length-1]).id,
         draftId:draftId,
-        draftData:masters.map((master:MDMMasterState)=>{
-
-          return {
-            masterId:master.id,
-            status:master.progress,
-            gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
-            dataMaster:master.id===activeMaster.id?rowData:[]
-          }
-        })
+        // draftData:masters.map((master:MDMMasterState)=>{
+ 
+        //   return {
+        //     masterId:master.id,
+        //     status:master.progress,
+        //     gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
+        //     dataMaster:master.id===activeMaster.id?rowData:[]
+        //   }
+        // })
+        draftData:[{
+          masterId:activeMaster.id,
+          status:activeMaster.progress,
+          gridState:JSON.stringify(activeMaster.colDefs),
+          dataMaster:rowData
+      }]
+       
+        // masters.map((master:MDMMasterState)=>{
+ 
+        //   return {
+        //     masterId:master.id,
+        //     status:master.progress,
+        //     gridState:master.id===activeMaster.id?JSON.stringify(activeMaster.colDefs):'',
+        //     dataMaster:master.id===activeMaster.id?rowData:[]
+        //   }
+        // })
       }
     }
     
+    function removeSelectedMasterValue(masterId:any) {
+      const currentUrl = window.location.href;
+      const paramName = 'selectedMaster';
+  
+      const regex = new RegExp(`[?&]${paramName}=([^&]*)`);
+      const match = currentUrl.match(regex);
+  
+      if (match) {
+          const currentValues = match[1].split(',');
+
+          if (currentValues.length === 1) {
+              console.log('Only one value present in selectedMaster. No changes made.');
+              return;
+          }
+
+          const newValues = currentValues.filter(value => value !== masterId);
+  
+          const newParamString = newValues.length ? `${paramName}=${newValues.join(',')}` : '';
+  
+          let newUrl;
+          if (newParamString) {
+              newUrl = currentUrl.replace(regex, `${match[0][0]}${newParamString}`);
+          } else {
+              newUrl = currentUrl.replace(regex, '');
+              newUrl = newUrl.replace(/[?&]$/, '');
+          }
+  
+          window.history.replaceState(null, '', newUrl);
+      } else {
+          console.log('No "selectedMaster" parameter found in the URL.');
+      }
+  }
+
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
-        e.stopPropagation();
-        if(masters.length === 1){
-          return notifyError("There Should be atleast one selected Master")
-        }
-        dispatch(REMOVE_MASTER(currMaster.id));
-        setDownloadData(false);
-        if(currMaster.id === activeMaster.id){
+      e.stopPropagation();
+      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+      if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
+      if(masters.length === 1){
+        return notifyError("There Should be atleast one selected Master")
+      }
+      dispatch(REMOVE_MASTER(currMaster.id));
+      setDownloadData(false);
+      if(currMaster.id === activeMaster.id){
+          removeSelectedMasterValue(String(currMaster.id));
           const mastersLength = masters.length
           for (let index = 0; index < mastersLength; index++) {
             
@@ -601,6 +708,7 @@ const useViewModify = (pageType:string) => {
         notifyError('All Masters have already been selected. Cannot add more masters');
         return;
       }
+      setCanToggleMaster(false)
       dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
       setDownloadData(false);
       setTempDownloadData(false);
@@ -737,7 +845,7 @@ const useViewModify = (pageType:string) => {
           return;
         }
         
-        const tempRowData = result.data.data.map((row:any)=>{
+        const tempRowData = result?.data?.data?.map((row:any)=>{
           const newRow = {...row};
           
           Object.keys(newRow).map((key)=>{
@@ -810,8 +918,10 @@ const useViewModify = (pageType:string) => {
 
           intervalID = setInterval(async ()=>{
             const progress = await getUploadProgress(processId);
-            setUploadProgress(progress.data.progress);
-            setTotalProgress(progress.data.totalRows)
+            if(progress.data!==undefined){
+              setUploadProgress(progress.data.progress);
+              setTotalProgress(progress.data.totalRows)
+            }
           },1000)
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
@@ -820,14 +930,15 @@ const useViewModify = (pageType:string) => {
           const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
           result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
           
-          setIsOverlayVisible(false);
 
           const ifErrorExists = result.find((data:any)=>data.error.length > 1);
           const ifWarningExists = result.find((data:any)=>data.warning.length > 1);
 
           if(ifErrorExists) {
             dispatch(UPDATE_PROGRESS_STATE('error'));
-            addInvalidDataColDefs('error');
+             if(!activeMaster.colDefs.some((colDef:ColDef)=>colDef.colId === "error")){
+              addInvalidDataColDefs('error');
+            }
           }
           if(ifWarningExists){
             // dispatch(UPDATE_PROGRESS_STATE('error'));
@@ -844,6 +955,7 @@ const useViewModify = (pageType:string) => {
           dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false));
+          setIsOverlayVisible(false);
           setIsOverlayVisible(false)
           notifySuccess(`Data Uploaded Successfully`);
           setDownloadData(false);
@@ -1129,6 +1241,15 @@ const useViewModify = (pageType:string) => {
 
         setIsSubmitDisabled(true)
         dispatch(REMOVE_COLDEFS(['checkbox']));
+
+        //check if errorneous Data
+        const errorData1 = activeMaster.rowData.find((row:any)=>{
+          return (row.error ) &&( row.error!=='' )
+        });
+        if(errorData1){
+          notifyError('Please Clear Errors Before Submitting');
+          return;
+        }
         
 
         if(activeMaster.progress === 'editOnline'){
@@ -1140,14 +1261,6 @@ const useViewModify = (pageType:string) => {
           // dispatch(REMOVE_COLDEFS(['error','warning']))
         }
 
-        //check if errorneous Data
-        const errorData = activeMaster.rowData.find((row:any)=>{
-          return (row.error ) &&( row.error!=='' )
-        });
-        if(errorData){
-          notifyError('Please Clear Errors Before Submitting');
-          return;
-        }
         
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
@@ -1195,7 +1308,7 @@ const useViewModify = (pageType:string) => {
             const tempResult:any = []
 
             tempCon.forEach((t:any)=>{
-              const exist = tempError.find((e:any)=>e.sc===t.sc)
+              const exist = tempError.find((e:any)=>e.sc===t?.sc)
               if(exist)tempResult.push(exist)
             })
             
@@ -1210,7 +1323,7 @@ const useViewModify = (pageType:string) => {
             setConflictCount(tempCon.length)
             setSubmittedDataCount(activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
             setIsConflictModalOpen(true)
-            addCheckBoxColDefs()
+            //addCheckBoxColDefs()
             dispatch(UPDATE_PROGRESS_STATE('editOnlineConflicts'))
           }
  
@@ -1258,7 +1371,7 @@ const useViewModify = (pageType:string) => {
           const tempResult:any = []
 
           tempCon.forEach((t:any)=>{
-            const exist = tempError.find((e:any)=>e.sc===t.sc)
+            const exist = tempError.find((e:any)=>e.sc===t?.sc)
             if(exist)tempResult.push(exist)
           })
           
@@ -1385,21 +1498,68 @@ const useViewModify = (pageType:string) => {
         }
       }
 
-      const onBackButton = () => {
-       if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
-       {
+      function removeModalOpenParameterWithoutReload() {
+        const parameterToRemove = '&isModalOpen=true';
+        const currentUrl = window.location.href;
+      
+        // Check if the parameter exists
+        if (currentUrl.includes(parameterToRemove)) {
+          // Remove the parameter
+          const updatedUrl = currentUrl.split(parameterToRemove).join('');
+          
+          // Update the browser's URL without reloading the page
+          window.history.replaceState(null, '', updatedUrl);
+        }
+      }
+
+      const onBackButton1 = (backUrl?: string) => {
+        removeModalOpenParameterWithoutReload()
+        // dispatch(FILL_MASTERS([]));
+        setCanToggleMaster(true)
+        if(backUrl){
+          navigate(backUrl)
+        }
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
-        dispatch(UPDATE_COLDEFS([]));
+        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
+        // dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
         // dispatch(UPDATE_ACTIVE_MASTER([]))
        
         dispatch(ADD_FILTER())
         setDownloadData(false);
         setTempDownloadData(false);
-        dispatch(FILL_MASTERS([]));
         /// riskycodehere !!
-        dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
+        // dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
+        setFilterButtonStatus([]);
+        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+        
+
+        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+        
+     }
+
+      const onBackButton = (backUrl?: string) => {
+       if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
+       {
+        console.log("onBackBtn", backUrl)
+        if(backUrl){
+          navigate(backUrl)
+        }
+        removeModalOpenParameterWithoutReload();
+        setCanToggleMaster(true);
+        dispatch(UPDATE_PROGRESS_STATE('default'));
+        dispatch(UPDATE_ROW_DATA([]));
+        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
+        // dispatch(UPDATE_COLDEFS([]));
+        dispatch(REMOVE_ALL_FILTERS());
+        // dispatch(UPDATE_ACTIVE_MASTER([]))
+       
+        dispatch(ADD_FILTER())
+        setDownloadData(false);
+        setTempDownloadData(false);
+        /// riskycodehere !!
+        // dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
         setFilterButtonStatus([]);
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
         
@@ -1467,9 +1627,15 @@ const useViewModify = (pageType:string) => {
 
       }
 
+      console.log(activeMaster.progress)
+
       const onSaveToDraft = async () => {
         try{
-          dispatch(REMOVE_COLDEFS(['checkbox']))
+          const colDefs = ref.current?.api.getColumnDefs() || [];
+          const checkboxExists = colDefs.some((col: any) => col.field === "checkbox");
+          if (checkboxExists) {
+            dispatch(REMOVE_COLDEFS(["checkbox"]));
+          }
           dispatch(UPDATE_IS_SAVING_DRAFT(true))
           let newData:any = []
           const errorOrWarning = activeMaster.rowData.find((row:any)=>(Object.keys(row).includes('error'))||(Object.keys(row).includes('warning')));
@@ -1502,10 +1668,13 @@ const useViewModify = (pageType:string) => {
                 return tempRow
             })
           }
-        
+          console.log(newData)
           const res = await postDraftChunks(newData)
+          if(checkboxExists){
+            addCheckBoxColDefs()
+          }
           if(res){
-            dispatch(UPDATE_PROGRESS_STATE("savedToDraft"))
+            //dispatch(UPDATE_PROGRESS_STATE("savedToDraft"))
             if(draftID.length > 0){
               return notifySuccess("Draft Updated Successfully")
             }
@@ -1514,15 +1683,15 @@ const useViewModify = (pageType:string) => {
             }
           }
           notifyError("Something Went Wrong")
-          if(activeMaster.progress==='uploaded'){
-            addCheckBoxColDefs()
-          }
+          // if(activeMaster.progress==='uploaded'){
+          //   addCheckBoxColDefs()
+          // }
           return false
         }catch(err){
           notifyError("Something Went Wrong")
-          if(activeMaster.progress==='uploaded'){
-            addCheckBoxColDefs()
-          }
+          // if(activeMaster.progress==='uploaded'){
+          //   addCheckBoxColDefs()
+          // }
           return false
         }finally{
           dispatch(UPDATE_IS_SAVING_DRAFT(false))
@@ -1534,7 +1703,16 @@ const useViewModify = (pageType:string) => {
         const currentMasterData = masters.find((master:MDMMasterState)=>master.id === activeMaster.id)
         console.log("CURRENTMATTER",currentMasterData?.rowData)
         if(currentMasterData) dispatch(UPDATE_ROW_DATA(currentMasterData.rowData))
-        dispatch(REMOVE_COLDEFS(['error','warning']));
+          const errorExist = currentMasterData?.rowData?.some((row: any) => row?.error !== undefined) || false;
+          const warningExist = currentMasterData?.rowData?.some((row: any) => row?.warning !== undefined) || false;
+        
+          if(!errorExist){
+            dispatch(REMOVE_COLDEFS(['error']));
+          }
+          if(!warningExist){
+            dispatch(REMOVE_COLDEFS(['warning']));
+          }
+        //dispatch(REMOVE_COLDEFS(['error','warning']));
         dispatch(UPDATE_PROGRESS_STATE('editOnline'));
         setEnableEditOnlineReset(false)
       }
@@ -1756,6 +1934,7 @@ const useViewModify = (pageType:string) => {
         exportToExcel,
         onColumnChange,
         onBackButton,
+        onBackButton1,
         onClearExportError,
         agGridProps,
         ref,
@@ -1803,7 +1982,9 @@ const useViewModify = (pageType:string) => {
         totalProgress,
         tempRecordCount,
         isSubmitDisabled,
-        onDiscardDraftCallback
+        onDiscardDraftCallback,
+        canToggleMaster,
+        setCanToggleMaster
     }
 }
 

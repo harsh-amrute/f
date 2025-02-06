@@ -3,11 +3,12 @@ import VFModalCard from "../VFModalCard"
 import { useUserData } from "../../../../context";
 import { ButtonFilterWrapper, FilterCardWrapper, FilterBody, FilterHeader, ButtonContainer, FilterComponent, SelectDropdownComponent, DropdownGroupWrapper, MultiSelectCheckBoxComponent,TextFieldHeader, RangeSliderComponent,VFHorizonText, SkeletonWrapper, SkeletonGroup, SkeletonContainer, SkeletonFooter } from "./style";
 import VFButtonOutline from "../VFButtonOutline";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import { useSpring, animated } from "react-spring";
 import Select from "react-select";
 import './styles.css';
+import { notifyError} from "../../../../helpers/notify";
 
 import { useGetAllSKUs,  useGetAllLocations } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
@@ -19,6 +20,7 @@ import { Skeleton } from "../../../../components/commons/styled";
 // import { generalFilterOptions } from '../../utils';
 
 interface VFMultiFilterProps{
+    isFilterOpen:boolean,
     onApplyFilter:(params:any)=>void
     onGoBack:()=>void
     selectedOption?:()=>void
@@ -115,7 +117,7 @@ const FilterMultiSelectCheckbox = ({filterOptions, header,onChange,filterState}:
                 return(
                     <>
                     <MultiSelectCheckBoxComponent key={option.id} theme={themeUi}>
-                        <input type="checkbox" name={option.label} style={{ width:'15px',height:'20px',marginRight:'14px',borderRadius: '2px'}} onChange={(e:any)=>onChange(e,'value')} checked={filterState.find((filter)=>option.label===filter.value && header===filter.attributeName)}/>
+                        <input type="checkbox" name={option.label} style={{ width:'15px',height:'20px',marginRight:'14px',borderRadius: '2px'}} onChange={(e:any)=>onChange(e,'value')} checked={!!filterState.find((filter)=>option.label===filter.value && header===filter.attributeName)}/>
                         {header==='Coverage' ? 
                             <div style={{height:'12px', width:'12px', backgroundColor:color}} ></div>
                         :null}
@@ -339,14 +341,14 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
     const getValue = ()=>{
         const doesFilterExist = filterState.find((o:any)=>o.name==filterId)
         if(doesFilterExist){
-            console.log('Filter value:', doesFilterExist.value); 
+            // console.log('Filter value:', doesFilterExist.value); 
             return doesFilterExist.value || ''
             // return doesFilterExist.value 
         }
         return '';
     }
+    
 
-   
     const getDropDownValue = (options:any)=>{
         const doesFilterExist = filterState.find((m:any)=>m.name==filterId)
        if(doesFilterExist){
@@ -362,9 +364,10 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
         } 
        
        }
+       return '';
            
     }
-   
+
 
      
     return(
@@ -396,7 +399,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
                     <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionIntegerOptions)}/>    
 
                     : 
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/>    
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/>    
 
                     }
                     {/* <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue()}/>     */}
@@ -419,7 +422,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
     //  }
 
     const{
-       
+        isFilterOpen,
         onGoBack,
         multiFilter,
         setMultiFilter,
@@ -441,11 +444,14 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
         
     } = props
+    
+
     const onFilterChange=(filterId:string,e:any,parentId:string,property:string, header?:string,updateLabel?:boolean)=>{
 
         // if(filterId==="Horizon"){
         //     setMultiFilter({...multiFilter,horizon:e})
         // }
+
         
         const filterObj:BPRFilter = {
             attributeName:"",
@@ -477,7 +483,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
         if(filterId==='LF6'){
             filterObj.attributeName='Location'; 
-            filterObj.label='Location';
+            filterObj.label='WHCode';
             //location
             filterObj.operator='='
         }
@@ -546,7 +552,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
 
     
-        const currGroupKey:any  = Object.keys(multiFilter).find((key:string)=>multiFilter[key as keyof BPRFilterState].id===parentId)
+        const currGroupKey:any  = Object.keys(filterState).find((key:string)=>filterState[key as keyof BPRFilterState].id===parentId)
         // let currentKey:any=""
         let finalValue:any | [];
         let selectedValues:any = [];
@@ -567,14 +573,14 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                 filterObj.name = filterId;
 
                 const newFilterObj = { ...filterObj, value: finalValue };
-                const  currGroupKey:any | undefined = Object.keys(multiFilter).find((key:string)=>{
-                    if(multiFilter[key as keyof BPRFilterState].id ===parentId){
+                const  currGroupKey:any | undefined = Object.keys(filterState).find((key:string)=>{
+                    if(filterState[key as keyof BPRFilterState].id ===parentId){
                         // currentKey = key   
-                        return multiFilter[key as keyof BPRFilterState].id ===parentId
+                        return filterState[key as keyof BPRFilterState].id ===parentId
                     }
                  })
                  if(currGroupKey){
-                     selectedValues = [...multiFilter[currGroupKey as keyof BPRFilterState].filters];
+                     selectedValues = [...filterState[currGroupKey as keyof BPRFilterState].filters];
                  }
        
 
@@ -589,10 +595,10 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                     //(obj.value !== finalValue) &&
                  }
              
-                setMultiFilter({
-                    ...multiFilter,
+                 setFilterState({
+                    ...filterState,
                     [currGroupKey]:{
-                        ...multiFilter[currGroupKey as keyof BPRFilterState],
+                        ...filterState[currGroupKey as keyof BPRFilterState],
                         filters:[...selectedValues]
                         
                     }
@@ -617,35 +623,35 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
        
         
-        const currGroup:string | undefined = Object.keys(multiFilter).find((key:string)=>{
-            return multiFilter[key as keyof BPRFilterState].id ===parentId
+        const currGroup:string | undefined = Object.keys(filterState).find((key:string)=>{
+            return filterState[key as keyof BPRFilterState].id ===parentId
         })
 
        
         if(currGroup){
 
-            const currFilter:BPRFilter | undefined =multiFilter[currGroup as keyof BPRFilterState].filters.find((filter:BPRFilter)=>{
+            const currFilter:BPRFilter | undefined =filterState[currGroup as keyof BPRFilterState].filters.find((filter:BPRFilter)=>{
                 return filter.name===filterId
             })
             if(currFilter){
                 //if((e.target && e.target.type ==="checkbox") || Array.isArray(e) ){
                 if( Array.isArray(e)){ 
-                    let tempFilteredArray = multiFilter[currGroupKey as keyof BPRFilterState].filters.filter((f:BPRFilter)=>f.name!==filterId)
+                    let tempFilteredArray = filterState[currGroupKey as keyof BPRFilterState].filters.filter((f:BPRFilter)=>f.name!==filterId)
                     tempFilteredArray = [...tempFilteredArray,...finalValue]
-                    setMultiFilter({
-                        ...multiFilter,
+                    setFilterState({
+                        ...filterState,
                         [currGroupKey]:{
-                            ...multiFilter[currGroupKey as keyof BPRFilterState],
+                            ...filterState[currGroupKey as keyof BPRFilterState],
                             filters:tempFilteredArray
                         }  
                     })   
                 }
                 else{
-                    setMultiFilter({
-                        ...multiFilter,
+                    setFilterState({
+                        ...filterState,
                         [currGroupKey]:{
-                            ...multiFilter[currGroupKey as keyof BPRFilterState],
-                            filters:[...multiFilter[currGroupKey as keyof BPRFilterState].filters.map((filter:BPRFilter)=>{
+                            ...filterState[currGroupKey as keyof BPRFilterState],
+                            filters:[...filterState[currGroupKey as keyof BPRFilterState].filters.map((filter:BPRFilter)=>{
                                 if(filter.name===filterId){
                                     const result:any = {
                                         ...filter
@@ -675,12 +681,14 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                     label:"",
                     name:filterId
                 }
+    
                 filterObj[property as keyof BPRFilter] = finalValue
-                setMultiFilter({
-                    ...multiFilter,
+                filterObj.label = String(filterObj.type)
+                setFilterState({
+                    ...filterState,
                     [currGroupKey]:{
-                        ...multiFilter[currGroupKey as keyof BPRFilterState],
-                        filters:[...multiFilter[currGroupKey as keyof BPRFilterState].filters,{...filterObj}],
+                        ...filterState[currGroupKey as keyof BPRFilterState],
+                        filters:[...filterState[currGroupKey as keyof BPRFilterState].filters,{...filterObj}],
                         
                     }
                 })
@@ -690,22 +698,22 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             else {
                 if(Array.isArray(e) && e.length===1){
                     filterObj[property as keyof BPRFilter] = finalValue[0].value
-                    setMultiFilter({
-                        ...multiFilter,
+                    setFilterState({
+                        ...filterState,
                         [currGroupKey]:{
-                            ...multiFilter[currGroupKey as keyof BPRFilterState],
-                            filters:[...multiFilter[currGroupKey as keyof BPRFilterState].filters,{...filterObj}]
+                            ...filterState[currGroupKey as keyof BPRFilterState],
+                            filters:[...filterState[currGroupKey as keyof BPRFilterState].filters,{...filterObj}]
                         }
                     }) 
                      return 
                 }
                 filterObj[property as keyof BPRFilter] = finalValue
                 if(finalLabel && updateLabel) filterObj['label'] = finalLabel;  
-                setMultiFilter({
-                    ...multiFilter,
+                setFilterState({
+                    ...filterState,
                     [currGroupKey]:{
-                        ...multiFilter[currGroupKey as keyof BPRFilterState],
-                        filters:[...multiFilter[currGroupKey as keyof BPRFilterState].filters,{...filterObj}]  
+                        ...filterState[currGroupKey as keyof BPRFilterState],
+                        filters:[...filterState[currGroupKey as keyof BPRFilterState].filters,{...filterObj}]  
                     }
                 }) 
             } 
@@ -716,7 +724,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
    
     
     
-
+    const [filterState, setFilterState] = useState<BPRFilterState>(multiFilter);
     const [openStatus,setOpenStatus] = useState({
         category:false,
         location:false,
@@ -763,7 +771,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
 
 
 
-
+    
 
     const getAPIValue = (filterId:any, filterState:any) => {
        
@@ -775,13 +783,43 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                 }
             }
         })
-    }
+    } 
 
     const loading = (isLoading || isLocationDataLoading)
 
+    const validation = () => {
+        const requiredFilters = ['Norm', 'Git', 'Stock'];
+        const emptyFilters = requiredFilters.filter(filterName =>
+            filterState.availabilityFilter.filters.some(
+            (filter:any) => filter.attributeName === filterName && filter.value === ''
+          )
+        );
+      
+        return emptyFilters;
+      };
+      
+      
+      const resetFilters = () => {
+        const resetMultiFilter = { ...multiFilter };
+      
+        Object.keys(resetMultiFilter).forEach((key) => {
+          resetMultiFilter[key as keyof BPRFilterState].filters = [];
+        });
+      
+        setMultiFilter({...resetMultiFilter});
+      };
+
+    //   useEffect(() => {
+    //     if(multiFilter){
+    //         if (Object.keys(multiFilter).length) {
+    //         setFilterState(JSON.parse(JSON.stringify(multiFilter)));
+    //         }
+    //     }
+    // }, []);
+
     return(
         <>
-        <VFModalCard zoom={'0.73'} openModal={true} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={loading?<Skeleton style={{height:20,width:80}}/>:'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
+        <VFModalCard zoom={'0.73'} openModal={isFilterOpen} closeModal={onGoBack} headerIcon={'/assets/img/VectorFLOW/BPR/select-filter.svg'} headerText={loading?<Skeleton style={{height:20,width:80}}/>:'Select Filter'}  closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'} paddingLeftAndRight={0} backgroundColor={'#f4f4f4'} data-testid="vfmultifilter-img">
            {
             (loading)
             ?
@@ -942,7 +980,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                           <FilterCheckboxAccordian filterType="For Locations" filterKey="location" isOpen={openStatus.location} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="location_type" isOpen={child.location_type} setOpenStatus={setChild}  style={{paddingLeft:'50px', maxHeight:'unset'}}>
                               <FilterMultiSelectCheckbox header={'ForLocation'} filterOptions={supplyChainForLocationCheckBoxList}
-                              filterState={multiFilter.supplyChainFilter.filters}
+                              filterState={filterState.supplyChainFilter.filters}
                               onChange={(e:any, key:string)=>onFilterChange('SCF1',e,'1', key)}/>
                           </FilterCheckboxAccordian>
                           </FilterCheckboxAccordian>
@@ -951,7 +989,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                           <FilterCheckboxAccordian filterType="For Children Of" filterKey="loc_children" isOpen={openStatus.loc_children} setOpenStatus={setOpenStatus}>
                           <FilterCheckboxAccordian filterType="Location Type" filterKey="loc_children_type" isOpen={child.loc_children_type} setOpenStatus={setChild} style={{paddingLeft:'50px'}}>
                             <FilterMultiSelectCheckbox header={'ForChildren'} filterOptions={supplyChainForChildrenOfCheckBoxList}
-                            filterState={multiFilter.supplyChainFilter.filters}
+                            filterState={filterState.supplyChainFilter.filters}
                            onChange={(e:any, key:string)=>onFilterChange('SCF2',e,'1',key)}/>
                           </FilterCheckboxAccordian>
                           </FilterCheckboxAccordian>
@@ -963,7 +1001,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                               <p>Specific Locations</p>
                           </TextFieldHeader>         
                           <VFMasterFieldSearch
-                               value={getAPIValue('SCF3', multiFilter.supplyChainFilter.filters)}  
+                               value={getAPIValue('SCF3', filterState.supplyChainFilter.filters)}  
                               setValue={(e:any)=>onFilterChange('SCF3',e,'1','value')} 
                               options={getOptions(locationData?.data.data)} 
                               placeholder={'Enter Location'} 
@@ -988,7 +1026,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                     <p>General Filter</p>
                 </FilterHeader>
                 <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                    <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('GF1',e,'7',key,'',updateLabel)} header="General Filter" filterId={'GF1'}  filterState={multiFilter.generalFilter.filters} generalFilterOptions={generalFilterOptions}></AvailabilityFilter>
+                    <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('GF1',e,'7',key,'',updateLabel)} header="General Filter" filterId={'GF1'}  filterState={filterState.generalFilter.filters} generalFilterOptions={generalFilterOptions}></AvailabilityFilter>
                 </FilterComponent>
                 </FilterCardWrapper>
                 )} 
@@ -1001,23 +1039,23 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             <p>Location Filter</p>
                         </FilterHeader>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                           <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF1',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF1'}  filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF1',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF1'}  filterState={filterState.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF2',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF2'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF2',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF2'} filterState={filterState.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF3',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF3'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF3',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF3'} filterState={filterState.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF4',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF4'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF4',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF4'} filterState={filterState.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF5',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF5'} filterState={multiFilter.locationFilter.filters}></AvailabilityFilter>
+                           <AvailabilityFilter placeholder={'Select'}  onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('LF5',e,'2',key,'',updateLabel)} header="Location Filter" filterId={'LF5'} filterState={filterState.locationFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
                             <VFMasterFieldSearch 
-                                value={getAPIValue('LF6', multiFilter.locationFilter.filters)}  
+                                value={getAPIValue('LF6', filterState.locationFilter.filters)}  
                                 setValue={(e:any)=>onFilterChange('LF6',e,'2','value')} 
                                 options={getOptions(locationData?.data.data)}  
                                 placeholder={'Enter Location'} 
@@ -1038,23 +1076,23 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         <p>Product Filter</p>
                     </FilterHeader>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any, key:string,updateLabel:boolean)=>onFilterChange('PF1',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF1'} header="Product Filter"></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any, key:string,updateLabel:boolean)=>onFilterChange('PF1',e,'3',key,'',updateLabel)}  filterState={filterState.productFilter.filters} filterId={'PF1'} header="Product Filter"></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF2',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF2'} header="Product Filter" ></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF2',e,'3',key,'',updateLabel)}  filterState={filterState.productFilter.filters} filterId={'PF2'} header="Product Filter" ></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF3',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF3'} header="Product Filter"></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF3',e,'3',key,'',updateLabel)}  filterState={filterState.productFilter.filters} filterId={'PF3'} header="Product Filter"></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF4',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF4'} header="Product Filter"></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF4',e,'3',key,'',updateLabel)}  filterState={filterState.productFilter.filters} filterId={'PF4'} header="Product Filter"></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF5',e,'3',key,'',updateLabel)}  filterState={multiFilter.productFilter.filters} filterId={'PF5'} header="Product Filter"></AvailabilityFilter>
+                       <AvailabilityFilter placeholder={process.env.REACT_APP_PRODUCT_PERMISSION_L1} onChange={(e:any,key:string,updateLabel:boolean)=>onFilterChange('PF5',e,'3',key,'',updateLabel)}  filterState={filterState.productFilter.filters} filterId={'PF5'} header="Product Filter"></AvailabilityFilter>
                     </FilterComponent>
                     <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', marginBottom:'7px'}}>           
                         <VFMasterFieldSearch
-                            value={getAPIValue('PF6', multiFilter.productFilter.filters)} 
+                            value={getAPIValue('PF6', filterState.productFilter.filters)} 
                             setValue={(e:any)=>onFilterChange('PF6',e,'3','value')}
                             options={getOptions(data?.data.data,true)}  
                             placeholder={'Enter SKU'} 
@@ -1077,13 +1115,13 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             <p>Availabilty Filter</p>
                         </FilterHeader>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                            <AvailabilityFilter placeholder={"Norm"} onChange={(e:any,key:string)=>onFilterChange('AF1',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF1'}></AvailabilityFilter>
+                            <AvailabilityFilter placeholder={"Norm"} onChange={(e:any,key:string)=>onFilterChange('AF1',e,'4',key)} header="Availabilty Filter" filterState={filterState.availabilityFilter.filters} filterId={'AF1'}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                            <AvailabilityFilter placeholder={"Stock"} onChange={(e:any,key:string)=>onFilterChange('AF2',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF2'}></AvailabilityFilter>
+                            <AvailabilityFilter placeholder={"Stock"} onChange={(e:any,key:string)=>onFilterChange('AF2',e,'4',key)} header="Availabilty Filter" filterState={filterState.availabilityFilter.filters} filterId={'AF2'}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                            <AvailabilityFilter placeholder={"Git"} onChange={(e:any,key:string)=>onFilterChange('AF3',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF3'}></AvailabilityFilter>
+                            <AvailabilityFilter placeholder={"Git"} onChange={(e:any,key:string)=>onFilterChange('AF3',e,'4',key)} header="Availabilty Filter" filterState={filterState.availabilityFilter.filters} filterId={'AF3'}></AvailabilityFilter>
                         </FilterComponent>
                         {/* <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
                             <AvailabilityFilter placeholder={"Availabilty"} onChange={(e:any,key:string)=>onFilterChange('AF4',e,'4',key)} header="Availabilty Filter" filterState={multiFilter.availabilityFilter.filters} filterId={'AF4'}></AvailabilityFilter>
@@ -1102,7 +1140,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                  
                              ]} 
                             
-                             filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF5')}
+                             filterState={filterState.availabilityFilter.filters.filter((f:any)=>f.name==='AF5')}
                              onChange={(e:any,key:string)=>onFilterChange('AF5',e,'4',key)} filterId={'AF5'}/> 
                              </FilterCheckboxAccordian>
                          </FilterComponent>
@@ -1121,7 +1159,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                   { label: 'Blue', id: '6' },
                             ]} 
                           
-                            filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF6')}
+                            filterState={filterState.availabilityFilter.filters.filter((f:any)=>f.name==='AF6')}
                             onChange={(e:any,key:string)=>onFilterChange('AF6',e,'4',key)} filterId={'AF6'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
@@ -1135,7 +1173,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                 { label: 'Seasonality', id: '2' },
                                 ]} 
                                 
-                                filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF7')}
+                                filterState={filterState.availabilityFilter.filters.filter((f:any)=>f.name==='AF7')}
                                 onChange={(e:any,key:string)=>onFilterChange('AF7',e,'4',key)} filterId={'AF7'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
@@ -1163,7 +1201,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                 }
                             })} 
                                 
-                                filterState={multiFilter.availabilityFilter.filters.filter((f)=>f.name==='AF8')}
+                                filterState={filterState.availabilityFilter.filters.filter((f:any)=>f.name==='AF8')}
                                 onChange={(e:any,key:string)=>onFilterChange('AF8',e,'4',key)} filterId={'AF8'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
@@ -1177,13 +1215,13 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                             <p>Color Filter</p>
                         </FilterHeader>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}} >
-                            <AvailabilityFilter placeholder={"Type"} header="Color Filter" onChange={(e:any,key:string)=>onFilterChange('CF1',e,'6',key,'Color Filter')} filterId={"CF1"} filterState={multiFilter.colorFilter.filters}></AvailabilityFilter>
+                            <AvailabilityFilter placeholder={"Type"} header="Color Filter" onChange={(e:any,key:string)=>onFilterChange('CF1',e,'6',key,'Color Filter')} filterId={"CF1"} filterState={filterState.colorFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                            <AvailabilityFilter placeholder={"Type"} header="Color Filter" onChange={(e:any,key:string)=>onFilterChange('CF2',e,'6',key,'Color Filter')} filterId={"CF2"} filterState={multiFilter.colorFilter.filters}></AvailabilityFilter>
+                            <AvailabilityFilter placeholder={"Type"} header="Color Filter" onChange={(e:any,key:string)=>onFilterChange('CF2',e,'6',key,'Color Filter')} filterId={"CF2"} filterState={filterState.colorFilter.filters}></AvailabilityFilter>
                         </FilterComponent>
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7'}}>
-                            <AvailabilityFilter placeholder={"Type"} header="Color Filter" onChange={(e:any,key:string)=>onFilterChange('CF3',e,'6',key,'Color Filter')} filterId={"CF3"} filterState={multiFilter.colorFilter.filters}> </AvailabilityFilter>
+                            <AvailabilityFilter placeholder={"Type"} header="Color Filter" onChange={(e:any,key:string)=>onFilterChange('CF3',e,'6',key,'Color Filter')} filterId={"CF3"} filterState={filterState.colorFilter.filters}> </AvailabilityFilter>
                         </FilterComponent>
                     </FilterCardWrapper>
                    )} 
@@ -1200,7 +1238,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                 {label:'33%<=Gap<=67%',id:'2'},
                                 {label:'Gap < 33%,',id:'3'},
                                 ]} 
-                                filterState={multiFilter.coverageFilter.filters}
+                                filterState={filterState.coverageFilter.filters}
                                 onChange={(e:any,key:string)=>onFilterChange('CGF3',e,'5',key)} /> 
                             </FilterCheckboxAccordian>
                         </FilterComponent>
@@ -1210,8 +1248,25 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
             
             <ButtonFilterWrapper>
                 <ButtonContainer>
-                    <VFButtonOutline themeUi={user.user.theme_ui} onClick={onGoBack}>Go Back!</VFButtonOutline>
-                    <VFButton themeUi={user.user.theme_ui} onClick={()=>onApplyFilter(multiFilter)}>Apply Filter</VFButton>
+                    <VFButtonOutline themeUi={user.user.theme_ui} onClick={resetFilters}>
+                       Reset Filters
+                    </VFButtonOutline>
+                    <VFButton
+                        themeUi={user.user.theme_ui}
+                        onClick={() => {
+                            const validationResult = validation()
+                            if (validationResult.length === 0) {
+                            setMultiFilter(filterState)
+                            onApplyFilter(filterState);
+                            } else {
+                            const errorMessage = `The following filters cannot be empty: ${validationResult.join(', ')}`;
+                            notifyError(errorMessage);
+                            console.log(errorMessage);
+                            }
+                        }}
+                        >
+                        Apply Filter
+                    </VFButton>
                 </ButtonContainer>
             </ButtonFilterWrapper>
             </React.Fragment>

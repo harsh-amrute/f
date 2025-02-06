@@ -5,6 +5,7 @@ import { useGetBufferTrendsGraph } from "../../../../Services/MTA/InsightsAndTre
 import { BufferTrendsGraphState } from '../../../../../VectorFlow/types/BPR'
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
 import { useUserData } from '../../../../../context';
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 const initialGraphData  ={
     data: {
@@ -28,6 +29,8 @@ const useBufferTrends = () => {
     const[availability, setAvailability]=useState(0.0);
    
     const {mutateAsync:getBufferTrendsGraph,isLoading} = useGetBufferTrendsGraph();
+
+    const {date:lastRunDate} = useGetLastRunData()
 
     const {user} = useUserData()
     const themeUI = user.user.theme_ui
@@ -198,7 +201,8 @@ const useBufferTrends = () => {
         setMultiFilterState,
         onDeleteFilter,
         onGoBack,
-        themeUI
+        themeUI,
+        lastRunDate
     }
   
 }

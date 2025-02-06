@@ -1,6 +1,6 @@
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-import { BPRLayout } from "./styles"
+import { BPRLayout, LastRunDateHeader, LastRunDate } from "./styles"
 import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
@@ -13,11 +13,12 @@ import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import { GridStateContext } from "../../../../../context/GridStateContext"
 import BPRRemarkHistoryModal from "./BPRRemarkHistoryModal"
-
-
+import { Skeleton } from "../../../../../components/commons/styled";
+import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
+import { useMemo } from "react"
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 const BPR = ()=>{
-
 
 
   const {
@@ -67,6 +68,18 @@ const BPR = ()=>{
     //   )
     // }
 
+    const Statusbar = useMemo(()=>{
+        return {
+            statusPanels: [
+              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+              { statusPanel: 'agTotalRowCountComponent', align:'left' },
+              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+              { statusPanel: 'agAggregationComponent', align:'left' },
+            ],
+          }
+    },[])
+
 
     return(
         <GridStateContext.Provider
@@ -104,6 +117,9 @@ const BPR = ()=>{
             generalFilterOptions={generalFilterOptions}
         />
         </div>
+        {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
         {
             showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
         }
@@ -135,24 +151,17 @@ const BPR = ()=>{
             <Allotment vertical defaultSizes={[300,150]}>
               <Allotment.Pane className="planning-grid-allotment">
               <VFTable
+                
                  key={'ref'}
                 disableZoomScaling
                 ref={ref}
-                height={"95%"}
+                height={"90%"}
                 {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}
                 enableRangeSelection={true} 
                 rowSelection="multiple"
-                statusBar = {{
-                    statusPanels: [
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                      { statusPanel: 'agAggregationComponent', align:'left' },
-                    ],
-                  }}
+                statusBar = {Statusbar}
             />
 
                 <VFPagination
@@ -162,8 +171,20 @@ const BPR = ()=>{
                     rowsPerPage={rowsPerPage}
                     handleChangePage={handleOnPageChange}
                 />
+                <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
+              {/* {onSubmitRemarks && (
+                 <CustomizedOutlineWrapper style={{ margin: '1rem 0', padding: 0 }}>
+                    <VFButtonOutline 
+                    style={{height:'30px',width:'159px',borderRadius:'4px',fontSize:'14px',fontWeight:'400',cursor:'pointer'}}
+                        themeUi={themeUi} 
+                        onClick={onSubmitRemarks}
+                            >
+                        Save Remark
+                        </VFButtonOutline>
+                  </CustomizedOutlineWrapper>
+               )} */}
               </Allotment.Pane>
-              <Allotment.Pane maxSize={220} minSize={200}>
+              <Allotment.Pane maxSize={350} minSize={200}>
               <div style={{marginTop:'20px'}}>
               {isSubGridOpen && (
                 <div style={{marginLeft:'15px',zoom:0.8}}>
@@ -247,6 +268,7 @@ const BPR = ()=>{
             />
             <div style={{display:'none'}}>                
                   <VFTable
+                  
                     key={'temp'}
                     ref={tempRef}
                     columnDefs={BPRColumns}
