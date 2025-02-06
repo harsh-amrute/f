@@ -21,8 +21,11 @@ import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCe
 
 import { ColDef } from "ag-grid-enterprise"
 import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
-import { useSubmitBORRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
+import { useGetBORRemarkHistory, useSubmitBORRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
+import { BORRemarksCellRenderer } from "../BuyerOrderReport/BORCellRenderers"
+import { CSSProperties } from 'styled-components'
+import useViewPort from '../../../../../hooks/useViewPort'
 
 
 
@@ -86,32 +89,49 @@ export const useBORColorBandwise =()=>{
      const {mutateAsync:getDailyData} = useGetDailyData();
      const [intialColumnState,setInitialColumnState] = useState<any>(undefined)
      const [BORCBColumns , setBORCBColumns] =  useState<ColDef[]>([])
+     const [isRemarkHistoryToolTipOpen,setIsRemarkHistoryToolTipOpen] = useState<boolean>(false)
+     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
+        
+     const {getGridZoom,getScreenZoomValue} = useViewPort()
+     const screenZoom = getScreenZoomValue() 
+ 
+     const gridZoom = getGridZoom()
+    const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
+     
+      const {mutateAsync:getBORRemarkHistory} = useGetBORRemarkHistory();
+
+   const onCloseRemarkHistory = ()=>setIsRemarkHistoryToolTipOpen(false)
+
 
      const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
         submitRemarkCellRenderer:BPRSubmitRemarkCellRenderer,
-        colorCellRenderer:TextToTextColorMapper
+        colorCellRenderer:TextToTextColorMapper,
+        remarksCellRenderer:BORRemarksCellRenderer
         
       }), []);
 
-      const onCellValueChanged = (newRow: any, primaryKey: string) => {
+      const onCellValueChanged = (newRow: any, primaryKey1: string,primaryKey2:string,primaryKey3:string) => {
         setEditedRows((prev) => {
           let found = false; // Flag to track if the row has been updated
           const updatedRows = prev.map((row) => {
-            if (row[primaryKey] === newRow[primaryKey]) {
+            if (row[primaryKey1] === newRow[primaryKey1] && row[primaryKey2]===newRow[primaryKey2] && row[primaryKey3]===newRow[primaryKey3]) {
               found = true;
-              return { ...newRow }; // Return updated row
+              return newRow.remarks && newRow.remarks.length !== 0 ? { ...newRow } : null; // Return updated row
             }
             return row; // Return unchanged row
           });
+  
+          const filteredUpdatedRows = updatedRows.filter(row => row !== null);
       
-          if (!found) {
+          if (!found && newRow.remarks && newRow.remarks.length > 0) {
             // If no existing row was found, add the new row
-            return [...updatedRows, {...newRow}];
+            return [...filteredUpdatedRows, {...newRow}];
           }
-          return updatedRows;
+          return filteredUpdatedRows;
         });
       };
+  
 
       const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -157,6 +177,25 @@ export const useBORColorBandwise =()=>{
     //     getTableState()
 
     // },[])
+    const onOpenRemarkHistory = async(e:React.MouseEvent<HTMLElement>,row:any)=>{
+      try{
+          setIsRemarkHistoryToolTipOpen(false)
+          const toastId = notifyLoader("Getting remark history")
+          const {top,left} = e.currentTarget.getBoundingClientRect()
+          setRemarkHistoryToolipPosition({
+              top: top *  gridZoom * screenZoom,
+              left: left *  gridZoom * screenZoom,
+              height:360,
+              width:350
+          })
+          const {data} = await getBORRemarkHistory(row)
+          toast.dismiss(toastId)
+          setRemarkHistory(data.data)
+          setIsRemarkHistoryToolTipOpen(true)
+      }catch(err:any){
+          notifyError(err.message)
+      }
+      }
 
 
         useEffect(()=>{
@@ -165,7 +204,7 @@ export const useBORColorBandwise =()=>{
                 const stateData =  await getState({"reportname":"BORColorBandwise"})
                 if(stateData.data.data.length!==0){
                     const parsedContent = JSON.parse(stateData.data.data)
-                    const generatedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  undefined, onOpenDailyDataGraph)
+                    const generatedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  onOpenRemarkHistory, onOpenDailyDataGraph)
                     const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
                     setGridState({
                         pivot:parsedContent.pivot,
@@ -315,7 +354,7 @@ export const useBORColorBandwise =()=>{
         // pivotMode:true,
          defaultColDef:defaultColDefObject,
         onGridReady:(params)=>setInternalRef(params),
-        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode")
+        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode","SupplierCode")
       }
      },[])
 
@@ -353,28 +392,50 @@ export const useBORColorBandwise =()=>{
     }
 
     const onSubmitRemarks = async()=>{
-      try{
-        const toastId = notifyLoader("Submitting Remark")
-        const payload = editedRows.map((e)=>{
-            return {
-                remark:e.remarks,
-                whcode:e.WHCode,
-                skucode:e.SKUCode,
-                spc:e.SupplierCode
+          try{
+            if(editedRows.length===0){
+              notifyError('Please add remarks/remark to save')
+              return
             }
+          const toastId = notifyLoader("Submitting Remark")
+          const payload = editedRows.map((e)=>{
+              return {
+                  remark:e.remarks,
+                  whcode:e.WHCode,
+                  skucode:e.SKUCode,
+                  spc:e.SupplierCode
+              }
+              
+          })
+          const {data} = await submitRemark({data:payload})
+          editedRows.forEach((editedRow) => {
+              // Find the row node using both SKUCode and WHCode as unique identifiers
+              const rowNode:any = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WHCode}-${editedRow.SupplierCode}`);
+              if (rowNode) {
+                const RemarkColumn = BORCBColumns.find(obj => obj.colId === "Remark");
+                if(rowNode?.data?.Remark!==undefined && RemarkColumn!==undefined){
+                  // Check if Remark column exist in both columnDef and RowData , only then update its value for better ui
+                  rowNode?.setDataValue('Remark', editedRow?.remarks);
+                }
+                rowNode.setDataValue('Remark', editedRow.remarks);
+        
+                // Clear the 'Edit Remarks' column after submission
+                rowNode.setDataValue('remarks', '');
+              }
+            });
             
-        })
-        const {data} = await submitRemark({data:payload})
-        toast.dismiss(toastId)
-        notifySuccess(data.msg)
-        setEditedRows([])
-       }catch(err:any){
-        notifyError(err.message)
+           toast.dismiss(toastId)
+           notifySuccess(data.msg)
+           setEditedRows([])
+          }catch(err:any){
+           notifyError(err.message)
+          }
        }
-   }
 
       const generalFilterOptions = useMemo(()=>{
         if(BORCBColumns.length!==0){
+
+          console.log("BORCBColumns", BORCBColumns);
           return convertUiConfigToOptions(BORCBColumns)
         }
     },[BORCBColumns])
@@ -413,6 +474,10 @@ export const useBORColorBandwise =()=>{
         onSubmitRemarks,
         editedRows,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+        isRemarkHistoryToolTipOpen,
+        setIsRemarkHistoryToolTipOpen,
+        remarkHistory,
+        onCloseRemarkHistory
     }
 }

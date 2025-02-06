@@ -10,6 +10,7 @@ import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/Da
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
+import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
 
 
 const BuyerOrderReportColorBandwise = ()=>{
@@ -44,7 +45,10 @@ const BuyerOrderReportColorBandwise = ()=>{
         onSubmitRemarks,
         editedRows,
         onResetCallback,
-        lastRunDate
+        lastRunDate,
+        isRemarkHistoryToolTipOpen,
+        remarkHistory,
+        onCloseRemarkHistory
     } = useBORColorBandwise()
 
 
@@ -148,6 +152,11 @@ const BuyerOrderReportColorBandwise = ()=>{
               {...tempAgGridProps} />
           </div>
         </BORLayout>
+        <BPRRemarkHistoryModal
+                data={remarkHistory}
+                isOpen={isRemarkHistoryToolTipOpen}
+                onClose={onCloseRemarkHistory}
+        />
       </GridStateContext.Provider>
     )
 }

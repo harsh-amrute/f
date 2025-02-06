@@ -2330,8 +2330,8 @@ export const getCellFilter = (dataType: "Number" | "String" | "Boolean"): string
 // });  
 
 export const mapColumnsWithConfigs = (CurrentState: any, initialState: ColDef[]): ColDef[] => {
-  return CurrentState.map((col: any) => {
-    const matchedCol = initialState.find((initCol: any) => initCol.colId === col.colId);
+  return initialState.map((col: any) => {
+    const matchedCol = CurrentState.find((initCol: any) => initCol.colId === col.colId);
     
     if (matchedCol) {
       const { hide, ...restCol } = col; // Exclude `hide` from col
