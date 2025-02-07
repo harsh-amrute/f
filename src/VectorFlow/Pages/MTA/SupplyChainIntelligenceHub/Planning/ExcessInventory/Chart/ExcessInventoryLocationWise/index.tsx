@@ -5,6 +5,7 @@ import "../../styles.css";
 import {SCDynamicContainer} from '../../styles';
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOptions} from '../../../../../../../../helpers/utils';
 import VFCharts from "../../../../../../../../components/VectorFLOW/commons/VFCharts";
+import {chartParams1 , chartParams2} from './chartParams'
 interface ExcessInventoryProps{
     data:any
 }
@@ -85,63 +86,6 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
         })
         return [...data];
     }
-    
-
-    const palette={
-        fills: ['#848484'],
-        strokes: ['#ffffff', '#ffffff'],
-    }
-
-    useEffect(()=>{
-        const formattedRowData1 = sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data'],['SKUCounts']),'SKUCounts')
-        setRowData1(formattedRowData1)
-        setChartThemeOverridesG1(generateChartOptions(formattedRowData1,series1,palette,'Location Name','Count Of SKUs',chartKeys1,undefined))
-        
-        const formattedRowData2 = scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data'],['SumOfAmount']),'SumOfAmount'),'SumOfAmount',100000)
-        setRowData2(formattedRowData2)
-        setChartThemeOverridesG2(generateChartOptions(formattedRowData2,series2,palette,'Location Name','Value In Lakhs',chartKeys2,undefined))
-    },[])
-
-    const myCustomTheme:any = {
-        palette: {
-            fills: ['#848484'],
-            strokes: ['#ffffff', '#ffffff'],
-        },
-    }
-
-    const chartKeys1 = {
-        Xaxis:['WHDescription'],
-        Yaxis:['SKUCounts']
-    }
-
-    const chartKeys2 = {
-        Xaxis:['WHDescription'],
-        Yaxis:['SumOfAmount']
-    }
-    
-    const series1 = [
-        {
-            type:'bar',
-            xKey:'WHDescription',
-            yKey:'SKUCounts',
-            yName:'Count of SKUs',
-            stacked:false,
-            barPadding:0.2,
-            
-        }
-    ]
-
-    const series2 = [
-        {
-            type:'bar',
-            xKey:'WHDescription',
-            yKey:'SumOfAmount',
-            yName:'Value In Lakhs',
-            stacked:false,
-            barPadding:0.2,
-            
-        }
-    ]
 
     const scaleDown = (data:any,key:string,divisor:number)=>{
         return data.map((row:any)=>{
@@ -151,26 +95,77 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             return temp;
         })
     }
+    
 
-    const defaultColForCustomGraph1 = {
-        columns:['WHDescription','SKUCounts'],
-        start:0,
-        end:9
-    }
+    // const palette={
+    //     fills: ['#848484'],
+    //     strokes: ['#ffffff', '#ffffff'],
+    // }
 
-    const defaultColForCustomGraph2 = {
-        columns:['WHDescription','SumOfAmount'],
-        start:0,
-        end:9
-    }
+    useEffect(()=>{
+        const formattedRowData1 = sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data'],['SKUCounts']),'SKUCounts')
+        setRowData1(formattedRowData1)
+        setChartThemeOverridesG1(generateChartOptions(formattedRowData1,chartParams1.series,chartParams1.palette,'Location Name','Count Of SKUs',chartParams1.chartKey,undefined))
+        
+        const formattedRowData2 = scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data'],['SumOfAmount']),'SumOfAmount'),'SumOfAmount',100000)
+        setRowData2(formattedRowData2)
+        setChartThemeOverridesG2(generateChartOptions(formattedRowData2,chartParams2.series,chartParams2.palette,'Location Name','Value In Lakhs',chartParams2.chartKey,undefined))
+    },[])
 
-    const graphInfo1 = [
-        'This graph highlights the top 10 locations with the highest excess inventory, measured in terms of the count of SKUs'
-    ]
+    // const myCustomTheme:any = {
+    //     palette: {
+    //         fills: ['#848484'],
+    //         strokes: ['#ffffff', '#ffffff'],
+    //     },
+    // }
 
-    const graphInfo2 = [
-        'This graph highlights the top 10 locations with the highest excess inventory, assessed in terms of monetary value.'
-    ]
+    // const chartKeys1 = {
+    //     Xaxis:['WHDescription'],
+    //     Yaxis:['SKUCounts']
+    // }
+
+    // const chartKeys2 = {
+    //     Xaxis:['WHDescription'],
+    //     Yaxis:['SumOfAmount']
+    // }
+    
+    // const series1 = [
+    //     {
+    //         type:'bar',
+    //         xKey:'WHDescription',
+    //         yKey:'SKUCounts',
+    //         yName:'Count of SKUs',
+    //         stacked:false,
+    //         barPadding:0.2,
+            
+    //     }
+    // ]
+
+    // const series2 = [
+    //     {
+    //         type:'bar',
+    //         xKey:'WHDescription',
+    //         yKey:'SumOfAmount',
+    //         yName:'Value In Lakhs',
+    //         stacked:false,
+    //         barPadding:0.2,
+            
+    //     }
+    // ]
+
+
+    // const defaultColForCustomGraph1 = {
+    //     columns:['WHDescription','SKUCounts'],
+    //     start:0,
+    //     end:9
+    // }
+
+    // const defaultColForCustomGraph2 = {
+    //     columns:['WHDescription','SumOfAmount'],
+    //     start:0,
+    //     end:9
+    // }
+
      
     return(
         <>
@@ -181,14 +176,14 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
 
                         <VFCharts     
                             height={'95%'}
-                            title={'Top 10 Locations With Excess Inventory: Count Of SKUs'}
-                            graphInfo={graphInfo1}
-                            defaultColForCustomGraph={defaultColForCustomGraph1}
+                            title={chartParams1.title}
+                            graphInfo={chartParams1.graphInfo}
+                            defaultColForCustomGraph={chartParams1.defaultColForChart}
                             colDefs={colDefs1}
                             rowData={rowData1}
                             chartProps={chartThemeOverridesG1}
-                            palette={palette}
-                            chartType={'column'}
+                            palette={chartParams1.palette}
+                            chartType={chartParams1.chartType}
                             containerStyle={{marginLeft:'0px',marginRight:'10px'}}
                         />
 
@@ -198,14 +193,14 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
 
                         <VFCharts     
                             height={'95%'}
-                            title={'Top 10 Locations with Excess Inventory: In Value (Rupee Lakhs)'}
-                            graphInfo={graphInfo2}
-                            defaultColForCustomGraph={defaultColForCustomGraph2}
+                            title={chartParams2.title}
+                            graphInfo={chartParams2.graphInfo}
+                            defaultColForCustomGraph={chartParams2.defaultColForChart}
                             colDefs={colDefs2}
                             rowData={rowData2}
                             chartProps={chartThemeOverridesG2}
-                            palette={palette}
-                            chartType={'column'}
+                            palette={chartParams2.palette}
+                            chartType={chartParams2.chartType}
                             containerStyle={{marginLeft:'17px',marginRight:'0px'}}
                         />
 
