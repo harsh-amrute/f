@@ -81,7 +81,7 @@ const ModalManageUsers = ({
     <>
       {
         <Transition appear show={openModal} as={Fragment}>
-          <Dialog as="div" className="modal-box" onClose={closeModal}>
+          <Dialog style={{zoom: 0.9}} as="div" className="modal-box" onClose={closeModal}>
             <Transition.Child
               as={Fragment}
               enter="transition"
@@ -120,7 +120,7 @@ const ModalManageUsers = ({
                       </span>
                     </Dialog.Title>
 
-                    <form onSubmit={handleSubmit(onSubmit)} autoComplete="new-password">
+                    <form onSubmit={handleSubmit(onSubmit)}>
                       <div className="modal-content-user">
                         <div className="modal-Per-input--box">
                           <label
@@ -132,14 +132,19 @@ const ModalManageUsers = ({
                           <input
                             id="user-name"
                             type="text"
+                            autoComplete="off"
                             className={`modal-Per-input ${
                               errors.username != null ? "modal-input--error" : ""
                             }`}
                             {...register("username", {
                               required: true,
+                              minLength: {
+                                value: 4,
+                                message: "The username must be more than 4 characters",
+                              },
                               maxLength: {
-                                value: 8,
-                                message: "The username must be 8 characters or fewer.",
+                                value: 15,
+                                message: "The username must be less than 15 characters",
                               },
                               pattern: {
                                 value:
@@ -148,7 +153,7 @@ const ModalManageUsers = ({
                                 message: "The username must contain at least one alphabetical character and  cannot contain @, ., spaces, or -.",
                               },
                             })}
-                            autoComplete="off"
+                            disabled={infoUser.edit}
                           />
                           {errors.username != null && (
                             <Errors errors={errors} name="username" />
@@ -168,9 +173,9 @@ const ModalManageUsers = ({
                             {...register("email_id", {
                               required: true,
                               pattern: {
-                                value:
-                                  // eslint-disable-next-line no-useless-escape
-                                  /^[a-zA-Z0-9][a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/,
+                                value: 
+                                // eslint-disable-next-line no-useless-escape
+                                /^[a-zA-Z0-9][a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|org|co\.in|in)$/, 
                                 message: t("loginPage.validate.email"),
                               },
                               maxLength: {
@@ -181,6 +186,7 @@ const ModalManageUsers = ({
                               },
                             })}
                             autoComplete="new-password"
+                            disabled={infoUser.edit}
                           />
                           {errors.email_id != null && (
                             <Errors errors={errors} name="email_id" />

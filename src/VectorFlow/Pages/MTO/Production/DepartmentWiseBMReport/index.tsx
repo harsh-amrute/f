@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import {
     BMDepWrapper,
@@ -54,6 +54,7 @@ interface ApiResponse {
     scc: string;
     children?: ApiResponse[];
     cgs?: string
+    pinned?:string
 }
 
 
@@ -111,6 +112,7 @@ interface ApiResponseItem {
     cla: string;      // Class alignment (fixed value)
     scc: string;      // Sub-channel code (will be set to the name of cc)
     ch?: ApiResponse[]; // Array of channel items
+    pinned?:string;
 }
 
 
@@ -135,7 +137,7 @@ const DptWiseBMReport = () => {
     const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
-    const [colDeflatest, setColdef] = useState<any>();
+    const [coldefs, setColdef] = useState<any>();
     const [tempColdef, setTempColdef] = useState<any>([{}]);
     const [systemType, setSystemType] = useState<any>()
     const [areRowsSelected, setAreRowsSelected] = useState(false);
@@ -156,7 +158,11 @@ const DptWiseBMReport = () => {
     const [gridDataCount, setGridDataCount] = useState<number>(0);
     const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>([]);
     const [filterData, setFilterData] = useState({});
-
+    const [isReset, setIsReset] = useState<any>();
+    const [columnState, setColumnState] = useState<any>();
+    const [masterUIConfig, setMasterUIConfig] = useState([]);
+    const [isPivot, setIsPivot] = useState<any>(false);
+    
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
 
@@ -239,65 +245,31 @@ const DptWiseBMReport = () => {
         setSystemType(Number(systemType.value));
     }
 
-    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
-
-    const mapInitalColumnDefs=async ()=>{
-        try {
-            const data = await getUserUIConfigData({
-                un: user.user.name,
-                rn_id: UIGridCode.ProdDeptWiseBMReport
-            });
-            
-            const newConfig = data?.data?.data[0]?.columns_settings? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-            setInitialColumnState(newConfig);
-            console.log("intialColumn state is set to", newConfig);
-
-            if (!data) {
-                console.error('Failed to apply column state');
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    useEffect(()=>{
-        // if(systemType){
-            mapInitalColumnDefs();
-        // }
-    },[systemType])
-
-    useEffect(()=>{
-        if(intialColumnState){
-            setColumnDef();
-        }
-
-    },[intialColumnState])
-
-    const removeUtilcolumns = (incolDef: any) => {
-        const newColDef = _.cloneDeep(incolDef);
-
-        newColDef.shift();
-
-        setTempColdef(newColDef);
-    }
-
-    const [resetColDef, setResetColDef] = useState<any>(undefined);
-
     const setColumnDef = async () => {
         try {
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
-            const modifiedResponse = addDefaultAttributes(response?.data?.data);
-            setResetColDef(modifiedResponse);
-            const coldef = mapApiResponseToColDefs(modifiedResponse, intialColumnState)
+            // const modifiedResponse = addDefaultAttributes(response?.data?.data);
+
+            const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(response?.data?.data);
+
+
+            // setResetColDef(modifiedResponse);
+            const coldef = mapApiResponseToColDefs(
+                modifiedResponse
+            );
             setColdef(coldef);
-            setTempColdef(removeUtilcolumns(coldef))
+            // setTempColdef(removeUtilcolumns(coldef))
             // getUserColumnConfig();
         }
         catch (e) {
             console.log(e);
         }
     }
+
+    useEffect(() => {
+        setColumnDef();
+      }, [])
 
     const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
         const modifiedResponse: ApiResponseItem[] = [];
@@ -346,6 +318,7 @@ const DptWiseBMReport = () => {
             hd: " ",
             cla: "Centre",
             scc: "chckbx",
+            pinned:'left',
         };
 
         // Prepend the default outer object
@@ -363,6 +336,7 @@ const DptWiseBMReport = () => {
             v: true,
             cla: "Centre",
             scc: "rmk",
+            pinned:'right',
             ch: [
                 {
                     cc: "Remark",
@@ -371,6 +345,7 @@ const DptWiseBMReport = () => {
                     v: true,
                     cla: "Centre",
                     scc: "r",
+                    pinned:'right',
                 },
                 {
                     cc: "lr",
@@ -379,6 +354,7 @@ const DptWiseBMReport = () => {
                     v: true,
                     cla: "Centre",
                     scc: "lr",
+                    pinned:'right',
                 },
                 {
                     cc: "Remark History",
@@ -387,6 +363,7 @@ const DptWiseBMReport = () => {
                     v: true,
                     cla: "Centre",
                     scc: "Remark History",
+                    pinned:'right',
                 }
             ]
         };
@@ -397,24 +374,13 @@ const DptWiseBMReport = () => {
         return modifiedResponse;
     };
 
-    const updateInitialHide = (res: any[], columnState: any) => {
-        res.forEach((resParent: any) => {
-            const parentColumn = columnState.find((state:any) => state.colId === resParent.colId);
-            if (parentColumn) {
-                resParent.initialHide = parentColumn.hide;
-            }
-            resParent.children?.forEach((resChild: any) => {
-                const childColumn = columnState.find((state:any) => state.colId === resChild.colId);
-                if (childColumn) {
-                    resChild.initialHide = childColumn.hide;
-                }
-            });
-        });
-        return res;
-    };
-
-    const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[], initialColumnState: any, isReset=false): any => {
-        const mapChildren = (parent: any, children: ApiResponse[]): ColDefChild[] => {
+    const mapApiResponseToColDefs = (
+        apiResponse: ApiResponseItem[], 
+    ): any => {
+        const mapChildren = (
+            parent: any,
+             children: ApiResponse[]
+            ): ColDefChild[] => {
             return children.map((child) => ({
                 field: child.scc.trim(),
                 suppressHeaderFilterButton: true,
@@ -424,7 +390,7 @@ const DptWiseBMReport = () => {
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
-                  pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
+                pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 valueFormatter: (params: any) => {
@@ -460,6 +426,8 @@ const DptWiseBMReport = () => {
             sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
             floatingFilter: section.scc === "chckbx" || section.cc == "ic" ? false : undefined,
             headerName: section.hd,
+            pinned: section.pinned || null,
+            // pinned:section.scc === "chckbx" ? 'left' : undefined,
             suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
             colId: section.cc,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
@@ -472,13 +440,7 @@ const DptWiseBMReport = () => {
                 return params.value;
             },
         }));
-
-        if(isReset){
             return res;
-        }
-
-       
-        return updateInitialHide(res, initialColumnState);
     }
 
     const getFilterData = async () => {
@@ -527,12 +489,6 @@ const DptWiseBMReport = () => {
     };
 
     const allotementRef = useRef<any>();
-
-
-    useEffect(() => {
-        if (allotementRef.current)
-            allotementRef.current.reset();
-    }, [areRowsSelected])
 
     const fetcDeptWiseWiphData = async (selectedOrderKeys: any) => {
         try {
@@ -890,24 +846,13 @@ const DptWiseBMReport = () => {
 
 
     useEffect(() => {
-        if (colDeflatest) {
-            const tempcoldeflatest = _.cloneDeep(colDeflatest);
+        if (coldefs) {
+            const tempcoldeflatest = _.cloneDeep(coldefs);
             tempcoldeflatest.shift();
             tempcoldeflatest.shift();
             setTempColdef(tempcoldeflatest);
         }
-    }, [colDeflatest])
-
-    useEffect(() => {
-        if(colDeflatest){
-            getUserColumnConfig();
-        }
-    }, [colDeflatest])
-
-
-    const [isReset, setIsReset] = useState<any>();
-    const [columnState, setColumnState] = useState<any>();
-
+    }, [coldefs])
 
     const getUserColumnConfig = async () => {
         try {
@@ -917,7 +862,9 @@ const DptWiseBMReport = () => {
             });
 
             const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-            setColumnState(newConfig);
+            
+            setColumnState(newConfig.cs);
+            setIsPivot(newConfig.pivot);
 
             if (!data) {
                 console.error('Failed to apply column state');
@@ -927,25 +874,34 @@ const DptWiseBMReport = () => {
         }
     }
 
-    const handleSaveClick = useCallback(async (coldefs?: any) => {
+    const handleSaveClick = async (coldefs?: any) => {
         try {
-            if(coldefs){
+            if (coldefs) {
+                const fullConfig = { pivot: false, cs: coldefs };
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.ProdDeptWiseBMReport,
-                    cs: JSON.stringify(coldefs)
-                }
+                    cs: JSON.stringify(fullConfig),
+                };
+    
                 await updateUserUIConfigData([payload]);
-            }
-            else{
+                setColumnState([...coldefs]);
+                setIsPivot(false);
+              
+            } else {
                 if (refGraph1?.current?.api) {
                     const config = refGraph1.current.api.getColumnState();
+                    
+                    const isPivot = refGraph1.current?.api.isPivotMode();
+                    const fullConfig = { pivot: isPivot, cs: config };
+                    // setColumnState(config)
                     const payload = {
                         un: user.user.name,
                         rn_id: UIGridCode.ProdDeptWiseBMReport,
-                        cs: JSON.stringify(config)
-                    }
+                        cs: JSON.stringify(fullConfig),
+                    };
                     await updateUserUIConfigData([payload]);
+                    await getUserColumnConfig();
                 }
             }
             notifySuccess("Changes saved successfully");
@@ -953,121 +909,40 @@ const DptWiseBMReport = () => {
             console.error(error);
             notifyError("Error saving changes");
         }
-    }, [])
+    };
 
-    const handleResetClick = () => {
-        setIsReset(true);
-    }
-
-    useEffect(() => {
-        applyColumnState(true);
-    }, [columnState, colDeflatest]);
-
-    // console.log("columnState", columnState);
-
-    const applyColumnState = useCallback((flag = false) => {
-        if (refGraph1?.current && columnState?.length) {
-            let colState = [...columnState];
-            if(flag){
-                const arr: any = []
-                colState.forEach((col: any)=>{
-                    if(col.children){
-                        col.children.forEach((child: any)=>{
-                            arr.push({
-                                "colId": child.colId,
-                                "initialHide": child.hide,
-                                "pinned": null,
-                                "sort": null,
-                                "sortIndex": null,
-                                "aggFunc": null,
-                                "rowGroup": false,
-                                "rowGroupIndex": null,
-                                "pivot": false,
-                                "pivotIndex": null,
-                                "flex": null
-                              })
-                        })
-                    }
-                    else{
-                        arr.push({
-                            "colId": col.colId,
-                            "initialHide": null,
-                            "pinned": null,
-                            "sort": null,
-                            "sortIndex": null,
-                            "aggFunc": null,
-                            "rowGroup": false,
-                            "rowGroupIndex": null,
-                            "pivot": false,
-                            "pivotIndex": null,
-                            "flex": null
-                          })
-                    }
-                    colState = arr;
-                })
-            }
-            refGraph1.current.api?.applyColumnState({
-                state: colState,
-                applyOrder: true,
-            });
-        }
-    }, [columnState])
-
-    useEffect(() => {
-        if (isReset) {
-            setColumnState(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
-            setColdef(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
-            setIsReset(false)
-        } else {
-            if(isReset != undefined){
-                handleSaveClick(mapApiResponseToColDefs(resetColDef, intialColumnState, true));
-            }
-        }
+   const handleResetClick = () => {
+      setIsReset(true);
+    };
+  
+    useEffect(() => {          
+      if (isReset) {
+        handleSaveClick(masterUIConfig);
+        setIsReset(false);
+      }
     }, [isReset]);
+  
+     useEffect(() => {
+      if (refGraph1?.current?.api) {
+        setMasterUIConfig(refGraph1?.current?.api.getColumnState());
+        getUserColumnConfig();
+      }
+    }, [coldefs]);
 
-    // const handleSaveClick = async () => {
-    //     try {
-    //         if (refGraph1?.current?.api) {
-    //             const config = refGraph1.current.api.getColumnState();
-
-    //             const payload = {
-    //                 un: user.user.name,
-    //                 rn_id: UIGridCode.ProdDeptWiseBMReport,
-    //                 cs: JSON.stringify(config)
-    //             }
-    //             await updateUserUIConfigData([payload]);
-    //             await getUserColumnConfig();
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
-    // const handleResetClick = () => {
-    //     setIsReset(true);
-    // }
-
-    // useEffect(() => {
-    //     if (refGraph1?.current && columnState?.length) {
-    //         const result = refGraph1?.current?.api?.applyColumnState({
-    //             state: columnState,
-    //             applyOrder: true
-    //         });
-    //         if (!result) {
-    //             console.error('Failed to apply column state');
-    //         }
-    //     }
-    // });
-
-    // useEffect(() => {
-    //     if (isReset) {
-    //         setColumnState(colDeflatest);
-    //         setIsReset(false)
-    //     } else {
-    //         handleSaveClick();
-    //     }
-    // }, [isReset]);
-
+    useEffect(() => {
+        if (refGraph1?.current && columnState?.length) {
+            const result = refGraph1.current.api.applyColumnState({
+                state: columnState,
+                applyOrder: true
+            });
+            const applyPivot = refGraph1.current?.api.setGridOption('pivotMode', isPivot);
+            
+            if (!result || !applyPivot) {
+                console.error('Failed to apply column state');
+            }
+        }
+    }, [columnState]);
+  
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
     const date = apiResponseData?.data?.data;
@@ -1103,31 +978,29 @@ const DptWiseBMReport = () => {
                     isMfgSelected={isMfgSelected}
                 />
             </BMDepHeaderWraper>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto'}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto', marginTop: "10px",}}>
             <p>{(date && date.length)? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
             <>
                 {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }
 
-                        <HorizontalViewWrapper style={{ marginTop: '0px' }}>
+                        <HorizontalViewWrapper style={{ marginTop: '0px', paddingLeft:"25px" }}>
                             <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
                                 <Allotment vertical={true} separator={true} ref={allotementRef}>
                                     <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
                                         <BTRAllomentSection>
                                             <GridView
-                                            key={isReset? 1: 2}
+                                            // key={isReset? 1: 2}
                                             reference={refGraph1}
                                             agGridProps={agGridProps}
-                                            columDef={colDeflatest}
+                                            columDef={coldefs}
                                             convercolumnDef={gridData}
                                                 updateReason={handleUpdateReason}
                                                 handlePageChange={handlePageChange}
                                                 totalRow={gridDataCount}
                                                 currentPage={currentPage}
-                                                onGridReady={() => {
-                                                    applyColumnState();
-                                                }}
+                                                // onGridReady={() => {applyColumnState()}}
                                                 />
                                         
                                         </BTRAllomentSection>

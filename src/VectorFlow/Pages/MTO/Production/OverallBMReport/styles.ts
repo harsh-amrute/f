@@ -135,3 +135,10 @@ export const BPRDailyAnalyticsTableCellIcon = styled.img`
     height:20px;
     width:20px;
 `
+
+export const InputCheckBox = styled.input<{ theme: string }>`
+    display:inline;
+    width: 2em;
+    height: 2rem;
+    accent-color:${(props) => globalstyles.chooseThemeColor[props.theme].color5};
+`

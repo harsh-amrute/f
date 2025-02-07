@@ -27,7 +27,10 @@ import AgeingCellRenderer from "../DepartmentWiseBMReport/AgeingIconCellRenderer
 import RemarkHistoryRenderer from "../DepartmentWiseBMReport/RemarkHistoryRenderer";
 import GridView from "../DepartmentWiseBMReport/GridView";
 import OrderElapsedGrid from "../DepartmentWiseBMReport/OrderElapsedGrid";
-import {  useGetOverAllBMReport, useShortOrderCompleteOrder } from "../../../../Services/MTO/Production/OverallBMReport/index";
+import {
+  useGetOverAllBMReport,
+  useShortOrderCompleteOrder,
+} from "../../../../Services/MTO/Production/OverallBMReport/index";
 import {
   notifyError,
   notifyLoader,
@@ -45,7 +48,7 @@ import OverlayLoader from "../../Common/Loader";
 import { ColorsMTO } from "../../Common/Colors";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../hooks/useFilter";
-import { formatFilterJSON} from "../../../../../helpers/utils";
+import { formatFilterJSON } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
@@ -62,6 +65,7 @@ import { useGetDate } from "../../../../../VectorFlow/Services/MTO/Production/In
 import moment from "moment";
 import VFSelect from "../../../../../../src/components/VectorFLOW/commons/MTO/VFSelect";
 import ConfirmationModal from "./ConfirmationModal";
+import { InputCheckBox } from "./styles";
 
 interface ApiResponse {
   cc: string;
@@ -72,7 +76,7 @@ interface ApiResponse {
   scc: string;
   children?: ApiResponse[];
   cgs?: string;
-  pinned?:string;
+  pinned?: string;
 }
 
 interface ColDefChild {
@@ -117,9 +121,8 @@ interface ApiResponseItem {
   cla: string; // Class alignment (fixed value)
   scc: string; // Sub-channel code (will be set to the name of cc)
   ch?: ApiResponse[]; // Array of channel items
-  pinned?:string; // Pin property
+  pinned?: string; // Pin property
 }
-
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -153,8 +156,12 @@ const OverallBmReport = () => {
     useState<boolean>(false);
   const [remarkHistory, setRemarkHistory] = useState<any>();
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const cache = useRef<any>({});
+  // for save and reset
+  const [isReset, setIsReset] = useState<any>();
+  const [columnState, setColumnState] = useState<any>();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
-
+  const [isPivot, setIsPivot] = useState<any>(false);
 
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
@@ -185,19 +192,25 @@ const OverallBmReport = () => {
     APIFilterConfig.filSecVisConfig.Prod_OverAll_BMReport
   );
   const [highAgeing, sethighAgeing] = useState<any>();
-  const [tempColdef,setTempColdef] = useState<any>();
+  const [tempColdef, setTempColdef] = useState<any>();
 
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
     useGetUserUIConfigData();
-  const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
+  const { mutateAsync: updateUserUIConfigData, isLoading: isUpdateUserConfig } =
+    useUpdateUserUIConfigData();
 
-
-  const { mutateAsync: getShortOrderCompleteOrder} = useShortOrderCompleteOrder();
+  const {
+    mutateAsync: getShortOrderCompleteOrder,
+    isLoading: isShortOrderCompleteOrder,
+  } = useShortOrderCompleteOrder();
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+  const userTheme = themeUi === 'REGALBLAZE';
+  const backgroundColor = userTheme ? ColorsMTO.Orange.code : ColorsMTO.darkPink.code;
 
-  const isOrderCloseEnabled = process.env.REACT_APP_ORDER_CLOSE === 'enabled'? true: false;
+  const isOrderCloseEnabled =
+    process.env.REACT_APP_ORDER_CLOSE === "enabled" ? true : false;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -258,18 +271,17 @@ const OverallBmReport = () => {
 
   // const mapInitalColumnDefs = async () => {
   //   try {
-      // const data = await getUserUIConfigData({
-      //   un: user.user.name,
-      //   rn_id: UIGridCode.ProdOverallBMReport,
-      // });
+  // const data = await getUserUIConfigData({
+  //   un: user.user.name,
+  //   rn_id: UIGridCode.ProdOverallBMReport,
+  // });
 
-      // const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-      // setInitialColumnState(newConfig);
+  // const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+  // setInitialColumnState(newConfig);
   //   } catch (error) {
   //     console.error(error);
   //   }
   // };
-  
 
   // useEffect(() => {
   //   mapInitalColumnDefs();
@@ -279,21 +291,20 @@ const OverallBmReport = () => {
     try {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
-      const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(response?.data?.data);
-      const coldef = mapApiResponseToColDefs(
-        modifiedResponse,
+      const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(
+        response?.data?.data
       );
+      const coldef = mapApiResponseToColDefs(modifiedResponse);
       setColdef(coldef);
     } catch (e) {
       console.log(e);
     }
   };
 
-
   useEffect(() => {
     setColumnDef();
-  }, [])
-  
+  }, []);
+
   const addDefaultAttributes = (
     apiResponse: ApiResponseItem[]
   ): ApiResponseItem[] => {
@@ -344,7 +355,7 @@ const OverallBmReport = () => {
       hd: "",
       cla: "Centre",
       scc: "chckbx",
-      pinned:'left',
+      pinned: "left",
     };
 
     // Prepend the default outer object
@@ -361,7 +372,7 @@ const OverallBmReport = () => {
       v: true,
       cla: "Centre",
       scc: "rmk",
-      pinned:'right',
+      pinned: "right",
       ch: [],
     };
 
@@ -381,28 +392,27 @@ const OverallBmReport = () => {
       v: true,
       cla: "Centre",
       scc: "",
-      pinned:'right',
+      pinned: "right",
       ch: [
         {
-              cc: "ct",
-              cp: maxCp + 2,
-              hd: "Order Close Action",
-              v: true,
-              cla: "Centre",
-              scc: "ct",
-              pinned:'right'
-          }
-      ]
-  };
+          cc: "ct",
+          cp: maxCp + 2,
+          hd: "Order Close Action",
+          v: true,
+          cla: "Centre",
+          scc: "ct",
+          pinned: "right",
+        },
+      ],
+    };
 
     // Add the additional object to the end of the modified response
     modifiedResponse.push(additionalObject);
 
-    if(isOrderCloseEnabled)  modifiedResponse.push(short_complete_OrderColumn);
+    if (isOrderCloseEnabled) modifiedResponse.push(short_complete_OrderColumn);
 
     return modifiedResponse;
   };
-
 
   //   res.forEach((resParent: any) => {
   //     const parentColumn = columnState.find(
@@ -428,23 +438,22 @@ const OverallBmReport = () => {
     label: string;
   }
 
-  const actionOptions:ActionOption[] = [
+  const actionOptions: ActionOption[] = [
     { value: "Short Close", label: "Short Close" },
     { value: "Complete Close", label: "Complete Close" },
   ];
-  
-  // const [selectedRowCount, setSelectedRowCount] = useState(0); 
-  const [selectedAction, setSelectedAction] = useState<any>(null)
-  const [textAction,setTextAction] = useState<any>();
-  
+
+  // const [selectedRowCount, setSelectedRowCount] = useState(0);
+  const [selectedAction, setSelectedAction] = useState<any>(null);
+  const [textAction, setTextAction] = useState<any>();
+
   const [totalOrderCount, setTotalOrderCount] = useState<any>(0);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   const onCheckBoxToggle = (e: any) => {
-
     const isChecked = e.target.checked;
     setIsCheckboxChecked(isChecked); // Update state based on checkbox
-      
+
     if (isChecked) {
       refGraph2.current.api.selectAll();
     } else {
@@ -454,85 +463,72 @@ const OverallBmReport = () => {
   };
 
   const toggleCheckBox = () => {
-    
     const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
-    const totalRows = refGraph2?.current?.api?.getDisplayedRowCount() 
+    const totalRows = refGraph2?.current?.api?.getDisplayedRowCount();
 
-    setIsCheckboxChecked(selectedNodes?.length === totalRows);    
+    setIsCheckboxChecked(selectedNodes?.length === totalRows);
   };
 
-  
   const handleActionChange = (option: any) => {
-    
     setSelectedAction(option);
     // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
-    const newData:any = [];
-    gridData.forEach((ele:any)=>{
+    const newData: any = [];
+    gridData.forEach((ele: any) => {
       const newEle = _.cloneDeep(ele);
       newEle.oca = option.value;
       newData.push(newEle);
-    })
+    });
 
     setGridData([...newData]);
-  }
+  };
 
   const updateActionAPI = async (action: string, order_ids: any) => {
     try {
-      if(action === 'undo'){
+      if (action === "undo") {
         const response = await getShortOrderCompleteOrder({
-          order_keys: order_ids
+          order_keys: order_ids,
         });
-       return response;
-      }else{
+        return response;
+      } else {
         const response = await getShortOrderCompleteOrder({
-          close_type: action==='Short Close'?"0":"1",
-          order_keys: order_ids
+          close_type: action === "Short Close" ? "0" : "1",
+          order_keys: order_ids,
         });
         return response;
       }
-        
     } catch (error) {
       console.log(error);
-      
-      throw error; 
+
+      throw error;
     }
   };
-
 
   const [showModal, setShowModal] = useState(false); // Renamed state
 
   const handleRightArrowClick = () => {
     setShowModal(true); // Open the modal
     setTextAction(selectedAction?.label);
-    
-    
-
 
     if (Array.isArray(masterSelectedRowData)) {
       const okValues = masterSelectedRowData
         .map((item) => item?.ok)
-        .filter((value) => value !== undefined); 
-  
+        .filter((value) => value !== undefined);
+
       setTotalOrderCount(okValues.length);
-  }
-
-
+    }
   };
 
   const handleRightArrowClick1 = (action: string, orderId: string) => {
     setShowModal(true); // Open the modal
     setTextAction(action);
-    
-    
 
+    //   if (Array.isArray(masterSelectedRowData)) {
+    //     const okValues = masterSelectedRowData
+    //       .map((item) => item?.ok)
+    //       .filter((value) => value !== undefined);
 
-  //   if (Array.isArray(masterSelectedRowData)) {
-  //     const okValues = masterSelectedRowData
-  //       .map((item) => item?.ok)
-  //       .filter((value) => value !== undefined); 
-  
-      setTotalOrderCount(orderId);
-  // }
+    setTotalOrderCount(orderId);
+    // }
   };
 
   const handleModalClose = () => {
@@ -541,35 +537,30 @@ const OverallBmReport = () => {
 
   const handleModalConfirm = async (orderId?: any, actionText?: any) => {
     try {
+      setShowModal(false);
 
       if (orderId && orderId !== "") {
-   
         const response = await updateActionAPI(actionText, [orderId]);
-        
+
         if (response?.status === 200) {
-        
-            
           notifySuccess("Order closed successfully!");
 
           const newGridData = [...gridData];
-          newGridData.forEach((ele:any)=>{if(ele.ok===orderId) ele.ct=actionText;});
+          newGridData.forEach((ele: any) => {
+            if (ele.ok === orderId) ele.ct = actionText;
+          });
           setGridData(newGridData);
-
         } else {
           notifyError("Something went wrong!");
         }
-  
       } else if (Array.isArray(masterSelectedRowData)) {
-
         const okValues = masterSelectedRowData
           .map((item) => item?.ok)
           .filter((value) => value !== undefined);
-  
-  
-        const response = await updateActionAPI(selectedAction.value, okValues);
-  
-        if (response?.status === 200) {
 
+        const response = await updateActionAPI(selectedAction.value, okValues);
+
+        if (response?.status === 200) {
           const newGridData = [...gridData];
           newGridData.forEach((ele: any) => {
             if (okValues.includes(ele.ok)) {
@@ -577,174 +568,165 @@ const OverallBmReport = () => {
             }
           });
           setGridData(newGridData);
+          setMasterSelectedRowData([]); // after short/complete close reset selected rows
 
           notifySuccess("Order closed successfully!");
         } else {
           notifySuccess("something went wrong!");
         }
       }
-      
-      setShowModal(false);
-  
-  
     } catch (error) {
       console.error("Failed to perform action:", error);
     }
   };
-  
 
-const undoClicked = async (props:any,orderId: string) => {
-  try {
-    const response = await updateActionAPI('undo', [orderId]);
-    if (response?.status === 200) {
-      notifySuccess("Order retrived succesfully! ");
-      const newGridData:any = [];
-      props.api.forEachNode((node:any)=>{
-        newGridData.push(node.data);
-      })
+  const undoClicked = async (props: any, orderId: string) => {
+    try {
+      const response = await updateActionAPI("undo", [orderId]);
+      if (response?.status === 200) {
+        notifySuccess("Order retrived succesfully! ");
+        const newGridData: any = [];
+        props.api.forEachNode((node: any) => {
+          newGridData.push(node.data);
+        });
 
-      newGridData?.forEach((ele:any)=>{if(ele.ok===orderId) ele.ct=null;ele.oca=null});
-      setGridData(newGridData);
-
-    } else {
-      notifyError("Something went wrong!")
+        newGridData?.forEach((ele: any) => {
+          if (ele.ok === orderId) ele.ct = null;
+          ele.oca = null;
+        });
+        setGridData(newGridData);
+      } else {
+        notifyError("Something went wrong!");
+      }
+    } catch (error) {
+      console.log("Error occurred while updating action:", error);
+      throw error;
     }
-  } catch (error) {
-    console.log("Error occurred while updating action:", error);
-    throw (error)
-  }
-};  
+  };
 
-// const onRowSelectionChanged = () => {
-//   if (refGraph2?.current?.api) {
-//     const selectedNodes = refGraph2.current.api.getSelectedNodes();
-//     setSelectedRowCount(selectedNodes.length); 
-//   } else {
-//     console.error("Row selection ");
-//   }
-// };
+  // const onRowSelectionChanged = () => {
+  //   if (refGraph2?.current?.api) {
+  //     const selectedNodes = refGraph2.current.api.getSelectedNodes();
+  //     setSelectedRowCount(selectedNodes.length);
+  //   } else {
+  //     console.error("Row selection ");
+  //   }
+  // };
 
+  // useEffect(()=>{
+  //   if(selectedAction){
+  //     const mySelectedNodes = refGraph2.current.api.getSelectedRows();
+  //     setGridData(gridData?.map((data: any) => {
+  //       if(mySelectedNodes.find((el:any)=>{data.ok===el.ok})){
+  //         return {...data, oca: selectedAction.value}
+  //       }
+  //       return data;
+  //     }));
+  //   }
 
+  // }, [selectedAction])
 
+  // useEffect(() => {
+  //   if (refGraph2?.current?.api) {
+  //     refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
 
-// useEffect(()=>{
-//   if(selectedAction){
-//     const mySelectedNodes = refGraph2.current.api.getSelectedRows();
-//     setGridData(gridData?.map((data: any) => {
-//       if(mySelectedNodes.find((el:any)=>{data.ok===el.ok})){
-//         return {...data, oca: selectedAction.value}
-//       }
-//       return data;
-//     }));
-//   }
-  
-// }, [selectedAction])
+  //     return () => {
+  //       if (refGraph2?.current?.api) {
+  //         refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
+  //       }
+  //     };
+  //   } else {
+  //     console.error("something went wrong");
+  //   }
+  // }, [refGraph2?.current?.api]);
 
+  const isRightArrowEnabled =
+    (isCheckboxChecked || masterSelectedRowData.length > 1) &&
+    selectedAction != null;
 
-
-// useEffect(() => {
-//   if (refGraph2?.current?.api) {
-//     refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
-
-//     return () => {
-//       if (refGraph2?.current?.api) {
-//         refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
-//       }
-//     };
-//   } else {
-//     console.error("something went wrong");
-//   }
-// }, [refGraph2?.current?.api]); 
-
-const isRightArrowEnabled = (isCheckboxChecked || masterSelectedRowData.length> 1) && selectedAction!=null;
-
-
-const DropdownArrowIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width="24"
-    height="24"
-    fill="none"
-  >
-    <path
-      d="M7 10l5 5 5-5H7z"
-      fill="currentColor"
-    />
-  </svg>
-);
-
+  const DropdownArrowIcon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      fill="none"
+    >
+      <path d="M7 10l5 5 5-5H7z" fill="currentColor" />
+    </svg>
+  );
 
   const OrderCloseHeader: any = (
     <>
-       <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        fontSize: "18px",
-        fontWeight: "bold",
-        gap: "15px",
-      }}
-    >
-      {/* Checkbox and Select */}
       <div
         style={{
-          borderRadius: "5px",
-          background: "white",
-          padding: "10px 30px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          boxShadow: "rgba(133, 132, 132, 0.247) -5px 4px 10px",
-          gap: "10px",
+          fontSize: "18px",
+          fontWeight: "bold",
+          gap: "15px",
         }}
       >
-        <input
-          onChange={onCheckBoxToggle}
-          type="checkbox"
-          style={{ color: "pink" }}
-          checked={isCheckboxChecked}
-        />
-        <VFSelect
-          options={actionOptions}
-          themeUi={themeUi}
-          icon={DropdownArrowIcon}
-          disabled={!(refGraph2.current?.api?.getSelectedRows()?.length>0)}
-          placeholder="Select Action"
-          value={selectedAction}
-          onChange={handleActionChange}
-        />
-      </div>
+        {/* Checkbox and Select */}
+        <div
+          style={{
+            borderRadius: "5px",
+            background: "white",
+            padding: "10px 30px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            boxShadow: "rgba(133, 132, 132, 0.247) -5px 4px 10px",
+            gap: "10px",
+          }}
+        >
+          <InputCheckBox
+            onChange={onCheckBoxToggle}
+            type="checkbox"
+            theme={themeUi}
+            disabled={isPivot}
+            checked={isCheckboxChecked}
+          />
+          <VFSelect
+            options={actionOptions}
+            themeUi={themeUi}
+            icon={DropdownArrowIcon}
+            disabled={!(refGraph2.current?.api?.getSelectedRows()?.length > 0)}
+            placeholder="Select Action"
+            value={selectedAction}
+            onChange={handleActionChange}
+          />
+        </div>
 
-      {/* Right Arrow - Disabled if Checkbox is Unchecked */}
-      <div
-        style={{
-          cursor: isRightArrowEnabled ? "pointer" : "not-allowed",
-          background: `linear-gradient(to right, ${ColorsMTO.darkPink.code},${ColorsMTO.Pink.code})`,
-          backgroundColor: ColorsMTO.darkPink.code,
-          height: "43px",
-          width: "59px",
-          borderRadius: "4px",
-          alignItems: "center",
-          justifyContent: "center",
-          alignContent: "center",
-          display: "flex",
-          opacity: isRightArrowEnabled ? 1 : 0.5, // Visual cue for disabled
-          pointerEvents: isRightArrowEnabled ? "auto" : "none", // Prevent click when disabled
-        }}
-        data-testid={"isReleaseBtn"}
-        onClick={handleRightArrowClick}
-      >
-        <img
-          src="/assets/img/rightArrowHorizontal.svg"
-          height={13}
-          width={7}
-        />
-      </div>
+        {/* Right Arrow - Disabled if Checkbox is Unchecked */}
+        <div
+          style={{
+            cursor: isRightArrowEnabled ? "pointer" : "not-allowed",
+            background: `linear-gradient(to right, ${backgroundColor})`,
+            backgroundColor: backgroundColor,
+            height: "43px",
+            width: "59px",
+            borderRadius: "4px",
+            alignItems: "center",
+            justifyContent: "center",
+            alignContent: "center",
+            display: "flex",
+            opacity: isRightArrowEnabled ? 1 : 0.5, // Visual cue for disabled
+            pointerEvents: isRightArrowEnabled ? "auto" : "none", // Prevent click when disabled
+          }}
+          data-testid={"isReleaseBtn"}
+          onClick={handleRightArrowClick}
+        >
+          <img
+            src="/assets/img/rightArrowHorizontal.svg"
+            height={13}
+            width={7}
+          />
+        </div>
 
-      {/* Confirmation Modal */}
-      {/* <ConfirmationModal
+        {/* Confirmation Modal */}
+        {/* <ConfirmationModal
       key={1}
         isOpen={showModal}
         onClose={handleModalClose}
@@ -754,118 +736,127 @@ const DropdownArrowIcon = () => (
         actionText={selectedAction?.label||"action"}
         orderCount={totalOrderCount}
       /> */}
-    </div>
+      </div>
     </>
   );
 
-  const onSelectChange =  (props:any, option: any, index: number)=>{
-
-
-    const newGridData:any = [];
-    props.api.forEachNode((node:any)=>{
+  const onSelectChange = (props: any, option: any, index: number) => {
+    const newGridData: any = [];
+    props.api.forEachNode((node: any) => {
       newGridData.push(node.data);
-    })
-   
-    
-    if(Array.isArray(newGridData)){
-      const dup_gridData = [...newGridData]
+    });
+
+    if (Array.isArray(newGridData)) {
+      const dup_gridData = [...newGridData];
       dup_gridData[index].oca = option.value;
       setGridData(dup_gridData);
     }
+  };
 
-    
-  }
+  const DropDownCellRenderer = (props: any) => {
+    return (
+      <>
+        {props.data?.ct === null ? (
+          <>
+            <VFSelect
+              options={actionOptions}
+              themeUi={themeUi}
+              icon={DropdownArrowIcon}
+              placeholder="Select Action"
+              disabled={!props.node.selected}
+              value={
+                props.node.selected
+                  ? actionOptions.find((opt) => opt.value === props.data?.oca)
+                  : null
+              }
+              onChange={(option: any) => {
+                onSelectChange(props, option, props.node.rowIndex);
+              }}
+            />
 
-const DropDownCellRenderer= (props: any) =>  {
-  return (
-  <>  {
-       props.data?.ct === null ?
-       <>
-       <VFSelect
-         options={actionOptions}
-         themeUi={themeUi}
-         icon={DropdownArrowIcon}
-         placeholder="Select Action"
-         disabled={!props.node.selected}
-         value={
-          props.node.selected? actionOptions.find((opt) => opt.value === props.data?.oca): null
-        }
-        onChange={(option: any) => {
-            onSelectChange(props, option, props.node.rowIndex);
-         }}
-       />
-        
-       <div
-         style={{
-           cursor: (props.data?.oca && props.node.selected) ? "pointer" : "not-allowed", 
-           opacity: (props.data?.oca && props.node.selected) ? 1 : 0.5,
-           background: (props.data?.oca && props?.node?.selected)
-             ? `linear-gradient(to right, ${ColorsMTO.darkPink.code}, ${ColorsMTO.Pink.code})`
-             : "#ccc", 
-           height: "43px",
-           width: "59px",
-           borderRadius: "4px",
-           display: "flex",
-           alignItems: "center",
-           justifyContent: "center",
-         }}
-         data-testid="isReleaseBtn"
-         onClick={() => {
-           if (props.data?.oca && props.node.selected) {
-             handleRightArrowClick1(
-               props.data.oca === "Short Close" ? "Short Close" : "Complete Close",
-               props.data.ok
-             );
-           }
-         }}
-       >
-         <img
-           src="/assets/img/rightArrowHorizontal.svg"
-           height={13}
-           width={7}
-           alt="Right Arrow"
-         />
-       </div>
-     </>
-     
-     
-     
-       : 
-       <>
-       <div style={{justifyContent:"space-between", display:"flex" , alignItems: "center", gap: "5px",margin:"10px" }}>
+            <div
+              style={{
+                cursor:
+                  props.data?.oca && props.node.selected
+                    ? "pointer"
+                    : "not-allowed",
+                opacity: props.data?.oca && props.node.selected ? 1 : 0.5,
+                background:
+                  props.data?.oca && props?.node?.selected
+                    ? `linear-gradient(to right, ${ColorsMTO.darkPink.code}, ${ColorsMTO.Pink.code})`
+                    : "#ccc",
+                height: "43px",
+                width: "59px",
+                borderRadius: "4px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              data-testid="isReleaseBtn"
+              onClick={() => {
+                if (props.data?.oca && props.node.selected) {
+                  handleRightArrowClick1(
+                    props.data.oca === "Short Close"
+                      ? "Short Close"
+                      : "Complete Close",
+                    props.data.ok
+                  );
+                }
+              }}
+            >
+              <img
+                src="/assets/img/rightArrowHorizontal.svg"
+                height={13}
+                width={7}
+                alt="Right Arrow"
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              style={{
+                justifyContent: "space-between",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                margin: "10px",
+              }}
+            >
+              <p>{props.data?.ct}</p>
+              <div
+                onClick={() => {
+                  undoClicked(props, props.data.ok);
+                }}
+                style={{
+                  marginLeft: "10px",
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <img
+                  style={{
+                    transform: "rotateY(180deg)",
+                    margin: "4px",
+                    cursor: "pointer",
+                  }}
+                  src="/assets/img/VectorFLOW/reset.svg"
+                  alt="Undo"
+                  title="Undo"
+                  height={14}
+                  width={14}
+                />
+              </div>
+            </div>
+          </>
+        )}
+      </>
+    );
+  };
 
-       <p>    
-           {props.data?.ct}            
-           </p>
-        <div onClick={() => {
-            undoClicked(props,props.data.ok);
-          }} style={{marginLeft:"10px", display: "flex", alignItems: "center", cursor:"pointer"}}>
-          <img
-          style={{transform:"rotateY(180deg)", margin: '4px',cursor:"pointer"}}
-          src="/assets/img/VectorFLOW/reset.svg"
-          alt="Undo"
-          title="Undo"
-          height={14}
-          width={14}
-          
-          />
-         
-        </div>
-        
-
-       </div>
-         
-       </>
-      }
-    
-      
-</>)}
-
-
-  const mapApiResponseToColDefs = (
-    apiResponse: ApiResponseItem[],
-  ): any => {
-    const mapChildren:any = (
+  const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): any => {
+    const mapChildren: any = (
       parent: any,
       children: ApiResponse[]
     ): ColDefChild[] => {
@@ -876,16 +867,17 @@ const DropDownCellRenderer= (props: any) =>  {
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
         pinned: child.cc === "ct" ? "right" : null,
-              cellRenderer:
+        cellRenderer:
           child.cc === "ec" && systemType >= 3
             ? "agGroupCellRenderer"
             : child.cc === "ic"
             ? "AgeingCellRenderer"
-            : child.cc === "BPP"  
+            : child.cc === "BPP"
             ? "colorCellRenderer"
             : child.cc === "RemarksHistory"
-            ? "RemarkHistoryRenderer":
-            child.cc === "ct"? "DropDownCellRenderer"
+            ? "RemarkHistoryRenderer"
+            : child.cc === "ct"
+            ? "DropDownCellRenderer"
             : undefined,
         maxWidth:
           child.cc === "ec" || child.cc === "ic" || child.scc === "bpp"
@@ -893,13 +885,13 @@ const DropDownCellRenderer= (props: any) =>  {
             : undefined,
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
-          child.cc === "ec" ? false : (child.cc === "ic" ) ? false : true,
-        valueFormatter: (props: any) => { 
-        if (typeof props.value === "number") {
-          return props.value.toFixed(2);
-        }
-        return props.value;
-      },
+          child.cc === "ec" ? false : child.cc === "ic" ? false : true,
+        valueFormatter: (props: any) => {
+          if (typeof props.value === "number") {
+            return props.value.toFixed(2);
+          }
+          return props.value;
+        },
         cellRendererParams: child.hd.includes("Remark")
           ? {
               onClick:
@@ -930,7 +922,6 @@ const DropDownCellRenderer= (props: any) =>  {
       }));
     };
 
-
     const res = apiResponse.map((section) => ({
       headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
       pinned: section.pinned || null,
@@ -947,11 +938,11 @@ const DropDownCellRenderer= (props: any) =>  {
       maxWidth:
         section.scc === "chckbx" || section.scc == "ic" ? 60 : undefined,
       floatingFilter:
-        section.scc === "chckbx" || section.scc == "ic"? false : undefined,
+        section.scc === "chckbx" || section.scc == "ic" ? false : undefined,
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
-      valueFormatter: (props: any) => { 
+      valueFormatter: (props: any) => {
         if (typeof props.value === "number") {
           return props.value.toFixed(2);
         }
@@ -959,24 +950,26 @@ const DropDownCellRenderer= (props: any) =>  {
       },
 
       // pinned: section.scc==="scos"?'right':"",
-      
+
       cellRenderer:
         section.cc === "ec" || (section.scc === "chckbx" && systemType >= 3)
           ? "agGroupCellRenderer"
           : section.cc === "ic"
           ? "AgeingCellRenderer"
-          : section.scc == "oca" ? "DropDownCellRenderer" : undefined,
-          // : undefined,
+          : section.scc == "oca"
+          ? "DropDownCellRenderer"
+          : undefined,
+      // : undefined,
 
-          // TODO: remove this
+      // TODO: remove this
       // valueFormatter: (props:any)=>{console.log("value formater val", props); return props.data.ct},
-        // cellRendererParams: 
-        //   section.scc == "oca" ? {
-        //     data: {
-        //       setSelectedAction
-        //     }
-        //   } : undefined
-        // ,
+      // cellRendererParams:
+      //   section.scc == "oca" ? {
+      //     data: {
+      //       setSelectedAction
+      //     }
+      //   } : undefined
+      // ,
       openByDefault:
         section.scc === "chckbx"
           ? undefined
@@ -984,7 +977,7 @@ const DropDownCellRenderer= (props: any) =>  {
           ? false
           : true,
 
-          ////////this could be some problem
+      ////////this could be some problem
       children:
         section.scc === "chckbx" || section.scc === "oca"
           ? undefined
@@ -1051,7 +1044,7 @@ const DropDownCellRenderer= (props: any) =>  {
       const gridData = await getOverallBMReportData({
         page: currentPage,
         appliedFilters: formatedFilters,
-        user
+        user,
       });
       if (!gridData?.data?.data || gridData?.data?.data?.length === 0) {
         setGridDataCount(0);
@@ -1059,17 +1052,20 @@ const DropDownCellRenderer= (props: any) =>  {
         setIsGridLoading(false);
         return;
       }
-      const modifiedGridData = gridData?.data?.data?.results.map((data: any)=>{
-        return {
-          ...data,
-          oca: null
-        }
-      }, [])
+      const modifiedGridData = gridData?.data?.data?.results.map(
+        (data: any) => {
+          return {
+            ...data,
+            oca: null,
+          };
+        },
+        []
+      );
       setGridData(modifiedGridData);
       setGridDataCount(gridData?.data?.data?.count);
       setIsGridLoading(false);
     } catch (e) {
-      notifyError("No Records found for the selected filter!")
+      notifyError("No Records found for the selected filter!");
       setGridDataCount(0);
       setGridData([]);
       setIsGridLoading(false);
@@ -1080,9 +1076,7 @@ const DropDownCellRenderer= (props: any) =>  {
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
     setIsCheckboxChecked(false);
-
-
-    }, []);
+  }, []);
 
   const extractDepartmentNames = (orders: Orders): string[] => {
     const departmentNames: Set<string> = new Set();
@@ -1125,7 +1119,6 @@ const DropDownCellRenderer= (props: any) =>  {
   };
 
   const getSelectedRow = () => {
-
     const selectedData = refGraph2.current?.api.getSelectedRows();
     if (selectedData.length == 0) {
       rowsSelected.current = false;
@@ -1133,7 +1126,7 @@ const DropDownCellRenderer= (props: any) =>  {
       rowsSelected.current = true;
     }
     /* To persist the state*/
-    if (selectedData && selectedData.length>=0) {
+    if (selectedData && selectedData.length >= 0) {
       let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
       selectedData.forEach((newItem: any) => {
         const index = mergedData.findIndex(
@@ -1160,7 +1153,7 @@ const DropDownCellRenderer= (props: any) =>  {
         }
       });
       // if (!_.isEqual(mergedData, masterSelectedRowData)) {
-        setMasterSelectedRowData(mergedData);
+      setMasterSelectedRowData(mergedData);
       // }
       /*persist data finised*/
     }
@@ -1213,8 +1206,10 @@ const DropDownCellRenderer= (props: any) =>  {
     toggleCheckBox();
   };
 
-
-  const cache = useRef<any>({});
+  const onPivotModeChanged = (event: any) => {
+    const isPivotOn = event.api.isPivotMode();
+    setIsPivot(isPivotOn);
+  };
 
   const agGridProps: AgGridReactProps = useMemo(() => {
     return {
@@ -1233,8 +1228,7 @@ const DropDownCellRenderer= (props: any) =>  {
         enableRangeSelection: true,
         components: customCellRenderers,
         pagination: true,
-        // pivotMode: true,
-
+        // pivotMode: false,
         defaultColDef: {
           enableValue: true,
           enableRowGroup: true,
@@ -1244,18 +1238,18 @@ const DropDownCellRenderer= (props: any) =>  {
           floatingFilter: true,
           //suppressFiltersToolPanel:true,
           cellStyle: {
-            "text-align": "center",
+            textAlign: "center",
             //'height': '50px',
-            //"font-style": "Roboto",
-            //"font-variant": "normal",
-            "font-size": "18px",
-            "font-family": "Roboto",
-            "white-space": "nowrap",
+            //"fontStyle": "Roboto",
+            //"fontVariant": "normal",
+            fontSize: "18px",
+            fontFamily: "Roboto",
+            whiteSpace: "nowrap",
             resizable: "true",
             color: "#000",
           },
           // floatingFilterComponentParams: {
-          //   suppressFilterButton: true,
+          //   // suppressFilterButton: true,
           // },
         },
       },
@@ -1270,6 +1264,7 @@ const DropDownCellRenderer= (props: any) =>  {
       // onSelectionChanged: debounce(getSelectedRow, 1000),
       onSelectionChanged: getSelectedRow,
       onRowDataUpdated: onFirstDataRendered,
+      onColumnPivotModeChanged: onPivotModeChanged,
       detailCellRendererParams: {
         suppressMenu: true,
         detailGridOptions: {
@@ -1278,7 +1273,7 @@ const DropDownCellRenderer= (props: any) =>  {
           autoGroupColumnDef: {
             headerName: "Item Name",
             cellRendererParams: {
-              suppressCount: true,        
+              suppressCount: true,
             },
           },
           columnDefs: [
@@ -1371,27 +1366,18 @@ const DropDownCellRenderer= (props: any) =>  {
         applyOrder: true,
       });
 
-      const isPivotMode = refGraph2.current?.api?.isPivotMode()
-      if(isPivotMode){
+      const isPivotMode = refGraph2.current?.api?.isPivotMode();
+      if (isPivotMode) {
         refGraph2.current?.api?.exportDataAsExcel({
           fileName: "OverallBMReport",
         });
-      }
-      else{
+      } else {
         tempGridRef.current?.api?.exportDataAsExcel({
           fileName: "OverallBMReport",
         });
       }
-
     }
   }, [tempGridData]);
-
-  // for save and reset
-
-  const [isReset, setIsReset] = useState<any>();
-  const [columnState, setColumnState] = useState<any>();
-
- 
 
   const getUserColumnConfig = async () => {
     try {
@@ -1400,10 +1386,11 @@ const DropDownCellRenderer= (props: any) =>  {
         rn_id: UIGridCode.ProdOverallBMReport,
       });
 
-      const newConfig = JSON.parse(data?.data?.data?.[0]?.columns_settings) || [];
+      const newConfig =
+        JSON.parse(data?.data?.data?.[0]?.columns_settings) || [];
 
-      setColumnState(newConfig);
-
+      setColumnState(newConfig.cs);
+      setIsPivot(newConfig.pivot);
 
       if (!data) {
         console.error("Failed to apply column state");
@@ -1413,32 +1400,31 @@ const DropDownCellRenderer= (props: any) =>  {
     }
   };
 
-
-
-
-  const handleSaveClick = async (coldefs?: any) => {    
+  const handleSaveClick = async (coldefs?: any) => {
     try {
       if (coldefs) {
+        const fullConfig = { pivot: false, cs: coldefs };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOverallBMReport,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
 
         await updateUserUIConfigData([payload]);
-        setColumnState([...coldefs]); 
-
+        setColumnState([...coldefs]);
+        setIsPivot(false);
       } else {
         if (refGraph2?.current?.api) {
           const config = refGraph2.current.api.getColumnState();
+          const isPivot = refGraph2.current?.api.isPivotMode();
+          const fullConfig = { pivot: isPivot, cs: config };
 
-
-         setColumnState(config)
+          // setColumnState(config);
 
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOverallBMReport,
-            cs: JSON.stringify(config),
+            cs: JSON.stringify(fullConfig),
           };
           await updateUserUIConfigData([payload]);
           await getUserColumnConfig();
@@ -1451,44 +1437,45 @@ const DropDownCellRenderer= (props: any) =>  {
     }
   };
 
-
   const handleResetClick = () => {
     setIsReset(true);
   };
 
-  useEffect(() => {          
+  useEffect(() => {
     if (isReset) {
       handleSaveClick(masterUIConfig);
       setIsReset(false);
     }
   }, [isReset]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (refGraph2?.current?.api) {
       setMasterUIConfig(refGraph2?.current?.api.getColumnState());
       getUserColumnConfig();
     }
   }, [coldefs]);
 
-  
-
   useEffect(() => {
     if (refGraph2?.current && columnState?.length) {
       const result = refGraph2.current.api.applyColumnState({
         state: columnState,
-        applyOrder: true
+        applyOrder: true,
       });
-      if (!result) {
-        console.error('Failed to apply column state');
+
+      const applyPivot = refGraph2.current?.api.setGridOption(
+        "pivotMode",
+        isPivot
+      );
+
+      if (!result || !applyPivot) {
+        console.error("Failed to apply column state");
       }
     }
   }, [columnState]);
 
-  
   const { data: apiResponseData /*isLoading, refetch*/ } = useGetDate();
 
   const date = apiResponseData?.data?.data;
-
 
   return (
     <BMDepWrapper>
@@ -1504,7 +1491,7 @@ const DropDownCellRenderer= (props: any) =>  {
           toggleFilter={toggleFilter}
           onApplyFilter={onApplyFilter}
           multiFilter={currFilter}
-          WIPFilter={isOrderCloseEnabled? OrderCloseHeader: null}
+          WIPFilter={isOrderCloseEnabled ? OrderCloseHeader : null}
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
           isMfgSelected={isMfgSelected}
@@ -1520,16 +1507,19 @@ const DropDownCellRenderer= (props: any) =>  {
           fontSize: "14px",
           fontWeight: "bold",
           fontFamily: "Roboto",
+          marginTop: "10px",
         }}
       >
         <p>{date && date.length ? moment(date).format("D MMM YYYY") : " "}</p>
       </div>
 
-      {(isGridLoading || isExcelLoading || isGetStateLoading) && (
-        <OverlayLoader />
-      )}
+      {(isGridLoading ||
+        isExcelLoading ||
+        isGetStateLoading ||
+        isShortOrderCompleteOrder ||
+        isUpdateUserConfig) && <OverlayLoader />}
 
-      <HorizontalViewWrapper style={{ marginTop: "0" }}>
+      <HorizontalViewWrapper style={{ marginTop: "0", paddingLeft:"25px" }}>
         <BTRTableWrapper
           style={{
             height: rowsSelected.current ? "120vh" : "75vh",
@@ -1585,16 +1575,16 @@ const DropDownCellRenderer= (props: any) =>  {
           </Allotment>
         </BTRTableWrapper>
 
-        <ConfirmationModal 
-        key={2}
-        isOpen={showModal} 
-        onClose={handleModalClose}
-        onConfirm={handleModalConfirm}
-        title={textAction}
-        // message="Are you sure?"
-        actionText={textAction}
-        orderCount={totalOrderCount}
-      />
+        <ConfirmationModal
+          key={2}
+          isOpen={showModal}
+          onClose={handleModalClose}
+          onConfirm={handleModalConfirm}
+          title={textAction}
+          // message="Are you sure?"
+          actionText={textAction}
+          orderCount={totalOrderCount}
+        />
       </HorizontalViewWrapper>
 
       <BPRRemarkHistoryModal

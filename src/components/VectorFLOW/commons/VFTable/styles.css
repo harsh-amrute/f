@@ -154,6 +154,11 @@
   color: white;
 }
 
+
+.ag-theme-alpine {
+  --ag-header-column-resize-handle-width: 1px !important;
+}
+
 .active-row {
   z-index: 111 !important;
   /* Adjust z-index to suit your needs */

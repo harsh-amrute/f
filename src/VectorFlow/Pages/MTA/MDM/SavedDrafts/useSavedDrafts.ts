@@ -4,7 +4,7 @@ import { useNavigate } from "react-router"
 import {useGetAllDrafts, useDeleteDraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyError, notifyPromise, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
-import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS } from "../../../../../redux/actions/MDM"
+import { FILL_MASTERS, SET_DRAFT_ID,TOGGLE_UPLOAD_MODAL, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS } from "../../../../../redux/actions/MDM"
 import { createMastersStateFromDraftData, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
@@ -86,13 +86,25 @@ const useSavedDrafts = ()=>{
               draftData.push(_.cloneDeep(data));
             }
         });
+        const draftDataInSequence:any[] = [];
+
+        draftData.forEach((Master:any)=>{
+          let DataInSequence:any[] =[];
+          if(Master?.DataMaster!==undefined){
+            DataInSequence = transformDataInSequencialFormat(Master.DataMaster);
+          }
+            draftDataInSequence.push({
+                ...Master,
+                DataMaster:DataInSequence
+            })
+        })    
  
         const mastersData= await getMasterUIConfiguration(getActionName(draftDetails.ActionType).value)
 
         toast.dismiss();
 
         const fields = mastersData.data.data
-        const masterState = createMastersStateFromDraftData(draftData,fields)
+        const masterState = createMastersStateFromDraftData(draftDataInSequence,fields)
         const activeMaster = masterState.find((m:MDMMasterState)=>m.progress!=='submitted');
 
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
@@ -104,8 +116,13 @@ const useSavedDrafts = ()=>{
             dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true))
         }
         
-        
-        navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`);
+        dispatch(TOGGLE_UPLOAD_MODAL(false))
+        navigate(`/master-data-management/control-panel/${getActionName(draftDetails.ActionType).label}`, {
+            state:{
+                backUrl: "/master-data-management/saved-drafts"
+            }
+        });
+
         toast.dismiss();
         notifySuccess("Draft Loaded Successfully");
 
@@ -113,6 +130,36 @@ const useSavedDrafts = ()=>{
         notifyError(error.message);
         toast.dismiss(toastId)
        }
+    }
+
+
+    const transformDataInSequencialFormat=(data:any)=>{
+        return data.sort((a:any, b:any) => {
+            const aHasError = a.error===undefined ? false : a.error.length > 0;
+            const aHasWarning = a.warning===undefined ? false :  a.warning.length > 0;
+            const bHasError = b.error===undefined ? false :  b.error.length > 0;
+            const bHasWarning = b.warning===undefined ? false :  b.warning.length > 0;
+       
+            if (aHasError && aHasWarning && (!bHasError || !bHasWarning)) {
+              return -1; // a should come before b
+            }
+            if (!aHasError && !aHasWarning && (bHasError || bHasWarning)) {
+              return 1;  // b should come before a
+            }
+            if (aHasError && !bHasError) {
+              return -1; // a should come before b
+            }
+            if (!aHasError && bHasError) {
+              return 1;  // b should come before a
+            }
+            if (aHasWarning && !bHasWarning) {
+              return -1; // a should come before b
+            }
+            if (!aHasWarning && bHasWarning) {
+              return 1;  // b should come before a
+            }
+            return 0; // keep the order if they are the same in terms of presence
+          });
     }
 
 

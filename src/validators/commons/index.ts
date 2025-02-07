@@ -39,7 +39,7 @@ export const generateCommonMessages = (key:string) => {
         'any.pipe':`${key} should not contain pipe`,
         'any.comma':`${key} should not contain comma`,
         'any.commapipe':`${key} should not contain comma and pipe`,
-        'any.onlySpecialCharacters': `${key} should not contains only special characters`,
+        'any.onlySpecialCharacters': `${key} should not contain only special characters`,
         'any.specialCharacters': `${key} cannot contain special characters`,
         'any.empty': `${key} should not be empty`,
         'string.base': `${key} should not be empty`
@@ -61,6 +61,12 @@ export const commonValidator = (value:any,helper:any)=>{
     if(IsInputHasComma(value)) return helper.error('any.comma');
     if(IsInputHasPipe(value)) return helper.error('any.pipe');
 
+}
+
+export const DescriptorValidator = (value:any,helper:any)=>{
+    const pattern = /[a-zA-Z0-9]/
+    if(specialCharacterValidator(value,pattern)) return helper.error('any.onlySpecialCharacters');
+    if(IsInputHasPipe(value)) return helper.error('any.pipe');
 }
 
 export const commonValidatorWithSeperator = (value:any,helper:any)=>{

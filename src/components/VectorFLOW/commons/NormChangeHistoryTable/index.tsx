@@ -104,7 +104,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
                 <AgGridWrapper>
                     <div className="ag-theme-alpine "  style={{ height: '200px', width:'700px',textAlign:'center' }}>  
                         <AgGridReact
-                        rowData={data}
+                        rowData={data===null ? [] : data}
                         columnDefs={columnDefs}
                     />
                      </div>

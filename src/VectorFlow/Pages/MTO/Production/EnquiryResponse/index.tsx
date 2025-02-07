@@ -11,7 +11,7 @@ import {
   DashedCard,
   EnquiryWrapper,
   EstimatedWrapper,
-  FilterWrapper,
+  // FilterWrapper,
   MessageText,
   RmUICont,
   TabSwitchContainer,
@@ -680,7 +680,7 @@ const EnquiryResponse = () => {
   return (
     <EnquiryWrapper>
       {(isUpdateUserConfig || isGetUserConfig) && <OverlayLoader />}
-      <FilterWrapper>
+      
         <MTOActionToolBar
           comp={"EnquiryResponse"}
           isAddFilterButton
@@ -694,7 +694,7 @@ const EnquiryResponse = () => {
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
         />
-      </FilterWrapper>
+      
       <div style={{ paddingLeft: '25px' }}>
 
 

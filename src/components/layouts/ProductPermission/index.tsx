@@ -33,6 +33,7 @@ const ProductPermission = ({ ...props }: any) => {
                       setValue={item.setValue}
                       handleListChild={item.handleAction}
                       disabled={false}
+                      key={index}
                     />
                   </SCItemMulSelect>
                 </SCFlexCenter>

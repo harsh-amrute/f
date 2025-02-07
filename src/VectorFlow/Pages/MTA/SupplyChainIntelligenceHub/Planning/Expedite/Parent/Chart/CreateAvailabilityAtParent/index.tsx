@@ -222,6 +222,20 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                   },
                   
               },
+              bar:{
+                series:{
+                    tooltip:{
+                        enabled:true,
+                        renderer:(params:any)=>{
+                            const datum = params.datum
+                            return {
+                                title: `${params.yName}`,
+                                content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+                            }
+                        },
+                    }
+                }
+              }
           };
       }, []);
 
@@ -276,7 +290,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                     <Allotment.Pane>
                         <SCChartContainer height={"100%"} style={{marginRight:'10px'}}>
                             <SCChartHeaderContainer >
-                                <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+                                <div style={{display:'flex',justifyContent:'center',alignItems:'center' , overflow:"hidden"}}>
                                     <SCChartHeader>Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock For Receiving Locations</SCChartHeader>
                                 </div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
@@ -364,7 +378,7 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
                     <Allotment.Pane>
                         <SCChartContainer height={"100%"} style={{marginLeft:'18px'}}>
                                 <SCChartHeaderContainer>
-                                    <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+                                    <div style={{display:'flex',justifyContent:'center',alignItems:'center' , overflow:"hidden"}}>
                                         <SCChartHeader>Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location</SCChartHeader>   
                                     </div>
                                     <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>

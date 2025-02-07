@@ -1,0 +1,64 @@
+export const chartParams1 = {
+    title:'Top 10 Locations With Excess Inventory: Count Of SKUs',
+    chartType:'column',
+    palette:{
+        fills: ['#848484'],
+        strokes: ['#ffffff', '#ffffff'],
+    },
+    chartKey:{
+        Xaxis:['WHDescription'],
+        Yaxis:['SKUCounts']
+    },
+    series:[
+        {
+            type:'bar',
+            xKey:'WHDescription',
+            yKey:'SKUCounts',
+            yName:'Count of SKUs',
+            stacked:false,
+            barPadding:0.2,
+            
+        }
+    ],
+    defaultColForChart:{
+        columns:['WHDescription','SKUCounts'],
+        start:0,
+        end:9
+    },
+    graphInfo:[
+        'This graph highlights the top 10 locations with the highest excess inventory, measured in terms of the count of SKUs'
+    ]
+}
+
+
+export const chartParams2 = {
+    title:'Top 10 Locations with Excess Inventory: In Value (Rupee Lakhs)',
+    chartType:'column',
+    palette:{
+        fills: ['#848484'],
+        strokes: ['#ffffff', '#ffffff'],
+    },
+    chartKey:{
+        Xaxis:['WHDescription'],
+        Yaxis:['SumOfAmount']
+    },
+    series:[
+        {
+            type:'bar',
+            xKey:'WHDescription',
+            yKey:'SumOfAmount',
+            yName:'Value In Lakhs',
+            stacked:false,
+            barPadding:0.2,
+            
+        }
+    ],
+    defaultColForChart:{
+        columns:['WHDescription','SumOfAmount'],
+        start:0,
+        end:9
+    },
+    graphInfo:[
+        'This graph highlights the top 10 locations with the highest excess inventory, assessed in terms of monetary value.'
+    ]
+}

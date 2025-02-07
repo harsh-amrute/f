@@ -5,6 +5,7 @@ import VFTaskBar from "./VFTaskbar"
 const mockFn = jest.fn()
 const dummyProps = {
     onBack:mockFn,
+    onBack1:mockFn,
     onClearAndExportErrors:mockFn,
     onModifyData:mockFn,
     onReset:mockFn,

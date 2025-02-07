@@ -6,8 +6,10 @@ import { useChangePassword } from "../../services";
 import { useNavigate } from "react-router";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import WelcomeBoard from "./welcome-board";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
+import ReCAPTCHA from "react-google-recaptcha";
+import { SITE_KEY} from "../../../helpers/constants";
 
 function ChangePasswordContainer() {
   const { t } = useTranslation();
@@ -17,6 +19,7 @@ function ChangePasswordContainer() {
   const userId = params.get('userId');
   const [requestSend, setRequestSend] = useState(false);
   const [loading, setLoading] = useState(false);
+  const recaptchaRef: any = useRef();
 
   useEffect(() => {
     if (!token || !userId) {
@@ -40,29 +43,38 @@ function ChangePasswordContainer() {
   const { mutateAsync: mutateForgotPassword } = useChangePassword()
 
   const onSave = () => {
-    setLoading(true)
-    let formData = getValues()
-    formData = {
-      ...formData,
-      token: token || '',
-      uid: userId || ''
-    }
-    mutateForgotPassword(formData, {
-      onSuccess: (data: any) => {
-        if (data?.status === 400) {
-          notifyError(data?.response?.msg)
-          setLoading(false)
-          return
-        }
-        notifySuccess(data?.data?.msg)
-        setRequestSend(true)
-        setLoading(false)
-      },
-      onError: () => {
-        notifyError('Something wrong !')
-        setLoading(false)
+    const recaptchaValue = recaptchaRef.current.getValue();
+    const recaptcha = localStorage.getItem("_grecaptcha");
+
+    if (recaptchaValue || recaptcha) {
+
+      setLoading(true)
+      let formData = getValues()
+      formData = {
+        ...formData,
+        token: token || '',
+        uid: userId || ''
       }
-    })
+      mutateForgotPassword(formData, {
+        onSuccess: (data: any) => {
+          if (data?.status === 400) {
+            notifyError(data?.response?.msg)
+            setLoading(false)
+            return
+          }
+          notifySuccess(data?.data?.msg)
+          setRequestSend(true)
+          setLoading(false)
+        },
+        onError: () => {
+          notifyError('Something wrong !')
+          setLoading(false)
+        }
+      })
+    } else {
+      // recaptchaRef.current?.reload();
+      notifyError(t("loginPage.notify.completeReCaptcha"));
+    }
   }
 
   return (
@@ -94,7 +106,7 @@ function ChangePasswordContainer() {
                   <InputGroup>
                     <img src="/assets/img/auth/password.svg" />
                     <IputLogin
-                      type="text"
+                      type="password"
                       {...register("new_password", {
                         required: true,
                         pattern: {
@@ -114,7 +126,7 @@ function ChangePasswordContainer() {
                   <InputGroup>
                     <img src="/assets/img/auth/password.svg" />
                     <IputLogin
-                      type="text"
+                      type="password"
                       {...register("confirm_password", {
                         required: true,
                         pattern: {
@@ -129,6 +141,13 @@ function ChangePasswordContainer() {
                   </InputGroup>
                   <Errors errors={errors} name="confirm_password" />
                 </InputArea>
+
+                <ReCAPTCHA
+                className="recaptcha"
+                ref={recaptchaRef}
+                // sitekey={process.env.REACT_APP_ENV === 'test' ? TEST_SITE_KEY : SITE_KEY}
+                sitekey={SITE_KEY}
+                />
 
                 <SCButtonLogin>
                   <ButtonSubmit>

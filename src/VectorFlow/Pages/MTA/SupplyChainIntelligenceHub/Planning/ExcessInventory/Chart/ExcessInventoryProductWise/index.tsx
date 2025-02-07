@@ -1,14 +1,11 @@
-import {useRef, useMemo, useState} from "react";
+import {useState, useEffect} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import "../../styles.css";
-import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
-import { type GridRef } from "../../../../../../../types/MDM";
-import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../styles';
-import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/VFModalCard";
-import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
-import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
+import {SCDynamicContainer} from '../../styles';
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOptions} from '../../../../../../../../helpers/utils';
+import VFCharts from "../../../../../../../../components/VectorFLOW/commons/VFCharts";
+import {chartParams1 , chartParams2} from './chartParams'
 interface ExcessInventoryProps{
     data:any
 }
@@ -16,11 +13,11 @@ interface ExcessInventoryProps{
 
 const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
 
-    const refGraph1 = useRef<GridRef>();
-    const refGraph2 = useRef<GridRef>();
-    
-    const [hideChart1,toggleChart1] = useState<boolean>(false);
-    const [hideChart2,toggleChart2] = useState<boolean>(false);
+    const [chartThemeOverridesG1 , setChartThemeOverridesG1] = useState<any>(undefined)
+    const [chartThemeOverridesG2 , setChartThemeOverridesG2] = useState<any>(undefined)
+
+    const [rowData1,setRowData1] = useState<any>([])
+    const [rowData2,setRowData2] = useState<any>([])
      
     const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
@@ -91,364 +88,124 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
         return [...data];
     }
 
-    const generateChart = (graphNo:number,withOutContainer?:boolean) => {
-       
-        if(graphNo === 1){
-            if(withOutContainer) {
-                refGraph1.current?.api.createRangeChart({
-                    chartType:'column',
-                    cellRange: {
-                        columns: ['SKUDescription','WHCount'],
-                        rowStartIndex:0,
-                        rowEndIndex:9
-                    }
-                })
-            }
-            else{
-                const container1 = document.getElementById('ExcessInventoryProductG1') as HTMLElement
-                refGraph1.current?.api.createRangeChart({
-                    chartType:'column',
-                    cellRange: {
-                        columns: ['SKUDescription','WHCount'],
-                        rowStartIndex:0,
-                        rowEndIndex:9
-                    },
-                    chartContainer:container1
-                })
-            }
-            
-        }
-      
-        if(graphNo === 2){
-            if(withOutContainer) {
-                refGraph2.current?.api.createRangeChart({
-                    chartType:'column',
-                    cellRange: {
-                        columns: ['SKUDescription','SumAmount'],
-                        rowStartIndex:0,
-                        rowEndIndex:9
-                    }
-                })
-            }
-            else{
-                const container2 = document.getElementById('ExcessInventoryProductG2') as HTMLElement
-                refGraph2.current?.api.createRangeChart({
-                    chartType:'column',
-                    cellRange: {
-                        columns: ['SKUDescription','SumAmount'],
-                        rowStartIndex:0,
-                        rowEndIndex:9
-                    },
-                    chartContainer:container2
-                })
-            }
-            
-        }
-      }
-
-      const handleChartClose = (graphNo:number) => {
-        if(graphNo === 1){
-            // chartRef1?.destroyChart()
-            toggleChart1(true);
-            // setGrid1DisplayStatus('block')
-        }
-        if(graphNo === 2){
-            // chartRef2?.destroyChart()
-            toggleChart2(true);
-            // setGrid2DisplayStatus('block')
-        }
-      }
-
-
-      const getChartToolbarItems:any = () => ['chartDownload'];
-
-      const chartThemeOverridesG1 = useMemo<any>(() => { 
-        return {
-            // palette:{
-            //     fills:['#848484','#848484']
-            // },
-            ...GraphSeriesOverrides,
-              common: {
-                  legend:{
-                    position:'bottom'
-                  },
-                  axes:{
-                    category:{
-                        title:{
-                            enabled:true,
-                            text:'Product Name',
-                            position:'bottom',
-                            fontSize:10,
-                            fontFamily:'Roboto'
-
-                        },
-                        label:{
-                            formatter:(params:any)=>{
-                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
-                                return params.value;
-                            },
-                            fontSize:8,
-                            fontFamily:'Roboto'
-                        }
-                        
-                    },
-                    number:{
-                        title:{
-                            enabled:true,
-                            text:"Count Of Locations",
-                            position:"left",
-                            fontSize:10,
-                            fontFamily:'Roboto'
-                        }
-                      }
-                  },
-                  
-              },
-          };
-      }, []);
-
-      const chartThemeOverridesG2 = useMemo<any>(() => { 
-        return {
-            // palette:{
-            //     fills:['#848484','#848484']
-            // },
-            ...GraphSeriesOverrides,
-              common: {
-                  legend:{
-                    position:'bottom'
-                  },
-                  axes:{
-                    category:{
-                        title:{
-                            enabled:true,
-                            text:'Product Name',
-                            position:'bottom',
-                            fontSize:10,
-                            fontFamily:'Roboto'
-
-                        },
-                        label:{
-                            formatter:(params:any)=>{
-                                if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
-                                return params.value;
-                            },
-                            fontSize:8,
-                            fontFamily:'Roboto'
-                        }
-                    },
-                    number:{
-                        title:{
-                            enabled:true,
-                            text:"Value In Lakhs",
-                            position:"left",
-                            fontSize:10,
-                            fontFamily:'Roboto'
-                        }
-                      }
-                  },
-                  
-              },
-          };
-      }, []);
-
-      const myCustomTheme:any = {
-        palette: {
-            fills: ['#848484'],
-            strokes: ['#ffffff', '#ffffff'],
-          },
-      }
-
-   
-      const graph1 = [
-        'This graph highlights the top 10 products with surplus inventory, in maximum number of locations',
-      ]
-
-      const graph2 = [
-        'This graph highlights the top 10 products with the highest excess inventory, assessed in terms of monetary value.'
-      ]
-
-      const scaleDown = (data:any,key:string,divisor:number)=>{
+    const scaleDown = (data:any,key:string,divisor:number)=>{
         return data.map((row:any)=>{
             const temp = {...row};
-            temp[key] = parseInt(row[key],10)/divisor;
+            const valueToScaleDown = (row[key] === "" || row[key] == null) ? 0 : row[key];
+            temp[key] = parseInt(valueToScaleDown,10)/divisor;
             return temp;
         })
-      }
+    }
+
+
+    useEffect(()=>{
+        const formattedRowData1 = sortData(convertToInt(data['topTenProductsWithExcessInventoryNumberOfLocations']['data'],['WHCount']),'WHCount')
+        setRowData1(formattedRowData1)
+        setChartThemeOverridesG1(generateChartOptions(formattedRowData1,chartParams1.series,chartParams1.palette,'Product Name','Count Of Locations',chartParams1.chartKey,undefined))
+        
+        const formattedRowData2 = scaleDown(sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data'],['SumAmount']),'SumAmount'),'SumAmount',100000)
+        setRowData2(formattedRowData2)
+        setChartThemeOverridesG2(generateChartOptions(formattedRowData2,chartParams2.series,chartParams2.palette,'Product Name','Value In Lakhs',chartParams2.chartKey,undefined))
+    },[])
+
+
+    const getChartToolbarItems:any = () => [''];
+    
+
+    // const chartKeys1 = {
+    //     Xaxis:['SKUDescription'],
+    //     Yaxis:['WHCount']
+    // }
+
+    // const chartKeys2 = {
+    //     Xaxis:['SKUDescription'],
+    //     Yaxis:['SumAmount']
+    // }
+
+    // const series1 = [
+    //     {
+    //         type:'bar',
+    //         xKey:'SKUDescription',
+    //         yKey:'WHCount',
+    //         yName:'Count of Locations',
+    //         stacked:false,
+    //         barPadding:0.2,
+    //     }
+    // ]
+
+    // const series2 = [
+    //     {
+    //         type:'bar',
+    //         xKey:'SKUDescription',
+    //         yKey:'SumAmount',
+    //         yName:'Value In Lakhs',
+    //         stacked:false,
+    //         barPadding:0.2,
+    //     }
+    // ]
+
+    // const palette:any = {
+    //     fills: ['#848484'],
+    //     strokes: ['#ffffff', '#ffffff'],
+    // }
+     
+
+    // const defaultColForCustomGraph1 = {
+    //     columns:['SKUDescription','WHCount'],
+    //     start:0,
+    //     end:9
+    // }
+
+    // const defaultColForCustomGraph2 = {
+    //     columns:['SKUDescription','SumAmount'],
+    //     start:0,
+    //     end:9
+    // }
+
+    // const graphInfo1 = [
+    //     'This graph highlights the top 10 products with surplus inventory, in maximum number of locations',
+    // ]
+
+    // const graphInfo2 = [
+    //     'This graph highlights the top 10 products with the highest excess inventory, assessed in terms of monetary value.'
+    // ]
+
      
     return(
         <>
             <SCDynamicContainer>
                 <Allotment>
-                    <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"95%"} style={{marginRight:'10px'}}>
-                            <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: Number Of Locations</SCChartHeader></div>
-                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
-                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
-                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
-                                </div>
-                            </SCChartHeaderContainer>
-                            <SCHorizontalDivider/>
-                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Products with Excess Inventory: Number of Locations" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-                                <div className="ag-theme-planning" style={{width:'1000px'}}>
-                                    <VFTable
-                                        ref={refGraph1}
-                                        columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryNumberOfLocations']['data'],['WHCount']),'WHCount')}
-                                        enableCharts={true}
-                                        enableRangeSelection={true} 
-                                        rowSelection="multiple"
-                                        statusBar = {{
-                                            statusPanels: [
-                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                              { statusPanel: 'agAggregationComponent', align:'left' },
-                                            ],
-                                          }}                                        onGridReady={()=>generateChart(1,true)}
-                                        getChartToolbarItems={getChartToolbarItems}
-                                        chartToolPanelsDef={
-                                            {
-                                                panels:[]
-                                            }
-                                        }
-                                        chartThemeOverrides={chartThemeOverridesG1}
-                                        chartThemes={['myCustomTheme']}
-                                        customChartThemes={{
-                                            'myCustomTheme':myCustomTheme
-                                        }}
-                                        disableZoomScaling={true}
-                                        defaultColDef={{
-                                            floatingFilter:true,
-                                            filter: "agMultiColumnFilter",
-                                            }}
-                                        height={'480px'}
-                                    />
-                                </div>
-                            </VFModalCard>
-                            <div style={{display:'none'}}>
-                                <VFTable
-                                    ref={refGraph1}
-                                    columnDefs={colDefs1}
-                                    rowData={sortData(convertToInt(data['topTenProductsWithExcessInventoryNumberOfLocations']['data'],['WHCount']),'WHCount')}
-                                    enableCharts={true}
-                                    enableRangeSelection={true} 
-                                    rowSelection="multiple"
-                                    statusBar = {{
-                                        statusPanels: [
-                                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                          { statusPanel: 'agAggregationComponent', align:'left' },
-                                        ],
-                                      }}                                    onGridReady={()=>generateChart(1)}
-                                    getChartToolbarItems={getChartToolbarItems}
-                                    chartToolPanelsDef={
-                                        {
-                                            panels:[]
-                                        }
-                                    }
-                                    chartThemeOverrides={chartThemeOverridesG1}
-                                    chartThemes={['myCustomTheme']}
-                                    customChartThemes={{
-                                        'myCustomTheme':myCustomTheme
-                                    }}
-                                    disableZoomScaling={true}
-                                    
-                                />
-                            </div>
-                            <div id="ExcessInventoryProductG1" style={{height:'80%'}}></div>
-                        </SCChartContainer>
-                        {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
-                            <VFInfoTip text={graph1}/>
-                        </div> */}
+                    <Allotment.Pane  minSize={440} preferredSize={'50%'}>
+
+                        <VFCharts     
+                            height={'95%'}
+                            title={chartParams1.title}
+                            graphInfo={chartParams1.graphInfo}
+                            defaultColForCustomGraph={chartParams1.defaultColForChart}
+                            colDefs={colDefs1}
+                            rowData={rowData1}
+                            chartProps={chartThemeOverridesG1}
+                            palette={chartParams1.palette}
+                            chartType={chartParams1.chartType}
+                            containerStyle={{marginLeft:'0px',marginRight:'10px'}}
+                        />
+
                     </Allotment.Pane>
-                    <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={'95%'} style={{marginLeft:'18px'}}>
-                            <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)</SCChartHeader></div>
-                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
-                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
-                                    {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(2)}/>}
-                                </div>
-                            </SCChartHeaderContainer>
-                            <SCHorizontalDivider/>
-                            <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-                                <div className="ag-theme-planning" style={{width:'1000px'}}>
-                                    <VFTable
-                                        ref={refGraph2}
-                                        columnDefs={colDefs2}
-                                        rowData={scaleDown(sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data'],['SumAmount']),'SumAmount'),'SumAmount',100000)}
-                                        enableCharts={true}
-                                        enableRangeSelection={true} 
-                                        rowSelection="multiple"
-                                        statusBar = {{
-                                            statusPanels: [
-                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                              { statusPanel: 'agAggregationComponent', align:'left' },
-                                            ],
-                                          }}                                        onGridReady={()=>generateChart(2,true)}
-                                        getChartToolbarItems={getChartToolbarItems}
-                                        chartToolPanelsDef={
-                                            {
-                                                panels:[]
-                                            }
-                                        }
-                                        chartThemeOverrides={chartThemeOverridesG2}
-                                        chartThemes={['myCustomTheme']}
-                                        customChartThemes={{
-                                            'myCustomTheme':myCustomTheme
-                                        }}
-                                        disableZoomScaling={true}
-                                        defaultColDef={{
-                                            floatingFilter:true,
-                                            filter: "agMultiColumnFilter",
-                                            }}
-                                        height={'480px'}
-                                    />
-                                </div>
-                            </VFModalCard>
-                            <div style={{display:'none'}}>
-                            <VFTable
-                                ref={refGraph2}
-                                columnDefs={colDefs2}
-                                rowData={scaleDown(sortData(convertToInt(data['topTenProductsWithExcessInventoryInValue']['data'],['SumAmount']),'SumAmount'),'SumAmount',100000)}
-                                enableCharts={true}
-                                enableRangeSelection={true} 
-                                rowSelection="multiple"
-                                statusBar = {{
-                                    statusPanels: [
-                                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                      { statusPanel: 'agAggregationComponent', align:'left' },
-                                    ],
-                                  }}                                onGridReady={()=>generateChart(2)}
-                                getChartToolbarItems={getChartToolbarItems}
-                                chartToolPanelsDef={
-                                    {
-                                        panels:[]
-                                    }
-                                }
-                                chartThemeOverrides={chartThemeOverridesG2}
-                                chartThemes={['myCustomTheme']}
-                                customChartThemes={{
-                                    'myCustomTheme':myCustomTheme
-                                }}
-                                disableZoomScaling={true}
+                    <Allotment.Pane  minSize={440} preferredSize={'50%'}>
+                    
+                        <VFCharts     
+                                height={'95%'}
+                                title={chartParams2.title}
+                                graphInfo={chartParams2.graphInfo}
+                                defaultColForCustomGraph={chartParams2.defaultColForChart}
+                                colDefs={colDefs2}
+                                rowData={rowData2}
+                                chartProps={chartThemeOverridesG2}
+                                palette={chartParams2.palette}
+                                chartType={chartParams2.chartType}
+                                containerStyle={{marginLeft:'17px',marginRight:'0px'}}
                             />
-                            </div>
-                            <div id="ExcessInventoryProductG2" style={{height:'80%'}}></div>
-                        </SCChartContainer>
-                        {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
-                            <VFInfoTip text={graph2}/>
-                        </div> */}
+
                     </Allotment.Pane>
                   
                 </Allotment>

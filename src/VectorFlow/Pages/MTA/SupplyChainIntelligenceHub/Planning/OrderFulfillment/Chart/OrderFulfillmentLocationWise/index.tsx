@@ -1,17 +1,12 @@
-import {useRef, useMemo, useState} from "react";
+import {useState, useEffect} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
-import "../../styles.css";
-import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
-import { type GridRef } from "../../../../../../../types/MDM";
+// import "../../styles.css";
 import { ColDef } from "ag-grid-enterprise";
-import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider,SCDynamicContainer} from '../../styles';
-import VFModalCard from "../../../../../../../../components/VectorFLOW/commons/VFModalCard";
-
-import {GraphSeriesOverrides} from '../../../../../../../../helpers/BPRConstants'
-import VFInfoToolTip from "../../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
-import {convertToInt, getProductAndLocationHeirarchiesFromEnv} from '../../../../../../../../helpers/utils';
-
+import {SCDynamicContainer} from '../../styles';
+import VFCharts from "../../../../../../../../components/VectorFLOW/commons/VFCharts";
+import {convertToInt, getProductAndLocationHeirarchiesFromEnv,generateChartOptions, downloadBase64Image} from '../../../../../../../../helpers/utils';
+import { chartParams1 , chartParams2 } from './chartParams' 
 interface OrderFulfillmentProps{
     data:any
 }
@@ -19,11 +14,11 @@ interface OrderFulfillmentProps{
 
 const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
 
-    const refGraph1 = useRef<GridRef>();
-    const refGraph2 = useRef<GridRef>();
-  
-    const [hideChart1,toggleChart1] = useState<boolean>(false);
-    const [hideChart2,toggleChart2] = useState<boolean>(false);
+    const [chartThemeOverridesG1 , setChartThemeOverridesG1] = useState<any>(undefined)
+    const [chartThemeOverridesG2 , setChartThemeOverridesG2] = useState<any>(undefined)
+
+    const [rowData1,setRowData1] = useState<any>([])
+    const [rowData2,setRowData2] = useState<any>([])
 
     const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
@@ -113,366 +108,150 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
         return [...data];
     }
 
-   
-    const generateChart = (graphNo:number,withOutContainer?:boolean) => {
-       
-        if(graphNo === 1){
-            if(withOutContainer) {
-                refGraph1.current?.api.createRangeChart({
-                    chartType:'stackedColumn',
-                    cellRange: {
-                    columns: ['location','overdue','due','others'],
-                    rowStartIndex:0,
-                    rowEndIndex:9
-                    }
-                })
-            }
-            else{
-                const container1 = document.getElementById('OrderFulfillmentG1') as HTMLElement
-                refGraph1.current?.api.createRangeChart({
-                    chartType:'stackedColumn',
-                    cellRange: {
-                    columns: ['location','overdue','due','others'],
-                    rowStartIndex:0,
-                    rowEndIndex:9
-                    },
-                  chartContainer: container1 
-                })    
-            }
-            
-        }
-      
-        if(graphNo === 2){
-            if(withOutContainer) {
-                refGraph2.current?.api.createRangeChart({
-                    chartType:'stackedColumn',
-                    cellRange: {
-                        columns: ['location','greater','between','smaller'],
-                        rowStartIndex:0,
-                        rowEndIndex:9
-                    }
-                })
-            }
-            else{
-                const container2 = document.getElementById('OrderFulfillmentG2') as HTMLElement
-                refGraph2.current?.api.createRangeChart({
-                    chartType:'stackedColumn',
-                    cellRange: {
-                        columns: ['location','greater','between','smaller'],
-                        rowStartIndex:0,
-                        rowEndIndex:9
-                    },
-                    chartContainer:container2
-                })
-            }
-            
-        }
-      }
 
-      const handleChartClose = (graphNo:number) => {
-        if(graphNo === 1){
-            // chartRef1?.destroyChart()
-            toggleChart1(true);
-            // setGrid1DisplayStatus('block')
-        }
-        if(graphNo === 2){
-            // chartRef2?.destroyChart()
-            toggleChart2(true);
-            // setGrid2DisplayStatus('block')
-        }
-      }
+    useEffect(()=>{
+        const formattedRowData1 = sortData(convertToInt(data['maximumOverdueOrders']['data'],['overdue','due','others']),'overdue','due','others')
+        setRowData1(formattedRowData1)
+        setChartThemeOverridesG1(generateChartOptions(formattedRowData1,chartParams1.series,chartParams1.palette,'Location Name','No Of Orders',chartParams1.chartKey,undefined))
+        
+        const formattedRowData2 = sortData(convertToInt(data['maxSkuWithGap']['data'],['greater','between','smaller']),'greater','between','smaller')
+        setRowData2(formattedRowData2)
+        setChartThemeOverridesG2(generateChartOptions(formattedRowData2,chartParams2.series,chartParams2.palette,'Location Name','NO Of SKUs',chartParams2.chartKey,undefined))
+    },[])
 
+    // const chartKeys1 = {
+    //     Xaxis:['location'],
+    //     Yaxis:['overdue','due','others']
+    // }
 
-      const getChartToolbarItems:any = () => ['chartDownload'];
+    // const chartKeys2 = {
+    //     Xaxis:['location'],
+    //     Yaxis:['greater','between','smaller']
+    // }
 
-      const chartThemeOverridesG1 = useMemo<any>(() => { 
-        return {
-            // palette:{
-            //     fills:['#848484','#848484']
-            // },
-            ...GraphSeriesOverrides,
-              common: {
-                  legend:{
-                    position:'bottom'
-                  },
-                  axes:{
-                    category:{
-                        title:{
-                            enabled:true,
-                            text:'Location Name',
-                            position:'bottom',
-                            fontSize:10,
-                            fontFamily:'Roboto'
+    // const series1 = [
+    //     {
+    //         type:'bar',
+    //         xKey:'location',
+    //         yKey:'overdue',
+    //         yName:'Overdue',
+    //         stacked:true,
+    //         barPadding:0.2,
+    //     },
+    //     {
+    //         type:'bar',
+    //         xKey:'location',
+    //         yKey:'due',
+    //         yName:'Due',
+    //         stacked:true,
+    //         barPadding:0.2,
+    //     },
+    //     {
+    //         type:'bar',
+    //         xKey:'location',
+    //         yKey:'others',
+    //         yName:'Others',
+    //         stacked:true,
+    //         barPadding:0.2,
+    //     }
+    // ]
 
-                        },
-                        label:{
-                                formatter:(params:any)=>{
-                                    if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
-                                    return params.value;
-                                },
-                            fontSize:8,
-                            fontFamily:'Roboto'
-                        }
-                    },
-                    number:{
-                        title:{
-                            enabled:true,
-                            text:"No Of Orders",
-                            position:"left",
-                            fontSize:10,
-                            fontFamily:'Roboto'
-                        }
-                      }
-                  },
-                  
-              },
-          };
-      }, []);
+    // const series2 = [
+    //     {
+    //         type:'bar',
+    //         xKey:'location',
+    //         yKey:'greater',
+    //         yName:'Gap > 67%',
+    //         stacked:true,
+    //         barPadding:0.2,
+    //     },
+    //     {
+    //         type:'bar',
+    //         xKey:'location',
+    //         yKey:'between',
+    //         yName:'33% <= Gap <= 67%',
+    //         stacked:true,
+    //         barPadding:0.2,
+    //     },
+    //     {
+    //         type:'bar',
+    //         xKey:'location',
+    //         yKey:'smaller',
+    //         yName:'Gap < 33%',
+    //         stacked:true,
+    //         barPadding:0.2,
+    //     }
+    // ]
 
-      const chartThemeOverridesG2 = useMemo<any>(() => { 
-        return {
-            // palette:{
-            //     fills:['#848484','#848484']
-            // },
-            ...GraphSeriesOverrides,
-              common: {
-                  legend:{
-                    position:'bottom'
-                  },
-                  axes:{
-                    category:{
-                        title:{
-                            enabled:true,
-                            text:'Location Name',
-                            position:'bottom',
-                            fontSize:10,
-                            fontFamily:'Roboto'
+    // const palette1 = {
+    //     fills: ['#ED1C24','#E3812D','#355FD3'],
+    //     strokes: ['#ffffff', '#ffffff']
+    // }
 
-                        },
-                        label:{
-                                formatter:(params:any)=>{
-                                    if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
-                                    return params.value;
-                                },
-                            fontSize:8,
-                            fontFamily:'Roboto'
-                        }
-                    
-                    },
-                    number:{
-                        title:{
-                            enabled:true,
-                            text:"No Of SKUs",
-                            position:"left",
-                            fontSize:10,
-                            fontFamily:'Roboto'
-                        }
-                      }
-                  },
-                  
-              },
-          };
-      }, []);
+    // const palette2 = {
+    //     fills: ['#F02424','#E3812D','#418D18'],
+    //     strokes: ['#ffffff', '#ffffff'],
+    // }
 
-      const myCustomThemeG1:any = {
-        palette: {
-            fills: ['#ED1C24','#E3812D','#355FD3'],
-            strokes: ['#ffffff', '#ffffff'],
-          },
-      }
+    // const defaultColForCustomGraph1 = {
+    //     columns:['location','overdue','due','others'],
+    //     start:0,
+    //     end:9
+    // }
 
-      const myCustomThemeG2:any = {
-        palette: {
-            fills: ['#F02424','#E3812D','#418D18'],
-            strokes: ['#ffffff', '#ffffff'],
-          },
-      }
+    // const defaultColForCustomGraph2 = {
+    //     columns:['location','greater','between','smaller'],
+    //     start:0,
+    //     end:9
+    // }
 
-      const graph1 = [
-        'This graph highlights the top 10 locations with max number of over due orders. It also captures the status of due & other orders from pending orders file.',
-        'Overdue orders - Due date crossed | Due Orders - Due dates of today or in the future | Other Orders - PSO Quantity'
-      ]
+    // const graphInfo1 = [
+    //     'This graph highlights the top 10 locations with max number of over due orders. It also captures the status of due & other orders from pending orders file.',
+    //     'Overdue orders - Due date crossed | Due Orders - Due dates of today or in the future | Other Orders - PSO Quantity'
+    // ]
 
-      const graph2 = [
-        'This Graph highlights the top 10 locations with max no of SKUs with Gap > 67% of requirement.',
-        'Gap = Requirement - Stock - GIT - Rationed Qty',
-        'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
-      ]
+    // const graphInfo2 = [
+    //     'This Graph highlights the top 10 locations with max no of SKUs with Gap > 67% of requirement.',
+    //     'Gap = Requirement - Rationed Qty',
+    //     'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
+    // ]
 
      
     return(
         <>
             <SCDynamicContainer>
                 <Allotment>
-                    <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={"95%"} style={{marginRight:'10px'}}>
-                            <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Maximum Overdue Orders</SCChartHeader></div>
-                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
-                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph1}/></div>
-                                    {!hideChart1 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(1)}/>}
-                                </div>
-                            </SCChartHeaderContainer>
-                            <SCHorizontalDivider/>
-                            <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Locations: Maximum Overdue Orders" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-                                <div className="ag-theme-planning" style={{width:'1000px'}}>
-                                    <VFTable
-                                        ref={refGraph1}
-                                        columnDefs={colDefs1}
-                                        rowData={sortData(convertToInt(data['maximumOverdueOrders']['data'],['overdue','due','others']),'overdue','due','others')}
-                                        enableCharts={true}
-                                        enableRangeSelection={true} 
-                                        rowSelection="multiple"
-                                        statusBar = {{
-                                            statusPanels: [
-                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                              { statusPanel: 'agAggregationComponent', align:'left' },
-                                            ],
-                                          }}                                        onGridReady={()=>generateChart(1,true)}
-                                        getChartToolbarItems={getChartToolbarItems}
-                                        chartToolPanelsDef={
-                                            {
-                                                panels:[]
-                                            }
-                                        }
-                                        chartThemeOverrides={chartThemeOverridesG1}
-                                        chartThemes={['myCustomTheme']}
-                                        customChartThemes={{
-                                            'myCustomTheme':myCustomThemeG1
-                                        }}
-                                        disableZoomScaling={true}
-                                        defaultColDef={{
-                                            floatingFilter:true,
-                                            filter: "agMultiColumnFilter",
-                                            }}
-                                        height={'480px'}
-                                    />
-                                </div>
-                            </VFModalCard>
-                            <div style={{display:'none'}}>
-                                <VFTable
-                                    ref={refGraph1}
-                                    columnDefs={colDefs1}
-                                    rowData={sortData(convertToInt(data['maximumOverdueOrders']['data'],['overdue','due','others']),'overdue','due','others')}
-                                    enableCharts={true}
-                                    enableRangeSelection={true} 
-                                    rowSelection="multiple"
-                                    statusBar = {{
-                                        statusPanels: [
-                                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                          { statusPanel: 'agAggregationComponent', align:'left' },
-                                        ],
-                                      }}                                    onGridReady={()=>generateChart(1)}
-                                    getChartToolbarItems={getChartToolbarItems}
-                                    chartToolPanelsDef={
-                                        {
-                                            panels:[]
-                                        }
-                                    }
-                                    chartThemeOverrides={chartThemeOverridesG1}
-                                    chartThemes={['myCustomTheme']}
-                                    customChartThemes={{
-                                        'myCustomTheme':myCustomThemeG1
-                                    }}
-                                    disableZoomScaling={true}
-                                />
-                            </div>
-                            <div id="OrderFulfillmentG1" style={{height:'80%'}}></div>
-                        </SCChartContainer>
-                        {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
-                            <VFInfoTip text={graph1}/>
-                        </div> */}
+                    <Allotment.Pane minSize={440} preferredSize={'50%'}>
+                    
+                    <VFCharts     
+                            height={'95%'}
+                            title={chartParams1.title}
+                            graphInfo={chartParams1.graphInfo}
+                            defaultColForCustomGraph={chartParams1.defaultColForChart}
+                            colDefs={colDefs1}
+                            rowData={rowData1}
+                            chartProps={chartThemeOverridesG1}
+                            palette={chartParams1.palette}
+                            chartType={chartParams1.chartType}
+                            containerStyle={{marginLeft:'0px',marginRight:'10px'}}
+                        />
+
                     </Allotment.Pane>
-                    <Allotment.Pane preferredSize={'50%'}>
-                        <SCChartContainer height={'95%'} style={{marginLeft:'18px'}}>
-                            <SCChartHeaderContainer>
-                                <div style={{display:'flex',width:'100%',justifyContent:'center'}}><SCChartHeader style={{marginRight:10}}>Top 10 Locations: Max SKUs With Gap &gt; 67% Of Requirement</SCChartHeader></div>
-                                <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
-                                    <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
-                                    {!hideChart2 && <img src="/assets/img/VectorFLOW/BPR/expand-graph.svg" width={15} height={15} alt="" onClick={()=>handleChartClose(2)}/>}
-                                </div>
-                            </SCChartHeaderContainer>
-                            <SCHorizontalDivider/>
-                            <VFModalCard openModal={hideChart2} closeModal={()=>toggleChart2(false)} headerIcon='' headerText="Top 10 Locations: Max SKUs With Gap &gt; 67% of Requirement" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
-                                <div className="ag-theme-planning" style={{width:'1000px'}}>
-                                    <VFTable
-                                        ref={refGraph2}
-                                        columnDefs={colDefs2}
-                                        rowData={sortData(convertToInt(data['maxSkuWithGap']['data'],['greater','between','smaller']),'greater','between','smaller')}
-                                        enableCharts={true}
-                                        enableRangeSelection={true} 
-                                        rowSelection="multiple"
-                                        statusBar = {{
-                                            statusPanels: [
-                                              { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                              { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                              { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                              { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                              { statusPanel: 'agAggregationComponent', align:'left' },
-                                            ],
-                                          }}                                        onGridReady={()=>generateChart(2,true)}
-                                        getChartToolbarItems={getChartToolbarItems}
-                                        chartToolPanelsDef={
-                                            {
-                                                panels:[]
-                                            }
-                                        }
-                                        chartThemeOverrides={chartThemeOverridesG2}
-                                        chartThemes={['myCustomTheme']}
-                                        customChartThemes={{
-                                            'myCustomTheme':myCustomThemeG2
-                                        }}
-                                        disableZoomScaling={true}
-                                        defaultColDef={{
-                                            floatingFilter:true,
-                                            filter: "agMultiColumnFilter",
-                                            }}
-                                        height={'480px'}
-                                    />
-                                </div>
-                            </VFModalCard>
-                            <div style={{display:'none'}}>
-                                <VFTable
-                                    ref={refGraph2}
-                                    columnDefs={colDefs2}
-                                    rowData={sortData(convertToInt(data['maxSkuWithGap']['data'],['greater','between','smaller']),'greater','between','smaller')}
-                                    enableCharts={true}
-                                    enableRangeSelection={true} 
-                                    rowSelection="multiple"
-                                    statusBar = {{
-                                        statusPanels: [
-                                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                                          { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                                          { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                                          { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                                          { statusPanel: 'agAggregationComponent', align:'left' },
-                                        ],
-                                      }}                                    onGridReady={()=>generateChart(2)}
-                                    getChartToolbarItems={getChartToolbarItems}
-                                    chartToolPanelsDef={
-                                        {
-                                            panels:[]
-                                        }
-                                    }
-                                    chartThemeOverrides={chartThemeOverridesG2}
-                                    chartThemes={['myCustomTheme']}
-                                    customChartThemes={{
-                                        'myCustomTheme':myCustomThemeG2
-                                    }}
-                                    disableZoomScaling={true}
-                                />
-                            </div>
-                            <div id="OrderFulfillmentG2" style={{height:'80%'}}></div>
-                        </SCChartContainer>
-                        {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
-                            <VFInfoTip text={graph2}/>
-                        </div> */}
+                    <Allotment.Pane minSize={440} preferredSize={'50%'}>
+                        
+                    <VFCharts     
+                            height={'95%'}
+                            title={chartParams2.title}
+                            graphInfo={chartParams2.graphInfo}
+                            defaultColForCustomGraph={chartParams2.defaultColForChart}
+                            colDefs={colDefs2}
+                            rowData={rowData2}
+                            chartProps={chartThemeOverridesG2}
+                            palette={chartParams2.palette}
+                            chartType={chartParams2.chartType}
+                            containerStyle={{marginLeft:'17px',marginRight:'0px'}}
+                        />
+
                     </Allotment.Pane>
                   
                 </Allotment>

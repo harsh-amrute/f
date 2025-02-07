@@ -4,7 +4,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRDispatchColorCellRenderer } from "../RationedRequirementReport/RRRCellRenderers"
-import { convertUiConfigToOptions,  mapTotalRequirementFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions,  mapTotalRequirementFieldsToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { notifyError} from "../../../../../helpers/notify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
@@ -82,7 +82,7 @@ const useTotalRequirementReport =()=>{
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("RRRColorBandWise")
+            const data =  await getState({reportname: "RRRColorBandWise"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
@@ -157,6 +157,7 @@ const useTotalRequirementReport =()=>{
             },
             pagination:false,
             sideBar:defaultAgGridSideBarForBPR,
+            getMainMenuItems: MainMenuItemsCustomization,          
             // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
             // rowSelection:'multiple',
             paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),

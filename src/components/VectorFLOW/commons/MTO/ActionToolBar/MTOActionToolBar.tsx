@@ -246,7 +246,7 @@ const MTOActionToolBar = ({
 
                     }
 
-                    <SCVerticalDivider />
+                    {/* <SCVerticalDivider /> */}
                 </>
 
                 {isAsOnDate &&

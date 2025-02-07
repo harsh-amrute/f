@@ -104,10 +104,20 @@ const ActionToolBar = ({
   const themeUi = user?.user?.theme_ui;
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
 
+  const [filterApplied, setFilterApplied] = useState<boolean>(false);
+ 
+ 
   const handleApplyFilter = (params: any) => {
     if (onApplyFilter) onApplyFilter(params);
     toggleFilter(false);
+    setFilterApplied(true);
   };
+ 
+  const handleResetAllState = () => {
+    onResetAllState(`${currCategory}${currentTab}`);
+    setFilterApplied(false); // Reset the filter state when reset is triggered
+  };
+ 
 
   const currentPageRecordCount = useMemo(() => {
     switch (currCategory) {
@@ -159,6 +169,7 @@ const ActionToolBar = ({
       case "GITFromParent":
         return (
           <VFMultiFilter
+            isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -178,6 +189,7 @@ const ActionToolBar = ({
       case "GITToChild":
         return (
           <VFMultiFilter
+           isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -197,6 +209,7 @@ const ActionToolBar = ({
       case "ExpediteFromParent":
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -216,6 +229,7 @@ const ActionToolBar = ({
       case "ExpediteToChild":
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -235,6 +249,7 @@ const ActionToolBar = ({
       case "ExcessInventory":
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -254,6 +269,7 @@ const ActionToolBar = ({
       case "OrderFulfillment":
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -274,6 +290,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/bpr") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -300,6 +317,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/rrr") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -326,6 +344,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/rrr-color-bandwise") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -352,6 +371,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/sdr") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -376,6 +396,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/bor") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -402,6 +423,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/bor-color-bandwise") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -428,6 +450,7 @@ const ActionToolBar = ({
         if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -454,6 +477,7 @@ const ActionToolBar = ({
         if (pathname === "/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -480,6 +504,7 @@ const ActionToolBar = ({
         if (pathname === "/insights-and-trends/buffer-trends") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -501,6 +526,7 @@ const ActionToolBar = ({
         if (pathname === "/insights-and-trends/research-insights") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -522,9 +548,10 @@ const ActionToolBar = ({
         }
         break;
       case "GuidedInsight":
-        if (pathname === "/insights-and-trends/guided-insights") {
+        if (pathname === "/insights-and-trends/guided-insights" && view==='grid') {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -546,6 +573,7 @@ const ActionToolBar = ({
         if (pathname === "/dbm/dbm-norm-suggestions") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -571,6 +599,7 @@ const ActionToolBar = ({
         ) {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -594,6 +623,7 @@ const ActionToolBar = ({
         if (pathname === "/logistics/intransit-whereabouts") {
           return (
             <VFMultiFilter
+            isFilterOpen={isFilterOpen}
               onApplyFilter={handleApplyFilter}
               onGoBack={() => toggleFilter(false)}
               multiFilter={multiFilter}
@@ -614,6 +644,7 @@ const ActionToolBar = ({
       case "chronicunavailability":
         return (
           <VFMultiFilter
+          isFilterOpen={isFilterOpen}
             onApplyFilter={handleApplyFilter}
             onGoBack={() => toggleFilter(false)}
             multiFilter={multiFilter}
@@ -651,15 +682,10 @@ const ActionToolBar = ({
       />
     );
   };
-
   return (
     <>
       {view === "chart" && (
         <SCTaskBarContainer>
-
-          
-
-
           {currCategory === "GuidedInsight" ? null : (
             <SCGoBackContainer onClick={onGoBack}>
               <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" />
@@ -690,14 +716,15 @@ const ActionToolBar = ({
           </SCTaskFilterContainer>
 
           <SCCustomActionsContainer>
-            {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
+            {/* {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
                <>
-                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                  
+                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit nmk</VFButton>
                   {isFilterOpen && renderFilter()}
                                
 
                 </>
-            }
+            } */}
             {currentTab === "dbmnormsuggestions" && (
               <>
                 <Link
@@ -774,7 +801,7 @@ const ActionToolBar = ({
                   </SCViewContainerWithBg>
                   <SCViewContainerWithBg
                     onClick={() =>
-                      onResetAllState(`${currCategory}${currentTab}`)
+                      handleResetAllState()
                     }
                   >
                     <SCViewImage
@@ -920,7 +947,8 @@ const ActionToolBar = ({
                 Save Remarks
               </VFButtonOutline>
             )} */}
-            {(currCategory === "BPR" || currCategory === "BOR" || currCategory === "BORColorBandwise") && onSubmitEditedRows && (
+            
+            {/* {(currCategory === "BPR" || currCategory === "BOR" || currCategory === "BORColorBandwise") && onSubmitEditedRows && (
               <VFButtonOutline
                 onClick={onSubmitEditedRows}
                 themeUi={themeUi}
@@ -928,7 +956,7 @@ const ActionToolBar = ({
               >
                 Save Remarks
               </VFButtonOutline>
-            )}
+            )} */}
 
 
             {currCategory === "ResearchInsight" && (
@@ -951,21 +979,21 @@ const ActionToolBar = ({
               </>
             )}
           </SCTaskFilterContainer>
-          {(currCategory==='BPR' && lastRunDate) && (
+          {/* {(currCategory==='BPR' && lastRunDate) && (
             lastRunDate === "Loading"?(
               <Skeleton style={{height:30,width:150}}/>
             ):(
               <LastRunDateHeader>{lastRunDate}</LastRunDateHeader>
             )
-          )}
+          )} */}
           <SCCustomActionsContainer>
             <VFButton
               onClick={() => toggleFilter(true)}
               themeUi={themeUi}
               disabled={false}
             >
-              Edit Filter
-            </VFButton>
+                {filterApplied ? "Edit Filter" : "Add Filter"}
+           </VFButton>
             {isFilterOpen && renderFilter()}
 
             {/* <VFButton themeUi={themeUi} onClick={()=>console.log("test")}>   Edit Filter</VFButton> */}
@@ -1015,7 +1043,7 @@ const ActionToolBar = ({
                     </SCViewContainerWithBg>
                     <SCViewContainerWithBg
                       onClick={() =>
-                        onResetAllState(`${currCategory}${currentTab}`)
+                        handleResetAllState()
                       }
                     >
                       <SCViewImage
