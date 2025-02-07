@@ -1,3 +1,8 @@
 .split-view-horizontal {
     height: 100%;
 }
+
+.custom-chart {
+    min-height:345px !important;
+  }
+  

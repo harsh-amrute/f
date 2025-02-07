@@ -22,7 +22,7 @@ import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
-
+import { AgChartOptions } from "ag-charts-community";
 // clear cached token and redirect to sso login
 import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
@@ -2522,6 +2522,129 @@ export const generateAndMapColumns = (reportName:string,fields:any ,includeRemar
   return Columns
 }
 
+
+const commonTooltip= {
+  enabled:true,
+  renderer:(params:any)=>{
+      const datum = params.datum
+      console.log(params)
+      return {
+      title: `${params.yName}`,
+      content: `${datum[params.xKey]}: ${datum[params.yKey]}`,
+      }
+  },
+}
+
+export const generateChartOptions = (data:any,series:any,palette:any,categoryTitle:string , numberTitle:string,keys:any,isCategoryData?:string) =>{
+
+  const seriesMapped = series.map((obj:any,index:number)=>{
+    return {...obj,tooltip:commonTooltip}
+  })
+  console.log(seriesMapped)
+  const options:AgChartOptions = {
+    data:data.slice(0,10),
+    theme:{
+      palette
+    },
+    series:seriesMapped,
+    axes:[
+      {
+        type: "category",
+        position: "bottom",
+        keys:keys.Xaxis,
+        title:{
+          enabled:true,
+          text:categoryTitle,
+          fontSize:10,
+          fontFamily:'Roboto'
+        },
+        label:{
+          formatter:(params:any)=>{
+            console.log(params)
+            if(params.value.length > 10) return params.value.slice(0,10) + '...';
+            return params.value;
+          },
+          fontSize:8,
+          fontFamily:'Roboto'
+        }
+      },
+      {
+        type:'number',
+        position:"left",
+        keys:keys.Yaxis,
+        title:{
+          enabled:true,
+          text:numberTitle,
+          fontSize:10,
+          fontFamily:'Roboto'
+        },
+        label:{
+          fontSize:12
+        }
+      }
+    ],
+  }
+  return options;
+}
+
+
+export const categoryFormatter = (params:any)=>{
+  if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+  return params.value;
+}
+
+export const generateGridSpecificChartFromChartProps = (options:any):any =>{
+  if(options===undefined){
+    return null
+  }
+  return {
+    palette:options.theme.palette,
+    common: {
+      legend: {
+        position: "bottom",
+      },
+      axes: {
+        category: {
+          title: {
+            enabled: options.axes?.[0]?.title?.enabled ?? true,
+            text: options.axes?.[0]?.title?.text ?? "",
+            position: "bottom",
+            fontSize: options.axes?.[0]?.title?.fontSize ?? 10,
+            fontFamily: options.axes?.[0]?.title?.fontFamily ?? "Roboto",
+          },
+          label: {
+            formatter:categoryFormatter,
+            fontSize: options.axes?.[0]?.label?.fontSize ?? 8,
+            fontFamily: options.axes?.[0]?.label?.fontFamily ?? "Roboto",
+          },
+        },
+        number: {
+          title: {
+            enabled: options.axes?.[1]?.title?.enabled ?? true,
+            text: options.axes?.[1]?.title?.text ?? "",
+            position: "left",
+            fontSize: options.axes?.[1]?.title?.fontSize ?? 10,
+            fontFamily: options.axes?.[1]?.title?.fontFamily ?? "Roboto",
+          },
+        },
+      },
+    },
+    bar: {
+      series: {
+        tooltip:{
+          enabled:true,
+          renderer:(params:any)=>{
+              const datum = params.datum
+              return {
+                  title: `${params.yName}`,
+                  content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+              }
+          },
+        }
+      },
+    },
+  };
+};
 
 
 export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (params: any, e: any) => void, onOpenRemarkHistory: (e: any, params: any) => void, onOpenDailyDataGraph: (params: any) => void): ColDef[] => {
