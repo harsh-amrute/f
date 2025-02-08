@@ -2527,7 +2527,6 @@ const commonTooltip= {
   enabled:true,
   renderer:(params:any)=>{
       const datum = params.datum
-      console.log(params)
       return {
       title: `${params.yName}`,
       content: `${datum[params.xKey]}: ${datum[params.yKey]}`,
@@ -2535,12 +2534,13 @@ const commonTooltip= {
   },
 }
 
-export const generateChartOptions = (data:any,series:any,palette:any,categoryTitle:string , numberTitle:string,keys:any,isCategoryData?:string) =>{
+export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
+  
+  const { series , palette , chartKey:keys, Labels} = chartParams
 
   const seriesMapped = series.map((obj:any,index:number)=>{
     return {...obj,tooltip:commonTooltip}
   })
-  console.log(seriesMapped)
   const options:AgChartOptions = {
     data:data.slice(0,10),
     theme:{
@@ -2554,13 +2554,12 @@ export const generateChartOptions = (data:any,series:any,palette:any,categoryTit
         keys:keys.Xaxis,
         title:{
           enabled:true,
-          text:categoryTitle,
+          text:Labels.Xaxis,
           fontSize:10,
           fontFamily:'Roboto'
         },
         label:{
           formatter:(params:any)=>{
-            console.log(params)
             if(params.value.length > 10) return params.value.slice(0,10) + '...';
             return params.value;
           },
@@ -2574,7 +2573,7 @@ export const generateChartOptions = (data:any,series:any,palette:any,categoryTit
         keys:keys.Yaxis,
         title:{
           enabled:true,
-          text:numberTitle,
+          text:Labels.Yaxis,
           fontSize:10,
           fontFamily:'Roboto'
         },

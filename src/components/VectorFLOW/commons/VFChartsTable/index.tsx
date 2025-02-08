@@ -41,6 +41,7 @@ const VFChartsTable = (props:any)=>{
         palette
     }
 
+    const getChartToolbarItems:any = () => ['chartDownload'];
 
     return (
         <VFModalCard openModal={hideChart} closeModal={()=>setHideChart(false)} headerIcon='' headerText={title} headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
@@ -62,7 +63,7 @@ const VFChartsTable = (props:any)=>{
                     ],
                   }}                                        
                 onGridReady={()=>generateChartInGridTable()}
-                //getChartToolbarItems={getChartToolbarItems}
+                getChartToolbarItems={getChartToolbarItems}
                 chartToolPanelsDef={
                     {
                         panels:[]

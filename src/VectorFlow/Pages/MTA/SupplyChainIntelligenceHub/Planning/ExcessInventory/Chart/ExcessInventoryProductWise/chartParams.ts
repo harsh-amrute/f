@@ -1,6 +1,12 @@
 export const chartParams1 = {
     title:'Top 10 Products with Excess Inventory: Number Of Locations',
     chartType:'column',
+    downloadName:'Top-10 Prd With Excess Inv- No of Loc',
+    LabelPosition:'bottom',
+    Labels:{
+        Xaxis:'Product Name',
+        Yaxis:'Count Of Locations'   
+    },
     palette:{
         fills: ['#848484'],
         strokes: ['#ffffff', '#ffffff'],
@@ -33,6 +39,12 @@ export const chartParams1 = {
 export const chartParams2 = {
     title:'Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)',
     chartType:'column',
+    downloadName:'Top-10 Prd With Excess Inv- In Value',
+    LabelPosition:'bottom',
+    Labels:{
+        Xaxis:'Product Name',
+        Yaxis:'Value In Lakhs'   
+    },
     palette:{
         fills: ['#848484'],
         strokes: ['#ffffff', '#ffffff'],
