@@ -2592,7 +2592,7 @@ export const categoryFormatter = (params:any)=>{
   return params.value;
 }
 
-export const generateGridSpecificChartFromChartProps = (options:any):any =>{
+export const generateGridSpecificChartFromChartProps = (options:any,downloadName:string):any =>{
   if(options===undefined){
     return null
   }
@@ -2601,6 +2601,11 @@ export const generateGridSpecificChartFromChartProps = (options:any):any =>{
     common: {
       legend: {
         position: "bottom",
+      },
+      title:{
+        enabled:true,
+        text:downloadName,
+        fontSize:10
       },
       axes: {
         category: {
@@ -3365,9 +3370,11 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     floatingFilter: false,
     checkboxSelection: true,
     headerCheckboxSelectionCurrentPageOnly: true,
-    width: 60,
+    width: 45,
     pinned: 'left',
     lockPosition: 'left',
+    initialHide:false,
+    suppressMenu:true
   }
 
   const DBMGraphColumn: ColDef[] = [
@@ -3375,16 +3382,19 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
       colId: 'dailydatagraph',
       field: '',
       headerName: '',
-      width: 80,
+      width: 60,
+      minWidth:60,
+      maxWidth:70,
       lockPosition: true,
       floatingFilter: false,
       tooltipField: "DailyDataGraph",
       cellRenderer: 'grapCellRenderer',
       cellRendererParams: {
         onOpenDailyDataGraph: onOpenDailyDataGraph
-      }
-
-
+      },
+      initialHide:false,
+      pinned:'left',
+      suppressMenu:true
     }
   ]
 
@@ -3398,8 +3408,11 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
         callBack: afterSleepCallBack
       },
       floatingFilter: false,
-      minWidth: 140,
-      maxWidth: 140
+      minWidth: 100,
+      maxWidth: 100,
+      initialHide:false,
+      pinned:'left',
+      suppressMenu:true
     }
   ]
 
@@ -3409,7 +3422,10 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     cellRenderer: 'suggestionCategoryCellRenderer',
     floatingFilter: false,
     minWidth: 30,
-    maxWidth: 30
+    maxWidth: 30,
+    initialHide:false,
+    pinned:'left',
+    suppressMenu:true
   }
 
 

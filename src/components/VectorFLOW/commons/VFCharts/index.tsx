@@ -55,7 +55,18 @@ const VFCharts = (props:any) =>{
 
             <AgCharts ref={chartRef} style={{minHeight:'80%'}} options={chartProps} />
 
-            <VFChartTable chartType={chartType} palette={palette} title={title} defaultColForCustomGraph={defaultColForChart} setHideChart={setHideChart} hideChart={hideChart} gridRef={gridRef} colDefs={colDefs} rowData={rowData} chartProps={chartProps} />
+            <VFChartTable 
+                chartType={chartType} 
+                downloadName={downloadName} 
+                palette={palette} 
+                title={title} 
+                defaultColForCustomGraph={defaultColForChart} 
+                setHideChart={setHideChart} 
+                hideChart={hideChart} 
+                gridRef={gridRef} 
+                colDefs={colDefs} 
+                rowData={rowData} 
+                chartProps={chartProps} />
     
     </SCChartContainer>
     )

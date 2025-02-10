@@ -56,8 +56,8 @@ const ExcessInventoryTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:st
       
         marker: {
                     fill: greyShades[index % greyShades.length],
-                    size: 8,
-                    stroke: "white",
+                    size: 5,
+                    stroke: greyShades[index % greyShades.length],
                     strokeWidth: 2,
                 },
                 

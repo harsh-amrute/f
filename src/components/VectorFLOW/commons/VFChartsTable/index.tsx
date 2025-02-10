@@ -14,14 +14,15 @@ const VFChartsTable = (props:any)=>{
         setHideChart,
         defaultColForCustomGraph,
         palette,
-        chartType
+        chartType,
+        downloadName
     } = props;
 
     const [gridSpecificChartOptions,setGridSpecificChartOptions] = useState<any>(undefined)
 
     useEffect(()=>{
         if(chartProps!==undefined){
-            setGridSpecificChartOptions(generateGridSpecificChartFromChartProps(chartProps))
+            setGridSpecificChartOptions(generateGridSpecificChartFromChartProps(chartProps,downloadName))
         }
     },[chartProps])
 
