@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData, updateCommonAttributes, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData, updateCommonAttributes, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs, getColumnDefinationsMTA } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -70,7 +70,7 @@ const useBPR =()=>{
 
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
   
-    const {data,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
+    const {data:UIConfigData,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
    
    
       
@@ -96,21 +96,22 @@ const useBPR =()=>{
   
     useEffect(()=>{
         getInitialBPRRowData()
-        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+        setGeneralFilterOptions(convertUiConfigToOptions(UIConfigData?.data.data))
     },[isBPRUILoading])
 
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            if(data?.data.data){
-                setInitialColumnState(data?.data.data)
+            if(UIConfigData?.data.data){
+                setInitialColumnState(UIConfigData?.data.data)
             }
             const stateData =  await getState({"reportname":"BPR"})
             console.log(stateData)
             if(stateData.data.data.length!==0){
                 const parsedContent = JSON.parse(stateData.data.data)
-                const generatedColumns = generateAndMapColumns('BPR',data?.data.data,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
-                const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
+                // const generatedColumns = generateAndMapColumns('BPR',data?.data.data,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                const MappedColumns = getColumnDefinationsMTA(UIConfigData?.data.data, CustomHeader, extras);
+                const coldefs = mapColumnsWithConfigs(parsedContent.columns, MappedColumns);
                 setGridState({
                     pivot:parsedContent.pivot,
                     charts:parsedContent.charts,
@@ -119,7 +120,8 @@ const useBPR =()=>{
                 console.log(parsedContent)
                 setBPRColumns(coldefs)
             }else{
-                const MappedColumns = generateAndMapColumns('BPR',data?.data.data,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                // const MappedColumns = generateAndMapColumns('BPR',data?.data.data,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                const MappedColumns = getColumnDefinationsMTA(UIConfigData?.data.data, CustomHeader, extras);
                 setGridState({
                     charts:[],
                     columns:MappedColumns,
@@ -136,10 +138,10 @@ const useBPR =()=>{
             })
           }
         }
-        if(data!==undefined){
+        if(UIConfigData!==undefined){
             getTableState()
         }
-    },[data])
+    },[UIConfigData])
 
     useEffect(()=>{
         if(internalRef && gridState && gridState.columns && gridState.columns.length!==0){
@@ -496,8 +498,8 @@ const useBPR =()=>{
     }
 
     const onResetCallback = async()=>{
-        const MappedColumns = generateAndMapColumns('BPR',intialColumnState,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
-        console.log(MappedColumns)
+        // const MappedColumns = generateAndMapColumns('BPR',intialColumnState,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                const MappedColumns = getColumnDefinationsMTA(UIConfigData?.data.data, CustomHeader, extras);
         // const ResetColumns = BPRColumns.map((t:any) => {
         //     return {
         //       ...t,
@@ -507,6 +509,65 @@ const useBPR =()=>{
         setBPRColumns(MappedColumns)
     }
 
+    const extras = [
+        {
+            width: 45,
+            minWidth: 45,
+            colId: "dailydatagraph",
+            headerName: '',
+            filter: false,
+            cellRenderer: 'grapCellRenderer',
+            cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+            pinned: 'left',
+            resizable: false,
+            floatingFilter: false,
+            suppressColumnsToolPanel: false
+        }
+    ];
+    
+    const CustomHeader = {
+        rn: {
+            cellStyle: {
+                backgroundColor: 'white',
+                border: '1px solid #b9bdba',
+                color: 'black',
+                padding: '1px'
+            },
+            pinned: 'right',
+            editable: true,
+            minWidth: 130,
+            maxWidth: 160,
+            lockPosition: 'right',
+            menuTabs: [],
+            suppressMenu: true,
+            resizable: false,
+            floatingFilter: false,
+        },
+        rh: {
+            cellRenderer: 'remarksCellRenderer',
+            cellRendererParams: {
+                onClick: onOpenRemarkHistory
+            },
+            pinned: 'right',
+            minWidth: 120,
+            maxWidth: 120,
+            lockPosition: 'right',
+            menuTabs: [],
+            suppressMenu: true,
+            resizable: false,
+            floatingFilter: false,
+        },
+        Tags: {
+            cellRenderer: 'tagsCellRenderer',
+            width: 100,
+            minWidth: 100,
+            filter: true,
+            pinned: null,
+            filterParams: {
+                buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+        }
+    }
 
     const handleOnPageChange = async(pageNumber:number)=>{
         setCurrGridPage(pageNumber)

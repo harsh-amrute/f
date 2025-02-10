@@ -4718,3 +4718,60 @@ export const downloadBase64Image = (base64Data: any, fileName: string):any => {
 }
 
 // ===================================================================================================
+
+export function getColumnDefinationsMTA(
+  fields: any,
+  customizationParams: any = {},
+  extraFields: any = [],
+  removeCols: any = [],
+) {
+  const columnDefs = fields?.sort((a: any, b: any) => a.Col_Position - b.Col_Position)?.map((data: any) => {
+    const columnDef = {
+      colId: data.Col_Code,
+      headerName: data.Header,
+      field: data.Col_Code,
+      initialHide: !data.Visible,
+      pinned: null,
+      sort: null,
+      sortIndex: null,
+      aggFunc: null,
+      rowGroup: false,
+      rowGroupIndex: null,
+      pivot: false,
+      pivotIndex: null,
+      flex: undefined,
+      minWidth: 180,
+      cellStyle: {
+        justifyContent: data.CellAlignment
+      },
+      cellRenderer: CellRenderersMapping[data.Col_Code] !== undefined ? CellRenderersMapping[data.Col_Code] : 'string',
+      cellDataType: getCellDataType(data.DataType),
+      filter: getCellFilter(data.DataType),
+      filterParams: filterParams
+    };
+    // Apply customization if needed
+    if (customizationParams[data.Col_Code]) {
+      // Object.assign(columnDef, customizationParams[data.Col_Code]);
+      mergeObjects(columnDef, customizationParams[data.Col_Code])
+    }
+    return columnDef;
+  });
+  // Add extra columns
+  extraFields?.forEach((field: any) => {
+    let position = field.position;
+    // If position is not specified or invalid, add the column at the end
+    if (
+      position === undefined ||
+      position < 0 ||
+      position > columnDefs.length
+    ) {
+      position = columnDefs.length;
+    }
+    columnDefs?.splice(position, 0, field);
+  });
+
+  const finalcolDef = columnDefs?.filter((obj: any) => !removeCols?.includes(obj.colId));
+
+  return finalcolDef;
+
+}
