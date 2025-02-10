@@ -147,7 +147,7 @@ const DeleteRecord = () => {
                 activeMaster={activeMaster}
                 themeUi={themeUi}
                 onTabChange={handleTabChange}
-                onTabClose={(e)=>handleTabClose(e,activeMaster)}
+                onTabClose={handleTabClose}
                 newTabTitle={"Add Master"}
                 newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
                 newTabHandler={addNewMaster}
