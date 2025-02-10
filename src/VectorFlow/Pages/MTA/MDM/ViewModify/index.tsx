@@ -20,6 +20,7 @@ import SubmitConflictModal from "./SubmitConflictModal";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import _ from "lodash";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import { useLocation } from "react-router";
 
 
 
@@ -31,6 +32,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
    
     // const disabled=true;
     // const dummyFn =()=>{return}
+
+    const location = useLocation();
 
     const {
         isSelectMasterOpen,
@@ -64,6 +67,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         isTableDataLoading,
         exportToExcel,
         onBackButton,
+        onBackButton1,
         onClearExportError,
         agGridProps,
         ref,
@@ -106,8 +110,9 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         totalProgress,
         tempRecordCount,
         isSubmitDisabled,
-        onDiscardDraftCallback
-
+        onDiscardDraftCallback,
+        canToggleMaster,
+        setCanToggleMaster
     } = useViewModify('modify');
     useEffect(()=>{
       if(ref.current && ref.current.api){
@@ -119,7 +124,6 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
         }
       }
     },[isTableDataLoading])
-
 
     return (
       <>
@@ -134,6 +138,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
                 themeUi={themeUi}
                 isLoading={isLoading}
                 handleSubmit={()=>{handleSelectMasterSubmit()}}
+                canToggleMaster={canToggleMaster}
             />
           }
           {!isSelectMasterOpen && 
@@ -357,16 +362,17 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             }}
             showSubmittedExportError={errorCount>0}
             masterProgress={activeMaster.progress}
-            disableSubmit={activeMaster.rowData.length===0 || isSubmitDisabled}
+            disableSubmit={activeMaster.rowData?.length===0 || isSubmitDisabled}
             enableEditOnlineReset = {enableEditOnlineReset}
-            disableDeleteSelected={activeMaster.rowData.length < 1}
+            disableDeleteSelected={activeMaster.rowData?.length < 1}
             onReset={onReset}
             onSaveToDraft={onSaveToDraft}
             isSavingToDraft={isSavingToDraft ?? false}
             onEditOnlineSave={onEditOnlineSave}
             editOnline={editOnline}
             onEditOnline={()=>onEditOnline('editOnline')}
-            onBack={onBackButton}
+            onBack={() => onBackButton(location?.state?.backUrl)}
+            onBack1={() => onBackButton1(location?.state?.backUrl)}
             onClearAndExportErrors={onClearExportError}
             onModifyData={()=>toggleUploadModal(true)}
             onExportData={exportToExcel}
@@ -381,7 +387,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
             onDeleteOnlineSubmit={()=>console.log('')}
             onDeleteOnline={()=>console.log('')}
             masterId={activeMaster.id}
-            DataCount={activeMaster.rowData.length}
+            DataCount={activeMaster.rowData?.length}
             onDiscardDraftCallback={onDiscardDraftCallback}
           />
           </div>

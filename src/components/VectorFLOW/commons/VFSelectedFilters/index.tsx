@@ -20,7 +20,20 @@ const VFSelectedFilters = (props:VFSelectedFiltersProps)=>{
     const areFiltersValid = useCallback((groupedFilters:Array<BPRFilter>):boolean=>{
         return groupedFilters.some((f:BPRFilter)=>f.attributeName!="" && f.value!="" && f.operator!="")
     },[])
- 
+
+
+        // Check if any filter group contains valid filters
+    const hasValidFilters = Object.keys(filters).some((key: string) => {
+        const currGroup: BPRFilterGroup = filters[key as keyof BPRFilterState];
+        return currGroup.filters.length > 0 && areFiltersValid(currGroup.filters);
+    })
+        
+    // If there are no valid filters, return null
+    if (!hasValidFilters) {
+        return null;
+    }
+    
+
     return (
         <VFSelectedFiltersWrapper style={style}>
             <VFSelectedFiltersPlaceHolder>

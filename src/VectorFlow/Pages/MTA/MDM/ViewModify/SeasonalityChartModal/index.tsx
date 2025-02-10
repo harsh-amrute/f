@@ -183,7 +183,6 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
         // },
         title:{
           display:true,
-          text:'Date 2023',
           color:'#000000',
           font:{
             size:16,
@@ -334,7 +333,7 @@ const SeasonalityChartModal = ({rowData,chartData,normChangeData,isModalOpen,clo
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>SKU Name:</SCText>
-                        <SCText fontWeight={500} fontSize={18}>{rowData.sd}</SCText>
+                        <SCText fontWeight={500} fontSize={18}>{rowData.skd}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>

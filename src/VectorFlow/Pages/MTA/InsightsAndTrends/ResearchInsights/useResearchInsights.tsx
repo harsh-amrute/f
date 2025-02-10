@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { AgGridReactProps } from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-import { convertUiConfigToOptions, mapResearchInsightsFieldsToColDefs } from '../../../../../helpers/utils'
+import { convertUiConfigToOptions, mapResearchInsightsFieldsToColDefs, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs } from '../../../../../helpers/utils'
 
 import { BPRTagsCellRenderer, BPRTechColorCellRenderer, BPREcoColorCellRenderer } from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
@@ -10,7 +10,7 @@ import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRDataCount, useGetStat
 import { isSameDay, format, addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
 import { useGetUpdatedGraphData, useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
-import { notifyError, notifyLoader } from '../../../../../helpers/notify'
+import { notifyError, notifyLoader,notifySuccess } from '../../../../../helpers/notify'
 import { toast } from 'react-toastify'
 
 
@@ -21,6 +21,8 @@ import { type DailyDataGraph } from "../../../../types/MTA";
 import { TOGGLE_GRAPH_MODAL, UPDATE_DAILY_DATA } from '../../../../../redux/actions/MTA';
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants'
+import { ColDef } from 'ag-grid-enterprise'
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 const useResearchInsights = () => {
 
@@ -66,11 +68,14 @@ const useResearchInsights = () => {
     const [calenderType,setCalenderType] = useState<'Tech' | 'Eco'>('Tech')
     const [expandedGraphId,setExpandedGraphId] = useState<1 | 2>(1)
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
+    const [ResearchInsightsColumns,setResearchInsightsColumns] = useState<ColDef[]>([])
 
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
+    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
+    
 
     const [graphs, setGraphs] = useState<Array<ReseachInsightsGraphState>>([
         {
@@ -89,32 +94,63 @@ const useResearchInsights = () => {
 
 
     const [selectedRowsDates, setSelectedRowsDates] = useState<Array<any>>([])
+    const {date:lastRunDate} = useGetLastRunData()
 
     useEffect (()=>{
         setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
 
     },[isBPRUILoading])
 
+
     useEffect(()=>{
         const getTableState = async()=>{
-          try{
-            const data =  await getState("ResearchInsight")
-            setGridState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:[],
-                pivot:false
-            })
-          }
+        try{
+            if(data?.data.data){
+                setInitialColumnState(data?.data.data)
+            }
+            const stateData =  await getState({"reportname":"ResearchInsight"})
+            if(stateData.data.data.length!==0){
+                const parsedContent = JSON.parse(stateData.data.data)
+                const generatedColumns = generateAndMapColumns('ResearchInsight',data?.data.data,false,true,true,undefined,undefined,onOpenDailyDataGraph)
+                const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
+                setGridState({
+                    pivot:parsedContent.pivot,
+                    charts:parsedContent.charts,
+                    columns:coldefs
+                })
+                console.log(parsedContent)
+                setResearchInsightsColumns(coldefs)
+            }else{
+                const MappedColumns = generateAndMapColumns('ResearchInsight',data?.data.data,false,true,true,undefined,undefined,onOpenDailyDataGraph)
+                setGridState({
+                    charts:[],
+                    columns:MappedColumns,
+                    pivot:false
+                })
+                setResearchInsightsColumns(MappedColumns)
+            }
+            }catch(err:any){
+                console.log(err)
+                setGridState({
+                    charts:[],
+                    columns:ResearchInsightsColumns,
+                    pivot:false
+                })
+            }
         }
-        getTableState()
+        if(data!==undefined){
+            getTableState()
+        }
+    },[data])
 
-    },[])
+
+
+
   
     useEffect(()=>{
         if(internalRef){
-            internalRef.api.applyColumnState({state:gridState.columns })
+            const colState = internalRef.current?.api?.getColumnState();
+            internalRef.api.applyColumnState({state:colState,applyOrder:true})
         }
     },[internalRef,gridState])
 
@@ -139,6 +175,22 @@ const useResearchInsights = () => {
         colorEcoCellRenderer:BPREcoColorCellRenderer,
         tagsCellRenderer:BPRTagsCellRenderer
       }), []);
+
+
+      const defaultColDefObject = useMemo(()=>{
+        return {
+            floatingFilter: true,
+            cellStyle:{
+                "flex":1,
+                'text-align':'center',
+                'height':'50px',
+                "font-style":"normal",
+                "display":"block",
+                'text-overflow':'ellipsis',
+                'white-space':'nowrap'
+            },
+        }
+      },[])
   
     const agGridProps:AgGridReactProps = useMemo(()=>{
         return {
@@ -157,34 +209,21 @@ const useResearchInsights = () => {
             },
             sideBar:defaultAgGridSideBarForBPR,
             // paginationPageSize:25,
+            getMainMenuItems: MainMenuItemsCustomization,
             paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
             suppressRowClickSelection:true,
             components:customCellRenderers,
-            defaultColDef:{
-                floatingFilter: true,
-                cellStyle:{
-                    "flex":1,
-                    'text-align':'center',
-                    'height':'50px',
-                    "font-style":"normal",
-                    " font-variant":"normal",
-                    " font-weight":"300",
-                    " font-size":"20px",
-                    " font-family":"Roboto",
-                    "display":"block",
-                    'text-overflow':'ellipsis',
-                    'white-space':'nowrap'
-                },
-            },
+            defaultColDef:defaultColDefObject,
             onGridReady:(params)=>setInternalRef(params)
         }
     },[])
 
     const tempAgGridProps:AgGridReactProps = {
-        onRowDataUpdated:(event)=>{
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+            onRowDataUpdated:(event)=>{
+                if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
+            }
         }
-    };
+    
 
     const getRecordCount = async (filter: any) => {
         const countData = await getBPRDataCount({
@@ -214,6 +253,7 @@ const useResearchInsights = () => {
             }
         })
         toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
         setResearchInsightsRowData(rowData.data.data)
     }
 
@@ -309,7 +349,7 @@ const useResearchInsights = () => {
 
     const getColorData = (array: Array<any>) => {
         const colorFrequencyArray: any = [];
-        for (let day = 1; day <= horizon; day++) {
+        for (let day = 90-horizon; day <= 90; day++) {
             const colorFrequency: any = {
                 Red: 0,
                 Blue: 0,
@@ -561,9 +601,9 @@ const useResearchInsights = () => {
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
 
-    const ResearchInsightsColumns = useMemo(() => {
-        return mapResearchInsightsFieldsToColDefs(data?.data.data, onOpenDailyDataGraph)
-    }, [data])
+    // const ResearchInsightsColumns = useMemo(() => {
+    //     return mapResearchInsightsFieldsToColDefs(data?.data.data, onOpenDailyDataGraph)
+    // }, [data])
 
     const onExportToExcelCallBack = async (pageNumber: number) => {
         const data = await getBPRData({
@@ -578,6 +618,17 @@ const useResearchInsights = () => {
         })
 
         return data.data.data
+    }
+
+    const onResetCallback = () =>{
+        const MappedColumns = generateAndMapColumns('ResearchInsight',intialColumnState,false,true,true, undefined,  undefined, onOpenDailyDataGraph)
+        // const ResetColumns = BPRColumns.map((t:any) => {
+        //     return {
+        //       ...t,
+        //       hide: false,
+        //     };
+        //   });
+        setResearchInsightsColumns(MappedColumns)
     }
 
 
@@ -597,6 +648,7 @@ const useResearchInsights = () => {
         whiteCount,
         isGraphOneOpen,
         graphs,
+        setGraphs,
         locationGraphData,
         selfGraphData,
         expandedGraphId,
@@ -639,7 +691,9 @@ const useResearchInsights = () => {
         continuousBlack,
         continuousBlackAndRed,
         continuousWhite,
-        generalFilterOptions
+        generalFilterOptions,
+        onResetCallback,
+        lastRunDate
     }
 }
 

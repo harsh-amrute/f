@@ -27,6 +27,7 @@ import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import { useUserData } from '../../../../../context'
 import { Skeleton } from '../../../../../components/commons/styled'
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 
 const ResearchInsights = ()=>{
@@ -52,6 +53,7 @@ const ResearchInsights = ()=>{
         selfGraphData,
         locationGraphData,
         graphs,
+        setGraphs,
         calenderType,
         expandedGraphAllFilterValues,
         toggleGraphModal,
@@ -83,7 +85,9 @@ const ResearchInsights = ()=>{
         continuousBlack,
         continuousBlackAndRed,
         continuousWhite,
-        generalFilterOptions
+        generalFilterOptions,
+        onResetCallback,
+        lastRunDate
     } = useResearchInsights()
 
     const {user} = useUserData()
@@ -95,6 +99,8 @@ const ResearchInsights = ()=>{
         return number.toFixed(2);
     }, []);
 
+
+
     return(
         <GridStateContext.Provider value={{
             ref:ref,
@@ -103,10 +109,11 @@ const ResearchInsights = ()=>{
             tempDownloadData:tempDownloadData,
             setTempDownloadData:setTempDownloadData,
             exportExcelRowData:exportExcelRowData,
-            setExportExcelRowData:setExportExcelRowData
+            setExportExcelRowData:setExportExcelRowData,
+            onResetCallback:onResetCallback
 
         }}>
-            <div style={{zoom:0.8, paddingLeft:'20px'}}>
+            <div style={{zoom:0.9, paddingLeft:'20px'}}>
        <ActionToolBar 
             view={'grid'} 
             setCurrentTab={''} 
@@ -122,11 +129,15 @@ const ResearchInsights = ()=>{
             multiFilter={currentFilter}
             setMultiFilter={setCurrentFilter}
             onDelete={onDeleteFilter}
+            lastRunDate={lastRunDate}
             generalFilterOptions={generalFilterOptions}
             onUpdateInsight={handleOnUpdateGraph}
             hideUpdateInsightsBtn={graphState==='default'}
         />
         </div>
+        {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
         
         
             <ResearchInsightsLayout>
@@ -713,11 +724,13 @@ const ResearchInsights = ()=>{
                 onUpdateGraphs={updateGraphState}
                 options={expandedGraphAllFilterValues}
                 graphs={graphs}
+                setGraphs={setGraphs}
                 id={expandedGraphId}
                 onTogglePen={(e)=>updateGraphState(expandedGraphId,"pen",e)}
                 data={expandedGraphId===1?selfGraphData:locationGraphData}
                 isOpen={isGraphOneOpen}
                 onClose={()=>setIsGraphOneOpen(false)}
+                horizon={horizon}
             />
            <div style={{display:'none'}}>                
                   <VFTable

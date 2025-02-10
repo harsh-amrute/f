@@ -3,7 +3,7 @@ import styled from "styled-components";
 import * as globalStyles from  '../../../../../styles/global'
 
 export const RRRLayout = styled.div`
-    margin-top:25px;
+    // margin-top:20px;
     margin-left:15px;
 // margin-bottom:40px;
 `
@@ -102,6 +102,7 @@ export const RRRAnalyticsTableHeader = styled.div`
     width:100%;
     height:40px;
     display:flex;
+    font-size: 8px;
     flex-direction:column;
     justify-content:center;
     overflow:hidden;
@@ -112,12 +113,14 @@ export const RRRAnalyticsTableSubHeader = styled.div`
     width:100%;
     height:20px;
     display:flex;
+    font-size:8px;
     justify-content:center;
     align-items:center;
 `
 export const RRRAnalyticsTableSubHeaderSection = styled.div`
     width:100%;
     height:100%;
+    font-size:7px;
     display:flex;
     justify-content:center;
     align-items:center;

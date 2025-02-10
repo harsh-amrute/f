@@ -6,12 +6,13 @@ export const FilterWrapper = styled.div`
     display:flex;
 `
 export const SelectSearchWrapper = styled.div`
-    width:70%;
+    width:80%;
     display:flex;
     flex-direction:row;
+    
  `
 export const ButtonWrapper = styled.div`
-    width:30%;
+    width:20%;
     gap:25px;
     display:flex;
     align-items:center;
@@ -37,7 +38,7 @@ export const TextWrapper = styled.div`
     display: flex;
     font-family:Roboto;
     font-weight:500;
-    font-size:20px;
+    font-size:14px;
     line-height:24px;
     margin-left:23px;
     gap:10px;

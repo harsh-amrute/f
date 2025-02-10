@@ -1,5 +1,5 @@
 import {useGetState,useGetDailyData, useGetUiConfig} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapOrderAllocationReportFieldsToColDefs } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapOrderAllocationReportFieldsToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
@@ -9,7 +9,7 @@ import { useSelector,useDispatch } from "react-redux"
 import { RootState } from "../../../../../redux/store/store"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
-import { notifyError, notifyLoader} from "../../../../../helpers/notify"
+import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
@@ -109,7 +109,7 @@ const useOrderAllocation =()=>{
       useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState("OrderAllocationReport")
+            const data =  await getState({reportname: "OrderAllocationReport"})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
@@ -165,6 +165,7 @@ const useOrderAllocation =()=>{
         const result = await getData(payload);
         setRowData(result.data.data)
         toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
         }catch(err:any){
           notifyError(err)
           setRecordCount(0)
@@ -202,6 +203,7 @@ const useOrderAllocation =()=>{
         suppressRowClickSelection:true,
         components:customCellRenderers,
         enableBrowserTooltips:true,
+        getMainMenuItems: MainMenuItemsCustomization,
         paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,

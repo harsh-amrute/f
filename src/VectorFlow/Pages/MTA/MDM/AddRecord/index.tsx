@@ -23,11 +23,14 @@ import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 
 import { MDMMasterState,Field } from "../../../../types/MDM";
+import { useLocation } from "react-router";
 
 const AddRecord = () => {
 
     const {user} = useUserData()
     const themeUi = user?.user?.theme_ui;
+
+    const location = useLocation();
 
     const {
         activeMaster,
@@ -44,6 +47,7 @@ const AddRecord = () => {
         isSavingToDraft,
         exportToExcel,
         onBackButton,
+        onBackButton1,
         onClearExportError,
         agGridProps,
         ref,
@@ -117,6 +121,7 @@ const AddRecord = () => {
               shouldShowMaster={showMaster}
               options={options}
               selectedOptions={selectedOptions}
+              isAdd={true}
           />
       )
     }
@@ -129,7 +134,7 @@ const AddRecord = () => {
                 activeMaster={activeMaster}
                 themeUi={themeUi}
                 onTabChange={handleTabChange}
-                onTabClose={(e)=>handleTabClose(e,activeMaster)}
+                onTabClose={handleTabClose}
                 newTabTitle={"Add Master"}
                 newTabIcon={"/assets/img/VectorFLOW/NMS/add-circle.svg"}
                 newTabHandler={addNewMaster}
@@ -240,7 +245,8 @@ const AddRecord = () => {
               onEditOnlineSave={onEditOnlineSave}
               editOnline={editOnline}
               onEditOnline={()=>onEditOnline('editOnline')}
-              onBack={onBackButton}
+              onBack={() => onBackButton(location?.state?.backUrl)}
+              onBack1={() => onBackButton1(location?.state?.backUrl)}
               onClearAndExportErrors={onClearExportError}
               onModifyData={()=>toggleUploadModal(true)}
               onExportData={exportToExcel}

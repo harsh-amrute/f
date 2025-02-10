@@ -270,6 +270,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const customHeader = {
         ColorPriority: {
             cellRenderer: 'coloPriority',
+            floatingFilter: false,
+            suppressHeaderFilterButton: true,
             tooltipValueGetter: (params: any) => {
                 const cpData = params.data.cp[0];
                 const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
@@ -586,7 +588,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             handleChangePage={handlePageChangeCumulative}
 
                         />
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
+                        <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
                                 onClick={() => { (!isDisabled) && fetchData(date, 1, '0') }}

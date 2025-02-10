@@ -5,7 +5,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 
 import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
@@ -29,6 +29,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context"
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
 import { BTRCategoryTextToNumberMapper } from "../../../../../helpers/BPRConstants"
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 import _ from 'lodash'
 
@@ -92,6 +93,7 @@ const useBTR = () => {
     const [verticalView, setVerticalView] = useState<boolean>(true)
     const [techRowData, setTechRowData] = useState<Array<any>>([])
     const [ecoRowData, setEcoRowData] = useState<Array<any>>([])
+    const {date:lastRunDate} = useGetLastRunData()
 
     const techPaginationProps: VFPaginationProps = {
         selectedRows: 0,
@@ -119,6 +121,7 @@ const useBTR = () => {
 
     const gridProps = useMemo(():AgGridReactProps=>{
         return {
+            getMainMenuItems: MainMenuItemsCustomization,
             gridOptions: {
                 components: {
                     graphCellRenderer: SeasonalityGraphCellRenderer,
@@ -168,7 +171,6 @@ const useBTR = () => {
         const loaderId = notifyLoader("Loading data")
         try {
             const data = await getBTRData(payload)
-
             setEcoRowData(mapBTRRowData(data.data.data.eco, horizon))
             setTechRowData(mapBTRRowData(data.data.data.tech, horizon))
             setDateLabels(data.data.data.labels[0])
@@ -411,7 +413,8 @@ const useBTR = () => {
         onApplyFilter,
         horizon,
         ecoColDefs,
-        setHorizon
+        setHorizon,
+        lastRunDate
     }
 }
 

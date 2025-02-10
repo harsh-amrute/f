@@ -8,11 +8,16 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
+import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
+import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
+
+
 const BuyerOrderReportColorBandwise = ()=>{
 
     const {     
      isLoading,      
-        colDefs,
+        BORCBColumns,
         agGridProps,
         rowData,       
         currentPage,
@@ -38,7 +43,12 @@ const BuyerOrderReportColorBandwise = ()=>{
         onApplyFilter ,
         generalFilterOptions,
         onSubmitRemarks,
-        editedRows
+        editedRows,
+        onResetCallback,
+        lastRunDate,
+        isRemarkHistoryToolTipOpen,
+        remarkHistory,
+        onCloseRemarkHistory
     } = useBORColorBandwise()
 
 
@@ -53,7 +63,8 @@ const BuyerOrderReportColorBandwise = ()=>{
           tempDownloadData: tempDownloadData,
           setTempDownloadData: setTempDownloadData,
           exportExcelRowData: exportExcelRowData,
-          setExportExcelRowData: setExportExcelRowData
+          setExportExcelRowData: setExportExcelRowData,
+          onResetCallback:onResetCallback
         }}
       >
         <div style={{ marginLeft: '10px' }}>
@@ -72,12 +83,16 @@ const BuyerOrderReportColorBandwise = ()=>{
             multiFilter={currFilter}
             setMultiFilter={setCurrFilter}
             disableChartAndGridViewToggle
+            lastRunDate={lastRunDate}
             generalFilterOptions={generalFilterOptions}
             onDelete={onDeleteFilter} 
             onSubmitEditedRows={onSubmitRemarks}
             disableSubmitEditedRowsBtn={editedRows.length===0}
             />
         </div>
+        {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
         <BORLayout>
           {/* <BORTaskBar style={{width:'74%'}}>
         <VFButtonOutline
@@ -97,13 +112,13 @@ const BuyerOrderReportColorBandwise = ()=>{
             <VFLoader />
           ) :
             (
-              <div style={{ height: '100vh' }}>
+              <div style={{ height: '78vh' }}>
                 {showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHDescription'} />}
                 {showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />}
 
                 <VFTable
                   {...agGridProps}
-                  columnDefs={colDefs}
+                  columnDefs={BORCBColumns}
                   rowData={rowData}
                   ref={ref}
                   enableRangeSelection={true} // Added property
@@ -117,7 +132,7 @@ const BuyerOrderReportColorBandwise = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ],
                   }}
-                  height={"90%"} />
+                  height={"80%"} />
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
@@ -125,16 +140,23 @@ const BuyerOrderReportColorBandwise = ()=>{
                   rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
                   handleChangePage={handleChangePage} />
 
+                <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
+
               </div>
             )}
           <div style={{ display: 'none' }}>
             <VFTable
               ref={tempRef}
-              columnDefs={colDefs}
+              columnDefs={BORCBColumns}
               rowData={exportExcelRowData}
               {...tempAgGridProps} />
           </div>
         </BORLayout>
+        <BPRRemarkHistoryModal
+                data={remarkHistory}
+                isOpen={isRemarkHistoryToolTipOpen}
+                onClose={onCloseRemarkHistory}
+        />
       </GridStateContext.Provider>
     )
 }

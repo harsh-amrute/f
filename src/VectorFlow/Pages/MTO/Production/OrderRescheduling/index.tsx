@@ -165,7 +165,7 @@ const OrderRescheduling = () => {
     readOnlyEdit: false,
     pagination: true,
     suppressRowClickSelection: true,
-    rowHeight: 40,
+    // rowHeight: 40,
     defaultColDef: {
       floatingFilter: true,
       // filter: "agMultiColumnFilter",

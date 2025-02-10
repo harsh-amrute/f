@@ -365,11 +365,11 @@ const useViewModify = (pageType: string) => {
   
 
 
-  const [selectedDays, setSelectedDays] = useState<any>({});
+  // const [selectedDays, setSelectedDays] = useState<any>({});
 
-  const toggleDay = (day:any) => {
-    setSelectedDays((prev:any) => ({ ...prev, [day]: !prev[day] }));
-  };
+  // const toggleDay = (day:any) => {
+  //   setSelectedDays((prev:any) => ({ ...prev, [day]: !prev[day] }));
+  // };
 
   const [calendarFormData,setCalendarFormData] = useState({})
 
@@ -1364,11 +1364,11 @@ const useViewModify = (pageType: string) => {
   // }
 
     const onSaveHandler = () => {
-      const index = activeMaster.rowData.findIndex((row) => row.hid === selectedData.hid);
-        const rowData = _.cloneDeep(activeMaster.rowData);
+      const index = activeMaster.rowData?.length ? activeMaster.rowData?.findIndex((row) => row.hid === selectedData.hid) : -1;
+        const rowData = _.cloneDeep(activeMaster.rowData || []);
         if(index != -1){
           rowData[index] = selectedData
-          dispatch(UPDATE_ROW_DATA(rowData))
+          dispatch(UPDATE_ROW_DATA(rowData));
         }
         else{
           rowData.unshift(selectedData);
@@ -1690,7 +1690,7 @@ const useViewModify = (pageType: string) => {
         result?.data?.data?.count == 0 ||
         result?.data?.data?.count == ""
       ) {
-        setTempRecordCount(result?.data.data.length);
+        setTempRecordCount(result?.data?.data?.length);
       } else {
         setTempRecordCount(result?.data?.data?.count);
       }
@@ -1702,7 +1702,7 @@ const useViewModify = (pageType: string) => {
       ) {
         setTempRecordCount(0);
       } else {
-        setTempRecordCount(result.data.recordCount);
+        setTempRecordCount(result?.data?.recordCount);
       }
     }
   
@@ -3540,7 +3540,6 @@ const useViewModify = (pageType: string) => {
     const groupedData = _.groupBy(PoogiPostObj.reasonData, "majdsc");
 
     for (const [key,items] of Object.entries(groupedData)) {
-      console.log(key);
       items.forEach((item) => {
         const { plnm, plid, majdsc, mindsc } = item;
         let existingMajor = finPoogiPostData.find(
@@ -3969,7 +3968,6 @@ const useViewModify = (pageType: string) => {
         const groupedData = _.groupBy(PoogiPostObj.reasonData, "majdsc");
     
         for (const [key,items] of Object.entries(groupedData)) {
-          console.log(key);
           items.forEach((item) => {
             const { plnm, plid, majdsc, mindsc } = item;
             let existingMajor = finPoogiPostData.find(
@@ -4232,9 +4230,9 @@ const useViewModify = (pageType: string) => {
     tempRecordCount,
     addRowToMtoGrid,
     onMTOSaveBufferData,
-    selectedDays,
-    setSelectedDays,
-    toggleDay,
+    // selectedDays,
+    // setSelectedDays,
+    // toggleDay,
     onSaveHandler,
     onDeleteHandler,
     selectedData,

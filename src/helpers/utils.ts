@@ -22,7 +22,7 @@ import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
-
+import { AgChartOptions } from "ag-charts-community";
 // clear cached token and redirect to sso login
 import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
@@ -152,64 +152,6 @@ export const isTrue = (value?: string | number) => {
   )
 }
 
-// export const mapBPRFieldsToColDefs = (fields:BPRField[]):ColDef[]=>{
-
-//   if(!fields || fields.length<1){
-//     return []
-//   }
-
-//   let result:ColDef[] = []
-
-//   const BPRSpecificColumns:ColDef[] =[
-//     {
-//       colId:'remarks',
-//       field:'ramarks',
-//       headerName:'Remarks',
-//       tooltipField:"tags"
-//       // tooltipComponent:'remarksToolTipComponent'
-//     },
-//     {
-//       colId:'rh',
-//       field:'rh',
-//       headerName:'Remark History',
-//     }
-//   ]
-
-//   const tagsColDef:ColDef =  {
-//     colId:'tags',
-//     field:'tags',
-//     headerName:"Tags",
-//     cellRenderer:'tagsCellRenderer'
-//   }
-
-//   result =  fields.map((f:BPRField)=>{
-//     if(f.Col_Code==='TechPen'){
-//       return{
-//         colId:f.Col_Code,
-//         field:f.Col_Code,
-//         headerName:f.Header,
-//         hide:!f.Visible,
-//         cellRenderer:'colorTechCellRenderer'
-//       }
-//     }
-//     if(f.Col_Code==='EcoPen'){
-//       return{
-//         colId:f.Col_Code,
-//         field:f.Col_Code,
-//         headerName:f.Header,
-//         hide:!f.Visible,
-//         cellRenderer:'colorEcoCellRenderer'
-//       }
-//     }
-//     return{
-//       colId:f.Col_Code,
-//       field:f.Col_Code,
-//       headerName:f.Header,
-//       hide:!f.Visible
-//     }
-//   })
-//   return [tagsColDef,...result,...BPRSpecificColumns]
-// }
 
 export const mapVDRFieldsToColDefs = (fields: RRRField[]): ColDef[] => {
 
@@ -617,7 +559,7 @@ export const handleDownloadVF = async (reportName: string, downloadName:string) 
   console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
-    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
       headers: {
         Authorization: `Bearer ${token?.access}`
       }
@@ -1078,7 +1020,9 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
         //     ? ''
         //     : parseFloat(params.value).toLocaleString(); // Format number properly
         // }
-
+        if(!params.data){
+          return ''
+        }
         return params.data[f.key]
       },
       // suppressColumnsToolPanel: f.isEdit ? false : true,
@@ -1208,9 +1152,9 @@ export const mapTaskStatusToColDefs = (taskStatus: ColDef[], color: string) => {
         'text-overflow': 'ellipsis',
         'white-space': 'nowrap',
         // 'padding-top': '7px',
-        'font-weight': t.colId === 'TaskStatus' ? '500' : 'auto',
-        'color': t.colId === 'TaskStatus' ? color : 'black',
-        'cursor': t.colId === 'TaskStatus' ? 'pointer' : 'default'
+        'font-weight': t?.colId === 'TaskStatus' ? '500' : 'auto',
+        'color': t?.colId === 'TaskStatus' ? color : 'black',
+        'cursor': t?.colId === 'TaskStatus' ? 'pointer' : 'default'
       },
       onCellClicked: (params: CellClickedEvent) => {
         if (params.colDef.colId === 'TaskStatus') {
@@ -1700,7 +1644,7 @@ export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields: Fiel
 
 
 export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], existingColumnFields: Field[], taskType: string, masterId: number) => {
-  const response = dirtyRowData.map(entry => {
+  const response = dirtyRowData?.map(entry => {
 
     if (((taskType === 'modify' && masterId !== 6 && masterId !== 10) || masterId === 13)) {
       const oldData = JSON.parse(entry.old);
@@ -1777,7 +1721,7 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
   });
 
   // sort the rows wrt the isModified flag
-  response.sort((a: any, b: any) => {
+  response?.sort((a: any, b: any) => {
     return b.isModified - a.isModified
   })
   return response
@@ -1886,12 +1830,11 @@ export const createMastersStateFromDraftData = (draftData: any[], fields: Master
         return colDef;
       });
 
-      console.log(colDefs)
       masters.push({
         id: existingMaster.id,
         name: existingMaster.name,
         colDefs: updatedColDefs,
-        rowData:formatAndValidateDraftRowData(colDefs,master.DataMaster)  || [],
+        rowData: master.DataMaster? formatAndValidateDraftRowData(colDefs,master?.DataMaster)  : [],
         isChecked: true,
         filters: [{
           id: generateRandomId(),
@@ -2326,6 +2269,19 @@ export const createTaskPendingSubmitPayload = (rowData: any[], actionType: numbe
 }
 
 
+export const generateDailyDataGraphCell = (onOpenDailyDataGraph:any):ColDef=>{
+
+  return {
+    ...createIconColumn({id:'dailydatagraph',label:'',cellRenderer:'grapCellRenderer'}),
+    cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph},
+    pinned: 'left',
+    minWidth:45,
+    resizable:false
+  }
+        // const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+}
+
+
 
 export const createIconColumn = (params: any): ColDef => {
 
@@ -2343,7 +2299,7 @@ export const createIconColumn = (params: any): ColDef => {
     filter:false,
     cellRenderer: cellRenderer,
     floatingFilter: false,
-    suppressColumnsToolPanel: true
+    suppressColumnsToolPanel: false
   }
 }
 
@@ -2354,8 +2310,349 @@ export const getCellDataType = (dataType: "Number" | "String" | "Boolean"): stri
 
 export const getCellFilter = (dataType: "Number" | "String" | "Boolean"): string => {
   if (dataType === 'Number') return "agNumberColumnFilter"
+  // else if(dataType==='String') return 'agTextColumnFilter'
+  // else if(dataType==='Boolean') return "agSetColumnFilter"
   return 'agMultiColumnFilter'
 }
+
+
+// export const mapColumnsWithConfigs = (CurrentState:any,initialState:ColDef[]) : ColDef[] =>{
+//   // return CurrentState.map((col:any) => {
+//   //   const matchedCol = initialState.find((initCol:any) => initCol.colId === col.colId);
+//   //   return matchedCol ? { ...matchedCol, ...col, initialHide: col.hide !== undefined ? col.hide : false } : col;
+//   // });
+//   return CurrentState.map((col:any) => {
+//   const matchedCol = initialState.find((initCol:any) => initCol.colId === col.colId);
+//   return matchedCol ? { ...matchedCol, ...col } : col;
+// });  
+// }
+
+// return CurrentState.map((col:any) => {
+//   const matchedCol = initialState.find((initCol:any) => initCol.colId === col.colId);
+//   return matchedCol ? { ...matchedCol, ...col } : col;
+// });  
+
+export const mapColumnsWithConfigs = (CurrentState: any, initialState: ColDef[]): ColDef[] => {
+  return initialState.map((col: any) => {
+    const matchedCol = CurrentState.find((initCol: any) => initCol.colId === col.colId);
+    
+    if (matchedCol) {
+      const { hide, ...restCol } = col; // Exclude `hide` from col
+      return { ...matchedCol, ...restCol, initialHide: hide !== undefined ? hide : matchedCol.initialHide };
+    }
+
+    return col;
+  });
+};
+
+
+export const addCheckBoxColumn = ():ColDef =>{
+  return  {
+    field:'checkbox',
+    colId:'checkbox',
+    headerName:'',
+    width:70,
+    checkboxSelection:true,
+    headerCheckboxSelection:true,
+    headerCheckboxSelectionCurrentPageOnly:true,
+    resizable:false,
+    suppressMenu: true,
+    maxWidth: 40,
+    pinned: 'left',
+    filter: false
+  }
+}
+
+export const getRemarkRelatedColumns = (onOpenRemarkHistory: (params: any, e: any) => void) : ColDef[] => {
+  return [
+    {
+      colId: 'remarks',
+      field: 'remarks',
+      headerName: 'Enter new remark',
+      cellStyle:{
+        backgroundColor: 'white',
+        border: '1px solid #b9bdba',
+        color: 'black',
+        padding: '1px'
+      },
+      pinned: 'right',
+      editable: true,
+      minWidth:130,
+      maxWidth:160,
+      initialHide:false,
+      lockPosition:'right',
+      menuTabs: [] ,
+      suppressMenu: true,
+      resizable:false
+    },
+    {
+      colId: 'rh',
+      field: 'rh',
+      headerName: 'Remark History',
+      cellRenderer: 'remarksCellRenderer',
+      cellRendererParams: {
+        onClick: onOpenRemarkHistory
+      },
+      pinned: 'right',
+      minWidth:120,
+      maxWidth:120,
+      initialHide:false,
+      lockPosition:'right',
+      menuTabs: [] ,
+      suppressMenu: true,
+      resizable:false
+    }
+  ]
+}
+
+const filterParams =  {
+  filters: [
+    {
+      filter: 'agTextColumnFilter',
+      filterParams: {
+        buttons: [ 'reset'],
+      }
+    },
+    {
+      filter: 'agSetColumnFilter',
+      filterParams: {
+        buttons: ['reset'],
+      }
+    },
+  ]
+}
+
+
+
+const CellRenderersMapping:any = {
+  'DispatchPen':'colorDispatchRender',
+  'TechPen':'colorTechCellRenderer',
+  'EcoPen':'colorEcoCellRenderer',
+  'TPen':'colorTechCellRenderer',
+  'EPen':'colorEcoCellRenderer'
+}
+
+const aggridDefaultColumnProps = {
+  sort: null,
+  sortIndex: null,
+  aggFunc: null,
+  rowGroup: false,
+  rowGroupIndex: null,
+  pivot: false,
+  pivotIndex: null,
+  flex: undefined,
+}
+
+// function getCellRendererForKey(key:string) {
+//   const renderer = CellRenderersMapping[key];
+//   return renderer !== undefined ? renderer : 'string'; // If the renderer is undefined, return the key as string
+// }
+
+
+export const generateAndMapColumns = (reportName:string,fields:any ,includeRemarks:boolean,includeGraph:boolean,includeTags:boolean,onOpenSubmitRemark?:any,  onOpenRemarkHistory?:any, onOpenDailyDataGraph?:any) =>{
+  
+  if (!fields || fields.length < 1) {
+    return []
+  }
+  let Columns:ColDef[] = [];
+
+  console.log("FIELDFS",fields)
+  Columns = fields.map((f:any,index:number)=>{
+    if(f.Col_Code==='t' || f.Col_Code==='tags'){
+      return {
+        colId: f.Col_Code,
+        field: f.Col_Code,
+        headerName: f.Header,
+        cellRenderer: 'tagsCellRenderer',
+        width: 100,
+        pinned:null,
+        // hide: !f.Visible,
+        initialHide: !f.Visible,
+        filter:true,
+        filterParams: {
+          buttons: ['reset'], // Adds Apply and Clear buttons
+        },
+        ...aggridDefaultColumnProps
+      }
+    }
+    return {
+      colId: f.Col_Code,
+      field: f.Col_Code,
+      headerName: f.Header,
+      // hide: !f.Visible,
+      initialHide: !f.Visible,
+      cellRenderer: CellRenderersMapping[f.Col_Code] !== undefined ? CellRenderersMapping[f.Col_Code] : 'string' ,
+      cellDataType: getCellDataType(f.DataType),
+      filter: getCellFilter(f.DataType),
+      minWidth:180,
+      pinned:null,
+      ...aggridDefaultColumnProps,
+      filterParams:filterParams
+    }
+  })
+
+  if(reportName==='ResearchInsight'){ // Add other reportName in || condition if checkbox is required
+    Columns.push(addCheckBoxColumn())  /// required Checkbox for RI 
+  }
+
+  if(includeRemarks){ // If Remark is required in any reports then provide boolean as true
+    Columns.unshift(...getRemarkRelatedColumns(onOpenRemarkHistory))
+  }
+
+
+  if(includeTags && ( reportName==='BPR' || reportName==='ResearchInsight' )){
+    Columns.unshift({
+      colId: 'tags',
+      field: 'tags',
+      headerName: "Tags",
+      cellRenderer: 'tagsCellRenderer',
+      width: 100,
+      initialHide:false,
+      filter:true,
+      pinned:null,
+      ...aggridDefaultColumnProps,
+      filterParams: {
+        buttons: ['reset'], // Adds Apply and Clear buttons
+      },
+    })
+  }
+
+  if(includeGraph){
+    Columns.unshift(generateDailyDataGraphCell(onOpenDailyDataGraph))
+  }
+
+
+  return Columns
+}
+
+
+const commonTooltip= {
+  enabled:true,
+  renderer:(params:any)=>{
+      const datum = params.datum
+      return {
+      title: `${params.yName}`,
+      content: `${datum[params.xKey]}: ${datum[params.yKey]}`,
+      }
+  },
+}
+
+export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
+  
+  const { series , palette , chartKey:keys, Labels} = chartParams
+
+  const seriesMapped = series.map((obj:any,index:number)=>{
+    return {...obj,tooltip:commonTooltip}
+  })
+  const options:AgChartOptions = {
+    data:data.slice(0,10),
+    theme:{
+      palette
+    },
+    series:seriesMapped,
+    axes:[
+      {
+        type: "category",
+        position: "bottom",
+        keys:keys.Xaxis,
+        title:{
+          enabled:true,
+          text:Labels.Xaxis,
+          fontSize:10,
+          fontFamily:'Roboto'
+        },
+        label:{
+          formatter:(params:any)=>{
+            if(params.value.length > 10) return params.value.slice(0,10) + '...';
+            return params.value;
+          },
+          fontSize:8,
+          fontFamily:'Roboto'
+        }
+      },
+      {
+        type:'number',
+        position:"left",
+        keys:keys.Yaxis,
+        title:{
+          enabled:true,
+          text:Labels.Yaxis,
+          fontSize:10,
+          fontFamily:'Roboto'
+        },
+        label:{
+          fontSize:12
+        }
+      }
+    ],
+  }
+  return options;
+}
+
+
+export const categoryFormatter = (params:any)=>{
+  if(params.value.value.length > 10) return params.value.toString().slice(0,10) + '...';
+  return params.value;
+}
+
+export const generateGridSpecificChartFromChartProps = (options:any,downloadName:string):any =>{
+  if(options===undefined){
+    return null
+  }
+  return {
+    palette:options.theme.palette,
+    common: {
+      legend: {
+        position: "bottom",
+      },
+      title:{
+        enabled:true,
+        text:downloadName,
+        fontSize:10
+      },
+      axes: {
+        category: {
+          title: {
+            enabled: options.axes?.[0]?.title?.enabled ?? true,
+            text: options.axes?.[0]?.title?.text ?? "",
+            position: "bottom",
+            fontSize: options.axes?.[0]?.title?.fontSize ?? 10,
+            fontFamily: options.axes?.[0]?.title?.fontFamily ?? "Roboto",
+          },
+          label: {
+            formatter:categoryFormatter,
+            fontSize: options.axes?.[0]?.label?.fontSize ?? 8,
+            fontFamily: options.axes?.[0]?.label?.fontFamily ?? "Roboto",
+          },
+        },
+        number: {
+          title: {
+            enabled: options.axes?.[1]?.title?.enabled ?? true,
+            text: options.axes?.[1]?.title?.text ?? "",
+            position: "left",
+            fontSize: options.axes?.[1]?.title?.fontSize ?? 10,
+            fontFamily: options.axes?.[1]?.title?.fontFamily ?? "Roboto",
+          },
+        },
+      },
+    },
+    bar: {
+      series: {
+        tooltip:{
+          enabled:true,
+          renderer:(params:any)=>{
+              const datum = params.datum
+              return {
+                  title: `${params.yName}`,
+                  content: `${datum[params.xKey].value}: ${datum[params.yKey]}`,
+              }
+          },
+        }
+      },
+    },
+  };
+};
+
 
 export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (params: any, e: any) => void, onOpenRemarkHistory: (e: any, params: any) => void, onOpenDailyDataGraph: (params: any) => void): ColDef[] => {
 
@@ -2369,46 +2666,41 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     {
       colId: 'remarks',
       field: 'remarks',
-      headerName: 'Edit Remarks',
-      cellRenderer: 'submitRemarkCellRenderer',
-      cellRendererParams: {
-        onClick: onOpenSubmitRemark
+      headerName: 'Enter new remark',
+      // cellRenderer: 'submitRemarkCellRenderer',
+      // cellRendererParams: {
+      //   onClick: onOpenSubmitRemark
+      // },
+      cellStyle:{
+        backgroundColor: 'white',
+        border: '1px solid #b9bdba',
+        color: 'black',
+        padding: '1px'
       },
       pinned: 'right',
-      cellStyle: {
-        overflow: 'visible',
-        'min-width': 145,
-        'padding-left':0,
-        'padding-right':0
-      },
       editable: true,
-      resizable:false,
+      minWidth:130,
+      maxWidth:160,
       lockPosition:'right',
-      maxWidth:145,
       menuTabs: [] ,
-      suppressMenu: true
+      suppressMenu: true,
+      resizable:false
     },
     {
       colId: 'rh',
       field: 'rh',
       headerName: 'Remark History',
       cellRenderer: 'remarksCellRenderer',
-
       cellRendererParams: {
         onClick: onOpenRemarkHistory
       },
       pinned: 'right',
-      cellStyle: {
-        overflow: 'visible',
-        'min-width': 145,
-        'padding-left':0,
-        'padding-right':0
-      },
-      resizable:false,
+      minWidth:120,
+      maxWidth:120,
       lockPosition:'right',
-      maxWidth:145,
       menuTabs: [] ,
-      suppressMenu: true
+      suppressMenu: true,
+      resizable:false
     }
   ]
 
@@ -2419,6 +2711,7 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
     cellRenderer: 'tagsCellRenderer',
     width: 100,
     hide:false,
+    filter:true,
     filterParams: {
       buttons: ['reset'], // Adds Apply and Clear buttons
     },
@@ -2433,14 +2726,13 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         hide: !f.Visible,
         cellRenderer: 'colorTechCellRenderer',
         // tooltipField: f.Col_Code,
-        cellStyle: {
-          'min-width': 180,
-        },
+        minWidth:180,
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
         pinned:null,
         filterParams: {
           buttons: ['reset'], // Adds Apply and Clear buttons
+          // excelMode: 'windows',
         },
       }
     }
@@ -2452,12 +2744,14 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
         hide: !f.Visible,
         cellRenderer: 'colorEcoCellRenderer',
         // tooltipField: f.Col_Code,
-        cellStyle: {
-          'min-width': 180,
-        },
+        minWidth:180,
         cellDataType: getCellDataType(f.DataType),
         filter: getCellFilter(f.DataType),
-        pinned:null
+        pinned:null,
+        filterParams: {
+          buttons: ['reset'], // Adds Apply and Clear buttons
+          // excelMode: 'windows',
+        },
       }
     }
     return {
@@ -2466,29 +2760,65 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
       headerName: f.Header,
       hide: !f.Visible,
       // tooltipField: f.Col_Code,
-      cellStyle: {
-        'min-width': 180,
-      },
+      minWidth:180,
       cellDataType: getCellDataType(f.DataType),
+      // filter:true,
+      pinned:null,
       filter: getCellFilter(f.DataType),
-      pinned:null
+        filterParams: {
+          filters: [
+            {
+              filter: 'agTextColumnFilter',
+              filterParams: {
+                buttons: [ 'reset'],
+              }
+            },
+            {
+              filter: 'agSetColumnFilter',
+              filterParams: {
+                buttons: ['reset'],
+              }
+            },
+          ]
+        },
+      // filterParams: {
+      //   buttons: ['reset','apply'], // Adds Apply and Clear buttons
+      // },
     }
   })
-  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, tagsColDef, ...result, ...BPRSpecificColumns]
+  return [generateDailyDataGraphCell(onOpenDailyDataGraph), tagsColDef, ...result, ...BPRSpecificColumns]
+}
+
+export const MainMenuItemsCustomization = (params:any) => {
+  console.log(params)
+  const defaultItems = params.defaultItems;
+  const conditionalItemsToRemove = ['remarks','rh']
+  const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
+  if(conditionalItemsToRemove.includes(params.column.colId)){
+    // itemsToRemove.push()
+    itemsToRemove.push("pinSubMenu")
+  }
+  const modifiedItems = defaultItems.filter((item:any) => !itemsToRemove.includes(item));
+   
+  return modifiedItems;
 }
 
 export const mapBPRRowData = (rowData: Array<any>) => {
-  return rowData.map((r) => {
-    const tempRow = { ...r }
-    if (r.Norm === 0) {
-      tempRow.TechPen = null
-      tempRow.EcoPen = null
-      tempRow.EcoColor = null
-      tempRow.TechColor = null
-    }
+  //Logic is breaking, doesn't show the grey color on TechColor and EcoColor
+  
+  // return rowData.map((r) => {
+  //   const tempRow = { ...r }
+  //   if (r.Norm === 0) {
+  //     tempRow.TechPen = null
+  //     tempRow.EcoPen = null
+  //     tempRow.EcoColor = null
+  //     tempRow.TechColor = null
+  //   }
     
-    return tempRow
-  })
+  //   return tempRow
+  // })
+  
+  return rowData
 }
 
 
@@ -2526,10 +2856,24 @@ export const mapBPRRowData = (rowData: Array<any>) => {
 //   return updatedArray;
 // }
 
+export function convertStringNumToNumber(objects: any[]): any[] {
+  return objects.map((obj) => {
+    const updatedObj = { ...obj };
+
+    // Check if 'actualStock' is a string and can be converted to a number
+    if (updatedObj.sla2!==undefined && typeof updatedObj.sla2 === 'string') {
+      const parsedNumber = parseFloat(updatedObj.sla2);
+      if (!isNaN(parsedNumber)) {
+        updatedObj.sla2 = parsedNumber;
+      }
+    }
+
+    return updatedObj;
+  });
+}
+
 export const updateCommonAttributes=(array1:any[], array2:any[], colId:string)=> {
 
-  console.log(array1,"ARRAY1")
-  console.log(array2,"ARRAY2")
   // Create a dictionary (map) of objects from array1 by colId
   const array1Dict:any = {};
   array1.forEach(obj => {
@@ -2647,42 +2991,41 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark
     {
       colId:'remarks',
       field:'remarks',
-      headerName:'Edit Remarks',
-     cellRenderer:'submitRemarkCellRenderer',
-     cellRendererParams:{
-      onClick:onOpenSubmitRemark
-     },
-     pinned:'right',
-     cellStyle: {
-      overflow: 'visible',
-      'min-width': 145,
-      'padding-left':0,
-      'padding-right':0
-    },
-    editable: true,
-    resizable:false,
-    lockPosition:'right',
-    maxWidth:145,
+      headerName:'Enter new remark',
+            // cellRenderer: 'submitRemarkCellRenderer',
+      // cellRendererParams: {
+      //   onClick: onOpenSubmitRemark
+      // },
+      cellStyle:{
+        backgroundColor: 'white',
+        border: '1px solid #b9bdba',
+        color: 'black',
+        padding: '1px'
+      },
+     pinned: 'right',
+     editable: true,
+     minWidth:130,
+     maxWidth:160,
+     lockPosition:'right',
+     menuTabs: [] ,
+     suppressMenu: true,
+     resizable:false
     },
     {
       colId:'rh',
       field:'rh',
       headerName:'Remark History',
       cellRenderer:'remarksCellRenderer',
-      
       cellRendererParams:{
         onClick:onOpenRemarkHistory
        },
        pinned: 'right',
-       cellStyle: {
-         overflow: 'visible',
-         'min-width': 145,
-         'padding-left':0,
-         'padding-right':0
-       },
-       resizable:false,
+       minWidth:120,
+       maxWidth:120,
        lockPosition:'right',
-       maxWidth:145,
+       menuTabs: [] ,
+       suppressMenu: true,
+       resizable:false
     }
   ]
 
@@ -2714,7 +3057,7 @@ export const mapBORFieldsToColDefs = (fields:UiConfigField[], onOpenSubmitRemark
     }
   })
   //return [...result, ...BORSpecificColumns]
-  return [{ ...createIconColumn({ id: 'dailydatagraph', label: '', cellRenderer: 'grapCellRenderer' }), cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph } }, ...result, ...BORSpecificColumns]
+  return [generateDailyDataGraphCell(onOpenDailyDataGraph), ...result, ...BORSpecificColumns]
 }
 
 export const BPRColorMapper = (color: string): { bg: string, text: string } => {
@@ -2759,18 +3102,21 @@ export const BPRColorMapper = (color: string): { bg: string, text: string } => {
 }
 
 export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => {
+  const columnsNotBeConverted = ['SKUCode','SKUDescription','Whcode','WhCode','LocationName','pc','pn']
   return rows.map((r) => {
     const transformedRow = Object.keys(r).reduce((acc, key) => {
       const value = r[key];
-      if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+      if(columnsNotBeConverted.includes(key)){
+        acc[key]=value+"";
+      }else if (typeof value === 'string' && !isNaN(parseFloat(value))) {
         acc[key] = parseFloat(value);
       } else {
         acc[key] = value;
       }
       return acc;
     }, {} as any);
-
-  
+ 
+ 
     const NewCategoryString = transformedRow.Category;
     const tempRow = { ...transformedRow, Category: NewCategoryString };
     let tempAvailabilty = 0;
@@ -2780,16 +3126,15 @@ export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => 
         nonBlackCount = nonBlackCount + 1;
       }
     }
-
+ 
     tempAvailabilty = parseFloat(((nonBlackCount / horizon) * 100).toFixed(2))
     return {
       ...tempRow,
       Availability: tempAvailabilty
     }
   })
-
+ 
 }
-
 
 export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: number, pinCatergory: boolean, excludeColumns?: Array<string>,): Array<ColDef> => {
   // const graphCellRenderer:ColDef={
@@ -3028,8 +3373,11 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     floatingFilter: false,
     checkboxSelection: true,
     headerCheckboxSelectionCurrentPageOnly: true,
-    width: 60,
+    width: 45,
+    pinned: 'left',
     lockPosition: 'left',
+    initialHide:false,
+    suppressMenu:true
   }
 
   const DBMGraphColumn: ColDef[] = [
@@ -3037,16 +3385,19 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
       colId: 'dailydatagraph',
       field: '',
       headerName: '',
-      width: 80,
+      width: 60,
+      minWidth:60,
+      maxWidth:70,
       lockPosition: true,
       floatingFilter: false,
       tooltipField: "DailyDataGraph",
       cellRenderer: 'grapCellRenderer',
       cellRendererParams: {
         onOpenDailyDataGraph: onOpenDailyDataGraph
-      }
-
-
+      },
+      initialHide:false,
+      pinned:'left',
+      suppressMenu:true
     }
   ]
 
@@ -3060,8 +3411,11 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
         callBack: afterSleepCallBack
       },
       floatingFilter: false,
-      minWidth: 140,
-      maxWidth: 140
+      minWidth: 100,
+      maxWidth: 100,
+      initialHide:false,
+      pinned:'left',
+      suppressMenu:true
     }
   ]
 
@@ -3071,7 +3425,10 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     cellRenderer: 'suggestionCategoryCellRenderer',
     floatingFilter: false,
     minWidth: 30,
-    maxWidth: 30
+    maxWidth: 30,
+    initialHide:false,
+    pinned:'left',
+    suppressMenu:true
   }
 
 
@@ -3359,6 +3716,9 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
   return undefined;
 }
 
+
+
+
 export const convertUiConfigToOptions = (data:any) => {
   console.log(data);
   return data?.map((column:any)=>{
@@ -3375,7 +3735,7 @@ export const handleDownloadVFReports = async (payload:{name:string,filters:any})
   try {
     const {name} = payload
     const token = await MainService.refreshToken();
-    const response = await fetch(`${process.env.REACT_APP_VF_API_HOST}/download-excel`, {
+    const response = await fetch(`${process.env.REACT_APP_API_HOST}/download-excel`, {
       headers: {
         Authorization: `Bearer ${token?.access}`,
         'Content-Type': 'application/json'
@@ -4356,4 +4716,71 @@ export const getMDMTableHeight = (activeMaster:MDMMasterState):string=>{
 
 }
 
+
+export const downloadBase64Image = (base64Data: any, fileName: string):any => {
+  const downloadLink = document.createElement('a');
+  downloadLink.href = base64Data;
+  downloadLink.download = fileName;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+}
+
 // ===================================================================================================
+
+export function getColumnDefinationsMTA(
+  fields: any,
+  customizationParams: any = {},
+  extraFields: any = [],
+  removeCols: any = [],
+) {
+  const columnDefs = fields?.sort((a: any, b: any) => a.Col_Position - b.Col_Position)?.map((data: any) => {
+    const columnDef = {
+      colId: data.Col_Code,
+      headerName: data.Header,
+      field: data.Col_Code,
+      initialHide: !data.Visible,
+      pinned: null,
+      sort: null,
+      sortIndex: null,
+      aggFunc: null,
+      rowGroup: false,
+      rowGroupIndex: null,
+      pivot: false,
+      pivotIndex: null,
+      flex: undefined,
+      minWidth: 180,
+      cellStyle: {
+        justifyContent: data.CellAlignment
+      },
+      cellRenderer: CellRenderersMapping[data.Col_Code] !== undefined ? CellRenderersMapping[data.Col_Code] : 'string',
+      cellDataType: getCellDataType(data.DataType),
+      filter: getCellFilter(data.DataType),
+      filterParams: filterParams
+    };
+    // Apply customization if needed
+    if (customizationParams[data.Col_Code]) {
+      // Object.assign(columnDef, customizationParams[data.Col_Code]);
+      mergeObjects(columnDef, customizationParams[data.Col_Code])
+    }
+    return columnDef;
+  });
+  // Add extra columns
+  extraFields?.forEach((field: any) => {
+    let position = field.position;
+    // If position is not specified or invalid, add the column at the end
+    if (
+      position === undefined ||
+      position < 0 ||
+      position > columnDefs.length
+    ) {
+      position = columnDefs.length;
+    }
+    columnDefs?.splice(position, 0, field);
+  });
+
+  const finalcolDef = columnDefs?.filter((obj: any) => !removeCols?.includes(obj.colId));
+
+  return finalcolDef;
+
+}

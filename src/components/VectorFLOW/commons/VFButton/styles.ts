@@ -15,7 +15,7 @@ export const SCButton = styled.button<{ themeUi: string, isDisabled:boolean | un
   letter-spacing:0px;
   font-weight:300;
   color: ${globalStyles.white};
-  padding: 15px 7px;
+  // padding: 15px 7px;
   border: none;
   box-shadow: -5px 4px 10px #919191B3;
   opacity:${(props)=>props.isDisabled ? 0.2 : 1};

@@ -93,20 +93,24 @@ const ErrorCell = (props:ICellRendererParams)=>{
         setIsToolTipOpen(false)
     }
 
+    const imageSrc = themeUi === "REGALBLAZE" 
+    ? "/assets/img/VectorFLOW/NMS/error1.svg" 
+    : "/assets/img/VectorFLOW/NMS/error.svg";
+
     return(
         <>
         
             <SCContainer style={{overflow:'visible'}}  themeUi={themeUi}>
-                <img src={"/assets/img/VectorFLOW/NMS/error.svg"} width={17} height={17} style={{marginRight:'7px',marginLeft:'5px'}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
-                <ErrorText  >{getFomattedMessage(message)}</ErrorText>
+                <img src={imageSrc} width={17} height={17} style={{marginRight:'7px',marginLeft:'5px'}} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} data-testid="errorImage"/>
+                <ErrorText  themeUi={themeUi}>{getFomattedMessage(message)}</ErrorText>
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">
                         <SCToolTipWrapper themeUi={themeUi} data-testid='tooltip-wrapper' style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
-                        <SCErrorToolTipUl>
+                        <SCErrorToolTipUl themeUi={themeUi}>
                             {(messages && messages.length > 0) &&
                                 messages.map((sentence: string, index: number) => {
                                     if (sentence.trim() !== '') {
-                                        return <SCErrorToolTipLi key={index}>{sentence}</SCErrorToolTipLi>;
+                                        return <SCErrorToolTipLi themeUi={themeUi} key={index}>{sentence}</SCErrorToolTipLi>;
                                     }
                                     return null; 
                                 })}

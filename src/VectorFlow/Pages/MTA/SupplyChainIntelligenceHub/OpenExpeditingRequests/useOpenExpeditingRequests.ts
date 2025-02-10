@@ -23,8 +23,9 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-import { updateCommonAttributes } from "../../../../../helpers/utils"
+import { updateCommonAttributes, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 const useOpenExpeditingRequests = () => {
 
@@ -68,6 +69,7 @@ const useOpenExpeditingRequests = () => {
 
     const gridZoom = getGridZoom()
     const screenZoom = getScreenZoomValue()
+    const {date:lastRunDate} = useGetLastRunData()
 
     const customCellRenderers = useMemo(() => ({
         // grapCellRenderer:BPRGraphCellRenderer,
@@ -125,6 +127,7 @@ const useOpenExpeditingRequests = () => {
             setOERColumns(ColumnDefinitions);
             const tempRowData = data?.data?.data?.data || [];
             toast.dismiss()
+            notifySuccess("Data Loaded Successfully")
             if(!tempRowData.length){
               setRowData([])
             }else{
@@ -233,6 +236,7 @@ const useOpenExpeditingRequests = () => {
                     event.api.applyColumnState({ state: columnState });
                 },
         sideBar:defaultAgGridSideBarForBPR,
+        getMainMenuItems: MainMenuItemsCustomization,
         pagination: true,
         suppressRowClickSelection: true,
         components: customCellRenderers,
@@ -356,6 +360,7 @@ const useOpenExpeditingRequests = () => {
         const data = await getData(filter)
         setRowData(data.data.data.datamap((r:any,index:number)=>({...r,id:index,action:''})))
         toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
       }catch(err:any){
         notifyError(err)
       }
@@ -503,7 +508,8 @@ const useOpenExpeditingRequests = () => {
         onSubmitEditedRows,
         editedRows,
         themeUi,
-        onResetCallback
+        onResetCallback,
+        lastRunDate
     }
 }
 

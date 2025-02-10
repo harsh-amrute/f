@@ -80,6 +80,17 @@ const ModalAdvanedPermissions = (props: any) => {
     
   };
 
+  const isValidPermission = (storePermission: any[]): boolean => {
+    if (!storePermission.some((permission) => permission.application_id === 1)) {
+      return true;
+    }
+    return storePermission.some((permission) => 
+      permission.application_id === 1 &&
+      permission.productPermission?.brand?.length > 0 && 
+      permission.locationPermission?.lcRegion?.length > 0
+    );
+  };
+
   const handleSubmit = () => {
     let product:any;
     let location:any;
@@ -87,16 +98,29 @@ const ModalAdvanedPermissions = (props: any) => {
     const productPermissions:any = [];
     const locationPermissions:any = [];
 
+   let isValid = true;
+    
     storePermission.forEach((app:any,index:number) => {
+      if(!isValid) return;
       if(index===storePermission.length-1){
         product = prdPermissionRef.current?.getPrdPermissionValue();
         location = lcPermissionRef.current?.getLcPermissionValue();
+
+       
 
         //Store Permissions
         const storePermissionCopy = [...storePermission]
         const currentPermission:any = storePermissionCopy.find((app:any)=>app.application_id === activeApplication);
         currentPermission.productPermission = product;
         currentPermission.locationPermission = location;
+        if(!isValidPermission(storePermissionCopy)){
+          isValid = false;
+          notifyError(
+            "Please select permission for the selected application!"
+          );
+          setIsLoadSpinner(false);
+          return;
+        }
         setStorePermission(storePermissionCopy)
       }
       else{
@@ -108,6 +132,9 @@ const ModalAdvanedPermissions = (props: any) => {
       // eslint-disable-next-line no-unsafe-optional-chaining
       app.locationPermission
       }
+
+
+    
       
       const dataPrdPermission = formDataPermission({
         parent: product.brand,
@@ -117,6 +144,8 @@ const ModalAdvanedPermissions = (props: any) => {
         keyChild: "product_hierarchy_2",
         keyGrandChild: "product_hierarchy_3",
       });
+
+     
 
       const dataLcPermission = formDataPermission({
         parent: location.lcRegion,
@@ -137,6 +166,8 @@ const ModalAdvanedPermissions = (props: any) => {
       })
   
     });
+
+    if(!isValid)return;
 
     const { brand} =
       // eslint-disable-next-line no-unsafe-optional-chaining
@@ -171,6 +202,7 @@ const ModalAdvanedPermissions = (props: any) => {
         }
       })
 
+
       setIsLoadSpinner(true);
  
       if (contentModal.callApi === 1 ) {
@@ -184,10 +216,11 @@ const ModalAdvanedPermissions = (props: any) => {
               res?.response?.name?.forEach((element: any) => {
                 notifyError(element);
               });
+              
+              res?.response?.msg &&  notifyError(res?.response?.msg);
               res?.response?.password?.forEach((element: any) => {
                 notifyError(element);
               });
-              notifyError(res?.response?.msg);
             } else {
               notifySuccess(res?.data?.msg);
               closeModal();
@@ -258,10 +291,12 @@ const ModalAdvanedPermissions = (props: any) => {
     const currentLocationPermission = lcPermissionRef.current?.getLcPermissionValue();
 
 
+    console.log("currentPermissions ,,,,,,,,,,,,,,,,", currentPermission);
 
-    // if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
-    //   t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
-    // );
+    if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
+      t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
+    );
+
 
     if(currentPermission){
       currentPermission.productPermission = currentProductPermission;
@@ -302,7 +337,7 @@ const ModalAdvanedPermissions = (props: any) => {
     <>
       {
         <Transition appear show={openModal} as={Fragment}>
-          <Dialog as="div" className="modal-box" onClose={closeModal}>
+          <Dialog style={{zoom: 0.8}} as="div" className="modal-box" onClose={closeModal}>
             <Transition.Child
               as={Fragment}
               enter="transition"

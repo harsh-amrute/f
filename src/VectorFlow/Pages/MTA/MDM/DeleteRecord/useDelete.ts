@@ -120,7 +120,28 @@ const useDelete=()=>{
        
     }
 
+    function updateUrlIsModalOpen() {
+
+      const currentUrl = window.location.href;
+      
+
+      const hasParameter = currentUrl.includes("isModalOpen=true");
+
+      if (!hasParameter) {
+
+          const [baseUrl, queryString] = currentUrl.split("?");
+          
+
+          const newQueryString = queryString ? `${queryString}&isModalOpen=true` : "isModalOpen=true";
+          const newUrl = `${baseUrl}?${newQueryString}`;
+          
+
+          window.history.replaceState(null,'', newUrl);
+      }
+  }
+
     const handleSubmitSelectMaster = ()=>{
+      updateUrlIsModalOpen();
         dispatch(UPDATE_ACTIVE_MASTER(0));
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
     }

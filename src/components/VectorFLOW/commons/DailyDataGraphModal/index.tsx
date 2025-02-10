@@ -14,17 +14,18 @@ import {
 
  import {type NormChangeHistory, DailyDataChart } from '../../../../VectorFlow/types/BPR';
 //  import {enIN} from 'date-fns/locale';
- import { useState } from "react";
+ import { useEffect, useState } from "react";
 
 import VFRangeSlider from '../VFRangeSlider'
 import Select from 'react-select'
 import { AgCharts} from "ag-charts-react";
-import { getDatesBetween, getFormattedDate } from "../../../../helpers/utils";
+import { getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
 import { useDispatch } from 'react-redux';
 import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
-import {subDays} from 'date-fns';
+import {eachDayOfInterval, format, subDays} from 'date-fns';
 import { useUserData } from "../../../../context";
+import useGetLastRunData from "../../../../hooks/useGetLastRunData";
 interface DailyDataGraphModalProps{
   rowData:any,
   chartData:any[]
@@ -42,19 +43,30 @@ interface NormData{
   date:string
 }
 
-
-
-
-
-
 const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,masterData,isModalOpen,monitoringData,skuKey,whKey}:DailyDataGraphModalProps) => {
 
   const {user} = useUserData()
+  const themeUi = user.user.theme_ui;
+  const {date:lastRunDate} = useGetLastRunData()
 
-  const themeUi = user.user.theme_ui
+    const dispatch = useDispatch();
+    const suspensionOptions = [
+        {label:'Select Suspension Type',value:''},
+        {label:'Upward Stock Based',value:'upwardStockBased'},
+        {label:'Downward Stock Based',value:'downwardStockBased'},
+        {label:'Upward Consumption Based',value:'upwardConsumptionBased'},
+        {label:'Downward Consumption Based',value:'downwardConsumptionBased'}
+    ]
+
+    const [horizon,setHorizon] = useState<number>(14);
+    const [suspensionType,setSuspensionType] = useState('')
+    const [normData,setNormData] = useState<any[]>([])
+    const [adjustedChartData,setadjustedChartData] = useState<any[]>([]);
+    const [missingData, setMissingData] = useState<any[]>([]);
+
 
     const fillNotAvailableDates = (data:any)=>{
-      const lastNinetyDates = getDatesBetween(subDays(new Date(),89),new Date());
+      const lastNinetyDates = eachDayOfInterval({start: subDays(new Date(lastRunDate),89),end: new Date(lastRunDate)});
       const lastNinetyDaysData:DailyDataChart[] = [];
       lastNinetyDates.forEach((date:Date)=>{
         const dailyData = data.find((data:DailyDataChart)=>{
@@ -65,81 +77,111 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         }
         else{
           lastNinetyDaysData.push({
-            cs:null,
-            dt:getFormattedDate(date),
-            git:null,
-            rp:null,
-            stk:null,
-            rrs:null,
-            grs:null,
-            rrc:null,
-            grc:null
+            cs: null,
+            dt:format(date, "yyyy-MM-dd"),
+            git: null,
+            rp: null,
+            stk: null,
+            rrs: null,
+            grs: null,
+            rrc: null,
+            grc: null
           })
         }
       })
+      return lastNinetyDaysData
     }
-    fillNotAvailableDates(chartData);
-    const dispatch = useDispatch();
-    const suspensionOptions = [
-        {label:'Select Suspension Type',value:''},
-        {label:'Upward Stock Based',value:'upwardStockBased'},
-        {label:'Downward Stock Based',value:'downwardStockBased'},
-        {label:'Upward Consumption Based',value:'upwardConsumptionBased'},
-        {label:'Downward Consumption Based',value:'downwardConsumptionBased'}
 
-    ]
-    const [horizon,setHorizon] = useState<number>(30);
-    const [suspensionType,setSuspensionType] = useState('')
+    // const addBoundaryDataPoints = (data: any) => {
+    //   if (data.length === 0) return data;
+  
+    //   const firstDate = new Date(data[0].dt);
+    //   const lastDate = new Date(data[data.length - 1].dt);
+  
+    //   const startPoint = {
+    //     dt: format(subDays(firstDate, 1), "yyyy-MM-dd"),
+    //     hideTooltip: true // Special flag to hide tooltip
+    //   };
+  
+    //   const endPoint = {
+    //     dt: format(addDays(lastDate, 1), "yyyy-MM-dd"),
+    //     hideTooltip: true // Special flag to hide tooltip
+    //   };
+  
+    //   return [startPoint, ...data, endPoint];
+    // };
+    
+    useEffect(()=>{
+      if(lastRunDate)
+        setMissingData(fillNotAvailableDates(chartData))
+    }, [lastRunDate, chartData])
 
     const generateChartOptions = () => {
-        const adjustedChartData = chartData.slice(chartData.length-horizon,chartData.length);
-        console.log(adjustedChartData);
-        const sortedNormChangeData = normChangeData
-          ? [...normChangeData].sort(
-              (a: NormChangeHistory, b: NormChangeHistory) => 
-                new Date(a.nCD).getTime() - new Date(b.nCD).getTime()
-            )
-          : [];
-        let tempNorm = 0;
+        useEffect(()=>{
+         {
+            const lastIndex = missingData.length - 1;
+            // Calculate the start index based on the horizon
+            const startIndex = Math.max(0, lastIndex - horizon + 1);  
 
-        let normData = chartData.map((dailyData:DailyDataChart) => {
+            const newadjustedChartData = missingData.slice(startIndex, lastIndex + 1)
 
-            //Find Closest Norm Change History to current Date
-            let closestNormChangeIndex = -1;
-
-            sortedNormChangeData.forEach((o:NormChangeHistory,index:number) => {
-              if(new Date(dailyData.dt).getTime() >= new Date(o.nCD).getTime()){
-                closestNormChangeIndex = index;
-              }
-            });
+            // if(newadjustedChartData.length){
+            //   newadjustedChartData = addBoundaryDataPoints(newadjustedChartData);
+            // }
             
-            if(normChangeData?.length > 0 && closestNormChangeIndex !== -1){
-              tempNorm = sortedNormChangeData[closestNormChangeIndex]['nN'];
-            }
-            else{
-              tempNorm = masterData['nm'];
-            }
-              
-            return {date:dailyData.dt,norm:tempNorm};
-        }).slice(chartData.length-horizon,chartData.length);
+            setadjustedChartData(newadjustedChartData)
+            const sortedNormChangeData = normChangeData
+              ? [...normChangeData].sort(
+                  (a: NormChangeHistory, b: NormChangeHistory) => 
+                    new Date(a.nCD).getTime() - new Date(b.nCD).getTime()
+                )
+              : [];
+            let tempNorm = 0;
+            let updateNormData:any[] = []
+            updateNormData = missingData.map((dailyData:DailyDataChart) => {
 
-      
-        normData = normData.map((data:NormData,index:number)=>{
-          const normBand = parseFloat((data.norm/3).toFixed(2))
-
-          const normObj = {
-            ...data,normRed:normBand,
-            normGreen:normBand,
-            normYellow:normBand,
-            normBlue:data.norm + parseInt(adjustedChartData[index]['bz'],10),
-            upwardStockBasedNorm:adjustedChartData[index]['rrs'] > 0 ? data.norm : 0,
-            downwardStockBasedNorm:adjustedChartData[index]['grs'] > 0 ? data.norm : 0,
-            upwardConsumptionBasedNorm:adjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
-            downwardConsumptionBasedNorm:adjustedChartData[index]['grc'] > 0 ? data.norm : 0
+                //Find Closest Norm Change History to current Date
+                let closestNormChangeIndex = -1;
+    
+                sortedNormChangeData.forEach((o:NormChangeHistory,index:number) => {
+                  if(new Date(dailyData.dt).getTime() >= new Date(o.nCD).getTime()){
+                    closestNormChangeIndex = index;
+                  }
+                });
+                
+                if(normChangeData?.length > 0 && closestNormChangeIndex !== -1){
+                  tempNorm = sortedNormChangeData[closestNormChangeIndex]['nN'];
+                }
+                else{
+                  tempNorm = masterData?.['nm'] || "";
+                }
+                  
+                return {date:dailyData.dt,norm:tempNorm};
+            }).slice(startIndex, lastIndex + 1);
+    
+          
+            // let prevValueNormValue = parseInt(chartData?.[0]?.['bz'], 10) || 0
+            updateNormData = updateNormData.map((data:NormData,index:number)=>{
+              const normBand = parseFloat((data.norm/3).toFixed(2))
+              const normBlue = (parseInt(newadjustedChartData?.[index]?.['bz'],10) || 0)
+    
+              const normObj = {
+                ...data,normRed:normBand,
+                normGreen:normBand,
+                normYellow:normBand,
+                normBlue:normBlue,
+                upwardStockBasedNorm:newadjustedChartData[index]['rrs'] > 0 ? data.norm : 0,
+                downwardStockBasedNorm:newadjustedChartData[index]['grs'] > 0 ? data.norm : 0,
+                upwardConsumptionBasedNorm:newadjustedChartData[index]['rrc'] > 0 ? data.norm : 0,
+                downwardConsumptionBasedNorm:newadjustedChartData[index]['grc'] > 0 ? data.norm : 0
+              }
+              // prevValueNormValue = parseInt(newadjustedChartData[index]['bz'],10)
+              return normObj
+            })
+            setNormData(updateNormData)
           }
+        },[horizon, missingData])
 
-          return normObj
-        })
 
         function generateSuspensionReasons(rrs:number,grs:number,rrc:number,grc:number){
           const suspensionReasons:Array<string> = [];
@@ -179,29 +221,35 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           </div>
         `
 
-        const generateDailyDataBlock = (stock:number,receipt:number,git:number,consumption:number,redNorm:number,yellowNorm:number,greenNorm:number) => `
+        const generateDailyDataBlock = (stock:number,receipt:number,git:number,consumption:number,redNorm:number,yellowNorm:number,greenNorm:number, blueNorm: number) => `
           <div style="padding:5px;">
             <div style="display:flex;justify-content:flex-start;flex-wrap:wrap;gap:5px;margin-bottom:5px;">
-              <div style="display:flex;align-items:center;gap:5px;">
+              ${stock != null || stock != undefined ? `<div style="display:flex;align-items:center;gap:5px;">
                 <div style="width:10px;height:10px;background-color:#5D148B;"></div>
                 <span style="font-family:Roboto;font-weight:700;">Stock :</span>
                 <span>${stock}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
+              </div>` : ""}
+              ${
+                git != null || git != undefined ? `<div style="display:flex;align-items:center;gap:5px;">
                 <div style="width:10px;height:10px;background-color:#8137BC;"></div>
                 <span style="font-family:Roboto;font-weight:700;">GIT :</span>
                 <span>${git}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
+              </div>`: ""
+              }
+              ${
+                receipt != null || receipt != undefined ? `<div style="display:flex;align-items:center;gap:5px;">
                 <div style="width:10px;height:10px;background-color:#67B6E8;"></div>
                 <span style="font-family:Roboto;font-weight:700;">Receipt :</span>
                 <span>${receipt}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:5px;">
+              </div>`: ""
+              }
+              ${
+                consumption != null || consumption != undefined ? `<div style="display:flex;align-items:center;gap:5px;">
                 <div style="width:10px;height:10px;background-color:#EDB04D;"></div>
                 <span style="font-family:Roboto;font-weight:700;">Consumption :</span>
                 <span>${consumption}</span>
-              </div>
+              </div>` : ""
+              }
               
             </div>
             <div style="display:flex;gap:5px;">
@@ -217,13 +265,21 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                 <div style="width:10px;height:10px;background-color:#418D18;"></div>
                 <span>${greenNorm}</span>
               </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:10px;height:10px;background-color:#355FD3;"></div>
+                <span>${blueNorm}</span>
+              </div>
             </div>
           <div>
         `
 
         function renderer(params: any) {
+          
           const suggestionObject = suggestionData.find((data:any)=>new Date(data['sdate']).getTime() === new Date(params.datum['date']).getTime())
-          const dailyDataObject = chartData.find((data:any)=>new Date(data['dt']).getTime() === new Date(params.datum['date']).getTime())
+          const dailyDataObject = missingData.find((data:any)=>new Date(data['dt']).getTime() === new Date(params.datum['date']).getTime())
+          // if(!dailyDataObject.stk && !dailyDataObject.rp && !dailyDataObject.git && !dailyDataObject.cs){
+          //   return ""
+          // }
           const suspensionReasons = generateSuspensionReasons(params.datum.upwardStockBasedNorm,params.datum.downwardStockBasedNorm,params.datum.upwardConsumptionBasedNorm,params.datum.downwardConsumptionBasedNorm)
        
           let tooltip = `
@@ -235,7 +291,9 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
           if(suspensionReasons.length > 0 && suspensionType!=='') tooltip += generateSuspensionReasonsBlock(suspensionReasons);
 
-          tooltip += generateDailyDataBlock(dailyDataObject.stk,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.ceil(params.datum.normYellow*3))
+          if(dailyDataObject.stk != null || dailyDataObject.rp != null || dailyDataObject.git != null || dailyDataObject.cs != null){
+            tooltip += generateDailyDataBlock(dailyDataObject.stk,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.floor(params.datum.normYellow*3), params.datum.normBlue)
+          }
 
           const finalTooltipHTML = `
             <div style="background-color:white;border:1px solid #777777;border-radius:5px;max-width:400px;">
@@ -486,6 +544,9 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
     }
 
     const getMonitoringDate = () => {
+        if(monitoringData.length == 0){
+          return '';
+        }
         if(suspensionType === 'upwardStockBased') return monitoringData[0]['srrd'];
         if(suspensionType === 'downwardStockBased') return monitoringData[0]['sgrd'];
         if(suspensionType === 'upwardConsumptionBased') return monitoringData[0]['crrd'];
@@ -503,9 +564,12 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
     return(
         <VFModalCard openModal={isModalOpen} closeModal={()=>dispatch(TOGGLE_GRAPH_MODAL(false))} headerIcon='' headerText="Daily Data Graph" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
             <SCSeasonalityContainer>
-                <SCChartContainer>
-                    <AgCharts options={generateChartOptions()}/>
-                </SCChartContainer>
+            <SCChartContainer>
+              <AgCharts options={{
+                ...generateChartOptions(),
+                padding: { right: 25}
+              }} />
+            </SCChartContainer>
                 <SCSeasonalityStatusDetails>
                   <SCSeasonalityDetailsTitle themeUi={themeUi}>
                     Daily Data Graph Details
@@ -568,31 +632,31 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>RLT :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['rlt']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rlt'] || ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Current Norm :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['nm']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['nm'] || ""}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Min Norm :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['mn']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['mn'] || ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>RCP :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['rcp']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rcp'] || ""}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>GCP :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData['gcp']}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['gcp'] || ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>

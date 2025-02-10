@@ -7,7 +7,15 @@ export const WrapToolTip = styled.div`
     pointer-events: auto;
     background: ${globalStyles.white};
     top: 0 !important;
+    opacity:1;
+    // visibility: hidden;
+    // transition: 100ms visibility ease-in;
+    &.react-tooltip__show{
+        visibility: visible;
+    }
   }
+
+  
 
 `;
 

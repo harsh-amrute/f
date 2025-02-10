@@ -12,6 +12,7 @@ import RemarkModal from "./RemarkModal"
 
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import { ButtonWrapper } from "./styles"
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 
 const OpenExpeditingRequests = () => {
@@ -43,7 +44,8 @@ const OpenExpeditingRequests = () => {
     editedRows,
     onSubmitEditedRows,
     themeUi,
-    onResetCallback
+    onResetCallback,
+    lastRunDate
   } = useOpenExpeditingRequests()
 
   return (
@@ -73,6 +75,7 @@ const OpenExpeditingRequests = () => {
           genericRecordCount={12}
           onExportToExcelCallBack={() => { return }}
           multiFilter={currentFilter}
+          lastRunDate={lastRunDate}
           setMultiFilter={setCurrentFilter}
           onDelete={onDelete}
           onApplyFilter={onApplyFilter}
@@ -80,6 +83,9 @@ const OpenExpeditingRequests = () => {
           disableSubmitEditedRowsBtn={editedRows.length === 0}
         />
       </div>
+      {lastRunDate && (
+        <LastRunDateComponent lastRunDate={lastRunDate} />
+      )}
       {/* {(isLoading)?
           (
             <VFLoader/>
@@ -100,7 +106,7 @@ const OpenExpeditingRequests = () => {
         />
           )
         } */}
-      <div style={{ marginLeft: '15px', height: '75%' }}>
+      <div style={{ marginLeft: '15px', height: '80%' }}>
         <VFTable
           columnDefs={colDefs}
           rowData={rowData}

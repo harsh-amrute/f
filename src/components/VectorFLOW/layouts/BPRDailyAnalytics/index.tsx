@@ -59,9 +59,9 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     },[rowData])
 
     function calculatePercentIncrease(data:Array<any>) {
-        if (data.length < 2) {
-          notifyError("Insufficient data to calculate percent increase")
-        }
+        //if (data.length < 2) {
+        //  notifyError("Insufficient data to calculate percent increase")
+        //}
         
         const todaysDateIndex = isBefore(data[0].ReportDate,data[1].ReportDate)?1:0
         const yesterdayDateIndex = (todaysDateIndex - 1 + data.length) % data.length;
@@ -104,14 +104,12 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         let payloadString = ""
         if(location.pathname==='/supply-chain-intelligence-hub/planning'){
             if(currentCategory!==""){
-                
                 switch(currentCategory){
                     case "GITFromParent":
                         payloadString = "gitparent"
                         break
                     case "GITToChild":
-                        if(currentTab==="locationWise")payloadString = "gitchildlocation"
-                        else payloadString = "gitchildtransporter"
+                        payloadString = currentTab==="locationWise" ? "gitchildlocation" : "gitchildtransporter"
                         break
                     case "ExpediteFromParent":
                         payloadString = "expediteparent"
@@ -136,7 +134,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
         }
         else payloadString = routerToAnalyticsStringMap[pathname]
         try{
-            const data = await getAnalyticsData(payloadString)
+            const data = await getAnalyticsData({reportname :payloadString})
             setRowData(calculatePercentIncrease(data.data.data))
             // setRowData(calculatePercentIncrease([
             //     {
@@ -236,7 +234,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
                         Analytics (SKU Locations)
                     </BPRDailyAnalyticsHeader>
                     <div style={{width:'100%',height:'100%',display:'grid',placeItems:'center'}}>
-                    <p style={{color:'white'}}>No data</p>
+                    <p style={{color:'white'}}>No data to show</p>
                     </div>
                 </BPRDailyAnalyticsContainer>
             </BPRDailyAnalyticsWrapper>
