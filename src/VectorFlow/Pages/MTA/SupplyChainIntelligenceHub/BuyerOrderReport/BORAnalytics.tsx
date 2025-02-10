@@ -82,7 +82,7 @@ const BORAnalytics = ()=>{
                                </RRRAnalyticsTableSubHeaderSection>
                                <RRRAnalyticsSeperator themeUi={themeUi}/>
                                <RRRAnalyticsTableSubHeaderSection>
-                                  U.Supp
+                                  Unique Supp. Count
                                </RRRAnalyticsTableSubHeaderSection>
                             </RRRAnalyticsTableSubHeader>
                         </RRRAnalyticsTableHeader>
