@@ -164,7 +164,7 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
         </div>
       </div>
       <div style={{height:'85%'}}>
-        <AgCharts options={options} />
+        <AgCharts options={{...options,padding: {right: 20,left:20}}} />
       </div>
     </div>
 
