@@ -95,76 +95,17 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             return temp;
         })
     }
-    
 
-    // const palette={
-    //     fills: ['#848484'],
-    //     strokes: ['#ffffff', '#ffffff'],
-    // }
 
     useEffect(()=>{
         const formattedRowData1 = sortData(convertToInt(data['topTenLocationsWithExcessInventorySkuCount']['data'],['SKUCounts']),'SKUCounts')
         setRowData1(formattedRowData1)
-        setChartThemeOverridesG1(generateChartOptions(formattedRowData1,chartParams1.series,chartParams1.palette,'Location Name','Count Of SKUs',chartParams1.chartKey,undefined))
+        setChartThemeOverridesG1(generateChartOptions(formattedRowData1,chartParams1,undefined))
         
         const formattedRowData2 = scaleDown(sortData(convertToInt(data['topTenLocationsWithExcessInventoryValue']['data'],['SumOfAmount']),'SumOfAmount'),'SumOfAmount',100000)
         setRowData2(formattedRowData2)
-        setChartThemeOverridesG2(generateChartOptions(formattedRowData2,chartParams2.series,chartParams2.palette,'Location Name','Value In Lakhs',chartParams2.chartKey,undefined))
+        setChartThemeOverridesG2(generateChartOptions(formattedRowData2,chartParams2,undefined))
     },[])
-
-    // const myCustomTheme:any = {
-    //     palette: {
-    //         fills: ['#848484'],
-    //         strokes: ['#ffffff', '#ffffff'],
-    //     },
-    // }
-
-    // const chartKeys1 = {
-    //     Xaxis:['WHDescription'],
-    //     Yaxis:['SKUCounts']
-    // }
-
-    // const chartKeys2 = {
-    //     Xaxis:['WHDescription'],
-    //     Yaxis:['SumOfAmount']
-    // }
-    
-    // const series1 = [
-    //     {
-    //         type:'bar',
-    //         xKey:'WHDescription',
-    //         yKey:'SKUCounts',
-    //         yName:'Count of SKUs',
-    //         stacked:false,
-    //         barPadding:0.2,
-            
-    //     }
-    // ]
-
-    // const series2 = [
-    //     {
-    //         type:'bar',
-    //         xKey:'WHDescription',
-    //         yKey:'SumOfAmount',
-    //         yName:'Value In Lakhs',
-    //         stacked:false,
-    //         barPadding:0.2,
-            
-    //     }
-    // ]
-
-
-    // const defaultColForCustomGraph1 = {
-    //     columns:['WHDescription','SKUCounts'],
-    //     start:0,
-    //     end:9
-    // }
-
-    // const defaultColForCustomGraph2 = {
-    //     columns:['WHDescription','SumOfAmount'],
-    //     start:0,
-    //     end:9
-    // }
 
      
     return(
@@ -176,14 +117,10 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
 
                         <VFCharts     
                             height={'95%'}
-                            title={chartParams1.title}
-                            graphInfo={chartParams1.graphInfo}
-                            defaultColForCustomGraph={chartParams1.defaultColForChart}
+                            chartParams={chartParams1}
                             colDefs={colDefs1}
                             rowData={rowData1}
                             chartProps={chartThemeOverridesG1}
-                            palette={chartParams1.palette}
-                            chartType={chartParams1.chartType}
                             containerStyle={{marginLeft:'0px',marginRight:'10px'}}
                         />
 
@@ -193,14 +130,10 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
 
                         <VFCharts     
                             height={'95%'}
-                            title={chartParams2.title}
-                            graphInfo={chartParams2.graphInfo}
-                            defaultColForCustomGraph={chartParams2.defaultColForChart}
+                            chartParams={chartParams2}
                             colDefs={colDefs2}
                             rowData={rowData2}
                             chartProps={chartThemeOverridesG2}
-                            palette={chartParams2.palette}
-                            chartType={chartParams2.chartType}
                             containerStyle={{marginLeft:'17px',marginRight:'0px'}}
                         />
 

@@ -861,7 +861,8 @@ const DptWiseBMReport = () => {
                 rn_id: UIGridCode.ProdDeptWiseBMReport
             });
 
-            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            const newConfig = data?.data?.data?.length?
+            JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
             
             setColumnState(newConfig.cs);
             setIsPivot(newConfig.pivot);

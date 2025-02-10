@@ -2527,7 +2527,6 @@ const commonTooltip= {
   enabled:true,
   renderer:(params:any)=>{
       const datum = params.datum
-      console.log(params)
       return {
       title: `${params.yName}`,
       content: `${datum[params.xKey]}: ${datum[params.yKey]}`,
@@ -2535,12 +2534,13 @@ const commonTooltip= {
   },
 }
 
-export const generateChartOptions = (data:any,series:any,palette:any,categoryTitle:string , numberTitle:string,keys:any,isCategoryData?:string) =>{
+export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
+  
+  const { series , palette , chartKey:keys, Labels} = chartParams
 
   const seriesMapped = series.map((obj:any,index:number)=>{
     return {...obj,tooltip:commonTooltip}
   })
-  console.log(seriesMapped)
   const options:AgChartOptions = {
     data:data.slice(0,10),
     theme:{
@@ -2554,13 +2554,12 @@ export const generateChartOptions = (data:any,series:any,palette:any,categoryTit
         keys:keys.Xaxis,
         title:{
           enabled:true,
-          text:categoryTitle,
+          text:Labels.Xaxis,
           fontSize:10,
           fontFamily:'Roboto'
         },
         label:{
           formatter:(params:any)=>{
-            console.log(params)
             if(params.value.length > 10) return params.value.slice(0,10) + '...';
             return params.value;
           },
@@ -2574,7 +2573,7 @@ export const generateChartOptions = (data:any,series:any,palette:any,categoryTit
         keys:keys.Yaxis,
         title:{
           enabled:true,
-          text:numberTitle,
+          text:Labels.Yaxis,
           fontSize:10,
           fontFamily:'Roboto'
         },
@@ -2593,7 +2592,7 @@ export const categoryFormatter = (params:any)=>{
   return params.value;
 }
 
-export const generateGridSpecificChartFromChartProps = (options:any):any =>{
+export const generateGridSpecificChartFromChartProps = (options:any,downloadName:string):any =>{
   if(options===undefined){
     return null
   }
@@ -2602,6 +2601,11 @@ export const generateGridSpecificChartFromChartProps = (options:any):any =>{
     common: {
       legend: {
         position: "bottom",
+      },
+      title:{
+        enabled:true,
+        text:downloadName,
+        fontSize:10
       },
       axes: {
         category: {
@@ -3366,9 +3370,11 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     floatingFilter: false,
     checkboxSelection: true,
     headerCheckboxSelectionCurrentPageOnly: true,
-    width: 60,
+    width: 45,
     pinned: 'left',
     lockPosition: 'left',
+    initialHide:false,
+    suppressMenu:true
   }
 
   const DBMGraphColumn: ColDef[] = [
@@ -3376,16 +3382,19 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
       colId: 'dailydatagraph',
       field: '',
       headerName: '',
-      width: 80,
+      width: 60,
+      minWidth:60,
+      maxWidth:70,
       lockPosition: true,
       floatingFilter: false,
       tooltipField: "DailyDataGraph",
       cellRenderer: 'grapCellRenderer',
       cellRendererParams: {
         onOpenDailyDataGraph: onOpenDailyDataGraph
-      }
-
-
+      },
+      initialHide:false,
+      pinned:'left',
+      suppressMenu:true
     }
   ]
 
@@ -3399,8 +3408,11 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
         callBack: afterSleepCallBack
       },
       floatingFilter: false,
-      minWidth: 140,
-      maxWidth: 140
+      minWidth: 100,
+      maxWidth: 100,
+      initialHide:false,
+      pinned:'left',
+      suppressMenu:true
     }
   ]
 
@@ -3410,7 +3422,10 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     cellRenderer: 'suggestionCategoryCellRenderer',
     floatingFilter: false,
     minWidth: 30,
-    maxWidth: 30
+    maxWidth: 30,
+    initialHide:false,
+    pinned:'left',
+    suppressMenu:true
   }
 
 
