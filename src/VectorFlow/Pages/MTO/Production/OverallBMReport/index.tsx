@@ -466,7 +466,7 @@ const OverallBmReport = () => {
     const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
     const totalRows = refGraph2?.current?.api?.getDisplayedRowCount();
 
-    setIsCheckboxChecked(totalRows>0 && selectedNodes?.length === totalRows);
+    setIsCheckboxChecked(totalRows > 0 && selectedNodes?.length === totalRows);
   };
 
   const handleActionChange = (option: any) => {
