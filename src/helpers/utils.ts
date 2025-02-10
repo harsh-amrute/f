@@ -1020,7 +1020,9 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
         //     ? ''
         //     : parseFloat(params.value).toLocaleString(); // Format number properly
         // }
-
+        if(!params.data){
+          return ''
+        }
         return params.data[f.key]
       },
       // suppressColumnsToolPanel: f.isEdit ? false : true,
