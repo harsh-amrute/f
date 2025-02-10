@@ -2,30 +2,31 @@ import styled from "styled-components";
 // import * as globalStyles from "../../../../../../styles/global";
 import * as gridSystem from "../../../../../../styles/gridSystem";
 
+export const SCDynamicContainer = styled.div`
+    margin-top:25px;
+    display:block;
+    height:150vh;
+    @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
+        .size.desktop}) {
+        height:70vh
+    }
+  
+    @media (min-width: ${gridSystem.size.desktop}) {
+      height:110vh
+    }
+`
+
 // export const SCDynamicContainer = styled.div`
 //     display:block;
-//     height:150vh;
-//     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
-//         .size.desktop}) {
-//         height:150vh
-//     }
-  
+//     // aspect-ratio:1;
+//     width:100%;
+//     margin-top:10px;
+//     height:85%;
 //     @media (min-width: ${gridSystem.size.desktop}) {
-//       height:100vh
+//         height:87%
 //     }
-// `
-
-export const SCDynamicContainer = styled.div`
-    display:block;
-    // aspect-ratio:1;
-    width:100%;
-    margin-top:10px;
-    height:85%;
-    @media (min-width: ${gridSystem.size.desktop}) {
-        height:87%
-    }
     
-`
+// `
 
 export const SCHorizontalAllignmentWrapper = styled.div`
     width:100%;

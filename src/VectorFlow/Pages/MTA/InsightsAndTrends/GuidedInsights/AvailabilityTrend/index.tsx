@@ -48,10 +48,9 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
         //stroke: "#4E4E4E",
         marker: {
           fill: greyShades[index % greyShades.length],
-          size: 12,
-          stroke: "white",
+          size: 5,
+          stroke: greyShades[index % greyShades.length],
           strokeWidth: 3,
-          
         }
       };
     });
@@ -62,6 +61,7 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
       
       data: AvailabilityTrendData,
       series: series,
+
       axes: [
         {
           type: 'category',
