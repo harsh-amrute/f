@@ -127,6 +127,7 @@ const useOpenExpeditingRequests = () => {
             setOERColumns(ColumnDefinitions);
             const tempRowData = data?.data?.data?.data || [];
             toast.dismiss()
+            notifySuccess("Data Loaded Successfully")
             if(!tempRowData.length){
               setRowData([])
             }else{
@@ -359,6 +360,7 @@ const useOpenExpeditingRequests = () => {
         const data = await getData(filter)
         setRowData(data.data.data.datamap((r:any,index:number)=>({...r,id:index,action:''})))
         toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
       }catch(err:any){
         notifyError(err)
       }

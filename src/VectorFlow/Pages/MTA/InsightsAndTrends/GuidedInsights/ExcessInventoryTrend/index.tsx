@@ -253,9 +253,9 @@ const ExcessInventoryTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:st
   };
   
   
-const graph1=['This graph highlights the date-wise trend of excess inventory across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
+const graph1=['This graph highlights the date-wise trend of excess inventory (On Hand) across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
 
-const graph2=['This graph highlights the date-wise trend of excess inventory in value across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
+const graph2=['This graph highlights the date-wise trend of excess inventory (On Hand) in value across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
 
 if(isLoaderGraph1||isLoaderGraph2){
   <VFLoader/>

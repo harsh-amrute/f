@@ -277,6 +277,7 @@ export const useBORColorBandwise =()=>{
         const result = await getData(payload);
         setRowData(result.data.data)
         toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
         }catch(err:any){
           notifyError(err)
           setRecordCount(0)
