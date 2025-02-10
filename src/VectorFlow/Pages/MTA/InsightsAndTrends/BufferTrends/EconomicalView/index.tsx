@@ -39,9 +39,12 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
         y:parseFloat(item.y),
         g:parseFloat(item.g),
         w:parseFloat(item.w),
-        r:parseFloat(item.r)
+        r:parseFloat(item.r),
+        total:parseFloat(item.total)
         // Parse the string to a floating-point number
     }));
+
+    console.log("numericData for EconomicalWise", numericData);
     const options:AgChartOptions = {
         axes:[
             {
@@ -140,6 +143,20 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
                 stroke:"grey",
                 
             }
+          },
+          {
+            type: "line",
+            xKey: "dt",
+            xName:"Date",
+            yKey: "total",
+            yName: "Total",
+            stroke: "purple" ,
+            marker:{
+                fill:"purple",
+                stroke:"purple",
+                
+            },
+            strokeWidth: 4
           }
         
         ],

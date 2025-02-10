@@ -8,7 +8,6 @@ export const formDataPermission = ({
 }: any) => {
   const dataPermission: any = [];
   let formData: any;
-
   if (parent?.length > 0) {
     for (const eleParent of parent) {
       let isAddParent: any = false;
@@ -17,10 +16,10 @@ export const formDataPermission = ({
           let isAddChild: any = false;
           if (eleChild.value.split(" > ").includes(eleParent.value)) {
             const dataChild: any = eleChild.value.split(" > ");
-  
             if (grandChild?.length > 0) {
               for (const eleGrandChild of grandChild) {
-                if (eleGrandChild.value.split(" > ").includes(eleChild.value)) {
+
+                if (eleGrandChild.value.includes(eleChild.value)) {
                   const dataGrandChild = eleGrandChild.value.split(" > ");
                   formData = {
                     [keyParent]: eleParent.value,
@@ -141,7 +140,7 @@ export const handleSelectChild = ({
     label: item,
     value: item,
   }));
-
+  console.log("grandChild" , grandChild);
   setGrandChild(valueGrandChild);
   setParent(newValueBrand);
 };
@@ -181,4 +180,5 @@ export const handleSelectGrandChild = ({
 
   setParent(newValueParent);
   setChild(newValueChild);
+  
 };

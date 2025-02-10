@@ -50,6 +50,30 @@ const useBufferTrends = () => {
         }
     ])
 
+    const getGraphDataWithTotal = (data:any) => {   
+        data.data.absolute = data?.data?.absolute.map((item: any) => ({
+            ...item,
+            total: Object.values(item).reduce((acc: number, value: any) => {
+                if (!isNaN(value)) {
+                    return acc + parseFloat(value);
+                }
+                return acc;
+            }, 0).toString()
+        }));
+
+        data.data.percentage = data?.data?.percentage.map((item: any) => ({
+            ...item,
+            total: Object.values(item).reduce((acc: number, value: any) => {
+                if (!isNaN(value)) {
+                    return acc + parseFloat(value);
+                }
+                return acc;
+            }, 0).toString()
+        }));
+
+        return data;
+    }
+
     const BufferTrendsDataLoad = async () => {
         try {
             setCurrentView('chart');
@@ -66,7 +90,7 @@ const useBufferTrends = () => {
             setCurrentGraphData(result.data?.data?.absolute);
             setSummaryData(result.data?.data?.summary);
             setAvailability(result.data?.data?.avail);
-            setGraphData(result.data);
+            setGraphData(getGraphDataWithTotal(result.data));
             notifySuccess("Graph Details Fetched Successfully")
 
         
@@ -82,7 +106,6 @@ const useBufferTrends = () => {
 
    const onFloatingTabChange = (tab:any) =>{
 
-    console.log("called")
      setCurrentTab(tab.value);
      updateGraphState(1,"pen",{label:'Absolute',value:'Absolute'})
      setHorizondays(30);
@@ -133,7 +156,6 @@ const useBufferTrends = () => {
     }
 
     const handleSubmitClick=()=>{
-        console.log("clicked")
         BufferTrendsDataLoad();
     }
 
@@ -164,7 +186,7 @@ const useBufferTrends = () => {
             setCurrentGraphData(result.data?.data?.absolute);
             setSummaryData(result.data?.data?.summary);
             setAvailability(result.data?.data?.avail);
-            setGraphData(result.data);
+            setGraphData(getGraphDataWithTotal(result.data));
             notifySuccess("Graph Details Fetched Successfully")
             
         } catch (error) {

@@ -10,7 +10,7 @@ const SKULocationMessages = (key:string)=>({
     "any.gcp":"GCP value should be greater than or equal to " + MIN_GCP_VALUE,
     "number.unsafe":`${key} should be less than ${MAX_INT_VAL}`,
     "any.mnwarn":"MinNorm should be greater than or equal to 2",
-    "any.mnerror":"MinNorm should be greater than 0",
+    "any.mnerror":"MinNorm should be greater than or equal to 0",
     "any.greaterthanZero":`${key} should be greater than 0`,
     'any.empty': `${key} should not be empty`,
     'any.FGRM': `${key} must be one of [fg, rm]`,
@@ -85,7 +85,7 @@ const MNValidator = (value:any,helper:any)=>{
     if(!Number.isInteger(value)){
         return value
     }
-    if(value<=0){
+    if(value<0){
         return helper.error("any.mnerror")
     }
     // }else if(value<2){
