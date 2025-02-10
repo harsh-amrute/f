@@ -14,14 +14,15 @@ const VFChartsTable = (props:any)=>{
         setHideChart,
         defaultColForCustomGraph,
         palette,
-        chartType
+        chartType,
+        downloadName
     } = props;
 
     const [gridSpecificChartOptions,setGridSpecificChartOptions] = useState<any>(undefined)
 
     useEffect(()=>{
         if(chartProps!==undefined){
-            setGridSpecificChartOptions(generateGridSpecificChartFromChartProps(chartProps))
+            setGridSpecificChartOptions(generateGridSpecificChartFromChartProps(chartProps,downloadName))
         }
     },[chartProps])
 
@@ -41,6 +42,7 @@ const VFChartsTable = (props:any)=>{
         palette
     }
 
+    const getChartToolbarItems:any = () => ['chartDownload'];
 
     return (
         <VFModalCard openModal={hideChart} closeModal={()=>setHideChart(false)} headerIcon='' headerText={title} headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
@@ -62,7 +64,7 @@ const VFChartsTable = (props:any)=>{
                     ],
                   }}                                        
                 onGridReady={()=>generateChartInGridTable()}
-                //getChartToolbarItems={getChartToolbarItems}
+                getChartToolbarItems={getChartToolbarItems}
                 chartToolPanelsDef={
                     {
                         panels:[]

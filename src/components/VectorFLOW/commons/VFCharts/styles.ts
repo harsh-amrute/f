@@ -38,8 +38,14 @@ export const SCChartLayout = styled.div`
     // margin-top:30px;
 `;
 
+export const SCHorizontalAllignmentWrapper = styled.div`
+    width:100%;
+    padding:0px 20px 15px;
+    height:100%;
+`
+
 export const SCChartHeaderContainer = styled.div`
-    height:60px;
+    //height:60px;
     background-color:white;
     display:flex;
     justify-content:space-evenly;
