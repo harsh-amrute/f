@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 import { GridOptions, SideBarDef } from 'ag-grid-enterprise';
 import _ from 'lodash';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
+import VFPagination from "../../Common/VFPagination";
 import VFTable from '../../Common/VFTable';
 
 interface IStep1Props {
@@ -138,6 +138,8 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
         rowsPerPage={15}
         currentPage={currentPage}
         handleChangePage={handlePageChange}
+        resetGridRef={currentGridRef}
+        
       />
     </>
   );

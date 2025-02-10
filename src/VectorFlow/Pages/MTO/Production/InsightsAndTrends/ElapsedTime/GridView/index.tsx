@@ -4,7 +4,7 @@ import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
-import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
+import VFPagination from "../../../../Common/VFPagination";
 import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
 import { useGetElapsedTimeData, useGetElapsedTimeDataForExcelExport } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
@@ -154,7 +154,8 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
             //     ]
             // }}
             />
-            <VFPagination selectedRows={1} totalRows={totalRows} currentPage={currentPage} rowsPerPage={pagination.mtoPageSize} handleChangePage={handlePageChange} />
+            <VFPagination selectedRows={1} totalRows={totalRows} currentPage={currentPage} rowsPerPage={pagination.mtoPageSize} handleChangePage={handlePageChange} resetGridRef={currentGridRef}
+            />
         </SCDynamicContainer>
 
     )

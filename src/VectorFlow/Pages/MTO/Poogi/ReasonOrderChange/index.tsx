@@ -15,7 +15,7 @@ import MTORemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORe
 import PlannedReleaseRenderer from './PlannedReleaseRenderer';
 import CustomCellEditor from './MajorDropDownRenderer';
 import { ColorsMTO } from '../../Common/Colors';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
+import VFPagination from "../../Common/VFPagination";
 import BPPRenderer from '../../Common/BPPRenderer';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
@@ -491,6 +491,8 @@ const ReasonForDelayOrder = () => {
                     totalRows={rowDataCount}
                     currentPage={currentPage}
                     handleChangePage={handlePageChange}
+                    resetGridRef={currentGridRef}
+
                 />
 
 

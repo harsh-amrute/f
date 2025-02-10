@@ -5,7 +5,7 @@ import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { useGetSTPLAndFullKitData } from "../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/STPLAndFullKits";
 import { useGetBOMExplosionData } from "../../../../../../VectorFlow/Services/MTO/Common/BOMExplosion";
-import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
+import VFPagination from "../../../Common/VFPagination";
 import { pagination } from "../../../Common/Enum";
 import { Wrapper } from "./styles";
 import { formatFilterJSON } from "../../../../../../helpers/utils";
@@ -161,7 +161,8 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
           totalRows={totalRow}
           currentPage={currentPage}
           handleChangePage={(cp) => handlePageChange(cp)}
-        />
+          resetGridRef={currentGridRef}
+          />
       </Wrapper>
     </>
   )

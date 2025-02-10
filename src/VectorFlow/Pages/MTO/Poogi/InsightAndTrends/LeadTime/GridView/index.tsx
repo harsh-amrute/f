@@ -5,7 +5,7 @@ import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/Cu
 import './styles.css'
 import { SCDynamicContainer } from './styles';
 import { useGetLeadTimeData } from '../../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime';
-import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
+import VFPagination from "../../../../Common/VFPagination";
 import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
@@ -119,7 +119,8 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appl
             //     ]
             // }}
             />
-            <VFPagination currentPage={currentPage} totalRows={totalRows} rowsPerPage={pagination.mtoPageSize} selectedRows={1} handleChangePage={handlePageChange} />
+            <VFPagination currentPage={currentPage} totalRows={totalRows} rowsPerPage={pagination.mtoPageSize} selectedRows={1} handleChangePage={handlePageChange} resetGridRef={currentGridRef}
+            />
         </SCDynamicContainer>
 
     )

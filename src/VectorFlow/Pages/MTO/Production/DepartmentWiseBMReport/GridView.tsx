@@ -1,6 +1,6 @@
 import { VFWrapper } from './styles';
 import { SaveBtnWrapper, SaveBtn } from '../../Poogi/ReasonOrderChange/styles';
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import VFPagination from "../../Common/VFPagination";
 // import { pagination } from '../../Common/Enum';
 // import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFTable from '../../Common/VFTable';
@@ -43,6 +43,7 @@ const GridView = memo(({
             <VFWrapper className="wrapper-overall">
                 <VFTable
                     {...agGridProps}
+                    debug
                     maintainColumnOrder
                     pagination={false}
                     columnDefs={columDef}
@@ -79,6 +80,7 @@ const GridView = memo(({
                 totalRows={totalRow?totalRow: 0}
                 currentPage={currentPage?currentPage: 0}
                 handleChangePage={handlePageChange}
+                resetGridRef={reference}
             />
             </VFWrapper>
             {

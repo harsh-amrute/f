@@ -383,6 +383,9 @@ const DptWiseBMReport = () => {
             return children.map((child) => ({
                 field: child.scc.trim(),
                 suppressHeaderFilterButton: true,
+                filterParams: {
+                    buttons: ['reset']
+                },
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,

@@ -6,7 +6,7 @@ import { SCDynamicContainer } from './styles';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
 import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import CustomTagTooltip from '../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
+import VFPagination from "../../Common/VFPagination";
 import { pagination } from '../Enum';
 import { formatFilterJSON } from '../../../../../helpers/utils';
 
@@ -149,6 +149,7 @@ const GridView = (props: IGridViewProps) => {
                 totalRows={totalRows}
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
+                resetGridRef={currentGridRef}
             />
         </SCDynamicContainer>
 

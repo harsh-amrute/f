@@ -168,9 +168,9 @@ const OrderRescheduling = () => {
     rowHeight: 40,
     defaultColDef: {
       floatingFilter: true,
-      filter: "agMultiColumnFilter",
-      floatingFilterComponentParams: { suppressFilterButton: true },
-      suppressMenu: true,
+      // filter: "agMultiColumnFilter",
+      // floatingFilterComponentParams: { suppressFilterButton: true },
+      // suppressMenu: true,
       resizable: true,
       cellDataType: false,
       // minWidth: 140,
@@ -228,6 +228,9 @@ const OrderRescheduling = () => {
       pinned: "left",
       suppressMenu: true,
       floatingFilter: false,
+      filterParams: {
+        buttons: ['reset'], // Adds Apply and Clear buttons
+      },
     },
   ];
 
@@ -287,6 +290,8 @@ const OrderRescheduling = () => {
       }
     }
   }, [HeaderData, currTab]);
+
+  console.log("Column Definitions:", colDef);
 
   const handlePageChangeCumulative = async (pageNumber: number) => {
     setIsLoading(true);
@@ -531,6 +536,9 @@ const OrderRescheduling = () => {
     setIsReset(true);
   };
 
+  // const resetGridFilters = () =>{
+  //   currentGridRef.current.api.setFilterModel(null)
+  // }
   useEffect(() => {
     if (currentGridRef?.current && columnState?.length) {
       const result = currentGridRef?.current?.api.applyColumnState({
@@ -604,6 +612,7 @@ const OrderRescheduling = () => {
           <div style={{ width: "100%", height: "100%" }}>
             <VFTableWrapper>
               <VFTable
+                {...agGridProps}
                 disableZoomScaling
                 columnDefs={colDef}
                 rowData={rowData}
@@ -631,7 +640,6 @@ const OrderRescheduling = () => {
                 onFirstDataRendered={onFirstDataRendered}
                 onGridReady={onFirstDataRendered}
                 onRowDataUpdated={onFirstDataRendered}
-                {...agGridProps}
                 pagination={false}
                 height={"100%"}
                 maintainColumnOrder={true}
@@ -642,6 +650,7 @@ const OrderRescheduling = () => {
                 totalRows={currData ? currData?.data?.data?.count : 0}
                 currentPage={currentPage}
                 handleChangePage={handlePageChangeCumulative}
+                resetGridRef={currentGridRef}
               />
 
               <div style={{ width: "100%" }}>

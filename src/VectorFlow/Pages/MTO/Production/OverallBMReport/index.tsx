@@ -45,7 +45,7 @@ import OverlayLoader from "../../Common/Loader";
 import { ColorsMTO } from "../../Common/Colors";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../hooks/useFilter";
-import { formatFilterJSON} from "../../../../../helpers/utils";
+import { formatFilterJSON } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
@@ -146,6 +146,7 @@ const OverallBmReport = () => {
   const allotementRef = useRef<any>(null);
 
   const [coldefs, setColdef] = useState<any>();
+
   const [gridData, setGridData] = useState<any>();
   const [gridDataCount, setGridDataCount] = useState<number>(0);
   const rowsSelected = useRef(false);
@@ -289,7 +290,6 @@ const OverallBmReport = () => {
       console.log(e);
     }
   };
-
 
   useEffect(() => {
     setColumnDef();
@@ -876,6 +876,9 @@ const DropDownCellRenderer= (props: any) =>  {
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
+        filterParams: {
+          buttons: ['reset']
+        },
         pinned: child.cc === "ct" ? "right" : null,
               cellRenderer:
           child.cc === "ec" && systemType >= 3

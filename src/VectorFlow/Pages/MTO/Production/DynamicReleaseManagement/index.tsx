@@ -417,13 +417,13 @@ const DynamicReleaseManagement = () => {
       suppressMenu: true,
       initialFlex: 1,
       // wrapHeaderText: true,
-      filter: "agMultiColumnFilter",
+      // filter: "agMultiColumnFilter",
 
       autoHeaderHeight: true,
       floatingFilter: true,
       enableRowGroup: true,
 
-      floatingFilterComponentParams: { suppressFilterButton: true },
+      // floatingFilterComponentParams: { suppressFilterButton: true },
       cellStyle: {
         "fontSize": "12px",
         'display': 'flex',
@@ -892,6 +892,7 @@ const DynamicReleaseManagement = () => {
             currentPage={currentPage}
             handleChangePage={handlePageChangeCumulative}
             showPagination
+            resetGridRef={currentGridRef}
           />
         </div>
         <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
