@@ -44,8 +44,6 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
         // Parse the string to a floating-point number
     }));
 
-    console.log("numericC DAta", data);
-
     const options: AgChartOptions = {
         axes: [
             {

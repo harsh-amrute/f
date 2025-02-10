@@ -44,7 +44,6 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays
         // Parse the string to a floating-point number
     }));
 
-    console.log("numericData for EconomicalWise", numericData);
     const options:AgChartOptions = {
         axes:[
             {

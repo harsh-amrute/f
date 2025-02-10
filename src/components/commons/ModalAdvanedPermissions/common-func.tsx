@@ -140,7 +140,6 @@ export const handleSelectChild = ({
     label: item,
     value: item,
   }));
-  console.log("grandChild" , grandChild);
   setGrandChild(valueGrandChild);
   setParent(newValueBrand);
 };
