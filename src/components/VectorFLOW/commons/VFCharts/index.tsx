@@ -9,7 +9,8 @@ import { AgChartInstance } from 'ag-grid-enterprise';
 
 const defaultStyles = {
     headerZoom:1,
-    headerContainerHeight:'60px'
+    headerContainerHeight:'60px',
+    agChartHeight:'80%'
 }
 
 const VFCharts = (props:any) =>{
@@ -53,7 +54,7 @@ const VFCharts = (props:any) =>{
                 </img>                  
             </div>
 
-            <AgCharts ref={chartRef} style={{minHeight:'80%'}} options={chartProps} />
+            <AgCharts ref={chartRef} style={{minHeight:'80%',height:customizedStyles.agChartHeight}} options={chartProps} />
 
             <VFChartTable 
                 chartType={chartType} 
