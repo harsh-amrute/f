@@ -752,6 +752,43 @@ const usePlanning = ()=>{
 
 
     const onGoBack = () => {
+        setCurrentFilter({
+            supplyChainFilter:{
+                id:'1',
+                label:'SupplyChain',
+                filters:[]
+            },
+            locationFilter:{
+                id:'2',
+                label:'Location',
+                filters:[]
+            },
+            productFilter:{
+                id:'3',
+                label:'Product',
+                filters:[]
+            },
+            availabilityFilter:{
+                id:'4',
+                label:'Availability',
+                filters:[]
+            },
+            coverageFilter:{
+                id:'5',
+                label:'Coverage',
+                filters:[]
+            },
+            colorFilter:{
+                id:'6',
+                label:'Color',
+                filters:[]
+            },
+            generalFilter:{
+                id:'7',
+                label:'General',
+                filters:[]
+            }
+        })
         setIsSelectCategoryOpen(true);
         setCurrentCategory('');
         setCurrentView('');
