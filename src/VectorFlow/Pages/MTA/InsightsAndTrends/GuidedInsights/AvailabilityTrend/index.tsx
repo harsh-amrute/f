@@ -106,7 +106,7 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
   }
 
   const graph1 = [
-    'This graph highlights day wise availabilty perecentage across locations',
+    'This graph highlights day wise availabilty percentage (On Hand) across locations',
     'Availabilty Perecentage = (Total instances excluding black/Total instances)*100'
   ]
 

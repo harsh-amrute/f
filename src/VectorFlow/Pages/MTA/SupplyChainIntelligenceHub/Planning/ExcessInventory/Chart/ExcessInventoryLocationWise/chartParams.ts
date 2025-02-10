@@ -32,7 +32,7 @@ export const chartParams1 = {
         end:9
     },
     graphInfo:[
-        'This graph highlights the top 10 locations with the highest excess inventory, measured in terms of the count of SKUs'
+        'This graph highlights the top 10 locations with the highest excess inventory (On Hand), measured in terms of the count of SKUs'
     ]
 }
 
@@ -71,6 +71,6 @@ export const chartParams2 = {
         end:9
     },
     graphInfo:[
-        'This graph highlights the top 10 locations with the highest excess inventory, assessed in terms of monetary value.'
+        'This graph highlights the top 10 locations with the highest excess inventory (On Hand), assessed in terms of monetary value.'
     ]
 }
