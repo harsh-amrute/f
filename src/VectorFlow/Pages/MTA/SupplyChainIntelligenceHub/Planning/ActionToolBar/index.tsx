@@ -124,7 +124,6 @@ const ActionToolBar = ({
  
   const handleResetAllState = () => {
     onResetAllState(`${currCategory}${currentTab}`);
-    setFilterApplied(false); 
   };
  
 

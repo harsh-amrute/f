@@ -532,12 +532,12 @@ const mapDataToRowData = (data: any) => {
   };
 
   const graph1 = [
-    "This graph highlights the top 10 parent locations with max SKUs in Pipeline Black/Red which have rationed qty available for receiving locations",
+    "This graph highlights the top 10 parent locations with max SKUs in Pipeline Black/Red/Yellow which have rationed qty available for receiving locations",
     "To improve availability, expedite dispatches from these parent locations.",
   ];
 
   const graph2 = [
-    "This graph highlights the top 10 receiving locations with maximum SKUs in Pipeline black/red which have rationed quantity available at parent location.",
+    "This graph highlights the top 10 receiving locations with maximum SKUs in Pipeline black/red/yellow which have rationed quantity available at parent location.",
     "To improve availability, expedite dispatches to these locations.",
   ];
 
@@ -571,7 +571,7 @@ const mapDataToRowData = (data: any) => {
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                         <SCChartHeader style={{marginRight:10}}>
-                          Top 10 Parent Location: Max Pipeline Black/Red SKUs With
+                          Top 10 Parent Location: Max Pipeline Black/Red/Yellow SKUs With
                           Available Rationed Qty For Receiving Locations
                         </SCChartHeader>
                       </div>
@@ -602,7 +602,7 @@ const mapDataToRowData = (data: any) => {
                         onMouseLeave={() => setIsHovered(false)} ></img>
                     </div>
 
-                    <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red SKUs With
+                    <VFModalCard openModal={hideChart1} closeModal={()=>toggleChart1(false)} headerIcon='' headerText="Top 10 Parent Location: Max Pipeline Black/Red/Yellow SKUs With
                           Available Rationed Qty For Receiving Locations" headerBgColor="white" headerTextColor="black" paddingLeftAndRight={27} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}>
                         <div className="ag-theme-planning" style={{width:'1000px'}}>
                           <VFTable
@@ -683,7 +683,7 @@ const mapDataToRowData = (data: any) => {
                     <SCChartHeaderContainer>
                       <div style={{display:'flex',width:'100%',justifyContent:'center',alignItems:'center'}}>
                         <SCChartHeader style={{marginRight:10}}>
-                          Top 10 Receiving Locations: Max Pipeline Inv. Black/Red
+                          Top 10 Receiving Locations: Max Pipeline Inv. Black/Red/Yellow
                           SKUs With Rationed Quantity Available At Parent
                         </SCChartHeader>
                       </div>

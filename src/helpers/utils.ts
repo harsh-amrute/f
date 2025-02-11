@@ -201,21 +201,21 @@ export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDaily
 
   let result:ColDef[] = []
 
-  const specificColumns:ColDef[] =[
-    {
-      colId:'dailydatagraph',
-      field:'',
-      headerName:'',
-      width:40,
-      lockPosition:'left',
-      floatingFilter:false,
-      tooltipField:"DailyDataGraph",
-      cellRenderer:'grapCellRenderer',
-      cellRendererParams:{
-        onOpenDailyDataGraph:onOpenDailyDataGraph
-      },
-    }
-  ]
+  // const specificColumns:ColDef[] =[
+  //   {
+  //     colId:'dailydatagraph',
+  //     field:'',
+  //     headerName:'',
+  //     width:40,
+  //     lockPosition:'left',
+  //     floatingFilter:false,
+  //     tooltipField:"DailyDataGraph",
+  //     cellRenderer:'grapCellRenderer',
+  //     cellRendererParams:{
+  //       onOpenDailyDataGraph:onOpenDailyDataGraph
+  //     },
+  //   }
+  // ]
 
   result =  fields.map((f:RRRField)=>{
     
@@ -239,7 +239,8 @@ export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDaily
       filter:getCellFilter(f.DataType)
     }
   })
-  return [...result,...specificColumns]
+  // return [...result,...specificColumns]
+    return [...result];
 }
 
 export const mapOrderAllocationReportFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
