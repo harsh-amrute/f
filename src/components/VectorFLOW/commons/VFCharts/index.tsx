@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import VFInfoToolTip from "../VFInfoToolTip";
 import { AgCharts } from 'ag-charts-react';
 import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDivider} from './styles';
 import VFChartTable from '../VFChartsTable'
 import { GridRef } from '../../../../VectorFlow/types/MDM';
-import { AgChartInstance } from 'ag-grid-enterprise';
+import { generateGridSpecificChartFromChartProps } from '../../../../helpers/utils'
 
 
 const defaultStyles = {
@@ -32,6 +32,14 @@ const VFCharts = (props:any) =>{
     const imgSrc = isHovered
     ? '/assets/img/downlod-icon-hover.svg'
     : '/assets/img/downlod-icon.svg';
+
+    const [gridSpecificChartOptions,setGridSpecificChartOptions] = useState<any>(undefined)
+
+    useEffect(()=>{
+        if(chartProps!==undefined){
+            setGridSpecificChartOptions(generateGridSpecificChartFromChartProps(chartProps,downloadName))
+        }
+    },[chartProps])
 
     return (
         <SCChartContainer height={height} style={containerStyle}>
@@ -67,7 +75,9 @@ const VFCharts = (props:any) =>{
                 gridRef={gridRef} 
                 colDefs={colDefs} 
                 rowData={rowData} 
-                chartProps={chartProps} />
+                chartProps={chartProps}
+                gridSpecificChartOptions={gridSpecificChartOptions}
+                />
     
     </SCChartContainer>
     )
@@ -77,7 +87,7 @@ const VFCharts = (props:any) =>{
 export default VFCharts;
 
 
-const VFChartsHeader = (props:any) =>{
+export const VFChartsHeader = (props:any) =>{
     const { hideChart, styles, graphInfo, setHideChart, title} = props;
     return (
         <SCChartHeaderContainer style={{height:styles.headerContainerHeight}}>

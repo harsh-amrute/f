@@ -7,6 +7,10 @@ export const chartParams1 = {
         Xaxis:'Parent Location Name',
         Yaxis:'Count Of SKUs'
     },
+    legend:{
+        enabled:true,
+        position:'bottom'
+    },
     palette:{
         fills: ['#000000', '#DA3535'],
         strokes: ['#ffffff', '#ffffff'],
@@ -43,8 +47,9 @@ export const chartParams1 = {
         'To improve availability, expedite production/sourcing at these parent locations.'
     ],
     customizedStyles:{
-        headerZoom:0.7, // default zoom is 1 
-        headerContainerHeight:'30px' // default height is 60px
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
     }
 }
 
@@ -93,8 +98,9 @@ export const chartParams2 = {
         'This graph highlights the top 10 parent locations with max number of SKUs in continuous Pipeline Black/Red/Yellow > RLT and have nil rationed stock available for receiving locations.',
         'To improve availability, expedite production/sourcing at these parent locations.'
     ],
-    customizedStyles:{ 
-        headerZoom:0.7, // default zoom is 1 
-        headerContainerHeight:'30px' // default height is 60px
+    customizedStyles:{
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
     }
 }

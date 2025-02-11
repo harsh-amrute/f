@@ -7,6 +7,10 @@ export const chartParams1 = {
         Xaxis:'Product Name',
         Yaxis:'Pending Quantity'
     },
+    legend:{
+        enabled:true,
+        position:'bottom'
+    },
     palette:{
         fills: ['#ED1C24','#E3812D','#355FD3'],
         strokes: ['#ffffff', '#ffffff'],
@@ -49,7 +53,12 @@ export const chartParams1 = {
     graphInfo:[
         'This graph highlights the top 10 products with maximum number of over due quantities and distribution of due and other quantities from pending orders file.',
         'Overdue qty indicate those with past due dates, due represents qty with due dates of today in the future, while others include qty without due dates.'
-      ]
+    ],
+    customizedStyles:{
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
+    }
 }
 
 
@@ -61,6 +70,10 @@ export const chartParams2 = {
     Labels:{
         Xaxis:'Product Name',
         Yaxis:'No. Of Locations'
+    },
+    legend:{
+        enabled:true,
+        position:'bottom'
     },
     palette:{
         fills: ['#F02424','#E3812D','#418D18'],
@@ -105,5 +118,10 @@ export const chartParams2 = {
         'This Graph highlights the top 10 products with max no of locations where Gap in the product > 67% of requirement.',
         'Gap = Requirement - Rationed Qty',
         'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
-      ]
+    ],
+    customizedStyles:{
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
+    }
 }

@@ -1,11 +1,15 @@
 export const chartParams1 = {
-    title:'Top 10 Parent Location: Max Pipeline Black/Red SKUs With Available Rationed Qty For Receiving Locations',
+    title:'Top 10 Parent Location: Max Pipeline Black/Red/Yellow SKUs With Available Rationed Qty For Receiving Locations',
     chartType:'stackedColumn',
-    downloadName:'Top 10 Parent Loc- (Max Pipeline Inv B/R Available at receiving loc)',
+    downloadName:'Top 10 Parent Loc- (Max Pipeline Inv B/R/Y Available at receiving loc)',
     LabelPosition:'bottom',
     Labels:{
         Xaxis:'Parent Location Name',
         Yaxis:'Count Of SKUs'
+    },
+    legend:{
+        enabled:true,
+        position:'bottom'
     },
     palette:{
         fills: ['#000000','#DA3535'],
