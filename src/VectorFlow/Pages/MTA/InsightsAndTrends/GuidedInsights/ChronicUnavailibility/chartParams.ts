@@ -11,6 +11,10 @@ export const chartParams1 = {
         fills: [ '#0a0a0a','#F02424'],
         strokes: ['#ffffff', '#ffffff'],
     },
+    legend:{
+        enabled:true,
+        position:'bottom'
+    },
     chartKey:{
         Xaxis:['location'],
         Yaxis:['blackCount','redCount']
@@ -40,10 +44,11 @@ export const chartParams1 = {
     },
     graphInfo: [
         'This graph highlights the top 10 locations with the highest number of SKUs continuously in Pipeline black, red or combination of black and red, surpassing the RLT'
-      ],
-      customizedStyles:{
-        headerZoom:0.7, // default zoom is 1 
-        headerContainerHeight:'30px' // default height is 60px
+    ],
+    customizedStyles:{
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
     }
 }
 
@@ -60,6 +65,10 @@ export const chartParams2 = {
     palette:{
         fills: [ '#0a0a0a','#F02424'],
         strokes: ['#ffffff', '#ffffff'],
+    },
+    legend:{
+        enabled:true,
+        position:'bottom'
     },
     chartKey:{
         Xaxis:['sku'],
@@ -94,7 +103,8 @@ export const chartParams2 = {
         'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
     ],
     customizedStyles:{
-        headerZoom:0.7, // default zoom is 1 
-        headerContainerHeight:'30px' // default height is 60px
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
     }
 }

@@ -1,11 +1,15 @@
 export const chartParams1 = {
-    title:'Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock For Receiving Locations',
+    title:'Top 10 Parent Locations : Max Pipeline Black/Red/Yellow SKUs With Nil Rationed Stock For Receiving Locations',
     chartType:'stackedColumn',
     downloadName:'Top-10 Parent Loc (Max Pipeline for receiving loc)',
     LabelPosition:'bottom',
     Labels:{
         Xaxis:'Parent Location Name',
         Yaxis:'Count Of SKUs'
+    },
+    legend:{
+        enabled:true,
+        position:'bottom'
     },
     palette:{
         fills: ['#000000', '#DA3535'],
@@ -39,18 +43,19 @@ export const chartParams1 = {
         end:9
     },
     graphInfo:[
-        'This graph highlights the top 10 parent locations with max SKUs in Pipeline black/red with insufficient/nil rationed stock available for receiving locations',
+        'This graph highlights the top 10 parent locations with max SKUs in Pipeline black/red/yellow with insufficient/nil rationed stock available for receiving locations',
         'To improve availability, expedite production/sourcing at these parent locations.'
     ],
     customizedStyles:{
-        headerZoom:0.7, // default zoom is 1 
-        headerContainerHeight:'30px' // default height is 60px
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
     }
 }
 
 
 export const chartParams2 = {
-    title:'Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location',
+    title:'Top 10 Parent Location: Max Continuous Pipeline Black/Red/Yellow SKUs With Nil Rationed Stock Available For Receiving Location',
     chartType:'stackedColumn',
     downloadName:'Top-10 Parent Loc (Max Continuous for receiving loc)',
     LabelPosition:'bottom',
@@ -90,11 +95,12 @@ export const chartParams2 = {
         end:9
     },
     graphInfo:[
-        'This graph highlights the top 10 parent locations with max number of SKUs in continuous Pipeline Black/Red > RLT and have nil rationed stock available for receiving locations.',
+        'This graph highlights the top 10 parent locations with max number of SKUs in continuous Pipeline Black/Red/Yellow > RLT and have nil rationed stock available for receiving locations.',
         'To improve availability, expedite production/sourcing at these parent locations.'
     ],
-    customizedStyles:{ 
-        headerZoom:0.7, // default zoom is 1 
-        headerContainerHeight:'30px' // default height is 60px
+    customizedStyles:{
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
     }
 }

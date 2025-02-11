@@ -104,18 +104,26 @@ const ActionToolBar = ({
   const themeUi = user?.user?.theme_ui;
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
 
-  const [filterApplied, setFilterApplied] = useState<boolean>(false);
+  
  
  
   const handleApplyFilter = (params: any) => {
     if (onApplyFilter) onApplyFilter(params);
     toggleFilter(false);
-    setFilterApplied(true);
+  };
+
+  const getTotalFilterCount = (multiFilter: any) => {
+    let total = 0;
+    for (const key in multiFilter) {
+      if (multiFilter[key]?.filters) {
+        total += multiFilter[key].filters.length;
+      }
+    }
+    return total;
   };
  
   const handleResetAllState = () => {
     onResetAllState(`${currCategory}${currentTab}`);
-    setFilterApplied(false); // Reset the filter state when reset is triggered
   };
  
 
@@ -548,7 +556,7 @@ const ActionToolBar = ({
         }
         break;
       case "GuidedInsight":
-        if (pathname === "/insights-and-trends/guided-insights" && view==='grid') {
+        if (pathname === "/insights-and-trends/guided-insights") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -716,15 +724,14 @@ const ActionToolBar = ({
           </SCTaskFilterContainer>
 
           <SCCustomActionsContainer>
-            {/* {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
+          {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
                <>
-                  
-                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit nmk</VFButton>
+                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
                   {isFilterOpen && renderFilter()}
                                
 
                 </>
-            } */}
+            }
             {currentTab === "dbmnormsuggestions" && (
               <>
                 <Link
@@ -992,7 +999,7 @@ const ActionToolBar = ({
               themeUi={themeUi}
               disabled={false}
             >
-                {filterApplied ? "Edit Filter" : "Add Filter"}
+                {getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}
            </VFButton>
             {isFilterOpen && renderFilter()}
 

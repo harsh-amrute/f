@@ -71,6 +71,17 @@ const SelectCategory = (props: CountProp) => {
 
     const {locations} = useGetLocation()
 
+    const getTotalFilterCount = (multiFilter: any) => {
+        let total = 0;
+        for (const key in multiFilter) {
+          if (multiFilter[key]?.filters) {
+            total += multiFilter[key].filters.length;
+          }
+        }
+        return total;
+      };
+     
+
     return (
         <>
 
@@ -80,7 +91,7 @@ const SelectCategory = (props: CountProp) => {
                     <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
                 </div>
                 <ButtonFilterWrapper>
-                    <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
+                    <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>{getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}</VFButton>
                     {
                         isFilterOpen && (
                             <VFMultiFilter isFilterOpen={isFilterOpen} onApplyFilter={handleApplyFilter} onGoBack={() => toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={locations} supplyChainForChildrenOfCheckBoxList={locations.filter((m: any) => ['plant', 'CWH', 'RWH'].includes(m.id))}></VFMultiFilter>
@@ -114,12 +125,12 @@ const SelectCategory = (props: CountProp) => {
                             <CountText>{childMonitorCount}</CountText>
                         </CountWrapper>
                         <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
-                            <ButtonComponent >
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onMonitorParentClick}>From Parent</button>
+                            <ButtonComponent onClick={onMonitorParentClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >From Parent</button>
                             </ButtonComponent>
                             <Separator color={'white'} ></Separator>
-                            <ButtonComponent >
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onMonitorChildClick}>To Child</button>
+                            <ButtonComponent onClick={onMonitorChildClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >To Child</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>
@@ -133,12 +144,12 @@ const SelectCategory = (props: CountProp) => {
                             <CountText>{childExpediteCount}</CountText>
                         </CountWrapper>
                         <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
-                            <ButtonComponent>
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onExpediteParentClick}>From Parent</button>
+                            <ButtonComponent onClick={onExpediteParentClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >From Parent</button>
                             </ButtonComponent>
                             <Separator color={'white'} ></Separator>
-                            <ButtonComponent>
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onExpediteChildClick}>To Child</button>
+                            <ButtonComponent onClick={onExpediteChildClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >To Child</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>
@@ -154,8 +165,8 @@ const SelectCategory = (props: CountProp) => {
                    <CountText>{totalcount}</CountText>    */}
                         </CountWrapper>
                         <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
-                            <ButtonComponent>
-                                <button style={{ backgroundColor:currentTheme.color4, color: 'white', font: "inherit" }} onClick={onExcessInventoryReviewClick}>Review</button>
+                            <ButtonComponent onClick={onExcessInventoryReviewClick}>
+                                <button style={{ backgroundColor:currentTheme.color4, color: 'white', font: "inherit" }} >Review</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>
@@ -169,8 +180,8 @@ const SelectCategory = (props: CountProp) => {
                    <CountText>{totalcount}</CountText>    */}
                         </CountWrapper>
                         <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
-                            <ButtonComponent>
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onOrderFulfillmentReviewClick}>Review</button>
+                            <ButtonComponent onClick={onOrderFulfillmentReviewClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >Review</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>

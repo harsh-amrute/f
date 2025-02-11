@@ -2537,19 +2537,20 @@ const commonTooltip= {
   },
 }
 
-export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
-  
-  const { series , palette , chartKey:keys, Labels} = chartParams
+const pieTooltip={
+  enabled:true,
+  renderer:(params:any)=>{
+      const datum = params.datum
+      return {
+      title: `${params.title}`,
+      content: `${datum[params.angleKey]}%`,
+      }
+  },
+}
 
-  const seriesMapped = series.map((obj:any,index:number)=>{
-    return {...obj,tooltip:commonTooltip}
-  })
-  const options:AgChartOptions = {
-    data:data.slice(0,10),
-    theme:{
-      palette
-    },
-    series:seriesMapped,
+
+export const createAxesForBarCharts = (keys:any,Labels:any)=>{
+  return {
     axes:[
       {
         type: "category",
@@ -2584,7 +2585,25 @@ export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:st
           fontSize:12
         }
       }
-    ],
+    ]
+  }
+}
+
+export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
+  
+  const { series , palette , chartKey:keys, Labels, chartType, legend} = chartParams
+
+  const seriesMapped = series.map((obj:any,index:number)=>{
+    return {...obj,tooltip: chartType==='pie' ? pieTooltip : commonTooltip}
+  })
+  const options:AgChartOptions = {
+    data: chartType==='pie' ? data : data.slice(0,10),
+    theme:{
+      palette
+    },
+    series:seriesMapped,
+    ...(legend !== undefined && chartType !== 'pie' ? { legend } : {}),
+    ...(chartType!='pie' ? createAxesForBarCharts(keys,Labels) : {}),
   }
   return options;
 }
@@ -3348,6 +3367,13 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   })
   // if(onShowChart)result = [graphCellRenderer,...result]
   result = result.filter((r) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
+  result.forEach(item => {
+    if (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field =="Availability" || item.field =="Norm" || item.field =="VirtualNorm" || item.field ==  "pc"|| item.field == "pn" || item.field  =="Category" || item.field  =="SKUCode"|| item.field  =="SKUDescription" || item.field  =="Tags") {
+      item.pinned = 'left';
+      item.width =50;
+    }
+  });
+ 
   if (excludeColumns) result = result.filter((r) => r.colId && !excludeColumns.includes(r.colId))
   return result
 
