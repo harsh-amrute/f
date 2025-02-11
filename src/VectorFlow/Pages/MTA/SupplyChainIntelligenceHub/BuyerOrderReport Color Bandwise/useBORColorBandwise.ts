@@ -204,7 +204,7 @@ export const useBORColorBandwise =()=>{
                 const stateData =  await getState({"reportname":"BORColorBandwise"})
                 if(stateData.data.data.length!==0){
                     const parsedContent = JSON.parse(stateData.data.data)
-                    const generatedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                    const generatedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,false,false, undefined,  onOpenRemarkHistory, onOpenDailyDataGraph)
                     const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
                     setGridState({
                         pivot:parsedContent.pivot,
@@ -213,7 +213,7 @@ export const useBORColorBandwise =()=>{
                     })
                     setBORCBColumns(coldefs)
                 }else{
-                    const MappedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,true,false, undefined,  undefined, onOpenDailyDataGraph)
+                    const MappedColumns = generateAndMapColumns('BORColorBandwise',intialColumnState,true,false,false, undefined,  undefined, onOpenDailyDataGraph)
                     setGridState({
                         charts:[],
                         columns:MappedColumns,
