@@ -2537,19 +2537,20 @@ const commonTooltip= {
   },
 }
 
-export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
-  
-  const { series , palette , chartKey:keys, Labels} = chartParams
+const pieTooltip={
+  enabled:true,
+  renderer:(params:any)=>{
+      const datum = params.datum
+      return {
+      title: `${params.title}`,
+      content: `${datum[params.angleKey]}%`,
+      }
+  },
+}
 
-  const seriesMapped = series.map((obj:any,index:number)=>{
-    return {...obj,tooltip:commonTooltip}
-  })
-  const options:AgChartOptions = {
-    data:data.slice(0,10),
-    theme:{
-      palette
-    },
-    series:seriesMapped,
+
+export const createAxesForBarCharts = (keys:any,Labels:any)=>{
+  return {
     axes:[
       {
         type: "category",
@@ -2584,7 +2585,24 @@ export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:st
           fontSize:12
         }
       }
-    ],
+    ]
+  }
+}
+
+export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
+  
+  const { series , palette , chartKey:keys, Labels, chartType} = chartParams
+
+  const seriesMapped = series.map((obj:any,index:number)=>{
+    return {...obj,tooltip: chartType==='pie' ? pieTooltip : commonTooltip}
+  })
+  const options:AgChartOptions = {
+    data: chartType==='pie' ? data : data.slice(0,10),
+    theme:{
+      palette
+    },
+    series:seriesMapped,
+    ...(chartType!='pie' ? createAxesForBarCharts(keys,Labels) : {}),
   }
   return options;
 }
