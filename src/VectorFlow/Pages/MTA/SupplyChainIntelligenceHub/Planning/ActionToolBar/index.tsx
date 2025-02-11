@@ -124,6 +124,7 @@ const ActionToolBar = ({
  
   const handleResetAllState = () => {
     onResetAllState(`${currCategory}${currentTab}`);
+    setFilterApplied(false); 
   };
  
 
@@ -556,7 +557,7 @@ const ActionToolBar = ({
         }
         break;
       case "GuidedInsight":
-        if (pathname === "/insights-and-trends/guided-insights" && view==='grid') {
+        if (pathname === "/insights-and-trends/guided-insights") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -724,15 +725,14 @@ const ActionToolBar = ({
           </SCTaskFilterContainer>
 
           <SCCustomActionsContainer>
-            {/* {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
+          {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
                <>
-                  
-                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit nmk</VFButton>
+                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
                   {isFilterOpen && renderFilter()}
                                
 
                 </>
-            } */}
+            }
             {currentTab === "dbmnormsuggestions" && (
               <>
                 <Link
