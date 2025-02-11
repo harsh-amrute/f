@@ -10,9 +10,12 @@ import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
+import { useEffect } from "react";
 
 const Planning = () => {
-
+  interface DataItem {
+    [key: string]: any; 
+  }
     const {
         isSelectCategoryOpen,
         planningCounts,
@@ -50,6 +53,26 @@ const Planning = () => {
         isDataLoading,
         currentColDefs
     } = usePlanning();
+
+    function parseFloatAllNumericStrings(data: DataItem[]) {
+      return data.map((item: DataItem) => {
+        for (const key in item) {
+          if (typeof item[key] === 'string' && item[key].trim() !== '' && !isNaN(item[key])) {
+            item[key] = parseFloat(item[key]);
+          }
+        }
+        return item;
+      });
+    }
+ 
+
+  useEffect(() => {
+    if (currentGridData) {
+        currentGridData?.createAvailabilityAtParent && parseFloatAllNumericStrings(currentGridData?.createAvailabilityAtParent?.data);
+        currentGridData?.expediteDispatches && parseFloatAllNumericStrings(currentGridData?.expediteDispatches?.data);
+        currentGridData?.data && parseFloatAllNumericStrings(currentGridData?.data);
+    }
+  }, [currentGridData]);
 
 
     const renderView = () => {
