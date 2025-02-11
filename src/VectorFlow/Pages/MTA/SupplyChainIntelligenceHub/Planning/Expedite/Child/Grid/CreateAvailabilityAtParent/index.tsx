@@ -112,7 +112,7 @@ const ExpediteChildCreateAvailabilityAtParentGrid = ({data,paginationProps,onOpe
             floatingFilter: true,
             filter: "agMultiColumnFilter",
             cellDataType:false,
-            resizable:false,
+            resizable:true,
             cellStyle:{
                 "flex":1,
                 'text-align':'center',

@@ -1233,9 +1233,9 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         <FilterComponent style={{borderTop:'0.5px solid #B7B7B7', paddingTop:'12px'}}>
                             <FilterCheckboxAccordian filterType="Coverage" filterKey="coverage_filter" isOpen={openStatus.coverage_filter} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header="Coverage" filterOptions={[
-                                {label:'Gap > 67%',id:'1'},
-                                {label:'33%<=Gap<=67%',id:'2'},
-                                {label:'Gap < 33%,',id:'3'},
+                                        {label:'Gap > 67%',id:'1'},
+                                        {label:'33% <= Gap <= 67%',id:'2'},
+                                        {label:'Gap < 33%',id:'3'},
                                 ]} 
                                 filterState={filterState.coverageFilter.filters}
                                 onChange={(e:any,key:string)=>onFilterChange('CGF3',e,'5',key)} /> 

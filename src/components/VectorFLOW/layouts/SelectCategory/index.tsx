@@ -125,12 +125,12 @@ const SelectCategory = (props: CountProp) => {
                             <CountText>{childMonitorCount}</CountText>
                         </CountWrapper>
                         <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
-                            <ButtonComponent >
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onMonitorParentClick}>From Parent</button>
+                            <ButtonComponent onClick={onMonitorParentClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >From Parent</button>
                             </ButtonComponent>
                             <Separator color={'white'} ></Separator>
-                            <ButtonComponent >
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onMonitorChildClick}>To Child</button>
+                            <ButtonComponent onClick={onMonitorChildClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >To Child</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>
@@ -144,12 +144,12 @@ const SelectCategory = (props: CountProp) => {
                             <CountText>{childExpediteCount}</CountText>
                         </CountWrapper>
                         <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
-                            <ButtonComponent>
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onExpediteParentClick}>From Parent</button>
+                            <ButtonComponent onClick={onExpediteParentClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >From Parent</button>
                             </ButtonComponent>
                             <Separator color={'white'} ></Separator>
-                            <ButtonComponent>
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onExpediteChildClick}>To Child</button>
+                            <ButtonComponent onClick={onExpediteChildClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >To Child</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>
@@ -165,8 +165,8 @@ const SelectCategory = (props: CountProp) => {
                    <CountText>{totalcount}</CountText>    */}
                         </CountWrapper>
                         <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
-                            <ButtonComponent>
-                                <button style={{ backgroundColor:currentTheme.color4, color: 'white', font: "inherit" }} onClick={onExcessInventoryReviewClick}>Review</button>
+                            <ButtonComponent onClick={onExcessInventoryReviewClick}>
+                                <button style={{ backgroundColor:currentTheme.color4, color: 'white', font: "inherit" }} >Review</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>
@@ -180,8 +180,8 @@ const SelectCategory = (props: CountProp) => {
                    <CountText>{totalcount}</CountText>    */}
                         </CountWrapper>
                         <ButtonWrapper style={{ backgroundColor: currentTheme.color4}} >
-                            <ButtonComponent>
-                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} onClick={onOrderFulfillmentReviewClick}>Review</button>
+                            <ButtonComponent onClick={onOrderFulfillmentReviewClick}>
+                                <button style={{ backgroundColor: currentTheme.color4, color: 'white', font: "inherit" }} >Review</button>
                             </ButtonComponent>
                         </ButtonWrapper>
                     </CardWrapper>

@@ -3366,6 +3366,13 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   })
   // if(onShowChart)result = [graphCellRenderer,...result]
   result = result.filter((r) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
+  result.forEach(item => {
+    if (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field =="Availability" || item.field =="Norm" || item.field =="VirtualNorm" || item.field ==  "pc"|| item.field == "pn" || item.field  =="Category" || item.field  =="SKUCode"|| item.field  =="SKUDescription" || item.field  =="Tags") {
+      item.pinned = 'left';
+      item.width =50;
+    }
+  });
+ 
   if (excludeColumns) result = result.filter((r) => r.colId && !excludeColumns.includes(r.colId))
   return result
 
