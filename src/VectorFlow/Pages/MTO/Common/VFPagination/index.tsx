@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { PaginationWrapper, StatusBarLabel, StatusBarLabelLight, StatusBarLabelBold, PaginationContainer, PaginationArrowIcon,StatusBarWrapper, TextBtn,GridFilterWrapper } from "./styles"
 
 
@@ -11,7 +10,8 @@ export interface VFPaginationProps {
     handleChangePerPage?: (e: any) => void
     showTotalItems?: boolean,
     showPagination?: boolean,
-    resetGridRef?: any
+    resetGridRef?: any,
+    isDisabled?: boolean | undefined
 }
 
 
@@ -22,26 +22,14 @@ const VFPagination = (props: VFPaginationProps) => {
         currentPage,
         rowsPerPage,
         handleChangePage,
-        resetGridRef
+        resetGridRef,
+        isDisabled
     } = props
-
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
 
     const defaultPaginationLimit = 100;
     const totalPages = Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit));
 
     // const totalPages = Math.ceil(totalRows/rowsPerPage)
-
-    useEffect(() => {
-        const totalRows = props.totalRows
-        
-        if (totalRows === 0) {
-            setIsButtonDisabled(true);
-        } else {
-            setIsButtonDisabled(false);
-        }
-    }, [totalRows]); 
 
     const clearGridFilter = () =>{
         resetGridRef?.current?.api.setFilterModel(null)
@@ -64,11 +52,13 @@ const VFPagination = (props: VFPaginationProps) => {
         return handleChangePage(newPage)
     }
 
+    console.log("my disabled, ", isDisabled);
+
     return (
         <PaginationWrapper data-testid="vf_pagination">
             <PaginationContainer>
                 <GridFilterWrapper>
-                    <TextBtn onClick={clearGridFilter} disabled={isButtonDisabled}>Clear All Grid Filters</TextBtn>  
+                    <TextBtn onClick={clearGridFilter} disabled={ isDisabled}>Clear All Grid Filters</TextBtn>  
                 </GridFilterWrapper>
                <StatusBarWrapper>
                 <StatusBarLabel>

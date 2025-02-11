@@ -79,6 +79,7 @@ const FullKitAssignment = () => {
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState<any>(undefined);
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
   const [colDef, setColDef] = useState([{}]);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -781,6 +782,8 @@ const FullKitAssignment = () => {
           setSelectedRows(newMap)
           currentPageSelectedRows.current = params.api.getSelectedNodes();
         }}
+        onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
         maintainColumnOrder
       // onSelectionChanged={(params) => {
       //   const selectedRoutes = new Set();
@@ -800,7 +803,7 @@ const FullKitAssignment = () => {
 
       // }}
       />
-      <VFPagination currentPage={currentPage} rowsPerPage={15} selectedRows={1} totalRows={totalRows} handleChangePage={handlePageChange} resetGridRef={currentGridRef}/>
+      <VFPagination currentPage={currentPage} rowsPerPage={15} selectedRows={1} totalRows={totalRows} handleChangePage={handlePageChange} resetGridRef={currentGridRef} isDisabled={isDisabled}/>
       <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
       <div className='chart-wrapper' style={{ width: "100%", flex: !hide ? 1 : 0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129" }}>
         <AgCharts ref={graph} options={chartoptions} />

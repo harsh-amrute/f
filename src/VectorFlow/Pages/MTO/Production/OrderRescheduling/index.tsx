@@ -73,6 +73,9 @@ const OrderRescheduling = () => {
   const { getColDef, colDefMap } = useColDef();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
+  
+
 
   const themeUi = user?.user?.theme_ui;
 
@@ -632,6 +635,8 @@ const OrderRescheduling = () => {
                     { statusPanel: "agAggregationComponent", align: "left" },
                   ],
                 }}
+                onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
                 onFirstDataRendered={onFirstDataRendered}
                 onGridReady={onFirstDataRendered}
                 onRowDataUpdated={onFirstDataRendered}
@@ -646,6 +651,8 @@ const OrderRescheduling = () => {
                 currentPage={currentPage}
                 handleChangePage={handlePageChangeCumulative}
                 resetGridRef={currentGridRef}
+                isDisabled={isDisabled}
+
               />
 
               <div style={{ width: "100%" }}>

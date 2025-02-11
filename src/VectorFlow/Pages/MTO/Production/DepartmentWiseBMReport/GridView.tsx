@@ -4,7 +4,7 @@ import VFPagination from "../../Common/VFPagination";
 // import { pagination } from '../../Common/Enum';
 // import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFTable from '../../Common/VFTable';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { useUserData } from '../../../../../context';
 interface GridProps {
     agGridProps: any
@@ -36,7 +36,8 @@ const GridView = memo(({
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
-  
+        
+    const [isDisabled, setIsDisabled]= useState<boolean>(true);
 
     return (
         <>
@@ -72,6 +73,7 @@ const GridView = memo(({
                         ],
                     }}
                     ref={reference}
+                    onFilterChanged={()=>{Object.keys((reference?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
                 />
             <VFPagination
                 selectedRows={0}
@@ -80,6 +82,7 @@ const GridView = memo(({
                 currentPage={currentPage?currentPage: 0}
                 handleChangePage={handlePageChange}
                 resetGridRef={reference}
+                isDisabled = {isDisabled}
             />
             </VFWrapper>
             {

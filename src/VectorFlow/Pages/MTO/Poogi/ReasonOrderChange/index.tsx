@@ -60,6 +60,7 @@ const ReasonForDelayOrder = () => {
     const [isReset, setIsReset] = useState<any>(undefined);
     const [colDef, setColDef] = useState([{}]);
     const [filterData, setFilterData] = useState({});
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
         state: currFilter,
@@ -484,6 +485,7 @@ const ReasonForDelayOrder = () => {
                     }}
                     onRowDataUpdated={(params: any) => { updateUserChanges(params); }}
                     maintainColumnOrder
+                    onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
                 />
                 <VFPagination
                     selectedRows={0}
@@ -492,6 +494,7 @@ const ReasonForDelayOrder = () => {
                     currentPage={currentPage}
                     handleChangePage={handlePageChange}
                     resetGridRef={currentGridRef}
+                    isDisabled={isDisabled}
 
                 />
 

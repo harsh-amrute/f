@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { GridOptions, SideBarDef } from 'ag-grid-enterprise';
 import _ from 'lodash';
 import VFPagination from "../../Common/VFPagination";
@@ -22,7 +22,10 @@ interface IStep1Props {
   setPageCallBack:any
 }
 
+
 const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState, pageCallBack, setPageCallBack }: IStep1Props, ref: any) => {
+
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
   const gridRef = useRef<any>();
 
@@ -129,6 +132,7 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
           setSelectedRows(newMap);
           currentPageSelectedRows.current = params.api.getSelectedNodes();
         }}
+        onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
         maintainColumnOrder={true}
         sideBar={sideBar}
       />
@@ -139,6 +143,8 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
         currentPage={currentPage}
         handleChangePage={handlePageChange}
         resetGridRef={currentGridRef}
+        isDisabled = {isDisabled}
+
         
       />
     </>

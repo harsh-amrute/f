@@ -28,6 +28,7 @@ const GridView = (props: IGridViewProps) => {
 
     const gridRef = useRef<any>(null);
     const [gridData, setGridData] = useState([]);
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalRows, setTotalRows] = useState<number>(0);
 
@@ -142,6 +143,8 @@ const GridView = (props: IGridViewProps) => {
                     ]
                 }}
                 maintainColumnOrder
+                onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
             />
             <VFPagination
                 selectedRows={0}
@@ -150,6 +153,7 @@ const GridView = (props: IGridViewProps) => {
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
                 resetGridRef={currentGridRef}
+                isDisabled={isDisabled}
             />
         </SCDynamicContainer>
 

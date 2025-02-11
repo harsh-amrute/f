@@ -17,6 +17,7 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appl
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
     const [data, setData] = useState([]);
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const { mutateAsync: getLeadTimeData, isLoading } = useGetLeadTimeData()
 
     const defaultColDef = {
@@ -113,13 +114,17 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appl
                     params.api.autoSizeAllColumns();
                     setCurrentGridRef(gridRef);
                 }}
+                onFilterChanged={
+                    ()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}
+                }
+               
             // statusBar={{
             //     statusPanels: [
             //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
             //     ]
             // }}
             />
-            <VFPagination currentPage={currentPage} totalRows={totalRows} rowsPerPage={pagination.mtoPageSize} selectedRows={1} handleChangePage={handlePageChange} resetGridRef={currentGridRef}
+            <VFPagination currentPage={currentPage} totalRows={totalRows} rowsPerPage={pagination.mtoPageSize} selectedRows={1} handleChangePage={handlePageChange} resetGridRef={currentGridRef} isDisabled={isDisabled}
             />
         </SCDynamicContainer>
 

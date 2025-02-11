@@ -16,6 +16,7 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
   const [gridData, setGridData] = useState([]);
   const [totalRow, setTotalRow] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
   const { mutateAsync: getSTPLandFullkitInDaysData, isLoading, isError, isSuccess } = useGetSTPLAndFullKitData();
   const { mutateAsync: getBOMExplosionData, } = useGetBOMExplosionData();
 
@@ -154,6 +155,8 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
             ]
           }}
           maintainColumnOrder
+          onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
         />
         <VFPagination
           selectedRows={0}
@@ -162,6 +165,8 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
           currentPage={currentPage}
           handleChangePage={(cp) => handlePageChange(cp)}
           resetGridRef={currentGridRef}
+          isDisabled={isDisabled}
+
           />
       </Wrapper>
     </>
