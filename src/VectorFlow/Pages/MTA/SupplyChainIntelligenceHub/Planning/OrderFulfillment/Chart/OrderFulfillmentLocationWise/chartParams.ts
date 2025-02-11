@@ -7,6 +7,10 @@ export const chartParams1 = {
         Xaxis:'Location Name',
         Yaxis:'No Of Orders'
     },
+    legend:{
+        enabled:true,
+        position:'bottom'
+    },
     palette:{
         fills: ['#ED1C24','#E3812D','#355FD3'],
         strokes: ['#ffffff', '#ffffff']
@@ -49,7 +53,12 @@ export const chartParams1 = {
     graphInfo: [
         'This graph highlights the top 10 locations with max number of over due orders. It also captures the status of due & other orders from pending orders file.',
         'Overdue orders - Due date crossed | Due Orders - Due dates of today or in the future | Other Orders - PSO Quantity'
-    ]
+    ],
+    customizedStyles:{
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
+    }
 }
 
 
@@ -61,6 +70,10 @@ export const chartParams2 = {
     Labels:{
         Xaxis:'Location Name',
         Yaxis:'No Of SKUs'
+    },
+    legend:{
+        enabled:true,
+        position:'bottom'
     },
     palette:{
         fills: ['#F02424','#E3812D','#418D18'],
@@ -105,5 +118,10 @@ export const chartParams2 = {
         'This Graph highlights the top 10 locations with max no of SKUs with Gap > 67% of requirement.',
         'Gap = Requirement - Rationed Qty',
         'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
-    ]
+    ],
+    customizedStyles:{
+        headerZoom:0.9, // default zoom is 1 
+        headerContainerHeight:'40px', // default height is 60px
+        agChartHeight:'86%'
+    }
 }
