@@ -104,13 +104,22 @@ const ActionToolBar = ({
   const themeUi = user?.user?.theme_ui;
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
 
-  const [filterApplied, setFilterApplied] = useState<boolean>(false);
+  
  
  
   const handleApplyFilter = (params: any) => {
     if (onApplyFilter) onApplyFilter(params);
     toggleFilter(false);
-    setFilterApplied(true);
+  };
+
+  const getTotalFilterCount = (multiFilter: any) => {
+    let total = 0;
+    for (const key in multiFilter) {
+      if (multiFilter[key]?.filters) {
+        total += multiFilter[key].filters.length;
+      }
+    }
+    return total;
   };
  
   const handleResetAllState = () => {
@@ -991,7 +1000,7 @@ const ActionToolBar = ({
               themeUi={themeUi}
               disabled={false}
             >
-                {filterApplied ? "Edit Filter" : "Add Filter"}
+                {getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}
            </VFButton>
             {isFilterOpen && renderFilter()}
 

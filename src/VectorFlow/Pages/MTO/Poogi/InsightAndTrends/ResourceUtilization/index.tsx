@@ -153,7 +153,7 @@ const ResourceUtilization = () => {
       const newMasterCCROpts: any = [];
       const oLimit = apiData?.wiplimit?.olimit?.map((l: any) => l.ccr) || [];
       const uLimit = apiData?.wiplimit?.ulimit?.map((l: any) => l.ccr) || [];
-      const apiOptions = [...oLimit, ...uLimit] || [];
+      const apiOptions = [...oLimit, ...uLimit];
       ccrs.forEach((e: any) => {
         newMasterCCROpts.push(e)
         if (apiOptions.includes(e.ccr_name) && !checkOptions(myCCROpts, e.ccr_name)) {

@@ -55,10 +55,9 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
         //stroke: "#4E4E4E",
         marker: {
           fill: greyShades[index % greyShades.length],
-          size: 12,
-          stroke: "white",
+          size: 5,
+          stroke: greyShades[index % greyShades.length],
           strokeWidth: 3,
-          
         }
       };
     });
@@ -69,6 +68,7 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
       
       data: AvailabilityTrendData,
       series: series,
+
       axes: [
         {
           type: 'category',
@@ -113,7 +113,7 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
   }
 
   const graph1 = [
-    'This graph highlights day wise availabilty perecentage across locations',
+    'This graph highlights day wise availabilty percentage (On Hand) across locations',
     'Availabilty Perecentage = (Total instances excluding black/Total instances)*100'
   ]
 
@@ -171,7 +171,7 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
         </div>
       </div>
       <div style={{height:'85%'}}>
-        <AgCharts options={options} />
+        <AgCharts options={{...options,padding: {right: 20,left:20}}} />
       </div>
     </div>
 

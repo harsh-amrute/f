@@ -2,7 +2,7 @@
 import { useGetSDRUIConfiguration ,useGetSDRData,useGetSDRDataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport/index';
 import { convertUiConfigToOptions, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
-import { notifyError,notifyLoader } from '../../../../../helpers/notify';
+import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
 import { toast } from 'react-toastify';
 import { AgGridReactProps } from 'ag-grid-react';
@@ -173,6 +173,7 @@ const useSupplierDispatchReport= ()=>{
             setRowData(VDRData.data.data);
             setCurrentPage(PageNo);
             toast.dismiss()
+            notifySuccess("Data Loaded Successfully")
         }
         catch(err:any){
             notifyError(err)
@@ -222,6 +223,7 @@ const useSupplierDispatchReport= ()=>{
             setCurrentPage(1)
             setRowData(rowData?.data?.data)
             toast.dismiss()
+            notifySuccess("Data Loaded Successfully")
         }catch(err:any){
             notifyError(err)
             setRowData([])

@@ -70,28 +70,11 @@ const useDBM =()=>{
         suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
       }), []);
 
-      useEffect(()=>{
-        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
-
-      },[isDBMConfigLoading])
-
     //   useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState({"reportname": "DBMNorm"})
-    //         setGridState(JSON.parse(data.data.data))
-    //       }catch(err:any){
-    //         setGridState({
-    //             charts:[],
-    //             columns:[],
-    //             pivot:false
-    //         })
-    //       }
-    //     }
-    //     getTableState()
+    //     setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
 
+    //   },[isDBMConfigLoading])
 
-    // },[])
 
         useEffect(()=>{
             const getTableState = async()=>{
@@ -132,6 +115,7 @@ const useDBM =()=>{
             }
             if(data!==undefined){
                 getTableState()
+                setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
             }
         },[data])
   
@@ -166,7 +150,6 @@ const useDBM =()=>{
         getDataCount(currentFilter);
         getDBMRowData(currentFilter,currentPage);
     }
-    // const DBMColumns = useMemo(()=>mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter),[data])
 
     const showAllCheckbox = () => {
         const rows:any[] = []
@@ -186,16 +169,16 @@ const useDBM =()=>{
             }
     }
 
-        const onResetCallback = async()=>{
-            const MappedColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
-            console.log(MappedColumns)
-            setDBMColumns(MappedColumns)
-        }
+    const onResetCallback = async()=>{
+        const MappedColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
+        console.log(MappedColumns)
+        setDBMColumns(MappedColumns)
+    }
 
     const handleChangePage = async (pageNo:any) => {
         setCurrentPage(pageNo);
         getDBMRowData(currentFilter,pageNo);
-     }
+    }
 
      const handleGoButton =  async(pageNo:any)=>{
         notifyLoader("Submitting Norms")

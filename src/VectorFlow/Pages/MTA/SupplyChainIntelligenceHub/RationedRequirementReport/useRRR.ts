@@ -5,7 +5,7 @@ import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../..
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
 import { convertUiConfigToOptions, mapRRRFieldsToColDefs, updateCommonAttributes, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs} from "../../../../../helpers/utils"
-import { notifyError, notifyLoader} from "../../../../../helpers/notify"
+import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
@@ -207,6 +207,7 @@ const useRRR =()=>{
             setCurrentPage(pageNo)
             setRRRRowData(rowData?.data?.data)
             toast.dismiss()
+            notifySuccess("Data Loaded Successfully")
         }catch(err:any){
             notifyError(err)
         }
@@ -231,6 +232,7 @@ const useRRR =()=>{
           setCurrentPage(1);
           setRRRRowData(rowData?.data?.data);
           toast.dismiss();
+          notifySuccess("Data Loaded Successfully")
         } catch (err: any) {
           notifyError(err);
           setRRRRowData([])

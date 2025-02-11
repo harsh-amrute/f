@@ -466,7 +466,7 @@ const OverallBmReport = () => {
     const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
     const totalRows = refGraph2?.current?.api?.getDisplayedRowCount();
 
-    setIsCheckboxChecked(selectedNodes?.length === totalRows);
+    setIsCheckboxChecked(totalRows > 0 && selectedNodes?.length === totalRows);
   };
 
   const handleActionChange = (option: any) => {
@@ -1386,8 +1386,7 @@ const OverallBmReport = () => {
         rn_id: UIGridCode.ProdOverallBMReport,
       });
 
-      const newConfig =
-        JSON.parse(data?.data?.data?.[0]?.columns_settings) || [];
+      const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
 
       setColumnState(newConfig.cs);
       setIsPivot(newConfig.pivot);

@@ -118,7 +118,7 @@ console.log(age)
   };
 
   const graph1 = [
-    "This graph highlights the trends of #SKU-Location with continous black,red or white status, each greater than or equal to the selected mimimum agening",
+    "This graph highlights the trends of #SKU-Location with continous (On Hand) black,red or white status, each greater than or equal to the selected mimimum agening",
   ];
 
   const numbers = Array.from(Array(90), (_, index) => index + 1);

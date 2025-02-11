@@ -10,7 +10,7 @@ import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRDataCount, useGetStat
 import { isSameDay, format, addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
 import { useGetUpdatedGraphData, useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
-import { notifyError, notifyLoader } from '../../../../../helpers/notify'
+import { notifyError, notifyLoader,notifySuccess } from '../../../../../helpers/notify'
 import { toast } from 'react-toastify'
 
 
@@ -253,6 +253,7 @@ const useResearchInsights = () => {
             }
         })
         toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
         setResearchInsightsRowData(rowData.data.data)
     }
 
