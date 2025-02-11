@@ -290,7 +290,7 @@ export const useBOR =()=>{
                 console.log(stateData)
                 if(stateData.data.data.length!==0){
                     const parsedContent = JSON.parse(stateData.data.data)
-                    const generatedColumns = generateAndMapColumns('BOR',data?.data.data,true,true,false, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                    const generatedColumns = generateAndMapColumns('BOR',data?.data.data,true,false,false, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
                     const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
                     setGridState({
                         pivot:parsedContent.pivot,
@@ -300,7 +300,7 @@ export const useBOR =()=>{
                     console.log(parsedContent)
                     setBORColumns(coldefs)
                 }else{
-                    const MappedColumns = generateAndMapColumns('BOR',data?.data.data,true,true,false, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
+                    const MappedColumns = generateAndMapColumns('BOR',data?.data.data,true,false,false, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
                     setGridState({
                         charts:[],
                         columns:MappedColumns,
