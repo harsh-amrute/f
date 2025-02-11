@@ -22,6 +22,13 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
     const param = { horison: horizon, filters:filter };
     const AvailabilityTrend = await GetAvailabilityTrend(param);
     const AvailabilityTrendData = AvailabilityTrend?.data?.data;
+
+    if (!AvailabilityTrendData || AvailabilityTrendData.length === 0) {
+      setOptions({}); 
+      return;
+  }
+
+
    const greyShades = [
       // '#191919', 
        '#333333', 

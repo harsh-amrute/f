@@ -801,21 +801,20 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
       
       const resetFilters = () => {
         const resetMultiFilter = { ...multiFilter };
-      
         Object.keys(resetMultiFilter).forEach((key) => {
           resetMultiFilter[key as keyof BPRFilterState].filters = [];
         });
-      
-        setMultiFilter({...resetMultiFilter});
+        setFilterState(resetMultiFilter);
+        setMultiFilter(resetMultiFilter); // Update the parent state as well
       };
 
-    //   useEffect(() => {
-    //     if(multiFilter){
-    //         if (Object.keys(multiFilter).length) {
-    //         setFilterState(JSON.parse(JSON.stringify(multiFilter)));
-    //         }
-    //     }
-    // }, []);
+      useEffect(() => {
+        if(multiFilter){
+            if (Object.keys(multiFilter).length) {
+            setFilterState(JSON.parse(JSON.stringify(multiFilter)));
+            }
+        }
+    }, []);
 
     return(
         <>
