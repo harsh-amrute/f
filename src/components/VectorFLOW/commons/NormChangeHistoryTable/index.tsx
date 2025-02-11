@@ -82,7 +82,7 @@ const NormChangeHistoryTable = (props : NormChangeHistoryTableProps)=> {
         flex: 2,
         cellRenderer: "wrapTextCellRenderer",
         autoHeight: true,
-        resizable: false,
+        resizable: true,
         sortable: true,
         wrapText: true,
         cellStyle: {
