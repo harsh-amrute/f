@@ -416,14 +416,9 @@ const DynamicReleaseManagement = () => {
       resizable: true,
       suppressMenu: true,
       initialFlex: 1,
-      // wrapHeaderText: true,
-      // filter: "agMultiColumnFilter",
-
       autoHeaderHeight: true,
       floatingFilter: true,
       enableRowGroup: true,
-
-      // floatingFilterComponentParams: { suppressFilterButton: true },
       cellStyle: {
         "fontSize": "12px",
         'display': 'flex',

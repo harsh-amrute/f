@@ -45,8 +45,6 @@ const VFPagination = (props: VFPaginationProps) => {
 
     const clearGridFilter = () =>{
         resetGridRef?.current?.api.setFilterModel(null)
-        // const totalRowCount = resetGridRef.current.api.getDisplayedRowCount();
-        // console.log('Total row count:', totalRowCount);
     }
 
     const getTotalItemsString = () => {

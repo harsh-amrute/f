@@ -168,9 +168,6 @@ const OrderRescheduling = () => {
     // rowHeight: 40,
     defaultColDef: {
       floatingFilter: true,
-      // filter: "agMultiColumnFilter",
-      // floatingFilterComponentParams: { suppressFilterButton: true },
-      // suppressMenu: true,
       resizable: true,
       cellDataType: false,
       // minWidth: 140,
@@ -290,8 +287,6 @@ const OrderRescheduling = () => {
       }
     }
   }, [HeaderData, currTab]);
-
-  console.log("Column Definitions:", colDef);
 
   const handlePageChangeCumulative = async (pageNumber: number) => {
     setIsLoading(true);

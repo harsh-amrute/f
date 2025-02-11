@@ -176,8 +176,6 @@ const EnquiryResponse = () => {
     );
   };
 
-  console.log("Column Definitions:",myColDefs );
-
   const getRMUI = () => {
     if (filterData) {
 

@@ -52,7 +52,6 @@ export const PaginationContainer = styled.div`
     width:100%;
     display:flex;
     flex-direction:row;
-    // justify-content:flex-end;
     height:40px;
     padding:0 10px;
     font-size:13px;
@@ -66,7 +65,6 @@ export const PaginationContainer = styled.div`
     border-top:none;
     background-color:white;
     margin-top:-20px;
-
      alignItems: 'center'
 `
 
