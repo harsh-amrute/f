@@ -71,6 +71,17 @@ const SelectCategory = (props: CountProp) => {
 
     const {locations} = useGetLocation()
 
+    const getTotalFilterCount = (multiFilter: any) => {
+        let total = 0;
+        for (const key in multiFilter) {
+          if (multiFilter[key]?.filters) {
+            total += multiFilter[key].filters.length;
+          }
+        }
+        return total;
+      };
+     
+
     return (
         <>
 
@@ -80,7 +91,7 @@ const SelectCategory = (props: CountProp) => {
                     <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters>
                 </div>
                 <ButtonFilterWrapper>
-                    <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>Edit Filter</VFButton>
+                    <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>{getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}</VFButton>
                     {
                         isFilterOpen && (
                             <VFMultiFilter isFilterOpen={isFilterOpen} onApplyFilter={handleApplyFilter} onGoBack={() => toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={locations} supplyChainForChildrenOfCheckBoxList={locations.filter((m: any) => ['plant', 'CWH', 'RWH'].includes(m.id))}></VFMultiFilter>
