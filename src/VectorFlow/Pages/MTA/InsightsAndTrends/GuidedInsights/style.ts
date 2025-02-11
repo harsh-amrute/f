@@ -17,7 +17,7 @@ export const SCDynamicContainer = styled.div`
       height:100vh
     }
     height:90%;
-    margin-top:10px;
+    margin-top:5px;
 `
 export const SCHorizontalAllignmentWrapper = styled.div`
     width:100%;

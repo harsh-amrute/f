@@ -201,21 +201,21 @@ export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDaily
 
   let result:ColDef[] = []
 
-  // const specificColumns:ColDef[] =[
-  //   {
-  //     colId:'dailydatagraph',
-  //     field:'',
-  //     headerName:'',
-  //     width:40,
-  //     lockPosition:'left',
-  //     floatingFilter:false,
-  //     tooltipField:"DailyDataGraph",
-  //     cellRenderer:'grapCellRenderer',
-  //     cellRendererParams:{
-  //       onOpenDailyDataGraph:onOpenDailyDataGraph
-  //     },
-  //   }
-  // ]
+  const specificColumns:ColDef[] =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      lockPosition:'left',
+      floatingFilter:false,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+    }
+  ]
 
   result =  fields.map((f:RRRField)=>{
     
@@ -239,8 +239,7 @@ export const mapRRRColorBandWiseFieldsToColDefs = (fields:RRRField[],onOpenDaily
       filter:getCellFilter(f.DataType)
     }
   })
-  // return [...result,...specificColumns]
-    return [...result];
+  return [...result,...specificColumns]
 }
 
 export const mapOrderAllocationReportFieldsToColDefs = (fields:UiConfigField[],onOpenDailyDataGraph:any):ColDef[]=>{
@@ -2591,7 +2590,7 @@ export const createAxesForBarCharts = (keys:any,Labels:any)=>{
 
 export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
   
-  const { series , palette , chartKey:keys, Labels, chartType} = chartParams
+  const { series , palette , chartKey:keys, Labels, chartType, legend} = chartParams
 
   const seriesMapped = series.map((obj:any,index:number)=>{
     return {...obj,tooltip: chartType==='pie' ? pieTooltip : commonTooltip}
@@ -2602,6 +2601,7 @@ export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:st
       palette
     },
     series:seriesMapped,
+    ...(legend !== undefined && chartType !== 'pie' ? { legend } : {}),
     ...(chartType!='pie' ? createAxesForBarCharts(keys,Labels) : {}),
   }
   return options;

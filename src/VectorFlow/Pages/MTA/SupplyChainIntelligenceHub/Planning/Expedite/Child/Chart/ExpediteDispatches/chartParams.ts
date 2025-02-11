@@ -1,7 +1,7 @@
 export const chartParams1 = {
-    title:'Top 10 Receiving Locations: Max Pipeline Inv. Black/Red SKUs With Rationed Quantity Available At Parent',
+    title:'Top 10 Receiving Locations: Max Pipeline Inv. Black/Red/Yellow SKUs With Rationed Quantity Available At Parent',
     chartType:'stackedColumn',
-    downloadName:'Top 10 Receiving Loc- (Max Pipeline Inv B/R Available at parent)',
+    downloadName:'Top 10 Receiving Loc- (Max Pipeline Inv B/R/Y Available at parent)',
     LabelPosition:'bottom',
     Labels:{
         Xaxis:'Parent Location Name',
@@ -10,6 +10,10 @@ export const chartParams1 = {
     palette:{
         fills: ["#D0A928"],
         strokes: ["#ffffff", "#ffffff"],
+    },
+    legend:{
+        enabled:true,
+        position:'bottom'
     },
     chartKey:{
         Xaxis:['WHDescription'],
