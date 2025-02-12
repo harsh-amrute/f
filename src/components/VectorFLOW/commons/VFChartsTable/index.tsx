@@ -45,8 +45,6 @@ const VFChartsTable = (props:any)=>{
     const getChartToolbarItems:any = () => ['chartDownload'];
 
     const handleExportExcel = () => {
-        console.log('excel');
-
         gridRef?.current?.api?.exportDataAsExcel({
             fileName: downloadName || 'export.xlsx', 
         });
@@ -117,10 +115,6 @@ const VFChartsTable = (props:any)=>{
                 height={'480px'}
             />
         </div>
-        {/* <button id="exportExcel" onClick={handleExportExcel}>Export Excel</button> */}
-    {/* <TextBtn style={{fontSize:'15px', paddingTop:'10px'}} id="exportExcel"  onClick={handleExportExcel} >Excel Export</TextBtn>   */}
-        
-
     </VFModalCard>
 
 </>
