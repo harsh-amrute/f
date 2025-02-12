@@ -161,8 +161,8 @@ const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) =>
   },[])
  
  
-  const generateCustomizedChartParams = (chart_Params:any,rowdata:any) =>{
-    const overridenChartparams = {...chart_Params}
+  const generateCustomizedChartParams = (chartParams:any,rowdata:any) =>{
+    const overridenChartparams = {...chartParams}
     const dynamicFeilds = filterNonEmptyDynamicColumns(rowdata)
  
     const defaultColForChart = {
