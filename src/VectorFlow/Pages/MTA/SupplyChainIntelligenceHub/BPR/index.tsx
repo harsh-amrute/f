@@ -1,5 +1,7 @@
 
-import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
+// import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
+import VFTable from '../../../MTO/Common/VFTable';
+
 import { BPRLayout, LastRunDateHeader, LastRunDate } from "./styles"
 import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
