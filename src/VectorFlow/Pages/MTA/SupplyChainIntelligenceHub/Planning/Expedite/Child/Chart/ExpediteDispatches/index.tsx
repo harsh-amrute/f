@@ -8,7 +8,6 @@ import { chartParams1, chartParams2 } from "./chartParams";
 import {colDefForPie as colDefs2} from '../../../colDefs'
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOptions} from '../../../../../../../../../helpers/utils';
 import VFCharts from "../../../../../../../../../components/VectorFLOW/commons/VFCharts";
-import { Any } from "react-spring";
  
 interface ExpediteChildDispatchesProps {
   data: any;
