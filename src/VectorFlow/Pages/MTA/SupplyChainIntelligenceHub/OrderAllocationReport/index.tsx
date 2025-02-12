@@ -95,7 +95,7 @@ const OrderAllocationReport = () => {
           <VFLoader/>
         ):
         (
-          <div style={{height:'100vh'}}>
+          <div style={{height:'70vh'}}>
 
           <VFTable
                   ref={ref}
@@ -113,7 +113,7 @@ const OrderAllocationReport = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                  height={"90%"}
+                  height={"100%"}
               />  
               <VFPagination 
                 selectedRows={0} 
