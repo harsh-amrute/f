@@ -246,10 +246,12 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
                 onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}
                 gridHeight={"95%"}
-            />
+            /> 
             <RequestExpeditingModal isOpen={isExpeditingModalOpen} onClose={()=>toggleExpeditingModal((prev:boolean)=>!prev)} onSubmit={submitOpenExpediteRemark}/>
         </>
     )
 }
 
 export default ExpediteParentExpediteDispatchesGrid;
+
+
