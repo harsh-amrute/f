@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import * as globalStyles from "../../../../styles/global";
 
 
 export const SaveRemarkWrapper = styled.div`

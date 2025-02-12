@@ -149,6 +149,7 @@ const OverallBmReport = () => {
   const allotementRef = useRef<any>(null);
 
   const [coldefs, setColdef] = useState<any>();
+
   const [gridData, setGridData] = useState<any>();
   const [gridDataCount, setGridDataCount] = useState<number>(0);
   const rowsSelected = useRef(false);
@@ -866,6 +867,9 @@ const OverallBmReport = () => {
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
+        filterParams: {
+          buttons: ['reset']
+        },
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
           child.cc === "ec" && systemType >= 3

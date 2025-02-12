@@ -15,7 +15,7 @@ import MTORemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORe
 import PlannedReleaseRenderer from './PlannedReleaseRenderer';
 import CustomCellEditor from './MajorDropDownRenderer';
 import { ColorsMTO } from '../../Common/Colors';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
+import VFPagination from "../../Common/VFPagination";
 import BPPRenderer from '../../Common/BPPRenderer';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
@@ -60,6 +60,7 @@ const ReasonForDelayOrder = () => {
     const [isReset, setIsReset] = useState<any>(undefined);
     const [colDef, setColDef] = useState([{}]);
     const [filterData, setFilterData] = useState({});
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
         state: currFilter,
@@ -484,6 +485,7 @@ const ReasonForDelayOrder = () => {
                     }}
                     onRowDataUpdated={(params: any) => { updateUserChanges(params); }}
                     maintainColumnOrder
+                    onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
                 />
                 <VFPagination
                     selectedRows={0}
@@ -491,6 +493,9 @@ const ReasonForDelayOrder = () => {
                     totalRows={rowDataCount}
                     currentPage={currentPage}
                     handleChangePage={handlePageChange}
+                    resetGridRef={currentGridRef}
+                    isDisabled={isDisabled}
+
                 />
 
 

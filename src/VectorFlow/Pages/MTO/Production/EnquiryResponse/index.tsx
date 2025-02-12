@@ -674,6 +674,8 @@ const EnquiryResponse = () => {
     }
   }, [HeaderData])
 
+ 
+    
   const ExcelExport =()=>{
     gridRef.current?.api?.exportDataAsExcel({ fileName: `Enquiry_Response_${format(Date.now(), "dd/MM/yyyy")}` })
   }
@@ -696,10 +698,7 @@ const EnquiryResponse = () => {
         />
       
       <div style={{ paddingLeft: '25px' }}>
-
-
         <BTRTableWrapper style={{ height: screenHeight - 145, margin: '0' }}>
-
           <Allotment vertical separator   >
             <Allotment.Pane preferredSize={'55%'}>
               <BTRAllomentSection>
@@ -713,10 +712,8 @@ const EnquiryResponse = () => {
                 />
               </BTRAllomentSection>
             </Allotment.Pane>
-
             <Allotment.Pane preferredSize={'45%'}>
               <BTRAllomentSection style={{ paddingTop: '10px' }}>
-
                 <EstimatedWrapper>
                   <div
                     style={{ WebkitFilter: `blur(${hasProductGroup ? "0px" : "3px"})`, padding: "20px 25px" }}
@@ -730,6 +727,7 @@ const EnquiryResponse = () => {
                     {getRMUI()}
                     <Note type="danger" message={message} />
                   </div>
+
                   <BlurCover style={{ display: hasProductGroup ? "none" : "block" }}>
                     <CardCover>
                       <DashedCard>
