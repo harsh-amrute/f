@@ -115,14 +115,14 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
             cellRenderer:'tagsCellRenderer',
             width:100,
         }
-        const ageingColDef =  {
-            colId:'AgeingOrder',
-            field:'AgeingOrder',
-            headerName:"Ageing Order",
-            cellRenderer:'ageingCellRenderer',
-            width:100,
-            floatingFilter:false
-        }
+        // const ageingColDef =  {
+        //     colId:'AgeingOrder',
+        //     field:'AgeingOrder',
+        //     headerName:"Ageing Order",
+        //     cellRenderer:'ageingCellRenderer',
+        //     width:100,
+        //     floatingFilter:false
+        // }
         columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
             return column1.colPosition - column2.colPosition;
         })
@@ -149,8 +149,8 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
                 headerName:column['header']
             }
         })
-        dispatch(UPDATE_GRID_STATE([ageingColDef,dailyDataColDef,...colDefs]))
-        return [ageingColDef,dailyDataColDef,...colDefs]
+        dispatch(UPDATE_GRID_STATE([dailyDataColDef,...colDefs]))
+        return [dailyDataColDef,...colDefs]
     }
 
     const colDefs = useMemo(()=>{

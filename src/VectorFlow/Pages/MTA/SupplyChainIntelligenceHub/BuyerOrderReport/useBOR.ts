@@ -1,6 +1,6 @@
 import { useGetBORUIConfiguration, useBORData, useBORDataCount,useSubmitBORRemark,useGetBORRemarkHistory } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapBORFieldsToColDefs, updateCommonAttributes, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs  } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
@@ -22,8 +22,8 @@ import {  BPRSubmitRemarkCellRenderer } from "../BPR/BPRCellRenderers"
 import useViewPort from "../../../../../hooks/useViewPort"
 import { BORRemarksCellRenderer } from "./BORCellRenderers"
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
-
-
+import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 
 
 export const useBOR =()=>{
@@ -34,7 +34,8 @@ export const useBOR =()=>{
 
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
-     const {data,isLoading:isBORUILoading} = useGetBORUIConfiguration();
+  const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
+  
      const dispatch = useDispatch();
    
      const {getGridZoom,getScreenZoomValue} = useViewPort()
@@ -87,8 +88,8 @@ export const useBOR =()=>{
       }
 
 
-     const {mutateAsync:getBorData} = useBORData();
-     const {mutateAsync:getBorDataCount} = useBORDataCount();
+     const {mutateAsync:getBorData, isLoading: isBORDataLoading} = useBORData();
+     const {mutateAsync:getBorDataCount, isLoading: isBORCountLoading} = useBORDataCount();
      const {mutateAsync:getDailyData} = useGetDailyData();
 
      const customCellRenderers = useMemo(() => ({
@@ -260,87 +261,85 @@ export const useBOR =()=>{
 
       const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
       const [gridState,setGridState] = useState<any>()
-      const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
+  const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
+  const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
 
-    //   useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState({"reportname":"BOR"})
-    //         const parsedContent = JSON.parse(data.data.data)
-    //         setGridState(parsedContent)
-    //       }catch(err:any){
-    //         setGridState({
-    //             charts:[],
-    //             columns:BORColumns,
-    //             pivot:false
-    //         })
-    //       }
-    //     }
-    //     getTableState()
+  useEffect(() => {
+    fetchData();
+    getBORUiConfig();
+  }, []);
 
-    // },[])
+  const fetchData = async () => {
+    await getRecordsCount();
+    await loadGridData(currentPage);
+  };
 
-        useEffect(()=>{
-            const getTableState = async()=>{
-              try{
-                if(data?.data.data){
-                    setInitialColumnState(data?.data.data)
-                }
-                const stateData =  await getState({"reportname":"BOR"})
-                console.log(stateData)
-                if(stateData.data.data.length!==0){
-                    const parsedContent = JSON.parse(stateData.data.data)
-                    const generatedColumns = generateAndMapColumns('BOR',data?.data.data,true,false,false, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
-                    const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
-                    setGridState({
-                        pivot:parsedContent.pivot,
-                        charts:parsedContent.charts,
-                        columns:coldefs
-                    })
-                    console.log(parsedContent)
-                    setBORColumns(coldefs)
-                }else{
-                    const MappedColumns = generateAndMapColumns('BOR',data?.data.data,true,false,false, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
-                    setGridState({
-                        charts:[],
-                        columns:MappedColumns,
-                        pivot:false
-                    })
-                    setBORColumns(MappedColumns)
-                }
-              }catch(err:any){
-                console.log(err)
-                setGridState({
-                    charts:[],
-                    columns:BORColumns,
-                    pivot:false
-                })
-              }
-            }
-            if(data!==undefined){
-              getTableState()
-            }
-        },[data])
-  
-    useEffect(()=>{
-      if(internalRef && gridState && gridState.columns){
-        internalRef.api.applyColumnState({state:BORColumns,applyOrder:true})
+  useEffect(() => {
+    setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
+  }, [initialColumnState]);
+      
+  const getBORUiConfig = async () => {
+    try {
+      const response = await getUiConfig(UIColumnConfigName.BOR);
+      setInitialColumnState(response.data.data);
+    } catch (err: any) {
+      notifyError("Something Went Wrong")
+    }
+  }
+
+  useEffect(() => {
+    const getTableState = async () => {
+      try {
+        const MappedColumns = getColumnDefinationsMTA(initialColumnState, CustomHeader);
+                  
+        setGridState({
+          charts: [],
+          columns: MappedColumns,
+          pivot: false
+        })
+        setBORColumns(MappedColumns);
+        getUserColumnConfig();
+      } catch (err: any) {
+        console.log(err)
       }
-  },[internalRef,gridState])
+    }
+    if (initialColumnState !== undefined) {
+      getTableState()
+    }
+  }, [initialColumnState]);
 
-      useEffect(()=>{       
-        const fetchData = async () => {
-            await getRecordsCount();
-            await loadGridData(currentPage);
-
-
-        };
-        fetchData();
-        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
-
-    }, [isBORUILoading]);
-
-
+  useEffect(() => {
+    if (BORColumns.length) {
+      if (internalRef?.api) {
+        setMasterUIConfig(internalRef.api.getColumnState());
+      }
+    }
+  }, [internalRef, BORColumns]);
+      
+  const getUserColumnConfig = async () => {
+    const stateData = await getState({ "reportname": UserUIColumnConfigName.BOR })
+    if (stateData.data.data.length !== 0) {
+      const parsedContent = JSON.parse(stateData.data.data)
+            
+      setGridState({
+        charts: parsedContent.charts,
+        columns: parsedContent.columns,
+        pivot: parsedContent.pivot,
+      })
+      
+    } else {
+      console.log("Data not available");
+    }
+  }
+  
+  useEffect(() => {
+    if (internalRef && gridState && gridState.columns) {
+      const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+      if (!result) {
+        console.error("Failed to apply column state", result);
+      }
+    }
+  }, [internalRef, gridState]);
 
     const onColumnVisible = (event: any) => {
       const { column, visible , columns } = event;
@@ -421,7 +420,8 @@ export const useBOR =()=>{
     
     const loadGridData = async (pageNo:any,filter?:any)=> {
 
-        try{
+      try {
+        
           notifyLoader("loading Grid Data")
           const payload={
             filters:filter || {},
@@ -456,12 +456,12 @@ export const useBOR =()=>{
         floatingFilter: true,
         cellStyle:{
             "flex":1,
-            'text-align':'center',
+            'textAlign':'center',
             'height':'50px',
-            "font-style":"normal",
+            "fontStyle":"normal",
             "display":"block",
-            'text-overflow':'ellipsis',
-            'white-space':'nowrap'
+            'textOverflow':'ellipsis',
+            'whiteSpace':'nowrap'
         },
     }
   },[])
@@ -551,21 +551,62 @@ export const useBOR =()=>{
     }
 
 
-    const onResetCallback = async()=>{
-      const MappedColumns = generateAndMapColumns('BOR',intialColumnState,true,true,false, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
-      // const ResetColumns = BORColumns.map((t:any) => {
-      //     return {
-      //       ...t,
-      //       hide: false,
-      //     };
-      //   });
-      setBORColumns(MappedColumns)
+  const onResetCallback = async () => {
+    setGridState({
+      charts: [],
+      columns: masterUIConfig,
+      pivot: false,
+    })
   }
 
+  const CustomHeader = {
+    dailydatagraph: {
+      width: 45,
+      minWidth: 45,
+      filter: false,
+      cellRenderer: 'grapCellRenderer',
+      cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+      pinned: 'left',
+      resizable: false,
+      floatingFilter: false,
+      suppressColumnsToolPanel: false
+    },
+    remarks: {
+      cellStyle: {
+        backgroundColor: 'white',
+        border: '1px solid #b9bdba',
+        color: 'black',
+        padding: '1px'
+      },
+      pinned: 'right',
+      editable: true,
+      minWidth: 130,
+      maxWidth: 160,
+      lockPosition: 'right',
+      menuTabs: [],
+      suppressMenu: true,
+      resizable: false,
+      floatingFilter: false,
+    },
+    rh: {
+      cellRenderer: 'remarksCellRenderer',
+      cellRendererParams: {
+        onClick: onOpenRemarkHistory
+      },
+      pinned: 'right',
+      minWidth: 120,
+      maxWidth: 120,
+      lockPosition: 'right',
+      menuTabs: [],
+      suppressMenu: true,
+      resizable: false,
+      floatingFilter: false,
+    },
+  }
   
      return {   
         ref,    
-        isLoading :isBORUILoading,      
+        isLoading :isUIConfigLoading || isBORDataLoading || isBORCountLoading,      
         BORColumns,
         agGridProps,
         rowData ,
@@ -605,7 +646,7 @@ export const useBOR =()=>{
         onCloseRemarkHistory,
         onCloseSubmitRemark,
         onResetCallback,
-        lastRunDate
+       lastRunDate
 
     }
 }

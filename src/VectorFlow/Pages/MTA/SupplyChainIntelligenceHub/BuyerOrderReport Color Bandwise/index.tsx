@@ -133,7 +133,8 @@ const BuyerOrderReportColorBandwise = ()=>{
                     ],
                   }}
                   height={"80%"}
-                  maintainColumnOrder />
+                  maintainColumnOrder
+                />
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}

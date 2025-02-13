@@ -33,7 +33,8 @@ const RRRColorBandwise = () => {
   onDeleteFilter,
   isSavedDataLoading,
   ref,
-  generalFilterOptions
+  generalFilterOptions,
+  onResetCallback
 } = useRRRColorBandwise();
 
 
@@ -47,7 +48,8 @@ const RRRColorBandwise = () => {
     tempDownloadData:tempDownloadData,
     setTempDownloadData:setTempDownloadData,
     exportExcelRowData:exportExcelRowData,
-    setExportExcelRowData:setExportExcelRowData
+    setExportExcelRowData:setExportExcelRowData,
+    onResetCallback:onResetCallback
 }}
   >
     <div style={{marginLeft:'10px'}}>
@@ -113,8 +115,8 @@ const RRRColorBandwise = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                  height={"100%"}
-                  maintainColumnOrder
+                height={"100%"}
+                maintainColumnOrder
               />  
               <VFPagination 
                 selectedRows={0} 

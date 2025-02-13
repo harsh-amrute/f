@@ -1,10 +1,10 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetRRRUIConfiguration,useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
+import { useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import { convertUiConfigToOptions, mapRRRFieldsToColDefs, updateCommonAttributes, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs} from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA} from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
@@ -13,6 +13,8 @@ import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants"
 import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
+import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 
 
 const useRRR =()=>{
@@ -28,10 +30,7 @@ const useRRR =()=>{
     const tempRef = useRef<GridRef>()
     const ref = useRef<GridRef>()
 
-   
-
     const [currentPage,setCurrentPage] = useState<any>(1);
-
 
     const [tempDownloadData,setTempDownloadData] = useState<boolean>(false);
 
@@ -39,16 +38,28 @@ const useRRR =()=>{
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
-    const {data,isLoading:isRRRConfigLoading} = useGetRRRUIConfiguration()
-    const {mutateAsync:getRRRData} =useGetRRRData();
-    const {mutateAsync:getRRRDataCount}=useGetRRRDataCount();
+    const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
+    const {mutateAsync:getRRRData, isLoading: isRRRLoading} =useGetRRRData();
+    const {mutateAsync:getRRRDataCount, isLoading: isRRRCountLoading}=useGetRRRDataCount();
 
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
 
     const [gridState,setGridState] = useState<any>()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
 
-    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+
+          
+    const getRRRUiConfig = async () => {
+        try {
+            const response = await getUiConfig(UIColumnConfigName.RRR);
+            setInitialColumnState(response.data.data);
+        } catch (err: any) {
+            notifyError("Something Went Wrong")
+        }
+    }
+
 
     // const [rowData,setRowData] = useState([]);
 
@@ -74,10 +85,11 @@ const useRRR =()=>{
         const fetchData = async () => {
             await getDataCount();
             await getRRRRowData(currentPage);
-            setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+            await getRRRUiConfig();
+            setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
         };
         fetchData();
-    }, [isRRRConfigLoading]);
+    }, []);
     
     // useEffect(()=>{
     //     const getTableState = async()=>{
@@ -96,53 +108,61 @@ const useRRR =()=>{
     //     getTableState()
     // },[])
 
-        useEffect(()=>{
-            const getTableState = async()=>{
-              try{
-                if(data?.data.data){
-                    setInitialColumnState(data?.data.data)
-                }
-                const stateData =  await getState({"reportname":"RRR"})
-                console.log(stateData)
-                if(stateData.data.data.length!==0){
-                    const parsedContent = JSON.parse(stateData.data.data)
-                    const generatedColumns = generateAndMapColumns('RRR',data?.data.data,false,false,false,undefined,undefined,undefined)
-                    const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
-                    setGridState({
-                        pivot:parsedContent.pivot,
-                        charts:parsedContent.charts,
-                        columns:coldefs
-                    })
-                    console.log(parsedContent)
-                    setRRRColumns(coldefs)
-                }else{
-                    const MappedColumns = generateAndMapColumns('RRR',data?.data.data,false,false,false,undefined,undefined,undefined)
-                    setGridState({
-                        charts:[],
-                        columns:MappedColumns,
-                        pivot:false
-                    })
-                    setRRRColumns(MappedColumns)
-                }
-              }catch(err:any){
-                console.log(err)
+    useEffect(() => {
+        const getTableState = async () => {
+            try {
+                const MappedColumns = getColumnDefinationsMTA(initialColumnState);
+                  
                 setGridState({
-                    charts:[],
-                    columns:RRRColumns,
-                    pivot:false
+                    charts: [],
+                    columns: MappedColumns,
+                    pivot: false
                 })
-              }
+                setRRRColumns(MappedColumns);
+                getUserColumnConfig();
+            } catch (err: any) {
+                console.log(err)
+                
             }
-            if(data!==undefined){
-              getTableState()
-            }
-        },[data])
-  
-    useEffect(()=>{
-        if(internalRef && gridState && gridState.columns){
-            internalRef.api.applyColumnState({state:RRRColumns,applyOrder:true})
         }
-    },[internalRef,gridState])
+        if (initialColumnState !== undefined) {
+            getTableState()
+        }
+    }, [initialColumnState]);
+
+    useEffect(() => {
+        if (RRRColumns.length) {
+            if (internalRef?.api) {
+                setMasterUIConfig(internalRef.api.getColumnState());
+            }
+        }
+    }, [internalRef, RRRColumns]);
+          
+    const getUserColumnConfig = async () => {
+        const stateData = await getState({ "reportname": UserUIColumnConfigName.RRR })
+        if (stateData.data.data.length !== 0) {
+            const parsedContent = JSON.parse(stateData.data.data)
+                
+            setGridState({
+                charts: parsedContent.charts,
+                columns: parsedContent.columns,
+                pivot: parsedContent.pivot,
+            })
+          
+        } else {
+            console.log("Data not available");
+        }
+    }
+  
+    useEffect(() => {
+        if (internalRef && gridState && gridState.columns) {
+            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }
+    }, [internalRef, gridState]);
+    
     // const getRecordsCount=async(filter?:any)=>{
     //     const payload={
     //     filters:filter || currFilter,
@@ -166,15 +186,12 @@ const useRRR =()=>{
 
     // }
 
-    const onResetCallback = async()=>{
-      const MappedColumns = generateAndMapColumns('BPR',intialColumnState,false,false,false,undefined,undefined,undefined)
-        // const ResetColumns = RRRColumns.map((t:any) => {
-        //     return {
-        //       ...t,
-        //       hide: false,
-        //     };
-        //   });
-        setRRRColumns(MappedColumns)
+    const onResetCallback = async () => {
+        setGridState({
+            charts: [],
+            columns: masterUIConfig,
+            pivot: false,
+        })
     }
 
     const getDataCount=async (filter?:any) => {
@@ -272,12 +289,12 @@ const useRRR =()=>{
         floatingFilter: true,
         cellStyle:{
             "flex":1,
-            'text-align':'center',
+            'textAlign':'center',
             'height':'50px',
-            "font-style":"normal",
+            "fontStyle":"normal",
             "display":"block",
-            'text-overflow':'ellipsis',
-            'white-space':'nowrap'
+            'textOverflow':'ellipsis',
+            'whiteSpace':'nowrap'
         },
     }
   },[])
@@ -358,7 +375,7 @@ const useRRR =()=>{
         isSideBarOpen,
         RRRColumns,
         agGridProps,
-        isLoading :  isRRRConfigLoading,
+        isLoading :  isUIConfigLoading || isRRRCountLoading || isRRRLoading,
         RRRRowData,
         RRRDataCount,
         currentPage,

@@ -1,12 +1,12 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { AgGridReactProps } from 'ag-grid-react'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-import { convertUiConfigToOptions, mapResearchInsightsFieldsToColDefs, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs } from '../../../../../helpers/utils'
+import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA } from '../../../../../helpers/utils'
 
 import { BPRTagsCellRenderer, BPRTechColorCellRenderer, BPREcoColorCellRenderer } from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
 
-import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRDataCount, useGetState, useGetDailyData } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRDataCount, useGetState, useGetDailyData } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { isSameDay, format, addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
 import { useGetUpdatedGraphData, useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
@@ -23,10 +23,13 @@ import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants'
 import { ColDef } from 'ag-grid-enterprise'
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
+import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig'
+import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum'
 
 const useResearchInsights = () => {
 
-    const { data, isLoading: isBPRUILoading } = useGetBPRUIConfiguration()
+    const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
+
     const dispatch = useDispatch();
 
     const ref = useRef<GridRef>();
@@ -45,7 +48,6 @@ const useResearchInsights = () => {
 
     const [exportExcelRowData, setExportExcelRowData] = useState<Array<any>>([])
 
-
     const { mutateAsync: getDailyData } = useGetDailyData();
 
     const { mutateAsync: getUpdatedGraphData, isLoading: isUpdatedGraphDataLoading } = useGetUpdatedGraphData()
@@ -56,8 +58,6 @@ const useResearchInsights = () => {
     const { mutateAsync: getBPRDataCount, isLoading: isBPRDataCountLoading } = useGetBPRDataCount()
 
     const { data: historicalAvailabilityResponse ,isLoading:isHistoricalAvailabilityLoading } = useGetHistroricalAvailabilityData()
-
-
 
     const [currGridPage,setCurrGridPage] = useState<number>(1)
     const [recordCount,setRecordCount] = useState<number>()
@@ -74,7 +74,8 @@ const useResearchInsights = () => {
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
-    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     
 
     const [graphs, setGraphs] = useState<Array<ReseachInsightsGraphState>>([
@@ -96,63 +97,85 @@ const useResearchInsights = () => {
     const [selectedRowsDates, setSelectedRowsDates] = useState<Array<any>>([])
     const {date:lastRunDate} = useGetLastRunData()
 
+              
+    const getRIUiConfig = async () => {
+        try {
+            const response = await getUiConfig(UIColumnConfigName.Research_Insights);
+            setInitialColumnState(response.data.data);
+        } catch (err: any) {
+            notifyError("Something Went Wrong")
+        }
+    }
+
     useEffect (()=>{
-        setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
+        setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
+    },[initialColumnState])
 
-    },[isBPRUILoading])
 
-
-    useEffect(()=>{
-        const getTableState = async()=>{
-        try{
-            if(data?.data.data){
-                setInitialColumnState(data?.data.data)
-            }
-            const stateData =  await getState({"reportname":"ResearchInsight"})
-            if(stateData.data.data.length!==0){
-                const parsedContent = JSON.parse(stateData.data.data)
-                const generatedColumns = generateAndMapColumns('ResearchInsight',data?.data.data,false,true,true,undefined,undefined,onOpenDailyDataGraph)
-                const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
+    useEffect(() => {
+        const getTableState = async () => {
+            try {
+                const MappedColumns = getColumnDefinationsMTA(initialColumnState, CustomHeader, extras);
+                  
                 setGridState({
-                    pivot:parsedContent.pivot,
-                    charts:parsedContent.charts,
-                    columns:coldefs
+                    charts: [],
+                    columns: MappedColumns,
+                    pivot: false
                 })
-                console.log(parsedContent)
-                setResearchInsightsColumns(coldefs)
-            }else{
-                const MappedColumns = generateAndMapColumns('ResearchInsight',data?.data.data,false,true,true,undefined,undefined,onOpenDailyDataGraph)
-                setGridState({
-                    charts:[],
-                    columns:MappedColumns,
-                    pivot:false
-                })
-                setResearchInsightsColumns(MappedColumns)
-            }
-            }catch(err:any){
+                setResearchInsightsColumns(MappedColumns);
+                getUserColumnConfig();
+            
+            } catch (err: any) {
                 console.log(err)
-                setGridState({
-                    charts:[],
-                    columns:ResearchInsightsColumns,
-                    pivot:false
-                })
             }
         }
-        if(data!==undefined){
+        if (initialColumnState !== undefined) {
             getTableState()
         }
-    },[data])
+    }, [initialColumnState]);
 
 
-
+    useEffect(() => {
+        if (ResearchInsightsColumns.length) {
+            if (internalRef?.api) {
+                setMasterUIConfig(internalRef.api.getColumnState());
+            }
+        }
+    }, [internalRef, ResearchInsightsColumns]);
+          
+    const getUserColumnConfig = async () => {
+        const stateData = await getState({ "reportname": UserUIColumnConfigName.Research_Insights })
+        if (stateData.data.data.length !== 0) {
+            const parsedContent = JSON.parse(stateData.data.data)
+                
+            setGridState({
+                charts: parsedContent.charts,
+                columns: parsedContent.columns,
+                pivot: parsedContent.pivot,
+            })
+          
+        } else {
+            console.log("Data not available");
+        }
+    }
 
   
-    useEffect(()=>{
-        if(internalRef){
-            const colState = internalRef.current?.api?.getColumnState();
-            internalRef.api.applyColumnState({state:colState,applyOrder:true})
+    useEffect(() => {
+        if (internalRef && gridState && gridState.columns) {
+            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
         }
-    },[internalRef,gridState])
+    }, [internalRef, gridState]);
+
+    const onResetCallback = async () => {
+        setGridState({
+            charts: [],
+            columns: masterUIConfig,
+            pivot: false,
+        })
+    };
 
 
     useEffect(() => {
@@ -160,6 +183,7 @@ const useResearchInsights = () => {
             resetState()
             await getRecordCount(currentFilter)
             await getRowData(currentFilter, 1)
+            await getRIUiConfig();
         }
         try {
 
@@ -621,17 +645,48 @@ const useResearchInsights = () => {
         return data.data.data
     }
 
-    const onResetCallback = () =>{
-        const MappedColumns = generateAndMapColumns('ResearchInsight',intialColumnState,false,true,true, undefined,  undefined, onOpenDailyDataGraph)
-        // const ResetColumns = BPRColumns.map((t:any) => {
-        //     return {
-        //       ...t,
-        //       hide: false,
-        //     };
-        //   });
-        setResearchInsightsColumns(MappedColumns)
+    const extras = [
+        {
+            field: 'checkbox',
+            colId: 'checkbox',
+            headerName: '',
+            width: 70,
+            checkboxSelection: true,
+            headerCheckboxSelection: true,
+            headerCheckboxSelectionCurrentPageOnly: true,
+            resizable: false,
+            suppressMenu: true,
+            maxWidth: 40,
+            pinned: 'left',
+            filter: false,
+        }
+    ];
+    
+    const CustomHeader = {
+        dailydatagraph: {
+            width: 45,
+            minWidth: 45,
+            colId: "dailydatagraph",
+            headerName: '',
+            filter: false,
+            cellRenderer: 'grapCellRenderer',
+            cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+            pinned: 'left',
+            resizable: false,
+            floatingFilter: false,
+            suppressColumnsToolPanel: false
+        },
+        Tags: {
+            cellRenderer: 'tagsCellRenderer',
+            width: 100,
+            minWidth: 100,
+            filter: true,
+            pinned: null,
+            filterParams: {
+                buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+        }
     }
-
 
     const rowsPerPage = useMemo(() => parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'), [])
 
@@ -640,7 +695,7 @@ const useResearchInsights = () => {
         agGridProps,
         ResearchInsightsData,
         ResearchInsightsColumns,
-        isLoading: isBPRUILoading || isBPRDataCountLoading,
+        isLoading: isUIConfigLoading || isBPRDataCountLoading,
         isUpdatedGraphDataLoading,
         horizon,
         graphState,
