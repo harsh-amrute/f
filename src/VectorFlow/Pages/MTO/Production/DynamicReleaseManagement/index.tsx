@@ -262,6 +262,11 @@ const DynamicReleaseManagement = () => {
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img height={12} width={12} alt="edit icon" src={userTheme ? "/assets/img/mto/fullKitAssignment/edit_icon_yellow.svg":"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
+              console.log("route....", params.data.rid)
+              if(params.data.rid === null){
+                notifyError("No Route assigned to this order!");
+                return;
+              }
               setRouteNum(params.data.rid)
               setOrderKey(params.data.ok)
               setRouteTrigger(!routeTrigger);
