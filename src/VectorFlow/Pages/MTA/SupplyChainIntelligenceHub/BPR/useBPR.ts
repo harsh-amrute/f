@@ -1,9 +1,9 @@
 import { useState,useMemo, useEffect, CSSProperties,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetBPRData, useGetBPRUIConfiguration, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { convertUiConfigToOptions, mapBPRFieldsToColDefs, mapBPRRowData, updateCommonAttributes, MainMenuItemsCustomization, generateAndMapColumns, mapColumnsWithConfigs, getColumnDefinationsMTA } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRRowData, updateCommonAttributes, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -19,10 +19,11 @@ import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants"
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import { getBPRDataForExcelDownload } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR/api"
+import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 
 
 const useBPR =()=>{
-
 
     const ref = useRef<GridRef>()
     const tempRef = useRef<GridRef>()
@@ -70,10 +71,8 @@ const useBPR =()=>{
 
     const [remarkHistory,setRemarkHistory] = useState<any[]>([])
   
-    const {data:UIConfigData,isLoading:isBPRUILoading,isError} = useGetBPRUIConfiguration()
+    const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading, isError } = useGetUIConfigData();
    
-   
-      
     const {date:lastRunDate} = useGetLastRunData()
     
     const {mutateAsync:getBPRData,isLoading:isRowDataLoading} = useGetBPRData()
@@ -90,68 +89,79 @@ const useBPR =()=>{
     const [gridState,setGridState] = useState<any>()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
-    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
 
-
-  
-    useEffect(()=>{
+    useEffect(() => {   
         getInitialBPRRowData()
-        setGeneralFilterOptions(convertUiConfigToOptions(UIConfigData?.data.data))
-    },[isBPRUILoading])
+        getBPRUiConfig();
+    }, []);
+    
+    const getBPRUiConfig = async () => {
+        try {
+            const response = await getUiConfig(UIColumnConfigName.BPR);
+            setInitialColumnState(response.data.data);
+        } catch (err: any) {
+            notifyError("Something Went Wrong")
+        }
+    }
 
     useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            if(UIConfigData?.data.data){
-                setInitialColumnState(UIConfigData?.data.data)
-            }
-            const stateData =  await getState({"reportname":"BPR"})
-            console.log(stateData)
-            if(stateData.data.data.length!==0){
-                const parsedContent = JSON.parse(stateData.data.data)
-                // const generatedColumns = generateAndMapColumns('BPR',data?.data.data,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
-                const MappedColumns = getColumnDefinationsMTA(UIConfigData?.data.data, CustomHeader, extras);
-                const coldefs = mapColumnsWithConfigs(parsedContent.columns, MappedColumns);
+        setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
+    },[initialColumnState])
+
+    useEffect(() => {
+        const getTableState = async () => {
+            try {
+                const MappedColumns = getColumnDefinationsMTA(initialColumnState, CustomHeader);
+                  
                 setGridState({
-                    pivot:parsedContent.pivot,
-                    charts:parsedContent.charts,
-                    columns:coldefs
+                    charts: [],
+                    columns: MappedColumns,
+                    pivot: false
                 })
-                console.log(parsedContent)
-                setBPRColumns(coldefs)
-            }else{
-                // const MappedColumns = generateAndMapColumns('BPR',data?.data.data,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
-                const MappedColumns = getColumnDefinationsMTA(UIConfigData?.data.data, CustomHeader, extras);
-                setGridState({
-                    charts:[],
-                    columns:MappedColumns,
-                    pivot:false
-                })
-                setBPRColumns(MappedColumns)
+                setBPRColumns(MappedColumns);
+                getUserColumnConfig();
+                
+            } catch (err: any) {
+                console.log(err)
             }
-          }catch(err:any){
-            console.log(err)
-            setGridState({
-                charts:[],
-                columns:BPRColumns,
-                pivot:false
-            })
-          }
         }
-        if(UIConfigData!==undefined){
+        if (initialColumnState !== undefined) {
             getTableState()
         }
-    },[UIConfigData])
+    }, [initialColumnState]);
+
+    useEffect(() => {
+        if (BPRColumns.length) {
+            if (internalRef?.api) {
+                setMasterUIConfig(internalRef.api.getColumnState());
+            }
+        }
+    }, [internalRef, BPRColumns]);
+    
+    const getUserColumnConfig = async () => {
+        const stateData = await getState({ "reportname": UserUIColumnConfigName.BPR })
+        if (stateData.data.data.length !== 0) {
+            const parsedContent = JSON.parse(stateData.data.data)
+          
+            setGridState({
+                charts: parsedContent.charts,
+                columns: parsedContent.columns,
+                pivot: parsedContent.pivot,
+            })
+    
+        } else {
+            console.log("Data not available");
+        }
+    }
 
     useEffect(()=>{
-        if(internalRef && gridState && gridState.columns && gridState.columns.length!==0){
-            const colState = internalRef.current?.api?.getColumnState();
-            // console.log("CHANGING",internalRef.api)
-            // const StateColumns = updateCommonAttributes(gridState.columns,BPRColumns,'colId')
-            // console.log(StateColumns)
-            // setBPRColumns(StateColumns)
-            // setBPRColumns(gridState.columns)
-            internalRef.api.applyColumnState({state:colState,applyOrder:true})
+        if (internalRef && gridState && gridState.columns) {
+            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
         }
     },[internalRef,gridState])
 
@@ -232,21 +242,18 @@ const useBPR =()=>{
       const defaultColDefObject = useMemo(()=>{
         return {
             floatingFilter: true,
+            
             cellStyle:{
                 "flex":1,
-                'text-align':'center',
+                'textAlign':'center',
                 'height':'50px',
-                "font-style":"normal",
+                "fontStyle":"normal",
                 "display":"block",
-                'text-overflow':'ellipsis',
-                'white-space':'nowrap'
+                'textOverflow':'ellipsis',
+                'whiteSpace':'nowrap'
             },
         }
       },[])
-
-
-
-
   
     const agGridProps:AgGridReactProps = useMemo(()=>{
 
@@ -300,7 +307,7 @@ const useBPR =()=>{
     }
 
       const getInitialBPRRowData=async()=>{
-        try{
+          try {    
             await getBPRRecordCount(currFilter)
             await getBPRRowData(currFilter,1)
         }catch(err:any){
@@ -497,20 +504,16 @@ const useBPR =()=>{
         return rowDta.data.data
     }
 
-    const onResetCallback = async()=>{
-        // const MappedColumns = generateAndMapColumns('BPR',intialColumnState,true,true,true, onOpenSubmitRemark,  onOpenRemarkHistory, onOpenDailyDataGraph)
-                const MappedColumns = getColumnDefinationsMTA(UIConfigData?.data.data, CustomHeader, extras);
-        // const ResetColumns = BPRColumns.map((t:any) => {
-        //     return {
-        //       ...t,
-        //       hide: false,
-        //     };
-        //   });
-        setBPRColumns(MappedColumns)
-    }
-
-    const extras = [
-        {
+    const onResetCallback = async () => {
+        setGridState({
+          charts: [],
+          columns: masterUIConfig,
+          pivot: false,
+        })
+      }
+    
+    const CustomHeader = {
+        dailydatagraph: {
             width: 45,
             minWidth: 45,
             colId: "dailydatagraph",
@@ -522,11 +525,8 @@ const useBPR =()=>{
             resizable: false,
             floatingFilter: false,
             suppressColumnsToolPanel: false
-        }
-    ];
-    
-    const CustomHeader = {
-        rn: {
+        },
+        remarks: {
             cellStyle: {
                 backgroundColor: 'white',
                 border: '1px solid #b9bdba',
@@ -574,7 +574,7 @@ const useBPR =()=>{
         await getBPRRowData(currFilter,pageNumber)
     }
 
-    const onApplyFilter = (filter:any)=>{
+    const onApplyFilter = (filter: any) => {
         setCurrFilter(filter)
         getBPRRecordCount(filter)
         setCurrGridPage(1)
@@ -604,7 +604,7 @@ const useBPR =()=>{
     
     return {
         isSubGridOpen,
-        isLoading :  isBPRUILoading || isBPRDataCountLoading,
+        isLoading :  isUIConfigLoading || isBPRDataCountLoading,
         isError,
         activeRow,
         BPRColumns,
