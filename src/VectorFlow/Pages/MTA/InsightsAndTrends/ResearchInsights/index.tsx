@@ -13,7 +13,6 @@ import { AvailabilityTrendHeader,ChartHeaderRadioGroup,ResearchInsightsTableWrap
 import CustomCalenderCaption from './CustomCalenderCaption'
 import CustomCalenderDay from './CustomCalenderDay'
 import useResearchInsights from './useResearchInsights'
-import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader'
 
 import 'react-day-picker/dist/style.css';
 import './styles.css'
@@ -28,6 +27,7 @@ import VFButton from '../../../../../components/VectorFLOW/commons/VFButton'
 import { useUserData } from '../../../../../context'
 import { Skeleton } from '../../../../../components/commons/styled'
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
+import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader'
 
 
 const ResearchInsights = ()=>{
@@ -148,9 +148,7 @@ const ResearchInsights = ()=>{
                 showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
             }
             <ResearchInsightsTableWrapper style={{ marginRight:'15px'}}>
-                {(isLoading || isSavedDataLoading)?(
-                    <VFLoader/>
-                ):(
+                {(isLoading || isSavedDataLoading) && <OverlayLoader/>}
                     <React.Fragment>
                         <VFTable
                             height={"100%"}
@@ -180,7 +178,6 @@ const ResearchInsights = ()=>{
                             handleChangePage={handlePageChange}
                         />
                     </React.Fragment>
-                )}
                 
                 {/* <ResearchInsightsTableTaskBar>
                     <VFButton
@@ -197,7 +194,7 @@ const ResearchInsights = ()=>{
                 isUpdatedGraphDataLoading
                 ?
                 <AvailabilityTrendWrapper>
-                    <VFLoader/>
+                    <OverlayLoader/>
                 </AvailabilityTrendWrapper>
                 :
                 <AvailabilityTrendWrapper>
@@ -219,7 +216,7 @@ const ResearchInsights = ()=>{
                                     90-60 Days
                                 </HistoricalAvailabiltyContentSectionHeader>
                                 <HistoricalAvailabiltyContentSectionData>
-                                    {getFormattedPercentage(historicalAvailabilityData.Availability_61_90)}%
+                                    {getFormattedPercentage(historicalAvailabilityData.Availability_01_30)}%
                                 </HistoricalAvailabiltyContentSectionData>
                             </HistoricalAvailabiltyContentSection>
                             <HistoricalAvailabiltyContentSection>
@@ -235,7 +232,7 @@ const ResearchInsights = ()=>{
                                     30-0 Days
                                 </HistoricalAvailabiltyContentSectionHeader>
                                 <HistoricalAvailabiltyContentSectionData>
-                                    {getFormattedPercentage(historicalAvailabilityData.Availability_01_30)}%
+                                    {getFormattedPercentage(historicalAvailabilityData.Availability_61_90)}%
                                 </HistoricalAvailabiltyContentSectionData>
                             </HistoricalAvailabiltyContentSection>
                         </HistoricalAvailabiltyContent>

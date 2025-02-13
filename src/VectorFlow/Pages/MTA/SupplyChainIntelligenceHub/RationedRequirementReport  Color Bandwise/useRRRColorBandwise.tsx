@@ -222,7 +222,6 @@ const useRRRColorBandwise = () => {
     dispatch(TOGGLE_GRAPH_MODAL(true));
   };
 
-  console.log(RRRColorBandWiseColumns)
 
   const CustomHeader = {
     dailydatagraph: {
@@ -351,7 +350,7 @@ const useRRRColorBandwise = () => {
     isSideBarOpen,
     RRRColorBandWiseColumns,
     agGridProps,
-    isLoading: isUIConfigLoading || isCountDataLoading || isDataLoading,
+    isLoading: isUIConfigLoading || isCountDataLoading || isDataLoading || isSavedDataLoading,
     rowData,
     recordsCount,
     currentPage,

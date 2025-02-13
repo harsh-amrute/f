@@ -53,7 +53,7 @@ const useResearchInsights = () => {
     const { mutateAsync: getUpdatedGraphData, isLoading: isUpdatedGraphDataLoading } = useGetUpdatedGraphData()
 
     const [ResearchInsightsData, setResearchInsightsRowData] = useState<Array<any>>([])
-    const { mutateAsync: getBPRData } = useGetBPRData()
+    const { mutateAsync: getBPRData , isLoading: isBPRLoading} = useGetBPRData()
 
     const { mutateAsync: getBPRDataCount, isLoading: isBPRDataCountLoading } = useGetBPRDataCount()
 
@@ -695,7 +695,7 @@ const useResearchInsights = () => {
         agGridProps,
         ResearchInsightsData,
         ResearchInsightsColumns,
-        isLoading: isUIConfigLoading || isBPRDataCountLoading,
+        isLoading: isUIConfigLoading || isBPRDataCountLoading || isBPRLoading,
         isUpdatedGraphDataLoading,
         horizon,
         graphState,

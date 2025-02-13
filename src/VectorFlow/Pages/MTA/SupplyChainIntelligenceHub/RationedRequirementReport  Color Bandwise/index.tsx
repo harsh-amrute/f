@@ -1,10 +1,10 @@
 import {RRRLayout} from './styles'
 import useRRRColorBandwise from './useRRRColorBandwise';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
+import OverlayLoader from '../../../../..//VectorFlow/Pages/MTO/Common/Loader';
 
 
 
@@ -93,10 +93,8 @@ const RRRColorBandwise = () => {
                     Reset Filter
             </VFButton>
         </RRRTaskBar> */}
-        {(isLoading || isSavedDataLoading)?(
-          <VFLoader/>
-        ):
-        (
+         {(isLoading || isSavedDataLoading) &&<OverlayLoader/>}
+          
           <div style={{height:'70vh'}}>
 
           <VFTable
@@ -126,7 +124,7 @@ const RRRColorBandwise = () => {
                 handleChangePage={(e)=>console.log(e)} 
               />  
         </div>
-        )}
+    
         <div style={{display:'none'}}>                
           <VFTable
             ref={tempRef}

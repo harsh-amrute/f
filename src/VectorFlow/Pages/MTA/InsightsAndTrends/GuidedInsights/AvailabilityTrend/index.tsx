@@ -2,8 +2,8 @@ import { AgCharts } from "ag-charts-react";
 import { useGetAvailabilityTrend } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import { useState, useEffect } from "react";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
+import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
 
 const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:string, filter:any, horizon:number, setHorizon:any}) => {
@@ -109,7 +109,7 @@ const AvailabilityTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:strin
   };
   
   if (isLoading) {
-    return <VFLoader />;
+    return <OverlayLoader />;
   }
 
   const graph1 = [

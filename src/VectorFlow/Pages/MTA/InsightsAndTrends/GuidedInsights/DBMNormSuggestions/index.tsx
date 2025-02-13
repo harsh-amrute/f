@@ -10,7 +10,6 @@ import "allotment/dist/style.css";
 import { SCDynamicContainer } from "../style";
 import { generateChartOptions } from "../../../../../../helpers/utils";
 import VFCharts from "../../../../../../components/VectorFLOW/commons/VFCharts";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import "./styles.css";
 import PieChartandGrid from './VFPieChartandGrid'
 
@@ -21,6 +20,7 @@ import {
   chartParams3,
   chartParams4,
 } from "./chartParams";
+import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
 const DBMNormSuggestions = ({ filter }: { filter: any }) => {
   const { mutateAsync: DBMNormSuggestionLoc, isLoading: isLoadingGraph1 } =
@@ -159,7 +159,7 @@ const DBMNormSuggestions = ({ filter }: { filter: any }) => {
     isLoadingGraph4 ||
     !isAllDataLoaded
   ) {
-    return <VFLoader />;
+    return <OverlayLoader />;
   }
 
   return (
