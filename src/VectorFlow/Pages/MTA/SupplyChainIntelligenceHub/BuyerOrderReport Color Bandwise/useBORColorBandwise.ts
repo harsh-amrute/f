@@ -80,11 +80,11 @@ export const useBORColorBandwise =()=>{
          loadGridData(pageNo,currFilter);
       }
 
-     const {mutateAsync:getData} = useGetBORColorBandWisData();
+     const {mutateAsync:getData, isLoading: isDataLoading} = useGetBORColorBandWisData();
 
-     const {mutateAsync:getDataCount} = useGetBORColorBandWiseRecordCount();
+     const {mutateAsync:getDataCount, isLoading: isCountLoading} = useGetBORColorBandWiseRecordCount();
 
-     const {mutateAsync:getDailyData} = useGetDailyData();
+     const {mutateAsync:getDailyData, isLoading: isDailyDataLoading} = useGetDailyData();
   const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
   const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
   const [BORCBColumns, setBORCBColumns] = useState<ColDef[]>([])
@@ -134,24 +134,32 @@ export const useBORColorBandwise =()=>{
       };
   
 
-      const onOpenDailyDataGraph = async (params:any) => {
+  const onOpenDailyDataGraph = async (params: any) => {
+    notifyLoader("Loading Daily Data Graph...");
         const payload:any = {
             SKUCode:params.data['SKUCode'],
             WHCode:params.data['WHCode']
-        }
-        const result = await getDailyData(payload)
-        const data = result.data.data[0];
-        const dailyData:DailyDataGraph = {
-            rowData:params.data,
-            chartData:data['StockData'] ? data['StockData'] : [],
-            normChangeData:data['NormChangeHistoryData'] ? data['NormChangeHistoryData'] : [],
-            masterData: Array.isArray(data['MasterData']) && data['MasterData']?.length > 0 ? data['MasterData'][0] : undefined,
-            suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-            monitoringData:data['MonitoringData'] ? data['MonitoringData'] : []
-        }
-  
-        dispatch(UPDATE_DAILY_DATA(dailyData));
-        dispatch(TOGGLE_GRAPH_MODAL(true));
+    }
+    try {
+      
+      const result = await getDailyData(payload)
+      const data = result.data.data[0];
+      const dailyData:DailyDataGraph = {
+        rowData:params.data,
+        chartData:data['StockData'] ? data['StockData'] : [],
+        normChangeData:data['NormChangeHistoryData'] ? data['NormChangeHistoryData'] : [],
+        masterData: Array.isArray(data['MasterData']) && data['MasterData']?.length > 0 ? data['MasterData'][0] : undefined,
+        suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
+        monitoringData:data['MonitoringData'] ? data['MonitoringData'] : []
+      }
+      
+      dispatch(UPDATE_DAILY_DATA(dailyData));
+      dispatch(TOGGLE_GRAPH_MODAL(true));
+      notifySuccess("Fetched Daily Data graph!")
+    }
+    catch (e) {
+      notifyError("Failed to load graph data!");
+    }
     }
 
     const onOpenRemarkHistory = async(e:React.MouseEvent<HTMLElement>,row:any)=>{
@@ -477,7 +485,7 @@ export const useBORColorBandwise =()=>{
   
      return {   
         ref,    
-        isLoading :isUIConfigLoading,      
+        isLoading :isUIConfigLoading || isDataLoading || isCountLoading,      
         BORCBColumns,
         agGridProps,
         rowData ,

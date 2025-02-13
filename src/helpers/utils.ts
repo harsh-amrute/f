@@ -4427,7 +4427,7 @@ export const formatFilterJSON = (filter: any) => {
     }
   });
   // console.log("formate filter", formatFilter);
-  return { formatFilter };
+  return formatFilter;
 }
 
 // Function to check values already there in Values

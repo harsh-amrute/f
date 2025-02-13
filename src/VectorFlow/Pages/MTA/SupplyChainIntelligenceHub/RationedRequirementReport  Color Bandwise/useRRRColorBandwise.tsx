@@ -83,9 +83,9 @@ const useRRRColorBandwise = () => {
 
   const { mutateAsync: getDailyData } = useGetDailyData();
 
-  const { mutateAsync: getData } = useGetRRRColorBandWiseData();
+  const { mutateAsync: getData , isLoading: isDataLoading} = useGetRRRColorBandWiseData();
 
-  const { mutateAsync: getDataCount } = useGetRRRColorBandWiseRecordCount();
+  const { mutateAsync: getDataCount , isLoading: isCountDataLoading} = useGetRRRColorBandWiseRecordCount();
 
   const rowsPerPage = parseInt(
     process.env.REACT_APP_BOR_ROWS_PER_PAGE || "100"
@@ -349,7 +349,7 @@ const useRRRColorBandwise = () => {
     isSideBarOpen,
     RRRColorBandWiseColumns,
     agGridProps,
-    isLoading: isUIConfigLoading,
+    isLoading: isUIConfigLoading || isCountDataLoading || isDataLoading,
     rowData,
     recordsCount,
     currentPage,

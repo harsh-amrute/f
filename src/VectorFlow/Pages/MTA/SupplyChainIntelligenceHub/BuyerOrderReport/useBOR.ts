@@ -88,8 +88,8 @@ export const useBOR =()=>{
       }
 
 
-     const {mutateAsync:getBorData} = useBORData();
-     const {mutateAsync:getBorDataCount} = useBORDataCount();
+     const {mutateAsync:getBorData, isLoading: isBORDataLoading} = useBORData();
+     const {mutateAsync:getBorDataCount, isLoading: isBORCountLoading} = useBORDataCount();
      const {mutateAsync:getDailyData} = useGetDailyData();
 
      const customCellRenderers = useMemo(() => ({
@@ -420,7 +420,8 @@ export const useBOR =()=>{
     
     const loadGridData = async (pageNo:any,filter?:any)=> {
 
-        try{
+      try {
+        
           notifyLoader("loading Grid Data")
           const payload={
             filters:filter || {},
@@ -603,7 +604,7 @@ export const useBOR =()=>{
   
      return {   
         ref,    
-        isLoading :isUIConfigLoading,      
+        isLoading :isUIConfigLoading || isBORDataLoading || isBORCountLoading,      
         BORColumns,
         agGridProps,
         rowData ,
@@ -643,7 +644,7 @@ export const useBOR =()=>{
         onCloseRemarkHistory,
         onCloseSubmitRemark,
         onResetCallback,
-        lastRunDate
+       lastRunDate
 
     }
 }

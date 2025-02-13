@@ -39,8 +39,8 @@ const useRRR =()=>{
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
     const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
-    const {mutateAsync:getRRRData} =useGetRRRData();
-    const {mutateAsync:getRRRDataCount}=useGetRRRDataCount();
+    const {mutateAsync:getRRRData, isLoading: isRRRLoading} =useGetRRRData();
+    const {mutateAsync:getRRRDataCount, isLoading: isRRRCountLoading}=useGetRRRDataCount();
 
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
 
@@ -372,7 +372,7 @@ const useRRR =()=>{
         isSideBarOpen,
         RRRColumns,
         agGridProps,
-        isLoading :  isUIConfigLoading,
+        isLoading :  isUIConfigLoading || isRRRCountLoading || isRRRLoading,
         RRRRowData,
         RRRDataCount,
         currentPage,

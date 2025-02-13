@@ -605,7 +605,7 @@ const useBPR =()=>{
     
     return {
         isSubGridOpen,
-        isLoading :  isUIConfigLoading || isBPRDataCountLoading,
+        isLoading :  isUIConfigLoading || isBPRDataCountLoading || isRowDataLoading,
         isError,
         activeRow,
         BPRColumns,

@@ -59,7 +59,7 @@ const BPR = ()=>{
         onDeleteFilter,
         lastRunDate,
         generalFilterOptions,
-        onResetCallback
+      onResetCallback
     } = useBPR();
 
     
