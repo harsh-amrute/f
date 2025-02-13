@@ -107,7 +107,7 @@ const BuyerOrderReport = ()=>{
             Edit Filter
         </VFButton>
     </BORTaskBar> */}
-          {(isLoading || isSavedDataLoading || isSavedDataLoading) ? (
+          {(isLoading || isSavedDataLoading) ? (
             <VFLoader />
           ) :
             (
