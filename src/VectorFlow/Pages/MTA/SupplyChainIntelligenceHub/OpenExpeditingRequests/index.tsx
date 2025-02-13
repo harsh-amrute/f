@@ -129,6 +129,7 @@ const OpenExpeditingRequests = () => {
           //   }
           // }}
           height={"100%"}
+          maintainColumnOrder
         />
 
         <ButtonWrapper>

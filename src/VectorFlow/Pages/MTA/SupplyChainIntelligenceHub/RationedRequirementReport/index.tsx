@@ -121,6 +121,7 @@ const RRR = () => {
                     ],
                   }}
                   height={"100%"}
+                maintainColumnOrder
               />  
               <VFPagination 
                 selectedRows={0} 

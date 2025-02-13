@@ -288,8 +288,9 @@ const useBPR =()=>{
         }
     },[])
 
-
-    const tempAgGridProps:AgGridReactProps = {
+    
+    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
+        return {
         onRowDataUpdated:(event)=>{
             const columnsToBeIncluded = ref?.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
             if(tempDownloadData){
@@ -298,6 +299,8 @@ const useBPR =()=>{
             }
         }
     }
+    },[ref,tempDownloadData])
+
 
       const getInitialBPRRowData=async()=>{
         try{

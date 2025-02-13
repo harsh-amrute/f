@@ -159,6 +159,7 @@ const BPR = ()=>{
                 {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}
+                maintainColumnOrder
                 enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {Statusbar}

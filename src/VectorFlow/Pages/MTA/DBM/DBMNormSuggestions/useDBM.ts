@@ -215,14 +215,16 @@ const useDBM =()=>{
 
    
 
-    const tempAgGridProps:AgGridReactProps = {
+    const tempAgGridProps:AgGridReactProps = useMemo(()=> {
+        return {
         onRowDataUpdated:(event)=>{
             console.log(event,'from tempGridProps',{tempDownloadData:tempDownloadData})
            const columnsToBeIncluded = event?.api?.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsToBeExcluded.includes(key));
             console.log(gridRef.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()))
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:columnsToBeIncluded});
         }
-      };
+      }
+    },[tempDownloadData])
 
     const getDataCount=async (filter:any) => {
         const rowDataCount =await getDBMDataCount({

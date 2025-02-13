@@ -218,12 +218,13 @@ const useResearchInsights = () => {
         }
     },[])
 
-    const tempAgGridProps:AgGridReactProps = {
+    const tempAgGridProps:AgGridReactProps = useMemo (()=> {
+        return{
             onRowDataUpdated:(event)=>{
                 if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
             }
         }
-    
+    },[tempDownloadData])      
 
     const getRecordCount = async (filter: any) => {
         const countData = await getBPRDataCount({

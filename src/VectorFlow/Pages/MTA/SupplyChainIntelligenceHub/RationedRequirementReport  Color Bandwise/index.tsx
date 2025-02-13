@@ -114,6 +114,7 @@ const RRRColorBandwise = () => {
                     ],
                   }}
                   height={"90%"}
+                  maintainColumnOrder
               />  
               <VFPagination 
                 selectedRows={0} 
@@ -130,6 +131,7 @@ const RRRColorBandwise = () => {
             columnDefs={RRRColorBandWiseColumns}
             rowData={exportExcelRowData}
             {...tempAgGridProps}
+            maintainColumnOrder
           />
         </div>
     </RRRLayout>

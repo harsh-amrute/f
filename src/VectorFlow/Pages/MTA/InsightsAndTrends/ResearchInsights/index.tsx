@@ -169,6 +169,7 @@ const ResearchInsights = ()=>{
                                 { statusPanel: 'agAggregationComponent', align:'left' },
                                 ],
                             }}
+                            maintainColumnOrder
                             
                         />
                         <VFPagination
@@ -738,6 +739,7 @@ const ResearchInsights = ()=>{
                     columnDefs={ResearchInsightsColumns}
                     rowData={exportExcelRowData}
                     {...tempAgGridProps}
+                    maintainColumnOrder
                   />
                 </div>
         </ResearchInsightsLayout>
