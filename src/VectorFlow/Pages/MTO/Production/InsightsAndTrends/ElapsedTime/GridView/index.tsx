@@ -4,7 +4,7 @@ import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
-import VFPagination from '../../../../../../../components/VectorFLOW/commons/VFPagination';
+import VFPagination from "../../../../Common/VFPagination";
 import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
 import { useGetElapsedTimeData, useGetElapsedTimeDataForExcelExport } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
@@ -15,6 +15,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(1);
     const [data, setData] = useState([]);
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const gridRef = useRef<any>(null);
     const { mutateAsync: getElapsedTimeData, isLoading } = useGetElapsedTimeData()
     const { mutateAsync : getElapsedTimeDataExcelExport } = useGetElapsedTimeDataForExcelExport();    
@@ -148,13 +149,15 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                     setCurrentGridRef(gridRef);
                 }}
                 maintainColumnOrder
+                onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
             // statusBar={{
             //     statusPanels: [
             //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
             //     ]
             // }}
             />
-            <VFPagination selectedRows={1} totalRows={totalRows} currentPage={currentPage} rowsPerPage={pagination.mtoPageSize} handleChangePage={handlePageChange} />
+            <VFPagination selectedRows={1} totalRows={totalRows} currentPage={currentPage} rowsPerPage={pagination.mtoPageSize} handleChangePage={handlePageChange} resetGridRef={currentGridRef} isDisabled={isDisabled}
+            />
         </SCDynamicContainer>
 
     )

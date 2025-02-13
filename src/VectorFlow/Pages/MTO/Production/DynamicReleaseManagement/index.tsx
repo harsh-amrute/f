@@ -84,6 +84,8 @@ const DynamicReleaseManagement = () => {
   const [message, setMessage] = useState('');
   const [HeaderData, setHeaderData] = useState([]);
   const [filterData, setFilterData] = useState({});
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
+  
   const { mutateAsync : getDynamicReleaseExcelData} = useGetDynamicReleaseExcelData();
   const { 
       state: currFilter, 
@@ -416,14 +418,9 @@ const DynamicReleaseManagement = () => {
       resizable: true,
       suppressMenu: true,
       initialFlex: 1,
-      // wrapHeaderText: true,
-      filter: "agMultiColumnFilter",
-
       autoHeaderHeight: true,
       floatingFilter: true,
       enableRowGroup: true,
-
-      floatingFilterComponentParams: { suppressFilterButton: true },
       cellStyle: {
         "fontSize": "12px",
         'display': 'flex',
@@ -878,6 +875,7 @@ const DynamicReleaseManagement = () => {
               { statusPanel: 'agTotalRowCountComponent', align: 'left' },
             ]
           }}
+          onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
           rowSelection="multiple"
           onSelectionChanged={updateGraphOnSelect}
           onRowDataUpdated={onFirstDataRendered}
@@ -892,6 +890,8 @@ const DynamicReleaseManagement = () => {
             currentPage={currentPage}
             handleChangePage={handlePageChangeCumulative}
             showPagination
+            resetGridRef={currentGridRef}
+            isDisabled={isDisabled}
           />
         </div>
         <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>

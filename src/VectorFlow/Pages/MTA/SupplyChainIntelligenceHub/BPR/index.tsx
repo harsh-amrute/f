@@ -1,5 +1,6 @@
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
+
 import { BPRLayout, LastRunDateHeader, LastRunDate } from "./styles"
 import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"

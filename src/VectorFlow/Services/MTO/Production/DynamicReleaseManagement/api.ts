@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { pagination } from '../../../../../VectorFlow/Pages/MTO/Common/Enum';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace DynamicReleaseManagementService {
@@ -70,7 +71,7 @@ export namespace DynamicReleaseManagementService {
         //     })
         // }
 
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDynamicReleaseData/?graph=${graph}&ao=${ao}&page=${page}&page_size=${2}`, 
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDynamicReleaseData/?graph=${graph}&ao=${ao}&page=${page}&page_size=${pagination.mtoPageSize}`, 
         appliedFilters,
         {
             headers: {

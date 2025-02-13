@@ -2195,6 +2195,7 @@ export const navigateWithPrompt = (onRouteChange: () => void, url: any, state: a
 
 }
 
+
 export const FormatDateFunction =(dateStr:string)=>{
   const date = new Date(dateStr);
 
@@ -4264,6 +4265,7 @@ export function getColumnDefinations(
   extraFields: any = [],
   removeCols: any = [],
 ) {
+ 
   const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => {
     const columnDef = {
       colId: data.cc,
@@ -4280,6 +4282,9 @@ export function getColumnDefinations(
       pivotIndex: null,
       flex: 1,
       minWidth: 150,
+      filterParams: {
+        buttons: ['reset'], // Adds Apply and Clear buttons
+      },
       cellStyle: {
         justifyContent: data.cla
       }
@@ -4401,6 +4406,7 @@ export const getType = (attributes: any, key: any) => {
 // Function to structure the output of filter modal
 export const formatFilterJSON = (filter: any) => {
   let formatFilter: any = {};
+
   for (const key in filter) {
     const { filters } = filter[key];
     for (let i = 0; i < filters.length; i++) {
@@ -4414,13 +4420,14 @@ export const formatFilterJSON = (filter: any) => {
       }
     }
   }
+
   Object.keys(formatFilter).forEach(key => {
     if (formatFilter[key]?.val === '') {
       delete formatFilter[key];
     }
   });
   // console.log("formate filter", formatFilter);
-  return formatFilter;
+  return { formatFilter };
 }
 
 // Function to check values already there in Values
