@@ -164,7 +164,6 @@ const BPR = ()=>{
                 enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {Statusbar}
-                maintainColumnOrder
             />
 
                 <VFPagination
