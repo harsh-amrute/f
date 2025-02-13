@@ -100,11 +100,11 @@ const Permissions = ({ roles }: any) => {
                 "profile.tabContent.permissions.roleAndPermissions.interStoreTransfer"
               )}
             </SCOverviewWrapTitle> */}
-            <SCOverviewWrapItem checkBackGround={roles.permission.length === 3}>
-              {roles.permission.map((item: any, index: number) => (
+            <SCOverviewWrapItem checkBackGround={roles?.permission?.length === 3}>
+              {roles?.permission?.map((item: any, index: number) => (
                 <SCOverviewItem
                   key={index}
-                  checkBorderBottom={roles.permission.length > 2}
+                  checkBorderBottom={roles?.permission?.length > 2}
                 >
                   <SCIconChecked src="/assets/img/check/checked_black.svg" />
                   <SCOverviewItemTitle>{item}</SCOverviewItemTitle>
@@ -126,22 +126,22 @@ const Permissions = ({ roles }: any) => {
           </SCSubTitleBox>
 
           <SCOverviewInfoPermis>
-            {generateProductPermissionsList(roles).map((application:any)=>(
+            {generateProductPermissionsList(roles)?.map((application:any)=>(
               <div style={{margin:'5px'}}>
                 <SCOverviewWrapTitle>
-                  {application.application_name}
+                  {application?.application_name}
                 </SCOverviewWrapTitle>
                 {
-                  application.permissions.map((dataPrd: any) => (
+                  application?.permissions?.map((dataPrd: any) => (
                     <SCOverViewSignItem>
-                      <SCSubTitleSpan>{dataPrd.title}</SCSubTitleSpan>
+                      <SCSubTitleSpan>{dataPrd?.title}</SCSubTitleSpan>
                       <SCSubTitleSpanItem>
                         <SCOverviewItemPerTitle>
-                          {dataPrd.name}
+                          {dataPrd?.name}
                         </SCOverviewItemPerTitle>
                         <SCOverviewItemContent>-</SCOverviewItemContent>
                         <SCOverviewItemContent>
-                          {dataPrd.data.toString().replace(/,/g, " | ")}
+                          {dataPrd?.data?.toString()?.replace(/,/g, " | ")}
                         </SCOverviewItemContent>
                       </SCSubTitleSpanItem>
                     </SCOverViewSignItem>
@@ -161,13 +161,13 @@ const Permissions = ({ roles }: any) => {
             </SCSubTitlePad>
           </SCSubTitleBox>
           <SCOverviewInfoPermis>
-            {generateLocationPermissionsList(roles).map((application:any)=>(
+            {generateLocationPermissionsList(roles)?.map((application:any)=>(
               <div style={{margin:'10px 5px'}}>
                 <SCOverviewWrapTitle>
-                  {application.application_name}
+                  {application?.application_name}
                 </SCOverviewWrapTitle>
                 {
-                  application.permissions.map((dataPrd: any) => (
+                  application?.permissions?.map((dataPrd: any) => (
                     <SCOverViewSignItem>
                       <SCSubTitleSpan>{dataPrd.title}</SCSubTitleSpan>
                       <SCSubTitleSpanItem>
@@ -176,7 +176,7 @@ const Permissions = ({ roles }: any) => {
                         </SCOverviewItemPerTitle>
                         <SCOverviewItemContent>-</SCOverviewItemContent>
                         <SCOverviewItemContent>
-                          {dataPrd.data.toString().replace(/,/g, " | ")}
+                          {dataPrd?.data?.toString()?.replace(/,/g, " | ")}
                         </SCOverviewItemContent>
                       </SCSubTitleSpanItem>
                     </SCOverViewSignItem>

@@ -26,7 +26,6 @@ import {
     BPRDailyAnalyticsTableCellText,
     BPRDailyAnalyticsTableCellIcon
 } from './styles'
-import { notifyError } from '../../../../helpers/notify'
 import { useUserData } from '../../../../context'
 
 interface BPRDailyAnalyticsProps{

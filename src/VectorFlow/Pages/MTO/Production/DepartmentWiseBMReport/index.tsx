@@ -384,6 +384,9 @@ const DptWiseBMReport = () => {
             return children.map((child) => ({
                 field: child.scc.trim(),
                 suppressHeaderFilterButton: true,
+                filterParams: {
+                    buttons: ['reset']
+                },
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
@@ -861,7 +864,8 @@ const DptWiseBMReport = () => {
                 rn_id: UIGridCode.ProdDeptWiseBMReport
             });
 
-            const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+            const newConfig = data?.data?.data?.length?
+            JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
             
             setColumnState(newConfig.cs);
             setIsPivot(newConfig.pivot);

@@ -34,7 +34,7 @@ import {
 import { SeasonalityQuickFilterType, type Filter } from "../../../../types/MDM";
 import VFTable from "../../Common/VFTable";
 import WarningModal from "./WarningModal";
-import React, { useEffect} from "react";
+import React, { useCallback, useEffect, useMemo, useState} from "react";
 import VFTaskBar from "./VFTaskbar";
 import SubmitConflictModal from "./SubmitConflictModal";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
@@ -50,6 +50,9 @@ import CustomCalenderCaption from "../../../MTA/InsightsAndTrends/ResearchInsigh
 import CustomCalenderDay from "../../../MTA/InsightsAndTrends/ResearchInsights/CustomCalenderDay";
 import { CalenderWrapper } from "../../../MTA/InsightsAndTrends/ResearchInsights/styles";
 import DatePickForm from "./DatePickForm";
+import { v4 as uuidv4 } from "uuid";
+import moment from "moment";
+
 
 const MTOViewModify = () => {
   const { user } = useUserData();
@@ -127,14 +130,10 @@ const MTOViewModify = () => {
     setIsModalOpen,
     onMinReasonEditingStopped,
     addRowToMtoMinGrid,
-    selectedDays,
-    toggleDay,
     onSaveHandler,
     selectedData,
     setSelectedData,
-    setCalendarFormData
-
-
+    setCalendarFormData,
   } = useViewModify("modify");
 
   const bufferModifyData = useSelector(
@@ -145,27 +144,140 @@ const MTOViewModify = () => {
 
   // const [isModalOpen, setIsModalOpen] = React.useState(false);
 
+  const [highlightedDates, setHighlightedDates] = useState<string[]>([])
+
+  // Mapping days to their respective index in JavaScript's Date object (0 for Sunday, 6 for Saturday)
+  const dayMap: Record<string, number> = {
+    Su: 0,
+    Mo: 1,
+    Tu: 2,
+    We: 3,
+    Th: 4,
+    Fr: 5,
+    Sa: 6,
+  };
+
+// Function to generate highlighted dates, memoized using useCallback
+const generateHighlightedDates = useCallback(() => {
+  if (!selectedData?.sd || !selectedData?.ed) return [];
+
+  const startDate = moment(selectedData.sd, "YYYY-MM-DD");
+  const endDate = moment(selectedData.ed, "YYYY-MM-DD");
+  const selectedDays = selectedData.dow
+    ? selectedData.dow.includes(",")
+      ? selectedData.dow.split(",")
+      : [selectedData.dow]
+    : [];
+
+  const result: string[] = [];
+
+  // If the recurrence is "monthly"
+  if (selectedData.rb === "Monthly" && selectedData.mn && selectedData.md) {
+    const currentMonth = moment(startDate).startOf("month");
+
+    while (currentMonth.isSameOrBefore(endDate, "month")) {
+      const matchingDate = getNthOccurrenceOfDay(
+        currentMonth.year(),
+        currentMonth.month(),
+        selectedData.mn,
+        selectedData.md
+      );
+
+      // Ensure the date is within the valid range
+      if (matchingDate && matchingDate.isBetween(startDate, endDate, "day", "[]")) {
+        result.push(matchingDate.format("YYYY-MM-DD"));
+      }
+
+      currentMonth.add(1, "month"); // Move to next month
+    }
+
+    return result;
+  }
+
+  // Default behavior (daily or weekly recurrence)
+  while (startDate.isSameOrBefore(endDate)) {
+    const dayOfWeek = startDate.day();
+    if (selectedDays.length === 0 || selectedDays.some((day: any) => dayMap[day] === dayOfWeek)) {
+      result.push(startDate.format("YYYY-MM-DD"));
+    }
+    startDate.add(1, "day");
+  }
+
+  return result;
+}, [selectedData]);
+
+const getNthOccurrenceOfDay = (year: number, month: number, occurrence: string, dayType: string) => {
+  const firstDayOfMonth = moment({ year, month, day: 1 });
+  const lastDayOfMonth = moment({ year, month }).endOf("month");
+
+  // If "md" is "day", return the exact nth day of the month
+  if (dayType === "day") {
+    let dayNumber = 1;
+    if (occurrence === "second") dayNumber = 2;
+    if (occurrence === "third") dayNumber = 3;
+    if (occurrence === "fourth") dayNumber = 4;
+    if (occurrence === "last") dayNumber = lastDayOfMonth.date();
+
+    const specificDate = moment({ year, month, day: dayNumber });
+
+    // Ensure the date falls within the valid range
+    return specificDate.isValid() ? specificDate : null;
+  }
+
+  // Handle weekday/weekend/specific day logic as before
+  const dates: moment.Moment[] = [];
+  for (let d = moment(firstDayOfMonth); d.isSameOrBefore(lastDayOfMonth); d.add(1, "day")) {
+    const weekday = d.isoWeekday();
+    const dayOfWeek = d.day();
+
+    if (
+      (dayType === "weekday" && weekday <= 5) ||
+      (dayType === "weekend day" && weekday >= 6) ||
+      (dayType in dayMap && dayOfWeek === dayMap[dayType])
+    ) {
+      dates.push(moment(d));
+    }
+  }
+
+  // Get required occurrence for weekdays/weekends
+  if (occurrence === "first") return dates[0];
+  if (occurrence === "second") return dates[1];
+  if (occurrence === "third") return dates[2];
+  if (occurrence === "fourth") return dates[3];
+  if (occurrence === "last") return dates[dates.length - 1];
+
+  return null;
+};
+
+
+
+// Memoize the result so it's only recomputed when necessary
+const getHighlightedDates = useMemo(() => generateHighlightedDates(), [generateHighlightedDates]);
+
+
+// Update the state when highlightedDates changes
+useEffect(() => {
+  setHighlightedDates(getHighlightedDates);
+}, [getHighlightedDates]);
+
   const calendarOnClickHandler = () => {
-    if (activeMaster.id === 504) {
       setCalendarFormData({
         dsc: "",
         iwd: true,
-        sd:"",
-        dow:'',
-        ccr:'',
-        rb:"",
-        pl:'',
-        ed:'',
-        hid: null
-      })
+        sd: "",
+        dow: "",
+        ccr: "",
+        rb: "",
+        mn: "", // first , second, third , fourth, last
+        md: "", // day, weekday, weekend day, su , mo , tu, we, th,fr, sa
+        pl: "",
+        ed: "",
+        rd: "",
+        hid: uuidv4(),
+      });
       setIsModalOpen(true);
-
-    }
   };
 
-  // useEffect(() => {
-  //   console.log('showCalendar updated:', showCalendar);
-  // }, [showCalendar]);
 
   useEffect(() => {
     if (ref.current && ref.current.api) {
@@ -176,9 +288,6 @@ const MTOViewModify = () => {
       }
     }
   }, [isTableDataLoading]);
-
-
-
 
   return (
     <>
@@ -360,7 +469,7 @@ const MTOViewModify = () => {
                       }
                       onSelectionChanged={onMajReasonSelected}
                       height={
-                        activeMaster.rowData.length > 0
+                        activeMaster.rowData?.length > 0
                           ? activeMaster.progress === "view"
                             ? "90%"
                             : "95%"
@@ -397,7 +506,7 @@ const MTOViewModify = () => {
                       }}
                       defaultColDef={{ ...agGridProps.defaultColDef, flex: 1 }}
                       height={
-                        activeMaster.rowData.length > 0
+                        activeMaster.rowData?.length > 0
                           ? activeMaster.progress === "view"
                             ? "90%"
                             : "95%"
@@ -526,7 +635,7 @@ const MTOViewModify = () => {
                   {...agGridProps}
                   suppressPaginationPanel={false}
                   height={
-                    activeMaster.rowData.length > 0
+                    activeMaster?.rowData?.length > 0
                       ? activeMaster.progress === "view"
                         ? "65%"
                         : "95%"
@@ -578,8 +687,11 @@ const MTOViewModify = () => {
                         if (activeMaster.id !== 504) {
                           addRowToMtoGrid();
                         }
+                        else{
+                          calendarOnClickHandler();
+                        }
                       }
-                      calendarOnClickHandler();
+                    
                     }}
                   >
                     {!activeMaster.colDefs.some(
@@ -681,7 +793,13 @@ const MTOViewModify = () => {
                       components={{
                         Caption: CustomCalenderCaption,
                         Day: (props) => {
-                          return <CustomCalenderDay {...props} color={"red"} />;
+                          const formattedDate = moment(props?.date).format(
+                            "YYYY-MM-DD"
+                          );
+                          const color = highlightedDates.includes(formattedDate)
+                            ? "Red"
+                            : "";
+                          return <CustomCalenderDay {...props} color={color} />;
                         },
                       }}
                       styles={{
@@ -703,64 +821,15 @@ const MTOViewModify = () => {
               <div>
                 {
                   <DatePickForm
-                    selectedDays={selectedDays}
-                    toggleDay={toggleDay}
                     plantNames={plantNames}
                     calendarFormData={calendarFormData}
                     ccrNames={ccrNames}
                     formData={selectedData}
                     setFormData={setSelectedData}
+                    onSaveHandler={onSaveHandler}
+                    setIsModalOpen={setIsModalOpen}
                   />
                 }
-                <div style={{ zoom: "0.8", marginTop: "10px" }}>
-                  <div
-                    key={"1"}
-                    style={{
-                      display: "flex",
-                      justifyContent: "right",
-                      gap: "8px",
-                      borderTop: "2px dashed #A0A0A0",
-                      padding: "20px 10px 0 0",
-                    }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          font: "normal normal 300 16px/24px Roboto",
-                          fontWeight: "400",
-                          padding: "10px 30px",
-                          color: "white",
-                          borderRadius: "6px",
-                          background: "#820F4C",
-                          boxShadow: "0px 6px 25px #00000029",
-                        }}
-                        onClick={onSaveHandler}
-                      >
-                        Save
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          background: "white",
-                          color: "grey",
-                          font: "normal normal 300 16px/24px Roboto",
-                          padding: "10px 20px",
-                          fontWeight: "400",
-                          borderRadius: "6px",
-                          border: "1px solid grey",
-
-                          boxShadow: "0px 6px 25px #00000029",
-                        }}
-                        onClick={() => {
-                          setIsModalOpen(false);
-                        }}
-                      >
-                        Cancel
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -778,7 +847,7 @@ const MTOViewModify = () => {
       )}
       {isConflictModalOpen && (
         <SubmitConflictModal
-          totalCount={activeMaster.rowData.length}
+          totalCount={activeMaster.rowData?.length}
           modificationCount={conflictCount}
           errorCount={errorCount}
           recordCount={submittedDataCount}
@@ -834,9 +903,9 @@ const MTOViewModify = () => {
             showSubmittedExportError={errorCount > 0}
             // masterProgress={(!bufferModifyData)?"initial":(bufferModifyData?"editOnline":"editOnlineSubmitted")}
             masterProgress={editStatus}
-            disableSubmit={activeMaster.rowData.length === 0}
+            disableSubmit={activeMaster.rowData?.length === 0}
             enableEditOnlineReset={enableEditOnlineReset}
-            disableDeleteSelected={activeMaster.rowData.length < 1}
+            disableDeleteSelected={activeMaster.rowData?.length < 1}
             onReset={onReset}
             onSaveToDraft={
               activeMaster.isMTO ? onMTOSaveAsDraft : onSaveToDraft
@@ -868,15 +937,15 @@ const MTOViewModify = () => {
             onMTOSaveData={onMTOSaveBufferData}
             isMTOSaveDataDisabled={
               (activeMaster.id === 501 &&
-                !(bufferModifyData && bufferModifyData.length > 0)) ||
+                !(bufferModifyData && bufferModifyData?.length > 0)) ||
               (activeMaster.id === 502 &&
-                !(ccrModifyData && ccrModifyData.length > 0))
+                !(ccrModifyData && ccrModifyData?.length > 0))
             }
             isMTODraftDisabled={
               (activeMaster.id === 501 &&
-                !(bufferModifyData && bufferModifyData.length > 0)) ||
+                !(bufferModifyData && bufferModifyData?.length > 0)) ||
               (activeMaster.id === 502 &&
-                !(ccrModifyData && ccrModifyData.length > 0))
+                !(ccrModifyData && ccrModifyData?.length > 0))
             }
             onMTOSaveAsDraft={onMTOSaveAsDraft}
           />

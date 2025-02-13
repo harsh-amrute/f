@@ -149,6 +149,7 @@ const OverallBmReport = () => {
   const allotementRef = useRef<any>(null);
 
   const [coldefs, setColdef] = useState<any>();
+
   const [gridData, setGridData] = useState<any>();
   const [gridDataCount, setGridDataCount] = useState<number>(0);
   const rowsSelected = useRef(false);
@@ -866,6 +867,9 @@ const OverallBmReport = () => {
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
+        filterParams: {
+          buttons: ['reset']
+        },
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
           child.cc === "ec" && systemType >= 3
@@ -1386,8 +1390,7 @@ const OverallBmReport = () => {
         rn_id: UIGridCode.ProdOverallBMReport,
       });
 
-      const newConfig = data.data.data.length?
-        JSON.parse(data?.data?.data?.[0]?.columns_settings) : [];
+      const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
 
       setColumnState(newConfig.cs);
       setIsPivot(newConfig.pivot);

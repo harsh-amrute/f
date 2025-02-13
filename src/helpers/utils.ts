@@ -1020,7 +1020,9 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
         //     ? ''
         //     : parseFloat(params.value).toLocaleString(); // Format number properly
         // }
-
+        if(!params.data){
+          return ''
+        }
         return params.data[f.key]
       },
       // suppressColumnsToolPanel: f.isEdit ? false : true,
@@ -2193,6 +2195,7 @@ export const navigateWithPrompt = (onRouteChange: () => void, url: any, state: a
 
 }
 
+
 export const FormatDateFunction =(dateStr:string)=>{
   const date = new Date(dateStr);
 
@@ -2527,7 +2530,6 @@ const commonTooltip= {
   enabled:true,
   renderer:(params:any)=>{
       const datum = params.datum
-      console.log(params)
       return {
       title: `${params.yName}`,
       content: `${datum[params.xKey]}: ${datum[params.yKey]}`,
@@ -2535,18 +2537,20 @@ const commonTooltip= {
   },
 }
 
-export const generateChartOptions = (data:any,series:any,palette:any,categoryTitle:string , numberTitle:string,keys:any,isCategoryData?:string) =>{
+const pieTooltip={
+  enabled:true,
+  renderer:(params:any)=>{
+      const datum = params.datum
+      return {
+      title: `${params.title}`,
+      content: `${datum[params.angleKey]}%`,
+      }
+  },
+}
 
-  const seriesMapped = series.map((obj:any,index:number)=>{
-    return {...obj,tooltip:commonTooltip}
-  })
-  console.log(seriesMapped)
-  const options:AgChartOptions = {
-    data:data.slice(0,10),
-    theme:{
-      palette
-    },
-    series:seriesMapped,
+
+export const createAxesForBarCharts = (keys:any,Labels:any)=>{
+  return {
     axes:[
       {
         type: "category",
@@ -2554,13 +2558,12 @@ export const generateChartOptions = (data:any,series:any,palette:any,categoryTit
         keys:keys.Xaxis,
         title:{
           enabled:true,
-          text:categoryTitle,
+          text:Labels.Xaxis,
           fontSize:10,
           fontFamily:'Roboto'
         },
         label:{
           formatter:(params:any)=>{
-            console.log(params)
             if(params.value.length > 10) return params.value.slice(0,10) + '...';
             return params.value;
           },
@@ -2574,7 +2577,7 @@ export const generateChartOptions = (data:any,series:any,palette:any,categoryTit
         keys:keys.Yaxis,
         title:{
           enabled:true,
-          text:numberTitle,
+          text:Labels.Yaxis,
           fontSize:10,
           fontFamily:'Roboto'
         },
@@ -2582,7 +2585,25 @@ export const generateChartOptions = (data:any,series:any,palette:any,categoryTit
           fontSize:12
         }
       }
-    ],
+    ]
+  }
+}
+
+export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
+  
+  const { series , palette , chartKey:keys, Labels, chartType, legend} = chartParams
+
+  const seriesMapped = series.map((obj:any,index:number)=>{
+    return {...obj,tooltip: chartType==='pie' ? pieTooltip : commonTooltip}
+  })
+  const options:AgChartOptions = {
+    data: chartType==='pie' ? data : data.slice(0,10),
+    theme:{
+      palette
+    },
+    series:seriesMapped,
+    ...(legend !== undefined && chartType !== 'pie' ? { legend } : {}),
+    ...(chartType!='pie' ? createAxesForBarCharts(keys,Labels) : {}),
   }
   return options;
 }
@@ -2593,7 +2614,7 @@ export const categoryFormatter = (params:any)=>{
   return params.value;
 }
 
-export const generateGridSpecificChartFromChartProps = (options:any):any =>{
+export const generateGridSpecificChartFromChartProps = (options:any,downloadName:string):any =>{
   if(options===undefined){
     return null
   }
@@ -2602,6 +2623,11 @@ export const generateGridSpecificChartFromChartProps = (options:any):any =>{
     common: {
       legend: {
         position: "bottom",
+      },
+      title:{
+        enabled:true,
+        text:downloadName,
+        fontSize:10
       },
       axes: {
         category: {
@@ -3341,6 +3367,13 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   })
   // if(onShowChart)result = [graphCellRenderer,...result]
   result = result.filter((r) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
+  result.forEach(item => {
+    if (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field =="Availability" || item.field =="Norm" || item.field =="VirtualNorm" || item.field ==  "pc"|| item.field == "pn" || item.field  =="Category" || item.field  =="SKUCode"|| item.field  =="SKUDescription" || item.field  =="Tags") {
+      item.pinned = 'left';
+      item.width =50;
+    }
+  });
+ 
   if (excludeColumns) result = result.filter((r) => r.colId && !excludeColumns.includes(r.colId))
   return result
 
@@ -3366,9 +3399,11 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     floatingFilter: false,
     checkboxSelection: true,
     headerCheckboxSelectionCurrentPageOnly: true,
-    width: 60,
+    width: 45,
     pinned: 'left',
     lockPosition: 'left',
+    initialHide:false,
+    suppressMenu:true
   }
 
   const DBMGraphColumn: ColDef[] = [
@@ -3376,16 +3411,19 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
       colId: 'dailydatagraph',
       field: '',
       headerName: '',
-      width: 80,
+      width: 60,
+      minWidth:60,
+      maxWidth:70,
       lockPosition: true,
       floatingFilter: false,
       tooltipField: "DailyDataGraph",
       cellRenderer: 'grapCellRenderer',
       cellRendererParams: {
         onOpenDailyDataGraph: onOpenDailyDataGraph
-      }
-
-
+      },
+      initialHide:false,
+      pinned:'left',
+      suppressMenu:true
     }
   ]
 
@@ -3399,8 +3437,11 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
         callBack: afterSleepCallBack
       },
       floatingFilter: false,
-      minWidth: 140,
-      maxWidth: 140
+      minWidth: 100,
+      maxWidth: 100,
+      initialHide:false,
+      pinned:'left',
+      suppressMenu:true
     }
   ]
 
@@ -3410,7 +3451,10 @@ export const mapDBMFieldsToColDefs = (fields: DBMField[], onOpenDailyDataGraph: 
     cellRenderer: 'suggestionCategoryCellRenderer',
     floatingFilter: false,
     minWidth: 30,
-    maxWidth: 30
+    maxWidth: 30,
+    initialHide:false,
+    pinned:'left',
+    suppressMenu:true
   }
 
 
@@ -4221,6 +4265,7 @@ export function getColumnDefinations(
   extraFields: any = [],
   removeCols: any = [],
 ) {
+ 
   const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => {
     const columnDef = {
       colId: data.cc,
@@ -4237,6 +4282,9 @@ export function getColumnDefinations(
       pivotIndex: null,
       flex: 1,
       minWidth: 150,
+      filterParams: {
+        buttons: ['reset'], // Adds Apply and Clear buttons
+      },
       cellStyle: {
         justifyContent: data.cla
       }
@@ -4358,6 +4406,7 @@ export const getType = (attributes: any, key: any) => {
 // Function to structure the output of filter modal
 export const formatFilterJSON = (filter: any) => {
   let formatFilter: any = {};
+
   for (const key in filter) {
     const { filters } = filter[key];
     for (let i = 0; i < filters.length; i++) {
@@ -4371,13 +4420,14 @@ export const formatFilterJSON = (filter: any) => {
       }
     }
   }
+
   Object.keys(formatFilter).forEach(key => {
     if (formatFilter[key]?.val === '') {
       delete formatFilter[key];
     }
   });
   // console.log("formate filter", formatFilter);
-  return formatFilter;
+  return { formatFilter };
 }
 
 // Function to check values already there in Values

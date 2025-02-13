@@ -224,6 +224,7 @@ const useRRR =()=>{
             setCurrentPage(pageNo)
             setRRRRowData(rowData?.data?.data)
             toast.dismiss()
+            notifySuccess("Data Loaded Successfully")
         }catch(err:any){
             notifyError(err)
         }
@@ -248,6 +249,7 @@ const useRRR =()=>{
           setCurrentPage(1);
           setRRRRowData(rowData?.data?.data);
           toast.dismiss();
+          notifySuccess("Data Loaded Successfully")
         } catch (err: any) {
           notifyError(err);
           setRRRRowData([])

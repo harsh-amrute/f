@@ -9,7 +9,7 @@ import { useSelector,useDispatch } from "react-redux"
 import { RootState } from "../../../../../redux/store/store"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type DailyDataGraph } from "../../../../types/MTA";
-import { notifyError, notifyLoader} from "../../../../../helpers/notify"
+import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
@@ -165,6 +165,7 @@ const useOrderAllocation =()=>{
         const result = await getData(payload);
         setRowData(result.data.data)
         toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
         }catch(err:any){
           notifyError(err)
           setRecordCount(0)

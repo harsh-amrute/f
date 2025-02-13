@@ -1,11 +1,11 @@
 export const chartParams1 = {
-    title:'Top 10 Locations: Maximum Overdue Orders',
+    title:'Top 10 Products: Categorization Of Pending Quantity',
     chartType:'stackedColumn',
-    downloadName:'Top 10 Loc (Max Overdue Orders)',
+    downloadName:'Top-10 Prd (Category of Pending Quantity)',
     LabelPosition:'bottom',
     Labels:{
-        Xaxis:'Location Name',
-        Yaxis:'No Of Orders'
+        Xaxis:'Product Name',
+        Yaxis:'Pending Quantity'
     },
     legend:{
         enabled:true,
@@ -13,16 +13,16 @@ export const chartParams1 = {
     },
     palette:{
         fills: ['#ED1C24','#E3812D','#355FD3'],
-        strokes: ['#ffffff', '#ffffff']
+        strokes: ['#ffffff', '#ffffff'],
     },
     chartKey:{
-        Xaxis:['location'],
+        Xaxis:['product'],
         Yaxis:['overdue','due','others']
     },
     series:[
         {
             type:'bar',
-            xKey:'location',
+            xKey:'product',
             yKey:'overdue',
             yName:'Overdue',
             stacked:true,
@@ -30,7 +30,7 @@ export const chartParams1 = {
         },
         {
             type:'bar',
-            xKey:'location',
+            xKey:'product',
             yKey:'due',
             yName:'Due',
             stacked:true,
@@ -38,7 +38,7 @@ export const chartParams1 = {
         },
         {
             type:'bar',
-            xKey:'location',
+            xKey:'product',
             yKey:'others',
             yName:'Others',
             stacked:true,
@@ -46,13 +46,13 @@ export const chartParams1 = {
         }
     ],
     defaultColForChart:{
-        columns:['location','overdue','due','others'],
+        columns:['product','overdue','due','others'],
         start:0,
         end:9
     },
-    graphInfo: [
-        'This graph highlights the top 10 locations with max number of over due orders. It also captures the status of due & other orders from pending orders file.',
-        'Overdue orders - Due date crossed | Due Orders - Due dates of today or in the future | Other Orders - PSO Quantity'
+    graphInfo:[
+        'This graph highlights the top 10 products with maximum number of over due quantities and distribution of due and other quantities from pending orders file.',
+        'Overdue qty indicate those with past due dates, due represents qty with due dates of today in the future, while others include qty without due dates.'
     ],
     customizedStyles:{
         headerZoom:0.9, // default zoom is 1 
@@ -63,13 +63,13 @@ export const chartParams1 = {
 
 
 export const chartParams2 = {
-    title:'Top 10 Locations: Max SKUs With Gap > 67% Of Requirement',
+    title:'Top 10 Products: Max No Of Locations With Gap > 67% of Requirement',
     chartType:'stackedColumn',
-    downloadName:'Top 10 Loc (Max SKUs With Gap > 67% Of Req)',
+    downloadName:'Top-10 Prd (Max No of Loc With Gap > 67% of Req)',
     LabelPosition:'bottom',
     Labels:{
-        Xaxis:'Location Name',
-        Yaxis:'No Of SKUs'
+        Xaxis:'Product Name',
+        Yaxis:'No. Of Locations'
     },
     legend:{
         enabled:true,
@@ -80,13 +80,13 @@ export const chartParams2 = {
         strokes: ['#ffffff', '#ffffff'],
     },
     chartKey:{
-        Xaxis:['location'],
+        Xaxis:['product'],
         Yaxis:['greater','between','smaller']
     },
     series:[
         {
             type:'bar',
-            xKey:'location',
+            xKey:'product',
             yKey:'greater',
             yName:'Gap > 67%',
             stacked:true,
@@ -94,7 +94,7 @@ export const chartParams2 = {
         },
         {
             type:'bar',
-            xKey:'location',
+            xKey:'product',
             yKey:'between',
             yName:'33% <= Gap <= 67%',
             stacked:true,
@@ -102,7 +102,7 @@ export const chartParams2 = {
         },
         {
             type:'bar',
-            xKey:'location',
+            xKey:'product',
             yKey:'smaller',
             yName:'Gap < 33%',
             stacked:true,
@@ -110,12 +110,12 @@ export const chartParams2 = {
         }
     ],
     defaultColForChart:{
-        columns:['location','greater','between','smaller'],
+        columns:['product','greater','between','smaller'],
         start:0,
         end:9
     },
     graphInfo:[
-        'This Graph highlights the top 10 locations with max no of SKUs with Gap > 67% of requirement.',
+        'This Graph highlights the top 10 products with max no of locations where Gap in the product > 67% of requirement.',
         'Gap = Requirement - Rationed Qty',
         'Requirement = Norm Requirement + Spike Requirement + Relevant PSO & CNR Requirement'
     ],

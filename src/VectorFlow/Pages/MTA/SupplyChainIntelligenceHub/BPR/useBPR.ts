@@ -364,6 +364,7 @@ const useBPR =()=>{
             }
         })
         toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
         if(rowData.data.data && Array.isArray(rowData.data.data))setBPRRowData(mapBPRRowData(rowData.data.data))
         else setBPRRowData([])
         

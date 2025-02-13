@@ -113,7 +113,7 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
             floatingFilter: true,
             filter: "agMultiColumnFilter",
             cellDataType:false,
-            resizable:false,
+            resizable:true,
             cellStyle:{
                 "flex":1,
                 'text-align':'center',
@@ -246,10 +246,12 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
                 onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}
                 gridHeight={"95%"}
-            />
+            /> 
             <RequestExpeditingModal isOpen={isExpeditingModalOpen} onClose={()=>toggleExpeditingModal((prev:boolean)=>!prev)} onSubmit={submitOpenExpediteRemark}/>
         </>
     )
 }
 
 export default ExpediteParentExpediteDispatchesGrid;
+
+

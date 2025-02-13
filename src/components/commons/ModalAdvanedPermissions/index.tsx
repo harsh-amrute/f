@@ -106,6 +106,8 @@ const ModalAdvanedPermissions = (props: any) => {
         product = prdPermissionRef.current?.getPrdPermissionValue();
         location = lcPermissionRef.current?.getLcPermissionValue();
 
+       
+
         //Store Permissions
         const storePermissionCopy = [...storePermission]
         const currentPermission:any = storePermissionCopy.find((app:any)=>app.application_id === activeApplication);
@@ -130,6 +132,7 @@ const ModalAdvanedPermissions = (props: any) => {
       // eslint-disable-next-line no-unsafe-optional-chaining
       app.locationPermission
       }
+
 
     
       
@@ -198,7 +201,7 @@ const ModalAdvanedPermissions = (props: any) => {
           element.permissions = [];
         }
       })
-      
+
 
       setIsLoadSpinner(true);
  
