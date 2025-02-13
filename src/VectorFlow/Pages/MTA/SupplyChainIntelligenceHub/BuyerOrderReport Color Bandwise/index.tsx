@@ -132,7 +132,9 @@ const BuyerOrderReportColorBandwise = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ],
                   }}
-                  height={"80%"} />
+                  height={"80%"}
+                  maintainColumnOrder
+                />
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}

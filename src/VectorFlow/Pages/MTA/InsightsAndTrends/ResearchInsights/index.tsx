@@ -169,6 +169,7 @@ const ResearchInsights = ()=>{
                                 { statusPanel: 'agAggregationComponent', align:'left' },
                                 ],
                             }}
+                            maintainColumnOrder
                             
                         />
                         <VFPagination

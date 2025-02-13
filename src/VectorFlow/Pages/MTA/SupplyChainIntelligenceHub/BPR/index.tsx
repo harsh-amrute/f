@@ -59,7 +59,7 @@ const BPR = ()=>{
         onDeleteFilter,
         lastRunDate,
         generalFilterOptions,
-        onResetCallback
+      onResetCallback
     } = useBPR();
 
     
@@ -163,6 +163,7 @@ const BPR = ()=>{
                 enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {Statusbar}
+                maintainColumnOrder
             />
 
                 <VFPagination
