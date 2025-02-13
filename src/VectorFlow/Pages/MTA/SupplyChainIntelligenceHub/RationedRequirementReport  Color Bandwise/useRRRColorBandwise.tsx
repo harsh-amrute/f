@@ -222,7 +222,6 @@ const useRRRColorBandwise = () => {
     dispatch(TOGGLE_GRAPH_MODAL(true));
   };
 
-  console.log(RRRColorBandWiseColumns)
 
   const CustomHeader = {
     dailydatagraph: {
@@ -318,7 +317,8 @@ const useRRRColorBandwise = () => {
     };
   }, []);
 
-  const tempAgGridProps: AgGridReactProps = {
+  const tempAgGridProps: AgGridReactProps = useMemo(() => {
+    return {
     onRowDataUpdated: (event) => {
       if (tempDownloadData)
         event.api.exportDataAsExcel({
@@ -328,7 +328,8 @@ const useRRRColorBandwise = () => {
             .map((c) => c.getColId()),
         });
     },
-  };
+  }
+}, [tempDownloadData]);
 
   const onExportToExcelCallBack = async (pageNumber: number) => {
     const data = await getData({
@@ -349,7 +350,7 @@ const useRRRColorBandwise = () => {
     isSideBarOpen,
     RRRColorBandWiseColumns,
     agGridProps,
-    isLoading: isUIConfigLoading || isCountDataLoading || isDataLoading,
+    isLoading: isUIConfigLoading || isCountDataLoading || isDataLoading || isSavedDataLoading,
     rowData,
     recordsCount,
     currentPage,

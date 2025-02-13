@@ -4,7 +4,6 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import { BPRLayout, LastRunDateHeader, LastRunDate } from "./styles"
 import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
-import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import useBPR from "./useBPR"
 
 import "allotment/dist/style.css";
@@ -18,6 +17,7 @@ import { Skeleton } from "../../../../../components/commons/styled";
 import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
 import { useMemo } from "react"
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
+import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader"
 
 const BPR = ()=>{
 
@@ -128,11 +128,7 @@ const BPR = ()=>{
             showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
         }
         
-        {(isLoading || isSavedDataLoading)?(
-            <VFLoader/>
-        )
-        :
-        (
+        {(isLoading || isSavedDataLoading) && <OverlayLoader/> }
             <BPRLayout>
             {/* <BPRTaskBar style={{width:isSideBarOpen?'77%':'97%'}}>
                 <VFButtonOutline
@@ -160,10 +156,10 @@ const BPR = ()=>{
                 {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}
+                maintainColumnOrder
                 enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {Statusbar}
-                maintainColumnOrder
             />
 
                 <VFPagination
@@ -279,9 +275,6 @@ const BPR = ()=>{
                   />
                 </div>
         </BPRLayout>
-        
-        )
-    }
         </GridStateContext.Provider>
     )
             }

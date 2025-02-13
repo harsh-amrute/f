@@ -349,11 +349,14 @@ const useRRR =()=>{
     // }
 
 
-    const tempAgGridProps:AgGridReactProps =  {
+    const tempAgGridProps:AgGridReactProps =  useMemo (()=> {
+        
+        return {
           onRowDataUpdated:(event)=>{
             if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'RationedRequirementReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
            }
         }
+    },[tempDownloadData])
       
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{

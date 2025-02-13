@@ -53,7 +53,7 @@ const useResearchInsights = () => {
     const { mutateAsync: getUpdatedGraphData, isLoading: isUpdatedGraphDataLoading } = useGetUpdatedGraphData()
 
     const [ResearchInsightsData, setResearchInsightsRowData] = useState<Array<any>>([])
-    const { mutateAsync: getBPRData } = useGetBPRData()
+    const { mutateAsync: getBPRData , isLoading: isBPRLoading} = useGetBPRData()
 
     const { mutateAsync: getBPRDataCount, isLoading: isBPRDataCountLoading } = useGetBPRDataCount()
 
@@ -242,12 +242,13 @@ const useResearchInsights = () => {
         }
     },[])
 
-    const tempAgGridProps:AgGridReactProps = {
+    const tempAgGridProps:AgGridReactProps = useMemo (()=> {
+        return{
             onRowDataUpdated:(event)=>{
                 if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
             }
         }
-    
+    },[tempDownloadData])      
 
     const getRecordCount = async (filter: any) => {
         const countData = await getBPRDataCount({
@@ -694,7 +695,7 @@ const useResearchInsights = () => {
         agGridProps,
         ResearchInsightsData,
         ResearchInsightsColumns,
-        isLoading: isUIConfigLoading || isBPRDataCountLoading,
+        isLoading: isUIConfigLoading || isBPRDataCountLoading || isBPRLoading,
         isUpdatedGraphDataLoading,
         horizon,
         graphState,
