@@ -123,6 +123,7 @@ const InTransitWhereAbouts = ()=>{
                     {...agGridProps}
                     ref={ref}
                     height={"100%"}
+                    maintainColumnOrder
                     
                 />
                 <div style={{marginBottom:'10px'}}>
@@ -181,6 +182,7 @@ const InTransitWhereAbouts = ()=>{
                     columnDefs={colDefs}
                     rowData={exportExcelRowData}
                     {...tempAgGridProps}
+                    maintainColumnOrder
                   />
                 </div>
         </GridStateContext.Provider>

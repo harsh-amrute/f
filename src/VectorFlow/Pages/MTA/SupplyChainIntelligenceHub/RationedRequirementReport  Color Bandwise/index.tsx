@@ -1,10 +1,10 @@
 import {RRRLayout} from './styles'
 import useRRRColorBandwise from './useRRRColorBandwise';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
+import OverlayLoader from '../../../../..//VectorFlow/Pages/MTO/Common/Loader';
 
 
 
@@ -33,7 +33,8 @@ const RRRColorBandwise = () => {
   onDeleteFilter,
   isSavedDataLoading,
   ref,
-  generalFilterOptions
+  generalFilterOptions,
+  onResetCallback
 } = useRRRColorBandwise();
 
 
@@ -47,7 +48,8 @@ const RRRColorBandwise = () => {
     tempDownloadData:tempDownloadData,
     setTempDownloadData:setTempDownloadData,
     exportExcelRowData:exportExcelRowData,
-    setExportExcelRowData:setExportExcelRowData
+    setExportExcelRowData:setExportExcelRowData,
+    onResetCallback:onResetCallback
 }}
   >
     <div style={{marginLeft:'10px'}}>
@@ -91,11 +93,9 @@ const RRRColorBandwise = () => {
                     Reset Filter
             </VFButton>
         </RRRTaskBar> */}
-        {(isLoading || isSavedDataLoading)?(
-          <VFLoader/>
-        ):
-        (
-          <div style={{height:'100vh'}}>
+         {(isLoading || isSavedDataLoading) &&<OverlayLoader/>}
+          
+          <div style={{height:'70vh'}}>
 
           <VFTable
                   ref={ref}
@@ -113,7 +113,8 @@ const RRRColorBandwise = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                  height={"90%"}
+                height={"100%"}
+                maintainColumnOrder
               />  
               <VFPagination 
                 selectedRows={0} 
@@ -123,13 +124,14 @@ const RRRColorBandwise = () => {
                 handleChangePage={(e)=>console.log(e)} 
               />  
         </div>
-        )}
+    
         <div style={{display:'none'}}>                
           <VFTable
             ref={tempRef}
             columnDefs={RRRColorBandWiseColumns}
             rowData={exportExcelRowData}
             {...tempAgGridProps}
+            maintainColumnOrder
           />
         </div>
     </RRRLayout>

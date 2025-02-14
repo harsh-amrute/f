@@ -3,7 +3,6 @@ import VFPagination from "../../../../../components/VectorFLOW/commons/VFPaginat
 
  import { BORLayout } from "./styles"
  import {useBORColorBandwise} from "./useBORColorBandwise"
- import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
  import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal";
@@ -11,6 +10,7 @@ import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons
 import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
+import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
 
 const BuyerOrderReportColorBandwise = ()=>{
@@ -108,10 +108,7 @@ const BuyerOrderReportColorBandwise = ()=>{
             Edit Filter
         </VFButton>
     </BORTaskBar> */}
-          {(isLoading || isSavedDataLoading) ? (
-            <VFLoader />
-          ) :
-            (
+          {(isLoading || isSavedDataLoading) && <OverlayLoader/>}
               <div style={{ height: '78vh' }}>
                 {showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHDescription'} />}
                 {showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />}
@@ -132,7 +129,9 @@ const BuyerOrderReportColorBandwise = ()=>{
                       { statusPanel: 'agAggregationComponent', align: 'left' },
                     ],
                   }}
-                  height={"80%"} />
+                  height={"80%"}
+                  maintainColumnOrder
+                />
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
@@ -143,7 +142,6 @@ const BuyerOrderReportColorBandwise = ()=>{
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
 
               </div>
-            )}
           <div style={{ display: 'none' }}>
             <VFTable
               ref={tempRef}

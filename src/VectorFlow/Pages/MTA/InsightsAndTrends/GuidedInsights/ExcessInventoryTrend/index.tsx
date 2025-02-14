@@ -2,10 +2,10 @@ import { SCChartContainer, SCDynamicContainer } from '../style';
 import { AgCharts } from "ag-charts-react";
 import { Allotment } from "allotment";
 import { useGetExcessInventorySku, useGetExcessInventoryValue } from "../../../../../Services/MTA/InsightsAndTrends";
-import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 import VFRangeSlider from '../../../../../../components/VectorFLOW/commons/VFRangeSlider';
 import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
 import { useEffect, useState } from 'react';
+import OverlayLoader from '../../../../../../VectorFlow/Pages/MTO/Common/Loader';
 
 
 const ExcessInventoryTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:string, filter:any, horizon:number, setHorizon:any}) => {
@@ -258,7 +258,7 @@ const graph1=['This graph highlights the date-wise trend of excess inventory (On
 const graph2=['This graph highlights the date-wise trend of excess inventory (On Hand) in value across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
 
 if(isLoaderGraph1||isLoaderGraph2){
-  <VFLoader/>
+  <OverlayLoader/>
 }
     return    (
   

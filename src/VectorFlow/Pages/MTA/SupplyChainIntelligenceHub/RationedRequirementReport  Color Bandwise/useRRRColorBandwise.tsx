@@ -8,7 +8,7 @@ import {
 } from "../RationedRequirementReport/RRRCellRenderers";
 import {
   convertUiConfigToOptions,
-  mapRRRColorBandWiseFieldsToColDefs,
+  getColumnDefinationsMTA,
 } from "../../../../../helpers/utils";
 import { notifyError } from "../../../../../helpers/notify";
 // import { toast } from "react-toastify";
@@ -18,7 +18,6 @@ import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants"
 import {
   useGetDailyData,
   useGetState,
-  useGetUiConfig,
 } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridRef } from "../../../../types/MDM";
 import { ColDef } from "ag-grid-enterprise";
@@ -35,6 +34,8 @@ import {
   useGetRRRColorBandWiseData,
   useGetRRRColorBandWiseRecordCount,
 } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/RRRColorBandWise";
+import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum";
 
 const useRRRColorBandwise = () => {
   const [internalRef, setInternalRef] = useState<any>();
@@ -65,8 +66,8 @@ const useRRRColorBandwise = () => {
 
   const [exportExcelRowData, setExportExcelRowData] = useState<Array<any>>([]);
 
-  const { mutateAsync: getUiConfig, isLoading: isRRRBandwiseConfigLoading } =
-    useGetUiConfig();
+  const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
+  
 
   // const {mutateAsync:getRRRBandwiseData} =useGetRRRData();
 
@@ -82,15 +83,16 @@ const useRRRColorBandwise = () => {
 
   const { mutateAsync: getDailyData } = useGetDailyData();
 
-  const { mutateAsync: getData } = useGetRRRColorBandWiseData();
+  const { mutateAsync: getData , isLoading: isDataLoading} = useGetRRRColorBandWiseData();
 
-  const { mutateAsync: getDataCount } = useGetRRRColorBandWiseRecordCount();
+  const { mutateAsync: getDataCount , isLoading: isCountDataLoading} = useGetRRRColorBandWiseRecordCount();
 
   const rowsPerPage = parseInt(
     process.env.REACT_APP_BOR_ROWS_PER_PAGE || "100"
   );
 
-  // const RRRColorBandWiseColumns = useMemo(()=>mapRRRColorBandWiseFieldsToColDefs(data?.data.data),[data])
+  const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
+  const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,27 +103,78 @@ const useRRRColorBandwise = () => {
     fetchData();
   }, []);
 
+  const getRRRColorBandWiseUiConfig = async () => {
+    try {
+      const response = await getUiConfig(UIColumnConfigName.RRR_OA);
+      setInitialColumnState(response.data.data);
+
+    } catch (err: any) {
+      notifyError("Something Went Wrong");
+    }
+  };
+
   useEffect(() => {
     const getTableState = async () => {
       try {
-        const data = await getState({reportname: "RRRColorBandWise"});
-        setGridState(JSON.parse(data.data.data));
-      } catch (err: any) {
+        const MappedColumns = getColumnDefinationsMTA(initialColumnState,CustomHeader);
+              
         setGridState({
           charts: [],
-          columns: [],
-          pivot: false,
-        });
+          columns: MappedColumns,
+          pivot: false
+        })
+        setRRRColorBandWiseColumns(MappedColumns);
+        getUserColumnConfig();
+      } catch (err: any) {
+        console.log(err)
+            
       }
-    };
-    getTableState();
-  }, []);
-
-  useEffect(()=>{
-    if(internalRef && gridState && gridState.columns){
-        internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
     }
-},[internalRef,gridState])
+    if (initialColumnState !== undefined) {
+      getTableState()
+    }
+  }, [initialColumnState]);
+
+  useEffect(() => {
+    if (RRRColorBandWiseColumns.length) {
+      if (internalRef?.api) {
+        setMasterUIConfig(internalRef.api.getColumnState());
+      }
+    }
+  }, [internalRef, RRRColorBandWiseColumns]);
+            
+  const getUserColumnConfig = async () => {
+    const stateData = await getState({ "reportname": UserUIColumnConfigName.RRR_OA })
+    if (stateData.data.data.length !== 0) {
+      const parsedContent = JSON.parse(stateData.data.data)
+                  
+      setGridState({
+        charts: parsedContent.charts,
+        columns: parsedContent.columns,
+        pivot: parsedContent.pivot,
+      })
+            
+    } else {
+      console.log("Data not available");
+    }
+  }
+
+  useEffect(() => {
+    if (internalRef && gridState && gridState.columns) {
+      const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+      if (!result) {
+        console.error("Failed to apply column state", result);
+      }
+    }
+  }, [internalRef, gridState]);
+
+  const onResetCallback = async () => {
+    setGridState({
+      charts: [],
+      columns: masterUIConfig,
+      pivot: false,
+    })
+  }
 
   const handleGetRecordsCount = async (filter?: any) => {
     const payload = {
@@ -169,21 +222,23 @@ const useRRRColorBandwise = () => {
     dispatch(TOGGLE_GRAPH_MODAL(true));
   };
 
-  console.log(RRRColorBandWiseColumns)
 
-  const getRRRColorBandWiseUiConfig = async () => {
-    try {
-      const response = await getUiConfig("RRR_OA");
-      setRRRColorBandWiseColumns(
-        mapRRRColorBandWiseFieldsToColDefs(
-          response.data.data,
-          onOpenDailyDataGraph
-        )
-      );
-    } catch (err: any) {
-      notifyError("Something Went Wrong");
-    }
-  };
+  const CustomHeader = {
+    dailydatagraph: {
+      width: 45,
+      minWidth: 45,
+      filter: false,
+      cellRenderer: 'grapCellRenderer',
+      cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+      pinned: 'left',
+      resizable: false,
+      floatingFilter: false,
+      suppressColumnsToolPanel: false
+    },
+    DispatchColor: {
+      cellRenderer: 'colorCellRenderer',
+    },
+  }
 
   const onApplyFilter = async (filter: any) => {
     await handleGetRecordsCount(filter);
@@ -262,7 +317,8 @@ const useRRRColorBandwise = () => {
     };
   }, []);
 
-  const tempAgGridProps: AgGridReactProps = {
+  const tempAgGridProps: AgGridReactProps = useMemo(() => {
+    return {
     onRowDataUpdated: (event) => {
       if (tempDownloadData)
         event.api.exportDataAsExcel({
@@ -272,7 +328,8 @@ const useRRRColorBandwise = () => {
             .map((c) => c.getColId()),
         });
     },
-  };
+  }
+}, [tempDownloadData]);
 
   const onExportToExcelCallBack = async (pageNumber: number) => {
     const data = await getData({
@@ -293,7 +350,7 @@ const useRRRColorBandwise = () => {
     isSideBarOpen,
     RRRColorBandWiseColumns,
     agGridProps,
-    isLoading: isRRRBandwiseConfigLoading,
+    isLoading: isUIConfigLoading || isCountDataLoading || isDataLoading || isSavedDataLoading,
     rowData,
     recordsCount,
     currentPage,
@@ -315,6 +372,7 @@ const useRRRColorBandwise = () => {
     ref,
     generalFilterOptions,
     setCurrentPage,
+    onResetCallback
   };
 };
 

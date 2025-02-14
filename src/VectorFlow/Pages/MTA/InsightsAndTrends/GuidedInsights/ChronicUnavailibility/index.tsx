@@ -3,11 +3,11 @@ import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import {SCDynamicContainer} from '../style';
 import { useGetChronicUnavailabilityLoc,useGetChronicUnavailabilitySku} from "../../../../../Services/MTA/InsightsAndTrends";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import VFCharts from "../../../../../../components/VectorFLOW/commons/VFCharts";
 import { coldefs1, coldefs2 } from "./colDef";
 import { chartParams1, chartParams2} from './chartParams'
 import { generateChartOptions } from '../../../../../../helpers/utils'
+import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
 const ChronicUnavailabilityCharts = ({filter}:{filter:any}) => {
 
@@ -82,7 +82,7 @@ const ChronicUnavailabilityCharts = ({filter}:{filter:any}) => {
 
 
    if(isLoadingChronicSku || isLoadingChronicLoc){
-        return <VFLoader/>
+        return <OverlayLoader/>
     } 
     return(
         <>

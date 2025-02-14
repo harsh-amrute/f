@@ -6,6 +6,7 @@ import VFPagination from '../../../../../components/VectorFLOW/commons/VFPaginat
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
+import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader';
 
 
 
@@ -98,10 +99,7 @@ const RRR = () => {
                     Reset Filter
             </VFButton>
         </RRRTaskBar> */}
-        {(isLoading || isSavedDataLoading)?(
-          <VFLoader/>
-        ):
-        (
+        {(isLoading || isSavedDataLoading) && <OverlayLoader/>}
           <div style={{height:'70vh'}}>
 
           <VFTable
@@ -120,7 +118,8 @@ const RRR = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                  height={"100%"}
+                height={"100%"}
+                maintainColumnOrder
               />  
               <VFPagination 
                 selectedRows={0} 
@@ -130,7 +129,6 @@ const RRR = () => {
                 handleChangePage={(e)=>getRRRRowData(e)} 
               />  
         </div>
-        )}
         <div style={{display:'none'}}>                
           <VFTable
             ref={tempRef}

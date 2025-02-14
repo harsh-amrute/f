@@ -112,6 +112,7 @@ const DBM = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
+                  maintainColumnOrder
               /> 
           <VFPagination 
                 selectedRows={0} 
@@ -127,6 +128,7 @@ const DBM = () => {
             columnDefs={DBMColumns}
             rowData={exportExcelRowData}
             {...tempAgGridProps}
+            maintainColumnOrder
           />
         </div>
       </DBMLayout>

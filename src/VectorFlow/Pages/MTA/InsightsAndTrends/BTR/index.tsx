@@ -1,12 +1,12 @@
 import { BTRLayoutTabsWrapper, BTRLayoutWrapper, ToggleViewBtnWrapper } from "./styles";
 import useBTR from "./useBTR";
 import { SCViewBackground, SCViewContainer, SCViewImage, SCVerticalDivider } from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar/styles';
-import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
+import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
 const BufferTrendReport = () => {
 
@@ -119,7 +119,7 @@ const BufferTrendReport = () => {
                         </ToggleViewBtnWrapper>
                     )}
                 </BTRLayoutTabsWrapper>
-                {isLoading && <VFLoader />}
+                {isLoading && <OverlayLoader />}
                 {!isLoading && renderView()}
                 <div style={{ display: 'none' }}>
                     <VFTable

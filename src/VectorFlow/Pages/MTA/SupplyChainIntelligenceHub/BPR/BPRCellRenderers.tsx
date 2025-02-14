@@ -99,6 +99,12 @@ const colorMapper =(color:string)=> {
                 "text":"black"
             }
         }
+        case "Blue": {
+            return {
+                "bg":"blue",
+                "text":"white"
+            }
+        }
         default:
             return{  
                 "bg":"white",
