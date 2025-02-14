@@ -1,7 +1,9 @@
 import VFModalCard from "../VFModalCard";
-import VFTable from "../VFTable";
+import VFTable from "../../../../VectorFlow/Pages/MTO/Common/VFTable";
 import { generateGridSpecificChartFromChartProps } from '../../../../helpers/utils'
 import { useEffect, useState } from "react";
+import './styles.css'
+
 
 const VFChartsTable = (props:any)=>{
     const {

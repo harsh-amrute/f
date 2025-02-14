@@ -1,0 +1,13 @@
+.ag-menu {
+    height:'100px';
+    width:'100px';
+}
+
+.ag-theme-planning .ag-filter-body-wrapper {
+    zoom: 0.75;
+  }
+  
+.ag-theme-planning .ag-menu-list {
+    zoom: 0.85;
+}
+
