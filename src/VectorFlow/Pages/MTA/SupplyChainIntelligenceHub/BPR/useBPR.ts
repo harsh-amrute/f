@@ -1,9 +1,9 @@
 import { useState,useMemo, useEffect, CSSProperties,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetBPRData, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { convertUiConfigToOptions, mapBPRRowData, updateCommonAttributes, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRRowData, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -21,6 +21,7 @@ import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import { getBPRDataForExcelDownload } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR/api"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
+import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 
 
 const useBPR =()=>{
@@ -85,7 +86,8 @@ const useBPR =()=>{
 
     const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
 
-    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState();
+    
     const [gridState,setGridState] = useState<any>()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
@@ -106,10 +108,6 @@ const useBPR =()=>{
         }
     }
 
-    useEffect(()=>{
-        setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
-    },[initialColumnState])
-
     useEffect(() => {
         const getTableState = async () => {
             try {
@@ -128,7 +126,8 @@ const useBPR =()=>{
             }
         }
         if (initialColumnState !== undefined) {
-            getTableState()
+            getTableState();
+            setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState));
         }
     }, [initialColumnState]);
 
@@ -521,12 +520,11 @@ const useBPR =()=>{
         dailydatagraph: {
             width: 45,
             minWidth: 45,
-            colId: "dailydatagraph",
-            headerName: '',
             filter: false,
             cellRenderer: 'grapCellRenderer',
             cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
             pinned: 'left',
+            lockPosition: true,
             resizable: false,
             floatingFilter: false,
             suppressColumnsToolPanel: false
