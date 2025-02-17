@@ -31,6 +31,7 @@ interface TechnicalWiseProps {
 
 const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizondays, handleSubmitClick, horizonDays,themeUi }: TechnicalWiseProps) => {
 
+    console.log("data", data);
 
     const numericData = data?.map((item: any) => ({
         ...item,
