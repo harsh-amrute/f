@@ -19,7 +19,7 @@ export interface SplitViewProps{
     themeUi:string
 }
 
-const VerticalSplitView = (props:SplitViewProps)=>{
+const HorizontalSplitView = (props:SplitViewProps)=>{
 
     const{
         techTable,
@@ -70,6 +70,15 @@ const VerticalSplitView = (props:SplitViewProps)=>{
    
     const {screenHeight} = useViewPort()
 
+    if(techTable.columnDefs)
+    {   
+            techTable.columnDefs.forEach(item => {
+                if ('field' in item && (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field === 'Availability' || item.field === 'Norm' || item.field === 'VirtualNorm'  || item.field === 'Category' || item.field === 'SKUCode' || item.field === 'SKUDescription' || item.field === 'Tags')) {
+                    item.pinned = 'left';
+                    item.width = 50;
+                }
+            });
+    }
    return (
         <HorizontalViewWrapper>
             <BTRTableWrapper style={{height:screenHeight - 100,margin:'0'}}>
@@ -150,4 +159,4 @@ const VerticalSplitView = (props:SplitViewProps)=>{
     )
 }
 
-export default VerticalSplitView
+export default HorizontalSplitView;
