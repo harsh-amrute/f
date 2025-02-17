@@ -299,6 +299,7 @@ export const useBORColorBandwise =()=>{
       cellRenderer: 'grapCellRenderer',
       cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
       pinned: 'left',
+      lockPosition: true,
       resizable: false,
       floatingFilter: false,
       suppressColumnsToolPanel: false

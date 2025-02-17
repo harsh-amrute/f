@@ -17,8 +17,8 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import {
   useGetDailyData,
-  useGetState,
 } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig";
 import { GridRef } from "../../../../types/MDM";
 import { ColDef } from "ag-grid-enterprise";
 
