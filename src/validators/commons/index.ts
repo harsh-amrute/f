@@ -36,13 +36,13 @@ export const defaultJOIOptions = {
 }
 export const generateCommonMessages = (key:string) => {
     return {
-        'any.pipe':`${key} should not contain pipe`,
-        'any.comma':`${key} should not contain comma`,
-        'any.commapipe':`${key} should not contain comma and pipe`,
-        'any.onlySpecialCharacters': `${key} should not contain only special characters`,
-        'any.specialCharacters': `${key} cannot contain special characters`,
-        'any.empty': `${key} should not be empty`,
-        'string.base': `${key} should not be empty`
+        'any.pipe':`"${key}" should not contain pipe`,
+        'any.comma':`"${key}" should not contain comma`,
+        'any.commapipe':`"${key}" should not contain comma and pipe`,
+        'any.onlySpecialCharacters': `"${key}" should not contain only special characters`,
+        'any.specialCharacters': `"${key}" cannot contain special characters`,
+        'any.empty': `"${key}" should not be empty`,
+        'string.base': `"${key}" should not be empty`
     }
 }
 
