@@ -1,4 +1,4 @@
-import { useState} from 'react'
+import { useEffect, useState} from 'react'
 import { notifyError,notifySuccess } from '../../../../../helpers/notify'
 import { toast } from "react-toastify";
 import { useGetBufferTrendsGraph } from "../../../../Services/MTA/InsightsAndTrends/BufferTrends";
@@ -51,7 +51,9 @@ const useBufferTrends = () => {
     ])
 
     const getGraphDataWithTotal = (data:any) => {   
-        data.data.absolute = data?.data?.absolute.map((item: any) => ({
+
+        const obj = {...data};
+        obj.data.absolute = data?.data?.absolute.map((item: any) => ({
             ...item,
             total: Object.values(item).reduce((acc: number, value: any) => {
                 if (!isNaN(value)) {
@@ -61,7 +63,7 @@ const useBufferTrends = () => {
             }, 0).toString()
         }));
 
-        data.data.percentage = data?.data?.percentage.map((item: any) => ({
+        obj.data.percentage = data?.data?.percentage.map((item: any) => ({
             ...item,
             total: Object.values(item).reduce((acc: number, value: any) => {
                 if (!isNaN(value)) {
@@ -71,7 +73,7 @@ const useBufferTrends = () => {
             }, 0).toString()
         }));
 
-        return data;
+        return obj;
     }
 
     const BufferTrendsDataLoad = async () => {
@@ -87,10 +89,11 @@ const useBufferTrends = () => {
             }           
             const result:any = await getBufferTrendsGraph(body)
             setIsSelectCategoryOpen(false);
-            setCurrentGraphData(result.data?.data?.absolute);
-            setSummaryData(result.data?.data?.summary);
-            setAvailability(result.data?.data?.avail);
+            // setCurrentGraphData(result.data?.data?.absolute);
+            // setSummaryData(result.data?.data?.summary);
+            // setAvailability(result.data?.data?.avail);
             setGraphData(getGraphDataWithTotal(result.data));
+
             notifySuccess("Graph Details Fetched Successfully")
 
         
@@ -104,6 +107,17 @@ const useBufferTrends = () => {
 
     }
 
+    useEffect(() => {
+        const { percentage , summary , avail} = graphData.data;
+        if(percentage.length!==0){
+            setCurrentGraphData(percentage);
+        }
+        if(summary.length!==0){
+            setSummaryData(summary);
+        }
+        setAvailability(avail);
+    }, [graphData]);
+    
    const onFloatingTabChange = (tab:any) =>{
 
      setCurrentTab(tab.value);
@@ -166,7 +180,6 @@ const useBufferTrends = () => {
         // setCurrentTab('tech');
         // setHorizondays(30);
         // setMultiFilterState([]);
-
     }
 
     const handleApplyFilter = async(params:any)=>{
