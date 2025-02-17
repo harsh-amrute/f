@@ -24,6 +24,22 @@ import { useLocation } from "react-router";
 
 
 
+interface DataRow {
+  [key: string]: any;
+}
+
+const replaceNaNWithEmptyString = (data?: DataRow[]): DataRow[] => { 
+  return (data || []).map((row: DataRow) => { 
+    const newRow = {...row}; 
+    Object.keys(newRow).forEach((key: string) => {
+      if (typeof newRow[key] === 'number' && isNaN(newRow[key])) {
+        newRow[key] = '';  // Replace NaN with an empty string
+      }
+    });
+    return newRow;
+  });
+};
+
 
   const ViewModify = () => {
     const { user } = useUserData();
@@ -114,6 +130,8 @@ import { useLocation } from "react-router";
         canToggleMaster,
         setCanToggleMaster
     } = useViewModify('modify');
+
+    const processedRowData = replaceNaNWithEmptyString(activeMaster.rowData);
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -232,7 +250,7 @@ import { useLocation } from "react-router";
                   ref={ref}
                   columnDefs={activeMaster.colDefs}
                   suppressMovableColumns={suppressMovable}
-                  rowData={activeMaster.rowData}
+                  rowData={processedRowData}
                   {...agGridProps}
                   suppressPaginationPanel={!isDataAvailableLocally}
                   statusBar={{
