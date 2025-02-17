@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import useBufferTrends from "./useBufferTrends";
-import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import ActionToolBar from "../../SupplyChainIntelligenceHub/Planning/ActionToolBar";
 
 import ChartView from "../../InsightsAndTrends/BufferTrends/ChartView";
@@ -10,6 +9,7 @@ import BPRViewTable, {
 } from "../../SupplyChainIntelligenceHub/BPR/BPRViewTable";
 import { AvailabilityContainer, AvailabilityContent, AvailabilityHeader, SummaryTableColumn } from "./styles";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
+import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
 const BufferTrends = () => {
   const {
@@ -149,7 +149,7 @@ const BufferTrends = () => {
           />
         </div>
       </div>
-      {isLoading ? <VFLoader /> : renderView()}
+      {isLoading ? <OverlayLoader /> : renderView()}
     </>
   );
 };

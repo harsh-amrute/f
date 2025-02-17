@@ -2,9 +2,9 @@ import { AgCharts } from "ag-charts-react";
 import { useGetAvailabilityAgeing } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import { useState, useEffect } from "react";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
 import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
 const AvailabilityAgeingTrend = ({themeUi,filter, ageing, setAgeing, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
  
@@ -123,7 +123,7 @@ console.log(age)
 
   const numbers = Array.from(Array(90), (_, index) => index + 1);
   if (isLoading) {
-    return <VFLoader />;
+    return <OverlayLoader />;
   }
 
   return (

@@ -524,7 +524,8 @@ export const useBOR =()=>{
         }
     }
 
-      const tempAgGridProps:AgGridReactProps = {
+      const tempAgGridProps:AgGridReactProps = useMemo(() => {
+        return {
         onRowDataUpdated:(event)=>{
           const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
           if(tempDownloadData){
@@ -533,6 +534,7 @@ export const useBOR =()=>{
           }
         }
       }
+    },[ref,tempDownloadData])
 
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getBorData({

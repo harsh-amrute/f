@@ -5,7 +5,8 @@ export const ResearchInsightsLayout = styled.div`
     // margin-top:10px
     margin-top:5px;
     margin-left:20px;
-    min-height:100vh;
+    // min-height:100vh;
+    height: 85%;
     display:grid;
     grid-template-columns:3fr 1fr;
     padding-bottom:50px;

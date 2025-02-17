@@ -294,8 +294,9 @@ const useBPR =()=>{
         }
     },[])
 
-
-    const tempAgGridProps:AgGridReactProps = {
+    
+    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
+        return {
         onRowDataUpdated:(event)=>{
             const columnsToBeIncluded = ref?.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
             if(tempDownloadData){
@@ -304,6 +305,8 @@ const useBPR =()=>{
             }
         }
     }
+    },[ref,tempDownloadData])
+
 
       const getInitialBPRRowData=async()=>{
           try {    
@@ -418,10 +421,11 @@ const useBPR =()=>{
              if (rowNode) {
                  const RemarkColumn = BPRColumns.find(obj => obj.colId === "Remark");
                  if(rowNode?.data?.Remark!==undefined && RemarkColumn!==undefined){
-                     // Check if Remark column exist in both columnDef and RowData , only then update its value for better ui
-                     rowNode?.setDataValue('Remark', editedRow?.remarks);
+                    //  rowNode?.setDataValue('Remark', editedRow?.remarks);
+                    const updatedData = { ...rowNode.data };
+                    updatedData.Remark = editedRow?.remarks;
+                    rowNode.setData(updatedData);
                  }
-             // Clear the remarks input field after storing data in db
                rowNode?.setDataValue('remarks', '');
              }
            });

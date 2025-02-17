@@ -44,6 +44,8 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
             if (params.data.transit && params.data.transit.length > 0) {
                 setActiveRow(params.data.transit);
                 toggleSubGrid(true);
+            }else{
+                setActiveRow(null)
             }
         },
         sideBar: defaultAgGridSideBarForBPR,

@@ -306,16 +306,22 @@ const useOpenExpeditingRequests = () => {
       });
     };
 
-    const tempAgGridProps:AgGridReactProps = {
+  
+ 
+
+    
+    const tempAgGridProps:AgGridReactProps = useMemo (()=> {
+      return {
         onRowDataUpdated:(event)=>{
-        //  if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
-        const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
-            if(tempDownloadData){
-                event.api.exportDataAsExcel({fileName:'OpenExpeditingReport',columnKeys:columnsToBeIncluded})
-                setTempDownloadData(false)
-            }
+          const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
+          if(tempDownloadData){
+              event.api.exportDataAsExcel({fileName:'OpenExpeditingReport',columnKeys:columnsToBeIncluded})
+              setTempDownloadData(false)
+          }
         }
-      };
+      }
+    },[ref,tempDownloadData])
+      
 
     const onOpenSubmitRemark = (e: React.MouseEvent<HTMLElement>,data:any) => {
         setActiveRow(data)
