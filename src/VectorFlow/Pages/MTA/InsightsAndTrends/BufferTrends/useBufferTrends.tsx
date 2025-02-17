@@ -52,7 +52,6 @@ const useBufferTrends = () => {
 
     const getGraphDataWithTotal = (data:any) => {   
 
-        console.log("Raw Data Before Transformation:", data);
         const obj = {...data};
         obj.data.absolute = data?.data?.absolute.map((item: any) => ({
             ...item,
@@ -74,7 +73,6 @@ const useBufferTrends = () => {
             }, 0).toString()
         }));
 
-        console.log("Raw Data after Transformation:", data);
         return obj;
     }
 
@@ -90,7 +88,6 @@ const useBufferTrends = () => {
                 filters:multiFilterState
             }           
             const result:any = await getBufferTrendsGraph(body)
-            console.log("API Response:", result);
             setIsSelectCategoryOpen(false);
             // setCurrentGraphData(result.data?.data?.absolute);
             // setSummaryData(result.data?.data?.summary);
