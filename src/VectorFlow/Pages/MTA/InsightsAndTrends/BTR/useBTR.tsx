@@ -289,6 +289,11 @@ const useBTR = () => {
                     />
                 )
             case "2":
+                if(techColDefs){   
+                    techColDefs.forEach(item => {
+                        if ('field' in item && (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field === 'Availability' || item.field === 'Norm' || item.field === 'VirtualNorm'  || item.field === 'Category' || item.field === 'SKUCode' || item.field === 'SKUDescription' || item.field === 'Tags')) 
+                            {item.pinned = 'left';item.width = 50;}});}
+                
                 return (
                     <>
                         <BTRTableHeader>
@@ -319,6 +324,10 @@ const useBTR = () => {
                     </>
                 )
             case "3":
+                if(ecoColDefs){   
+                    ecoColDefs.forEach(item => {
+                        if ('field' in item && (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field === 'Availability' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field === 'Category' || item.field === 'SKUCode' || item.field === 'SKUDescription' || item.field === 'Tags')) 
+                            {item.pinned = 'left';item.width = 50;}});}
                 return (
                     <>
                         <BTRTableHeader>
