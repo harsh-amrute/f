@@ -112,8 +112,8 @@ const useTaskPendingForReview = ()=>{
                     if(i===1){
                         taskDataStore.push(...result.data.data);
                     }
-                    taskDataStore[0].data.push(...result.data.data[0].data);
                     console.log(result.data.data)
+                    if(i!==1)  taskDataStore[0].data.push(...result.data.data[0].data);
                     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${taskCount} / ${taskCount}`})
                     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${taskCount}`})
                 }
