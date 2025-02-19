@@ -131,7 +131,7 @@ const replaceNaNWithEmptyString = (data?: DataRow[]): DataRow[] => {
         setCanToggleMaster
     } = useViewModify('modify');
 
-    const processedRowData = replaceNaNWithEmptyString(activeMaster.rowData);
+    // const processedRowData = replaceNaNWithEmptyString(activeMaster.rowData);
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -250,7 +250,7 @@ const replaceNaNWithEmptyString = (data?: DataRow[]): DataRow[] => {
                   ref={ref}
                   columnDefs={activeMaster.colDefs}
                   suppressMovableColumns={suppressMovable}
-                  rowData={processedRowData}
+                  rowData={activeMaster.rowData}
                   {...agGridProps}
                   suppressPaginationPanel={!isDataAvailableLocally}
                   statusBar={{
