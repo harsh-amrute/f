@@ -2589,6 +2589,31 @@ export const createAxesForBarCharts = (keys:any,Labels:any)=>{
   }
 }
 
+export const addExtraColumnForLabels = (data:any)=>{
+  const addedData = _.cloneDeep(data)
+  if(addedData.length===0) return [];
+  console.log(addedData);
+  addedData.unshift({color:"custom",pre:-1, post:-2})
+  return addedData;
+}
+
+export const addLabelsToPieChart = {
+  enabled:true,
+  item:{
+    label:{
+      formatter:(params: any) => {
+        if(params.value == -1){
+          return "PRE"
+        }
+        else if (params.value == -2){
+          return "POST"
+        }
+        return params.value
+      }
+    }
+  }
+}
+
 export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
   
   const { series , palette , chartKey:keys, Labels, chartType, legend} = chartParams
@@ -2597,12 +2622,12 @@ export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:st
     return {...obj,tooltip: chartType==='pie' ? pieTooltip : commonTooltip}
   })
   const options:AgChartOptions = {
-    data: chartType==='pie' ? data : data.slice(0,10),
+    data: chartType==='pie' ? addExtraColumnForLabels(data) : data.slice(0,10),
     theme:{
       palette
     },
     series:seriesMapped,
-    ...(legend !== undefined && chartType !== 'pie' ? { legend } : {}),
+    ...(legend !== undefined && chartType !== 'pie' ? { legend } : {legend: addLabelsToPieChart}),
     ...(chartType!='pie' ? createAxesForBarCharts(keys,Labels) : {}),
   }
   return options;
