@@ -4761,7 +4761,7 @@ export function getColumnDefinationsMTA(
       field: data.Col_Code,
       initialHide: !data.Visible,
       pinned: null,
-      sort: null,
+      initialSort: null,
       sortIndex: null,
       aggFunc: null,
       rowGroup: false,
