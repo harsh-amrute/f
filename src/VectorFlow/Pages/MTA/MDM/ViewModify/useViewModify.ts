@@ -865,7 +865,11 @@ const useViewModify = (pageType:string) => {
             const currentColDef = activeMaster.colDefs.find((c)=>c.colId===key)
             const cellDataType = currentColDef?.cellDataType
             if(cellDataType==='number' && newRow[key]!== null){
-              newRow[key] = parseFloat(newRow[key])
+              if(isNaN(parseFloat(newRow[key]))){
+                newRow[key]='';
+              }else{
+                newRow[key] = parseFloat(newRow[key])
+              }
             }
           })
 
