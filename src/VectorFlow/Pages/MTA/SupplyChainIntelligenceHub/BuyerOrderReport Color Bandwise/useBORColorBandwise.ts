@@ -172,6 +172,7 @@ export const useBORColorBandwise =()=>{
               height:360,
               width:350
           })
+          console.log("row...", row)
           const {data} = await getBORRemarkHistory(row)
           toast.dismiss(toastId)
           setRemarkHistory(data.data)
@@ -444,10 +445,10 @@ export const useBORColorBandwise =()=>{
           const toastId = notifyLoader("Submitting Remark")
           const payload = editedRows.map((e)=>{
               return {
-                  remark:e.remarks,
-                  whcode:e.WHCode,
-                  skucode:e.SKUCode,
-                  spc:e.SupplierCode
+                remark:e.remarks,
+                whcode:e.WhCode || e.WHCode,
+                skucode:e.SKUCode,
+                spc:e.SupplierCode
               }
               
           })
