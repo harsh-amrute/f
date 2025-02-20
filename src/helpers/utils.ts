@@ -2627,7 +2627,7 @@ export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:st
       palette
     },
     series:seriesMapped,
-    ...(legend !== undefined && chartType !== 'pie' ? { legend } : {legend: addLabelsToPieChart}),
+    ...(chartType === 'pie' ? { legend: addLabelsToPieChart }  : legend !== undefined ? { legend }  : {}),
     ...(chartType!='pie' ? createAxesForBarCharts(keys,Labels) : {}),
   }
   return options;
