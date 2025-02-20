@@ -2,7 +2,7 @@ import { BPRColorCellRendererIcon, BPRRemarksCellRendererWrapper } from "../BPR/
 
 export const BORRemarksCellRenderer = (params:any)=>{
 
-   
+   console.log("whcode....", params.data)
     return (
         <BPRRemarksCellRendererWrapper >
             <BPRColorCellRendererIcon 
@@ -12,7 +12,7 @@ export const BORRemarksCellRenderer = (params:any)=>{
                 if (!ref) return;
         
                 ref.onclick = (e:any) => {
-                 params.onClick(e, {skucode:params.data.SKUCode,whcode:params.data.WHCode,spc:params.data.SupplierCode})
+                 params.onClick(e, {skucode:params.data.SKUCode,whcode:params.data.WHCode || params.data.WhCode,spc:params.data.SupplierCode})
                   e.stopPropagation();
                 };
               }}
