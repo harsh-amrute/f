@@ -20,8 +20,7 @@ import { GridRef } from "../../../../types/MDM"
 import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCellRenderers"
 
 import { ColDef } from "ag-grid-enterprise"
-import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
-import { useGetBORRemarkHistory, useSubmitBORRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
+import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount, useGetBOROARemarkHistory, useSubmitBOROARemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { BORRemarksCellRenderer } from "../BuyerOrderReport/BORCellRenderers"
 import { CSSProperties } from 'styled-components'
@@ -45,7 +44,7 @@ export const useBORColorBandwise =()=>{
 
   const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
 
-     const {mutateAsync:submitRemark} = useSubmitBORRemark()
+     const {mutateAsync:submitRemark} = useSubmitBOROARemark()
 
      const dispatch = useDispatch();
    
@@ -97,7 +96,7 @@ export const useBORColorBandwise =()=>{
      const gridZoom = getGridZoom()
     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
      
-      const {mutateAsync:getBORRemarkHistory} = useGetBORRemarkHistory();
+      const {mutateAsync:getBORRemarkHistory} = useGetBOROARemarkHistory();
 
   const onCloseRemarkHistory = () => setIsRemarkHistoryToolTipOpen(false)
   const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState()

@@ -337,7 +337,7 @@ const ModalAdvanedPermissions = (props: any) => {
     <>
       {
         <Transition appear show={openModal} as={Fragment}>
-          <Dialog style={{zoom: 0.8}} as="div" className="modal-box" onClose={closeModal}>
+          <Dialog as="div" className="modal-box" onClose={closeModal}>
             <Transition.Child
               as={Fragment}
               enter="transition"
