@@ -106,7 +106,7 @@ const Modal = ({
         </>
       ) : (
         <Transition appear show={openModal} as={Fragment}>
-          <Dialog as="div" className="modal-box" onClose={closeModal}>
+          <Dialog style={{zoom: 0.7}} as="div" className="modal-box" onClose={closeModal}>
             <Transition.Child
               as={Fragment}
               enter="transition"

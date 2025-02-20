@@ -50,7 +50,7 @@ const Profile = () => {
 
   return (
     <>
-      <SCProfileOverView>
+      <SCProfileOverView style={{zoom: 0.75}}>
         <SCProfilePad>
           <SCProfileImg src="/assets/img/profile/profile.svg" />
           <SCProfileName>{user?.user?.name}</SCProfileName>
@@ -80,7 +80,8 @@ const Profile = () => {
         )} */}
         </SCTabsWrapper>
       </SCProfileOverView>
-      {tabPanel === 0 && <Overview themeUi={themeUi} />}
+      <div style={{zoom: 0.75}}>
+      {tabPanel === 0 && <Overview style={{zoom: 0.75}} themeUi={themeUi} />}
       {tabPanel === 1 && <Permissions roles={user.roles} />}
       {tabPanel === 2 && (
         <ManageUsers 
@@ -91,8 +92,9 @@ const Profile = () => {
           // isURLsDrawerOpen={isURLsDrawerOpen}
           // toggleRolesDrawer={toggleRolesDrawer}
           // toggleURLsDrawer={toggleURLsDrawer}
-        />
-      )}
+          />
+        )}
+        </div>
     </>
   )
 }
