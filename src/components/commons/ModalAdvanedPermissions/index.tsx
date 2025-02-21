@@ -387,7 +387,7 @@ const ModalAdvanedPermissions = (props: any) => {
                           />
                         </div>)
                       }
-
+                      
                       <PrdPermissions
                         ref={prdPermissionRef}
                         product={allPermissions?.product_permission}
