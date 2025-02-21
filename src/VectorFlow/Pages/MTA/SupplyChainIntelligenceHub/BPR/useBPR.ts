@@ -175,68 +175,68 @@ const useBPR =()=>{
       }), []);
 
 
-      const onColumnVisible = (event: any) => {
-        const { column, visible , columns } = event;
-        // console.log(column)
-        // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
-        if(column!==null && column.colId!=="dailydatagraph" && event.source==='toolPanelUi'){
-        setBPRColumns((prevColumns:any) =>{
-            const updatedColumns = prevColumns.map((col: any) =>
-                col.field === column.colId
-                  ? { ...col, hide: !visible }
-                  : col
-              );
+    //   const onColumnVisible = (event: any) => {
+    //     const { column, visible , columns } = event;
+    //     // console.log(column)
+    //     // Optionally, you can update your state if needed (like in a sidebar with checkboxes)
+    //     if(column!==null && column.colId!=="dailydatagraph" && event.source==='toolPanelUi'){
+    //     setBPRColumns((prevColumns:any) =>{
+    //         const updatedColumns = prevColumns.map((col: any) =>
+    //             col.field === column.colId
+    //               ? { ...col, hide: !visible }
+    //               : col
+    //           );
             
-              // Check if any columns, except the one with colId === "dailydatagraph", have hide: false
-              const anyColumnWithHideFalse = updatedColumns.some(
-                (col: any) => col.colId !== "dailydatagraph" && col.hide === false
-              );
+    //           // Check if any columns, except the one with colId === "dailydatagraph", have hide: false
+    //           const anyColumnWithHideFalse = updatedColumns.some(
+    //             (col: any) => col.colId !== "dailydatagraph" && col.hide === false
+    //           );
             
-              // Now map over the updated columns and ensure dailydatagraph's hide is updated accordingly
-              return updatedColumns.map((col: any) =>
-                col.colId === "dailydatagraph"
-                  ? { ...col, hide: anyColumnWithHideFalse ? false : col.hide }
-                  : col
-              );
-        }
-        );
-        }else if(columns.length>1 && event.source==='toolPanelUi'){
-            setBPRColumns((prevColumns: any) => {
-                // Create a new array with updated columns, excluding 'dailydatagraph
-                if(visible===true){
-                    return  prevColumns.map((col: any) => ({ ...col, hide: false }))
-                }else{
-                    const updatedColumns = prevColumns.map((col: any) =>
-                        col.colId === "dailydatagraph"
-                          ? col // Exclude this column for now
-                          : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
-                          ? { ...col, hide: !visible }
-                          : col
-                      );
+    //           // Now map over the updated columns and ensure dailydatagraph's hide is updated accordingly
+    //           return updatedColumns.map((col: any) =>
+    //             col.colId === "dailydatagraph"
+    //               ? { ...col, hide: anyColumnWithHideFalse ? false : col.hide }
+    //               : col
+    //           );
+    //     }
+    //     );
+    //     }else if(columns.length>1 && event.source==='toolPanelUi'){
+    //         setBPRColumns((prevColumns: any) => {
+    //             // Create a new array with updated columns, excluding 'dailydatagraph
+    //             if(visible===true){
+    //                 return  prevColumns.map((col: any) => ({ ...col, hide: false }))
+    //             }else{
+    //                 const updatedColumns = prevColumns.map((col: any) =>
+    //                     col.colId === "dailydatagraph"
+    //                       ? col // Exclude this column for now
+    //                       : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
+    //                       ? { ...col, hide: !visible }
+    //                       : col
+    //                   );
                     
-                      // Check if all columns except 'dailydatagraph' have `hide: true`
-                      const allHidden = updatedColumns.every(
-                        (col: any) => col.colId === "dailydatagraph" || col.hide
-                      );
+    //                   // Check if all columns except 'dailydatagraph' have `hide: true`
+    //                   const allHidden = updatedColumns.every(
+    //                     (col: any) => col.colId === "dailydatagraph" || col.hide
+    //                   );
                     
-                      // Update 'dailydatagraph' column's `hide` property if all others are hidden
-                      return updatedColumns.map((col: any) =>
-                        col.colId === "dailydatagraph" && allHidden ? { ...col, hide: true } : col
-                      );
-                }
-              });
+    //                   // Update 'dailydatagraph' column's `hide` property if all others are hidden
+    //                   return updatedColumns.map((col: any) =>
+    //                     col.colId === "dailydatagraph" && allHidden ? { ...col, hide: true } : col
+    //                   );
+    //             }
+    //           });
               
-            // setBPRColumns((prevColumns:any) =>
-            //     prevColumns.map((col: any) =>
-            //         col.colId === "dailydatagraph"
-            //         ? col // Exclude this column from being updated
-            //         : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
-            //         ? { ...col, hide: !visible }
-            //         : col
-            //       )              
-            //   );
-        }
-      };
+    //         // setBPRColumns((prevColumns:any) =>
+    //         //     prevColumns.map((col: any) =>
+    //         //         col.colId === "dailydatagraph"
+    //         //         ? col // Exclude this column from being updated
+    //         //         : col.field === columns.find((column: any) => column.colId === col.colId)?.colId
+    //         //         ? { ...col, hide: !visible }
+    //         //         : col
+    //         //       )              
+    //         //   );
+    //     }
+    //   };
 
 
       const defaultColDefObject = useMemo(()=>{

@@ -3155,7 +3155,7 @@ export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => 
  
 }
 
-export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: number, pinCatergory: boolean, excludeColumns?: Array<string>,): Array<ColDef> => {
+export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: number, pinCatergory: boolean, excludeColumns?: Array<string>, onOpenDailyDataGraph?:any): Array<ColDef> => {
   // const graphCellRenderer:ColDef={
   //   field:'graph',
   //   colId:'graph',
@@ -3175,6 +3175,23 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   //   // },
   //   flex: 1
   // }
+
+  const specificColumns:any =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      pinned: 'left',
+      floatingFilter:false,
+      position:0,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+    }
+  ]
 
 
   let result = Object.keys(row).map((key: string): ColDef => {
@@ -3375,7 +3392,7 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   });
  
   if (excludeColumns) result = result.filter((r) => r.colId && !excludeColumns.includes(r.colId))
-  return result
+  return [...specificColumns,...result]
 
 }
 
