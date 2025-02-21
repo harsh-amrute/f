@@ -11,6 +11,8 @@ import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA, UPDATE_PLANNING_DATA} from '../../
 import { AgGridReactProps } from 'ag-grid-react';
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { GridRef } from "../../../../../VectorFlow/types/MDM";
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTA/Common/UIConfig";
+import { UIColumnConfigName } from "../../../../../helpers/Enum";
 
 const usePlanning = ()=>{
 
@@ -104,20 +106,120 @@ const usePlanning = ()=>{
           }
         }
       };
-  
-
-
+      
     useEffect(()=>{
         fetchPlanningDataCount();
     },[])
+
+    const {mutateAsync: getUIConfig}  = useGetUIConfigData();
+
+    const [gridColDefs,setGridColDefs] = useState<any>([]);
+
+    const getAllUIConfig = async(category:string,tab:string) => {
+
+        
+        let coldefs:any = [];
+        try {
+            switch (category) {
+            case 'GITFromParent': {
+                coldefs = await getUIConfig(UIColumnConfigName.GIT_From_Parent);
+                break;
+            }
+            case 'GITToChild': {
+                switch (tab) {
+                case 'locationWise':
+                    coldefs = await getUIConfig(UIColumnConfigName.GIT_To_Child_LW);
+                    break;
+                case 'transporterWise':
+                    coldefs = await getUIConfig(UIColumnConfigName.GIT_To_Child_TW);
+                    break;
+                case 'custom':
+                    coldefs = await getUIConfig(UIColumnConfigName.GIT_To_Child_CS);
+                    break;
+                default:
+                    coldefs = await getUIConfig(UIColumnConfigName.GIT_To_Child_LW);
+                    break;
+                }
+                break;
+            }
+            case 'ExpediteFromParent': {
+                switch (tab) {
+                case 'expediteDispatches':
+                    coldefs = await getUIConfig(UIColumnConfigName.Expedite_From_Parent_ED);
+                    break;
+                case 'createAvailabilityAtParent':
+                    coldefs = await getUIConfig(UIColumnConfigName.Expedite_From_Parent_CAAP);
+                    break;
+                default:
+                    coldefs = await getUIConfig(UIColumnConfigName.Expedite_From_Parent_ED);
+                    break;
+                }
+                break;
+            }
+            case 'ExpediteToChild': {
+                switch (tab) {
+                case 'expediteDispatches':
+                    coldefs = await getUIConfig(UIColumnConfigName.Expedite_To_Child_ED);
+                    break;
+                case 'custom':
+                    coldefs = await getUIConfig(UIColumnConfigName.Expedite_To_Child_CS);
+                    break;
+                default:
+                    coldefs = await getUIConfig(UIColumnConfigName.Expedite_To_Child_ED);
+                    break;
+                }
+                break;
+            }
+            case 'ExcessInventory': {
+                switch (tab) {
+                case 'excessInventory':
+                    coldefs = await getUIConfig(UIColumnConfigName.Excess_Inventory_Review);
+                    break;
+                case 'custom':
+                    coldefs = await getUIConfig(UIColumnConfigName.Excess_Inventory_Review_CS);
+                    break;
+                default:
+                    coldefs = await getUIConfig(UIColumnConfigName.Excess_Inventory_Review);
+                    break;
+                }
+                break;
+            }
+            case 'OrderFulfillment': {
+                switch (tab) {
+                case 'orderFulfillment':
+                    coldefs = await getUIConfig(UIColumnConfigName.Order_Fulfillment_Review);
+                    break;
+                case 'custom':
+                    coldefs = await getUIConfig(UIColumnConfigName.Order_Fulfillment_Review_CS);
+                    break;
+                default:
+                    coldefs = await getUIConfig(UIColumnConfigName.Order_Fulfillment_Review);
+                    break;
+                }
+                break;
+            }
+            }
+        } catch (error: any) {
+            console.log(error);
+            notifyError(error);
+        }
+        setGridColDefs(coldefs?.data?.data);
+    }
+
+
 
     useEffect(()=>{
         dispatch(UPDATE_PLANNING_DATA({
             currentTab:currentTab,
             currentCategory:currentCategory,
             currentView:currentView
-        }))
+        }))  
+        if(currentView==='grid'){
+            getAllUIConfig(currentCategory,currentTab);
+        }
+
     },[currentCategory,currentTab,currentView])
+
    
     const getFloatingTabsList = (view:string) => {
         switch(currentCategory){
@@ -136,11 +238,6 @@ const usePlanning = ()=>{
                             id:'transporterWise',
                             label:'Transporter-Wise',
                             value:'transporterWise'
-                        },
-                        {
-                            id:'custom',
-                            label:'Custom Screens',
-                            value:'custom'
                         }
                     ])
                 }
@@ -155,6 +252,12 @@ const usePlanning = ()=>{
                             id:'transporterWise',
                             label:'Transporter-Wise',
                             value:'transporterWise'
+                        }
+                        ,
+                        {
+                            id:'custom',
+                            label:'Custom Screens',
+                            value:'custom'
                         }
                     ])
                 }
@@ -198,7 +301,10 @@ const usePlanning = ()=>{
         }
         case 'ExpediteToChild':{
             if(view === 'chart'){
-                return([
+                return([])
+            }
+            else{
+                return ([
                     {
                         id:'expediteDispatches',
                         label:'Expedite Dispatches',
@@ -209,20 +315,11 @@ const usePlanning = ()=>{
                         label:'Custom Screens',
                         value:'custom'
                     }
-                ])
-            }
-            else{
-                return ([
-                    {
-                        id:'expediteDispatches',
-                        label:'Expedite Dispatches',
-                        value:'expediteDispatches'
-                    },
-                    {
-                        id:'createAvailabilityAtParent',
-                        label:'Create Availability At Parent',
-                        value:'createAvailabilityAtParent'
-                    },
+                    // {
+                    //     id:'createAvailabilityAtParent',
+                    //     label:'Create Availability At Parent',
+                    //     value:'createAvailabilityAtParent'
+                    // },
                 ])
             }
           
@@ -240,15 +337,22 @@ const usePlanning = ()=>{
                         label:'Excess Inventory Product-wise',
                         value:'excessInventoryProduct'
                     },
+                   
+                ])
+            }
+            else{
+                return [
+                    {
+                        id:'excessInventory',
+                        label:'Excess Inventory',
+                        value:'excessInventory'
+                    },
                     {
                         id:'custom',
                         label:'Custom Screens',
                         value:'custom'
                     }
-                ])
-            }
-            else{
-                return []
+                ]
             }
           
         }
@@ -264,16 +368,22 @@ const usePlanning = ()=>{
                         id:'orderFulfillmentProduct',
                         label:'Order Fulfillment Product-wise',
                         value:'orderFulfillmentProduct'
+                    }
+                ])
+            }
+            else{
+                return [
+                    {
+                        id:'orderFulfillment',
+                        label:'Order Fulfillment',
+                        value:'orderFulfillment'
                     },
                     {
                         id:'custom',
                         label:'Custom Screens',
                         value:'custom'
                     }
-                ])
-            }
-            else{
-                return []
+                ]
             }
           
         }
@@ -388,7 +498,6 @@ const usePlanning = ()=>{
                     if(!result.data.data.data)throw new Error("Data Not Available") 
                     setIsSelectCategoryOpen(false);
                     setCurrentGraphData(result.data.data.data)
-                    console.log(currentGraphData)
                     setCurrentTab('locationWise');
                     toast.dismiss(toastId);
                     notifySuccess("Graph Details Fetched Successfully");
@@ -518,7 +627,6 @@ const usePlanning = ()=>{
                         totalTempCount = planningCounts.parentMonitorCount
                     }
                     toast.dismiss(toastId);
-                    console.log(totalTempCount)
                     if(totalTempCount !==0)notifySuccess("Grid Details Fetched Successfully");
                     break;
                 }
@@ -573,7 +681,6 @@ const usePlanning = ()=>{
                     }
                     if(!fromPagination){
                         const count = await getPlanningDataGridCount(body)
-                        console.log(count)
                         const {createAvailabilityAtParent,expediteDispatches} = count.data.data
                         const tempTab =tab?tab:currentTab
                         if(tempTab==="createAvailabilityAtParent"){
@@ -658,7 +765,6 @@ const usePlanning = ()=>{
                     if(!fromPagination){
                         body.paginationParameter.pageNumber  = 1
                         const count = await getPlanningDataGridCount(body)
-                        console.log(count)
                         setTotalRows(count.data.data)
                         setCurrentPage(1)
                         setPlanningCounts({...planningCounts,reviewExcessInventoryCount:count.data.data})
@@ -748,6 +854,14 @@ const usePlanning = ()=>{
             setCurrentPage(1)
             fetchAndUpdateGridData(1,false,currentFilter,tab.value)
         }
+        if(currentCategory==='ExcessInventory' && currentView==='grid'){
+            setCurrentPage(1)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+        }
+        if(currentCategory==='OrderFulfillment' && currentView==='grid'){
+            setCurrentPage(1)
+            fetchAndUpdateGridData(1,false,currentFilter,tab.value)
+        }
     }
 
 
@@ -797,17 +911,20 @@ const usePlanning = ()=>{
         toast.dismiss();
     }
 
-    const onViewChange = async (view:string) => {
-        if(currentTab===''){
-            const activeTab = getFloatingTabsList(view)[0];
-            if(activeTab){
-                setCurrentTab(getFloatingTabsList(view)[0].value);
+    const onViewChange = async (view: string) => {
+        const tabsList = getFloatingTabsList(view);
+        if (currentTab === '') {
+            if (tabsList.length > 0) {
+                setCurrentTab(tabsList[0].value);
             }
-            if(view==='grid') await fetchAndUpdateGridData(currentPage,false,currentFilter);
+            if (view === 'grid') await fetchAndUpdateGridData(currentPage, false, currentFilter);
             setCurrentView(view);
-        }else{
-            const activeTab = getFloatingTabsList(view).find(tab => tab.value === currentTab);
-            if(view==='grid') await fetchAndUpdateGridData(currentPage,false,currentFilter);
+        } else {
+            const activeTab = tabsList.find(tab => tab.value === currentTab);
+            if (!activeTab && tabsList.length > 0) {
+                setCurrentTab(tabsList[0].value);
+            }
+            if (view === 'grid') await fetchAndUpdateGridData(currentPage, false, currentFilter);
             setCurrentView(view);
         }
     }
@@ -874,42 +991,42 @@ const usePlanning = ()=>{
         }
     },[currentCategory])
 
-    const currentColDefs = useMemo(()=>{
-        if(currentGridData){
-            let currUiConfig = []
-            if(currentCategory==="GITToChild"){
-                if(currentTab==="locationWise") currUiConfig=currentGridData['locationWise'].uiConfig
-                else currUiConfig=currentGridData['transporterWise'].uiConfig
-            }
-            else if(currentCategory==="ExpediteFromParent"){
-                if(currentTab==="createAvailabilityAtParent") currUiConfig=currentGridData['createAvailabilityAtParent'].uiConfig
-                else currUiConfig=currentGridData['expediteDispatches'].uiConfig
-            }
-            else if(currentCategory==="ExpediteToChild"){
-                if(currentTab==="createAvailabilityAtParent") currUiConfig=currentGridData['createAvailabilityAtParent'].uiConfig
-                else currUiConfig=currentGridData['expediteDispatches'].uiConfig
-            }
-            else currUiConfig = currentGridData.uiConfig
-            let colDefs = [];
-        colDefs = currUiConfig.map((column:{header:string,colCode:string})=>{
-            if(['plp','pip'].includes(column.colCode)){
-                return {
-                    field:column['colCode'],
-                    colId:column['colCode'],
-                    headerName:column['header'],
-                    cellRenderer:'colorCellRenderer',
-                }
-            }
-            return {
-                field:column['colCode'],
-                colId:column['colCode'],
-                headerName:column['header']
-            }
-        })
-        return [...colDefs]
-        }
-        return []
-    },[currentGridData])
+    // const currentColDefs = useMemo(()=>{
+    //     if(currentGridData){
+    //         let currUiConfig = []
+    //         if(currentCategory==="GITToChild"){
+    //             if(currentTab==="locationWise") currUiConfig=currentGridData['locationWise'].uiConfig
+    //             else currUiConfig=currentGridData['transporterWise'].uiConfig
+    //         }
+    //         else if(currentCategory==="ExpediteFromParent"){
+    //             if(currentTab==="createAvailabilityAtParent") currUiConfig=currentGridData['createAvailabilityAtParent'].uiConfig
+    //             else currUiConfig=currentGridData['expediteDispatches'].uiConfig
+    //         }
+    //         else if(currentCategory==="ExpediteToChild"){
+    //             if(currentTab==="createAvailabilityAtParent") currUiConfig=currentGridData['createAvailabilityAtParent'].uiConfig
+    //             else currUiConfig=currentGridData['expediteDispatches'].uiConfig
+    //         }
+    //         else currUiConfig = currentGridData.uiConfig
+    //         let colDefs = [];
+    //     colDefs = currUiConfig.map((column:{header:string,colCode:string})=>{
+    //         if(['plp','pip'].includes(column.colCode)){
+    //             return {
+    //                 field:column['colCode'],
+    //                 colId:column['colCode'],
+    //                 headerName:column['header'],
+    //                 cellRenderer:'colorCellRenderer',
+    //             }
+    //         }
+    //         return {
+    //             field:column['colCode'],
+    //             colId:column['colCode'],
+    //             headerName:column['header']
+    //         }
+    //     })
+    //     return [...colDefs]
+    //     }
+    //     return []
+    // },[currentGridData])
 
     // console.log(currentPageData,currentTab)
 
@@ -950,7 +1067,7 @@ const usePlanning = ()=>{
         onApplyFilter,
         onDeleteFilter,
         isDataLoading,
-        currentColDefs
+        gridColDefs
     }
 
 

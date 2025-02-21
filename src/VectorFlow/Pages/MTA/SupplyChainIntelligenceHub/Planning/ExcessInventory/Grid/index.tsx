@@ -1,15 +1,18 @@
-import {useMemo} from 'react';
+import {useContext, useEffect, useMemo, useState} from 'react';
 import GridViewTable from "../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
-import { createIconColumn, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../helpers/utils';
+import {  getColumnDefinationsMTA } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
-import { generateDailyDataGraphCell } from '../../../../../../../helpers/utils'
+import { GridStateContext } from '../../../../../../../context/GridStateContext';
 
 const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
+
+    const [colDefs, setColDefs] = useState<any>([]);
+    const {gridColDefs} = useContext(GridStateContext);
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -87,43 +90,80 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
         }
     }
 
-    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
-        let colDefs = [];
-        const dailyDataColDef = generateDailyDataGraphCell(onOpenDailyDataGraph) 
-        columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
-            return column1.colPosition - column2.colPosition;
-        })
-        const tagsColDef =  {
-            colId:'t',
-            field:'t',
-            headerName:"Tags",
-            cellRenderer:'tagsCellRenderer',
-            width:100,
+    // replaced this method with new getColumnDefinationsMTA for code reuseablity
+    // const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
+    //     let colDefs = [];
+    //     const dailyDataColDef = generateDailyDataGraphCell(onOpenDailyDataGraph) 
+    //     columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
+    //         return column1.colPosition - column2.colPosition;
+    //     })
+    //     const tagsColDef =  {
+    //         colId:'t',
+    //         field:'t',
+    //         headerName:"Tags",
+    //         cellRenderer:'tagsCellRenderer',
+    //         width:100,
+    //     }
+    //     colDefs = columns.map((column:{header:string,colCode:string})=>{
+    //         if(['plp','pip','pin'].includes(column.colCode)){
+    //             return {
+    //                 field:column['colCode'],
+    //                 colId:column['colCode'],
+    //                 headerName:column['header'],
+    //                 cellRenderer:'colorCellRenderer',
+    //             }
+    //         }
+    //         if(column.colCode === 't'){
+    //             return tagsColDef
+    //         }
+    //         const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+    //         if(customColdef) return customColdef;
+    //         return {
+    //             field:column['colCode'],
+    //             colId:column['colCode'],
+    //             headerName:column['header']
+    //         }
+    //     })
+    //     return [dailyDataColDef,...colDefs]
+    // }
+
+    const CustomHeader = {
+        dailydatagraph: {
+            width: 45,
+            minWidth: 45,
+            filter: false,
+            cellRenderer: 'grapCellRenderer',
+            cellRendererParams: { onOpenDailyDataGraph },
+            pinned: 'left',
+            resizable: false,
+            floatingFilter: false,
+            suppressColumnsToolPanel: false
+        },
+        t: {
+            cellRenderer: 'tagsCellRenderer',
+            width: 100,
+            minWidth: 100,
+            filter: true,
+            pinned: null,
+            filterParams: {
+                buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+        },
+        pin:{
+            cellRenderer:'colorCellRenderer',
+        },
+        pip:{
+            cellRenderer: "colorCellRenderer"
         }
-        colDefs = columns.map((column:{header:string,colCode:string})=>{
-            if(['plp','pip','pin'].includes(column.colCode)){
-                return {
-                    field:column['colCode'],
-                    colId:column['colCode'],
-                    headerName:column['header'],
-                    cellRenderer:'colorCellRenderer',
-                }
-            }
-            if(column.colCode === 't'){
-                return tagsColDef
-            }
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
-            if(customColdef) return customColdef;
-            return {
-                field:column['colCode'],
-                colId:column['colCode'],
-                headerName:column['header']
-            }
-        })
-        return [dailyDataColDef,...colDefs]
     }
 
-    const colDefs = mapUIConfigToColdefs(data['uiConfig'])
+    // const colDefs = mapUIConfigToColdefs(data['uiConfig'])
+    useEffect(()=>{
+        if(gridColDefs!==null){
+            const cols =  getColumnDefinationsMTA(gridColDefs,CustomHeader)
+            setColDefs(cols);
+        } 
+    },[gridColDefs])
 
     return(
         <GridViewTable 

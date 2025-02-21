@@ -37,7 +37,7 @@ interface GridViewTableProps {
 }
 
 const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader,currentCategory,currentTab}:GridViewTableProps) => {
-    const {ref} = useContext(GridStateContext)
+    const {ref,gridColDefs} = useContext(GridStateContext)
     const {mutateAsync:getState} = useGetState()
     const [gridState,setGridState] = useState<any>()
 
@@ -61,7 +61,6 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
           try{
             const data =  await getState({reportname:`${currentCategory}${currentTab}`})
             const parsedContent = JSON.parse(data.data.data)
-            // console.log(parsedContent)
             setGridState(parsedContent)
           }catch(err:any){
             setGridState({
@@ -75,16 +74,16 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
     },[])
 
     useEffect(()=>{
-        if(internalRef && gridState && gridState.columns && gridState.columns.length!==0){
+        if(internalRef && gridState && Array.isArray(gridState.columns) && gridState.columns.length !== 0){
             const StateColumns = updateCommonAttributes(gridState.columns,Columns,'colId')
             setColumns(StateColumns)
-            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+            internalRef?.api?.applyColumnState({state:gridState.columns,applyOrder:true})
+        }else{
+            internalRef?.api?.applyColumnState({state:gridColDefs,applyOrder:true})
         }
-    },[internalRef,gridState])
+    },[internalRef,gridState,gridColDefs])
 
-    // if(isLoading){
-    //     return <VFLoader/>
-    // }
+   
 
     const renderSubGrid = ()=>{
         if(showStockGrid){
@@ -160,7 +159,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                         <VFTable
                             ref={ref}
                             {...agGridProps}
-                            columnDefs={Columns}
+                            columnDefs={agGridColDefs}
                             rowData={agGridRowData}
                             height={gridHeight ? gridHeight : '380px'}
                             onGridReady={(params)=>setInternalRef(params)}

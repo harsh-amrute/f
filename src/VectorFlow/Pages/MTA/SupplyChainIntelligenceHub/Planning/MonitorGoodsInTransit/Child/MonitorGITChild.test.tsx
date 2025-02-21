@@ -2,7 +2,7 @@ import { render} from "@testing-library/react"
 // import MonitorGITChildLocationWiseCharts from "./Charts/LocationWise";
 // import { MonitorGITChildLocationWiseMockData, MonitorGITChildTransporterWiseMockData, MonitorGITChildCustomMockData } from "../../../../../../../mock-data/Planning";
 import { MonitorGITChildCustomMockData } from "../../../../../../../mock-data/Planning";
-import MonitorGITChildCustomCharts from "./Charts/Custom";
+import MonitorGITChildCustomCharts from "./Grid/Custom";
 import { UserDataContext } from "../../../../../../../context/UserDataContext";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { setupReactQuery } from "../../../../../../../config/react-query-config";

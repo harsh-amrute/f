@@ -11,9 +11,9 @@ import { SCDynamicContainer } from "../../../styles";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../../../../../redux/store/store";
 import { toast } from 'react-toastify';
-import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { useGetState } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
-import { getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
+import { getColumnDefinationsMTA, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
 
 
 
@@ -22,7 +22,7 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
 
-    const {ref} = useContext(GridStateContext)
+    const {ref,gridColDefs} = useContext(GridStateContext)
 
     const [columnState,setColumnState] = useState<any>()
     const {currentGridState} = useSelector((state:RootState)=>state.mta)
@@ -32,46 +32,45 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
 
-    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
-        let colDefs = [];
+    // remove after merge
+    // const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+    //     let colDefs = [];
 
-        colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{enablePivot:true, enableValue:true,enableRowGroup:true}); 
+    //     colDefs = columns.map((column:{header:string,colCode:string})=>{
+    //         const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{enablePivot:true, enableValue:true,enableRowGroup:true}); 
 
-            if(customColdef) return customColdef;
-            return {
-                field:column['colCode'],
-                colId:column['colCode'],
-                headerName:column['header'],
-                enablePivot:true,
-                enableValue:true,
-                enableRowGroup:true,
-            }
-        })
-        return [...colDefs];
-    }
+    //         if(customColdef) return customColdef;
+    //         return {
+    //             field:column['colCode'],
+    //             colId:column['colCode'],
+    //             headerName:column['header'],
+    //             enablePivot:true,
+    //             enableValue:true,
+    //             enableRowGroup:true,
+    //         }
+    //     })
+    //     return [...colDefs];
+    // }
 
 
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({reportname: "InTransitWhereAbouts"})
-            setColumnState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setColumnState(colDefs)
-          }
-        }
-        getTableState()
-    },[currentGridState])
+    // useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState({reportname: "InTransitWhereAbouts"})
+    //         setColumnState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         setColumnState(colDefs)
+    //       }
+    //     }
+    //     getTableState()
+    // },[currentGridState])
 
 
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
             
             const rows:any = [];
-            let uiconfig = [];
             try {
-                console.log('c')
                 const numberOfPages = Math.ceil(recordCount/chunkSize);
                 const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
                 
@@ -87,14 +86,14 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                     }
                     const result = await getPlanningDataCustom(body);
                     if(result.data.data === null) throw new Error("Something Went Wrong")
-                    if(uiconfig.length < 1){
-                        uiconfig = result.data.data['uiConfig']
-                    }
                     rows.push(...result.data.data.data)
                     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
                     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
                 }
-                setColDefs(mapUIConfigToColdefs(uiconfig));
+                // remove after merge
+                // setColDefs(mapUIConfigToColdefs(uiconfig));
+
+                setColDefs(getColumnDefinationsMTA(gridColDefs))
                 toast.dismiss(toastId);
            
                 notifySuccess(`Data Fetched Successfully`);
@@ -139,9 +138,9 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 filter: "agMultiColumnFilter",
                 }}
                 onGridReady={(params)=>{
-                    if(columnState){
-                     params.api.applyColumnState({state:columnState})
-                    }
+                    // if(columnState){
+                    //  params.api.applyColumnState({state:columnState})
+                    // }
                  }}
                 height={'100%'}
             />
