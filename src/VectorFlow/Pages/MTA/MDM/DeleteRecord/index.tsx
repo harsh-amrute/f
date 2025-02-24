@@ -83,7 +83,6 @@ const DeleteRecord = () => {
         isOverlayVisible,
         isDataAvailableLocally,
         enableEditOnlineReset,
-        errorCount,
         tempRecordCount,
         onDiscardDraftCallback
     } = useViewModify('remove');
@@ -104,7 +103,8 @@ const DeleteRecord = () => {
         selectedOptions,
         showMaster,
         showMasterGroup,
-        isSubmitDisabled
+        isSubmitDisabled,
+        errorCount
     } = useDelete();
 
     useEffect(()=>{
