@@ -5,6 +5,9 @@ const MIN_RLT_VALUE = 3;
 const MIN_RCP_VALUE = 3;
 const MIN_GCP_VALUE = 3;
 const SKULocationMessages = (key:string)=>({
+    "any.RLT":"RLT value should be greater than or equal to " + MIN_RLT_VALUE,
+    "any.RCP":"RCP value should be greater than or equal to " + MIN_RCP_VALUE,
+    "any.GCP":"GCP value should be greater than or equal to " + MIN_GCP_VALUE,
     "any.rlt":"RLT value should be greater than or equal to " + MIN_RLT_VALUE,
     "any.rcp":"RCP value should be greater than or equal to " + MIN_RCP_VALUE,
     "any.gcp":"GCP value should be greater than or equal to " + MIN_GCP_VALUE,
@@ -12,6 +15,7 @@ const SKULocationMessages = (key:string)=>({
     "any.mnwarn":"MinNorm should be greater than or equal to 2",
     "any.mnerror":"MinNorm should be greater than or equal to 0",
     "any.greaterthanZero":`${key} should be greater than 0`,
+    "any.MinimumOrderCount":`Min Order Count should be greater than 0`,
     'any.empty': `${key} should not be empty`,
     'any.FGRM': `${key} must be one of [fg, rm]`,
     'any.DBMACTIVE':`${key} must be one of ["YES", "NO", "Y", "N", "1", "0"]`
@@ -31,7 +35,7 @@ const RLTValidator = (value:any,helper:any)=>{
     if(value <=0){
         return helper.error("any.greaterthanZero")
     }else if (value>0 && value <=2) {
-        return helper.warn('any.rlt');
+        return helper.warn('any.RLT');
     }
     return value;
 }
@@ -43,7 +47,7 @@ const RCPValidator = (value:any,helper:any)=>{
     if(value <=0){
         return helper.error("any.greaterthanZero")
     }else if (value>0 && value <=2) {
-        return helper.warn('any.rcp');
+        return helper.warn('any.RCP');
     }
     return value;
 }
@@ -55,7 +59,7 @@ const GCPValidator = (value:any,helper:any)=>{
     if(value <=0){
         return helper.error("any.greaterthanZero")
     }else if (value>0 && value <=2) {
-        return helper.warn('any.gcp');
+        return helper.warn('any.GCP');
     }
     return value;
 }
@@ -75,7 +79,7 @@ const MOCValidator = (value:any,helper:any)=>{
         return value
     }
     if(value <=0){
-        return helper.error("any.greaterthanZero")
+        return helper.error("any.MinimumOrderCount")
     }
     return value;
 }
@@ -107,11 +111,11 @@ export const SKULocationSchema = Joi.object({
     pd:Joi.string(),
     n:Joi.number().integer(),
     mn:Joi.number().integer().custom(MNValidator).messages(SKULocationMessages('mn')),
-    rlt:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(RLTValidator).messages(SKULocationMessages('rlt')),
-    rcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(RCPValidator).messages(SKULocationMessages('rcp')),
-    gcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(GCPValidator).messages(SKULocationMessages('gcp')),
-    ocp:Joi.number().integer().max(MAX_INT_VAL).allow(null, '').custom(OCPValidator).messages(SKULocationMessages('ocp')),
-    moc:Joi.number().integer().max(MAX_INT_VAL).allow(null, '').custom(MOCValidator).messages(SKULocationMessages('moc')),
+    rlt:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(RLTValidator).messages(SKULocationMessages('RLT')),
+    rcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(RCPValidator).messages(SKULocationMessages('RCP')),
+    gcp:Joi.number().integer().max(MAX_DECIMAL_VAL).custom(GCPValidator).messages(SKULocationMessages('GCP')),
+    ocp:Joi.number().integer().max(MAX_INT_VAL).allow(null, '').custom(OCPValidator).messages(SKULocationMessages('OCP')),
+    moc:Joi.number().integer().max(MAX_INT_VAL).allow(null, '').custom(MOCValidator).messages(SKULocationMessages('MinimumOrderCount')),
     ps:Joi.number().integer().min(1).max(MAX_INT_VAL).messages(SKULocationMessages('ps')),
     st:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`Modified Spike Threshold should be less than ${MAX_DECIMAL_VAL}`}),
     dst:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`DefaultSpikeThreshold should be less than ${MAX_DECIMAL_VAL}`}),
