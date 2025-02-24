@@ -23,7 +23,7 @@ import { getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
 import { useDispatch } from 'react-redux';
 import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
-import {eachDayOfInterval, format, subDays} from 'date-fns';
+import {addDays, eachDayOfInterval, format, subDays} from 'date-fns';
 import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
 interface DailyDataGraphModalProps{
@@ -92,28 +92,28 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
       return lastNinetyDaysData
     }
 
-    // const addBoundaryDataPoints = (data: any) => {
-    //   if (data.length === 0) return data;
+    const addBoundaryDataPoints = (data: any) => {
+      if (data.length === 0) return data;
   
-    //   const firstDate = new Date(data[0].dt);
-    //   const lastDate = new Date(data[data.length - 1].dt);
+      const firstDate = new Date(data[0].dt);
+      const lastDate = new Date(data[data.length - 1].dt);
   
-    //   const startPoint = {
-    //     dt: format(subDays(firstDate, 1), "yyyy-MM-dd"),
-    //     hideTooltip: true // Special flag to hide tooltip
-    //   };
+      const startPoint = {
+        dt: format(subDays(firstDate, 1), "yyyy-MM-dd"),
+        hideTooltip: true // Special flag to hide tooltip
+      };
   
-    //   const endPoint = {
-    //     dt: format(addDays(lastDate, 1), "yyyy-MM-dd"),
-    //     hideTooltip: true // Special flag to hide tooltip
-    //   };
+      const endPoint = {
+        dt: format(addDays(lastDate, 1), "yyyy-MM-dd"),
+        hideTooltip: true // Special flag to hide tooltip
+      };
   
-    //   return [startPoint, ...data, endPoint];
-    // };
+      return [startPoint, ...data, endPoint];
+    };
     
     useEffect(()=>{
       if(lastRunDate)
-        setMissingData(fillNotAvailableDates(chartData))
+        setMissingData(addBoundaryDataPoints(fillNotAvailableDates(chartData)))
     }, [lastRunDate, chartData])
 
     const generateChartOptions = () => {

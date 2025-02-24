@@ -1,426 +1,200 @@
-import { SCChartContainer, SCDynamicContainer } from '../style';
+import { SCChartContainer, SCDynamicContainer } from "../style";
 import { AgCharts } from "ag-charts-react";
 import { Allotment } from "allotment";
-import { useGetExcessInventorySku, useGetExcessInventoryValue } from "../../../../../Services/MTA/InsightsAndTrends";
-import VFRangeSlider from '../../../../../../components/VectorFLOW/commons/VFRangeSlider';
-import VFInfoToolTip from '../../../../../../components/VectorFLOW/commons/VFInfoToolTip';
-import { useEffect, useState } from 'react';
-import OverlayLoader from '../../../../../../VectorFlow/Pages/MTO/Common/Loader';
+import {
+  useGetExcessInventorySku,
+  useGetExcessInventoryValue,
+} from "../../../../../Services/MTA/InsightsAndTrends";
+import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import { useEffect, useState } from "react";
+import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
+import { chartParams1, chartParams2 } from "./chartParams";
+import {
+  createTotalLegendForLineCharts,
+  generateChartOptions,
+} from "../../../../../../helpers/utils";
+import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
 
+const ExcessInventoryTrend = ({
+  filter,
+  horizon,
+  setHorizon,
+}: {
+  themeUi: string;
+  filter: any;
+  horizon: number;
+  setHorizon: any;
+}) => {
+  const [options1, setOptions1] = useState({});
+  const [options2, setOptions2] = useState({});
 
-const ExcessInventoryTrend = ({themeUi, filter, horizon, setHorizon}:{themeUi:string, filter:any, horizon:number, setHorizon:any}) => {
+  const greyShades = [
+    "#333333",
+    "#666666",
+    "#808080",
+    "#a6a6a6",
+    "#cccccc",
+    "#d8d8d8",
+  ];
 
-    //  const [horizon1, setHorizon1] = useState<number>(9);
-    //  const [horizon2, setHorizon2] = useState<number>(9);
-     const [options1, setOptions1] = useState({});
-        const [options2, setOptions2] = useState({});
+  const { mutateAsync: GetExcessInventorySku, isLoading: isLoaderGraph1 } =
+    useGetExcessInventorySku();
+  const { mutateAsync: GetExcessInventoryValue, isLoading: isLoaderGraph2 } =
+    useGetExcessInventoryValue();
 
-    
-     const { mutateAsync: GetExcessInventorySku, isLoading: isLoaderGraph1 } =useGetExcessInventorySku();
-     const { mutateAsync: GetExcessInventoryValue, isLoading: isLoaderGraph2 } =useGetExcessInventoryValue();
-
-     useEffect(() => {
+  useEffect(() => {
     OnHorizonChange(horizon);
     OnHorizon2Change(horizon);
   }, [filter]);
 
-   const OnHorizonChange = async (hvalue: any) => {
+  const OnHorizonChange = async (hvalue: any) => {
     setHorizon(hvalue);
-    const param = { horison: horizon, filters:filter,  };
+    const param = { horison: horizon, filters: filter };
     const ExcessInventorySkuData = await GetExcessInventorySku(param);
-   // const ExcessInventoryValueData =  await GetExcessInventoryValue(param);
-   const greyShades = [
-      // '#191919', 
-       '#333333', 
-       //'#4c4c4c',
-       // '#595959', 
-        '#666666', //'#737373', 
-        '#808080',// '#8c8c8c','#999999',
-       '#a6a6a6', //'#b2b2b2', '#bfbfbf', 
-       '#cccccc', '#d8d8d8'
-       
-    ];
-     const ExcessInventoryDataSku=ExcessInventorySkuData?.data?.data;
-    const locationTypes = Array.from(new Set(ExcessInventoryDataSku.map((d:any) => d.locationtype)));
-     const series:any = locationTypes.map((locationType, index) => {
-    const seriesData = ExcessInventoryDataSku.filter((d:any) => d.locationtype === locationType)
-                            .map((d:any) => ({ date: d.date, countSku: d.countSku }));
-                            return {
-        type: 'line',
-        xKey: 'date',
-        yKey: 'countSku',
+    const data = ExcessInventorySkuData?.data?.data;
+    const locationTypes = Array.from(
+      new Set(data.map((d: any) => d.locationtype))
+    );
+    const series: any = locationTypes.map((locationType, index) => {
+      const seriesData = data
+        .filter((d: any) => d.locationtype === locationType)
+        .map((d: any) => ({ date: d.date, countSku: d.countSku }));
+      return {
+        ...chartParams1.series[0],
         yName: locationType,
         data: seriesData,
         stroke: greyShades[index % greyShades.length],
         strokeWidth: 3,
-      
         marker: {
-                    fill: greyShades[index % greyShades.length],
-                    size: 5,
-                    stroke: greyShades[index % greyShades.length],
-                    strokeWidth: 2,
-                },
-                
+          fill: greyShades[index % greyShades.length],
+          size: 5,
+          stroke: greyShades[index % greyShades.length],
+          strokeWidth: 2,
+        },
       };
     });
-
-    const totalSeriesData = ExcessInventoryDataSku.reduce((acc:any, current:any) => {
-      const existingDate = acc.find((d:any) => d.date === current.date);
-      if (existingDate) {
-          existingDate.countSku += current.countSku;
-      } else {
-          acc.push({ date: current.date, countSku: current.countSku });
-      }
-      return acc;
-  }, []);
-
-  series.push({
-      type: 'line',
-      xKey: 'date',
-      yKey: 'countSku',
-      yName: 'Total',
-      data: totalSeriesData,
-      stroke: '#BC3D81',
-      strokeWidth: 3,
-      marker: {
-          fill: '#BC3D81',
-          size: 8,
-          stroke: "white",
-          strokeWidth: 2,
-      },
-      visible:false
-  });
-
-   
-    setOptions1(
-      {
-      autoSize: true,
-      
-      data: ExcessInventoryDataSku,
-      series: series,
-      axes: [
-        {
-          type: 'category',
-          position: 'bottom',
-          title: {
-            text: 'Date',
-           
-          },
-          label: {
-            formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
-            fontSize: 10,
-            autoRotate:false,
-            avoidCollisions:true
-          },
-          
-        },
-        {
-          type: 'number',
-          position: 'left',
-          title: {
-            text: 'Count of SKUs',
-          },
-          
-        },
-      ],
-      legend: {
-        position: 'bottom',
-        item:{
-          marker:{
-            shape:'square'
-          }
-        }
-      },
-    });
-     };
+    series.push(createTotalLegendForLineCharts(data, "countSku"));
+    const chartProps = { ...chartParams1, series: series };
+    const customizedChartProps = generateChartOptions(data, chartProps);
+    setOptions1(customizedChartProps);
+  };
 
   const OnHorizon2Change = async (hvalue: any) => {
     setHorizon(hvalue);
-    const param = { horison: horizon, filters:filter };
-    //const ExcessInventorySkuData = await GetExcessInventorySku(param);
-    const ExcessInventoryValueData =  await GetExcessInventoryValue(param);
-    //SetExcessInventorySku(ExcessInventorySkuData?.data?.data);
-     const greyShades = [
-      // '#191919', 
-       '#333333', 
-       //'#4c4c4c',
-       // '#595959', 
-        '#666666', //'#737373', 
-        '#808080',// '#8c8c8c','#999999',
-       '#a6a6a6', //'#b2b2b2', '#bfbfbf', 
-       '#cccccc', '#d8d8d8'
-       
-    ];
-     const ExcessInventoryDataValue=ExcessInventoryValueData?.data?.data;
-    const locationTypes = Array.from(new Set(ExcessInventoryDataValue.map((d:any) => d.locationtype)));
-     const series:any = locationTypes.map((locationType, index) => {
-    const seriesData = ExcessInventoryDataValue.filter((d:any) => d.locationtype === locationType)
-                            .map((d:any) => ({ date: d.date, value: d.value }));
-                            return {
-        type: 'line',
-        xKey: 'date',
-        yKey: 'value',
+    const param = { horison: horizon, filters: filter };
+    const ExcessInventoryValueData = await GetExcessInventoryValue(param);
+    const data = ExcessInventoryValueData?.data?.data;
+    const locationTypes = Array.from(
+      new Set(data.map((d: any) => d.locationtype))
+    ); // dynamic labels
+    const series: any = locationTypes.map((locationType, index) => {
+      const seriesData = data
+        .filter((d: any) => d.locationtype === locationType)
+        .map((d: any) => ({ date: d.date, value: d.value }));
+      return {
+        ...chartParams1.series[0],
         yName: locationType,
         data: seriesData,
         stroke: greyShades[index % greyShades.length],
         strokeWidth: 3,
-        
         marker: {
-                    fill: greyShades[index % greyShades.length],
-                    size: 8,
-                    stroke: "white",
-                    strokeWidth: 2,
-                },
-      };
-    });
-   
-    const totalSeriesData = ExcessInventoryDataValue.reduce((acc:any, current:any) => {
-      const existingDate = acc.find((d:any) => d.date === current.date);
-      if (existingDate) {
-          existingDate.value += current.value;
-      } else {
-          acc.push({ date: current.date, value: current.value });
-      }
-      return acc;
-  }, []);
-
-  series.push({
-      type: 'line',
-      xKey: 'date',
-      yKey: 'value',
-      yName: 'Total',
-      data: totalSeriesData,
-      stroke: '#BC3D81',
-      strokeWidth: 3,
-      marker: {
-          fill: '#BC3D81',
+          fill: greyShades[index % greyShades.length],
           size: 8,
           stroke: "white",
           strokeWidth: 2,
-      },
-      visible:false
-  });
-
-
-    setOptions2(
-      {
-      autoSize: true,
-      
-      data: ExcessInventoryDataValue,
-      series: series,
-      axes: [
-        {
-          type: 'category',
-          position: 'bottom',
-          title: {
-            text: 'Date',
-           
-          },
-          label: {
-            formatter: (params:any) => new Date(params.value).toISOString().split('T')[0],
-            fontSize: 10,
-            autoRotate:false,
-            avoidCollisions:true
-          },   
-          
-          
         },
-        {
-          type: 'number',
-          position: 'left',
-          title: {
-            text: 'Value In Lakhs',
-          },
-          label: {
-            formatter: (params:any) => {
-              const valueInLakhs = params.value / 100000; // Divide by 100,000 to convert to lakhs
-              return `${valueInLakhs} L`; // Return the value followed by 'L' for lakhs
-            },
-          },
-          
-        },
-      ],
-      legend: {
-        position: 'bottom',
-        item:{
-          marker:{
-            shape:'square'
-          }
-        }
-      },
+      };
     });
-    
+    series.push(createTotalLegendForLineCharts(data, "value"));
+    const chartProps = { ...chartParams2, series: series };
+    const customizedChartProps = generateChartOptions(data, chartProps);
+    setOptions2(customizedChartProps);
   };
-  
-  
-const graph1=['This graph highlights the date-wise trend of excess inventory (On Hand) across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
 
-const graph2=['This graph highlights the date-wise trend of excess inventory (On Hand) in value across various locations and products over the past 7 days','Excess Inventory = Quantity > Norm']
+  if (isLoaderGraph1 || isLoaderGraph2) {
+    <OverlayLoader />;
+  }
+  return (
+    <SCDynamicContainer>
+      <Allotment minSize={0} maxSize={590}>
 
-if(isLoaderGraph1||isLoaderGraph2){
-  <OverlayLoader/>
-}
-    return    (
-  
-<SCDynamicContainer>
-    <Allotment minSize={0} maxSize={590}>
-        <Allotment.Pane preferredSize={'50%'} >
-            <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'415px',boxShadow: '-5px 5px 12px #0000001C',marginRight:'15px'}}>
-                <div className="horiozn one" style={{ width:'100%', height:'50px', display:'flex', justifyContent:'space-evenly', alignItems:'center',zoom:'0.9'}}>
-                    <label
-                    style={{
-                        fontStyle: "normal",
-                        fontVariant: "normal",
-                        fontWeight: 300,
-                        fontSize: 15,
-                        fontFamily: "Roboto"
-                    }}
-                    >
-                    {" "}
-                    <b>Select Horizon: </b>
-                    </label>
-                    <VFRangeSlider
-                    showTriangle={false}
-                    min={1}
-                    max={90}
-                    milestones={[-1, 0, 30, 60, 90]}
-                    strictMode={false}
-                    width={250}
-                    defaultValue={9}
-                    handleChange={(e) => setHorizon(e)}
-                    labelValueFormatter={(value: number) =>
-                        value > 1 ? `${value} Days` : `${value} Day`
-                
-                    }
-                    style={{margin:'0px'}}
-                    
-                    />
-                    {/* <VFButtonOutline
-                    style={{height:'35px', fontSize:'13px', fontWeight:500}}
-                    themeUi={themeUi}
-                    onClick={() =>console.log('')}
-                    width={100}>
-                    Submit
-                    </VFButtonOutline> */}
-                   <img 
-
-                    style={{cursor:'pointer', marginLeft:'-15px'}}
-                    src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
-                    height={40} 
-                    width={50}
-                    onClick={() => OnHorizonChange(horizon)}
-                    
-                    />
-                   
-                </div>
-                <SCChartContainer >
-                    <div style={{
-                        // top: '316px',
-                        // left: '293px',
-                        // width: '550px',
-                        height: '300px',
-                        borderTop:'1px solid rgb(178, 178, 178)',
-                    }}>
-
-                    <div className="Title" style={{height:'50px', backgroundColor:'white',display:'flex',justifyContent:'center', alignItems:'center'}}>
-                        <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
-                            Excess Inventory Trend (Count Of SKU)-Last 90 Days
-                        </div>
-                        <div style={{marginLeft:10,marginBottom:'-5px'}}>
-                            <VFInfoToolTip infoList={graph1} />
-                        </div>
-
-                    </div>
-                    <AgCharts options={options1} />
-            </div>
-                {/* <SCHorizontalDivider/> */}
-            </SCChartContainer>
-                 {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
-                            <VFInfoTip text={graph1}/>
-                </div> */}
-            </div>
+        <Allotment.Pane preferredSize={"50%"}>
+          <div
+            className="main"
+            style={{
+              marginTop: "20px",
+              backgroundColor: "white",
+              height: "415px",
+              boxShadow: "-5px 5px 12px #0000001C",
+              marginRight: "15px",
+            }}
+          >
+            <VFHorizon
+              setHorizon={setHorizon}
+              OnHorizonChange={OnHorizonChange}
+              horizon={horizon}
+              styles={{width:'100%'}}
+            />
+            <CustomizedChartComponent chartOptions={options1} chartParams={chartParams1}/>
+          </div>
 
         </Allotment.Pane>
-        {/* <Allotment.Pane preferredSize={'50%'}> */}
-        <div className="main" style={{marginTop:'20px',backgroundColor:'white',height:'415px',boxShadow: '-5px 5px 12px #0000001C', marginLeft:'25px'}}>
-            <div className="horiozn one" style={{ width:'100%', height:'50px', display:'flex', justifyContent:'space-evenly', alignItems:'center',zoom:'0.9'}}>
-                <label
-                style={{
-                    fontStyle: "normal",
-                    fontVariant: "normal",
-                    fontWeight: 300,
-                    fontSize: 15,
-                    fontFamily: "Roboto"
-                }}
-                >
-                {" "}
-                <b>Select Horizon: </b>
-                </label>
-                <VFRangeSlider
-                showTriangle={false}
-                min={1}
-                max={90}
-                milestones={[-1, 0, 30, 60, 90]}
-                strictMode={false}
-                width={250}
-                defaultValue={9}
-                handleChange={(e) => setHorizon(e)}
-                labelValueFormatter={(value: number) =>
-                    value > 1 ? `${value} Days` : `${value} Day`
-            
-                }
-                style={{margin:'0px'}}
+        <div
+          className="main"
+          style={{
+            marginTop: "20px",
+            backgroundColor: "white",
+            height: "415px",
+            boxShadow: "-5px 5px 12px #0000001C",
+            marginLeft: "25px",
+          }}
+        >
+          <VFHorizon
+            setHorizon={setHorizon}
+            OnHorizonChange={OnHorizon2Change}
+            horizon={horizon}
+            styles={{width:'100%'}}
+          />
+          <CustomizedChartComponent chartOptions={options2} chartParams={chartParams2}/>
+        </div>
+      </Allotment>
 
-                />
-                 {/* <VFButtonOutline
-                    style={{height:'35px', fontSize:'13px', fontWeight:500}}
-                    themeUi={themeUi}
-                    onClick={() =>console.log('')}
-                    width={100}>
-                    Submit
-                </VFButtonOutline> */}
-                 <img 
-                    style={{cursor:'pointer', marginLeft:'-15px'}}
-                    src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
-                    height={40} 
-                    width={50} 
-                    onClick={() => OnHorizon2Change(horizon)}
-                    />
-            </div>
+    </SCDynamicContainer>
+  );
+};
 
-            <SCChartContainer>
-                <div style={{
-                    // top: '316px',
-                    // left: '1191px',
-                    // width: '550px',
-                    height: '300px',
-                    borderTop:'1px solid rgb(178, 178, 178)',
-                }}>
+export default ExcessInventoryTrend;
 
-                <div className="Title" style={{height:'50px', backgroundColor:'white',display:'flex',justifyContent:'center', alignItems:'center'}}>
-                    <div style={{fontSize:'14px', fontWeight:500, textAlign:'center'}}>
-                        Excess Inventory Trend (In Value)-Last 90 Days              
-                    </div>
-                    <div style={{marginLeft:10,marginBottom:'-5px'}}>
-                        <VFInfoToolTip infoList={graph2} />
-                 </div>
-
-                    </div>
-                    <AgCharts options={options2} />
-                </div>
-            {/* <SCHorizontalDivider/> */}
-            </SCChartContainer>
-            {/* <div style={{marginLeft:'10px',marginRight:'10px'}}>
-                            <VFInfoTip text={graph2}/>
-
-                        </div> */}
-                                    </div>
-
-        {/* </Allotment.Pane> */}
-    </Allotment>
-</SCDynamicContainer>
-  
-    )
-}
-
-export default ExcessInventoryTrend
+export const CustomizedChartComponent = ({chartOptions,chartParams}:any) => {
+  return (
+    <SCChartContainer>
+      <div
+        style={{
+          height: "300px",
+          borderTop: "1px solid rgb(178, 178, 178)",
+        }}
+      >
+        <div
+          className="Title"
+          style={{
+            height: "50px",
+            backgroundColor: "white",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{ fontSize: "14px", fontWeight: 500, textAlign: "center" }}
+          >
+            {chartParams.title}
+          </div>
+          <div style={{ marginLeft: 10, marginBottom: "-5px" }}>
+            <VFInfoToolTip infoList={chartParams.graphInfo} />
+          </div>
+        </div>
+        <AgCharts options={chartOptions} />
+      </div>
+    </SCChartContainer>
+  );
+};
