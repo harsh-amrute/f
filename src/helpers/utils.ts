@@ -2564,6 +2564,9 @@ export const createAxesForBarCharts = (keys:any,Labels:any)=>{
         },
         label:{
           formatter:(params:any)=>{
+            if(Labels.Xaxis==='Date'){
+              return new Date(params.value).toISOString().split('T')[0]
+            }
             if(params.value.length > 10) return params.value.slice(0,10) + '...';
             return params.value;
           },
@@ -2631,6 +2634,36 @@ export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:st
     ...(chartType!='pie' ? createAxesForBarCharts(keys,Labels) : {}),
   }
   return options;
+}
+
+
+export const createTotalLegendForLineCharts = (data:any,key:string)=>{
+  const totalSeriesData = data.reduce((acc: any, current: any) => {
+    const existingDate = acc.find((d: any) => d.date === current.date);
+    if (existingDate) {
+      existingDate[key] += current[key];
+    } else {
+      acc.push({ date: current.date, [key]: current[key] }); // Fix applied here
+    }
+    return acc;
+  }, []);
+  /// return series
+  return {
+    type: 'line',
+    xKey: 'date',
+    yKey: key,
+    yName: 'Total',
+    data: totalSeriesData,
+    stroke: '#BC3D81', /// change color as per requirement
+    strokeWidth: 3,
+    marker: {
+        fill: '#BC3D81',
+        size: 8,
+        stroke: "#BC3D81",
+        strokeWidth: 2,
+    },
+    visible:false
+  }
 }
 
 
