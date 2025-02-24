@@ -25,8 +25,8 @@ export const BTRCategoryMapper:BTRCategoryMapperType = {
         bgColor:"black",
         color:'white',
         cellLabel:"CTB",
-        toolTipHeader:"Cont Tech Black",
-        toolTipDescription:"*Total Tech black days > RLT"
+        toolTipHeader:"Cont On Hand Black",
+        toolTipDescription:"*Total On Hand black days > RLT"
     },
     "SE":{
         bgColor:"#8E8E8E",
@@ -47,14 +47,14 @@ export const BTRCategoryMapper:BTRCategoryMapperType = {
         color:'white',
         cellLabel:"SI",
         toolTipHeader:'Supply Chain Issue',
-        toolTipDescription:'*Eco Black ageing > 1.5 RLTs'
+        toolTipDescription:'*Pipeline Black ageing > 1.5 RLTs'
     },
     "BR":{
         bgColor:"linear-gradient(90deg, rgba(41,41,41,1) 50%, rgba(240,36,36,1) 50%)",
         color:'white',
         cellLabel:"B+R",
-        toolTipHeader:"Cont Tech Black+Red",
-        toolTipDescription:"*Total Tech black + red days >=RLT"
+        toolTipHeader:"Cont On Hand Black+Red",
+        toolTipDescription:"*Total On Hand black + red days >=RLT"
     },
     "UN":{
         bgColor:"#D0A928",

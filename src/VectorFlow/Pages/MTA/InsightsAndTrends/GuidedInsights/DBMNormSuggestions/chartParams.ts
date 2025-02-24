@@ -132,9 +132,9 @@ export const chartParams2 = {
 
 
 export const chartParams3 = {
-    title:'Top 10 Locations: Maximum Overdue Orders',
+    title:'Top 10 Products: Max No. Of DBM Suggestions',
     chartType:'stackedColumn',
-    downloadName:'Top 10 Loc (Max Overdue Orders)',
+    downloadName:'Top 10 Products: Max No. Of DBM Suggestions',
     LabelPosition:'bottom',
     Labels:{
         Xaxis:'SKU Code',
@@ -195,9 +195,9 @@ export const chartParams3 = {
 
 
 export const chartParams4 = {
-    title:'Top 10 Locations: Max SKUs With Gap > 67% Of Requirement',
+    title:'Ageing categorization Of DBM suggestions',
     chartType:'stackedColumn',
-    downloadName:'Top 10 Loc (Max SKUs With Gap > 67% Of Req)',
+    downloadName:'Ageing categorization Of DBM suggestions',
     LabelPosition:'bottom',
     Labels:{
         Xaxis:'Ageing',

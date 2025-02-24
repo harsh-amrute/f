@@ -10,7 +10,10 @@ export enum UIColumnConfigName{
     BOR_OA = "BOR_OA",
     RRR = "RationRequirementReport",
     RRR_OA = "RRR_OA",
-    Research_Insights = "ResearchInsight"
+    Research_Insights = "ResearchInsight",
+    DBM = "NormSuggestion",
+    ChronicUnavailability = "ChronicUnavailability",
+    OER = "OpenExpeditingRequests",
 }
 
 export enum UserUIColumnConfigName{
@@ -25,5 +28,8 @@ export enum UserUIColumnConfigName{
     BOR_OA = "BORColorBandwise",
     RRR = "RRR",
     RRR_OA = "RRRColorBandWise",
-    Research_Insights = "ResearchInsight"
+    Research_Insights = "ResearchInsight",
+    DBM = "DBMNorm",
+    ChronicUnavailability = "ChronicUnavailability",
+    OER = "OpenExpeditingRequests",
 }

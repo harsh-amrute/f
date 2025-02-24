@@ -153,6 +153,21 @@ export default forwardRef(({ ...props }: any, ref) => {
     };
   };
   
+  const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) =>{
+    const check = event.target.checked;
+
+    if(check){
+      setBrand(listBrand)
+      setCategory(listCategory)
+      setSubBrand(listSubBrand)
+    }
+    else{
+      setBrand([])
+      setCategory([])
+      setSubBrand([])
+    }    
+  }
+
   const prdPermissions = [
     {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L1 || '',
@@ -176,16 +191,21 @@ export default forwardRef(({ ...props }: any, ref) => {
     },
     {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L3 || '',
-      placeholder:"", 
-      options: subBrand.length === 0 ? [] : listCategory.filter((cat: Option) =>
-        subBrand.some((s) => cat.value.startsWith(s.value.split(' ')[0])) // Filter based on selected sub-brand
-      ),
+      placeholder: "", 
+      options: subBrand.length === 0 ? [] : (() => {
+        const currentSubBrandValues = subBrand.map(s => s.value); 
+          const filteredCategories = listCategory.filter((c: Option) => {
+          return currentSubBrandValues.some(subBrandValue => c.value.startsWith(subBrandValue));
+        });
+    
+        return filteredCategories;
+      })(),
       value: category,
       setValue: setCategory,
       handleAction: handleSelectCategory,
       disabled: subBrand.length === 0, 
-    },
-
+    }
+   
     // {
     //   title: "P-L4",
     //   placeholder: "",
@@ -214,7 +234,6 @@ export default forwardRef(({ ...props }: any, ref) => {
     ...permission,
     title: headers && headers?.Orders && headers?.Orders[index] ? headers.Orders[index] :  permission.title
   })) 
-  console.log(prdPermissions)
 
   return (
     <ProductPermission
@@ -222,6 +241,8 @@ export default forwardRef(({ ...props }: any, ref) => {
         "profile.tabContent.manageUsers.advancedPermission.productPermission.title"
       )}
       prdPermissions={updatedPermissions }
+      onSelectAll={onSelectAll}
+      
     />
   );
 });

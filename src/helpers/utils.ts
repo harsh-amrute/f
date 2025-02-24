@@ -2589,6 +2589,31 @@ export const createAxesForBarCharts = (keys:any,Labels:any)=>{
   }
 }
 
+export const addExtraColumnForLabels = (data:any)=>{
+  const addedData = _.cloneDeep(data)
+  if(addedData.length===0) return [];
+  console.log(addedData);
+  addedData.unshift({color:"custom",pre:-1, post:-2})
+  return addedData;
+}
+
+export const addLabelsToPieChart = {
+  enabled:true,
+  item:{
+    label:{
+      formatter:(params: any) => {
+        if(params.value == -1){
+          return "PRE"
+        }
+        else if (params.value == -2){
+          return "POST"
+        }
+        return params.value
+      }
+    }
+  }
+}
+
 export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:string) =>{
   
   const { series , palette , chartKey:keys, Labels, chartType, legend} = chartParams
@@ -2597,12 +2622,12 @@ export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:st
     return {...obj,tooltip: chartType==='pie' ? pieTooltip : commonTooltip}
   })
   const options:AgChartOptions = {
-    data: chartType==='pie' ? data : data.slice(0,10),
+    data: chartType==='pie' ? addExtraColumnForLabels(data) : data.slice(0,10),
     theme:{
       palette
     },
     series:seriesMapped,
-    ...(legend !== undefined && chartType !== 'pie' ? { legend } : {}),
+    ...(chartType === 'pie' ? { legend: addLabelsToPieChart }  : legend !== undefined ? { legend }  : {}),
     ...(chartType!='pie' ? createAxesForBarCharts(keys,Labels) : {}),
   }
   return options;
@@ -3384,12 +3409,6 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   })
   // if(onShowChart)result = [graphCellRenderer,...result]
   result = result.filter((r) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
-  result.forEach(item => {
-    if (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field =="Availability" || item.field =="Norm" || item.field =="VirtualNorm" || item.field ==  "pc"|| item.field == "pn" || item.field  =="Category" || item.field  =="SKUCode"|| item.field  =="SKUDescription" || item.field  =="Tags") {
-      item.pinned = 'left';
-      item.width =50;
-    }
-  });
  
   if (excludeColumns) result = result.filter((r) => r.colId && !excludeColumns.includes(r.colId))
   return [...specificColumns,...result]
@@ -4784,7 +4803,7 @@ export function getColumnDefinationsMTA(
       field: data.Col_Code,
       initialHide: !data.Visible,
       pinned: null,
-      sort: null,
+      initialSort: null,
       sortIndex: null,
       aggFunc: null,
       rowGroup: false,
