@@ -29,9 +29,7 @@ import { useLocation } from "react-router";
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
     const suppressMovable = true;
-   
-    // const disabled=true;
-    // const dummyFn =()=>{return}
+  
 
     const location = useLocation();
 
@@ -114,6 +112,7 @@ import { useLocation } from "react-router";
         canToggleMaster,
         setCanToggleMaster
     } = useViewModify('modify');
+
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){

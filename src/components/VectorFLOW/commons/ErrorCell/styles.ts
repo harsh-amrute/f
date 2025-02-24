@@ -19,6 +19,7 @@ export const SCToolTipWrapper = styled.div<{themeUi:string}>`
     color:#820F4C;
     border-radius:4px;
     width:170px;
+    max-height:280px;
     z-index:100000;
     /* box-shadow: #BC3D81 0px 5px 15px; */
     animation:${fadeIn} 0.3s ease;

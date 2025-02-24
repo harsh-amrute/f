@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import * as gridSystem from "../../../styles/gridSystem";
+import * as globalStyles from "../../../styles/global";
+
 
 export const SCSwapPermission = styled.div`
   margin-bottom: 15px;
@@ -18,12 +20,28 @@ export const SCtitle = styled.div`
   line-height: 2.6rem;
   margin: 15px 50px 0 50px;
 
+  display:flex;
+  justify-content: space-between;
+  align-items: center; 
+
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
       .size.laptopL}) {
     font-size: 1.8rem;
     margin-top: 5px; 
   }
 `;
+
+export const Checkbox = styled.input<{ themeUi: string }>`
+  width: 18px;
+  height: 18px;
+  border-radius: 50%; 
+  cursor: pointer; 
+  outline: none; 
+  position: relative;
+  border:1px solid black; 
+  accent-color: ${(props) =>
+    globalStyles.chooseThemeColor[props.themeUi]?.color5};
+  }`
 
 export const SCSwapContent = styled.div`
   padding: 0 50px;

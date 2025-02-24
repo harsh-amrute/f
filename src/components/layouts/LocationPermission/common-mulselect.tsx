@@ -105,7 +105,19 @@ export default forwardRef(({ ...props }: any, ref) => {
       setChild: setLcType,
     });
   };
-
+  const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) =>{
+    const check = event.target.checked;
+    if(check){
+      setLcType(listLcType)
+      setLcRegion(listLcRegion)
+      setLcCluster(listLcCluster)
+    }
+    else{
+      setLcType([])
+      setLcRegion([])
+      setLcCluster([])
+    }    
+  }
   useImperativeHandle(ref, () => ({
     getLcPermissionValue() {
       return getLcPermissionValue();
@@ -128,7 +140,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       lcCluster,
     };
   };
-
+ 
   const prdPermissions = [
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L1 || '',
@@ -153,15 +165,21 @@ export default forwardRef(({ ...props }: any, ref) => {
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L3 || '',
       placeholder: "", 
-      options: lcType.length === 0 ? [] : listLcCluster.filter((cluster: any) =>
-        lcType.some((type: any) => cluster.value.startsWith(type.value.split(' ')[0])) // Filter lcCluster based on selected lcType
-      ),
+      options: lcType.length === 0 ? [] : (() => {    
+        const currentLcTypeValues = lcType.map((type:any) => type.value); 
+          const filteredClusters = listLcCluster.filter((cluster: any) => {
+          return currentLcTypeValues.some((lcTypeValue:any) => cluster.value.startsWith(lcTypeValue));
+        });    
+    
+        return filteredClusters;
+      })(),
       value: lcCluster,
       setValue: setLcCluster,
       handleAction: handleSelectLcCluster,
       disabled: lcType.length === 0, 
-    },
+    }
 
+   
     // {
     //   title: "P-L4",
     //   placeholder: "",
@@ -195,6 +213,7 @@ export default forwardRef(({ ...props }: any, ref) => {
         "profile.tabContent.manageUsers.advancedPermission.locationPermission.title"
       )}
       prdPermissions={updatedPermissions}
+      onSelectAll={onSelectAll}
     />
   );
 });
