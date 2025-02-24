@@ -8,13 +8,13 @@ const SKULocationMessages = (key:string)=>({
     "any.rlt":"RLT value should be greater than or equal to " + MIN_RLT_VALUE,
     "any.rcp":"RCP value should be greater than or equal to " + MIN_RCP_VALUE,
     "any.gcp":"GCP value should be greater than or equal to " + MIN_GCP_VALUE,
-    "number.unsafe":`${key} should be less than ${MAX_INT_VAL}`,
+    "number.unsafe":`"${key}" should be less than ${MAX_INT_VAL}`,
     "any.mnwarn":"MinNorm should be greater than or equal to 2",
     "any.mnerror":"MinNorm should be greater than or equal to 0",
-    "any.greaterthanZero":`${key} should be greater than 0`,
-    'any.empty': `${key} should not be empty`,
-    'any.FGRM': `${key} must be one of [fg, rm]`,
-    'any.DBMACTIVE':`${key} must be one of ["YES", "NO", "Y", "N", "1", "0"]`
+    "any.greaterthanZero":`"${key}" should be greater than 0`,
+    'any.empty': `"${key}" should not be empty`,
+    'any.FGRM': `"${key}" must be one of [fg, rm]`,
+    'any.DBMACTIVE':`"${key}" must be one of ["YES", "NO", "Y", "N", "1", "0"]`
 })
 
 const ParentWhCodeValidator = (value:any,helper:any)=>{
