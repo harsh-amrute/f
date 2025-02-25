@@ -144,7 +144,8 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                       { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
-                  }}                defaultColDef={{
+                  }}                
+                defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}

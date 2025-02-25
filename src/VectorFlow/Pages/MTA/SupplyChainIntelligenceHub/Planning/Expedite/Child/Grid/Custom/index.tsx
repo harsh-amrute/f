@@ -127,7 +127,17 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
-                sideBar={true}
+                sideBar= {{
+                    toolPanels: [
+                      {
+                        id: "columns",
+                        labelDefault: "Columns",
+                        labelKey: "columns",
+                        iconKey: "columns",
+                        toolPanel: "agColumnsToolPanel",
+                      }
+                    ]}
+                  }
                 enableCharts={true}
                 enableRangeSelection={true} 
                 rowSelection="multiple"

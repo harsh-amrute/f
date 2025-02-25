@@ -644,7 +644,7 @@ const usePlanning = ()=>{
                     }
                     if(!fromPagination){
                         const count = await getPlanningDataGridCount(body)
-                        const {locationwise,transporterwise} = count.data.data
+                        const {locationwise,transporterwise} = count.data.data[0]
                         const tempTab =tab?tab:currentTab
                         if(tempTab==="locationWise"){
                             setPlanningCounts({...planningCounts,childMonitorCount:locationwise})
