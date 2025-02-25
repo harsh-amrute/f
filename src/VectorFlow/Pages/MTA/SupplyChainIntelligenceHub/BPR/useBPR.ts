@@ -22,6 +22,7 @@ import { getBPRDataForExcelDownload } from "../../../../Services/MTA/SupplyChain
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
+import _ from "lodash"
 
 
 const useBPR =()=>{
@@ -483,7 +484,7 @@ const useBPR =()=>{
         const result = await getDailyData(payload)
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
-            rowData:params.data || [],
+            rowData:_.cloneDeep(params.data) || [],
             chartData:data['StockData'] || [],
             normChangeData:data['NormChangeHistoryData'] || [],
             masterData:data['MasterData']?.[0] || [],

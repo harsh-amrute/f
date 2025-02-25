@@ -6,17 +6,29 @@ import {
   SCSwapItem,
   SCFlexCenter,
   SCItemTitle,
-  SCItemMulSelect
+  SCItemMulSelect,
+  Checkbox
 } from "./styles";
+import { useUserData } from "../../../context";
+
 
 
 const LocationPermission = ({ ...props }: any) => {
-  const { prdPermissions, title } = props;
+  const { prdPermissions, title, onSelectAll } = props;
+
+  const { user} = useUserData();
+  const themeUi = user?.user?.theme_ui;
 
   return (
     <>
       <SCSwapPermission>
-        <SCtitle>{title}</SCtitle>
+        <SCtitle>
+          {title}
+          <div style={{display:'flex', gap:'5px'}}>
+            <Checkbox themeUi={themeUi} type='checkbox' onClick={onSelectAll} /> 
+            <p style={{fontSize:'14px' }}>Select All</p>
+          </div>
+        </SCtitle>
         <SCSwapContent className="scroll-style">
           {prdPermissions.map((item: any,index:number) => {
             return (
