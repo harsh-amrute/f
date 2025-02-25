@@ -69,7 +69,8 @@ const InTransitWhereAbouts = ()=>{
         editedRows,
         onSubmitEditedRows,
         themeUi,
-        lastRunDate
+        lastRunDate,
+        onResetCallback
     } = useInTransitWhereAbouts()
 
     return(
@@ -81,7 +82,8 @@ const InTransitWhereAbouts = ()=>{
           tempDownloadData:tempDownloadData,
           setTempDownloadData:setTempDownloadData,
           exportExcelRowData:exportExcelRowData,
-          setExportExcelRowData:setExportExcelRowData
+          setExportExcelRowData:setExportExcelRowData,
+          onResetCallback:onResetCallback
 
       }}
         >
