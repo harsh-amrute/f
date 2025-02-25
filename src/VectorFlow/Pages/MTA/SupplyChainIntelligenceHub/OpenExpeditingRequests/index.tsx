@@ -32,7 +32,7 @@ const OpenExpeditingRequests = () => {
     onCloseRemarkHistory,
     tempDownloadData,
     setTempDownloadData,
-    colDefs,
+    OERColumns,
     exportExcelRowData,
     setExportExcelRowData,
     exportExcelColumns,
@@ -93,7 +93,7 @@ const OpenExpeditingRequests = () => {
             :
           (
             <VFTable
-            columnDefs={colDefs}
+            columnDefs={OERColumns}
             rowData={rowData}
             {...agGridProps}
             ref={ref}
@@ -108,7 +108,7 @@ const OpenExpeditingRequests = () => {
         } */}
       <div style={{ marginLeft: '15px', height: '80%' }}>
         <VFTable
-          columnDefs={colDefs}
+          columnDefs={OERColumns}
           rowData={rowData}
           enableRangeSelection={true}
           rowSelection="multiple"
@@ -129,6 +129,7 @@ const OpenExpeditingRequests = () => {
           //   }
           // }}
           height={"100%"}
+          maintainColumnOrder
         />
 
         <ButtonWrapper>

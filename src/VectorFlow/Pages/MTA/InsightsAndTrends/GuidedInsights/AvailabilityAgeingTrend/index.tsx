@@ -2,28 +2,28 @@ import { AgCharts } from "ag-charts-react";
 import { useGetAvailabilityAgeing } from "../../../../../Services/MTA/InsightsAndTrends";
 import VFRangeSlider from "../../../../../../components/VectorFLOW/commons/VFRangeSlider";
 import { useState, useEffect } from "react";
-import VFLoader from "../../../../../../components/VectorFLOW/commons/VFLoader";
-import { AgChartOptions } from "ag-charts-community";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
+import OverlayLoader from "../../../../../../VectorFlow/Pages/MTO/Common/Loader";
+import { chartParams1  } from "./chartParams";
+import { generateChartOptions } from "../../../../../../helpers/utils";
+import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
+
 
 const AvailabilityAgeingTrend = ({themeUi,filter, ageing, setAgeing, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
  
 
+  const { mutateAsync: GetAvailabilityAgeing, isLoading } =useGetAvailabilityAgeing();
+  const [options, setOptions] = useState({})
 
-  const { mutateAsync: GetAvailabilityAgeing, isLoading } =
-    useGetAvailabilityAgeing();
-  const [AvailabilityAgeingTrendData, setAgeingData] = useState();
   const OnHorizonChange = async (hvalue: any, age: any) => {
     setAgeing(age);
-console.log(age)
     setHorizon(hvalue);
     const param = { horison: horizon, ageing: ageing,filters:filter};
-
-
     const AvailabilityAgeing = await GetAvailabilityAgeing(param);
 
-    const AvailabilityAgeingTrendData = AvailabilityAgeing?.data?.data;
-    setAgeingData(AvailabilityAgeingTrendData);
+    const data = AvailabilityAgeing?.data?.data;
+    const customizedChartProps = generateChartOptions(data, chartParams1);
+    setOptions(customizedChartProps);
   };
 
   const handleAgeChange = (event: any) => {
@@ -34,96 +34,93 @@ console.log(age)
     OnHorizonChange(horizon, ageing);
   }, [filter]);
 
-  const AvailabilityAgeingTrendOptions: AgChartOptions = {
-    // title: {
-    //   text: "Trend of #SKU-Loations with Continuous Black/Red/White Status >= Selected Minimum Ageing",
-    //   fontWeight: "500",
-    //   fontSize:14
-    // },
-    data: AvailabilityAgeingTrendData,
-    series: [
-      {
-        type: "line" as const,
-        xKey: "date",
-        yKey: "red",
-        yName: "red",
-        stroke: "#DA3535",
-        marker: {
-          fill: "red",
-          stroke: "red",
-          size: 8,
-        },
-      },
-      {
-        type: "line" as const,
-        xKey: "date",
-        yKey: "black",
-        yName: "black",
-        strokeWidth: 3,
-        stroke: "#000000",
-        marker: {
-          fill: "black",
-          stroke: "black",
-          size: 8,
-        },
-      },
-      {
-        type: "line" as const,
-        xKey: "date",
-        yKey: "white",
-        yName: "white",
-        strokeWidth: 3,
-        stroke: "#BFBFBF",
-        marker: {
-          fill: "grey",
-          stroke: "grey",
-          size: 8,
-        },
-      },
-    ],
-    legend: {
-      position: "bottom",
-      item:{
-        marker:{
-          shape:'square'
-        }
-      }
-    },
-    axes: [
-      {
-        type: "category",
-        position: "bottom",
-        title: {
-          text: "Date",
-          fontSize: 10,
-          fontFamily: "Roboto",
-        },
-        label: {
-          fontSize: 8,
-          fontFamily: "Roboto",
-          autoRotate:false,
-          avoidCollisions:true
-        },
-      },
-      {
-        type: "number",
-        position: "left",
-        title: {
-          text: "No Of SKU-Locations",
-          fontSize: 10,
-          fontFamily: "Roboto",
-        },
-      },
-    ],
-  };
+  // const AvailabilityAgeingTrendOptions: AgChartOptions = {
+  //   // title: {
+  //   //   text: "Trend of #SKU-Loations with Continuous Black/Red/White Status >= Selected Minimum Ageing",
+  //   //   fontWeight: "500",
+  //   //   fontSize:14
+  //   // },
+  //   data: AvailabilityAgeingTrendData,
+  //   series: [
+  //     {
+  //       type: "line" as const,
+  //       xKey: "date",
+  //       yKey: "red",
+  //       yName: "red",
+  //       stroke: "#DA3535",
+  //       marker: {
+  //         fill: "red",
+  //         stroke: "red",
+  //         size: 8,
+  //       },
+  //     },
+  //     {
+  //       type: "line" as const,
+  //       xKey: "date",
+  //       yKey: "black",
+  //       yName: "black",
+  //       strokeWidth: 3,
+  //       stroke: "#000000",
+  //       marker: {
+  //         fill: "black",
+  //         stroke: "black",
+  //         size: 8,
+  //       },
+  //     },
+  //     {
+  //       type: "line" as const,
+  //       xKey: "date",
+  //       yKey: "white",
+  //       yName: "white",
+  //       strokeWidth: 3,
+  //       stroke: "#BFBFBF",
+  //       marker: {
+  //         fill: "grey",
+  //         stroke: "grey",
+  //         size: 8,
+  //       },
+  //     },
+  //   ],
+  //   legend: {
+  //     position: "bottom",
+  //     item:{
+  //       marker:{
+  //         shape:'square'
+  //       }
+  //     }
+  //   },
+  //   axes: [
+  //     {
+  //       type: "category",
+  //       position: "bottom",
+  //       title: {
+  //         text: "Date",
+  //         fontSize: 10,
+  //         fontFamily: "Roboto",
+  //       },
+  //       label: {
+  //         fontSize: 8,
+  //         fontFamily: "Roboto",
+  //         autoRotate:false,
+  //         avoidCollisions:true
+  //       },
+  //     },
+  //     {
+  //       type: "number",
+  //       position: "left",
+  //       title: {
+  //         text: "No Of SKU-Locations",
+  //         fontSize: 10,
+  //         fontFamily: "Roboto",
+  //       },
+  //     },
+  //   ],
+  // };
 
-  const graph1 = [
-    "This graph highlights the trends of #SKU-Location with continous (On Hand) black,red or white status, each greater than or equal to the selected mimimum agening",
-  ];
 
   const numbers = Array.from(Array(90), (_, index) => index + 1);
   if (isLoading) {
-    return <VFLoader />;
+    return <OverlayLoader />;
   }
 
   return (
@@ -172,51 +169,14 @@ console.log(age)
             ))}
           </select>
         </div>
-        <div style={{ width: 390, display: "flex", alignItems:'center'}}>
-          <label
-            style={{
-              fontStyle: "normal",
-              fontVariant: "normal",
-              fontWeight: 300,
-              fontSize: 14,
-              fontFamily: "Roboto",
-              marginRight:'5px'
-            }}
-          >
-            {" "}
-            <b>Select Horizon: </b>
-          </label>
 
-          <VFRangeSlider
-            showTriangle={false}
-            min={1}
-            max={90}
-            milestones={[-1, 0, 30, 60, 90]}
-            strictMode={false}
-            width={250}
-            defaultValue={horizon}
-            handleChange={(e) => setHorizon(e)}
-            labelValueFormatter={(value: number) =>
-              value > 1 ? `${value} Days` : `${value} Day`
-            }
-            style={{margin:'0px'}}
-          />
-        </div>
-        {/* <VFButtonOutline
-          themeUi={themeUi}
-          onClick={() => OnHorizonChange(horizon, minAgeing)}
-          width={100}
-          style={{ height: "35px", fontSize: "13px", fontWeight: 500 }}
-        >
-          Submit
-        </VFButtonOutline> */}
-         <img 
-            style={{cursor:'pointer'}}
-            src={themeUi==="REGALBLAZE"?"/assets/img/Group 627-regal.svg":"/assets/img/Group 627.svg"}
-            height={40} 
-            width={50} 
-            onClick={() => OnHorizonChange(horizon, ageing)}
-            /> 
+        <VFHorizon
+          setHorizon={setHorizon}
+          OnHorizonChange={OnHorizonChange}
+          horizon={horizon}
+          styles={{width:'500px'}}
+        />
+
       </div>
       <div style={{ marginLeft: "10px", marginRight: "10px", height: "88%"}}>
         <div
@@ -232,14 +192,13 @@ console.log(age)
           <div
             style={{ fontSize: "14px", fontWeight: 500, textAlign: "center" }}
           >
-            Trend Of #SKU-Locations With Continuous Black/Red/White Status {">"}=
-            Selected Minimum Ageing{" "}
+            {chartParams1.title}
           </div>
           <div style={{ marginLeft: 10 ,marginBottom:'-5px'}}>
-            <VFInfoToolTip infoList={graph1} />
+            <VFInfoToolTip infoList={chartParams1.graphInfo} />
           </div>
         </div>
-        <div style={{height:'85%'}}><AgCharts options={AvailabilityAgeingTrendOptions} /></div>
+        <div style={{height:'85%'}}><AgCharts options={options} /></div>
       </div>
     </div>
   );

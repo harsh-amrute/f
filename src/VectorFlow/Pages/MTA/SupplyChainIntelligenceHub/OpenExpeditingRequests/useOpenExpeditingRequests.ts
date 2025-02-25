@@ -7,9 +7,6 @@ import useViewPort from "../../../../../hooks/useViewPort";
 import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 
-
-// import {useGetState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../helpers/notify";
 import ColorCellRenderer from "./ColorCellRenderer";
 import ETACellRenderer from "./ETACellRenderer";
@@ -22,10 +19,12 @@ import SubmitRemarkCellRenderer from "./SubmitRemarkCellRenderer";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
-import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-import { updateCommonAttributes, MainMenuItemsCustomization } from "../../../../../helpers/utils"
+import { useGetState } from "../../../../../VectorFlow/Services/MTA/Common/UserUIConfig";
+import { getColumnDefinationsMTA, MainMenuItemsCustomization } from "../../../../../helpers/utils"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
+import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum";
 
 const useOpenExpeditingRequests = () => {
 
@@ -82,78 +81,109 @@ const useOpenExpeditingRequests = () => {
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
-    const {mutateAsync:getState} = useGetState()
-    const [gridState,setGridState] = useState<any>()
+  const { mutateAsync: getState } = useGetState();
+  const [gridState, setGridState] = useState<any>()
+  const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
+  const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
+  const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+  
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
 
-    useEffect(()=>{
-      const getTableState = async()=>{
-        try{
-          const data =  await getState({reportname:"OpenExpeditingRequests"})
-          const parsedContent = JSON.parse(data.data.data)
-          setGridState(parsedContent)
-        }catch(err:any){
-          setGridState({
-              charts:[],
-              columns:OERColumns,
-              pivot:false
-          })
-        }
+  useEffect(() => {
+    const getTableState = async () => {
+      try {
+        const MappedColumns = getColumnDefinationsMTA(initialColumnState, CustomHeader);
+                                          
+        setGridState({
+          charts: [],
+          columns: MappedColumns,
+          pivot: false
+        })
+        setOERColumns(MappedColumns);
+        getUserColumnConfig();
+      } catch (err: any) {
+        console.error(err);
       }
-      getTableState()
-  },[])
-
-  useEffect(()=>{
-    if(internalRef && gridState && gridState.columns){
-      const StateColumns = updateCommonAttributes(gridState.columns,OERColumns,'colId')
-      setOERColumns(StateColumns)
-      internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
     }
-},[internalRef,gridState])
+    if (initialColumnState !== undefined) {
+      getTableState()
+    }
+  }, [initialColumnState]);
 
-      useEffect(()=>{
-        const getRowData = async()=>{
-          try{
-            notifyLoader("Loading Grid Data")
-            const data = await getData(currentFilter)
+  useEffect(() => {
+    if (OERColumns.length) {
+      if (internalRef?.api) {
+        setMasterUIConfig(internalRef.api.getColumnState());
+      }
+    }
+  }, [internalRef, OERColumns]);
+                
+  const getUserColumnConfig = async () => {
+    const stateData = await getState({ "reportname": UserUIColumnConfigName.OER })
+    if (stateData.data.data.length !== 0) {
+      const parsedContent = JSON.parse(stateData.data.data)
+                      
+      setGridState({
+        charts: parsedContent.charts,
+        columns: parsedContent.columns,
+        pivot: parsedContent.pivot,
+      })
+                
+    } else {
+      console.log("Data not available");
+    }
+  }
 
-            //// idar_issue_hai_
-            //// need_a_new_api_route_to_get_OER_Configurations
-            //// currently_not_avaiable
-            const ColumnDefinitions = mapFieldsToColDefs(data.data.data.config)
-            setColDefs(ColumnDefinitions)
-            setOERColumns(ColumnDefinitions);
-            const tempRowData = data?.data?.data?.data || [];
-            toast.dismiss()
-            notifySuccess("Data Loaded Successfully")
-            if(!tempRowData.length){
-              setRowData([])
-            }else{
-              setRowData(tempRowData.map((r:any,index:number)=>({...r,id:index,action:''})))
-              notifySuccess("Data Loaded Successfully")
-            }
-            // notifySuccess("Data Loaded Successfully")
-          }catch(err:any){
-            console.error(err)
-            notifyError(err)
-          }
+  useEffect(() => {
+    if (internalRef && gridState && gridState.columns) {
+        const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+        if (!result) {
+            console.error("Failed to apply column state", result);
         }
-        getRowData()
-      },[])
+    }
+}, [internalRef, gridState]);
+  
+  const getOERUiConfig = async () => {
+    try {
+      const response = await getUiConfig(UIColumnConfigName.OER);
+      setInitialColumnState(response.data.data);
+    } catch (err: any) {
+      notifyError("Something Went Wrong")
+    }
+  }
 
-    // useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState("OpenExpeditingRequests")
-    //         setColumnState(JSON.parse(data.data.data))
-    //       }catch(err:any){
-    //         setColumnState(colDefs)
-    //       }
-    //     }
-    //     getTableState()
-    // },[currentGridState])
+  useEffect(() => {
+    const getRowData = async () => {
+      try {
+        notifyLoader("Loading Grid Data")
+        const data = await getData(currentFilter)
+
+        //// idar_issue_hai_
+        //// need_a_new_api_route_to_get_OER_Configurations
+        //// currently_not_avaiable
+        // const ColumnDefinitions = mapFieldsToColDefs(data.data.data.config)
+        // setColDefs(ColumnDefinitions)
+        // setOERColumns(ColumnDefinitions);
+        const tempRowData = data?.data?.data?.data || [];
+        toast.dismiss()
+        notifySuccess("Data Loaded Successfully")
+        if (!tempRowData.length) {
+          setRowData([])
+        } else {
+          setRowData(tempRowData.map((r: any, index: number) => ({ ...r, id: index, action: '' })))
+          notifySuccess("Data Loaded Successfully")
+        }
+        // notifySuccess("Data Loaded Successfully")
+      } catch (err: any) {
+        console.error(err)
+        notifyError(err)
+      }
+    }
+    getRowData();
+    getOERUiConfig();
+  }, []);
 
     const onColumnVisible = (event: any) => {
       const { column, visible , columns } = event;
@@ -224,17 +254,17 @@ const useOpenExpeditingRequests = () => {
                 return { background: "#F7F7F7" };
             },
         },
-        onColumnVisible: onColumnVisible,
-                onColumnMoved: (event:any) => {
-                    const columnState = event.api.getColumnState();
-                    columnState.forEach((state:any) => {
-                      if (state.pinned && (state.colId!=='remarks' && state.colId!=='rh')) {
-                        // Reset the pin to null
-                        state.pinned = null;
-                      }
-                    });
-                    event.api.applyColumnState({ state: columnState });
-                },
+        // onColumnVisible: onColumnVisible,
+        //         onColumnMoved: (event:any) => {
+        //             const columnState = event.api.getColumnState();
+        //             columnState.forEach((state:any) => {
+        //               if (state.pinned && (state.colId!=='remarks' && state.colId!=='rh')) {
+        //                 // Reset the pin to null
+        //                 state.pinned = null;
+        //               }
+        //             });
+        //             event.api.applyColumnState({ state: columnState });
+        //         },
         sideBar:defaultAgGridSideBarForBPR,
         getMainMenuItems: MainMenuItemsCustomization,
         pagination: true,
@@ -276,16 +306,22 @@ const useOpenExpeditingRequests = () => {
       });
     };
 
-    const tempAgGridProps:AgGridReactProps = {
+  
+ 
+
+    
+    const tempAgGridProps:AgGridReactProps = useMemo (()=> {
+      return {
         onRowDataUpdated:(event)=>{
-        //  if(tempDownloadData) event.api.exportDataAsExcel({fileName:''});
-        const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
-            if(tempDownloadData){
-                event.api.exportDataAsExcel({fileName:'OpenExpeditingReport',columnKeys:columnsToBeIncluded})
-                setTempDownloadData(false)
-            }
+          const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
+          if(tempDownloadData){
+              event.api.exportDataAsExcel({fileName:'OpenExpeditingReport',columnKeys:columnsToBeIncluded})
+              setTempDownloadData(false)
+          }
         }
-      };
+      }
+    },[ref,tempDownloadData])
+      
 
     const onOpenSubmitRemark = (e: React.MouseEvent<HTMLElement>,data:any) => {
         setActiveRow(data)
@@ -389,17 +425,61 @@ const useOpenExpeditingRequests = () => {
       notifyError("Something went wrong")
      }
     }
-
-
     
-    const onResetCallback = async()=>{
-      const ResetColumns = OERColumns.map((t:any) => {
-          return {
-            ...t,
-            hide: false,
-          };
-        });
-      setOERColumns([...ResetColumns])
+  const onResetCallback = async () => {
+    setGridState({
+      charts: [],
+      columns: masterUIConfig,
+      pivot: false,
+    })
+  };
+
+  const CustomHeader = {
+    pic: {
+      cellRenderer:'colorCellRenderer',
+    },
+    eta: {
+      cellRenderer: 'etaCellRenderer',
+      floatingFilter: false,
+      editable: true,
+      cellDataType: 'date',
+    },
+    action: {
+      cellRenderer: 'submitRemarkCellRenderer',
+      floatingFilter: false,
+      editable: true
+    },
+    remarks: {
+      cellStyle: {
+        backgroundColor: 'white',
+        border: '1px solid #b9bdba',
+        color: 'black',
+        padding: '1px'
+      },
+      pinned: 'right',
+      editable: true,
+      minWidth: 130,
+      maxWidth: 160,
+      lockPosition: 'right',
+      menuTabs: [],
+      suppressMenu: true,
+      resizable: false,
+      floatingFilter: false,
+    },
+    rh: {
+      cellRenderer: 'remarksCellRenderer',
+      cellRendererParams: {
+        onClick: onOpenRemarkHistory
+      },
+      pinned: 'right',
+      minWidth: 120,
+      maxWidth: 120,
+      lockPosition: 'right',
+      menuTabs: [],
+      suppressMenu: true,
+      resizable: false,
+      floatingFilter: false,
+    },
   }
 
       // const BPRColumnData = useMemo(() => {
@@ -416,70 +496,10 @@ const useOpenExpeditingRequests = () => {
       //     setBPRColumns(BPRColumnData);
       //   }, [BPRColumnData, setBPRColumns]); 
 
-
-    const mapFieldsToColDefs  = (fields:Array<any>):Array<ColDef>=>{
-      const config = fields
-      let result:Array<ColDef> = []
-      if(config){
-        result =  config.map((col:any):ColDef=>{
-          if(col.colCode==="pic"){
-            return{
-              headerName: col.header,
-              colId: col.colCode,
-              field: col.colCode,
-              cellRenderer:'colorCellRenderer',
-              // hide: !col.Visible,
-            }
-          }
-          if(col.colCode==='eta'){
-            return {
-              headerName: col.header,
-              colId: col.colCode,
-              field: col.colCode,
-              // cellRenderer:'etaCellRenderer',
-              cellRenderer:'etaCellRenderer',
-              floatingFilter:false,
-              editable:true,
-              cellDataType:'date',
-              // hide: !col.Visible,
-              
-          }
-          }
-          return{
-            headerName: col.header,
-            colId: col.colCode,
-            field: col.colCode,
-            // hide: !col.Visible,
-        }
-        })
-        result = [...result,{
-          headerName: "Action",
-          colId: 'action',
-          field: 'action',
-          cellRenderer: 'submitRemarkCellRenderer',
-          floatingFilter:false,
-          editable:true
-      },
-      {
-          headerName: "",
-          colId: 'history',
-          field: 'history',
-          cellRenderer:'remarksCellRenderer',
-          cellRendererParams:{
-              onClick:onOpenRemarkHistory
-          },
-          floatingFilter:false,
-          maxWidth:70
-      }]
-      }
-      return result
-    }
-
-
     return {
         agGridProps,
         rowData,
-        colDefs,
+        OERColumns,
         remark,
         remarkHistory,
         isSubmitRemarkToolTipOpen,

@@ -105,7 +105,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
                 <ErrorText  themeUi={themeUi}>{getFomattedMessage(message)}</ErrorText>
                 {isToolTipOpen && (
                     <Portal wrapperId="error-tooltip">
-                        <SCToolTipWrapper themeUi={themeUi} data-testid='tooltip-wrapper' style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
+                        <SCToolTipWrapper className="custom-scrollbar" themeUi={themeUi} data-testid='tooltip-wrapper' style={{...errorCellPosition}} onMouseEnter={()=>setIsToolTipOpen(true)} onMouseLeave={onMouseOut}>
                         <SCErrorToolTipUl themeUi={themeUi}>
                             {(messages && messages.length > 0) &&
                                 messages.map((sentence: string, index: number) => {

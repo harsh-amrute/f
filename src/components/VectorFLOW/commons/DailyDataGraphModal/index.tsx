@@ -567,7 +567,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             <SCChartContainer>
               <AgCharts options={{
                 ...generateChartOptions(),
-                padding: { right: 25}
+                padding: { right: 30}
               }} />
             </SCChartContainer>
                 <SCSeasonalityStatusDetails>

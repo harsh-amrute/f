@@ -121,7 +121,6 @@ const ActionToolBar = ({
     }
     return total;
   };
- 
   const handleResetAllState = () => {
     onResetAllState(`${currCategory}${currentTab}`);
   };
@@ -727,10 +726,10 @@ const ActionToolBar = ({
           <SCCustomActionsContainer>
           {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
                <>
-                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>
+                    {getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}
+                  </VFButton>
                   {isFilterOpen && renderFilter()}
-                               
-
                 </>
             }
             {currentTab === "dbmnormsuggestions" && (

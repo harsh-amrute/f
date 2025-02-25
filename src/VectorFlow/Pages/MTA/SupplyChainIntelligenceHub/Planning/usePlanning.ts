@@ -931,7 +931,7 @@ const usePlanning = ()=>{
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
-            SKUCode:params.data['sc'],
+            SKUCode:params.data['sc'].toString(),
             WHCode:params.data['wc']
         }
         const result = await getDailyData(payload)

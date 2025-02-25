@@ -163,6 +163,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             rowData={agGridRowData}
                             height={gridHeight ? gridHeight : '380px'}
                             onGridReady={(params)=>setInternalRef(params)}
+                            maintainColumnOrder
                         />
                         {paginationProps && <VFPagination {...paginationProps}/>}
     

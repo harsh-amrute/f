@@ -3,9 +3,9 @@ import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENG
 
 export const LocationSchema = Joi.object({
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('WhCode')),
-    wd:Joi.string().empty().max(MAX_NAME_LENGTH).custom(DescriptorValidator).required().messages(generateCommonMessages("Description")),
-    l:Joi.string().empty().max(50).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('Logistics Location')),
-    lc:Joi.string().empty().max(50).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('Location Type')),
+    wd:Joi.string().empty().max(MAX_NAME_LENGTH).custom(DescriptorValidator).required().messages(generateCommonMessages("wd")),
+    l:Joi.string().allow(null, '').max(50).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('l')),
+    lc:Joi.string().empty().max(50).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('lc')),
     ...CommonSchema
 
 }).preferences(defaultJOIOptions)

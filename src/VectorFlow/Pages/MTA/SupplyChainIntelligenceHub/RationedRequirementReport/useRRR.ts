@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
-import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetState } from "../../../../../VectorFlow/Services/MTA/Common/UserUIConfig";
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
@@ -66,20 +66,6 @@ const useRRR =()=>{
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
 
     const {date:lastRunDate} = useGetLastRunData()
-
-    // const RRRColumnData = useMemo(() => {
-    //         return mapRRRFieldsToColDefs(
-    //           data?.data?.data, 
-    //         );
-    //       }, [data]);
-    //       // Update columns state only if there is a change
-    //       useEffect(() => {
-    //         // Check if the columns data has changed before setting state
-    //         setRRRColumns(RRRColumnData);
-    //       }, [RRRColumnData, setRRRColumns]); 
-
-    // const RRRColumns = useMemo(()=>mapRRRFieldsToColDefs(data?.data.data),[data])
-
   
     useEffect(()=>{       
         const fetchData = async () => {
@@ -90,23 +76,6 @@ const useRRR =()=>{
         };
         fetchData();
     }, []);
-    
-    // useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState({reportname:"RRR"})
-    //         const parsedContent = JSON.parse(data.data.data)
-    //         setGridState(parsedContent)
-    //       }catch(err:any){
-    //         setGridState({
-    //             charts:[],
-    //             columns:[],
-    //             pivot:false
-    //         })
-    //       }
-    //     }
-    //     getTableState()
-    // },[])
 
     useEffect(() => {
         const getTableState = async () => {
@@ -349,11 +318,14 @@ const useRRR =()=>{
     // }
 
 
-    const tempAgGridProps:AgGridReactProps =  {
+    const tempAgGridProps:AgGridReactProps =  useMemo (()=> {
+        
+        return {
           onRowDataUpdated:(event)=>{
             if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'RationedRequirementReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
            }
         }
+    },[tempDownloadData])
       
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{

@@ -1,9 +1,9 @@
 import { useState,useMemo, useEffect, CSSProperties,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 
-import { useGetBPRData, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount,useGetState } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { convertUiConfigToOptions, mapBPRRowData, updateCommonAttributes, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRRowData, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -21,6 +21,8 @@ import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import { getBPRDataForExcelDownload } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR/api"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
+import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
+import _ from "lodash"
 
 
 const useBPR =()=>{
@@ -85,7 +87,8 @@ const useBPR =()=>{
 
     const {mutateAsync:getBPRDataCount,isLoading:isBPRDataCountLoading} = useGetBPRDataCount()
 
-    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+    const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState();
+    
     const [gridState,setGridState] = useState<any>()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
@@ -106,10 +109,6 @@ const useBPR =()=>{
         }
     }
 
-    useEffect(()=>{
-        setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
-    },[initialColumnState])
-
     useEffect(() => {
         const getTableState = async () => {
             try {
@@ -128,7 +127,8 @@ const useBPR =()=>{
             }
         }
         if (initialColumnState !== undefined) {
-            getTableState()
+            getTableState();
+            setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState));
         }
     }, [initialColumnState]);
 
@@ -295,8 +295,9 @@ const useBPR =()=>{
         }
     },[])
 
-
-    const tempAgGridProps:AgGridReactProps = {
+    
+    const tempAgGridProps:AgGridReactProps = useMemo(()=>{
+        return {
         onRowDataUpdated:(event)=>{
             const columnsToBeIncluded = ref?.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
             if(tempDownloadData){
@@ -305,6 +306,8 @@ const useBPR =()=>{
             }
         }
     }
+    },[ref,tempDownloadData])
+
 
       const getInitialBPRRowData=async()=>{
           try {    
@@ -419,10 +422,11 @@ const useBPR =()=>{
              if (rowNode) {
                  const RemarkColumn = BPRColumns.find(obj => obj.colId === "Remark");
                  if(rowNode?.data?.Remark!==undefined && RemarkColumn!==undefined){
-                     // Check if Remark column exist in both columnDef and RowData , only then update its value for better ui
-                     rowNode?.setDataValue('Remark', editedRow?.remarks);
+                    //  rowNode?.setDataValue('Remark', editedRow?.remarks);
+                    const updatedData = { ...rowNode.data };
+                    updatedData.Remark = editedRow?.remarks;
+                    rowNode.setData(updatedData);
                  }
-             // Clear the remarks input field after storing data in db
                rowNode?.setDataValue('remarks', '');
              }
            });
@@ -480,7 +484,7 @@ const useBPR =()=>{
         const result = await getDailyData(payload)
         const data = result.data.data[0];
         const dailyData:DailyDataGraph = {
-            rowData:params.data || [],
+            rowData:_.cloneDeep(params.data) || [],
             chartData:data['StockData'] || [],
             normChangeData:data['NormChangeHistoryData'] || [],
             masterData:data['MasterData']?.[0] || [],
@@ -517,12 +521,11 @@ const useBPR =()=>{
         dailydatagraph: {
             width: 45,
             minWidth: 45,
-            colId: "dailydatagraph",
-            headerName: '',
             filter: false,
             cellRenderer: 'grapCellRenderer',
             cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
             pinned: 'left',
+            lockPosition: true,
             resizable: false,
             floatingFilter: false,
             suppressColumnsToolPanel: false

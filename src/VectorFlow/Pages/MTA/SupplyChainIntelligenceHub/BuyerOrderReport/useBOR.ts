@@ -1,5 +1,5 @@
-import { useGetBORUIConfiguration, useBORData, useBORDataCount,useSubmitBORRemark,useGetBORRemarkHistory } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
-import {useGetState,useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
+import { useBORData, useBORDataCount,useSubmitBORRemark,useGetBORRemarkHistory } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
+import {useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
@@ -24,6 +24,7 @@ import { BORRemarksCellRenderer } from "./BORCellRenderers"
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
+import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 
 
 export const useBOR =()=>{
@@ -259,7 +260,7 @@ export const useBOR =()=>{
       //   }, [BORColumnData, setBORColumns]); 
 
 
-      const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
+  const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState();
       const [gridState,setGridState] = useState<any>()
   const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
   const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
@@ -273,10 +274,6 @@ export const useBOR =()=>{
     await getRecordsCount();
     await loadGridData(currentPage);
   };
-
-  useEffect(() => {
-    setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
-  }, [initialColumnState]);
       
   const getBORUiConfig = async () => {
     try {
@@ -304,7 +301,8 @@ export const useBOR =()=>{
       }
     }
     if (initialColumnState !== undefined) {
-      getTableState()
+      getTableState();
+      setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState));
     }
   }, [initialColumnState]);
 
@@ -526,7 +524,8 @@ export const useBOR =()=>{
         }
     }
 
-      const tempAgGridProps:AgGridReactProps = {
+      const tempAgGridProps:AgGridReactProps = useMemo(() => {
+        return {
         onRowDataUpdated:(event)=>{
           const columnsToBeIncluded = ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsNotToBeIncluded.includes(key));
           if(tempDownloadData){
@@ -535,6 +534,7 @@ export const useBOR =()=>{
           }
         }
       }
+    },[ref,tempDownloadData])
 
       const onExportToExcelCallBack=async(pageNumber:number)=>{
         const data =  await getBorData({
@@ -565,6 +565,7 @@ export const useBOR =()=>{
       cellRenderer: 'grapCellRenderer',
       cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
       pinned: 'left',
+      lockPosition: true,
       resizable: false,
       floatingFilter: false,
       suppressColumnsToolPanel: false

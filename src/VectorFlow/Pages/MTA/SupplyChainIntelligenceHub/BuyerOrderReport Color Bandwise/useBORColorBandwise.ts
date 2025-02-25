@@ -20,8 +20,7 @@ import { GridRef } from "../../../../types/MDM"
 import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCellRenderers"
 
 import { ColDef } from "ag-grid-enterprise"
-import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
-import { useGetBORRemarkHistory, useSubmitBORRemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport'
+import { useGetBORColorBandWisData, useGetBORColorBandWiseRecordCount, useGetBOROARemarkHistory, useSubmitBOROARemark } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BORColorBandWise'
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { BORRemarksCellRenderer } from "../BuyerOrderReport/BORCellRenderers"
 import { CSSProperties } from 'styled-components'
@@ -45,7 +44,7 @@ export const useBORColorBandwise =()=>{
 
   const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
 
-     const {mutateAsync:submitRemark} = useSubmitBORRemark()
+     const {mutateAsync:submitRemark} = useSubmitBOROARemark()
 
      const dispatch = useDispatch();
    
@@ -97,7 +96,7 @@ export const useBORColorBandwise =()=>{
      const gridZoom = getGridZoom()
     const [remarkHistoryToolipPosition,setRemarkHistoryToolipPosition] = useState<CSSProperties>({})
      
-      const {mutateAsync:getBORRemarkHistory} = useGetBORRemarkHistory();
+      const {mutateAsync:getBORRemarkHistory} = useGetBOROARemarkHistory();
 
   const onCloseRemarkHistory = () => setIsRemarkHistoryToolTipOpen(false)
   const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState()
@@ -173,6 +172,7 @@ export const useBORColorBandwise =()=>{
               height:360,
               width:350
           })
+          console.log("row...", row)
           const {data} = await getBORRemarkHistory(row)
           toast.dismiss(toastId)
           setRemarkHistory(data.data)
@@ -299,6 +299,7 @@ export const useBORColorBandwise =()=>{
       cellRenderer: 'grapCellRenderer',
       cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
       pinned: 'left',
+      lockPosition: true,
       resizable: false,
       floatingFilter: false,
       suppressColumnsToolPanel: false
@@ -444,10 +445,10 @@ export const useBORColorBandwise =()=>{
           const toastId = notifyLoader("Submitting Remark")
           const payload = editedRows.map((e)=>{
               return {
-                  remark:e.remarks,
-                  whcode:e.WHCode,
-                  skucode:e.SKUCode,
-                  spc:e.SupplierCode
+                remark:e.remarks,
+                whcode:e.WhCode || e.WHCode,
+                skucode:e.SKUCode,
+                spc:e.SupplierCode
               }
               
           })

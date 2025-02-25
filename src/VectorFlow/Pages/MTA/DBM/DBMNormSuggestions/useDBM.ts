@@ -1,7 +1,7 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import { useGetDBMUIConfiguration,useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
-import { convertUiConfigToOptions, mapDBMFieldsToColDefs, mapColumnsWithConfigs  } from "../../../../../helpers/utils"
+import { useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
+import { convertUiConfigToOptions, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
 //import { useRef } from "react"
 import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
@@ -13,12 +13,14 @@ import { type RootState } from "../../../../../redux/store/store";
 import { DailyDataGraph } from "../../../../types/MTA"
 import { useGetDailyData, useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
-import { notifyLoader, notifySuccess } from "../../../../../helpers/notify"
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import SuggestionCategoryCellRenderer from "./SuggestionCategoryCellRendere"
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
 import { ColDef } from 'ag-grid-community';
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
+import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 
 const useDBM =()=>{
     //const [DBMApplySelectedNormData,setDBMApplySelectedNormData] = useState<any[]>([])
@@ -40,10 +42,11 @@ const useDBM =()=>{
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
-    const {data,isLoading:isDBMConfigLoading} = useGetDBMUIConfiguration()
-    const {mutateAsync:getDBMData} =useGetDBMData();
+    const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
+    
+    const {mutateAsync:getDBMData, isLoading: isDBMDataLoading} =useGetDBMData();
     const {mutateAsync:getDBMApplySelectedNorm} =useGetDBMApplySelectedNorm();
-    const {mutateAsync:getDBMDataCount}=useGetDBMDataCount();
+    const {mutateAsync:getDBMDataCount, isLoading: isDBMDataCountLoading}=useGetDBMDataCount();
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
@@ -59,7 +62,8 @@ const useDBM =()=>{
 
     const recordsPerPage = parseInt(process.env.REACT_APP_DBM_ROWS_PER_PAGE || '50');
     const columnsToBeExcluded = ['checkbox', 'dailydatagraph', '0', 'sleep']
-    const [intialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const [DBMColumns,setDBMColumns] = useState<ColDef[]>([])
     const {date:lastRunDate} = useGetLastRunData()
 
@@ -70,60 +74,70 @@ const useDBM =()=>{
         suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
       }), []);
 
-    //   useEffect(()=>{
-    //     setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
-
-    //   },[isDBMConfigLoading])
-
-
-        useEffect(()=>{
-            const getTableState = async()=>{
-              try{
-                if(data?.data.data){
-                    setInitialColumnState(data?.data.data)
-                }
-                const stateData =  await getState({"reportname":"DBMNorm"})
-                console.log(stateData)
-                if(stateData.data.data.length!==0){
-                    const parsedContent = JSON.parse(stateData.data.data)
-                    const generatedColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
-                    const coldefs = mapColumnsWithConfigs(parsedContent.columns,generatedColumns)
-                    setGridState({
-                        pivot:parsedContent.pivot,
-                        charts:parsedContent.charts,
-                        columns:coldefs
-                    })
-                    console.log(parsedContent)
-                    setDBMColumns(coldefs)
-                }else{
-                    const MappedColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
-                    setGridState({
-                        charts:[],
-                        columns:MappedColumns,
-                        pivot:false
-                    })
-                    setDBMColumns(MappedColumns)
-                }
-              }catch(err:any){
-                console.log(err)
-                setGridState({
-                    charts:[],
-                    columns:DBMColumns,
-                    pivot:false
-                })
-              }
-            }
-            if(data!==undefined){
-                getTableState()
-                setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
-            }
-        },[data])
-  
-    useEffect(()=>{
-        if(internalRef && gridState && gridState.columns){
-            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+    const getDBMUiConfig = async () => {
+        try {
+            const response = await getUiConfig(UIColumnConfigName.DBM);
+            setInitialColumnState(response.data.data);
+        } catch (err: any) {
+            notifyError("Something Went Wrong")
         }
-    },[internalRef,gridState])
+    }
+
+    useEffect(() => {
+        const getTableState = async () => {
+            try {
+                const MappedColumns = getColumnDefinationsMTA(initialColumnState, CustomHeader, extras);
+                                  
+                setGridState({
+                    charts: [],
+                    columns: MappedColumns,
+                    pivot: false
+                })
+                setDBMColumns(MappedColumns);
+                getUserColumnConfig();
+                setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState));
+                  
+            } catch (err: any) {
+                console.log(err)
+            }
+        }
+        if (initialColumnState !== undefined) {
+            getTableState()
+        }
+    }, [initialColumnState]);
+
+    useEffect(() => {
+        if (DBMColumns.length) {
+            if (internalRef?.api) {
+                setMasterUIConfig(internalRef.api.getColumnState());
+            }
+        }
+    }, [internalRef, DBMColumns]);
+              
+    const getUserColumnConfig = async () => {
+        const stateData = await getState({ "reportname": UserUIColumnConfigName.DBM })
+        if (stateData.data.data.length !== 0) {
+            const parsedContent = JSON.parse(stateData.data.data)
+                    
+            setGridState({
+                charts: parsedContent.charts,
+                columns: parsedContent.columns,
+                pivot: parsedContent.pivot,
+            })
+              
+        } else {
+            console.log("Data not available");
+        }
+    }
+  
+    useEffect(() => {
+        if (internalRef && gridState && gridState.columns) {
+            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }
+    }, [internalRef, gridState]);
 
     const onOpenDailyDataGraph = async (params:any) => {
         const payload:any = {
@@ -169,10 +183,75 @@ const useDBM =()=>{
             }
     }
 
-    const onResetCallback = async()=>{
-        const MappedColumns = mapDBMFieldsToColDefs(data?.data.data,onOpenDailyDataGraph,refetchAfter)
-        console.log(MappedColumns)
-        setDBMColumns(MappedColumns)
+    
+    const onResetCallback = async () => {
+        setGridState({
+            charts: [],
+            columns: masterUIConfig,
+            pivot: false,
+        })
+    };
+    
+
+    const extras = [
+        {
+            field: 'checkbox',
+            colId: 'checkbox',
+            headerName: '',
+            width: 45,
+            floatingFilter: false,
+            checkboxSelection: true,
+            headerCheckboxSelection: true,
+            headerCheckboxSelectionCurrentPageOnly: true,
+            resizable: false,
+            suppressMenu: true,
+            maxWidth: 45,
+            pinned: 'left',
+            lockPosition: 'left',
+            filter: false,
+            position:0,
+        }
+    ];
+    
+    const CustomHeader = {
+        dailydatagraph: {
+            width: 60,
+            minWidth: 60,
+            maxWidth: 70,
+            lockPosition: true,
+            filter: false,
+            cellRenderer: 'grapCellRenderer',
+            cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+            pinned: 'left',
+            resizable: false,
+            floatingFilter: false,
+            suppressColumnsToolPanel: false,
+            tooltipField: "DailyDataGraph",
+            suppressMenu: true
+        },
+        Sleep: {
+            lockPosition: true,
+            cellRenderer: 'sleepCellRenderer',
+            cellRendererParams: {
+                callBack: refetchAfter
+            },
+            floatingFilter: false,
+            minWidth: 100,
+            maxWidth: 100,
+            pinned: 'left',
+            suppressMenu: true
+        },
+        Suggestions: {
+            lockPosition: true,
+            cellRenderer: 'suggestionCategoryCellRenderer',
+            floatingFilter: false,
+            minWidth: 40,
+            maxWidth: 40,
+            initialHide: false,
+            pinned: 'left',
+            suppressMenu: true
+        },
+
     }
 
     const handleChangePage = async (pageNo:any) => {
@@ -210,19 +289,20 @@ const useDBM =()=>{
     useEffect(()=>{       
         getDataCount(currentFilter);
         getDBMRowData(currentFilter,currentPage);
+        getDBMUiConfig();
 
     },[])
 
    
 
-    const tempAgGridProps:AgGridReactProps = {
-        onRowDataUpdated:(event)=>{
-            console.log(event,'from tempGridProps',{tempDownloadData:tempDownloadData})
-           const columnsToBeIncluded = event?.api?.getAllDisplayedColumns().map((c)=>c.getColId()).filter((key:string)=>!columnsToBeExcluded.includes(key));
-            console.log(gridRef.current?.api.getAllDisplayedColumns().map((c)=>c.getColId()))
+    const tempAgGridProps:AgGridReactProps = useMemo(()=> {
+        return {
+        onRowDataUpdated:(event:any)=>{
+           const columnsToBeIncluded = event?.api?.getAllDisplayedColumns().map((c:any)=>c.getColId()).filter((key:string)=>!columnsToBeExcluded.includes(key));
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:columnsToBeIncluded});
         }
-      };
+      }
+    },[tempDownloadData])
 
     const getDataCount=async (filter:any) => {
         const rowDataCount =await getDBMDataCount({
@@ -318,7 +398,7 @@ const useDBM =()=>{
     return {
         DBMColumns,
         agGridProps,
-        isLoading :  isDBMConfigLoading,
+        isLoading :  isUIConfigLoading || isDBMDataLoading || isDBMDataCountLoading,
         DBMRowData,
         handleChangePage,
         gridRef,

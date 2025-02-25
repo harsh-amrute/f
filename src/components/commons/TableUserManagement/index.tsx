@@ -238,7 +238,7 @@ const TableUserManagement = ({
         }}
         text={t("profile.tabContent.manageUsers.button.delete")}
       />
-
+      
       {isLoading && <LoadingSpinner />}
     </>
   );

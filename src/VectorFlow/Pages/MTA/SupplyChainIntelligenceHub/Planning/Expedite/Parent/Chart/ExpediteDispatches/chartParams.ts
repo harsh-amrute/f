@@ -69,7 +69,7 @@ export const chartParams2 = {
           title: {
             text: "PRE",
           },
-          fills: ["#000000","#ED1C24","#FFCB05", "#418D18", "#BCBCBC","#355FD3"],
+          fills: ["#fff","#000000","#ED1C24","#FFCB05", "#418D18", "#BCBCBC","#355FD3"],
           angleKey: "pre",
           sectorLabelKey: "pre",
           outerRadiusRatio: 0.5,
@@ -87,7 +87,7 @@ export const chartParams2 = {
           title: {
             text: "POST"
           },
-          fills: ["#000000","#ED1C24","#FFCB05", "#418D18", "#BCBCBC","#355FD3"],
+          fills: ["#fff","#000000","#ED1C24","#FFCB05", "#418D18", "#BCBCBC","#355FD3"],
           angleKey: "post",
           sectorLabelKey: "post",
           innerRadiusRatio: 0.7,

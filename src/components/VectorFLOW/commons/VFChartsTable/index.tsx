@@ -1,8 +1,6 @@
 import VFModalCard from "../VFModalCard";
-import VFTable from "../VFTable";
-import { generateGridSpecificChartFromChartProps } from '../../../../helpers/utils'
-import { useEffect, useState } from "react";
-import { TextBtn } from "../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter/styles";
+import VFTable from "../../../../VectorFlow/Pages/MTO/Common/VFTable";
+import './styles.css'
 import VFButtonOutline from "../VFButtonOutline";
 import { useUserData } from "../../../../context";
 

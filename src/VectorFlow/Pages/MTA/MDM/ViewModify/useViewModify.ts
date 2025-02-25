@@ -425,6 +425,17 @@ const useViewModify = (pageType:string) => {
       },
     }
 
+    function hasWarning(array: Array<any>): boolean {
+      for (let i = 0; i < array.length; i++) {
+          const warning = array[i].warning;
+          if (warning && warning.length > 0) {
+              return true; 
+          }
+      }
+      return false; 
+  }
+  
+
     const getTempGridColDefs = () => {
       //check if it already contains
       let doesInvalidColDefExists = false;
@@ -432,7 +443,9 @@ const useViewModify = (pageType:string) => {
          if(activeMaster.colDefs.find((column:ColDef)=>invalidColumn.colId === column.colId)) doesInvalidColDefExists = true;
       })
       if(doesInvalidColDefExists) return [...activeMaster.colDefs]
-      return [...invalidDataColdefs,...activeMaster.colDefs]
+      return hasWarning(activeMaster.rowData) 
+        ?  [...invalidDataColdefs, ...activeMaster.colDefs]
+      : [...invalidDataColdefs.filter(colDef => colDef.field === 'error') , ...activeMaster.colDefs]
     }
 
     const tempAgGridProps:AgGridReactProps = {
@@ -852,7 +865,11 @@ const useViewModify = (pageType:string) => {
             const currentColDef = activeMaster.colDefs.find((c)=>c.colId===key)
             const cellDataType = currentColDef?.cellDataType
             if(cellDataType==='number' && newRow[key]!== null){
-              newRow[key] = parseFloat(newRow[key])
+              if(isNaN(parseFloat(newRow[key]))){
+                newRow[key]='';
+              }else{
+                newRow[key] = parseFloat(newRow[key])
+              }
             }
           })
 
@@ -1152,6 +1169,11 @@ const useViewModify = (pageType:string) => {
               }
               else{
                 data = await modifyMaster(payload);
+                if (data.status !== 200) {
+                  throw new Error(`Request failed with status`);
+               }
+                
+                
               }
 
 
@@ -1514,7 +1536,6 @@ const useViewModify = (pageType:string) => {
 
       const onBackButton1 = (backUrl?: string) => {
         removeModalOpenParameterWithoutReload()
-        // dispatch(FILL_MASTERS([]));
         setCanToggleMaster(true)
         if(backUrl){
           navigate(backUrl)
@@ -1522,20 +1543,22 @@ const useViewModify = (pageType:string) => {
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
         dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
-        // dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
-        // dispatch(UPDATE_ACTIVE_MASTER([]))
-       
+        dispatch(REMOVE_COLDEFS(['checkbox']));
+        dispatch(REMOVE_COLDEFS(['warning']));
+        dispatch(REMOVE_COLDEFS(['error']));
         dispatch(ADD_FILTER())
         setDownloadData(false);
         setTempDownloadData(false);
-        /// riskycodehere !!
-        // dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
         setFilterButtonStatus([]);
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
         
 
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+            // dispatch(UPDATE_ACTIVE_MASTER([]))
+        // dispatch(UPDATE_COLDEFS([]));
+        // dispatch(FILL_MASTERS([]));
+        // dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
         
      }
 
@@ -1551,21 +1574,20 @@ const useViewModify = (pageType:string) => {
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
         dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
-        // dispatch(UPDATE_COLDEFS([]));
         dispatch(REMOVE_ALL_FILTERS());
-        // dispatch(UPDATE_ACTIVE_MASTER([]))
-       
+        dispatch(REMOVE_COLDEFS(['checkbox']));
+        dispatch(REMOVE_COLDEFS(['warning']));
+        dispatch(REMOVE_COLDEFS(['error']));
         dispatch(ADD_FILTER())
         setDownloadData(false);
         setTempDownloadData(false);
-        /// riskycodehere !!
-        // dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:'',colDefs:[],rowData:[],isChecked:true}))
         setFilterButtonStatus([]);
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
         
 
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
-
+        // dispatch(UPDATE_COLDEFS([]));
+        // dispatch(UPDATE_ACTIVE_MASTER([]))
        }
         
       }

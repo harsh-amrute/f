@@ -6,7 +6,8 @@ import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinati
 import { BPRTagsCellRenderer, BPRTechColorCellRenderer, BPREcoColorCellRenderer } from '../../SupplyChainIntelligenceHub/BPR/BPRCellRenderers'
 import BPRGraphCellRenderer from '../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer'
 
-import { useGetBPRData, useGetBPRDataCount, useGetState, useGetDailyData } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetBPRData, useGetBPRDataCount, useGetDailyData } from "./../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetState } from "./../../../../../VectorFlow/Services/MTA/Common/UserUIConfig";
 import { isSameDay, format, addDays } from 'date-fns'
 import { ReseachInsightsGraphState } from '../../../../../VectorFlow/types/BPR'
 import { useGetUpdatedGraphData, useGetHistroricalAvailabilityData } from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
@@ -53,7 +54,7 @@ const useResearchInsights = () => {
     const { mutateAsync: getUpdatedGraphData, isLoading: isUpdatedGraphDataLoading } = useGetUpdatedGraphData()
 
     const [ResearchInsightsData, setResearchInsightsRowData] = useState<Array<any>>([])
-    const { mutateAsync: getBPRData } = useGetBPRData()
+    const { mutateAsync: getBPRData , isLoading: isBPRLoading} = useGetBPRData()
 
     const { mutateAsync: getBPRDataCount, isLoading: isBPRDataCountLoading } = useGetBPRDataCount()
 
@@ -107,11 +108,6 @@ const useResearchInsights = () => {
         }
     }
 
-    useEffect (()=>{
-        setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
-    },[initialColumnState])
-
-
     useEffect(() => {
         const getTableState = async () => {
             try {
@@ -130,7 +126,8 @@ const useResearchInsights = () => {
             }
         }
         if (initialColumnState !== undefined) {
-            getTableState()
+            getTableState();
+            setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState))
         }
     }, [initialColumnState]);
 
@@ -242,12 +239,13 @@ const useResearchInsights = () => {
         }
     },[])
 
-    const tempAgGridProps:AgGridReactProps = {
+    const tempAgGridProps:AgGridReactProps = useMemo (()=> {
+        return{
             onRowDataUpdated:(event)=>{
                 if(tempDownloadData) event?.api?.exportDataAsExcel({fileName:'ResearchInsights',columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
             }
         }
-    
+    },[tempDownloadData])      
 
     const getRecordCount = async (filter: any) => {
         const countData = await getBPRDataCount({
@@ -665,12 +663,11 @@ const useResearchInsights = () => {
         dailydatagraph: {
             width: 45,
             minWidth: 45,
-            colId: "dailydatagraph",
-            headerName: '',
             filter: false,
             cellRenderer: 'grapCellRenderer',
             cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
             pinned: 'left',
+            lockPosition: true,
             resizable: false,
             floatingFilter: false,
             suppressColumnsToolPanel: false
@@ -694,7 +691,7 @@ const useResearchInsights = () => {
         agGridProps,
         ResearchInsightsData,
         ResearchInsightsColumns,
-        isLoading: isUIConfigLoading || isBPRDataCountLoading,
+        isLoading: isUIConfigLoading || isBPRDataCountLoading || isBPRLoading,
         isUpdatedGraphDataLoading,
         horizon,
         graphState,
