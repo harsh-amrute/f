@@ -146,6 +146,8 @@ const useBTR = () => {
         flex: 1,
         width: 50,
         minWidth: 80,
+        cellClass:'btr_cell_style'
+
     }
 
     const gridProps = useMemo(():AgGridReactProps=>{

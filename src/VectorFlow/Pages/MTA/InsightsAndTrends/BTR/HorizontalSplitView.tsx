@@ -72,11 +72,13 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
 
     if(techTable.columnDefs)
     {   
-            techTable.columnDefs.forEach(item => {
+            techTable.columnDefs.forEach((item :any)=> {
                 if ('field' in item && (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field === 'Availability' || item.field === 'Norm' || item.field === 'VirtualNorm'  || item.field === 'Category' || item.field === 'SKUCode' || item.field === 'SKUDescription' || item.field === 'Tags')) {
                     item.pinned = 'left';
                     item.width = 50;
                 }
+                item.filter=false;
+            
             });
     }
 

@@ -44,7 +44,9 @@ const VerticalSplitView = (props: SplitViewProps) => {
                 colDef.minWidth = 80;
             } else {
                 colDef.pinned = false;
+
             }
+            colDef.filter=false;
             return colDef;
         });
         return newColDef;
@@ -55,6 +57,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
         const colDefs = techTable.columnDefs.filter((col: any) => col.colId && !['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn"].includes(col.colId));
         const newColDef = colDefs.map((colDef: any) => {
             colDef.pinned = false;
+            colDef.filter=false;
             return colDef;
         });
         return newColDef;
@@ -64,6 +67,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
         if (!ecoTable.columnDefs) return []
         const colDefs = ecoTable.columnDefs.map((colDef: any) => {
             colDef.pinned = false;
+            colDef.filter=false;
             return colDef;
         });
         return colDefs;
@@ -114,14 +118,18 @@ const VerticalSplitView = (props: SplitViewProps) => {
         floatingFilter: false,
         filter: false,
         sortable: false,
+
+       
+    suppressHeaderMenuButton: false,
         // cellStyle: {
         //     "textAlign": "center",
         //     'textOverflow': 'ellipsis',
         //     'whiteSpace': 'nowrap'
         // },
         flex: 1,
-        // width: 80,
+        width: 80,
         minWidth: 80,
+        cellClass:'btr_cell_style'
     }
 
 
@@ -161,7 +169,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 height={"95%"}
                                 disableZoomScaling
                                 gridOptions={{
-                                    ...techTable.gridOptions
+                                    ...techTable.gridOptions,
                                 }}
                                 columnDefs={techTableColDefs}
                                 rowData={techTable.rowData}
