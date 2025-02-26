@@ -46,8 +46,18 @@ const ModalManageUsers = ({
     register,
     handleSubmit,
     getValues,
+    reset,
     formState: { errors },
   } = form;
+
+  const handleFormreset = ()=>{
+    reset({
+      username: "",
+      email_id: "",
+      password: "",
+    });
+    closeModal();
+  }
 
   const onSubmit = () => {
     const value = getValues();    
@@ -69,7 +79,7 @@ const ModalManageUsers = ({
     
       fillAdvancedPermissionsModalData(currentItem);
       setIsOpenAdvanced(true);
-      closeModal();
+      handleFormreset();
     } else {
       notifyError(
         t("profile.tabContent.manageUsers.notifyError.pleaseSelectRole")
@@ -81,7 +91,7 @@ const ModalManageUsers = ({
     <>
       {
         <Transition appear show={openModal} as={Fragment}>
-          <Dialog style={{zoom: 0.9}} as="div" className="modal-box" onClose={closeModal}>
+          <Dialog style={{zoom: 0.9}} as="div" className="modal-box" onClose={handleFormreset}>
             <Transition.Child
               as={Fragment}
               enter="transition"
@@ -115,7 +125,7 @@ const ModalManageUsers = ({
                         />
                         {contentModal?.title}
                       </span>
-                      <span onClick={closeModal} className="close-forced">
+                      <span onClick={handleFormreset} className="close-forced">
                         x
                       </span>
                     </Dialog.Title>
@@ -269,7 +279,7 @@ const ModalManageUsers = ({
                         <button
                           type="button"
                           className="btn_cancel"
-                          onClick={closeModal}
+                          onClick={handleFormreset}
                         >
                           {t("profile.tabContent.manageUsers.button.cancel")}
                         </button>

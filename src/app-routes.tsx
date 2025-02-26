@@ -101,7 +101,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/login',
     '/forgot-password',
     '/change-password',
-    '/profile'
+    '/profile',
+    '/',
+    '/landing-page'
   ]
   const urlAllPage = [
     ...authenPage,
