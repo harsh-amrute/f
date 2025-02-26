@@ -676,6 +676,7 @@ const ActionToolBar = ({
     return (
       <VFFloatingTab
         tabs={tabsList}
+        
         defaultTab={
           tabsList.findIndex((object) => {
             return object.value === currentTab;
@@ -1100,7 +1101,7 @@ const ActionToolBar = ({
                             UPDATE_PLANNING_DATA({
                               currentTab: currentTab,
                               currentCategory: currentCategory,
-                              currentView: "grid",
+                              currentView: "chart",
                             })
                           );
                         }}

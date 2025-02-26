@@ -1,24 +1,27 @@
-import {useState,useMemo}from 'react';
+import {useState,useMemo, useEffect, useContext}from 'react';
 import GridViewTable from "../../../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
 import { VFPaginationProps } from "../../../../../../../../../components/VectorFLOW/commons/VFPagination";
 import { SideBarDef } from 'ag-grid-enterprise';
-import { createIconColumn, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
+import {getColumnDefinationsMTA } from '../../../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import RequestExpeditingModal from '../../../../../BPR/RequestExpeditingModal';
 import { useSubmitOpenExpediteRequest } from '../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/Planning';
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../../../../helpers/notify';
 import { toast } from 'react-toastify';
-import { MainMenuItemsCustomization, generateDailyDataGraphCell } from '../../../../../../../../../helpers/utils'
+import { MainMenuItemsCustomization } from '../../../../../../../../../helpers/utils'
+import { GridStateContext } from '../../../../../../../../../context/GridStateContext';
 
 const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
     const [isExpeditingModalOpen,toggleExpeditingModal] =  useState<boolean>(false)
-    console.log(data);
     const [activeRow,setActiveRow] = useState<any>();
     const [currentRowData,setCurrentRowData] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
+
+    const [colDefs, setColDefs] = useState<any>([]);
+    const {gridColDefs} = useContext(GridStateContext);
 
     const {mutateAsync:submitRemark} = useSubmitOpenExpediteRequest()
     const submitOpenExpediteRemark = async(remark:string)=>{
@@ -130,46 +133,82 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
         }
     }
 
-    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
-        let colDefs = [];
-        const dailyDataColDef = generateDailyDataGraphCell(onOpenDailyDataGraph)
-        // const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
-        columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
-            return column1.colPosition - column2.colPosition;
-        })
-        const tagsColDef =  {
-            colId:'tags',
-            field:'t',
-            headerName:"Tags",
-            cellRenderer:'tagsCellRenderer',
-            width:100,
+    // const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string,colPosition:number}>) => {
+    //     let colDefs = [];
+    //     const dailyDataColDef = generateDailyDataGraphCell(onOpenDailyDataGraph)
+    //     // const dailyDataColDef = {...createIconColumn({id:'graph',label:'',cellRenderer:'grapCellRenderer'}),cellRendererParams:{onOpenDailyDataGraph:onOpenDailyDataGraph}}
+    //     columns.sort((column1:{header:string,colCode:string,colPosition:number},column2:{header:string,colCode:string,colPosition:number})=>{
+    //         return column1.colPosition - column2.colPosition;
+    //     })
+    //     const tagsColDef =  {
+    //         colId:'tags',
+    //         field:'t',
+    //         headerName:"Tags",
+    //         cellRenderer:'tagsCellRenderer',
+    //         width:100,
+    //     }
+    //     colDefs = columns.map((column:{header:string,colCode:string})=>{
+    //         if(['plp','pip','pin'].includes(column.colCode)){
+    //             return {
+    //                 field:column['colCode'],
+    //                 colId:column['colCode'],
+    //                 headerName:column['header'],
+    //                 cellRenderer:'colorCellRenderer',
+    //             }
+    //         }
+    //         if(column.colCode === 't'){
+    //             return tagsColDef
+    //         }
+
+    //         const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+    //         if(customColdef) return customColdef;
+
+    //         return {
+    //             field:column['colCode'],
+    //             colId:column['colCode'],
+    //             headerName:column['header']
+    //         }
+    //     })
+    //     return [dailyDataColDef,...colDefs]
+    // }
+
+    const CustomHeader = {
+        dailydatagraph: {
+            width: 45,
+            minWidth: 45,
+            filter: false,
+            cellRenderer: 'grapCellRenderer',
+            cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+            pinned: 'left',
+            resizable: false,
+            floatingFilter: false,
+            suppressColumnsToolPanel: false
+        },
+        t: {
+            cellRenderer: 'tagsCellRenderer',
+            width: 100,
+            minWidth: 100,
+            filter: true,
+            pinned: null,
+            filterParams: {
+                buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+        },
+        pin:{
+            cellRenderer:'colorCellRenderer',
+        },
+        pip:{
+            cellRenderer: "colorCellRenderer"
         }
-        colDefs = columns.map((column:{header:string,colCode:string})=>{
-            if(['plp','pip','pin'].includes(column.colCode)){
-                return {
-                    field:column['colCode'],
-                    colId:column['colCode'],
-                    headerName:column['header'],
-                    cellRenderer:'colorCellRenderer',
-                }
-            }
-            if(column.colCode === 't'){
-                return tagsColDef
-            }
-
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
-            if(customColdef) return customColdef;
-
-            return {
-                field:column['colCode'],
-                colId:column['colCode'],
-                headerName:column['header']
-            }
-        })
-        return [dailyDataColDef,...colDefs]
     }
 
-    const colDefs = mapUIConfigToColdefs(data['uiConfig'] ? data['uiConfig'] : [])
+    // const colDefs = mapUIConfigToColdefs(data['uiConfig'] ? data['uiConfig'] : [])
+    useEffect(()=>{
+        if(gridColDefs!==null){
+            const cols =  getColumnDefinationsMTA(gridColDefs,CustomHeader)
+            setColDefs(cols);
+        } 
+    },[gridColDefs])
 
     // if(isLoading){
     //   return (

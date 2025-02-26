@@ -1,18 +1,22 @@
-import {useMemo, useState} from 'react';
+import {useContext, useEffect, useMemo, useState} from 'react';
 import GridViewTable from "../../GridView/GridViewTable";
 import { BPRTagsCellRenderer } from "../../../BPR/BPRCellRenderers";
 import { AgGridReactProps } from "ag-grid-react";
-import { createIconColumn, getProductAndLocationHeirarchiesFromEnv, MainMenuItemsCustomization } from '../../../../../../../helpers/utils';
+import {  getColumnDefinationsMTA, MainMenuItemsCustomization } from '../../../../../../../helpers/utils';
 import BPRGraphCellRenderer from '../../../BPR/BPRGraphCellRenderer';
 import ColorCellRenderer from '../../../../InsightsAndTrends/BTR/ColorCellRenderer';
 import { OrderCoverageCellRenderer } from '../../../../../../../components/VectorFLOW/commons/OrderCoverageCellRenderer';
 import { BPRViewTableColDef } from '../../../BPR/BPRViewTable';
 import { defaultAgGridSideBarForBPR } from '../../../../../../../helpers/BPRConstants';
+import { GridStateContext } from '../../../../../../../context/GridStateContext';
 
 const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, currentCategory, currentTab}:any) => {
 
     const [activeRow, setActiveRow] = useState<any>();
     const [isSubGridOpen, toggleSubGrid] = useState<any>(true);
+
+    const [colDefs, setColDefs] = useState<any>([]);
+    const {gridColDefs} = useContext(GridStateContext);
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer: BPRGraphCellRenderer,
@@ -80,59 +84,101 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
         }
     }
 
-    const mapUIConfigToColdefs = (columns:any) => {
-        let colDefs = [];
-        columns.sort((column1:any, column2:any) => {
-            return column1.colPosition - column2.colPosition;
-        });
-        const dailyDataColDef = {...createIconColumn({id:'graph', label:'', cellRenderer:'grapCellRenderer'}), cellRendererParams: {onOpenDailyDataGraph: onOpenDailyDataGraph}};
-        // const tagsColDef = {
-        //     colId: 'tags',
-        //     field: 'tags',
-        //     headerName: "Tags",
-        //     cellRenderer: 'tagsCellRenderer',
-        //     width: 100
-        // };
+    // const mapUIConfigToColdefs = (columns:any) => {
+    //     let colDefs = [];
+    //     columns.sort((column1:any, column2:any) => {
+    //         return column1.colPosition - column2.colPosition;
+    //     });
+    //     const dailyDataColDef = {...createIconColumn({id:'graph', label:'', cellRenderer:'grapCellRenderer'}), cellRendererParams: {onOpenDailyDataGraph: onOpenDailyDataGraph}};
+    //     // const tagsColDef = {
+    //     //     colId: 'tags',
+    //     //     field: 'tags',
+    //     //     headerName: "Tags",
+    //     //     cellRenderer: 'tagsCellRenderer',
+    //     //     width: 100
+    //     // };
 
-        colDefs = columns.map((column:any) => {
-            if (['plp', 'pip'].includes(column.colCode)) {
-                return {
-                    field: column['colCode'],
-                    colId: column['colCode'],
-                    headerName: column['header'],
-                    cellRenderer: 'colorCellRenderer',
-                }
-            }
-            if (column.colCode === 'c') {
-                return {
-                    field: column['colCode'],
-                    colId: column['colCode'],
-                    headerName: column['header'],
-                    cellRenderer: 'orderCoverageCellRenderer',
-                    minWidth: 250,
-                }
-            }
-            if(column.colCode==='t'){
-                return {
-                    field: column['colCode'],
-                    colId: column['colCode'],
-                    headerName: column['header'],
-                    cellRenderer: 'tagsCellRenderer',
-                    width: 100
-                }
-            }
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
-            if(customColdef) return customColdef;
-            return {
-                field: column['colCode'],
-                colId: column['colCode'],
-                headerName: column['header'],
-            }
-        });
-        return [dailyDataColDef, ...colDefs];
+    //     colDefs = columns.map((column:any) => {
+    //         if (['plp', 'pip'].includes(column.colCode)) {
+    //             return {
+    //                 field: column['colCode'],
+    //                 colId: column['colCode'],
+    //                 headerName: column['header'],
+    //                 cellRenderer: 'colorCellRenderer',
+    //             }
+    //         }
+    //         if (column.colCode === 'c') {
+    //             return {
+    //                 field: column['colCode'],
+    //                 colId: column['colCode'],
+    //                 headerName: column['header'],
+    //                 cellRenderer: 'orderCoverageCellRenderer',
+    //                 minWidth: 250,
+    //             }
+    //         }
+    //         if(column.colCode==='t'){
+    //             return {
+    //                 field: column['colCode'],
+    //                 colId: column['colCode'],
+    //                 headerName: column['header'],
+    //                 cellRenderer: 'tagsCellRenderer',
+    //                 width: 100
+    //             }
+    //         }
+    //         const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+    //         if(customColdef) return customColdef;
+    //         return {
+    //             field: column['colCode'],
+    //             colId: column['colCode'],
+    //             headerName: column['header'],
+    //         }
+    //     });
+    //     return [dailyDataColDef, ...colDefs];
+    // }
+
+    const CustomHeader = {
+        dailydatagraph: {
+            width: 45,
+            minWidth: 45,
+            filter: false,
+            cellRenderer: 'grapCellRenderer',
+            cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+            pinned: 'left',
+            resizable: false,
+            floatingFilter: false,
+            suppressColumnsToolPanel: false
+        },
+        t: {
+            cellRenderer: 'tagsCellRenderer',
+            width: 100,
+            minWidth: 100,
+            filter: true,
+            pinned: null,
+            filterParams: {
+                buttons: ['reset'], // Adds Apply and Clear buttons
+            },
+        },
+        c:{
+            cellRenderer: 'orderCoverageCellRenderer',
+        },
+        pin:{
+            cellRenderer:'colorCellRenderer',
+        },
+        pip:{
+            cellRenderer: "colorCellRenderer"
+        },
+        plp:{
+            cellRenderer: "colorCellRenderer"
+        }
     }
 
-    const colDefs = mapUIConfigToColdefs(data['uiConfig']);
+    // const colDefs = mapUIConfigToColdefs(data['uiConfig']);
+    useEffect(()=>{
+        if(gridColDefs!==null){
+            const cols =  getColumnDefinationsMTA(gridColDefs,CustomHeader)
+            setColDefs(cols);
+        } 
+    },[gridColDefs])
 
     const customGridColDef:Array<BPRViewTableColDef> = [
         {

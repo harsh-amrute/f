@@ -4815,9 +4815,9 @@ export function getColumnDefinationsMTA(
 ) {
   const columnDefs = fields?.map((data: any) => {
     const columnDef = {
-      colId: data.Col_Code,
-      headerName: data.Header,
-      field: data.Col_Code,
+      colId: data.Col_Code || data.colCode,
+      headerName: data.Header || data.header,
+      field: data.Col_Code || data.colCode,
       initialHide: !data.Visible,
       pinned: null,
       initialSort: null,
@@ -4832,16 +4832,16 @@ export function getColumnDefinationsMTA(
       cellStyle: {
         justifyContent: data.CellAlignment
       },
-      cellRenderer: CellRenderersMapping[data.Col_Code] !== undefined ? CellRenderersMapping[data.Col_Code] : 'string',
+      cellRenderer: CellRenderersMapping[data.Col_Code || data.colCode] !== undefined ? CellRenderersMapping[data.Col_Code || data.colCode] : 'string',
       cellDataType: getCellDataType(data.DataType),
       filter: getCellFilter(data.DataType),
       filterParams: filterParams,
       position: data.Col_Position,
     };
     // Apply customization if needed
-    if (customizationParams[data.Col_Code]) {
+    if (customizationParams[data.Col_Code || data.colCode]) {
       // Object.assign(columnDef, customizationParams[data.Col_Code]);
-      mergeObjects(columnDef, customizationParams[data.Col_Code])
+      mergeObjects(columnDef, customizationParams[data.Col_Code || data.colCode])
     }
     return columnDef;
   });
