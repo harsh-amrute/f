@@ -70,7 +70,7 @@ const ErrorCell = (props:ICellRendererParams)=>{
     const onMouseIn = (e: React.MouseEvent<HTMLElement>) => {
         const { bottom, left, top } = e.currentTarget.getBoundingClientRect();
     
-        const tooltipHeight =messages.length * 5 /* Height of your tooltip */;
+        const tooltipHeight =messages.length * 16 /* Height of your tooltip */;
         const viewportHeight = window.innerHeight;
     
         let tooltipTop = (bottom) + 10;
