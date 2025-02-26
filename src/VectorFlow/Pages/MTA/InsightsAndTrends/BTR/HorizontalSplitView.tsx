@@ -72,13 +72,30 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
 
     if(techTable.columnDefs)
     {   
-            techTable.columnDefs.forEach(item => {
+            techTable.columnDefs.forEach((item :any)=> {
                 if ('field' in item && (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field === 'Availability' || item.field === 'Norm' || item.field === 'VirtualNorm'  || item.field === 'Category' || item.field === 'SKUCode' || item.field === 'SKUDescription' || item.field === 'Tags')) {
                     item.pinned = 'left';
                     item.width = 50;
                 }
+                item.filter=false;
+            
             });
     }
+
+    const defaultColDef = {
+        floatingFilter: false,
+        filter: false,
+        sortable: false,
+        // cellStyle: {
+        //     "textAlign": "center",
+        //     'textOverflow': 'ellipsis',
+        //     'whiteSpace': 'nowrap'
+        // },
+        flex: 1,
+        // width: 80,
+        // minWidth: 80,
+    }
+
    return (
         <HorizontalViewWrapper>
             <BTRTableWrapper style={{height:screenHeight - 100,margin:'0'}}>
@@ -100,11 +117,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                             tooltipHideDelay={100000}
                             onBodyScroll={(params)=>onBodyScroll(params,1)}
                             height={"100%"}
-                            defaultColDef={{
-                                floatingFilter:false,
-                                filter:false,
-                                sortable:false
-                            }}
+                            defaultColDef={defaultColDef}
                             alignedGrids={isLocked?[ref2]:[]}
                         />
                         <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
@@ -132,11 +145,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
                             onBodyScroll={(params)=>onBodyScroll(params,2)}
-                            defaultColDef={{
-                                floatingFilter:false,
-                                filter:false,
-                                sortable:false
-                            }}
+                            defaultColDef={defaultColDef}
                             alignedGrids={isLocked?[ref1]:[]}
                         />
                          <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>

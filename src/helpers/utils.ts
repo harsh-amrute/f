@@ -4812,7 +4812,7 @@ export function getColumnDefinationsMTA(
   extraFields: any = [],
   removeCols: any = [],
 ) {
-  const columnDefs = fields?.sort((a: any, b: any) => a.Col_Position - b.Col_Position)?.map((data: any) => {
+  const columnDefs = fields?.map((data: any) => {
     const columnDef = {
       colId: data.Col_Code || data.colCode,
       headerName: data.Header || data.header,
@@ -4834,7 +4834,8 @@ export function getColumnDefinationsMTA(
       cellRenderer: CellRenderersMapping[data.Col_Code || data.colCode] !== undefined ? CellRenderersMapping[data.Col_Code || data.colCode] : 'string',
       cellDataType: getCellDataType(data.DataType),
       filter: getCellFilter(data.DataType),
-      filterParams: filterParams
+      filterParams: filterParams,
+      position: data.Col_Position,
     };
     // Apply customization if needed
     if (customizationParams[data.Col_Code || data.colCode]) {
@@ -4843,20 +4844,27 @@ export function getColumnDefinationsMTA(
     }
     return columnDef;
   });
+  
   // Add extra columns
+  // If position is not specified or invalid, add the column at the end
   extraFields?.forEach((field: any) => {
-    let position = field.position;
-    // If position is not specified or invalid, add the column at the end
+    const position = field.position;
     if (
       position === undefined ||
       position < 0 ||
       position > columnDefs.length
     ) {
-      position = columnDefs.length;
+      field.position = columnDefs.length;
     }
-    columnDefs?.splice(position, 0, field);
   });
+  
+  //add extraFields in columnDefs
+  columnDefs.push(...extraFields);
 
+  //sort all column accordinglly position 
+  columnDefs.sort((a: any, b: any) => a.position - b.position);
+
+  //remove columns matching "removeCols"
   const finalcolDef = columnDefs?.filter((obj: any) => !removeCols?.includes(obj.colId));
 
   return finalcolDef;

@@ -1,5 +1,5 @@
-import {useGetState,useGetDailyData, useGetUiConfig} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, mapOrderAllocationReportFieldsToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
+import {useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
+import { convertUiConfigToOptions, mapOrderAllocationReportFieldsToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
@@ -19,6 +19,9 @@ import { BPRSubmitRemarkCellRenderer, TextToTextColorMapper } from "../BPR/BPRCe
 
 import { ColDef } from "ag-grid-enterprise"
 import { useGetOrderAllocationReportData, useGetOrderAllocationReportRecordsCount } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/OrderAllocationReport'
+import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig'
+import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum'
+import { useGetState } from '../../../../Services/MTA/Common/UserUIConfig'
 
 
 
@@ -34,7 +37,7 @@ const useOrderAllocation =()=>{
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
 
-     const {mutateAsync:getUiConfig,isLoading:isBORUILoading} = useGetUiConfig();
+     const {mutateAsync:getUiConfig,isLoading:isUIConfigLoading} = useGetUIConfigData();
 
      const dispatch = useDispatch();
    
@@ -68,9 +71,9 @@ const useOrderAllocation =()=>{
       }
 
 
-     const {mutateAsync:getData} = useGetOrderAllocationReportData();
+     const {mutateAsync:getData, isLoading: isRowDataLoading} = useGetOrderAllocationReportData();
 
-     const {mutateAsync:getRecordsCount} = useGetOrderAllocationReportRecordsCount();
+     const {mutateAsync:getRecordsCount, isLoading: isRecordsCountLoading} = useGetOrderAllocationReportRecordsCount();
 
      const {mutateAsync:getDailyData} = useGetDailyData();
 
@@ -99,35 +102,52 @@ const useOrderAllocation =()=>{
   
         dispatch(UPDATE_DAILY_DATA(dailyData));
         dispatch(TOGGLE_GRAPH_MODAL(true));
-    }
-      
-
-      const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
-
-      const [gridState,setGridState] = useState<any>()
-
-      useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({reportname: "OrderAllocationReport"})
-            setGridState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:[],
-                pivot:false
-            })
-          }
-        }
-        getTableState()
-
-    },[])
+  }
   
-    useEffect(()=>{
-      if(internalRef && gridState && gridState.columns){
-          internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+  const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState();
+  const [gridState, setGridState] = useState<any>()
+  const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+  
+  useEffect(() => {
+    if (colDefs.length) {
+      if (internalRef?.api) {
+        setMasterUIConfig(internalRef.api.getColumnState());
       }
-  },[internalRef,gridState])
+    }
+  }, [internalRef, colDefs]);
+  
+  const getUserColumnConfig = async () => {
+    const stateData = await getState({ "reportname": UserUIColumnConfigName.OAR })
+    if (stateData.data.data.length !== 0) {
+      const parsedContent = JSON.parse(stateData.data.data)
+                    
+      setGridState({
+        charts: parsedContent.charts,
+        columns: parsedContent.columns,
+        pivot: parsedContent.pivot,
+      })
+              
+    } else {
+      console.log("Data not available");
+    }
+  }
+  
+  useEffect(() => {
+    if (internalRef && gridState && gridState.columns) {
+      const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+      if (!result) {
+        console.error("Failed to apply column state", result);
+      }
+    }
+  }, [internalRef, gridState]);
+  
+  const onResetCallback = async () => {
+    setGridState({
+      charts: [],
+      columns: masterUIConfig,
+      pivot: false,
+    })
+  };
 
       useEffect(()=>{       
         const fetchData = async () => {
@@ -174,14 +194,26 @@ const useOrderAllocation =()=>{
 
     }
 
-    const getOrderAllocationReportUiConfig = async()=>{
-      try{
-          const response = await getUiConfig('OrderAllocationReport')
-          setColDefs(mapOrderAllocationReportFieldsToColDefs(response.data.data,onOpenDailyDataGraph))
-      }catch(err:any){
-          notifyError("Something Went Wrong")
-      }
+  const getOrderAllocationReportUiConfig = async () => {
+    try {
+      const response = await getUiConfig(UIColumnConfigName.OAR);
+      const MappedColumns = getColumnDefinationsMTA(response.data.data, CustomHeader);
+      setColDefs(MappedColumns);
+      setGridState({
+        charts: [],
+        columns: MappedColumns,
+        pivot: false
+      })
+    } catch (err: any) {
+      notifyError("Something Went Wrong")
+    }
   }
+
+  useEffect(() => {
+    if (colDefs.length) {
+      getUserColumnConfig();
+    }
+  }, [colDefs]);
 
     const onApplyFilter = async(filter:any)=>{
       await handleGetRecordsCount(filter)
@@ -258,10 +290,31 @@ const useOrderAllocation =()=>{
         return convertUiConfigToOptions(colDefs)
     },[colDefs])
 
+  const CustomHeader = {
+    dailydatagraph: {
+      width: 60,
+      minWidth: 60,
+      maxWidth: 70,
+      lockPosition: true,
+      filter: false,
+      cellRenderer: 'grapCellRenderer',
+      cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+      pinned: 'left',
+      resizable: false,
+      floatingFilter: false,
+      suppressColumnsToolPanel: false,
+      tooltipField: "DailyDataGraph",
+      suppressMenu: true
+    },
+    OrderColor: {
+      floatingFilter: true,
+      cellRenderer: 'colorCellRenderer',
+    },
+  }
   
      return {   
         ref,    
-        isLoading :isBORUILoading,      
+        isLoading :isUIConfigLoading || isRowDataLoading || isRecordsCountLoading,      
         colDefs,
         agGridProps,
         rowData ,
@@ -288,6 +341,7 @@ const useOrderAllocation =()=>{
         setCurrFilter,
         onDeleteFilter,
         generalFilterOptions,
+        onResetCallback
     }
 }
 

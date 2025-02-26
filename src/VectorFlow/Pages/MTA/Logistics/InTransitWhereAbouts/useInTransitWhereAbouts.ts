@@ -14,19 +14,17 @@ import ShowRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpedit
 import SubmitRemarkCellRenderer from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/SubmitRemarkCellRenderer";
 import MasterDetail from "./MasterDetail";
 import { ColorGroupCellRenderer, CurrentLocationCellRenderer, ETACellRenderer } from "./CellRenderers";
-import {mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
+import {getColumnDefinationsMTA, mapInTransitWhereAboutsRowData, mapSubmitRemarkData } from "../../../../../helpers/utils";
 import { useGetInTransitWhereAboutsData, useGetInTransitWhereAboutsDataCount,useGetRemarkDetailsForInTransit, useGetTransporterDetails, useSubmitRemarksForInTransit } from "../../../../../VectorFlow/Services/MTA/Logistics/InTransitWhereAbouts";
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context";
 import { ColDef } from "ag-grid-enterprise";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
-import { useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
+import { useGetState } from "../../../../../VectorFlow/Services/MTA/Common/UserUIConfig";
 import { GridRef } from "../../../../../VectorFlow/types/MDM";
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
-
-
-
-
+import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig";
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum";
 
 const useInTransitWhereAbouts = ()=>{
     const ref = useRef<GridRef>()
@@ -41,6 +39,7 @@ const useInTransitWhereAbouts = ()=>{
       columns: [],
       pivot: false,
     })
+    const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
 
     const themeUi = user.user.theme_ui
 
@@ -112,58 +111,81 @@ const useInTransitWhereAbouts = ()=>{
         remarksCellRenderer: ShowRemarkCellRenderer
     }), []);
 
-    const {mutateAsync:getState} = useGetState()
+  const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState();
+  const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading, isError } = useGetUIConfigData();
+  const [colDefs,setColDefs] = useState<Array<ColDef>>([])
 
     useEffect(()=>{
       const getInitialData =async()=>{
         await getRecordCount(currentFilter)
-        await getRowData(currentFilter,1)
+        await getRowData(currentFilter, 1)
+        await getInTransitUiConfig();
       }
       getInitialData()
-    },[]) 
+    }, []) 
+  
+  const getInTransitUiConfig = async () => {
+    try {
+      const response = await getUiConfig(UIColumnConfigName.InTransit);
+      const MappedColumns = getColumnDefinationsMTA(response.data.data, CustomHeader);
+      setColDefs(MappedColumns);
+      setGridState({
+        charts: [],
+        columns: MappedColumns,
+        pivot: false
+      })
+    } catch (err: any) {
+      notifyError("Something Went Wrong")
+    }
+  }
 
-    useEffect(() => {
-      const getTableState = async () => {
-        try {
-          const data = await getState({reportname: "InTransitWhereAbouts"});
-          
-          let parsedData;
-          try {
-            parsedData = data.data.data ? JSON.parse(data.data.data) : null;
-          } catch (parseError) {
-            console.error("Error parsing JSON:", parseError);
-            parsedData = null;
-          }
-    
-          if (parsedData) {
-            setGridState(parsedData);
-          } else {
-            setGridState({
-              charts: [],
-              columns: [],
-              pivot: false,
-            });
-          }
-        } catch (err: any) {
-          console.error("Error fetching data:", err);
-          setGridState({
-            charts: [],
-            columns: [],
-            pivot: false,
-          });
-        }
-      };
-      
-      getTableState();
-    }, []);
-
-    useEffect(()=>{
-      if(internalRef && gridState && gridState.columns){
-          internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+  useEffect(() => {
+    if (colDefs.length) {
+      if (internalRef?.api) {
+        setMasterUIConfig(internalRef.api.getColumnState());
       }
-  },[internalRef,gridState])
+    }
+  }, [internalRef, colDefs]);
     
+  const getUserColumnConfig = async () => {
+    const stateData = await getState({ "reportname": UserUIColumnConfigName.InTransit })
+    if (stateData.data.data.length !== 0) {
+      const parsedContent = JSON.parse(stateData.data.data)
+                      
+      setGridState({
+        charts: parsedContent.charts,
+        columns: parsedContent.columns,
+        pivot: parsedContent.pivot,
+      })
+                
+    } else {
+      console.log("Data not available");
+    }
+  }
 
+  useEffect(() => {
+    if (colDefs.length) {
+      getUserColumnConfig();
+    }
+  }, [colDefs]);
+
+  useEffect(() => {
+    if (internalRef && gridState && gridState.columns) {
+      const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+      if (!result) {
+        console.error("Failed to apply column state", result);
+      }
+    }
+  }, [internalRef, gridState]);
+    
+  const onResetCallback = async () => {
+    setGridState({
+      charts: [],
+      columns: masterUIConfig,
+      pivot: false,
+    })
+  };
+    
     const agGridProps: AgGridReactProps =useMemo(()=>{
       return  {
         readOnlyEdit:false,
@@ -198,7 +220,7 @@ const useInTransitWhereAbouts = ()=>{
           components: customCellRenderers,
           defaultColDef: {
             
-              floatingFilter: true,
+              floatingFilter: false,
               filter: "agMultiColumnFilter",
               cellDataType: false,
               minWidth:140,
@@ -500,94 +522,133 @@ const useInTransitWhereAbouts = ()=>{
      }
     }
       
-
-    const colDefs = useMemo(():ColDef[]=>{
-       return [
-      {
-        headerName: "Order No",
-        colId: 'OrderNo',
-        field: 'OrderNo',
-        floatingFilter:false,
+  
+  const CustomHeader = {
+    OrderNo: {
         cellRenderer: 'agGroupCellRenderer'
     },
-    {
-        headerName: "Dispath Date",
-        colId: 'DispatchDate',
-        field: 'DispatchDate',
-        floatingFilter:false
-    },
-    {
-        headerName: "Delay Beyond SLA",
-        colId: 'dbs',
-        field: 'dbs',
-        floatingFilter:false
-    },
-    {
-        headerName: "QTY",
-        colId: 'Qty',
-        field: 'Qty',
-        floatingFilter:false
-    },
-    {
-        headerName: "Current Loc",
-        colId: 'CurrentLoc',
-        field: 'CurrentLoc',
-        floatingFilter:false,
-        cellRenderer:'currentLocationCellRenderer',
-        cellRendererParams:{
-          onClick:onOpenSubmitCurrentLocation
+    CurrentLoc: {
+      cellRenderer: 'currentLocationCellRenderer',
+      cellRendererParams: {
+        onClick: onOpenSubmitCurrentLocation
       },
-      editable:true
+      editable: true
     },
-    {
-        headerName: "On-Hand Inventory penetration",
-        colId: 'on_hand_penetration',
-        field: 'on_hand_penetration',
-        cellRenderer:'colorCellRenderer',
-        floatingFilter:false
+    on_hand_penetration: {
+      cellRenderer:'colorCellRenderer',
     },
-    {
-        headerName: "Action",
-        colId: 'action',
-        field: 'action',
-        cellRenderer: 'submitRemarkCellRenderer',
-        cellRendererParams:{
-            onClick:onOpenSubmitRemark
-        },
-        floatingFilter:false,
-        editable:true
+    action: {
+      cellRenderer: 'submitRemarkCellRenderer',
+      cellRendererParams: {
+        onClick: onOpenSubmitRemark
+      },
+      editable: true
     },
-      {
-        headerName: "ETA",
-        colId: 'ETA',
-        field: 'ETA',
-        cellRenderer:'etaCellRenderer',
-        cellRendererParams:{
-          onClick:onOpenSubmitETA
-        },
-        floatingFilter:false,
-        editable:true,
-        cellDataType:'dateString'
+    ETA: {
+      cellRenderer: 'etaCellRenderer',
+      cellRendererParams: {
+        onClick: onOpenSubmitETA
+      },
+      editable: true,
+      cellDataType: 'dateString'
     },
-      {
-          headerName: "",
-          colId: 'rh',
-          field: 'rh',
-          cellRenderer:'remarksCellRenderer',
-          cellRendererParams:{
-              onClick:onOpenRemarkHistory
-          },
-          floatingFilter:false,
-          maxWidth:70
-      }]
-    },[])
+    rh: {
+      cellRenderer: 'remarksCellRenderer',
+      cellRendererParams: {
+        onClick: onOpenRemarkHistory
+      },
+      maxWidth: 70
+    }
+  }
+
+    // const colDefs = useMemo(():ColDef[]=>{
+    //    return [
+    //   {
+    //     headerName: "Order No",
+    //     colId: 'OrderNo',
+    //     field: 'OrderNo',
+    //     floatingFilter:false,
+    //     cellRenderer: 'agGroupCellRenderer'
+    // },
+    // {
+    //     headerName: "Dispath Date",
+    //     colId: 'DispatchDate',
+    //     field: 'DispatchDate',
+    //     floatingFilter:false
+    // },
+    // {
+    //     headerName: "Delay Beyond SLA",
+    //     colId: 'dbs',
+    //     field: 'dbs',
+    //     floatingFilter:false
+    // },
+    // {
+    //     headerName: "QTY",
+    //     colId: 'Qty',
+    //     field: 'Qty',
+    //     floatingFilter:false
+    // },
+    // {
+    //     headerName: "Current Loc",
+    //     colId: 'CurrentLoc',
+    //     field: 'CurrentLoc',
+    //     floatingFilter:false,
+    //     cellRenderer:'currentLocationCellRenderer',
+    //     cellRendererParams:{
+    //       onClick:onOpenSubmitCurrentLocation
+    //   },
+    //   editable:true
+    // },
+    // {
+    //     headerName: "On-Hand Inventory penetration",
+    //     colId: 'on_hand_penetration',
+    //     field: 'on_hand_penetration',
+    //     cellRenderer:'colorCellRenderer',
+    //     floatingFilter:false
+    // },
+    // {
+    //     headerName: "Action",
+    //     colId: 'action',
+    //     field: 'action',
+    //     cellRenderer: 'submitRemarkCellRenderer',
+    //     cellRendererParams:{
+    //         onClick:onOpenSubmitRemark
+    //     },
+    //     floatingFilter:false,
+    //     editable:true
+    // },
+    //   {
+    //     headerName: "ETA",
+    //     colId: 'ETA',
+    //     field: 'ETA',
+    //     cellRenderer:'etaCellRenderer',
+    //     cellRendererParams:{
+    //       onClick:onOpenSubmitETA
+    //     },
+    //     floatingFilter:false,
+    //     editable:true,
+    //     cellDataType:'dateString'
+    // },
+    //   {
+    //       headerName: "",
+    //       colId: 'rh',
+    //       field: 'rh',
+    //       cellRenderer:'remarksCellRenderer',
+    //       cellRendererParams:{
+    //           onClick:onOpenRemarkHistory
+    //       },
+    //       floatingFilter:false,
+    //       maxWidth:70
+    //   }]
+    // },[])
 
     return {
         agGridProps,
         rowData,
         colDefs,
         remark,
-        isLoading : isDataLoading || isCountLoading,
+        isLoading : isDataLoading || isCountLoading || isSavedDataLoading || isUIConfigLoading,
+        isError,
         remarkHistory,
         isSubmitRemarkToolTipOpen,
         isRemarkHistoryToolTipOpen,
@@ -635,7 +696,8 @@ const useInTransitWhereAbouts = ()=>{
         editedRows,
         onSubmitEditedRows,
         themeUi,
-        lastRunDate
+        lastRunDate,
+        onResetCallback
     }
 }
 

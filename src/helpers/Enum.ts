@@ -22,6 +22,10 @@ export enum UIColumnConfigName{
     DBM = "NormSuggestion",
     ChronicUnavailability = "ChronicUnavailability",
     OER = "OpenExpeditingRequests",
+    OAR = "OrderAllocationReport",
+    TRR = "RRR_OA",
+    InTransit = "InTransitWhereAbouts",
+    BuffertrendReport = "BuffertrendReport"
 }
 
 export enum UserUIColumnConfigName{
@@ -38,4 +42,9 @@ export enum UserUIColumnConfigName{
     DBM = "DBMNorm",
     ChronicUnavailability = "ChronicUnavailability",
     OER = "OpenExpeditingRequests",
+    OAR = "OrderAllocationReport",
+    TRR = "RRRColorBandWise",
+    InTransit = "InTransitWhereAbouts",
+    BTROnHand = "BTRon-hand",
+    BTRPipeline = "BTRpipeline"
 }
