@@ -3427,7 +3427,6 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   result = result.filter((r) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
  
   if (excludeColumns) result = result.filter((r) => r.colId && !excludeColumns.includes(r.colId))
-  console.log(result,"result")
   return result
 
 }

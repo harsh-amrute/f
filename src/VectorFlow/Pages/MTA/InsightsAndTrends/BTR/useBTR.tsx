@@ -257,7 +257,6 @@ const useBTR = () => {
         const loaderId = notifyLoader("Loading data")
         try {
             const data = await getBTRData(payload)
-            console.log(data, "data");
             setEcoRowData(mapBTRRowData(data.data.data.eco, horizon))
             setTechRowData(mapBTRRowData(data.data.data.tech, horizon))
             setDateLabels(data.data.data.labels[0])
