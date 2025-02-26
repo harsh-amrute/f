@@ -37,7 +37,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const staticTableColDefs = useMemo<any>(() => {
         if (!techTable.columnDefs) return []
-        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn"].includes(col.colId));
+        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn", "WhCode"].includes(col.colId));
         const newColDef = colDefs.map((colDef: any) => {
             if (colDef.colId === "Category") {
                 colDef.pinned = "left";
@@ -54,7 +54,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const techTableColDefs = useMemo<any>(() => {
         if (!techTable.columnDefs) return []
-        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && !['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn"].includes(col.colId));
+        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && !['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"].includes(col.colId));
         const newColDef = colDefs.map((colDef: any) => {
             colDef.pinned = false;
             colDef.filter=false;
@@ -65,12 +65,13 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const ecoTableColDefs = useMemo<any>(() => {
         if (!ecoTable.columnDefs) return []
-        const colDefs = ecoTable.columnDefs.map((colDef: any) => {
+        const colDefs = ecoTable.columnDefs.filter((col: any) => col.colId && !["WhCode"].includes(col.colId));
+        const newColDef = colDefs.map((colDef: any) => {
             colDef.pinned = false;
             colDef.filter=false;
             return colDef;
         });
-        return colDefs;
+        return newColDef
     }, [techTable.columnDefs]);
 
     const handleChange = (sizes: Array<number>) => {
