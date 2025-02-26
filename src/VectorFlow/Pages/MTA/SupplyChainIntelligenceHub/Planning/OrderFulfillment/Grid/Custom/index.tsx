@@ -1,4 +1,4 @@
-import {useEffect, useState,useContext } from "react";
+import {useEffect, useContext, useState } from "react";
 
 // import "./styles.css";
 import VFTable from "../../../../../../../../components/VectorFLOW/commons/VFTable";
@@ -12,17 +12,17 @@ import { toast } from 'react-toastify';
 import { useGetState } from "../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../context/GridStateContext";
 import { GridState } from "../../../../../../../../VectorFlow/types/BPR";
-import { getProductAndLocationHeirarchiesFromEnv, convertStringNumToNumber } from '../../../../../../../../helpers/utils';
+import {getProductAndLocationHeirarchiesFromEnv, convertStringNumToNumber, getColumnDefinationsMTA} from '../../../../../../../../helpers/utils';
+import { UserUIColumnConfigName } from "../../../../../../../../helpers/Enum";
 
 
 
 
-const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
+const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
 
+    const {ref,gridColDefs} = useContext(GridStateContext)
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
-    const {ref} = useContext(GridStateContext)
-
     const [gridState,setGridState] = useState<GridState>()
 
     const chunkSize = 10000;
@@ -30,28 +30,32 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
 
-    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
-        let colDefs = [];
+    // remove after merge
+    // const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+    //     let colDefs = [];
 
-        colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{enablePivot:true, enableValue:true,enableRowGroup:true}); 
-            if(customColdef) return customColdef;
+    //     colDefs = columns.map((column:{header:string,colCode:string})=>{
+    //         const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{enablePivot:true, enableValue:true,enableRowGroup:true}); 
+    //         if(customColdef) return customColdef;
 
-            return {
-                field:column['colCode'],
-                colId:column['colCode'],
-                headerName:column['header'],
-                enablePivot:true,
-                enableValue:true,
-                enableRowGroup:true,
-            }
-        })
-        return [...colDefs];
-    }
+    //         return {
+    //             field:column['colCode'],
+    //             colId:column['colCode'],
+    //             headerName:column['header'],
+    //             enablePivot:true,
+    //             enableValue:true,
+    //             enableRowGroup:true,
+    //         }
+    //     })
+    //     return [...colDefs];
+    // }
+
+
+
     useEffect(()=>{
         const getTableState = async()=>{
           try{
-            const data =  await getState({reportname: "ExcessInventorycustom"})
+            const data =  await getState({reportname: UserUIColumnConfigName.Order_Fulfillment_Review_CS})
             setGridState(JSON.parse(data.data.data))
           }catch(err:any){
             setGridState({
@@ -62,20 +66,26 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
           }
         }
         getTableState()
-    },[])
-    
+    },[colDefs])
+
+    useEffect(()=>{
+        if(ref?.current && gridState && gridState?.columns.length>0){
+            ref?.current?.api.applyColumnState({state:gridState.columns, applyOrder:true})
+            ref?.current?.api.setGridOption('pivotMode',gridState.pivot)
+        }
+    },[gridState,ref])
+
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
             const rows:any = [];
-            let uiconfig = [];
             try {
      
                 const numberOfPages = Math.ceil(recordCount/chunkSize);
                 const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
                 
-                for(let i=1; i<=numberOfPages; i++){
+                for(let i=0; i<=numberOfPages; i++){
                     const body = {
-                        category:'excessInventory',
+                        category:'orderFulfillment',
                         type:'review',
                         filters:[],
                         paginationParameter:{
@@ -85,15 +95,16 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                     }
                     const result = await getPlanningDataCustom(body);
                     if(result.data.data === null) throw new Error("Something Went Wrong")
-                    if(uiconfig.length < 1){
-                        uiconfig = result.data.data['uiConfig']
-                    }
                     const rowDataAfterTypeCasting = convertStringNumToNumber(result.data.data.data)
                     rows.push(...rowDataAfterTypeCasting)
                     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
                     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
                 }
-                setColDefs(mapUIConfigToColdefs(uiconfig));
+
+                // remove after merge
+                // setColDefs(mapUIConfigToColdefs(uiconfig));
+
+                setColDefs(getColumnDefinationsMTA(gridColDefs));
                 toast.dismiss(toastId);
            
                 notifySuccess(`Data Fetched Successfully`);
@@ -101,7 +112,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 toast.dismiss();
                 notifyError('Something Went Wrong');
               }
-            console.log(rows)
+           
             setRowData(rows);
 
         }
@@ -113,37 +124,37 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
         return <VFLoader/>
     }
 
-    const sideBarForExcessInventory = {
-    toolPanels: [
-      {
-        id: "columns",
-        labelDefault: "Columns",
-        labelKey: "columns",
-        iconKey: "columns",
-        toolPanel: "agColumnsToolPanel",
-        // toolPanelParams: {},
-      },
-      {
-        id: 'filters',
-        labelDefault: 'Filters',
-        labelKey: 'filters',
-        iconKey: 'filter',
-        toolPanel: 'agFiltersToolPanel',
-      }
-    ],
-    defaultToolPanel:'',
-    }
-
+    const sideBarForOrderFullFillment = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            // toolPanelParams: {},
+          },
+          {
+            id: 'filters',
+            labelDefault: 'Filters',
+            labelKey: 'filters',
+            iconKey: 'filter',
+            toolPanel: 'agFiltersToolPanel',
+          }
+        ],
+        defaultToolPanel:'',
+        }
 
     
     return(
         <>
         <SCDynamicContainer className="ag-theme-planning-custom">
             <VFTable
+                height={'100%'}
                 ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
-                sideBar={sideBarForExcessInventory}
+                sideBar={sideBarForOrderFullFillment}
                 enableCharts={true}
                 enableRangeSelection={true} 
                 rowSelection="multiple"
@@ -159,22 +170,8 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
-                onGridReady={(params)=>{
-                    if(gridState){
-                        params.api.applyColumnState({state:gridState.columns})
-                        params.api.setGridOption('pivotMode',gridState.pivot)
-                        if(gridState.charts && Array.isArray(gridState.charts) && gridState.charts.length>0){
-                            gridState.charts.forEach((c:any)=>{
-                                params.api.restoreChart(c)
-                            }) 
-                        }              
-                    }
-                 }}
-                pivotMode={true}
-                suppressDragLeaveHidesColumns={true}
                 disableZoomScaling={true}
                 rowHeight={30}
-                height={'100%'}
             />
         </SCDynamicContainer>
         </>
@@ -182,4 +179,4 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
     
 }
 
-export default ExcessInventoryCustomCharts;
+export default OrderFulfillmentCustomCharts;

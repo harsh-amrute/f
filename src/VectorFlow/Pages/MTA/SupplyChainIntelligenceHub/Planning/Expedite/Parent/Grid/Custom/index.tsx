@@ -1,4 +1,4 @@
-import {useEffect, useContext, useState } from "react";
+import {useEffect, useState,useContext } from "react";
 
 // import "./styles.css";
 import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VFTable";
@@ -6,80 +6,78 @@ import VFTable from "../../../../../../../../../components/VectorFLOW/commons/VF
 import '../../../styles.css';
 import { useGetPlanningDataCustom } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/Planning";
 import VFLoader from "../../../../../../../../../components/VectorFLOW/commons/VFLoader";
-import { SCDynamicContainer } from "../../../styles";
 import { notifyLoader,notifyError,notifySuccess } from "../../../../../../../../../helpers/notify";
+import { SCDynamicContainer } from "../../../styles";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../../../../redux/store/store";
 import { toast } from 'react-toastify';
-
-import { useGetState } from "../../../../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
-
+import { useGetState } from "../../../../../../../../Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { GridStateContext } from "../../../../../../../../../context/GridStateContext";
-import { GridState } from "../../../../../../../../../VectorFlow/types/BPR";
-import { getProductAndLocationHeirarchiesFromEnv } from "../../../../../../../../../helpers/utils";
+import { getColumnDefinationsMTA, getProductAndLocationHeirarchiesFromEnv } from '../../../../../../../../../helpers/utils';
 
 
 
-const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
 
-    const {ref} = useContext(GridStateContext)
+const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
 
-    const [gridState,setGridState] = useState<GridState>()
+    const {ref,gridColDefs} = useContext(GridStateContext)
 
+    const [columnState,setColumnState] = useState<any>()
+    const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
     const chunkSize = 10000;
 
+    const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
     const {mutateAsync:getPlanningDataCustom,isLoading} = useGetPlanningDataCustom();
-    const {mutateAsync:getState} = useGetState()
 
-    const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
-        let colDefs = [];
+    // remove after merge
+    // const mapUIConfigToColdefs = (columns:Array<{header:string,colCode:string}>) => {
+    //     let colDefs = [];
 
-        colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{enablePivot:true, enableValue:true,enableRowGroup:true}); 
-            if(customColdef) return customColdef;
-            return {
-                field:column['colCode'],
-                colId:column['colCode'],
-                headerName:column['header'],
-                enablePivot:true,
-                enableValue:true,
-                enableRowGroup:true,
-            }
-        })
-        return [...colDefs];
-    }
+    //     colDefs = columns.map((column:{header:string,colCode:string})=>{
+    //         const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{enablePivot:true, enableValue:true,enableRowGroup:true}); 
 
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({reportname: "GITToChildcustom"})
-            setGridState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:colDefs,
-                pivot:false
-            })
-          }
-        }
-        getTableState()
-    },[])
+    //         if(customColdef) return customColdef;
+    //         return {
+    //             field:column['colCode'],
+    //             colId:column['colCode'],
+    //             headerName:column['header'],
+    //             enablePivot:true,
+    //             enableValue:true,
+    //             enableRowGroup:true,
+    //         }
+    //     })
+    //     return [...colDefs];
+    // }
+
+
+    // useEffect(()=>{
+    //     const getTableState = async()=>{
+    //       try{
+    //         const data =  await getState({reportname: "InTransitWhereAbouts"})
+    //         setColumnState(JSON.parse(data.data.data))
+    //       }catch(err:any){
+    //         setColumnState(colDefs)
+    //       }
+    //     }
+    //     getTableState()
+    // },[currentGridState])
 
 
     useEffect(()=>{
         const fetchCustomPlanningData = async ()=> {
+            
             const rows:any = [];
-            let uiconfig = [];
             try {
-     
                 const numberOfPages = Math.ceil(recordCount/chunkSize);
                 const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
                 
                 for(let i=1; i<=numberOfPages; i++){
                     const body = {
-                        category:'git',
-                        type:'child',
+                        category:'expedite',
+                        type:'parent',
                         filters:[],
                         paginationParameter:{
                             pageNumber:i,
@@ -88,15 +86,14 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                     }
                     const result = await getPlanningDataCustom(body);
                     if(result.data.data === null) throw new Error("Something Went Wrong")
-                    console.log(result.data.data.data);
-                    if(uiconfig.length < 1){
-                        uiconfig = result.data.data['uiConfig']
-                    }
                     rows.push(...result.data.data.data)
                     if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${recordCount} / ${recordCount}`})
                     else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${recordCount}`})
                 }
-                setColDefs(mapUIConfigToColdefs(uiconfig));
+                // remove after merge
+                // setColDefs(mapUIConfigToColdefs(uiconfig));
+
+                setColDefs(getColumnDefinationsMTA(gridColDefs))
                 toast.dismiss(toastId);
            
                 notifySuccess(`Data Fetched Successfully`);
@@ -112,16 +109,15 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     },[])
    
 
-    if(isLoading){
+    if(isLoading || isSavedDataLoading){
         return <VFLoader/>
     }
 
     
     return(
         <>
-        <SCDynamicContainer className="ag-theme-planning-custom">
+        <SCDynamicContainer>
             <VFTable
-                height={'100%'}
                 ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
@@ -141,20 +137,12 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}
-                disableZoomScaling={true}
                 onGridReady={(params)=>{
-                    if(gridState){
-                        params.api.applyColumnState({state:gridState.columns})
-                        params.api.setGridOption('pivotMode',gridState.pivot)
-    
-                        if(gridState.charts && Array.isArray(gridState.charts) && gridState.charts.length>0){
-                            gridState.charts.forEach((c:any)=>{
-                                params.api.restoreChart(c)
-                            }) 
-                        }              
-                    }
+                    // if(columnState){
+                    //  params.api.applyColumnState({state:columnState})
+                    // }
                  }}
-                rowHeight={30}
+                height={'100%'}
             />
         </SCDynamicContainer>
         </>
@@ -162,4 +150,4 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     
 }
 
-export default MonitorGITChildCustomCharts;
+export default ExpediteParentCustomCharts;

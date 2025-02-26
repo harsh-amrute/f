@@ -121,7 +121,6 @@ const ActionToolBar = ({
     }
     return total;
   };
- 
   const handleResetAllState = () => {
     onResetAllState(`${currCategory}${currentTab}`);
   };
@@ -677,6 +676,7 @@ const ActionToolBar = ({
     return (
       <VFFloatingTab
         tabs={tabsList}
+        
         defaultTab={
           tabsList.findIndex((object) => {
             return object.value === currentTab;
@@ -726,10 +726,10 @@ const ActionToolBar = ({
           <SCCustomActionsContainer>
           {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
                <>
-                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>Edit Filter</VFButton>
+                  <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>
+                    {getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}
+                  </VFButton>
                   {isFilterOpen && renderFilter()}
-                               
-
                 </>
             }
             {currentTab === "dbmnormsuggestions" && (
@@ -1101,7 +1101,7 @@ const ActionToolBar = ({
                             UPDATE_PLANNING_DATA({
                               currentTab: currentTab,
                               currentCategory: currentCategory,
-                              currentView: "grid",
+                              currentView: "chart",
                             })
                           );
                         }}

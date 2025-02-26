@@ -1169,6 +1169,11 @@ const useViewModify = (pageType:string) => {
               }
               else{
                 data = await modifyMaster(payload);
+                if (data.status !== 200) {
+                  throw new Error(`Request failed with status`);
+               }
+                
+                
               }
 
 
