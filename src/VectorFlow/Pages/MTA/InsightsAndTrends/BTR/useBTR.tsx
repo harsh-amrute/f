@@ -160,18 +160,19 @@ const useBTR = () => {
                     }
                     return { background: "#F7F7F7" };
                 },
+                components: {
+                    graphCellRenderer: SeasonalityGraphCellRenderer,
+                    categoryCellRenderer: CategoryCellRenderer,
+                    categoryToolTip: CategoryToolTip,
+                    availabilityCellRenderer: AvailabilityCellRenderer,
+                    colorCellRenderer: ColorCellRenderer,
+                    tagsCellRenderer: TagsCellRenderer,
+                    availabilityToolTip: AvailabilityToolTip,
+                    // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
+                },
             },
             rowHeight: 25,
-            components: {
-                graphCellRenderer: SeasonalityGraphCellRenderer,
-                categoryCellRenderer: CategoryCellRenderer,
-                categoryToolTip: CategoryToolTip,
-                availabilityCellRenderer: AvailabilityCellRenderer,
-                colorCellRenderer: ColorCellRenderer,
-                tagsCellRenderer: TagsCellRenderer,
-                availabilityToolTip: AvailabilityToolTip,
-                // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
-            },
+            
             defaultColDef: defaultColDef,
         }
     }, [])

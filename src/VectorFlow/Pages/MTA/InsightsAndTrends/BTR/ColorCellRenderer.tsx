@@ -1,35 +1,35 @@
 import {BPRColorCellRendererWrapper} from '../../SupplyChainIntelligenceHub/BPR/styles'
 
 const colorMapper =(color:number)=> {
-        if(color<=0){
-            return {
-                "bg":"#cecece",
-                "text":"black"
-            }
+    if(color<=0){
+        return {
+            "bg":"#cecece",
+            "text":"black"
         }
-        if(color<33.33 && color>0){
-            return {
-                "bg":"#418D18",
-                "text":"white"
-            }
-        }
-        if(color>33.33 && color<66.66){
-            return {
-                "bg":"#EBBF2B",
-                "text":"white"
-            }
-        }
-        if(66.66<color && color<99.99){
-            return {
-                "bg":"#F04D4D",
-                "text":"white"
-            }
-        }
-
-        return{
-            "bg":"#000000",
+    }
+    if(color>0 && color<=33.33){
+        return {
+            "bg":"#418D18",
             "text":"white"
-        }  
+        }
+    }
+    if(color>33.33 && color<=66.66){
+        return {
+            "bg":"#EBBF2B",
+            "text":"white"
+        }
+    }
+    if(color>66.66 && color<=99.99){
+        return {
+            "bg":"#F04D4D",
+            "text":"white"
+        }
+    }
+    return{
+        "bg":"#000000",
+        "text":"white"
+    }
+
 }
 
  const ColorCellRenderer = (params:any)=>{
