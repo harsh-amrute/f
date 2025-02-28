@@ -33,19 +33,16 @@ import { BTRCategoryTextToNumberMapper } from "../../../../../helpers/BPRConstan
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 import _ from 'lodash'
-<<<<<<< HEAD
 import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { useSelector,useDispatch } from "react-redux";
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer";
 import type { RootState } from '../../../../../redux/store/store';
 
-=======
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { format } from "date-fns"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
->>>>>>> develop-vflow
 
 const useBTR = () => {
 
@@ -170,7 +167,6 @@ const useBTR = () => {
         return {
             getMainMenuItems: MainMenuItemsCustomization,
             gridOptions: {
-<<<<<<< HEAD
                 components: {
                     grapCellRenderer: BPRGraphCellRenderer,
                     graphCellRenderer: SeasonalityGraphCellRenderer,
@@ -184,8 +180,6 @@ const useBTR = () => {
 
 
                 },
-=======
->>>>>>> develop-vflow
                 getRowStyle: (params: any) => {
                     if (params.node.rowIndex % 2 === 0) {
                         return { background: "#EBEBEB" };
@@ -194,16 +188,6 @@ const useBTR = () => {
                 },
             },
             rowHeight: 25,
-            components: {
-                graphCellRenderer: SeasonalityGraphCellRenderer,
-                categoryCellRenderer: CategoryCellRenderer,
-                categoryToolTip: CategoryToolTip,
-                availabilityCellRenderer: AvailabilityCellRenderer,
-                colorCellRenderer: ColorCellRenderer,
-                tagsCellRenderer: TagsCellRenderer,
-                availabilityToolTip: AvailabilityToolTip,
-                // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
-            },
             defaultColDef: defaultColDef,
         }
     }, [])
@@ -383,8 +367,44 @@ const useBTR = () => {
             return [];
         }
     };
+
+    const onOpenDailyDataGraph = async (params:any) => {
+        console.log(params,"params")
+            const payload:any = {
+                SKUCode:params.data['SKUCode'],
+                WHCode:params.data['WhCode']
+            }
+            const result = await getDailyData(payload)
+            const data = result.data.data[0];
+            const dailyData:DailyDataGraph = {
+                rowData:params.data,
+                chartData:data['StockData'],
+                normChangeData:data['NormChangeHistoryData'],
+                masterData:data['MasterData']?.[0],
+                suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
+                monitoringData:data['MonitoringData']
+            }
+
+            console.log("dailyDataaa",dailyData);
+
+            dispatch(UPDATE_DAILY_DATA(dailyData));
+            dispatch(TOGGLE_GRAPH_MODAL(true));
+        }
+
     
     const CustomHeader = {
+        dailydatagraph: {
+            width: 45,
+            minWidth: 45,
+            filter: false,
+            cellRenderer: 'grapCellRenderer',
+            cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+            pinned: 'left',
+            lockPosition: true,
+            resizable: false,
+            floatingFilter: false,
+            suppressColumnsToolPanel: false
+        },
         Category: {
             cellRenderer: 'categoryCellRenderer',
             tooltipField: "Category",
@@ -430,7 +450,7 @@ const useBTR = () => {
                 }
                 return colDef
             })
-            const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
+            const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D') || r.colId === 'DailyDataGraph') || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
             return result;
         } else return [];
     }, [techRowData, currentTab, verticalView, dateLabels]);
@@ -453,7 +473,6 @@ const useBTR = () => {
                 return colDef
             })
             const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
-
             return result;
         } else return [];
     }, [ecoRowData, dateLabels, verticalView, currentTab]);
@@ -616,46 +635,9 @@ const useBTR = () => {
 
     }
 
-<<<<<<< HEAD
-      const onOpenDailyDataGraph = async (params:any) => {
-        console.log(params,"params")
-            const payload:any = {
-                SKUCode:params.data['SKUCode'],
-                WHCode:params.data['WhCode']
-            }
-            const result = await getDailyData(payload)
-            const data = result.data.data[0];
-            const dailyData:DailyDataGraph = {
-                rowData:params.data,
-                chartData:data['StockData'],
-                normChangeData:data['NormChangeHistoryData'],
-                masterData:data['MasterData']?.[0],
-                suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
-                monitoringData:data['MonitoringData']
-            }
-
-            console.log("dailyDataaa",dailyData);
-
-            dispatch(UPDATE_DAILY_DATA(dailyData));
-            dispatch(TOGGLE_GRAPH_MODAL(true));
-        }
-
-
-    const techColDefs = useMemo((): Array<ColDef> => {
-        if (techRowData.length === 0) return []
-        if (verticalView && currentTab.id === '1') return mapBTRRowDataToColDefs(techRowData[0], dateLabels, horizon, true, ["RN"], onOpenDailyDataGraph)
-        return mapBTRRowDataToColDefs(techRowData[0], dateLabels, horizon, false, ["RN"], onOpenDailyDataGraph)
-    }, [techRowData, dateLabels, verticalView, currentTab])
-
-    const ecoColDefs = useMemo(():Array<ColDef>=>{
-        if(ecoRowData.length===0)return []
-        if(verticalView && currentTab.id==="1")return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,['Category',"LocationName","Norm","SKUCode","SKUDescription","Tags","VirtualNorm","RN","pc","pn"], onOpenDailyDataGraph)
-        return mapBTRRowDataToColDefs(ecoRowData[0],dateLabels,horizon,false,["RN"], onOpenDailyDataGraph)
-    },[ecoRowData,currentTab,verticalView,dateLabels])
+      
     
 
-=======
->>>>>>> develop-vflow
     return {
         ecoRef,
         techRef,
@@ -688,12 +670,10 @@ const useBTR = () => {
         ecoColDefs,
         setHorizon,
         lastRunDate,
-<<<<<<< HEAD
         dailyData,
-        showDailyDataGraphModal
-=======
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
         onResetCallback
->>>>>>> develop-vflow
     }
 }
 

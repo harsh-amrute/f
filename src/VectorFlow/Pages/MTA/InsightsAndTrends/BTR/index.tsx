@@ -8,6 +8,7 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
+import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable";
 
 const BufferTrendReport = () => {
 
@@ -28,6 +29,7 @@ const BufferTrendReport = () => {
         setTempDownloadData,
         tempAgGridProps,
         exportExcelRowData,
+        showNormChangeHistoryTable,
         setExportExcelRowData,
         exportExcelColumns,
         setExportExcelColumns,
@@ -41,12 +43,8 @@ const BufferTrendReport = () => {
         ecoColDefs,
         setHorizon,
         lastRunDate,
-<<<<<<< HEAD
-        showDailyDataGraphModal
-
-=======
+        showDailyDataGraphModal,
         onResetCallback
->>>>>>> develop-vflow
     } = useBTR()
 
     
@@ -91,6 +89,9 @@ const BufferTrendReport = () => {
             )}
              {
             showDailyDataGraphModal && <DailyDataGraphModal rowData={dailyData.rowData} chartData={dailyData.chartData} normChangeData={dailyData.normChangeData} masterData={dailyData.masterData} isModalOpen={showDailyDataGraphModal} suggestionData={dailyData.suggestionData} monitoringData={dailyData.monitoringData} skuKey={'SKUCode'} whKey={'WHName'} />
+        }
+        {
+            showNormChangeHistoryTable && <NormChangeHistoryTable data={dailyData.normChangeData} />
         }
         <BTRLayoutWrapper>
                 <BTRLayoutTabsWrapper>

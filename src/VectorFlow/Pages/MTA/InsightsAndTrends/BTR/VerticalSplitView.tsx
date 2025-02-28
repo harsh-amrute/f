@@ -54,7 +54,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const techTableColDefs = useMemo<any>(() => {
         if (!techTable.columnDefs) return []
-        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && !['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"].includes(col.colId));
+        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && !['DailyDataGraph','Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"].includes(col.colId));
         const newColDef = colDefs.map((colDef: any) => {
             colDef.pinned = false;
             colDef.filter=false;
@@ -65,7 +65,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const ecoTableColDefs = useMemo<any>(() => {
         if (!ecoTable.columnDefs) return []
-        const colDefs = ecoTable.columnDefs.filter((col: any) => col.colId && !["WhCode"].includes(col.colId));
+        const colDefs = ecoTable.columnDefs.filter((col: any) => col.colId && !['DailyDataGraph',"WhCode"].includes(col.colId));
         const newColDef = colDefs.map((colDef: any) => {
             colDef.pinned = false;
             colDef.filter=false;
@@ -172,7 +172,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 gridOptions={{
                                     ...techTable.gridOptions,
                                 }}
-                                columnDefs={techTableColDefs}
+                                columnDefs={techTableColDefs.filter((col: any) =>col.colId!=="DailyDataGraph")}
                                 rowData={techTable.rowData}
                                 tooltipMouseTrack={true}
                                 tooltipShowDelay={0}
@@ -210,7 +210,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                             gridOptions={{
                                 ...ecoTable.gridOptions
                             }}
-                            columnDefs={ecoTableColDefs}
+                            columnDefs={ecoTableColDefs.filter((col: any) =>col.colId!=="DailyDataGraph")}
                             rowData={ecoTable.rowData}
                             tooltipMouseTrack={true}
                             tooltipShowDelay={0}
