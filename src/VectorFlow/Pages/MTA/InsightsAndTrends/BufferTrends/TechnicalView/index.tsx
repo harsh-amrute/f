@@ -44,6 +44,65 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
         // Parse the string to a floating-point number
     }));
 
+
+    const colors = [
+        { label: 'Black', value: 'black' },
+        { label: 'Blue', value: 'Blue' },
+        { label: 'Red', value: 'Red' },
+        { label: 'Yellow', value: '#FFBF00' },
+        { label: 'Green', value: 'Green' },
+        { label: 'White', value: 'grey' }
+    ];
+    
+    function TooltipRenderer({ datum }: any) {
+    
+        return `
+            <div style="background:#6C696A; color:white; padding:10px;">
+                <div style="color: white; padding: 5px; text-align: center;">
+                    <b>${datum.dt || "No Date"}</b>
+                </div>
+                <table style="width: 100%; color: white; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style=" text-align: left;">Category</th>
+                            <th style=" text-align: right;">
+                                ${graphs[0].pen.label === 'Percentage' ? 'Percentage' : 'Count'}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody styles="text-align:left;">
+                        ${colors.map(color => {
+                            const key = color.value === 'black' ? 'b' :
+                                        color.value === 'Blue' ? 'bu' :
+                                        color.value === 'Red' ? 'r' :
+                                        color.value === '#FFBF00' ? 'y' :
+                                        color.value === 'Green' ? 'g' :
+                                        color.value === 'grey' ? 'w' : null;
+    
+                            if (!key) return ''; 
+    
+                            return `
+                                <tr>
+                                    <td style="padding: 5px; background-color: #6C696A;">
+                                        <div style="display: flex; align-items: center;">
+                                            <div style="margin-right: 10px; height: 10px; width: 15px; background-color: ${color.value} ;"></div>
+                                            ${color.label}
+                                        </div>
+                                    </td>
+                                    <td style="padding: 5px; background-color: #6C696A; text-align: right;">
+                                        ${graphs[0].pen.label === 'Percentage' 
+                                            ? Math.round((datum[key] / datum.total) * 100) + '%'
+                                            : datum[key]}
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
     const options: AgChartOptions = {
         axes: [
             {
@@ -78,7 +137,10 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                 marker: {
                     fill: "Black",
                     stroke: "Black"
-                }
+                },
+                tooltip: {
+                    renderer: TooltipRenderer
+                },
             },
             {
                 type: "line",
@@ -90,7 +152,10 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                 marker: {
                     fill: "Blue",
                     stroke: "Blue"
-                }
+                },
+                tooltip: {
+                    renderer: TooltipRenderer
+                },
             },
             {
                 type: "line",
@@ -102,7 +167,10 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                 marker: {
                     fill: "Red",
                     stroke: "Red"
-                }
+                },
+                tooltip: {
+                    renderer: TooltipRenderer
+                },
             },
             {
                 type: "line",
@@ -114,7 +182,10 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                 marker: {
                     fill: "#FFBF00",
                     stroke: "#FFBF00"
-                }
+                },
+                tooltip: {
+                    renderer: TooltipRenderer
+                },
             },
             {
                 type: "line",
@@ -126,7 +197,10 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                 marker: {
                     fill: "Green",
                     stroke: "Green"
-                }
+                },
+                tooltip: {
+                    renderer: TooltipRenderer
+                },
             }
             ,
             {
@@ -140,7 +214,10 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                     fill: "grey",
                     stroke: "grey",
 
-                }
+                },
+                tooltip: {
+                    renderer: TooltipRenderer
+                },
             },
             {
                 type: "line",
@@ -153,6 +230,9 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                     fill: "purple",
                     stroke: "purple",
 
+                },
+                tooltip: {
+                    renderer: TooltipRenderer
                 },
             strokeWidth: 4
             }

@@ -36,7 +36,7 @@ const useOpenExpeditingRequests = () => {
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
 
-    const {mutateAsync:getData} = useGetOpenExpediteRequestData()
+  const { mutateAsync: getData, isLoading: isRowDataLoading } = useGetOpenExpediteRequestData();
     const {mutateAsync:addRemark} = useAddRemarkForExpedite()
     const {mutateAsync:getRemark} = useGetRemarkDetailsForExpedite()
 
@@ -138,12 +138,12 @@ const useOpenExpeditingRequests = () => {
 
   useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
-        const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
-        if (!result) {
-            console.error("Failed to apply column state", result);
-        }
+      const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+      if (!result) {
+        console.error("Failed to apply column state", result);
+      }
     }
-}, [internalRef, gridState]);
+  }, [internalRef, gridState]);
   
   const getOERUiConfig = async () => {
     try {
@@ -500,6 +500,7 @@ const useOpenExpeditingRequests = () => {
         agGridProps,
         rowData,
         OERColumns,
+        isLoading :isUIConfigLoading || isRowDataLoading ,      
         remark,
         remarkHistory,
         isSubmitRemarkToolTipOpen,

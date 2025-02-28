@@ -15,6 +15,7 @@ const BufferTrendReport = () => {
         currentTab,
         isLoading,
         techColDefs,
+        ecoRef,
         techRef,
         techTotalRows,
         verticalView,
@@ -40,8 +41,12 @@ const BufferTrendReport = () => {
         ecoColDefs,
         setHorizon,
         lastRunDate,
+<<<<<<< HEAD
         showDailyDataGraphModal
 
+=======
+        onResetCallback
+>>>>>>> develop-vflow
     } = useBTR()
 
     
@@ -49,13 +54,14 @@ const BufferTrendReport = () => {
     return (
         <GridStateContext.Provider
             value={{
-                ref: techRef,
+                ref: currentTab.id === "2" ? techRef : currentTab.id === "3" ? ecoRef : "",
                 exportExcelColumns: exportExcelColumns,
                 setExportExcelColumns: setExportExcelColumns,
                 tempDownloadData: tempDownloadData,
                 setTempDownloadData: setTempDownloadData,
                 exportExcelRowData: exportExcelRowData,
-                setExportExcelRowData: setExportExcelRowData
+                setExportExcelRowData: setExportExcelRowData,
+                onResetCallback: onResetCallback
             }}
         >
             <div style={{zoom:0.9,marginLeft:'10px'}}>

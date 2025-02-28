@@ -11,7 +11,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import { type RootState } from "../../../../../redux/store/store";
 import { DailyDataGraph } from "../../../../types/MTA"
-import { useGetDailyData, useGetState } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import useBPRFilter from '../../../../../hooks/useBPRFilter'
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
@@ -21,6 +21,7 @@ import { ColDef } from 'ag-grid-community';
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
+import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 
 const useDBM =()=>{
     //const [DBMApplySelectedNormData,setDBMApplySelectedNormData] = useState<any[]>([])

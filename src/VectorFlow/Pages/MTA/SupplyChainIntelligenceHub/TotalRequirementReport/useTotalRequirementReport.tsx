@@ -4,12 +4,12 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRDispatchColorCellRenderer } from "../RationedRequirementReport/RRRCellRenderers"
-import { convertUiConfigToOptions,  mapTotalRequirementFieldsToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions,  mapTotalRequirementFieldsToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
 import { notifyError} from "../../../../../helpers/notify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { defaultAgGridSideBarForBPR } from "../../../../../helpers/BPRConstants";
-import {  useGetState, useGetUiConfig } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig";
 import { GridRef } from "../../../../types/MDM"
 import { ColDef } from "ag-grid-enterprise"
 
@@ -19,6 +19,8 @@ import { TextToTextColorMapper } from "../BPR/BPRCellRenderers"
 // import { useDispatch } from "react-redux"
 // import { TOGGLE_GRAPH_MODAL, UPDATE_DAILY_DATA } from "../../../../../redux/actions/MTA"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
+import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 
 
 const useTotalRequirementReport =()=>{
@@ -51,15 +53,17 @@ const useTotalRequirementReport =()=>{
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
-    const {mutateAsync:getUiConfig,isLoading:isRRRBandwiseConfigLoading} = useGetUiConfig()
-
+    const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
+    
     // const {mutateAsync:getRRRBandwiseData} =useGetRRRData();
 
-    const {mutateAsync:getRRRBandwiseDataCount}=useGetRRRDataCount();
+    const {mutateAsync:getRRRBandwiseDataCount, isLoading: isRRRBandwiseDataCount}=useGetRRRDataCount();
 
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
 
-    const [gridState,setGridState] = useState<any>()
+    const [gridState, setGridState] = useState<any>()
+    const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+    
 
     // const [rowData,setRowData] = useState([]);
 
@@ -78,28 +82,47 @@ const useTotalRequirementReport =()=>{
         };
         fetchData();
     }, []);
-    
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({reportname: "RRRColorBandWise"})
-            setGridState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:[],
-                pivot:false
-            })
+
+    useEffect(() => {
+        if (colDefs.length) {
+          if (internalRef?.api) {
+            setMasterUIConfig(internalRef.api.getColumnState());
           }
         }
-        getTableState()
-    },[])
-  
-    useEffect(()=>{
-        if(internalRef && gridState && gridState.columns){
-            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+    }, [internalRef, colDefs]);
+    
+    const getUserColumnConfig = async () => {
+        const stateData = await getState({ "reportname": UserUIColumnConfigName.TRR })
+        if (stateData.data.data.length !== 0) {
+          const parsedContent = JSON.parse(stateData.data.data)
+                        
+          setGridState({
+            charts: parsedContent.charts,
+            columns: parsedContent.columns,
+            pivot: parsedContent.pivot,
+          })
+                  
+        } else {
+          console.log("Data not available");
         }
-    },[internalRef,gridState])
+    }
+  
+    useEffect(() => {
+        if (internalRef && gridState && gridState.columns) {
+            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }
+    }, [internalRef, gridState]);
+
+    const onResetCallback = async () => {
+        setGridState({
+            charts: [],
+            columns: masterUIConfig,
+            pivot: false,
+        })
+    };
 
     const getBandwiseDataCount=async (filter?:any) => {
         const rowDataCount =await getRRRBandwiseDataCount({
@@ -112,14 +135,26 @@ const useTotalRequirementReport =()=>{
         setRecordCount(rowDataCount?.data?.recordCount)
     }
 
-    const getRRRColorBandWiseUiConfig = async()=>{
-        try{
-            const response = await getUiConfig('RRR_OA')
-            setColDefs(mapTotalRequirementFieldsToColDefs(response.data.data))
-        }catch(err:any){
+    const getRRRColorBandWiseUiConfig = async () => {
+        try {
+            const response = await getUiConfig(UIColumnConfigName.TRR);
+            const MappedColumns = getColumnDefinationsMTA(response.data.data, CustomHeader);
+            setColDefs(MappedColumns);
+            setGridState({
+                charts: [],
+                columns: MappedColumns,
+                pivot: false
+            });
+        } catch (err: any) {
             notifyError("Something Went Wrong")
         }
     }
+
+    useEffect(() => {
+        if (colDefs.length) {
+            getUserColumnConfig();
+        }
+    }, [colDefs]);
 
 
     const onApplyFilter = async(filter:any)=>{
@@ -238,13 +273,20 @@ const useTotalRequirementReport =()=>{
 
     const generalFilterOptions = useMemo(()=>{
         return convertUiConfigToOptions(colDefs)
-    },[colDefs])
+    }, [colDefs])
+    
+    const CustomHeader = {
+        DispatchColor: {
+            floatingFilter: true,
+            cellRenderer: 'colorCellRenderer',
+        },
+    }
 
     return {
         isSideBarOpen,
         colDefs,
         agGridProps,
-        isLoading :  isRRRBandwiseConfigLoading,
+        isLoading :  isUIConfigLoading || isRRRBandwiseDataCount,
         rowData,
         recordCount,
         currentPage,
@@ -267,7 +309,8 @@ const useTotalRequirementReport =()=>{
         getBandwiseDataCount,
         ref,
         generalFilterOptions,
-        setRowData
+        setRowData,
+        onResetCallback
     }
 }
 

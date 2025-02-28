@@ -6,7 +6,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
 
 import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
@@ -33,11 +33,19 @@ import { BTRCategoryTextToNumberMapper } from "../../../../../helpers/BPRConstan
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 import _ from 'lodash'
+<<<<<<< HEAD
 import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { useSelector,useDispatch } from "react-redux";
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer";
 import type { RootState } from '../../../../../redux/store/store';
 
+=======
+import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
+import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
+import { format } from "date-fns"
+import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
+import { GridRef } from "../../../../../VectorFlow/types/MDM"
+>>>>>>> develop-vflow
 
 const useBTR = () => {
 
@@ -47,9 +55,11 @@ const useBTR = () => {
 
     const {mutateAsync:getDailyData} = useGetDailyData();
 
-    const ecoRef = useRef()
-    const techRef = useRef()
+    const ecoRef = useRef<GridRef>();
+    const techRef = useRef<GridRef>();
     const tempRef = useRef()
+    const [techInternalRef,setTechInternalRef] = useState<any>()
+    const [ecoInternalRef,setEcoInternalRef] = useState<any>()
     const tabs: Array<VFFloatingTabItemProps> = [
         {
             id: "1",
@@ -89,6 +99,9 @@ const useBTR = () => {
 
     const { data: countData, mutateAsync: getBTRDataCount, isLoading: isBTRCountLoading } = useGetBTRDataCount()
 
+    const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading, isError } = useGetUIConfigData();
+
+    const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState();
 
     const ecoTotalRows = useMemo(() => { return countData?.data.data.EcoCount }, [isBTRCountLoading])
 
@@ -107,6 +120,11 @@ const useBTR = () => {
     const [techRowData, setTechRowData] = useState<Array<any>>([])
     const [ecoRowData, setEcoRowData] = useState<Array<any>>([])
     const {date:lastRunDate} = useGetLastRunData()
+    const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [techGridState, setTechGridState] = useState<any>();
+    const [ecoGridState, setEcoGridState] = useState<any>();
+    const [techMasterUIConfig, setTechMasterUIConfig] = useState<any>([]);
+    const [ecoMasterUIConfig, setEcoMasterUIConfig] = useState<any>([]);
 
     const techPaginationProps: VFPaginationProps = {
         selectedRows: 0,
@@ -132,10 +150,27 @@ const useBTR = () => {
 
     }
 
+    const defaultColDef = {
+        floatingFilter: true,
+        filter: 'agMultiColumnFilter',
+        sortable: true,
+        cellStyle: {
+            "textAlign": "center",
+            'textOverflow': 'ellipsis',
+            'whiteSpace': 'nowrap'
+        },
+        flex: 1,
+        width: 50,
+        minWidth: 80,
+        cellClass:'btr_cell_style'
+
+    }
+
     const gridProps = useMemo(():AgGridReactProps=>{
         return {
             getMainMenuItems: MainMenuItemsCustomization,
             gridOptions: {
+<<<<<<< HEAD
                 components: {
                     grapCellRenderer: BPRGraphCellRenderer,
                     graphCellRenderer: SeasonalityGraphCellRenderer,
@@ -149,6 +184,8 @@ const useBTR = () => {
 
 
                 },
+=======
+>>>>>>> develop-vflow
                 getRowStyle: (params: any) => {
                     if (params.node.rowIndex % 2 === 0) {
                         return { background: "#EBEBEB" };
@@ -156,7 +193,18 @@ const useBTR = () => {
                     return { background: "#F7F7F7" };
                 },
             },
-            rowHeight: 25
+            rowHeight: 25,
+            components: {
+                graphCellRenderer: SeasonalityGraphCellRenderer,
+                categoryCellRenderer: CategoryCellRenderer,
+                categoryToolTip: CategoryToolTip,
+                availabilityCellRenderer: AvailabilityCellRenderer,
+                colorCellRenderer: ColorCellRenderer,
+                tagsCellRenderer: TagsCellRenderer,
+                availabilityToolTip: AvailabilityToolTip,
+                // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
+            },
+            defaultColDef: defaultColDef,
         }
     }, [])
 
@@ -167,9 +215,65 @@ const useBTR = () => {
         }
     };
 
+    const getBPRUiConfig = async () => {
+        try {
+            const response = await getUiConfig(UIColumnConfigName.BuffertrendReport);
+            setInitialColumnState(response.data.data);
+        } catch (err: any) {
+            notifyError("Something Went Wrong")
+        }
+    }
 
-    // const [defaultColDefs,setDefaultColDefs] = useState<Array<ColDef>>([])
+    const getUserColumnConfig = async () => {
+        if (currentTab.id === "2") {
+            const stateData = await getState({ "reportname": UserUIColumnConfigName.BTROnHand });
+            if (stateData.data.data.length !== 0) {
+                const parsedContent = JSON.parse(stateData.data.data)
+                setTechGridState({
+                    charts: parsedContent.charts,
+                    columns: parsedContent.columns,
+                    pivot: parsedContent.pivot,
+                })
+            } else {
+                console.log("State Data not available for BTROnHand");
+            }
+        }
 
+        if (currentTab.id === "3") {
+            const stateData = await getState({ "reportname": UserUIColumnConfigName.BTRPipeline });
+            if (stateData.data.data.length !== 0) {
+                const parsedContent = JSON.parse(stateData.data.data)
+
+                setEcoGridState({
+                    charts: parsedContent.charts,
+                    columns: parsedContent.columns,
+                    pivot: parsedContent.pivot,
+                })
+        
+            } else {
+                console.log("State Data not available BTRPipeline");
+            }
+        }
+    }
+
+    const onResetCallback = async () => {
+        if (currentTab.id === "2") {
+
+            setTechGridState({
+                charts: [],
+                columns: techMasterUIConfig,
+                pivot: false,
+            })
+        } else if (currentTab.id === "3") {
+
+            setEcoGridState({
+                charts: [],
+                columns: ecoMasterUIConfig,
+                pivot: false,
+            })
+        }
+        
+    }
 
     const getData = async (filter: any, pageNumber: number) => {
         const payload = {
@@ -211,6 +315,7 @@ const useBTR = () => {
         }
         getBTRDataCount(payload)
         getData(currFilter, 1)
+        getBPRUiConfig();
     }, [])
 
     const getPreparedFilter = (filter: BPRFilterState): BPRFilterState => {
@@ -256,6 +361,138 @@ const useBTR = () => {
     const toggleVerticalView = (isVertical: boolean) => setVerticalView(isVertical)
 
     const toggleCurrentTab = (tab: VFFloatingTabItemProps) => setCurrentTab(tab)
+
+    const Extras = () => {
+        if (dateLabels) {
+            return Object.entries(dateLabels).map((item: any, index: any) => {
+                return {
+                    field: item[0],
+                    colId: item[0],
+                    headerName: format(item[1], 'PP'),
+                    cellRenderer: 'colorCellRenderer',
+                    cellRendererParams: (params: any) => {
+                        return {
+                            colorValue: params.data[item[0]]
+                        }
+                    },
+                    minWidth: 100,
+                    position: (index + initialColumnState.length),  //column should be at position onwards main columns
+                }
+            })
+        } else {
+            return [];
+        }
+    };
+    
+    const CustomHeader = {
+        Category: {
+            cellRenderer: 'categoryCellRenderer',
+            tooltipField: "Category",
+            tooltipComponent: 'categoryToolTip',
+            pinned: 'left',
+        },
+        Availability: {
+            cellRenderer: 'availabilityCellRenderer',
+            tooltipField: "Availability",
+            tooltipComponent: 'availabilityToolTip',
+            pinned: 'left',
+        },
+        Tags: {
+            cellRenderer: 'tagsCellRenderer',
+            pinned: 'left',
+        },
+        SKUCode: {
+            pinned: 'left',
+        },
+        SKUDescription: {
+            pinned: 'left',
+        },
+        WhCode: {
+            pinned: 'left',
+        },
+        LocationName: {
+            pinned: 'left',
+        },
+        Norm: {
+            pinned: 'left',
+        },
+        VirtualNorm: {
+            pinned: 'left',
+        },
+    };
+
+    const techColDefs = useMemo((): Array<ColDef> => {
+        if (initialColumnState) {
+            const colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras());
+            colDefs.map((colDef: any) => {
+                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId)) {
+                    colDef.minWidth = 80;
+                }
+                return colDef
+            })
+            const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
+            return result;
+        } else return [];
+    }, [techRowData, currentTab, verticalView, dateLabels]);
+
+    const ecoColDefs = useMemo((): Array<ColDef> => {
+        if (initialColumnState) {
+            let colDefs;
+            if (verticalView && currentTab.id === "1") {
+                const removeCols = ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn"];
+                colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras(), removeCols);
+            } else {
+                colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras());
+            }
+
+            // Set column width for all columns except date columns
+            colDefs.map((colDef: any) => {
+                if (initialColumnState.find((initialColumnState: any) => initialColumnState.Col_Code === colDef.colId)) {
+                    colDef.minWidth = 80;
+                }
+                return colDef
+            })
+            const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
+
+            return result;
+        } else return [];
+    }, [ecoRowData, dateLabels, verticalView, currentTab]);
+
+    useEffect(() => {
+        if (currentTab.id === "2" || currentTab.id === "3") {
+            getUserColumnConfig();   
+        }
+    },[currentTab])
+
+    useEffect(() => {
+        if (currentTab.id === "2" && techColDefs.length && techInternalRef?.api) {
+            setTechMasterUIConfig(techInternalRef?.api.getColumnState());
+        }
+    }, [techInternalRef, techColDefs, currentTab]);
+
+    useEffect(() => {
+        if (currentTab.id === "3" && ecoColDefs.length && ecoInternalRef?.api) {
+            setEcoMasterUIConfig(ecoInternalRef?.api.getColumnState());
+        }
+    }, [ecoInternalRef, ecoColDefs, currentTab]);
+
+    useEffect(() => {
+        if (techInternalRef && techGridState && techGridState.columns) {
+            const result = techInternalRef?.api.applyColumnState({ state: techGridState.columns, applyOrder: true });
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }
+    }, [techInternalRef, techGridState]);
+    
+    useEffect(() => {
+        if (ecoInternalRef && ecoGridState && ecoGridState.columns) {
+            const result = ecoInternalRef?.api.applyColumnState({ state: ecoGridState.columns, applyOrder: true });
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }
+    }, [ecoInternalRef, ecoGridState]);
 
     const renderView = () => {
         switch (currentTab.id) {
@@ -304,11 +541,6 @@ const useBTR = () => {
                     />
                 )
             case "2":
-                if(techColDefs){   
-                    techColDefs.forEach(item => {
-                        if ('field' in item && (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field === 'Availability' || item.field === 'Norm' || item.field === 'VirtualNorm'  || item.field === 'Category' || item.field === 'SKUCode' || item.field === 'SKUDescription' || item.field === 'Tags')) 
-                            {item.pinned = 'left';item.width = 50;}});}
-                
                 return (
                     <>
                         <BTRTableHeader>
@@ -323,15 +555,11 @@ const useBTR = () => {
                             disableZoomScaling
                             columnDefs={techColDefs}
                             rowData={techRowData}
-                            defaultColDef={{
-                                floatingFilter: true,
-                                filter: 'agMultiColumnFilter',
-                                sortable: true,
-
-                            }}
                             {...gridProps}
                             pagination={false}
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
+                            maintainColumnOrder
+                            onGridReady={(params) => setTechInternalRef(params)}
                         />
                         <div style={{ zoom: 0.7, margin: '0px -15px 0px -15px' }}>
                             <VFPagination {...techPaginationProps} />
@@ -339,10 +567,6 @@ const useBTR = () => {
                     </>
                 )
             case "3":
-                if(ecoColDefs){   
-                    ecoColDefs.forEach(item => {
-                        if ('field' in item && (item.field === 'WhCode' || item.field === 'Whcode' || item.field === 'LocationName' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field === 'Availability' || item.field === 'Norm' || item.field === 'VirtualNorm' || item.field === 'Category' || item.field === 'SKUCode' || item.field === 'SKUDescription' || item.field === 'Tags')) 
-                            {item.pinned = 'left';item.width = 50;}});}
                 return (
                     <>
                         <BTRTableHeader>
@@ -357,14 +581,12 @@ const useBTR = () => {
                             disableZoomScaling
                             columnDefs={ecoColDefs}
                             rowData={ecoRowData}
-                            defaultColDef={{
-                                floatingFilter: true,
-                                filter: 'agMultiColumnFilter',
-                                sortable: true
-                            }}
                             {...gridProps}
                             pagination={false}
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
+                            maintainColumnOrder
+                            onGridReady={(params) => setEcoInternalRef(params)}
+
                         />
                         <div style={{ zoom: 0.7, margin: '0px -15px 0px -15px' }}>
                             <VFPagination {...ecoPaginationProps} />
@@ -394,6 +616,7 @@ const useBTR = () => {
 
     }
 
+<<<<<<< HEAD
       const onOpenDailyDataGraph = async (params:any) => {
         console.log(params,"params")
             const payload:any = {
@@ -431,13 +654,16 @@ const useBTR = () => {
     },[ecoRowData,currentTab,verticalView,dateLabels])
     
 
+=======
+>>>>>>> develop-vflow
     return {
         ecoRef,
         techRef,
         tempRef,
         currentTab,
         verticalView,
-        isLoading,
+        isLoading: isLoading || isBTRCountLoading || isUIConfigLoading || isSavedDataLoading,
+        isError,
         techColDefs,
         techTotalRows,
         toggleVerticalView,
@@ -462,8 +688,12 @@ const useBTR = () => {
         ecoColDefs,
         setHorizon,
         lastRunDate,
+<<<<<<< HEAD
         dailyData,
         showDailyDataGraphModal
+=======
+        onResetCallback
+>>>>>>> develop-vflow
     }
 }
 

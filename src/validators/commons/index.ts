@@ -42,7 +42,8 @@ export const generateCommonMessages = (key:string) => {
         'any.onlySpecialCharacters': `"${key}" should not contain only special characters`,
         'any.specialCharacters': `"${key}" cannot contain special characters`,
         'any.empty': `"${key}" should not be empty`,
-        'string.base': `"${key}" should not be empty`
+        'string.base': `"${key}" should not be empty`,
+        'string.max': `"${key}" should be less than or equal to 50 characters`
     }
 }
 
@@ -85,28 +86,35 @@ export const supplyCodeChecks = (value:any,helper:any)=>{
     if(IsInputHasPipe(value)) return helper.error('any.pipe');
 }
 
+const pipeCheckValidator = (value:any, helper:any) => {
+    if (IsInputHasPipe(value)) {
+        return helper.error('any.pipe');
+    }
+    return value; 
+};
+
 export const MAX_CUSTOM_ATTRIBUTES_COUNT = 15;
 export const MAX_CODE_LENGTH = 50;
 export const MAX_NAME_LENGTH = 125;
 export const MAX_CUSTOM_ATTRIBUTE_LENGTH = 50;
 export const MAX_DECIMAL_VAL = 100000000;
 export const MIN_DECIMAL_VAL = 0;
-export const MAX_INT_VAL = 1000000000;
+export const MAX_INT_VAL = 100000000;
 
 export const CommonSchema = {
-    c1:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c2:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c3:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c4:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c5:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c6:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c7:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c8:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c9:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c10:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c11:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c12:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c13:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c14:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow(''),
-    c15:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('')
+    c1:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c1")),
+    c2:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c2")),
+    c3:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c3")),
+    c4:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c4")),
+    c5:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c5")),
+    c6:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
+    c7:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
+    c8:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
+    c9:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
+    c10:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
+    c11:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
+    c12:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
+    c13:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
+    c14:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
+    c15:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null)
 }

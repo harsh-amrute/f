@@ -4,7 +4,7 @@ import {
   getColumnDefinationsMTA,
   MainMenuItemsCustomization,
 } from "../../../../../../helpers/utils";
-import { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useGetUIConfigData } from "../../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../../helpers/Enum";
 import { notifyError } from "../../../../../../helpers/notify";
@@ -197,17 +197,19 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
   ];
 
   return (
-    <GridViewTable
-      agGridProps={agGridProps}
-      agGridColDefs={ChronicUnavailabilityColumns}
-      agGridRowData={currentGridData}
-      customGridRowData={[]}
-      customGridColDef={[]}
-      isSubGridOpen={false}
-      currentCategory={"GuidedInsightchronicunavailability"}
-      currentTab={""}
-      gridHeight={"80%"}
-    />
+    <div style={{padding:"20px 0px 0px 20px"}}>
+      <GridViewTable
+        agGridProps={agGridProps}
+        agGridColDefs={ChronicUnavailabilityColumns}
+        agGridRowData={currentGridData}
+        customGridRowData={[]}
+        customGridColDef={[]}
+        isSubGridOpen={false}
+        currentCategory={"GuidedInsightchronicunavailability"}
+        currentTab={""}
+        gridHeight={"80%"}
+      />
+    </div>
   );
 };
 export default ChronicGridView;
