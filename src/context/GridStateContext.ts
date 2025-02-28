@@ -8,11 +8,13 @@ interface GridStateContextProps{
     setTempDownloadData:any
     exportExcelRowData:Array<any>
     setExportExcelRowData:any,
-    onResetCallback?:any
+    onResetCallback?:any,
+    gridColDefs?:any,
 }
 
 export const GridStateContext = createContext<GridStateContextProps>({
     ref:null,
+    gridColDefs:[],
     exportExcelColumns:[],
     setExportExcelColumns:()=>{return},
     tempDownloadData:false,

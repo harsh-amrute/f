@@ -1,10 +1,18 @@
 export enum UIColumnConfigName{
+    // planning
     GIT_From_Parent = "GIT_From_Parent",
-    GIT_To_Child = "GIT_To_Child",
-    Expedite_From_Parent = "Expedite_From_Parent",
-    Expedite_To_Child = "Expedite_To_Child",
+    GIT_To_Child_LW = "GIT_To_Child_LW",
+    GIT_To_Child_TW = "GIT_To_Child_TW",
+    GIT_To_Child_CS = "GIT_To_Child_CS",
+    Excess_Inventory_Review_CS = "Excess_Inventory_Review_CS",
     Excess_Inventory_Review = "Excess_Inventory_Review",
+    Order_Fulfillment_Review_CS = "Order_Fulfillment_Review_CS",
     Order_Fulfillment_Review = "Order_Fulfillment_Review",
+    Expedite_From_Parent_ED = "Expedit_From_Parent_ED",
+    Expedite_From_Parent_CAAP = "Expedite_To_Parent_CAAP",
+    Expedite_To_Child_ED = "Expedit_To_Child_ED",
+    Expedite_To_Child_CS = "Expedite_To_Child_CS",
+    // BPR
     BPR = "AdminBPR",
     BOR="BuyerOrderReport",
     BOR_OA = "BOR_OA",
@@ -14,15 +22,17 @@ export enum UIColumnConfigName{
     DBM = "NormSuggestion",
     ChronicUnavailability = "ChronicUnavailability",
     OER = "OpenExpeditingRequests",
+    OAR = "OrderAllocationReport",
+    TRR = "RRR_OA",
+    InTransit = "InTransitWhereAbouts",
+    BuffertrendReport = "BuffertrendReport"
 }
 
 export enum UserUIColumnConfigName{
-    GIT_From_Parent = "GIT_From_Parent",
-    GIT_To_Child = "GIT_To_Child",
-    Expedite_From_Parent = "Expedite_From_Parent",
-    Expedite_To_Child = "Expedite_To_Child",
-    Excess_Inventory_Review = "Excess_Inventory_Review",
-    Order_Fulfillment_Review = "Order_Fulfillment_Review",
+    GIT_To_Child_CS = "GITToChildcustom",
+    Expedite_To_Child_CS = "ExpediteToChildcustom",
+    Excess_Inventory_Review_CS = "ExcessInventorycustom",
+    Order_Fulfillment_Review_CS ="OrderFulfillmentcustom",
     BPR = "BPR",
     BOR = "BOR",
     BOR_OA = "BORColorBandwise",
@@ -32,4 +42,9 @@ export enum UserUIColumnConfigName{
     DBM = "DBMNorm",
     ChronicUnavailability = "ChronicUnavailability",
     OER = "OpenExpeditingRequests",
+    OAR = "OrderAllocationReport",
+    TRR = "RRRColorBandWise",
+    InTransit = "InTransitWhereAbouts",
+    BTROnHand = "BTRon-hand",
+    BTRPipeline = "BTRpipeline"
 }

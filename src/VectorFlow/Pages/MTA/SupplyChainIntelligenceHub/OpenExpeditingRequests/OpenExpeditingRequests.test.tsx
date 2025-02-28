@@ -5,11 +5,12 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
 import {GetStateMockResponse,ResetStateMockResponse,SaveStateMockResponse} from '../../../../../mock-data/BPR';
 
-import {useGetLocationTypes, useGetState,useResetState,useSaveState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
+import {useGetLocationTypes, useResetState,useSaveState} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
 import {store} from "../../../../../redux/store/store";
 import OpenExpeditingRequests from './index';
+import { useGetState } from '../../../../Services/MTA/Common/UserUIConfig';
 
 // Mock context data
 

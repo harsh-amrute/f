@@ -11,6 +11,7 @@ import { GridStateContext } from "../../../../../context/GridStateContext";
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import { useEffect } from "react";
+import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
 const Planning = () => {
   interface DataItem {
@@ -51,7 +52,7 @@ const Planning = () => {
         setCurrentFilter,
         onDeleteFilter,
         isDataLoading,
-        currentColDefs
+        gridColDefs
     } = usePlanning();
 
     function parseFloatAllNumericStrings(data: DataItem[]) {
@@ -77,16 +78,13 @@ const Planning = () => {
 
   const renderView = () => {
       
-     if(isDataLoading){
-        return <VFLoader/>
-    }
 
         switch(currentView){
             
             case 'chart':
                 return <ChartView currentTab={currentTab} category={currentCategory} currentGraphData={currentGraphData} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph} planningCounts={planningCounts}/>
             case 'grid':
-                return <GridView currentTab={currentTab} category={currentCategory} currentGridData={currentGridData} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph}/>
+                return <>{isDataLoading && <OverlayLoader/>} <GridView currentTab={currentTab} category={currentCategory} currentGridData={currentGridData} paginationProps={paginationProps} onOpenDailyDataGraph={onOpenDailyDataGraph} planningCounts={planningCounts}/></> 
 
         }
         
@@ -101,15 +99,17 @@ const Planning = () => {
     }
 
 
+
     return(
         <GridStateContext.Provider value={{
             ref:ref,
+            gridColDefs,
             exportExcelColumns:exportExcelColumns,
             setExportExcelColumns:setExportExcelColumns,
             tempDownloadData:tempDownloadData,
             setTempDownloadData:setTempDownloadData,
             exportExcelRowData:exportExcelRowData,
-            setExportExcelRowData:setExportExcelRowData
+            setExportExcelRowData:setExportExcelRowData,
 
         }}>
             {
@@ -182,7 +182,7 @@ const Planning = () => {
             <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}
-                    columnDefs={currentColDefs}
+                    columnDefs={gridColDefs}
                     rowData={exportExcelRowData}
                     {...tempAgGridProps}
                   />

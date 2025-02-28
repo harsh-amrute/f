@@ -1,18 +1,13 @@
 import MonitorGITChildLocationWiseCharts from "../MonitorGoodsInTransit/Child/Charts/LocationWise";
-import MonitorGITChildCustomCharts from "../MonitorGoodsInTransit/Child/Charts/Custom";
 import MonitorGITChildTransporterWiseCharts from '../MonitorGoodsInTransit/Child/Charts/TransporterWise';
 import MonitorGITParent from "../MonitorGoodsInTransit/Parent";
 import ExpediteDispatches from '../Expedite/Parent/Chart/ExpediteDispatches';
 import ExpediteDispatchesChild from "../Expedite/Child/Chart/ExpediteDispatches";
 import CreateAvailabilityAtParent from "../Expedite/Parent/Chart/CreateAvailabilityAtParent";
-import ExpediteParentCustomCharts from "../Expedite/Parent/Chart/Custom";
-import ExpediteChildCustomCharts from "../Expedite/Child/Chart/Custom";
 import ExcessInventoryLocation from "../ExcessInventory/Chart/ExcessInventoryLocationWise";
 import ExcessInventoryProduct from "../ExcessInventory/Chart/ExcessInventoryProductWise";
-import ExcessInventoryCustomCharts from "../ExcessInventory/Chart/Custom";
 import OrderFulfillmentLocation from '../OrderFulfillment/Chart/OrderFulfillmentLocationWise';
 import OrderFulfillmentProduct from '../OrderFulfillment/Chart/OrderFulfillmentProductWise';
-import OrderFulfillmentCustomCharts from '../OrderFulfillment/Chart/Custom';
 import { VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import {PlanningCounts} from '../../../../../types/MTA'
 
@@ -46,11 +41,6 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                         />
                     )
                 }
-                if(currentTab === 'custom'){
-                    return (
-                        <MonitorGITChildCustomCharts recordCount={planningCounts.childMonitorCustomCount}/>
-                    )
-                }
                 break;
             case 'ExpediteFromParent':
                 if(currentTab === 'expediteDispatches'){
@@ -67,11 +57,6 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                         />
                     )
                 }
-                if(currentTab === 'custom'){
-                    return (
-                        <ExpediteParentCustomCharts recordCount={planningCounts.parentExpediteCustomCount}/>
-                    )
-                }
                 break; 
             case 'ExpediteToChild':
                 if(currentTab === 'expediteDispatches'){
@@ -79,11 +64,6 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                         <ExpediteDispatchesChild
                             data={currentGraphData ? currentGraphData['expediteDispatches']:[]}
                         />
-                    )
-                }
-                if(currentTab === 'custom'){
-                    return (
-                        <ExpediteChildCustomCharts recordCount={planningCounts.childExpediteCustomCount}/>
                     )
                 }
                 break;   
@@ -102,11 +82,6 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                         />
                     )
                 }
-                if(currentTab === 'custom'){
-                    return(
-                        <ExcessInventoryCustomCharts recordCount={planningCounts.reviewExcessInventoryCustomCount}/>
-                    )
-                }
                 break;
             case 'OrderFulfillment':
                 if(currentTab === 'orderFulfillmentLocation'){
@@ -121,11 +96,6 @@ const ChartView = ({category,currentTab,currentGraphData,paginationProps,onOpenD
                         <OrderFulfillmentProduct
                             data={currentGraphData ? currentGraphData:[]}
                         />
-                    )
-                }
-                if(currentTab === 'custom'){
-                    return (
-                        <OrderFulfillmentCustomCharts recordCount={planningCounts.reviewOrderFulfillmentCustomCount}/>
                     )
                 }
                 break;

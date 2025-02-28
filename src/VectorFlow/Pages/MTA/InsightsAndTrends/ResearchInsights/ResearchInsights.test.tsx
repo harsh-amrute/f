@@ -3,7 +3,8 @@ import { UserDataContext } from "../../../../../context";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setupReactQuery } from "../../../../../config/react-query-config";
-import { useGetBPRData,useGetBPRUIConfiguration ,useGetBPRDataCount,useSaveState,useGetState,useResetState,useGetDailyData, useGetLocationTypes} from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { useGetBPRData,useGetBPRUIConfiguration ,useGetBPRDataCount,useSaveState,useResetState,useGetDailyData,useGetLocationTypes} from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { useGetState } from '../../../../../VectorFlow/Services/MTA/Common/UserUIConfig';
 import {useGetHistroricalAvailabilityData, useGetUpdatedGraphData} from '../../../../../VectorFlow/Services/MTA/InsightsAndTrends/ResearchInsights'
 import { GetBPRDataMockResponse,GetBPRUIConfigurationMockResponse, GetUpdatedGraphDataMockResponse,GetStateMockResponse,ResetStateMockResponse,SaveStateMockResponse,GetDailyDataMockResponse, GetHistoricalAvailabilityMockResponse} from '../../../../../mock-data/BPR';
 import ResearchInsights from './index';
