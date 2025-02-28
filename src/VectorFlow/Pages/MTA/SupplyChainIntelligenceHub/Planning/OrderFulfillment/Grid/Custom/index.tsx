@@ -148,7 +148,7 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer className="ag-theme-planning-custom">
+        <SCDynamicContainer>
             <VFTable
                 height={'100%'}
                 ref={ref}

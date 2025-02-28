@@ -5,6 +5,8 @@ import useViewPort from "../../../../../hooks/useViewPort"
 import { BTRTableHeader, BTRTableWrapper ,BTRAllomentSection,LockBtnWrapper, LockBtn, HorizontalViewWrapper, LocktBtnContent, LockLabel} from "./styles"
 import CustomVFTable from "./CustomVFTable"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
+import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
+import { VFTableWrapper } from '../../../../../components/VectorFLOW/commons/VFTable/styles'
 
 interface SpliViewTableProps extends AgGridReactProps{
     header:string
@@ -86,7 +88,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                 <Allotment.Pane preferredSize={'50%'}>
                     <BTRAllomentSection>
                         <BTRTableHeader>{techTable.header}</BTRTableHeader>
-                        <CustomVFTable 
+                        {/* <CustomVFTable 
                             ref={ref1}
                             rowHeight={25}
                             disableZoomScaling
@@ -106,8 +108,33 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                                 sortable:false
                             }}
                             alignedGrids={isLocked?[ref2]:[]}
-                        />
-                        <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
+                        /> */}
+                            <VFTable    
+                                key={'ref'}
+                                disableZoomScaling
+                                ref={ref1}
+                                rowHeight={25}
+                                height={"100%"}
+                                gridOptions={{
+                                    ...techTable.gridOptions
+                                }}
+                                onBodyScroll={(params)=>onBodyScroll(params,1)}
+                                defaultColDef={{
+                                floatingFilter:false,
+                                filter:false,
+                                sortable:false
+                            }}
+                            alignedGrids={isLocked?[ref2]:[]}
+                            tooltipMouseTrack={true}
+                            tooltipShowDelay={0}
+                            tooltipHideDelay={100000}
+                            columnDefs={techTable.columnDefs}
+                            rowData={techTable.rowData}
+                            />
+    
+              
+
+          <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
                             <VFPagination
                                 {...techTable.paginationProps}
                             />
@@ -118,7 +145,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                 <Allotment.Pane preferredSize={'50%'}>
                     <BTRAllomentSection style={{marginTop:'20px',paddingBottom:'20px'}}>
                         <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
-                        <CustomVFTable 
+                        {/* <CustomVFTable 
                             height={"100%"}
                             ref={ref2}
                             rowHeight={25}
@@ -138,6 +165,28 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                                 sortable:false
                             }}
                             alignedGrids={isLocked?[ref1]:[]}
+                        /> */}
+                        <VFTable    
+                                key={'ref'}
+                                disableZoomScaling
+                                ref={ref2}
+                                rowHeight={25}
+                                height={"100%"}
+                                gridOptions={{
+                                    ...techTable.gridOptions
+                                }}
+                                onBodyScroll={(params)=>onBodyScroll(params,1)}
+                                defaultColDef={{
+                                floatingFilter:false,
+                                filter:false,
+                                sortable:false
+                            }}
+                            alignedGrids={isLocked?[ref2]:[]}
+                            tooltipMouseTrack={true}
+                            tooltipShowDelay={0}
+                            tooltipHideDelay={100000}
+                            columnDefs={techTable.columnDefs}
+                            rowData={ecoTable.rowData}
                         />
                          <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
                             <VFPagination
