@@ -101,16 +101,22 @@ const usePlanning = ()=>{
         
     }
 
-    const tempAgGridProps:AgGridReactProps = {
-        onRowDataUpdated:(event)=>{
-          if(tempDownloadData){
-            console.log("final excel rowdata", exportExcelRowData);
-            event?.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`, columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
-            setTempDownloadData(false)  
-          }
+    const tempAgGridProps: AgGridReactProps = {
+        onRowDataUpdated: (event) => {
+            if (tempDownloadData) {
+                const allColumns = ref.current?.api.getAllDisplayedColumns();
+                const columnKeys = allColumns?.map(c => c.getColId())
+                    .filter(colId => !['t','dailydatagraph'].includes(colId)); // Replace with actual column IDs to exclude
+                
+                event?.api.exportDataAsExcel({
+                    fileName: `${currentCategory}${currentTab}`,
+                    columnKeys: columnKeys
+                });
+                
+                setTempDownloadData(false);
+            }
         }
-      };
-      
+    };
     useEffect(()=>{
         fetchPlanningDataCount();
     },[])
