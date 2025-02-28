@@ -334,23 +334,19 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     const [no, setNo] = useState(false);
     const [arePlantsDifferent, setArePlantsDifferent] = useState(false);
 
-    //ccr groups & ccrs filter on the basis of plant
-
-    const ccrGroups = useMemo(() => {
-        if (selectedPlant && masters) {
-            return masters?.ccrGroups.map((ccrGroup: any) => {
-                return {
-                    ...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any) => {
-                        return ccr.plant_id == selectedPlant
-                    })
+    // Look up for CCRItemTypeMappingMaster
+    const CCRItemTypeMappingMasterLookup = useMemo(() => {
+        const mappingLookup = new Map<string, Set<string>>();
+        if (masters?.CCRItemTypeMappingMaster) {
+            masters.CCRItemTypeMappingMaster.forEach((mapping: { ccrId: string, it: string }) => {
+                if (!mappingLookup.has(mapping.ccrId)) {
+                    mappingLookup.set(mapping.ccrId, new Set());
                 }
-            })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
+                mappingLookup.get(mapping.ccrId)!.add(mapping.it);
+            });
         }
-        else {
-            return []
-        }
-
-    }, [masters, selectedPlant])
+        return mappingLookup
+    }, [masters?.CCRItemTypeMappingMaster])
 
     // console.log("selectedPlant", selectedPlant)
     // console.log("ccrGroups", ccrGroups)
@@ -465,7 +461,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         console.log("lineCCRPendingQty", lineCCRPendingQty)
                         console.log("orderPendingQty", orderPendingCCRQty)
 
-                        if (lineCCRPendingQty!==null && lineCCRPendingQty<0 && lineCCRPendingQty===undefined) {
+                        if (lineCCRPendingQty !== null && lineCCRPendingQty < 0 && lineCCRPendingQty === undefined) {
                             if (!orderPendingCCRQty) {
                                 errors.push(`Missing Pending Qty for CCR: ${ccrNames[index]} for Order: ${order.oid}`)
                             }
@@ -780,14 +776,17 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             const orderLoadOfCCRs: any = {}
 
             let maxFol = 0
-
             newSelectedRows?.rows?.forEach((order: any) => {
+
                 ccrIds.forEach((ccrId: any) => {
                     const ccr = masters.CCRMaster.find((ccr: any) => {
                         return ccr.ccr_id === ccrId
                     })
                     let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
                     ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
+
+                    console.log("CCRItemTypeMappingMaster", masters.CCRItemTypeMappingMaster)
+
 
                     const ccrItemTypeMapping = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
                     // console.log(JSON.parse(JSON.stringify(orderLoadOfCcrs)))
@@ -886,7 +885,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     }
 
     useEffect(() => {
-        loadGraph(selectedRoute)
+        loadGraph(selectedRoute);
+
     }, [selectedRoute])
 
     useEffect(() => {
@@ -963,24 +963,54 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     }, [selectedRoute, selectedBuffers])
 
     const sideBar = React.useMemo<
-    SideBarDef | string | string[] | boolean | null
-  >(() => {
-    return {
-      toolPanels: [
-        {
-          id: "columns",
-          labelDefault: "Columns",
-          labelKey: "columns",
-          iconKey: "columns",
-          toolPanel: "agColumnsToolPanel",
-          toolPanelParams: {
-            suppressPivots: true,
-            suppressPivotMode: true,
-          },
-        },
-      ],
-    };
-  }, []);
+        SideBarDef | string | string[] | boolean | null
+    >(() => {
+        return {
+            toolPanels: [
+                {
+                    id: "columns",
+                    labelDefault: "Columns",
+                    labelKey: "columns",
+                    iconKey: "columns",
+                    toolPanel: "agColumnsToolPanel",
+                    toolPanelParams: {
+                        suppressPivots: true,
+                        suppressPivotMode: true,
+                    },
+                },
+            ],
+        };
+    }, []);
+
+    //ccr groups & ccrs filter on the basis of plant
+    const calculateCCGroups = () => {
+        const itemTypes: Set<string> = new Set()
+        if (newSelectedRows?.rows?.length) {
+            newSelectedRows.rows.forEach((row: any) => {
+                if (row?.itid)
+                    itemTypes.add(row.itid);
+            })
+        }
+
+        if (selectedPlant && masters && itemTypes.size == 1) {
+            return masters?.ccrGroups.map((ccrGroup: any) => {
+                return {
+                    ...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any) => {
+                        // console.log("ccr", ccr.value)
+                        return ccr.plant_id == selectedPlant && CCRItemTypeMappingMasterLookup.get(ccr.value)?.has(Array.from(itemTypes)[0]);
+                    })
+                }
+            })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
+        }
+        else {
+            return []
+        }
+    }
+    
+
+    const ccrGroups = useMemo(calculateCCGroups, [masters, selectedPlant, newSelectedRows])
+
+    // const [ccrGroups, setCcrGroups] = useState([]);
 
     return (
         <>
@@ -1013,11 +1043,15 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                     const selectedProdBuffer: any = new Set();
                                     const selectedProcBuffer: any = new Set();
                                     const selectedPlants: any = new Set();
+                                    const selectedItemTypes: any = new Set();
 
 
                                     selected.forEach((row: any) => {
                                         if (row.plid) {
                                             selectedPlants.add(row.plid)
+                                        }
+                                        if (row.itid) {
+                                            selectedItemTypes.add(row.itid);
                                         }
                                         if (row.newRoute) {
                                             const formattedRoute = formatRoute(row.newRoute);
@@ -1051,12 +1085,17 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else {
                                             selectedProcBuffer.add(null)
                                         }
-                                    })
+                                    });
+
+                                    // if (selectedItemTypes.size > 1) {
+
+                                    // }
+
                                     let isAssignmentPossible = true; //if only one order is selected
                                     if (selected.length > 1) {
                                         isAssignmentPossible = ([1].includes(selectedRoutes.size)) && ([1].includes(selectedProdBuffer.size)) && ([1].includes(selectedProcBuffer.size))
                                     }
-                                    if (selectedPlants.size == 1) {
+                                    if (selectedPlants.size == 1 && selectedItemTypes.size == 1) {
                                         setArePlantsDifferent(false)
                                         setSelectedPlant([...selectedPlants][0])
                                     } else {
@@ -1156,7 +1195,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                 <CardCover>
                                     <DashedCard style={{ width: "500px" }}>
                                         <MessageText style={{ textAlign: "center", display: "flex", flexDirection: "column", width: "100%", gap: "2rem" }}>
-                                            {arePlantsDifferent ? <div>Selected orders have different plants and cannot be modified together.</div> : !no ? <>
+                                            {arePlantsDifferent ? <div>Selected orders have different plants or item type therefore they cannot be modified together.</div> : !no ? <>
                                                 <div>
                                                     Selected orders have different routes and buffer.<br />
                                                     Do you want to edit these orders together?

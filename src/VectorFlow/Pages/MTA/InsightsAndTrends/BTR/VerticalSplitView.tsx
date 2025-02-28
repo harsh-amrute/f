@@ -37,15 +37,43 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const [lockBtnPosition, setLockBtnPosition] = useState<number>(0)
 
-    const staticTableColDefs = useMemo(() => {
+    const staticTableColDefs = useMemo<any>(() => {
         if (!techTable.columnDefs) return []
-        return techTable.columnDefs.filter((col) => col.headerName && ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "ParentWhCode", "ParentName"].includes(col.headerName))
-    }, [techTable.columnDefs])
+        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn", "WhCode"].includes(col.colId));
+        const newColDef = colDefs.map((colDef: any) => {
+            if (colDef.colId === "Category") {
+                colDef.pinned = "left";
+                colDef.minWidth = 80;
+            } else {
+                colDef.pinned = false;
 
-    const techTableColDefs = useMemo(() => {
+            }
+            colDef.filter=false;
+            return colDef;
+        });
+        return newColDef;
+    }, [techTable.columnDefs]);
+
+    const techTableColDefs = useMemo<any>(() => {
         if (!techTable.columnDefs) return []
-        return techTable.columnDefs.filter((col) => col.headerName && !['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "ParentWhCode", "ParentName"].includes(col.headerName))
-    }, [techTable.columnDefs])
+        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && !['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"].includes(col.colId));
+        const newColDef = colDefs.map((colDef: any) => {
+            colDef.pinned = false;
+            colDef.filter=false;
+            return colDef;
+        });
+        return newColDef;
+    }, [techTable.columnDefs]);
+
+    const ecoTableColDefs = useMemo<any>(() => {
+        if (!ecoTable.columnDefs) return []
+        const newColDef = ecoTable.columnDefs.map((colDef: any) => {
+            colDef.pinned = false;
+            colDef.filter=false;
+            return colDef;
+        });
+        return newColDef
+    }, [techTable.columnDefs]);
 
     const handleChange = (sizes: Array<number>) => {
         setLockBtnPosition(sizes[0])
@@ -88,6 +116,24 @@ const VerticalSplitView = (props: SplitViewProps) => {
         }
     }
 
+    const defaultColDef = {
+        floatingFilter: false,
+        filter: false,
+        sortable: false,
+
+       
+    suppressHeaderMenuButton: false,
+        // cellStyle: {
+        //     "textAlign": "center",
+        //     'textOverflow': 'ellipsis',
+        //     'whiteSpace': 'nowrap'
+        // },
+        flex: 1,
+        width: 80,
+        minWidth: 80,
+        cellClass:'btr_cell_style'
+    }
+
 
     return (
         <BTRTableWrapper>
@@ -109,11 +155,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 tooltipMouseTrack={true}
                                 tooltipShowDelay={0}
                                 tooltipHideDelay={100000}
-                                defaultColDef={{
-                                    floatingFilter: false,
-                                    filter: false,
-                                    sortable: false
-                                }}
+                                defaultColDef={defaultColDef}
                                 onBodyScroll={(params) => onBodyScroll(params, 3)}
                             /> */}
                             <VFTable    
@@ -171,18 +213,14 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 height={"95%"}
                                 disableZoomScaling
                                 gridOptions={{
-                                    ...techTable.gridOptions
+                                    ...techTable.gridOptions,
                                 }}
                                 columnDefs={techTableColDefs}
                                 rowData={techTable.rowData}
                                 tooltipMouseTrack={true}
                                 tooltipShowDelay={0}
                                 tooltipHideDelay={100000}
-                                defaultColDef={{
-                                    floatingFilter: false,
-                                    filter: false,
-                                    sortable: false
-                                }}
+                                defaultColDef={defaultColDef}
                                 onBodyScroll={(params) => onBodyScroll(params, 1)}
                                 alignedGrids={isLocked ? [ref2] : []}
                             />
@@ -215,16 +253,12 @@ const VerticalSplitView = (props: SplitViewProps) => {
                             gridOptions={{
                                 ...ecoTable.gridOptions
                             }}
-                            columnDefs={ecoTable.columnDefs}
+                            columnDefs={ecoTableColDefs}
                             rowData={ecoTable.rowData}
                             tooltipMouseTrack={true}
                             tooltipShowDelay={0}
                             tooltipHideDelay={100000}
-                            defaultColDef={{
-                                floatingFilter: false,
-                                filter: false,
-                                sortable: false
-                            }}
+                            defaultColDef={defaultColDef}
                             onBodyScroll={(params) => onBodyScroll(params, 2)}
                             alignedGrids={isLocked ? [ref1] : []}
                         /> */}

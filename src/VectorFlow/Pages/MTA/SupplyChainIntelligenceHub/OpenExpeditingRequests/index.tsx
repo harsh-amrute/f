@@ -8,7 +8,7 @@ import useOpenExpeditingRequests from "./useOpenExpeditingRequests"
 import { GridStateContext } from "../../../../../context/GridStateContext"
 import RemarkModal from "./RemarkModal"
 
-// import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import { ButtonWrapper } from "./styles"
@@ -21,6 +21,7 @@ const OpenExpeditingRequests = () => {
     agGridProps,
     rowData,
     remark,
+    isLoading,
     remarkHistory,
     isSubmitRemarkToolTipOpen,
     isRemarkHistoryToolTipOpen,
@@ -86,15 +87,26 @@ const OpenExpeditingRequests = () => {
       {lastRunDate && (
         <LastRunDateComponent lastRunDate={lastRunDate} />
       )}
-      {/* {(isLoading)?
-          (
-            <VFLoader/>
-          )
-            :
-          (
-            <VFTable
+      {(isLoading) ?
+        (
+          <VFLoader />
+        )
+        :
+        (<div style={{ marginLeft: '15px', height: '80%' }}>
+          <VFTable
             columnDefs={OERColumns}
             rowData={rowData}
+            enableRangeSelection={true}
+            rowSelection="multiple"
+            statusBar={{
+              statusPanels: [
+                { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                { statusPanel: 'agAggregationComponent', align: 'left' },
+              ],
+            }}
             {...agGridProps}
             ref={ref}
             // onGridReady={(params)=>{
@@ -102,40 +114,17 @@ const OpenExpeditingRequests = () => {
             //     params.columnApi.applyColumnState({state:columnState})
             //   }
             // }}
-            height={800}
-        />
-          )
-        } */}
-      <div style={{ marginLeft: '15px', height: '80%' }}>
-        <VFTable
-          columnDefs={OERColumns}
-          rowData={rowData}
-          enableRangeSelection={true}
-          rowSelection="multiple"
-          statusBar={{
-            statusPanels: [
-              { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-              { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-              { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-              { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-              { statusPanel: 'agAggregationComponent', align: 'left' },
-            ],
-          }}
-          {...agGridProps}
-          ref={ref}
-          // onGridReady={(params)=>{
-          //   if(columnState){
-          //     params.columnApi.applyColumnState({state:columnState})
-          //   }
-          // }}
-          height={"100%"}
-          maintainColumnOrder
-        />
-
-        <ButtonWrapper>
-          <VFButtonOutline disabled={editedRows.length === 0} themeUi={themeUi} width={169} style={{ fontSize: '20px', fontWeight: '500' }} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
-        </ButtonWrapper>
-      </div>
+            height={"100%"}
+            maintainColumnOrder
+          />
+    
+          <ButtonWrapper>
+            <VFButtonOutline disabled={editedRows.length === 0} themeUi={themeUi} width={169} style={{ fontSize: '20px', fontWeight: '500' }} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
+          </ButtonWrapper>
+        </div>
+        )
+      }
+      
       {isSubmitRemarkToolTipOpen && (
         <BPRSubmiRemarkToolTip
           remark={remark}

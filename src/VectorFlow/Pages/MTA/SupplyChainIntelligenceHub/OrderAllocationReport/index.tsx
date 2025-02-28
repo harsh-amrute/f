@@ -33,7 +33,8 @@ const OrderAllocationReport = () => {
   onDeleteFilter,
   isSavedDataLoading,
   ref,
-  generalFilterOptions
+  generalFilterOptions,
+  onResetCallback
 } = useOrderAllocation();
 
 
@@ -47,7 +48,8 @@ const OrderAllocationReport = () => {
     tempDownloadData:tempDownloadData,
     setTempDownloadData:setTempDownloadData,
     exportExcelRowData:exportExcelRowData,
-    setExportExcelRowData:setExportExcelRowData
+    setExportExcelRowData:setExportExcelRowData,
+    onResetCallback:onResetCallback
 }}
   >
     <div style={{marginLeft:'10px'}}>
@@ -113,7 +115,8 @@ const OrderAllocationReport = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                  height={"100%"}
+                height={"100%"}
+                maintainColumnOrder
               />  
               <VFPagination 
                 selectedRows={0} 

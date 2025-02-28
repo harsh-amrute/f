@@ -33,7 +33,8 @@ const TotalRequirementReport = () => {
   onDeleteFilter,
   isSavedDataLoading,
   ref,
-  generalFilterOptions
+  generalFilterOptions,
+  onResetCallback
 } = useTotalRequirementReport();
 
 
@@ -47,7 +48,8 @@ const TotalRequirementReport = () => {
     tempDownloadData:tempDownloadData,
     setTempDownloadData:setTempDownloadData,
     exportExcelRowData:exportExcelRowData,
-    setExportExcelRowData:setExportExcelRowData
+    setExportExcelRowData:setExportExcelRowData,
+    onResetCallback:onResetCallback
 }}
   >
     <div style={{marginLeft:'10px'}}>
