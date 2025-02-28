@@ -18,7 +18,7 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
     const [activeRow,setActiveRow] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
     const [colDefs, setColDefs] = useState<any>([]);
-    const {gridColDefs} = useContext(GridStateContext);
+    const {gridColDefs, setGlobalColDef} = useContext(GridStateContext);
     // const dispatch = useDispatch()
     // const {currentGridState} = useSelector((state:RootState)=>state.mta)
 
@@ -193,6 +193,7 @@ const MonitorGITParent = ({data,paginationProps,onOpenDailyDataGraph,currentCate
         if(gridColDefs!==null){
             const cols =  getColumnDefinationsMTA(gridColDefs,CustomHeader)
             setColDefs(cols);
+            setGlobalColDef(cols);
         } 
     },[gridColDefs])
 

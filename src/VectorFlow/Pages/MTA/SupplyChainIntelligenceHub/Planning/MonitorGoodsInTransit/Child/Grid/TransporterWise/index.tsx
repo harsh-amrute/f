@@ -15,7 +15,7 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
     const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
 
     const [colDefs, setColDefs] = useState<any>([]);
-    const {gridColDefs} = useContext(GridStateContext);
+    const {gridColDefs, setGlobalColDef} = useContext(GridStateContext);
     
     const customCellRenderers = useMemo(() => ({
         tagsCellRenderer:BPRTagsCellRenderer,
@@ -222,6 +222,7 @@ const MonitorGITChildTransporterWiseGrid = ({data,paginationProps,onOpenDailyDat
         if(gridColDefs!==null){
             const cols =  getColumnDefinationsMTA(gridColDefs,CustomHeader)
             setColDefs(cols);
+            setGlobalColDef(cols);
         } 
     },[gridColDefs])
     

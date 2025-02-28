@@ -53,7 +53,9 @@ const Planning = () => {
         onDeleteFilter,
         isDataLoading,
         gridColDefs,
-        initialPlanningCount
+        initialPlanningCount,
+        globalColDef,
+        setGlobalColDef
     } = usePlanning();
 
     function parseFloatAllNumericStrings(data: DataItem[]) {
@@ -104,6 +106,8 @@ const Planning = () => {
         <GridStateContext.Provider value={{
             ref:ref,
             gridColDefs,
+            globalColDef,
+            setGlobalColDef,
             exportExcelColumns:exportExcelColumns,
             setExportExcelColumns:setExportExcelColumns,
             tempDownloadData:tempDownloadData,
@@ -181,7 +185,7 @@ const Planning = () => {
             <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}
-                    columnDefs={gridColDefs}
+                    columnDefs={globalColDef}
                     rowData={exportExcelRowData}
                     {...tempAgGridProps}
                   />

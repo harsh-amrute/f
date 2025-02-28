@@ -21,7 +21,7 @@ const ExpediteChildExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDa
     const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
 
     const [colDefs, setColDefs] = useState<any>([]);
-    const {gridColDefs} = useContext(GridStateContext);
+    const {gridColDefs, setGlobalColDef} = useContext(GridStateContext);
 
     const {mutateAsync:submitRemark} = useSubmitOpenExpediteRequest()
     const submitOpenExpediteRemark = async(remark:string)=>{
@@ -212,6 +212,7 @@ const ExpediteChildExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDa
         if(gridColDefs!==null){
             const cols =  getColumnDefinationsMTA(gridColDefs,CustomHeader)
             setColDefs(cols);
+            setGlobalColDef(cols);
         } 
     },[gridColDefs])
 
