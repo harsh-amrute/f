@@ -399,11 +399,11 @@ const useBTR = () => {
             filter: false,
             cellRenderer: 'grapCellRenderer',
             cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
-            pinned: 'left',
             lockPosition: true,
             resizable: false,
             floatingFilter: false,
-            suppressColumnsToolPanel: false
+            suppressColumnsToolPanel: false,
+            pinned: 'left',
         },
         Category: {
             cellRenderer: 'categoryCellRenderer',
