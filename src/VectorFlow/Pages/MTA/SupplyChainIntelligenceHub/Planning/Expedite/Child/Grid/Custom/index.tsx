@@ -123,7 +123,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer className="ag-theme-planning-custom" style={{height:'100%'}}>
+        <SCDynamicContainer style={{height:'100%'}}>
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}
