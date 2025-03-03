@@ -43,9 +43,9 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const staticTableColDefs = useMemo<any>(() => {
         if (!techTable.columnDefs) return []
-        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn", "WhCode"].includes(col.colId));
+        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && ['dailydatagraph','Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn", "WhCode"].includes(col.colId));
         const newColDef = colDefs.map((colDef: any) => {
-            if (colDef.colId === "Category") {
+            if (colDef.colId === "Category" || colDef.colId ==="dailydatagraph") {
                 colDef.pinned = "left";
                 colDef.minWidth =  100;
             } else {
@@ -62,7 +62,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const techTableColDefs = useMemo<any>(() => {
         if (!techTable.columnDefs) return []
-        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && !['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"].includes(col.colId));
+        const colDefs = techTable.columnDefs.filter((col: any) => col.colId && !['dailydatagraph','Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"].includes(col.colId));
         const newColDef = colDefs.map((colDef: any) => {
             colDef.pinned = false;
             colDef.filter=false;
@@ -73,7 +73,8 @@ const VerticalSplitView = (props: SplitViewProps) => {
 
     const ecoTableColDefs = useMemo<any>(() => {
         if (!ecoTable.columnDefs) return []
-        const newColDef = ecoTable.columnDefs.map((colDef: any) => {
+        const colDefs = ecoTable.columnDefs.filter((col: any) => col.colId && !['dailydatagraph',"WhCode"].includes(col.colId));
+        const newColDef = colDefs.map((colDef: any) => {
             colDef.pinned = false;
             colDef.filter=false;
             return colDef;
