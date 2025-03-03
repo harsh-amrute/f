@@ -199,7 +199,7 @@ const ResearchInsights = ()=>{
                 :
                 <AvailabilityTrendWrapper>
                 <AvailabilityTrendHeader themeUi={themeUi}>
-                    Availability Trend
+                   On Hand Availability Trend
                 </AvailabilityTrendHeader>
                 <AvailabilityTrendSection style={{borderBottom:'dashed 2px #B2B2B2'}}>
                     <HistoricalAvailabiltyHeader>

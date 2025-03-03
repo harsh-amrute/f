@@ -581,7 +581,8 @@ const useBTR = () => {
                             onGridReady={(params) => setTechInternalRef(params)}
                         />
                         <div style={{ zoom: 0.7, margin: '0px -15px 0px -15px' }}>
-                            <VFPagination {...techPaginationProps} />
+                            <VFPagination style={{marginTop:'-15px'}}
+                            {...techPaginationProps} />
                         </div>
                     </>
                 )
@@ -608,7 +609,8 @@ const useBTR = () => {
 
                         />
                         <div style={{ zoom: 0.7, margin: '0px -15px 0px -15px' }}>
-                            <VFPagination {...ecoPaginationProps} />
+                            <VFPagination style={{marginTop:'-15px'}}
+                            {...ecoPaginationProps} />
                         </div>
                     </>
                 )
