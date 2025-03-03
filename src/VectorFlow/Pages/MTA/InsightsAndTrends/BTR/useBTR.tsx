@@ -459,7 +459,7 @@ const useBTR = () => {
         if (initialColumnState) {
             let colDefs;
             if (verticalView && currentTab.id === "1") {
-                const removeCols = ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn"];
+                const removeCols = ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"];
                 colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras(), removeCols);
             } else {
                 colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras());

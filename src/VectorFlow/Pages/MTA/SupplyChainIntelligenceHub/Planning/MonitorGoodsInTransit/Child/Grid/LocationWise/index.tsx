@@ -17,7 +17,7 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
     const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
 
     const [colDefs, setColDefs] = useState<any>([]);
-    const {gridColDefs} = useContext(GridStateContext);
+    const {gridColDefs, setGlobalColDef} = useContext(GridStateContext);
     
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -243,6 +243,7 @@ const MonitorGITChildLocationWiseGrid = ({data,paginationProps,onOpenDailyDataGr
         if(gridColDefs!==null){
             const cols =  getColumnDefinationsMTA(gridColDefs,CustomHeader)
             setColDefs(cols);
+            setGlobalColDef(cols);
         } 
     },[gridColDefs])
     

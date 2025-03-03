@@ -21,7 +21,7 @@ import { UserUIColumnConfigName } from "../../.../../../../../../../../../helper
 
 const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
 
-    const {ref,gridColDefs} = useContext(GridStateContext)
+    const {ref,gridColDefs, setGlobalColDef} = useContext(GridStateContext);
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
 
@@ -104,6 +104,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 // setColDefs(mapUIConfigToColdefs(uiconfig));
 
                 setColDefs(getColumnDefinationsMTA(gridColDefs))
+                setGlobalColDef(getColumnDefinationsMTA(gridColDefs));
                 toast.dismiss(toastId);
            
                 notifySuccess(`Data Fetched Successfully`);

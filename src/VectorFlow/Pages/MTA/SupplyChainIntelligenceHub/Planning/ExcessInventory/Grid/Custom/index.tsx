@@ -22,7 +22,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
 
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
-    const {ref, gridColDefs} = useContext(GridStateContext)
+    const {ref,gridColDefs, setGlobalColDef} = useContext(GridStateContext);
 
     const [gridState,setGridState] = useState<GridState>()
 
@@ -109,6 +109,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 
 
                 setColDefs(getColumnDefinationsMTA(gridColDefs)); 
+                setGlobalColDef(getColumnDefinationsMTA(gridColDefs));
                 
                 toast.dismiss(toastId);
            

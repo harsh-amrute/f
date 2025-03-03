@@ -13,6 +13,7 @@ import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { GridRef } from "../../../../../VectorFlow/types/MDM";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTA/Common/UIConfig";
 import { UIColumnConfigName } from "../../../../../helpers/Enum";
+import _ from "lodash";
 
 const usePlanning = ()=>{
 
@@ -77,6 +78,8 @@ const usePlanning = ()=>{
 
     const [isDataLoading,setIsDataLoading] = useState(false);
 
+    const [globalColDef, setGlobalColDef] = useState<any>();
+
 
     const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
 
@@ -98,15 +101,22 @@ const usePlanning = ()=>{
         
     }
 
-    const tempAgGridProps:AgGridReactProps = {
-        onRowDataUpdated:(event)=>{
-          if(tempDownloadData){
-            event?.api.exportDataAsExcel({fileName:`${currentCategory}${currentTab}`, columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
-            setTempDownloadData(false)  
-          }
+    const tempAgGridProps: AgGridReactProps = {
+        onRowDataUpdated: (event) => {
+            if (tempDownloadData) {
+                const allColumns = ref.current?.api.getAllDisplayedColumns();
+                const columnKeys = allColumns?.map(c => c.getColId())
+                    .filter(colId => !['t','dailydatagraph'].includes(colId)); // Replace with actual column IDs to exclude
+                
+                event?.api.exportDataAsExcel({
+                    fileName: `${currentCategory}${currentTab}`,
+                    columnKeys: columnKeys
+                });
+                
+                setTempDownloadData(false);
+            }
         }
-      };
-      
+    };
     useEffect(()=>{
         fetchPlanningDataCount();
     },[])
@@ -391,7 +401,7 @@ const usePlanning = ()=>{
             return([])
         }
     }
-
+    const [initialPlanningCount, setInitialPlanningCount] = useState<any>();
     const fetchPlanningDataCount = async (filter?:any) => {
         setIsOverlayVisible(true);
         const result = await getPlanningDataCount({...filter});
@@ -418,6 +428,7 @@ const usePlanning = ()=>{
                 if(planningCategoryObj.custom) tempPlanningCount.reviewOrderFulfillmentCustomCount = planningCategoryObj.custom; 
             }
         });
+        setInitialPlanningCount(_.cloneDeep(tempPlanningCount));
         
         setPlanningCounts(tempPlanningCount);
     }
@@ -454,6 +465,7 @@ const usePlanning = ()=>{
             }
             return data.data.data.data.createAvailabilityAtParent
         }
+        console.log(data.data.data.data);
         return data.data.data.data
     }
 
@@ -1067,7 +1079,10 @@ const usePlanning = ()=>{
         onApplyFilter,
         onDeleteFilter,
         isDataLoading,
-        gridColDefs
+        gridColDefs,
+        initialPlanningCount,
+        globalColDef,
+        setGlobalColDef
     }
 
 

@@ -3182,7 +3182,10 @@ export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => 
   const columnsNotBeConverted = ['SKUCode','SKUDescription','Whcode','WhCode','LocationName','pc','pn']
   return rows.map((r) => {
     const transformedRow = Object.keys(r).reduce((acc, key) => {
-      const value = r[key];
+      let value = r[key];
+      if(value===null){
+        value = "";
+      }
       if(columnsNotBeConverted.includes(key)){
         acc[key]=value+"";
       }else if (typeof value === 'string' && !isNaN(parseFloat(value))) {

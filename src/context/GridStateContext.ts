@@ -10,11 +10,15 @@ interface GridStateContextProps{
     setExportExcelRowData:any,
     onResetCallback?:any,
     gridColDefs?:any,
+    globalColDef?:any,
+    setGlobalColDef?: any
 }
 
 export const GridStateContext = createContext<GridStateContextProps>({
     ref:null,
     gridColDefs:[],
+    globalColDef:[],
+    setGlobalColDef:()=>{return},
     exportExcelColumns:[],
     setExportExcelColumns:()=>{return},
     tempDownloadData:false,
