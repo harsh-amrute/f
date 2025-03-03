@@ -22,7 +22,7 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
 
-    const {ref,gridColDefs} = useContext(GridStateContext)
+    const {ref,gridColDefs, setGlobalColDef} = useContext(GridStateContext);
 
     const [columnState,setColumnState] = useState<any>()
     const {currentGridState} = useSelector((state:RootState)=>state.mta)
@@ -94,6 +94,7 @@ const ExpediteParentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 // setColDefs(mapUIConfigToColdefs(uiconfig));
 
                 setColDefs(getColumnDefinationsMTA(gridColDefs))
+                setGlobalColDef(getColumnDefinationsMTA(gridColDefs));
                 toast.dismiss(toastId);
            
                 notifySuccess(`Data Fetched Successfully`);

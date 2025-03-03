@@ -12,7 +12,7 @@ import { GridStateContext } from '../../../../../../../context/GridStateContext'
 const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
 
     const [colDefs, setColDefs] = useState<any>([]);
-    const {gridColDefs} = useContext(GridStateContext);
+    const {gridColDefs, setGlobalColDef} = useContext(GridStateContext);
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -162,6 +162,7 @@ const ExcessInventoryGrid = ({data,paginationProps,onOpenDailyDataGraph,currentC
         if(gridColDefs!==null){
             const cols =  getColumnDefinationsMTA(gridColDefs,CustomHeader)
             setColDefs(cols);
+            setGlobalColDef(cols);
         } 
     },[gridColDefs])
 

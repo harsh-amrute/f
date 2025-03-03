@@ -20,7 +20,7 @@ import { UserUIColumnConfigName } from "../../../../../../../../helpers/Enum";
 
 const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
 
-    const {ref,gridColDefs} = useContext(GridStateContext)
+  const {ref,gridColDefs, setGlobalColDef} = useContext(GridStateContext);
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
     const [gridState,setGridState] = useState<GridState>()
@@ -105,6 +105,7 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 // setColDefs(mapUIConfigToColdefs(uiconfig));
 
                 setColDefs(getColumnDefinationsMTA(gridColDefs));
+                setGlobalColDef(getColumnDefinationsMTA(gridColDefs));
                 toast.dismiss(toastId);
            
                 notifySuccess(`Data Fetched Successfully`);
