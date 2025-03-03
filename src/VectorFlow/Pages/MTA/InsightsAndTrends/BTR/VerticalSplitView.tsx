@@ -6,6 +6,11 @@ import { Allotment } from "allotment"
 import CustomVFTable from "./CustomVFTable"
 import { BTRTableWrapper, BTRTableHeader, LockBtnWrapper, LockBtn, LocktBtnContent, LockLabel, VerticalViewLeftTableWrapper } from "./styles"
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
+// import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
+
+import './styles.css'
+import VFTable from '../../../../../VectorFlow/Pages/MTO/Common/VFTable'
+
 
 interface SpliViewTableProps extends AgGridReactProps {
     header: string
@@ -33,6 +38,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
     const ref2 = useRef<AgGridReact>(null)
     const ref3 = useRef<AgGridReact>(null)
 
+
     const [lockBtnPosition, setLockBtnPosition] = useState<number>(0)
 
     const staticTableColDefs = useMemo<any>(() => {
@@ -41,14 +47,16 @@ const VerticalSplitView = (props: SplitViewProps) => {
         const newColDef = colDefs.map((colDef: any) => {
             if (colDef.colId === "Category") {
                 colDef.pinned = "left";
-                colDef.minWidth = 80;
+                colDef.minWidth =  100;
             } else {
                 colDef.pinned = false;
-
+                
             }
+            colDef.width = 100;
             colDef.filter=false;
             return colDef;
         });
+        console.log(newColDef)
         return newColDef;
     }, [techTable.columnDefs]);
 
@@ -127,61 +135,84 @@ const VerticalSplitView = (props: SplitViewProps) => {
         //     'whiteSpace': 'nowrap'
         // },
         flex: 1,
-        width: 80,
-        minWidth: 80,
+        width: 100,
+        minWidth: 100,
         cellClass:'btr_cell_style'
     }
 
-
+    console.log(techTable.gridOptions);
     return (
         <BTRTableWrapper>
             <Allotment defaultSizes={[600, 300]} vertical={false} onChange={handleChange}>
                 <Allotment.Pane minSize={500}>
                     <BTRTableHeader style={{ display: 'flex', justifyContent: 'flex-start', marginLeft: '50%' }}>{techTable.header}</BTRTableHeader>
                     <VerticalViewLeftTableWrapper>
-                        <div style={{ marginTop: -10, height: '85%', width: '100%',minWidth:'50%' }}>
-                            <CustomVFTable
+                        <div style={{ marginTop: -10, height: '95%', width: '100%',minWidth:'50%' }}>
+                            <div style={{ height:'100%', display:'flex', flexDirection:'column'}}>
+                            <VFTable 
+                                key={'ref'}
+                                disableZoomScaling
                                 ref={ref3}
                                 rowHeight={25}
+                                sideBar={null}
                                 height={"95%"}
-                                disableZoomScaling
                                 gridOptions={{
                                     ...techTable.gridOptions
+                                }}
+                                statusBar={{
+                                        statusPanels:[]
                                 }}
                                 columnDefs={staticTableColDefs}
                                 rowData={techTable.rowData}
                                 tooltipMouseTrack={true}
                                 tooltipShowDelay={0}
                                 tooltipHideDelay={100000}
-                                defaultColDef={defaultColDef}
-                                onBodyScroll={(params) => onBodyScroll(params, 3)}
+                               
+                                defaultColDef={{
+                                    floatingFilter: false,
+                                    filter: false,
+                                    sortable: false,
+                                }}
+                                onBodyScroll={(params:any) => onBodyScroll(params, 3)}
                             />
-                            <div style={{ zoom: 0.7, margin: '0px -15px' }}>
-                                <VFPagination
+                            </div>
+                            <div style={{ zoom: 0.7, margin: '0px -15px'}}>
+                                <VFPagination style={{ width:'95%', marginTop:'-30px'}}
                                     {...techTable.paginationProps}
                                 />
                             </div>
                         </div>
-                        <div style={{ marginTop: -10, height: '85%', width: '100%' ,minWidth:'50%'}}>
-                            <CustomVFTable
+                        <div style={{ marginTop: -10, height: '95%', width: '100%' ,minWidth:'50%'}}>
+                         <div style={{ height:'100%', display:'flex', flexDirection:'column'}}>
+                            <VFTable 
+                                key={'ref'}
+                                disableZoomScaling
                                 ref={ref1}
                                 rowHeight={25}
+                                sideBar={null}
                                 height={"95%"}
-                                disableZoomScaling
                                 gridOptions={{
-                                    ...techTable.gridOptions,
+                                    ...techTable.gridOptions
+                                }}
+                                statusBar={{
+                                        statusPanels:[]
                                 }}
                                 columnDefs={techTableColDefs}
                                 rowData={techTable.rowData}
                                 tooltipMouseTrack={true}
                                 tooltipShowDelay={0}
                                 tooltipHideDelay={100000}
-                                defaultColDef={defaultColDef}
-                                onBodyScroll={(params) => onBodyScroll(params, 1)}
-                                alignedGrids={isLocked ? [ref2] : []}
+                               
+                                defaultColDef={{
+                                    floatingFilter: false,
+                                    filter: false,
+                                    sortable: false,
+                                }}
+                                onBodyScroll={(params:any) => onBodyScroll(params, 3)}
                             />
-                            <div style={{ zoom: 0.7, margin: '0px -15px' }}>
-                                <VFPagination
+                            </div>
+                            <div style={{ zoom: 0.7, margin: '0px -15px'  }}>
+                                <VFPagination style={{marginTop:'-30px'}} 
                                     {...techTable.paginationProps}
                                 />
                             </div>
@@ -200,26 +231,37 @@ const VerticalSplitView = (props: SplitViewProps) => {
                 </Allotment.Pane>
                 <Allotment.Pane minSize={300}>
                     <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
-                    <div style={{ marginTop: -10, height: '85%', paddingLeft: '17px' }}>
-                        <CustomVFTable
-                            ref={ref2}
-                            rowHeight={25}
-                            height={"95%"}
-                            disableZoomScaling
-                            gridOptions={{
-                                ...ecoTable.gridOptions
-                            }}
-                            columnDefs={ecoTableColDefs}
-                            rowData={ecoTable.rowData}
-                            tooltipMouseTrack={true}
-                            tooltipShowDelay={0}
-                            tooltipHideDelay={100000}
-                            defaultColDef={defaultColDef}
-                            onBodyScroll={(params) => onBodyScroll(params, 2)}
-                            alignedGrids={isLocked ? [ref1] : []}
-                        />
-                        <div style={{ zoom: 0.7, margin: '0px -15px' }}>
-                            <VFPagination
+                    <div style={{ marginTop: -10, height: '95%', paddingLeft: '17px' }}>
+                         <div style={{ height:'100%', display:'flex', flexDirection:'column'}}>
+                            <VFTable 
+                                key={'ref'}
+                                disableZoomScaling
+                                ref={ref2}
+                                rowHeight={25}
+                                sideBar={null}
+                                height={"95%"}
+                                gridOptions={{
+                                    ...techTable.gridOptions
+                                }}
+                                statusBar={{
+                                        statusPanels:[]
+                                }}
+                                columnDefs={ecoTableColDefs}
+                                rowData={ecoTable.rowData}
+                                tooltipMouseTrack={true}
+                                tooltipShowDelay={0}
+                                tooltipHideDelay={100000}
+                               
+                                defaultColDef={{
+                                    floatingFilter: false,
+                                    filter: false,
+                                    sortable: false,
+                                }}
+                                onBodyScroll={(params:any) => onBodyScroll(params, 3)}
+                            />
+                            </div>
+                        <div style={{ zoom: 0.7, margin: '0px -15px'}}>
+                            <VFPagination style={{marginTop:'-30px',paddingRight:'10px'}}
                                 {...ecoTable.paginationProps}
                             />
                         </div>

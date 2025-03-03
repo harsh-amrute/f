@@ -153,7 +153,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer className="ag-theme-planning-custom">
+        <SCDynamicContainer>
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}

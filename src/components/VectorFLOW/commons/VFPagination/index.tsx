@@ -1,5 +1,7 @@
 
 import { PaginationWrapper,StatusBarLabel,StatusBarLabelLight,StatusBarLabelBold,PaginationContainer, PaginationArrowIcon } from "./styles"
+import { CSSProperties } from 'react'
+
 
 
 export interface VFPaginationProps{
@@ -10,7 +12,9 @@ export interface VFPaginationProps{
     handleChangePage:(e:any)=>void
     handleChangePerPage?:(e:any)=>void
     showTotalItems?:boolean,
-    showPagination?:boolean
+    showPagination?:boolean,
+    style?:CSSProperties
+    
 }
 
 
@@ -20,6 +24,7 @@ const VFPagination  = (props:VFPaginationProps)=>{
         totalRows,
         currentPage,
         rowsPerPage,
+        style,
         handleChangePage,
     } = props
 
@@ -48,7 +53,7 @@ const VFPagination  = (props:VFPaginationProps)=>{
     }
 
     return(
-        <PaginationWrapper data-testid="vf_pagination">
+        <PaginationWrapper data-testid="vf_pagination" style={style}>
             <PaginationContainer>
             <StatusBarLabel>
                 <StatusBarLabelBold>
