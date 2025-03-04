@@ -18,6 +18,8 @@ import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
 import { v4 as uuidv4 } from 'uuid';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
+import { warn } from 'console';
+import { BPRRemarksToolTipContentRowDataCellSection } from '../../SupplyChainIntelligenceHub/BPR/styles';
 
 
 const useViewModify = (pageType:string) => {
@@ -133,7 +135,7 @@ const useViewModify = (pageType:string) => {
 
     const validResumeStatuses = [23];
 
-
+// console.log(activeMaster.name)
     const invalidDataColdefs:ColDef[] = [
       {
         field:'warning',
@@ -308,7 +310,6 @@ const useViewModify = (pageType:string) => {
       ],
       defaultToolPanel:defaultToolPanel,
     }
-
     const agGridProps:AgGridReactProps = {
       tooltipShowDelay:0,
       readOnlyEdit:true,
@@ -357,7 +358,9 @@ const useViewModify = (pageType:string) => {
           }
         }
       },
+   
       rowSelection:'multiple',
+
       suppressRowClickSelection:true,
       components:customCellRenderers,
       onSelectionChanged:()=>{
@@ -392,7 +395,9 @@ const useViewModify = (pageType:string) => {
               const {error,warning} = checkError(newRow,activeMaster,pageType);
               err = error;
               warn = warning;
+
             }
+          
             //check if there is any errorenous column
             if(err!==undefined){
               newRow.error = err
@@ -400,6 +405,7 @@ const useViewModify = (pageType:string) => {
             else{
               newRow.error = ""
             }
+          
             //check if there is any warning column
             if(warn!==undefined){
               newRow.warning = warn
@@ -410,8 +416,11 @@ const useViewModify = (pageType:string) => {
               return newRow;
         
           }
+        
           return row;
         })
+       
+      
         const ifErrorExists = newRowData.some((row:any)=>("error" in row) && row["error"].length > 0);
         if(ifErrorExists){
            addInvalidDataColDefs('error');
@@ -423,6 +432,7 @@ const useViewModify = (pageType:string) => {
         setEnableEditOnlineReset(true)
         dispatch(UPDATE_ROW_DATA([...newRowData]))
       },
+   
     }
 
     function hasWarning(array: Array<any>): boolean {
@@ -442,11 +452,16 @@ const useViewModify = (pageType:string) => {
       invalidDataColdefs.forEach((invalidColumn:ColDef)=>{
          if(activeMaster.colDefs.find((column:ColDef)=>invalidColumn.colId === column.colId)) doesInvalidColDefExists = true;
       })
-      if(doesInvalidColDefExists) return [...activeMaster.colDefs]
-      return hasWarning(activeMaster.rowData) 
-        ?  [...invalidDataColdefs, ...activeMaster.colDefs]
-      : [...invalidDataColdefs.filter(colDef => colDef.field === 'error') , ...activeMaster.colDefs]
+      if(doesInvalidColDefExists)
+       return [...activeMaster.colDefs]
+      if (activeMaster.name === 'SKULocation') {
+        return [...invalidDataColdefs.filter(colDef => colDef.field === 'error' || colDef.field === 'warning'), ...activeMaster.colDefs];
+        
+    } else {
+        return [...invalidDataColdefs.filter(colDef => colDef.field === 'error'), ...activeMaster.colDefs];
     }
+}
+// console.log(activeMaster.name)
 
     const tempAgGridProps:AgGridReactProps = {
       columnDefs:getTempGridColDefs(),
@@ -1029,8 +1044,8 @@ const useViewModify = (pageType:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
-          if(data['error'].length > 0){
-            erroneusData.push(data);
+          if (data['error'].length > 0 ) {
+              erroneusData.push(data);
           }
           else{
             validData.push(data);
@@ -1461,7 +1476,7 @@ const useViewModify = (pageType:string) => {
         const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
 
         if(submittedRecordsCount === totalRecords){
-          notifySuccess("Modification done Successfull")
+          notifySuccess("Modification done Successfully")
         }
 
         else if(errorRowData.length > 0 || conflictCount > 0){
@@ -1480,7 +1495,7 @@ const useViewModify = (pageType:string) => {
             notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${conflictCount} records have conflicts. `)
           }
         }
-        else notifySuccess("Modification done Successfull")
+        else notifySuccess("Modification done Successfully")
         dispatch(UPDATE_PROGRESS_STATE(state));
       }
 
@@ -1648,9 +1663,6 @@ const useViewModify = (pageType:string) => {
         }
 
       }
-
-      console.log(activeMaster.progress)
-
       const onSaveToDraft = async () => {
         try{
           const colDefs = ref.current?.api.getColumnDefs() || [];
