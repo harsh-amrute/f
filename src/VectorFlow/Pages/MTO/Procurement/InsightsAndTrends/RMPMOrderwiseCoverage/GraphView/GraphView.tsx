@@ -35,7 +35,7 @@ const GraphView = ({ shortageData }: any) => {
     function TooltipRenderer({ datum, xKey }: any) {
         return `
     <div class="ag-chart-tooltip-title" style="background-color: #6C696A; display: flex; justify-content: center; align-items: center">
-        ${(datum[xKey] === 1) ? '0-7 Days' : (datum[xKey] === 85) ? '85-90 Days' : (datum[xKey] + '-' + (Number(datum[xKey] + 6)) + ' Days')}
+        ${isNaN(datum[xKey]) ? `${datum[xKey]} Days` :(datum[xKey] === 1) ? '0-7 Days' : (datum[xKey] === 85) ? '85-90 Days' : (datum[xKey] + '-' + (Number(datum[xKey] + 6)) + ' Days')}
     </div>
     <div class="ag-chart-tooltip-content" style="color: white; background-color: #6C696A">
     
@@ -104,7 +104,10 @@ const GraphView = ({ shortageData }: any) => {
                             return '85-90 Days'
                         }
                         else {
-                            return `${params.value}-${Number(params.value) + 6} Days`
+                          const categoryLable =  isNaN(Number(params.value)) ? params.value : `${params.value}-${Number(params.value) + 6} Days` ;
+                          const categoryLableLength = categoryLable.length > 20 ? categoryLable.slice(0, 19) + "..." : categoryLable; 
+
+                            return categoryLableLength;
                         }
 
                     }
@@ -134,9 +137,9 @@ const GraphView = ({ shortageData }: any) => {
             item: {
                 label: {
                     fontSize: 10
-                }
+                }         
             }
-        }
+        },
     });
 
     const TableData = _.cloneDeep(shortageData);
