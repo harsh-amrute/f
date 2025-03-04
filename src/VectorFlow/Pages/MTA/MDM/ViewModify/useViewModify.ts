@@ -18,9 +18,6 @@ import { toast } from 'react-toastify';
 import ConflictErrorCellRenderer from './ConflictErrorCellRenderer';
 import { v4 as uuidv4 } from 'uuid';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
-import { warn } from 'console';
-import { BPRRemarksToolTipContentRowDataCellSection } from '../../SupplyChainIntelligenceHub/BPR/styles';
-
 
 const useViewModify = (pageType:string) => {
 
@@ -135,7 +132,6 @@ const useViewModify = (pageType:string) => {
 
     const validResumeStatuses = [23];
 
-// console.log(activeMaster.name)
     const invalidDataColdefs:ColDef[] = [
       {
         field:'warning',
@@ -461,7 +457,6 @@ const useViewModify = (pageType:string) => {
         return [...invalidDataColdefs.filter(colDef => colDef.field === 'error'), ...activeMaster.colDefs];
     }
 }
-// console.log(activeMaster.name)
 
     const tempAgGridProps:AgGridReactProps = {
       columnDefs:getTempGridColDefs(),

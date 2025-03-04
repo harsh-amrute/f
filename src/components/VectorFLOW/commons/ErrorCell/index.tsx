@@ -63,6 +63,7 @@ const ErrorCell = (props: ICellRendererParams) => {
 
         let tooltipTop = (bottom) + 10;
 
+        // Check if tooltip overflows on the bottom side
         if (tooltipTop + tooltipHeight > viewportHeight) {
             tooltipTop = (top) - tooltipHeight;
         }
@@ -113,7 +114,7 @@ const ErrorCell = (props: ICellRendererParams) => {
     useEffect(() => {
         if (!isMouseOverTooltip && tooltipTimeout) {
             const timeout = setTimeout(() => {
-                setTooltipsState(prev => ({ ...prev, ['tooltip1']: false }));
+                setTooltipsState(prev => ({ ...prev, ['tooltip']: false }));
             }, 120);
             return () => clearTimeout(timeout); 
         }
@@ -133,12 +134,12 @@ const ErrorCell = (props: ICellRendererParams) => {
                     width={17}
                     height={17}
                     style={{ marginRight: '7px', marginLeft: '5px' }}
-                    onMouseEnter={(e) => onMouseIn(e, 'tooltip1')} 
-                    onMouseLeave={() => onMouseOut('tooltip1')} 
+                    onMouseEnter={(e) => onMouseIn(e, 'tooltip')} 
+                    onMouseLeave={() => onMouseOut('tooltip')} 
                     data-testid="errorImage"
                 />
                 <ErrorText themeUi={themeUi}>{getFomattedMessage(message)}</ErrorText>
-                {tooltipsState['tooltip1'] && ( 
+                {tooltipsState['tooltip'] && ( 
                     <Portal wrapperId="error-tooltip">
                         <SCToolTipWrapper
                             className="custom-scrollbar"
@@ -151,7 +152,7 @@ const ErrorCell = (props: ICellRendererParams) => {
                                 zIndex: 1000,
                             }}
                             onMouseEnter={onTooltipMouseEnter}
-                            onMouseLeave={() => onTooltipMouseLeave('tooltip1')}
+                            onMouseLeave={() => onTooltipMouseLeave('tooltip')}
                         >
                             <SCErrorToolTipUl themeUi={themeUi}>
                                 {messages && messages.length > 0 &&
