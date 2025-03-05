@@ -164,7 +164,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
             setMasterUIConfig(currentGridRef?.current.api.getColumnState());
             getUserColumnConfig();
         }
-    }, [colDef]);
+    }, [colDef,currentGridRef]);
 
     useEffect(() => {
         setColumnDef();
@@ -237,8 +237,8 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
             } else if (currentTab.id === 'cv') {
                 setcurrentCumPage(1);
             }
-            getInitialData();
         }
+        getInitialData();
     }, [currentTab, appliedFilters])
 
     useEffect(() => {
@@ -264,7 +264,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     }
 
     const getInitialData = async (currPage?: number, releaseDate?: string, isExcelExport = false) => {
-        currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport) : getCumulativeDateWise(currPage, releaseDate, isExcelExport);
+         currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport) : getCumulativeDateWise(currPage, releaseDate, isExcelExport);
     }
 
     const getSelectedDateWise = async (currPage?: number, releaseDate: string = date, isExcelExport = false) => {
@@ -460,7 +460,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                     console.error('Failed to apply column state');
                 }
             }
-        }, [columnState]);
+        }, [currentGridRef, columnState, colDef]);
 
         switch (currentTab.id) {
             case "sdv":

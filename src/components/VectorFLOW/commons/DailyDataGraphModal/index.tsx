@@ -549,7 +549,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           xName:'Date',
           yKey: 'upwardStockBasedNorm',
           yName:'',
-          data:normData,
+          data: addBoundaryDataPoints(normData),
           type:'area',
           // strokeWidth: 3,
           fill:'#808080',
@@ -709,31 +709,31 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>RLT :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rlt'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rlt'] !== undefined && masterData?.['rlt'] !== null ? masterData['rlt'] : ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Current Norm :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['nm'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['nm'] !== undefined && masterData?.['nm'] !== null ? masterData['nm'] : ""}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Min Norm :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['mn'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['mn'] !== undefined && masterData?.['mn'] !== null ? masterData['mn'] : ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>RCP :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rcp'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rcp'] !== undefined && masterData?.['rcp'] !== null ? masterData['rcp'] : ""}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>GCP :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['gcp'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['gcp'] !== undefined && masterData?.['gcp'] !== null ? masterData['gcp'] : ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>

@@ -52,7 +52,6 @@ const VFPagination = (props: VFPaginationProps) => {
         return handleChangePage(newPage)
     }
 
-    console.log("my disabled, ", isDisabled);
 
     return (
         <PaginationWrapper data-testid="vf_pagination">
