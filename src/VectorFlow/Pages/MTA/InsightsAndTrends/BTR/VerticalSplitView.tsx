@@ -56,7 +56,6 @@ const VerticalSplitView = (props: SplitViewProps) => {
             colDef.filter=false;
             return colDef;
         });
-        console.log(newColDef)
         return newColDef;
     }, [techTable.columnDefs]);
 
@@ -140,8 +139,6 @@ const VerticalSplitView = (props: SplitViewProps) => {
         minWidth: 100,
         cellClass:'btr_cell_style'
     }
-
-    console.log(techTable.gridOptions);
     return (
         <BTRTableWrapper>
             <Allotment defaultSizes={[600, 300]} vertical={false} onChange={handleChange}>
