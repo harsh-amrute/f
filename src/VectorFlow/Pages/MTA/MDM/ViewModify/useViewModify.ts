@@ -492,10 +492,23 @@ const useViewModify = (pageType:string) => {
 
   
 
-    const addInvalidDataColDefs = (columnName:string) => {
-      dispatch(ADD_COLDEFS({colDefs:[columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]]}));
-      // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+    const addInvalidDataColDefs = (columnName: string) => {
+
+      // Check if the column already exists
+      const columnAlreadyExists = colDefs.some((colDef: ColDef) => colDef.colId === columnName);
+
+      if (!columnAlreadyExists) {
+        const colDefToAdd = columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0];
+        dispatch(ADD_COLDEFS({ colDefs: [colDefToAdd] }));
+      } else {
+        console.log(`${columnName} column already exists`);
+      }
     }
+
+    // const addInvalidDataColDefs = (columnName:string) => {
+    //   dispatch(ADD_COLDEFS({colDefs:[columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]]}));
+    //   // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
+    // }
 
     const getCurrentVisbileColumns = () => {
       const columnData = ref.current?.api.getAllDisplayedColumns();
