@@ -556,7 +556,6 @@ export const handleDownloadMTOVF = async (reportName: string, downloadName: stri
 
 export const handleDownloadVF = async (reportName: string, downloadName:string) => {
 
-  console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
@@ -2103,7 +2102,6 @@ export const createConflictRowData = (conflicts: { conflictdetails: { oldData: a
         for (let i = 0; i < primaryKeys.length; i++) {
 
           if (row[primaryKeys[i]] === conflictDetail.requestedData[primaryKeys[i]]) {
-            console.log(row, index, conflictDetail.oldData, conflictIndex)
             isDuplicate = true
           }
           else {
@@ -2867,7 +2865,6 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
 }
 
 export const MainMenuItemsCustomization = (params:any) => {
-  console.log(params)
   const defaultItems = params.defaultItems;
   const conditionalItemsToRemove = ['remarks','rh']
   const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
@@ -3216,7 +3213,7 @@ export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => 
  
 }
 
-export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: number, pinCatergory: boolean, excludeColumns?: Array<string>,): Array<ColDef> => {
+export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: number, pinCatergory: boolean, excludeColumns?: Array<string>, onOpenDailyDataGraph?:any): Array<ColDef> => {
   // const graphCellRenderer:ColDef={
   //   field:'graph',
   //   colId:'graph',
@@ -3236,6 +3233,23 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   //   // },
   //   flex: 1
   // }
+
+  const specificColumns:any =[
+    {
+      colId:'dailydatagraph',
+      field:'',
+      headerName:'',
+      width:40,
+      pinned: 'left',
+      floatingFilter:false,
+      position:0,
+      tooltipField:"DailyDataGraph",
+      cellRenderer:'grapCellRenderer',
+      cellRendererParams:{
+        onOpenDailyDataGraph:onOpenDailyDataGraph
+      },
+    }
+  ]
 
 
   let result = Object.keys(row).map((key: string): ColDef => {
@@ -3430,7 +3444,7 @@ export const mapBTRRowDataToColDefs = (row: any, dateMapper: any, horizon: numbe
   result = result.filter((r) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
  
   if (excludeColumns) result = result.filter((r) => r.colId && !excludeColumns.includes(r.colId))
-  return result
+  return [...specificColumns,...result]
 
 }
 
@@ -3801,7 +3815,6 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
 
 
 export const convertUiConfigToOptions = (data:any) => {
-  console.log(data);
   return data?.map((column:any)=>{
     return {
       value:column.Col_Code,

@@ -523,7 +523,8 @@ const DynamicReleaseManagement = () => {
           enabled: false
         },
         label: {
-          avoidCollisions: false,
+          avoidCollisions: true,
+          autoRotate: true,
         }
       },
       {

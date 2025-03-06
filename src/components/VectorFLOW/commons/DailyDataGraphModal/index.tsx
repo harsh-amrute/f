@@ -23,9 +23,10 @@ import { getFormattedDate } from "../../../../helpers/utils";
 import {suspensionMessages} from '../../../../helpers/BPRConstants';
 import { useDispatch } from 'react-redux';
 import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../../redux/actions/MTA";
-import {eachDayOfInterval, format, subDays} from 'date-fns';
+import {addDays, eachDayOfInterval, format, subDays} from 'date-fns';
 import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
+import { all } from "axios";
 interface DailyDataGraphModalProps{
   rowData:any,
   chartData:any[]
@@ -92,24 +93,87 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
       return lastNinetyDaysData
     }
 
-    // const addBoundaryDataPoints = (data: any) => {
-    //   if (data.length === 0) return data;
+    const addBoundaryDataPoints = (data: any) => {
+      if (data.length === 0) return data;
+      const firstDate = new Date(data[0].date);
+      const lastDate = new Date(data[data.length - 1].date);
+
   
-    //   const firstDate = new Date(data[0].dt);
-    //   const lastDate = new Date(data[data.length - 1].dt);
+      const startPoint = {
+        date: format(subDays(firstDate, 1), "yyyy-MM-dd"),
+        // date: "",
+        hideTooltip: true, // Special flag to hide tooltip
+        upwardStockBasedNorm: null,
+        downwardStockBasedNorm:null,
+        upwardConsumptionBasedNorm: null,
+        downwardConsumptionBasedNorm: null,
+        norm: data[0].norm,
+        normRed: data[0].normRed,
+        normYellow: data[0].normYellow,
+        normGreen: data[0].normGreen,
+        normBlue: data[0].normBlue
+      };
   
-    //   const startPoint = {
-    //     dt: format(subDays(firstDate, 1), "yyyy-MM-dd"),
-    //     hideTooltip: true // Special flag to hide tooltip
-    //   };
+      const endPoint = {
+        // date:"",
+        date: format(addDays(lastDate, 1), "yyyy-MM-dd"),
+        hideTooltip: true, // Special flag to hide tooltip
+        upwardStockBasedNorm: null,
+        downwardStockBasedNorm:null,
+        upwardConsumptionBasedNorm: null,
+        downwardConsumptionBasedNorm: null,
+        norm: data[0].norm,
+        normRed: data[0].normRed,
+        normYellow: data[0].normYellow,
+        normGreen: data[0].normGreen,
+        normBlue: data[0].normBlue
+      };
   
-    //   const endPoint = {
-    //     dt: format(addDays(lastDate, 1), "yyyy-MM-dd"),
-    //     hideTooltip: true // Special flag to hide tooltip
-    //   };
+      const newData =[startPoint, ...data, endPoint];
+      return newData;
+    };
+
+
+    const addBoundaryDataPointsADJ = (data: any) => {
+      if (data.length === 0) return data;
+      const firstDate = new Date(data[0].dt);
+      const lastDate = new Date(data[data.length - 1].dt);
+
   
-    //   return [startPoint, ...data, endPoint];
-    // };
+      const startPoint = {
+        dt: format(subDays(firstDate, 1), "yyyy-MM-dd"),
+        // dt: "",
+        hideTooltip: true, // Special flag to hide tooltip
+        bz: null,
+        cs: null,
+        git: null,
+        grc: null,
+        grs: null,
+        rp: null,
+        rrc: null,
+        rrs: null,
+        // stk: null,
+      };
+  
+      const endPoint = {
+        // dt:"",
+        dt: format(addDays(lastDate, 1), "yyyy-MM-dd"),
+        hideTooltip: true, // Special flag to hide tooltip
+        bz: null,
+        cs: null,
+        git: null,
+        grc: null,
+        grs: null,
+        rp: null,
+        rrc: null,
+        rrs: null,
+        // stk: null,
+      };
+
+      const newData = [startPoint, ...data, endPoint];
+      console.log("newData", newData);
+      return newData;
+    };
     
     useEffect(()=>{
       if(lastRunDate)
@@ -279,7 +343,21 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           const dailyDataObject = missingData.find((data:any)=>new Date(data['dt']).getTime() === new Date(params.datum['date']).getTime())
           // if(!dailyDataObject.stk && !dailyDataObject.rp && !dailyDataObject.git && !dailyDataObject.cs){
           //   return ""
-          // }
+          // }      
+
+          const allDates = addBoundaryDataPoints(normData).map((data: any) => new Date(data['date']).getTime());
+          
+          
+          const firstDate = allDates[0];
+       
+          const lastDate = allDates[allDates.length - 1];
+          
+          const currentDate = new Date(params.datum['date']).getTime();
+        
+          if (currentDate === firstDate || currentDate === lastDate) {
+            return " " ; 
+          }
+
           const suspensionReasons = generateSuspensionReasons(params.datum.upwardStockBasedNorm,params.datum.downwardStockBasedNorm,params.datum.upwardConsumptionBasedNorm,params.datum.downwardConsumptionBasedNorm)
        
           let tooltip = `
@@ -291,8 +369,8 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           if(suggestionObject) tooltip += generateRevisionSuggestedBlock(suggestionObject?.oln,suggestionObject?.nn,suggestionObject?.rsn);
           if(suspensionReasons.length > 0 && suspensionType!=='') tooltip += generateSuspensionReasonsBlock(suspensionReasons);
 
-          if(dailyDataObject.stk != null || dailyDataObject.rp != null || dailyDataObject.git != null || dailyDataObject.cs != null){
-            tooltip += generateDailyDataBlock(dailyDataObject.stk,dailyDataObject.rp,dailyDataObject.git,dailyDataObject.cs,params.datum.normRed,params.datum.normGreen*2,Math.floor(params.datum.normYellow*3), params.datum.normBlue)
+          if(dailyDataObject?.stk != null || dailyDataObject?.rp != null || dailyDataObject?.git != null || dailyDataObject?.cs != null){
+            tooltip += generateDailyDataBlock(dailyDataObject?.stk,dailyDataObject?.rp,dailyDataObject?.git,dailyDataObject?.cs,params.datum.normRed,params.datum.normGreen*2,Math.floor(params.datum.normYellow*3), params.datum.normBlue)
           }
 
           const finalTooltipHTML = `
@@ -326,7 +404,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   xName: 'Date',
                   yKey: 'normRed',
                   yName: '',
-                  data: normData,
+                  data: addBoundaryDataPoints(normData),
                   type: 'area',
                   // strokeWidth: 3,
                   fill: '#ED4A4A',
@@ -344,7 +422,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   xName: 'Date',
                   yKey: 'normYellow',
                   yName: '',
-                  data: normData,
+                  data: addBoundaryDataPoints(normData),
                   type: 'area',
                   // strokeWidth: 3,
                   stacked: true,
@@ -362,7 +440,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   xName: 'Date',
                   yKey: 'normGreen',
                   yName: '',
-                  data: normData,
+                  data: addBoundaryDataPoints(normData),
                   type: 'area',
                   // strokeWidth: 3,
                   stacked: true,
@@ -380,7 +458,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   xName: 'Date',
                   yKey: 'normBlue',
                   yName: '',
-                  data: normData,
+                  data: addBoundaryDataPoints(normData),
                   type: 'area',
                   // strokeWidth: 3,
                   fill: '#355FD3',
@@ -398,7 +476,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   xName: 'Date',
                   yKey: 'git',
                   yName: 'GIT',
-                  data: adjustedChartData,
+                  data: addBoundaryDataPointsADJ(adjustedChartData),
                   type: 'bar',
                   fill: '#8137BC',
                   tooltip: {
@@ -410,7 +488,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   xName: 'Date',
                   yKey: 'rp',
                   yName: 'Receipts',
-                  data: adjustedChartData,
+                  data: addBoundaryDataPointsADJ(adjustedChartData),
                   type: 'bar',
                   fill: '#67B6E8',
                   tooltip: {
@@ -422,7 +500,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   xName: 'Date',
                   yKey: 'cs',
                   yName: 'Consumption',
-                  data: adjustedChartData,
+                  data: addBoundaryDataPointsADJ(adjustedChartData),
                   type: 'bar',
                   fill: '#EDB04D',
                   tooltip: {
@@ -434,7 +512,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                   xName: 'Date',
                   yKey: 'stk',
                   yName: 'Stock',
-                  data: adjustedChartData,
+                  data: addBoundaryDataPointsADJ(adjustedChartData),
                   type: 'line',
                   stroke: '#5D148B',
                   tooltip: {
@@ -465,14 +543,13 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
             },
           ],
       };
-      
         const upwardStockBasedOptions = {
             
           xKey: 'date',
           xName:'Date',
           yKey: 'upwardStockBasedNorm',
           yName:'',
-          data:normData,
+          data: addBoundaryDataPoints(normData),
           type:'area',
           // strokeWidth: 3,
           fill:'#808080',
@@ -488,7 +565,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           xName:'Date',
           yKey: 'downwardStockBasedNorm',
           yName:'',
-          data:normData,
+          data:addBoundaryDataPoints(normData),
           type:'area',
           // strokeWidth: 3,
           fill:'#808080',
@@ -505,7 +582,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           xName:'Date',
           yKey: 'upwardConsumptionBasedNorm',
           yName:'',
-          data:normData,
+          data:addBoundaryDataPoints(normData),
           type:'area',
           // strokeWidth: 3,
           fill:'#808080',
@@ -522,7 +599,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
           xName:'Date',
           yKey: 'downwardConsumptionBasedNorm',
           yName:'',
-          data:normData,
+          data:addBoundaryDataPoints(normData),
           type:'area',
           // strokeWidth: 3,
           fill:'#808080',
@@ -632,31 +709,31 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>RLT :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rlt'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rlt'] !== undefined && masterData?.['rlt'] !== null ? masterData['rlt'] : ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Current Norm :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['nm'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['nm'] !== undefined && masterData?.['nm'] !== null ? masterData['nm'] : ""}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Min Norm :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['mn'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['mn'] !== undefined && masterData?.['mn'] !== null ? masterData['mn'] : ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>RCP :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rcp'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['rcp'] !== undefined && masterData?.['rcp'] !== null ? masterData['rcp'] : ""}</SCText>
                       </SCDataNode>
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>GCP :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['gcp'] || ""}</SCText>
+                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['gcp'] !== undefined && masterData?.['gcp'] !== null ? masterData['gcp'] : ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
                     <SCHorizontalDivider/>
