@@ -556,7 +556,6 @@ export const handleDownloadMTOVF = async (reportName: string, downloadName: stri
 
 export const handleDownloadVF = async (reportName: string, downloadName:string) => {
 
-  console.log(downloadName)
   try {
     const token = await MainService.refreshToken();
     const response = await fetch(`${process.env.REACT_APP_API_HOST}api/mta/DownloadReports/${encodeURIComponent(reportName)}`, {
@@ -2103,7 +2102,6 @@ export const createConflictRowData = (conflicts: { conflictdetails: { oldData: a
         for (let i = 0; i < primaryKeys.length; i++) {
 
           if (row[primaryKeys[i]] === conflictDetail.requestedData[primaryKeys[i]]) {
-            console.log(row, index, conflictDetail.oldData, conflictIndex)
             isDuplicate = true
           }
           else {
@@ -2867,7 +2865,6 @@ export const mapBPRFieldsToColDefs = (fields: BPRField[], onOpenSubmitRemark: (p
 }
 
 export const MainMenuItemsCustomization = (params:any) => {
-  console.log(params)
   const defaultItems = params.defaultItems;
   const conditionalItemsToRemove = ['remarks','rh']
   const itemsToRemove = ["columnChooser", "resetColumns"]; // Example items to remove
@@ -3818,7 +3815,6 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
 
 
 export const convertUiConfigToOptions = (data:any) => {
-  console.log(data);
   return data?.map((column:any)=>{
     return {
       value:column.Col_Code,

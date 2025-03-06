@@ -325,6 +325,10 @@ const DayWiseCoverage = () => {
         }
       }, [isReset]);
 
+    const handleMaterialRequirementClick = ()=>{
+        setShowModal(true);
+    }
+
     // const getFilterData = async () => {
     // try {
     //     const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Day_Wise_Coverage});
@@ -386,7 +390,7 @@ const DayWiseCoverage = () => {
                 {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader/>}
                 </div>
             </VFModalCard>
-            {calenderData?.[selectedDate] && <div style={{ marginBottom: "1rem", marginTop: "-1rem", fontSize: "18px", fontWeight: "bold", cursor: "pointer", paddingTop: "1rem", display: 'flex', alignItems: 'center', gap: '1rem' }} onClick={() => setShowModal(true)}>Material Requirement <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" width="15.917" height="15.917" viewBox="0 0 15.917 15.917">
+            {calenderData?.[selectedDate] && <div style={{ marginBottom: "1rem", marginTop: "-1rem", fontSize: "18px", fontWeight: "bold", cursor: "pointer", paddingTop: "1rem", display: 'flex', alignItems: 'center', gap: '1rem' }} onClick={handleMaterialRequirementClick}>Material Requirement <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" width="15.917" height="15.917" viewBox="0 0 15.917 15.917">
                 <path id="Path_10654" data-name="Path 10654" d="M16.194,8.959a.724.724,0,0,0-.724.724v4.341a1.447,1.447,0,0,1-1.447,1.447H3.894a1.447,1.447,0,0,1-1.447-1.447V3.894A1.447,1.447,0,0,1,3.894,2.447H8.235A.724.724,0,0,0,8.235,1H3.894A2.894,2.894,0,0,0,1,3.894V14.023a2.894,2.894,0,0,0,2.894,2.894H14.023a2.894,2.894,0,0,0,2.894-2.894V9.682A.723.723,0,0,0,16.194,8.959Z" transform="translate(-1 -1)" fill="#b93b7e" />
                 <path id="Path_10655" data-name="Path 10655" d="M19.9,1.444a.716.716,0,0,0-.135-.2c-.009-.009-.012-.022-.021-.031s-.022-.012-.031-.021A.679.679,0,0,0,19.235,1H14.894a.724.724,0,0,0,0,1.447h2.594L12.212,7.723a.723.723,0,1,0,1.023,1.023L18.512,3.47V6.064a.724.724,0,1,0,1.447,0V1.723a.716.716,0,0,0-.056-.279Z" transform="translate(-4.041 -1)" fill="#b93b7e" />
             </svg>
