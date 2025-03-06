@@ -1590,7 +1590,6 @@ const useViewModify = (pageType:string) => {
       if(user)  
       {
        if(backUrl){
-        console.log('in url lopp')
          navigate(backUrl)
        }
 
@@ -1684,7 +1683,6 @@ const useViewModify = (pageType:string) => {
       const onSaveToDraft = async () => {
         toggleEditOnline(false)
         resetColumnEditing()
-        console.log('cakked my func')
         try{
           const colDefs = ref.current?.api.getColumnDefs() || [];
           const checkboxExists = colDefs.some((col: any) => col.field === "checkbox");
