@@ -907,10 +907,13 @@ const useViewModify = (pageType:string) => {
     }
 
     const onEditOnline = (progress:any) => {
+
       const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
         const isEditable = activeMaster.fields.find((field:Field)=>field.key === col.colId )?.isEdit;
         
-        if(isEditable) return {...col,editable:true}
+        if(isEditable){
+          return {...col,editable:true}
+        } 
         return {...col}
       })
 
@@ -919,6 +922,15 @@ const useViewModify = (pageType:string) => {
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
 
     }
+
+    const resetColumnEditing = () => {
+      toggleEditOnline(false);
+      const updatedColdefs = activeMaster.colDefs.map((col:ColDef)=>{
+          return {...col,editable:false}
+      })
+      dispatch(UPDATE_COLDEFS(updatedColdefs))
+    };
+
 
       const onUploadMaster = async () => {
         let intervalID:any;
@@ -1552,7 +1564,7 @@ const useViewModify = (pageType:string) => {
         }
         dispatch(UPDATE_PROGRESS_STATE('default'));
         dispatch(UPDATE_ROW_DATA([]));
-        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
+        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')));
         dispatch(REMOVE_ALL_FILTERS());
         dispatch(REMOVE_COLDEFS(['checkbox']));
         dispatch(REMOVE_COLDEFS(['warning']));
@@ -1572,35 +1584,46 @@ const useViewModify = (pageType:string) => {
         
      }
 
-      const onBackButton = (backUrl?: string) => {
-       if(confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")) 
-       {
-        console.log("onBackBtn", backUrl)
-        if(backUrl){
-          navigate(backUrl)
-        }
-        removeModalOpenParameterWithoutReload();
-        setCanToggleMaster(true);
-        dispatch(UPDATE_PROGRESS_STATE('default'));
-        dispatch(UPDATE_ROW_DATA([]));
-        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !==  'error')))
-        dispatch(REMOVE_ALL_FILTERS());
-        dispatch(REMOVE_COLDEFS(['checkbox']));
-        dispatch(REMOVE_COLDEFS(['warning']));
-        dispatch(REMOVE_COLDEFS(['error']));
-        dispatch(ADD_FILTER())
-        setDownloadData(false);
-        setTempDownloadData(false);
-        setFilterButtonStatus([]);
-        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-        
+     const onBackButton = (backUrl?: string) => {
 
-        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
-        // dispatch(UPDATE_COLDEFS([]));
-        // dispatch(UPDATE_ACTIVE_MASTER([]))
+      const user = confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")
+      if(user)  
+      {
+       if(backUrl){
+        console.log('in url lopp')
+         navigate(backUrl)
        }
-        
-      }
+
+       resetColumnEditing()
+       toggleEditOnline(false);
+       removeModalOpenParameterWithoutReload();
+       setCanToggleMaster(true);
+       dispatch(UPDATE_PROGRESS_STATE('default'));
+       dispatch(UPDATE_ROW_DATA([]));
+       dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !== 'error') .map((m: any) => {
+        const copy= { ...m };  
+        copy.editable = false; 
+        return copy;
+          })
+      ));
+      
+       dispatch(REMOVE_ALL_FILTERS());
+       dispatch(REMOVE_COLDEFS(['checkbox']));
+       dispatch(REMOVE_COLDEFS(['warning']));
+       dispatch(REMOVE_COLDEFS(['error']));
+       dispatch(ADD_FILTER())
+       setDownloadData(false);
+       setTempDownloadData(false);
+       setFilterButtonStatus([]);
+       dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+      
+
+       if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+       // dispatch(UPDATE_COLDEFS([]));
+       // dispatch(UPDATE_ACTIVE_MASTER([]))
+      }      
+     }
+    
 
       const postDraftChunks = async (rowData:any) => {
         let draftId = '';
@@ -1659,6 +1682,9 @@ const useViewModify = (pageType:string) => {
 
       }
       const onSaveToDraft = async () => {
+        toggleEditOnline(false)
+        resetColumnEditing()
+        console.log('cakked my func')
         try{
           const colDefs = ref.current?.api.getColumnDefs() || [];
           const checkboxExists = colDefs.some((col: any) => col.field === "checkbox");
@@ -1744,6 +1770,7 @@ const useViewModify = (pageType:string) => {
         //dispatch(REMOVE_COLDEFS(['error','warning']));
         dispatch(UPDATE_PROGRESS_STATE('editOnline'));
         setEnableEditOnlineReset(false)
+        toggleEditOnline(false)
       }
 
       // const     validateEditOnlineData = (data:any[]) => {
