@@ -99,7 +99,7 @@ const DBM = () => {
                 suggestionData={dailyData.suggestionData}
                 monitoringData={dailyData.monitoringData}
                 skuKey={"SKUCode"}
-                whKey={"WHCode"}
+                whKey={"LocName"}
               />
             )}
             {showNormChangeHistoryTable && (
