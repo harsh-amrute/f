@@ -142,6 +142,7 @@ const useDelete=()=>{
 
     const handleSubmitSelectMaster = ()=>{
       updateUrlIsModalOpen();
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         dispatch(UPDATE_ACTIVE_MASTER(0));
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
     }

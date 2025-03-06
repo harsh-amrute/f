@@ -65,6 +65,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onEditOnlineSave,
         onSaveToDraft,
         onDeleteSelected,
+        onDeleteOnlineSubmit,
         onSeasonalityResume,
         onSeasonalityStop,
         onDeleteOnline,
@@ -566,7 +567,10 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         //     )
          case "deleteOnlineSubmitted":
             return(
-                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'flex-end'}}>
+                <TaskBarContainer data-testid="taskbar" style={{width:width}}>
+                    <VFTaskBarButtonGroup>
+                    <BackButton/>
+                    </VFTaskBarButtonGroup>
                     <div>
                         <VFStepper
                             items={getStepperState()}
@@ -585,7 +589,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={isSavingToDraft || disableSubmit} width={139}>
                         Save as draft
                         </VFButtonOutline>
-                    <VFButton themeUi={themeUi} onClick={onSubmit} disabled={disableSubmit || isSavingToDraft }>
+                    <VFButton themeUi={themeUi} onClick={onDeleteOnlineSubmit} disabled={disableSubmit || isSavingToDraft }>
                             Delete All
                         </VFButton>
                    </VFTaskBarButtonGroup>
