@@ -1001,7 +1001,7 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       floatingFilter: true,
       filter: cellFilter,
       cellDataType: cellDataType,
-      onCellClicked:(params:any)=>console.log(params.data),
+      onCellClicked:(params:any)=>console.log(),
       tooltipComponent: 'conflictErrorToolTip',
       suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
