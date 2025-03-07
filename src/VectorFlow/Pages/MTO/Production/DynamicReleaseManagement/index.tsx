@@ -16,7 +16,7 @@ import ReleaseModal from './ReleaseModal';
 import './styles.css'
 import { useGetDynamicReleaseData, useGetDynamicReleaseExcelData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
-import { useGetCCRGroupMaster, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import { useGetCCRGroupMaster, useGetFOLData, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
@@ -574,16 +574,28 @@ const DynamicReleaseManagement = () => {
     setChartOptions({ ...chartoptions, data: finalGraphData })
   }, [finalGraphData])
 
+  const {mutateAsync: getFOLData} = useGetFOLData();
+
   const getMastersData = async () => {
     try {
       const ccrGroupMaster = await getCCRGroupMaster();
       const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
       const ccrGroups: any = [];
+      const FOLData = await getFOLData();
+      const FOL = FOLData?.data?.data;
+  
 
       ccrGroupData.forEach((group: any) => {
-        const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] };
+        const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] }
+        // let minFOL = Infinity
+        let minFol = Infinity;
+        let maxFol = -Infinity;
         group.ccrs.forEach((ccr: any) => {
-          obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id });
+          minFol = Math.min(minFol, FOL[ccr.ccr_id]?.fol || 0);
+          maxFol = Math.max(maxFol, FOL[ccr.ccr_id]?.fol || 0)
+        })
+        group.ccrs.forEach((ccr: any) => {
+          obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0, plant_id: ccr.plant });
         });
         ccrGroups.push(obj);
       });
