@@ -122,6 +122,9 @@ const EnquiryResponse = () => {
     return simData;
   };
 
+
+
+
   function getWeekOfMonth(dateString: string): string {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -352,11 +355,14 @@ const EnquiryResponse = () => {
   const updatedSelectedFilters = (options: any) => {
     const filters: { label: string; values: string[] }[] = [];
 
+
     if (options?.plantName) {
+      console.log('okk')
       filters.push({
         label: "Plant",
         values: [...options.plantName],
       });
+      
     }
     if (options?.productGroup?.length > 0) {
       filters.push({
