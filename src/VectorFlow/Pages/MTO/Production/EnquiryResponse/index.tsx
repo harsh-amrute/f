@@ -293,7 +293,7 @@ const EnquiryResponse = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const filterByPlNames = (names: string[]) => {
+  const filterByPlNames = (names: any[]) => {
     if (names.length === 0) {
       return tableData;
     }
@@ -301,7 +301,7 @@ const EnquiryResponse = () => {
     for (let i = 0; i < tableData?.length; i++) {
       const current = tableData[i];
       for (let j = 0; j < names.length; j++) {
-        if (current?.plnm?.includes(names[j])) {
+        if (current?.plnm?.includes(names[j].name)) {
           data?.push(current);
           break; // If a match is found, break out of the inner loop
         }
@@ -357,10 +357,10 @@ const EnquiryResponse = () => {
 
 
     if (options?.plantName) {
-      console.log('okk')
+      const names = options.plantName.map((plantName:any)=>plantName.name)
       filters.push({
         label: "Plant",
-        values: [...options.plantName],
+        values: [...names],
       });
       
     }
@@ -393,7 +393,6 @@ const EnquiryResponse = () => {
   }
 
   const applyFilter = (options: any) => {
-
     let data = [];
     data = filterByPlNames(options?.plantName);
     data =
@@ -519,7 +518,7 @@ const EnquiryResponse = () => {
     let updatedProductGrp = selectedOptions?.productGroup;
 
     if (category === "Plant") {
-      updatedPlantName = updatedPlantName.filter((item: string) => item !== name);
+      updatedPlantName = updatedPlantName.filter((item: any) => item.name !== name);
       if (updatedPlantName.length === 0) {
 
         updatedPlantName = "";

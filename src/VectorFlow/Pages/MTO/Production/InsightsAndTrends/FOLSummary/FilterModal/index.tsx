@@ -226,11 +226,11 @@ const FilterModal = (props: IFilterModalProps) => {
     const [activeAccordian, setActiveAccordian] = useState<string>('');
 
     const handleChange = (event: any) => {
-        const PlantArray: string[] = [];
+        const PlantArray = [];
 
         for (let index = 0; index < event?.length; index++) {
             // const element = event[index].value
-            PlantArray.push(event)
+            PlantArray.push(event[index])
 
         }
         handleNameChange(PlantArray);
@@ -298,7 +298,7 @@ const FilterModal = (props: IFilterModalProps) => {
                         />
                     </SearchBar> */}
                     <VFMasterFieldSearch
-                        value={selectedOptions?.plantName[0]}
+                        value={selectedOptions?.plantName}
                         setValue={(e: any) => {
                             if (e) {
 
