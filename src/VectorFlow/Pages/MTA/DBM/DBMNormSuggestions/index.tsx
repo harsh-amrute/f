@@ -1,13 +1,14 @@
 import {DBMLayout} from './styles'
 import useDBM from './useDBM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar';
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import DailyDataGraphModal from '../../../../../components/VectorFLOW/commons/DailyDataGraphModal';
 import NormChangeHistoryTable from '../../../../../components/VectorFLOW/commons/NormChangeHistoryTable';
 import { GridStateContext } from '../../../../../context/GridStateContext';
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
+import { useState } from 'react';
 
 const DBM = () => {
 
@@ -44,11 +45,15 @@ const DBM = () => {
   lastRunDate
 } = useDBM();
 
+const [isDisabled, setIsDisabled]= useState<boolean>(true)
+
+
  if(isLoading){
   return (
     <VFLoader/>
   )
 }
+
 
   return (
     <>
@@ -127,6 +132,14 @@ const DBM = () => {
                 ],
               }}
               maintainColumnOrder
+              onFilterChanged={() => {
+                const filterModel = gridRef?.current?.api?.getFilterModel();
+                if (filterModel && Object.keys(filterModel).length > 0) {
+                  setIsDisabled(false);
+                } else {
+                  setIsDisabled(true);
+                }
+              }}
             />
             <VFPagination
               selectedRows={0}
@@ -134,6 +147,8 @@ const DBM = () => {
               currentPage={currentPage}
               rowsPerPage={recordsPerPage}
               handleChangePage={(e) => handleChangePage(e)}
+              resetGridRef={gridRef} 
+              isDisabled={isDisabled}
             />
           </div>
           <div style={{ display: "none" }}>

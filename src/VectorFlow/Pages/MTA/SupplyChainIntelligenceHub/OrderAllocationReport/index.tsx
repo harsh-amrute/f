@@ -2,9 +2,10 @@ import {RRRLayout} from './styles'
 import useOrderAllocation from './useOrderAllocationReport';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
+import { useState } from 'react';
 
 
 
@@ -37,7 +38,7 @@ const OrderAllocationReport = () => {
   onResetCallback
 } = useOrderAllocation();
 
-
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
  
   return (
   <GridStateContext.Provider
@@ -117,13 +118,23 @@ const OrderAllocationReport = () => {
                   }}
                 height={"100%"}
                 maintainColumnOrder
+                onFilterChanged={() => {
+                  const filterModel = ref?.current?.api?.getFilterModel();
+                  if (filterModel && Object.keys(filterModel).length > 0) {
+                    setIsDisabled(false);
+                  } else {
+                    setIsDisabled(true);
+                  }
+                }}
               />  
               <VFPagination 
                 selectedRows={0} 
                 totalRows={recordCount} 
                 currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
-                handleChangePage={handleChangePage} 
+                handleChangePage={handleChangePage}
+                resetGridRef={ref} 
+                isDisabled={isDisabled}  
               />  
         </div>
         )}

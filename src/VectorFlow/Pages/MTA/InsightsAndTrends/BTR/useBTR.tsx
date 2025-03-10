@@ -21,7 +21,8 @@ import TagsCellRenderer from "./TagsCellRenderer"
 import AvailabilityToolTip from "./AvailabilityToolTip"
 import CategoryToolTip from "./CategoryToolTip"
 import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers"
-import VFPagination, { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination"
+import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination"
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import CustomVFTable from "./CustomVFTable"
 import { notifyError, notifyLoader } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
@@ -122,6 +123,8 @@ const useBTR = () => {
     const [ecoGridState, setEcoGridState] = useState<any>();
     const [techMasterUIConfig, setTechMasterUIConfig] = useState<any>([]);
     const [ecoMasterUIConfig, setEcoMasterUIConfig] = useState<any>([]);
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+
 
     const techPaginationProps: VFPaginationProps = {
         selectedRows: 0,
@@ -579,10 +582,19 @@ const useBTR = () => {
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                             maintainColumnOrder
                             onGridReady={(params) => setTechInternalRef(params)}
-                        />
-                        <div style={{ zoom: 0.7, margin: '0px -15px 0px -15px' }}>
+                            onFilterChanged={() => {
+                                const filterModel = techRef?.current?.api?.getFilterModel();
+                                if (filterModel && Object.keys(filterModel).length > 0) {
+                                  setIsDisabled(false);
+                                } else {
+                                  setIsDisabled(true);
+                                }
+                            }}                        />
+                        <div>
                             <VFPagination style={{marginTop:'-15px'}}
-                            {...techPaginationProps} />
+                            {...techPaginationProps} 
+                            resetGridRef={techRef} 
+                            isDisabled={isDisabled}/>
                         </div>
                     </>
                 )
@@ -606,11 +618,21 @@ const useBTR = () => {
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                             maintainColumnOrder
                             onGridReady={(params) => setEcoInternalRef(params)}
+                            onFilterChanged={() => {
+                                const filterModel = ecoRef?.current?.api?.getFilterModel();
+                                if (filterModel && Object.keys(filterModel).length > 0) {
+                                  setIsDisabled(false);
+                                } else {
+                                  setIsDisabled(true);
+                                }
+                            }}  
 
                         />
-                        <div style={{ zoom: 0.7, margin: '0px -15px 0px -15px' }}>
+                        <div style={{width:'100%'}}>
                             <VFPagination style={{marginTop:'-15px'}}
-                            {...ecoPaginationProps} />
+                            {...ecoPaginationProps} 
+                            resetGridRef={ecoRef} 
+                            isDisabled={isDisabled}/>
                         </div>
                     </>
                 )

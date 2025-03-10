@@ -1,3 +1,4 @@
+import { useUserData } from '../../../../../context';
 import { PaginationWrapper, StatusBarLabel, StatusBarLabelLight, StatusBarLabelBold, PaginationContainer, PaginationArrowIcon,StatusBarWrapper, TextBtn,GridFilterWrapper } from "./styles"
 
 
@@ -14,7 +15,7 @@ export interface VFPaginationProps {
     isDisabled?: boolean | undefined
 }
 
-
+ 
 const VFPagination = (props: VFPaginationProps) => {
 
     const {
@@ -25,6 +26,10 @@ const VFPagination = (props: VFPaginationProps) => {
         resetGridRef,
         isDisabled
     } = props
+
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
+
 
     const defaultPaginationLimit = 100;
     const totalPages = Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit));
@@ -52,12 +57,11 @@ const VFPagination = (props: VFPaginationProps) => {
         return handleChangePage(newPage)
     }
 
-
     return (
         <PaginationWrapper data-testid="vf_pagination">
             <PaginationContainer>
                 <GridFilterWrapper>
-                    <TextBtn onClick={clearGridFilter} disabled={ isDisabled}>Clear All Grid Filters</TextBtn>  
+                    <TextBtn onClick={clearGridFilter} disabled={ isDisabled} themeUi={themeUi}>Clear All Grid Filters</TextBtn>  
                 </GridFilterWrapper>
                <StatusBarWrapper>
                 <StatusBarLabel>
