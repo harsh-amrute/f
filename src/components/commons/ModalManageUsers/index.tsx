@@ -163,7 +163,7 @@ const ModalManageUsers = ({
                               pattern: {
                               value:
                                 /^[a-zA-Z0-9_]+$/,
-                              message: "The username should only contain lowercase, uppercase, numbers, and underscores (_).",
+                              message: "The username should only contain letters, numbers, and underscores (_).",
                               },
                             })}
                             disabled={infoUser.edit}
