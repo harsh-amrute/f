@@ -84,7 +84,6 @@ const ModalManageUsers = ({
     
       fillAdvancedPermissionsModalData(currentItem);
       setIsOpenAdvanced(true);
-      handleFormreset();
     } else {
       notifyError(
         t("profile.tabContent.manageUsers.notifyError.pleaseSelectRole")
@@ -154,18 +153,17 @@ const ModalManageUsers = ({
                             {...register("username", {
                               required: true,
                               minLength: {
-                                value: 4,
-                                message: "The username must be more than 4 characters",
+                              value: 4,
+                              message: "The username must be more than 4 characters",
                               },
                               maxLength: {
-                                value: 15,
-                                message: "The username must be less than 15 characters",
+                              value: 15,
+                              message: "The username must be less than 15 characters",
                               },
                               pattern: {
-                                value:
-                                  // eslint-disable-next-line no-useless-escape
-                                  /^(?=.*[A-Z])[a-zA-Z0-9_]+$/,
-                                message: "The username must include at least one uppercase letter and one lowercase letter and may contain numbers, and underscores (_).",
+                              value:
+                                /^[a-zA-Z0-9_]+$/,
+                              message: "The username should only contain lowercase, uppercase, numbers, and underscores (_).",
                               },
                             })}
                             disabled={infoUser.edit}
