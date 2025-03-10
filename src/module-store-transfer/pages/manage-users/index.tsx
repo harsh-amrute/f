@@ -86,6 +86,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const [allPermissions,setAllPermissions] = useState<any>([]);
   const [storePermission,setStorePermission] = useState([]);
   const [currentItem,setCurrentItem] = useState();
+  const [isEditUser,setIsEditUser] = useState<boolean | undefined>()
   
   //Follwing Function Updates All Permissions according to current active Application/Application Id provided
   const updateAllPermissions = (applicationId:number) => {
@@ -106,6 +107,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       buttonSubmit: "Add User",
     });
     setIsOpenUser(true);
+    setIsEditUser(false)
   };
 
   const onCloseModal = () => {
@@ -154,10 +156,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       checkAddGrandChild,
     };
   };
-
-  useEffect(()=>{
-    console.log("data....store...permissions.", storePermission);
-  },[storePermission])
 
   const fillAdvancedPermissionsModalData = (item?:any)=>{
     //Application Ids with valid Selected Roles
@@ -313,8 +311,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
 
   const handleClickEdit = (item: any) => {
-    setCurrentItem(item);
-
+    setIsEditUser(true)
     const roles = item.role_id.map((role: any) => role.id);
 
     setInfoUser({
@@ -401,6 +398,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         setListRoles={setListRoles}
         fillAdvancedPermissionsModalData={fillAdvancedPermissionsModalData}
         currentItem={currentItem}
+        isEditUser={isEditUser}
       />
 
       <ModalAdvanedPermissions

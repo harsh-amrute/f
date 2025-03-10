@@ -14,7 +14,7 @@ import { useUserData } from "../../../context";
 
 
 const LocationPermission = ({ ...props }: any) => {
-  const { prdPermissions, title, onSelectAll } = props;
+  const { prdPermissions, title, onSelectAll, isUnSelected } = props;
 
   const { user} = useUserData();
   const themeUi = user?.user?.theme_ui;
@@ -25,7 +25,7 @@ const LocationPermission = ({ ...props }: any) => {
         <SCtitle>
           {title}
           <div style={{display:'flex', gap:'5px'}}>
-            <Checkbox themeUi={themeUi} type='checkbox' onClick={onSelectAll} /> 
+            <Checkbox themeUi={themeUi} checked={isUnSelected} type='checkbox' onClick={onSelectAll} /> 
             <p style={{fontSize:'14px' }}>Select All</p>
           </div>
         </SCtitle>
@@ -44,6 +44,7 @@ const LocationPermission = ({ ...props }: any) => {
                       handleListChild={item.handleAction}
                       disabled={false}
                       key={index}
+                      setIsUnselected={item.setIsUnSelected}
                       // key={uuidv4()}
                     />
                   </SCItemMulSelect>
