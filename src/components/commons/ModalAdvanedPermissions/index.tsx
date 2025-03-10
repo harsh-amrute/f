@@ -291,7 +291,6 @@ const ModalAdvanedPermissions = (props: any) => {
     const currentLocationPermission = lcPermissionRef.current?.getLcPermissionValue();
 
 
-    console.log("currentPermissions ,,,,,,,,,,,,,,,,", currentPermission);
 
     if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
       t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
