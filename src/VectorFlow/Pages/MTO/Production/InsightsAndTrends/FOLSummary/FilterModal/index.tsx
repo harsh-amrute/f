@@ -229,8 +229,8 @@ const FilterModal = (props: IFilterModalProps) => {
         const PlantArray = [];
 
         for (let index = 0; index < event?.length; index++) {
-            const element = event[index].value
-            PlantArray.push(element)
+            // const element = event[index].value
+            PlantArray.push(event[index])
 
         }
         handleNameChange(PlantArray);
@@ -298,11 +298,11 @@ const FilterModal = (props: IFilterModalProps) => {
                         />
                     </SearchBar> */}
                     <VFMasterFieldSearch
-                        value={selectedOptions?.plantName.name}
+                        value={selectedOptions?.plantName}
                         setValue={(e: any) => {
                             if (e) {
 
-                                if (e.length > 0) {
+                                if (e.length >= 0) {
                                     handleChange(e)
                                 }
                             }

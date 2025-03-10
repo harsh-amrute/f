@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import RadioSelect from '../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
 import { FOLIcon, StepGroup, StepperWrapper } from './RouteAssignment.styled'
+import _ from 'lodash'
 
 interface IRouteAssignmentProps {
     theme: string,
@@ -149,6 +150,22 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
         // return cancelAnimationFrame(animationFrameId);
     }, []);
 
+    const [sortedSelectedRoutes, setSortedSelectedRoutes] = useState<any>([]);
+
+    useEffect(()=>{
+        if(selectedRoutes){
+
+            const val = _.cloneDeep(selectedRoutes);
+            setSortedSelectedRoutes(val.map((routeGroup: any) => {
+                const [ccrGroup, ccr] = routeGroup;
+                const sortedCcrs = ccrGroup.ccrs.sort((a: any, b: any) => a.fol - b.fol);
+                return [{ ...ccrGroup, ccrs: sortedCcrs }, ccr];
+            }))
+            
+        }
+
+    },[selectedRoutes])
+    
   return (
     <StepperWrapper style={{justifyContent: ccrGroupMaster.length <= 3 ? "start" :ccrGroupMaster.length <= 6 ? "end" : ccrGroupMaster.length <= 9? "start": 'end'}} key="route-assignment" className="route-assignment">
         {ccrGroupMaster.map((ccrGroup: any, index: number)=>{
@@ -161,9 +178,9 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                     color="lightgrey" 
                     options={ccrGroupMaster} 
                     isClearable
-                    value={selectedRoutes[index]?.[0] || null}
+                    value={sortedSelectedRoutes?.[index]?.[0] || null}
                     onChange={(newValue: any)=>{
-                        const newGroups = [...selectedRoutes];
+                        const newGroups = [...sortedSelectedRoutes];
                         if(newValue == null || newValue == undefined){
                             newGroups[index] = null
                         }else{
@@ -181,10 +198,10 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                     isClearable
                     isDisabled={!isEditable}
                     theme={theme} 
-                    value={selectedRoutes[index]?.[1] || null}
-                    options={selectedRoutes[index]?.[0]?.ccrs}
+                    value={sortedSelectedRoutes[index]?.[1] || null}
+                    options={sortedSelectedRoutes[index]?.[0]?.ccrs}
                     onChange={(newValue: any)=>{
-                        const newGroups = [...selectedRoutes];
+                        const newGroups = [...sortedSelectedRoutes];
                         newGroups[index][1] = newValue;
                         setSelectedRoutes(newGroups);
                     }}

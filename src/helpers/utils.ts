@@ -1001,7 +1001,7 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       floatingFilter: true,
       filter: cellFilter,
       cellDataType: cellDataType,
-      onCellClicked:(params:any)=>console.log(params.data),
+      onCellClicked:(params:any)=>console.log(),
       tooltipComponent: 'conflictErrorToolTip',
       suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
@@ -4841,6 +4841,7 @@ export function getColumnDefinationsMTA(
       rowGroup: false,
       rowGroupIndex: null,
       pivot: false,
+      enablePivot: true,
       pivotIndex: null,
       flex: undefined,
       minWidth: 180,
