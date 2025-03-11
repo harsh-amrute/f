@@ -226,7 +226,6 @@ const useViewModify = (pageType:string) => {
         //   dispatch(REMOVE_COLDEFS(['error','warning']))
         // }
 
-        console.log("this is the active master now",activeMaster.progress)
 
         if(activeMaster.progress === 'editOnline'){
           return onEditOnline('editOnline');
@@ -1269,9 +1268,7 @@ const useViewModify = (pageType:string) => {
             
             const pureErrorCount = activeMaster.rowData.length + intersectionCount - conflictCount
 
-            console.log("activeMaster.rowData.length :",activeMaster.rowData.length,"intersectionCount",intersectionCount,"conflictCount",conflictCount)
             const pureConflictCount = activeMaster.rowData.length + intersectionCount - errorCount
-            console.log("my error count", errorCount)
             toast.dismiss(toastId);
             setConflictCount(pureConflictCount);
             setErrorCount(pureErrorCount);
@@ -1393,15 +1390,12 @@ const useViewModify = (pageType:string) => {
         else{
 
           const {isDisaster,isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          console.log("The data has been submitted and the below is the data UseViewModify")
-          console.log('errorCount',errorCount,'locaherrocount',localErrorCount);
           let errorRowData:any[]=[];
           if(isDisaster){
             setIsSubmitDisabled(false)
             return 
           } 
          if(!isConflicts){
-          console.log("confilict if block")
           if(localErrorCount>0 || errorCount>0){
             
             if(localErrorCount>0){
@@ -1435,7 +1429,6 @@ const useViewModify = (pageType:string) => {
           // console.time('That took ')
           // console.log('Calculating...')
 
-          console.log("notconfilict if block")
 
           const tempCon = createConflictRowData(localConflictData,activeMaster.id)
           const tempError = createErrorRowData(localErrorData,activeMaster.id)
@@ -1965,7 +1958,6 @@ const useViewModify = (pageType:string) => {
     }
 
     const onIgnoreSubmitErrors = ()=>{
-      console.log(activeMaster.progress)
       const errorRowData = createErrorRowData(errorData,activeMaster.id)
       if(errorRowData.length>0){
         addInvalidDataColDefs('error')
