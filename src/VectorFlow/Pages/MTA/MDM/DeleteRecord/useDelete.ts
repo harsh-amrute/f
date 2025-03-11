@@ -359,11 +359,9 @@ const useDelete=()=>{
               if(draftID.length > 0){
                 await deleteDraft(draftID);
               }
+              dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
               notifySuccess(`Deletions Submitted Successfully`);
-              dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
-            
-   
           }
          else{
             const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
@@ -382,10 +380,11 @@ const useDelete=()=>{
                 dispatch(UPDATE_ROW_DATA(errorRowData))
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
               }
+
+              dispatch(UPDATE_PROGRESS_STATE('submitted'));
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
               notifySuccess(`Deletions Submitted Successfully`);
               toast.dismiss();
-              dispatch(UPDATE_PROGRESS_STATE('submitted'));
               if(draftID.length > 0){
                 await deleteDraft(draftID);
               }

@@ -190,7 +190,7 @@ const useViewModify = (pageType:string) => {
   
   
     useEffect(()=>{
-
+        
         setColDefs(activeMaster.colDefs);
 
         if(filterButtonStatus.length !== 0) return;
@@ -225,6 +225,9 @@ const useViewModify = (pageType:string) => {
         //   dispatch(UPDATE_COLDEFS(updatedColdefs));
         //   dispatch(REMOVE_COLDEFS(['error','warning']))
         // }
+
+        console.log("this is the active master now",activeMaster.progress)
+
         if(activeMaster.progress === 'editOnline'){
           return onEditOnline('editOnline');
         }
@@ -1075,7 +1078,7 @@ const useViewModify = (pageType:string) => {
         setTempDownloadData(true);
         setErrorDownloadPrefix(source)
 
-        if(activeMaster.progress!=='submitted'){
+        if((activeMaster.progress!=='submitted') && (activeMaster.progress!=='deleteOnlineSubmitted')){
           dispatch(UPDATE_ROW_DATA(validData));
         
           dispatch(REMOVE_COLDEFS(['error','warning']));
@@ -1265,8 +1268,10 @@ const useViewModify = (pageType:string) => {
             const intersectionCount = conflictCount + errorCount - activeMaster.rowData.length
             
             const pureErrorCount = activeMaster.rowData.length + intersectionCount - conflictCount
-            const pureConflictCount = activeMaster.rowData.length + intersectionCount - errorCount
 
+            console.log("activeMaster.rowData.length :",activeMaster.rowData.length,"intersectionCount",intersectionCount,"conflictCount",conflictCount)
+            const pureConflictCount = activeMaster.rowData.length + intersectionCount - errorCount
+            console.log("my error count", errorCount)
             toast.dismiss(toastId);
             setConflictCount(pureConflictCount);
             setErrorCount(pureErrorCount);
@@ -1386,13 +1391,17 @@ const useViewModify = (pageType:string) => {
  
         }
         else{
+
           const {isDisaster,isConflicts,errorCount:localErrorCount,errorData:localErrorData,conflictData:localConflictData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
+          console.log("The data has been submitted and the below is the data UseViewModify")
+          console.log('errorCount',errorCount,'locaherrocount',localErrorCount);
           let errorRowData:any[]=[];
           if(isDisaster){
             setIsSubmitDisabled(false)
             return 
           } 
          if(!isConflicts){
+          console.log("confilict if block")
           if(localErrorCount>0 || errorCount>0){
             
             if(localErrorCount>0){
@@ -1401,19 +1410,23 @@ const useViewModify = (pageType:string) => {
             else{
               errorRowData = createErrorRowData(errorData,activeMaster.id)
             }
+
             if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
               addInvalidDataColDefs('error')
             }
+
             if(errorRowData.length>0){
               dispatch(UPDATE_ROW_DATA(errorRowData))
               dispatch(SET_RECORD_COUNT(errorRowData.length))
             }
-            
           }
-         
+          
+
           setSelectedRowsCount(0);
           sendErrorToastMessage(totalRecords,errorRowData,localConflictData.length,'submitted')
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+
+
           if(draftID.length > 0){
             await deleteDraft(draftID);
           }
@@ -1421,6 +1434,8 @@ const useViewModify = (pageType:string) => {
         else{
           // console.time('That took ')
           // console.log('Calculating...')
+
+          console.log("notconfilict if block")
 
           const tempCon = createConflictRowData(localConflictData,activeMaster.id)
           const tempError = createErrorRowData(localErrorData,activeMaster.id)

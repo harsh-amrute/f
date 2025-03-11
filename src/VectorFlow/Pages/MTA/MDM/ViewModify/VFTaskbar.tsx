@@ -353,13 +353,11 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
                     <div style={{display:'flex', gap:'20px'}}>
                     <BackButton/>
-                    {showSubmittedExportError ? (
-                         <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
-                                Export Errors
-                        </VFButton>
-                    ):
-                        <div style={{width:'100%'}}/>
-                    }
+                     
+                    <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
+                        Export Errors
+                    </VFButton>
+                                        
                     </div>
                     <div >
                     
@@ -570,6 +568,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                     <BackButton/>
+                    <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
+                                Export Errors
+                    </VFButton>
                     </VFTaskBarButtonGroup>
                     <div>
                         <VFStepper
@@ -589,7 +590,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={isSavingToDraft || disableSubmit} width={139}>
                         Save as draft
                         </VFButtonOutline>
-                    <VFButton themeUi={themeUi} onClick={onDeleteOnlineSubmit} disabled={disableSubmit || isSavingToDraft }>
+                    <VFButton themeUi={themeUi} onClick={onSubmit} disabled={disableSubmit || isSavingToDraft }>
                             Delete All
                         </VFButton>
                    </VFTaskBarButtonGroup>
