@@ -399,6 +399,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         fillAdvancedPermissionsModalData={fillAdvancedPermissionsModalData}
         currentItem={currentItem}
         isEditUser={isEditUser}
+        setIsEditUser={setIsEditUser}
       />
 
       <ModalAdvanedPermissions
