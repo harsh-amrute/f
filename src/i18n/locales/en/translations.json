@@ -6,7 +6,8 @@
       "email": "*Invalid Email",
       "password": "Password must exceed 8 characters",
       "passwordMaxLength": "Password must be less than 15 characters",
-      "emailMaxLength": "Email must be less than 255 characters"
+      "emailMaxLength": "Email must be less than 255 characters",
+      "includeSpace": "Password cannot start or end with a space."
     },
     "placeholder": {
       "email": "Enter Username / Email ID",
@@ -57,7 +58,7 @@
       "success": "Change password success"
     },
     "validate": {
-      "password": "Password requires uppercase characters, numbers, and special characters",
+      "password": "Password requires both uppercase and lowercase characters, numbers, and special characters",
       "confirmPassword": "Password missmatch"
     }
   },
@@ -607,7 +608,7 @@
           "userNameMaxLength": "* Upto 8 characters allowed. [Any alpha-numeric, spcl chr: “_” , “.” only]",
           "validateUserName": "* Upto 8 characters allowed. [Any alpha-numeric, spcl chr: “_” , “.” only]",
           "emailMaxLength": "Email must be less than 200 characters",
-          "formatPassword": "Password requires uppercase characters, numbers, and special characters"
+          "formatPassword": "Password requires both uppercase and lowercase characters, numbers, and special characters"
         }
       }
     }

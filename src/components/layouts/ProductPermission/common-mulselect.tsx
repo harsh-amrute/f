@@ -26,6 +26,8 @@ export default forwardRef(({ ...props }: any, ref) => {
   const [subBrand, setSubBrand] = useState<Option[]>([]);
   const [category, setCategory] = useState<Option[]>([]);
 
+  const [isUnSelected,setIsUnSelected] = useState<boolean>(false)
+
   // Update the lists whenever the product data or initial values change
   useEffect(() => {
     const newListBrand: Option[] = [];
@@ -155,7 +157,8 @@ export default forwardRef(({ ...props }: any, ref) => {
   
   const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) =>{
     const check = event.target.checked;
-
+    setIsUnSelected((prev)=> !prev)
+    
     if(check){
       setBrand(listBrand)
       setCategory(listCategory)
@@ -177,6 +180,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       setValue: setBrand,
       handleAction: handleSelectBrand,
       disabled: false,
+      setIsUnSelected: setIsUnSelected
     },
     {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L2 || '',
@@ -188,6 +192,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       setValue: setSubBrand,
       handleAction: handleSelectSubBrand,
       disabled: brand.length === 0, // Disable if no brand is selected
+      setIsUnSelected: setIsUnSelected
     },
     {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L3 || '',
@@ -204,6 +209,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       setValue: setCategory,
       handleAction: handleSelectCategory,
       disabled: subBrand.length === 0, 
+      setIsUnSelected: setIsUnSelected
     }
    
     // {
@@ -242,7 +248,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       )}
       prdPermissions={updatedPermissions }
       onSelectAll={onSelectAll}
-      
+      isUnSelected={isUnSelected}
     />
   );
 });
