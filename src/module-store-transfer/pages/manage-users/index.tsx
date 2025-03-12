@@ -311,6 +311,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
 
   const handleClickEdit = (item: any) => {
+    setCurrentItem(item)
     setIsEditUser(true)
     const roles = item.role_id.map((role: any) => role.id);
 

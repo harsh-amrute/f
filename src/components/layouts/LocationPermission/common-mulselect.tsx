@@ -172,10 +172,11 @@ export default forwardRef(({ ...props }: any, ref) => {
       placeholder: "", 
       options: lcType.length === 0 ? [] : (() => {    
         const currentLcTypeValues = lcType.map((type:any) => type.value); 
-          const filteredClusters = listLcCluster.filter((cluster: any) => {
-          return currentLcTypeValues.some((lcTypeValue:any) => cluster.value.startsWith(lcTypeValue));
+        const filteredClusters = listLcCluster.filter((cluster: any) => {
+          const splitValue = cluster.value.split(" > ").slice(0, 3);
+          const exactMatchValue = splitValue[0] + " > " + splitValue[1];
+          return currentLcTypeValues.includes(exactMatchValue);
         });    
-    
         return filteredClusters;
       })(),
       value: lcCluster,
