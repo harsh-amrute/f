@@ -38,7 +38,7 @@ const VFHorizon = ({ setHorizon, OnHorizonChange, horizon,styles }: any) => {
         milestones={[-1, 0, 30, 60, 90]}
         strictMode={false}
         width={250}
-        defaultValue={9}
+        defaultValue={horizon || 9}  
         handleChange={(e: any) => setHorizon(e)}
         labelValueFormatter={(value: number) =>
           value > 1 ? `${value} Days` : `${value} Day`
