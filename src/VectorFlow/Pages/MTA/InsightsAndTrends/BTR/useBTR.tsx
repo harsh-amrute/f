@@ -44,6 +44,7 @@ import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpe
 import { format } from "date-fns"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
+import BTRColorCellRenderer from "./BTRColorCellRenderer";
 
 const useBTR = () => {
 
@@ -176,7 +177,7 @@ const useBTR = () => {
                     categoryCellRenderer: CategoryCellRenderer,
                     categoryToolTip: CategoryToolTip,
                     availabilityCellRenderer: AvailabilityCellRenderer,
-                    colorCellRenderer: ColorCellRenderer,
+                    colorCellRenderer: BTRColorCellRenderer,
                     tagsCellRenderer: TagsCellRenderer,
                     availabilityToolTip: AvailabilityToolTip,
                     // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
@@ -276,6 +277,7 @@ const useBTR = () => {
         const loaderId = notifyLoader("Loading data")
         try {
             const data = await getBTRData(payload)
+            console.log("data::",data) // to see the large btr data in console
             setEcoRowData(mapBTRRowData(data.data.data.eco, horizon))
             setTechRowData(mapBTRRowData(data.data.data.tech, horizon))
             setDateLabels(data.data.data.labels[0])
@@ -501,6 +503,7 @@ const useBTR = () => {
     useEffect(() => {
         if (techInternalRef && techGridState && techGridState.columns) {
             const result = techInternalRef?.api.applyColumnState({ state: techGridState.columns, applyOrder: true });
+            techInternalRef.api.sizeColumnsToFit();  
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
@@ -510,6 +513,7 @@ const useBTR = () => {
     useEffect(() => {
         if (ecoInternalRef && ecoGridState && ecoGridState.columns) {
             const result = ecoInternalRef?.api.applyColumnState({ state: ecoGridState.columns, applyOrder: true });
+            ecoInternalRef.api.sizeColumnsToFit();
             if (!result) {
                 console.error("Failed to apply column state", result);
             }

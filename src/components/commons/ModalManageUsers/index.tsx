@@ -18,6 +18,7 @@ interface ModalProps {
   fillAdvancedPermissionsModalData:any,
   currentItem:any
   isEditUser?:any
+  setIsEditUser?:any
 }
 
 const ModalManageUsers = ({
@@ -31,7 +32,8 @@ const ModalManageUsers = ({
   setListRoles,
   fillAdvancedPermissionsModalData,
   currentItem,
-  isEditUser
+  isEditUser,
+  setIsEditUser,
 }: ModalProps) => {
   const { t } = useTranslation();
   const { user } = useUserData();
@@ -90,6 +92,11 @@ const ModalManageUsers = ({
       );
     }
   };
+
+  const handleNextClick = ()=>{
+    setIsEditUser(true)
+    closeModal()
+  }
 
   return (
     <>
@@ -283,7 +290,7 @@ const ModalManageUsers = ({
                       </div>
 
                       <div className="modal-bottom">
-                        <button type="submit" className={"btn_submit " + themeUi}>
+                        <button type="submit" onClick={handleNextClick} className={"btn_submit " + themeUi}>
                           {t("profile.tabContent.manageUsers.button.nextBtn")}
                         </button>
                         <button

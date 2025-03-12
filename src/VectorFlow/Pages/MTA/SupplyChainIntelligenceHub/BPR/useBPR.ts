@@ -158,7 +158,8 @@ const useBPR =()=>{
 
     useEffect(()=>{
         if (internalRef && gridState && gridState.columns) {
-            const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            internalRef?.api.sizeColumnsToFit();    
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
@@ -291,7 +292,10 @@ const useBPR =()=>{
             components:customCellRenderers,
             defaultColDef:defaultColDefObject,
             onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode"),
-            onGridReady:(params)=>setInternalRef(params)
+            onGridReady:(params)=>setInternalRef(params),
+            // autoSizeStrategy:{
+            //     type:"fitCellContents"
+            // }
         }
     },[])
 
