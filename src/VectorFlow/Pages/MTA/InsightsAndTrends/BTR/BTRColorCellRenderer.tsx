@@ -1,33 +1,34 @@
 import {BPRColorCellRendererWrapper} from '../../SupplyChainIntelligenceHub/BPR/styles'
+import { Black, Green, Red, white, Yellow } from '../../../../../styles/global'
 
 const colorMapper =(color:string)=> {
     if(color==="White"){
         return {
-            "bg":"#cecece",
-            "text":"black"
+            "bg": white,
+            "text":Black
         }
     }
     if(color==="Green"){
         return {
-            "bg":"#418D18",
-            "text":"white"
+            "bg":Green,
+            "text":white
         }
     }
     if(color==="Yellow"){
         return {
-            "bg":"#EBBF2B",
-            "text":"white"
+            "bg":Yellow,
+            "text":white
         }
     }
     if(color==="Red"){
         return {
-            "bg":"#F04D4D",
-            "text":"white"
+            "bg":Red,
+            "text":white
         }
     }
     return{
-        "bg":"#000000",
-        "text":"white"
+        "bg":Black,
+        "text":white
     }
 
 }
