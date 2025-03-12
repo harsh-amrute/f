@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
+import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
 
 
 interface ManageUsersProps{
@@ -64,12 +65,15 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const { mutateAsync : usegetHeaderData } = useGetHeadersData();
   const [headers , setHeaders] = useState<any>();
 
+  const [searchUserBasedOn, setSearchUserBasedOn] = useState("");
+  
+  
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
   });
-
-
+  
+  
   const getHeaderDatafunct = async() =>{
     const reponse = await usegetHeaderData();
     setHeaders(reponse.data);
@@ -167,7 +171,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
     if(contentModal.callApi === 1){
       
-      console.log("dataAllPermissions", dataAllPermissions);
       const fillStepperDetails = dataAllPermissions.map((app:any,index:number)=>validApplications.includes(app.application_id) ? ({
         label:app.application_name,
         id:app.application_id,
@@ -331,6 +334,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setIsOpenUser(true);
   };
 
+  
+
   return (
     <>
       <SCProfileOverView>
@@ -340,6 +345,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
               {t("profile.tabContent.manageUsers.title")}
             </SCSubTitleSpan>
             <SCSubTitlePadItem>
+                <SearchInputManageUser searchUserBasedOn={searchUserBasedOn} setSearchUserBasedOn={setSearchUserBasedOn} />
+              
               <SCItemBtn>
                 <ButtonFloat
                   text={t("profile.tabContent.manageUsers.button.addNewUser")}
@@ -371,6 +378,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             refetch={refetch}
             is_admin={is_admin}
             permission={permission}
+            searchUserBasedOn={searchUserBasedOn}
           />
         )}
       </SCProfileOverView>
