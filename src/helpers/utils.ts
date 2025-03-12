@@ -4842,6 +4842,8 @@ export function getColumnDefinationsMTA(
       rowGroupIndex: null,
       pivot: false,
       enablePivot: true,
+      enableRowGroup:true,
+      enableValue:true,
       pivotIndex: null,
       flex: undefined,
       minWidth: 180,
