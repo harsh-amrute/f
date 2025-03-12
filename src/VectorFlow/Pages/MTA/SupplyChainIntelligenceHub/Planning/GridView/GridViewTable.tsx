@@ -8,7 +8,7 @@ import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
 import BPRViewTable, { BPRViewTableColDef } from '../../BPR/BPRViewTable'
-import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
+import VFPagination from "../../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
 import { GridStateContext } from "../../../../../../context/GridStateContext";
 import { useGetState } from "../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
@@ -40,6 +40,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
     const {ref,gridColDefs} = useContext(GridStateContext)
     const {mutateAsync:getState} = useGetState()
     const [gridState,setGridState] = useState<any>()
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+
 
     const [internalRef,setInternalRef] = useState<any>()
     const [Columns,setColumns] = useState<any[]>(_.cloneDeep(agGridColDefs))
@@ -164,8 +166,19 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             height={gridHeight ? gridHeight : '380px'}
                             onGridReady={(params)=>setInternalRef(params)}
                             maintainColumnOrder
+                            onFilterChanged={() => {
+                                const filterModel = ref?.current?.api?.getFilterModel();
+                                if (filterModel && Object.keys(filterModel).length > 0) {
+                                  setIsDisabled(false);
+                                } else {
+                                  setIsDisabled(true);
+                                }
+                            }}
                         />
-                        {paginationProps && <VFPagination {...paginationProps}/>}
+                        {paginationProps && <VFPagination {...paginationProps}
+                         resetGridRef={ref} 
+                         isDisabled={isDisabled}
+                         />}
     
                         </Allotment.Pane>
                     ) 
@@ -186,8 +199,21 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                 //         params.columnApi.applyColumnState({state:columnState})
                                 //     }
                                 // }}
+                                onFilterChanged={() => { 
+                                    const filterModel = ref?.current?.api?.getFilterModel();
+                                    if (filterModel && Object.keys(filterModel).length > 0) {
+                                      setIsDisabled(false);
+                                    } else {
+                                      setIsDisabled(true);
+                                    }
+                                }}
+
                             />
-                            {paginationProps && <VFPagination {...paginationProps}/>}
+                            {paginationProps &&
+                            <VFPagination {...paginationProps}
+                            resetGridRef={ref} 
+                            isDisabled={isDisabled}/>
+                            }
     
                         </Allotment.Pane>
                     ) 

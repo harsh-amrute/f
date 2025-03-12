@@ -1,11 +1,11 @@
 import {RRRLayout} from './styles'
 import useRRRColorBandwise from './useRRRColorBandwise';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
 import OverlayLoader from '../../../../..//VectorFlow/Pages/MTO/Common/Loader';
-
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
+import { useState } from 'react';
 
 
 const RRRColorBandwise = () => {
@@ -37,7 +37,7 @@ const RRRColorBandwise = () => {
   onResetCallback
 } = useRRRColorBandwise();
 
-
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
  
   return (
   <GridStateContext.Provider
@@ -115,6 +115,14 @@ const RRRColorBandwise = () => {
                   }}
                 height={"100%"}
                 maintainColumnOrder
+                onFilterChanged={() => {
+                  const filterModel = ref?.current?.api?.getFilterModel();
+                  if (filterModel && Object.keys(filterModel).length > 0) {
+                    setIsDisabled(false);
+                  } else {
+                    setIsDisabled(true);
+                  }
+                }}
               />  
               <VFPagination 
                 selectedRows={0} 
@@ -122,6 +130,8 @@ const RRRColorBandwise = () => {
                 currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>console.log(e)} 
+                resetGridRef={ref} 
+                isDisabled={isDisabled}
               />  
         </div>
     

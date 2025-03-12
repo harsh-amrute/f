@@ -9,11 +9,12 @@ import { GridStateContext } from "../../../../../context/GridStateContext"
 import useInTransitWhereAbouts from "./useInTransitWhereAbouts"
 import ContactDetailsModal from "./ContactDetailsModal"
 import RemarkModal from "./RemarkModal"
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import { ButtonWrapper } from "../../SupplyChainIntelligenceHub/OpenExpeditingRequests/styles"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
+import { useState } from "react"
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 
 
 
@@ -72,6 +73,7 @@ const InTransitWhereAbouts = ()=>{
         lastRunDate,
         onResetCallback
     } = useInTransitWhereAbouts()
+    
 
     return(
         <GridStateContext.Provider
@@ -126,7 +128,6 @@ const InTransitWhereAbouts = ()=>{
                     ref={ref}
                     height={"100%"}
                     maintainColumnOrder
-                    
                 />
                 <div style={{marginBottom:'10px'}}>
                 <VFPagination

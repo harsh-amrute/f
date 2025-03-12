@@ -1,12 +1,13 @@
 import {RRRLayout} from './styles'
 import useRRR from './useRRR';
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
-import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
+import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader';
+import { useState } from 'react';
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
+
 
 
 
@@ -40,6 +41,7 @@ const RRR = () => {
   lastRunDate
 } = useRRR();
 
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
  
   return (
@@ -120,6 +122,14 @@ const RRR = () => {
                   }}
                 height={"100%"}
                 maintainColumnOrder
+                onFilterChanged={() => {
+                  const filterModel = ref?.current?.api?.getFilterModel();
+                  if (filterModel && Object.keys(filterModel).length > 0) {
+                    setIsDisabled(false);
+                  } else {
+                    setIsDisabled(true);
+                  }
+                }}
               />  
               <VFPagination 
                 selectedRows={0} 
@@ -127,6 +137,8 @@ const RRR = () => {
                 currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>getRRRRowData(e)} 
+                resetGridRef={ref} 
+                isDisabled={isDisabled}
               />  
         </div>
         <div style={{display:'none'}}>                

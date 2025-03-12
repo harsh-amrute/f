@@ -113,16 +113,17 @@ export const GridFilterWrapper = styled.div`
     justify-content:center;
 `
 
-export const TextBtn=styled.button`
+export const TextBtn= styled.button<{themeUi: string}>`
+
     font-family: 'Roboto';
     font-weight: 500;
     font-size: 23px;
     line-height: 24px;
-    color: #82104C;
     display: flex;
     align-items: center;
     cursor:pointer;
     background-color:white;
+    color:${(props)=>props.themeUi ==='REGALBLAZE'? '#CB830E' :'#BC3D81'};
 
      &:disabled{
         color:grey;
