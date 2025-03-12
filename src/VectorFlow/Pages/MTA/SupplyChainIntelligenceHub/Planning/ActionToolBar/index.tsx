@@ -672,6 +672,12 @@ const ActionToolBar = ({
     }
   };
 
+    const handleGIExportExcel = () => {
+      ref?.current?.api?.exportDataAsExcel({
+          fileName:  'ChronicUnavailabilityexport.xlsx', 
+      });
+  };
+
   const renderFloatingTab = () => {
     return (
       <VFFloatingTab
@@ -1007,11 +1013,12 @@ const ActionToolBar = ({
 
             {currCategory === "BufferTrend" ? null : (
               <>
-                {currCategory === "GuidedInsight" ||
-                (currCategory === "BTR" && currentTab === "both") ? null : (
+                {currCategory === "GuidedInsightchronicunavailability" ||
+                ((currCategory === "BTR" && currentTab === "both")  ) ? null : (
                   <>
                     <SCVerticalDivider />
-                    <SCViewContainerWithBg onClick={handleExportToExcel}>
+                    {/* <SCViewContainerWithBg onClick={handleExportToExcel}> */}
+                    <SCViewContainerWithBg onClick={() => {currCategory === "GuidedInsight" ? handleGIExportExcel() : handleExportToExcel()}}>
                       <>
                         <SCViewImage
                           src={
