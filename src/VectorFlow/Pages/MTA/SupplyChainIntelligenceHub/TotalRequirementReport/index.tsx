@@ -2,9 +2,10 @@ import { RRRLayout } from '../RationedRequirementReport/styles';
 import useTotalRequirementReport from './useTotalRequirementReport';
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
+import { useState } from 'react';
 
 
 
@@ -37,8 +38,8 @@ const TotalRequirementReport = () => {
   onResetCallback
 } = useTotalRequirementReport();
 
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
- 
   return (
   <GridStateContext.Provider
   value={{
@@ -116,6 +117,14 @@ const TotalRequirementReport = () => {
                     ],
                   }}
                   height={"80%"}
+                  onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                  }}
               />  
               <VFPagination 
                 selectedRows={0} 
@@ -123,6 +132,8 @@ const TotalRequirementReport = () => {
                 currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>console.log(e)} 
+                resetGridRef={ref} 
+                isDisabled={isDisabled}
               />  
         </div>
         )}

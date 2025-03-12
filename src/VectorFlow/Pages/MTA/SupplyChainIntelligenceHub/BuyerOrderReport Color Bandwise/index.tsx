@@ -1,5 +1,5 @@
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 
  import { BORLayout } from "./styles"
  import {useBORColorBandwise} from "./useBORColorBandwise"
@@ -11,6 +11,7 @@ import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRem
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
+import { useState } from "react";
 
 
 const BuyerOrderReportColorBandwise = ()=>{
@@ -51,10 +52,10 @@ const BuyerOrderReportColorBandwise = ()=>{
         onCloseRemarkHistory
     } = useBORColorBandwise()
 
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    
 
     return(
-
-     
       <GridStateContext.Provider
         value={{
           ref: ref,
@@ -131,13 +132,23 @@ const BuyerOrderReportColorBandwise = ()=>{
                   }}
                   height={"80%"}
                   maintainColumnOrder
+                  onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                  }}
                 />
                 <VFPagination
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
                   rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
-                  handleChangePage={handleChangePage} />
+                  handleChangePage={handleChangePage}
+                  resetGridRef={ref} 
+                  isDisabled={isDisabled}  />
 
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
 

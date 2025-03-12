@@ -1,6 +1,5 @@
 
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable"
-
 import { BPRLayout, LastRunDateHeader, LastRunDate } from "./styles"
 import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
@@ -10,14 +9,14 @@ import "allotment/dist/style.css";
 import ActionToolBar from "../Planning/ActionToolBar"
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 import { GridStateContext } from "../../../../../context/GridStateContext"
 import BPRRemarkHistoryModal from "./BPRRemarkHistoryModal"
 import { Skeleton } from "../../../../../components/commons/styled";
 import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader"
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 
 const BPR = ()=>{
 
@@ -62,7 +61,8 @@ const BPR = ()=>{
       onResetCallback
     } = useBPR();
 
-    
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+ 
     // if(isLoading || isSavedDataLoading){
     //   return (
     //     <VFLoader/>
@@ -81,6 +81,7 @@ const BPR = ()=>{
           }
     },[])
 
+    
 
     return(
         <GridStateContext.Provider
@@ -147,8 +148,7 @@ const BPR = ()=>{
             <div style={{height:'100vh',marginLeft:'15px'}}>
             <Allotment vertical defaultSizes={[300,150]}>
               <Allotment.Pane className="planning-grid-allotment">
-              <VFTable
-                
+              <VFTable    
                  key={'ref'}
                 disableZoomScaling
                 ref={ref}
@@ -160,6 +160,15 @@ const BPR = ()=>{
                 enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {Statusbar}
+                onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                }}
+                  
             />
 
                 <VFPagination
@@ -168,6 +177,8 @@ const BPR = ()=>{
                     currentPage={currGridPage}
                     rowsPerPage={rowsPerPage}
                     handleChangePage={handleOnPageChange}
+                    resetGridRef={ref} 
+                    isDisabled={isDisabled}
                 />
                 <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
               {/* {onSubmitRemarks && (
@@ -272,6 +283,8 @@ const BPR = ()=>{
                     columnDefs={BPRColumns}
                     rowData={exportExcelRowData}
                     {...tempAgGridProps}
+
+                  
                   />
                 </div>
         </BPRLayout>
