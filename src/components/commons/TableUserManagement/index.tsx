@@ -16,6 +16,7 @@ interface TableUser {
   refetch: any;
   is_admin: boolean;
   permission: any;
+  searchUserBasedOn: string
 }
 
 const TableUserManagement = ({
@@ -24,6 +25,7 @@ const TableUserManagement = ({
   refetch,
   is_admin,
   permission,
+  searchUserBasedOn
 }: TableUser) => {
   const { t } = useTranslation();
   const [isOpenDelete, setIsOpenDelete] = useState(false);
@@ -213,7 +215,7 @@ const TableUserManagement = ({
           </Tab.SCTableTbody>
 
           {dataAllUsers &&
-            dataAllUsers?.map((item: any) => (
+            dataAllUsers?.filter((userData:any)=> userData.name.toLowerCase().startsWith(searchUserBasedOn.toLocaleLowerCase())).map((item: any) => (
               <Tab.SCTableTbody key={item?.id}>
                 <Tab.SCTableTrValue>
                   <Tab.SCTableTd>{item?.name}</Tab.SCTableTd>

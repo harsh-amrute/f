@@ -86,6 +86,8 @@ const ModalManageUsers = ({
     
       fillAdvancedPermissionsModalData(currentItem);
       setIsOpenAdvanced(true);
+      setIsEditUser(true)
+      closeModal()
     } else {
       notifyError(
         t("profile.tabContent.manageUsers.notifyError.pleaseSelectRole")
@@ -93,10 +95,7 @@ const ModalManageUsers = ({
     }
   };
 
-  const handleNextClick = ()=>{
-    setIsEditUser(true)
-    closeModal()
-  }
+ 
 
   return (
     <>
@@ -290,7 +289,7 @@ const ModalManageUsers = ({
                       </div>
 
                       <div className="modal-bottom">
-                        <button type="submit" onClick={handleNextClick} className={"btn_submit " + themeUi}>
+                        <button type="submit"  className={"btn_submit " + themeUi}>
                           {t("profile.tabContent.manageUsers.button.nextBtn")}
                         </button>
                         <button
