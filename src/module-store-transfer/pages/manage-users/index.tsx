@@ -354,7 +354,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                   icon="/assets/img/profile/icon_plus.svg"
                 />
               </SCItemBtn>
-              <SCItemBtn>
+              {/* <SCItemBtn>
                 <ButtonOutlineIcon
                   text={t("profile.tabContent.manageUsers.button.bulkUpload")}
                   icon={`/assets/img/profile/${
@@ -364,7 +364,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                   }.svg`}
                   disabled={true}
                 />
-              </SCItemBtn>
+              </SCItemBtn> */}
             </SCSubTitlePadItem>
           </SCSubTitlePad>
         </SCSubTitleBox>
