@@ -34,10 +34,14 @@ const SearchInputMultiple = ({
 }: SelectSearchMultipleProps) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+
   const handleSelect = (e: any) => {
     setValue(e);
     handleListChild(e);
-    setIsUnselected(false)
+
+    if(setIsUnselected){
+      setIsUnselected(false)
+    }
   };
 
   const myBoxShadow = boxShadow ? boxShadow : '0px 6px 12px #95959529'

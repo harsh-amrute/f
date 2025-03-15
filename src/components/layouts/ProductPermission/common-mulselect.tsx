@@ -128,6 +128,8 @@ export default forwardRef(({ ...props }: any, ref) => {
       return getSetPrdPermission();
     },
     setBrand,
+    setIsUnSelected,
+    isUnSelected
   }));
 
   

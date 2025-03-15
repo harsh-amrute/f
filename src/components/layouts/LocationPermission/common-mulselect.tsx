@@ -10,7 +10,7 @@ export default forwardRef(({ ...props }: any, ref) => {
     handleSelectParent,
     handleSelectChild,
     handleSelectGrandChild,
-    headers
+    headers,
   } = props;
 
   const [listLcRegion, setListLcRegion] = useState<any>([]);
@@ -128,6 +128,8 @@ export default forwardRef(({ ...props }: any, ref) => {
     removeLcPermissionValue() {
       removeLcPermissionValue();
     },
+    setIsUnSelected,
+    isUnSelected,
   }));
 
   const removeLcPermissionValue = () => {
