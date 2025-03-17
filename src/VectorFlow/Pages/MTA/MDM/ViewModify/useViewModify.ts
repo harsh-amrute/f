@@ -382,7 +382,7 @@ const useViewModify = (pageType:string) => {
         if (!field) {
           return;
         }
-        dispatch(REMOVE_COLDEFS(['error','warning']));
+        // dispatch(REMOVE_COLDEFS(['error','warning']));
         const newRow = { ...data };
         newRow[field] = newValue;
         
@@ -422,10 +422,14 @@ const useViewModify = (pageType:string) => {
         const ifErrorExists = newRowData.some((row:any)=>("error" in row) && row["error"].length > 0);
         if(ifErrorExists){
            addInvalidDataColDefs('error');
+        } else{
+          dispatch(REMOVE_COLDEFS(['error']));
         }
         const ifWarningExists = newRowData.some((row:any)=>("warning" in row)&&row["warning"].length > 0);
         if(ifWarningExists){
            addInvalidDataColDefs('warning');
+        } else{
+          dispatch(REMOVE_COLDEFS(['warning']));
         }
         setEnableEditOnlineReset(true)
         dispatch(UPDATE_ROW_DATA([...newRowData]))
@@ -450,13 +454,17 @@ const useViewModify = (pageType:string) => {
       invalidDataColdefs.forEach((invalidColumn:ColDef)=>{
          if(activeMaster.colDefs.find((column:ColDef)=>invalidColumn.colId === column.colId)) doesInvalidColDefExists = true;
       })
-      if(doesInvalidColDefExists)
-       return [...activeMaster.colDefs]
+
+      const activeMasterColDefsRequiredCols = activeMaster.colDefs.filter((cols)=> cols.colId !== "checkbox")
+      if(doesInvalidColDefExists){
+       return [...activeMasterColDefsRequiredCols]
+      }
+
       if (activeMaster.name === 'SKULocation') {
-        return [...invalidDataColdefs.filter(colDef => colDef.field === 'error' || colDef.field === 'warning'), ...activeMaster.colDefs];
+        return [...invalidDataColdefs.filter(colDef => colDef.field === 'error' || colDef.field === 'warning'), ...activeMasterColDefsRequiredCols];
         
     } else {
-        return [...invalidDataColdefs.filter(colDef => colDef.field === 'error'), ...activeMaster.colDefs];
+        return [...invalidDataColdefs.filter(colDef => colDef.field === 'error'), ...activeMasterColDefsRequiredCols];
     }
 }
 
@@ -495,13 +503,11 @@ const useViewModify = (pageType:string) => {
   
 
     const addInvalidDataColDefs = (columnName: string) => {
-
       // Check if the column already exists
       const columnAlreadyExists = colDefs.some((colDef: ColDef) => colDef.colId === columnName);
 
-      if (!columnAlreadyExists) {
-        const colDefToAdd = columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0];
-        dispatch(ADD_COLDEFS({ colDefs: [colDefToAdd] }));
+      if (!columnAlreadyExists) {       
+        dispatch(ADD_COLDEFS({colDefs:[columnName === 'error' ? invalidDataColdefs[1] : invalidDataColdefs[0]]}));
       } else {
         console.log(`${columnName} column already exists`);
       }
