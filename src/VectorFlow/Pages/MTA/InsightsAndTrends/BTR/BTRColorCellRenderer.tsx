@@ -1,5 +1,5 @@
 import {BPRColorCellRendererWrapper} from '../../SupplyChainIntelligenceHub/BPR/styles'
-import { Black, Green, Red, white, Yellow } from '../../../../../styles/global'
+import { Black, Green, Red, white, Yellow, Blue } from '../../../../../styles/global'
 
 const colorMapper =(color:string)=> {
     if(color==="White"){
@@ -23,6 +23,12 @@ const colorMapper =(color:string)=> {
     if(color==="Red"){
         return {
             "bg":Red,
+            "text":white
+        }
+    }
+    if(color==="Blue"){
+        return {
+            "bg":Blue,
             "text":white
         }
     }
