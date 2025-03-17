@@ -8,8 +8,12 @@ export const QUERY_KEYS = {
 }
 
 export const useGetSOSummaydetails = ()=>{
-    return useMutation(async(params: {appliedFilters: any})=>{
-      return await MaterialCoverageServices.getMaterialSOData(params)
+    // return useMutation(async(params: {appliedFilters: any})=>{
+    //   return await MaterialCoverageServices.getMaterialSOData(params)
+    // })
+  
+    return useMutation(async()=>{
+      return await MaterialCoverageServices.getMaterialSOData()
     })
   }
 

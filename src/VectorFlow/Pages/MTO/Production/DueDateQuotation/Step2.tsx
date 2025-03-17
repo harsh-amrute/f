@@ -548,7 +548,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                     const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr: any) => ccr.ccr_id == maxFolSpan.ccr_id)?.residual_buffer);
                     console.log("residualBuffer", residualBuffer);
-                    if (!residualBuffer) {
+                    if (residualBuffer == undefined || residualBuffer == null) {
                         throw new Error(`Residual Missing for CCR: ${maxFolSpan.ccr_name}`)
                     }
 
@@ -991,7 +991,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     itemTypes.add(row.itid);
             })
         }
-
+        
         if (selectedPlant && masters && itemTypes.size == 1) {
             return masters?.ccrGroups.map((ccrGroup: any) => {
                 return {

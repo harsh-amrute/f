@@ -14,6 +14,7 @@ import { GridRef } from "../../../../../VectorFlow/types/MDM";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTA/Common/UIConfig";
 import { UIColumnConfigName } from "../../../../../helpers/Enum";
 import _ from "lodash";
+import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 const usePlanning = ()=>{
 
@@ -43,7 +44,7 @@ const usePlanning = ()=>{
 
     const [isSelectCategoryOpen,setIsSelectCategoryOpen] = useState(true);
 
-
+    const { date: lastRunDate } = useGetLastRunData();
     const {mutateAsync:getPlanningDataCount} = useGetPlanningDataCount();
 
     const {mutateAsync:getPlanningDataGraph} = useGetPlanningDataGraph();
@@ -1082,7 +1083,8 @@ const usePlanning = ()=>{
         gridColDefs,
         initialPlanningCount,
         globalColDef,
-        setGlobalColDef
+        setGlobalColDef,
+        lastRunDate,
     }
 
 

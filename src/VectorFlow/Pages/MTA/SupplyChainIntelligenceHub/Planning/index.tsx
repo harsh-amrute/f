@@ -12,6 +12,7 @@ import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
 import { useEffect, useState } from "react";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 const Planning = () => {
   interface DataItem {
@@ -55,7 +56,8 @@ const Planning = () => {
         gridColDefs,
         initialPlanningCount,
         globalColDef,
-        setGlobalColDef
+        setGlobalColDef,
+        lastRunDate,
     } = usePlanning();
 
     function parseFloatAllNumericStrings(data: DataItem[]) {
@@ -172,6 +174,9 @@ const Planning = () => {
                         isPlanning
                         />
                 </div>  
+            {lastRunDate && (
+              <LastRunDateComponent lastRunDate={lastRunDate} />
+            )}
                     
                     {renderView()}
                 </>
