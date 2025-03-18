@@ -9,9 +9,9 @@ import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
 import { FilterPageName } from "../../Common/Enum";
-import { DownloadExcel } from "../../../../../helpers/utils";
+import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
 
-const useMaterialSO = (data: any) => {
+const useMaterialSO = (data: any, appliedFilters:any) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
     const [rowDataCount, setRowDataCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -22,7 +22,7 @@ const useMaterialSO = (data: any) => {
 
     useEffect(() => {
         getInitialData(currentPage)
-    }, [])
+    }, [appliedFilters])
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -30,6 +30,7 @@ const useMaterialSO = (data: any) => {
 
     const getInitialData = async (currPage: number, isExcelExport = false , body = {}) => {
         try {
+            const formatedFilters = formatFilterJSON(appliedFilters);
             let queryString = '?Color='
                 const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'))
                 colorsArray.forEach((s: string, index: number) => {
@@ -72,8 +73,8 @@ const useMaterialSO = (data: any) => {
                 }
             })
             queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}`
-            
-            const someData = await getOpenSODetailsData(queryString);
+      
+            const someData = await getOpenSODetailsData({ data: queryString, appliedFilters: formatedFilters });
             const output = someData.data?.data?.results.map((item: any) => ({
                 ...item,
                 fkapr: ((item.fka / item.oq) * 100).toFixed(2)

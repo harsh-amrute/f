@@ -14,9 +14,10 @@ interface MaterialSODetailedProps {
     colDef: any,
     isUpdateUserConfig: any,
     isGetUserConfig: any,
+    appliedFilters:any,
 }
 
-    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef}: MaterialSODetailedProps, ref) => {
+    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters}: MaterialSODetailedProps, ref) => {
     const {
         agGridProps,
         RRRRowData,
@@ -25,7 +26,7 @@ interface MaterialSODetailedProps {
         handlePageChangeOnHook,
         currentPage,
         ExcelExportData
-    } = useMaterialSO(parameterData);
+    } = useMaterialSO(parameterData, appliedFilters);
     const gridRef = useRef<any>(null);
 
     useImperativeHandle(ref, ()=>({
