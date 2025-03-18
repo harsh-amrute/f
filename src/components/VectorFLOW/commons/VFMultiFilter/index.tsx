@@ -313,11 +313,13 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
         // {value:'smallerthan',label:'<'},
         // {value:'smallerthanequalto',label:'<='},
         {value:'doesnotcontain',label:'Does not contain'},
+        {value:'contain',label:'contain'},
+
         {value:'startswith',label:'Starts with'},
         {value:'doesnotstartwith',label:'Does not start with'},
         {value:'endswith',label:'Ends with'},
         {value:'doesnotendwith',label:'Does not end with'},
-        {value:'hasvalue',label:'Has value'},
+        // {value:'hasvalue',label:'Has value'},
         {value:'hasnovalue',label:'Has no value'},
     ]
 
@@ -398,13 +400,13 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
                 
                 <SelectDropdownComponent data-testid="BPR-filter-dropdown">
                     {
-                    header==="Availabilty Filter" ?
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionIntegerOptions)}/>    
-
-                    : 
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/>    
-
-                    }
+                    header === "Availabilty Filter" || header === "Color Filter" ? (   
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionIntegerOptions)}/> 
+                    ):(   
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/> 
+                    )
+                     }
+                     
                     {/* <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue()}/>     */}
                 </SelectDropdownComponent>
                 <SelectDropdownComponent data-testid="BPR-filter-dropdown">
@@ -415,6 +417,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
             </>     
     )
 }
+
+
 const VFMultiFilter=(props:VFMultiFilterProps)=>{ 
 
     const {user} = useUserData();
