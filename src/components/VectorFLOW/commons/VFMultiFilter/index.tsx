@@ -313,7 +313,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
         // {value:'smallerthan',label:'<'},
         // {value:'smallerthanequalto',label:'<='},
         {value:'doesnotcontain',label:'Does not contain'},
-        {value:'contain',label:'contain'},
+        {value:'contain',label:'contains'},
 
         {value:'startswith',label:'Starts with'},
         {value:'doesnotstartwith',label:'Does not start with'},
