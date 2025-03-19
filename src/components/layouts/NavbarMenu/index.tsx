@@ -49,7 +49,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
           console.error("Error fetching reports:", reportsResponse.reason);
         }
       }
-      console.log(mtoReportsResponse,reportsResponse)
       // Process MTO reports if the request succeeded
       if (mtoReportsResponse.status === "fulfilled" && mtoReportsResponse.value.status === 200) {
         const rawMTOReports = mtoReportsResponse.value.data.data;
