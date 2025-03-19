@@ -47,12 +47,12 @@ const VerticalSplitView = (props: SplitViewProps) => {
         const newColDef = colDefs.map((colDef: any) => {
             if (colDef.colId === "Category" || colDef.colId ==="dailydatagraph") {
                 colDef.pinned = "left";
-                colDef.minWidth =  100;
+                colDef.minWidth =  80;
             } else {
                 colDef.pinned = false;
                 
             }
-            colDef.width = 100;
+            colDef.width = 80;
             colDef.filter=false;
             return colDef;
         });
@@ -127,7 +127,6 @@ const VerticalSplitView = (props: SplitViewProps) => {
         filter: false,
         sortable: false,
 
-       
     suppressHeaderMenuButton: false,
         // cellStyle: {
         //     "textAlign": "center",
@@ -139,6 +138,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
         minWidth: 100,
         cellClass:'btr_cell_style'
     }
+
     return (
         <BTRTableWrapper>
             <Allotment defaultSizes={[600, 300]} vertical={false} onChange={handleChange}>
@@ -166,11 +166,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 tooltipShowDelay={0}
                                 tooltipHideDelay={100000}
                                
-                                defaultColDef={{
-                                    floatingFilter: false,
-                                    filter: false,
-                                    sortable: false,
-                                }}
+                                defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 3)}
                             />
                             </div>
@@ -201,11 +197,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 tooltipShowDelay={0}
                                 tooltipHideDelay={100000}
                                
-                                defaultColDef={{
-                                    floatingFilter: false,
-                                    filter: false,
-                                    sortable: false,
-                                }}
+                                defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 3)}
                             />
                             </div>
@@ -250,11 +242,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 tooltipShowDelay={0}
                                 tooltipHideDelay={100000}
                                
-                                defaultColDef={{
-                                    floatingFilter: false,
-                                    filter: false,
-                                    sortable: false,
-                                }}
+                                defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 3)}
                             />
                             </div>

@@ -2,21 +2,19 @@ import styled from "styled-components";
 import * as globalStyles from "../../../styles/global";
 import * as gridSystem from "../../../styles/gridSystem";
 
-export const WrapToolTip = styled.div`
+export const WrapToolTip = styled.div<{left?: number}>`
   .tooltip_list {
     pointer-events: auto;
     background: ${globalStyles.white};
     top: 0 !important;
-    opacity:1;
+    left: ${props => props?.left}px !important;
+    opacity: 1;
     // visibility: hidden;
     // transition: 100ms visibility ease-in;
-    &.react-tooltip__show{
-        visibility: visible;
+    &.react-tooltip__show {
+      visibility: visible;
     }
   }
-
-  
-
 `;
 
 

@@ -24,6 +24,7 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
   const navigate = useNavigate();
   const mdm = useSelector((state: RootState) => state.mdm);
   const dispatch = useDispatch();
+  const [left, setLeft] = useState(0);
 
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [tooltipMaxHeight, setTooltipMaxHeight] = useState<string>("");
@@ -40,6 +41,7 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
       return;
     }
     const tooltipTop = tooltipElement.getBoundingClientRect().top; 
+    setLeft(tooltipElement.getBoundingClientRect().width); 
     const viewportHeight = window.innerHeight; 
     const availableHeight = viewportHeight - tooltipTop - 10; 
     setTooltipMaxHeight(`${availableHeight}px`);
@@ -126,7 +128,7 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
 
   return (
   <div ref={tooltipRef}>
-    <WrapToolTip>
+    <WrapToolTip left={left}>
       <Tooltip 
         id={item.name}
         place="right"

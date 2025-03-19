@@ -3,6 +3,7 @@ import VFTable from "../../../../VectorFlow/Pages/MTO/Common/VFTable";
 import './styles.css'
 import VFButtonOutline from "../VFButtonOutline";
 import { useUserData } from "../../../../context";
+import { SideBarDef } from 'ag-grid-enterprise';
 
 
 const VFChartsTable = (props:any)=>{
@@ -47,6 +48,25 @@ const VFChartsTable = (props:any)=>{
             fileName: downloadName || 'export.xlsx', 
         });
     };
+
+    const sideBar:SideBarDef = {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+                suppressPivots: true,
+                suppressPivotMode: true,
+                suppressRowGroups: true,
+                suppressValues: true,
+              },
+          },
+        ],
+        defaultToolPanel:'',
+      }
 
   
 
@@ -111,6 +131,7 @@ const VFChartsTable = (props:any)=>{
                     filter: "agMultiColumnFilter",
                 }}
                 height={'480px'}
+                sideBar={sideBar}
             />
         </div>
     </VFModalCard>

@@ -98,8 +98,9 @@ const MaterialCov = () => {
 
   const getSOData = async () => {
     try {
-      const formatedFilters = formatFilterJSON(appliedFilters);
-      const response = await getSOSummaryData({ appliedFilters: formatedFilters});
+      // const formatedFilters = formatFilterJSON(appliedFilters);
+      // const response = await getSOSummaryData({ appliedFilters: formatedFilters});
+      const response = await getSOSummaryData();
       setSOData(response?.data?.data || []);
     } catch (error) {
       console.log(error);
@@ -109,7 +110,8 @@ const MaterialCov = () => {
 
   useEffect(() => {
     getSOData();
-  }, [appliedFilters])
+    // }, [appliedFilters])
+  }, [])
 
   const tabs = [
     {
@@ -284,18 +286,18 @@ const MaterialCov = () => {
 
           <ActionToolBar
             comp={'MaterialCov'}
-            isAddFilterButton
             themeUi={themeUi}
-            isFilterOpen={isFilterOpen}
-            onAddFilter={onAddFilter}
-            toggleFilter={toggleFilter}
-            onApplyFilter={onApplyFilter}
-            isMfgSelected={isMfgSelected}
-            multiFilter={currFilter}
-            setMultiFilter={setCurrFilter}
-            onFilterRemove={onFilterRemove}
-            onDateChange={() => { console.log('') }}
-            submitDate={() => { console.log('') }}
+            // isAddFilterButton
+            // isFilterOpen={isFilterOpen}
+            // onAddFilter={onAddFilter}
+            // toggleFilter={toggleFilter}
+            // onApplyFilter={onApplyFilter}
+            // isMfgSelected={isMfgSelected}
+            // multiFilter={currFilter}
+            // setMultiFilter={setCurrFilter}
+            // onFilterRemove={onFilterRemove}
+            // onDateChange={() => { console.log('') }}
+            // submitDate={() => { console.log('') }}
           />
           <div>
 
@@ -361,12 +363,21 @@ const MaterialCov = () => {
               handleToggleComponent(false);
               // setCurrTab("CurrentCoverage")
             }}
-            isMfgSelected={isMfgSelected}
-            multiFilter={currFilter}
-            disableRemoveFilter={true}
+            // disableRemoveFilter={true}
             handleSaveClick={handleSaveClick}
             handleResetClick={handleResetClick}
-            onExcelExportClick={ callExportExcel}
+            onExcelExportClick={callExportExcel}
+            isAddFilterButton
+            isFilterOpen={isFilterOpen}
+            onAddFilter={onAddFilter}
+            toggleFilter={toggleFilter}
+            onApplyFilter={onApplyFilter}
+            isMfgSelected={isMfgSelected}
+            multiFilter={currFilter}
+            setMultiFilter={setCurrFilter}
+            onFilterRemove={onFilterRemove}
+            // onDateChange={() => { console.log('') }}
+            // submitDate={() => { console.log('') }}
           />
 
           <MaterialSODetailed 
@@ -378,6 +389,7 @@ const MaterialCov = () => {
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
+            appliedFilters={appliedFilters}
           />
         </div>
 
