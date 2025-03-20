@@ -97,8 +97,8 @@ const theme_ui = user.user.theme_ui
               <p>Search Key</p>
             </TextWrapper>
             <DualDropDownWrapper>
-              <Select options={skuOptions} value={selectedSkuOption} placeholder={"Select SKU Code"} styles={{...styles,...specificStyles}} onChange={(newValue: any)=>{setSelectedSkuOption(newValue)}} isDisabled={isSkuDisabled()} ></Select>
-              <Select options={locOptions} value={selectedLocOption} placeholder={"Select Location"} styles={{...styles,...specificStyles}} onChange={(newValue: any)=>{setSelectedLocOption(newValue)}} isDisabled={isLocDisabled()}></Select>
+              <Select options={skuOptions || []} value={selectedSkuOption} placeholder={"Select SKU Code"} styles={{...styles,...specificStyles}} onChange={(newValue: any)=>{setSelectedSkuOption(newValue)}} isDisabled={isSkuDisabled()} ></Select>
+              <Select options={locOptions || []} value={selectedLocOption} placeholder={"Select Location"} styles={{...styles,...specificStyles}} onChange={(newValue: any)=>{setSelectedLocOption(newValue)}} isDisabled={isLocDisabled()}></Select>
             </DualDropDownWrapper>
           </SelectWrapper>
             
