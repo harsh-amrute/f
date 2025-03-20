@@ -1,5 +1,5 @@
 import {BPRColorCellRendererWrapper} from '../../SupplyChainIntelligenceHub/BPR/styles'
-import { Black, Green, Red, white, Yellow, Blue } from '../../../../../styles/global'
+import { Black, Green, Red, white, Yellow, Blue,gray } from '../../../../../styles/global'
 
 const colorMapper =(color:string)=> {
     if(color==="White"){
@@ -46,15 +46,15 @@ const BTRColorCellRenderer = (params:any)=>{
 
     if(color===null || color===undefined || isNaN(color)){
         return(
-            <>
-            
-            </>
+            <BPRColorCellRendererWrapper style={{backgroundColor:gray,color:Black,maxWidth:85}} data-testid='color-cell'>
+              X
+            </BPRColorCellRendererWrapper>
         )
-    }
 
-    if(color<=-99999999.00){
+    }
+    if(color==-99999999.00){
         return(
-            <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:85}} data-testid='color-cell'>
+            <BPRColorCellRendererWrapper style={{backgroundColor:gray,color:gray,maxWidth:85}} data-testid='color-cell'>
                -999.99%
             </BPRColorCellRendererWrapper>
         )
