@@ -2622,6 +2622,8 @@ export const generateChartOptions = (data:any,chartParams:any,isCategoryData?:st
   const seriesMapped = series.map((obj:any,index:number)=>{
     return {...obj,tooltip: chartType==='pie' ? pieTooltip : commonTooltip}
   })
+
+  if(data == null ) return {};
   const options:AgChartOptions = {
     data: chartType==='pie' ? addExtraColumnForLabels(data) : data.slice(0,10),
     theme:{
