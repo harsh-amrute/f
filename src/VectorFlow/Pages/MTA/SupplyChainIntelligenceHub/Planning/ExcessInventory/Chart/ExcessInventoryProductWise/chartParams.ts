@@ -37,7 +37,7 @@ export const chartParams1 = {
 
 
 export const chartParams2 = {
-    title:'Top 10 Products with Excess Inventory: In Value (Rupee Lakhs)',
+    title:`Top 10 Products with Excess Inventory: In Value (${process.env.REACT_APP_CURRENCY || 'Rupee'} Lakhs)`,
     chartType:'column',
     downloadName:'Top-10 Prd With Excess Inv- In Value',
     LabelPosition:'bottom',
