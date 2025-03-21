@@ -38,7 +38,8 @@ export interface VFTaskBarProps{
     masterId:number,
     isSavingToDraft:boolean,
     DataCount?:number,
-    onDiscardDraftCallback?:()=>void
+    onDiscardDraftCallback?:()=>void,
+    showExportErrors?:boolean
 }
 
 
@@ -76,7 +77,8 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onPhaseInPhaseOutStop,
         masterId,
         DataCount,
-        onDiscardDraftCallback
+        onDiscardDraftCallback,
+        showExportErrors
     } = props
 
     const {user,isSideBarOpen} = useUserData()
@@ -353,11 +355,11 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
                     <div style={{display:'flex', gap:'20px'}}>
                     <BackButton/>
-                     
-                    <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
-                        Export Errors
-                    </VFButton>
-                                        
+                        {
+                            showExportErrors && (<VFButton onClick={() => onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
+                                Export Errors
+                            </VFButton>)
+                        }              
                     </div>
                     <div >
                     

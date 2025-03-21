@@ -160,6 +160,7 @@ const useResearchInsights = () => {
     useEffect(() => {
         if (internalRef && gridState && gridState.columns) {
             const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            internalRef?.api.sizeColumnsToFit();
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
@@ -648,12 +649,13 @@ const useResearchInsights = () => {
             colId: 'checkbox',
             headerName: '',
             width: 70,
+            minWidth: 50,
             checkboxSelection: true,
             headerCheckboxSelection: true,
             headerCheckboxSelectionCurrentPageOnly: true,
             resizable: false,
             suppressMenu: true,
-            maxWidth: 40,
+            maxWidth: 50,
             pinned: 'left',
             filter: false,
         }

@@ -85,42 +85,56 @@ const VerticalSplitView = (props: SplitViewProps) => {
         setLockBtnPosition(sizes[0])
     }
 
+    const isSyncingScrollRef = useRef(false);
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+
     const onBodyScroll = (params: any, from: number) => {
-
-        if (isLocked) {
-            if (params.direction === 'vertical') {
-                let currIndex = parseInt((params.top / 21).toFixed(0))
-                if (currIndex > 100) currIndex = 100
-                if (from === 1) {
-                    ref2.current?.api.ensureIndexVisible(currIndex)
-                    ref3.current?.api.ensureIndexVisible(currIndex)
-                }
-                else if (from === 3) {
-                    ref1.current?.api.ensureIndexVisible(currIndex)
-                    ref2.current?.api.ensureIndexVisible(currIndex)
-                }
-                else {
-                    ref1.current?.api.ensureIndexVisible(currIndex)
-                    ref3.current?.api.ensureIndexVisible(currIndex)
-                }
-            }
-            // else{
-            //     const currIndex = parseInt((params.left/80).toFixed(0))
-            //     const columns = techTable.columnDefs
-
-            //     if(columns){
-            //         const currColumn:any = columns[currIndex]
-
-            //         if(from===1){
-            //             ref2.current?.api.ensureColumnVisible(currColumn.colId)
-            //         }
-            //         else{
-            //             ref1.current?.api.ensureColumnVisible(currColumn.colId)
-            //         }
-            //     }
-            // }
+        if (
+            !isLocked ||
+            isSyncingScrollRef.current ||
+            (params.direction !== "vertical" && params.direction !== "horizontal")
+        ){
+            return;
         }
-    }
+
+        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+
+        isSyncingScrollRef.current = true;
+
+        const rowHeight = 25;
+        const rowCount = techTable.rowData ? techTable.rowData.length : 0;
+        const currIndex = Math.min(
+            Math.max(Math.round(params.top / rowHeight), 0),
+            rowCount - 1
+        );
+
+        if (rowCount > 0) {
+         
+            const syncScroll = () => {
+                switch (from) {
+                case 1:
+                    ref2.current?.api?.ensureIndexVisible(currIndex, "top");
+                    ref3.current?.api?.ensureIndexVisible(currIndex, "top");
+                    break;
+                case 2:
+                    ref1.current?.api?.ensureIndexVisible(currIndex, "top");
+                    ref3.current?.api?.ensureIndexVisible(currIndex, "top");
+                    break;
+                case 3:
+                    ref1.current?.api?.ensureIndexVisible(currIndex, "top");
+                    ref2.current?.api?.ensureIndexVisible(currIndex, "top");
+                    break;  
+                default:
+                    break;
+                }
+            };
+            requestAnimationFrame(syncScroll); 
+        }
+        scrollTimeoutRef.current = setTimeout(() => {
+            isSyncingScrollRef.current = false;
+        }, 70);
+    };
 
     const defaultColDef = {
         floatingFilter: false,
@@ -148,9 +162,9 @@ const VerticalSplitView = (props: SplitViewProps) => {
                         <div style={{ marginTop: -10, height: '95%', width: '100%',minWidth:'50%' }}>
                             <div style={{ height:'100%', display:'flex', flexDirection:'column'}}>
                             <VFTable 
-                                key={'ref'}
+                                key={'ref1'}
                                 disableZoomScaling
-                                ref={ref3}
+                                ref={ref1}
                                 rowHeight={25}
                                 sideBar={null}
                                 height={"95%"}
@@ -167,7 +181,8 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 tooltipHideDelay={100000}
                                
                                 defaultColDef={defaultColDef}
-                                onBodyScroll={(params:any) => onBodyScroll(params, 3)}
+                                onBodyScroll={(params:any) => onBodyScroll(params, 1)}
+                                
                             />
                             </div>
                             <div style={{ zoom: 0.7, margin: '0px -15px'}}>
@@ -179,9 +194,9 @@ const VerticalSplitView = (props: SplitViewProps) => {
                         <div style={{ marginTop: -10, height: '95%', width: '100%' ,minWidth:'50%'}}>
                          <div style={{ height:'100%', display:'flex', flexDirection:'column'}}>
                             <VFTable 
-                                key={'ref'}
+                                key={'ref2'}
                                 disableZoomScaling
-                                ref={ref1}
+                                ref={ref2}
                                 rowHeight={25}
                                 sideBar={null}
                                 height={"95%"}
@@ -198,7 +213,8 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 tooltipHideDelay={100000}
                                
                                 defaultColDef={defaultColDef}
-                                onBodyScroll={(params:any) => onBodyScroll(params, 3)}
+                                onBodyScroll={(params:any) => onBodyScroll(params, 2)}
+                                alignedGrids={isLocked?[ref3]:[]}
                             />
                             </div>
                             <div style={{ zoom: 0.7, margin: '0px -15px'  }}>
@@ -224,9 +240,9 @@ const VerticalSplitView = (props: SplitViewProps) => {
                     <div style={{ marginTop: -10, height: '95%', paddingLeft: '17px' }}>
                          <div style={{ height:'100%', display:'flex', flexDirection:'column'}}>
                             <VFTable 
-                                key={'ref'}
+                                key={'ref3'}
                                 disableZoomScaling
-                                ref={ref2}
+                                ref={ref3}
                                 rowHeight={25}
                                 sideBar={null}
                                 height={"95%"}
@@ -244,6 +260,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                
                                 defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 3)}
+                                alignedGrids={isLocked?[ref2]:[]}
                             />
                             </div>
                         <div style={{ zoom: 0.7, margin: '0px -15px'}}>
