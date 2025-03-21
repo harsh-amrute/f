@@ -122,11 +122,11 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
         downwardStockBasedNorm:null,
         upwardConsumptionBasedNorm: null,
         downwardConsumptionBasedNorm: null,
-        norm: data[0].norm,
-        normRed: data[0].normRed,
-        normYellow: data[0].normYellow,
-        normGreen: data[0].normGreen,
-        normBlue: data[0].normBlue
+        norm: data[data?.length-1].norm,
+        normRed: data[data?.length-1].normRed,
+        normYellow: data[data?.length-1].normYellow,
+        normGreen: data[data?.length-1].normGreen,
+        normBlue: data[data?.length-1].normBlue
       };
   
       const newData =[startPoint, ...data, endPoint];
@@ -215,6 +215,9 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                 
                 if(normChangeData?.length > 0 && closestNormChangeIndex !== -1){
                   tempNorm = sortedNormChangeData[closestNormChangeIndex]['nN'];
+                }
+                else if(normChangeData?.length>0){
+                  tempNorm = sortedNormChangeData[0]['olN'];
                 }
                 else{
                   tempNorm = masterData?.['nm'] || "";
