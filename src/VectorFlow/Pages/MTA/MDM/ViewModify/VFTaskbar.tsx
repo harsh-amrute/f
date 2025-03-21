@@ -354,9 +354,12 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <div style={{display:'flex', gap:'20px'}}>
                     <BackButton/>
                      
-                    <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
-                        Export Errors
+                     {showSubmittedExportError &&
+                     <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false}  width={183}>
+                     Export Errors
                     </VFButton>
+                     }
+                    
                                         
                     </div>
                     <div >
