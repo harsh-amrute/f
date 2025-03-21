@@ -1072,7 +1072,7 @@ const useViewModify = (pageType:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
-          if (data['error'].length > 0 ) {
+          if (data['error'] && data['error'].length > 0 ) {
               erroneusData.push(data);
           }
           else{

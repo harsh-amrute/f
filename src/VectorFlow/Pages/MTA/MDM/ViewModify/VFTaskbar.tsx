@@ -38,7 +38,8 @@ export interface VFTaskBarProps{
     masterId:number,
     isSavingToDraft:boolean,
     DataCount?:number,
-    onDiscardDraftCallback?:()=>void
+    onDiscardDraftCallback?:()=>void,
+    showExportErrors?:boolean
 }
 
 
@@ -76,7 +77,8 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onPhaseInPhaseOutStop,
         masterId,
         DataCount,
-        onDiscardDraftCallback
+        onDiscardDraftCallback,
+        showExportErrors
     } = props
 
     const {user,isSideBarOpen} = useUserData()

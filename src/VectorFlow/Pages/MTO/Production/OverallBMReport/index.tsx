@@ -883,10 +883,10 @@ const OverallBmReport = () => {
             : child.cc === "ct"
             ? "DropDownCellRenderer"
             : undefined,
-        maxWidth:
+        minWidth:
           child.cc === "ec" || child.cc === "ic" || child.scc === "bpp"
             ? 80
-            : undefined,
+            : 150,
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
           child.cc === "ec" ? false : child.cc === "ic" ? false : true,
@@ -1464,17 +1464,17 @@ const OverallBmReport = () => {
         state: columnState,
         applyOrder: true,
       });
-
+      // refGraph2.current?.api.autoSizeAllColumns()
       const applyPivot = refGraph2.current?.api.setGridOption(
         "pivotMode",
         isPivot
       );
-
+      refGraph2.current.api.autoSizeAllColumns()
       if (!result || !applyPivot) {
         console.error("Failed to apply column state");
       }
     }
-  }, [columnState]);
+  }, [columnState,refGraph2,refGraph2.current]);
 
   const { data: apiResponseData /*isLoading, refetch*/ } = useGetDate();
 

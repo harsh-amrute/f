@@ -43,9 +43,9 @@ export const chartParams1 = {
 
 
 export const chartParams2 = {
-    title:'Excess Inventory Trend (Count Of SKU)-Last 90 Days',
+    title: `Top 10 Products with Excess Inventory: In Value (${process.env.REACT_APP_CURRENCY || 'Rupee'}  Lakhs)`,
     chartType:'line',
-    downloadName:'Excess Inventory Trend (Count Of SKU)-Last 90 Days',
+    downloadName:`Top 10 Products with Excess Inventory: In Value (${process.env.REACT_APP_CURRENCY || 'Rupee'} Lakhs)`,
     LabelPosition:'bottom',
     Labels:{
         Xaxis:'Date',

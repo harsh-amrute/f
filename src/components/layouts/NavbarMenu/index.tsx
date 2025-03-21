@@ -34,7 +34,7 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
       let transformedMTOData: any[] = [];
   
       // Process normal reports if the request succeeded
-      if (reportsResponse.status === "fulfilled") {
+      if (reportsResponse.status === "fulfilled" && reportsResponse.value.status === 200) {
         const rawDailyReport = reportsResponse.value.data.data;
         transformedData = Object.entries(rawDailyReport).map(([key, attributes]: [string, any]) => ({
           name: attributes.reportName,
@@ -45,11 +45,12 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
           downloadName: attributes.downloadName
         }));
       } else {
-        console.error("Error fetching reports:", reportsResponse.reason);
+        if (reportsResponse.status === "rejected") {
+          console.error("Error fetching reports:", reportsResponse.reason);
+        }
       }
-  
       // Process MTO reports if the request succeeded
-      if (mtoReportsResponse.status === "fulfilled") {
+      if (mtoReportsResponse.status === "fulfilled" && mtoReportsResponse.value.status === 200) {
         const rawMTOReports = mtoReportsResponse.value.data.data;
         transformedMTOData = Object.entries(rawMTOReports).map(([key, attributes]: [string, any]) => ({
           name: attributes.reportName,
@@ -61,7 +62,9 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
           downloadName: attributes.downloadName
         }));
       } else {
-        console.error("Error fetching MTO reports:", mtoReportsResponse.reason);
+        if (mtoReportsResponse.status === "rejected") {
+          console.error("Error fetching MTO reports:", mtoReportsResponse.reason);
+        }
       }
   
       // Clone the menu once and update it
