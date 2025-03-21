@@ -25,7 +25,7 @@ export enum UIColumnConfigName{
     OAR = "OrderAllocationReport",
     TRR = "RRR_OA",
     InTransit = "InTransitWhereAbouts",
-    BuffertrendReport = "BuffertrendReport"
+    BuffertrendReport = "BufferTrendReport"
 }
 
 export enum UserUIColumnConfigName{
