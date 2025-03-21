@@ -80,8 +80,10 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
             const StateColumns = updateCommonAttributes(gridState.columns,Columns,'colId')
             setColumns(StateColumns)
             internalRef?.api?.applyColumnState({state:gridState.columns,applyOrder:true})
+            internalRef?.api.sizeColumnsToFit();
         }else{
             internalRef?.api?.applyColumnState({state:gridColDefs,applyOrder:true})
+            internalRef?.api.sizeColumnsToFit();
         }
     },[internalRef,gridState,gridColDefs])
 

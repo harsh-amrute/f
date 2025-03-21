@@ -71,6 +71,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     useEffect(()=>{
         if(ref?.current && gridState && gridState?.columns?.length>0){
             ref?.current?.api.applyColumnState({state:gridState.columns, applyOrder:true})
+            ref?.current?.api.sizeColumnsToFit();
             ref?.current?.api.setGridOption('pivotMode',gridState.pivot)
         }
     },[gridState,ref])
