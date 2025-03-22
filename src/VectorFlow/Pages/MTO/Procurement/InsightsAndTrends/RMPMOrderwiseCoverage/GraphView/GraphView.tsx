@@ -22,6 +22,50 @@ const GraphView = ({ shortageData }: any) => {
     const [apiDate, setApiDate] = useState(apiResponseData?.data?.data);
     const [date, setDate] = useState('');
 
+  const containerRef  = useRef<HTMLDivElement>(null);
+
+
+      const downloadChartWithHeader = () => {
+        if (containerRef.current) {
+          const chartCanvas = containerRef.current.querySelector('canvas');
+          if (!chartCanvas) {
+            console.error("Chart canvas not found.");
+            return;
+          }
+    
+          const headerHeight = 40;
+          const combinedCanvas = document.createElement('canvas');
+          combinedCanvas.width = chartCanvas.width;
+          combinedCanvas.height = chartCanvas.height + headerHeight;
+    
+          const ctx = combinedCanvas.getContext('2d');
+          if (!ctx) {
+            console.error("Failed to get canvas context.");
+            return;
+          }
+    
+          const titleText = `RM / PM Orderwise Coverage ( ${date})`
+    
+          ctx.font = 'bold 16px Arial';  
+          const textWidth = ctx.measureText(titleText).width;
+          
+          const xCoordinate = (combinedCanvas.width - textWidth) / 2;
+    
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, combinedCanvas.width, headerHeight);
+          ctx.fillStyle = 'black';
+          ctx.fillText(titleText, xCoordinate, 25);
+    
+          ctx.drawImage(chartCanvas, 0, headerHeight);
+    
+          const link = document.createElement('a');
+          link.href = combinedCanvas.toDataURL('image/png');
+          link.download = titleText || 'chart.png';
+          link.click();
+        }
+      };
+
+
     React.useEffect(() => {
         setApiDate(apiResponseData?.data?.data);
     }, [apiResponseData]);
@@ -263,17 +307,11 @@ const GraphView = ({ shortageData }: any) => {
                 <SCHorizontalDivider />
 
                 <ChartWrapper>
-                    <div style={{ height: '100%', width: '100%' }}>
+                    <div style={{ height: '100%', width: '100%' }} ref={containerRef}>
                         <div style={{ display: 'flex', justifyContent: "right" }}>
 
-                            <div style={{ paddingRight: '10px', cursor:"pointer" }} onClick={() => {
-
-                                (chartRef && chartRef.current) && chartRef?.current.download({
-                                    type: 'png',
-                                    filename: 'RMPM Orderwise Coverage',
-
-                                });
-                            }}> <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" /></div>
+                            <div style={{ paddingRight: '10px', cursor:"pointer" }} onClick={downloadChartWithHeader}
+                            > <img height={12} width={12} src="/assets/img/mto/RMPMBufferTrend/download.svg" /></div>
                         </div>
 
                         <div className='chart-wrapper' style={{ flex: 1, height: "90%" }}>
