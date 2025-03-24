@@ -35,6 +35,7 @@ export const defaultJOIOptions = {
 
 }
 export const generateCommonMessages = (key:string) => {
+    const maxLength = key === "sd" ? 125 : 50;  
     return {
         'any.pipe':`"${key}" should not contain pipe`,
         'any.comma':`"${key}" should not contain comma`,
@@ -43,7 +44,7 @@ export const generateCommonMessages = (key:string) => {
         'any.specialCharacters': `"${key}" cannot contain special characters`,
         'any.empty': `"${key}" should not be empty`,
         'string.base': `"${key}" should not be empty`,
-        'string.max': `"${key}" should be less than or equal to 50 characters`
+        'string.max': `"${key}" should be less than or equal to ${maxLength} characters`
     }
 }
 
