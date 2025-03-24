@@ -354,17 +354,17 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
                     <div style={{display:'flex', gap:'20px'}}>
-                    <BackButton/>   
+                    <BackButton/>  
+                    {showExportErrors && 
                      <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false}  width={183}>
                      Export Errors
-                    </VFButton>                    
+                    </VFButton> 
+                    } 
                     </div>
-                    <div >
-                    
-                        
-                        <VFStepper
-                            items={getStepperState()}
-                        />
+                    <div > 
+                    <VFStepper
+                        items={getStepperState()}
+                    />
                     </div>
 
                 </TaskBarContainer>
