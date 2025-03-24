@@ -41,34 +41,41 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
         setLockBtnPosition(sizes[0])
     }
 
+    const isSyncingScrollRef = useRef<boolean>(false);
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
     const onBodyScroll = (params:any,from:number)=>{
-        if(isLocked){
-            if(params.direction==='vertical'){
-                let currIndex = parseInt((params.top/21).toFixed(0))
-                if(currIndex>100)currIndex=100
-                if(from===1){
-                    ref2.current?.api.ensureIndexVisible(currIndex)
-                }
-                else{
-                    ref1.current?.api.ensureIndexVisible(currIndex)
+        if(params.direction !=='vertical' || !isLocked || isSyncingScrollRef.current ) return 
+
+        if(scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
+
+        isSyncingScrollRef.current = true;  
+
+        const rowCount = techTable.rowData ? techTable.rowData.length : 0;
+        const currIndex = Math.min(
+            Math.max(Math.round(params.top / 25), 0),
+            rowCount - 1
+        );
+
+        if(rowCount > 0){
+            const syncScroll = ()=>{
+                switch(from){
+                    case 1:
+                        ref2.current?.api.ensureIndexVisible(currIndex)
+                         break;
+                    case 2:
+                        ref1.current?.api.ensureIndexVisible(currIndex)
+                        break;
+                    default:
+                        break;
                 }
             }
-            // else{
-            //     const currIndex = parseInt((params.left/80).toFixed(0))
-            //     console.log(currIndex)
-            //     const columns = techTable.columnDefs
-            //     if(columns){
-            //         const currColumn:any = columns[currIndex]
-                
-            //         if(from===1){
-            //             ref2.current?.api.ensureColumnVisible(currColumn.colId)
-            //         }
-            //         else{
-            //             ref1.current?.api.ensureColumnVisible(currColumn.colId)
-            //         }
-            //     }
-            // }
+            requestAnimationFrame(syncScroll)
         }
+        scrollTimeoutRef.current = setTimeout(() => {
+            isSyncingScrollRef.current = false;
+        }, 70);
+        
     }
    
     const {screenHeight} = useViewPort()
@@ -107,7 +114,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                     <BTRAllomentSection>
                         <BTRTableHeader>{techTable.header}</BTRTableHeader>
                            <VFTable 
-                                key={'ref'}
+                                key={'ref1'}
                                 disableZoomScaling
                                 ref={ref1}
                                 rowHeight={25}
@@ -143,7 +150,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                     <BTRAllomentSection style={{marginTop:'20px',paddingBottom:'20px'}}>
                         <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
                         <VFTable 
-                                key={'ref'}
+                                key={'ref2'}
                                 disableZoomScaling
                                 ref={ref2}
                                 rowHeight={25}
@@ -160,9 +167,9 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                                 tooltipHideDelay={100000}
                                 columnDefs={techTable.columnDefs}
                                 rowData={ecoTable.rowData}                             
-                                onBodyScroll={(params)=>onBodyScroll(params,1)}
+                                onBodyScroll={(params)=>onBodyScroll(params,2)}
                                 defaultColDef={defaultColDef}
-                                alignedGrids={isLocked?[ref2]:[]}
+                                alignedGrids={isLocked?[ref1]:[]}
                                 
                             />
     
