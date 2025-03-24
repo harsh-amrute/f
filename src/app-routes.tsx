@@ -225,6 +225,8 @@ const lazyLoad = (children: React.ReactNode) => {
 
   const urlCurrent = window.location.pathname
 
+  console.log(urlCurrent)
+
   if (urlAllPage.includes(urlCurrent)) {
     if (newUrlPermiss.includes(urlCurrent)) {
       return (
@@ -236,6 +238,7 @@ const lazyLoad = (children: React.ReactNode) => {
       return <PageForbidden />
     }
   } else {
+    console.log("not found")
     return <PageNotFound />
   }
 }
@@ -636,6 +639,17 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/not-found',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<PageNotFound />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
       path: '/permission-forbidden',
       element: <AppLayout />,
       children: [
@@ -709,17 +723,6 @@ export const initRoutes = (): RouteObject[] => {
         index:true,
         element:lazyLoad(<TotalRequirementReport/>)
         } ,
-        ...getStoreTransferModuleRoutes()
-      ]
-    },
-    {
-      path: '/not-found',
-      element: <AppLayout />,
-      children: [
-        {
-          index: true,
-          element: lazyLoad(<PageNotFound />)
-        },
         ...getStoreTransferModuleRoutes()
       ]
     },
@@ -1311,6 +1314,10 @@ export const initRoutes = (): RouteObject[] => {
           element: <VectorAdminLogin/>,
         }
       ]
+    },
+    {
+      path: "*",
+      element:< PageNotFound /> 
     }
   ]
 }
