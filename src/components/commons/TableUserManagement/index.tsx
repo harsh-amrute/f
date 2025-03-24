@@ -9,6 +9,7 @@ import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import LoadingSpinner from "../LoadingSpinner";
+import { Tooltip } from 'react-tooltip';
 
 interface TableUser {
   handleClickEdit: any;
@@ -141,24 +142,38 @@ const TableUserManagement = ({
   const ListAction = ({ item }: any) => {
     
     return (
+      <>
       <Tab.SCTableTd>
-        <Tab.SCIcon
-          src="/assets/img/profile/icon_edit.svg"
-          onClick={() => handleClickEdit(item)}
-        />
-        <Tab.SCIcon
-          src="/assets/img/profile/icon_delete.svg"
-          onClick={() => {
-            handleOpenDelete(item.id);
-          }}
-        />
-        <Tab.SCIcon
-          src="/assets/img/profile/icon_lock.svg"
-          onClick={() => {
-            handleResetPwd(item.id);
-          }}
-        />
+        <Tab.SCIconWrapper>
+          <Tab.SCIcon
+            data-tooltip-id="edit"
+            src="/assets/img/profile/icon_edit.svg"
+            onClick={() => handleClickEdit(item)}
+          />
+          <Tooltip id="edit" content={"Edit User"} place="top" />
+        </Tab.SCIconWrapper>
+        <Tab.SCIconWrapper>
+          <Tab.SCIcon
+            data-tooltip-id="delete"
+            src="/assets/img/profile/icon_delete.svg"
+            onClick={() => {
+              handleOpenDelete(item.id);
+            }}
+          />
+          <Tooltip id="delete" content={"Delete User"} />
+        </Tab.SCIconWrapper>
+        <Tab.SCIconWrapper>
+          <Tab.SCIcon
+            data-tooltip-id="reset"
+            src="/assets/img/profile/icon_lock.svg"
+            onClick={() => {
+              handleResetPwd(item.id);
+            }}
+          />
+          <Tooltip id="reset" content={"Reset Password"} />
+        </Tab.SCIconWrapper>
       </Tab.SCTableTd>
+      </>
     );
   };
 
@@ -215,7 +230,7 @@ const TableUserManagement = ({
           </Tab.SCTableTbody>
 
           {dataAllUsers &&
-            dataAllUsers?.filter((userData:any)=> userData.name.toLowerCase().startsWith(searchUserBasedOn.toLocaleLowerCase())).map((item: any) => (
+            dataAllUsers?.filter((userData:any)=> userData.name.toLowerCase().includes(searchUserBasedOn.toLocaleLowerCase())).map((item: any) => (
               <Tab.SCTableTbody key={item?.id}>
                 <Tab.SCTableTrValue>
                   <Tab.SCTableTd>{item?.name}</Tab.SCTableTd>

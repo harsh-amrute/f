@@ -10,6 +10,7 @@ import { useEffect, useState, useRef } from "react";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
 import ReCAPTCHA from "react-google-recaptcha";
 import { SITE_KEY} from "../../../helpers/constants";
+import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
 
 function ChangePasswordContainer() {
   const { t } = useTranslation();
@@ -28,6 +29,7 @@ function ChangePasswordContainer() {
   }, [token, userId])
 
   const form = useForm<{ new_password: string, confirm_password: string, token: string, uid: string }>({
+    mode:"onTouched",
     defaultValues: {
       new_password: '',
       confirm_password: ''
@@ -86,13 +88,25 @@ function ChangePasswordContainer() {
             <SuccessArea>
               <SuccessIcon src="/assets/img/auth/tick-circle.svg" />
               <SuccessText>Password changed successfully.</SuccessText>
-              <SuccessText>Please login again with the new password.</SuccessText>
-              <SCButtonLogin onClick={() => navigate('/login', { replace: true })}>
+              <SuccessText>
+                Please login again with the new password.
+              </SuccessText>
+              <SCButtonLogin
+                onClick={() => navigate("/login", { replace: true })}
+              >
                 <ButtonSubmit>
-                  <ButtonSubmitText>{t("changePasswordPage.loginBtn")}</ButtonSubmitText>
+                  <ButtonSubmitText>
+                    {t("changePasswordPage.loginBtn")}
+                  </ButtonSubmitText>
                   <ArrowArea>
-                    <img src="/assets/img/auth/arrow.svg" className="arrow arrow-in" />
-                    <img src="/assets/img/auth/arrow-hover.svg" className="arrow arrow-out" />
+                    <img
+                      src="/assets/img/auth/arrow.svg"
+                      className="arrow arrow-in"
+                    />
+                    <img
+                      src="/assets/img/auth/arrow-hover.svg"
+                      className="arrow arrow-out"
+                    />
                   </ArrowArea>
                 </ButtonSubmit>
               </SCButtonLogin>
@@ -102,7 +116,10 @@ function ChangePasswordContainer() {
               {/* <LogoArvind src="/assets/img/logoArvind.png" alt="logo" /> */}
               <Tittle>{t("changePasswordPage.title")}</Tittle>
               <FormArea onSubmit={handleSubmit(onSave)}>
-                <InputArea error={errors.new_password}>
+                <InputArea
+                  error={errors.new_password}
+                  errorLength={errors.new_password?.message?.length}
+                >
                   <InputGroup>
                     <img src="/assets/img/auth/password.svg" />
                     <IputLogin
@@ -111,9 +128,17 @@ function ChangePasswordContainer() {
                         required: true,
                         pattern: {
                           value:
-                            // eslint-disable-next-line no-useless-escape
                             /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
                           message: t("changePasswordPage.validate.password"),
+                        },
+                        validate: (value) => {
+                          if (value.includes(" ")) {
+                            return (
+                              t("loginPage.validate.includeSpace") ||
+                              "Password mush not contain spaces."
+                            );
+                          }
+                          return true;
                         },
                       })}
                       placeholder={t("changePasswordPage.placeholder.password")}
@@ -122,7 +147,10 @@ function ChangePasswordContainer() {
                   <Errors errors={errors} name="new_password" />
                 </InputArea>
 
-                <InputArea error={errors.confirm_password}>
+                <InputArea
+                  error={errors.confirm_password}
+                  errorLength={errors.confirm_password?.message?.length}
+                >
                   <InputGroup>
                     <img src="/assets/img/auth/password.svg" />
                     <IputLogin
@@ -131,31 +159,73 @@ function ChangePasswordContainer() {
                         required: true,
                         pattern: {
                           value:
-                            // eslint-disable-next-line no-useless-escape
                             /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
-                          message: t("changePasswordPage.validate.confirmPassword"),
+                          message: t(
+                            "changePasswordPage.validate.confirmPassword"
+                          ),
+                        },
+                        validate: (value) => {
+                          if (value !== getValues("new_password")) {
+                            return (
+                              t(
+                                "changePasswordPage.validate.confirmPassword"
+                              ) || "Passwords must match"
+                            );
+                          }
+                          return true;
                         },
                       })}
-                      placeholder={t("changePasswordPage.placeholder.confirmPassword")}
+                      placeholder={t(
+                        "changePasswordPage.placeholder.confirmPassword"
+                      )}
                     />
                   </InputGroup>
                   <Errors errors={errors} name="confirm_password" />
                 </InputArea>
 
                 <ReCAPTCHA
-                className="recaptcha"
-                ref={recaptchaRef}
-                // sitekey={process.env.REACT_APP_ENV === 'test' ? TEST_SITE_KEY : SITE_KEY}
-                sitekey={SITE_KEY}
+                  className="recaptcha"
+                  ref={recaptchaRef}
+                  // sitekey={process.env.REACT_APP_ENV === 'test' ? TEST_SITE_KEY : SITE_KEY}
+                  sitekey={SITE_KEY}
                 />
 
-                <SCButtonLogin>
+                <SCButtonLogin disabled={loading || Object.keys(errors).length > 0}>
                   <ButtonSubmit>
-                    <ButtonSubmitText>{t("changePasswordPage.submitBtn")}</ButtonSubmitText>
-                    <ArrowArea>
-                      <img src="/assets/img/auth/arrow.svg" className="arrow arrow-in" />
-                      <img src="/assets/img/auth/arrow-hover.svg" className="arrow arrow-out" />
-                    </ArrowArea>
+                    {loading ? (
+                      <>
+                        <ButtonSubmitText>Submitting...</ButtonSubmitText>
+                        <div
+                          style={{
+                            width: "30px",
+                            height: "20px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <VFLoader
+                            styles={{ width: "50px", height: "50px" }}
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <ButtonSubmitText>
+                          {t("changePasswordPage.submitBtn")}
+                        </ButtonSubmitText>
+                        <ArrowArea>
+                          <img
+                            src="/assets/img/auth/arrow.svg"
+                            className="arrow arrow-in"
+                          />
+                          <img
+                            src="/assets/img/auth/arrow-hover.svg"
+                            className="arrow arrow-out"
+                          />
+                        </ArrowArea>
+                      </>
+                    )}
                   </ButtonSubmit>
                 </SCButtonLogin>
               </FormArea>
@@ -167,8 +237,14 @@ function ChangePasswordContainer() {
         <ContainerLeft>
           <CircleForgotPassword />
           <LogoAreaForgotPsw>
-            <img src="/assets/img/auth/forgot-left.png" className="icon-head left-icon" />
-            <img src="/assets/img/auth/forgot-right.png" className="icon-head right-icon" />
+            <img
+              src="/assets/img/auth/forgot-left.png"
+              className="icon-head left-icon"
+            />
+            <img
+              src="/assets/img/auth/forgot-right.png"
+              className="icon-head right-icon"
+            />
             <WelcomeBoard />
           </LogoAreaForgotPsw>
         </ContainerLeft>

@@ -190,8 +190,8 @@ export const FormArea: any = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   .recaptcha {
+    padding-top: 0.4vh;
     margin: 4vh 0 0 0;
   }
 `;
@@ -220,7 +220,7 @@ export const ArrowArea: any = styled.div`
   align-items: center;
 `;
 
-export const InputArea: any = styled.div<{ error: true | false }>`
+export const InputArea: any = styled.div<{ error: true | false , errorLength: number }>`
   border: ${(props) => (props.error ? "2px solid red" : "none")};
   margin-top: 6vh;
   background: transparent linear-gradient(278deg, #f2f3f6 0%, #e5e6ec 100%) 0%
@@ -229,11 +229,8 @@ export const InputArea: any = styled.div<{ error: true | false }>`
   border-radius: 40px;
   width: 28vw;
   height: 8vh;
-
-  p {
-    display: block;
-    position: fixed;
-  }
+  margin-bottom: ${({error,errorLength})=> ( (error && errorLength > 50)? "2.5vh" : error ?  "0.3vh" : '0px')};
+  
 `;
 
 export const InputGroup: any = styled.div`
