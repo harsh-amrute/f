@@ -16,7 +16,7 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
     const [isSubGridOpen, toggleSubGrid] = useState<any>(true);
 
     const [colDefs, setColDefs] = useState<any>([]);
-    const {gridColDefs} = useContext(GridStateContext);
+    const {gridColDefs, setGlobalColDef} = useContext(GridStateContext);
 
     const customCellRenderers = useMemo(() => ({
         grapCellRenderer: BPRGraphCellRenderer,
@@ -177,6 +177,7 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
         if(gridColDefs!==null){
             const cols =  getColumnDefinationsMTA(gridColDefs,CustomHeader)
             setColDefs(cols);
+            setGlobalColDef(cols);
         } 
     },[gridColDefs])
 

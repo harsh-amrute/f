@@ -1,4 +1,4 @@
-import React,{useCallback} from 'react'
+import React,{useCallback, useState} from 'react'
 
 import {DayPicker} from 'react-day-picker'
 import { Player } from '@lottiefiles/react-lottie-player'
@@ -19,7 +19,7 @@ import './styles.css'
 import { AgCharts } from 'ag-charts-react'
 import ActionToolBar from '../../SupplyChainIntelligenceHub/Planning/ActionToolBar'
 import ExpandedGraph from './ReseachInsightsExpandedGraph'
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination'
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import { GridStateContext } from '../../../../../context/GridStateContext'
 import DailyDataGraphModal from "../../../../../components/VectorFLOW/commons/DailyDataGraphModal"
 import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons/NormChangeHistoryTable"
@@ -91,7 +91,10 @@ const ResearchInsights = ()=>{
     } = useResearchInsights()
 
     const {user} = useUserData()
-    const themeUi = user.user.theme_ui
+    const themeUi = user.user.theme_ui   
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    
+
 
     const getFormattedPercentage = useCallback((number: number) => {
         if (number === 0) return "0"; 
@@ -168,6 +171,14 @@ const ResearchInsights = ()=>{
                                 ],
                             }}
                             maintainColumnOrder
+                            onFilterChanged={() => {
+                                const filterModel = ref?.current?.api?.getFilterModel();
+                                if (filterModel && Object.keys(filterModel).length > 0) {
+                                  setIsDisabled(false);
+                                } else {
+                                  setIsDisabled(true);
+                                }
+                            }}
                             
                         />
                         <VFPagination
@@ -176,6 +187,8 @@ const ResearchInsights = ()=>{
                             currentPage={currGridPage}
                             rowsPerPage={rowsPerPage}
                             handleChangePage={handlePageChange}
+                            resetGridRef={ref} 
+                            isDisabled={isDisabled}
                         />
                     </React.Fragment>
                 
@@ -199,7 +212,7 @@ const ResearchInsights = ()=>{
                 :
                 <AvailabilityTrendWrapper>
                 <AvailabilityTrendHeader themeUi={themeUi}>
-                    Availability Trend
+                   On Hand Availability Trend
                 </AvailabilityTrendHeader>
                 <AvailabilityTrendSection style={{borderBottom:'dashed 2px #B2B2B2'}}>
                     <HistoricalAvailabiltyHeader>

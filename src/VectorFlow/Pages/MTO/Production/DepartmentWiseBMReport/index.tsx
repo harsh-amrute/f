@@ -391,7 +391,7 @@ const DptWiseBMReport = () => {
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
-                maxWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : undefined,
+                minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
                 pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
@@ -940,12 +940,12 @@ const DptWiseBMReport = () => {
                 applyOrder: true
             });
             const applyPivot = refGraph1.current?.api.setGridOption('pivotMode', isPivot);
-            
+            refGraph1.current.api.autoSizeAllColumns()
             if (!result || !applyPivot) {
                 console.error('Failed to apply column state');
             }
         }
-    }, [columnState]);
+    }, [columnState,refGraph1,refGraph1.current]);
   
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 

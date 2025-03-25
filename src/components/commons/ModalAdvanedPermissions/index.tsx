@@ -47,6 +47,9 @@ const ModalAdvanedPermissions = (props: any) => {
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
   const { mutateAsync: mutateRegister } = useRegisterUser();
   const { mutateAsync: mutatePutEditUser } = usePutEditUser();  
+  const [prevPrdSelectedAll,setPrevPrdSelectedAll] = useState<boolean>()
+  const [prevLcSelectedAll,setPrevLcSelectedAll] = useState<boolean>()
+
   const backModalUser = () => {
  
     //Reset Current Application Permissions
@@ -62,6 +65,14 @@ const ModalAdvanedPermissions = (props: any) => {
       })])
     }
     
+    if(prevPrdSelectedAll){
+      prdPermissionRef.current?.setIsUnSelected(prevPrdSelectedAll)
+    }
+
+    if(prevLcSelectedAll){
+      lcPermissionRef.current?.setIsUnSelected(prevLcSelectedAll)
+    }
+
     if(getActiveApplicationIndex() <= 0){
       setIsOpenUser(true);
       setIsOpenAdvanced(false);
@@ -283,7 +294,6 @@ const ModalAdvanedPermissions = (props: any) => {
     // }
   };
 
-  
   const saveAndGoToNext = () => {
     const storePermissionCopy = [...storePermission]
     const currentPermission:any = storePermissionCopy.find((app:any)=>app.application_id === activeApplication);
@@ -291,7 +301,6 @@ const ModalAdvanedPermissions = (props: any) => {
     const currentLocationPermission = lcPermissionRef.current?.getLcPermissionValue();
 
 
-    console.log("currentPermissions ,,,,,,,,,,,,,,,,", currentPermission);
 
     if(currentProductPermission.brand === undefined || currentLocationPermission.lcRegion === undefined) return notifyError(
       t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
@@ -303,6 +312,13 @@ const ModalAdvanedPermissions = (props: any) => {
       currentPermission.locationPermission = currentLocationPermission;
       setStorePermission(storePermissionCopy)
     }
+    
+    setPrevPrdSelectedAll(prdPermissionRef.current?.isUnSelected)
+    setPrevLcSelectedAll(lcPermissionRef.current?.isUnSelected)
+    prdPermissionRef.current?.setIsUnSelected(false);
+    lcPermissionRef.current?.setIsUnSelected(false)
+
+
     
     const newApplicationId = storePermission[getActiveApplicationIndex()+1].application_id;
     setStepperDetails([...stepperDetails.map((step:any)=>{

@@ -123,7 +123,6 @@ const MTOActionToolBar = ({
 
 }: MTOActionToolBarProps) => {
 
-
     const handleRemoveFilter = (category: string, name: string) => {
         if (removeFilters) {
             removeFilters(category, name);

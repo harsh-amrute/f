@@ -122,7 +122,7 @@ const useBufferTrends = () => {
 
      setCurrentTab(tab.value);
      updateGraphState(1,"pen",{label:'Absolute',value:'Absolute'})
-     setHorizondays(30);
+    //  setHorizondays(30);
     
    } 
 

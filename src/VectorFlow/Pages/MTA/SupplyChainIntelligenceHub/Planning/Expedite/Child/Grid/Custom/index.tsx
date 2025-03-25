@@ -21,7 +21,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
 
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
-    const {ref,gridColDefs} = useContext(GridStateContext)
+    const {ref,gridColDefs, setGlobalColDef} = useContext(GridStateContext);
     const [gridState,setGridState] = useState<GridState>()
 
     const chunkSize = 10000;
@@ -68,6 +68,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     useEffect(()=>{
         if(ref?.current && gridState && gridState?.columns.length>0){
             ref?.current?.api.applyColumnState({state:gridState.columns, applyOrder:true})
+            ref?.current?.api?.sizeColumnsToFit();
             ref?.current?.api.setGridOption('pivotMode',gridState.pivot)
         }
     },[gridState,ref])
@@ -100,6 +101,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
                 }
                 // setColDefs(mapUIConfigToColdefs(uiconfig));
                 setColDefs(getColumnDefinationsMTA(gridColDefs))
+                setGlobalColDef(getColumnDefinationsMTA(gridColDefs));
                 toast.dismiss(toastId);
            
                 notifySuccess(`Data Fetched Successfully`);
@@ -122,7 +124,7 @@ const ExpediteChildCustomCharts = ({recordCount}:{recordCount:any}) => {
     
     return(
         <>
-        <SCDynamicContainer className="ag-theme-planning-custom" style={{height:'100%'}}>
+        <SCDynamicContainer style={{height:'100%'}}>
             <VFTable
                 ref={ref}
                 columnDefs={colDefs}

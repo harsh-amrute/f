@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
+import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
 
 
 interface ManageUsersProps{
@@ -64,12 +65,15 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const { mutateAsync : usegetHeaderData } = useGetHeadersData();
   const [headers , setHeaders] = useState<any>();
 
+  const [searchUserBasedOn, setSearchUserBasedOn] = useState("");
+  
+  
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
   });
-
-
+  
+  
   const getHeaderDatafunct = async() =>{
     const reponse = await usegetHeaderData();
     setHeaders(reponse.data);
@@ -86,6 +90,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const [allPermissions,setAllPermissions] = useState<any>([]);
   const [storePermission,setStorePermission] = useState([]);
   const [currentItem,setCurrentItem] = useState();
+  const [isEditUser,setIsEditUser] = useState<boolean | undefined>()
   
   //Follwing Function Updates All Permissions according to current active Application/Application Id provided
   const updateAllPermissions = (applicationId:number) => {
@@ -106,6 +111,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       buttonSubmit: "Add User",
     });
     setIsOpenUser(true);
+    setIsEditUser(false)
   };
 
   const onCloseModal = () => {
@@ -155,10 +161,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     };
   };
 
-  useEffect(()=>{
-    console.log("data....store...permissions.", storePermission);
-  },[storePermission])
-
   const fillAdvancedPermissionsModalData = (item?:any)=>{
     //Application Ids with valid Selected Roles
     const validApplications:Array<number> = [];
@@ -169,7 +171,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
     if(contentModal.callApi === 1){
       
-      console.log("dataAllPermissions", dataAllPermissions);
       const fillStepperDetails = dataAllPermissions.map((app:any,index:number)=>validApplications.includes(app.application_id) ? ({
         label:app.application_name,
         id:app.application_id,
@@ -313,8 +314,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
 
   const handleClickEdit = (item: any) => {
-    setCurrentItem(item);
-
+    setCurrentItem(item)
+    setIsEditUser(true)
     const roles = item.role_id.map((role: any) => role.id);
 
     setInfoUser({
@@ -333,6 +334,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setIsOpenUser(true);
   };
 
+  
+
   return (
     <>
       <SCProfileOverView>
@@ -342,6 +345,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
               {t("profile.tabContent.manageUsers.title")}
             </SCSubTitleSpan>
             <SCSubTitlePadItem>
+                <SearchInputManageUser searchUserBasedOn={searchUserBasedOn} setSearchUserBasedOn={setSearchUserBasedOn} />
+              
               <SCItemBtn>
                 <ButtonFloat
                   text={t("profile.tabContent.manageUsers.button.addNewUser")}
@@ -349,7 +354,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                   icon="/assets/img/profile/icon_plus.svg"
                 />
               </SCItemBtn>
-              <SCItemBtn>
+              {/* <SCItemBtn>
                 <ButtonOutlineIcon
                   text={t("profile.tabContent.manageUsers.button.bulkUpload")}
                   icon={`/assets/img/profile/${
@@ -359,7 +364,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                   }.svg`}
                   disabled={true}
                 />
-              </SCItemBtn>
+              </SCItemBtn> */}
             </SCSubTitlePadItem>
           </SCSubTitlePad>
         </SCSubTitleBox>
@@ -373,6 +378,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             refetch={refetch}
             is_admin={is_admin}
             permission={permission}
+            searchUserBasedOn={searchUserBasedOn}
           />
         )}
       </SCProfileOverView>
@@ -401,6 +407,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         setListRoles={setListRoles}
         fillAdvancedPermissionsModalData={fillAdvancedPermissionsModalData}
         currentItem={currentItem}
+        isEditUser={isEditUser}
+        setIsEditUser={setIsEditUser}
       />
 
       <ModalAdvanedPermissions

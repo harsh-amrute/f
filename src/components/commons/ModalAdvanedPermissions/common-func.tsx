@@ -19,7 +19,9 @@ export const formDataPermission = ({
             if (grandChild?.length > 0) {
               for (const eleGrandChild of grandChild) {
 
-                if (eleGrandChild.value.includes(eleChild.value)) {
+                const splitValue = eleGrandChild.value.split(" > ").slice(0, 3);
+                const exactMatchValue = splitValue[0] + " > " + splitValue[1];
+                if (exactMatchValue === eleChild.value) {
                   const dataGrandChild = eleGrandChild.value.split(" > ");
                   formData = {
                     [keyParent]: eleParent.value,
@@ -129,8 +131,10 @@ export const handleSelectChild = ({
 
     if (grandChild?.length > 0) {
       for (const eleGrandChild of grandChild) {
-        if (eleGrandChild.value.includes(eleChild.value)) {
-          valueGrandChild.push(eleGrandChild);
+        const splitValue = eleGrandChild.value.split(" > ").slice(0, 3);
+        const exactMatchValue = splitValue[0] + " > " + splitValue[1];
+        if (exactMatchValue === eleChild.value) {
+          valueGrandChild.push(eleGrandChild);  
         }
       }
     }

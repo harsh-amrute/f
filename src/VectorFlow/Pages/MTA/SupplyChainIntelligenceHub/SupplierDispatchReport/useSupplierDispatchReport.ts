@@ -138,6 +138,7 @@ const useSupplierDispatchReport= ()=>{
     useEffect(()=>{
         if(internalRef && gridState && gridState.columns){
             internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
+            internalRef?.api.sizeColumnsToFit();
         }
     },[internalRef,gridState])
 

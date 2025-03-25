@@ -10,7 +10,7 @@ export default forwardRef(({ ...props }: any, ref) => {
     handleSelectParent,
     handleSelectChild,
     handleSelectGrandChild,
-    headers
+    headers,
   } = props;
 
   const [listLcRegion, setListLcRegion] = useState<any>([]);
@@ -20,6 +20,8 @@ export default forwardRef(({ ...props }: any, ref) => {
   const [lcRegion, setLcRegion] = useState<any>([]); 
   const [lcType, setLcType] = useState<any>([]);
   const [lcCluster, setLcCluster] = useState<any>([]);
+
+  const [isUnSelected,setIsUnSelected] = useState<boolean>(false)
 
   useEffect(() => {
     const newListLcRegion: any = [];
@@ -107,6 +109,7 @@ export default forwardRef(({ ...props }: any, ref) => {
   };
   const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) =>{
     const check = event.target.checked;
+    setIsUnSelected((prev)=> !prev)
     if(check){
       setLcType(listLcType)
       setLcRegion(listLcRegion)
@@ -125,6 +128,8 @@ export default forwardRef(({ ...props }: any, ref) => {
     removeLcPermissionValue() {
       removeLcPermissionValue();
     },
+    setIsUnSelected,
+    isUnSelected,
   }));
 
   const removeLcPermissionValue = () => {
@@ -150,6 +155,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       setValue: setLcRegion,
       handleAction: handleSelectLcRegion,
       disabled: false,
+      setIsUnSelected: setIsUnSelected
     },
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L2 || '',
@@ -161,22 +167,26 @@ export default forwardRef(({ ...props }: any, ref) => {
       setValue: setLcType,
       handleAction: handleSelectLcType,
       disabled: lcRegion.length === 0, 
+      setIsUnSelected: setIsUnSelected
     },
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L3 || '',
       placeholder: "", 
       options: lcType.length === 0 ? [] : (() => {    
         const currentLcTypeValues = lcType.map((type:any) => type.value); 
-          const filteredClusters = listLcCluster.filter((cluster: any) => {
-          return currentLcTypeValues.some((lcTypeValue:any) => cluster.value.startsWith(lcTypeValue));
+        const filteredClusters = listLcCluster.filter((cluster: any) => {
+          const splitValue = cluster.value.split(" > ").slice(0, 3);
+          const exactMatchValue = splitValue[0] + " > " + splitValue[1];
+          return currentLcTypeValues.includes(exactMatchValue);
         });    
-    
         return filteredClusters;
       })(),
       value: lcCluster,
       setValue: setLcCluster,
       handleAction: handleSelectLcCluster,
       disabled: lcType.length === 0, 
+      setIsUnSelected: setIsUnSelected
+
     }
 
    
@@ -214,6 +224,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       )}
       prdPermissions={updatedPermissions}
       onSelectAll={onSelectAll}
+      isUnSelected={isUnSelected}
     />
   );
 });

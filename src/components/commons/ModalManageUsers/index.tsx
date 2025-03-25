@@ -17,6 +17,8 @@ interface ModalProps {
   setListRoles: any;
   fillAdvancedPermissionsModalData:any,
   currentItem:any
+  isEditUser?:any
+  setIsEditUser?:any
 }
 
 const ModalManageUsers = ({
@@ -29,13 +31,16 @@ const ModalManageUsers = ({
   listRoles,
   setListRoles,
   fillAdvancedPermissionsModalData,
-  currentItem
+  currentItem,
+  isEditUser,
+  setIsEditUser,
 }: ModalProps) => {
   const { t } = useTranslation();
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
   
   const form = useForm<any>({
+    mode: "onChange",
     values: {
       username: infoUser.name,
       email_id: infoUser.email,
@@ -50,12 +55,14 @@ const ModalManageUsers = ({
     formState: { errors },
   } = form;
 
-  const handleFormreset = ()=>{
-    reset({
-      username: "",
-      email_id: "",
-      password: "",
-    });
+  const handleFormreset = (isEditUser = false)=>{
+    if(!isEditUser){
+      reset({
+        username: "",
+        email_id: "",
+        password: "",
+      });
+    }
     closeModal();
   }
 
@@ -66,7 +73,7 @@ const ModalManageUsers = ({
       //   notifyError("Password Cannot Be Empty !")
       //   return 
       // }
-      if (infoUser.edit===false && value.password.length > 0) {
+      if (infoUser.edit===false && value.password.length > 0 && value.password.trim() === value.password) {
         setInfoUser({
           ...infoUser,
           name: value.username,
@@ -79,7 +86,8 @@ const ModalManageUsers = ({
     
       fillAdvancedPermissionsModalData(currentItem);
       setIsOpenAdvanced(true);
-      handleFormreset();
+      setIsEditUser(true)
+      closeModal()
     } else {
       notifyError(
         t("profile.tabContent.manageUsers.notifyError.pleaseSelectRole")
@@ -87,11 +95,13 @@ const ModalManageUsers = ({
     }
   };
 
+ 
+
   return (
     <>
       {
-        <Transition appear show={openModal} as={Fragment}>
-          <Dialog style={{zoom: 0.9}} as="div" className="modal-box" onClose={handleFormreset}>
+        <Transition  appear show={openModal} as={Fragment}>
+          <Dialog style={{zoom: 0.9}} as="div" className="modal-box" onClose={()=>{handleFormreset(isEditUser)}}>
             <Transition.Child
               as={Fragment}
               enter="transition"
@@ -125,7 +135,7 @@ const ModalManageUsers = ({
                         />
                         {contentModal?.title}
                       </span>
-                      <span onClick={handleFormreset} className="close-forced">
+                      <span onClick={()=>{handleFormreset(isEditUser)}} className="close-forced">
                         x
                       </span>
                     </Dialog.Title>
@@ -149,18 +159,17 @@ const ModalManageUsers = ({
                             {...register("username", {
                               required: true,
                               minLength: {
-                                value: 4,
-                                message: "The username must be more than 4 characters",
+                              value: 4,
+                              message: "The username must be more than 4 characters",
                               },
                               maxLength: {
-                                value: 15,
-                                message: "The username must be less than 15 characters",
+                              value: 15,
+                              message: "The username must be less than 15 characters",
                               },
                               pattern: {
-                                value:
-                                  // eslint-disable-next-line no-useless-escape
-                                  /^(?=.*[a-zA-Z])[^@.\s-]*$/,
-                                message: "The username must contain at least one alphabetical character and  cannot contain @, ., spaces, or -.",
+                              value:
+                                /^[a-zA-Z0-9_]+$/,
+                              message: "The username should only contain letters, numbers, and underscores (_).",
                               },
                             })}
                             disabled={infoUser.edit}
@@ -185,7 +194,7 @@ const ModalManageUsers = ({
                               pattern: {
                                 value: 
                                 // eslint-disable-next-line no-useless-escape
-                                /^[a-zA-Z0-9][a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|org|co\.in|in)$/, 
+                                /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/, 
                                 message: t("loginPage.validate.email"),
                               },
                               maxLength: {
@@ -204,56 +213,63 @@ const ModalManageUsers = ({
                         </div>
 
                         {infoUser.edit === false && (
-                          <div className="modal-Per-input--box">
+                            <div className="modal-Per-input--box">
                             <label
                               htmlFor="password"
                               className="modal-Per-label"
                             >
                               {t(
-                                "profile.tabContent.manageUsers.modal.password"
+                              "profile.tabContent.manageUsers.modal.password"
                               )}
                             </label>
                             <input
                               id="password"
                               type="password"
                               placeholder={
-                                contentModal.callApi === 2 ? "***********" : ""
+                              contentModal.callApi === 2 ? "***********" : ""
                               }
                               className={`modal-Per-input ${
-                                errors.password != null
-                                  ? "modal-input--error"
-                                  : ""
+                              errors.password != null
+                                ? "modal-input--error"
+                                : ""
                               }`}
                               {...register("password", {
-                                required: {
-                                  value: !infoUser.edit,
-                                  message: t(
-                                    "profile.tabContent.manageUsers.validate.passwordRequired"
-                                  ),
-                                },
-                                minLength: {
-                                  value: 8,
-                                  message: t("loginPage.validate.password"),
-                                },
-                                maxLength: {
-                                  value: 15,
-                                  message: t(
-                                    "loginPage.validate.passwordMaxLength"
-                                  ),
-                                },
-                                pattern: {
-                                  value:
-                                    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
-                                  message: t(
-                                    "profile.tabContent.manageUsers.validate.formatPassword"
-                                  ),
-                                },
+                              required: {
+                                value: !infoUser.edit,
+                                message: t(
+                                "profile.tabContent.manageUsers.validate.passwordRequired"
+                                ),
+                              },
+                              minLength: {
+                                value: 8,
+                                message: t("loginPage.validate.password"),
+                              },
+                              maxLength: {
+                                value: 15,
+                                message: t(
+                                "loginPage.validate.passwordMaxLength"
+                                ),
+                              },
+                              pattern: {
+                                value:
+                                  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{}[\]|;:'",.<>/?])(?=.*[a-zA-Z]).{8,}$/,
+                                message: t(
+                                  "profile.tabContent.manageUsers.validate.formatPassword"
+                                ),
+                              },
+                              validate: (value) => {
+                                if (value.startsWith(" ") || value.endsWith(" ")) {
+                                  return t("loginPage.validate.includeSpace" ) || "Password should not start or end with a space.";
+                                }
+                                return true;
+                              }
+                              
                               })}
                             />
                             {errors.password != null && (
                               <Errors errors={errors} name="password" />
                             )}
-                          </div>
+                            </div>
                         )}
                       </div>
 
@@ -273,13 +289,13 @@ const ModalManageUsers = ({
                       </div>
 
                       <div className="modal-bottom">
-                        <button type="submit" className={"btn_submit " + themeUi}>
+                        <button type="submit"  className={"btn_submit " + themeUi}>
                           {t("profile.tabContent.manageUsers.button.nextBtn")}
                         </button>
                         <button
                           type="button"
                           className="btn_cancel"
-                          onClick={handleFormreset}
+                          onClick={()=>{handleFormreset(isEditUser)}}
                         >
                           {t("profile.tabContent.manageUsers.button.cancel")}
                         </button>

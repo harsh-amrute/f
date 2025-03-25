@@ -10,8 +10,9 @@ import NormChangeHistoryTable from "../../../../../components/VectorFLOW/commons
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable';
 import VFLoader from '../../../../../components/VectorFLOW/commons/VFLoader';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
+import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 
 const Planning = () => {
   interface DataItem {
@@ -52,7 +53,11 @@ const Planning = () => {
         setCurrentFilter,
         onDeleteFilter,
         isDataLoading,
-        gridColDefs
+        gridColDefs,
+        initialPlanningCount,
+        globalColDef,
+        setGlobalColDef,
+        lastRunDate,
     } = usePlanning();
 
     function parseFloatAllNumericStrings(data: DataItem[]) {
@@ -97,13 +102,14 @@ const Planning = () => {
     if(isDataLoading){
         return <VFLoader/>
     }
-
-
+  
 
     return(
         <GridStateContext.Provider value={{
             ref:ref,
             gridColDefs,
+            globalColDef,
+            setGlobalColDef,
             exportExcelColumns:exportExcelColumns,
             setExportExcelColumns:setExportExcelColumns,
             tempDownloadData:tempDownloadData,
@@ -126,12 +132,12 @@ const Planning = () => {
                 isSelectCategoryOpen && 
                 <div style={{zoom:'var(--default-zoom)'}}>
                     <SelectCategory
-                        childMonitorCount={planningCounts.childMonitorCount}
-                        parentMonitorCount={planningCounts.parentMonitorCount}
-                        childExpediteCount={planningCounts.childExpediteCount}
-                        parentExpediteCount={planningCounts.parentExpediteCount}
-                        reviewOrderFulfillmentCount={planningCounts.reviewOrderFulfillmentCount}
-                        reviewExcessInventoryCount={planningCounts.reviewExcessInventoryCount}
+                        childMonitorCount={initialPlanningCount?.childMonitorCount}
+                        parentMonitorCount={initialPlanningCount?.parentMonitorCount}
+                        childExpediteCount={initialPlanningCount?.childExpediteCount}
+                        parentExpediteCount={initialPlanningCount?.parentExpediteCount}
+                        reviewOrderFulfillmentCount={initialPlanningCount?.reviewOrderFulfillmentCount}
+                        reviewExcessInventoryCount={initialPlanningCount?.reviewExcessInventoryCount}
                         onMonitorChildClick={()=>handlePlanningQuadrantClick('GITToChild')}
                         onMonitorParentClick={()=>handlePlanningQuadrantClick('GITFromParent')}
                         onExpediteChildClick={()=>handlePlanningQuadrantClick('ExpediteToChild')}
@@ -141,8 +147,7 @@ const Planning = () => {
                         multiFilter={currentFilter}
                         setMultiFilter={setCurrentFilter}
                         onDelete={onDeleteFilter}
-                        onApplyFilter={onApplyFilter}
-                    />
+                        onApplyFilter={onApplyFilter}/>
                 </div>
             }
             {
@@ -169,6 +174,9 @@ const Planning = () => {
                         isPlanning
                         />
                 </div>  
+            {lastRunDate && (
+              <LastRunDateComponent lastRunDate={lastRunDate} />
+            )}
                     
                     {renderView()}
                 </>
@@ -182,7 +190,7 @@ const Planning = () => {
             <div style={{display:'none'}}>                
                   <VFTable
                     ref={tempRef}
-                    columnDefs={gridColDefs}
+                    columnDefs={globalColDef}
                     rowData={exportExcelRowData}
                     {...tempAgGridProps}
                   />

@@ -38,7 +38,8 @@ export interface VFTaskBarProps{
     masterId:number,
     isSavingToDraft:boolean,
     DataCount?:number,
-    onDiscardDraftCallback?:()=>void
+    onDiscardDraftCallback?:()=>void,
+    showExportErrors?:boolean
 }
 
 
@@ -65,6 +66,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onEditOnlineSave,
         onSaveToDraft,
         onDeleteSelected,
+        onDeleteOnlineSubmit,
         onSeasonalityResume,
         onSeasonalityStop,
         onDeleteOnline,
@@ -75,7 +77,8 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         onPhaseInPhaseOutStop,
         masterId,
         DataCount,
-        onDiscardDraftCallback
+        onDiscardDraftCallback,
+        showExportErrors
     } = props
 
     const {user,isSideBarOpen} = useUserData()
@@ -351,21 +354,17 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
             return(
                 <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
                     <div style={{display:'flex', gap:'20px'}}>
-                    <BackButton/>
-                    {showSubmittedExportError ? (
-                         <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
-                                Export Errors
-                        </VFButton>
-                    ):
-                        <div style={{width:'100%'}}/>
-                    }
+                    <BackButton/>  
+                    {showExportErrors && 
+                     <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false}  width={183}>
+                     Export Errors
+                    </VFButton> 
+                    } 
                     </div>
-                    <div >
-                    
-                        
-                        <VFStepper
-                            items={getStepperState()}
-                        />
+                    <div > 
+                    <VFStepper
+                        items={getStepperState()}
+                    />
                     </div>
 
                 </TaskBarContainer>
@@ -566,7 +565,13 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
         //     )
          case "deleteOnlineSubmitted":
             return(
-                <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'flex-end'}}>
+                <TaskBarContainer data-testid="taskbar" style={{width:width}}>
+                    <VFTaskBarButtonGroup>
+                    <BackButton/>
+                    <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
+                                Export Errors
+                    </VFButton>
+                    </VFTaskBarButtonGroup>
                     <div>
                         <VFStepper
                             items={getStepperState()}

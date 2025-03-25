@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
+import { type DailyDataGraph } from "../../../../types/MTA";
 
 
 import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/commons/VFFloatingTab"
@@ -20,11 +21,12 @@ import TagsCellRenderer from "./TagsCellRenderer"
 import AvailabilityToolTip from "./AvailabilityToolTip"
 import CategoryToolTip from "./CategoryToolTip"
 import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers"
-import VFPagination, { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination"
+import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination"
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import CustomVFTable from "./CustomVFTable"
 import { notifyError, notifyLoader } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
-
+import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
 import { useUserData } from "../../../../../context"
 import { BPRFilterState } from "../../../../../VectorFlow/types/BPR"
@@ -32,14 +34,25 @@ import { BTRCategoryTextToNumberMapper } from "../../../../../helpers/BPRConstan
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 
 import _ from 'lodash'
+import { useGetDailyData } from "../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR"
+import { useSelector,useDispatch } from "react-redux";
+import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer";
+import type { RootState } from '../../../../../redux/store/store';
+
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
 import { format } from "date-fns"
 import { useGetState } from "../../../../Services/MTA/Common/UserUIConfig"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
+import BTRColorCellRenderer from "./BTRColorCellRenderer";
 
 const useBTR = () => {
 
+     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
+        const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
+        const dailyData = useSelector((state:RootState) => state.mta.dailyData);
+
+    const {mutateAsync:getDailyData} = useGetDailyData();
 
     const ecoRef = useRef<GridRef>();
     const techRef = useRef<GridRef>();
@@ -65,6 +78,8 @@ const useBTR = () => {
     ]
 
     const { user } = useUserData()
+     const dispatch = useDispatch();
+
 
     const themeUi = user.user.theme_ui
 
@@ -109,6 +124,8 @@ const useBTR = () => {
     const [ecoGridState, setEcoGridState] = useState<any>();
     const [techMasterUIConfig, setTechMasterUIConfig] = useState<any>([]);
     const [ecoMasterUIConfig, setEcoMasterUIConfig] = useState<any>([]);
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+
 
     const techPaginationProps: VFPaginationProps = {
         selectedRows: 0,
@@ -154,6 +171,19 @@ const useBTR = () => {
         return {
             getMainMenuItems: MainMenuItemsCustomization,
             gridOptions: {
+                components: {
+                    grapCellRenderer: BPRGraphCellRenderer,
+                    graphCellRenderer: SeasonalityGraphCellRenderer,
+                    categoryCellRenderer: CategoryCellRenderer,
+                    categoryToolTip: CategoryToolTip,
+                    availabilityCellRenderer: AvailabilityCellRenderer,
+                    colorCellRenderer: BTRColorCellRenderer,
+                    tagsCellRenderer: TagsCellRenderer,
+                    availabilityToolTip: AvailabilityToolTip,
+                    // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
+
+
+                },
                 getRowStyle: (params: any) => {
                     if (params.node.rowIndex % 2 === 0) {
                         return { background: "#EBEBEB" };
@@ -162,16 +192,6 @@ const useBTR = () => {
                 },
             },
             rowHeight: 25,
-            components: {
-                graphCellRenderer: SeasonalityGraphCellRenderer,
-                categoryCellRenderer: CategoryCellRenderer,
-                categoryToolTip: CategoryToolTip,
-                availabilityCellRenderer: AvailabilityCellRenderer,
-                colorCellRenderer: ColorCellRenderer,
-                tagsCellRenderer: TagsCellRenderer,
-                availabilityToolTip: AvailabilityToolTip,
-                // paginationPageSize:parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100'),
-            },
             defaultColDef: defaultColDef,
         }
     }, [])
@@ -257,6 +277,7 @@ const useBTR = () => {
         const loaderId = notifyLoader("Loading data")
         try {
             const data = await getBTRData(payload)
+            console.log("data::",data) // to see the large btr data in console
             setEcoRowData(mapBTRRowData(data.data.data.eco, horizon))
             setTechRowData(mapBTRRowData(data.data.data.tech, horizon))
             setDateLabels(data.data.data.labels[0])
@@ -351,8 +372,44 @@ const useBTR = () => {
             return [];
         }
     };
+
+    const onOpenDailyDataGraph = async (params:any) => {
+        console.log(params,"params")
+            const payload:any = {
+                SKUCode:params.data['SKUCode'],
+                WHCode:params.data['WhCode']
+            }
+            const result = await getDailyData(payload)
+            const data = result.data.data[0];
+            const dailyData:DailyDataGraph = {
+                rowData:params.data,
+                chartData:data['StockData'],
+                normChangeData:data['NormChangeHistoryData'],
+                masterData:data['MasterData']?.[0],
+                suggestionData:data['SuggestionHistoryData'] ? data['SuggestionHistoryData'] : [],
+                monitoringData:data['MonitoringData']
+            }
+
+            console.log("dailyDataaa",dailyData);
+
+            dispatch(UPDATE_DAILY_DATA(dailyData));
+            dispatch(TOGGLE_GRAPH_MODAL(true));
+        }
+
     
     const CustomHeader = {
+        dailydatagraph: {
+            width: 45,
+            minWidth: 45,
+            filter: false,
+            cellRenderer: 'grapCellRenderer',
+            cellRendererParams: { onOpenDailyDataGraph: onOpenDailyDataGraph },
+            lockPosition: true,
+            resizable: false,
+            floatingFilter: false,
+            suppressColumnsToolPanel: false,
+            pinned: 'left',
+        },
         Category: {
             cellRenderer: 'categoryCellRenderer',
             tooltipField: "Category",
@@ -398,7 +455,7 @@ const useBTR = () => {
                 }
                 return colDef
             })
-            const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
+            const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D') || r.colId === 'DailyDataGraph') || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
             return result;
         } else return [];
     }, [techRowData, currentTab, verticalView, dateLabels]);
@@ -407,7 +464,7 @@ const useBTR = () => {
         if (initialColumnState) {
             let colDefs;
             if (verticalView && currentTab.id === "1") {
-                const removeCols = ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn"];
+                const removeCols = ['Category', "LocationName", "Norm", "SKUCode", "SKUDescription", "Tags", "VirtualNorm", "RN", "pc", "pn","WhCode"];
                 colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras(), removeCols);
             } else {
                 colDefs = getColumnDefinationsMTA(initialColumnState, CustomHeader, Extras());
@@ -421,7 +478,6 @@ const useBTR = () => {
                 return colDef
             })
             const result = colDefs.filter((r: any) => (!r.colId?.startsWith('D')) || (r.colId.startsWith('D') && parseInt(r.colId.slice(1)) > 90 - horizon))
-
             return result;
         } else return [];
     }, [ecoRowData, dateLabels, verticalView, currentTab]);
@@ -447,6 +503,7 @@ const useBTR = () => {
     useEffect(() => {
         if (techInternalRef && techGridState && techGridState.columns) {
             const result = techInternalRef?.api.applyColumnState({ state: techGridState.columns, applyOrder: true });
+            techInternalRef.api.sizeColumnsToFit();  
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
@@ -456,6 +513,7 @@ const useBTR = () => {
     useEffect(() => {
         if (ecoInternalRef && ecoGridState && ecoGridState.columns) {
             const result = ecoInternalRef?.api.applyColumnState({ state: ecoGridState.columns, applyOrder: true });
+            ecoInternalRef.api.sizeColumnsToFit();
             if (!result) {
                 console.error("Failed to apply column state", result);
             }
@@ -486,6 +544,7 @@ const useBTR = () => {
                         toggleLockMode={toggleLockMode}
                     />
                 )
+
                 return (
                     <HorizontalSplitView
                         themeUi={themeUi}
@@ -527,9 +586,19 @@ const useBTR = () => {
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                             maintainColumnOrder
                             onGridReady={(params) => setTechInternalRef(params)}
-                        />
-                        <div style={{ zoom: 0.7, margin: '0px -15px 0px -15px' }}>
-                            <VFPagination {...techPaginationProps} />
+                            onFilterChanged={() => {
+                                const filterModel = techRef?.current?.api?.getFilterModel();
+                                if (filterModel && Object.keys(filterModel).length > 0) {
+                                  setIsDisabled(false);
+                                } else {
+                                  setIsDisabled(true);
+                                }
+                            }}                        />
+                        <div>
+                            <VFPagination style={{marginTop:'-15px'}}
+                            {...techPaginationProps} 
+                            resetGridRef={techRef} 
+                            isDisabled={isDisabled}/>
                         </div>
                     </>
                 )
@@ -553,10 +622,21 @@ const useBTR = () => {
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
                             maintainColumnOrder
                             onGridReady={(params) => setEcoInternalRef(params)}
+                            onFilterChanged={() => {
+                                const filterModel = ecoRef?.current?.api?.getFilterModel();
+                                if (filterModel && Object.keys(filterModel).length > 0) {
+                                  setIsDisabled(false);
+                                } else {
+                                  setIsDisabled(true);
+                                }
+                            }}  
 
                         />
-                        <div style={{ zoom: 0.7, margin: '0px -15px 0px -15px' }}>
-                            <VFPagination {...ecoPaginationProps} />
+                        <div style={{width:'100%'}}>
+                            <VFPagination style={{marginTop:'-15px'}}
+                            {...ecoPaginationProps} 
+                            resetGridRef={ecoRef} 
+                            isDisabled={isDisabled}/>
                         </div>
                     </>
                 )
@@ -582,6 +662,9 @@ const useBTR = () => {
         return data.data.data.eco
 
     }
+
+      
+    
 
     return {
         ecoRef,
@@ -615,6 +698,9 @@ const useBTR = () => {
         ecoColDefs,
         setHorizon,
         lastRunDate,
+        dailyData,
+        showDailyDataGraphModal,
+        showNormChangeHistoryTable,
         onResetCallback
     }
 }

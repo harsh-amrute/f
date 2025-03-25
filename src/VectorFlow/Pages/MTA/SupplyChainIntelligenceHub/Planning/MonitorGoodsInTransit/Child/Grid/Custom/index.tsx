@@ -21,7 +21,7 @@ import { UserUIColumnConfigName } from "../../.../../../../../../../../../helper
 
 const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
 
-    const {ref,gridColDefs} = useContext(GridStateContext)
+    const {ref,gridColDefs, setGlobalColDef} = useContext(GridStateContext);
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
 
@@ -71,6 +71,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     useEffect(()=>{
         if(ref?.current && gridState && gridState?.columns?.length>0){
             ref?.current?.api.applyColumnState({state:gridState.columns, applyOrder:true})
+            ref?.current?.api.sizeColumnsToFit();
             ref?.current?.api.setGridOption('pivotMode',gridState.pivot)
         }
     },[gridState,ref])
@@ -104,6 +105,7 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
                 // setColDefs(mapUIConfigToColdefs(uiconfig));
 
                 setColDefs(getColumnDefinationsMTA(gridColDefs))
+                setGlobalColDef(getColumnDefinationsMTA(gridColDefs));
                 toast.dismiss(toastId);
            
                 notifySuccess(`Data Fetched Successfully`);
@@ -126,13 +128,23 @@ const MonitorGITChildCustomCharts = ({recordCount}:{recordCount:number}) => {
     
     return(
         <>
-        <SCDynamicContainer className="ag-theme-planning-custom">
+        <SCDynamicContainer>
             <VFTable
                 height={'100%'}
                 ref={ref}
                 columnDefs={colDefs}
                 rowData={rowData}
-                sideBar={true}
+                sideBar={{
+                    toolPanels: [
+                      {
+                        id: "columns",
+                        labelDefault: "Columns",
+                        labelKey: "columns",
+                        iconKey: "columns",
+                        toolPanel: "agColumnsToolPanel",
+                      },
+                    ],
+                }}
                 enableCharts={true}
                 enableRangeSelection={true} 
                 rowSelection="multiple"

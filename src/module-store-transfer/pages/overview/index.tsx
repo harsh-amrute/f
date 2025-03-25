@@ -30,6 +30,7 @@ const Overview = ({ themeUi }: any) => {
   const [show, setShow] = useState(true);
 
   const form = useForm({
+    mode:"onChange",
     defaultValues: {
       old_password: "",
       new_password: "",
@@ -174,6 +175,12 @@ const Overview = ({ themeUi }: any) => {
                           "profile.tabContent.manageUsers.validate.formatPassword"
                         ),
                       },
+                      validate: (value) => {
+                        if (value.startsWith(" ") || value.endsWith(" ")) {
+                          return t("loginPage.validate.includeSpace" ) || "Password should not start or end with a space.";
+                        }
+                        return true;
+                      }
                     })}
                   />
                 </SCChangePasswordBox>

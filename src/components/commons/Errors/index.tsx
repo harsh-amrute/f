@@ -8,9 +8,6 @@ const Errors = ({ errors, name }: ErrorsProps) => {
     switch (errors[name].type) {
       case 'required':
         return `This ${text} is required field`
-
-      // case 'maxLength':
-      //   return `This ${name} do not more than`
       case 'minLength':
         return `${errors[name].message}`
 
@@ -19,7 +16,8 @@ const Errors = ({ errors, name }: ErrorsProps) => {
 
       case 'pattern':
         return `${errors[name].message}`
-
+      case 'validate':
+        return `${errors[name].message}`
       default:
         return null
     }

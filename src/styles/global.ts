@@ -6,6 +6,13 @@ export const secondaryColor = "#929292";
 export const gray = "#f9f9f9";
 export const beige = "#EDEDED";
 export const backgroundRowTable = "#F4F4F4";
+export const Black = '#000';
+export const Red = '#F02424';
+export const Yellow = '#EBBF2B';
+export const Green = '#418D18';
+export const White = '#FFFFFF';
+export const Orange = '#CB830E';
+export const Blue = '#355FD3';
 
 export const NOIRFUSION = {
   color1: "#000000",

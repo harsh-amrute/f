@@ -5,6 +5,9 @@ import useViewPort from "../../../../../hooks/useViewPort"
 import { BTRTableHeader, BTRTableWrapper ,BTRAllomentSection,LockBtnWrapper, LockBtn, HorizontalViewWrapper, LocktBtnContent, LockLabel} from "./styles"
 import CustomVFTable from "./CustomVFTable"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
+import VFTable from '../../../../../VectorFlow/Pages/MTO/Common/VFTable'
+
+import { VFTableWrapper } from '../../../../../components/VectorFLOW/commons/VFTable/styles'
 
 interface SpliViewTableProps extends AgGridReactProps{
     header:string
@@ -38,34 +41,41 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
         setLockBtnPosition(sizes[0])
     }
 
+    const isSyncingScrollRef = useRef<boolean>(false);
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
     const onBodyScroll = (params:any,from:number)=>{
-        if(isLocked){
-            if(params.direction==='vertical'){
-                let currIndex = parseInt((params.top/21).toFixed(0))
-                if(currIndex>100)currIndex=100
-                if(from===1){
-                    ref2.current?.api.ensureIndexVisible(currIndex)
-                }
-                else{
-                    ref1.current?.api.ensureIndexVisible(currIndex)
+        if(params.direction !=='vertical' || !isLocked || isSyncingScrollRef.current ) return 
+
+        if(scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
+
+        isSyncingScrollRef.current = true;  
+
+        const rowCount = techTable.rowData ? techTable.rowData.length : 0;
+        const currIndex = Math.min(
+            Math.max(Math.round(params.top / 25), 0),
+            rowCount - 1
+        );
+
+        if(rowCount > 0){
+            const syncScroll = ()=>{
+                switch(from){
+                    case 1:
+                        ref2.current?.api.ensureIndexVisible(currIndex)
+                         break;
+                    case 2:
+                        ref1.current?.api.ensureIndexVisible(currIndex)
+                        break;
+                    default:
+                        break;
                 }
             }
-            // else{
-            //     const currIndex = parseInt((params.left/80).toFixed(0))
-            //     console.log(currIndex)
-            //     const columns = techTable.columnDefs
-            //     if(columns){
-            //         const currColumn:any = columns[currIndex]
-                
-            //         if(from===1){
-            //             ref2.current?.api.ensureColumnVisible(currColumn.colId)
-            //         }
-            //         else{
-            //             ref1.current?.api.ensureColumnVisible(currColumn.colId)
-            //         }
-            //     }
-            // }
+            requestAnimationFrame(syncScroll)
         }
+        scrollTimeoutRef.current = setTimeout(() => {
+            isSyncingScrollRef.current = false;
+        }, 70);
+        
     }
    
     const {screenHeight} = useViewPort()
@@ -103,25 +113,33 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                 <Allotment.Pane preferredSize={'50%'}>
                     <BTRAllomentSection>
                         <BTRTableHeader>{techTable.header}</BTRTableHeader>
-                        <CustomVFTable 
-                            ref={ref1}
-                            rowHeight={25}
-                            disableZoomScaling
-                            gridOptions={{
-                               ...techTable.gridOptions
-                            }}
-                            columnDefs={techTable.columnDefs}
-                            rowData={techTable.rowData}
-                            tooltipMouseTrack={true}
-                            tooltipShowDelay={0}
-                            tooltipHideDelay={100000}
-                            onBodyScroll={(params)=>onBodyScroll(params,1)}
-                            height={"100%"}
-                            defaultColDef={defaultColDef}
-                            alignedGrids={isLocked?[ref2]:[]}
-                        />
-                        <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
-                            <VFPagination
+                           <VFTable 
+                                key={'ref1'}
+                                disableZoomScaling
+                                ref={ref1}
+                                rowHeight={25}
+                                sideBar={null}
+                                height={"100%"}
+                                gridOptions={{
+                                    ...techTable.gridOptions
+                                }}
+                                statusBar={{
+                                        statusPanels:[]
+                                }}
+                                tooltipMouseTrack={true}
+                                tooltipShowDelay={0}
+                                tooltipHideDelay={100000}
+                                columnDefs={techTable.columnDefs}
+                                rowData={techTable.rowData}                                
+                                onBodyScroll={(params)=>onBodyScroll(params,1)}
+                                defaultColDef={defaultColDef}
+                                alignedGrids={isLocked?[ref2]:[]}
+                            />
+    
+              
+
+          <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
+                            <VFPagination style={{marginTop:'-30px'}}
                                 {...techTable.paginationProps}
                             />
                          </div>
@@ -131,25 +149,33 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                 <Allotment.Pane preferredSize={'50%'}>
                     <BTRAllomentSection style={{marginTop:'20px',paddingBottom:'20px'}}>
                         <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
-                        <CustomVFTable 
-                            height={"100%"}
-                            ref={ref2}
-                            rowHeight={25}
-                            disableZoomScaling
-                            gridOptions={{
-                                ...ecoTable.gridOptions
-                            }}
-                            columnDefs={techTable.columnDefs}
-                            rowData={ecoTable.rowData}
-                            tooltipMouseTrack={true}
-                            tooltipShowDelay={0}
-                            tooltipHideDelay={100000}
-                            onBodyScroll={(params)=>onBodyScroll(params,2)}
-                            defaultColDef={defaultColDef}
-                            alignedGrids={isLocked?[ref1]:[]}
-                        />
+                        <VFTable 
+                                key={'ref2'}
+                                disableZoomScaling
+                                ref={ref2}
+                                rowHeight={25}
+                                sideBar={null}
+                                height={"100%"}
+                                gridOptions={{
+                                    ...techTable.gridOptions
+                                }}
+                                statusBar={{
+                                        statusPanels:[]
+                                }}
+                                tooltipMouseTrack={true}
+                                tooltipShowDelay={0}
+                                tooltipHideDelay={100000}
+                                columnDefs={techTable.columnDefs}
+                                rowData={ecoTable.rowData}                             
+                                onBodyScroll={(params)=>onBodyScroll(params,2)}
+                                defaultColDef={defaultColDef}
+                                alignedGrids={isLocked?[ref1]:[]}
+                                
+                            />
+    
+              
                          <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
-                            <VFPagination
+                            <VFPagination style={{marginTop:'-30px'}}
                                 {...ecoTable.paginationProps}
                             />
                          </div>
