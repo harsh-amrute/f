@@ -1673,7 +1673,7 @@ const useViewModify = (pageType:string) => {
         try {
           toastId = notifyLoader(`Creating Draft ${chunkProgress}/${activeMaster.rowData.length}`);
           for(let i=0; i < rowData.length; i+=chunkSize){
-            if(draftId.length > 0){
+            if(draftID.length > 0){
               if(i+chunkSize < rowData.length){
                 await createDraft(generateDraftPayload(rowData.slice(i,i+chunkSize),draftId));
                 toast.update(toastId,{render:`Uploading ${i+chunkSize}/${rowData.length}`})

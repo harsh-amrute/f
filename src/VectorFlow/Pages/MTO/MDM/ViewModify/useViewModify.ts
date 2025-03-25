@@ -2710,7 +2710,7 @@ const useViewModify = (pageType: string) => {
         `Creating Draft ${chunkProgress}/${activeMaster.rowData.length}`
       );
       for (let i = 0; i < rowData.length; i += chunkSize) {
-        if (draftID.length > 0) {
+        if (draftId.length > 0) {
           if (i + chunkSize < rowData.length) {
             await createDraft(
               generateDraftPayload(rowData.slice(i, i + chunkSize), draftId)
