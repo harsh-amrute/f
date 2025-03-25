@@ -1601,7 +1601,7 @@ const useViewModify = (pageType:string) => {
         setTempDownloadData(false);
         setFilterButtonStatus([]);
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-        
+        dispatch(SET_DRAFT_ID(''))
 
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
             // dispatch(UPDATE_ACTIVE_MASTER([]))
@@ -1642,7 +1642,7 @@ const useViewModify = (pageType:string) => {
        setTempDownloadData(false);
        setFilterButtonStatus([]);
        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-      
+       dispatch(SET_DRAFT_ID(''))
 
        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
        // dispatch(UPDATE_COLDEFS([]));
