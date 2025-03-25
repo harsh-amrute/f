@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const SCPageNotFound = styled.div`
-  height: 100%;
+  height: 85vh;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -14,4 +14,11 @@ export const SCTextTitle = styled.div`
 
 export const SCTextContent = styled.div`
   font-size: 30px;
+`
+
+export const PageNotFoundIcon = styled.img`
+  // height:auto;
+  // width:auto%;
+  // align:center;
+    
 `

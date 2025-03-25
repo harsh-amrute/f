@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const SCPageForbidden = styled.div`
-  height: 100%;
+  height: 95%;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -14,4 +14,10 @@ export const SCTextTitle = styled.div`
 
 export const SCTextContent = styled.div`
   font-size: 30px;
+`
+
+export const PermissionForbiddenIcon = styled.img`
+  // height:100%;
+  // width:100%
+    
 `

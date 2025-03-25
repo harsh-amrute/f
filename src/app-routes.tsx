@@ -636,6 +636,17 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/not-found',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<PageNotFound />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
       path: '/permission-forbidden',
       element: <AppLayout />,
       children: [
@@ -709,17 +720,6 @@ export const initRoutes = (): RouteObject[] => {
         index:true,
         element:lazyLoad(<TotalRequirementReport/>)
         } ,
-        ...getStoreTransferModuleRoutes()
-      ]
-    },
-    {
-      path: '/not-found',
-      element: <AppLayout />,
-      children: [
-        {
-          index: true,
-          element: lazyLoad(<PageNotFound />)
-        },
         ...getStoreTransferModuleRoutes()
       ]
     },
@@ -1311,6 +1311,10 @@ export const initRoutes = (): RouteObject[] => {
           element: <VectorAdminLogin/>,
         }
       ]
+    },
+    {
+      path: "*",
+      element:< PageNotFound /> 
     }
   ]
 }
