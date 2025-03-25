@@ -3,7 +3,7 @@ import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENG
 
 export const SKUSchema = Joi.object({
     sc:Joi.string().empty().invalid(null).max(MAX_CODE_LENGTH).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('sc')),
-    sd: Joi.string().empty().max(50).custom(DescriptorValidator).required().messages({...generateCommonMessages("sd"),"string.max": `"sd" should be less than or equal to 125 characters`}),
+    sd: Joi.string().empty().max(MAX_NAME_LENGTH).custom(DescriptorValidator).required().messages({...generateCommonMessages("sd"),"string.max": `"sd" should be less than or equal to 125 characters`}),
     ec:Joi.number().integer().empty().greater(MIN_DECIMAL_VAL).max(MAX_INT_VAL).messages({'number.unsafe':`"ec" should be less than ${MAX_DECIMAL_VAL}`}),
     wt:Joi.number().empty().allow(null).greater(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`"wt" should be less than ${MAX_DECIMAL_VAL}`}),
     vm:Joi.number().empty().allow(null).greater(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`"vm" should be less than ${MAX_DECIMAL_VAL}`}),
