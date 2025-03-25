@@ -32,7 +32,8 @@ const SupplierDispatchReport = () => {
     onApplyFilter,
     ref,
     agGridProps,
-    generalFilterOptions
+    generalFilterOptions,
+    onResetCallback
   } = useSupplierDispatchReport();
   
 
@@ -47,6 +48,7 @@ const SupplierDispatchReport = () => {
         setTempDownloadData: setTempDownloadData,
         exportExcelRowData: exportExcelRowData,
         setExportExcelRowData: setExportExcelRowData,
+        onResetCallback:onResetCallback
       }}
     >
       <div style={{marginLeft:'10px'}}>
@@ -79,6 +81,7 @@ const SupplierDispatchReport = () => {
                   columnDefs={VDRColumns}
                   rowData={RowData}
                   height={'100%'}
+                  maintainColumnOrder
         />
         <VFPagination 
                 selectedRows={0} 

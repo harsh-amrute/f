@@ -25,7 +25,8 @@ export enum UIColumnConfigName{
     OAR = "OrderAllocationReport",
     TRR = "RRR_OA",
     InTransit = "InTransitWhereAbouts",
-    BuffertrendReport = "BufferTrendReport"
+    BuffertrendReport = "BufferTrendReport",
+    SDR = "SupplierDispatchReport"
 }
 
 export enum UserUIColumnConfigName{
@@ -46,5 +47,6 @@ export enum UserUIColumnConfigName{
     TRR = "RRRColorBandWise",
     InTransit = "InTransitWhereAbouts",
     BTROnHand = "BTRon-hand",
-    BTRPipeline = "BTRpipeline"
+    BTRPipeline = "BTRpipeline",
+    SDR = "SDR"
 }
