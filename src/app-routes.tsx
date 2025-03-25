@@ -225,8 +225,6 @@ const lazyLoad = (children: React.ReactNode) => {
 
   const urlCurrent = window.location.pathname
 
-  console.log(urlCurrent)
-
   if (urlAllPage.includes(urlCurrent)) {
     if (newUrlPermiss.includes(urlCurrent)) {
       return (
@@ -238,7 +236,6 @@ const lazyLoad = (children: React.ReactNode) => {
       return <PageForbidden />
     }
   } else {
-    console.log("not found")
     return <PageNotFound />
   }
 }
