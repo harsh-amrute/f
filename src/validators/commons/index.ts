@@ -103,19 +103,19 @@ export const MIN_DECIMAL_VAL = 0;
 export const MAX_INT_VAL = 100000000;
 
 export const CommonSchema = {
-    c1:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c1")),
-    c2:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c2")),
-    c3:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c3")),
-    c4:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c4")),
-    c5:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null).custom(pipeCheckValidator).messages(generateCommonMessages("c5")),
-    c6:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
-    c7:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
-    c8:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
-    c9:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
-    c10:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
-    c11:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
-    c12:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
-    c13:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
-    c14:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null),
-    c15:Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('',null)
-}
+    c1: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c1"), "string.max": `"c1" should be less than or equal to 50 characters`}),
+    c2: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c2"), "string.max": `"c2" should be less than or equal to 50 characters`}),
+    c3: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c3"), "string.max": `"c3" should be less than or equal to 50 characters`}),
+    c4: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c4"), "string.max": `"c4" should be less than or equal to 50 characters`}),
+    c5: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c5"), "string.max": `"c5" should be less than or equal to 50 characters`}),
+    c6: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c6"), "string.max": `"c6" should be less than or equal to 50 characters`}),
+    c7: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c7"), "string.max": `"c7" should be less than or equal to 50 characters`}),
+    c8: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c8"), "string.max": `"c8" should be less than or equal to 50 characters`}),
+    c9: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c9"), "string.max": `"c9" should be less than or equal to 50 characters`}),
+    c10: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c10"), "string.max": `"c10" should be less than or equal to 50 characters`}),
+    c11: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c11"), "string.max": `"c11" should be less than or equal to 50 characters`}),
+    c12: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c12"), "string.max": `"c12" should be less than or equal to 50 characters`}),
+    c13: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c13"), "string.max": `"c13" should be less than or equal to 50 characters`}),
+    c14: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c14"), "string.max": `"c14" should be less than or equal to 50 characters`}),
+    c15: Joi.string().max(MAX_CUSTOM_ATTRIBUTE_LENGTH).allow('', null).custom(pipeCheckValidator).messages({...generateCommonMessages("c15"), "string.max": `"c15" should be less than or equal to 50 characters`}),
+};

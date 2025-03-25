@@ -139,6 +139,7 @@ const useOpenExpeditingRequests = () => {
   useEffect(() => {
     if (internalRef && gridState && gridState.columns) {
       const result = internalRef.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+      internalRef?.api.sizeColumnsToFit();
       if (!result) {
         console.error("Failed to apply column state", result);
       }

@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from "react"
 import { Field } from "../../../../../VectorFlow/types/MDM";
 import { useGetMasterUIConfiguration, useGetSkuLoc, useGetTaskMastersHistory} from "../../../../../VectorFlow/Services/MTA/MDM"
 import { useUserData } from "../../../../../context";
- 
+import { notifyError } from '../../../../../helpers/notify'
+
+
 const useDataModificationHistory = () => {
  
     const [rowData, setRowData] = useState<Array<any>>([])
@@ -46,41 +48,28 @@ const useDataModificationHistory = () => {
     // },[])
 
  
-    const fetchSKULocations = async(masterId:any)=>{
-        const {data} = await getSKULocations({masterId:masterId});
-       
-        setSkuOptions(data.data.map((option: any)=>{
-            return {label:option.SKUCode, value:option.SKUCode, fields:option.fields}
-        }));
-
-        setLocOptions(data.data.map((option: any)=>{
-            return {label:option.WhCode, value:option.WhCode, fields:option.fields}
-        }));
-     }
- 
-
-    // useEffect(() => {
-    //     const fetchSKULocations = async () => {
-    //         const { data } = await getSKULocations({ masterId: 1 });
-    //             setLocOptions(data.data.map((option: any) => ({
-    //                 label: option.whCode,
-    //                 value: option.id,
-    //                 fields: option.fields
-    //             })));
-    //     }
+    const fetchSKULocations = async (masterId: any) => {
+        try {
+            const response = await getSKULocations({ masterId });
+            setSkuOptions(response?.data?.data?.map((option: any) => ({
+                label: option.SKUCode, value: option.SKUCode, fields: option.fields
+            })) || []);
     
-    //     fetchSKULocations();
-    // }, []);
-
+            setLocOptions(response?.data?.data?.map((option: any) => ({
+                label: option.WhCode, value: option.WhCode, fields: option.fields
+            })) || []);
+    
+        } catch (error) {
+            notifyError("Failed to fetch data");
+        }
+    };
+    
     const onMasterChange = (newValue: any) => {
-        console.log(newValue)
         setSelectedOption(newValue)
         fetchSKULocations(newValue.value)
-
     }
 
-   
-    
+     
     const handleChange = () => {
         const postTaskMasterHistory = async() =>{
             const payload:any = {masterId:selectedOption.value}
@@ -112,27 +101,26 @@ const useDataModificationHistory = () => {
         const fetchInitialData = async () => {
             try {
                   const { data: optionsData } = await masterUIConfiguration('modify');
-                setOptions(optionsData.data.map((option: any) => ({
+                setOptions(optionsData?.data?.map((option: any) => ({
                     label: option.name,
                     value: option.id,
                     fields: option.fields
-                })));
+                })) || []);
  
                 // Fetch skuOptions
                 const { data: skuOptionsData } = await getSKULocations({ masterId: selectedOption.masterId });
-                setSkuOptions(skuOptionsData.data.map((option: any) => ({
+                setSkuOptions(skuOptionsData?.data?.map((option: any) => ({
                     label: option.SKUCode,
                     value: option.id,
-                    fields: option.fields
-                    
-                })));
+                    fields: option.fields    
+                })) || [] );
                
                 const { data: locOptionsData } = await getSKULocations({ masterId: selectedOption.masterId });
-                setLocOptions(locOptionsData.data.map((option: any) => ({
+                setLocOptions(locOptionsData?.data?.map((option: any) => ({
                     label: option.whCode,
                     value: option.id,
                     fields: option.fields
-                })));
+                })) || [] );
             }
         
             catch (error) {
