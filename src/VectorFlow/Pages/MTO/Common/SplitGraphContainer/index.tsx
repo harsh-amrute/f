@@ -1,11 +1,11 @@
 import { AgChartOptions } from 'ag-charts-community'
 import { AgCharts } from 'ag-charts-react'
-import { Dispatch, SetStateAction, useRef } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import { SCChartContainer, SCChartMainContainer, SCHorizontalDivider, ChartWrapper } from './styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
-
+import { renderToStaticMarkup } from 'react-dom/server';
 interface SplitGrpahContainerProps {
   colDef: any,
   options: AgChartOptions,
@@ -49,6 +49,54 @@ const SplitGraphContainer = ({
   const chartRef = useRef<any>(null);
   const refGraph1 = useRef<GridRef>(null);
 
+  const containerRef  = useRef<HTMLDivElement>(null);
+
+  function extractTextContent(element: JSX.Element): string {
+    const htmlString = renderToStaticMarkup(element);
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlString;
+    return tempDiv.textContent || '';
+  }
+  const downloadChartWithHeader = () => {
+    if (containerRef.current) {
+      const chartCanvas = containerRef.current.querySelector('canvas');
+      if (!chartCanvas) {
+        console.error("Chart canvas not found.");
+        return;
+      }
+
+      const headerHeight = 40;
+      const combinedCanvas = document.createElement('canvas');
+      combinedCanvas.width = chartCanvas.width;
+      combinedCanvas.height = chartCanvas.height + headerHeight;
+
+      const ctx = combinedCanvas.getContext('2d');
+      if (!ctx) {
+        console.error("Failed to get canvas context.");
+        return;
+      }
+
+      const titleText = graphTitleJSX ? extractTextContent(graphTitleJSX) : graphTitle || '';
+
+      ctx.font = 'bold 16px Arial';  
+      const textWidth = ctx.measureText(titleText).width;
+      
+      const xCoordinate = (combinedCanvas.width - textWidth) / 2;
+
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, combinedCanvas.width, headerHeight);
+      ctx.fillStyle = 'black';
+      ctx.fillText(titleText, xCoordinate, 25);
+
+      ctx.drawImage(chartCanvas, 0, headerHeight);
+
+      const link = document.createElement('a');
+      link.href = combinedCanvas.toDataURL('image/png');
+      link.download = titleText || 'chart.png';
+      link.click();
+    }
+  };
+  
 
   const myCustomTheme = () => {
     switch (graphType) {
@@ -803,18 +851,12 @@ const SplitGraphContainer = ({
 
         <SCHorizontalDivider />
         <ChartWrapper>
-          <div style={{ height: '100%', width: '100%' }}>
+          <div style={{ height: '100%', width: '100%' }} ref={containerRef}>
             <div className="title" style={{ backgroundColor: 'white', height: '40px', display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
               <div style={{ fontSize: '10px', fontWeight: 500, textAlign: 'center', margin: '0 auto' }}>
                 {graphTitle || graphTitleJSX}
               </div>
-              <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={() => {
-
-                chartRef?.current.download({
-                  type: 'png',
-                  filename: downloadFileName,
-                });
-              }}>
+              <div style={{ marginLeft: '0 10px -5px', marginBottom: '-5px' }} onClick={downloadChartWithHeader}>
                 <img src='/assets/img/mto/RMPMBufferTrend/download.svg' style={{ color: "#CCCCCC", paddingBottom: '5px' }} height={15} width={15} color={"#CCCCCC"} />
               </div>
 
