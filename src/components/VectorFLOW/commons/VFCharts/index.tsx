@@ -5,7 +5,6 @@ import {SCChartHeaderContainer, SCChartHeader, SCChartContainer, SCHorizontalDiv
 import VFChartTable from '../VFChartsTable'
 import { GridRef } from '../../../../VectorFlow/types/MDM';
 import { generateGridSpecificChartFromChartProps } from '../../../../helpers/utils'
-import { renderToStaticMarkup } from 'react-dom/server';
 
 
 const defaultStyles = {
