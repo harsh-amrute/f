@@ -306,28 +306,29 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
     ]
 
     const comparisionOptions = [
-        {value:'equalto',label:'='},
+        {value:'equalto',label:'Equal to'},
         {value:'notequalto',label:'Not Equal to'},
         // {value:'greaterthan',label:'>'},
         // {value:'greaterthanequalto',label:'>='},
         // {value:'smallerthan',label:'<'},
         // {value:'smallerthanequalto',label:'<='},
         {value:'doesnotcontain',label:'Does not contain'},
+        // {value:'contain',label:'contains'},
         {value:'startswith',label:'Starts with'},
         {value:'doesnotstartwith',label:'Does not start with'},
         {value:'endswith',label:'Ends with'},
         {value:'doesnotendwith',label:'Does not end with'},
-        {value:'hasvalue',label:'Has value'},
-        // {value:'hasnovalue',label:'Has no value'},
+        // {value:'hasvalue',label:'Has value'},
+        {value:'hasnovalue',label:'Has no value'},
     ]
     
     const comparisionIntegerOptions = [
         {value:'equalto',label:'='},
         {value:'greaterthan',label:'>'},
-        {value:'greaterthanequalto',label:'>='},
         {value:'smallerthan',label:'<'},
+        {value:'greaterthanequalto',label:'>='},
         {value:'smallerthanequalto',label:'<='},
-        {value:'notequalto',label:'Not Equal to'},
+        {value:'notequalto',label:'!='},
     ]
 
     const getOperatorValue = (comparisionOptions:any)=>{
@@ -393,16 +394,15 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
                         <FilterSelectDropdown className="custom-scrollbar" placeholder={"Color"} options={colorFilterOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'attributeName')} filterId={filterId} value={getDropDownValue('colorFilterOptions')}/>    
                      </SelectDropdownComponent>
                 )}
-                
-                <SelectDropdownComponent data-testid="BPR-filter-dropdown">
+                    <SelectDropdownComponent data-testid="BPR-filter-dropdown">
                     {
-                    header==="Availabilty Filter" ?
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionIntegerOptions)}/>    
-
-                    : 
-                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/>    
-
-                    }
+                    header === "Availabilty Filter" || header === "Color Filter" ? (   
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionIntegerOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionIntegerOptions)}/> 
+                    ):(   
+                    <FilterSelectDropdown className="custom-scrollbar" placeholder={"OP"} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue(comparisionOptions)}/> 
+                    )
+                     }
+                     
                     {/* <FilterSelectDropdown className="custom-scrollbar" placeholder={"<="} options={comparisionOptions} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator',false)} filterId={filterId} value={getOperatorValue()}/>     */}
                 </SelectDropdownComponent>
                 <SelectDropdownComponent data-testid="BPR-filter-dropdown">
