@@ -14,8 +14,7 @@ import { ButtonWrapper } from "../../SupplyChainIntelligenceHub/OpenExpeditingRe
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import { useState } from "react"
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
-
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 
 
 const InTransitWhereAbouts = ()=>{
@@ -73,6 +72,8 @@ const InTransitWhereAbouts = ()=>{
         lastRunDate,
         onResetCallback
     } = useInTransitWhereAbouts()
+
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
     
 
     return(
@@ -128,15 +129,28 @@ const InTransitWhereAbouts = ()=>{
                     ref={ref}
                     height={"100%"}
                     maintainColumnOrder
+                    onFilterChanged={() => {
+                        const filterModel = ref?.current?.api?.getFilterModel();
+                        if (filterModel && Object.keys(filterModel).length > 0) {
+                          setIsDisabled(false);
+                        } else {
+                          setIsDisabled(true);
+                        }
+                    }}
                 />
                 <div style={{marginBottom:'10px'}}>
+                <div style={{marginTop:'35px'}}>
+
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
                     currentPage={currentPage}
                     rowsPerPage={100}
                     handleChangePage={handlePageChange}
+                    resetGridRef={ref} 
+                    isDisabled={isDisabled}
                 />
+                </div>
                 </div>
                 <ButtonWrapper>
                     <VFButtonOutline disabled={editedRows.length===0} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>

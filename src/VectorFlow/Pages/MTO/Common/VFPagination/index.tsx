@@ -60,9 +60,9 @@ const VFPagination = (props: VFPaginationProps) => {
     return (
         <PaginationWrapper data-testid="vf_pagination">
             <PaginationContainer>
-                <GridFilterWrapper>
-                    <TextBtn onClick={clearGridFilter} disabled={ isDisabled} themeUi={themeUi}>Clear All Grid Filters</TextBtn>  
-                </GridFilterWrapper>
+            <GridFilterWrapper>
+                <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>Clear All Grid Filters</TextBtn>  
+            </GridFilterWrapper>
                <StatusBarWrapper>
                 <StatusBarLabel>
                     <StatusBarLabelBold>
