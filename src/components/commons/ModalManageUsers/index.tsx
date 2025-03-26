@@ -258,8 +258,8 @@ const ModalManageUsers = ({
                                 ),
                               },
                               validate: (value) => {
-                                if (value.startsWith(" ") || value.endsWith(" ")) {
-                                  return t("loginPage.validate.includeSpace" ) || "Password should not start or end with a space.";
+                                if (value.includes(" ")) {
+                                  return t("loginPage.validate.includeSpace" ) || "Password mush not contain spaces.";
                                 }
                                 return true;
                               }
@@ -289,7 +289,7 @@ const ModalManageUsers = ({
                       </div>
 
                       <div className="modal-bottom">
-                        <button type="submit"  className={"btn_submit " + themeUi}>
+                        <button type="submit" disabled={Object.keys(errors).length > 0}  className={"btn_submit " + themeUi}>
                           {t("profile.tabContent.manageUsers.button.nextBtn")}
                         </button>
                         <button
