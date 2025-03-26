@@ -41,6 +41,8 @@ const AvailabilityTrend = ({
     const AvailabilityTrend = await GetAvailabilityTrend(param);
     const data = AvailabilityTrend?.data?.data;
 
+
+
     if (!data || data.length === 0) {
       setOptions({});
       return;
@@ -66,8 +68,10 @@ const AvailabilityTrend = ({
       };
     });
 
+
     const chartProps = { ...chartParams1, series: series };
     const customizedChartProps = generateChartOptions(data, chartProps);
+    customizedChartProps.data = data;
     setOptions(customizedChartProps);
 
   };
