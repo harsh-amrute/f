@@ -4,6 +4,8 @@ import './styles.css'
 import VFButtonOutline from "../VFButtonOutline";
 import { useUserData } from "../../../../context";
 import { SideBarDef } from 'ag-grid-enterprise';
+import { useState } from "react";
+import { GridFilterWrapper, TextBtn } from "../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
 
 
 const VFChartsTable = (props:any)=>{
@@ -19,10 +21,11 @@ const VFChartsTable = (props:any)=>{
         palette,
         chartType,
         downloadName,
-        gridSpecificChartOptions
+        gridSpecificChartOptions,
     } = props;
 
 
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const {user} = useUserData()
     const theme_ui = user.user.theme_ui
 
@@ -68,8 +71,24 @@ const VFChartsTable = (props:any)=>{
         defaultToolPanel:'',
       }
 
-  
 
+    const clearGridFilter = () =>{
+        gridRef?.current?.api.setFilterModel(null);
+          setIsDisabled(true);
+    }
+
+   
+    const CustomStatusPanel = () => {
+        return (
+            <GridFilterWrapper style={{marginTop:'15px'}}>
+                <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                    Clear All Grid Filters
+                </TextBtn>  
+            </GridFilterWrapper>           
+        );
+    };
+    
+    
     return (
         <>
 
@@ -96,43 +115,48 @@ const VFChartsTable = (props:any)=>{
              </VFButtonOutline>
         </div>
 
-            <VFTable
-                ref={gridRef}
-                columnDefs={colDefs}
-                rowData={rowData}
-                enableCharts={true}
-                enableRangeSelection={true} 
-                rowSelection="multiple"
-                statusBar = {{
-                    statusPanels: [
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align:'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align:'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align:'left' },
-                      { statusPanel: 'agAggregationComponent', align:'left' },
-                    ],
-                  }}                                        
-                onGridReady={()=>generateChartInGridTable()}
-                getChartToolbarItems={getChartToolbarItems}
-                chartToolPanelsDef={
-                    {
-                        panels:[]
-                    }
-                }
-                
-                chartThemeOverrides={gridSpecificChartOptions}
-                chartThemes={['myCustomTheme']}
-                customChartThemes={{
-                    'myCustomTheme':myCustomTheme
-                }}
-                disableZoomScaling={true}
-                defaultColDef={{
-                    floatingFilter:true,
-                    filter: "agMultiColumnFilter",
-                }}
-                height={'480px'}
-                sideBar={sideBar}
-            />
+        <VFTable
+        ref={gridRef}
+        columnDefs={colDefs}
+        rowData={rowData}
+        enableCharts={true}
+        enableRangeSelection={true} 
+        rowSelection="multiple"
+        statusBar = {{
+            statusPanels: [
+            { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+            { statusPanel: 'agTotalRowCountComponent', align:'left' },
+            { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+            { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+            { statusPanel: 'agAggregationComponent', align:'left' },
+            { statusPanel: CustomStatusPanel, align: "right" },
+            ],
+        }}                                        
+        onGridReady={(params) => {
+        generateChartInGridTable();
+        params.api.addEventListener('filterChanged', () => {
+            const filterModel = params.api.getFilterModel();
+            if (Object.keys(filterModel).length > 0) {
+                setIsDisabled(false); 
+            } else {
+                setIsDisabled(true); 
+            }
+            });
+        }}
+        getChartToolbarItems={getChartToolbarItems}
+        chartToolPanelsDef={{ panels:[] }}        
+        chartThemeOverrides={gridSpecificChartOptions}
+        chartThemes={['myCustomTheme']}
+        customChartThemes={{ 'myCustomTheme': myCustomTheme }}
+        disableZoomScaling={true}
+        defaultColDef={{
+        floatingFilter: true,
+        filter: "agMultiColumnFilter",
+        }}
+        height={'480px'}
+        sideBar={sideBar}
+    />
+
         </div>
     </VFModalCard>
 

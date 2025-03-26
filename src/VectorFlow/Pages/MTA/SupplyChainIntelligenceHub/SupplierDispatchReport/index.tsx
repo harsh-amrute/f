@@ -3,8 +3,9 @@ import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import { VDRLayout } from "./styles";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import ActionToolBar from "../Planning/ActionToolBar";
+import { useState } from "react";
 
 
 const SupplierDispatchReport = () => {
@@ -34,6 +35,9 @@ const SupplierDispatchReport = () => {
     agGridProps,
     generalFilterOptions
   } = useSupplierDispatchReport();
+
+      const [isDisabled, setIsDisabled]= useState<boolean>(true)
+  
   
 
   
@@ -79,14 +83,27 @@ const SupplierDispatchReport = () => {
                   columnDefs={VDRColumns}
                   rowData={RowData}
                   height={'100%'}
+                  onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                }}
         />
+        <div style={{marginTop:'35px'}}>
         <VFPagination 
                 selectedRows={0} 
                 totalRows={SDRCount} 
                 currentPage={currentPage} 
                 rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>GetSDRData(e)} 
+
+                resetGridRef={ref} 
+                isDisabled={isDisabled}
               />
+            </div>
         </div>
       )}
       <div style={{display:'none'}}>                
