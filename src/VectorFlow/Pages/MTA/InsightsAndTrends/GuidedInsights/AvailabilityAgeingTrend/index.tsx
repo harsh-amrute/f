@@ -18,11 +18,13 @@ const AvailabilityAgeingTrend = ({themeUi,filter, ageing, setAgeing, horizon, se
   const OnHorizonChange = async (hvalue: any, age: any) => {
     setAgeing(age);
     setHorizon(hvalue);
-    const param = { horison: horizon, ageing: ageing,filters:filter};
+    const param = { horison: hvalue, ageing: age,filters:filter};
     const AvailabilityAgeing = await GetAvailabilityAgeing(param);
-
     const data = AvailabilityAgeing?.data?.data;
+    // const customizedChartProps = generateChartOptions(data, chartParams1);
+    // setOptions(customizedChartProps);
     const customizedChartProps = generateChartOptions(data, chartParams1);
+    customizedChartProps.data = data; 
     setOptions(customizedChartProps);
   };
 
