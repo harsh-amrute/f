@@ -1,15 +1,17 @@
 
 import { useGetSDRUIConfiguration ,useGetSDRData,useGetSDRDataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport/index';
-import { convertUiConfigToOptions, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
+import { convertUiConfigToOptions, getColumnDefinationsMTA, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
 import { toast } from 'react-toastify';
 import { AgGridReactProps } from 'ag-grid-react';
 import {SDRDispatchColorCellRenderer} from './SDRCellRenderers'
-import { useGetState } from '../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR';
+import { useGetState } from '../../../../../VectorFlow/Services/MTA/Common/UserUIConfig';
 import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
+import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig';
+import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum';
 
 const useSupplierDispatchReport= ()=>{
 
@@ -26,124 +28,107 @@ const useSupplierDispatchReport= ()=>{
 
     const tempRef = useRef()
 
-    const {data,isLoading:isSDRUILoading}= useGetSDRUIConfiguration();
-    const {mutateAsync:getSDRData} =useGetSDRData();
-    const {mutateAsync:getSDRDataCount}=useGetSDRDataCount();
+    // const { data, isLoading: isSDRUILoading } = useGetSDRUIConfiguration();
+    const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading, isError } = useGetUIConfigData();
+    const {mutateAsync:getSDRData, isLoading: isSDRDataLoading} =useGetSDRData();
+    const {mutateAsync:getSDRDataCount,isLoading:isSDRDataCountLoading}=useGetSDRDataCount();
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
 
     const {mutateAsync:getState} = useGetState()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
-
+    const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
+    const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+    const [VDRColumns,setVDRColumns] = useState<any[]>([])
 
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
 
-    const customCellRenderers = useMemo(() => (   
+    const customCellRenderers = useMemo(() => (
         {
-        grapCellRenderer:'',
-       colorDispatchRender:SDRDispatchColorCellRenderer
+            grapCellRenderer: '',
+            colorDispatchRender: SDRDispatchColorCellRenderer
         
-      }), []);
+        }), []);
 
-    
-    const VDRColumns=useMemo(()=>mapVDRFieldsToColDefs(data?.data.data),[data])
+    useEffect(() => {
+        getInitialSDRRowData();
+        getBPRUiConfig();
+    }, []);
 
-  
- 
-  const agGridProps: AgGridReactProps = useMemo(()=>{
-    return{
-        paginationPageSize: parseInt(
-          process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
-        ),
-    
-        suppressRowTransform: true,
-        tooltipShowDelay: 0.3,
-        tooltipTrigger: "focus",
-        tooltipInteraction: true,
-        readOnlyEdit: true,
-        
-        gridOptions: {
-          sideBar: defaultAgGridSideBarForBPR,
-          rowHeight: 50,
-          getRowStyle: (params: any) => {
-            if (params.node.rowIndex % 2 === 0) {
-              return { background: "#EBEBEB" };
-            }
-            return { background: "#F7F7F7" };
-          },
-        },
-        enableRangeSelection: true,
-        components:customCellRenderers,
-        rowSelection: "multiple",
-        statusBar: {
-          statusPanels: [
-            { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
-            { statusPanel: "agTotalRowCountComponent", align: "left" },
-            { statusPanel: "agFilteredRowCountComponent", align: "left" },
-            { statusPanel: "agSelectedRowCountComponent", align: "left" },
-            { statusPanel: "agAggregationComponent", align: "left" },
-          ],
-        },
-        pagination: false,
-        suppressRowClickSelection: true,
-    
-        defaultColDef: {
-          floatingFilter: true,
-          resizable: true,
-          cellStyle: {
-            flex: 1,
-            "text-align": "center",
-            height: "50px",
-            "font-style": "normal",
-            " font-variant": "normal",
-            " font-weight": "300",
-            " font-size": "20px",
-            " font-family": "Roboto",
-            display: "block",
-            "text-overflow": "ellipsis",
-            "white-space": "nowrap",
-          },
-        },
-        onGridReady:(params)=>setInternalRef(params)
-      }
-  },[])
-
-
-  useEffect(()=>{
-    const fetchData= async()=>{
-        await GetDataCount()
-        await GetSDRData(currentPage);
+    const getInitialSDRRowData = async () => {
+        try {
+            await GetDataCount()
+            await GetSDRData(currentPage);
+        } catch (err: any) {
+            notifyError(err)
+        }
     }
-    fetchData();
-    setGeneralFilterOptions(convertUiConfigToOptions(data?.data.data))
-
-    
-},[isSDRUILoading])
-
-    useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({reportname: "SDR"})
-            setGridState(JSON.parse(data.data.data))
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:[],
-                pivot:false
-            })
-          }
-        }
-        getTableState()
-    },[])
   
-    useEffect(()=>{
-        if(internalRef && gridState && gridState.columns){
-            internalRef.api.applyColumnState({state:gridState.columns,applyOrder:true})
-            internalRef?.api.sizeColumnsToFit();
+    const getBPRUiConfig = async () => {
+        try {
+            const response = await getUiConfig(UIColumnConfigName.SDR);
+            setInitialColumnState(response.data.data);
+        } catch (err: any) {
+            notifyError("Something Went Wrong")
         }
-    },[internalRef,gridState])
+    }
 
-   
-
+    useEffect(() => {
+            const getTableState = async () => {
+                try {
+                    const MappedColumns = getColumnDefinationsMTA(initialColumnState, CustomHeader);
+                      
+                    setGridState({
+                        charts: [],
+                        columns: MappedColumns,
+                        pivot: false
+                    })
+                    setVDRColumns(MappedColumns);
+                    getUserColumnConfig();
+                    
+                } catch (err: any) {
+                    console.log(err)
+                }
+            }
+            if (initialColumnState !== undefined) {
+                getTableState();
+                setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState));
+            }
+        }, [initialColumnState]);
+    
+        useEffect(() => {
+            if (VDRColumns.length) {
+                if (internalRef?.api) {
+                    setMasterUIConfig(internalRef.api.getColumnState());
+                }
+            }
+        }, [internalRef, VDRColumns]);
+        
+    const getUserColumnConfig = async () => {
+        const stateData = await getState({ "reportname": UserUIColumnConfigName.SDR })
+        if (stateData.data.data.length !== 0) {
+            const parsedContent = JSON.parse(stateData.data.data)
+              
+            setGridState({
+                charts: parsedContent.charts,
+                columns: parsedContent.columns,
+                pivot: parsedContent.pivot,
+            })
+        
+        } else {
+            console.log("Data not available");
+        }
+    }
+    
+    useEffect(() => {
+        if (internalRef && gridState && gridState.columns) {
+            const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
+            internalRef?.api.sizeColumnsToFit();
+            if (!result) {
+                console.error("Failed to apply column state", result);
+            }
+        }
+    }, [internalRef, gridState]);
+ 
     const GetDataCount = async (filter?:any)=>{
         const DataCount= await getSDRDataCount({
             filters: filter || currFilter,
@@ -181,6 +166,81 @@ const useSupplierDispatchReport= ()=>{
         }
     }
 
+    const onResetCallback = async () => {
+        setGridState({
+          charts: [],
+          columns: masterUIConfig,
+          pivot: false,
+        })
+    }
+
+    const CustomHeader = {
+        DispatchPen: {
+            cellRenderer: 'colorDispatchRender',    
+        },
+        WHDescription: {
+            rowGroup: false,
+        },
+    }
+
+    const agGridProps: AgGridReactProps = useMemo(() => {
+        return {
+            paginationPageSize: parseInt(
+                process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
+            ),
+    
+            suppressRowTransform: true,
+            tooltipShowDelay: 0.3,
+            tooltipTrigger: "focus",
+            tooltipInteraction: true,
+            readOnlyEdit: true,
+        
+            gridOptions: {
+                sideBar: defaultAgGridSideBarForBPR,
+                rowHeight: 50,
+                getRowStyle: (params: any) => {
+                    if (params.node.rowIndex % 2 === 0) {
+                        return { background: "#EBEBEB" };
+                    }
+                    return { background: "#F7F7F7" };
+                },
+            },
+            enableRangeSelection: true,
+            components: customCellRenderers,
+            rowSelection: "multiple",
+            statusBar: {
+                statusPanels: [
+                    { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
+                    { statusPanel: "agTotalRowCountComponent", align: "left" },
+                    { statusPanel: "agFilteredRowCountComponent", align: "left" },
+                    { statusPanel: "agSelectedRowCountComponent", align: "left" },
+                    { statusPanel: "agAggregationComponent", align: "left" },
+                ],
+            },
+            pagination: false,
+            suppressRowClickSelection: true,
+    
+            defaultColDef: {
+                floatingFilter: true,
+                resizable: true,
+                cellStyle: {
+                    flex: 1,
+                    "text-align": "center",
+                    height: "50px",
+                    "font-style": "normal",
+                    " font-variant": "normal",
+                    " font-weight": "300",
+                    " font-size": "20px",
+                    " font-family": "Roboto",
+                    display: "block",
+                    "text-overflow": "ellipsis",
+                    "white-space": "nowrap",
+                },
+            },
+            onGridReady: (params) => setInternalRef(params)
+        }
+    }, []);
+    
     const tempAgGridProps:AgGridReactProps = {
         onRowDataUpdated:(event)=>{
          if(tempDownloadData) event.api.exportDataAsExcel({fileName:'SupplierDispatchReport', columnKeys:ref.current?.api.getAllDisplayedColumns().map((c)=>c.getColId())});
@@ -250,7 +310,8 @@ const useSupplierDispatchReport= ()=>{
         tempDownloadData,
         exportExcelRowData,
         setExportExcelRowData,
-        isLoading:isSDRUILoading,
+        isLoading: isUIConfigLoading || isSDRDataLoading || isSDRDataCountLoading,
+        isError,
         GetSDRData,
         tempRef,
         tempAgGridProps,
@@ -262,7 +323,8 @@ const useSupplierDispatchReport= ()=>{
         onApplyFilter,
         agGridProps,
         ref,
-        generalFilterOptions
+        generalFilterOptions,
+        onResetCallback
     }
     
 

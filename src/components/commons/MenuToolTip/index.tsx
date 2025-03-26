@@ -9,12 +9,13 @@ import {
   TooltipContent,
   SCIcon,
 } from "./style";
-import { handleDownloadMTOVF, handleDownloadVF, navigateWithPrompt } from "../../../helpers/utils";
+import { navigateWithPrompt } from "../../../helpers/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { RESET_STATE } from "../../../redux/actions/MDM";
 import { RESET_MTO_STATE } from "../../../redux/actions/MTO";
 import { useRef, useLayoutEffect, useState } from "react";
+import useDownloadHandler from "../../../helpers/useDownloadHandler";
 
 const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoading, setIsHide, setWidthResponsive, reportUrls }: any) => {
   const { t } = useTranslation();
@@ -28,6 +29,8 @@ const MenuToolTip = ({ item, tempUrls, setTempUrls, isLoading, isHide, setIsLoad
 
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [tooltipMaxHeight, setTooltipMaxHeight] = useState<string>("");
+
+  const{handleDownloadMTOVF,handleDownloadVF}= useDownloadHandler()
 
   const resetState = () => {
     dispatch(RESET_STATE());

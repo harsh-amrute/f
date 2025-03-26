@@ -216,7 +216,6 @@ const useAdd=()=>{
               }
 
               setTaskId(data.data.taskId  );
-              
               if(data.data.conflictErrorCount){
                 conflictCount += parseInt(data.data.conflictErrorCount,10);
               }
@@ -292,14 +291,10 @@ const useAdd=()=>{
           }
 
 
-          if(localErrorCount>0 || errorCounts>0){
-            if(localErrorCount > 0){
-              errorRowData = createErrorRowData(localErrorData,activeMaster.id)
-            }
-            else{
-              errorRowData = createErrorRowData(errorData,activeMaster.id)
-            }
-            if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+          if (localErrorCount > 0) {
+            errorRowData = createErrorRowData(localErrorData, activeMaster.id)
+            
+            if (!activeMaster.colDefs.find((c: ColDef) => c.colId === 'error')) {
               addInvalidDataColDefs('error')
             }
             dispatch(UPDATE_ROW_DATA(errorRowData))

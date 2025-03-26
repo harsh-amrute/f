@@ -33,6 +33,49 @@ const VFCharts = (props:any) =>{
     ? '/assets/img/downlod-icon-hover.svg'
     : '/assets/img/downlod-icon.svg';
 
+    const containerRef  = useRef<HTMLDivElement>(null);
+  
+      const downloadChartWithHeader = () => {
+        if (containerRef.current) {
+          const chartCanvas = containerRef.current.querySelector('canvas');
+          if (!chartCanvas) {
+            console.error("Chart canvas not found.");
+            return;
+          }
+    
+          const headerHeight = 40;
+          const combinedCanvas = document.createElement('canvas');
+          combinedCanvas.width = chartCanvas.width;
+          combinedCanvas.height = chartCanvas.height + headerHeight;
+    
+          const ctx = combinedCanvas.getContext('2d');
+          if (!ctx) {
+            console.error("Failed to get canvas context.");
+            return;
+          }
+    
+          const titleText = title || '';
+    
+          ctx.font = 'bold 16px Arial';  
+          const textWidth = ctx.measureText(titleText).width;
+          
+          const xCoordinate = (combinedCanvas.width - textWidth) / 2;
+    
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, combinedCanvas.width, headerHeight);
+          ctx.fillStyle = 'black';
+          ctx.fillText(titleText, xCoordinate, 25);
+    
+          ctx.drawImage(chartCanvas, 0, headerHeight);
+    
+          const link = document.createElement('a');
+          link.href = combinedCanvas.toDataURL('image/png');
+          link.download = titleText || 'chart.png';
+          link.click();
+        }
+      };
+
+
     const [gridSpecificChartOptions,setGridSpecificChartOptions] = useState<any>(undefined)
 
     useEffect(()=>{
@@ -42,7 +85,7 @@ const VFCharts = (props:any) =>{
     },[chartProps])
 
     return (
-        <SCChartContainer height={height} style={containerStyle}>
+        <SCChartContainer height={height} style={containerStyle} ref={containerRef}>
 
             <VFChartsHeader hideChart={hideChart} styles={customizedStyles} graphInfo={graphInfo} setHideChart={setHideChart} title={title}  />
 
@@ -53,9 +96,7 @@ const VFCharts = (props:any) =>{
                     src={imgSrc}  
                     height={13} 
                     width={13} 
-                    onClick={() => {
-                        chartRef.current.download({fileName:`${downloadName}.png`})
-                    }}
+                    onClick={downloadChartWithHeader}
                     style={{cursor:'pointer'}} 
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)} >

@@ -730,7 +730,8 @@ const ActionToolBar = ({
           </SCTaskFilterContainer>
 
           <SCCustomActionsContainer>
-          {(currentTab === "chronicunavailability" || currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" || currentTab==="dbmnormsuggestions") &&
+            {/* currentTab === "chronicunavailability" || || currentTab==="dbmnormsuggestions" */}
+          {( currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" ) &&
                <>
                   <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>
                     {getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}

@@ -33,7 +33,8 @@ const SupplierDispatchReport = () => {
     onApplyFilter,
     ref,
     agGridProps,
-    generalFilterOptions
+    generalFilterOptions,
+    onResetCallback
   } = useSupplierDispatchReport();
 
       const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -51,6 +52,7 @@ const SupplierDispatchReport = () => {
         setTempDownloadData: setTempDownloadData,
         exportExcelRowData: exportExcelRowData,
         setExportExcelRowData: setExportExcelRowData,
+        onResetCallback:onResetCallback
       }}
     >
       <div style={{marginLeft:'10px'}}>
@@ -91,6 +93,7 @@ const SupplierDispatchReport = () => {
                       setIsDisabled(true);
                     }
                 }}
+                  maintainColumnOrder
         />
         <div style={{marginTop:'35px'}}>
         <VFPagination 
