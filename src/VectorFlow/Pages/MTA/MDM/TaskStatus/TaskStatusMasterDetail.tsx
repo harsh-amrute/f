@@ -208,7 +208,8 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
                                 <VFButton 
                                     onClick={()=>onDownload(approver)} 
                                     themeUi={user.user.theme_ui}
-                                    width={167}
+                                    width={116}
+                                    style={{height:"43px",fontSize:"13px"}}
                                 >
                                     <VFTastStatusDownloadWrapper>
                                         <img src="/assets/img/VectorFLOW/NMS/download-task-status.svg" height={25}/>
