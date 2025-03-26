@@ -856,6 +856,8 @@ const OverallBmReport = () => {
     );
   };
 
+  const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
+
   const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): any => {
     const mapChildren: any = (
       parent: any,
@@ -904,6 +906,14 @@ const OverallBmReport = () => {
                   : undefined,
             }
           : undefined,
+          cellClassRules:
+          child.cc === "BPP" && excelColorArr.reduce(
+            (acc, color) => ({
+              ...acc,
+              [color]: (params: any) => params.data.cl === color
+            }),
+            {}
+          ),
         cellStyle:
           child.cc === "Remark"
             ? {
@@ -924,6 +934,7 @@ const OverallBmReport = () => {
                 paddingLeft: child.cla == "left" ? "1rem" : undefined,
               },
       }));
+
     };
 
     const res = apiResponse.map((section) => ({
@@ -1480,6 +1491,18 @@ const OverallBmReport = () => {
 
   const date = apiResponseData?.data?.data;
 
+  const excelStyles = useMemo(() => 
+    excelColorArr.map((color) => ({
+      id: color,
+      font: { color: color === "White" ? "000000" : "#ffffff" },
+      interior: {
+        color: color === "White"  ? "#A8A8A8" : ColorsMTO[color as keyof typeof ColorsMTO]?.code,
+        pattern: 'Solid'
+      }
+    }))
+  , []);
+  
+
   return (
     <BMDepWrapper>
       <BMDepHeaderWraper>
@@ -1555,6 +1578,7 @@ const OverallBmReport = () => {
                     saveBtn={false}
                     totalRow={gridDataCount}
                     currentPage={currentPage}
+                    excelStyles={excelStyles}
                   />
                 </div>
               </BTRAllomentSection>
