@@ -40,6 +40,7 @@ function ForgotPasswordContainer() {
   const recaptchaRefFP: any = useRef();
 
   const form = useForm<LoginRequest>({
+    mode : "onChange",
     defaultValues: {
       email: "",
     },

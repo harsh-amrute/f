@@ -4,7 +4,7 @@ const SearchInputManageUser = ({ searchUserBasedOn, setSearchUserBasedOn }: any)
     return (
         <SearchWrapper>
             <SearchInputManageUserStyled 
-                placeholder="Search"
+                placeholder="User Id"
                 aria-label="Search components"
                 id="search"
                 type="text"

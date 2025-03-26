@@ -176,8 +176,8 @@ const Overview = ({ themeUi }: any) => {
                         ),
                       },
                       validate: (value) => {
-                        if (value.startsWith(" ") || value.endsWith(" ")) {
-                          return t("loginPage.validate.includeSpace" ) || "Password should not start or end with a space.";
+                        if (value.includes(" ")) {
+                          return t("loginPage.validate.includeSpace" ) || "Password mush not contain spaces.";
                         }
                         return true;
                       }
@@ -190,7 +190,17 @@ const Overview = ({ themeUi }: any) => {
                   </SCChangePasswordLabel>
                   <SCChangePasswordInput
                     type="password"
-                    {...register("confirm_password", { required: true })}
+                    {...register("confirm_password", { 
+                      required: true,
+                      validate: (value)=>{
+                        if(value !== getValues("new_password")){
+                          return t("changePasswordPage.validate.confirmPassword") || "Passwords must match";
+                        }
+                        return true;
+                      }
+                    }
+                     
+                    )}
                   />
                 </SCChangePasswordBox>
               </SCBoxChangePassword>
@@ -208,7 +218,7 @@ const Overview = ({ themeUi }: any) => {
               </SCBoxChangePassword>
 
               <SCChangePasswordFlex>
-                <SCChangePasswordSubmit type="submit" themeUi={themeUi}>
+                <SCChangePasswordSubmit type="submit" disabled={Object.keys(errors).length > 0} themeUi={themeUi}>
                   {t("profile.tabContent.overview.button.updatePsw")}
                 </SCChangePasswordSubmit>
                 <SCChangePasswordCancel

@@ -33,6 +33,7 @@ function LoginContainer() {
   },[])
 
   const form = useForm<LoginRequest>({
+    mode:"onTouched",
     defaultValues: {
       email: "",
       password: "",

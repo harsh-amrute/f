@@ -7,7 +7,7 @@
       "password": "Password must exceed 8 characters",
       "passwordMaxLength": "Password must be less than 15 characters",
       "emailMaxLength": "Email must be less than 255 characters",
-      "includeSpace": "Password cannot start or end with a space."
+      "includeSpace": "Password must not contain spaces."
     },
     "placeholder": {
       "email": "Enter Username / Email ID",
@@ -59,7 +59,7 @@
     },
     "validate": {
       "password": "Password requires both uppercase and lowercase characters, numbers, and special characters",
-      "confirmPassword": "Password missmatch"
+      "confirmPassword": "Passwords do not match. Please try again"
     }
   },
   "navbar": {
