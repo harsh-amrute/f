@@ -43,7 +43,7 @@ export const setupAxios = () => {
     }
 
     if (errorResp.status === 403) {
-      window.location.href = '/permission-forbidden'
+      window.location.href = '/permission-forbidden?URLPermission=true'
       return errorResp
     }
 

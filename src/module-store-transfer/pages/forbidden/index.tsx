@@ -1,12 +1,18 @@
-import { SCPageForbidden, SCTextTitle, SCTextContent } from './styles'
+import { SCPageForbidden, SCTextTitle, SCTextContent, PermissionForbiddenIcon } from './styles'
 
 const PageForbidden = () => {
+  const params = new URLSearchParams(window.location.search);
+  const URLPermission = params.get("URLPermission");
   return (
     <SCPageForbidden>
-      <SCTextTitle>Error 403 - Forbidden</SCTextTitle>
-      <SCTextContent>
-        You don’t have permission to access on this server
-      </SCTextContent>
+      {URLPermission ?
+        <PermissionForbiddenIcon
+          src="/assets/img/error-403.svg"
+        /> :
+        <PermissionForbiddenIcon
+          src="/assets/img/error-403-page.svg"
+        />
+      }
     </SCPageForbidden>
   )
 }
