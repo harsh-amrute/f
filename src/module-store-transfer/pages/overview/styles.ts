@@ -152,7 +152,21 @@ export const SCChangePasswordSubmit = styled.button<{ themeUi: string }>`
     props.themeUi === "REGALBLAZE"
       ? globalStyles.chooseThemeColor[props.themeUi]?.color5
       : "linear-gradient(180deg, #bc3d81 0%, #820f4c 100%)"};
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    background:rgb(197, 195, 195);
+    color:rgb(110, 107, 107);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 `;
+
 
 export const SCChangePasswordCancel = styled.button`
   background: transparent;

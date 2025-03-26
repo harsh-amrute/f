@@ -1,10 +1,9 @@
-import { SCPageNotFound, SCTextTitle, SCTextContent } from './styles'
+import { SCPageNotFound, SCTextTitle, SCTextContent, PageNotFoundIcon } from './styles'
 
 const PageNotFound = () => {
   return (
     <SCPageNotFound>
-      <SCTextTitle>404</SCTextTitle>
-      <SCTextContent>Page Not found</SCTextContent>
+      <PageNotFoundIcon src="/assets/img/error-404-page.svg" />
     </SCPageNotFound>
   )
 }

@@ -23,7 +23,7 @@ const Errors = ({ errors, name }: ErrorsProps) => {
     }
   }
   return (
-    <p style={{ color: 'red', marginTop: 10, fontSize: 12,maxWidth:'400px' }}>
+    <p style={{ color: 'red', marginTop: 10, fontSize: 12,maxWidth:'350px', }}>
       {errors[name] && renderError()}
     </p>
   )
