@@ -810,7 +810,7 @@ const ActionToolBar = ({
                       }
                       alt=""
                     />
-                    <p>Save</p>
+                    <p>Save Layout</p>
                   </SCViewContainerWithBg>
                   <SCViewContainerWithBg
                     onClick={() =>
@@ -825,7 +825,7 @@ const ActionToolBar = ({
                       }
                       alt=""
                     />
-                    <p>Reset</p>
+                    <p>Reset Layout</p>
                   </SCViewContainerWithBg>
                   {!disableChartAndGridViewToggle && <SCVerticalDivider />}
                 </>
@@ -1053,7 +1053,7 @@ const ActionToolBar = ({
                         }
                         alt=""
                       />
-                      <p>Save</p>
+                      <p>Save Layout</p>
                     </SCViewContainerWithBg>
                     <SCViewContainerWithBg
                       onClick={() =>
@@ -1068,7 +1068,7 @@ const ActionToolBar = ({
                         }
                         alt=""
                       />
-                      <p>Reset</p>
+                      <p>Reset Layout</p>
                     </SCViewContainerWithBg>
                     {/* {!disableChartAndGridViewToggle && <SCVerticalDivider/> } */}
                     {!disableChartAndGridViewToggle &&
