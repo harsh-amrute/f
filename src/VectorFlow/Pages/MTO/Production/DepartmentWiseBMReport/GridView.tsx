@@ -17,6 +17,7 @@ interface GridProps {
     currentPage?: any,
     saveBtn?: boolean,
     onGridReady?: any
+    excelStyles?:any
 }
 
 const GridView = memo(({
@@ -29,6 +30,7 @@ const GridView = memo(({
     totalRow,
     currentPage,
     onGridReady,
+    excelStyles,
     saveBtn = true }: GridProps) => {
 
     const rowsPerPage = Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
@@ -47,6 +49,7 @@ const GridView = memo(({
                     maintainColumnOrder
                     pagination={false}
                     columnDefs={columDef}
+                    excelStyles={excelStyles}
                     rowData={convercolumnDef}
                     tooltipHideDelay={100000}
                     tooltipShowDelay={0}
