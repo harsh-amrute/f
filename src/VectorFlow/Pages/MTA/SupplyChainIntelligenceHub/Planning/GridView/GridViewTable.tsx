@@ -83,6 +83,24 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
         }
     },[gridState, ref])
 
+     const clearGridFilter = () =>{
+              ref?.current?.api.setFilterModel(null);
+                setIsDisabled(true);
+          }
+      
+         
+          const CustomStatusPanel = () => {
+              return (
+                  <GridFilterWrapper style={{marginTop:'25px'}}>
+                      <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                          Clear All Grid Filters
+                      </TextBtn>  
+                  </GridFilterWrapper>           
+              );
+          };
+
+   
+
     const renderSubGrid = ()=>{
         if(showStockGrid){
             return(
