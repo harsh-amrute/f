@@ -17,6 +17,8 @@ import { GridStateContext } from '../../../../../../../../../context/GridStateCo
 const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyDataGraph,currentCategory,currentTab}:{data:any,paginationProps:VFPaginationProps,onOpenDailyDataGraph:any,currentCategory:string,currentTab:string})=>{
     const [isExpeditingModalOpen,toggleExpeditingModal] =  useState<boolean>(false)
     const [activeRow,setActiveRow] = useState<any>();
+    const [selectedIntransitData,setSelectedIntransitData] = useState<any>();
+    const [selectedStockData,setSelectedStockData] = useState<any>();
     const [currentRowData,setCurrentRowData] = useState<any>();
     const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
 
@@ -40,10 +42,38 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
         toast.dismiss()
         notifySuccess('Request Submitted sucessfully')
         }catch(err:any){
+            console.log(err)
             notifyError(err)
         }finally{
             toggleExpeditingModal(false)
         }
+    }
+    
+    const setTransitStockData = (params: any) => {
+        let stockDataExists, transitDataExists;
+        if (data.stockData && data.stockData.length) {
+            stockDataExists = data.stockData.filter((stockData: any) => (stockData.skucode == params.data.sc && stockData.whcode == params.data.wc))
+            if (stockDataExists) {
+                setSelectedStockData(stockDataExists);
+            }
+        }
+
+        if (data.transitData && data.transitData.length) {
+            transitDataExists = data.transitData.filter((transitData: any) => (transitData.skucode == params.data.sc && transitData.whcode == params.data.wc))
+            if (transitDataExists) {
+                setSelectedStockData(transitDataExists);
+            }
+        }
+        if (transitDataExists || stockDataExists) {
+            setCurrentRowData(params.data)
+            toggleSubGrid(true)
+        }
+
+        // if (params.data.intransit && params.data.intransit.length > 0) {
+        //     setActiveRow(params.data.intransit)
+        //     setCurrentRowData(params.data)
+        //     toggleSubGrid(true)
+        // }
     }
     
 
@@ -82,13 +112,7 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
         // rowSelection:'single',
         readOnlyEdit:true,
         getMainMenuItems: MainMenuItemsCustomization,
-        onRowClicked:(params:any)=>{
-            if(params.data.intransit && params.data.intransit.length>0){
-                setActiveRow(params.data.intransit)
-                setCurrentRowData(params.data)
-                toggleSubGrid(true)
-            }
-        },
+        onRowClicked: setTransitStockData,
         enableRangeSelection: true,
         rowSelection: "multiple",
         statusBar: {
@@ -119,16 +143,16 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
             resizable:true,
             cellStyle:{
                 "flex":1,
-                'text-align':'center',
+                'textAlign':'center',
                 'height':'50px',
-                "font-style":"normal",
-                " font-variant":"normal",
-                " font-weight":"300",
-                " font-size":"20px",
-                " font-family":"Roboto",
+                "fontStyle":"normal",
+                " fontVariant":"normal",
+                " fontWeight":"300",
+                " fontSize":"20px",
+                " fontFamily":"Roboto",
                 "display":"block",
-                'text-overflow':'ellipsis',
-                'white-space':'nowrap'
+                'textOverflow':'ellipsis',
+                'whiteSpace':'nowrap'
             },
         }
     }
@@ -278,10 +302,10 @@ const ExpediteParentExpediteDispatchesGrid = ({data,paginationProps,onOpenDailyD
                 agGridProps={agGridProps} 
                 agGridColDefs={colDefs} 
                 agGridRowData={data['data']} 
-                customGridRowData={activeRow} 
+                customGridRowData={selectedIntransitData} 
                 customGridColDef={customGridColDef} 
                 showStockGrid 
-                stockGridData={currentRowData?[{...currentRowData}]:[]} 
+                stockGridData={selectedStockData}
                 isSubGridOpen={isSubGridOpen} 
                 onRequestExpediting={()=>toggleExpeditingModal(true)}
                 paginationProps={paginationProps}

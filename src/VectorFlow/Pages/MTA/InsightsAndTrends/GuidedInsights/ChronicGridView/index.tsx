@@ -4,11 +4,14 @@ import {
   getColumnDefinationsMTA,
   MainMenuItemsCustomization,
 } from "../../../../../../helpers/utils";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useGetUIConfigData } from "../../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../../helpers/Enum";
 import { notifyError } from "../../../../../../helpers/notify";
 import { ColDef } from "ag-grid-enterprise";
+
+
+
 interface ChronicGridViewProps {
   currentGridData: any;
 }
@@ -54,6 +57,10 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
       rowGroup: true,
     }
   };
+
+ 
+
+  
 
   const sideBarForChronicGrid = {
     toolPanels: [
@@ -208,6 +215,7 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
         currentCategory={"GuidedInsightchronicunavailability"}
         currentTab={""}
         gridHeight={"80%"}
+        
       />
     </div>
   );

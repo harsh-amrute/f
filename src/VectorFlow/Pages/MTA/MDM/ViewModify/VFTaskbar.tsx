@@ -355,11 +355,11 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width,justifyContent:'space-between'}}>
                     <div style={{display:'flex', gap:'20px'}}>
                     <BackButton/>  
-                    {showExportErrors && 
-                     <VFButton onClick={()=>onClearAndExportErrors('')} themeUi={themeUi} disabled={false}  width={183}>
-                     Export Errors
-                    </VFButton> 
-                    } 
+                        {(showExportErrors || showSubmittedExportError) &&
+                            <VFButton onClick={() => onClearAndExportErrors('')} themeUi={themeUi} disabled={false} width={183}>
+                                Export Errors
+                            </VFButton>
+                        }
                     </div>
                     <div > 
                     <VFStepper

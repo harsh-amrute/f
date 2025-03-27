@@ -1,6 +1,9 @@
 
+import { GridFilterWrapper, TextBtn } from "../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles"
 import { PaginationWrapper,StatusBarLabel,StatusBarLabelLight,StatusBarLabelBold,PaginationContainer, PaginationArrowIcon } from "./styles"
 import { CSSProperties } from 'react'
+import { useUserData } from '../../../../context';
+
 
 
 
@@ -13,7 +16,9 @@ export interface VFPaginationProps{
     handleChangePerPage?:(e:any)=>void
     showTotalItems?:boolean,
     showPagination?:boolean,
-    style?:CSSProperties
+    style?:CSSProperties,
+    resetGridRef?: any,
+    isDisabled?:any
     
 }
 
@@ -26,9 +31,13 @@ const VFPagination  = (props:VFPaginationProps)=>{
         rowsPerPage,
         style,
         handleChangePage,
+        resetGridRef,
+        isDisabled
     } = props
 
 
+    const { user } = useUserData();
+    const themeUi = user?.user?.theme_ui;
     const defaultPaginationLimit = 100;
     const totalPages = Math.max(Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit)),1)
 
@@ -51,10 +60,17 @@ const VFPagination  = (props:VFPaginationProps)=>{
         if(newPage<1)return 
         return handleChangePage(newPage)
     }
+    const clearGridFilter = () =>{
+        resetGridRef?.current?.api.setFilterModel(null)
+    }
+
 
     return(
         <PaginationWrapper data-testid="vf_pagination" style={style}>
             <PaginationContainer>
+                 <GridFilterWrapper>
+                                    <TextBtn onClick={clearGridFilter} disabled={ isDisabled} themeUi={themeUi}>Clear All Grid Filters</TextBtn>  
+                                </GridFilterWrapper>
             <StatusBarLabel>
                 <StatusBarLabelBold>
                 {getTotalItemsString()} 

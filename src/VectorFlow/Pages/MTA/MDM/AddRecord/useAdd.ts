@@ -216,7 +216,6 @@ const useAdd=()=>{
               }
 
               setTaskId(data.data.taskId  );
-              
               if(data.data.conflictErrorCount){
                 conflictCount += parseInt(data.data.conflictErrorCount,10);
               }
@@ -284,22 +283,22 @@ const useAdd=()=>{
           const totalRecords = activeMaster.rowData.length
         
           const {isDisaster,errorCount:localErrorCount,errorData:localErrorData,conflictCount} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          let errorRowData = [];
+          let errorRowData:any = [];
 
           if(isDisaster){
             notifyError("Something went wrong !")
             return
           }
 
-
-          if(localErrorCount>0 || errorCounts>0){
-            if(localErrorCount > 0){
-              errorRowData = createErrorRowData(localErrorData,activeMaster.id)
-            }
-            else{
-              errorRowData = createErrorRowData(errorData,activeMaster.id)
-            }
-            if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
+          if (localErrorCount > 0) {
+            errorRowData = localErrorData.flatMap((errorObj: any) =>
+              errorObj.errorData.map((row: any) => ({
+                  ...row,
+                  error: errorObj.errorType,
+              })),
+          );
+          
+            if (!activeMaster.colDefs.find((c: ColDef) => c.colId === 'error')) {
               addInvalidDataColDefs('error')
             }
             dispatch(UPDATE_ROW_DATA(errorRowData))
@@ -341,6 +340,7 @@ const useAdd=()=>{
         setIsSubmitDisabled(false)
       }
     }
+
 
       const showMasterGroup = (currMasterGroup:{name:string,masters:Array<any>})=>{
         if(selectedOptions.length===0)return true

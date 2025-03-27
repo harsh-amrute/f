@@ -274,8 +274,16 @@
   color: #FFFFFF;
 }
 
-.modal-bottom .btn_submit.REGALBLAZE{
+.modal-bottom .btn_submit.REGALBLAZE {
   background: #C7810E;
+}
+
+.modal-bottom .btn_submit:disabled {
+  background: #D3D3D3;
+  color: #A9A9A9;
+  cursor: not-allowed;
+  box-shadow: none;
+  border: 1px solid #C0C0C0;
 }
 
 .modal-bottom .btn_cancel {

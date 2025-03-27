@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import { useNavigate } from "react-router";
 import { type Option, type Field,type GetMasterDataPayload, type GridRef, type QueryFilteredDataConfigs, type MDMMasterState } from "../../../../types/MDM";
-import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData } from "../../../../../helpers/utils";
+import {generateOptions, areMasterFiltersValid, parseExcelData, mapStateFiltersToPayload, mapMasterToMasterState, generateSesonalityChartData, checkError,getActionId, mapMasterToColumnDefs,createConflictRowData, createErrorRowData, MainMenuItemsCustomization } from "../../../../../helpers/utils";
 import { useGetMasterData, useGetMasterUIConfiguration, useGetCount, useCreateDraft, useModifyDraft, useGetSeasonalityDetails, useModifyMasterData,useModifyMasterDataRetail, useDeleteDraft, useDeleteTask, useValidateMaster, useGetRetailCount,useGetMasterDataRetail, useGetUploadProgress } from "../../../../Services/MTA/MDM";
 import { useSelector, useDispatch } from 'react-redux';
 import { FILL_MASTERS, FILL_OPTIONS, TOGGLE_SELECT_MASTER_SCREEN, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS,STORE_ALL_MASTERS, REMOVE_MASTER, ADD_FILTER, REMOVE_FILTER, SYNC_ACTIVE_MASTER_TO_MASTER, UPDATE_ROW_DATA, UPDATE_PROGRESS_STATE, ADD_COLDEFS, REMOVE_ROW_DATA, REMOVE_COLDEFS, SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, REMOVE_ALL_FILTERS, SET_RECORD_COUNT, UPDATE_DATA_AVAILABILITY_STATUS, RESET_FILTERS, UPDATE_IS_SAVING_DRAFT, ADD_MASTER} from '../../../../../redux/actions/MDM';
@@ -313,6 +313,7 @@ const useViewModify = (pageType:string) => {
       readOnlyEdit:true,
       tooltipTrigger:'hover',
       sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
+      getMainMenuItems: MainMenuItemsCustomization,
       gridOptions:{
         getRowStyle: (params: any) => {
           if (params.node.rowIndex % 2 === 0) {
@@ -1608,7 +1609,7 @@ const useViewModify = (pageType:string) => {
         setTempDownloadData(false);
         setFilterButtonStatus([]);
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-        
+        dispatch(SET_DRAFT_ID(''))
 
         if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
             // dispatch(UPDATE_ACTIVE_MASTER([]))
@@ -1649,7 +1650,7 @@ const useViewModify = (pageType:string) => {
        setTempDownloadData(false);
        setFilterButtonStatus([]);
        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-      
+       dispatch(SET_DRAFT_ID(''))
 
        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
        // dispatch(UPDATE_COLDEFS([]));
@@ -1680,7 +1681,7 @@ const useViewModify = (pageType:string) => {
         try {
           toastId = notifyLoader(`Creating Draft ${chunkProgress}/${activeMaster.rowData.length}`);
           for(let i=0; i < rowData.length; i+=chunkSize){
-            if(draftId.length > 0){
+            if(draftID.length > 0){
               if(i+chunkSize < rowData.length){
                 await createDraft(generateDraftPayload(rowData.slice(i,i+chunkSize),draftId));
                 toast.update(toastId,{render:`Uploading ${i+chunkSize}/${rowData.length}`})

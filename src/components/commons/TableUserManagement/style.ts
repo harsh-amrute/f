@@ -149,9 +149,13 @@ export const SCTableTrValue = styled.tr`
   }
 `
 
-export const SCIcon = styled.img`
-  cursor: pointer;
+export const SCIconWrapper = styled.div`
+    display :inline-block;
+    position: relative;
+    cursor: pointer;
+    `;
 
+export const SCIcon = styled.img`
   .circle {
     fill: red;
   }
