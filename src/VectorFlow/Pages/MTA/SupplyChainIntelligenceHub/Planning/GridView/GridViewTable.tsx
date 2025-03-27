@@ -37,57 +37,44 @@ interface GridViewTableProps {
 }
 
 const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader,currentCategory,currentTab}:GridViewTableProps) => {
-    const {ref,gridColDefs} = useContext(GridStateContext)
+    const {ref} = useContext(GridStateContext)
     const {mutateAsync:getState} = useGetState()
     const [gridState,setGridState] = useState<any>()
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
 
-    const [internalRef,setInternalRef] = useState<any>()
     const [Columns,setColumns] = useState<any[]>(_.cloneDeep(agGridColDefs))
 
-    // useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState(`${currentCategory}${currentTab}`)
-    //         ref.current.api.applyColumnState({state:JSON.parse(data.data.data)})
-    //       }catch(err:any){
-    //         notifyError(err)
-    //       }
-    //     }
-    //     getTableState()
-    // },[ref])
-
     useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({reportname:`${currentCategory}${currentTab}`})
-            const parsedContent = JSON.parse(data.data.data)
-            setGridState(parsedContent)
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:Columns,
-                pivot:false
-            })
-          }
+        if(agGridColDefs && agGridColDefs.length){
+            const getTableState = async()=>{
+                try{
+                    const data =  await getState({reportname:`${currentCategory}${currentTab}`})
+                    const parsedContent = JSON.parse(data.data.data)
+                    setGridState(parsedContent)
+                }catch(err:any){
+                    setGridState({
+                        charts:[],
+                        columns:Columns,
+                        pivot:false
+                    })
+                }
+            }
+            
+            getTableState()
         }
-        getTableState()
-    },[])
+    },[agGridColDefs])
 
     useEffect(()=>{
-        if(internalRef && gridState && Array.isArray(gridState.columns) && gridState.columns.length !== 0){
-            const StateColumns = updateCommonAttributes(gridState.columns,Columns,'colId')
-            setColumns(StateColumns)
-            internalRef?.api?.applyColumnState({state:gridState.columns,applyOrder:true})
-            internalRef?.api.sizeColumnsToFit();
+        if(gridState && Array.isArray(gridState.columns) && gridState.columns.length !== 0){
+            ref?.current?.api?.applyColumnState({state:gridState.columns,applyOrder:true})
+            ref?.current?.api?.sizeColumnsToFit();
         }else{
-            internalRef?.api?.applyColumnState({state:gridColDefs,applyOrder:true})
-            internalRef?.api.sizeColumnsToFit();
+            if(ref && ref.current){
+                ref?.current?.api?.sizeColumnsToFit();
+            }
         }
-    },[internalRef,gridState,gridColDefs])
-
-   
+    },[gridState, ref])
 
     const renderSubGrid = ()=>{
         if(showStockGrid){
@@ -166,7 +153,6 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
                             height={gridHeight ? gridHeight : '380px'}
-                            onGridReady={(params)=>setInternalRef(params)}
                             maintainColumnOrder
                             onFilterChanged={() => {
                                 const filterModel = ref?.current?.api?.getFilterModel();
