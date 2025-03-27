@@ -283,17 +283,21 @@ const useAdd=()=>{
           const totalRecords = activeMaster.rowData.length
         
           const {isDisaster,errorCount:localErrorCount,errorData:localErrorData,conflictCount} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
-          let errorRowData = [];
+          let errorRowData:any = [];
 
           if(isDisaster){
             notifyError("Something went wrong !")
             return
           }
 
-
           if (localErrorCount > 0) {
-            errorRowData = createErrorRowData(localErrorData, activeMaster.id)
-            
+            errorRowData = localErrorData.flatMap((errorObj: any) =>
+              errorObj.errorData.map((row: any) => ({
+                  ...row,
+                  error: errorObj.errorType,
+              })),
+          );
+          
             if (!activeMaster.colDefs.find((c: ColDef) => c.colId === 'error')) {
               addInvalidDataColDefs('error')
             }
@@ -336,6 +340,7 @@ const useAdd=()=>{
         setIsSubmitDisabled(false)
       }
     }
+
 
       const showMasterGroup = (currMasterGroup:{name:string,masters:Array<any>})=>{
         if(selectedOptions.length===0)return true
