@@ -48,7 +48,7 @@ const VFChartsTable = (props:any)=>{
 
     const handleExportExcel = () => {
         gridRef?.current?.api?.exportDataAsExcel({
-            fileName: downloadName || 'export.xlsx', 
+            fileName: (downloadName ? downloadName.replace(/[^a-zA-Z0-9-_ %]/g, '').replace(/ /g, '_') : 'export') + '.xlsx'        
         });
     };
 
