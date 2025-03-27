@@ -257,14 +257,13 @@ const useRRR =()=>{
   const defaultColDefObject = useMemo(()=>{
     return {
         floatingFilter: true,
-        cellStyle:{
-            "flex":1,
-            'textAlign':'center',
-            'height':'50px',
-            "fontStyle":"normal",
-            "display":"block",
-            'textOverflow':'ellipsis',
-            'whiteSpace':'nowrap'
+        cellStyle: {       
+            "textAlign": "center",
+            "height": "50px",
+            "fontStyle": "normal",
+            "display": "block",
+            "textOverflow": "ellipsis",
+            "whiteSpace": "nowrap",
         },
     }
   },[])
