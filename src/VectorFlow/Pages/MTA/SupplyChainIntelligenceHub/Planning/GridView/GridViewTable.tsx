@@ -17,7 +17,6 @@ import _ from 'lodash'
 import { GridFilterWrapper, TextBtn } from "../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
 import { useUserData } from "../../../../../../context";
 
-// import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 
 
 interface GridViewTableProps {
@@ -83,6 +82,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
         }
     },[gridState, ref])
 
+    
      const clearGridFilter = () =>{
               ref?.current?.api.setFilterModel(null);
                 setIsDisabled(true);
