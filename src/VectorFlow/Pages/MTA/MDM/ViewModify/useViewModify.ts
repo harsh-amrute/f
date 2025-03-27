@@ -765,7 +765,14 @@ const useViewModify = (pageType:string) => {
     }
   
     const handleOnDeleteFilter = (id:string)=>{
-      if(activeMaster.filters.length === 1) return notifyError("Cannot Delete this Filter Instance")
+     
+      if (activeMaster.filters.length === 1) {
+        
+        dispatch(RESET_FILTERS());
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+      
+        return;
+      }
       dispatch(REMOVE_FILTER(id));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }

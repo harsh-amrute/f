@@ -19,7 +19,7 @@ const [currentGridData,setCurrentGridData] = useState([{}]);
 
 const ref = useRef()
 
-const {state:currentFilter,setState:setCurrentFilter,onDelete} = useBPRFilter()
+const {state:currentFilter,setState:setCurrentFilter,onDelete,defaultFilters} = useBPRFilter()
 
 
 const {mutateAsync:getDBMNormSuggestionLoc} = useGetDBMNormSuggestionLoc() || {};
@@ -38,6 +38,7 @@ const [ageing,setAgeing] = useState<number>(1)
  const onFloatingTabChange = (tab:any) => {
         setCurrentTab(tab.value);
         setCurrentView("chart");
+        setCurrentFilter(defaultFilters)
     }
      const onGoBack = () => {
         // setIsSelectCategoryOpen(true);
@@ -58,8 +59,8 @@ const [ageing,setAgeing] = useState<number>(1)
         }
          const toastId = notifyLoader('Loading Grid Data');
          const result = await getChronicUnavailabilityGrid(body)
-         setCurrentGridData(result.data.data);
-         setChronicRowData(result.data.data);
+         setCurrentGridData(result?.data?.data != null? result?.data?.data:[]);
+         setChronicRowData(result?.data?.data != null? result?.data?.data:[]);
          toast.dismiss(toastId);
          notifySuccess("Grid Details Fetched Successfully");
                     
@@ -67,7 +68,6 @@ const [ageing,setAgeing] = useState<number>(1)
 
     const fetchAndUpdateChartData=async(currentFilter?:any, horison?:any, ageing?:any)=>{
        try{
-        console.log(ageing)
         const body:any=
            {filters:currentFilter,
            }
@@ -105,9 +105,6 @@ const [ageing,setAgeing] = useState<number>(1)
             // result = {...r1, ...r2};
             toast.dismiss(toastId);
          }
-console.log('ok')
-
-
 
           if(result){
             setCurrentGridData(result.data.data);
@@ -138,8 +135,8 @@ console.log('ok')
             fetchAndUpdateChartData(currentFilter, horizon, ageing)
           }
           else{
-            setCurrentFilter(filter)
-            fetchAndUpdateGridData(filter)
+            setCurrentFilter(currentFilter)
+            fetchAndUpdateGridData(currentFilter)
           }
         // await getDataCount(filter)
         //await getDBMRowData(filter,1)

@@ -152,6 +152,8 @@ const VFChartsTable = (props:any)=>{
         defaultColDef={{
         floatingFilter: true,
         filter: "agMultiColumnFilter",
+        flex:1,
+        minWidth:100
         }}
         height={'480px'}
         sideBar={sideBar}
