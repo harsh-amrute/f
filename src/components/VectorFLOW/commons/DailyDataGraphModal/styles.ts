@@ -6,12 +6,12 @@ export const SCSeasonalityContainer = styled.div`
     padding-top:20px;
     padding-bottom:20px;
     display:flex;
-    width:1810px;
-    height:850px;
+    width:100%;
+    height:100%;
 
     @media (min-width:1024px) and (max-width:1688px){
-        width:1100px;
-        height:500px;
+        width:1000px;
+        height:100%;
     } 
     
 `
@@ -19,8 +19,8 @@ export const SCSeasonalityContainer = styled.div`
 export const SCChartContainer = styled.div`
     margin-right:33px;
     //width:81%;
-    width:76%;
-    height:300px
+    width:90%;
+    height:90%;
 `
 
 export const SCSeasonalityStatusDetails = styled.div`
