@@ -4848,7 +4848,7 @@ export function getColumnDefinationsMTA(
       enableRowGroup:true,
       enableValue:true,
       pivotIndex: null,
-      flex: undefined,
+      flex: 1,
       minWidth: 180,
       cellStyle: {
         justifyContent: data.CellAlignment
