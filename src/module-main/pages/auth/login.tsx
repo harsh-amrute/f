@@ -62,7 +62,6 @@ function LoginContainer() {
         onSuccess: (data: any) => {
 
           if (data?.status !== 200) {
-            console.log(data.response.msg)
             if(data.response.msg==='User is inactive please contact admin'){
               notifyError("User is inactive please contact admin")
             }
