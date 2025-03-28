@@ -153,6 +153,10 @@ export const SCIconWrapper = styled.div`
     display :inline-block;
     position: relative;
     cursor: pointer;
+
+    .user-manage-tooltip{
+      z-index:1;
+    }
     `;
 
 export const SCIcon = styled.img`

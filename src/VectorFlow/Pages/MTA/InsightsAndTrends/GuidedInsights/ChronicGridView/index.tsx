@@ -122,6 +122,7 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
       filter: "agMultiColumnFilter",
       cellDataType: false,
       resizable: true,
+      minWidth: 150, // Default width for all columns
       cellStyle: {
         flex: 1,
         textAlign: "center",
