@@ -229,7 +229,7 @@ const ResearchInsights = ()=>{
                                     90-60 Days
                                 </HistoricalAvailabiltyContentSectionHeader>
                                 <HistoricalAvailabiltyContentSectionData>
-                                    {getFormattedPercentage(historicalAvailabilityData.Availability_01_30)}%
+                                    {getFormattedPercentage(historicalAvailabilityData.availability_01_30)}%
                                 </HistoricalAvailabiltyContentSectionData>
                             </HistoricalAvailabiltyContentSection>
                             <HistoricalAvailabiltyContentSection>
@@ -237,7 +237,7 @@ const ResearchInsights = ()=>{
                                     60-30 Days
                                 </HistoricalAvailabiltyContentSectionHeader>
                                 <HistoricalAvailabiltyContentSectionData>
-                                    {getFormattedPercentage(historicalAvailabilityData.Availability_31_60)}%
+                                    {getFormattedPercentage(historicalAvailabilityData.availability_31_60)}%
                                 </HistoricalAvailabiltyContentSectionData>
                             </HistoricalAvailabiltyContentSection>
                             <HistoricalAvailabiltyContentSection style={{border:"none"}}>
@@ -245,7 +245,7 @@ const ResearchInsights = ()=>{
                                     30-0 Days
                                 </HistoricalAvailabiltyContentSectionHeader>
                                 <HistoricalAvailabiltyContentSectionData>
-                                    {getFormattedPercentage(historicalAvailabilityData.Availability_61_90)}%
+                                    {getFormattedPercentage(historicalAvailabilityData.availability_61_90)}%
                                 </HistoricalAvailabiltyContentSectionData>
                             </HistoricalAvailabiltyContentSection>
                         </HistoricalAvailabiltyContent>
