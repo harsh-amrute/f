@@ -77,11 +77,11 @@ const ModalManageUsers = ({
         setInfoUser({
           ...infoUser,
           name: value.username,
-          email: value.email_id.trim(),
+          email: value.email_id.trim().toLowerCase(),
           password: value.password,
         });
       } else {
-        setInfoUser({ ...infoUser, name: value.username, email: value.email_id });
+        setInfoUser({ ...infoUser, name: value.username, email: value.email_id.trim().toLowerCase() });
       }
     
       fillAdvancedPermissionsModalData(currentItem);

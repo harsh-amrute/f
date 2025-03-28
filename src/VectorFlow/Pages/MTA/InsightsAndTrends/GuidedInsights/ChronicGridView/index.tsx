@@ -71,14 +71,7 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
         iconKey: "columns",
         toolPanel: "agColumnsToolPanel",
         // toolPanelParams: {},
-      },
-      {
-        id: "filters",
-        labelDefault: "Filters",
-        labelKey: "filters",
-        iconKey: "filter",
-        toolPanel: "agFiltersToolPanel",
-      },
+      }
     ],
     defaultToolPanel: "",
   };
