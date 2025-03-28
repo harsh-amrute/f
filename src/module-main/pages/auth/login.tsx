@@ -60,8 +60,12 @@ function LoginContainer() {
       formData.password = await hashPassword(formData.password)
       mutateLogin(formData, {
         onSuccess: (data: any) => {
+
           if (data?.status !== 200) {
-            if(data?.status === 400){
+            if(data.response.msg==='User is inactive please contact admin'){
+              notifyError("User is inactive please contact admin")
+            }
+            else if(data?.status === 400){
               notifyError(data?.error?.non_field_errors[0] )
             }else{
               notifyError("Something went wrong")
