@@ -472,23 +472,6 @@ export const useBORColorBandwise =()=>{
               rowNode.setDataValue('remarks', '');
             }
           });
-
-          // editedRows.forEach((editedRow) => {
-          //     // Find the row node using both SKUCode and WHCode as unique identifiers
-          //     const rowNode:any = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WHCode}-${editedRow.SupplierCode}`);
-          //     if (rowNode) {
-          //       const RemarkColumn = BORCBColumns.find(obj => obj.colId === "Remark");
-          //       if(rowNode?.data?.Remark!==undefined && RemarkColumn!==undefined){
-          //         // Check if Remark column exist in both columnDef and RowData , only then update its value for better ui
-          //         rowNode?.setDataValue('Remark', editedRow?.remarks);
-          //       }
-          //       rowNode.setDataValue('Remark', editedRow.remarks);
-        
-          //       // Clear the 'Edit Remarks' column after submission
-          //       rowNode.setDataValue('remarks', '');
-          //     }
-          //   });
-            
            toast.dismiss(toastId)
            notifySuccess(data.msg)
            setEditedRows([])
