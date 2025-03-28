@@ -6,7 +6,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA, DownloadExcel, DownloadExcelMTA } from "../../../../../helpers/utils"
 
 import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
@@ -24,7 +24,7 @@ import { SeasonalityGraphCellRenderer } from "../../../../../components/VectorFL
 import { VFPaginationProps } from "../../../../../components/VectorFLOW/commons/VFPagination"
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import CustomVFTable from "./CustomVFTable"
-import { notifyError, notifyLoader } from "../../../../../helpers/notify"
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import {TOGGLE_GRAPH_MODAL,UPDATE_DAILY_DATA} from '../../../../../redux/actions/MTA';
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
@@ -273,6 +273,7 @@ const useBTR = () => {
                 pageNumber: pageNumber,
                 recordsPerPage: rowsPerPage
             },
+            ISExport:"0"
         }
         const loaderId = notifyLoader("Loading data")
         try {
@@ -645,25 +646,52 @@ const useBTR = () => {
         }
     }
 
+    // const onExportToExcelCallBack = async (pageNumber: number, page: string) => {
+    //     const tempFilter = getPreparedFilter(currFilter)
+    //     const payload = {
+    //         id: 0,
+    //         name: page==='on-hand'?'tech':'eco',
+    //         fields: [],
+    //         filters: tempFilter,
+    //         paginationParameter: {
+    //             pageNumber: pageNumber,
+    //             recordsPerPage: 5000
+    //         },
+    //     }
+    //     const data = await getBTRData(payload)
+    //     if (page == 'on-hand') return data.data.data.tech
+    //     return data.data.data.eco
+
+    // }
+
     const onExportToExcelCallBack = async (pageNumber: number, page: string) => {
         const tempFilter = getPreparedFilter(currFilter)
+        const headersdata = techRef?.current?.api?.getColumnState() || [];
+        console.log(techColDefs,headersdata)
+        const techColMap = new Map(techColDefs.map((col: any) => [col.colId, col.headerName]));
+        const resultArray = headersdata
+            .filter((col: any) => techColMap.has(col.colId)) // Keep only matching colId
+            .map((col: any) => ({ Field: col.colId, HeaderName: techColMap.get(col.colId) }));
+       console.log(resultArray)
         const payload = {
+            Headers:resultArray,
             id: 0,
             name: page==='on-hand'?'tech':'eco',
             fields: [],
             filters: tempFilter,
             paginationParameter: {
-                pageNumber: pageNumber,
-                recordsPerPage: 5000
+                pageNumber: pageNumber
             },
+            ISExport:"1",
+            responseType: `arraybuffer`
         }
+        notifyLoader("Downloading Data...")
         const data = await getBTRData(payload)
-        if (page == 'on-hand') return data.data.data.tech
-        return data.data.data.eco
+        DownloadExcelMTA(data?.data?.data ,data?.data?.data?.fileName )
+        notifySuccess(`Data Exported Successfully`);
 
     }
-
-      
+ 
     
 
     return {
