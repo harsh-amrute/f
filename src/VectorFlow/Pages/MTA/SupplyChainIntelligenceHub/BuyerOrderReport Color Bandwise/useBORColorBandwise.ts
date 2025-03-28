@@ -394,13 +394,16 @@ export const useBORColorBandwise =()=>{
             }
             return { background: "#F7F7F7" };
             },
+            getRowId: (params) => {
+              return `${params.data.SKUCode}-${params.data.WhCode}-${params.data.SupplierCode}`
+          },
         },
          pagination:false,
          sideBar:defaultAgGridSideBarForBPR,
         // pivotMode:true,
          defaultColDef:defaultColDefObject,
         onGridReady:(params)=>setInternalRef(params),
-        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WHCode","SupplierCode")
+        onCellValueChanged:(params)=>onCellValueChanged(params.data,"SKUCode","WhCode","SupplierCode")
       }
      },[])
 
@@ -455,21 +458,20 @@ export const useBORColorBandwise =()=>{
           })
           const {data} = await submitRemark({data:payload})
           editedRows.forEach((editedRow) => {
-              // Find the row node using both SKUCode and WHCode as unique identifiers
-              const rowNode:any = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WHCode}-${editedRow.SupplierCode}`);
-              if (rowNode) {
-                const RemarkColumn = BORCBColumns.find(obj => obj.colId === "Remark");
-                if(rowNode?.data?.Remark!==undefined && RemarkColumn!==undefined){
-                  // Check if Remark column exist in both columnDef and RowData , only then update its value for better ui
-                  rowNode?.setDataValue('Remark', editedRow?.remarks);
-                }
-                rowNode.setDataValue('Remark', editedRow.remarks);
-        
-                // Clear the 'Edit Remarks' column after submission
-                rowNode.setDataValue('remarks', '');
+            // Find the row node using both SKUCode and WHCode as unique identifiers
+            const rowNode:any = ref.current?.api.getRowNode(`${editedRow.SKUCode}-${editedRow.WhCode}-${editedRow.SupplierCode}`);
+            if (rowNode) {
+              const RemarkColumn = BORCBColumns.find(obj => obj.colId === "Remark");
+              if(rowNode?.data?.Remark!==undefined && RemarkColumn!==undefined){
+                // Check if Remark column exist in both columnDef and RowData , only then update its value for better ui
+                rowNode?.setDataValue('Remark', editedRow?.remarks);
               }
-            });
-            
+              rowNode.setDataValue('Remark', editedRow.remarks);
+      
+              // Clear the 'Edit Remarks' column after submission
+              rowNode.setDataValue('remarks', '');
+            }
+          });
            toast.dismiss(toastId)
            notifySuccess(data.msg)
            setEditedRows([])
