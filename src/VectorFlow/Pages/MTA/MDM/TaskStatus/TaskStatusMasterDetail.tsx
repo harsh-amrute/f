@@ -182,7 +182,8 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
         data,
         onDownload
     } = props
-    const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
+    // const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
+    const approvedStatuses = ["Approved","Approved - DB Updated"]
     const {user} = useUserData()
     const {Approvers} = data
 
