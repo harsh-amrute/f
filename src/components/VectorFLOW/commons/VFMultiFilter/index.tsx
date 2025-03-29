@@ -484,7 +484,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
         if(filterId==='LF6'){
             filterObj.attributeName='Location'; 
-            filterObj.label='WHCode';
+            filterObj.label='LocationCode';
             //location
             filterObj.operator='='
         }
@@ -1256,6 +1256,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         onClick={() => {
                             const validationResult = validation()
                             if (validationResult.length === 0) {
+                                console.log("sdfsfdsfs", filterState);
                             setMultiFilter(filterState)
                             onApplyFilter(filterState);
                             } else {

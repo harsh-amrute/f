@@ -642,7 +642,7 @@ const useViewModify = (pageType:string) => {
     const handleTabChange = (currMaster: MDMMasterState) => {
       if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
 
-      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted' && master.progress !=='deleteOnlineSubmitted'));
 
       if(currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
       else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
