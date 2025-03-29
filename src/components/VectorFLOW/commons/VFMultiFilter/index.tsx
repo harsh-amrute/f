@@ -658,7 +658,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                         ...filter
                                     };
                                    
-                                    if(finalLabel && updateLabel) {console.log('heelo');result['label'] = finalLabel;}
+                                    if(finalLabel && updateLabel) {result['label'] = finalLabel;}
                                     if(finalValue!==undefined){
                                         result[property] = finalValue;
 
@@ -1256,7 +1256,6 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                         onClick={() => {
                             const validationResult = validation()
                             if (validationResult.length === 0) {
-                                console.log("sdfsfdsfs", filterState);
                             setMultiFilter(filterState)
                             onApplyFilter(filterState);
                             } else {
