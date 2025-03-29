@@ -72,7 +72,7 @@ const ConflictErrorCellRenderer = (params:any)=>{
         // const viewPortWidth = window.innerWidth
     
     
-        let tooltipTop = (top * currGridZoom * currScreenZoom) +targetHeight + 10;
+        let tooltipTop = (top * currGridZoom * currScreenZoom) +targetHeight;
         // let tooltipLeft = (left *  currGridZoom * currScreenZoom) +((targetWidth/2)*  currGridZoom * currScreenZoom) - (toolTipWidth/2);
         const tooltipLeft = (left *  currGridZoom * currScreenZoom) +((targetWidth/2)*  currGridZoom * currScreenZoom) - (tooltipWidth/2) ;
 
@@ -124,7 +124,7 @@ const ConflictErrorCellRenderer = (params:any)=>{
             </p>
            {params.data.users && isToolTipOpen && (
              <Portal wrapperId="conflict-tooltip">
-                <ConflictErrorToolTipWrapper id={'tooltipWrapper'} ref={toolTipRef} style={{...tooltipPosition}}>
+                <ConflictErrorToolTipWrapper id={'tooltipWrapper'} ref={toolTipRef} style={{...tooltipPosition}} className="custom-scrollbar">
                     {!isToolTipOverflowing && (    
                         <ToolTipTriangle style={{top:-13}}/>
                     )}

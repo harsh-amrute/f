@@ -340,6 +340,7 @@ export const ConflictErrorToolTipWrapper = styled.div`
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     /* transform:translate(-50%,10px) ; */
     animation:${fadeIn} 0.2s ease-in;
+    max-height:250px;
     
    
 `
