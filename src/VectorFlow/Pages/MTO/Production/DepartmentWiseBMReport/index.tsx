@@ -785,8 +785,11 @@ const DptWiseBMReport = () => {
             console.log(e);
         }
     }
-
-
+    
+    console.log('gridData', gridData)
+    
+    
+    
     const getTempUpdatedFilteredData = async () => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
@@ -800,6 +803,7 @@ const DptWiseBMReport = () => {
             setIsExcelLoading(false);
         }
     }
+    console.log('tempGridData', tempGridData)
 
     useEffect(() => {
         if (Object.keys(appliedFilters).length) {
