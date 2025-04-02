@@ -633,16 +633,16 @@ const useViewModify = (pageType:string) => {
       if(activeMaster.id===0){
         dispatch(UPDATE_ACTIVE_MASTER(0));
       }
-      else{
-        dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
-      }
+      // else{
+      //   dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
+      // }
       dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
     }
 
     const handleTabChange = (currMaster: MDMMasterState) => {
       if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
 
-      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted' && master.progress !=='deleteOnlineSubmitted'));
 
       if(currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
       else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
@@ -722,10 +722,20 @@ const useViewModify = (pageType:string) => {
           console.log('No "selectedMaster" parameter found in the URL.');
       }
   }
+  function checkMasterProgress(masterArray: any) {
+    let defaultProgressCount = 0; 
+    for (const master of masterArray) {
+        if (master.progress === "default") {
+            defaultProgressCount++; 
+        }
+    }
+    return defaultProgressCount === 1;
+}
 
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
       e.stopPropagation();
-      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+      if(checkMasterProgress(masters)) {return notifyError("There Should be atleast one selected Master")}
+      const nextMasterIndex = masters?.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
       if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
       if(masters.length === 1){
         return notifyError("There Should be atleast one selected Master")

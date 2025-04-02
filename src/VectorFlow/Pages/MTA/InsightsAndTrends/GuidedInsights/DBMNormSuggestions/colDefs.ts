@@ -53,7 +53,7 @@ export const coldefs1: ColDef[] = [
     },
     {
       field: "c1",
-      headerName: "c1",
+      headerName: "C1",
       colId: "c1",
     },
     {
@@ -131,12 +131,12 @@ export const coldefs1: ColDef[] = [
 export  const coldefs2: ColDef[] = [
     {
       field: "suggestion",
-      headerName: "suggestion",
+      headerName: "Suggestion",
       colId: "suggestion",
     },
     {
       field: "count",
-      headerName: "count",
+      headerName: "Count",
       colId: "count",
     },
   ];
@@ -164,17 +164,17 @@ export  const coldefs3: ColDef[] = [
     },
     {
       field: "elephantOrderCapping",
-      headerName: "elephantOrderCapping",
+      headerName: "ElephantOrderCapping",
       colId: "elephantOrderCapping",
     },
     {
       field: "weight",
-      headerName: "weight",
+      headerName: "Weight",
       colId: "weight",
     },
     {
       field: "volume",
-      headerName: "volume",
+      headerName: "Volume",
       colId: "volume",
     },
     {
@@ -204,7 +204,7 @@ export  const coldefs3: ColDef[] = [
     },
     {
       field: "c1",
-      headerName: "c1",
+      headerName: "C1",
       colId: "c1",
     },
     {

@@ -527,14 +527,28 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
               },
           ],
           axes: [
-              {
-                  type: "category",
-                  position: "bottom",
-                  label: {
-                      autoRotate: false,
-                      avoidCollisions: true
-                  }
-              } as const,
+            {
+              type: "category",
+              position: "bottom",
+              label: {
+                  autoRotate: false,
+                  avoidCollisions: true,
+                  formatter: (params: any) => {
+                      const date = new Date(params.value);
+                      const allDates = addBoundaryDataPoints(normData).map((data: any) => new Date(data['date']).getTime());
+                      
+                      const firstDate = allDates[0];
+                      const lastDate = allDates[allDates.length - 1];
+                      const currentDate = date.getTime();
+                      
+                      
+                      if (currentDate === firstDate || currentDate === lastDate) {
+                          return ""; 
+                      }
+                      return params.value; 
+                  },
+              },
+          } as const,
               {
                 type: "number",
                 position: "left",

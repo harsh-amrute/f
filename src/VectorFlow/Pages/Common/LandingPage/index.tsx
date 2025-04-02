@@ -141,7 +141,7 @@ const LandingPage = () => {
             if (item[1]?.length > 0) {
               return (
                 <Fragment key={index}>
-                  <Rectangle  text={ApplicationName[item[0]]}>
+                  <Rectangle  text={ApplicationName[item[0]]} theme={themeUi}>
                     <CardContainer>
                       {item[1].map((subItem: any, subIndex: number) => {
                         return (

@@ -71,14 +71,7 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
         iconKey: "columns",
         toolPanel: "agColumnsToolPanel",
         // toolPanelParams: {},
-      },
-      {
-        id: "filters",
-        labelDefault: "Filters",
-        labelKey: "filters",
-        iconKey: "filter",
-        toolPanel: "agFiltersToolPanel",
-      },
+      }
     ],
     defaultToolPanel: "",
   };
@@ -118,12 +111,13 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
     pagination: true,
     suppressRowClickSelection: true,
     defaultColDef: {
+      flex:1,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
       cellDataType: false,
       resizable: true,
+      minWidth:150,
       cellStyle: {
-        flex: 1,
         textAlign: "center",
         height: "50px",
         fontStyle: "normal",

@@ -484,7 +484,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
         if(filterId==='LF6'){
             filterObj.attributeName='Location'; 
-            filterObj.label='WHCode';
+            filterObj.label='LocationCode';
             //location
             filterObj.operator='='
         }
@@ -658,7 +658,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                         ...filter
                                     };
                                    
-                                    if(finalLabel && updateLabel) {console.log('heelo');result['label'] = finalLabel;}
+                                    if(finalLabel && updateLabel) {result['label'] = finalLabel;}
                                     if(finalValue!==undefined){
                                         result[property] = finalValue;
 
