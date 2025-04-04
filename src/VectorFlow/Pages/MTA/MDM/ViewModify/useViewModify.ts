@@ -1727,7 +1727,8 @@ const useViewModify = (pageType:string) => {
       }
       const onSaveToDraft = async () => {
         toggleEditOnline(false)
-        resetColumnEditing()
+        // resetColumnEditing()
+
         try{
           const colDefs = ref.current?.api.getColumnDefs() || [];
           const checkboxExists = colDefs.some((col: any) => col.field === "checkbox");

@@ -250,6 +250,7 @@ import { useLocation } from "react-router";
             (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
               && 
               <VFPagination 
+                resetGridRef={ref}
                 selectedRows={selectedRowsCount} 
                 totalRows={recordCount} 
                 currentPage={currentPage} 
