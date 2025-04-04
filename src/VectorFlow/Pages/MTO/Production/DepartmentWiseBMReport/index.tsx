@@ -786,7 +786,6 @@ const DptWiseBMReport = () => {
         }
     }
     
-    console.log('gridData', gridData)
     
     
     
@@ -803,7 +802,6 @@ const DptWiseBMReport = () => {
             setIsExcelLoading(false);
         }
     }
-    console.log('tempGridData', tempGridData)
 
     useEffect(() => {
         if (Object.keys(appliedFilters).length) {
