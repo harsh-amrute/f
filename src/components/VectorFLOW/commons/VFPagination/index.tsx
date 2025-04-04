@@ -65,12 +65,8 @@ const VFPagination  = (props:VFPaginationProps)=>{
         if (resetGridRef?.current?.api) {
             resetGridRef.current.api.setFilterModel(null);
             resetGridRef.current.api.onFilterChanged(); 
-        } else {
-            console.log("Jai maharastraaaa");
         }
     };
-    
-
 
     return(
         <PaginationWrapper data-testid="vf_pagination" style={style}>
