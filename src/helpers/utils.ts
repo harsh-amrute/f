@@ -4351,6 +4351,7 @@ export function getColumnDefinations(
       rowGroupIndex: null,
       pivot: false,
       pivotIndex: null,
+      enablePivot: true,
       flex: 1,
       minWidth: 150,
       filterParams: {
