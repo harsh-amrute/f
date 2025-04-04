@@ -162,7 +162,9 @@ const ActionToolBar = ({
     //     filters:multiFilter
     //   });
     // }
-
+    else if(pathname==="/insights-and-trends/buffer-trend-report"){
+      onExportToExcelCallBack();
+    }
     else{
       onExportToExcelOld({
         pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
