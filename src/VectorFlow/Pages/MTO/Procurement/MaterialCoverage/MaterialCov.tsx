@@ -198,8 +198,7 @@ const MaterialCov = () => {
           cellRenderer: ColorCellRenderer
       },
       FullKitAvail: {
-          minWidth: 100,
-          maxWidth: 100,
+          minWidth: 150,
           cellStyle: {
               paddingRight: '25px'
           },

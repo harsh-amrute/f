@@ -524,6 +524,11 @@ const useViewModify = (pageType:string) => {
       return columnData?.map((column:any) => ({key:column.colDef.field}));
     }
 
+    const getAllVisibleColums =()=>{
+      const columnData=ref.current?.api.getAllGridColumns();
+      return columnData?.map((column:any)=>({key:column.colDef.field}))
+    }
+
     const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
       const {filters,pagination,fields,count,currentPage,rowsPerPage} = configs;
       const payload:GetMasterDataPayload = {
@@ -1055,7 +1060,7 @@ const useViewModify = (pageType:string) => {
           const currMasterFilters = activeMaster.filters;
           const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
         
-          const payloadFields:any = getCurrentVisbileColumns();
+          const payloadFields:any = getAllVisibleColums();
           
           const numberOfPages = Math.ceil(recordCount/chunkSize);
           const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
@@ -2083,7 +2088,8 @@ const useViewModify = (pageType:string) => {
         isSubmitDisabled,
         onDiscardDraftCallback,
         canToggleMaster,
-        setCanToggleMaster
+        setCanToggleMaster,
+        getAllVisibleColums,
     }
 }
 

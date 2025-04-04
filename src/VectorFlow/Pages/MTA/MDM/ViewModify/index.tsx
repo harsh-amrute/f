@@ -110,7 +110,8 @@ import { useLocation } from "react-router";
         isSubmitDisabled,
         onDiscardDraftCallback,
         canToggleMaster,
-        setCanToggleMaster
+        setCanToggleMaster,
+        getAllVisibleColums
     } = useViewModify('modify');
 
     useEffect(()=>{
