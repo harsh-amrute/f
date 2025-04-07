@@ -3,8 +3,8 @@ import styled from "styled-components";
 import * as globalStyles from  '../../../../../styles/global'
 
 export const RRRLayout = styled.div`
-    // margin-top:20px;
-    margin-left:15px;
+    margin-top:10px;
+    margin-left:20px;
 // margin-bottom:40px;
 `
 

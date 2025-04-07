@@ -95,7 +95,7 @@ const SupplierDispatchReport = () => {
                 }}
                   maintainColumnOrder
         />
-        <div style={{marginTop:'35px'}}>
+        <div>
         <VFPagination 
                 selectedRows={0} 
                 totalRows={SDRCount} 

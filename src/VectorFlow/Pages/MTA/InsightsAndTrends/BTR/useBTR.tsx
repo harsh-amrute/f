@@ -595,7 +595,7 @@ const useBTR = () => {
                                   setIsDisabled(true);
                                 }
                             }}                        />
-                        <div style={{marginTop:'20px'}}>
+                        <div>
                             <VFPagination 
                             {...techPaginationProps} 
                             resetGridRef={techRef} 

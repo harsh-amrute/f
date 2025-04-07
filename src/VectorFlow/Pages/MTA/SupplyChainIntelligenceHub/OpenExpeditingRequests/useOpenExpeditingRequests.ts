@@ -406,8 +406,12 @@ const useOpenExpeditingRequests = () => {
 
 
     const onSubmitEditedRows = async()=>{
-      notifyLoader('Submitting data')
-     try{
+      try {
+        if(editedRows.length===0){
+          notifyError('Please add remarks/remark to save')
+          return
+        }
+      notifyLoader('Submitting Remark')
       const payload = editedRows.map((r)=>{
         return{
           SKUCode:r.sc,

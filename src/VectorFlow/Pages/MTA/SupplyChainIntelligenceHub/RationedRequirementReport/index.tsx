@@ -120,7 +120,7 @@ const RRR = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                height={"100%"}
+                height={"95%"}
                 maintainColumnOrder
                 onFilterChanged={() => {
                   const filterModel = ref?.current?.api?.getFilterModel();

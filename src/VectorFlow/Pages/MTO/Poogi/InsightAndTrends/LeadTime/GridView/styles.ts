@@ -108,6 +108,7 @@ export const ETACellValue = styled.p`
 export const SCDynamicContainer = styled.div`
     display:block;
     height:150vh;
+    padding:20px;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
     .size.desktop}) {
         height:70vh
@@ -186,8 +187,8 @@ export const SCDynamicContainer = styled.div`
   }
 
   & div[data-testid="vf_pagination"]{
-    margin-top: -20px;
-    padding: 0 20px;
+    margin-top: 0px;
+    // padding: 0 20px;
   }
    
 

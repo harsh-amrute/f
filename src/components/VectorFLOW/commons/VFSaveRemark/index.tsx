@@ -5,11 +5,13 @@ import { useUserData } from "../../../../context/UserDataContext";
 
 interface VFSaveRemarkProps {
     onSubmitRemarks: () => void;
+    isDisabled?:boolean
 }
 
 const VFSaveRemark = (props: VFSaveRemarkProps) => {
     const {
         onSubmitRemarks,
+        isDisabled
     } = props;
 
     const { user } = useUserData();
@@ -21,6 +23,7 @@ const VFSaveRemark = (props: VFSaveRemarkProps) => {
                 style={{ height: '30px', width: '159px', borderRadius: '4px', fontSize: '14px', fontWeight: '400', cursor: 'pointer' }} 
                 themeUi={themeUi} 
                 onClick={onSubmitRemarks}
+                disabled = {isDisabled}
             >
                 Save Remark
             </VFButtonOutline>
