@@ -1452,6 +1452,7 @@ const useViewModify = (pageType:string) => {
 
           if(draftID.length > 0){
             await deleteDraft(draftID);
+            dispatch(SET_DRAFT_ID(''));
           }
         }
         else{
@@ -1798,7 +1799,7 @@ const useViewModify = (pageType:string) => {
           // }
           return false
         }finally{
-          dispatch(SET_DRAFT_ID(''));
+          //dispatch(SET_DRAFT_ID(''));
           dispatch(UPDATE_IS_SAVING_DRAFT(false))
         }
     }
