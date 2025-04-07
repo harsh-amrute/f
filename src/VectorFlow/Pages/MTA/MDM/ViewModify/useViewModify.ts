@@ -524,6 +524,11 @@ const useViewModify = (pageType:string) => {
       return columnData?.map((column:any) => ({key:column.colDef.field}));
     }
 
+    const getAllVisibleColums =()=>{
+      const columnData=ref.current?.api.getAllGridColumns();
+      return columnData?.map((column:any)=>({key:column.colDef.field}))
+    }
+
     const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
       const {filters,pagination,fields,count,currentPage,rowsPerPage} = configs;
       const payload:GetMasterDataPayload = {
@@ -1055,7 +1060,7 @@ const useViewModify = (pageType:string) => {
           const currMasterFilters = activeMaster.filters;
           const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
         
-          const payloadFields:any = getCurrentVisbileColumns();
+          const payloadFields:any = getAllVisibleColums();
           
           const numberOfPages = Math.ceil(recordCount/chunkSize);
           const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
@@ -1691,7 +1696,7 @@ const useViewModify = (pageType:string) => {
         try {
           toastId = notifyLoader(`Creating Draft ${chunkProgress}/${activeMaster.rowData.length}`);
           for(let i=0; i < rowData.length; i+=chunkSize){
-            if(draftID.length > 0){
+            if(draftId.length > 0){
               if(i+chunkSize < rowData.length){
                 await createDraft(generateDraftPayload(rowData.slice(i,i+chunkSize),draftId));
                 toast.update(toastId,{render:`Uploading ${i+chunkSize}/${rowData.length}`})
@@ -1727,7 +1732,8 @@ const useViewModify = (pageType:string) => {
       }
       const onSaveToDraft = async () => {
         toggleEditOnline(false)
-        resetColumnEditing()
+        // resetColumnEditing()
+
         try{
           const colDefs = ref.current?.api.getColumnDefs() || [];
           const checkboxExists = colDefs.some((col: any) => col.field === "checkbox");
@@ -1792,6 +1798,7 @@ const useViewModify = (pageType:string) => {
           // }
           return false
         }finally{
+          dispatch(SET_DRAFT_ID(''));
           dispatch(UPDATE_IS_SAVING_DRAFT(false))
         }
     }
@@ -2082,7 +2089,8 @@ const useViewModify = (pageType:string) => {
         isSubmitDisabled,
         onDiscardDraftCallback,
         canToggleMaster,
-        setCanToggleMaster
+        setCanToggleMaster,
+        getAllVisibleColums,
     }
 }
 

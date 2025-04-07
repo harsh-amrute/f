@@ -60,10 +60,13 @@ const VFPagination  = (props:VFPaginationProps)=>{
         if(newPage<1)return 
         return handleChangePage(newPage)
     }
-    const clearGridFilter = () =>{
-        resetGridRef?.current?.api.setFilterModel(null)
-    }
 
+    const clearGridFilter = () => {
+        if (resetGridRef?.current?.api) {
+            resetGridRef.current.api.setFilterModel(null);
+            resetGridRef.current.api.onFilterChanged(); 
+        }
+    };
 
     return(
         <PaginationWrapper data-testid="vf_pagination" style={style}>

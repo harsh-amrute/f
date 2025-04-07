@@ -388,7 +388,7 @@ const MTOActionToolBar = ({
 
                             <SaveSVG theme={themeUi}/>
 
-                            <p style={{padding:"6px"}}>Save Layout</p>
+                            <p style={{padding:"5px"}}>Save Layout</p>
                         </SCViewContainerWithBg>
                         <SCViewContainerWithBg onClick={() => handleResetClick()}>
                             <ResetSVG theme={themeUi}/>
