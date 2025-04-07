@@ -16,6 +16,7 @@ import LastRunDateComponent from "../../../../../components/commons/lastRundate"
 import { useState } from "react"
 import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles"
 import { useUserData } from "../../../../../context";
+import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
 
 
 
@@ -115,7 +116,7 @@ const OpenExpeditingRequests = () => {
           <VFLoader />
         )
         :
-        (<div style={{ marginLeft: '15px', height: '80%' }}>
+        (<div style={{ marginLeft: '15px', height: '70vh' }}>
           <VFTable
             columnDefs={OERColumns}
             rowData={rowData}
@@ -143,14 +144,17 @@ const OpenExpeditingRequests = () => {
                       setIsDisabled(true); 
                   }
                   });
-              }}
-            height={"100%"}
+            }}
+            
+            height={"95%"}
             maintainColumnOrder
           />
-    
-          <ButtonWrapper>
+          
+          <VFSaveRemark onSubmitRemarks={onSubmitEditedRows} isDisabled={editedRows.length === 0}/>
+          
+          {/* <ButtonWrapper>
             <VFButtonOutline disabled={editedRows.length === 0} themeUi={themeUi} width={169} style={{ fontSize: '20px', fontWeight: '500' }} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
-          </ButtonWrapper>
+          </ButtonWrapper> */}
         </div>
         )
       }

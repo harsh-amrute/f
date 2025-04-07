@@ -23,6 +23,7 @@ import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
 import useFilter from '../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import useColDef from '../../../../../hooks/useColDef';
+import VFSaveRemark from '../../../../../components/VectorFLOW/commons/VFSaveRemark';
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -497,13 +498,15 @@ const ReasonForDelayOrder = () => {
                     isDisabled={isDisabled}
 
                 />
+                
+                <VFSaveRemark onSubmitRemarks={updateMajorMinorReason} />
+                
 
-
-                <SaveBtnWrapper>
+                {/* <SaveBtnWrapper>
                     <SaveBtn onClick={() => updateMajorMinorReason()}>
                         Save Reasons
                     </SaveBtn>
-                </SaveBtnWrapper>
+                </SaveBtnWrapper> */}
 
                 <MTORemarkHistoryModal
                     data={remarkHistory}

@@ -730,3 +730,23 @@ export const BPRViewTableHeaderTab = styled.div<{
     margin-left:50px;
     border-radius:4px;
   `
+  export const Wrapper = styled.div`
+  width: 100%;
+  height: 90%;
+//   margin: 20px 0 0;
+//   padding: 20px 0px 20px 20px;
+
+  & .ag-header-cell-text {
+    font-size: 13px;
+  }
+
+  & > .ag-theme-alpine{
+    margin: 0 !important;
+  }
+    
+  & div[data-testid="vf_pagination"]{
+  margin: 0 !important;
+  padding: 0;
+  }
+ 
+`;

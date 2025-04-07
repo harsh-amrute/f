@@ -216,7 +216,7 @@ export const VFWrapper = styled.div`
   }
   & > div[data-testid="vf_pagination"]{
     padding: 0 !important;
-    margin-top: -20px !important;
+    // margin-top: -20px !important;
   }
   & .ag-header-cell-resize {
     position: absolute;

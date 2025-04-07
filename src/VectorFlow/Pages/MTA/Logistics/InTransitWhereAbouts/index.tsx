@@ -139,7 +139,7 @@ const InTransitWhereAbouts = ()=>{
                     }}
                 />
                 <div style={{marginBottom:'10px'}}>
-                <div style={{marginTop:'35px'}}>
+                <div>
 
                 <VFPagination
                     selectedRows={0}

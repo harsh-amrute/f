@@ -121,7 +121,8 @@ export const BPRDailyAnalyticsTableCellHeader = styled.p`
 export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  margin: 20px 0 0;
+//   margin: 20px 0 0;
+  padding: 20px 0px 20px 20px;
 
   & .ag-header-cell-text {
     font-size: 13px;

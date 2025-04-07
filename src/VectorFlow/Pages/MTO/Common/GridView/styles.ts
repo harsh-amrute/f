@@ -107,6 +107,7 @@ export const ETACellValue = styled.p`
 export const SCDynamicContainer = styled.div`
     display:block;
     height:150vh;
+    padding:20px;
     @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
     .size.desktop}) {
         height:70vh
@@ -117,8 +118,8 @@ export const SCDynamicContainer = styled.div`
     }
 
     & > div[data-testid="vf_pagination"]{
-      margin-top: -20px !important;
-      padding: 0 20px;
+      margin-top: 0px !important;
+      // padding: 0 20px;
   }
 
 
@@ -185,8 +186,8 @@ export const SCDynamicContainer = styled.div`
       }
 
       & .ag-status-bar{
-        height: 24px !important;
-        font-size: 10px;
+        // height: 24px !important;
+        font-size: 12px;
       }
   }
 

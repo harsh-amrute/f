@@ -1,6 +1,6 @@
 
 import VFTable from "../../../../../VectorFlow/Pages/MTO/Common/VFTable"
-import { BPRLayout, LastRunDateHeader, LastRunDate } from "./styles"
+import { BPRLayout, LastRunDateHeader, LastRunDate, Wrapper } from "./styles"
 import BPRViewTable from "./BPRViewTable"
 import { Allotment } from "allotment"
 import useBPR from "./useBPR"
@@ -148,11 +148,12 @@ const BPR = ()=>{
             <div style={{height:'100vh',marginLeft:'15px'}}>
             <Allotment vertical defaultSizes={[300,150]}>
               <Allotment.Pane className="planning-grid-allotment">
+              <Wrapper>
               <VFTable    
                  key={'ref'}
                 disableZoomScaling
                 ref={ref}
-                height={"90%"}
+                height={"100%"}
                 {...agGridProps}
                 columnDefs={BPRColumns}
                 rowData={BPRRowData}
@@ -170,7 +171,9 @@ const BPR = ()=>{
                 }}
                   
             />
-                <div style={{height:'30px',width:'100%',marginTop:'-20px'}}/>              
+              </Wrapper>
+              
+
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}
