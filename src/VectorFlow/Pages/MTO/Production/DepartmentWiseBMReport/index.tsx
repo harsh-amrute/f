@@ -162,6 +162,8 @@ const DptWiseBMReport = () => {
     const [columnState, setColumnState] = useState<any>();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
     const [isPivot, setIsPivot] = useState<any>(false);
+    const [userPageSize, setUserPageSize] = useState<any>();
+    const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
     
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
@@ -661,6 +663,17 @@ const DptWiseBMReport = () => {
         setCurrentPage(currPage)
     }
 
+    const savePageSize = (pageSize: any) => {
+        if (pageSize) {
+            setUserPageSize(pageSize);
+            handleSaveClick(undefined, pageSize);
+            getUpdatedFilteredData(currentPage, pageSize);
+        } else {
+            notifyError("Invalide page size");
+        }
+        
+    }
+
     const cache = useRef<any>({});
 
     const agGridProps: AgGridReactProps = useMemo(()=>{
@@ -767,10 +780,15 @@ const DptWiseBMReport = () => {
     }, [masterSelectedRowData, gridData])
     
 
-    const getUpdatedFilteredData = async (page: any) => {
+    const getUpdatedFilteredData = async (page: any, pageSize?:any) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': page, appliedFilters: formatedFilters });
+            const gridData = await getFilteredDeptWiseBMReportData({
+                'wip': isWIPChecked ? 1 : 0,
+                'curr': page,
+                appliedFilters: formatedFilters,
+                page_size: pageSize || userPageSize
+            });
             if(!gridData.data.data || gridData.data.data.length===0){
                 setGridDataCount(0);
                 setGridData([])
@@ -778,8 +796,6 @@ const DptWiseBMReport = () => {
             }
             setGridData(gridData?.data?.data?.results)
             setGridDataCount(gridData?.data?.data?.count)
-
-
         }
         catch (e) {
             console.log(e);
@@ -809,14 +825,14 @@ const DptWiseBMReport = () => {
 
 
     useEffect(()=>{
-        if (Object.keys(appliedFilters).length) {
+        if (Object.keys(appliedFilters).length && userConfigFetched ) {
             if(currentPage != 1){
                 setCurrentPage(1)
             }else{
                 getUpdatedFilteredData(currentPage)
             }
         }
-    }, [appliedFilters])
+    }, [appliedFilters, userConfigFetched])
 
 
     const onExcelExport = () => {
@@ -864,11 +880,11 @@ const DptWiseBMReport = () => {
                 rn_id: UIGridCode.ProdDeptWiseBMReport
             });
 
-            const newConfig = data?.data?.data?.length?
-            JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
-            
+            const newConfig = data?.data?.data?.length? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
+            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
             setColumnState(newConfig.cs);
             setIsPivot(newConfig.pivot);
+            setUserConfigFetched(true);
 
             if (!data) {
                 console.error('Failed to apply column state');
@@ -878,10 +894,10 @@ const DptWiseBMReport = () => {
         }
     }
 
-    const handleSaveClick = async (coldefs?: any) => {
+    const handleSaveClick = async (coldefs?: any,page_size?:any) => {
         try {
             if (coldefs) {
-                const fullConfig = { pivot: false, cs: coldefs };
+                const fullConfig = { pivot: false, cs: coldefs, pageSize: userPageSize };
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.ProdDeptWiseBMReport,
@@ -892,12 +908,23 @@ const DptWiseBMReport = () => {
                 setColumnState([...coldefs]);
                 setIsPivot(false);
               
+            } else if (page_size) {
+                const config = columnState;
+                const isPivot = refGraph1.current?.api.isPivotMode();
+                const fullConfig = { pivot: isPivot, cs: config, pageSize: page_size };
+            
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProdDeptWiseBMReport,
+                    cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIConfigData([payload]);
+            
             } else {
                 if (refGraph1?.current?.api) {
                     const config = refGraph1.current.api.getColumnState();
-                    
                     const isPivot = refGraph1.current?.api.isPivotMode();
-                    const fullConfig = { pivot: isPivot, cs: config };
+                    const fullConfig = { pivot: isPivot, cs: config, pageSize: userPageSize };
                     // setColumnState(config)
                     const payload = {
                         un: user.user.name,
@@ -1004,6 +1031,9 @@ const DptWiseBMReport = () => {
                                                 handlePageChange={handlePageChange}
                                                 totalRow={gridDataCount}
                                                 currentPage={currentPage}
+                                                customPageSize={true}
+                                                savePageSize={savePageSize}
+                                                userPageSize = {userPageSize}
                                                 // onGridReady={() => {applyColumnState()}}
                                                 />
                                         

@@ -17,7 +17,10 @@ interface GridProps {
     currentPage?: any,
     saveBtn?: boolean,
     onGridReady?: any
-    excelStyles?:any
+    excelStyles?: any,
+    customPageSize?:boolean,
+    savePageSize?: (e: any) => void,
+    userPageSize?:any
 }
 
 const GridView = memo(({
@@ -31,9 +34,12 @@ const GridView = memo(({
     currentPage,
     onGridReady,
     excelStyles,
-    saveBtn = true }: GridProps) => {
+    saveBtn = true,
+    customPageSize=false,
+    userPageSize,
+    savePageSize}: GridProps) => {
 
-    const rowsPerPage = Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
+    const rowsPerPage = userPageSize || Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
 
 
     const { user } = useUserData();
@@ -86,6 +92,9 @@ const GridView = memo(({
                 handleChangePage={handlePageChange}
                 resetGridRef={reference}
                 isDisabled = {isDisabled}
+                customPageSizeEnabled={customPageSize}
+                savePageSize={savePageSize}
+                userPageSize={userPageSize}
             />
             </VFWrapper>
             {

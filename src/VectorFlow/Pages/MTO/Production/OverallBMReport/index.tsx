@@ -163,6 +163,7 @@ const OverallBmReport = () => {
   const [columnState, setColumnState] = useState<any>();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
   const [isPivot, setIsPivot] = useState<any>(false);
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
 
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
@@ -213,6 +214,7 @@ const OverallBmReport = () => {
   const isOrderCloseEnabled =
     process.env.REACT_APP_ORDER_CLOSE === "enabled" ? true : false;
   const dispatch = useDispatch();
+  const [userPageSize, setUserPageSize] = useState<any>();
 
   useEffect(() => {
     try {
@@ -301,10 +303,6 @@ const OverallBmReport = () => {
       console.log(e);
     }
   };
-
-  useEffect(() => {
-    setColumnDef();
-  }, []);
 
   const addDefaultAttributes = (
     apiResponse: ApiResponseItem[]
@@ -1022,6 +1020,7 @@ const OverallBmReport = () => {
     // //console.log('coldefs', colDefs)
     // setColdef(colDefs)
     // getInitialGridData(1);
+    setColumnDef();
     getFilterData();
   }, []);
 
@@ -1051,7 +1050,7 @@ const OverallBmReport = () => {
     };
   }, []);
 
-  const getInitialGridData = async (currentPage: number) => {
+  const getInitialGridData = async (currentPage: number, pageSize?:any) => {
     try {
       setIsGridLoading(true);
       const formatedFilters = formatFilterJSON(appliedFilters);
@@ -1060,6 +1059,7 @@ const OverallBmReport = () => {
         page: currentPage,
         appliedFilters: formatedFilters,
         user,
+        page_size: pageSize || userPageSize
       });
       if (!gridData?.data?.data || gridData?.data?.data?.length === 0) {
         setGridDataCount(0);
@@ -1092,6 +1092,17 @@ const OverallBmReport = () => {
     setCurrentPage(currPage);
     setIsCheckboxChecked(false);
   }, []);
+
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+      setUserPageSize(pageSize);
+      handleSaveClick(undefined,pageSize);
+      getInitialGridData(currentPage, pageSize);
+    } else {
+      notifyError("Invalide page size");
+    }
+    
+  }
 
   const extractDepartmentNames = (orders: Orders): string[] => {
     const departmentNames: Set<string> = new Set();
@@ -1339,14 +1350,14 @@ const OverallBmReport = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    if (Object.keys(appliedFilters).length) {
+    if (Object.keys(appliedFilters).length && userConfigFetched) {
       if (currentPage != 1) {
         setCurrentPage(1);
       } else {
         getInitialGridData(currentPage);
       }
     }
-  }, [appliedFilters]);
+  }, [appliedFilters, userConfigFetched]);
 
   const tempGridRef = useRef<any>(null);
   const [tempGridData, setTempGridData] = useState<any>(undefined);
@@ -1402,9 +1413,10 @@ const OverallBmReport = () => {
       });
 
       const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
-
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
       setColumnState(newConfig.cs);
       setIsPivot(newConfig.pivot);
+      setUserConfigFetched(true);
 
       if (!data) {
         console.error("Failed to apply column state");
@@ -1414,10 +1426,10 @@ const OverallBmReport = () => {
     }
   };
 
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
-        const fullConfig = { pivot: false, cs: coldefs };
+        const fullConfig = { pivot: false, cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOverallBMReport,
@@ -1427,11 +1439,23 @@ const OverallBmReport = () => {
         await updateUserUIConfigData([payload]);
         setColumnState([...coldefs]);
         setIsPivot(false);
+      } else if (page_size) {
+        const config = columnState;
+        const isPivot = refGraph2.current?.api.isPivotMode();
+        const fullConfig = { pivot: isPivot, cs: config, pageSize: page_size };
+
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdOverallBMReport,
+          cs: JSON.stringify(fullConfig),
+        };
+        await updateUserUIConfigData([payload]);
+
       } else {
         if (refGraph2?.current?.api) {
           const config = refGraph2.current.api.getColumnState();
           const isPivot = refGraph2.current?.api.isPivotMode();
-          const fullConfig = { pivot: isPivot, cs: config };
+          const fullConfig = { pivot: isPivot, cs: config, pageSize: userPageSize };
 
           // setColumnState(config);
 
@@ -1566,6 +1590,9 @@ const OverallBmReport = () => {
                   saveBtn={false}
                   totalRow={gridDataCount}
                   currentPage={currentPage}
+                  customPageSize={true}
+                  savePageSize={savePageSize}
+                  userPageSize = {userPageSize}
                 />
                 {/* This Grid is only for the user to download the excel report */}
                 <div style={{ display: "none" }}>
@@ -1579,6 +1606,8 @@ const OverallBmReport = () => {
                     totalRow={gridDataCount}
                     currentPage={currentPage}
                     excelStyles={excelStyles}
+                    savePageSize={savePageSize}
+                    userPageSize = {userPageSize}
                   />
                 </div>
               </BTRAllomentSection>
