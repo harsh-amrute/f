@@ -9,6 +9,7 @@ import moment from 'moment'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 import { useUserData } from '../../../../../../../context'
+import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton'
 
 
 const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
@@ -513,7 +514,6 @@ const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.c
                         }}
                         > <b>Select Horizon (in days): </b></label>
                         <VFRangeSlider
-                            style={{ paddingTop: '13px' }}
                             showTriangle={false}
                             min={1}
                             max={90}
@@ -524,31 +524,23 @@ const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.c
                             handleChange={(e) => setHorizondays(e)}
                             labelValueFormatter={(value: number) => value.toString()}
                         />
-                        <div>
-                            <div
-                                style={{
-                                    cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${backgroundColor}, ${gradientColor})`,
-                                    backgroundColor: backgroundColor,
-                                    height: '35px',
-                                    width: '55px',
-                                    borderRadius: '4px',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    alignContent: 'center',
-                                    display: 'flex'
-                                }}
-                                onClick={() => handleSubmitClick()}>
-                                <img
-                                    style={{}}
-                                    src={ "/assets/img/rightArrowHorizontal.svg"}
-                                    height={13}
-                                    width={7}
-                                />
-                            </div>
-                        </div>
-
-
+                        <VFButton
+                            onClick={() => handleSubmitClick()}
+                            themeUi={themeUi}
+                            disabled={false}
+                            style={{
+                                height: "35px",
+                                width: "50px",
+                                borderRadius: "3px",
+                            }}
+                        >   
+                            <img
+                                src="/assets/img/rightArrowHorizontal.svg"
+                                height={13}
+                                width={7}
+                            />
+                        </VFButton>
+                        
                     </SCChartSliderContainer>
                     <SCChartHeaderContainer style={{ background: 'transparent' }}>
                         <CapsuleWrapper style={{ zoom: 0.8, padding: '4px' }}>

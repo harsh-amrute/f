@@ -187,27 +187,27 @@ const MTOActionToolBar = ({
                     } */}
 
 
-                    {isReleaseDate &&
-                        <div
-                            data-testid='isReleaseDate'
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                marginRight: '3px',
-                                fontSize: '18px',
-                                fontWeight: 'bold',
-                                width: '100%'
-                            }}>
+            {isReleaseDate &&
+              <div
+                data-testid='isReleaseDate'
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginRight: '3px',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  width: '100%'
+                }}>
 
-                            &nbsp;
-                            <p>Release Date Till</p>
-                            &nbsp;
-                            &nbsp;
-                            <VFDatePicker date={date} min={datetime} onDateChange={onDateChange} />
+                &nbsp;
+                <p>Release Date Till</p>
+                &nbsp;
+                &nbsp;
+                <VFDatePicker date={date} min={datetime} onDateChange={onDateChange} />
                             
-                            &nbsp;
-                            {/* <div style={{ display: 'flex', alignItems: 'center' }}>
+                &nbsp;
+                {/* <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <img
                                     style={{ cursor: 'pointer' }}
                                     src={themeUi === "REGALBLAZE" ? "/assets/img/Group 627-regal.svg" : "/assets/img/Group 627.svg"}
@@ -218,32 +218,27 @@ const MTOActionToolBar = ({
                                 />
 
                             </div> */}
-                            <div
-                                style={{
-                                    cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${gradientColor}})`,
-                                    backgroundColor:backgroundColor,
-                                    height: '43px',
-                                    width: '59px',
-                                    borderRadius: '4px',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    alignContent: 'center',
-                                    display: 'flex'
-                                }}
-                                onClick={() => { if (submitDate) submitDate() }}
-                                data-testid={"Group 627"}
-                            >
-                                <img
-                                    // style={{}}
-                                    src="/assets/img/rightArrowHorizontal.svg"
-                                    height={13}
-                                    width={7}
-                                />
-                            </div>
-                        </div>
+                <VFButton
+                  data-testid={"Group 627"}
+                  onClick={() => submitDate && submitDate()}
+                  themeUi={themeUi}
+                  disabled={false}
+                  style={{
+                    height: "45px",
+                    width: "60px",
+                    borderRadius: "3px",
+                  }}
+                >
+                  <img
+                    src="/assets/img/rightArrowHorizontal.svg"
+                    height={13}
+                    width={7}
+                  />
+                </VFButton>
 
-                    }
+              </div>
+
+            }
 
                     {/* <SCVerticalDivider /> */}
                 </>
