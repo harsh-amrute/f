@@ -331,7 +331,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     useEffect(() => {
         if(HeaderData && HeaderData.length>0){
             if (currentTab?.label === 'Shortage') {
-                if(process.env.REACT_APP_ENABLE_STIMULATION === "enabled"){
+                console.log("processdf env.REACT_APP_ENABLE_SIMULATION",process.env.REACT_APP_ENABLE_SIMULATION)
+                if(process.env.REACT_APP_ENABLE_SIMULATION === "enabled"){
 
                     setColDef(getColumnDefinations(HeaderData, customHeader, extras))
                 }
@@ -360,7 +361,13 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     useEffect(() => {
         if (currentTab) {
             if (currentTab.label === 'Shortage') {
-                setColDef(getColumnDefinations(HeaderData, customHeader, extras))
+                if(process.env.REACT_APP_ENABLE_SIMULATION === "enabled"){
+                    
+                    setColDef(getColumnDefinations(HeaderData, customHeader, extras))
+                }
+                else{
+                    setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
+                }
                 setCurrentPage(1);
                 fetchData(date, 1, '0')
             }
@@ -592,9 +599,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
 
-                        />{
-process.env.REACT_APP_ENABLE_STIMULATION === "enabled" &&
-                            <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
+                        />
+                        { process.env.REACT_APP_ENABLE_SIMULATION==='enabled'  && (
+            <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
                                 onClick={() => { (!isDisabled) && fetchData(date, 1, '0') }}
@@ -637,10 +644,14 @@ process.env.REACT_APP_ENABLE_STIMULATION === "enabled" &&
                                 Simulate improvement in Full Kits
                             </VFButton>
                         </div>
+
+        )
+                            
                             }
 
                     </TableWrapper>
                 );
+            
             default:
                 return(
                     <TableWrapper>

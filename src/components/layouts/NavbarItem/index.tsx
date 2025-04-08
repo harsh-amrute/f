@@ -131,7 +131,6 @@ const NavbarItem = ({
     return listChild.map((item: any) => {
 
       const checkForUrl = user?.url_permission.includes(item?.url);
-      console.log("item for url", item, checkForUrl);
       if (checkForUrl) {
         return (
           <SCItemChild
