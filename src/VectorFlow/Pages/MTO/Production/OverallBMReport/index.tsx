@@ -66,6 +66,7 @@ import moment from "moment";
 import VFSelect from "../../../../../../src/components/VectorFLOW/commons/MTO/VFSelect";
 import ConfirmationModal from "./ConfirmationModal";
 import { InputCheckBox } from "./styles";
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 
 interface ApiResponse {
   cc: string;
@@ -208,8 +209,10 @@ const OverallBmReport = () => {
 
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-  const userTheme = themeUi === 'REGALBLAZE';
-  const backgroundColor = userTheme ? ColorsMTO.Orange.code : ColorsMTO.darkPink.code;
+  const userTheme = themeUi === "REGALBLAZE";
+  const backgroundColor = userTheme
+    ? ColorsMTO.Orange.code
+    : ColorsMTO.darkPink.code;
 
   const isOrderCloseEnabled =
     process.env.REACT_APP_ORDER_CLOSE === "enabled" ? true : false;
@@ -699,30 +702,26 @@ const OverallBmReport = () => {
         </div>
 
         {/* Right Arrow - Disabled if Checkbox is Unchecked */}
-        <div
+        <VFButton
+          data-testid={"isReleaseBtn"}
+          onClick={() => handleRightArrowClick()}
+          themeUi={themeUi}
+          disabled={false}
           style={{
             cursor: isRightArrowEnabled ? "pointer" : "not-allowed",
-            background: `linear-gradient(to right, ${backgroundColor})`,
-            backgroundColor: backgroundColor,
-            height: "43px",
-            width: "59px",
-            borderRadius: "4px",
-            alignItems: "center",
-            justifyContent: "center",
-            alignContent: "center",
-            display: "flex",
+            height: "50px",
+            width: "60px",
+            borderRadius: "3px",
             opacity: isRightArrowEnabled ? 1 : 0.5, // Visual cue for disabled
             pointerEvents: isRightArrowEnabled ? "auto" : "none", // Prevent click when disabled
           }}
-          data-testid={"isReleaseBtn"}
-          onClick={handleRightArrowClick}
         >
           <img
             src="/assets/img/rightArrowHorizontal.svg"
             height={13}
             width={7}
           />
-        </div>
+        </VFButton>
 
         {/* Confirmation Modal */}
         {/* <ConfirmationModal

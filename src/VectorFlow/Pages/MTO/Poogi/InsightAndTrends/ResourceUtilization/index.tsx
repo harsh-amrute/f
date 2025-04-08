@@ -40,6 +40,7 @@ import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSele
 import { useDispatch } from "react-redux";
 import { RESOURCE_UTIL_ANALYTICS } from "../../../../../../redux/actions/MTO";
 import { ColorsMTO } from "../../../Common/Colors";
+import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 
 const SearchIcon = () => {
   return (
@@ -898,29 +899,22 @@ const ResourceUtilization = () => {
                 width={60}
                 onClick={() => handleHorizonSubmit && handleHorizonSubmit()}
               /> */}
-              <div
-                style={{
-                  cursor: 'pointer',
-                  background: `linear-gradient(to right, ${gradientColor})`,
-                  backgroundColor: backgroundColor,
-                  height: '30px',
-                  width: '50px',
-                  borderRadius: '4px',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                  display: 'flex'
-                }}
-                onClick={() => handleHorizonSubmit && handleHorizonSubmit()}
-              >
-                <img
-                  style={{}}
-                  src="/assets/img/rightArrowHorizontal.svg"
-                  height={13}
-                  width={7}
-                />
-              </div>
-
+              <VFButton
+              onClick={() => handleHorizonSubmit && handleHorizonSubmit()}
+              themeUi={themeUi}
+              disabled={false}
+              style={{
+                height: "40px",
+                width: "50px",
+                borderRadius: "3px",
+              }}
+            >
+              <img
+                src="/assets/img/rightArrowHorizontal.svg"
+                height={13}
+                width={7}
+              />
+            </VFButton>
             </div>
           </SCChartSliderContainer>
         </div>

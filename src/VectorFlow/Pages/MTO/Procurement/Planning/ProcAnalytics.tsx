@@ -20,8 +20,8 @@ const ProcAnalytics = () => {
 
             if(data && data.date){
 
-                const response1 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '1', appliedFilters })
-                const response2 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '0', appliedFilters })
+                const response1 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '0', appliedFilters })
+                const response2 =  await getProcPlanningData({ date: data.date, pageNum: '1', ca: '1', appliedFilters })
 
             setShortageCount(response1?.data?.data?.count || 0)
             setAvailCount(response2?.data?.data?.count || 0)

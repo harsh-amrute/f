@@ -8,6 +8,7 @@ import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../../.
 import RadioSelect from '../../../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
 import { useUserData } from '../../../../../../../context'
 import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
+import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton'
 
 const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant, dept }: any) => {
 
@@ -118,40 +119,22 @@ const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant
                             <p style={{ fontWeight: 'bold', paddingRight: '5px' }}>Department </p>
                             <RadioSelect theme={themeUi} options={selectOptionsDep} value={selectedDept} onChange={(newValue: any) => { setSelectedDept(newValue) }} />
                         </div>
-                        <div>
-                            {/* <img
-
-                                style={{ cursor: 'pointer' }}
-                                src="/assets/img/Group 627.svg"
-                                height={40}
-                                width={50}
+                        <VFButton
                                 onClick={() => handleSubmitClick()}
-                            /> */}
-                            <div
+                                themeUi={themeUi}
+                                disabled={false}
                                 style={{
-                                    cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${gradientColor})`,
-                                    backgroundColor: backgroundColor,
                                     height: '30px',
-                                    width: '50px',
-                                    borderRadius: '4px',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    alignContent: 'center',
-                                    display: 'flex'
+                                    width: '40px', 
+                                    borderRadius: '3px',
                                 }}
-                                onClick={() => handleSubmitClick()}
                             >
                                 <img
-                                    style={{}}
                                     src="/assets/img/rightArrowHorizontal.svg"
                                     height={13}
                                     width={7}
                                 />
-                            </div>
-                        </div>
-
-
+                        </VFButton>
                     </div>
                     <SCChartHeaderContainer>
 
