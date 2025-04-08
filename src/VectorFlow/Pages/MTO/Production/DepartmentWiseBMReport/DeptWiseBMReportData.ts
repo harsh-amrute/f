@@ -84,14 +84,14 @@ export const DeptWiseBMReport = (onOpenRemarkHistory: () => void): (ColDef | Col
                 { field: "Rgn", headerName: "Region", colId: "Region", columnGroupShow: 'closed' },
                 { field: "Cntry", headerName: "Country", colId: "Country", columnGroupShow: 'closed' },
             ]
-        },
+        }, 
         {
             headerName: "",
             suppressStickyLabel: true,
             openByDefault: false,
             colId: '',
             children: [
-                {
+                { 
                     field: "Rem_Cd", headerName: "Remark Code", pinned: 'right', colId: "Remark Code", cellRenderer: "TextBoxCellRenderer", cellRendererParams: {
                         visible: {
                             flag: true
@@ -124,7 +124,6 @@ export const orderDataDropDown: (ColDef)[] = [
     { field: "WIP", headerName: 'WIP' },
     { field: 'Gp', headerName: 'Gap' }
 ]
-
 export const orderStatus: (ColDef | ColGroupDef)[] = [
     {
         headerName: "Order ID",

@@ -12,7 +12,7 @@ import {SeasonalityQuickFilterType, type Filter} from '../../../../types/MDM';
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import WarningModal from './WarningModal'
 import UploadModal from "./UploadModal";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import VFTaskBar from "./VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import SeasonalityChartModal from "./SeasonalityChartModal";
@@ -110,8 +110,12 @@ import { useLocation } from "react-router";
         isSubmitDisabled,
         onDiscardDraftCallback,
         canToggleMaster,
-        setCanToggleMaster
+        setCanToggleMaster,
+        getAllVisibleColums
     } = useViewModify('modify');
+
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    
 
     useEffect(()=>{
       if(ref.current && ref.current.api){
@@ -245,16 +249,26 @@ import { useLocation } from "react-router";
                     [],
                   }}
                   height={getMDMTableHeight(activeMaster)}
+                  onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                  }}
                 />
                 {
             (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
               && 
               <VFPagination 
+                resetGridRef={ref}
                 selectedRows={selectedRowsCount} 
                 totalRows={recordCount} 
                 currentPage={currentPage} 
                 rowsPerPage={rowsPerPage} 
                 handleChangePage={(e)=>handleChangePage(e)}  
+                isDisabled={isDisabled}
               />
           }
                 {/* <VFTable

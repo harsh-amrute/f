@@ -785,8 +785,10 @@ const DptWiseBMReport = () => {
             console.log(e);
         }
     }
-
-
+    
+    
+    
+    
     const getTempUpdatedFilteredData = async () => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);

@@ -170,7 +170,7 @@ const BPR = ()=>{
                 }}
                   
             />
-
+                <div style={{height:'30px',width:'100%',marginTop:'-20px'}}/>              
                 <VFPagination
                     selectedRows={0}
                     totalRows={recordCount}

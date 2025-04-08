@@ -1361,7 +1361,7 @@ const OverallBmReport = () => {
         appliedFilters: formatedFilters,
         page_size: gridDataCount,
       });
-      setTempGridData(gridData?.data?.data?.results);
+      setTempGridData(gridData?.data?.data?.results || []);
     } catch (e) {
       console.log(e);
     } finally {
