@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useUserData } from '../../../../../context';
 import { PaginationWrapper, StatusBarLabel, StatusBarLabelLight, StatusBarLabelBold, PaginationContainer, PaginationArrowIcon,StatusBarWrapper, TextBtn,GridFilterWrapper, CustomPageSize, PageSizeInputDiv, PageSizeInput, PageSizeSaveDiv } from "./styles"
 import { notifyError } from '../../../../../helpers/notify';
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 
 export interface VFPaginationProps {
     selectedRows: number
@@ -104,14 +105,26 @@ const VFPagination = (props: VFPaginationProps) => {
                                 themeUi={themeUi}
                                 value={customPageSize}
                                 onChange={handleChange}
-                            />                                
-                            <PageSizeSaveDiv onClick={()=>validatePageSize()} isSaveButtonEnabled>
+                            />
+                            <VFButton
+                                onClick={() => validatePageSize()}
+                                themeUi={themeUi}
+                                disabled={false}
+                                style={{
+                                    // cursor: isSaveButtonEnabled ? "pointer" : "not-allowed",
+                                    height: "100%",
+                                    width: "30%",
+                                    borderRadius: "0px 3px 3px 0px",
+                                    // opacity: isSaveButtonEnabled ? 1 : 0.5, // Visual cue for disabled
+                                    // pointerEvents: isSaveButtonEnabled ? "auto" : "none", // Prevent click when disabled
+                                }}
+                            >
                                 <img
                                     src="/assets/img/rightArrowHorizontal.svg"
                                     height={13}
                                     width={7}
-                                />
-                            </PageSizeSaveDiv>
+                                />    
+                            </VFButton>
                         </PageSizeInputDiv>
                     </CustomPageSize>
                     }
