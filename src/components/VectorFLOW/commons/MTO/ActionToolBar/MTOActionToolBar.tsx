@@ -141,44 +141,37 @@ const MTOActionToolBar = ({
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
 
     return (
-      <SCTaskBarContainer className="toolbar-container">
-        <SCTaskFilterContainer
-          style={{
-            maxWidth: "50%",
-            width: "unset",
-            justifyContent: "unset",
-          }}
-        >
-          <>{ReleaseOrderHeader && <div>{ReleaseOrderHeader}</div>}</>
-          <>
-            {isGoBackButton && (
-              <SCGoBackContainer
-                onClick={() => {
-                  if (handleGoBack) handleGoBack();
-                }}
-              >
-                <img src="/assets/img/VectorFLOW/BPR/goback.svg" alt="" />
-                <SCGoBackText>
-                  <b>Go Back</b>
-                </SCGoBackText>
-              </SCGoBackContainer>
-            )}
-
-            {quickFilter && (
-              <div
+        <SCTaskBarContainer className='toolbar-container'>
+            <SCTaskFilterContainer
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: "1.8rem",
-                  minWidth: "max-content",
-                }}
-              >
-                {quickFilter}
-              </div>
-            )}
+                    maxWidth: '50%',
+                    width: 'unset',
+                    justifyContent: 'unset'
+                }}>
+                <>
+                    {ReleaseOrderHeader &&
+                        <div>
+                            {ReleaseOrderHeader}
+                        </div>
+                    }
+                </>
+                <>
+                    {isGoBackButton &&
 
-            {/* {isWIPCheckBox &&
+                        <SCGoBackContainer onClick={() => { if (handleGoBack) handleGoBack() }}>
+                            <img
+                                src="/assets/img/VectorFLOW/BPR/goback.svg"
+                                alt=""
+                            />
+                            <SCGoBackText ><b>Go Back</b></SCGoBackText>
+                        </SCGoBackContainer>
+                    }
+
+                    {quickFilter && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", minWidth: "max-content" }}>
+                        {quickFilter}
+                    </div>}
+
+                    {/* {isWIPCheckBox &&
                         <CheckBoxDiv data-testid='check-box'>
                             <Checkbox
                                 data-testid='check-box'
@@ -193,27 +186,26 @@ const MTOActionToolBar = ({
                         </CheckBoxDiv>
                     } */}
 
-            {isReleaseDate && (
+
+            {isReleaseDate &&
               <div
-                data-testid="isReleaseDate"
+                data-testid='isReleaseDate'
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginRight: "3px",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  width: "100%",
-                }}
-              >
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginRight: '3px',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  width: '100%'
+                }}>
+
                 &nbsp;
                 <p>Release Date Till</p>
-                &nbsp; &nbsp;
-                <VFDatePicker
-                  date={date}
-                  min={datetime}
-                  onDateChange={onDateChange}
-                />
+                &nbsp;
+                &nbsp;
+                <VFDatePicker date={date} min={datetime} onDateChange={onDateChange} />
+                            
                 &nbsp;
                 {/* <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <img
@@ -243,249 +235,200 @@ const MTOActionToolBar = ({
                     width={7}
                   />
                 </VFButton>
+
               </div>
-            )}
 
-            {/* <SCVerticalDivider /> */}
-          </>
+            }
 
-          {isAsOnDate && (
-            <DateWrapper data-testid="isAsOnDate">
-              <DateIcon
-                src="/assets/img/calender-icon.svg"
-                alt="calender-icon"
-              />
-              <DateTitle>As on Date</DateTitle>
-              <DateValue>{format(new Date(), format2)}</DateValue>
-            </DateWrapper>
-          )}
-          {/**Temp Enquiry response Filter start */}
-          {selectedFilters && selectedFilters?.length > 0 && (
-            <VFSelectedFiltersWrapper style={{ width: "700px" }}>
-              <VFSelectedFiltersPlaceHolder>
-                Selected Filters
-              </VFSelectedFiltersPlaceHolder>
-              <VFFilterScrollBar>
-                {selectedFilters?.map((filter: filterType) => {
-                  if (filter.values.length > 0) {
-                    return (
-                      <VFSelectedFiltersChip key={filter.label}>
-                        <VFSelectedFiltersFilterLabel>
-                          {filter?.label}:
-                        </VFSelectedFiltersFilterLabel>
-                        {filter?.values?.map((value: string) => (
-                          <div key={value}>
-                            <VFSelectedFiltersFilterContent>
-                              <VFSelectedFiltersFilterValue>
-                                <p style={{ margin: "0px 5px 0px 5px" }}>
-                                  {" "}
-                                  {value}
-                                </p>
-                              </VFSelectedFiltersFilterValue>
-                              {
-                                <VFSelectedFiltersFilterCloseIcon
-                                  onClick={() =>
-                                    handleRemoveFilter(filter?.label, value)
-                                  }
-                                  src="/assets/img/VectorFLOW/BPR/close-circle.svg"
-                                  alt="close-icon"
-                                  data-testid={"closeIcon-filter"}
-                                />
-                              }
-                              {filter?.values?.length > 1 && (
-                                <SCFilterVerticalDivider />
-                              )}
-                            </VFSelectedFiltersFilterContent>
-                          </div>
-                        ))}
-                      </VFSelectedFiltersChip>
-                    );
-                  }
-                })}
-              </VFFilterScrollBar>
-            </VFSelectedFiltersWrapper>
-          )}
-          {/**Selected Filter ends*/}
+                    {/* <SCVerticalDivider /> */}
+                </>
 
-          {WIPFilter && <div>{WIPFilter}</div>}
-        </SCTaskFilterContainer>
-        {/**New Selected Filter start */}
-        {isAddFilterButton &&
-          newFilters &&
-          Object.keys(newFilters)?.length > 0 && (
-            <VFSelectedFiltersWrapper>
-              <VFSelectedFiltersPlaceHolder>
-                Selected Filters
-              </VFSelectedFiltersPlaceHolder>
-              <VFFilterScrollBar>
-                {Object.keys(newFilters)?.map((key: any) => (
-                  <VFSelectedFiltersChip key={key}>
-                    <VFSelectedFiltersFilterLabel>
-                      {newFilters[key]?.name} <SCFilterVerticalDivider />
-                    </VFSelectedFiltersFilterLabel>
-                    {newFilters[key]?.filters?.map(
-                      (filter: any, index: number) =>
-                        filter?.value?.length > 0 && (
-                          <>
-                            <VFSelectedFilterLabel>
-                              {filter?.label}:
-                            </VFSelectedFilterLabel>
-                            {filter?.value?.map((f: any) => (
-                              <div key={f.value}>
-                                <VFSelectedFiltersFilterContent>
-                                  <VFSelectedFiltersFilterValue>
-                                    <p
-                                      style={{
-                                        margin: "0px 5px 0px 5px",
-                                        fontFamily: "500",
-                                      }}
-                                    >
-                                      {" "}
-                                      {f.label}
-                                    </p>
-                                  </VFSelectedFiltersFilterValue>
-                                  {disableRemoveFilter ? (
-                                    <div>-</div>
-                                  ) : (
-                                    <VFSelectedFiltersFilterCloseIcon
-                                      onClick={() => {
-                                        const filtervalue = f.id || f.value;
-                                        onFilterRemove(
-                                          key,
-                                          filter.filterId,
-                                          filtervalue
-                                        );
-                                      }}
-                                      src="/assets/img/VectorFLOW/BPR/close-circle.svg"
-                                      alt="close-icon"
-                                      data-testid={"closeIcon-filter"}
-                                    />
-                                  )}
-                                </VFSelectedFiltersFilterContent>
-                              </div>
-                            ))}
-                            {index !== newFilters[key]?.filters?.length - 1 && (
-                              <SCFilterVerticalDivider />
-                            )}
-                          </>
-                        )
-                    )}
-                  </VFSelectedFiltersChip>
-                ))}
-              </VFFilterScrollBar>
-            </VFSelectedFiltersWrapper>
-          )}
-        {/**Selected Filter ends*/}
+                {isAsOnDate &&
+                    <DateWrapper data-testid='isAsOnDate'>
+                        <DateIcon
+                            src='/assets/img/calender-icon.svg' alt='calender-icon'
+                        />
+                        <DateTitle>As on Date</DateTitle>
+                        <DateValue>
+                            {format(new Date(), format2)}
+                        </DateValue>
+                    </DateWrapper>}
+                {/**Temp Enquiry response Filter start */}
+                {selectedFilters && selectedFilters?.length > 0 && <VFSelectedFiltersWrapper style={{ width: '700px' }}>
+                    <VFSelectedFiltersPlaceHolder>
+                        Selected Filters
+                    </VFSelectedFiltersPlaceHolder>
+                    <VFFilterScrollBar >
+                        {
+                            selectedFilters?.map((filter: filterType) => {
+                                if (filter.values.length > 0) {
+                                    return (
+                                        <VFSelectedFiltersChip key={filter.label}>
+                                            <VFSelectedFiltersFilterLabel>
+                                                {filter?.label}:
+                                            </VFSelectedFiltersFilterLabel>
+                                            {filter?.values?.map((value: string) => (
+                                                <div key={value}>
+                                                    <VFSelectedFiltersFilterContent>
+                                                        <VFSelectedFiltersFilterValue>
+                                                            <p style={{ margin: '0px 5px 0px 5px' }}> {value}</p>
+                                                        </VFSelectedFiltersFilterValue>
+                                                        {<VFSelectedFiltersFilterCloseIcon
+                                                            onClick={() => handleRemoveFilter(filter?.label, value)}
+                                                            src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
+                                                        />}
+                                                        {filter?.values?.length > 1 && <SCFilterVerticalDivider />}
+                                                    </VFSelectedFiltersFilterContent>
+                                                </div>
+                                            )
+                                            )}
+                                        </VFSelectedFiltersChip>
+                                    )
+                                }
+                            })
+                        }
+                    </VFFilterScrollBar>
+                </VFSelectedFiltersWrapper>}
+                {/**Selected Filter ends*/}
 
-        <SCCustomActionsContainer>
-          {utilityBtns && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "1.8rem",
-                gap: "1.5rem",
-                marginRight: "10px",
-              }}
-            >
-              {utilityBtns}
-            </div>
-          )}
-          {isAddFilterButton &&
-            (onAddFilter ? (
-              <VFButton
-                onClick={() => onAddFilter()}
-                themeUi={themeUi}
-                disabled={false}
-                width={110}
-              >
-                {(selectedFilters || newFilters) &&
-                (selectedFilters?.length || Object.keys(newFilters).length) ? (
-                  <p style={{ padding: "2px" }}>Edit Filter</p>
-                ) : (
-                  <p style={{ padding: "2px" }}>+ Add Filter</p>
-                )}
-              </VFButton>
-            ) : (
-              <SCButton>
-                <p>+ Add Filter</p>
-              </SCButton>
-            ))}
-          <>
-            {isExcelExport && (
-              <>
-                <SCVerticalDivider />
-                <SCViewContainerWithBg onClick={onExcelExportClick}>
-                  <>
-                    <ExportExcelSVG theme={themeUi} />
-                    <p style={{ padding: "5px" }}>Excel Export</p>
-                  </>
-                </SCViewContainerWithBg>
-              </>
-            )}
+                {
+                    WIPFilter &&
+                    <div>
+                        {WIPFilter}
+                    </div>
+                }
 
-            {isGridView && handleSaveClick && handleResetClick && (
-              <>
-                <SCVerticalDividerGray />
-                <SCViewContainerWithBg onClick={() => handleSaveClick()}>
-                  <SaveSVG theme={themeUi} />
+            </SCTaskFilterContainer>
+            {/**New Selected Filter start */}
+            {isAddFilterButton && newFilters && Object.keys(newFilters)?.length > 0 &&
+                <VFSelectedFiltersWrapper>
+                    <VFSelectedFiltersPlaceHolder>
+                        Selected Filters
+                    </VFSelectedFiltersPlaceHolder>
+                    <VFFilterScrollBar>
+                        {
+                            Object.keys(newFilters)?.map((key: any) => (
+                                <VFSelectedFiltersChip key={key}>
+                                    <VFSelectedFiltersFilterLabel>
+                                        {newFilters[key]?.name} <SCFilterVerticalDivider />
+                                    </VFSelectedFiltersFilterLabel>
+                                    {newFilters[key]?.filters?.map((filter: any, index: number) => (
+                                        (filter?.value?.length) > 0 &&
+                                        <>
+                                            <VFSelectedFilterLabel>
+                                                {filter?.label}:
+                                            </VFSelectedFilterLabel>
+                                            { filter?.value?.map((f: any) => (
+                                                <div key={f.value}>
+                                                    <VFSelectedFiltersFilterContent>
+                                                        <VFSelectedFiltersFilterValue>
+                                                            <p style={{ margin: '0px 5px 0px 5px', fontFamily: '500' }}> {f.label}</p>
+                                                        </VFSelectedFiltersFilterValue>
+                                                        {disableRemoveFilter ? <div>-</div> : <VFSelectedFiltersFilterCloseIcon
+                                                            onClick={() => {
+                                                                const filtervalue = f.id || f.value;
+                                                                onFilterRemove(key, filter.filterId, filtervalue)
+                                                            }}
+                                                            src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
+                                                        />}
+                                                    </VFSelectedFiltersFilterContent>
+                                                </div>
+                                            ))}
+                                            {index !== newFilters[key]?.filters?.length - 1 && <SCFilterVerticalDivider />}
+                                        </>
+                                    ))}
+                                </VFSelectedFiltersChip>
+                            ))
+                        }
+                    </VFFilterScrollBar>
+                </VFSelectedFiltersWrapper>}
+            {/**Selected Filter ends*/}
 
-                  <p style={{ padding: "5px" }}>Save Layout</p>
-                </SCViewContainerWithBg>
-                <SCViewContainerWithBg onClick={() => handleResetClick()}>
-                  <ResetSVG theme={themeUi} />
-                  <p style={{ padding: "5px" }}>Reset Layout</p>
-                </SCViewContainerWithBg>
-              </>
-            )}
+            <SCCustomActionsContainer>
+                {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", gap: "1.5rem", marginRight: "10px" }}>
+                    {utilityBtns}
+                </div>}
+                {isAddFilterButton && (onAddFilter ?
+                    <VFButton onClick={() => onAddFilter()}
+                        themeUi={themeUi}
+                        disabled={false}
+                        width={110}
+                    >{(selectedFilters || newFilters) && (selectedFilters?.length || Object.keys(newFilters).length) ?
+                        <p style={{ padding: '2px' }}>Edit Filter</p>
+                        :
+                        <p style={{ padding: '2px' }}>+ Add Filter</p>}
+                    </VFButton>
+                    :
+                    <SCButton>
+                        <p >+ Add Filter</p>
+                    </SCButton>)
+                }
+                <>
+                    {isExcelExport && <>
+                        <SCVerticalDivider  />
+                        <SCViewContainerWithBg onClick={onExcelExportClick}
+                         >
+                            <>
+                               
+                                <ExportExcelSVG theme={themeUi}/>
+                                <p style={{padding:"5px"}}>Excel Export</p>
+                            </>
+                        </SCViewContainerWithBg>
+                    </>}
 
-            {/* Toggle button for chartview/ grid view */}
-            {isChartGridToggle && (
-              <>
-                {isAddFilterButton && <SCVerticalDividerGray />}
-                <SCViewContainerWithBgToggle>
-                  <SCViewContainer
-                    onClick={() => {
-                      isGridView && setIsGridView && setIsGridView(!isGridView);
-                    }}
-                  >
-                    <ChartView theme={themeUi} view={!isGridView} />
-                    <p>Chart View</p>
-                  </SCViewContainer>
+                    {isGridView && handleSaveClick && handleResetClick && <>
+                        <SCVerticalDividerGray />
+                        <SCViewContainerWithBg onClick={() => handleSaveClick()}>
+                           
 
-                  <SCHorizontalDivison />
+                            <SaveSVG theme={themeUi}/>
 
-                  <SCViewContainer
-                    onClick={() => {
-                      !isGridView &&
-                        setIsGridView &&
-                        setIsGridView(!isGridView);
-                    }}
-                  >
-                    <GridView theme={themeUi} view={isGridView} />
-                    <p>Grid View</p>
-                  </SCViewContainer>
-                </SCViewContainerWithBgToggle>
-              </>
-            )}
-          </>
-          {isFilterOpen &&
-            toggleFilter &&
-            onApplyFilter &&
-            setMultiFilter &&
-            multiFilter && (
-              <VFCommonFilter
-                onApplyFilter={onApplyFilter}
-                onGoBack={() => toggleFilter(false)}
-                multiFilter={multiFilter}
-                setMultiFilter={setMultiFilter}
-                isFilterOpen={isFilterOpen}
-              />
-            )}
-        </SCCustomActionsContainer>
-      </SCTaskBarContainer>
-    );
+                            <p style={{padding:"5px"}}>Save Layout</p>
+                        </SCViewContainerWithBg>
+                        <SCViewContainerWithBg onClick={() => handleResetClick()}>
+                            <ResetSVG theme={themeUi}/>
+                            <p style={{padding:"5px"}}>Reset Layout</p>
+                        </SCViewContainerWithBg>
+                    </>}
+
+                    {/* Toggle button for chartview/ grid view */}
+                    {isChartGridToggle &&
+                        <>
+                        {isAddFilterButton && <SCVerticalDividerGray />}
+                            <SCViewContainerWithBgToggle >
+                                <SCViewContainer onClick={() => { isGridView && setIsGridView && (setIsGridView(!isGridView)) }}>
+
+                                <ChartView theme={themeUi} view={!isGridView}/>
+                                    <p>Chart View</p>
+
+                                </SCViewContainer>
+
+                                <SCHorizontalDivison />
+
+                                <SCViewContainer onClick={() => { !isGridView && setIsGridView && (setIsGridView(!isGridView)) }}>
+                                    <GridView theme={themeUi} view={isGridView}/>
+                                    <p>Grid View</p>
+
+                                </SCViewContainer>
+
+                            </SCViewContainerWithBgToggle>
+                        </>
+                    }
+
+                </>
+                {isFilterOpen && toggleFilter && onApplyFilter && setMultiFilter && multiFilter &&
+                    <VFCommonFilter
+                        onApplyFilter={onApplyFilter}
+                        onGoBack={() => toggleFilter(false)}
+                        multiFilter={multiFilter}
+                        setMultiFilter={setMultiFilter}
+                    isFilterOpen={isFilterOpen}
+                    />
+                }
+
+            </SCCustomActionsContainer >
+        </SCTaskBarContainer >
+    )
 }
 
 export default MTOActionToolBar
