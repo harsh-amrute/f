@@ -1009,6 +1009,15 @@ export const OrderDetailsChildrenHeader = [
                 "ca": "left",
                 "val": "*Error*"
             },
+            {
+                "rn": "MaterialReportChildren",
+                "jf": "pg",
+                "cp": 5,
+                "hdr": "Purchase Gap",
+                "vs": true,
+                "ca": "left",
+                "val": "*Error*"
+            },
         ]
     }
 ]
@@ -1731,7 +1740,16 @@ export const HeaderChildren =
             "vs": true,
             "ca": "left",
             "val": "*Error*"
-        }
+        },
+        {
+            "rn": "MaterialReportChildren",
+            "jf": "pg",
+            "cp": 5,
+            "hdr": "Purchase Gap",
+            "vs": true,
+            "ca": "left",
+            "val": "*Error*"
+        },
     ]
 
 
