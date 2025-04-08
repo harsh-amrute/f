@@ -21,6 +21,7 @@ import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
 import _ from "lodash";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { useLocation } from "react-router";
+import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
 
 
 
@@ -127,6 +128,23 @@ import { useLocation } from "react-router";
         }
       }
     },[isTableDataLoading])
+
+    
+    const clearGridFilter = () =>{
+      ref?.current?.api.setFilterModel(null);
+        setIsDisabled(true);
+  }
+
+    const CustomStatusPanel = () => {
+                  return (
+                      <GridFilterWrapper style={{marginTop:'25px'}}>
+                          <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>
+                              Clear All Grid Filters
+                          </TextBtn>  
+                      </GridFilterWrapper>           
+                  );
+              };
+
 
     return (
       <>
@@ -245,6 +263,8 @@ import { useLocation } from "react-router";
                       { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
                       { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                       { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
+
                     ]:
                     [],
                   }}
@@ -259,8 +279,10 @@ import { useLocation } from "react-router";
                   }}
                 />
                 {
+
             (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen))
               && 
+
               <VFPagination 
                 resetGridRef={ref}
                 selectedRows={selectedRowsCount} 
