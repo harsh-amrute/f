@@ -61,6 +61,12 @@ const NavbarItem = ({
       listMenu
     } = props
 
+
+    const allChildUrls = listMenu.child.map((i: any) => i.url);
+
+    if(!allChildUrls.some((url: string) => user?.url_permission.includes(url))) {
+      return null;
+    }
     return (
       <SCMenuItem
         key={listMenu.id}
@@ -88,7 +94,7 @@ const NavbarItem = ({
           }
           {
             listMenu.child.map((l: any, index: number) => {
-              if (l.child) {
+              if (l.child && l.child.length>0) {
                 return (
                   <RenderListMenu listMenu={l} key={index} />
                 )
@@ -125,7 +131,7 @@ const NavbarItem = ({
     return listChild.map((item: any) => {
 
       const checkForUrl = user?.url_permission.includes(item?.url);
-
+      console.log("item for url", item, checkForUrl);
       if (checkForUrl) {
         return (
           <SCItemChild
