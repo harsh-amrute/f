@@ -108,7 +108,7 @@ export const SKULocationSchema = Joi.object({
     sd:Joi.string().empty().max(MAX_NAME_LENGTH),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('wc')),
     wd:Joi.string().empty().max(MAX_NAME_LENGTH),
-    pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(ParentWhCodeValidator).required().messages(generateCommonMessages('pwc')),
+    pwc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('pwc')),
     pd:Joi.string(),
     n:Joi.number().integer(),
     mn:Joi.number().integer().custom(MNValidator).messages(SKULocationMessages('mn')),

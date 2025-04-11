@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { commonValidator,supplyCodeChecks, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MAX_INT_VAL} from "../../../commons";
+import { commonValidator,supplyCodeChecks, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,MAX_INT_VAL,commonValidatorWithSeperator} from "../../../commons";
 
 const SuppCodeValidator = (value:any,helper:any)=>{
 
@@ -11,7 +11,7 @@ const SuppCodeValidator = (value:any,helper:any)=>{
 export const MOQSchema = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).messages(generateCommonMessages('wc')),
-    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator).required().messages(generateCommonMessages('spc')),
+    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('spc')),
     mq:Joi.number().integer().min(0).messages({'number.unsafe':`"mq" should be less than ${MAX_INT_VAL}`}),
 
 }).preferences(defaultJOIOptions)
@@ -19,5 +19,5 @@ export const MOQSchema = Joi.object({
 export const MOQSchemaDelete = Joi.object({
     sc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('SKUCode')),
     wc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidator).required().messages(generateCommonMessages('WhCode')),
-    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(SuppCodeValidator).required().messages(generateCommonMessages('spc')),
+    spc:Joi.string().empty().max(MAX_CODE_LENGTH).custom(commonValidatorWithSeperator).required().messages(generateCommonMessages('spc')),
 }).preferences(defaultJOIOptions)
