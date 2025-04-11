@@ -69,7 +69,7 @@ const VFModalCard = ({
                   leaveFrom="opa translate-y-0"
                   leaveTo="opacity-0 tranlate"
                 >
-                  <Dialog.Panel className="modal-forced--block" style={{paddingBottom:'12px'}}>
+                  <Dialog.Panel className="modal-forced--block">
                     <Dialog.Title as="h3" className="modal-title-forced" style={{backgroundColor:headerBgColor, boxShadow:'0px 5px 10px 0px rgba(110, 107, 107,0.11)', position:'relative', zIndex:'10'}}>
                     <VFHeaderWrapper headerBgColor={headerBgColor}>
                       <SCHeader>

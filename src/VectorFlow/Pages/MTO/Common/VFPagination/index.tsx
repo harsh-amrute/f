@@ -115,6 +115,7 @@ const VFPagination = (props: VFPaginationProps) => {
                                     height: "100%",
                                     width: "30%",
                                     borderRadius: "0px 3px 3px 0px",
+                                    boxShadow: "none"
                                     // opacity: isSaveButtonEnabled ? 1 : 0.5, // Visual cue for disabled
                                     // pointerEvents: isSaveButtonEnabled ? "auto" : "none", // Prevent click when disabled
                                 }}

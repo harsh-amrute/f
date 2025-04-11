@@ -28,7 +28,7 @@ export const BTRTableWrapper = styled.div`
     flex-direction:column;
     height:400px;
     width:100%;
-    margin-top:20px;
+    margin-top:10px;
     margin-bottom:20px;
     height:100%;
 `
@@ -43,7 +43,8 @@ export const BTRAllomentSection = styled.div`
 export const BTRTableHeader = styled.p`
     font-size:13px;
     font-weight:500;
-    margin:0px 25px;
+    margin:15px 25px 0px;
+    height:35px;
 `
 
 export const BTRAvailabiltyCellRendererWrapper = styled.div`
@@ -171,7 +172,7 @@ export const HorizontalViewWrapper = styled.div`
 
 export const VerticalViewLeftTableWrapper = styled.div`
       display:flex;
-      height:100%;
+      height:95%;
       width:100%;
       padding-right:10px;
 `

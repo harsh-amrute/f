@@ -149,6 +149,7 @@ justify-content:flex-end;
 flex-direction:row;
 align-items:center;
 background-color:#F4F4F4;
+border-radius: 0px 0px 12px 12px;
 `
 
 export const ButtonContainer = styled.div`
@@ -166,7 +167,7 @@ export const Option = styled.div`
     width: 100%;
     display: flex;
     gap: 10px;
-    padding: 10px;
+    padding: 5px 10px;
     font-family: 'Roboto';
     font-weight: 300;
     font-size: 16px;

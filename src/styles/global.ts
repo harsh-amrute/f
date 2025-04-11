@@ -74,7 +74,9 @@ export const REGALBLAZE = {
   footerParticular: "#273B67",
   backgroundActiveTooltip: "#F9F1E5",
   textColorActiveTooltip: "#14213D",
-  colorButton: "#C7810E"
+  // colorButton: "#C7810E",
+  colorButton:
+    "transparent linear-gradient(360deg, #C7810E 0%, #FCA311 100%) 0% 0% no-repeat padding-box",
 };
 
 export const chooseThemeColor: any = {

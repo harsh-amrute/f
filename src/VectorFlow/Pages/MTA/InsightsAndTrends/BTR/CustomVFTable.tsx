@@ -35,7 +35,7 @@ const CustomVFTable = forwardRef((props: VFTableProps, ref: any) => {
   }
 
   return (
-    <VFTableWrapper style={{margin:'20px 0px 0px 0px'}} className={`${getClassName()} ag-theme-alpine`} role={"table"} height={props.height}  disableZoomScaling={props.disableZoomScaling}>
+    <VFTableWrapper style={{margin:'0px 0px 0px 0px'}} className={`${getClassName()} ag-theme-alpine`} role={"table"} height={props.height}  disableZoomScaling={props.disableZoomScaling}>
       <AgGridReact
         ref={ref}
         {...props}

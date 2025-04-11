@@ -171,6 +171,7 @@ line-height: 24px;
 color: #82104C;
 display: flex;
 align-items: center;
+cursor: pointer;
 `
 
 export const ConfirmationText=styled.div`
