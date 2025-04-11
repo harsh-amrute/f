@@ -95,7 +95,7 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
     // padding-right: 25px;
     display: flex;
     height: 100%;
-    // margin: 0 20px;
+    margin: 20px 0px;
     & .ag-theme-alpine {
       flex: 1;
     }
