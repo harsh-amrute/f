@@ -16,7 +16,7 @@ import PlannedReleaseRenderer from './PlannedReleaseRenderer';
 import CustomCellEditor from './MajorDropDownRenderer';
 import { ColorsMTO } from '../../Common/Colors';
 import VFPagination from "../../Common/VFPagination";
-import BPPRenderer from '../../Common/BPPRenderer';
+import BPPRenderer from '../../Common/BPRRenderer/BPPRenderer';
 import OverlayLoader from '../../Common/Loader';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';

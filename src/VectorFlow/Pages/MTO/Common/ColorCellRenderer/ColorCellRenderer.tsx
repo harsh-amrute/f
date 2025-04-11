@@ -1,6 +1,6 @@
 
-import { BPRColorCellRendererWrapper } from '../../MTA/SupplyChainIntelligenceHub/BPR/styles';
-import { ColorsMTO } from './Colors';
+import { BPRColorCellRendererWrapper } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles';
+import { ColorsMTO } from '../Colors';
 
 const colorMapper = (color: string) => {
 

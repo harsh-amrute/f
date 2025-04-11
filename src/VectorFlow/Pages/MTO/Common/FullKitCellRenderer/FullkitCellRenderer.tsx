@@ -1,7 +1,7 @@
 
 import { ICellRendererParams } from "ag-grid-enterprise"
-import { BTRAvailabiltyCellRenderer, BTRAvailabiltyCellRendererWrapper } from '../../MTA/InsightsAndTrends/BTR/styles';
-import { useUserData } from "../../../../context";
+import { AvailabiltyCellRenderer, AvailabiltyCellRendererWrapper } from './styles';
+import { useUserData } from "../../../../../context";
 const FullkitCellRenderer = (props: ICellRendererParams) => {
 
     const { user } = useUserData();
@@ -20,10 +20,10 @@ const FullkitCellRenderer = (props: ICellRendererParams) => {
     };
 
     return (
-        <BTRAvailabiltyCellRendererWrapper data-testid="avl-cell-renderer">
+        <AvailabiltyCellRendererWrapper data-testid="avl-cell-renderer">
             <div>{formatNumber(props.data.fol)}</div>
-            <BTRAvailabiltyCellRenderer value={props.data.fol} themeUi={themeUi}/>     
-        </BTRAvailabiltyCellRendererWrapper>
+            <AvailabiltyCellRenderer value={props.data.fol} themeUi={themeUi}/>     
+        </AvailabiltyCellRendererWrapper>
     )
 }
 
