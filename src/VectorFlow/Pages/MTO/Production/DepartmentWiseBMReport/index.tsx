@@ -25,7 +25,7 @@ import { notifyError, notifyLoader, notifySuccess } from '../../../../../helpers
 import { toast } from 'react-toastify';
 import OverlayLoader from '../../Common/Loader';
 import { useGetPoogiRemarks } from '../../../../../VectorFlow/Services/MTO/Poogi/ReasonOrderChange/index';
-import BPPRenderer from '../../Common/BPPRenderer';
+import BPPRenderer from '../../Common/BPRRenderer/BPPRenderer';
 import { IRowNode } from 'ag-grid-enterprise';
 import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/Common/BOMExplosion';
 import { ColorsMTO } from '../../Common/Colors';

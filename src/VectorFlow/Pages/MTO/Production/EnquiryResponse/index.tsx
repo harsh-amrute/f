@@ -30,7 +30,7 @@ import { Allotment } from "allotment";
 import useViewPort from "../../../../../hooks/useViewPort";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../helpers/utils";
-import FullkitCellRenderer from "../../Common/FullkitCellRenderer";
+import FullkitCellRenderer from "../../Common/FullKitCellRenderer/FullkitCellRenderer";
 import { UIGridCode } from "../../Common/Enum";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import OverlayLoader from "../../Common/Loader";

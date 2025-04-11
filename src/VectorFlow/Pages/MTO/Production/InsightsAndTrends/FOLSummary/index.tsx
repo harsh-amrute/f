@@ -13,7 +13,7 @@ import { notifyLoader } from "../../../../../../helpers/notify";
 import { toast } from "react-toastify"
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
-import FullkitCellRenderer from "../../../Common/FullkitCellRenderer";
+import FullkitCellRenderer from "../../../Common/FullKitCellRenderer/FullkitCellRenderer";
 // import { valueContainerCSS } from "react-select/dist/declarations/src/components/containers";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import OverlayLoader from "../../../Common/Loader";

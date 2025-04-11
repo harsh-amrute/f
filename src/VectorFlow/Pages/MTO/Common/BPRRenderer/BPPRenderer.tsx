@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColorsMTO } from './Colors';
+import { ColorsMTO } from '../Colors';
 
 const colorMapper = (color: string) => {
 

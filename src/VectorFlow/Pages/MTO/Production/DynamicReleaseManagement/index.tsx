@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
-import ColorCellRenderer from '../../Common/ColorCellRenderer';
+import ColorCellRenderer from '../../Common/ColorCellRenderer/ColorCellRenderer';
 import { Button, Wrapper } from './DynamicReleaseManagement.styled';
 import { useUserData } from '../../../../../context';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
