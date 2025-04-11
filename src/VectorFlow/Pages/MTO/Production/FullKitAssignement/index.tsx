@@ -6,7 +6,7 @@ import VFTable from '../../Common/VFTable';
 // import { AgChartOptions } from 'ag-charts-community';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 
-import ColorCellRenderer from '../../Common/ColorCellRenderer';
+import ColorCellRenderer from '../../Common/ColorCellRenderer/ColorCellRenderer';
 import { Button, Wrapper } from './FullKitAssignment.styled';
 import { useUserData } from '../../../../../context';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';

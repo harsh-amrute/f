@@ -21,7 +21,7 @@ import { Allotment } from "allotment";
 // import useViewPort from '../../../../../hooks/useViewPort';
 //import { useUserData } from '../../../../../context';
 import { AgGridReactProps } from "ag-grid-react";
-import BPPRenderer from "../../Common/BPPRenderer";
+import BPPRenderer from "../../Common/BPRRenderer/BPPRenderer";
 import AgeingCellRenderer from "../DepartmentWiseBMReport/AgeingIconCellRenderer";
 //import customCellRenderer from '../DepartmentWiseBMReport/CustomCellRenderer';
 import RemarkHistoryRenderer from "../DepartmentWiseBMReport/RemarkHistoryRenderer";
