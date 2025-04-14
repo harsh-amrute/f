@@ -2,16 +2,14 @@ import { useSpring, animated } from "react-spring";
 import { MultiSelectCheckBoxComponent } from "../../../../../components/VectorFLOW/commons/VFMultiFilter/style";
 import { useUserData } from "../../../../../context";
 import Select from "react-select";
-import { useEffect, useImperativeHandle, useState } from "react";
+import { useEffect, useState } from "react";
 import { DropdownGroupWrapper, SelectDropdownComponent, OptionsWrapper } from "./styles";
 import { Filter } from "../../../../../VectorFlow/types/MTO";
 import './style.css'
 import { InputTypes } from "../Enum";
 import { checkValue } from "../../../../../helpers/utils";
-import { filterAttributes, staticHeaderConfig } from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
-import { findUniqueKeysAndValues, getDynamicAttributes, getKeyName, getType } from '../../../../../helpers/utils';
 import { SCFilterAddButton } from "../../MDM/ViewModify/styles";
-import { filter } from "lodash";
+
 
 
 
@@ -24,8 +22,6 @@ interface FilterMultiSelectCheckboxProps {
   filterId?: any;
 }
 
-// const { user } = useUserData();
-// const themeUi = user.user.theme_ui;
 
 const FilterCheckboxAccordian = ({
   filterType,
@@ -220,7 +216,7 @@ const FilterSelectDropdown = ({
   disabled=false,
 }: any) => {
   const customStylesClose = {
-    control: (baseStyles: any,) => ({
+    control: (baseStyles: any) => ({
       ...baseStyles,
       height: "39px",
       borderRadius: " 20px 20px 20px 20px",
