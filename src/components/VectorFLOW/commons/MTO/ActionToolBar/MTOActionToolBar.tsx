@@ -129,7 +129,6 @@ const MTOActionToolBar = ({
         }
     }
 
-    console.log("selected Filters", selectedFilters);
 
     const format2 = "yyyy-MM-dd"
     const d = new Date();
@@ -307,7 +306,7 @@ const MTOActionToolBar = ({
             {isAddFilterButton && newFilters && Object.keys(newFilters)?.length > 0 &&
                 <VFSelectedFiltersWrapper>
                     <VFSelectedFiltersPlaceHolder>
-                        {/* Selected Filters */}
+                        Selected Filters
                     </VFSelectedFiltersPlaceHolder>
                     <VFFilterScrollBar>
                         {
