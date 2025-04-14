@@ -2,12 +2,19 @@ import { useSpring, animated } from "react-spring";
 import { MultiSelectCheckBoxComponent } from "../../../../../components/VectorFLOW/commons/VFMultiFilter/style";
 import { useUserData } from "../../../../../context";
 import Select from "react-select";
-import { useState } from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 import { DropdownGroupWrapper, SelectDropdownComponent, OptionsWrapper } from "./styles";
 import { Filter } from "../../../../../VectorFlow/types/MTO";
 import './style.css'
 import { InputTypes } from "../Enum";
 import { checkValue } from "../../../../../helpers/utils";
+import { filterAttributes, staticHeaderConfig } from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
+import { findUniqueKeysAndValues, getDynamicAttributes, getKeyName, getType } from '../../../../../helpers/utils';
+import { SCFilterAddButton } from "../../MDM/ViewModify/styles";
+import { filter } from "lodash";
+
+
+
 
 interface FilterMultiSelectCheckboxProps {
   filterOptions: Array<{ label: string; id: string }>;
@@ -16,6 +23,9 @@ interface FilterMultiSelectCheckboxProps {
   onChange: any;
   filterId?: any;
 }
+
+// const { user } = useUserData();
+// const themeUi = user.user.theme_ui;
 
 const FilterCheckboxAccordian = ({
   filterType,
@@ -55,6 +65,9 @@ const FilterCheckboxAccordian = ({
     },
     config: { duration: "120" },
   });
+
+  const {user} = useUserData()
+  const themeUi = user?.user?.theme_ui;
 
   return (
     <>
@@ -203,9 +216,11 @@ const FilterSelectDropdown = ({
   onChange,
   filterId,
   value,
+  resetKey,
+  disabled=false,
 }: any) => {
   const customStylesClose = {
-    control: (baseStyles: any) => ({
+    control: (baseStyles: any,) => ({
       ...baseStyles,
       height: "39px",
       borderRadius: " 20px 20px 20px 20px",
@@ -311,6 +326,10 @@ const FilterSelectDropdown = ({
       onChange={onChange}
       aria-label={filterId}
       value={value}
+      isDisabled={disabled}
+      key={resetKey}
+      
+
       // menuIsOpen={true}
     />
   );
@@ -322,8 +341,11 @@ const FilterTextInput = ({
   disabled = false,
   value,
   type = "text",
-  name
+  name,
+  resetKey,
 }: any) => {
+
+
   return (
     <input
       name={name}
@@ -342,15 +364,17 @@ const FilterTextInput = ({
         fontSize: "14px",
         textAlign: "center",
         border: "none",
+        cursor: 'text',
       }}
       placeholder={placeholder}
       onChange={onChange}
-      value={value}
+       value={value}
+       key={resetKey}
     />
   );
 };
 
-const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}:any)=>{
+const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState, setFilterState, masterFilterState, resetKey}:any)=>{
 
   const textComparatorConfig: any = {
     et : {value:'et',label:'Equal to'},
@@ -393,39 +417,218 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState}
     {value:'gt',label:'>'},
     {value:'lt',label:'<'},
   ]
+
+  const getNameOptions = (type: string) => {
+    if(type==='numberCompare'){
+      return numberComparators
+    }
+    else{
+      return textComparators
+    }
+  }
+
+  const [selectedHeader, setSelectedHeader] = useState<any>(masterFilterState.filters.map((e:any)=> {return e.header}))
+  const [selectedOperator, setSelectedOperator] = useState<any>(masterFilterState.filters.map((e:any)=> {return e.operator}))
+  const [selectedValue, setSelectedValue] = useState<any[]>(masterFilterState.filters.map((e:any)=> {return e.value}));
+
+  const handleHeaderChange = (selectedOption: any, type: any, index:any) => {
+    if(type==="header"){
+      const updatedHeaders:any = [...selectedHeader];
+      updatedHeaders[index] = selectedOption;
+      setSelectedHeader(updatedHeaders);
+    }
+    else if (type === "operator") {
+      const updatedOperator = [...selectedOperator];
+      updatedOperator[index] = selectedOption;
+      setSelectedOperator(updatedOperator);
+    }
+    else if(type==='value'){
+    const updatedValues = [...selectedValue]; 
+    updatedValues[index] = selectedOption.target.value;
+    setSelectedValue(updatedValues);
+    onChange('numberCompare',selectedHeader?.[index]?.attributeName, selectedOperator, "orders", selectedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}])
+    }
+       // type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any
+    if(type==='operator'){
+      onChange('numberCompare',selectedHeader?.[index]?.attributeName, selectedOperator, "orders", selectedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}])
+    }
+  };
+
+
+  useEffect(() => {
+    //console.log('')
+  }, [filterState]);
   
-  const getOperatorValue = (type: string)=>{
-      const operator = filterState.operator;
-      if(type === InputTypes.TextCompare){
-        return textComparatorConfig[operator] || textComparators[0]
-      }
-      return numberComparatorConfig[operator] || numberComparators[0]
-  }
+  const addFilter = () => {
+    setFilterState({
+      ...masterFilterState,
+      filters: 
+      [
+      ...masterFilterState.filters, 
+      { id: Date.now() }
+    ]});    
+  };
 
-  const getValue = ()=>{
-    return filterState? filterState?.value[0]?.value: ""
-  }
 
-  const getOptions = (type: string) => {
-    return type === InputTypes.TextCompare ? textComparators : numberComparators
-  }
+  useEffect(() => {
+    const allHaveValues = selectedHeader.length > 0 && selectedOperator.length > 0 && selectedValue.length > 0 
+    if (allHaveValues) {
+      const updatedFilterState = masterFilterState?.filters?.map((filter: any, index: any) => ({
+        id: filter.id,
+        header: selectedHeader[index] || null,
+        operator: selectedOperator[index] || null,
+        value: selectedValue[index] || '',
+      }));
+  
+      setFilterState((prev: any) => ({
+        ...prev,
+        filters: updatedFilterState,
+      }));
+    } else {
+      // console.log("Skipped setting filterState — arrays are not ready");
+    }
 
-  return(
-    <>
+  }, [selectedHeader, selectedOperator, selectedValue]);
+
+
+  useEffect(()=>{
+    // console.log("masterfilter state", masterFilterState)
+  },[masterFilterState])
+  
+
+
+
+  useEffect(() => {
+    if(resetKey>0){ 
+      setSelectedHeader([]);
+      setSelectedOperator([]);
+      setSelectedValue([]);
+      
+      const val = {
+        ...masterFilterState,
+        filters: 
+        [
+        { id: Date.now() }
+      ]}
+      setFilterState(val)
+    }
+  }, [resetKey]);
+  
+
+ 
+  
+
+
+  const isDisabled = (index: number) => {
+    if(selectedHeader[index]===null ||selectedHeader[index]===undefined || selectedHeader[index]==='' ){
+     return true;
+    }
+    else{
+      return false;
+    }
+  };
+
+    const { user } = useUserData();
+    const themeUi = user.user.theme_ui;
+
+  const getFilteredHeaderOptions = (index: number) => {
+
+    const selectedKeys = selectedHeader.map((header: any, i: number) => {
+    const isDifferentRow = i !== index; 
+    const value = header?.value;
+    return isDifferentRow ? value : null;
+  })
+  .filter(Boolean);  
+  
+    const filteredOptions = header?.filter(
+      (e: any) => !selectedKeys.includes(e.name)
+    )?.map((e: any) => ({
+      key: e.name,
+      value: e.name,
+      label: e.name,
+      type: e.type,
+      attributeName: e.attributeName
+    })) || [];
+  
+    return filteredOptions;
+  };
+  
+
+      return (
+      <>
+       {masterFilterState?.filters?.map((filter:any, index:any) => (
+      <div key={filter.id} style={{ display: "flex",  width: index === 0 ? "100%" : "90%"}}>
+    
+      <div style={{ display: "flex", justifyContent: "space-between", width: index === 0 ? 'calc(100% - 40px)' : '100%' }}>
       <DropdownGroupWrapper>
-        <SelectDropdownComponent data-testid="filter-dropdown">
-          <FilterTextInput disabled={true} placeholder={placeholder} />  
+        <SelectDropdownComponent style={{ width:'87%' }}>
+          <FilterSelectDropdown
+            className="custom-scrollbar"
+            placeholder={"Select"}
+            options={getFilteredHeaderOptions(index)}
+            onChange={(option: any) => handleHeaderChange(option, 'header', index)}
+            filterId={filterId}
+            value={selectedHeader?.[index]}
+            resetKey={resetKey}
+          />
         </SelectDropdownComponent>
-        <SelectDropdownComponent data-testid="filter-dropdown">
-          <FilterSelectDropdown className="custom-scrollbar" placeholder={filterState.type === InputTypes.TextCompare ? "Equal to" : "<="} options={getOptions(filterState.type)} hideDropdownArrow onChange={(e:any)=>onChange(e,'operator')} filterId={filterId} value={getOperatorValue(filterState.type)}/>    
+
+        <SelectDropdownComponent style={{ width: "100%", cursor: isDisabled(index) ? 'default' : 'pointer' }}>
+          <FilterSelectDropdown
+            style={{ background: isDisabled(index) ? "pink" : "#F2F2F2" }}
+            className="custom-scrollbar"
+            placeholder={'Operator'}
+            type={filterState.type === InputTypes.TextCompare ? "text" : "number"}
+            options={getNameOptions(selectedHeader?.[index]?.type)}
+            hideDropdownArrow
+            key={new Date()} 
+            onChange={(e: any) => handleHeaderChange(e, 'operator', index)}
+            filterId={filterId}
+            value={selectedOperator?.[index] || null}
+            disabled={isDisabled(index)}
+            resetKey={resetKey}
+          />
         </SelectDropdownComponent>
-        <SelectDropdownComponent data-testid="filter-dropdown">
-          <FilterTextInput name={header} type={filterState.type === InputTypes.TextCompare ? "text" : 'number'} placeholder={'Value'} onChange={(e:any)=>onChange(e,'value')} header={header} value={getValue()}/>    
-        </SelectDropdownComponent>  
-      </DropdownGroupWrapper>  
-    </>     
-  )
-}
+
+        <SelectDropdownComponent style={{ width: "100%" }}>
+          <FilterTextInput
+            name={header}
+            type={selectedHeader[index]?.type === InputTypes.TextCompare ? "text" : "number"}
+            placeholder={"Value"}
+            onChange={(e: any) => handleHeaderChange(e, 'value', index)}
+            header={header}
+            value={selectedValue?.[index] || ''}
+            disabled={isDisabled(index)}
+            resetKey={resetKey}
+          />
+        </SelectDropdownComponent>
+      </DropdownGroupWrapper>
+    </div>
+
+    {index === 0 && (
+      <div style={{
+        width: "40px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}>
+        <SCFilterAddButton
+          onClick={addFilter}
+          src={themeUi==="REGALBLAZE" ? "/assets/img/VectorFLOW/NMS/add-filter-regal.svg"
+            :"/assets/img/VectorFLOW/NMS/add-filter.svg"}
+          data-testid="add-filter"
+        />
+      </div>
+    )}
+  </div>
+
+  
+))}
+
+      </>
+    );
+  };
+
 
 export {
   FilterCheckboxAccordian,

@@ -129,6 +129,8 @@ const MTOActionToolBar = ({
         }
     }
 
+    console.log("selected Filters", selectedFilters);
+
     const format2 = "yyyy-MM-dd"
     const d = new Date();
     const datetime = moment(d).format(format2); 
@@ -139,6 +141,8 @@ const MTOActionToolBar = ({
 
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
+
+
 
     return (
         <SCTaskBarContainer className='toolbar-container'>
@@ -308,7 +312,7 @@ const MTOActionToolBar = ({
             {isAddFilterButton && newFilters && Object.keys(newFilters)?.length > 0 &&
                 <VFSelectedFiltersWrapper>
                     <VFSelectedFiltersPlaceHolder>
-                        Selected Filters
+                        {/* Selected Filters */}
                     </VFSelectedFiltersPlaceHolder>
                     <VFFilterScrollBar>
                         {
@@ -327,7 +331,7 @@ const MTOActionToolBar = ({
                                                 <div key={f.value}>
                                                     <VFSelectedFiltersFilterContent>
                                                         <VFSelectedFiltersFilterValue>
-                                                            <p style={{ margin: '0px 5px 0px 5px', fontFamily: '500' }}> {f.label}</p>
+                                                            <p style={{ margin: '0px 5px 0px 5px', fontFamily: '500' }}> {f.label || f.value}</p>
                                                         </VFSelectedFiltersFilterValue>
                                                         {disableRemoveFilter ? <div>-</div> : <VFSelectedFiltersFilterCloseIcon
                                                             onClick={() => {
@@ -339,6 +343,7 @@ const MTOActionToolBar = ({
                                                     </VFSelectedFiltersFilterContent>
                                                 </div>
                                             ))}
+                                            
                                             {index !== newFilters[key]?.filters?.length - 1 && <SCFilterVerticalDivider />}
                                         </>
                                     ))}
