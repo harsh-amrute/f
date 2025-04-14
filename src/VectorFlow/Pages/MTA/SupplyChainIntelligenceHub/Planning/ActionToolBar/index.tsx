@@ -162,7 +162,9 @@ const ActionToolBar = ({
     //     filters:multiFilter
     //   });
     // }
-
+    else if(pathname==="/insights-and-trends/buffer-trend-report"){
+      onExportToExcelCallBack();
+    }
     else{
       onExportToExcelOld({
         pagination: { recordCount: currentPageRecordCount || 0, chunkSize: 5000 },
@@ -730,8 +732,8 @@ const ActionToolBar = ({
           </SCTaskFilterContainer>
 
           <SCCustomActionsContainer>
-            {/* currentTab === "chronicunavailability" || || currentTab==="dbmnormsuggestions" */}
-          {( currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" || currentTab === "excessinventorytrend" ) &&
+            {/* currentTab === "chronicunavailability" || || currentTab==="dbmnormsuggestions" || currentTab === "excessinventorytrend" */}
+          {( currentTab === "availabilitytrend"|| currentTab === "availabilityageingtrend" ) &&
                <>
                   <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false}>
                     {getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}
@@ -811,7 +813,7 @@ const ActionToolBar = ({
                       }
                       alt=""
                     />
-                    <p>Save</p>
+                    <p>Save Layout</p>
                   </SCViewContainerWithBg>
                   <SCViewContainerWithBg
                     onClick={() =>
@@ -826,7 +828,7 @@ const ActionToolBar = ({
                       }
                       alt=""
                     />
-                    <p>Reset</p>
+                    <p>Reset Layout</p>
                   </SCViewContainerWithBg>
                   {!disableChartAndGridViewToggle && <SCVerticalDivider />}
                 </>
@@ -1054,7 +1056,7 @@ const ActionToolBar = ({
                         }
                         alt=""
                       />
-                      <p>Save</p>
+                      <p>Save Layout</p>
                     </SCViewContainerWithBg>
                     <SCViewContainerWithBg
                       onClick={() =>
@@ -1069,7 +1071,7 @@ const ActionToolBar = ({
                         }
                         alt=""
                       />
-                      <p>Reset</p>
+                      <p>Reset Layout</p>
                     </SCViewContainerWithBg>
                     {/* {!disableChartAndGridViewToggle && <SCVerticalDivider/> } */}
                     {!disableChartAndGridViewToggle &&

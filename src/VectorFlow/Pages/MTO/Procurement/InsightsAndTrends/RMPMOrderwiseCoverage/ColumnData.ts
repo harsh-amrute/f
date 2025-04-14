@@ -1,5 +1,5 @@
 import { ColDef } from "ag-grid-enterprise"
-import AvlCellRenderer from "../../../Common/AvlCellRenderer"
+import AvlCellRenderer from "../../../Common/AvlCellRenderer/AvlCellRenderer"
 import ColorRangeCellRenderer from "../../../Common/ColorRangeCellRenderer"
 const columnData: ColDef[] = [
     {

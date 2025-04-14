@@ -524,6 +524,11 @@ const useViewModify = (pageType:string) => {
       return columnData?.map((column:any) => ({key:column.colDef.field}));
     }
 
+    const getAllVisibleColums =()=>{
+      const columnData=ref.current?.api.getAllGridColumns();
+      return columnData?.map((column:any)=>({key:column.colDef.field}))
+    }
+
     const queryFilteredData = async (configs:QueryFilteredDataConfigs) => {
       const {filters,pagination,fields,count,currentPage,rowsPerPage} = configs;
       const payload:GetMasterDataPayload = {
@@ -633,16 +638,16 @@ const useViewModify = (pageType:string) => {
       if(activeMaster.id===0){
         dispatch(UPDATE_ACTIVE_MASTER(0));
       }
-      else{
-        dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
-      }
+      // else{
+      //   dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
+      // }
       dispatch(TOGGLE_SELECT_MASTER_SCREEN(false));
     }
 
     const handleTabChange = (currMaster: MDMMasterState) => {
       if(currMaster.progress === 'submitted') return notifyError(`The ${currMaster.name} is already submitted`);
 
-      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted' && master.progress !=='deleteOnlineSubmitted'));
 
       if(currMaster.id === masters[nextMasterIndex].id) return dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex));
       else return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
@@ -722,10 +727,20 @@ const useViewModify = (pageType:string) => {
           console.log('No "selectedMaster" parameter found in the URL.');
       }
   }
+  function checkMasterProgress(masterArray: any) {
+    let defaultProgressCount = 0; 
+    for (const master of masterArray) {
+        if (master.progress === "default") {
+            defaultProgressCount++; 
+        }
+    }
+    return defaultProgressCount === 1;
+}
 
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
       e.stopPropagation();
-      const nextMasterIndex = masters.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+      if(checkMasterProgress(masters)) {return notifyError("There Should be atleast one selected Master")}
+      const nextMasterIndex = masters?.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
       if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
       if(masters.length === 1){
         return notifyError("There Should be atleast one selected Master")
@@ -765,7 +780,14 @@ const useViewModify = (pageType:string) => {
     }
   
     const handleOnDeleteFilter = (id:string)=>{
-      if(activeMaster.filters.length === 1) return notifyError("Cannot Delete this Filter Instance")
+     
+      if (activeMaster.filters.length === 1) {
+        
+        dispatch(RESET_FILTERS());
+        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+      
+        return;
+      }
       dispatch(REMOVE_FILTER(id));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
     }
@@ -1038,7 +1060,7 @@ const useViewModify = (pageType:string) => {
           const currMasterFilters = activeMaster.filters;
           const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
         
-          const payloadFields:any = getCurrentVisbileColumns();
+          const payloadFields:any = getAllVisibleColums();
           
           const numberOfPages = Math.ceil(recordCount/chunkSize);
           const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)
@@ -1430,6 +1452,7 @@ const useViewModify = (pageType:string) => {
 
           if(draftID.length > 0){
             await deleteDraft(draftID);
+            dispatch(SET_DRAFT_ID(''));
           }
         }
         else{
@@ -1674,7 +1697,7 @@ const useViewModify = (pageType:string) => {
         try {
           toastId = notifyLoader(`Creating Draft ${chunkProgress}/${activeMaster.rowData.length}`);
           for(let i=0; i < rowData.length; i+=chunkSize){
-            if(draftID.length > 0){
+            if(draftId.length > 0){
               if(i+chunkSize < rowData.length){
                 await createDraft(generateDraftPayload(rowData.slice(i,i+chunkSize),draftId));
                 toast.update(toastId,{render:`Uploading ${i+chunkSize}/${rowData.length}`})
@@ -1710,7 +1733,8 @@ const useViewModify = (pageType:string) => {
       }
       const onSaveToDraft = async () => {
         toggleEditOnline(false)
-        resetColumnEditing()
+        // resetColumnEditing()
+
         try{
           const colDefs = ref.current?.api.getColumnDefs() || [];
           const checkboxExists = colDefs.some((col: any) => col.field === "checkbox");
@@ -1775,6 +1799,7 @@ const useViewModify = (pageType:string) => {
           // }
           return false
         }finally{
+          //dispatch(SET_DRAFT_ID(''));
           dispatch(UPDATE_IS_SAVING_DRAFT(false))
         }
     }
@@ -2065,7 +2090,8 @@ const useViewModify = (pageType:string) => {
         isSubmitDisabled,
         onDiscardDraftCallback,
         canToggleMaster,
-        setCanToggleMaster
+        setCanToggleMaster,
+        getAllVisibleColums,
     }
 }
 

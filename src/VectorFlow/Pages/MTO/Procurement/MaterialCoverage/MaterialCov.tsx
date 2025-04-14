@@ -23,7 +23,7 @@ import { useGetUIConfigData } from '../../../../Services/MTO/Common/UIConfig';
 import { formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useUserData } from "../../../../../context/index";
-import ColorCellRenderer from "../../Common/ColorCellRenderer";
+import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import useColDef from '../../../../../hooks/useColDef';
 
@@ -198,8 +198,7 @@ const MaterialCov = () => {
           cellRenderer: ColorCellRenderer
       },
       FullKitAvail: {
-          minWidth: 100,
-          maxWidth: 100,
+          minWidth: 150,
           cellStyle: {
               paddingRight: '25px'
           },

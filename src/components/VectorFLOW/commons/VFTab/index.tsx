@@ -52,7 +52,7 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
     if (getTabStatus(master) === 'active') {
       return '/assets/img/VectorFLOW/NMS/close-icon.svg';
     }
-    if (master.progress === 'submitted' || master.progress === 'editOnlineSubmitted') {
+    if (master.progress === 'submitted' || master.progress === 'editOnlineSubmitted'|| master.progress==='deleteOnlineSubmitted') {
       return '/assets/img/VectorFLOW/NMS/tick.svg';
     }
     else{

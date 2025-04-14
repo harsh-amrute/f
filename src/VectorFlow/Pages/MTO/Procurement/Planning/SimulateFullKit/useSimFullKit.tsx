@@ -1,12 +1,12 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react"
 import { AgGridReact, AgGridReactProps } from "ag-grid-react"
 import { useUserData } from "../../../../../../context"
-import AvlCellRenderer from "../../../Common/AvlCellRenderer";
+import AvlCellRenderer from "../../../Common/AvlCellRenderer/AvlCellRenderer";
 import AvailabilityToolTip from "../../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import { VFFloatingTabItemProps } from "../../../../../../components/VectorFLOW/commons/VFFloatingTab"
 import VFTable from "../../../Common/VFTable";
 import { useLocation } from 'react-router-dom';
-import ColorCellRenderer from "../../../Common/ColorCellRenderer";
+import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRenderer";
 import { DownloadExcel, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import DetailCellRenderer from "./DetailCellRenderer";
 import { useGetProcAfterSimulationPlanningDataForExcelExport, userGetProcAfterSimulationPlanningData } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";

@@ -182,7 +182,8 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
         data,
         onDownload
     } = props
-    const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
+    // const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
+    const approvedStatuses = ["Approved","Approved - DB Updated"]
     const {user} = useUserData()
     const {Approvers} = data
 
@@ -208,7 +209,8 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
                                 <VFButton 
                                     onClick={()=>onDownload(approver)} 
                                     themeUi={user.user.theme_ui}
-                                    width={167}
+                                    width={116}
+                                    style={{height:"43px",fontSize:"13px"}}
                                 >
                                     <VFTastStatusDownloadWrapper>
                                         <img src="/assets/img/VectorFLOW/NMS/download-task-status.svg" height={25}/>

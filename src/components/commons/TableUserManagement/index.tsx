@@ -150,7 +150,12 @@ const TableUserManagement = ({
             src="/assets/img/profile/icon_edit.svg"
             onClick={() => handleClickEdit(item)}
           />
-          <Tooltip id="edit" content={"Edit User"} place="top" />
+          <Tooltip
+            id="edit"
+            content={"Edit User"}
+            place="top"
+            className="user-manage-tooltip"
+          />
         </Tab.SCIconWrapper>
         <Tab.SCIconWrapper>
           <Tab.SCIcon
@@ -160,7 +165,7 @@ const TableUserManagement = ({
               handleOpenDelete(item.id);
             }}
           />
-          <Tooltip id="delete" content={"Delete User"} />
+          <Tooltip id="delete" content={"Delete User"}  className="user-manage-tooltip"/>
         </Tab.SCIconWrapper>
         <Tab.SCIconWrapper>
           <Tab.SCIcon
@@ -170,7 +175,7 @@ const TableUserManagement = ({
               handleResetPwd(item.id);
             }}
           />
-          <Tooltip id="reset" content={"Reset Password"} />
+          <Tooltip id="reset" content={"Reset Password"} className="user-manage-tooltip"/>
         </Tab.SCIconWrapper>
       </Tab.SCTableTd>
       </>

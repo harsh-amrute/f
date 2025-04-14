@@ -168,7 +168,7 @@ const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum
                 </div>
             </RouteContentWrapper>
             <div style={{ zoom: '0.7', marginTop: '10px' }}>
-                <div key={'1'} style={{ display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 10px 0 0' }}>
+                <div key={'1'} style={{ display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 20px 20px 0' }}>
 
                     <div>
                         <div onClick={() => { setRouteNum(''), setShowModal(false) }} style={{

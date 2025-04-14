@@ -187,10 +187,11 @@ export const ProcurementLayout = styled.div`
     height: 100vh;
     display: flex;
     flex-direction: column;
+    margin: 20px 0px 0px 25px;
 
     & div[data-testid="vf_pagination"]{
         width:100%;
-        margin: -20px 0 0 0;
+        // margin: -20px 0 0 0;
     }
 
     & > .ag-theme-alpine{

@@ -103,6 +103,7 @@ export const HighlightedValue = styled.div`
 export const EstimatedWrapper = styled.div`
   position: relative;
   margin: 1rem 0;
+  overflow-y: scroll;
 `;
 export const BlurCover = styled.div`
   top: 0;
@@ -145,7 +146,6 @@ export const TabSwitchContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 50px;
-  margin-top: 20px;
 
   @media (min-width: ${gridSystem.size.mobileS}) and (max-width: ${gridSystem
     .size.mobileL}) {

@@ -35,45 +35,50 @@ const VFCharts = (props:any) =>{
 
     const containerRef  = useRef<HTMLDivElement>(null);
   
-      const downloadChartWithHeader = () => {
+    const downloadChartWithHeader = () => {
         if (containerRef.current) {
-          const chartCanvas = containerRef.current.querySelector('canvas');
-          if (!chartCanvas) {
-            console.error("Chart canvas not found.");
-            return;
-          }
+            const chartCanvas = containerRef.current.querySelector('canvas');
+            if (!chartCanvas) {
+                console.error("Chart canvas not found.");
+                return;
+            }
     
-          const headerHeight = 40;
-          const combinedCanvas = document.createElement('canvas');
-          combinedCanvas.width = chartCanvas.width;
-          combinedCanvas.height = chartCanvas.height + headerHeight;
+            const headerHeight = 40;
+            const combinedCanvas = document.createElement('canvas');
+            combinedCanvas.width = chartCanvas.width;
+            combinedCanvas.height = chartCanvas.height + headerHeight;
     
-          const ctx = combinedCanvas.getContext('2d');
-          if (!ctx) {
-            console.error("Failed to get canvas context.");
-            return;
-          }
+            const ctx = combinedCanvas.getContext('2d');
+            if (!ctx) {
+                console.error("Failed to get canvas context.");
+                return;
+            }
     
-          const titleText = title || '';
+            const titleText = title || '';
     
-          ctx.font = 'bold 16px Arial';  
-          const textWidth = ctx.measureText(titleText).width;
-          
-          const xCoordinate = (combinedCanvas.width - textWidth) / 2;
+            ctx.font = 'bold 16px Arial';  
+            const textWidth = ctx.measureText(titleText).width;
+            
+            const xCoordinate = (combinedCanvas.width - textWidth) / 2;
     
-          ctx.fillStyle = 'white';
-          ctx.fillRect(0, 0, combinedCanvas.width, headerHeight);
-          ctx.fillStyle = 'black';
-          ctx.fillText(titleText, xCoordinate, 25);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, combinedCanvas.width, headerHeight);
+            ctx.fillStyle = 'black';
+            ctx.fillText(titleText, xCoordinate, 25);
     
-          ctx.drawImage(chartCanvas, 0, headerHeight);
+            ctx.drawImage(chartCanvas, 0, headerHeight);
     
-          const link = document.createElement('a');
-          link.href = combinedCanvas.toDataURL('image/png');
-          link.download = titleText || 'chart.png';
-          link.click();
+            // Sanitize the filename
+            const sanitizedFilename = (titleText || 'chart')
+                .replace(/[/\\?%*:|"<>]/g, '_')  // Replace invalid characters with underscore
+                .trim();                         // Remove leading/trailing spaces
+    
+            const link = document.createElement('a');
+            link.href = combinedCanvas.toDataURL('image/png');
+            link.download = `${sanitizedFilename}.png`;
+            link.click();
         }
-      };
+    };
 
 
     const [gridSpecificChartOptions,setGridSpecificChartOptions] = useState<any>(undefined)

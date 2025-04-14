@@ -854,14 +854,18 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   if(numberOfSheets[0]!='ag-grid'){
     throw new Error('Sheet Name is changed') 
   }
-
- 
-
-
    
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
   });
+  
+  //Check if File Contains a Column that is Duplicate
+  const isDuplicateHeader = data[0].some((header:any,index:number)=>data[0].indexOf(header)!==index);
+
+  if(isDuplicateHeader){
+    throw new Error("File Contains Duplicate Headers")
+  }
+
   //displayName to key mapper
   const headerKeys = data[0].map((headerName: any) => {
     const fieldObj = master.fields.find((field: Field) => field.displayName === headerName);
@@ -2454,7 +2458,6 @@ export const generateAndMapColumns = (reportName:string,fields:any ,includeRemar
   }
   let Columns:ColDef[] = [];
 
-  console.log("FIELDFS",fields)
   Columns = fields.map((f:any,index:number)=>{
     if(f.Col_Code==='t' || f.Col_Code==='tags'){
       return {
@@ -2593,7 +2596,6 @@ export const createAxesForBarCharts = (keys:any,Labels:any)=>{
 export const addExtraColumnForLabels = (data:any)=>{
   const addedData = _.cloneDeep(data)
   if(addedData.length===0) return [];
-  console.log(addedData);
   addedData.unshift({color:"custom",pre:-1, post:-2})
   return addedData;
 }
@@ -3846,7 +3848,6 @@ export const handleDownloadVFReports = async (payload:{name:string,filters:any})
     // Convert response to blob object
     const blob = await response.blob()
 
-    console.log(blob)
     // Create download URL for blob object
     const url = URL.createObjectURL(blob)
   
@@ -4350,6 +4351,7 @@ export function getColumnDefinations(
       rowGroupIndex: null,
       pivot: false,
       pivotIndex: null,
+      enablePivot: true,
       flex: 1,
       minWidth: 150,
       filterParams: {
@@ -4591,6 +4593,30 @@ export const DownloadExcel = (response : any,filename = "ReportFile") => {
     }
   } catch (e) {
     console.log(e);
+  }
+};
+
+
+export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
+  try {
+    const responseData = response.data?.data || response;
+    const binaryString = atob(responseData.fileContent);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const blob = new Blob([bytes.buffer], { type: responseData.fileType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  } catch (e) {
+    console.error("Error downloading Excel file:", e);
   }
 };
 
@@ -4851,7 +4877,7 @@ export function getColumnDefinationsMTA(
       enableRowGroup:true,
       enableValue:true,
       pivotIndex: null,
-      flex: undefined,
+      flex: 1,
       minWidth: 180,
       cellStyle: {
         justifyContent: data.CellAlignment

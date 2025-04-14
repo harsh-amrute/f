@@ -53,7 +53,7 @@ const TotalRequirementReport = () => {
     onResetCallback:onResetCallback
 }}
   >
-    <div style={{marginLeft:'10px'}}>
+    <div>
       <ActionToolBar 
         view={'grid'} 
         setCurrentTab={''} 
@@ -98,7 +98,7 @@ const TotalRequirementReport = () => {
           <VFLoader/>
         ):
         (
-          <div style={{height:'100vh'}}>
+          <div style={{height:'70vh'}}>
 
           <VFTable
                   ref={ref}
@@ -116,7 +116,7 @@ const TotalRequirementReport = () => {
                       { statusPanel: 'agAggregationComponent', align:'left' },
                     ],
                   }}
-                  height={"80%"}
+                  height={"100%"}
                   onFilterChanged={() => {
                     const filterModel = ref?.current?.api?.getFilterModel();
                     if (filterModel && Object.keys(filterModel).length > 0) {

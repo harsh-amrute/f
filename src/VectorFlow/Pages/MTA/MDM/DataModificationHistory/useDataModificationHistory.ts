@@ -54,9 +54,8 @@ const useDataModificationHistory = () => {
             setSkuOptions(response?.data?.data?.map((option: any) => ({
                 label: option.SKUCode, value: option.SKUCode, fields: option.fields
             })) || []);
-    
             setLocOptions(response?.data?.data?.map((option: any) => ({
-                label: option.WhCode, value: option.WhCode, fields: option.fields
+                label: option.WHCode, value: option.WHCode, fields: option.fields
             })) || []);
     
         } catch (error) {
@@ -74,13 +73,13 @@ const useDataModificationHistory = () => {
         const postTaskMasterHistory = async() =>{
             const payload:any = {masterId:selectedOption.value}
             if(isSkuDisabled()){
-                payload['whCode'] = selectedLocOption.value;
+                payload['WHCode'] = selectedLocOption.value;
             }
             if(isLocDisabled()){
                 payload['skuCode'] = selectedSkuOption.value;
             }
             if(!isSkuDisabled() && !isLocDisabled()){
-                payload['whCode'] = selectedLocOption.value;
+                payload['WHCode'] = selectedLocOption.value;
                 payload['skuCode'] = selectedSkuOption.value;
             }
             const {data} = await getTaskMastersHistory(payload);
@@ -117,7 +116,7 @@ const useDataModificationHistory = () => {
                
                 const { data: locOptionsData } = await getSKULocations({ masterId: selectedOption.masterId });
                 setLocOptions(locOptionsData?.data?.map((option: any) => ({
-                    label: option.whCode,
+                    label: option.WHCode,
                     value: option.id,
                     fields: option.fields
                 })) || [] );

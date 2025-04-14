@@ -4,11 +4,14 @@ import {
   getColumnDefinationsMTA,
   MainMenuItemsCustomization,
 } from "../../../../../../helpers/utils";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useGetUIConfigData } from "../../../../../Services/MTA/Common/UIConfig";
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../../helpers/Enum";
 import { notifyError } from "../../../../../../helpers/notify";
 import { ColDef } from "ag-grid-enterprise";
+
+
+
 interface ChronicGridViewProps {
   currentGridData: any;
 }
@@ -55,6 +58,10 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
     }
   };
 
+ 
+
+  
+
   const sideBarForChronicGrid = {
     toolPanels: [
       {
@@ -64,14 +71,7 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
         iconKey: "columns",
         toolPanel: "agColumnsToolPanel",
         // toolPanelParams: {},
-      },
-      {
-        id: "filters",
-        labelDefault: "Filters",
-        labelKey: "filters",
-        iconKey: "filter",
-        toolPanel: "agFiltersToolPanel",
-      },
+      }
     ],
     defaultToolPanel: "",
   };
@@ -111,12 +111,13 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
     pagination: true,
     suppressRowClickSelection: true,
     defaultColDef: {
+      flex:1,
       floatingFilter: true,
       filter: "agMultiColumnFilter",
       cellDataType: false,
       resizable: true,
+      minWidth:150,
       cellStyle: {
-        flex: 1,
         textAlign: "center",
         height: "50px",
         fontStyle: "normal",
@@ -208,6 +209,7 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
         currentCategory={"GuidedInsightchronicunavailability"}
         currentTab={""}
         gridHeight={"80%"}
+        
       />
     </div>
   );

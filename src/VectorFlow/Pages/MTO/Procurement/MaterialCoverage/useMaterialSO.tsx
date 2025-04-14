@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import AvlCellRenderer from '../../Common/AvlCellRenderer';
+import AvlCellRenderer from '../../Common/AvlCellRenderer/AvlCellRenderer';
 import AvailabilityToolTip from "../../../../../VectorFlow/Pages/MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
 import DetailCellRenderer from "./MaterialCellRenderer";
-import ColorCellRenderer from "../../Common/ColorCellRenderer";
+import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer";
 import { useGetOpenSODetailsData, useGetOpenSODetailsDataForExcelExport } from "../../../../../VectorFlow/Services/MTO/Procurement/MaterialCoverage";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";

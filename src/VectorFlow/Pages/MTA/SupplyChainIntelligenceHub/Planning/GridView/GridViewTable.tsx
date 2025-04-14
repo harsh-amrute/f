@@ -6,7 +6,7 @@ import "allotment/dist/style.css";
 import { GridViewLayout } from "./styles";
 import { AgGridReactProps } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
-import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable';
+import VFTable from "../../../../../../components/VectorFLOW/commons/VFTable"
 import BPRViewTable, { BPRViewTableColDef } from '../../BPR/BPRViewTable'
 import VFPagination from "../../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import { type VFPaginationProps } from "../../../../../../components/VectorFLOW/commons/VFPagination";
@@ -14,8 +14,9 @@ import { GridStateContext } from "../../../../../../context/GridStateContext";
 import { useGetState } from "../../../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 import { updateCommonAttributes } from '../../../../../../helpers/utils'
 import _ from 'lodash'
+import { GridFilterWrapper, TextBtn } from "../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
+import { useUserData } from "../../../../../../context";
 
-// import VFPagination from "~/components/VectorFLOW/commons/VFPagination";
 
 
 interface GridViewTableProps {
@@ -33,59 +34,70 @@ interface GridViewTableProps {
     currentCategory:string,
     gridHeight?:string,
     tablePrefixSrc?:string,
-    tableHeader?:string
+    tableHeader?:string,
+    ref1?:any
 }
 
-const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader,currentCategory,currentTab}:GridViewTableProps) => {
-    const {ref,gridColDefs} = useContext(GridStateContext)
+const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowData,customGridColDef,showStockGrid,isSubGridOpen,stockGridData,onRequestExpediting,paginationProps,gridHeight,tablePrefixSrc,tableHeader,currentCategory,currentTab, ref1}:GridViewTableProps) => {
+    const {ref} = useContext(GridStateContext)
     const {mutateAsync:getState} = useGetState()
     const [gridState,setGridState] = useState<any>()
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
+        const {user} = useUserData()
+        const theme_ui = user.user.theme_ui
+    
 
-    const [internalRef,setInternalRef] = useState<any>()
+
     const [Columns,setColumns] = useState<any[]>(_.cloneDeep(agGridColDefs))
 
-    // useEffect(()=>{
-    //     const getTableState = async()=>{
-    //       try{
-    //         const data =  await getState(`${currentCategory}${currentTab}`)
-    //         ref.current.api.applyColumnState({state:JSON.parse(data.data.data)})
-    //       }catch(err:any){
-    //         notifyError(err)
-    //       }
-    //     }
-    //     getTableState()
-    // },[ref])
-
     useEffect(()=>{
-        const getTableState = async()=>{
-          try{
-            const data =  await getState({reportname:`${currentCategory}${currentTab}`})
-            const parsedContent = JSON.parse(data.data.data)
-            setGridState(parsedContent)
-          }catch(err:any){
-            setGridState({
-                charts:[],
-                columns:Columns,
-                pivot:false
-            })
-          }
+        if(agGridColDefs && agGridColDefs.length){
+            const getTableState = async()=>{
+                try{
+                    const data =  await getState({reportname:`${currentCategory}${currentTab}`})
+                    const parsedContent = JSON.parse(data.data.data)
+                    setGridState(parsedContent)
+                }catch(err:any){
+                    setGridState({
+                        charts:[],
+                        columns:Columns,
+                        pivot:false
+                    })
+                }
+            }
+            
+            getTableState()
         }
-        getTableState()
-    },[])
+    },[agGridColDefs])
 
     useEffect(()=>{
-        if(internalRef && gridState && Array.isArray(gridState.columns) && gridState.columns.length !== 0){
-            const StateColumns = updateCommonAttributes(gridState.columns,Columns,'colId')
-            setColumns(StateColumns)
-            internalRef?.api?.applyColumnState({state:gridState.columns,applyOrder:true})
-            internalRef?.api.sizeColumnsToFit();
+        if(gridState && Array.isArray(gridState.columns) && gridState.columns.length !== 0){
+            ref?.current?.api?.applyColumnState({state:gridState.columns,applyOrder:true})
+            ref?.current?.api?.sizeColumnsToFit();
         }else{
-            internalRef?.api?.applyColumnState({state:gridColDefs,applyOrder:true})
-            internalRef?.api.sizeColumnsToFit();
+            if(ref && ref.current){
+                ref?.current?.api?.sizeColumnsToFit();
+            }
         }
-    },[internalRef,gridState,gridColDefs])
+    },[gridState, ref])
+
+    
+     const clearGridFilter = () =>{
+              ref?.current?.api.setFilterModel(null);
+                setIsDisabled(true);
+          }
+      
+         
+          const CustomStatusPanel = () => {
+              return (
+                  <GridFilterWrapper style={{marginTop:'25px'}}>
+                      <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                          Clear All Grid Filters
+                      </TextBtn>  
+                  </GridFilterWrapper>           
+              );
+          };
 
    
 
@@ -160,14 +172,23 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                     (isSubGridOpen || showStockGrid ) && (
                         <Allotment.Pane className="planning-grid-allotment">
                     
-                        <VFTable
+                        <VFTable                 
                             ref={ref}
                             {...agGridProps}
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
                             height={gridHeight ? gridHeight : '380px'}
-                            onGridReady={(params)=>setInternalRef(params)}
                             maintainColumnOrder
+                            statusBar={{
+                                statusPanels: [
+                                    { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
+                                    { statusPanel: "agTotalRowCountComponent", align: "left" },
+                                    { statusPanel: "agFilteredRowCountComponent", align: "left" },
+                                    { statusPanel: "agSelectedRowCountComponent", align: "left" },
+                                    { statusPanel: "agAggregationComponent", align: "left" },
+                                    { statusPanel: CustomStatusPanel, align: "right" },
+                                ],
+                            }}
                             onFilterChanged={() => {
                                 const filterModel = ref?.current?.api?.getFilterModel();
                                 if (filterModel && Object.keys(filterModel).length > 0) {
@@ -196,12 +217,17 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                 columnDefs={agGridColDefs}
                                 rowData={agGridRowData}
                                 height={gridHeight ? gridHeight : '380px'}
-                                // onGridReady={(params)=>{
-                                //     if(columnState){
-                                //         params.columnApi.applyColumnState({state:columnState})
-                                //     }
-                                // }}
-                                onFilterChanged={() => { 
+                                statusBar={{
+                                    statusPanels: [
+                                        { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
+                                        { statusPanel: "agTotalRowCountComponent", align: "left" },
+                                        { statusPanel: "agFilteredRowCountComponent", align: "left" },
+                                        { statusPanel: "agSelectedRowCountComponent", align: "left" },
+                                        { statusPanel: "agAggregationComponent", align: "left" },
+                                        { statusPanel: CustomStatusPanel, align: "right" },
+                                    ],
+                                }}
+                                onFilterChanged={() => {
                                     const filterModel = ref?.current?.api?.getFilterModel();
                                     if (filterModel && Object.keys(filterModel).length > 0) {
                                       setIsDisabled(false);
@@ -209,7 +235,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                       setIsDisabled(true);
                                     }
                                 }}
-
+                                
                             />
                             {paginationProps &&
                             <VFPagination {...paginationProps}

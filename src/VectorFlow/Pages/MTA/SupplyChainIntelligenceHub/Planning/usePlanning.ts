@@ -710,8 +710,15 @@ const usePlanning = ()=>{
                     
                     const result = await getPlanningDataGrid(body);
                     const uiConfig = result.data.data.uiConfig;
-                    const {createAvailabilityAtParent,expediteDispatches} = result.data.data.data;
-                    const customData = {"createAvailabilityAtParent":{"data":createAvailabilityAtParent,"uiConfig":uiConfig},"expediteDispatches":{"data":expediteDispatches,"uiConfig":uiConfig}};
+                    const {createAvailabilityAtParent,createAvailabilityAtParentwip,createAvailabilityAtParenttransit,expediteDispatches,expediteDispatcheswip,expediteDispatchestransit} = result.data.data.data;
+                    // const customData = {
+                    //     "createAvailabilityAtParent": { "data": createAvailabilityAtParent, transitData: createAvailabilityAtParentwip, stockData: createAvailabilityAtParenttransit, "uiConfig": uiConfig },
+                    //     "expediteDispatches": { "data": expediteDispatches, transitData: expediteDispatcheswip, stockData: expediteDispatchestransit, "uiConfig": uiConfig }
+                    // };
+                    const customData = {
+                        "createAvailabilityAtParent": { "data": createAvailabilityAtParent, "uiConfig": uiConfig },
+                        "expediteDispatches": { "data": expediteDispatches, "uiConfig": uiConfig }
+                    };
                     setCurrentGridData(customData);
                     if(fromPagination){
                         setTotalRows(planningCounts.parentExpediteCount)

@@ -14,6 +14,10 @@ import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButt
 import { ButtonWrapper } from "./styles"
 import LastRunDateComponent from "../../../../../components/commons/lastRundate";
 import { useState } from "react"
+import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles"
+import { useUserData } from "../../../../../context";
+import VFSaveRemark from "../../../../../components/VectorFLOW/commons/VFSaveRemark"
+
 
 
 const OpenExpeditingRequests = () => {
@@ -50,6 +54,24 @@ const OpenExpeditingRequests = () => {
     lastRunDate
   } = useOpenExpeditingRequests()
 
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    const {user} = useUserData()
+    const theme_ui = user.user.theme_ui
+
+    const clearGridFilter = () =>{
+      ref?.current?.api.setFilterModel(null);
+      setIsDisabled(true);
+      }
+  
+    const CustomStatusPanel = () => {
+      return (
+        <GridFilterWrapper style={{marginTop:'25px'}}>
+          <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+              Clear All Grid Filters
+          </TextBtn>  
+        </GridFilterWrapper>           
+        );
+    };
   
   return (
     <GridStateContext.Provider
@@ -94,7 +116,7 @@ const OpenExpeditingRequests = () => {
           <VFLoader />
         )
         :
-        (<div style={{ marginLeft: '15px', height: '80%' }}>
+        (<div style={{ marginLeft: '15px', height: '70vh' }}>
           <VFTable
             columnDefs={OERColumns}
             rowData={rowData}
@@ -107,22 +129,32 @@ const OpenExpeditingRequests = () => {
                 { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
                 { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                 { statusPanel: 'agAggregationComponent', align: 'left' },
+                { statusPanel: CustomStatusPanel, align: "right" },
+
               ],
             }}
             {...agGridProps}
             ref={ref}
-            // onGridReady={(params)=>{
-            //   if(columnState){
-            //     params.columnApi.applyColumnState({state:columnState})
-            //   }
-            // }}
-            height={"100%"}
+            onGridReady={(params) => {
+              params.api.addEventListener('filterChanged', () => {
+                  const filterModel = params.api.getFilterModel();
+                  if (Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false); 
+                  } else {
+                      setIsDisabled(true); 
+                  }
+                  });
+            }}
+            
+            height={"95%"}
             maintainColumnOrder
           />
-    
-          <ButtonWrapper>
+          
+          <VFSaveRemark onSubmitRemarks={onSubmitEditedRows} isDisabled={editedRows.length === 0}/>
+          
+          {/* <ButtonWrapper>
             <VFButtonOutline disabled={editedRows.length === 0} themeUi={themeUi} width={169} style={{ fontSize: '20px', fontWeight: '500' }} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
-          </ButtonWrapper>
+          </ButtonWrapper> */}
         </div>
         )
       }
