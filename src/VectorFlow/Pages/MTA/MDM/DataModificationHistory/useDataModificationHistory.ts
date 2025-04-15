@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Field } from "../../../../../VectorFlow/types/MDM";
 import { useGetMasterUIConfiguration, useGetSkuLoc, useGetTaskMastersHistory} from "../../../../../VectorFlow/Services/MTA/MDM"
 import { useUserData } from "../../../../../context";
-import { notifyError } from '../../../../../helpers/notify'
+import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
 
 const useDataModificationHistory = () => {
@@ -50,13 +50,23 @@ const useDataModificationHistory = () => {
  
     const fetchSKULocations = async (masterId: any) => {
         try {
-            const response = await getSKULocations({ masterId });
-            setSkuOptions(response?.data?.data?.map((option: any) => ({
+            const response = await getSKULocations({ masterId })
+
+            const data = response?.data?.data
+            const isDataEmpty = !data || (!data.sku?.length && !data.loc?.length)
+
+            if (isDataEmpty) {
+                notifyError("No Data Found")
+                return;
+            }
+            
+            setSkuOptions(response?.data?.data?.sku.map((option: any) => ({
                 label: option.SKUCode, value: option.SKUCode, fields: option.fields
             })) || []);
-            setLocOptions(response?.data?.data?.map((option: any) => ({
+            setLocOptions(response?.data?.data?.loc.map((option: any) => ({
                 label: option.WHCode, value: option.WHCode, fields: option.fields
             })) || []);
+
     
         } catch (error) {
             notifyError("Failed to fetch data");
@@ -65,6 +75,11 @@ const useDataModificationHistory = () => {
     
     const onMasterChange = (newValue: any) => {
         setSelectedOption(newValue)
+        setSkuOptions([])          
+        setLocOptions([]) 
+        setSelectedSkuOption(null)
+        setSelectedLocOption(null) 
+        setRowData([])       
         fetchSKULocations(newValue.value)
     }
 
@@ -83,6 +98,7 @@ const useDataModificationHistory = () => {
                 payload['skuCode'] = selectedSkuOption.value;
             }
             const {data} = await getTaskMastersHistory(payload);
+            data.data === null ? notifyError(data.msg) : notifySuccess(data.msg)
             setRowData(data.data);
         }
         postTaskMasterHistory()
@@ -100,39 +116,24 @@ const useDataModificationHistory = () => {
         const fetchInitialData = async () => {
             try {
                   const { data: optionsData } = await masterUIConfiguration('modify');
-                setOptions(optionsData?.data?.map((option: any) => ({
-                    label: option.name,
-                    value: option.id,
-                    fields: option.fields
-                })) || []);
- 
-                // Fetch skuOptions
-                const { data: skuOptionsData } = await getSKULocations({ masterId: selectedOption.masterId });
-                setSkuOptions(skuOptionsData?.data?.map((option: any) => ({
-                    label: option.SKUCode,
-                    value: option.id,
-                    fields: option.fields    
-                })) || [] );
-               
-                const { data: locOptionsData } = await getSKULocations({ masterId: selectedOption.masterId });
-                setLocOptions(locOptionsData?.data?.map((option: any) => ({
-                    label: option.WHCode,
-                    value: option.id,
-                    fields: option.fields
-                })) || [] );
-            }
+                        setOptions(optionsData?.data?.map((option: any) => ({
+                        label: option.name,
+                        value: option.id,
+                        fields: option.fields
+                    })) || []);
+                }
         
-            catch (error) {
-                //
-            }
+                catch (error) {
+                    notifyError("Something went wrong")
+                }
         };
    
         fetchInitialData();  
-      }
+    }
  
 
-      const isSkuDisabled =() => {
-        if(!selectedOption)return false
+    const isSkuDisabled =() => {
+        if(!selectedOption) return false
         return selectedOption.value==='2' ||
         selectedOption.value==='15' ||
         selectedOption.value==='20' ||
@@ -143,9 +144,9 @@ const useDataModificationHistory = () => {
 
     }
 
-      const isLocDisabled = () => {
-        if(!selectedOption)return false
-        return selectedOption.value ==='1' ||
+    const isLocDisabled = () => {
+        if(!selectedOption) return false
+        return selectedOption.value ==='1' || selectedOption.value === '5' ||
         selectedOption.value==='27'
     };
 
