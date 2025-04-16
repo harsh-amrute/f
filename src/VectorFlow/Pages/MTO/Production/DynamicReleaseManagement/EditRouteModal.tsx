@@ -204,7 +204,6 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
                 )
             );
 
-            console.log("ccrGroups in edit route modal", ccrGroups);
             // Filter route to only include CCRs that exist in ccrGroups
             const filteredRoute = route?.filter((routeItem: any) => {
                 const [_, ccr] = routeItem;
@@ -212,7 +211,6 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
             });
 
             // if (filteredRoute.length !== route.length) {
-                console.log("filteredRoute", filteredRoute);
                 setRoute(filteredRoute);
             // }
         }
