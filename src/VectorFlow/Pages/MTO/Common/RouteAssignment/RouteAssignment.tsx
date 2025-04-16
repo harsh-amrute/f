@@ -13,6 +13,11 @@ interface IRouteAssignmentProps {
 }
 
 const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedRoutes, isEditable = true}: IRouteAssignmentProps) => {
+
+
+    useEffect(() => {
+        console.log("ccrGroupMaster in routes", ccrGroupMaster);
+    }, [ccrGroupMaster])
     useEffect(() => {
         // let animationFrameId: any;
         const adjustLayout =(containerWidth:number, items:any) =>{
@@ -153,18 +158,25 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     const [sortedSelectedRoutes, setSortedSelectedRoutes] = useState<any>([]);
 
     useEffect(()=>{
-        if(selectedRoutes){
+        if(selectedRoutes && ccrGroupMaster){
 
             const val = _.cloneDeep(selectedRoutes);
+            console.log("ccrGroupMaster", ccrGroupMaster);
+            console.log("selectedRoutes intial", selectedRoutes);
             setSortedSelectedRoutes(val.map((routeGroup: any) => {
                 const [ccrGroup, ccr] = routeGroup;
+                console.log("ccrGroup....", ccrGroup);
+                console.log("ccr in route", ccr);
                 const sortedCcrs = ccrGroup.ccrs.sort((a: any, b: any) => a.fol - b.fol);
-                return [{ ...ccrGroup, ccrs: sortedCcrs }, ccr];
+                
+                const val = [{ ...ccrGroup, ccrs: sortedCcrs }, ccr];
+                console.log("val", val);
+                return val;
             }))
             
         }
 
-    },[selectedRoutes])
+    },[selectedRoutes, ccrGroupMaster])
     
   return (
     <StepperWrapper style={{justifyContent: ccrGroupMaster.length <= 3 ? "start" :ccrGroupMaster.length <= 6 ? "end" : ccrGroupMaster.length <= 9? "start": 'end'}} key="route-assignment" className="route-assignment">
@@ -199,7 +211,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                     isDisabled={!isEditable}
                     theme={theme} 
                     value={sortedSelectedRoutes[index]?.[1] || null}
-                    options={sortedSelectedRoutes[index]?.[0]?.ccrs}
+                    options={sortedSelectedRoutes[index]?.[0]?.ccrs.filter((ccr: any) => ccrGroupMaster.some((group: any) => group.ccrs.some((c: any) => c.value === ccr.value)))}
                     onChange={(newValue: any)=>{
                         const newGroups = [...sortedSelectedRoutes];
                         newGroups[index][1] = newValue;

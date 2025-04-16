@@ -992,23 +992,59 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             })
         }
         
-        if (selectedPlant && masters && itemTypes.size == 1) {
+        if (selectedPlant && masters && itemTypes.size > 0) {
+            // Get all CCRs for each item type
+            const ccrSets = Array.from(itemTypes).map(itemType => {
+                const ccrSet = new Set<string>();
+                masters?.CCRItemTypeMappingMaster.forEach((mapping: any) => {
+                    if (mapping.it === itemType) {
+                        ccrSet.add(mapping.ccrId);
+                    }
+                });
+                return ccrSet;
+            });
+
+            // Check if all item types have the same CCRs
+            const allCCRsMatch = ccrSets.every((ccrSet, _, arr) => {
+                const firstSet = arr[0];
+                return ccrSet.size === firstSet.size && Array.from(ccrSet).every(value => firstSet.has(value));
+            });
+
+            if (allCCRsMatch) {
+                // If all item types have the same CCRs, use the first item type's CCRs
+                const firstItemType = Array.from(itemTypes)[0];
+                return masters?.ccrGroups.map((ccrGroup: any) => {
+                    return {
+                        ...ccrGroup, 
+                        ccrs: ccrGroup.ccrs.filter((ccr: any) => {
+                            return ccr.plant_id == selectedPlant && CCRItemTypeMappingMasterLookup.get(ccr.value)?.has(firstItemType);
+                        })
+                    }
+                })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
+            }
+        }
+        
+        // Fallback to plant-based filtering if CCRs don't match or no item types
+        if (selectedPlant && masters) {
             return masters?.ccrGroups.map((ccrGroup: any) => {
                 return {
-                    ...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any) => {
-                        // console.log("ccr", ccr.value)
-                        return ccr.plant_id == selectedPlant && CCRItemTypeMappingMasterLookup.get(ccr.value)?.has(Array.from(itemTypes)[0]);
+                    ...ccrGroup, 
+                    ccrs: ccrGroup.ccrs.filter((ccr: any) => {
+                        return ccr.plant_id == selectedPlant;
                     })
                 }
             })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
         }
-        else {
-            return []
-        }
+        
+        return []
     }
     
-
+ 
     const ccrGroups = useMemo(calculateCCGroups, [masters, selectedPlant, newSelectedRows])
+
+    useEffect(()=>{
+        console.log("selectedRoute", selectedRoute)
+    },[selectedRoute])
 
     // const [ccrGroups, setCcrGroups] = useState([]);
 
@@ -1098,18 +1134,53 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                     if (selectedPlants.size == 1 && selectedItemTypes.size == 1) {
                                         setArePlantsDifferent(false)
                                         setSelectedPlant([...selectedPlants][0])
-                                    } else {
+                                    } 
+                                    else if(selectedPlants.size==1 && selectedItemTypes.size>1){
+                                        const itemTypeArray = Array.from(selectedItemTypes);
+                                        const ccrSets = itemTypeArray.map((itemType) => {
+                                            const ccrSet = new Set<string>();
+                                            masters?.CCRItemTypeMappingMaster.forEach((mapping: any) => {
+                                                if (mapping.it === itemType) {
+                                                    ccrSet.add(mapping.ccrId);
+                                                }
+                                            });
+                                            return ccrSet;
+                                        });
+                                        console.log("ccrSets===>", ccrSets)
+                                        const allCCRsMatch = ccrSets.every((ccrSet, _, arr) => {
+                                            const firstSet = arr[0];
+                                            return ccrSet.size === firstSet.size && Array.from(ccrSet).every(value => firstSet.has(value));
+                                        });
+
+                                        console.log("allCCRsMatch===>", allCCRsMatch)
+
+                                        if (!allCCRsMatch) {
+                                            isAssignmentPossible = false;
+                                            setSelectedPlant(null)
+                                            setArePlantsDifferent(true)
+                                        }
+                                        else{
+                                            setArePlantsDifferent(false)
+                                            setSelectedPlant([...selectedPlants][0])
+                                        }
+
+                                        // setArePlantsDifferent(false)
+                                        // setSelectedPlant([...selectedPlants][0])
+                                    }
+                                    else {
+                                        
                                         isAssignmentPossible = false;
                                         setSelectedPlant(null)
                                         setArePlantsDifferent(true)
                                     }
-
+                                    console.log("selectedRoutes mere....", selectedRoutes)
                                     const routeId = [...selectedRoutes][0]
                                     if (selectedRoutes.size == 0) {
                                         setSelectedRoute([])
                                     }
                                     else if (selectedRoutes.size == 1 && routeId != null) {
                                         const routeDetails = await getRoute(routeId);
+                                        console.log("routeDetails.....>>>", routeDetails)
                                         setSelectedRoute(routeDetails);
                                     }
                                     // TODO: check this condition -> check for null
@@ -1123,7 +1194,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         setSelectedBuffers([])
                                         setSelectedRoute([])
                                     }
-                                    setNewSelectedRows({ rows: selected, isAssignmentPossible });
+                                    setNewSelectedRows({ rows: selected, isAssignmentPossible});
                                 }
                                 catch (err) {
                                     console.error(err);
@@ -1195,7 +1266,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                 <CardCover>
                                     <DashedCard style={{ width: "500px" }}>
                                         <MessageText style={{ textAlign: "center", display: "flex", flexDirection: "column", width: "100%", gap: "2rem" }}>
-                                            {arePlantsDifferent ? <div>Selected orders have different plants or item type therefore they cannot be modified together.</div> : !no ? <>
+                                            {arePlantsDifferent ? <div>Selected orders have different plants or ccrs assigned therefore they cannot be modified together.</div> : !no ? <>
                                                 <div>
                                                     Selected orders have different routes and buffer.<br />
                                                     Do you want to edit these orders together?

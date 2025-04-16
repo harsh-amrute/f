@@ -16,7 +16,7 @@ import ReleaseModal from './ReleaseModal';
 import './styles.css'
 import { useGetDynamicReleaseData, useGetDynamicReleaseExcelData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
-import { useGetCCRGroupMaster, useGetFOLData, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import { useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetFOLData, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
@@ -228,6 +228,9 @@ const DynamicReleaseManagement = () => {
 
   },[HeaderData])
 
+  const [itemTypeId, setItemTypeId] = useState<any>();
+  const [plantId, setPlantId] = useState<any>();
+
 
   useEffect(() => {
     if (isSuccess) {
@@ -266,6 +269,8 @@ const DynamicReleaseManagement = () => {
                 notifyError("No Route assigned to this order!");
                 return;
               }
+              setItemTypeId(params.data.itid)
+              setPlantId(params.data.plid)
               setRouteNum(params.data.rid)
               setOrderKey(params.data.ok)
               setRouteTrigger(!routeTrigger);
@@ -575,6 +580,7 @@ const DynamicReleaseManagement = () => {
   }, [finalGraphData])
 
   const {mutateAsync: getFOLData} = useGetFOLData();
+  const {mutateAsync: getCCRItemTypeMappingMaster} = useGetCCRItemTypeMappingMaster();
 
   const getMastersData = async () => {
     try {
@@ -583,6 +589,7 @@ const DynamicReleaseManagement = () => {
       const ccrGroups: any = [];
       const FOLData = await getFOLData();
       const FOL = FOLData?.data?.data;
+      const CCRItemTypeMappingMaster = await getCCRItemTypeMappingMaster();
   
 
       ccrGroupData.forEach((group: any) => {
@@ -600,7 +607,10 @@ const DynamicReleaseManagement = () => {
         ccrGroups.push(obj);
       });
 
-      setMasters({ ccrGroups });
+      const CCRItemTypeMappingMasterData = Object.values(CCRItemTypeMappingMaster?.data?.data);
+      console.log(CCRItemTypeMappingMasterData, "^CCRItemTypeMappingMasterData");  
+
+      setMasters({ ccrGroups, CCRItemTypeMappingMaster: CCRItemTypeMappingMasterData });
     } catch (error) {
       console.log(error)
     }
@@ -915,7 +925,7 @@ const DynamicReleaseManagement = () => {
          <div className='chart-wrapper' style={{ width: "100%", maxHeight: '40vh', flex: !hide ? 1:0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129"}}>
           <AgCharts ref={graph} options={chartoptions}/>
         </div>
-        {showModal && <EditRouteModal chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} orderKey={orderKey} />}
+        {showModal && <EditRouteModal selectedPlant={plantId} itemTypeId={itemTypeId} chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} orderKey={orderKey} />}
         
         {showReleaseModal && <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setResetReleaseCheckbox={setIsCheckboxChecked} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />}
       </Wrapper>
