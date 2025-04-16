@@ -34,6 +34,7 @@ export const TableWrapper = styled.div`
         height: 100%;
         width: 100%;
         margin-left: 3rem;
+        margin-top: 1rem;
         margin-bottom: 0;
     }
     & > div[data-testid="vf_pagination"]{

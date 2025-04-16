@@ -573,8 +573,9 @@ const useBTR = () => {
                         <BTRTableHeader>
                             On-Hand Inventory View Trend Report
                         </BTRTableHeader>
+                        <div style={{height: '100%'}}>
                         <CustomVFTable
-                            height={"100%"}
+                            height={"90%"}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
@@ -595,7 +596,7 @@ const useBTR = () => {
                                   setIsDisabled(true);
                                 }
                             }}                        />
-                        <div>
+                        
                             <VFPagination 
                             {...techPaginationProps} 
                             resetGridRef={techRef} 
@@ -609,8 +610,10 @@ const useBTR = () => {
                         <BTRTableHeader>
                             Pipeline Inventory Trend Report
                         </BTRTableHeader>
+                        
+                        <div style={{height:'100%'}}>
                         <CustomVFTable
-                            height={"100%"}
+                            height={"90%"}
                             tooltipHideDelay={100000}
                             tooltipShowDelay={0}
                             tooltipMouseTrack={true}
@@ -633,8 +636,7 @@ const useBTR = () => {
                             }}  
 
                         />
-                        <div style={{width:'100%'}}>
-                            <VFPagination style={{marginTop:'-15px'}}
+                        <VFPagination
                             {...ecoPaginationProps} 
                             resetGridRef={ecoRef} 
                             isDisabled={isDisabled}/>

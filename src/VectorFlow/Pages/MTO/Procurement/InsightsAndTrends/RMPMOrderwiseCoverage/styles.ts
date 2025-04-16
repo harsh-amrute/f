@@ -75,6 +75,7 @@ export const TableWrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin-left: 2rem;
+    margin-top: 1rem;
     padding-bottom: 20px;
 
     & > .ag-theme-alpine {

@@ -43,6 +43,7 @@ export const SCCloseModal = styled.span`
   align-items:center;
   font-weight: 300;
   font-size: 2.6rem;
+  cursor: pointer;
 `;
 
 export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefined, backgroundColor:string | undefined}> `
@@ -51,8 +52,7 @@ export const SCWrapperContent = styled.div<{paddingLeftAndRight:number | undefin
   height:auto;
   background-color:${props => props.backgroundColor ? props.backgroundColor :'white'};
   // border-radius:inherit;
-  border-raduis:12px 12px 12px 12px;
-
+  border-radius: 0px 0px 12px 12px;
 `;
 
 export const SCHeader = styled.div`

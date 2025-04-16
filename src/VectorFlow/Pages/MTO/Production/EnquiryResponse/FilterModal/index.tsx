@@ -88,8 +88,7 @@ const FilterModal = (props: IFilterModalProps) => {
             paddingLeftAndRight={0}
             backgroundColor="rgb(244, 244, 244)"
         >
-            <ModalWrapper>
-
+            {/* <ModalWrapper> */}
                 <ModalBody>
                     <FilterContainer>
                         <FilterHeading>Resource Filters</FilterHeading>
@@ -142,7 +141,8 @@ const FilterModal = (props: IFilterModalProps) => {
                                                     {filter?.options?.map((option: string, idx: number) => (
                                                         <Option >
 
-                                                            <label style={{ alignItems: 'center', display: 'flex' }}><Radio
+                                                            <label style={{ alignItems: 'center', display: 'flex', cursor:'pointer', gap: '8px' }}>
+                                                                <Radio
                                                                 key={option}
                                                                 name={option}
                                                                 theme={themeUi ? themeUi : ''}
@@ -162,7 +162,7 @@ const FilterModal = (props: IFilterModalProps) => {
 
                     </FilterContainer>
                 </ModalBody>
-            </ModalWrapper>
+            {/* </ModalWrapper> */}
 
             <ButtonFilterWrapper>
                 <ButtonContainer>

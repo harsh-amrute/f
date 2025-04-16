@@ -5,7 +5,8 @@ export const SCButton = styled.button<{ themeUi: string, isDisabled:boolean | un
   background:
     ${(props) =>
       props.themeUi === "REGALBLAZE"
-        ? globalStyles.chooseThemeColor[props.themeUi]?.color5
+        // ? globalStyles.chooseThemeColor[props.themeUi]?.color5
+        ? "transparent linear-gradient(261deg, #FCA311 0%, #CB830E 100%) 0% 0% no-repeat padding-box"
         : "transparent linear-gradient(74deg, #820F4C 0%, #BC3D81 100%) 0% 0% no-repeat padding-box"};
   width:${(props)=>props.customWidth ? props.customWidth : 130}px;
   height:50px;

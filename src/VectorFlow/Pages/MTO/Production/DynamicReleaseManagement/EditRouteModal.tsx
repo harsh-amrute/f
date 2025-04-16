@@ -1,5 +1,5 @@
 import { AgCharts } from 'ag-charts-react'
-import React, { useEffect, } from 'react'
+import React, { useEffect, useMemo, } from 'react'
 import { useSaveRouteData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
@@ -8,7 +8,7 @@ import OverlayLoader from '../../Common/Loader'
 import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
 
-const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, themeUi, orderKey }: any) => {
+const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, setDataUpdated, setRouteNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, themeUi, orderKey }: any) => {
     
     const { mutateAsync: saveRouteData, isLoading, isSuccess, isError } = useSaveRouteData();
 
@@ -19,6 +19,7 @@ const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum
         ps: number;
     };
 
+    
     useEffect(() => {
         if (isSuccess) {
             notifySuccess("Route updated successfully!")
@@ -144,6 +145,77 @@ const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum
     }, [isSuccess])
 
 
+    
+    const CCRItemTypeMappingMasterLookup = useMemo(() => {
+        const mappingLookup = new Map<string, Set<string>>();
+        if (master?.CCRItemTypeMappingMaster) {
+            master.CCRItemTypeMappingMaster.forEach((mapping: { ccrId: string, it: string }) => {
+                if (!mappingLookup.has(mapping.ccrId)) {
+                    mappingLookup.set(mapping.ccrId, new Set());
+                }
+                mappingLookup.get(mapping.ccrId)!.add(mapping.it);
+            });
+        }
+        return mappingLookup
+    }, [master?.CCRItemTypeMappingMaster])
+
+    const calculateCCGroups = () => {
+        const itemTypes: Set<string> = new Set()
+        itemTypes.add(itemTypeId)
+
+        // Get all CCRs that have mappings for the current item type
+        const validCCRs = new Set<string>();
+        master?.CCRItemTypeMappingMaster?.forEach((mapping: any) => {
+            if (mapping.it === itemTypeId) {
+                validCCRs.add(mapping.ccrId);
+            }
+        });
+
+        // Filter CCR groups based on valid CCRs and selected plant
+        const filteredCCRGroups = master?.ccrGroups?.map((ccrGroup: any) => {
+            // Filter CCRs within each group
+            const filteredCCRs = ccrGroup.ccrs.filter((ccr: any) => {
+                return ccr.plant_id === selectedPlant && validCCRs.has(ccr.value);
+            });
+
+            // Update the first index's CCRs with the filtered CCRs
+            if (filteredCCRs.length > 0) {
+                return {
+                    ...ccrGroup,
+                    ccrs: filteredCCRs
+                };
+            }
+            return null;
+        }).filter(Boolean); // Remove null entries
+
+        return filteredCCRGroups || [];
+    }
+    
+
+
+    const ccrGroups = useMemo(calculateCCGroups, [master ,selectedPlant])
+
+    useEffect(() => {
+        if (route && ccrGroups) {
+            // Get all valid CCR values from ccrGroups
+            const validCCRValues = new Set(
+                ccrGroups?.flatMap((group: any) => 
+                    group?.ccrs?.map((ccr: any) => ccr?.value)
+                )
+            );
+
+            // Filter route to only include CCRs that exist in ccrGroups
+            const filteredRoute = route?.filter((routeItem: any) => {
+                const [_, ccr] = routeItem;
+                return validCCRValues?.has(ccr?.value);
+            });
+
+            // if (filteredRoute.length !== route.length) {
+                setRoute(filteredRoute);
+            // }
+        }
+    }, [ccrGroups]);
+
     return (
         <VFModalCard openModal={showModal} closeModal={() => { setRouteNum(''), setShowModal((false)) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             {isLoading && <OverlayLoader message='Saving route data' />}
@@ -152,12 +224,12 @@ const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum
                     You can change route by selecting CCR from drop-down
                 </Text>
                 {
-                    master && master?.ccrGroups &&
+                    master && ccrGroups &&
 
                     (<RouteAssignment
                         isEditable={true}
                         theme={themeUi}
-                        ccrGroupMaster={master.ccrGroups}
+                        ccrGroupMaster={ccrGroups}
                         selectedRoutes={route}
                         setSelectedRoutes={setRoute}
                     />)
@@ -168,7 +240,7 @@ const EditRouteModal = ({ chartoptions, dataUpdated, setDataUpdated, setRouteNum
                 </div>
             </RouteContentWrapper>
             <div style={{ zoom: '0.7', marginTop: '10px' }}>
-                <div key={'1'} style={{ display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 10px 0 0' }}>
+                <div key={'1'} style={{ display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 20px 20px 0' }}>
 
                     <div>
                         <div onClick={() => { setRouteNum(''), setShowModal(false) }} style={{
