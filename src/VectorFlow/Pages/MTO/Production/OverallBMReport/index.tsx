@@ -297,6 +297,8 @@ const OverallBmReport = () => {
     try {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
+
+      console.log("responseeee", response);  
       const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(
         response?.data?.data
       );
@@ -869,6 +871,11 @@ const OverallBmReport = () => {
         filterParams: {
           buttons: ['reset']
         },
+        filter:
+        child.cla === "right"
+          ? "agNumberColumnFilter"
+          : "agTextColumnFilter",
+
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
           child.cc === "ec" && systemType >= 3
@@ -933,6 +940,7 @@ const OverallBmReport = () => {
       }));
 
     };
+
 
     const res = apiResponse.map((section) => ({
       headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,

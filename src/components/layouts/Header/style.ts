@@ -30,6 +30,9 @@ export const SCHeaderText = styled.p`
   }
 `;
 
+
+
+
 export const SCHeaderContent = styled.div`
   display: flex;
   align-items: center;
@@ -162,28 +165,19 @@ export const SCWrapperImg = styled.div<{ isHideLogo: boolean }>`
   cursor: pointer;
   transition: ${globalStyles.customTransition};
   z-index:1000;
+  `
+export const ClientNameText = styled.div<{ isHideLogo: boolean }>`
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  // display: ${props => (props.isHideLogo ? 'none' : 'block')};
+  z-index: 1000;
 `;
 
 export const SCImg = styled.img<{ isHideLogo: boolean }>`
-  position: absolute;
-  width: 132px;
-  height: 132px;
-  margin-top: -36px;
-  margin-left: ${(props) => (props.isHideLogo ? "20px" : "100px")};
-  display: ${props => props.isHideLogo ? "block": "none"};
-  transition: ${globalStyles.customTransition};
-
+  height: 40px; // Example size
+  margin-right: 8px;
+  // display: ${props => (props.isHideLogo ? 'none' : 'block')};
+  z-index: 1000;
 `;
-
-export const ClientNameText = styled.div<{ isHideLogo: boolean }>`
-    margin-left: ${(props) => (props.isHideLogo ? "20px" : "100px")};
-    /* display: ${props => props.isHideLogo ? "block": "none"}; */
-    display:  flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    font-style: inherit;
-    font-size: 2rem;
-    padding-top: 1rem;
-    font-weight: 800;
-`
