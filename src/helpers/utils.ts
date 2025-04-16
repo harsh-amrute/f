@@ -1260,8 +1260,9 @@ export const getExistingColumnFields = (columns: string[], fields: Field[]): Fie
 
 export const areValuesEqual = (a: any, b: any): boolean => {
   if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
-    return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
-  }
+    // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
+    return parseFloat(a) === parseFloat(b) 
+  }  
   return a === b
 }
 
@@ -4606,13 +4607,14 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`);
+    link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}`);
     document.body.appendChild(link);
     link.click();
     URL.revokeObjectURL(url);
     document.body.removeChild(link);
   } catch (e) {
     console.error("Error downloading Excel file:", e);
+
   }
 };
 
