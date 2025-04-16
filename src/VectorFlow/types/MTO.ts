@@ -106,4 +106,5 @@ export interface FilterState{
     resources?: FilterGroup
     orders?: FilterGroup
     major?: FilterGroup
+    filters?: any
 }
