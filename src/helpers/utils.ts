@@ -4607,7 +4607,7 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}`);
+    link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`);
     document.body.appendChild(link);
     link.click();
     URL.revokeObjectURL(url);
