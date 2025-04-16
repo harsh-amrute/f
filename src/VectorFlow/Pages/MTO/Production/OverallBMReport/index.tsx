@@ -941,7 +941,6 @@ const OverallBmReport = () => {
 
     };
 
-    console.log("mapApiResponseToColDefs", mapApiResponseToColDefs);
 
     const res = apiResponse.map((section) => ({
       headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
