@@ -450,10 +450,6 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
     }
   };
 
-
-  useEffect(() => {
-    //console.log('')
-  }, [filterState]);
   
   const addFilter = () => {
     setFilterState({
@@ -480,17 +476,11 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
         ...prev,
         filters: updatedFilterState,
       }));
-    } else {
-      // console.log("Skipped setting filterState — arrays are not ready");
     }
 
   }, [selectedHeader, selectedOperator, selectedValue]);
 
 
-  useEffect(()=>{
-    // console.log("masterfilter state", masterFilterState)
-  },[masterFilterState])
-  
 
 
 
@@ -511,8 +501,6 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   }, [resetKey]);
   
 
- 
-  
 
 
   const isDisabled = (index: number) => {
@@ -557,7 +545,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
     
       <div style={{ display: "flex", justifyContent: "space-between", width: index === 0 ? 'calc(100% - 40px)' : '100%' }}>
       <DropdownGroupWrapper>
-        <SelectDropdownComponent style={{ width:'87%' }}>
+        <SelectDropdownComponent style={{ width:'100%' }}>
           <FilterSelectDropdown
             className="custom-scrollbar"
             placeholder={"Select"}
@@ -569,9 +557,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
           />
         </SelectDropdownComponent>
 
-        <SelectDropdownComponent style={{ width: "100%", cursor: isDisabled(index) ? 'default' : 'pointer' }}>
-          <FilterSelectDropdown
-            style={{ background: isDisabled(index) ? "pink" : "#F2F2F2" }}
+        <SelectDropdownComponent style={{width:'100%',cursor: isDisabled(index) ? 'default' : 'pointer' }}>
+          <FilterSelectDropdown 
             className="custom-scrollbar"
             placeholder={'Operator'}
             type={filterState.type === InputTypes.TextCompare ? "text" : "number"}
