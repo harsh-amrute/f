@@ -14,10 +14,6 @@ interface IRouteAssignmentProps {
 
 const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedRoutes, isEditable = true}: IRouteAssignmentProps) => {
 
-
-    useEffect(() => {
-        console.log("ccrGroupMaster in routes", ccrGroupMaster);
-    }, [ccrGroupMaster])
     useEffect(() => {
         // let animationFrameId: any;
         const adjustLayout =(containerWidth:number, items:any) =>{
@@ -161,17 +157,10 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
         if(selectedRoutes && ccrGroupMaster){
 
             const val = _.cloneDeep(selectedRoutes);
-            console.log("ccrGroupMaster", ccrGroupMaster);
-            console.log("selectedRoutes intial", selectedRoutes);
             setSortedSelectedRoutes(val.map((routeGroup: any) => {
                 const [ccrGroup, ccr] = routeGroup;
-                console.log("ccrGroup....", ccrGroup);
-                console.log("ccr in route", ccr);
                 const sortedCcrs = ccrGroup.ccrs.sort((a: any, b: any) => a.fol - b.fol);
-                
-                const val = [{ ...ccrGroup, ccrs: sortedCcrs }, ccr];
-                console.log("val", val);
-                return val;
+                return [{ ...ccrGroup, ccrs: sortedCcrs }, ccr];
             }))
             
         }
@@ -198,10 +187,6 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                         }else{
                             newGroups[index] = [newValue,null];
                         }
-                        // console.log("newValue", newValue);
-                        // console.log("index", index);
-                        // console.log("newGroups", newGroups);
-                        // console.log(newGroups.filter(item => item !== undefined || item !== null))
                         setSelectedRoutes(newGroups.filter(item => item !== undefined && item !== null));
                     }}
                 />

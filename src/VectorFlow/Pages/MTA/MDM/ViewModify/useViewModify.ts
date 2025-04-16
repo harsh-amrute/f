@@ -730,7 +730,6 @@ const useViewModify = (pageType:string) => {
   function checkMasterProgress(masterArray: any) {
     let defaultProgressCount = 0; 
     for (const master of masterArray) {
-      console.log("current master and progress",master.progress);
         if (master.progress === "default" || master.progress === "view") {
             defaultProgressCount++; 
         }

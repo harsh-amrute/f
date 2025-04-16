@@ -1042,9 +1042,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
  
     const ccrGroups = useMemo(calculateCCGroups, [masters, selectedPlant, newSelectedRows])
 
-    useEffect(()=>{
-        console.log("selectedRoute", selectedRoute)
-    },[selectedRoute])
 
     // const [ccrGroups, setCcrGroups] = useState([]);
 
@@ -1146,13 +1143,11 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                             });
                                             return ccrSet;
                                         });
-                                        console.log("ccrSets===>", ccrSets)
                                         const allCCRsMatch = ccrSets.every((ccrSet, _, arr) => {
                                             const firstSet = arr[0];
                                             return ccrSet.size === firstSet.size && Array.from(ccrSet).every(value => firstSet.has(value));
                                         });
 
-                                        console.log("allCCRsMatch===>", allCCRsMatch)
 
                                         if (!allCCRsMatch) {
                                             isAssignmentPossible = false;
@@ -1173,14 +1168,12 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         setSelectedPlant(null)
                                         setArePlantsDifferent(true)
                                     }
-                                    console.log("selectedRoutes mere....", selectedRoutes)
                                     const routeId = [...selectedRoutes][0]
                                     if (selectedRoutes.size == 0) {
                                         setSelectedRoute([])
                                     }
                                     else if (selectedRoutes.size == 1 && routeId != null) {
                                         const routeDetails = await getRoute(routeId);
-                                        console.log("routeDetails.....>>>", routeDetails)
                                         setSelectedRoute(routeDetails);
                                     }
                                     // TODO: check this condition -> check for null

@@ -609,7 +609,6 @@ const DynamicReleaseManagement = () => {
       });
 
       const CCRItemTypeMappingMasterData = Object.values(CCRItemTypeMappingMaster?.data?.data);
-      console.log(CCRItemTypeMappingMasterData, "^CCRItemTypeMappingMasterData");  
 
       setMasters({ ccrGroups, CCRItemTypeMappingMaster: CCRItemTypeMappingMasterData });
     } catch (error) {
