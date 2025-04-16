@@ -132,6 +132,7 @@ export const BTRAllomentSection = styled.div`
     flex-direction:column;
     height:100%;
     max-height:100%;
+    padding-bottom: 20px;
 `
 
 export const BTRTableHeader = styled.p`

@@ -15,6 +15,9 @@ import VFRangeSlider from '../../../Common/VFRangeSlider'
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import { ColorsMTO } from '../../../Common/Colors'
 import { useUserData } from '../../../../../../context'
+import RadioSelect from '../../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
+import OverlayLoader from '../../../Common/Loader'
+import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton'
 
 export const APIFilterConfig = {
     filSecVisConfig: {
@@ -35,12 +38,17 @@ const BMTrends = () => {
         value: 'Absolute Value'
     });
     const [bmTrendData, setBMTrendData] = useState<BufferTrendData[]>([]);
-    const { data } = useGetBMTrendsData() || {};
+    // const { data: BMTrendsData } = useGetBMTrendsData() || {};
+    const [BMTrendsData, setBMTrendsData] = useState<any>();
     const [numericData, setNumericData] = useState<BufferTrendData[]>(filterDataByDaysGap(bmTrendData, 0, horizonDays, false));
     const [hideChart1, toggleChart1] = useState(false);
     const [rowData, setRowData] = useState(numericData);
     const [chartLoading, setChartLoading] = useState(true);
     const [tableLoading, setTableLoading] = useState(true);
+    const [selectedPlant, setSelectedPlant] = useState<any>();
+    const [selectOptionsPlnt, setSelectOptionsPlnt] = useState([]);
+    const { mutateAsync: getBMTrendsData, isLoading: isLoading } = useGetBMTrendsData()
+    
     // const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     // const [filterData, setFilterData] = useState({});
     // const  { 
@@ -239,6 +247,9 @@ const BMTrends = () => {
 
     const handleSubmitClick = () => {
         setNumericData(filterDataByDaysGap(bmTrendData, 0, horizonDays, (actBtn.label === 'Percentage')));
+        if (selectedPlant) {
+            getBMTrendData();
+        }
         // console.log("this is the converted numeric dat, ", numericData);
     }
 
@@ -332,7 +343,6 @@ const BMTrends = () => {
                         }}
                         > <b>Select Horizon (in days): </b></label>
                         <VFRangeSlider
-                            style={{ paddingTop: '12px' }}
                             showTriangle={false}
                             min={1}
                             max={90}
@@ -343,44 +353,40 @@ const BMTrends = () => {
                             handleChange={(e) => setHorizondays(e)}
                             labelValueFormatter={(value: number) => value.toString()}
                         />
+                    </SCChartSliderContainer>
+                    <div
+                        style={{
+                            fontSize: "12px",
+                            margin: "auto auto auto 0",
+                            fontFamily: "Roboto",
+                            textAlign: "center",
+                            display: 'flex',
+                            gap: '10px'
+                        }}
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '10px' }}>
+                            <p style={{ fontWeight: 'bold', paddingRight: '5px' }}>Plant </p>
+                            <RadioSelect theme={themeUi} options={selectOptionsPlnt} value={selectedPlant} onChange={(newValue: any) => { setSelectedPlant(newValue) }} />
+                        </div>
                         <div>
-                            {/* <VFButtonOutline themeUi={user.user.theme_ui} onClick={handleSubmitClick} width={120} disabled={false} style={{fontSize:'15px',height:'42px',fontWeight:500}}>
-                                        Submit
-                                    </VFButtonOutline> */}
-                            {/* <img
-
-                                style={{ cursor: 'pointer' }}
-                                src="/assets/img/Group 627.svg"
-                                height={40}
-                                width={50}
+                            <VFButton
                                 onClick={() => handleSubmitClick()}
-                            /> */}
-                            <div
+                                themeUi={themeUi}
+                                disabled={false}
                                 style={{
-                                    cursor: 'pointer',
-                                    background: `linear-gradient(to right, ${gradientColor})`,
-                                    backgroundColor: backgroundColor,
-                                    height: '43px',
-                                    width: '59px',
-                                    borderRadius: '4px',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    alignContent: 'center',
-                                    display: 'flex'
+                                    height: '30px',
+                                    width: '40px', 
+                                    borderRadius: '3px',
                                 }}
-                                onClick={() => handleSubmitClick()}
                             >
                                 <img
-                                    style={{}}
                                     src="/assets/img/rightArrowHorizontal.svg"
                                     height={13}
                                     width={7}
                                 />
-                            </div>
+                            </VFButton>
                         </div>
-
-
-                    </SCChartSliderContainer>
+                    </div>
                     <SCChartHeaderContainer>
                         <CapsuleWrapper style={{ zoom: 1, padding: '4px' }}>
                             <VFCapsule
@@ -428,18 +434,40 @@ const BMTrends = () => {
     // },[])
 
     useEffect(() => {
+        getBMTrendData();
+    }, []);
+
+    useEffect(() => {
         if (numericData) {
             setRowData(numericData);
         }
     }, [numericData]);
-
+    
     useEffect(() => {
-        if (data?.data?.data) {
-            const updatedData = convertToGraphData(data?.data?.data);
+        if (BMTrendsData?.data?.data) {
+            const updatedData = convertToGraphData(BMTrendsData?.data?.data);
             setBMTrendData(updatedData);
             setNumericData(filterDataByDaysGap(updatedData, 0, horizonDays, false));
+            setPlantData(BMTrendsData?.data?.data?.plants  || {});
         }
-    }, [data]);
+    }, [BMTrendsData]);
+
+    const getBMTrendData = async () => {
+        const data = await getBMTrendsData({ plant: selectedPlant?.value || undefined });
+        setBMTrendsData(data);
+    }
+
+    const setPlantData = (plantsData: any) => {
+        const newPlantOptions: any = [];
+
+        plantsData &&
+            Object.entries(plantsData)?.forEach((e: any) => {
+                const eachPlant = { value: e[0], label: e[1] }
+                newPlantOptions.push(eachPlant);
+            })
+        
+        setSelectOptionsPlnt(newPlantOptions);
+    };
 
     const { data: apiResponseData, /*isLoading, refetch*/ } = useGetDate();
 
@@ -460,6 +488,8 @@ const BMTrends = () => {
 
     return (
         <BMTrendWrapper>
+            {(isLoading ) && <OverlayLoader />}
+
             <MTOActionToolBar
                 comp={'BMTrends'}
                 // isAddFilterButton

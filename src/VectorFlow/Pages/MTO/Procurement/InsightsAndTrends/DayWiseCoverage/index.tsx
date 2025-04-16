@@ -18,7 +18,7 @@ import { UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
-import ColorCellRenderer from "../../../Common/ColorCellRenderer";
+import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRenderer";
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 // import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';

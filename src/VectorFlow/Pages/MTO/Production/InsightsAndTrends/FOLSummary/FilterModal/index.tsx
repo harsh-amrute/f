@@ -8,6 +8,7 @@ import FilterCheckboxAccordian from '../../../../../../../components/VectorFLOW/
 import { DropdownGroupWrapper, FilterComponent, SelectDropdownComponent } from '../../../../../../../components/VectorFLOW/commons/VFMultiFilter/style';
 import VFMasterFieldSearch from '../../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
 import Select from 'react-select';
+import Radio from '../../../../../../../components/VectorFLOW/commons/MTO/Radio';
 // import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
 
 
@@ -39,7 +40,7 @@ const FilterSelectDropdown = ({ placeholder, options, hideDropdownArrow, onChang
                 color: '#313131',
                 fontFamily: 'Roboto',
                 fontWeight: '300',
-                fontSize: '12px',
+                fontSize: '16px',
                 // marginTop:'5px',
                 // marginBottom:'5px',
                 // marginLeft:'5px',
@@ -82,7 +83,7 @@ const FilterSelectDropdown = ({ placeholder, options, hideDropdownArrow, onChang
                 color: '#313131',
                 fontFamily: 'Roboto',
                 fontWeight: '300',
-                fontSize: '12px',
+                fontSize: '16px',
                 textAlign: hideDropdownArrow ? 'center' : '',
                 padding: '0 5px',
                 boxSizing: "border-box"
@@ -96,7 +97,7 @@ const FilterSelectDropdown = ({ placeholder, options, hideDropdownArrow, onChang
                 color: '#313131',
                 fontFamily: 'Roboto',
                 fontWeight: '300',
-                fontSize: '12px',
+                fontSize: '16px',
                 textAlign: hideDropdownArrow ? 'center' : '',
                 padding: '0 5px',
                 boxSizing: "border-box"
@@ -144,7 +145,7 @@ const FilterSelectDropdown = ({ placeholder, options, hideDropdownArrow, onChang
 }
 const FilterTextInput = ({ placeholder, onChange, disabled = false, value }: any) => {
     return (
-        <input type="number" disabled={disabled} style={{ width: '100%', height: '38px', background: '#F2F2F2 0% 0% no-repeat padding-box', borderRadius: '20px', outline: 'none', color: '#313131', fontFamily: 'Roboto', fontWeight: '300', fontSize: '12px', textAlign: 'center', border: 'none' }} placeholder={placeholder} onChange={onChange} value={value} />
+        <input type="number" disabled={disabled} style={{ width: '100%', height: '38px', background: '#F2F2F2 0% 0% no-repeat padding-box', borderRadius: '20px', outline: 'none', color: '#313131', fontFamily: 'Roboto', fontWeight: '300', fontSize: '16px', textAlign: 'center', border: 'none' }} placeholder={placeholder} onChange={onChange} value={value} />
     )
 }
 
@@ -297,17 +298,19 @@ const FilterModal = (props: IFilterModalProps) => {
                             alt="search-icon"
                         />
                     </SearchBar> */}
+                    <FilterAccordianWrapper>
+
                     <VFMasterFieldSearch
                         value={selectedOptions?.plantName}
                         setValue={(e: any) => {
                             if (e) {
-
+                                
                                 if (e.length >= 0) {
                                     handleChange(e)
                                 }
                             }
                         }}
-
+                        
                         options={filters[0].options}
                         placeholder={'Plant'}
                         handleListChild={() => null}
@@ -316,7 +319,8 @@ const FilterModal = (props: IFilterModalProps) => {
                         borderRadius={40}
                         disabled={false}
                         boxShadow={'0'}
-                    />
+                        />
+                    </FilterAccordianWrapper>
                     <FilterAccordianWrapper>
                         {
                             filters?.map((filter: { key: string, heading: string, options: string[] }) => {
@@ -330,14 +334,25 @@ const FilterModal = (props: IFilterModalProps) => {
 
                                                 (
                                                     <Option>
-                                                        <input
+                                                        <label style={{ alignItems: 'center', display: 'flex', cursor:'pointer', gap: '8px' }}>
+                                                                <Radio
+                                                                key={option}
+                                                                name={option}
+                                                                theme={themeUi ? themeUi : ''}
+                                                                checked={getChecked(filter?.heading, option)}
+                                                                onChange={(e) => { handleOptionChange(e, filter?.heading, idx) }}
+                                                                type={`${filter.key === 'prdGrp' ? 'radio' : 'checkbox'}`}
+                                                            />
+                                                            {option}
+                                                        </label>
+                                                        {/* <input
                                                             key={option}
                                                             name={option}
                                                             checked={getChecked(filter?.heading, option)}
                                                             onChange={(e) => { handleOptionChange(e, filter?.heading, idx) }}
                                                             type='checkbox'
                                                         />
-                                                        <label>{option}</label>
+                                                        <label>{option}</label> */}
                                                     </Option>
                                                 ))}
                                             </OptionsWrapper>

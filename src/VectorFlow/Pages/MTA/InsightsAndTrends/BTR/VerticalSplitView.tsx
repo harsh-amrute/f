@@ -157,7 +157,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
         <BTRTableWrapper>
             <Allotment defaultSizes={[600, 300]} vertical={false} onChange={handleChange}>
                 <Allotment.Pane minSize={500}>
-                    <BTRTableHeader style={{ display: 'flex', justifyContent: 'flex-start', marginLeft: '50%' }}>{techTable.header}</BTRTableHeader>
+                    <BTRTableHeader style={{ display: 'flex', justifyContent: 'flex-start', marginLeft: '50%', height: '35px' }}>{techTable.header}</BTRTableHeader>
                     <VerticalViewLeftTableWrapper>
                         <div style={{ marginTop: -10, height: '95%', width: '100%',minWidth:'50%' }}>
                             <div style={{ height:'100%', display:'flex', flexDirection:'column'}}>
@@ -237,7 +237,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                 </Allotment.Pane>
                 <Allotment.Pane minSize={300}>
                     <BTRTableHeader>{ecoTable.header}</BTRTableHeader>
-                    <div style={{ marginTop: -10, height: '95%', paddingLeft: '17px' }}>
+                    <div style={{ marginTop: -10, height: '90%', paddingLeft: '17px' }}>
                          <div style={{ height:'100%', display:'flex', flexDirection:'column'}}>
                             <VFTable 
                                 key={'ref3'}

@@ -1,10 +1,10 @@
 import Joi from "joi";
-import { commonValidator,supplyCodeChecks, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH} from "../../../commons";
+import { commonValidator,supplyCodeChecks, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,commonValidatorWithSeperator} from "../../../commons";
 
 const SuppCodeValidator = (value:any,helper:any)=>{
 
     if(helper.prefs.context.WhCode === value) throw new Error('Supplier code and Location code are same.');
-    return supplyCodeChecks(value,helper);
+    return commonValidatorWithSeperator(value,helper);
 
 }
 

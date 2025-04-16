@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useUserData } from '../../../../../context';
-import { PaginationWrapper, StatusBarLabel, StatusBarLabelLight, StatusBarLabelBold, PaginationContainer, PaginationArrowIcon,StatusBarWrapper, TextBtn,GridFilterWrapper } from "./styles"
-
+import { PaginationWrapper, StatusBarLabel, StatusBarLabelLight, StatusBarLabelBold, PaginationContainer, PaginationArrowIcon,StatusBarWrapper, TextBtn,GridFilterWrapper, CustomPageSize, PageSizeInputDiv, PageSizeInput, PageSizeSaveDiv } from "./styles"
+import { notifyError } from '../../../../../helpers/notify';
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 
 export interface VFPaginationProps {
     selectedRows: number
@@ -12,7 +14,10 @@ export interface VFPaginationProps {
     showTotalItems?: boolean,
     showPagination?: boolean,
     resetGridRef?: any,
-    isDisabled?: boolean | undefined
+    isDisabled?: boolean | undefined,
+    customPageSizeEnabled?: boolean | undefined,
+    savePageSize?: (e: any) => void,
+    userPageSize?:any
 }
 
  
@@ -24,12 +29,39 @@ const VFPagination = (props: VFPaginationProps) => {
         rowsPerPage,
         handleChangePage,
         resetGridRef,
-        isDisabled
+        isDisabled,
+        customPageSizeEnabled,
+        savePageSize,
+        userPageSize
     } = props
-
+    
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
+    const [customPageSize, setCustomPageSize] = useState();
+    const minPageSize = 1, maxPageSize = 10000;
 
+    useEffect(() => {
+        setCustomPageSize(userPageSize);
+    },[userPageSize])
+
+    const handleChange = (e: any) => {
+        const inputValue = e.target.value;
+        setCustomPageSize(inputValue);
+    };
+
+    const validatePageSize = () => {
+        if (customPageSize) {
+            if (customPageSize < minPageSize) {
+                notifyError("Page size can not be less than " + minPageSize);
+            } else if (customPageSize > maxPageSize) {
+                notifyError("Page size can not exceed " + maxPageSize);
+            } else {
+                savePageSize && savePageSize(customPageSize);
+            }
+        } else {
+            notifyError("Invalide page size");
+        }
+    };
 
     const defaultPaginationLimit = 100;
     const totalPages = Math.ceil(totalRows / (props.rowsPerPage || defaultPaginationLimit));
@@ -64,6 +96,39 @@ const VFPagination = (props: VFPaginationProps) => {
                 <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>Clear All Grid Filters</TextBtn>  
             </GridFilterWrapper>
                <StatusBarWrapper>
+                    {customPageSizeEnabled && <CustomPageSize>
+                        Page Size:
+                        <PageSizeInputDiv>
+                            <PageSizeInput
+                                className="no-arrows"
+                                type="number"
+                                themeUi={themeUi}
+                                value={customPageSize}
+                                onChange={handleChange}
+                            />
+                            <VFButton
+                                onClick={() => validatePageSize()}
+                                themeUi={themeUi}
+                                disabled={false}
+                                style={{
+                                    // cursor: isSaveButtonEnabled ? "pointer" : "not-allowed",
+                                    height: "100%",
+                                    width: "30%",
+                                    borderRadius: "0px 3px 3px 0px",
+                                    boxShadow: "none"
+                                    // opacity: isSaveButtonEnabled ? 1 : 0.5, // Visual cue for disabled
+                                    // pointerEvents: isSaveButtonEnabled ? "auto" : "none", // Prevent click when disabled
+                                }}
+                            >
+                                <img
+                                    src="/assets/img/rightArrowHorizontal.svg"
+                                    height={13}
+                                    width={7}
+                                />    
+                            </VFButton>
+                        </PageSizeInputDiv>
+                    </CustomPageSize>
+                    }
                 <StatusBarLabel>
                     <StatusBarLabelBold>
                         {getTotalItemsString()}

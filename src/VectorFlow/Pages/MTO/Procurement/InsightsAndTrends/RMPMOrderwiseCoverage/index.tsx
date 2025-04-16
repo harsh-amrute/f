@@ -13,7 +13,7 @@ import { notifyError, notifyLoader, notifySuccess } from '../../../../../../help
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils'
 import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
-import FullkitCellRenderer from '../../../Common/FullkitCellRenderer'
+import FullkitCellRenderer from '../../../Common/FullKitCellRenderer/FullkitCellRenderer'
 import { FilterPageName, pagination, UIGridCode } from '../../../Common/Enum'
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useUserData } from "../../../../../../context/index";

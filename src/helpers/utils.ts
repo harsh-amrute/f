@@ -4481,12 +4481,16 @@ export const formatFilterJSON = (filter: any) => {
 
   for (const key in filter) {
     const { filters } = filter[key];
-    for (let i = 0; i < filters.length; i++) {
+    for (let i = 0; i < filters?.length; i++) {
       const { attributeName, value, type, operator } = filters[i];
       if (value?.length > 0) {
-        if (type === 'textCompare' || type === 'numberCompare') {
+        if (type === 'textCompare') {
           formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator : 'et', val: value[0].value } };
-        } else {
+        } else if( type === 'numberCompare'){
+          formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator : 'et', val: parseInt(value[0].value) } };
+
+        }
+         else {
           formatFilter = { ...formatFilter, [attributeName]: value?.map((v: any) => v?.value || v?.id) };
         }
       }
@@ -4522,7 +4526,7 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
       filters: []
     }
 
-    for (let i = 0; i < filters.length; i++) {
+    for (let i = 0; i < filters?.length; i++) {
       const { name, attributeName, value, type, operator } = filters[i];
 
       if (attributeName === 'ms') {
@@ -4530,7 +4534,7 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
           newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
         }
       } else {
-        if (value.length > 0) {
+        if (Array.isArray(value) && value.length > 0) {
           newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: (value[0]?.value===0)?  
             [{value: '0', label: '0'}]: value?.filter((v: any) => v.value || v.id) });
         }

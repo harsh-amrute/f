@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
-import ColorCellRenderer from '../../Common/ColorCellRenderer';
+import ColorCellRenderer from '../../Common/ColorCellRenderer/ColorCellRenderer';
 import { Button, Wrapper } from './DynamicReleaseManagement.styled';
 import { useUserData } from '../../../../../context';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
@@ -27,6 +27,7 @@ import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useColDef from '../../../../../hooks/useColDef';
 import { ColorsMTO } from '../../Common/Colors';
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 
 
 const APIFilterConfig = {
@@ -802,57 +803,26 @@ const DynamicReleaseManagement = () => {
           <InputCheckBox checked={isCheckboxChecked} onChange={onCheckBoxToggle} type="checkbox" theme={themeUi} />
           <p>Release</p>
         </div>
-        {
-          isReleaseButtonDisabled ?
-            <div
-              style={{
-                cursor: "not-allowed",
-                background: `linear-gradient(to right, ${backgroundColor})`,
-                backgroundColor: backgroundColor,
-                height: "43px",
-                width: "59px",
-                borderRadius: "4px",
-                alignItems: "center",
-                justifyContent: "center",
-                alignContent: "center",
-                display: "flex",
-                opacity: 0.5, // Visual cue for disabled
-                pointerEvents: "none", // Prevent click when disabled
-              }}
-              data-testid={'isReleaseBtn'}
-            >
-              <img
-                style={{}}
-                src="/assets/img/rightArrowHorizontal.svg"
-                height={13}
-                width={7}
-              />
-            </div>
-            :
-            <div
-              style={{
-                cursor: 'pointer',
-                background: `linear-gradient(to right, ${backgroundColor})`,
-                backgroundColor: backgroundColor,
-                height: '43px',
-                width: '59px',
-                borderRadius: '4px',
-                alignItems: 'center',
-                justifyContent: 'center',
-                alignContent: 'center',
-                display: 'flex'
-              }}
-              data-testid={'isReleaseBtn'}
-              onClick={onOrderRelease}>
-              <img
-                style={{}}
-                src="/assets/img/rightArrowHorizontal.svg"
-                height={13}
-                width={7}
-              />
-            </div>
-        }
-
+        <VFButton
+          data-testid={"isReleaseBtn"}
+          onClick={() => onOrderRelease()}
+          themeUi={themeUi}
+          disabled={false}
+          style={{
+            cursor: isReleaseButtonDisabled ? "not-allowed" : "pointer",
+            height: "50px",
+            width: "60px",
+            borderRadius: "3px",
+            opacity: isReleaseButtonDisabled ? 0.5 : 1, // Visual cue for disabled
+            pointerEvents: isReleaseButtonDisabled ? "none" : "auto", // Prevent click when disabled
+          }}
+        >
+          <img
+            src="/assets/img/rightArrowHorizontal.svg"
+            height={13}
+            width={7}
+          />
+        </VFButton>
       </div>
     </>
   );
