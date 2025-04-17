@@ -78,7 +78,7 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 
 const useProcPlanning = (date: string, appliedFilters: any) => {
     const [HeaderData, setHeaderData] = useState<any>([]);
-    const gridRef = useRef<AgGridReact>(null);
+    const gridRef = useRef<any>(null);
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState<boolean|undefined>(undefined);
     const [colDef, setColDef] = useState<any>([{}]);
@@ -88,6 +88,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const { colDefMap , getColDef} = useColDef();
     const reportName = "ProcurementPlanningShortage";
     const [defaultColState,setDefaultColState] = useState<any>([])
+
+    const [clearFilter, clearFilterDisabled]= useState<boolean>(true);
+
+    
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
@@ -556,9 +560,19 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                            
+                            // onFilterChanged={() => { 
+                            //     const filterModel = gridRef?.current?.api?.getFilterModel() || {};
+                            //     console.log("filterModelwewew", filterModel.length)
+                            //     Object.keys(filterModel).length > 0 ? clearFilterDisabled(false) : clearFilterDisabled(true);
+                            // }}        
+                    onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
+
                         />
                         <VFPagination
                             key={1}
+                            resetGridRef={gridRef}
+                            isDisabled={clearFilter}
                             selectedRows={0}
                             rowsPerPage={Math.min(500, totalRows)}
                             totalRows={totalRows}
@@ -591,9 +605,13 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                        onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
+
                         />
                         <VFPagination
                             selectedRows={0}
+                            resetGridRef={gridRef}
+                            isDisabled={clearFilter}
                             rowsPerPage={Math.min(500, totalRows)}
                             totalRows={totalRows}
                             currentPage={currentPage}
@@ -675,9 +693,13 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                    onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
+
                         />
                         <VFPagination
                             key={1}
+                            resetGridRef={gridRef}
+                            isDisabled={clearFilter}
                             selectedRows={0}
                             rowsPerPage={Math.min(500, totalRows)}
                             totalRows={totalRows}

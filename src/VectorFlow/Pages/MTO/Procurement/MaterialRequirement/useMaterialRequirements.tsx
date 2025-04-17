@@ -87,6 +87,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     const { colDefMap, getColDef } = useColDef()
     const { mutateAsync: getMaterialRequirementDataExcelExport } = useGetMaterialRequirementDetailsForExcelExport();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
+    const [isDisabled, setIsDisabled]= useState<boolean>(true);
 
     const reportName = "MaterialRequirement";
 
@@ -170,7 +171,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         setColumnDef();
     }, [])
 
-    const gridRef = useRef<AgGridReact>(null);
+    const gridRef = useRef<any>(null);
     // const { isSideBarOpen } = useUserData()
     const tabs: Array<VFFloatingTabItemProps> = [
         {
@@ -490,10 +491,14 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                                     ]
                                 }}
                                 maintainColumnOrder
+                               onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
 
                             />
                             <VFPagination
                                 selectedRows={0}
+                                isDisabled={isDisabled}
+                                resetGridRef={gridRef}
                                 rowsPerPage={pagination.mtoPageSize}
                                 totalRows={dayWiseRecordCount}
                                 currentPage={currentPage}
@@ -529,9 +534,13 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                                     ]
                                 }}
                                 maintainColumnOrder
+                               onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
                             />
                             <VFPagination
                                 selectedRows={0}
+                                isDisabled={isDisabled}
+                                resetGridRef={gridRef}
                                 rowsPerPage={pagination.mtoPageSize}
                                 totalRows={cumulativeRecordCount}
                                 currentPage={currentCumPage}

@@ -4,7 +4,7 @@ import VFTable from '../../Common/VFTable';
 import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
 import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 interface MaterialSODetailedProps {
     parameterData: any,
@@ -28,6 +28,9 @@ interface MaterialSODetailedProps {
         ExcelExportData
     } = useMaterialSO(parameterData, appliedFilters);
     const gridRef = useRef<any>(null);
+
+    const [isDisabled, setIsDisabled]= useState<boolean>(true);
+    
 
     useImperativeHandle(ref, ()=>({
         getExcelExport: (body : any)=>{
@@ -123,9 +126,13 @@ interface MaterialSODetailedProps {
                         ]
                     }}
                     maintainColumnOrder
+                    onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
                 />
                 <VFPagination
                     selectedRows={0}
+                    resetGridRef={gridRef}
+                    isDisabled={isDisabled}
                     rowsPerPage={pagination.mtoPageSize}
                     totalRows={rowDataCount}
                     currentPage={currentPage}
