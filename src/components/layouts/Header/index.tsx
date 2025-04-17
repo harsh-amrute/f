@@ -19,7 +19,7 @@ const Header = (props:HeaderProps) => {
   const themeUi = user?.user?.theme_ui;
   const [isHideLogo, setIsHideLogo] = useState<boolean>(true);
   let timeoutId: any;
-    
+
   const renderNamePage = () => {
     if (location.pathname === '/manual-upload') {
       return <span>{t('header.manualUpload')}</span>
@@ -145,24 +145,22 @@ const Header = (props:HeaderProps) => {
           </HeaderStyled.SCWrapperImg>
         </>
       )
-    } 
-    
+    }
+
+
+
     if(urlExcludeHeader.includes(location.pathname)){
       return(
-        <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo}>
-            {process.env.REACT_APP_CLIENT_NAME?.length !== 0 ? (
-            <HeaderStyled.ClientNameText
-               isHideLogo={isHideLogo}>
-                {process.env.REACT_APP_CLIENT_NAME}
-            </HeaderStyled.ClientNameText>
-          ) : (
-            <HeaderStyled.SCImg
-              src="/assets/VectorFlow_black.svg"
-              alt="logo"
-              isHideLogo={isHideLogo}
-            />
-          )}
-          </HeaderStyled.SCWrapperImg>
+        <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ display: 'flex', alignItems: 'center' }}>
+          <HeaderStyled.SCImg
+            src={process.env.REACT_APP_CLIENT_LOGO?.toString()}
+            alt="logo"
+            isHideLogo={isHideLogo}
+          />
+<HeaderStyled.ClientNameText isHideLogo={isHideLogo}>
+  {process.env.REACT_APP_CLIENT_NAME}
+</HeaderStyled.ClientNameText>
+        </HeaderStyled.SCWrapperImg>
       )
     }
 
@@ -174,7 +172,6 @@ const Header = (props:HeaderProps) => {
             top: 0,
             zIndex: 2,
             paddingTop:15
-            // paddingBottom: '2px'
           }}
         >
           <HeaderStyled.SCHeaderText>

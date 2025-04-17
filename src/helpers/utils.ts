@@ -17,7 +17,7 @@ import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingFo
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField, BPRViewTableFilterNumericalOperator, BPRViewTableFilterStringOperator } from '../VectorFlow/types/BPR';
 import { RRRField } from '../VectorFlow/types/RRR'
-import _ from 'lodash'
+import _, { filter } from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
@@ -1260,8 +1260,9 @@ export const getExistingColumnFields = (columns: string[], fields: Field[]): Fie
 
 export const areValuesEqual = (a: any, b: any): boolean => {
   if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
-    return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
-  }
+    // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
+    return parseFloat(a) === parseFloat(b) 
+  }  
   return a === b
 }
 
@@ -4350,6 +4351,7 @@ export function getColumnDefinations(
       rowGroup: false,
       rowGroupIndex: null,
       pivot: false,
+      filter: data.cla==='right' ? "agNumberColumnFilter": "agTextColumnFilter",
       pivotIndex: null,
       enablePivot: true,
       flex: 1,
@@ -4383,12 +4385,11 @@ export function getColumnDefinations(
   });
 
   const finalcolDef = columnDefs?.filter((obj: any) => !removeCols?.includes(obj.colId));
-
+  
   return finalcolDef;
-
+  
 }
 // ===================================================================================================
-
 
 // Common methods used in Filter Modal Screen
 // ===================================================================================================
@@ -4617,6 +4618,7 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
     document.body.removeChild(link);
   } catch (e) {
     console.error("Error downloading Excel file:", e);
+
   }
 };
 
