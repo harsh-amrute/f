@@ -185,7 +185,7 @@ const DynamicReleaseManagement = () => {
   };
 
 
-  const getFilterData = async (currentPage?:number, pageSize?:any) => {
+  const getFilterData = async () => {
     try {
         const response = await getPageWiseFilterData({
           page_name: FilterPageName.Prod_Dynamic_Release_Management,
@@ -763,7 +763,6 @@ const DynamicReleaseManagement = () => {
       }
       else if(page_size){
                 const config = columnState;
-                const isPivot = currentGridRef.current?.api.isPivotMode();
                 const fullConfig = { cs: config, pageSize: page_size };        
                 const payload = {
                   un: user.user.name,

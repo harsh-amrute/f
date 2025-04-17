@@ -27,7 +27,7 @@ export namespace DueDateQuotationService {
             },
             )
         }
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?page=${page}&unSch=${unSch ? 1 : 0}&page_size=${15}`,{
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?page=${page}&unSch=${unSch ? 1 : 0}&page_size=${page_size || 15}`,{
             headers: {
                 'Content-Type': 'application/json',
                 //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
