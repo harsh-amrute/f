@@ -134,7 +134,7 @@ const DynamicReleaseManagement = () => {
   }
 
   const GetData = async (allOrders = 0, page = 1, graph = 1, isExcelExport = false, pageSize?:any  ) => {
-    console.log(allOrders,"allOrders")
+    // console.log(allOrders,"allOrders")
     const formatedFilters = formatFilterJSON(appliedFilters);
     if (isExcelExport) {
       try {
@@ -155,9 +155,22 @@ const DynamicReleaseManagement = () => {
     }
     else if (allOrders) {
       try {
+
+        console.log("........ Final API Call payload:", {
+          graph: 0,
+          ao: allOrders,
+          page,
+          appliedFilters: formatedFilters,
+          page_size: pageSize || userPageSize,
+        });
+
+        
         const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters,  page_size: pageSize || userPageSize});
         setCurrData(APIData);
         setRowData(APIData?.data?.data?.results ? APIData?.data?.data?.results : []);
+
+        console.log("APIData:", APIData?.data?.data);
+
       }
       catch (e) {
         notifyError("Failed to fetch Grid data!")
@@ -168,6 +181,9 @@ const DynamicReleaseManagement = () => {
         const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters, page_size: pageSize || userPageSize});
         setCurrData(APIData);
         setRowData(APIData?.data?.data?.results ? APIData?.data?.data?.results : []);
+
+        console.log("APIData:", APIData?.data?.data);
+
       }
       catch (e) {
         notifyError("Failed to fetch Grid data!")
@@ -210,7 +226,7 @@ const DynamicReleaseManagement = () => {
   useEffect(() => {
     if (Object.entries(appliedFilters).length && userConfigFetched ) {
       setCurrentPage(1);
-      console.log("appliedFilters")
+      // console.log("appliedFilters")
       GetData(table1? 0 : 1);
     }
   }, [appliedFilters,userConfigFetched])
@@ -223,7 +239,7 @@ const DynamicReleaseManagement = () => {
       setSelectedRows([]);
       setDataUpdated(false);
       setIsCheckboxChecked(false)
-      console.log(table1,"table1")
+      // console.log(table1,"table1")
       GetData(table1 ? 0 : 1, 1, 0);
     }
   }, [dataUpdated])
@@ -392,11 +408,11 @@ const DynamicReleaseManagement = () => {
   const onFirstDataRendered =
     (params: any) => {
       const nodesToSelect: IRowNode[] = [];
-      console.log(selectedRows, "updateUserData selectedRows");
+      // console.log(selectedRows, "updateUserData selectedRows");
       params.api.forEachNode((node: any) => {
         if (node.data && node.data.oid && existsInSelected(node.data.ok)) {
-          console.log(node.data, "exist");
-          console.log(selectedRows, "selectedRows exist");
+          // console.log(node.data, "exist");
+          // console.log(selectedRows, "selectedRows exist");
           node.data.ok = selectedRows[0].ok;
           nodesToSelect.push(node);
         }
@@ -695,6 +711,11 @@ const DynamicReleaseManagement = () => {
         setUserPageSize(pageSize);
         handleSaveClick(undefined, pageSize);
         GetData(table1?0:1,1,0,false, pageSize);
+
+        // console.log('savePageSize', currData)
+
+        console.log("Calling API with pageSize:", pageSize || userPageSize);
+
     } else {
         notifyError("Invalide page size");
     }
@@ -758,7 +779,7 @@ const DynamicReleaseManagement = () => {
   const handleSaveClick = async (coldefs?: any, page_size?:any) => {
     try {
       if (coldefs) {
-        const fullConfig = {cs: coldefs, pageSize: userPageSize };
+        const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdDynamicReleaseManagement,
@@ -772,16 +793,19 @@ const DynamicReleaseManagement = () => {
                 const config = columnState;
                 const isPivot = currentGridRef.current?.api.isPivotMode();
                 const fullConfig = { cs: config, pageSize: page_size };
+
+                console.log(page_size, "if condiotn valaaaaaaaaaaaa")
         
                 const payload = {
                   un: user.user.name,
-                  rn_id: UIGridCode.ProdOverallBMReport,
+                  rn_id: UIGridCode.ProdDynamicReleaseManagement,
                   cs: JSON.stringify(fullConfig),
                 };
                 await updateUserUIReportConfigData([payload]);
         
 
       }
+      
       
       
       else {
@@ -800,6 +824,9 @@ const DynamicReleaseManagement = () => {
           await getUserColumnConfig();
         }
       }
+
+      console.log("Saving config with page size:", page_size);
+
 
     } catch (error) {
       console.error(error);
