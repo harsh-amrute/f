@@ -14,10 +14,10 @@ export namespace DueDateQuotationService {
         })
     }
 
-    export const getFilteredOrdersForDDQ = async ({page, unSch, appliedFilters}: any) => {
+    export const getFilteredOrdersForDDQ = async ({page, unSch, appliedFilters, page_size}: any) => {
        
         if(appliedFilters && Object.keys(appliedFilters).length){
-            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?page=${page}&unSch=${unSch ? 1 : 0}&page_size=${15}`,
+            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?page=${page}&unSch=${unSch ? 1 : 0}&page_size=${page_size || 15}`,
             appliedFilters,
             {
                 headers: {

@@ -19,11 +19,13 @@ interface IStep1Props {
   columnState: any,
   colDef: any,
   pageCallBack: any,
-  setPageCallBack:any
+  setPageCallBack:any,
+  savePageSize:any,
+  userPageSize:any
 }
 
 
-const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState, pageCallBack, setPageCallBack }: IStep1Props, ref: any) => {
+const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState, pageCallBack, setPageCallBack, savePageSize,userPageSize }: IStep1Props, ref: any) => {
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
@@ -144,6 +146,10 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
         handleChangePage={handlePageChange}
         resetGridRef={currentGridRef}
         isDisabled = {isDisabled}
+
+        customPageSizeEnabled={true}
+        savePageSize={savePageSize}
+        userPageSize = {userPageSize}
       />
     </>
   );
