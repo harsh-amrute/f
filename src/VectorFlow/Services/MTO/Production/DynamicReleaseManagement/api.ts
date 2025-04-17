@@ -3,7 +3,7 @@ import { pagination } from '../../../../../VectorFlow/Pages/MTO/Common/Enum';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace DynamicReleaseManagementService {
-    export const getDynamicReleaseData = async ({ graph = 0, ao = 0, page = 1, appliedFilters }: { graph: number, ao: number, page: number, appliedFilters: any }) => {
+    export const getDynamicReleaseData = async ({ graph = 0, ao = 0, page = 1, appliedFilters }: { graph: number, ao: number, page: number, appliedFilters: any, page_size?:any }) => {
         // if (graph === 0 && ao === 0 && page === 1) {
         //     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDynamicReleaseData/?graph=${graph}&ao=${ao}&page=${page}`, 
         //     appliedFilters,

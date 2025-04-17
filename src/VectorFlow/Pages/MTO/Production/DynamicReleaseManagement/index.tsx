@@ -118,6 +118,10 @@ const DynamicReleaseManagement = () => {
   const [isReleaseButtonDisabled, setIsReleaseButtonDisabled] = useState(true);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+
+
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
@@ -129,7 +133,8 @@ const DynamicReleaseManagement = () => {
     }
   }
 
-  const GetData = async (allOrders = 0, page = 1, graph = 1, isExcelExport = false) => {
+  const GetData = async (allOrders = 0, page = 1, graph = 1, isExcelExport = false, pageSize?:any  ) => {
+    console.log(allOrders,"allOrders")
     const formatedFilters = formatFilterJSON(appliedFilters);
     if (isExcelExport) {
       try {
@@ -150,7 +155,7 @@ const DynamicReleaseManagement = () => {
     }
     else if (allOrders) {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters,  page_size: pageSize || userPageSize});
         setCurrData(APIData);
         setRowData(APIData?.data?.data?.results ? APIData?.data?.data?.results : []);
       }
@@ -160,7 +165,7 @@ const DynamicReleaseManagement = () => {
     }
     else {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters, page_size: pageSize || userPageSize});
         setCurrData(APIData);
         setRowData(APIData?.data?.data?.results ? APIData?.data?.data?.results : []);
       }
@@ -171,7 +176,7 @@ const DynamicReleaseManagement = () => {
     }
     if (graph) {
       try {
-        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page, appliedFilters: formatedFilters });
+        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page, appliedFilters: formatedFilters,  page_size: pageSize || userPageSize});
         setGraphData(GraphAPIData.data.data);
       }
       catch (e) {
@@ -179,8 +184,10 @@ const DynamicReleaseManagement = () => {
       }
     }
   };
+  console.log(currData)
 
-  const getFilterData = async () => {
+
+  const getFilterData = async (currentPage?:number, pageSize?:any) => {
     try {
         const response = await getPageWiseFilterData({
           page_name: FilterPageName.Prod_Dynamic_Release_Management,
@@ -201,11 +208,14 @@ const DynamicReleaseManagement = () => {
   }, [])
 
   useEffect(() => {
-    if (Object.entries(appliedFilters).length) {
+    if (Object.entries(appliedFilters).length && userConfigFetched ) {
       setCurrentPage(1);
-      GetData();
+      console.log("appliedFilters")
+      GetData(table1? 0 : 1);
     }
-  }, [appliedFilters])
+  }, [appliedFilters,userConfigFetched])
+
+  //getFilterData
   
   useEffect(() => {
     if (dataUpdated && !showModal) {
@@ -213,6 +223,7 @@ const DynamicReleaseManagement = () => {
       setSelectedRows([]);
       setDataUpdated(false);
       setIsCheckboxChecked(false)
+      console.log(table1,"table1")
       GetData(table1 ? 0 : 1, 1, 0);
     }
   }, [dataUpdated])
@@ -669,6 +680,18 @@ const DynamicReleaseManagement = () => {
     }
   };
 
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+        setCurrentPage(1)
+        setUserPageSize(pageSize);
+        handleSaveClick(undefined, pageSize);
+        GetData(table1?0:1,1,0,false, pageSize);
+    } else {
+        notifyError("Invalide page size");
+    }
+    
+}
+
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
     setIsCheckboxChecked(isChecked); 
@@ -708,8 +731,10 @@ const DynamicReleaseManagement = () => {
         un: user.user.name,
         rn_id: UIGridCode.ProdDynamicReleaseManagement
       });
-  
-      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+
+      setUserConfigFetched(true)
+      const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] :[];
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
       setColumnState(newConfig);
   
       if (!data) {
@@ -721,25 +746,46 @@ const DynamicReleaseManagement = () => {
   }
       
   
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?:any) => {
     try {
       if (coldefs) {
+        const fullConfig = {cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdDynamicReleaseManagement,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
         
-      } else {
+      }
+      else if(page_size){
+                const config = columnState;
+                const isPivot = currentGridRef.current?.api.isPivotMode();
+                const fullConfig = { cs: config, pageSize: page_size };
+        
+                const payload = {
+                  un: user.user.name,
+                  rn_id: UIGridCode.ProdOverallBMReport,
+                  cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIReportConfigData([payload]);
+        
+
+      }
+      
+      
+      else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
+
+          const fullConfig = {  cs: config, pageSize: userPageSize };
+
 
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdDynamicReleaseManagement,
-            cs: JSON.stringify(config)
+            cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
@@ -844,10 +890,10 @@ const DynamicReleaseManagement = () => {
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 
-          <BPRViewTableHeaderTab onClick={() => { setTable1(true), GetData(0, currentPage, 0) }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
+          <BPRViewTableHeaderTab onClick={() => { setTable1(true) }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
             Orders with simulated full kit
           </BPRViewTableHeaderTab>
-          <BPRViewTableHeaderTab onClick={() => { setTable1(false), GetData(1, currentPage, 0) }} status={!table1} marLeft={true} themeUi={themeUi} zIndex={1} style={{ width: '250px', fontSize: '12px' }} >
+          <BPRViewTableHeaderTab onClick={() => { setTable1(false) }} status={!table1} marLeft={true} themeUi={themeUi} zIndex={1} style={{ width: '250px', fontSize: '12px' }} >
             All Orders
           </BPRViewTableHeaderTab>
         </SCTabHeader>
@@ -879,6 +925,11 @@ const DynamicReleaseManagement = () => {
             showPagination
             resetGridRef={currentGridRef}
             isDisabled={isDisabled}
+
+            customPageSizeEnabled={true}
+
+                  savePageSize={savePageSize}
+                  userPageSize = {userPageSize}
           />
         </div>
         <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>

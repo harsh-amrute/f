@@ -144,8 +144,6 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
         handleChangePage={handlePageChange}
         resetGridRef={currentGridRef}
         isDisabled = {isDisabled}
-
-        
       />
     </>
   );
