@@ -42,7 +42,7 @@ export enum InputTypes {
 }
 
 export enum pagination {
-    mtoPageSize = 15
+    mtoPageSize = 500
 }
 
 export enum UIGridCode {
