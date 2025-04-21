@@ -1102,9 +1102,10 @@ const OverallBmReport = () => {
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
+      setCurrentPage(1);
       setUserPageSize(pageSize);
       handleSaveClick(undefined,pageSize);
-      getInitialGridData(currentPage, pageSize);
+      getInitialGridData(1, pageSize);
     } else {
       notifyError("Invalide page size");
     }

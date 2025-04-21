@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
-import { checkValue, findUniqueKeysAndValues, getDynamicAttributes, getKeyName, getType } from '../helpers/utils';
+import { checkValue, compare, findUniqueKeysAndValues, getDynamicAttributes, getKeyName, getType } from '../helpers/utils';
 import { filterAttributes, staticHeaderConfig } from '../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
 import { FilterState } from '../VectorFlow/types/MTO';
 import _ from 'lodash';
@@ -14,6 +14,7 @@ const useFilter=(filterData: any, page: any)=>{
     const onFilterRemove = (parentId: string, filterId: any, value: any) => {
          const updatedMultiFilter = { ...multiFilter };
       
+
         const filters = updatedMultiFilter[parentId as keyof FilterState]?.filters || [];
       
         for (let i = 0; i < filters.length; i++) {
@@ -24,6 +25,9 @@ const useFilter=(filterData: any, page: any)=>{
 
                 const newVal = val.value;
               const compareValue = value === "0" && typeof val.value === "number" ? Number(value) : value;
+              if(compareValue !==newVal){
+                    return val
+              }
             })
           }
         }
@@ -31,19 +35,24 @@ const useFilter=(filterData: any, page: any)=>{
         updatedMultiFilter[parentId as keyof FilterState].filters = [...filters];
 
         
+        console.log("updatedMultiFilter.....", updatedMultiFilter)
         const newFilters = _.cloneDeep(updatedMultiFilter).filters.filter((e: any) => {
-            return e.header.attributeName !== filterId;
+            return e?.header?.attributeName !== filterId;
         });
+
+        
+
+
         if(newFilters.length===0){
             newFilters.push({
                 attributeName: '',
                 operator: '',
                 value: []
               });
-            
         }
         const val = {...updatedMultiFilter, filters: newFilters};
         setMultiFilter(val); 
+        return val;
      
       };
 

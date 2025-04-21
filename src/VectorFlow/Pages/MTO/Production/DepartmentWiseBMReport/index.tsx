@@ -669,9 +669,10 @@ const DptWiseBMReport = () => {
 
     const savePageSize = (pageSize: any) => {
         if (pageSize) {
+            setCurrentPage(1)
             setUserPageSize(pageSize);
             handleSaveClick(undefined, pageSize);
-            getUpdatedFilteredData(currentPage, pageSize);
+            getUpdatedFilteredData(1, pageSize);
         } else {
             notifyError("Invalide page size");
         }
