@@ -668,15 +668,15 @@ const useBTR = () => {
 
     const onExportToExcelCallBack = async (pageNumber: number, page: string) => {
         const tempFilter = getPreparedFilter(currFilter)
-        const headersdata = techRef?.current?.api?.getColumnState() || [];
-        console.log(techColDefs,headersdata)
-        const techColMap = new Map(techColDefs.map((col: any) => [col.colId, col.headerName]));
-        const resultArray = headersdata
-            .filter((col: any) => techColMap.has(col.colId)) // Keep only matching colId
-            .map((col: any) => ({ Field: col.colId, HeaderName: techColMap.get(col.colId) }));
-       console.log(resultArray)
+        const headersData = (page === 'on-hand') ? (techRef?.current?.api?.getColumnState() || []) : (ecoRef?.current?.api?.getColumnState() || []);
+        const colDefs = (page === 'on-hand') ? techColDefs : ecoColDefs;
+        const colMap = new Map(colDefs.map((col: any) => [col.colId, col.headerName]));
+        const resultArray = headersData
+        .filter((col: any) => colMap.has(col.colId) && col.colId !== "dailydatagraph")
+        .map((col: any) => ({ Field: col.colId, HeaderName: colMap.get(col.colId) }));
+      
         const payload = {
-            Headers:resultArray,
+            Headers: resultArray,
             id: 0,
             name: page==='on-hand'?'tech':'eco',
             fields: [],
@@ -688,9 +688,17 @@ const useBTR = () => {
             responseType: `arraybuffer`
         }
         notifyLoader("Downloading Data...")
-        const data = await getBTRData(payload)
-        DownloadExcelMTA(data?.data?.data ,data?.data?.data?.fileName )
-        notifySuccess(`Data Exported Successfully`);
+        try {
+            const data = await getBTRData(payload)
+            DownloadExcelMTA(data?.data?.data ,data?.data?.data?.fileName )
+            notifySuccess(`Data Exported Successfully`);
+        }
+        catch(error) {
+            console.log(error);
+            notifyError("Error Exporting Excel")
+        }
+        
+        
 
     }
  
