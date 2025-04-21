@@ -3,6 +3,7 @@ import { GridOptions, SideBarDef } from 'ag-grid-enterprise';
 import _ from 'lodash';
 import VFPagination from "../../Common/VFPagination";
 import VFTable from '../../Common/VFTable';
+import { pagination } from '../../Common/Enum';
 
 interface IStep1Props {
   gridOptions: GridOptions,
@@ -139,7 +140,7 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
       <VFPagination
         selectedRows={0}
         totalRows={totalRows.current}
-        rowsPerPage={15}
+        rowsPerPage={pagination.mtoPageSize}
         currentPage={currentPage}
         handleChangePage={handlePageChange}
         resetGridRef={currentGridRef}

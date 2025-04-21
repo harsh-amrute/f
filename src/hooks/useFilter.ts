@@ -35,7 +35,6 @@ const useFilter=(filterData: any, page: any)=>{
         updatedMultiFilter[parentId as keyof FilterState].filters = [...filters];
 
         
-        console.log("updatedMultiFilter.....", updatedMultiFilter)
         const newFilters = _.cloneDeep(updatedMultiFilter).filters.filter((e: any) => {
             return e?.header?.attributeName !== filterId;
         });
