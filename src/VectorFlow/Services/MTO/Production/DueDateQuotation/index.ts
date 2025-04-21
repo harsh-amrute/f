@@ -15,11 +15,12 @@ interface DDQInputParams {
     page: number,
     unSch: boolean,
     appliedFilters: any
+    page_size?:number
 }
 
 
 export const useGetFilteredOrdersForDDQ = () => {
-    return useMutation(async (data: DDQInputParams) => {
+    return useMutation(async (data: DDQInputParams ) => {
         return DueDateQuotationService.getFilteredOrdersForDDQ(data)
     })
 }
