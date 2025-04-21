@@ -4618,7 +4618,7 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
     document.body.removeChild(link);
   } catch (e) {
     console.error("Error downloading Excel file:", e);
-
+    notifyError("Something went wrong");
   }
 };
 
