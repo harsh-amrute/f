@@ -59,6 +59,10 @@ const MaterialCov = () => {
   const { user } = useUserData();
   const { getColDef , colDefMap} = useColDef();
   const [defaultColState,setDefaultColState] = useState<any>([])
+
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+  
     const { 
     state: currFilter, 
     setState: setCurrFilter, 
@@ -135,7 +139,9 @@ const MaterialCov = () => {
           rn_id: UIGridCode.ProcMaterialCovOpenSales
         });
   
+        setUserConfigFetched(true);
         const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+        setUserPageSize(newConfig.pageSize? Number(newConfig.pageSize) : undefined);
         setColumnState(newConfig)
   
         if (!data) {
@@ -154,26 +160,34 @@ const MaterialCov = () => {
 
   
 
-  const handleSaveClick = async (isReset = false) => {
+  const handleSaveClick = async (isReset = false, pageSize?: number) => {
     try {
       const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState();
-
-        const payload = {
-          un: user.user.name,
-          rn_id: UIGridCode.ProcMaterialCovOpenSales,
-          cs: JSON.stringify(config)
-        }
+  
+      const fullConfig = {
+        cs: config,
+        pageSize: pageSize || userPageSize, 
+      };
+  
+      const payload = {
+        un: user.user.name,
+        rn_id: UIGridCode.ProcMaterialCovOpenSales,
+        cs: JSON.stringify(fullConfig),
+      };
+  
       await updateUserUIReportConfigData([payload]);
-      !isReset && notifySuccess("Saved successfully")
-      if(!isReset){
-        setColumnState([...config])
-      }
+  !isReset && notifySuccess("Saved successfully")
 
+      if (!isReset) {
+        setColumnState([...config]);
+      }
+  
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
+  
   const handleResetClick = () => {
     setIsReset(true);
   }
@@ -265,6 +279,7 @@ const MaterialCov = () => {
   }, [isReset]);
   
   const materialSoDetailRef = useRef<any>();
+  
   const callExportExcel = () => {
       const headersdata = currentGridRef?.current?.api.getColumnState();
       const formattedFilters = formatFilterJSON(appliedFilters)
@@ -389,6 +404,10 @@ const MaterialCov = () => {
             currentGridRef={currentGridRef}
             columnState={columnState}
             appliedFilters={appliedFilters}
+            handleSaveClick={handleSaveClick}
+            userConfigFetched={userConfigFetched}
+            userPageSize={userPageSize}
+            setUserPageSize={setUserPageSize}
           />
         </div>
 

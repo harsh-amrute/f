@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { FilterPageName } from "../../Common/Enum";
 import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
 
-const useMaterialSO = (data: any, appliedFilters:any) => {
+const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userConfigFetched:any,userPageSize:any,setUserPageSize:any) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
     const [rowDataCount, setRowDataCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -21,14 +21,14 @@ const useMaterialSO = (data: any, appliedFilters:any) => {
     const { mutateAsync : getOpenSODetailsDataForExcelExport } = useGetOpenSODetailsDataForExcelExport();
 
     useEffect(() => {
-        getInitialData(currentPage)
-    }, [appliedFilters])
+        if(userConfigFetched)
+            getInitialData(currentPage)
+    }, [appliedFilters, userConfigFetched])  
 
     const [isLoading, setIsLoading] = useState(false);
 
 
-
-    const getInitialData = async (currPage: number, isExcelExport = false , body = {}) => {
+    const getInitialData = async (currPage: number, isExcelExport = false , body = {},pageSize?:any) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
             let queryString = '?Color='
@@ -41,7 +41,7 @@ const useMaterialSO = (data: any, appliedFilters:any) => {
                         queryString += `${data[s]},`
                     }
                 })
-                queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}`
+                queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize}`
          
         if (isExcelExport) {
             
@@ -72,7 +72,7 @@ const useMaterialSO = (data: any, appliedFilters:any) => {
                     queryString += `${data[s]},`
                 }
             })
-            queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}`
+            queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize}`
       
             const someData = await getOpenSODetailsData({ data: queryString, appliedFilters: formatedFilters });
             const output = someData.data?.data?.results.map((item: any) => ({
@@ -92,6 +92,17 @@ const useMaterialSO = (data: any, appliedFilters:any) => {
             }
     }
 
+    const savePageSize = (pageSize: any) => {
+        if (pageSize) {
+            setCurrentPage(1)
+            setUserPageSize(pageSize);
+            handleSaveClick(undefined, pageSize);
+            getInitialData(1,false,{},pageSize);
+        } else {
+            notifyError("Invalide page size");
+        }
+        
+    }
 
     const handlePageChangeOnHook = useCallback((param: number) => {
         setCurrentPage(param);
@@ -192,7 +203,9 @@ const useMaterialSO = (data: any, appliedFilters:any) => {
         rowDataCount: rowDataCount,
         handlePageChangeOnHook,
         currentPage: currentPage,
-        ExcelExportData
+        ExcelExportData,
+        savePageSize,
+        userPageSize,
     }
 }
 
