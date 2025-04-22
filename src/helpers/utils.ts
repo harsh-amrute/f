@@ -4503,7 +4503,12 @@ export const formatFilterJSON = (filter: any) => {
       delete formatFilter[key];
     }
   });
-  // console.log("formate filter", formatFilter);
+  Object.keys(formatFilter).forEach(key => {
+    if ((formatFilter[key]?.op && (formatFilter[key]?.val === undefined ||  formatFilter[key]?.val === null)) || 
+        (formatFilter[key]?.val && (formatFilter[key]?.op === undefined || formatFilter[key]?.op === null))) {
+      delete formatFilter[key];
+    }
+  });
   return formatFilter;
 }
 
@@ -4618,7 +4623,7 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
     document.body.removeChild(link);
   } catch (e) {
     console.error("Error downloading Excel file:", e);
-
+    notifyError("Something went wrong");
   }
 };
 

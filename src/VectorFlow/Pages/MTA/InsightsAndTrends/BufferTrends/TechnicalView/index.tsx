@@ -47,11 +47,11 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
 
     const colors = [
         { label: 'Black', value: 'black' },
-        { label: 'Blue', value: 'Blue' },
         { label: 'Red', value: 'Red' },
         { label: 'Yellow', value: '#FFBF00' },
         { label: 'Green', value: 'Green' },
-        { label: 'White', value: 'grey' }
+        { label: 'White', value: 'grey' },
+        { label: 'Blue', value: 'Blue' },
     ];
     
     function TooltipRenderer({ datum }: any) {
@@ -73,11 +73,11 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                     <tbody styles="text-align:left;">
                         ${colors.map(color => {
                             const key = color.value === 'black' ? 'b' :
-                                        color.value === 'Blue' ? 'bu' :
                                         color.value === 'Red' ? 'r' :
                                         color.value === '#FFBF00' ? 'y' :
                                         color.value === 'Green' ? 'g' :
-                                        color.value === 'grey' ? 'w' : null;
+                                        color.value === 'grey' ? 'w' :
+                                        color.value === 'Blue' ? 'bu' : null;
     
                             if (!key) return ''; 
     
@@ -97,6 +97,24 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                                 </tr>
                             `;
                         }).join('')}
+
+                        ${graphs[0].pen.label !== 'Percentage' ? 
+                            `
+                                <tr>
+                                    <td style="padding: 5px; background-color:  #6C696A; font-weight: bold;">
+                                        <div style="display: flex; align-items: center;">
+                                            Total
+                                        </div>
+                                    </td>
+                                    <td style="padding: 5px; text-align: right; font-weight: bold;">
+                                        ${(datum.total).toFixed(2)}
+                                    </td>
+                                </tr>
+                            `
+                            : 
+                            ''
+
+                        }
                     </tbody>
                 </table>
             </div>

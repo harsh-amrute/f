@@ -16,7 +16,11 @@ import { putUpdateProcurementSimulationData, useGetProcurementPlanningDataForExc
 import { toast } from "react-toastify";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+<<<<<<< HEAD
 import VFPagination from "../../Common/VFPagination";
+=======
+import VFPagination from '../../Common/VFPagination';
+>>>>>>> develop-vflow
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles";
@@ -89,9 +93,15 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const reportName = "ProcurementPlanningShortage";
     const [defaultColState,setDefaultColState] = useState<any>([])
 
+<<<<<<< HEAD
     const [clearFilter, clearFilterDisabled]= useState<boolean>(true);
 
     
+=======
+    const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+    const [userPageSize, setUserPageSize] = useState<any>();
+
+>>>>>>> develop-vflow
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
@@ -111,7 +121,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 rn_id: UIGridCode.ProcPlanning
             });
 
+            setUserConfigFetched(true)
             const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
             setColumnState(newConfig);
 
             if (!data) {
@@ -122,26 +134,30 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         }
     }
 
-    const handleSaveClick = async (isReset = false) => {
+    const handleSaveClick = async (isReset = false, page_size?: any) => {
+        const config = isReset ? defaultColState : gridRef?.current?.api?.getColumnState();
     
-        const config = isReset ?  defaultColState : gridRef?.current?.api?.getColumnState();
-
         try {
-            
+            const fullConfig = {
+                cs: config,
+                pageSize: page_size || userPageSize
+            };
+    
             const payload = {
                 un: user.user.name,
                 rn_id: UIGridCode.ProcPlanning,
-                cs: JSON.stringify(config)
-            }
+                cs: JSON.stringify(fullConfig)
+            };
+    
             await updateUserUIReportConfigData([payload]);
-            !isReset && notifySuccess("Saved Successfully")
-                
-
+            !isReset && notifySuccess("Saved Successfully");
+    
         } catch (error) {
             console.error(error);
-            notifyError("Error while saving")
+            notifyError("Error while saving");
         }
-    }
+    };
+    
 
     const handleResetClick = () => {
         setIsReset(true);
@@ -188,7 +204,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
     const { mutateAsync : GetProcPlanningDataForExcelData} = useGetProcurementPlanningDataForExcelExport()
-    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false) => {
+
+    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any) => {
         setIsLoading(true);
         if(isExcelExport){
             try {
@@ -212,7 +229,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             toast.dismiss();
             notifyLoader("Loading data...")
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab, appliedFilters: formatedFilters });
+            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab, appliedFilters: formatedFilters,page_size: pageSize || userPageSize });
             if (response.status === 200) {
                 setCurrentPage(pageNumber)
                 toast.dismiss();
@@ -490,10 +507,11 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }, []);
 
     useEffect(() => {
-        if (date && Object.keys(appliedFilters).length>0) {
+        if (date && Object.keys(appliedFilters).length>0 && userConfigFetched) {
+            setCurrentPage(1);
             fetchData(date,1,currentTab?.label === "Shortage" ? '0':'1');
         }
-    }, [appliedFilters])
+    }, [appliedFilters, userConfigFetched])
 
     const handlePageChangeCumulative = async (pageNumber: number) => {
         // setIsLoading(true);
@@ -514,6 +532,18 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
+
+    const savePageSize = (pageSize: any) => {
+        if (pageSize) {
+            setCurrentPage(1)
+            setUserPageSize(pageSize);
+            handleSaveClick(undefined, pageSize);
+            fetchData(date,1,currentTab?.label === "Shortage" ? '0':'1', false,pageSize);
+        } else {
+            notifyError("Invalide page size");
+        }
+        
+    }
 
     useEffect(() => {
         if (gridRef?.current && columnState?.length && colDef.length > 0) {
@@ -578,6 +608,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
+                            customPageSizeEnabled={true}
+                            savePageSize={savePageSize}
+                            userPageSize = {userPageSize}
 
                         />
                     </TableWrapper>
@@ -616,6 +649,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
+                            customPageSizeEnabled={true}
+                            savePageSize={savePageSize}
+                            userPageSize = {userPageSize}
 
                         />
                         { process.env.REACT_APP_ENABLE_SIMULATION==='enabled'  && (
@@ -705,6 +741,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
+                            customPageSizeEnabled={true}
+                            savePageSize={savePageSize}
+                            userPageSize = {userPageSize}
                         />
                     </TableWrapper>
                 );

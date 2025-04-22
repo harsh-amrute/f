@@ -8,8 +8,8 @@ export const QUERY_KEYS = {
     UpdateBatchWiseCompAllSimulation: ['ProcPlanningService.UpdateBatchWiseCompAllSimulation']
 }
 export const userGetProcPlanningData = () => {
-    return useMutation(async (data: { date: string, pageNum: string, ca: string, appliedFilters: any }) => {
-        return await ProcPlanningService.GetProcPlanningData(data.date, data.pageNum, data.ca, data.appliedFilters);
+    return useMutation(async (data: { date: string, pageNum: string, ca: string, appliedFilters: any, page_size?:any }) => {
+        return await ProcPlanningService.GetProcPlanningData(data.date, data.pageNum, data.ca, data.appliedFilters, data.page_size);
     });
 }
 

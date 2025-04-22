@@ -169,6 +169,7 @@ export const SCWrapperImg = styled.div<{ isHideLogo: boolean }>`
 export const ClientNameText = styled.div<{ isHideLogo: boolean }>`
   flex: 1;
   white-space: nowrap;
+  margin-left: 15px;
   overflow: hidden;
   text-overflow: ellipsis;
   // display: ${props => (props.isHideLogo ? 'none' : 'block')};

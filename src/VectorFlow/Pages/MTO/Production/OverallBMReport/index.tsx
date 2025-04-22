@@ -166,6 +166,8 @@ const OverallBmReport = () => {
   const [isPivot, setIsPivot] = useState<any>(false);
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
 
+
+
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
       return [];
@@ -1102,9 +1104,10 @@ const OverallBmReport = () => {
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
+      setCurrentPage(1);
       setUserPageSize(pageSize);
       handleSaveClick(undefined,pageSize);
-      getInitialGridData(currentPage, pageSize);
+      getInitialGridData(1, pageSize);
     } else {
       notifyError("Invalide page size");
     }
