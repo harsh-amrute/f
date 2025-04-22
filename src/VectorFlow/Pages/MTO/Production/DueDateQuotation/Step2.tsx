@@ -1172,7 +1172,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         <RouteAssignment
                                             isEditable={isEditable}
                                             theme={theme}
-                                            ccrGroupMaster={ccrGroups}
+                                            ccrGroupMaster={[...ccrGroups,...ccrGroups,...ccrGroups]}
                                             selectedRoutes={selectedRoute}
                                             setSelectedRoutes={setSelectedRoute}
                                         />

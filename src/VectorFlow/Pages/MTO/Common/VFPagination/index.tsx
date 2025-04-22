@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useUserData } from '../../../../../context';
-import { PaginationWrapper, StatusBarLabel, StatusBarLabelLight, StatusBarLabelBold, PaginationContainer, PaginationArrowIcon,StatusBarWrapper, TextBtn,GridFilterWrapper, CustomPageSize, PageSizeInputDiv, PageSizeInput, PageSizeSaveDiv } from "./styles"
+import { PaginationWrapper, StatusBarLabel, StatusBarLabelLight, StatusBarLabelBold, PaginationContainer, PaginationArrowIcon,StatusBarWrapper, TextBtn,GridFilterWrapper, CustomPageSize, PageSizeInputDiv, PageSizeInput } from "./styles"
 import { notifyError } from '../../../../../helpers/notify';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 

@@ -184,7 +184,7 @@ export const ButtonWrapper = styled.div`
     width:100%;
     display:flex;
     justify-content:flex-end;
-    padding:10px 10px 0px 0px;
+    padding:20px 20px 20px 0px;
     border-top:solid 1px #707070;
     zoom:0.8;
 `
