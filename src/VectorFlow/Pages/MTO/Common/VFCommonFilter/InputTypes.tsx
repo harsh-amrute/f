@@ -427,26 +427,33 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   const [selectedOperator, setSelectedOperator] = useState<any>(masterFilterState.filters.map((e:any)=> {return e.operator}))
   const [selectedValue, setSelectedValue] = useState<any[]>(masterFilterState.filters.map((e:any)=> {return e.value}));
 
-  const handleHeaderChange = (selectedOption: any, type: any, index:any) => {
+  const handleHeaderChange = (selectedOption: any, type: any, index:any, id: any) => {
+
     if(type==="header"){
       const updatedHeaders:any = [...selectedHeader];
       updatedHeaders[index] = selectedOption;
+
       setSelectedHeader(updatedHeaders);
+      const updatedOperator = [...selectedOperator];
+      updatedOperator[index] = null;
+      setSelectedOperator(updatedOperator);
+
+      const updatedValues = [...selectedValue]; 
+      updatedValues[index] = null;
+      setSelectedValue(updatedValues);
     }
     else if (type === "operator") {
       const updatedOperator = [...selectedOperator];
       updatedOperator[index] = selectedOption;
+      updatedOperator[index].index = index;
       setSelectedOperator(updatedOperator);
+      onChange('numberCompare',selectedHeader?.[index]?.attributeName, selectedOperator, "orders", selectedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}])
     }
     else if(type==='value'){
     const updatedValues = [...selectedValue]; 
     updatedValues[index] = selectedOption.target.value;
     setSelectedValue(updatedValues);
     onChange('numberCompare',selectedHeader?.[index]?.attributeName, selectedOperator, "orders", selectedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}])
-    }
-       // type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any
-    if(type==='operator'){
-      onChange('numberCompare',selectedHeader?.[index]?.attributeName, selectedOperator, "orders", selectedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}])
     }
   };
 
@@ -550,7 +557,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
             className="custom-scrollbar"
             placeholder={"Select"}
             options={getFilteredHeaderOptions(index)}
-            onChange={(option: any) => handleHeaderChange(option, 'header', index)}
+            onChange={(option: any) => handleHeaderChange(option, 'header', index, filter.id)}
             filterId={filterId}
             value={selectedHeader?.[index]}
             resetKey={resetKey}
@@ -565,7 +572,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
             options={getNameOptions(selectedHeader?.[index]?.type)}
             hideDropdownArrow
             key={new Date()} 
-            onChange={(e: any) => handleHeaderChange(e, 'operator', index)}
+            onChange={(e: any) => handleHeaderChange(e, 'operator', index, filter.id)}
             filterId={filterId}
             value={selectedOperator?.[index] || null}
             disabled={isDisabled(index)}
@@ -578,7 +585,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
             name={header}
             type={selectedHeader[index]?.type === InputTypes.TextCompare ? "text" : "number"}
             placeholder={"Value"}
-            onChange={(e: any) => handleHeaderChange(e, 'value', index)}
+            onChange={(e: any) => handleHeaderChange(e, 'value', index, filter.id)}
             header={header}
             value={selectedValue?.[index] || ''}
             disabled={isDisabled(index)}
