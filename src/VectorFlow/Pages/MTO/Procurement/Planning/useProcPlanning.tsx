@@ -16,7 +16,7 @@ import { putUpdateProcurementSimulationData, useGetProcurementPlanningDataForExc
 import { toast } from "react-toastify";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
+import VFPagination from "../../Common/VFPagination";
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles";

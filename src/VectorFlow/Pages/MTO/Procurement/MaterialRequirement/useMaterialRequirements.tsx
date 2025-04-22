@@ -511,8 +511,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                 return (
                     <>
                         {/* {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader/>} */}
-                        <TableWrapper>
-                           
+                        <TableWrapper>      
                             <VFTable
                                 paginationPageSize={10}
                                 {...agGridProps}
