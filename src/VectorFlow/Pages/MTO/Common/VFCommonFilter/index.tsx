@@ -20,7 +20,7 @@ import { AvailabilityFilter, FilterCheckboxAccordian, FilterMultiSelectCheckbox,
 import VFMasterFieldSearch from "../../../../../components/VectorFLOW/commons/VFMasterFieldSearch";
 import { checkValue } from "../../../../../helpers/utils";
 import { InputTypes } from "../Enum";
-import _, { filter } from "lodash";
+import _ from "lodash";
 
 interface VFCommonFilterProps {
   onApplyFilter: (params: any) => void;
@@ -48,22 +48,40 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
 
   const onFilterChange = (type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any) => {
 
-    
+  
+
     let updatedFilters = filterState[parent as keyof FilterState]?.filters || [];
     if(type==='numberCompare' || type==='textCompare'){
       updatedFilters = filterState[parent as keyof FilterState]?.filters.map((ele:any)=>{
+        console.log(ele.index, '==', e?.[0]?.index);
+        if (ele.index != null && e[0]?.index != null && String(ele.index) === String(e[0].index)) {
+          const newEle = _.cloneDeep(ele);
+          newEle.type = type;
+          newEle.index = undefined;
+          newEle.operator = "";
+          newEle.value = [];
+          return newEle;
+        }
+        else{
+          return ele;
+        }
+      })
+      
+      
+     updatedFilters = updatedFilters.map((ele:any)=>{
         if(ele.attributeName===filterId){
           const newEle = _.cloneDeep(ele);
           newEle.operator = property
           newEle.value=targetValue
+          newEle.index = e?.[0]?.index;
           return newEle;
         }
         else{
-
           return ele;
         }
       })
     }
+
     for (let i = 0; i < updatedFilters.length; i++) {
       const { attributeName } = updatedFilters[i];
       
@@ -74,6 +92,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
             const updatedvalue = type === InputTypes.NumberCompare ? e.target.value !== ''  && e.target.value != undefined  ? Number(e?.target?.value): e?.target?.value: e.target.value;
             val =  [{label: updatedvalue, value: updatedvalue}];
           }
+          
           updatedFilters[i][property as keyof Filter]= val;
         }
 
