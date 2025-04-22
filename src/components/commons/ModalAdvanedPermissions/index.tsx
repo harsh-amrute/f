@@ -1,13 +1,13 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import React, { Fragment, memo, useState } from "react";
 import "./styles.css";
 import { useTranslation } from "react-i18next";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useRegisterUser, usePutEditUser } from "../../../services/profile";
 import LoadingSpinner from "../LoadingSpinner";
-import PrdPermissions from "../../../components/layouts/ProductPermission/common-mulselect";
-import LcPermissions from "../../../components/layouts/LocationPermission/common-mulselect";
-import UserMangementStepper from "../../VectorFLOW/commons/UserManagementStepper";
+const PrdPermissions = React.lazy(() => import("../../../components/layouts/ProductPermission/common-mulselect"));
+const LcPermissions = React.lazy(() => import("../../../components/layouts/LocationPermission/common-mulselect"));
+const UserMangementStepper = React.lazy(() => import("../../VectorFLOW/commons/UserManagementStepper"));
 import {
   formDataPermission,
   handleSelectParent,
@@ -41,7 +41,9 @@ const ModalAdvanedPermissions = (props: any) => {
     storePermission,
     setStorePermission,
     setStepperDetails,
-    headers
+    headers,
+    setIsCheckBox,
+    isCheckBox
   } = props;
 
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
@@ -53,17 +55,19 @@ const ModalAdvanedPermissions = (props: any) => {
   const backModalUser = () => {
  
     //Reset Current Application Permissions
-    if(valueSelect.length > 0){
-      const initalPermissions = valueSelect.find((app:any)=>app.application_id === activeApplication);
-      setStorePermission([...storePermission.map((app:any)=>{
-        if(app.application_id === activeApplication){
-          return {
-            ...app,productPermission:initalPermissions.productPermission,locationPermission:initalPermissions.locationPermission
-          }
-        }
-        return {...app}
-      })])
+    const storePermissionCopy = [...storePermission]
+    const currentPermission:any = storePermissionCopy.find((app:any)=>app.application_id === activeApplication);
+    const currentProductPermission = prdPermissionRef.current?.getPrdPermissionValue();
+    const currentLocationPermission = lcPermissionRef.current?.getLcPermissionValue();
+
+
+    if(currentPermission){
+      currentPermission.productPermission = currentProductPermission;
+      currentPermission.locationPermission = currentLocationPermission;
+      setStorePermission(storePermissionCopy)
     }
+
+
     
     if(prevPrdSelectedAll){
       prdPermissionRef.current?.setIsUnSelected(prevPrdSelectedAll)
@@ -412,6 +416,9 @@ const ModalAdvanedPermissions = (props: any) => {
                         handleSelectChild={handleSelectChild}
                         headers={ headers && headers[activeApplication] }
                         handleSelectGrandChild={handleSelectGrandChild}
+                        setIsCheckBox={setIsCheckBox}
+                        isCheckBox={isCheckBox}
+                        activeApplicationId={activeApplication}
                       />
                       <LcPermissions
                         ref={lcPermissionRef}
@@ -421,6 +428,9 @@ const ModalAdvanedPermissions = (props: any) => {
                         handleSelectChild={handleSelectChild}
                         handleSelectGrandChild={handleSelectGrandChild}
                         headers={ headers && headers[activeApplication] }
+                        setIsCheckBox={setIsCheckBox}
+                        isCheckBox={isCheckBox}
+                        activeApplicationId={activeApplication}
                       />
 
                       <div className="modal-bottom upper-line">
@@ -473,4 +483,4 @@ const ModalAdvanedPermissions = (props: any) => {
   );
 };
 
-export default ModalAdvanedPermissions;
+export default memo(ModalAdvanedPermissions);

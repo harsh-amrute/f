@@ -112,6 +112,21 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     });
     setIsOpenUser(true);
     setIsEditUser(false)
+
+    const validApplications:Array<number> = [];
+    listRoles.forEach((app:any)=>{
+      const commonRoles = _.intersection(app.child.map((perm:any)=>perm.id),infoUser.roles);
+      if(commonRoles.length > 0) validApplications.push(app.id);
+    })
+
+    const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
+      application_id:app.application_id,
+      productPermission:[],
+      locationPermission:[]
+    }) : undefined).filter((element:any) => element !== undefined)
+
+    fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
+    setStorePermission(fillEmptyPermission);
   };
 
   const onCloseModal = () => {
@@ -121,6 +136,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const onCloseModalAdvanced = () => {
     setIsOpenAdvanced(false);
   };
+
+  const [isCheckBox, setIsCheckBox] = useState({});
+
+  console.log(isCheckBox, "isCheckBox");
 
   const getPermission = ({ data, txtParent, txtChild, txtGrandChild }: any) => {
     const parent: any = [];
@@ -169,6 +188,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         if(commonRoles.length > 0) validApplications.push(app.id);
       })
 
+    
     if(contentModal.callApi === 1){
       
       const fillStepperDetails = dataAllPermissions.map((app:any,index:number)=>validApplications.includes(app.application_id) ? ({
@@ -182,14 +202,9 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       fillStepperDetails && fillStepperDetails[0] &&  (fillStepperDetails[0].currentState = 'active');
       
 
-      const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
-        application_id:app.application_id,
-        productPermission:[],
-        locationPermission:[]
-      }) : undefined).filter((element:any) => element !== undefined)
-
-      fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
-      setStorePermission(fillEmptyPermission);
+      
+      validApplications.sort((a,b)=> a-b)
+    
       setStepperDetails(fillStepperDetails);
       setActiveApplication(validApplications[0]);
       updateAllPermissions(validApplications[0]);
@@ -432,6 +447,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         setStorePermission={setStorePermission}
         setStepperDetails={setStepperDetails}
         headers = {headers}
+        setIsCheckBox={setIsCheckBox}
+        isCheckBox={isCheckBox}
       />
     </>
   );

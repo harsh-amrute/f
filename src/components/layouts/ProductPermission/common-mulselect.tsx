@@ -15,7 +15,10 @@ export default forwardRef(({ ...props }: any, ref) => {
     handleSelectParent,
     handleSelectChild,
     handleSelectGrandChild,
-    headers
+    headers,
+    setIsCheckBox,
+    isCheckBox,
+    activeApplicationId
   } = props;
 
   const [listBrand, setListBrand] = useState<Option[]>([]);
@@ -160,6 +163,13 @@ export default forwardRef(({ ...props }: any, ref) => {
   const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) =>{
     const check = event.target.checked;
     setIsUnSelected((prev)=> !prev)
+    setIsCheckBox((prevCheck: any) => ({
+      ...prevCheck,
+      isPrdCheck: {
+        ...prevCheck.isPrdCheck,
+        [activeApplicationId]: check
+      }
+    }))
     
     if(check){
       setBrand(listBrand)
