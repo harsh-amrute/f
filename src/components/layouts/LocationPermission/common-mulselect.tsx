@@ -11,6 +11,8 @@ export default forwardRef(({ ...props }: any, ref) => {
     handleSelectChild,
     handleSelectGrandChild,
     headers,
+    isCheckBoxRef,
+    activeApplicationId,
   } = props;
 
   const [listLcRegion, setListLcRegion] = useState<any>([]);
@@ -21,7 +23,6 @@ export default forwardRef(({ ...props }: any, ref) => {
   const [lcType, setLcType] = useState<any>([]);
   const [lcCluster, setLcCluster] = useState<any>([]);
 
-  const [isUnSelected,setIsUnSelected] = useState<boolean>(false)
 
   useEffect(() => {
     const newListLcRegion: any = [];
@@ -109,7 +110,9 @@ export default forwardRef(({ ...props }: any, ref) => {
   };
   const onSelectAll = (event: React.ChangeEvent<HTMLInputElement>) =>{
     const check = event.target.checked;
-    setIsUnSelected((prev)=> !prev)
+    if(isCheckBoxRef?.current?.isLcCheck){
+      isCheckBoxRef.current.isLcCheck[activeApplicationId] = check;
+    }
     if(check){
       setLcType(listLcType)
       setLcRegion(listLcRegion)
@@ -128,8 +131,6 @@ export default forwardRef(({ ...props }: any, ref) => {
     removeLcPermissionValue() {
       removeLcPermissionValue();
     },
-    setIsUnSelected,
-    isUnSelected,
   }));
 
   const removeLcPermissionValue = () => {
@@ -155,7 +156,9 @@ export default forwardRef(({ ...props }: any, ref) => {
       setValue: setLcRegion,
       handleAction: handleSelectLcRegion,
       disabled: false,
-      setIsUnSelected: setIsUnSelected
+      isCheckBoxRef,
+      from:"isLcCheck",
+      activeApplicationId,
     },
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L2 || '',
@@ -167,7 +170,9 @@ export default forwardRef(({ ...props }: any, ref) => {
       setValue: setLcType,
       handleAction: handleSelectLcType,
       disabled: lcRegion.length === 0, 
-      setIsUnSelected: setIsUnSelected
+      isCheckBoxRef,
+      from:"isLcCheck",
+      activeApplicationId,
     },
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L3 || '',
@@ -185,8 +190,9 @@ export default forwardRef(({ ...props }: any, ref) => {
       setValue: setLcCluster,
       handleAction: handleSelectLcCluster,
       disabled: lcType.length === 0, 
-      setIsUnSelected: setIsUnSelected
-
+      isCheckBoxRef,
+      from:"isLcCheck",
+      activeApplicationId,
     }
 
    
@@ -224,7 +230,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       )}
       prdPermissions={updatedPermissions}
       onSelectAll={onSelectAll}
-      isUnSelected={isUnSelected}
+      isSelected={isCheckBoxRef?.current?.isLcCheck[activeApplicationId]}
     />
   );
 });

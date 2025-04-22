@@ -91,6 +91,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const [storePermission,setStorePermission] = useState([]);
   const [currentItem,setCurrentItem] = useState();
   const [isEditUser,setIsEditUser] = useState<boolean | undefined>()
+
+  const isCheckBoxRef = useRef<any>({
+    isPrdCheck: {},
+    isLcCheck: {},
+  });
   
   //Follwing Function Updates All Permissions according to current active Application/Application Id provided
   const updateAllPermissions = (applicationId:number) => {
@@ -126,7 +131,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     }) : undefined).filter((element:any) => element !== undefined)
 
     fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
+    validApplications.sort((a:any,b:any)=>a-b);
     setStorePermission(fillEmptyPermission);
+    isCheckBoxRef.current.isPrdCheck = {},
+    isCheckBoxRef.current.isLcCheck = {}
   };
 
   const onCloseModal = () => {
@@ -137,9 +145,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setIsOpenAdvanced(false);
   };
 
-  const [isCheckBox, setIsCheckBox] = useState({});
-
-  console.log(isCheckBox, "isCheckBox");
 
   const getPermission = ({ data, txtParent, txtChild, txtGrandChild }: any) => {
     const parent: any = [];
@@ -447,8 +452,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         setStorePermission={setStorePermission}
         setStepperDetails={setStepperDetails}
         headers = {headers}
-        setIsCheckBox={setIsCheckBox}
-        isCheckBox={isCheckBox}
+        isCheckBoxRef={isCheckBoxRef}
       />
     </>
   );

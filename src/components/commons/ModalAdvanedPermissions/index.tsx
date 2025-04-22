@@ -1,13 +1,13 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, memo, useState } from "react";
+import { Fragment, useState } from "react";
 import "./styles.css";
 import { useTranslation } from "react-i18next";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useRegisterUser, usePutEditUser } from "../../../services/profile";
 import LoadingSpinner from "../LoadingSpinner";
-const PrdPermissions = React.lazy(() => import("../../../components/layouts/ProductPermission/common-mulselect"));
-const LcPermissions = React.lazy(() => import("../../../components/layouts/LocationPermission/common-mulselect"));
-const UserMangementStepper = React.lazy(() => import("../../VectorFLOW/commons/UserManagementStepper"));
+import PrdPermissions from "../../../components/layouts/ProductPermission/common-mulselect";
+import LcPermissions from "../../../components/layouts/LocationPermission/common-mulselect";
+import UserMangementStepper from "../../VectorFLOW/commons/UserManagementStepper";
 import {
   formDataPermission,
   handleSelectParent,
@@ -42,15 +42,12 @@ const ModalAdvanedPermissions = (props: any) => {
     setStorePermission,
     setStepperDetails,
     headers,
-    setIsCheckBox,
-    isCheckBox
+    isCheckBoxRef,
   } = props;
 
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
   const { mutateAsync: mutateRegister } = useRegisterUser();
   const { mutateAsync: mutatePutEditUser } = usePutEditUser();  
-  const [prevPrdSelectedAll,setPrevPrdSelectedAll] = useState<boolean>()
-  const [prevLcSelectedAll,setPrevLcSelectedAll] = useState<boolean>()
 
   const backModalUser = () => {
  
@@ -65,16 +62,6 @@ const ModalAdvanedPermissions = (props: any) => {
       currentPermission.productPermission = currentProductPermission;
       currentPermission.locationPermission = currentLocationPermission;
       setStorePermission(storePermissionCopy)
-    }
-
-
-    
-    if(prevPrdSelectedAll){
-      prdPermissionRef.current?.setIsUnSelected(prevPrdSelectedAll)
-    }
-
-    if(prevLcSelectedAll){
-      lcPermissionRef.current?.setIsUnSelected(prevLcSelectedAll)
     }
 
     if(getActiveApplicationIndex() <= 0){
@@ -317,13 +304,6 @@ const ModalAdvanedPermissions = (props: any) => {
       setStorePermission(storePermissionCopy)
     }
     
-    setPrevPrdSelectedAll(prdPermissionRef.current?.isUnSelected)
-    setPrevLcSelectedAll(lcPermissionRef.current?.isUnSelected)
-    prdPermissionRef.current?.setIsUnSelected(false);
-    lcPermissionRef.current?.setIsUnSelected(false)
-
-
-    
     const newApplicationId = storePermission[getActiveApplicationIndex()+1].application_id;
     setStepperDetails([...stepperDetails.map((step:any)=>{
       const stepCopy = {...step};
@@ -416,8 +396,7 @@ const ModalAdvanedPermissions = (props: any) => {
                         handleSelectChild={handleSelectChild}
                         headers={ headers && headers[activeApplication] }
                         handleSelectGrandChild={handleSelectGrandChild}
-                        setIsCheckBox={setIsCheckBox}
-                        isCheckBox={isCheckBox}
+                        isCheckBoxRef={isCheckBoxRef}
                         activeApplicationId={activeApplication}
                       />
                       <LcPermissions
@@ -428,8 +407,7 @@ const ModalAdvanedPermissions = (props: any) => {
                         handleSelectChild={handleSelectChild}
                         handleSelectGrandChild={handleSelectGrandChild}
                         headers={ headers && headers[activeApplication] }
-                        setIsCheckBox={setIsCheckBox}
-                        isCheckBox={isCheckBox}
+                        isCheckBoxRef={isCheckBoxRef}
                         activeApplicationId={activeApplication}
                       />
 
@@ -483,4 +461,4 @@ const ModalAdvanedPermissions = (props: any) => {
   );
 };
 
-export default memo(ModalAdvanedPermissions);
+export default ModalAdvanedPermissions;
