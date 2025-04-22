@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import axios from 'axios'
+import { pagination } from '../../../../../VectorFlow/Pages/MTO/Common/Enum';
+
 
 export namespace ProcPlanningService {
 
-    export const GetProcPlanningData = async (date: string, pageNum: string, ca: string, appliedFilters: any) => {
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getProcPlanningData/?releaseDate=${date}&page=${pageNum}&ca=${ca}&page_size=500`, 
+    export const GetProcPlanningData = async (date: string, pageNum: string, ca: string, appliedFilters: any,page_size?:any) => {
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getProcPlanningData/?releaseDate=${date}&page=${pageNum}&ca=${ca}&&page_size=${page_size || pagination.mtoPageSize}`, 
         appliedFilters,
         {
             headers: { 'Content-Type': 'application/json' }
