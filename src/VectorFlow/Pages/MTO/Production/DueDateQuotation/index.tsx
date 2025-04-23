@@ -593,7 +593,7 @@ const DueDateQuotation = () => {
           <div style={{ minHeight: '10vh', fontSize: '16px', padding: "20px", textAlign: "center" }}>
             Any unsaved changes will be discarded, <br /> Are you sure you want to go back ?
           </div>
-          <div style={{ zoom: '0.7', display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 0 0 0' }}>
+          <div style={{ zoom: '0.7', display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 20px 20px 0' }}>
 
             <VFButton onClick={() => { setShowModal(false) }} themeUi={themeUi}>
               No
