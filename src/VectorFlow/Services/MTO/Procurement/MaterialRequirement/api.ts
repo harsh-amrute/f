@@ -34,7 +34,7 @@ export namespace MaterialRequirementService {
 
     export const getMaterialRequirementDataDayWise = async ({currPage, releaseDate, appliedFilters ,body , isExcelExport = false ,report_name,page_size}: any) => {
         if(isExcelExport){
-            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementDayWiseData/?releaseDate=${releaseDate}&&page_size=${page_size || pagination.mtoPageSize}`, 
+            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementDayWiseData/?releaseDate=${releaseDate}`, 
             body,
             {
                 headers: {
@@ -43,8 +43,7 @@ export namespace MaterialRequirementService {
                 },
                 params: {
                     export : isExcelExport,
-                    report_name,
-                    page_size:page_size
+                    report_name
                 },
                 responseType: 'blob'  // 'blob' for downloading the file as a blob instead of text
             })    

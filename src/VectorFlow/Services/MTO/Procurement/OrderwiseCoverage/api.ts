@@ -17,7 +17,7 @@ export namespace OrderwiseCoverageService {
                 }
             })
         }
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getRMPMCoverageData/?page_size=${page_size || pagination.mtoPageSize}`, 
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getRMPMCoverageData/`, 
         appliedFilters,
         {
     
