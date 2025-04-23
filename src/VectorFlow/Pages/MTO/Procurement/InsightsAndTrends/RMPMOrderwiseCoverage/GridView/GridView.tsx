@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import { pagination } from "../../../../../../../VectorFlow/Pages/MTO/Common/Enum"
 import VFTable from "../../../../../../../VectorFlow/Pages/MTO/Common/VFTable"
 import { TableWrapper } from "../styles"
@@ -13,8 +13,9 @@ interface GridProps {
 }
 
 const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, currentGridRef, columnState, orderWiseRecordCount, currentPage, handlePageChangeDayWise }: GridProps | any) => {
-
-    const gridRef = useRef();
+    
+    const [isDisabled, setIsDisabled]= useState<boolean>(true);
+    const gridRef = useRef<any>(null);
 
     useEffect(() => {
         if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
@@ -52,13 +53,18 @@ const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, curre
                     ]
                 }}
                 maintainColumnOrder
+                onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
             />
             <VFPagination
                 selectedRows={0}
+                resetGridRef={gridRef}
+                isDisabled={isDisabled}
                 rowsPerPage={pagination.mtoPageSize}
                 totalRows={orderWiseRecordCount}
                 currentPage={currentPage}
                 handleChangePage={handlePageChangeDayWise}
+
             />
         </TableWrapper>
     )
