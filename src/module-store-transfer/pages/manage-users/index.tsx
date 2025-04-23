@@ -118,21 +118,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setIsOpenUser(true);
     setIsEditUser(false)
 
-    const validApplications:Array<number> = [];
-    listRoles.forEach((app:any)=>{
-      const commonRoles = _.intersection(app.child.map((perm:any)=>perm.id),infoUser.roles);
-      if(commonRoles.length > 0) validApplications.push(app.id);
-    })
-
-    const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
-      application_id:app.application_id,
-      productPermission:[],
-      locationPermission:[]
-    }) : undefined).filter((element:any) => element !== undefined)
-
-    fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
-    validApplications.sort((a:any,b:any)=>a-b);
-    setStorePermission(fillEmptyPermission);
     isCheckBoxRef.current.isPrdCheck = {},
     isCheckBoxRef.current.isLcCheck = {}
   };
@@ -187,15 +172,18 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const fillAdvancedPermissionsModalData = (item?:any)=>{
     //Application Ids with valid Selected Roles
-    const validApplications:Array<number> = [];
-      listRoles.forEach((app:any)=>{
-        const commonRoles = _.intersection(app.child.map((perm:any)=>perm.id),infoUser.roles);
-        if(commonRoles.length > 0) validApplications.push(app.id);
-      })
+    const prevPremission = storePermission
 
+    const validApplications:Array<number> = [];
+    listRoles.forEach((app:any)=>{
+      const commonRoles = _.intersection(app.child.map((perm:any)=>perm.id),infoUser.roles);
+      if(commonRoles.length > 0) validApplications.push(app.id);
+    });
+    validApplications.sort((a:number,b:number)=>a-b);
+    
     
     if(contentModal.callApi === 1){
-      
+
       const fillStepperDetails = dataAllPermissions.map((app:any,index:number)=>validApplications.includes(app.application_id) ? ({
         label:app.application_name,
         id:app.application_id,
@@ -206,10 +194,20 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       fillStepperDetails.sort((a:any,b:any)=>a.id-b.id)
       fillStepperDetails && fillStepperDetails[0] &&  (fillStepperDetails[0].currentState = 'active');
       
-
+      const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
+        application_id:app.application_id,
+        productPermission:[],
+        locationPermission:[]
+      }) : undefined).filter((element:any) => element !== undefined)
+  
+      fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
       
-      validApplications.sort((a,b)=> a-b)
-    
+      if(prevPremission.length > 0){
+        setStorePermission(prevPremission);
+      }else{
+
+        setStorePermission(fillEmptyPermission);
+      }
       setStepperDetails(fillStepperDetails);
       setActiveApplication(validApplications[0]);
       updateAllPermissions(validApplications[0]);
@@ -352,6 +350,9 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       buttonSubmit: "Update User",
     });
     setIsOpenUser(true);
+
+    isCheckBoxRef.current.isPrdCheck = {},
+    isCheckBoxRef.current.isLcCheck = {}
   };
 
   
