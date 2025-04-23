@@ -1,9 +1,11 @@
 import { ColDef } from "ag-grid-enterprise";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../Common/VFTable";
 import { VFTableWrapper } from "./styles";
+import { GridFilterWrapper, TextBtn } from "../../../Common/VFPagination/styles";
+import { useUserData } from "../../../../../../context";
 
 interface IResizeTableProps {
   colDef: ColDef[];
@@ -17,6 +19,10 @@ interface IResizeTableProps {
 const ResizableTable = (props: IResizeTableProps) => {
   const { data, colDef, setCurrentGridRef, currentGridRef, columnState } = props;
   const gridRef = props.gridRef;
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
+  const { user } = useUserData();
+  const theme_ui = user.user.theme_ui
+  
 
   const getRowStyle = (params: any) => {
     if (params.node.rowIndex % 2 === 0) {
@@ -44,6 +50,21 @@ const ResizableTable = (props: IResizeTableProps) => {
     flex: 1,
   };
 
+  const clearGridFilter = () =>{
+    gridRef?.current?.api.setFilterModel(null);
+      setIsDisabled(true);
+}
+
+  const CustomStatusPanel = () => {
+        return (
+            <GridFilterWrapper style={{marginTop:'15px'}}>
+                <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                    Clear All Grid Filters
+                </TextBtn>  
+            </GridFilterWrapper>           
+        );
+    };  
+
   useEffect(()=>{ 
     if (currentGridRef?.current && columnState?.length) {
       const result = currentGridRef.current.api.applyColumnState({
@@ -67,17 +88,37 @@ const ResizableTable = (props: IResizeTableProps) => {
         getRowStyle={getRowStyle}
         pagination
         paginationPageSize={15}
-        onGridReady={(params: any) => {
-          params.api.autoSizeAllColumns();
-
-          setCurrentGridRef(gridRef);
-        }}
         gridOptions={{
           sideBar: {
             toolPanels: ["agColumnsToolPanel"],
           },
         }}
         maintainColumnOrder
+        
+        statusBar = {{
+          statusPanels: [
+            { statusPanel: CustomStatusPanel, align: "left" },
+            { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'right' },
+            { statusPanel: 'agTotalRowCountComponent', align:'right' },
+            { statusPanel: 'agFilteredRowCountComponent', align:'right' },
+            { statusPanel: 'agSelectedRowCountComponent', align:'right' },
+            { statusPanel: 'agAggregationComponent', align:'right' },
+          ],
+        }}  
+        
+        onGridReady={(params: any) => {
+          params.api.autoSizeAllColumns();
+          setCurrentGridRef(gridRef);
+          params.api.addEventListener('filterChanged', () => {
+            const filterModel = params.api.getFilterModel();
+            if (Object.keys(filterModel).length > 0) {
+                setIsDisabled(false); 
+            } else {
+                setIsDisabled(true); 
+            }
+            });
+        }}
+
 
       />
     </VFTableWrapper>

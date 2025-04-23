@@ -4,6 +4,8 @@ import VFTable from "../../../Common/VFTable";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import DayWiseCoverageDetailsCellRenderer from "./DayWiseCoverageDetailsCellRenderer";
 import { useGetDayWiseCoverageData } from "../../../../../../VectorFlow/Services/MTO/Procurement/DayWiseCoverage";
+import { GridFilterWrapper, TextBtn } from "../../../Common/VFPagination/styles";
+import { useUserData } from "../../../../../../context";
 
 interface IDayWiseCoverageProps {
   columnState: any,
@@ -37,6 +39,9 @@ const DayWiseCoverageTable = ({
   const gridRef = useRef<any>(null);
   const [rowData, setRowData] = useState([]);
   const { mutateAsync: getData, isLoading: isGridLoading } = useGetDayWiseCoverageData();
+  const [isDisabled, setIsDisabled]= useState<boolean>(true)
+  const { user } = useUserData();
+  const theme_ui = user.user.theme_ui
 
   const getGridData = async () => {
     if (selectedDate) {
@@ -44,6 +49,23 @@ const DayWiseCoverageTable = ({
       setRowData(data?.data?.data)
     }
   }
+
+  
+  const clearGridFilter = () =>{
+    gridRef?.current?.api.setFilterModel(null);
+      setIsDisabled(true);
+}
+
+  const CustomStatusPanel = () => {
+          return (
+              <GridFilterWrapper style={{marginTop:'15px'}}>
+                  <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                      Clear All Grid Filters
+                  </TextBtn>  
+              </GridFilterWrapper>           
+          );
+      };
+      
 
   useEffect(() => {
     getGridData()
@@ -99,6 +121,7 @@ const DayWiseCoverageTable = ({
 
   return (
 
+    
 
     <VFTable
       ref={gridRef}
@@ -109,12 +132,33 @@ const DayWiseCoverageTable = ({
       columnDefs={options.columnDefs}
       rowData={rowData}
       // pagination={true}
+      
+      statusBar = {{
+        statusPanels: [
+          { statusPanel: CustomStatusPanel, align: "left" },
+          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'right' },
+          { statusPanel: 'agTotalRowCountComponent', align:'right' },
+          { statusPanel: 'agFilteredRowCountComponent', align:'right' },
+          { statusPanel: 'agSelectedRowCountComponent', align:'right' },
+          { statusPanel: 'agAggregationComponent', align:'right' },
+        ],
+      }}  
+      
       onGridReady={(params: any) => {
         params.api.autoSizeAllColumns();
         setCurrentGridRef(gridRef);
+        params.api.addEventListener('filterChanged', () => {
+          const filterModel = params.api.getFilterModel();
+          if (Object.keys(filterModel).length > 0) {
+              setIsDisabled(false); 
+          } else {
+              setIsDisabled(true); 
+          }
+          });
       }}
-    />
 
+      />
+      
   );
 };
 

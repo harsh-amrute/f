@@ -87,6 +87,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     const { colDefMap, getColDef } = useColDef()
     const { mutateAsync: getMaterialRequirementDataExcelExport } = useGetMaterialRequirementDetailsForExcelExport();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
+    const [isDisabled, setIsDisabled]= useState<boolean>(true);
 
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
@@ -188,7 +189,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         setColumnDef();
     }, [])
 
-    const gridRef = useRef<AgGridReact>(null);
+    const gridRef = useRef<any>(null);
     // const { isSideBarOpen } = useUserData()
     const tabs: Array<VFFloatingTabItemProps> = [
         {
@@ -520,11 +521,15 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                                     ]
                                 }}
                                 maintainColumnOrder
+                               onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
 
                             />
                             <VFPagination
                                 selectedRows={0}
                                 rowsPerPage={userPageSize || pagination.mtoPageSize}
+                                isDisabled={isDisabled}
+                                resetGridRef={gridRef}
                                 totalRows={dayWiseRecordCount}
                                 currentPage={currentPage}
                                 handleChangePage={handlePageChangeDayWise}
@@ -539,8 +544,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                 return (
                     <>
                         {/* {(isMatReqDayWiseLoading || isMatReqLoading) && <VFLoader/>} */}
-                        <TableWrapper>
-                           
+                        <TableWrapper>      
                             <VFTable
                                 paginationPageSize={10}
                                 {...agGridProps}
@@ -562,10 +566,14 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                                     ]
                                 }}
                                 maintainColumnOrder
+                               onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
+
                             />
                             <VFPagination
                                 selectedRows={0}
                                 rowsPerPage={userPageSize || pagination.mtoPageSize}
+                                isDisabled={isDisabled}
+                                resetGridRef={gridRef}
                                 totalRows={cumulativeRecordCount}
                                 currentPage={currentCumPage}
                                 handleChangePage={handlePageChangeCumulative}
