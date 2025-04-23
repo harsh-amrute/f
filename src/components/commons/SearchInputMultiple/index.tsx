@@ -15,7 +15,9 @@ interface SelectSearchMultipleProps {
   backgroundColor?: string;
   borderRadius?: number;
   boxShadow?: string,
-  setIsUnselected?: any;
+  isCheckBoxRef?: any;
+  from?:string;
+  activeApplicationId?: number;
 }
 
 const SearchInputMultiple = ({
@@ -30,7 +32,9 @@ const SearchInputMultiple = ({
   backgroundColor = '#F2F2F2',
   borderRadius,
   boxShadow,
-  setIsUnselected
+  isCheckBoxRef,
+  from,
+  activeApplicationId,
 }: SelectSearchMultipleProps) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
@@ -39,9 +43,10 @@ const SearchInputMultiple = ({
     setValue(e);
     handleListChild(e);
 
-    if(setIsUnselected){
-      setIsUnselected(false)
+    if (isCheckBoxRef?.current?.isPrdCheck && from && activeApplicationId) {
+      isCheckBoxRef.current[from][activeApplicationId] = false;
     }
+
   };
 
   const myBoxShadow = boxShadow ? boxShadow : '0px 6px 12px #95959529'
