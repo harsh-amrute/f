@@ -17,7 +17,7 @@ import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingFo
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField, BPRViewTableFilterNumericalOperator, BPRViewTableFilterStringOperator } from '../VectorFlow/types/BPR';
 import { RRRField } from '../VectorFlow/types/RRR'
-import _ from 'lodash'
+import _, { filter } from 'lodash'
 import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
@@ -1260,8 +1260,9 @@ export const getExistingColumnFields = (columns: string[], fields: Field[]): Fie
 
 export const areValuesEqual = (a: any, b: any): boolean => {
   if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
-    return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
-  }
+    // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
+    return parseFloat(a) === parseFloat(b) 
+  }  
   return a === b
 }
 
@@ -4350,6 +4351,7 @@ export function getColumnDefinations(
       rowGroup: false,
       rowGroupIndex: null,
       pivot: false,
+      filter: data.cla==='right' ? "agNumberColumnFilter": "agTextColumnFilter",
       pivotIndex: null,
       enablePivot: true,
       flex: 1,
@@ -4383,12 +4385,11 @@ export function getColumnDefinations(
   });
 
   const finalcolDef = columnDefs?.filter((obj: any) => !removeCols?.includes(obj.colId));
-
+  
   return finalcolDef;
-
+  
 }
 // ===================================================================================================
-
 
 // Common methods used in Filter Modal Screen
 // ===================================================================================================
@@ -4481,12 +4482,16 @@ export const formatFilterJSON = (filter: any) => {
 
   for (const key in filter) {
     const { filters } = filter[key];
-    for (let i = 0; i < filters.length; i++) {
+    for (let i = 0; i < filters?.length; i++) {
       const { attributeName, value, type, operator } = filters[i];
       if (value?.length > 0) {
-        if (type === 'textCompare' || type === 'numberCompare') {
+        if (type === 'textCompare') {
           formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator : 'et', val: value[0].value } };
-        } else {
+        } else if( type === 'numberCompare'){
+          formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator : 'et', val: parseInt(value[0].value) } };
+
+        }
+         else {
           formatFilter = { ...formatFilter, [attributeName]: value?.map((v: any) => v?.value || v?.id) };
         }
       }
@@ -4498,7 +4503,12 @@ export const formatFilterJSON = (filter: any) => {
       delete formatFilter[key];
     }
   });
-  // console.log("formate filter", formatFilter);
+  Object.keys(formatFilter).forEach(key => {
+    if ((formatFilter[key]?.op && (formatFilter[key]?.val === undefined ||  formatFilter[key]?.val === null)) || 
+        (formatFilter[key]?.val && (formatFilter[key]?.op === undefined || formatFilter[key]?.op === null))) {
+      delete formatFilter[key];
+    }
+  });
   return formatFilter;
 }
 
@@ -4522,7 +4532,7 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
       filters: []
     }
 
-    for (let i = 0; i < filters.length; i++) {
+    for (let i = 0; i < filters?.length; i++) {
       const { name, attributeName, value, type, operator } = filters[i];
 
       if (attributeName === 'ms') {
@@ -4530,7 +4540,7 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
           newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
         }
       } else {
-        if (value.length > 0) {
+        if (Array.isArray(value) && value.length > 0) {
           newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: (value[0]?.value===0)?  
             [{value: '0', label: '0'}]: value?.filter((v: any) => v.value || v.id) });
         }
@@ -4613,6 +4623,7 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
     document.body.removeChild(link);
   } catch (e) {
     console.error("Error downloading Excel file:", e);
+    notifyError("Something went wrong");
   }
 };
 

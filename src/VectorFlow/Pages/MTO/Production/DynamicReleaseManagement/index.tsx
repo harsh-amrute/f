@@ -16,7 +16,7 @@ import ReleaseModal from './ReleaseModal';
 import './styles.css'
 import { useGetDynamicReleaseData, useGetDynamicReleaseExcelData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
-import { useGetCCRGroupMaster, useGetFOLData, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import { useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetFOLData, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
@@ -118,6 +118,10 @@ const DynamicReleaseManagement = () => {
   const [isReleaseButtonDisabled, setIsReleaseButtonDisabled] = useState(true);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+
+
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
@@ -129,7 +133,7 @@ const DynamicReleaseManagement = () => {
     }
   }
 
-  const GetData = async (allOrders = 0, page = 1, graph = 1, isExcelExport = false) => {
+  const GetData = async (allOrders = 0, page = 1, graph = 1, isExcelExport = false, pageSize?:any  ) => {
     const formatedFilters = formatFilterJSON(appliedFilters);
     if (isExcelExport) {
       try {
@@ -150,7 +154,7 @@ const DynamicReleaseManagement = () => {
     }
     else if (allOrders) {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters,  page_size: pageSize || userPageSize});
         setCurrData(APIData);
         setRowData(APIData?.data?.data?.results ? APIData?.data?.data?.results : []);
       }
@@ -160,7 +164,7 @@ const DynamicReleaseManagement = () => {
     }
     else {
       try {
-        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters });
+        const APIData = await getDynamicReleaseData({ graph: 0, ao: allOrders, page, appliedFilters: formatedFilters, page_size: pageSize || userPageSize});
         setCurrData(APIData);
         setRowData(APIData?.data?.data?.results ? APIData?.data?.data?.results : []);
       }
@@ -171,7 +175,7 @@ const DynamicReleaseManagement = () => {
     }
     if (graph) {
       try {
-        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page, appliedFilters: formatedFilters });
+        const GraphAPIData = await getDynamicReleaseData({ graph: 1, ao: allOrders, page, appliedFilters: formatedFilters,  page_size: pageSize || userPageSize});
         setGraphData(GraphAPIData.data.data);
       }
       catch (e) {
@@ -179,6 +183,7 @@ const DynamicReleaseManagement = () => {
       }
     }
   };
+
 
   const getFilterData = async () => {
     try {
@@ -201,11 +206,13 @@ const DynamicReleaseManagement = () => {
   }, [])
 
   useEffect(() => {
-    if (Object.entries(appliedFilters).length) {
+    if (Object.entries(appliedFilters).length && userConfigFetched ) {
       setCurrentPage(1);
-      GetData();
+      GetData(table1? 0 : 1);
     }
-  }, [appliedFilters])
+  }, [appliedFilters,userConfigFetched])
+
+  //getFilterData
   
   useEffect(() => {
     if (dataUpdated && !showModal) {
@@ -228,6 +235,9 @@ const DynamicReleaseManagement = () => {
     }
 
   },[HeaderData])
+
+  const [itemTypeId, setItemTypeId] = useState<any>();
+  const [plantId, setPlantId] = useState<any>();
 
 
   useEffect(() => {
@@ -267,6 +277,8 @@ const DynamicReleaseManagement = () => {
                 notifyError("No Route assigned to this order!");
                 return;
               }
+              setItemTypeId(params.data.itid)
+              setPlantId(params.data.plid)
               setRouteNum(params.data.rid)
               setOrderKey(params.data.ok)
               setRouteTrigger(!routeTrigger);
@@ -376,11 +388,8 @@ const DynamicReleaseManagement = () => {
   const onFirstDataRendered =
     (params: any) => {
       const nodesToSelect: IRowNode[] = [];
-      console.log(selectedRows, "updateUserData selectedRows");
       params.api.forEachNode((node: any) => {
         if (node.data && node.data.oid && existsInSelected(node.data.ok)) {
-          console.log(node.data, "exist");
-          console.log(selectedRows, "selectedRows exist");
           node.data.ok = selectedRows[0].ok;
           nodesToSelect.push(node);
         }
@@ -576,6 +585,7 @@ const DynamicReleaseManagement = () => {
   }, [finalGraphData])
 
   const {mutateAsync: getFOLData} = useGetFOLData();
+  const {mutateAsync: getCCRItemTypeMappingMaster} = useGetCCRItemTypeMappingMaster();
 
   const getMastersData = async () => {
     try {
@@ -584,6 +594,7 @@ const DynamicReleaseManagement = () => {
       const ccrGroups: any = [];
       const FOLData = await getFOLData();
       const FOL = FOLData?.data?.data;
+      const CCRItemTypeMappingMaster = await getCCRItemTypeMappingMaster();
   
 
       ccrGroupData.forEach((group: any) => {
@@ -601,7 +612,9 @@ const DynamicReleaseManagement = () => {
         ccrGroups.push(obj);
       });
 
-      setMasters({ ccrGroups });
+      const CCRItemTypeMappingMasterData = Object.values(CCRItemTypeMappingMaster?.data?.data);
+
+      setMasters({ ccrGroups, CCRItemTypeMappingMaster: CCRItemTypeMappingMasterData });
     } catch (error) {
       console.log(error)
     }
@@ -669,6 +682,18 @@ const DynamicReleaseManagement = () => {
     }
   };
 
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+        setCurrentPage(1)
+        setUserPageSize(pageSize);
+        handleSaveClick(undefined, pageSize);
+        GetData(table1?0:1,1,0,false, pageSize);
+    } else {
+        notifyError("Invalide page size");
+    }
+    
+}
+
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
     setIsCheckboxChecked(isChecked); 
@@ -708,8 +733,10 @@ const DynamicReleaseManagement = () => {
         un: user.user.name,
         rn_id: UIGridCode.ProdDynamicReleaseManagement
       });
-  
-      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
+
+      setUserConfigFetched(true)
+      const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] :[];
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
       setColumnState(newConfig);
   
       if (!data) {
@@ -721,25 +748,40 @@ const DynamicReleaseManagement = () => {
   }
       
   
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?:any) => {
     try {
       if (coldefs) {
+        const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdDynamicReleaseManagement,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
         
-      } else {
+      }
+      else if(page_size){
+                const config = columnState;
+                const fullConfig = { cs: config, pageSize: page_size };        
+                const payload = {
+                  un: user.user.name,
+                  rn_id: UIGridCode.ProdDynamicReleaseManagement,
+                  cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIReportConfigData([payload]);
+              }
+      else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
+
+          const fullConfig = {  cs: config, pageSize: userPageSize };
+
 
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdDynamicReleaseManagement,
-            cs: JSON.stringify(config)
+            cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
@@ -844,10 +886,10 @@ const DynamicReleaseManagement = () => {
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 
-          <BPRViewTableHeaderTab onClick={() => { setTable1(true), GetData(0, currentPage, 0) }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
+          <BPRViewTableHeaderTab onClick={() => { setTable1(true) }} status={table1} marLeft={true} themeUi={themeUi} zIndex={2} style={{ width: '250px', fontSize: '12px' }} >
             Orders with simulated full kit
           </BPRViewTableHeaderTab>
-          <BPRViewTableHeaderTab onClick={() => { setTable1(false), GetData(1, currentPage, 0) }} status={!table1} marLeft={true} themeUi={themeUi} zIndex={1} style={{ width: '250px', fontSize: '12px' }} >
+          <BPRViewTableHeaderTab onClick={() => { setTable1(false) }} status={!table1} marLeft={true} themeUi={themeUi} zIndex={1} style={{ width: '250px', fontSize: '12px' }} >
             All Orders
           </BPRViewTableHeaderTab>
         </SCTabHeader>
@@ -879,13 +921,16 @@ const DynamicReleaseManagement = () => {
             showPagination
             resetGridRef={currentGridRef}
             isDisabled={isDisabled}
+            customPageSizeEnabled={true}
+            savePageSize={savePageSize}
+            userPageSize = {userPageSize}
           />
         </div>
         <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
          <div className='chart-wrapper' style={{ width: "100%", maxHeight: '40vh', flex: !hide ? 1:0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129"}}>
           <AgCharts ref={graph} options={chartoptions}/>
         </div>
-        {showModal && <EditRouteModal chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUi={themeUi} orderKey={orderKey} />}
+        {showModal && <EditRouteModal selectedPlant={plantId} itemTypeId={itemTypeId} chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUi={themeUi} orderKey={orderKey} />}
         
         {showReleaseModal && <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setResetReleaseCheckbox={setIsCheckboxChecked} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />}
       </Wrapper>

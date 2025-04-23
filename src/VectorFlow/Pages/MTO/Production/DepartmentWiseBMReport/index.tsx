@@ -395,6 +395,10 @@ const DptWiseBMReport = () => {
                 cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
+                filter:
+                child.cla === "right"
+                ? "agNumberColumnFilter"
+                : "agTextColumnFilter",
                 pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
@@ -665,9 +669,10 @@ const DptWiseBMReport = () => {
 
     const savePageSize = (pageSize: any) => {
         if (pageSize) {
+            setCurrentPage(1)
             setUserPageSize(pageSize);
             handleSaveClick(undefined, pageSize);
-            getUpdatedFilteredData(currentPage, pageSize);
+            getUpdatedFilteredData(1, pageSize);
         } else {
             notifyError("Invalide page size");
         }

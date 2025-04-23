@@ -166,6 +166,8 @@ const OverallBmReport = () => {
   const [isPivot, setIsPivot] = useState<any>(false);
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
 
+
+
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
       return [];
@@ -297,6 +299,8 @@ const OverallBmReport = () => {
     try {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
+
+      console.log("responseeee", response);  
       const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(
         response?.data?.data
       );
@@ -869,6 +873,11 @@ const OverallBmReport = () => {
         filterParams: {
           buttons: ['reset']
         },
+        filter:
+        child.cla === "right"
+          ? "agNumberColumnFilter"
+          : "agTextColumnFilter",
+
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
           child.cc === "ec" && systemType >= 3
@@ -933,6 +942,7 @@ const OverallBmReport = () => {
       }));
 
     };
+
 
     const res = apiResponse.map((section) => ({
       headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
@@ -1094,9 +1104,10 @@ const OverallBmReport = () => {
 
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
+      setCurrentPage(1);
       setUserPageSize(pageSize);
       handleSaveClick(undefined,pageSize);
-      getInitialGridData(currentPage, pageSize);
+      getInitialGridData(1, pageSize);
     } else {
       notifyError("Invalide page size");
     }

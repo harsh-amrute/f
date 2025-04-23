@@ -7,6 +7,7 @@ import useDataModificationHistory from "./useDataModificationHistory";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 
 
+
 const DataModificationHistory = ()=>{
  
   
@@ -26,7 +27,8 @@ const DataModificationHistory = ()=>{
     selectedLocOption,
     isSkuDisabled,
     isLocDisabled,
-    onMasterChange
+    onMasterChange,
+    setRowData
    
     
 } = useDataModificationHistory()
@@ -41,7 +43,7 @@ const styles={
         // backgroundColor: '#bc3d814d',
         color:"black",
         backgroundColor:theme_ui==="REGALBLAZE"?"rgb(252, 163, 17,0.3) ": '#bc3d814d',
-      }
+      },
       }),
     control:(baseStyles:any, { isFocused }:any) => ({ 
       ...baseStyles, 
@@ -51,7 +53,12 @@ const styles={
       "&:hover":{
           borderColor: isFocused ? "none": "hsl(0, 0%, 80%);",
 
-      }
+      },
+    }),
+    menu: (baseStyles: any) => ({
+      ...baseStyles,
+      zIndex: 9999,
+      position: "absolute",
     }),
 }
 const specificStyles = {
@@ -97,11 +104,10 @@ const theme_ui = user.user.theme_ui
               <p>Search Key</p>
             </TextWrapper>
             <DualDropDownWrapper>
-              <Select options={skuOptions || []} value={selectedSkuOption} placeholder={"Select SKU Code"} styles={{...styles,...specificStyles}} onChange={(newValue: any)=>{setSelectedSkuOption(newValue)}} isDisabled={isSkuDisabled()} ></Select>
-              <Select options={locOptions || []} value={selectedLocOption} placeholder={"Select Location"} styles={{...styles,...specificStyles}} onChange={(newValue: any)=>{setSelectedLocOption(newValue)}} isDisabled={isLocDisabled()}></Select>
+              <Select options={skuOptions || []} value={selectedSkuOption} placeholder={"Select SKU Code"} styles={{...styles,...specificStyles}} onChange={(newValue: any)=>{setSelectedSkuOption(newValue); setRowData([])}} isDisabled={isSkuDisabled()} ></Select>
+              <Select options={locOptions || []} value={selectedLocOption} placeholder={"Select Location"} styles={{...styles,...specificStyles}} onChange={(newValue: any)=>{setSelectedLocOption(newValue); setRowData([])}} isDisabled={isLocDisabled()}></Select>
             </DualDropDownWrapper>
           </SelectWrapper>
-            
         </SelectSearchWrapper>
         <VerticalDivider />
         <ButtonWrapper>

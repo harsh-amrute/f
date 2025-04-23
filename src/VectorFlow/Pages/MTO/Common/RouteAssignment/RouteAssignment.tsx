@@ -129,7 +129,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
       
 
     useEffect(()=>{
-        if(selectedRoutes){
+        if(selectedRoutes && ccrGroupMaster){
 
             const val = _.cloneDeep(selectedRoutes);
             setSortedSelectedRoutes(val.map((routeGroup: any) => {
@@ -140,7 +140,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
             
         }
 
-    },[selectedRoutes])
+    },[selectedRoutes, ccrGroupMaster])
     
   return (
     <StepperWrapper ccrMasterLength={ccrGroupMaster.length}
@@ -163,10 +163,6 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                         }else{
                             newGroups[index] = [newValue,null];
                         }
-                        // console.log("newValue", newValue);
-                        // console.log("index", index);
-                        // console.log("newGroups", newGroups);
-                        // console.log(newGroups.filter(item => item !== undefined || item !== null))
                         setSelectedRoutes(newGroups.filter(item => item !== undefined && item !== null));
                     }}
                 />
@@ -176,7 +172,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
                     isDisabled={!isEditable}
                     theme={theme} 
                     value={sortedSelectedRoutes[index]?.[1] || null}
-                    options={sortedSelectedRoutes[index]?.[0]?.ccrs}
+                    options={sortedSelectedRoutes[index]?.[0]?.ccrs.filter((ccr: any) => ccrGroupMaster.some((group: any) => group.ccrs.some((c: any) => c.value === ccr.value)))}
                     onChange={(newValue: any)=>{
                         const newGroups = [...sortedSelectedRoutes];
                         newGroups[index][1] = newValue;

@@ -20,6 +20,7 @@ import { AvailabilityFilter, FilterCheckboxAccordian, FilterMultiSelectCheckbox,
 import VFMasterFieldSearch from "../../../../../components/VectorFLOW/commons/VFMasterFieldSearch";
 import { checkValue } from "../../../../../helpers/utils";
 import { InputTypes } from "../Enum";
+import _ from "lodash";
 
 interface VFCommonFilterProps {
   onApplyFilter: (params: any) => void;
@@ -41,8 +42,45 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
   const [isCCDisabled, setIsCCDisabled] = useState(props.multiFilter.customers?.filters[1]?.value?.length > 0);
   const [isCNDisabled, setIsCNDisabled] = useState(props.multiFilter.customers?.filters[0]?.value?.length > 0);
 
+  const themeUi = user.user.theme_ui;
+
+  const [resetKey, setResetKey] = useState(0);
+
   const onFilterChange = (type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any) => {
-    const updatedFilters = filterState[parent as keyof FilterState]?.filters || [];
+
+  
+
+    let updatedFilters = filterState[parent as keyof FilterState]?.filters || [];
+    if(type==='numberCompare' || type==='textCompare'){
+      updatedFilters = filterState[parent as keyof FilterState]?.filters.map((ele:any)=>{
+        if (ele.index != null && e[0]?.index != null && String(ele.index) === String(e[0].index)) {
+          const newEle = _.cloneDeep(ele);
+          newEle.type = type;
+          newEle.index = undefined;
+          newEle.operator = "";
+          newEle.value = [];
+          return newEle;
+        }
+        else{
+          return ele;
+        }
+      })
+      
+      
+     updatedFilters = updatedFilters.map((ele:any)=>{
+        if(ele.attributeName===filterId){
+          const newEle = _.cloneDeep(ele);
+          newEle.operator = property
+          newEle.value=targetValue
+          newEle.index = e?.[0]?.index;
+          return newEle;
+        }
+        else{
+          return ele;
+        }
+      })
+    }
+
     for (let i = 0; i < updatedFilters.length; i++) {
       const { attributeName } = updatedFilters[i];
       
@@ -53,6 +91,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
             const updatedvalue = type === InputTypes.NumberCompare ? e.target.value !== ''  && e.target.value != undefined  ? Number(e?.target?.value): e?.target?.value: e.target.value;
             val =  [{label: updatedvalue, value: updatedvalue}];
           }
+          
           updatedFilters[i][property as keyof Filter]= val;
         }
 
@@ -83,26 +122,30 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
     if(filterState.customers?.filters[1].value.length===0){
       setIsCCDisabled(false);
     }
-
-    setFilterState({
+    const val = {
       ...filterState,
       [parent]: {
         ...filterState[parent as keyof FilterState],
         filters: [...updatedFilters],
       },
-    });
+    };
+    setFilterState(val);
   };
 
   const clearFilters = (currFilters: any) => {
+    setResetKey(prev => prev + 1); 
+
     const emptyFilterState = { ...currFilters };
     for(const key in emptyFilterState){
       
       const { filters } = emptyFilterState[key];
-      for(let i = 0; i < filters.length; i++){
+      for (let i = 0; i < (filters?.length); i++) {
         const { attributeName, options } = filters[i];
         filters[i].value = attributeName === 'ms' ? [...options] : [];
       }
     }
+
+    emptyFilterState.filters = [{id: Date.now()}];
     
     setMultiFilter(emptyFilterState);
     setFilterState(emptyFilterState);
@@ -127,7 +170,14 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
 
   useEffect(() => {
     if (Object.keys(multiFilter).length) {
-      setFilterState(JSON.parse(JSON.stringify(multiFilter)));
+      if(resetKey>0){
+        setFilterState({...JSON.parse(JSON.stringify(multiFilter)), filters:  [{id: Date.now()}]});
+        setResetKey(0);
+      }
+      else{
+        setFilterState({...JSON.parse(JSON.stringify(multiFilter)), filters: multiFilter?.filters || [{id: Date.now()}]});
+
+      }
     }
   }, [multiFilter]);
 
@@ -153,29 +203,40 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
           <React.Fragment>
             <FilterBody>
               {filterKeys?.map((category) => {
+                 let hasRenderedComponent = false;
+                if(category==="filters")return null;
                 return (
                   <FilterCardWrapper data-testid="availabilityFilter">
                     <FilterHeader>
                       <p>{filterState[category as keyof FilterState]?.label}</p>
                     </FilterHeader>
                     <FilterWrapper className="drop-down-options">
-                      {filterState[category as keyof FilterState]?.filters.map((filter: Filter) => {
-                        if (filter?.type === InputTypes.TextCompare || filter?.type === InputTypes.NumberCompare) {
-                          return (
-                            <FilterComponent data-testid="" style={{ borderTop: "0.5px solid #B7B7B7" }}>
-                              <AvailabilityFilter
+                      {filterState[category as keyof FilterState]?.filters?.map((filter: Filter) => {
+                      if (
+                        (filter?.type === InputTypes.TextCompare || filter?.type === InputTypes.NumberCompare) && hasRenderedComponent
+                      ) {
+                        return null;
+                      }
 
-                                placeholder={filter?.name}
-                                onChange={(e: any, key: string) =>
-                                  onFilterChange(filter.type, filter.attributeName, e, category, key)
-                                }
-                                header={filter?.name}
-                                filterState={filter}
-                                filterId={filter?.attributeName}
-                              ></AvailabilityFilter>
-                            </FilterComponent>
-                          );
-                        }
+                      if (filter?.type === InputTypes.TextCompare || filter?.type === InputTypes.NumberCompare) {
+                        hasRenderedComponent = true; 
+                        return (
+                          <FilterComponent data-testid="" style={{ borderTop: "0.5px solid #B7B7B7" }}>
+                            <AvailabilityFilter
+                              placeholder={filter?.name}
+                              onChange={
+                                onFilterChange  
+                              }
+                              header={filterState[category as keyof FilterState]?.filters.filter((ele:any)=> ele.type==='numberCompare' || ele.type==='textCompare')}
+                              filterState={filter}
+                              masterFilterState={filterState}
+                              setFilterState={setFilterState}
+                              filterId={filter?.attributeName}
+                              resetKey={resetKey}
+                            />
+                          </FilterComponent>
+                        );
+                      }
 
                         if (filter.type === InputTypes.Search) {
                           return (
@@ -298,7 +359,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
             </FilterBody>
             <ButtonFilterWrapper>
               <ButtonContainer>
-                <TextBtn onClick={() => setIsConfirmModalOpen(true)}>Clear All Filters</TextBtn>
+                <TextBtn onClick={() => setIsConfirmModalOpen(true)} theme={themeUi}>Clear All Filters</TextBtn>
                 <VFButtonOutline data-testid="goBack" themeUi={user.user.theme_ui} onClick={ () => {
                   setFilterState(multiFilter);
                   onGoBack()

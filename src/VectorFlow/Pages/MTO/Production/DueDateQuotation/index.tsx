@@ -80,6 +80,10 @@ const DueDateQuotation = () => {
   const {  mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getFilteredOrdersForExcelDDQ} = useGetOrdersForExcelDDQ();
   const {colDefMap , getColDef} = useColDef();
+
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+
   const  { 
     state: currFilter, 
     setState: setCurrFilter, 
@@ -255,6 +259,8 @@ const DueDateQuotation = () => {
         })
       }
 
+   
+
       const ccrGroupMaster = await getCCRGroupMaster();
       const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
       const ccrGroups: any = [];
@@ -313,6 +319,19 @@ const DueDateQuotation = () => {
     }
   }
 
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+        setCurrentPage(1)
+        setUserPageSize(pageSize);
+        handleSaveClick(1, pageSize);
+        getUpdatedFilterData(false,pageSize)      
+
+    } else {
+        notifyError("Invalide page size");
+    }
+    
+}
+
 
   const getCurrentStep = () => {
     switch (step) {
@@ -335,6 +354,8 @@ const DueDateQuotation = () => {
             columnState={columnState}
             pageCallBack={pageCallBack}
             setPageCallBack={setPageCallBack}
+            userPageSize={userPageSize}
+            savePageSize={savePageSize}
           />
         )
       }
@@ -399,13 +420,13 @@ const DueDateQuotation = () => {
     }
   }
 
-  const getUpdatedFilterData = async (isExcelExport = false) => {
+  const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any ) => {
     if(isExcelExport){
       const headersdata = currentGridRef?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
       const body = getBodyForExcelExport({headersdata , filterData : formatedFilters, colDefMap});
       try{
-        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled})
+        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize})
         if(response.status == 200){
           DownloadExcel(response,FilterPageName.Prod_DDQ)
         }else{
@@ -419,7 +440,7 @@ const DueDateQuotation = () => {
 
       try {
         const formatedFilters = formatFilterJSON(appliedFilters);
-        const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters });
+        const data: any = await getFilteredOrdersForDDQ({ page: currentPage, unSch: unScheduled, appliedFilters: formatedFilters, page_size: pageSize || userPageSize });
         totalRows.current = data?.data?.data?.count;
         let results: any = data?.data?.data?.results;
         if(scheduledOrders){
@@ -443,14 +464,14 @@ const DueDateQuotation = () => {
   }, [currentPage, unScheduled, step == 1]);
 
   useEffect(() => {
-    if (Object.entries(appliedFilters).length) {
+    if (Object.entries(appliedFilters).length && userConfigFetched) {
       if (currentPage == 1) {
         getUpdatedFilterData();
       } else {
         setCurrentPage(1);
       }      
     }
-  },[appliedFilters])
+  },[appliedFilters,userConfigFetched])
 
   const getUserColumnConfig = async () => {
     try {
@@ -459,7 +480,9 @@ const DueDateQuotation = () => {
         rn_id: UIGridCode.ProdDDQ
       });
 
-      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      setUserConfigFetched(true)
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) || [] : [];
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
       setColumnState(newConfig);
 
       if (!data) {
@@ -470,13 +493,14 @@ const DueDateQuotation = () => {
     }
   }
 
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?:any) => {
     try {
       if (coldefs) {
+        const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdDDQ,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
@@ -484,11 +508,11 @@ const DueDateQuotation = () => {
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
-
+          const fullConfig = { cs: config, pageSize: page_size };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdDDQ,
-            cs: JSON.stringify(config),
+            cs: JSON.stringify(fullConfig),
           };
 
           await updateUserUIReportConfigData([payload]);

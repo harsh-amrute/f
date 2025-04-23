@@ -1,48 +1,69 @@
 import {useEffect, useState} from 'react';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
-import { checkValue, findUniqueKeysAndValues, getDynamicAttributes, getKeyName, getType } from '../helpers/utils';
+import { checkValue, compare, findUniqueKeysAndValues, getDynamicAttributes, getKeyName, getType } from '../helpers/utils';
 import { filterAttributes, staticHeaderConfig } from '../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
 import { FilterState } from '../VectorFlow/types/MTO';
+import _ from 'lodash';
 
 const useFilter=(filterData: any, page: any)=>{
     const [multiFilter, setMultiFilter]= useState<any>({})
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isMfgSelected, setIsMfgSelected] = useState<boolean>(false);
     const [appliedFilters, setAppliedFilters] = useState<any>({});
-
-    // console.log("multiFilter", multiFilter);
-
-    // console.log("filterData", filterData);
-
-    // console.log("page", page);
     
-    const onFilterRemove = (parentId:string, filterId:any, value:any) => {
+    const onFilterRemove = (parentId: string, filterId: any, value: any) => {
+         const updatedMultiFilter = { ...multiFilter };
+      
+
+        const filters = updatedMultiFilter[parentId as keyof FilterState]?.filters || [];
+      
+        for (let i = 0; i < filters.length; i++) {
+        const { attributeName } = filters[i];
+      
+          if (attributeName === filterId) {
+            filters[i].value = filters[i]?.value?.filter((val: any) => {
+
+                const newVal = val.value;
+              const compareValue = value === "0" && typeof val.value === "number" ? Number(value) : value;
+              if(compareValue !==newVal){
+                    return val
+              }
+            })
+          }
+        }
+ 
+        updatedMultiFilter[parentId as keyof FilterState].filters = [...filters];
+
         
-        const updatedMultiFilter = { ...multiFilter };
-       const updatedFilters = updatedMultiFilter[parentId as keyof FilterState]?.filters || [];
+        const newFilters = _.cloneDeep(updatedMultiFilter).filters.filter((e: any) => {
+            return e?.header?.attributeName !== filterId;
+        });
 
-       for(let i = 0; i < updatedFilters?.length; i++){
-            const { attributeName } = updatedFilters[i];
-            if(attributeName === filterId){
-                updatedFilters[i].value = updatedFilters[i]?.value?.filter((val: any) => { 
-             
-                    const newVal = val.value; 
-                    const compareValue = value === "0" && typeof(val.value) === "number"? Number(value):value; // Ensure type consistency
-                    if(newVal !== compareValue){
-                        return val;
-                    }
-                });
-            }
-       }
+        
 
-       updatedMultiFilter[parentId as keyof FilterState].filters = [...updatedFilters];
 
-        setMultiFilter(updatedMultiFilter);
-        return updatedMultiFilter
-    };
+        if(newFilters.length===0){
+            newFilters.push({
+                attributeName: '',
+                operator: '',
+                value: []
+              });
+        }
+        const val = {...updatedMultiFilter, filters: newFilters};
+        setMultiFilter(val); 
+        return val;
+     
+      };
 
-    const onApplyFilter = (filter: any) => {
-        setAppliedFilters(filter);
+    const onApplyFilter = (filter: any,selectedHeader?:any,selectedOperator?:any,selectedValue?:any) => {
+
+        const filterPayload = {
+            headers: selectedHeader,
+            operators: selectedOperator,
+            values: selectedValue,
+          };
+        
+        setAppliedFilters(filter || filterPayload );
         setIsMfgSelected(true);
         setIsFilterOpen(false)
     }
@@ -53,6 +74,8 @@ const useFilter=(filterData: any, page: any)=>{
     const toggleFilter = (state: boolean) => {
         setIsFilterOpen(state);
     }
+
+
 
     useEffect(()=>{
 
@@ -131,9 +154,13 @@ const useFilter=(filterData: any, page: any)=>{
                     operator: '',
                     value: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ value: type, label: type })) : [],
                     options: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ value: type, label: type })): filterOptionsConfig[key]
-                })).filter((fil: any) => filterAttributes.order.includes(fil.attributeName) || ((getKeyName(filterData?.hdrkeymap.lattr, fil.attributeName) === fil.name) || (getKeyName(filterData?.hdrkeymap.oattr, fil.attributeName) === fil.name)))
+                })
+            ).filter((fil: any) => filterAttributes.order.includes(fil.attributeName) || ((getKeyName(filterData?.hdrkeymap.lattr, fil.attributeName) === fil.name) || (getKeyName(filterData?.hdrkeymap.oattr, fil.attributeName) === fil.name)))
+
             }
-        }
+
+        }     
+
         if(page?.res){
             filterObjects["resources"] = {
                 id: "res",
@@ -173,8 +200,6 @@ const useFilter=(filterData: any, page: any)=>{
         }
     },[multiFilter])
            
-    // console.log(defaultFilterState, 'DEFAULT');
-    // console.log(multiFilter, 'MULTI');
     return{
         state:multiFilter,
         setState:setMultiFilter,

@@ -19,7 +19,6 @@ export const useGetSOSummaydetails = ()=>{
 
 export const useGetOpenSODetailsData = () => {
   return useMutation(async(data:any)=>{
-        //console.log("return ===",MaterialCoverageServices.getOpenSODetailsData)
         return MaterialCoverageServices.getOpenSODetailsData(data)
     })
 }
