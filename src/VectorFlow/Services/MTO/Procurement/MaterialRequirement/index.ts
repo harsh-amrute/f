@@ -4,19 +4,19 @@ import { MaterialRequirementService } from './api'
 
 
 export const useGetMaterialRequirementDetails = () => {
-    return useMutation(async (data: any,page_size?:any) => {
+    return useMutation(async (data: any) => {
         return MaterialRequirementService.getMaterialRequirementData(data)
     })
 }
 
 export const useGetMaterialRequirementDetailsDatewise = () => {
-    return useMutation(async (data: any,page_size?:any) => {
+    return useMutation(async (data: any) => {
         return MaterialRequirementService.getMaterialRequirementDataDayWise(data)
     })
 }
 
 export const useGetMaterialRequirementDetailsForExcelExport = () => {
-    return useMutation(async (params: any, page_size?:any) => {
+    return useMutation(async (params: any) => {
         return MaterialRequirementService.getMaterialRequirementData(params)
     })
 }

@@ -24,7 +24,7 @@ import { TableWrapper } from "./styles";
 import { useDispatch } from "react-redux";
 import { APPLIED_FILTERS, PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
-import { FilterPageName, UIGridCode } from "../../Common/Enum";
+import { FilterPageName, pagination, UIGridCode } from "../../Common/Enum";
 import useColDef from "../../../../../hooks/useColDef";
 
 
@@ -91,6 +91,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
+    console.log(userPageSize,"userPageSize");
 
     const setColumnDef = async () => {
         try {
@@ -189,7 +190,11 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     dispatch(PROCPLANNING_ANALYTICS({ date }));
     dispatch(APPLIED_FILTERS( {...formatFilterJSON(appliedFilters)} ));
 
-    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps | undefined>(undefined);
+    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps | undefined>({
+        id: 'ca',
+        label: 'Completely Available',
+        value: 'ca'
+    });
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
@@ -394,6 +399,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
 
     const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
+
     const [isDisabled, setIsDisabled] = useState(true);
     useEffect(() => {
         let isDis = true;
@@ -519,7 +525,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         else {
             fetchData(date, pageNumber, '0');
         }
-
+console.log(currentTab)
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
 
@@ -584,7 +590,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                         <VFPagination
                             key={1}
                             selectedRows={0}
-                            rowsPerPage={Math.min(500, totalRows)}
+                            rowsPerPage={userPageSize || pagination.mtoPageSize}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -621,7 +627,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                         />
                         <VFPagination
                             selectedRows={0}
-                            rowsPerPage={Math.min(500, totalRows)}
+                            rowsPerPage={userPageSize || pagination.mtoPageSize}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -709,7 +715,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                         <VFPagination
                             key={1}
                             selectedRows={0}
-                            rowsPerPage={Math.min(500, totalRows)}
+                            rowsPerPage={userPageSize || pagination.mtoPageSize}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}

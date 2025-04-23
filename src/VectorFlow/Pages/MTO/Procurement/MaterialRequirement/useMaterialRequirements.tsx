@@ -249,14 +249,16 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
 
     useEffect(() => {
-        if (appliedFilters !== null && Object.entries(appliedFilters).length && userConfigFetched) {
+        if (appliedFilters !== null && Object.entries(appliedFilters).length) {
             if (currentTab.id === 'sdv') {
                 setCurrentPage(1);
             } else if (currentTab.id === 'cv') {
                 setcurrentCumPage(1);
             }
         }
-        getInitialData();
+        if(userConfigFetched){
+            getInitialData();
+        }
     }, [currentTab, appliedFilters, userConfigFetched])
 
     useEffect(() => {
