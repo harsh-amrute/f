@@ -94,7 +94,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
-    console.log(userPageSize,"userPageSize");
 
     const setColumnDef = async () => {
         try {
@@ -528,7 +527,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         else {
             fetchData(date, pageNumber, '0');
         }
-console.log(currentTab)
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
 
