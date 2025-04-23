@@ -16,11 +16,7 @@ import { putUpdateProcurementSimulationData, useGetProcurementPlanningDataForExc
 import { toast } from "react-toastify";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-<<<<<<< HEAD
 import VFPagination from "../../Common/VFPagination";
-=======
-import VFPagination from '../../Common/VFPagination';
->>>>>>> develop-vflow
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles";
@@ -93,15 +89,12 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const reportName = "ProcurementPlanningShortage";
     const [defaultColState,setDefaultColState] = useState<any>([])
 
-<<<<<<< HEAD
     const [clearFilter, clearFilterDisabled]= useState<boolean>(true);
 
     
-=======
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
 
->>>>>>> develop-vflow
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
