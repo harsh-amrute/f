@@ -311,7 +311,6 @@ const RMPMOrderwiseCoverage = () => {
                     rn_id: UIGridCode.ProcRMPMOrderCov,
                     cs: JSON.stringify(fullConfig),
                 };
-                console.log(payload)
                 await updateUserUIReportConfigData([payload]);
                 setColumnState([...coldefs]);
         
