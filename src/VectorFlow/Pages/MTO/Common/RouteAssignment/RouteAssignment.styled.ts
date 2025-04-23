@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const StepperWrapper = styled.div`
+export const StepperWrapper = styled.div<{ ccrMasterLength?: number }>`
   flex-wrap: wrap;
   display: flex;
   justify-content: start;
@@ -16,6 +16,29 @@ export const StepperWrapper = styled.div`
   }
   &.buffer-assignment > .step-group > div:nth-of-type(2){
     flex: 1.5;
+  }
+    
+    /* Adjust justify-content based on window width */
+  @media (max-width: 1200px) {
+    justify-content: start;
+  }
+
+  @media only screen and (min-width: 1201px) {
+    justify-content : ${props => {
+      if (props.ccrMasterLength) {
+        if (props.ccrMasterLength <= 3) {
+          return "start";
+        } else if (props.ccrMasterLength <= 6) {
+          return "end";
+        } else if (props.ccrMasterLength <= 9) {
+          return "start";
+        } else {
+          return "end";
+        }
+      } else {
+        return "start";
+      }
+    }};
   }
 `;
 

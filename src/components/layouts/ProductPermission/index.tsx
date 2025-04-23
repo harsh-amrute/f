@@ -14,7 +14,7 @@ import { useUserData } from "../../../context";
 
 
 const ProductPermission = ({ ...props }: any) => {
-  const { title, prdPermissions, onSelectAll,isUnSelected } = props;
+  const { title, prdPermissions, onSelectAll,isSelected } = props;
 
   const { user} = useUserData();
   const themeUi = user?.user?.theme_ui;
@@ -25,7 +25,7 @@ const ProductPermission = ({ ...props }: any) => {
         <SCtitle>
           {title}
           <div style={{display:'flex', gap:'5px'}}>
-            <Checkbox themeUi={themeUi} checked={isUnSelected} type='checkbox' onClick={onSelectAll} /> 
+            <Checkbox themeUi={themeUi} checked={isSelected} type='checkbox' onClick={onSelectAll} /> 
             <p style={{fontSize:'14px' }}>Select All</p>
           </div>
         </SCtitle>
@@ -45,7 +45,9 @@ const ProductPermission = ({ ...props }: any) => {
                       handleListChild={item.handleAction}
                       disabled={false}
                       key={index}
-                      setIsUnselected={item.setIsUnSelected}
+                      from={item.from}
+                      isCheckBoxRef={item.isCheckBoxRef}
+                      activeApplicationId={item.activeApplicationId}
                     />
                   </SCItemMulSelect>
                 </SCFlexCenter>

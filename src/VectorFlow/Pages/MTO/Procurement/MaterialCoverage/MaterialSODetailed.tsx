@@ -1,7 +1,7 @@
 import { ProcurementLayout } from './styles';
 import useMaterialSO from './useMaterialSO';
 import VFTable from '../../Common/VFTable';
-import VFPagination from '../../../../../components/VectorFLOW/commons/VFPagination';
+import VFPagination from '../../Common/VFPagination';
 import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
@@ -15,9 +15,13 @@ interface MaterialSODetailedProps {
     isUpdateUserConfig: any,
     isGetUserConfig: any,
     appliedFilters:any,
+    handleSaveClick:any,
+    userConfigFetched:any,
+    userPageSize:any,
+    setUserPageSize:any
 }
 
-    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters}: MaterialSODetailedProps, ref) => {
+    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize}: MaterialSODetailedProps, ref) => {
     const {
         agGridProps,
         RRRRowData,
@@ -25,8 +29,9 @@ interface MaterialSODetailedProps {
         rowDataCount,
         handlePageChangeOnHook,
         currentPage,
-        ExcelExportData
-    } = useMaterialSO(parameterData, appliedFilters);
+        ExcelExportData,
+        savePageSize,
+    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize);
     const gridRef = useRef<any>(null);
 
     useImperativeHandle(ref, ()=>({
@@ -130,6 +135,9 @@ interface MaterialSODetailedProps {
                     totalRows={rowDataCount}
                     currentPage={currentPage}
                     handleChangePage={handlePageChange}
+                    customPageSizeEnabled={true}
+                    savePageSize={savePageSize}
+                    userPageSize = {userPageSize}
                 />
             </ProcurementLayout>
         </>

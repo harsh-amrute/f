@@ -930,7 +930,7 @@ const DynamicReleaseManagement = () => {
          <div className='chart-wrapper' style={{ width: "100%", maxHeight: '40vh', flex: !hide ? 1:0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129"}}>
           <AgCharts ref={graph} options={chartoptions}/>
         </div>
-        {showModal && <EditRouteModal selectedPlant={plantId} itemTypeId={itemTypeId} chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUI={themeUi} orderKey={orderKey} />}
+        {showModal && <EditRouteModal selectedPlant={plantId} itemTypeId={itemTypeId} chartoptions={chartoptions} dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setRouteNum={setRouteNum} lineCCRDetails={lineCCR} route={route} master={masters} setRoute={setRoute} showModal={showModal} setShowModal={setShowModal} themeUi={themeUi} orderKey={orderKey} />}
         
         {showReleaseModal && <ReleaseModal dataUpdated={dataUpdated} setDataUpdated={setDataUpdated} setResetReleaseCheckbox={setIsCheckboxChecked} rowRelase={rowRelease} message={message} themeUi={themeUi} totalOrders={120} order_key={order_key} selectedOrders={selectedRows} showModal={showReleaseModal} setShowModal={setShowReleaseModal} />}
       </Wrapper>

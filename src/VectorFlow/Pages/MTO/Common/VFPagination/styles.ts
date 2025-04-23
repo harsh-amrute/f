@@ -151,7 +151,7 @@ export const PageSizeInputDiv= styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: rgba(133, 132, 132, 0.247) -5px 4px 10px;
+    box-shadow: rgba(133, 132, 132, 0.247) 5px 0px 10px;
     height: 100%;
     width: 80px;
     margin-left: 5px;
@@ -178,18 +178,4 @@ export const PageSizeInput= styled.input<{themeUi: string}>`
     &:focus {
         border: 1px solid ${(props)=>props.themeUi ==='REGALBLAZE'? '#CB830E' :'#BC3D81'}; /* Adjust the color to your preference */
     }
-`
-
-export const PageSizeSaveDiv= styled.div<{ isSaveButtonEnabled: boolean }>`
-    cursor:${(props) => props.isSaveButtonEnabled ? "pointer" : "not-allowed"} ;
-    background-color: rgb(130, 15, 76);
-    height: 100%;
-    width: 30%;
-    border-radius: 0px 3px 3px 0px;
-    align-items: center;
-    place-content: center;
-    display: flex;
-    opacity: ${(props) => props.isSaveButtonEnabled ? 1 : 0.5};
-    pointer-events: ${(props) => props.isSaveButtonEnabled ? "auto" : "none"};
-
 `
