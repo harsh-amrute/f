@@ -1,8 +1,10 @@
 import axios from 'axios';
+import { pagination } from '../../../../../VectorFlow/Pages/MTO/Common/Enum';
+
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OrderwiseCoverageService {
-    export const getOrderwiseCoverageData = async ({page, graph, appliedFilters}: { page?: number, graph: number, appliedFilters?: any }) => {
+    export const getOrderwiseCoverageData = async ({page, graph, appliedFilters,page_size}: { page?: number, graph: number, appliedFilters?: any,page_size?:any }) => {
 
         if(graph){
             return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getRMPMCoverageData/`, {
@@ -15,7 +17,7 @@ export namespace OrderwiseCoverageService {
                 }
             })
         }
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getRMPMCoverageData/`, 
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getRMPMCoverageData/?page_size=${page_size || pagination.mtoPageSize}`, 
         appliedFilters,
         {
     
@@ -25,7 +27,9 @@ export namespace OrderwiseCoverageService {
             },
             params: {
                 page,
-                graphflag: graph
+                graphflag: graph,
+                page_size: page_size || pagination.mtoPageSize
+
             }
         })
     }

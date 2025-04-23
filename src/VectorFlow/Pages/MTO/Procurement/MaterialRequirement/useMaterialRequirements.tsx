@@ -88,6 +88,9 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
     const { mutateAsync: getMaterialRequirementDataExcelExport } = useGetMaterialRequirementDetailsForExcelExport();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+    const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+    const [userPageSize, setUserPageSize] = useState<any>();
+
     const reportName = "MaterialRequirement";
 
     const setColumnDef = async () => {
@@ -107,8 +110,9 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                 un: user.user.name,
                 rn_id: UIGridCode.ProcMaterialRequirement
             });
-    
+            setUserConfigFetched(true)
             const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
             setColumnState(newConfig);
     
             if (!data) {
@@ -119,24 +123,38 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         }
     }
 
-    const handleSaveClick = async (coldefs?: any) => {
+    const handleSaveClick = async (coldefs?: any,page_size?: any) => {
         try {
             if (coldefs) {
+                const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize }; 
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.ProcMaterialRequirement,
-                    cs: JSON.stringify(coldefs),
+                    cs: JSON.stringify(fullConfig),
                 };
                 await updateUserUIReportConfigData([payload]);
                 setColumnState([...coldefs]);
                 
-            } else {
+            }
+            else if(page_size){
+                const config = currentGridRef.current.api.getColumnState(); 
+                const fullConfig = { cs: config, pageSize: page_size };        
+                const payload = {
+                  un: user.user.name,
+                  rn_id: UIGridCode.ProcMaterialRequirement,
+                  cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIReportConfigData([payload]);
+              }
+            
+            else {
                 if (currentGridRef?.current?.api) {
-                    const config = currentGridRef.current.api.getColumnState();
+                    const config = currentGridRef.current.api.getColumnState(); 
+                    const fullConfig = { cs: config, pageSize: page_size|| userPageSize };
                     const payload = {
                         un: user.user.name,
                         rn_id: UIGridCode.ProcMaterialRequirement,
-                        cs: JSON.stringify(config)
+                        cs: JSON.stringify(fullConfig),
                     }
                     await updateUserUIReportConfigData([payload]);
                     await getUserColumnConfig();
@@ -231,7 +249,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
 
     useEffect(() => {
-        if (appliedFilters !== null && Object.entries(appliedFilters).length) {
+        if (appliedFilters !== null && Object.entries(appliedFilters).length && userConfigFetched) {
             if (currentTab.id === 'sdv') {
                 setCurrentPage(1);
             } else if (currentTab.id === 'cv') {
@@ -239,7 +257,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
             }
         }
         getInitialData();
-    }, [currentTab, appliedFilters])
+    }, [currentTab, appliedFilters, userConfigFetched])
 
     useEffect(() => {
         if (forDate) {
@@ -263,11 +281,11 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         getInitialData(0, date, true)
     }
 
-    const getInitialData = async (currPage?: number, releaseDate?: string, isExcelExport = false) => {
-         currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport) : getCumulativeDateWise(currPage, releaseDate, isExcelExport);
+    const getInitialData = async (currPage?: number, releaseDate?: string, isExcelExport = false, pageSize?:any ) => {
+         currentTab.id === 'sdv' ? getSelectedDateWise(currPage, releaseDate, isExcelExport, pageSize ) : getCumulativeDateWise(currPage, releaseDate, isExcelExport, pageSize );
     }
 
-    const getSelectedDateWise = async (currPage?: number, releaseDate: string = date, isExcelExport = false) => {
+    const getSelectedDateWise = async (currPage?: number, releaseDate: string = date, isExcelExport = false, pageSize?:any ) => {
 
         const formatedFilters = formatFilterJSON(appliedFilters);
         if (isExcelExport) {
@@ -283,14 +301,14 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
             }
         } else {
 
-            const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage, appliedFilters: formatedFilters });
+            const datWiseData = await getMaterialRequirementDataDayWise({ releaseDate: releaseDate, currPage: currPage ? currPage : currentPage, appliedFilters: formatedFilters,page_size: pageSize || userPageSize });
             const dayWiseOutput = datWiseData.data?.data?.results;
             setDayWiseRecordCount(datWiseData.data?.data?.count)
             setDayWiseData(dayWiseOutput)
         }
     }
 
-    const getCumulativeDateWise = async (currPage = 1, releaseDate: string = date, isExcelExport = false) => {        
+    const getCumulativeDateWise = async (currPage = 1, releaseDate: string = date, isExcelExport = false,pageSize?:any) => {        
         const formatedFilters = formatFilterJSON(appliedFilters);
         if (isExcelExport) {
             const headersdata = currentGridRef?.current?.api.getColumnState();
@@ -305,13 +323,23 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         }
         else {
 
-            const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage, appliedFilters: formatedFilters });
+            const cumulativeData = await getMaterialRequirementData({ releaseDate: releaseDate, currPage: currPage ? currPage : currentCumPage, appliedFilters: formatedFilters ,page_size: pageSize || userPageSize});
             const cumulativeOutput = cumulativeData.data?.data?.results
             setcumulativeRecordCount(cumulativeData.data?.data?.count)
             SetCumulativeData(cumulativeOutput)
         }
     }
-
+    const savePageSize = (pageSize: any) => {
+        if (pageSize) {
+            setCurrentPage(1)
+            setUserPageSize(pageSize);
+            handleSaveClick(undefined, pageSize);
+            getInitialData(1,date,false, pageSize);
+        } else {
+            notifyError("Invalide page size");
+        }
+        
+    }
 
     const autoGroupColumnDef = useMemo(() => {
         return {
@@ -494,10 +522,13 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                             />
                             <VFPagination
                                 selectedRows={0}
-                                rowsPerPage={pagination.mtoPageSize}
+                                rowsPerPage={userPageSize || pagination.mtoPageSize}
                                 totalRows={dayWiseRecordCount}
                                 currentPage={currentPage}
                                 handleChangePage={handlePageChangeDayWise}
+                                customPageSizeEnabled={true}
+                                savePageSize={savePageSize}
+                                userPageSize = {userPageSize}
                             />
                         </TableWrapper>
                     </>
@@ -532,10 +563,13 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                             />
                             <VFPagination
                                 selectedRows={0}
-                                rowsPerPage={pagination.mtoPageSize}
+                                rowsPerPage={userPageSize || pagination.mtoPageSize}
                                 totalRows={cumulativeRecordCount}
                                 currentPage={currentCumPage}
                                 handleChangePage={handlePageChangeCumulative}
+                                customPageSizeEnabled={true}
+                                savePageSize={savePageSize}
+                                userPageSize = {userPageSize}
                             />
                         </TableWrapper>
 
