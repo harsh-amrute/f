@@ -59,7 +59,7 @@ const EditRouteModal = ({ setDataUpdated, setResetReleaseCheckbox, rowRelase, or
 
                 </Text>
 
-                <div style={{ zoom: '0.7', display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '10px 10px 0 0' }}>
+                <div style={{ zoom: '0.7', display: 'flex', justifyContent: 'right', gap: '8px', borderTop: '2px dashed #A0A0A0', padding: '20px 20px 20px 0' }}>
 
                     <div>
                         <SCButton onClick={() => { setShowModal(false) }} style={{ background: 'white', color: 'grey', border: '1px solid grey' }} themeUi={themeUi}>
