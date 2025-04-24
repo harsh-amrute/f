@@ -142,7 +142,7 @@ const MaterialCov = () => {
         setUserConfigFetched(true);
         const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
         setUserPageSize(newConfig.pageSize? Number(newConfig.pageSize) : undefined);
-        setColumnState(newConfig)
+        setColumnState(newConfig.cs)
   
         if (!data) {
           console.error('Failed to apply column state');
@@ -160,26 +160,40 @@ const MaterialCov = () => {
 
   
 
-  const handleSaveClick = async (isReset = false, pageSize?: number) => {
+  const handleSaveClick = async (isReset = false, page_size?: number) => {
     try {
-      const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState();
-  
-      const fullConfig = {
-        cs: config,
-        pageSize: pageSize || userPageSize, 
-      };
-  
-      const payload = {
-        un: user.user.name,
-        rn_id: UIGridCode.ProcMaterialCovOpenSales,
-        cs: JSON.stringify(fullConfig),
-      };
-  
-      await updateUserUIReportConfigData([payload]);
-  !isReset && notifySuccess("Saved successfully")
+      if (page_size) {
+        const config = columnState;
+        const fullConfig = { cs: config, pageSize: page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProcMaterialCovOpenSales,
+          cs: JSON.stringify(fullConfig),
+        };
+        await updateUserUIReportConfigData([payload]);
 
-      if (!isReset) {
-        setColumnState([...config]);
+      } else {
+
+        const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState();
+  
+        const fullConfig = {
+          cs: config,
+          pageSize: userPageSize,
+        };
+  
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProcMaterialCovOpenSales,
+          cs: JSON.stringify(fullConfig),
+        };
+  
+        await updateUserUIReportConfigData([payload]);
+        !isReset && notifySuccess("Saved successfully")
+    
+
+        if (!isReset) {
+          setColumnState([...config]);
+        }
       }
   
     } catch (error) {

@@ -291,7 +291,7 @@ const RMPMOrderwiseCoverage = () => {
             setUserConfigFetched(true)
             const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
-            setColumnState(newConfig);
+            setColumnState(newConfig.cs);
     
             if (!data) {
                 console.error('Failed to apply column state');
@@ -304,7 +304,7 @@ const RMPMOrderwiseCoverage = () => {
     const handleSaveClick = async (coldefs?: any,page_size?: any) => {
         try {
             if (coldefs) {
-                const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
+                const fullConfig = {cs: coldefs, pageSize: userPageSize };
               
                 const payload = {
                     un: user.user.name,
@@ -316,7 +316,7 @@ const RMPMOrderwiseCoverage = () => {
         
             }
             else if(page_size){
-                const config = currentGridRef.current.api.getColumnState();
+                const config = columnState;
                 const fullConfig = { cs: config, pageSize: page_size };        
                 const payload = {
                   un: user.user.name,
@@ -328,7 +328,7 @@ const RMPMOrderwiseCoverage = () => {
              else {
                 if (currentGridRef?.current?.api) {
                     const config = currentGridRef.current.api.getColumnState();
-                    const fullConfig = {  cs: config, pageSize: page_size|| userPageSize  };
+                    const fullConfig = {  cs: config, pageSize: userPageSize };
                     const payload = {
                         un: user.user.name,
                         rn_id: UIGridCode.ProcRMPMOrderCov,
