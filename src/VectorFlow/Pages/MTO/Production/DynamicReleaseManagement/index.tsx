@@ -914,7 +914,7 @@ const DynamicReleaseManagement = () => {
 
           <VFPagination
             selectedRows={0}
-            rowsPerPage={pagination.mtoPageSize}
+            rowsPerPage={userPageSize || pagination.mtoPageSize}
             totalRows = {currData?.data?.data?.count || currData?.data?.data?.length || 0}
             currentPage={currentPage}
             handleChangePage={handlePageChangeCumulative}
