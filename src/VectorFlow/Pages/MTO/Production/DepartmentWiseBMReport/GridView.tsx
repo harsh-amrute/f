@@ -6,6 +6,7 @@ import VFPagination from "../../Common/VFPagination";
 import VFTable from '../../Common/VFTable';
 import { memo, useState } from 'react';
 import { useUserData } from '../../../../../context';
+import { pagination } from '../../Common/Enum';
 interface GridProps {
     agGridProps: any
     columDef: any
@@ -39,7 +40,7 @@ const GridView = memo(({
     userPageSize,
     savePageSize}: GridProps) => {
 
-    const rowsPerPage = userPageSize || Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || 500;
+    const rowsPerPage = userPageSize || Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || pagination.mtoPageSize;
 
 
     const { user } = useUserData();

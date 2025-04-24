@@ -12,7 +12,7 @@ interface GridProps {
     columnState: any,
 }
 
-const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, currentGridRef, columnState, orderWiseRecordCount, currentPage, handlePageChangeDayWise }: GridProps | any) => {
+const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, currentGridRef, columnState, orderWiseRecordCount, currentPage, handlePageChangeDayWise, savePageSize, userPageSize }: GridProps | any) => {
     
     const [isDisabled, setIsDisabled]= useState<boolean>(true);
     const gridRef = useRef<any>(null);
@@ -58,13 +58,13 @@ const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, curre
             />
             <VFPagination
                 selectedRows={0}
-                resetGridRef={gridRef}
-                isDisabled={isDisabled}
-                rowsPerPage={pagination.mtoPageSize}
+                rowsPerPage={userPageSize || pagination.mtoPageSize}
                 totalRows={orderWiseRecordCount}
                 currentPage={currentPage}
                 handleChangePage={handlePageChangeDayWise}
-
+                customPageSizeEnabled={true}
+                savePageSize={savePageSize}
+                userPageSize={userPageSize}
             />
         </TableWrapper>
     )
