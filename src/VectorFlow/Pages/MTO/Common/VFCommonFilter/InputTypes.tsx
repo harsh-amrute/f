@@ -447,13 +447,15 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
       updatedOperator[index] = selectedOption;
       updatedOperator[index].index = index;
       setSelectedOperator(updatedOperator);
-      onChange('numberCompare',selectedHeader?.[index]?.attributeName, selectedOperator, "orders", selectedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}])
+      onChange('numberCompare',selectedHeader?.[index]?.attributeName, updatedOperator, "orders", updatedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}],index)
     }
     else if(type==='value'){
     const updatedValues = [...selectedValue]; 
     updatedValues[index] = selectedOption.target.value;
     setSelectedValue(updatedValues);
-    onChange('numberCompare',selectedHeader?.[index]?.attributeName, selectedOperator, "orders", selectedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}])
+    const updateOperator = [...selectedOperator];
+    updateOperator[index] = selectedOperator[index];
+    onChange('numberCompare',selectedHeader?.[index]?.attributeName, updateOperator, "orders", updateOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}],index)
     }
   };
 
