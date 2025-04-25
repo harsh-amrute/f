@@ -280,7 +280,8 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, master, rou
                 <div style={{ height: "300px" }}>
                     <AgCharts options={chartoptions} />
                 </div>
-                <div style={{ display: "flex", justifyContent: "end", gap: "1rem" }}>
+            </ContentWrapper>
+                <div style={{ display: "flex", justifyContent: "end", gap: "1rem",borderTop: '2px dashed #A0A0A0', padding: '20px 20px 20px 0' }}>
                     <VFButtonOutline
                         style={{
                             height: "30px",
@@ -306,7 +307,6 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, master, rou
                         boxShadow: "unset"
                     }} themeUi={theme} onClick={() => { SaveRoute() }}>Save Route</VFButton>
                 </div>
-            </ContentWrapper>
         </VFModalCard>
     )
 }
