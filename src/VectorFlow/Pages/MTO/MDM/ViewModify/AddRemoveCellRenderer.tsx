@@ -7,12 +7,10 @@ import type { RootState } from '../../../../../redux/store/store';
 import { notifyError } from '../../../../../helpers/notify';
 import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 import _ from 'lodash';
+import { BUFFER_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from './MDMJoiValidations';
 
 
 const AddRemoveCellRenderer = (params: any) => {
-
-  
-  
 
     const dispatch = useDispatch();
     const activeMaster = useSelector((state: RootState) => state.mdm.activeMaster);
@@ -24,55 +22,29 @@ const AddRemoveCellRenderer = (params: any) => {
     const ccrInitialData = useSelector((state: any)=> state.mto.ccrInitialData);
 
     const validateCCR = () => {
-      if (params.data.cnm === "" || !params.data.cnm) {
-        notifyError("CCR name cannot be empty!");
-        return false;
+      const {error} = CCR_VALIDATION_SCHEMA.validate(params.data,{ abortEarly: false })
+
+      if(error){
+        const fieldOrders = activeMaster.colDefs
+          .filter((item: any) => item.field !== "actions")
+          .map((item: any) => item.field);
+
+        const orderedErrors = fieldOrders.flatMap((key)=>(
+          error.details.filter((err:any) => err.path[0] === key)
+        ))
+
+        notifyError(orderedErrors[0]?.message)
+        return false
       }
-      if (params.data.cpd === "" || !params.data.cpd) {
-        notifyError("CCR Capacity Per Day cannot be empty!");
-        return false;
-      }
-      if (params.data.cpd <= 0) {
-        notifyError("CCR Capacity Per Day should be greater than 0!");
-        return false;
-      }
-      if (params.data.whpd === "" || !params.data.whpd) {
-        notifyError("Working hours Per Day cannot be empty!");
-        return false;
-      }
-      if (params.data.whpd <= 0) {
-        notifyError("Working hours Per Day should be greater than 0!");
-        return false;
-      }
-      if (params.data.sh === "" || !params.data.sh) {
-        notifyError("Scheduling horizon cannot be empty!");
-        return false;
-      }
-      if (ccrInitialData.some((ccr: any) => ccr.ccd === params.data.ccd)) {
+
+      const tempData = _.cloneDeep(activeMaster.rowData);
+      tempData.shift();
+
+      if (tempData.some((ccr: any) => ccr.ccd === params.data.ccd)) {
         notifyError("CCR Code already exists in the master CCR!");
         return false;
       }
-      if (params.data.rb === undefined || params.data.rb < 0 || params.data.rb > 1) {
-        notifyError("CCR Resource Buffer (rb) should be a value between 0 and 1!");
-        return false;
-      }
-      if (params.data.cwl === "" || params.data.cwl === undefined || params.data.cwl < 0) {
-        notifyError("CCR Capacity Workload (cwl) should be greater than 0!");
-        return false;
-      }
-
-      if (params.data.cgid === "" || !params.data.cgid || params.data.cgid===null) {
-        notifyError("Choose a valid ccrgroup from the dropdown!");
-        return false;
-      }
-      if (params.data.pl === "" || !params.data.pl || params.data.pl===null) {
-        notifyError("Choose a valid plant from the dropdown!");
-        return false;
-      }
-      if (params.data.dp === "" || !params.data.dp || params.data.pl===null) {
-        notifyError("Choose a valid department from the dropdown!");
-        return false;
-      }
+      
       return true;
     };
     const addRow = () => {
@@ -80,38 +52,25 @@ const AddRemoveCellRenderer = (params: any) => {
         const allRows = [...activeMaster.rowData];
         allRows.shift();
         // Check if the entered Buffer type is unique 
+
         if(activeMaster.id===501){
+          const {error} = BUFFER_VALIDATION_SCHEMA.validate(params.data,{ abortEarly: false }) 
+       
+          if(error){
+            const fieldOrders = activeMaster.colDefs
+              .filter((item: any) => item.field !== "actions")
+              .map((item: any) => item.field);
 
-          if (params.data.bsz % 1 !== 0) {
-            notifyError("Buffer size cannot be a fractional value!");
-            return;
+            const orderedErrors = fieldOrders.flatMap((key) =>
+              error.details.filter((err) => err.path[0] === key)
+            );
+            
+            return notifyError(orderedErrors[0]?.message)
+            
           }
-
-          if (Number(params.data.bsz) > 365) {
-            notifyError("Buffer size cannot exceed for over a year!");
-            return;
-          }
-          if (Number(params.data.bsz) <= 0 || params.data.bsz === '0') {
-            notifyError("Buffer size must be greater than 0!");
-            return;
-          }
-
-          if (params.data.bsz === "") {
-            notifyError("Buffer size cannot be empty!");
-            return;
-          }
-
-          if (params.data.slt === null || params.data.slt < 0 || params.data.slt > 365) {
-            notifyError("SLT should be a value between 0 and 365!");
-            return;
-          }
-
-          if (params.data.mlt === null || params.data.mlt < 0 || params.data.mlt > 365) {
-            notifyError("MLT should be a value between 0 and 365!");
-            return;
-          }    
-          
+        
           let isValid = true;
+          
           bufferInitialData?.forEach((e:any)=>{
     
             if(e.bsz== params.data.bsz && e.bt=== params.data.bt){
