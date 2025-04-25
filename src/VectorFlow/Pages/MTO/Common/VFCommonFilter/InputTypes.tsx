@@ -370,41 +370,20 @@ const FilterTextInput = ({
   );
 };
 
-const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState, setFilterState, masterFilterState, resetKey}:any)=>{
 
-  const textComparatorConfig: any = {
-    et : {value:'et',label:'Equal to'},
-    net : {value:'net',label:'Not Equal to'},
-    cn: {value:'cn',label:'Contains'},
-    dnc : {value:'dnc',label:'Does not contain'},
-    sw: {value:'sw',label:'Starts with'},
-    dsw: {value:'dsw',label:'Does not start with'},
-    ew: {value:'ew',label:'Ends with'},
-    dnew: {value:'dnew',label:'Does not end with'},
-    hv: {value:'hv',label:'Has value'},
-  }
-  
-  const numberComparatorConfig: any = {
-    et: {value:'et', label: '='},
-    net:  {value:'net', label: '!='},
-    gt: {value:'gt',label:'>'},
-    gte: {value:'gte',label:'>='},
-    lt: {value:'lt',label:'<'},
-    lte: {value:'lte',label:'<='},
-  }
 
-  const textComparators = [
-    {value:'et',label:'Equal to'},
-    {value:'net',label:'Not Equal to'},
-    {value: "cn", label: "Contains"},
-    {value:'dnc',label:'Does not contain'},
-    {value:'sw',label:'Starts with'},
-    {value:'dsw',label:'Does not start with'},
-    {value:'ew',label:'Ends with'},
-    {value:'dnew',label:'Does not end with'},
-    {value:'hv',label:'Has value'},
-  ]
- 
+    const textComparators = [
+      { value: 'et', label: 'Equal to' },
+      { value: 'net', label: 'Not Equal to' },
+      { value: "cn", label: "Contains" },
+      { value: 'dnc', label: 'Does not contain' },
+      { value: 'sw', label: 'Starts with' },
+      { value: 'dsw', label: 'Does not start with' },
+      { value: 'ew', label: 'Ends with' },
+      { value: 'dnew', label: 'Does not end with' },
+      { value: 'hv', label: 'Has value' },
+    ];
+    
   const numberComparators = [
     {value:'et', label: '='},
     {value:'net', label: '!='},
@@ -413,6 +392,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
     {value:'gt',label:'>'},
     {value:'lt',label:'<'},
   ]
+
+const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState, setFilterState, masterFilterState, resetKey}:any)=>{
 
   const getNameOptions = (type: string) => {
     if(type==='numberCompare'){
@@ -427,7 +408,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   const [selectedOperator, setSelectedOperator] = useState<any>(masterFilterState.filters.map((e:any)=> {return e.operator}))
   const [selectedValue, setSelectedValue] = useState<any[]>(masterFilterState.filters.map((e:any)=> {return e.value}));
 
-  const handleHeaderChange = (selectedOption: any, type: any, index:any, id: any) => {
+  const handleHeaderChange = (selectedOption: any, type: any, index: any, id: any) => {
+    
 
     if(type==="header"){
       const updatedHeaders:any = [...selectedHeader];
@@ -626,5 +608,7 @@ export {
   FilterSelectDropdown,
   FilterTextInput,
   AvailabilityFilter,
-  Checkbox
+  textComparators,
+  numberComparators,
+  Checkbox,
 };

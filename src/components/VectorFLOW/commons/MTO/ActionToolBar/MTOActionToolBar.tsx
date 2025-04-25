@@ -39,6 +39,7 @@ import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
 import { ExportExcelSVG, ResetSVG, SaveSVG,GridView,ChartView } from '../../../../../helpers/SvgRenderer';
 import { Theme } from '../../../../../styles/global';
 import VFDatePicker from '../../../../../VectorFlow/Pages/MTO/Common/VFDatePicker';
+import {textComparators, numberComparators} from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter/InputTypes'
 
 type filterType = {
     label: string,
@@ -305,48 +306,73 @@ const MTOActionToolBar = ({
             {/**New Selected Filter start */}
             {isAddFilterButton && newFilters && Object.keys(newFilters)?.length > 0 &&
                 <VFSelectedFiltersWrapper>
-                    <VFSelectedFiltersPlaceHolder>
-                        Selected Filters
-                    </VFSelectedFiltersPlaceHolder>
-                    <VFFilterScrollBar>
-                        {
-                            Object.keys(newFilters)?.map((key: any) => (
-                                <VFSelectedFiltersChip key={key}>
-                                    <VFSelectedFiltersFilterLabel>
-                                        {newFilters[key]?.name} <SCFilterVerticalDivider />
-                                    </VFSelectedFiltersFilterLabel>
-                                    {newFilters[key]?.filters?.map((filter: any, index: number) => (
-                                        (filter?.value?.length) > 0 &&
-                                        <>
-                                            <VFSelectedFilterLabel>
-                                                {filter?.label}:
-                                            </VFSelectedFilterLabel>
-                                            { filter?.value?.map((f: any) => (
-                                                <div key={f.value}>
-                                                    <VFSelectedFiltersFilterContent>
-                                                        <VFSelectedFiltersFilterValue>
-                                                            <p style={{ margin: '0px 5px 0px 5px', fontFamily: '500' }}> {f.label || f.value}</p>
-                                                        </VFSelectedFiltersFilterValue>
-                                                        {disableRemoveFilter ? <div>-</div> : <VFSelectedFiltersFilterCloseIcon
-                                                            onClick={() => {
-                                                                const filtervalue = f.id || f.value;
-                                                                onFilterRemove(key, filter.filterId, filtervalue)
-                                                            }}
-                                                            src='/assets/img/VectorFLOW/BPR/close-circle.svg' alt='close-icon' data-testid={'closeIcon-filter'}
-                                                        />}
-                                                    </VFSelectedFiltersFilterContent>
-                                                </div>
-                                            ))}
-                                            
-                                            {index !== newFilters[key]?.filters?.length - 1 && <SCFilterVerticalDivider />}
-                                        </>
-                                    ))}
-                                </VFSelectedFiltersChip>
-                            ))
-                        }
-                    </VFFilterScrollBar>
-                </VFSelectedFiltersWrapper>}
+                 <VFSelectedFiltersPlaceHolder>
+                    Selected Filters
+                </VFSelectedFiltersPlaceHolder>
+
+                <VFFilterScrollBar>
+                {
+                    Object.keys(newFilters)?.map((key: any) => (
+                        <VFSelectedFiltersChip key={key}>
+                        <VFSelectedFiltersFilterLabel>
+                            {newFilters[key]?.name} <SCFilterVerticalDivider />
+                        </VFSelectedFiltersFilterLabel>
+
+                            {newFilters[key]?.filters?.map((filter: any, index: number) => {
+                        
+                            const operatorText = filter?.operator && filter?.operator !== '' ? (
+                                filter?.type === 'textCompare' ? textComparators?.find((item: any) => item.value === filter?.operator)?.label + ' ' 
+                                    : filter?.type === 'numberCompare' ? numberComparators?.find((item: any) => item.value === filter?.operator)?.label + ' '
+                                        : '') 
+                             : '';
+                                               
+                            return (
+                        (filter?.value?.length > 0) &&
+                        <>
+                            <VFSelectedFilterLabel>
+                            {filter?.label}:
+                            </VFSelectedFilterLabel>
+
+                            {filter?.value?.map((f: any) => {
+                            return (
+                                <div key={f.value}>
+                                <VFSelectedFiltersFilterContent>
+                                    <VFSelectedFiltersFilterValue>         
+                                    <p style={{ margin: '0px 5px 0px 5px', fontFamily: '500' }}> 
+                                        { operatorText ? operatorText :''}{f.label || f.value}
+                                    </p>
+                                    </VFSelectedFiltersFilterValue>
+
+                                    {disableRemoveFilter ? (
+                                    <div>-</div>
+                                    ) : (
+                                    <VFSelectedFiltersFilterCloseIcon
+                                        onClick={() => {
+                                        const filtervalue = f.id || f.value;
+                                        onFilterRemove(key, filter.filterId, filtervalue);
+                                        }}
+                                        src='/assets/img/VectorFLOW/BPR/close-circle.svg'
+                                        alt='close-icon'
+                                        data-testid={'closeIcon-filter'}
+                                    />
+                                    )}
+                                </VFSelectedFiltersFilterContent>
+                                </div>
+                            );
+                            })}
+
+                            {index !== newFilters[key]?.filters?.length - 1 && <SCFilterVerticalDivider />}
+                        </>
+                     );
+                    })}
+                </VFSelectedFiltersChip>
+                ))
+                }
+                </VFFilterScrollBar>
+                </VFSelectedFiltersWrapper>
+                 }
             {/**Selected Filter ends*/}
+        
 
             <SCCustomActionsContainer>
                 {utilityBtns && <div style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.8rem", gap: "1.5rem", marginRight: "10px" }}>
