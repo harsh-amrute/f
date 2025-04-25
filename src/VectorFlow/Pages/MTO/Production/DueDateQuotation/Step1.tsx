@@ -142,7 +142,7 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
       <VFPagination
         selectedRows={0}
         totalRows={totalRows.current}
-        rowsPerPage={pagination.mtoPageSize}
+        rowsPerPage={userPageSize || pagination.mtoPageSize}
         currentPage={currentPage}
         handleChangePage={handlePageChange}
         resetGridRef={currentGridRef}

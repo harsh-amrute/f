@@ -737,7 +737,7 @@ const DynamicReleaseManagement = () => {
       setUserConfigFetched(true)
       const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] :[];
       setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
-      setColumnState(newConfig);
+      setColumnState(newConfig.cs);
   
       if (!data) {
         console.error('Failed to apply column state');
@@ -751,7 +751,7 @@ const DynamicReleaseManagement = () => {
   const handleSaveClick = async (coldefs?: any, page_size?:any) => {
     try {
       if (coldefs) {
-        const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
+        const fullConfig = {cs: coldefs, pageSize:userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdDynamicReleaseManagement,
@@ -914,7 +914,7 @@ const DynamicReleaseManagement = () => {
 
           <VFPagination
             selectedRows={0}
-            rowsPerPage={pagination.mtoPageSize}
+            rowsPerPage={userPageSize || pagination.mtoPageSize}
             totalRows = {currData?.data?.data?.count || currData?.data?.data?.length || 0}
             currentPage={currentPage}
             handleChangePage={handlePageChangeCumulative}

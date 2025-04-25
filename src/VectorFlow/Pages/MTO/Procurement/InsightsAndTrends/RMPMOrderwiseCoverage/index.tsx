@@ -69,6 +69,9 @@ const RMPMOrderwiseCoverage = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [orderWiseRecordCount, setOrderWiseRecordCount] = useState<number>(0);
 
+    const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+    const [userPageSize, setUserPageSize] = useState<any>();
+
     const themeUi = user?.user?.theme_ui;
 
     const agGridProps: AgGridReactProps = {
@@ -219,7 +222,7 @@ const RMPMOrderwiseCoverage = () => {
         });
     };
 
-    const GetData = async (graph: any, page: any, isExcelExport = false) => {
+    const GetData = async (graph: any, page: any, isExcelExport = false,pageSize?:any) => {
         if (isExcelExport) {
             try {
                 const headersdata = currentGridRef?.current?.api.getColumnState();
@@ -257,7 +260,7 @@ const RMPMOrderwiseCoverage = () => {
             try {
                 notifyLoader("Loading Data...")
                 const formatedFilters = formatFilterJSON(appliedFilters);
-                const APIData = await getOrderwiseCoverageData({ graph, page: page ? page : currentPage, appliedFilters: formatedFilters });
+                const APIData = await getOrderwiseCoverageData({ graph, page: page ? page : currentPage, appliedFilters: formatedFilters, page_size: pageSize || userPageSize });
                 if (APIData.status.toString() === '200') {
                     toast.dismiss();
                     setApiGridData(APIData?.data?.data?.results || []);
@@ -285,9 +288,10 @@ const RMPMOrderwiseCoverage = () => {
                 un: user.user.name,
                 rn_id: UIGridCode.ProcRMPMOrderCov
             });
-    
+            setUserConfigFetched(true)
             const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-            setColumnState(newConfig);
+            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+            setColumnState(newConfig.cs);
     
             if (!data) {
                 console.error('Failed to apply column state');
@@ -297,34 +301,60 @@ const RMPMOrderwiseCoverage = () => {
         }
     }
 
-    const handleSaveClick = async (coldefs?: any) => {
+    const handleSaveClick = async (coldefs?: any,page_size?: any) => {
         try {
             if (coldefs) {
+                const fullConfig = {cs: coldefs, pageSize: userPageSize };
+              
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.ProcRMPMOrderCov,
-                    cs: JSON.stringify(coldefs),
+                    cs: JSON.stringify(fullConfig),
                 };
                 await updateUserUIReportConfigData([payload]);
                 setColumnState([...coldefs]);
         
-            } else {
+            }
+            else if(page_size){
+                const config = columnState;
+                const fullConfig = { cs: config, pageSize: page_size };        
+                const payload = {
+                  un: user.user.name,
+                  rn_id: UIGridCode.ProcRMPMOrderCov,
+                  cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIReportConfigData([payload]);
+              }
+             else {
                 if (currentGridRef?.current?.api) {
                     const config = currentGridRef.current.api.getColumnState();
-    
+                    const fullConfig = {  cs: config, pageSize: userPageSize };
                     const payload = {
                         un: user.user.name,
                         rn_id: UIGridCode.ProcRMPMOrderCov,
-                        cs: JSON.stringify(config)
+                        cs: JSON.stringify(fullConfig)
                     }
                     await updateUserUIReportConfigData([payload]);
                     await getUserColumnConfig();
                 }
 
             }
+            
         } catch (error) {
             console.error(error);
         }
+    }
+
+    const savePageSize = (pageSize: any) => {
+        if (pageSize) {
+            setCurrentPage(1)
+            setUserPageSize(pageSize);
+            handleSaveClick(undefined, pageSize);
+            GetData(0,1,false, pageSize);
+        } else {
+            notifyError("Invalide page size");
+        }
+        
     }
 
     const handleResetClick = () => {
@@ -347,11 +377,11 @@ const RMPMOrderwiseCoverage = () => {
     }, [])
 
     useEffect(() => {
-        if (Object.entries(appliedFilters).length > 1) {
+        if (Object.entries(appliedFilters).length > 1 && userConfigFetched) {
             setCurrentPage(1);
             GetData(0, 1);
         }
-    }, [appliedFilters]);
+    }, [appliedFilters,userConfigFetched]);
 
     useEffect(() => {
         setConvertedData(mapDataToColumns(apiGridData, columnData));
@@ -421,6 +451,8 @@ const RMPMOrderwiseCoverage = () => {
                             orderWiseRecordCount={orderWiseRecordCount}
                             currentPage={currentPage}
                             handlePageChangeDayWise={handlePageChangeDayWise}
+                            userPageSize={userPageSize}
+                            savePageSize={savePageSize}
                         /> : <GraphView shortageData={GraphDatas} />}
                 </div>
             </div>

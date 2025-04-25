@@ -297,7 +297,8 @@ const DayWiseCoverage = () => {
             await updateUserUIReportConfigData([payload]);
             setColumnState([...coldefs]);
             
-          } else {
+          } 
+          else {
               if (currentGridRef?.current?.api) {
                   const config = currentGridRef.current.api.getColumnState();
                   

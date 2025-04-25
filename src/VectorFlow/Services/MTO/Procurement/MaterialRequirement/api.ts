@@ -1,10 +1,12 @@
 import axios from 'axios';
+import { pagination } from '../../../../../VectorFlow/Pages/MTO/Common/Enum';
+
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace MaterialRequirementService {
-    export const getMaterialRequirementData = async ({currPage, releaseDate, appliedFilters,body,isExcelExport = false, report_name}: any) => {
+    export const getMaterialRequirementData = async ({currPage, releaseDate, appliedFilters,body,isExcelExport = false, report_name, page_size}: any) => {
         if(isExcelExport) {
-            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementData/?releaseDate=${releaseDate}`, 
+            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementData/?releaseDate=${releaseDate}&page_size=${page_size || pagination.mtoPageSize}`, 
             body,
             {
     
@@ -19,7 +21,7 @@ export namespace MaterialRequirementService {
                 responseType: 'blob' 
             })  
         }
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementData/?page=${currPage}&releaseDate=${releaseDate}`, 
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementData/?page=${currPage}&releaseDate=${releaseDate}&page_size=${page_size || pagination.mtoPageSize}`, 
         appliedFilters,
         {
 
@@ -30,7 +32,7 @@ export namespace MaterialRequirementService {
         })
     }
 
-    export const getMaterialRequirementDataDayWise = async ({currPage, releaseDate, appliedFilters ,body , isExcelExport = false ,report_name}: any) => {
+    export const getMaterialRequirementDataDayWise = async ({currPage, releaseDate, appliedFilters ,body , isExcelExport = false ,report_name,page_size}: any) => {
         if(isExcelExport){
             return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementDayWiseData/?releaseDate=${releaseDate}`, 
             body,
@@ -46,7 +48,7 @@ export namespace MaterialRequirementService {
                 responseType: 'blob'  // 'blob' for downloading the file as a blob instead of text
             })    
         }
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementDayWiseData/?page=${currPage}&releaseDate=${releaseDate}`, 
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaterialRequirementDayWiseData/?page=${currPage}&releaseDate=${releaseDate}&&page_size=${page_size || pagination.mtoPageSize}`, 
         appliedFilters,
         {
             headers: {

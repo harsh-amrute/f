@@ -16,7 +16,7 @@ import { putUpdateProcurementSimulationData, useGetProcurementPlanningDataForExc
 import { toast } from "react-toastify";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import VFPagination from '../../Common/VFPagination';
+import VFPagination from "../../Common/VFPagination";
 import OverlayLoader from "../../Common/Loader";
 import { INumberCellEditorParams } from "@ag-grid-community/core"
 import { TableWrapper } from "./styles";
@@ -24,7 +24,7 @@ import { TableWrapper } from "./styles";
 import { useDispatch } from "react-redux";
 import { APPLIED_FILTERS, PROCPLANNING_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
-import { FilterPageName, UIGridCode } from "../../Common/Enum";
+import { FilterPageName, pagination, UIGridCode } from "../../Common/Enum";
 import useColDef from "../../../../../hooks/useColDef";
 
 
@@ -78,7 +78,7 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 
 const useProcPlanning = (date: string, appliedFilters: any) => {
     const [HeaderData, setHeaderData] = useState<any>([]);
-    const gridRef = useRef<AgGridReact>(null);
+    const gridRef = useRef<any>(null);
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState<boolean|undefined>(undefined);
     const [colDef, setColDef] = useState<any>([{}]);
@@ -89,6 +89,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const reportName = "ProcurementPlanningShortage";
     const [defaultColState,setDefaultColState] = useState<any>([])
 
+    const [clearFilter, clearFilterDisabled]= useState<boolean>(true);
+
+    
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
 
@@ -114,7 +117,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             setUserConfigFetched(true)
             const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
-            setColumnState(newConfig);
+            setColumnState(newConfig.cs);
 
             if (!data) {
                 console.error('Failed to apply column state');
@@ -125,22 +128,35 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }
 
     const handleSaveClick = async (isReset = false, page_size?: any) => {
+
         const config = isReset ? defaultColState : gridRef?.current?.api?.getColumnState();
     
         try {
-            const fullConfig = {
-                cs: config,
-                pageSize: page_size || userPageSize
-            };
+            if (page_size) {
+                const config = columnState;
+                const fullConfig = { cs: config, pageSize: page_size };
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcPlanning,
+                    cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIReportConfigData([payload]);
+        
+            } else {
+                const fullConfig = {
+                    cs: config,
+                    pageSize: userPageSize
+                };
     
-            const payload = {
-                un: user.user.name,
-                rn_id: UIGridCode.ProcPlanning,
-                cs: JSON.stringify(fullConfig)
-            };
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcPlanning,
+                    cs: JSON.stringify(fullConfig)
+                };
     
-            await updateUserUIReportConfigData([payload]);
-            !isReset && notifySuccess("Saved Successfully");
+                await updateUserUIReportConfigData([payload]);
+                !isReset && notifySuccess("Saved Successfully");
+            }
     
         } catch (error) {
             console.error(error);
@@ -189,7 +205,11 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     dispatch(PROCPLANNING_ANALYTICS({ date }));
     dispatch(APPLIED_FILTERS( {...formatFilterJSON(appliedFilters)} ));
 
-    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps | undefined>(undefined);
+    const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps | undefined>({
+        id: 'ca',
+        label: 'Completely Available',
+        value: 'ca'
+    });
     const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
@@ -394,6 +414,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
 
     const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
+
     const [isDisabled, setIsDisabled] = useState(true);
     useEffect(() => {
         let isDis = true;
@@ -519,7 +540,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         else {
             fetchData(date, pageNumber, '0');
         }
-
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
 
@@ -580,11 +600,21 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                            
+                            // onFilterChanged={() => { 
+                            //     const filterModel = gridRef?.current?.api?.getFilterModel() || {};
+                            //     console.log("filterModelwewew", filterModel.length)
+                            //     Object.keys(filterModel).length > 0 ? clearFilterDisabled(false) : clearFilterDisabled(true);
+                            // }}        
+                    onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
+
                         />
                         <VFPagination
                             key={1}
+                            resetGridRef={gridRef}
+                            isDisabled={clearFilter}
                             selectedRows={0}
-                            rowsPerPage={Math.min(500, totalRows)}
+                            rowsPerPage={userPageSize || pagination.mtoPageSize}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -618,10 +648,14 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                        onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
+
                         />
                         <VFPagination
                             selectedRows={0}
-                            rowsPerPage={Math.min(500, totalRows)}
+                            resetGridRef={gridRef}
+                            isDisabled={clearFilter}
+                            rowsPerPage={userPageSize || pagination.mtoPageSize}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
@@ -705,11 +739,15 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                     { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                                 ]
                             }}
+                    onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
+
                         />
                         <VFPagination
                             key={1}
+                            resetGridRef={gridRef}
+                            isDisabled={clearFilter}
                             selectedRows={0}
-                            rowsPerPage={Math.min(500, totalRows)}
+                            rowsPerPage={userPageSize || pagination.mtoPageSize}
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
