@@ -46,14 +46,12 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
 
   const [resetKey, setResetKey] = useState(0);
 
-  const onFilterChange = (type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any) => {
-
-  
+  const onFilterChange = (type: string, filterId: string, e: any, parent: string, property: string, header?: string, targetValue?: any, currIndex?: any) => {
 
     let updatedFilters = filterState[parent as keyof FilterState]?.filters || [];
     if(type==='numberCompare' || type==='textCompare'){
       updatedFilters = filterState[parent as keyof FilterState]?.filters.map((ele:any)=>{
-        if (ele.index != null && e[0]?.index != null && String(ele.index) === String(e[0].index)) {
+        if (ele.index != null && currIndex != null && String(ele.index) === String(currIndex)) {
           const newEle = _.cloneDeep(ele);
           newEle.type = type;
           newEle.index = undefined;
@@ -72,7 +70,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
           const newEle = _.cloneDeep(ele);
           newEle.operator = property
           newEle.value=targetValue
-          newEle.index = e?.[0]?.index;
+          newEle.index = currIndex;
           return newEle;
         }
         else{
