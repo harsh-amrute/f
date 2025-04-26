@@ -45,7 +45,7 @@ interface MaterialSODetailedProps {
     }))
 
     const handlePageChange = (currPage: number) => {
-        handlePageChangeOnHook(currPage);
+        handlePageChangeOnHook(currPage, false, {}, userPageSize);
     }
     //Excel Export POC 
 
