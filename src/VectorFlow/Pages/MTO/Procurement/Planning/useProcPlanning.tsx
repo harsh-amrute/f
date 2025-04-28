@@ -117,7 +117,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             setUserConfigFetched(true)
             const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
-            setColumnState(newConfig);
+            setColumnState(newConfig.cs);
 
             if (!data) {
                 console.error('Failed to apply column state');
@@ -128,22 +128,35 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }
 
     const handleSaveClick = async (isReset = false, page_size?: any) => {
+
         const config = isReset ? defaultColState : gridRef?.current?.api?.getColumnState();
     
         try {
-            const fullConfig = {
-                cs: config,
-                pageSize: page_size || userPageSize
-            };
+            if (page_size) {
+                const config = columnState;
+                const fullConfig = { cs: config, pageSize: page_size };
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcPlanning,
+                    cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIReportConfigData([payload]);
+        
+            } else {
+                const fullConfig = {
+                    cs: config,
+                    pageSize: userPageSize
+                };
     
-            const payload = {
-                un: user.user.name,
-                rn_id: UIGridCode.ProcPlanning,
-                cs: JSON.stringify(fullConfig)
-            };
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcPlanning,
+                    cs: JSON.stringify(fullConfig)
+                };
     
-            await updateUserUIReportConfigData([payload]);
-            !isReset && notifySuccess("Saved Successfully");
+                await updateUserUIReportConfigData([payload]);
+                !isReset && notifySuccess("Saved Successfully");
+            }
     
         } catch (error) {
             console.error(error);
@@ -349,7 +362,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     useEffect(() => {
         if(HeaderData && HeaderData.length>0){
             if (currentTab?.label === 'Shortage') {
-                console.log("processdf env.REACT_APP_ENABLE_SIMULATION",process.env.REACT_APP_ENABLE_SIMULATION)
                 if(process.env.REACT_APP_ENABLE_SIMULATION === "enabled"){
 
                     setColDef(getColumnDefinations(HeaderData, customHeader, extras))
@@ -387,12 +399,12 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                     setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
                 }
                 setCurrentPage(1);
-                fetchData(date, 1, '0')
+                fetchData(date, 1, '0', false, userPageSize);
             }
             else {
                 setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]))
                 setCurrentPage(1);
-                fetchData(date, 1, '1')
+                fetchData(date, 1, '1', false, userPageSize);
             }
         }
 
@@ -505,9 +517,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }, []);
 
     useEffect(() => {
-        if (date && Object.keys(appliedFilters).length>0 && userConfigFetched) {
+        if (date && Object.keys(appliedFilters).length > 0 && userConfigFetched) {
             setCurrentPage(1);
-            fetchData(date,1,currentTab?.label === "Shortage" ? '0':'1');
+            fetchData(date, 1, currentTab?.label === "Shortage" ? '0' : '1');
         }
     }, [appliedFilters, userConfigFetched])
 
@@ -522,10 +534,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         // setData(newDat);
         // setIsLoading(false);
         if (currentTab?.id === 'ca') {
-            fetchData(date, pageNumber, '1');
+            fetchData(date, pageNumber, '1', false, userPageSize);
         }
         else {
-            fetchData(date, pageNumber, '0');
+            fetchData(date, pageNumber, '0', false, userPageSize);
         }
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
@@ -655,7 +667,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
-                                onClick={() => { (!isDisabled) && fetchData(date, 1, '0') }}
+                                    onClick={() => { (!isDisabled) && fetchData(date, 1, '0',false,userPageSize) }}
                                 themeUi=""
                                 disabled={isDisabled}
                                 width={135}

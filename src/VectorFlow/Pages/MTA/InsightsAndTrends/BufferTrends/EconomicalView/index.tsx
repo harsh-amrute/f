@@ -46,8 +46,9 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,h
         { label: 'Red', value: 'Red' },
         { label: 'Yellow', value: '#FFBF00' },
         { label: 'Green', value: 'Green' },
-        { label: 'White', value: 'grey' },
         { label: 'Blue', value: 'Blue' },
+        { label: 'White', value: 'grey' },
+        
     ];
     
     function TooltipRenderer({ datum }: any) {
@@ -72,8 +73,8 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,h
                                         color.value === 'Red' ? 'r' :
                                         color.value === '#FFBF00' ? 'y' :
                                         color.value === 'Green' ? 'g' :
-                                        color.value === 'grey' ? 'w' :
-                                        color.value === 'Blue' ? 'bu' : null;
+                                        color.value === 'Blue' ? 'bu' : 
+                                        color.value === 'grey' ? 'w' : null;
     
                             if (!key) return ''; 
     

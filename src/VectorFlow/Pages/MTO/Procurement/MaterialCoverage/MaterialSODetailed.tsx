@@ -45,7 +45,7 @@ interface MaterialSODetailedProps {
     }))
 
     const handlePageChange = (currPage: number) => {
-        handlePageChangeOnHook(currPage);
+        handlePageChangeOnHook(currPage, false, {}, userPageSize);
     }
     //Excel Export POC 
 
@@ -138,7 +138,7 @@ interface MaterialSODetailedProps {
                     selectedRows={0}
                     resetGridRef={gridRef}
                     isDisabled={isDisabled}
-                    rowsPerPage={pagination.mtoPageSize}
+                    rowsPerPage={userPageSize || pagination.mtoPageSize}
                     totalRows={rowDataCount}
                     currentPage={currentPage}
                     handleChangePage={handlePageChange}

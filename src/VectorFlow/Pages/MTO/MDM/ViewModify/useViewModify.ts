@@ -110,6 +110,7 @@ import MajReasonDescCell from "./MajReasonDescCell";
 import MinReasonDescCell from "./MinReasonDescCell";
 import { useNavigate } from "react-router-dom";
 import DaysOfWeekRenderer from "./DaysOfWeekRenderer";
+import { BUFFER_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from "./MDMJoiValidations";
 
 
 const useViewModify = (pageType: string) => {
@@ -598,74 +599,29 @@ const useViewModify = (pageType: string) => {
 
   const validateMTOMaster = (masterId: number, newRowData: any) => {
     if (masterId === 501) {
-      const allRows = [...newRowData];
-      const newData: any = [];
 
+      const allRows = [...newRowData];
+      
+      const newData: any = [];
       allRows.forEach((e, i) => {
         const newVal = _.cloneDeep(e);
+        const { error } = BUFFER_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
+        if (error) {
+          // console.log(activeMaster.fields,"this is active master fields")
+          const fieldOrders = activeMaster.fields.map(field => field.key)
 
-        if (e.bsz === "") {
-          newVal.err = { error: "Enter the Buffer Size!", warning: "" };
-        }
-        // Validate for empty buffer type
-        else if (e.bt === "") {
-          newVal.err = { error: "Enter the Buffer Type!", warning: "" };
-        } else if (
-          Number(e.bsz) <= 0 ||
-          Number(e.bsz) >= 365 ||
-          e.bsz === null
-        ) {
+          const errorOrders = fieldOrders.flatMap((field) => {
+            return error.details.filter(err => err.path[0] === field)
+          });
+          
           newVal.err = {
-            error: "Buffer Size must be a number between 1 and 364!",
+            error: errorOrders[0].message,
             warning: "",
           };
-        }
-        // Validate slt is numeric and within range
-        else if (Number(e.slt) < 0 || Number(e.slt) >= 365 || e.slt === null) {
-          newVal.err = {
-            error: "SLT must be a number between 0 and 364!",
-            warning: "",
-          };
-        }
-        // Validate slt is not empty
-        else if (e.slt === "") {
-          newVal.err = { error: "SLT cannot be empty!", warning: "" };
-        } else if (e.mlt === "") {
-          newVal.err = { error: "MLT cannot be empty!", warning: "" };
-        }
-        // Validate mlt is numeric and within range
-        else if (Number(e.mlt) < 0 || Number(e.mlt) >= 365 || e.mlt === null) {
-          newVal.err = {
-            error: "MLT must be a number between 0 and 364!",
-            warning: "",
-          };
-        }
-        // Validate data types
-        else if (isNaN(Number(e.bsz))) {
-          newVal.err = { error: "Buffer Size must be a number!", warning: "" };
-        } else if (isNaN(Number(e.slt))) {
-          newVal.err = { error: "SLT must be a number!", warning: "" };
-        } else if (isNaN(Number(e.mlt))) {
-          newVal.err = { error: "MLT must be a number!", warning: "" };
-        } else if (typeof e.bcd !== "string") {
-          newVal.err = { error: "Enter a valid Buffer Code!", warning: "" };
-        } else if (typeof e.bd !== "string") {
-          newVal.err = {
-            error: "Enter a valid Buffer Description!",
-            warning: "",
-          };
-        } else if (
-          e.ib !== "true" &&
-          e.ib !== "false" &&
-          typeof e.ib !== "boolean"
-        ) {
-          newVal.err = {
-            error: "Is Blue must be either 'true' or 'false'!",
-            warning: "",
-          };
-        }
-        // Check against bufferInitialData for duplicates
-        else {
+        } else {
+          newVal.err = { error: "", warning: "" };
+          
+        
           bufferInitialData?.forEach((ele: any) => {
             if (ele.bcd === e.bcd) {
               newVal.err = {
@@ -701,27 +657,8 @@ const useViewModify = (pageType: string) => {
               warning: "",
             };
           }
-        }
-
+        
         // Additional validations
-        if (!e.bt || !e.bsz) {
-          newVal.err = {
-            error: "Enter Buffer Type and Buffer Size",
-            warning: "",
-          };
-        }
-        if (Number(e.bsz) <= 0) {
-          newVal.err = {
-            error: "Buffer size must be greater than 0",
-            warning: "",
-          };
-        }
-        if (Number(e.bsz) > 365) {
-          newVal.err = {
-            error: "Buffer size cannot exceed for over a year",
-            warning: "",
-          };
-        }
         const isBufferCodeDuplicate = bufferInitialData?.some(
           (master: any) => master.bcd === e.bcd
         );
@@ -764,7 +701,8 @@ const useViewModify = (pageType: string) => {
           newVal.err = { error: "", warning: "" };
         }
 
-        newData.push(newVal);
+      }
+      newData.push(newVal);
       });
 
       dispatch(UPDATE_ROW_DATA(newData));
@@ -777,118 +715,80 @@ const useViewModify = (pageType: string) => {
       allRows.forEach((e: any, index: number) => {
         const newVal = _.cloneDeep(e);
 
-        if (typeof e.cnm !== "string") {
-          newVal.err = { error: "CCR name must be a string!", warning: "" };
-        } else if (isNaN(Number(e.cpd))) {
-          newVal.err = {
-            error: "CCR Capacity Per Day must be a number!",
-            warning: "",
-          };
-        } else if (isNaN(Number(e.whpd))) {
-          newVal.err = {
-            error: "Working hours Per Day must be a number!",
-            warning: "",
-          };
-        } else if (isNaN(Number(e.sh))) {
-          newVal.err = {
-            error: "Scheduling horizon must be a number!",
-            warning: "",
-          };
-        } else if (
-          isNaN(Number(e.rb)) ||
-          Number(e.rb) < 0 ||
-          Number(e.rb) > 1
-        ) {
-          newVal.err = {
-            error: "Resource buffer (rb) must be a decimal between 0 and 1!",
-            warning: "",
-          };
-        } else if (isNaN(Number(e.cwl))) {
-          newVal.err = {
-            error: "Cumulative WIP Limit must be a number!",
-            warning: "",
-          };
-        } else if (
-          plantMaster &&
-          !plantMaster?.some(
-            (plant: any) => plant.plant_name === e.pl || plant.plant_id === e.pl
-          )
-        ) {
-          newVal.err = {
-            error: "Please select a valid plant from the dropdown",
-            warning: "",
-          };
-        } else if (
-          deptMaster &&
-          !deptMaster?.some(
-            (dept: any) => dept.dept_name === e.dp || dept.dept_id === e.dp
-          )
-        ) {
-          newVal.err = {
-            error: "Please select a valid department from the dropdown",
-            warning: "",
-          };
-        } else if (
-          ccrGroupMaster &&
-          !Object.keys(ccrGroupMaster).includes(e.cgid)
-        ) {
-          newVal.err = {
-            error: "Please select a valid CCR Group from the dropdown",
-            warning: ""
-          };
-        }
+        const {error} = CCR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
 
-        if (e.cnm === "" || !e.cnm) {
-          newVal.err = { error: "CCR name cannot be empty!", warning: "" };
-        } else if (e.cpd === "" || !e.cpd || e.cpd <= 0) {
-          newVal.err = {
-            error: "CCR Capacity Per Day must be greater than 0!",
-            warning: "",
-          };
-        } else if (e.whpd === "" || !e.whpd || e.whpd <= 0) {
-          newVal.err = {
-            error: "Working hours Per Day must be greater than 0!",
-            warning: "",
-          };
-        } else if (e.sh === "" || !e.sh) {
-          newVal.err = {
-            error: "Scheduling horizon cannot be empty!",
-            warning: "",
-          };
-        } else if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
-          newVal.err = {
-            error: "CCR code already exists in the master data!",
-            warning: "",
-          };
-        } else if (e.rb === undefined || e.rb < 0 || e.rb > 1) {
-          newVal.err = {
-            error: "Resource buffer (rb) must be between 0 and 1!",
-            warning: "",
-          };
-        } else if (e.cwl === "" || e.cwl === undefined || e.cwl <= 0) {
-          newVal.err = {
-            error: "Cumulative WIP Limit must be greater than 0!",
-            warning: "",
-          };
-        } else {
-          const isCcrCodeDuplicate = ccrInitialData?.some(
-            (master: any) => master.ccd === e.ccd
-          );
+        if(error){
 
-          const isCcrCodeDuplicateInCurr = allRows.some(
-            (row: any, i: any) => i < index && row.ccd === e.ccd
-          );
-          if (isCcrCodeDuplicateInCurr) {
-            newVal.err = { error: "CCR code must be unique!", warning: "" };
+          const fieldOrders = activeMaster.fields.map(field =>field.key)
+
+          const errorOrders = fieldOrders.flatMap((field)=>{
+            return error.details.filter(err=> err.path[0] === field)
+          })
+
+          newVal.err = {
+            error : errorOrders[0].message,
+            warning : ""
           }
-          if (isCcrCodeDuplicate) {
+
+          newData.push(newVal)
+        }else{
+        
+          if (
+            plantMaster &&
+            !plantMaster?.some(
+              (plant: any) => plant.plant_name === e.pl || plant.plant_id === e.pl
+            )
+          ) {
             newVal.err = {
-              error: "CCR code exists in master data!",
+              error: "Please select a valid plant from the dropdown",
               warning: "",
             };
+          } else if (
+            deptMaster &&
+            !deptMaster?.some(
+              (dept: any) => dept.dept_name === e.dp || dept.dept_id === e.dp
+            )
+          ) {
+            newVal.err = {
+              error: "Please select a valid department from the dropdown",
+              warning: "",
+            };
+          } else if (
+            ccrGroupMaster &&
+            !Object.keys(ccrGroupMaster).includes(e.cgid)
+          ) {
+            newVal.err = {
+              error: "Please select a valid CCR Group from the dropdown",
+              warning: ""
+            };
           }
+
+          if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
+            newVal.err = {
+              error: "CCR code already exists in the master data!",
+              warning: "",
+            };
+          
+          } else {
+            const isCcrCodeDuplicate = ccrInitialData?.some(
+              (master: any) => master.ccd === e.ccd
+            );
+
+            const isCcrCodeDuplicateInCurr = allRows.some(
+              (row: any, i: any) => i < index && row.ccd === e.ccd
+            );
+            if (isCcrCodeDuplicateInCurr) {
+              newVal.err = { error: "CCR code must be unique!", warning: "" };
+            }
+            if (isCcrCodeDuplicate) {
+              newVal.err = {
+                error: "CCR code exists in master data!",
+                warning: "",
+              };
+            }
+          }
+          newData.push(newVal);
         }
-        newData.push(newVal);
       });
 
       // Dispatch the updated row data
@@ -900,7 +800,7 @@ const useViewModify = (pageType: string) => {
       const newData: any = [];
       allRows.forEach((e: any) => {
         const newVal = _.cloneDeep(e);
-
+        
         if (
           plantMaster &&
           !plantMaster.some(
@@ -4120,7 +4020,7 @@ const useViewModify = (pageType: string) => {
     bufferTypeData,
     ccrGroupMaster,
     plantMaster,
-    deptMaster,
+    deptMaster
   ]);
 
   const onMajReasonSelected = () => {
