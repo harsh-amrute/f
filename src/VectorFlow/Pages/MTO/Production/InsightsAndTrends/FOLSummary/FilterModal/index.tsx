@@ -324,7 +324,6 @@ const FilterModal = (props: IFilterModalProps) => {
                     <FilterAccordianWrapper>
                         {
                             filters?.map((filter: { key: string, heading: string, options: string[] }) => {
-                                console.log(filter.key)
                                 if (filter.key === "plnm" || filter.key === "FOL" || filter.key === "prdGrp") return null
                                 return (
                                     <AccordianContainer>
