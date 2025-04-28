@@ -6,7 +6,7 @@ const colorMapper = (color: number) => {
         return {
             "bg": "#cecece",
             "text": "black"
-        }
+        }                    
     }
     if (color < 0) {
         return {
