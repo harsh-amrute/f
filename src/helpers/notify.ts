@@ -57,5 +57,6 @@ export const notifyLoader = (msg: string) =>{
 }
 
 export const notifyWarning = (msg: string) =>{
+  toast.dismiss()
   return toast.warning(msg, ATTR_TOAST)
 }

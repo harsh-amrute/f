@@ -220,13 +220,12 @@ const ModalAdvanedPermissions = (props: any) => {
               });
               
               res?.response?.msg &&  notifyError(res?.response?.msg);
-              res?.response?.war && notifyWarning(res?.response?.war);
               res?.response?.password?.forEach((element: any) => {
                 notifyError(element);
               });
             } else {
-              notifySuccess(res?.data?.msg);
-              notifyWarning(res?.data?.war);
+              notifySuccess(res?.data?.msg.message);
+              notifyWarning(res?.data?.msg.warning);
               closeModal();
               refetch();
             }
