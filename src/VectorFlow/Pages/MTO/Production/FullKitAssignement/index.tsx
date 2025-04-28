@@ -124,7 +124,7 @@ const FullKitAssignment = () => {
             <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }}
               onClick={() => {
                 setShowModal(true);
-                setItemTypeId(params.data?.itid || 1);
+                setItemTypeId(params.data?.itid);
                 setSelectedPlantId(params.data?.plid);
                 setSelectedRouteId(params.data?.r);
                 setOrderKey(params.data?.ok);
