@@ -53,7 +53,6 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
       updatedFilters = filterState[parent as keyof FilterState]?.filters.map((ele:any)=>{
         if (ele.index != null && currIndex != null && String(ele.index) === String(currIndex)) {
           const newEle = _.cloneDeep(ele);
-          newEle.type = type;
           newEle.index = undefined;
           newEle.operator = "";
           newEle.value = [];
@@ -66,7 +65,7 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
       
       
      updatedFilters = updatedFilters.map((ele:any)=>{
-        if(ele.attributeName===filterId){
+        if(ele.attributeName===filterId ){
           const newEle = _.cloneDeep(ele);
           newEle.operator = property
           newEle.value=targetValue
@@ -180,7 +179,10 @@ const VFCommonFilter = (props: VFCommonFilterProps) => {
     }
   }, [multiFilter]);
 
+
+
   const filterKeys = Object.keys(filterState) || [];
+
   return (
     <>
       <VFModalCard

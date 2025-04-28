@@ -316,16 +316,15 @@ const MTOActionToolBar = ({
                         <VFSelectedFiltersChip key={key}>
                         <VFSelectedFiltersFilterLabel>
                             {newFilters[key]?.name} <SCFilterVerticalDivider />
-                        </VFSelectedFiltersFilterLabel>
-
+                            </VFSelectedFiltersFilterLabel>
+                            
                             {newFilters[key]?.filters?.map((filter: any, index: number) => {
-                        
-                            const operatorText = filter?.operator && filter?.operator !== '' ? (
-                                filter?.type === 'textCompare' ? textComparators?.find((item: any) => item.value === filter?.operator)?.label + ' ' 
+                                const operatorText = filter?.operator && filter?.operator !== '' ? (
+                                    filter?.type === 'textCompare' ? textComparators?.find((item: any) => item.value === filter?.operator)?.label + ' ' 
                                     : filter?.type === 'numberCompare' ? numberComparators?.find((item: any) => item.value === filter?.operator)?.label + ' '
                                         : '') 
-                             : '';
-                                               
+                                    : '';
+                                            
                             return (
                         (filter?.value?.length > 0) &&
                         <>

@@ -409,8 +409,6 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   const [selectedValue, setSelectedValue] = useState<any[]>(masterFilterState.filters.map((e:any)=> {return e.value}));
 
   const handleHeaderChange = (selectedOption: any, type: any, index: any, id: any) => {
-    
-
     if(type==="header"){
       const updatedHeaders:any = [...selectedHeader];
       updatedHeaders[index] = selectedOption;
@@ -429,7 +427,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
       updatedOperator[index] = selectedOption;
       updatedOperator[index].index = index;
       setSelectedOperator(updatedOperator);
-      onChange('numberCompare',selectedHeader?.[index]?.attributeName, updatedOperator, "orders", updatedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}],index)
+      
+      onChange(selectedHeader?.[index]?.type,selectedHeader?.[index]?.attributeName, updatedOperator, "orders", updatedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}],index)
     }
     else if(type==='value'){
     const updatedValues = [...selectedValue]; 
@@ -437,7 +436,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
     setSelectedValue(updatedValues);
     const updateOperator = [...selectedOperator];
     updateOperator[index] = selectedOperator[index];
-    onChange('numberCompare',selectedHeader?.[index]?.attributeName, updateOperator, "orders", updateOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}],index)
+    onChange(selectedHeader?.[index]?.type,selectedHeader?.[index]?.attributeName, updateOperator, "orders", updateOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}],index)
     }
   };
 
@@ -528,6 +527,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
     return filteredOptions;
   };
   
+
 
       return (
       <>
