@@ -54,15 +54,19 @@ function ForgotPasswordContainer() {
 
   const { mutateAsync: mutateForgotPassword } = useForgotPassword();
 
+  const [message, setMessage] = useState("");
+
   const onSave = () => {
     const recaptchaValue = recaptchaRefFP.current.getValue();
     setLoading(true);
     const formData = getValues();
     const data = { email: formData.email.trim() };
 
+    
     if (recaptchaValue) {
       mutateForgotPassword(data, {
         onSuccess: (data: any) => {
+          setMessage(data.data.msg);
           if (data?.status === 400) {
             recaptchaRefFP.current?.reset();
             notifyError(data?.response?.msg[0]);
@@ -72,6 +76,8 @@ function ForgotPasswordContainer() {
           setLoading(false);
         },
         onError: (data: any) => {
+          setMessage(data.data.msg);
+
           recaptchaRefFP.current?.reset();
           notifyError(data.error);
           setLoading(false);
@@ -93,10 +99,7 @@ function ForgotPasswordContainer() {
             <SuccessArea>
               <SuccessIcon src="/assets/img/auth/tick-circle.svg" />
               <SuccessText>
-                Password reset link successfully sent to your email ID.
-              </SuccessText>
-              <SuccessText>
-                Please follow the steps provided on email.
+               {message}
               </SuccessText>
             </SuccessArea>
           ) : (
