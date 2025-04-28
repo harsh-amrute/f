@@ -117,7 +117,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             setUserConfigFetched(true)
             const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
-            setColumnState(newConfig);
+            setColumnState(newConfig.cs);
 
             if (!data) {
                 console.error('Failed to apply column state');
@@ -128,22 +128,35 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }
 
     const handleSaveClick = async (isReset = false, page_size?: any) => {
+
         const config = isReset ? defaultColState : gridRef?.current?.api?.getColumnState();
     
         try {
-            const fullConfig = {
-                cs: config,
-                pageSize: page_size || userPageSize
-            };
+            if (page_size) {
+                const config = columnState;
+                const fullConfig = { cs: config, pageSize: page_size };
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcPlanning,
+                    cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIReportConfigData([payload]);
+        
+            } else {
+                const fullConfig = {
+                    cs: config,
+                    pageSize: userPageSize
+                };
     
-            const payload = {
-                un: user.user.name,
-                rn_id: UIGridCode.ProcPlanning,
-                cs: JSON.stringify(fullConfig)
-            };
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.ProcPlanning,
+                    cs: JSON.stringify(fullConfig)
+                };
     
-            await updateUserUIReportConfigData([payload]);
-            !isReset && notifySuccess("Saved Successfully");
+                await updateUserUIReportConfigData([payload]);
+                !isReset && notifySuccess("Saved Successfully");
+            }
     
         } catch (error) {
             console.error(error);

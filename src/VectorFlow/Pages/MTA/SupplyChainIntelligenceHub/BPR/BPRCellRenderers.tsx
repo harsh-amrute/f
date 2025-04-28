@@ -128,6 +128,13 @@ export const BPRTechColorCellRenderer = (params:any)=>{
         )
     }
 
+    if(params.data.TechPen== null){
+        return (
+            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:"white",maxWidth:90}}>
+            </BPRColorCellRendererWrapper>        
+            )
+    }
+
     return(
         <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
             {params.data.TechPen}%
@@ -160,6 +167,13 @@ export const BPREcoColorCellRenderer = (params:any)=>{
             // </BPRColorCellRendererWrapper>
             <React.Fragment/>
         )
+    }
+
+    if(params.data.EcoPen == null){
+        return (
+            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:"white",maxWidth:90}}>
+            </BPRColorCellRendererWrapper>        
+            )
     }
 
     return(
