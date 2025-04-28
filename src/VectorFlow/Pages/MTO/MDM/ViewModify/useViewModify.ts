@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, act } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   type Option,
   type Field,
