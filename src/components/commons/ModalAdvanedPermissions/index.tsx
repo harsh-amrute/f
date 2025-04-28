@@ -259,7 +259,6 @@ const ModalAdvanedPermissions = (props: any) => {
                 notifyError(element);
               });
             } else {
-              console.log("resssss", res);
               notifySuccess(res?.data?.msg);
               refetch();
               closeModal();
