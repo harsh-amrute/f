@@ -8,7 +8,7 @@ import { useGetOpenSODetailsData, useGetOpenSODetailsDataForExcelExport } from "
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
-import { FilterPageName } from "../../Common/Enum";
+import { FilterPageName, pagination } from "../../Common/Enum";
 import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
 
 const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userConfigFetched:any,userPageSize:any,setUserPageSize:any) => {
@@ -21,76 +21,61 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
     const { mutateAsync : getOpenSODetailsDataForExcelExport } = useGetOpenSODetailsDataForExcelExport();
 
     useEffect(() => {
-        if(userConfigFetched)
-            getInitialData(currentPage)
+        if (userConfigFetched) {
+            setCurrentPage(1);
+            getInitialData(1);
+        }
     }, [appliedFilters, userConfigFetched])  
 
     const [isLoading, setIsLoading] = useState(false);
 
 
-    const getInitialData = async (currPage: number, isExcelExport = false , body = {},pageSize?:any) => {
+    const getInitialData = async (currPage: number, isExcelExport = false, body = {}, pageSize?: any) => {
         try {
-            const formatedFilters = formatFilterJSON(appliedFilters);
-            let queryString = '?Color='
-                const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'))
-                colorsArray.forEach((s: string, index: number) => {
-                    if (index === colorsArray.length - 1) {
-                        queryString += `${data[s]}`
-                    }
-                    else {
-                        queryString += `${data[s]},`
-                    }
-                })
-                queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize}`
-         
-        if (isExcelExport) {
-            
-                
-                const response = await  getOpenSODetailsDataForExcelExport({data : queryString , isExcelExport :1 , body , report_name : FilterPageName.Proc_Material_Coverage_For_OpenSO})
-                if(response.status === 200) {
-                    DownloadExcel(response , FilterPageName.Proc_Material_Coverage_For_OpenSO)
-                    notifySuccess("Excel Export Successfully")
-                }
-                else{
-                    notifyError("Failed to export Excel")
-                }
-
-            
-        }else{
-           
+          const formattedFilters = formatFilterJSON(appliedFilters);
+          const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'));
+          const colorsQuery = colorsArray.map((key: string) => data[key]).join(',');
+      
+          const queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`;
+      
+          if (isExcelExport) {
+            const response = await getOpenSODetailsDataForExcelExport({
+              data: queryString,
+              isExcelExport: 1,
+              body,
+              report_name: FilterPageName.Proc_Material_Coverage_For_OpenSO
+            });
+      
+            if (response.status === 200) {
+              DownloadExcel(response, FilterPageName.Proc_Material_Coverage_For_OpenSO);
+              notifySuccess("Excel Export Successfully");
+            } else {
+              notifyError("Failed to export Excel");
+            }
+          } else {
             setIsLoading(true);
             toast.dismiss();
-            notifyLoader("Loading data...")
-
-            let queryString = '?Color='
-            const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'))
-            colorsArray.forEach((s: string, index: number) => {
-                if (index === colorsArray.length - 1) {
-                    queryString += `${data[s]}`
-                }
-                else {
-                    queryString += `${data[s]},`
-                }
-            })
-            queryString += `&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize}`
+            notifyLoader("Loading data...");
       
-            const someData = await getOpenSODetailsData({ data: queryString, appliedFilters: formatedFilters });
-            const output = someData.data?.data?.results.map((item: any) => ({
-                ...item,
-                fkapr: ((item.fka / item.oq) * 100).toFixed(2)
-            })
-            )
-            setRowDataCount(someData.data?.data?.count);
-            setIsLoading(false);
-            setOrderDetailsData(output)
-            toast.dismiss();
-            notifySuccess("Fetched data successfully!")
+            const someData = await getOpenSODetailsData({ data: queryString, appliedFilters: formattedFilters });
+            const results = someData.data?.data?.results || [];
+            const output = results.map((item: any) => ({
+              ...item,
+              fkapr: ((item.fka / item.oq) * 100).toFixed(2),
+            }));
+      
+            setRowDataCount(someData.data?.data?.count || 0);
+            setOrderDetailsData(output);
+            notifySuccess("Fetched data successfully!");
+          }
+        } catch (error) {
+          console.error("An error occurred while fetching data:", error);
+          notifyError("An error occurred while fetching data.");
+        } finally {
+          setIsLoading(false);
+          toast.dismiss();
         }
-        
-            }catch (error) {
-                console.log(error);
-            }
-    }
+      }
 
     const savePageSize = (pageSize: any) => {
         if (pageSize) {
@@ -104,9 +89,9 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
         
     }
 
-    const handlePageChangeOnHook = useCallback((param: number) => {
-        setCurrentPage(param);
-        getInitialData(param)
+    const handlePageChangeOnHook = useCallback((currPage: number,isExcelExport:boolean,body:any,userPageSize:number) => {
+        setCurrentPage(currPage);
+        getInitialData(currPage, isExcelExport, body, userPageSize);
         // You can add more logic here
     }, []);
 
