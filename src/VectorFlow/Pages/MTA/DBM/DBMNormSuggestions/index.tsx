@@ -83,7 +83,7 @@ const [isDisabled, setIsDisabled]= useState<boolean>(true)
           showAllTick={showAllCheckbox}
           handleGoButton={handleGoButton}
           genericRecordCount={DBMDataCount}
-          onExportToExcelCallBack={(e: number) => onExportToExcelCallBack(e)}
+          onExportToExcelCallBack={onExportToExcelCallBack}
           onApplyFilter={handleApplyFilter}
           multiFilter={currentFilter}
           setMultiFilter={setCurrentFilter}
