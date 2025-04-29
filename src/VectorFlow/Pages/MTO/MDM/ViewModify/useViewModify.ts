@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, act } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   type Option,
   type Field,
@@ -3439,6 +3439,7 @@ const useViewModify = (pageType: string) => {
     const finPoogiPostData: any = [];
     const groupedData = _.groupBy(PoogiPostObj.reasonData, "majdsc");
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [key,items] of Object.entries(groupedData)) {
       items.forEach((item) => {
         const { plnm, plid, majdsc, mindsc } = item;
@@ -3867,6 +3868,7 @@ const useViewModify = (pageType: string) => {
         const finPoogiPostData: any = [];
         const groupedData = _.groupBy(PoogiPostObj.reasonData, "majdsc");
     
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [key,items] of Object.entries(groupedData)) {
           items.forEach((item) => {
             const { plnm, plid, majdsc, mindsc } = item;

@@ -7,7 +7,6 @@ import BoxPlotContainer from '../../../../Common/BoxPlotContainer'
 import { useGetDeptMasterData, useGetPlantMasterData } from '../../../../../../../VectorFlow/Services/MTO/Common/Masters'
 import RadioSelect from '../../../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
 import { useUserData } from '../../../../../../../context'
-import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton'
 
 const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant, dept }: any) => {
@@ -24,9 +23,6 @@ const WeekWiseGraph = ({ handleSelectionChange, chartTableData, chartData, plant
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
-    const userTheme = themeUi === 'REGALBLAZE';
-    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
 
     const [selectedPlant, setSelectedPlant] = useState(plant);
     const [selectedDept, setSelectedDept] = useState(dept);

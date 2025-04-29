@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import DatePicker from '../../../../../../components/VectorFLOW/commons/MTO/DatePicker'
 import { DayWiseCoverageHeaderContainer, DayWiseCoverageStatus, Divider, Text } from './style'
 import { format } from 'date-fns'
-import { ColorsMTO } from '../../../Common/Colors'
 import { useUserData } from '../../../../../../context'
 import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton'
 
@@ -32,12 +31,7 @@ const DayWiseCoverageHeader = ({
 
 
     const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
-    const userTheme = themeUi === 'REGALBLAZE';
-
-    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-    
+    const themeUi = user?.user?.theme_ui;    
 
     useEffect(() => {
         if (!(start.length && end.length)) {

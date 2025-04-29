@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { commonValidator,supplyCodeChecks, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,commonValidatorWithSeperator} from "../../../commons";
+import { commonValidator, generateCommonMessages,defaultJOIOptions,MAX_CODE_LENGTH,commonValidatorWithSeperator} from "../../../commons";
 
 const SuppCodeValidator = (value:any,helper:any)=>{
 

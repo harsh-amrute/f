@@ -35,7 +35,6 @@ import { ReactElement } from 'react';
 import { format } from 'date-fns';
 import VFCommonFilter from '../../../../../VectorFlow/Pages/MTO/Common/VFCommonFilter';
 import { getSelectedFilters } from '../../../../../helpers/utils';
-import { ColorsMTO } from '../../../../../VectorFlow/Pages/MTO/Common/Colors';
 import { ExportExcelSVG, ResetSVG, SaveSVG,GridView,ChartView } from '../../../../../helpers/SvgRenderer';
 import { Theme } from '../../../../../styles/global';
 import VFDatePicker from '../../../../../VectorFlow/Pages/MTO/Common/VFDatePicker';
@@ -133,11 +132,6 @@ const MTOActionToolBar = ({
     const format2 = "yyyy-MM-dd"
     const d = new Date();
     const datetime = moment(d).format(format2); 
-
-    const userTheme = themeUi === 'REGALBLAZE';
-    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
 

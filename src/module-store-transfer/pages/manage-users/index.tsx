@@ -9,7 +9,6 @@ import {
 } from "./styles";
 import {
   ButtonFloat,
-  ButtonOutlineIcon,
   TableUserManagement,
   ModalManageUsers,
   ModalAdvanedPermissions,

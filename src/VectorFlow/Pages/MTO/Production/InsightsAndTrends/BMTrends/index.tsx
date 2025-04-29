@@ -13,7 +13,6 @@ import { useGetDate } from '../../../../../../VectorFlow/Services/MTO/Production
 import VFRangeSlider from '../../../Common/VFRangeSlider'
 // import useFilter from "../../../../../../hooks/useFilter";
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
-import { ColorsMTO } from '../../../Common/Colors'
 import { useUserData } from '../../../../../../context'
 import RadioSelect from '../../../../../../components/VectorFLOW/commons/MTO/RadioSelect'
 import OverlayLoader from '../../../Common/Loader'
@@ -147,10 +146,6 @@ const BMTrends = () => {
     }
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
-    const userTheme = themeUi === 'REGALBLAZE';
-    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-
 
     const getSeriesData = () => {
         const series: AgCartesianSeriesOptions[] = [];

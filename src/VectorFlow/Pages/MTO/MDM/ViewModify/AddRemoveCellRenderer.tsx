@@ -19,7 +19,6 @@ const AddRemoveCellRenderer = (params: any) => {
     const ccrModifyData = useSelector((state: any)=> state.mto.ccrModifyData);
     const poogiModifyData = useSelector((state: any)=> state.mto.poogiModifyData);
     const poogiInitialData = useSelector((state: any)=> state.mto.poogiIntialData);
-    const ccrInitialData = useSelector((state: any)=> state.mto.ccrInitialData);
 
     const validateCCR = () => {
       const {error} = CCR_VALIDATION_SCHEMA.validate(params.data,{ abortEarly: false })

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { SearchInputMultiple } from "../../index";
 import {
   SCSwapPermission,
