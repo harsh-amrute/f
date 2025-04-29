@@ -368,21 +368,20 @@ const FilterTextInput = ({
   );
 };
 
-const AvailabilityFilter = ({ header, onChange,filterId,filterState, setFilterState, masterFilterState, resetKey}:any)=>{
 
 
-  const textComparators = [
-    {value:'et',label:'Equal to'},
-    {value:'net',label:'Not Equal to'},
-    {value: "cn", label: "Contains"},
-    {value:'dnc',label:'Does not contain'},
-    {value:'sw',label:'Starts with'},
-    {value:'dsw',label:'Does not start with'},
-    {value:'ew',label:'Ends with'},
-    {value:'dnew',label:'Does not end with'},
-    {value:'hv',label:'Has value'},
-  ]
- 
+    const textComparators = [
+      { value: 'et', label: 'Equal to' },
+      { value: 'net', label: 'Not Equal to' },
+      { value: "cn", label: "Contains" },
+      { value: 'dnc', label: 'Does not contain' },
+      { value: 'sw', label: 'Starts with' },
+      { value: 'dsw', label: 'Does not start with' },
+      { value: 'ew', label: 'Ends with' },
+      { value: 'dnew', label: 'Does not end with' },
+      { value: 'hv', label: 'Has value' },
+    ];
+    
   const numberComparators = [
     {value:'et', label: '='},
     {value:'net', label: '!='},
@@ -391,6 +390,8 @@ const AvailabilityFilter = ({ header, onChange,filterId,filterState, setFilterSt
     {value:'gt',label:'>'},
     {value:'lt',label:'<'},
   ]
+
+const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState, setFilterState, masterFilterState, resetKey}:any)=>{
 
   const getNameOptions = (type: string) => {
     if(type==='numberCompare'){
@@ -426,7 +427,8 @@ const AvailabilityFilter = ({ header, onChange,filterId,filterState, setFilterSt
       updatedOperator[index] = selectedOption;
       updatedOperator[index].index = index;
       setSelectedOperator(updatedOperator);
-      onChange('numberCompare',selectedHeader?.[index]?.attributeName, updatedOperator, "orders", updatedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}],index)
+      
+      onChange(selectedHeader?.[index]?.type,selectedHeader?.[index]?.attributeName, updatedOperator, "orders", updatedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}],index)
     }
     else if(type==='value'){
     const updatedValues = [...selectedValue]; 
@@ -434,7 +436,7 @@ const AvailabilityFilter = ({ header, onChange,filterId,filterState, setFilterSt
     setSelectedValue(updatedValues);
     const updateOperator = [...selectedOperator];
     updateOperator[index] = selectedOperator[index];
-    onChange('numberCompare',selectedHeader?.[index]?.attributeName, updateOperator, "orders", updateOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}],index)
+    onChange(selectedHeader?.[index]?.type,selectedHeader?.[index]?.attributeName, updateOperator, "orders", updateOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}],index)
     }
   };
 
@@ -526,6 +528,7 @@ const AvailabilityFilter = ({ header, onChange,filterId,filterState, setFilterSt
   };
   
 
+
       return (
       <>
        {masterFilterState?.filters?.map((filter:any, index:any) => (
@@ -607,5 +610,7 @@ export {
   FilterSelectDropdown,
   FilterTextInput,
   AvailabilityFilter,
-  Checkbox
+  textComparators,
+  numberComparators,
+  Checkbox,
 };

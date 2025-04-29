@@ -3,7 +3,6 @@ import { AgCharts } from 'ag-charts-react'
 import { useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
-// import RouteAssignment from '../../Common/RouteAssignment/RouteAssignment'
 import { ContentWrapper, Text } from './FullKitAssignment.styled'
 import { Rectangle } from './RectangleMarker'
 import { notifyError } from '../../../../../helpers/notify'
@@ -29,7 +28,7 @@ type Route = {
     ps: number;
 };
 
-const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, routeId, plantId, orderKey, setOrderKey, loadDataParams, setLoadDataParams }: any) => {
+const EditRouteModal = ({ showModal, setShowModal, graphData, theme, master, routeId, plantId, orderKey, setOrderKey, loadDataParams, setLoadDataParams, itemTypeId }: any) => {
 
     const chartoptions: any = {
         data: graphData,
@@ -147,11 +146,19 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
     }, [routeId, orderKey]);
 
     const ccrGroupsForPlant = useMemo(() => {
-        if (plantId && ccrGroups) {
-            return ccrGroups.map((ccrGroup: any) => {
+        // Get all CCRs that have mappings for the current item type
+        const validCCRs = new Set<string>();
+        master?.CCRItemTypeMappingMaster?.forEach((mapping: any) => {
+            if (mapping.it === itemTypeId) {
+                validCCRs.add(mapping.ccrId);
+            }
+        });
+        
+        if (plantId && master?.ccrGroups) {
+            return master?.ccrGroups.map((ccrGroup: any) => {
                 return {
                     ...ccrGroup, ccrs: ccrGroup.ccrs.filter((ccr: any) => {
-                        return ccr.plant_id == plantId
+                        return ccr.plant_id == plantId && validCCRs.has(ccr.value);
                     })
                 }
             })?.filter((ccrGroup: any) => ccrGroup.ccrs.length != 0)
@@ -159,7 +166,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
         else {
             return []
         }
-    }, [ccrGroups, plantId])
+    }, [master?.ccrGroups, plantId])
 
 
     const getRoute = async (route: any) => {
@@ -171,7 +178,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
                 const newRoute: any = []
                 routeDetails.forEach((routeDetail: any) => {
                     const obj = []
-                    const ccrGroup = ccrGroups.find((ccr: any) => ccr.value === routeDetail.ccrGrpId);
+                    const ccrGroup = master?.ccrGroups.find((ccr: any) => ccr.value === routeDetail.ccrGrpId);
                     obj[0] = ccrGroup;
                     obj[1] = ccrGroup.ccrs.find((ccr: any) => ccr.value === routeDetail.ccrId)
                     newRoute[routeDetail.ps - 1] = obj
@@ -259,13 +266,22 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
                 <Text>
                     You can change route by selecting CCR from drop-down
                 </Text>
-                <RouteAssignment theme={theme} ccrGroupMaster={ccrGroupsForPlant} selectedRoutes={selectedRoute} setSelectedRoutes={setSelectedRoute} />
+                {
+                    master && ccrGroupsForPlant &&
+                    (<RouteAssignment
+                        theme={theme}
+                        ccrGroupMaster={ccrGroupsForPlant}
+                        selectedRoutes={selectedRoute}
+                        setSelectedRoutes={setSelectedRoute}
+                    />)
+                }
                 {/* <RouteAssignment theme={theme} /> */}
                 <strong style={{ fontSize: "14px" }}>Route Load</strong>
                 <div style={{ height: "300px" }}>
                     <AgCharts options={chartoptions} />
                 </div>
-                <div style={{ display: "flex", justifyContent: "end", gap: "1rem" }}>
+            </ContentWrapper>
+                <div style={{ display: "flex", justifyContent: "end", gap: "1rem",borderTop: '2px dashed #A0A0A0', padding: '20px 20px 20px 0' }}>
                     <VFButtonOutline
                         style={{
                             height: "30px",
@@ -291,9 +307,8 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, ccrGroups, 
                         boxShadow: "unset"
                     }} themeUi={theme} onClick={() => { SaveRoute() }}>Save Route</VFButton>
                 </div>
-            </ContentWrapper>
         </VFModalCard>
     )
 }
 
-export default EditRouteModal
+export default React.memo(EditRouteModal)

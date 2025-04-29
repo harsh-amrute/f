@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import "./styles.css";
 import { useTranslation } from "react-i18next";
-import { notifyError, notifySuccess } from "../../../helpers/notify";
+import { notifyError, notifySuccess, notifyWarning } from "../../../helpers/notify";
 import { useRegisterUser, usePutEditUser } from "../../../services/profile";
 import LoadingSpinner from "../LoadingSpinner";
 import PrdPermissions from "../../../components/layouts/ProductPermission/common-mulselect";
@@ -21,6 +21,7 @@ const ModalAdvanedPermissions = (props: any) => {
   const { t } = useTranslation();
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+
 
   const {
     openModal,
@@ -205,7 +206,6 @@ const ModalAdvanedPermissions = (props: any) => {
 
 
       setIsLoadSpinner(true);
- 
       if (contentModal.callApi === 1 ) {
         mutateRegister(formData, {
           onSuccess: (res: any) => {
@@ -223,13 +223,13 @@ const ModalAdvanedPermissions = (props: any) => {
                 notifyError(element);
               });
             } else {
-              notifySuccess(res?.data?.msg);
+              notifySuccess(res?.data?.msg.message);
+              notifyWarning(res?.data?.msg.warning);
               closeModal();
               refetch();
             }
           },
           onError: (error: any) => {
-            console.log("error", error);
             setIsLoadSpinner(false);
             error.response?.email?.forEach((element: any) => {
               notifyError(element);
@@ -386,6 +386,7 @@ const ModalAdvanedPermissions = (props: any) => {
                           />
                         </div>)
                       }
+
                       
                       <PrdPermissions
                         ref={prdPermissionRef}

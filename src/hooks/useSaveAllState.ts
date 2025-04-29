@@ -161,8 +161,8 @@ const useSaveAllState = (isPlanning?:boolean) => {
         };
       });
       ref.current.api.applyColumnState({state:tempCurrentGridState,applyOrder:true})
-      onResetCallback()
-      // ref.current.api.resetColumnState()
+      // onResetCallback()
+      ref.current.api.resetColumnState()
       ref.current.api.setGridOption('pivotMode',false)
       const charts  = ref.current.api.getChartModels()
       charts.forEach((c:any)=>{
