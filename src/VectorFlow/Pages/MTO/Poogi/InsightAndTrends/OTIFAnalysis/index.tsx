@@ -8,7 +8,6 @@ import {
   BTRTableWrapper,
   HorizontalViewWrapper,
 } from "./styles";
-import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TagCellToolTip from "./TagCellRenderer/TagCellRenderer";
 import { useGetFilterData } from "../../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../../hooks/useFilter";
@@ -22,6 +21,7 @@ import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefina
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
+import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -72,10 +72,12 @@ const OTIFAnalysis = () => {
       cellStyle: {
         display: 'flex',
         justifyContent: "center",
-      }
+      },
+      minWidth:100,
     },
     BPP: {
-      cellRenderer: ColorCellRenderer,
+      cellRenderer: BPPRenderer,
+      minWidth:100,
     },
   }
 

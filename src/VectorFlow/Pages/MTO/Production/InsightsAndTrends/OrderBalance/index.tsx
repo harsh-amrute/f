@@ -8,7 +8,6 @@ import {
 } from "./styles";
 import GridView from "../../../Common/GridView";
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
-import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TrailDeptCount from "./TrailDeptCount";
 import TrailDeptBalance from "./TrailDeptBalance";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
@@ -26,6 +25,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
+import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -75,7 +75,8 @@ const OrderBalance = () => {
 
   const colDefCustomizations = {
     BPP: {
-      cellRenderer: ColorCellRenderer,
+      cellRenderer: BPPRenderer,
+      minwidth:100
     }
   };
 

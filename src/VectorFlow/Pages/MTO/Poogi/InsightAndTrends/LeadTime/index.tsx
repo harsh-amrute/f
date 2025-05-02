@@ -9,12 +9,12 @@ import OverlayLoader from '../../../Common/Loader';
 import { useUserData } from "../../../../../../context/index";
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
-import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import useColDef from '../../../../../../hooks/useColDef';
+import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer';
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -178,10 +178,12 @@ const LeadTime = () => {
       cellStyle: {
         display: 'flex',
         justifyContent: "center",
-      }
+      },
+      minWidth:100,
     },
     'BPP': {
-      cellRenderer: ColorCellRenderer,
+      cellRenderer: BPPRenderer,
+      minWidth:100,
     },
   }
 

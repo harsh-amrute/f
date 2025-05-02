@@ -389,7 +389,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }, []);
 
     useEffect(() => {
-        if (currentTab) {
+        if (currentTab && userConfigFetched) {
             if (currentTab.label === 'Shortage') {
                 if(process.env.REACT_APP_ENABLE_SIMULATION === "enabled"){
                     
@@ -407,8 +407,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 fetchData(date, 1, '1', false, userPageSize);
             }
         }
-
-
     }, [currentTab])
 
 

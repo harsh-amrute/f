@@ -300,7 +300,6 @@ const OverallBmReport = () => {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
 
-      console.log("responseeee", response);  
       const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(
         response?.data?.data
       );
