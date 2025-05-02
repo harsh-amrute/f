@@ -26,7 +26,6 @@ import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../.
 import {addDays, eachDayOfInterval, format, subDays} from 'date-fns';
 import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
-import { all } from "axios";
 interface DailyDataGraphModalProps{
   rowData:any,
   chartData:any[]

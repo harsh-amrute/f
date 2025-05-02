@@ -1,6 +1,5 @@
 import { useState, useMemo, useRef, useEffect /*useCallback*/ } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import { AgGridReact } from "@ag-grid-community/react";
 // import { useUserData } from "../../../../../context"
 import ColorPriority from '../../Common/ColorPriority/index';
 import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";

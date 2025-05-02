@@ -210,11 +210,7 @@ const OverallBmReport = () => {
   } = useShortOrderCompleteOrder();
 
   const { user } = useUserData();
-  const themeUi = user?.user?.theme_ui;
-  const userTheme = themeUi === "REGALBLAZE";
-  const backgroundColor = userTheme
-    ? ColorsMTO.Orange.code
-    : ColorsMTO.darkPink.code;
+  const themeUi = user?.user?.theme_ui; 
 
   const isOrderCloseEnabled =
     process.env.REACT_APP_ORDER_CLOSE === "enabled" ? true : false;

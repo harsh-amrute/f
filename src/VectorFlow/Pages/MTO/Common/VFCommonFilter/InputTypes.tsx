@@ -62,8 +62,6 @@ const FilterCheckboxAccordian = ({
     config: { duration: "120" },
   });
 
-  const {user} = useUserData()
-  const themeUi = user?.user?.theme_ui;
 
   return (
     <>
@@ -408,7 +406,9 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   const [selectedOperator, setSelectedOperator] = useState<any>(masterFilterState.filters.map((e:any)=> {return e.operator}))
   const [selectedValue, setSelectedValue] = useState<any[]>(masterFilterState.filters.map((e:any)=> {return e.value}));
 
-  const handleHeaderChange = (selectedOption: any, type: any, index: any, id: any) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleHeaderChange = (selectedOption: any, type: any, index:any, id: any) => {
+
     if(type==="header"){
       const updatedHeaders:any = [...selectedHeader];
       updatedHeaders[index] = selectedOption;

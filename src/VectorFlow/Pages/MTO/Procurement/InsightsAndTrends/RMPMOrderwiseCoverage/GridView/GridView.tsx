@@ -14,7 +14,8 @@ interface GridProps {
 
 const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, currentGridRef, columnState, orderWiseRecordCount, currentPage, handlePageChangeDayWise, savePageSize, userPageSize }: GridProps | any) => {
     
-    const [isDisabled, setIsDisabled]= useState<boolean>(true);
+    const [isDisabled, setIsDisabled] = useState<boolean>(true);
+    
     const gridRef = useRef<any>(null);
 
     useEffect(() => {
@@ -65,6 +66,7 @@ const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, curre
                 customPageSizeEnabled={true}
                 savePageSize={savePageSize}
                 userPageSize={userPageSize}
+                isDisabled={isDisabled}
             />
         </TableWrapper>
     )

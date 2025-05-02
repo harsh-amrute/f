@@ -15,7 +15,6 @@ const VFChartsTable = (props:any)=>{
         gridRef,
         colDefs,
         rowData,
-        chartProps,
         setHideChart,
         defaultColForCustomGraph,
         palette,

@@ -7,7 +7,7 @@ import { MDMMasterState, Option } from "../../../../VectorFlow/types/MDM";
 import {ImageMapper,ImageMapperHover, masterGroupMapper} from "../../../../helpers/MDMConstants"
 import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import * as globalStyles from "../../../../styles/global";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { FILL_SELECTED_OPTIONS } from "../../../../redux/actions/MDM";
 
 export interface SelectGroupedMastersProps {
@@ -101,7 +101,6 @@ const SelectGroupedMasters = (props:SelectGroupedMastersProps)=>{
         shouldShowMaster,
         selectedOptions,
         options,
-        isAdd
     } = props
 
     const {user} = useUserData();

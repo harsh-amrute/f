@@ -1,4 +1,4 @@
-import { SCPageNotFound, SCTextTitle, SCTextContent, PageNotFoundIcon } from './styles'
+import { SCPageNotFound, PageNotFoundIcon } from './styles'
 
 const PageNotFound = () => {
   return (
