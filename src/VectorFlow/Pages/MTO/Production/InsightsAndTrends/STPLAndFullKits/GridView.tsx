@@ -8,13 +8,12 @@ import { useGetBOMExplosionData } from "../../../../../../VectorFlow/Services/MT
 import VFPagination from "../../../Common/VFPagination";
 import { pagination } from "../../../Common/Enum";
 import { Wrapper } from "./styles";
-import { formatFilterJSON } from "../../../../../../helpers/utils";
 
 
 const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef,rowData,userPageSize,handlePageChange,totalRows,currentPage,savePageSize }: any) => {
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
-  const { mutateAsync: getSTPLandFullkitInDaysData, isLoading, isError, isSuccess } = useGetSTPLAndFullKitData();
+  const { isLoading, isError, isSuccess } = useGetSTPLAndFullKitData();
   const { mutateAsync: getBOMExplosionData, } = useGetBOMExplosionData();
 
 

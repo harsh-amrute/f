@@ -5,8 +5,8 @@ import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/Cu
 import './styles.css'
 import { SCDynamicContainer } from './styles';
 import VFPagination from "../../../../Common/VFPagination";
-import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
-import { useGetElapsedTimeData, useGetElapsedTimeDataForExcelExport } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
+import { notifyError } from '../../../../../../../helpers/notify';
+import { useGetElapsedTimeData } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
 
