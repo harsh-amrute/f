@@ -1,13 +1,13 @@
 import { ColDef } from "ag-grid-enterprise"
 import AvlCellRenderer from "../../../Common/AvlCellRenderer/AvlCellRenderer"
-import ColorRangeCellRenderer from "../../../Common/ColorRangeCellRenderer"
+import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer"
 const columnData: ColDef[] = [
     {
         colId: "bpp",
         field: "bpp",
         headerName: "BPP",
         hide: false,
-        cellRenderer: ColorRangeCellRenderer,
+        cellRenderer: BPPRenderer,
         tooltipComponent: "availabilityToolTip",
         initialWidth: 100,
         autoHeaderHeight: true,
