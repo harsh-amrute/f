@@ -114,10 +114,10 @@ const colorMapper =(color:string)=> {
 }
 
 export const BPRTechColorCellRenderer = (params:any)=>{
-
-    const techColor = params.data.TechColor;
+    
+    const techColor = params?.data?.TechColor;
     // console.log("techColor", params.data)
-    const cellColor = colorMapper(params.data.TechColor)
+    const cellColor = colorMapper(params?.data?.TechColor)
 
     if(!techColor || techColor.length<0 ){
         return(
@@ -154,13 +154,12 @@ export const TextToTextColorMapper = (params:any)=>{
 }
 
 export const BPREcoColorCellRenderer = (params:any)=>{
-
-
-    const ecoColor = params.data.EcoColor
+    
+    const ecoColor = params?.data?.EcoColor
 
     const cellColor = colorMapper(ecoColor)
 
-    if(!ecoColor || ecoColor.length<0 ){
+    if(!ecoColor || ecoColor?.length<0 ){
         return(
             // <BPRColorCellRendererWrapper style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
             //     NULL
