@@ -11,40 +11,14 @@ import { Wrapper } from "./styles";
 import { formatFilterJSON } from "../../../../../../helpers/utils";
 
 
-const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appliedFilters}: any) => {
+const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef,rowData,userPageSize,handlePageChange,totalRows,currentPage,savePageSize }: any) => {
 
-  const [gridData, setGridData] = useState([]);
-  const [totalRow, setTotalRow] = useState<number>(0)
-  const [currentPage, setCurrentPage] = useState<number>(1)
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
   const { mutateAsync: getSTPLandFullkitInDaysData, isLoading, isError, isSuccess } = useGetSTPLAndFullKitData();
   const { mutateAsync: getBOMExplosionData, } = useGetBOMExplosionData();
 
 
   const gridRef = useRef();
-
-  const handlePageChange = async (currPage: number) => {
-    setCurrentPage(currPage);
-    getGridData({ graphflag: 0, page: currPage });
-  }
-
-  const getGridData = async (params: any) => {
-    try {
-      const formatedFilters = formatFilterJSON(appliedFilters);
-      const response = await getSTPLandFullkitInDaysData({ ...params, appliedFilters: formatedFilters});
-      setGridData(response?.data?.data?.results);
-      setTotalRow(response?.data?.data?.count)
-    }
-    catch (e) {
-      console.log(e);
-      notifyError('Failed to fetch Grid data!');
-    }
-  }
-
-
-  useEffect(() => {
-    getGridData({ graphflag: 0, page: currentPage });
-  }, [appliedFilters])
 
   useEffect(() => {
     if (isSuccess) {
@@ -130,6 +104,9 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
     }
   }, [currentGridRef, columnState]);
 
+
+
+
   return (
     <>
       {
@@ -139,7 +116,7 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
         <VFTable
           {...gridOptions}
           columnDefs={colDef}
-          rowData={gridData || []}
+          rowData={rowData}
           tooltipHideDelay={100000}
           tooltipShowDelay={0}
           tooltipMouseTrack={true}
@@ -160,12 +137,15 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef, appli
         />
         <VFPagination
           selectedRows={0}
-          rowsPerPage={pagination.mtoPageSize}
-          totalRows={totalRow}
+          rowsPerPage={userPageSize || pagination.mtoPageSize}
+          totalRows={totalRows?totalRows:0}
           currentPage={currentPage}
-          handleChangePage={(cp) => handlePageChange(cp)}
+          handleChangePage={(cp)=>handlePageChange(cp)}
           resetGridRef={currentGridRef}
           isDisabled={isDisabled}
+          customPageSizeEnabled={true}
+          savePageSize={savePageSize}
+          userPageSize = {userPageSize}
 
           />
       </Wrapper>

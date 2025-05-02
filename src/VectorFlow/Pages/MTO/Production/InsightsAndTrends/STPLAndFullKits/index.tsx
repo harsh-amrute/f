@@ -21,6 +21,7 @@ import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Comm
 import useFilter from '../../../../../../hooks/useFilter';
 import useColDef from "../../../../../../hooks/useColDef";
 
+
 const APIFilterConfig = {
   filSecVisConfig: {
     "Prod_STPL_And_FullKits" : {
@@ -56,11 +57,20 @@ const STPLAndFullKits = () => {
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
+  
   const reportName = "STPLAndFullKits";
   const { user } = useUserData();
   const { colDefMap,getColDef } = useColDef()
   const { mutateAsync : getSTPLandFullkitInDaysExcelData} = useGetSTPLAndFullKitExcelData();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
+
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+  const [gridData, setGridData] = useState([]);
+  const [totalRow, setTotalRow] = useState<number>(0)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  
+  
 
   const themeUi = user?.user?.theme_ui;
 
@@ -70,7 +80,6 @@ const STPLAndFullKits = () => {
       const headersdata = currentGridRef?.current?.api?.getColumnState();
       const formattedFilters = formatFilterJSON(appliedFilters)
       const body = getBodyForExcelExport({headersdata,appliedFilters : formattedFilters,colDefMap})
-      console.log('stpl and full kit response body',body)
       try{
           const response = await getSTPLandFullkitInDaysExcelData({body,isExcelExport : 1,graphflag, report_name : FilterPageName.Prod_STPL_And_FullKits})
           DownloadExcel(response, FilterPageName.Prod_STPL_And_FullKits)
@@ -93,11 +102,51 @@ const STPLAndFullKits = () => {
     }
   }
 
+  const getGridData = async (params: any,pageSize?:any) => {
+      try {
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const response = await getSTPLandFullkitInDaysData({ ...params, appliedFilters: formatedFilters, page_size: pageSize || userPageSize });
+        setGridData(response?.data?.data?.results);
+        setTotalRow(response?.data?.data?.count)
+      }
+      catch (e) {
+        console.log(e);
+        notifyError('Failed to fetch Grid data!');
+      }
+    }
+
   const colDefCustomizations = {
     Plant: {
       cellRenderer: "agGroupCellRenderer",
     }
   }
+
+
+  useEffect(() => {
+    if (Object.entries(appliedFilters).length && userConfigFetched) {
+      setCurrentPage(1);
+      getGridData({ graphflag: 0, page: 1 });
+    }
+   }, [appliedFilters, userConfigFetched])
+
+  const handlePageChange = async (currPage: number) => {
+    setCurrentPage(currPage);
+    getGridData({ graphflag: 0, page: currPage });
+  }
+
+  
+
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+      setUserPageSize(pageSize);
+        setCurrentPage(1)
+        handleSaveClick(undefined, pageSize);
+        getGridData({ graphflag: 0, page: 1 }, pageSize);
+      } else {
+        notifyError("Invalide page size");
+    }
+    
+}
 
   const setColumnDef = async () => {
     try {
@@ -110,6 +159,7 @@ const STPLAndFullKits = () => {
     }
   }
   
+  
   const getUserColumnConfig = async () => {
     try {
       const data = await getUserUIReportConfigData({
@@ -117,8 +167,10 @@ const STPLAndFullKits = () => {
         rn_id: UIGridCode.ProdStplAndFullKit
       });
 
+      setUserConfigFetched(true)
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setColumnState(newConfig);
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setColumnState(newConfig.cs);
 
       if (!data) {
         console.error('Failed to apply column state');
@@ -128,26 +180,38 @@ const STPLAndFullKits = () => {
     }
   }
 
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        const fullConfig = {cs: coldefs, pageSize: page_size || userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdStplAndFullKit,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
 
-      } else {
+      }
+      else if(page_size){
+        const config = columnState;
+        const fullConfig = { cs: config,  pageSize: page_size};        
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdStplAndFullKit,
+          cs: JSON.stringify(fullConfig),
+        };
+        await updateUserUIReportConfigData([payload]);
+      }
+      else {
         if (currentGridRef?.current?.api) {
 
           const config = currentGridRef.current.api.getColumnState();
-
+          const fullConfig = {  cs: config,  pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdStplAndFullKit,
-            cs: JSON.stringify(config)
+            cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
@@ -193,12 +257,21 @@ const STPLAndFullKits = () => {
     }
   }, [isReset]);
 
+
   useEffect(() => {
-    if (currentGridRef?.current) {
+    if ((currentGridRef?.current)) {
       setMasterUIConfig(currentGridRef?.current.api.getColumnState());
       getUserColumnConfig();
     }
-  }, [colDef, currentGridRef]);
+ 
+  }, [colDef, currentGridRef, isGridView]);
+
+//   useEffect(() => {
+//   if (isGridView && !userConfigFetched) {
+//     getUserColumnConfig();
+//   }
+// }, [isGridView]);
+
   
   const GetExcelData = async () => {
     getGraphData({graphflag : 0 , isExcelExport : true , appliedFilters})
@@ -236,6 +309,12 @@ const STPLAndFullKits = () => {
             currentGridRef={currentGridRef}
             columnState={columnState}
             appliedFilters={appliedFilters}
+            userPageSize={userPageSize}
+            handlePageChange={handlePageChange}
+            currentPage={currentPage}
+            totalRows={totalRow}
+            savePageSize={savePageSize}
+            rowData={gridData}
           />
         ) : (
           <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom: "10px" }}>
