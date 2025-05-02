@@ -7,7 +7,6 @@ import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer';
 import { useGetRMExpeditingData } from '../../../../../../Services/MTO/Production/InsightsAndTrends/RMPMExpediting/index';
 import moment from 'moment'
-import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 import { formatFilterJSON } from '../../../../../../../helpers/utils'
 import { useUserData } from '../../../../../../../../src/context'
 import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton'
@@ -37,10 +36,7 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
-    const userTheme = themeUi === 'REGALBLAZE';
 
-    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
 
     const options: AgChartOptions = {
         //Porperties to set here for x and y axises

@@ -11,7 +11,6 @@ import _ from 'lodash'
 import OverlayLoader from '../../../Common/Loader'
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useUserData } from "../../../../../../context/index";
-import ColorRangeCellRenderer from '../../../../../../VectorFlow/Pages/MTO/Common/ColorRangeCellRenderer';
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import useColDef from '../../../../../../hooks/useColDef'
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport,getColumnDefinations } from '../../../../../../helpers/utils';
@@ -21,6 +20,7 @@ import { useGetElapsedTimeData, useGetElapsedTimeDataForExcelExport,useGetElapse
 
 
 
+import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';
 
@@ -318,10 +318,12 @@ const ElapsedTime = () => {
             cellStyle: {
                 display: 'flex',
                 justifyContent: "center",
-            }
+            },
+            minwidth:100
         },
         'BPP': {
-            cellRenderer: ColorRangeCellRenderer,
+            cellRenderer: BPPRenderer,
+            minwidth:100
         },
     }
 

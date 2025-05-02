@@ -104,18 +104,18 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
 
 
     
-    const CCRItemTypeMappingMasterLookup = useMemo(() => {
-        const mappingLookup = new Map<string, Set<string>>();
-        if (master?.CCRItemTypeMappingMaster) {
-            master.CCRItemTypeMappingMaster.forEach((mapping: { ccrId: string, it: string }) => {
-                if (!mappingLookup.has(mapping.ccrId)) {
-                    mappingLookup.set(mapping.ccrId, new Set());
-                }
-                mappingLookup.get(mapping.ccrId)!.add(mapping.it);
-            });
-        }
-        return mappingLookup
-    }, [master?.CCRItemTypeMappingMaster])
+    // const CCRItemTypeMappingMasterLookup = useMemo(() => {
+    //     const mappingLookup = new Map<string, Set<string>>();
+    //     if (master?.CCRItemTypeMappingMaster) {
+    //         master.CCRItemTypeMappingMaster.forEach((mapping: { ccrId: string, it: string }) => {
+    //             if (!mappingLookup.has(mapping.ccrId)) {
+    //                 mappingLookup.set(mapping.ccrId, new Set());
+    //             }
+    //             mappingLookup.get(mapping.ccrId)!.add(mapping.it);
+    //         });
+    //     }
+    //     return mappingLookup
+    // }, [master?.CCRItemTypeMappingMaster])
 
     const calculateCCGroups = () => {
 
@@ -162,7 +162,7 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
 
             // Filter route to only include CCRs that exist in ccrGroups
             const filteredRoute = route?.filter((routeItem: any) => {
-                const [_, ccr] = routeItem;
+                const [ccr] = routeItem;
                 return validCCRValues?.has(ccr?.value);
             });
 

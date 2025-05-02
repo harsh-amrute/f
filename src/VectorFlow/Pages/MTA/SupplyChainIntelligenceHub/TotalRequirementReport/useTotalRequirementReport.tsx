@@ -4,7 +4,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRDispatchColorCellRenderer } from "../RationedRequirementReport/RRRCellRenderers"
-import { convertUiConfigToOptions,  mapTotalRequirementFieldsToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
 import { notifyError} from "../../../../../helpers/notify"
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";

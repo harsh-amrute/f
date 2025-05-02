@@ -7,7 +7,6 @@ import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
 import moment from 'moment'
-import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 import { useUserData } from '../../../../../../../context'
 import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton'
 
@@ -29,12 +28,6 @@ const BTMTA = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
-    const userTheme = themeUi === 'REGALBLAZE';
-
-    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-    const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-    
-
 
     const TooltipRenderer = ({ datum, xKey }: any) => {
         let countArr = [];

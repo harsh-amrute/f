@@ -7,7 +7,6 @@ import { SCChartHeaderContainer, SCChartMainContainer, SCChartSliderContainer } 
 import SplitGraphContainer from '../../../../../../../VectorFlow/Pages/MTO/Common/SplitGraphContainer'
 import moment from 'moment'
 import { useGetDate } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting'
-import { ColorsMTO } from '../../../../../../../VectorFlow/Pages/MTO/Common/Colors'
 import { useUserData } from '../../../../../../../context'
 import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton'
 
@@ -16,11 +15,7 @@ const BTMTO = ({ isMTO, data }: { isMTO: boolean, data: any }) => {
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
-    const userTheme = themeUi === 'REGALBLAZE';
-
-    const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-    
+   
 
     const [horizonDays, setHorizondays] = useState(14);
 

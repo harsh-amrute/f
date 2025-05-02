@@ -39,7 +39,6 @@ import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import VFSelect from "../../../../../../components/VectorFLOW/commons/MTO/VFSelect";
 import { useDispatch } from "react-redux";
 import { RESOURCE_UTIL_ANALYTICS } from "../../../../../../redux/actions/MTO";
-import { ColorsMTO } from "../../../Common/Colors";
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 
 const SearchIcon = () => {
@@ -66,9 +65,6 @@ const ResourceUtilization = () => {
   });
   const { user } = useUserData();
   const themeUi = user.user.theme_ui;
-  const userTheme = themeUi === 'REGALBLAZE';
-  const backgroundColor = userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
-  const gradientColor =userTheme ?  ColorsMTO.Orange.code :   ColorsMTO.darkPink.code;
   const { mutateAsync: getResourceUtilizationData, isLoading, isSuccess, isError } = useGetResourceUtilizationData();
   const { mutateAsync: getPlantMaster } = useGetPlantMasterData();
   const { mutateAsync: getDeptMaster } = useGetDeptMasterData();

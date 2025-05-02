@@ -1,4 +1,4 @@
-import { SCPageForbidden, SCTextTitle, SCTextContent, PermissionForbiddenIcon } from './styles'
+import { SCPageForbidden, PermissionForbiddenIcon } from './styles'
 
 const PageForbidden = () => {
   const params = new URLSearchParams(window.location.search);

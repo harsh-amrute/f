@@ -8,7 +8,6 @@ import {
   BTRTableWrapper,
   HorizontalViewWrapper,
 } from "./styles";
-import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import TagCellToolTip from "../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer";
@@ -22,6 +21,7 @@ import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
+import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 
 
 const APIFilterConfig = {
@@ -71,10 +71,12 @@ const TopFailureReasons = () => {
       cellStyle: {
         display: 'flex',
         justifyContent: "center",
-      }
+      },
+      minWidth:100,
     },
     bpp: {
-      cellRenderer: ColorCellRenderer,
+      cellRenderer: BPPRenderer,
+      minWidth:100,
     },
   }
 

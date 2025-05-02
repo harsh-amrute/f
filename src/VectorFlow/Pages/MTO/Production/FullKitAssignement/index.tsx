@@ -157,7 +157,7 @@ const FullKitAssignment = () => {
     },
     Tags: {
       cellRenderer: ColorCellRenderer,
-      minWidth: 80,
+      minWidth: 120,
       maxWidth: 120,
     }
   })

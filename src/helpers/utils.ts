@@ -4559,20 +4559,24 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
 }
 
 export const getBodyForExcelExport = ({headersdata , filterData = {}, colDefMap} : any) => {
-  try{
-            const headers = headersdata?.map((col : any) => {
-              const header_data = colDefMap.current.get(col.colId);
-              return {
-                  ...header_data
-              }
-          }).filter((col : any) =>{
-              return col.hd != undefined && col.scc != undefined
-          })
-          const body = {
-              headers: headers,
-              ...filterData
-          }          
-          return body;
+  try {
+    const headers = headersdata?.map((col: any) => {
+      const header_data = colDefMap.current.get(col.colId);
+      if (header_data?.scc === "bpp" || header_data?.scc === "cp") {
+        header_data.isColor = true;
+      }
+      
+      return {
+        ...header_data
+      }
+    }).filter((col: any) => {
+      return col.hd != undefined && col.scc != undefined
+    })
+    const body = {
+      headers: headers,
+      ...filterData
+    }
+    return body;
   }
   catch (e){
     console.log(e)

@@ -9,7 +9,6 @@ import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import GridView from '../../../Common/GridView'
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
-import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
@@ -18,6 +17,7 @@ import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import useColDef from '../../../../../../hooks/useColDef'
+import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -91,10 +91,12 @@ const OTAndIFAnalysis = () => {
             cellStyle: {
                 display: 'flex',
                 justifyContent: "center",
-            }
+            },
+            minWidth:100,
         },
         BPP: {
-            cellRenderer: ColorCellRenderer,
+            cellRenderer: BPPRenderer,
+            minWidth:100,
         },
     }
 
