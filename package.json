@@ -76,7 +76,7 @@
     "clear-cache": "react-scripts test --clearCache",
     "eject": "react-scripts eject",
     "lint": "eslint . -f node_modules/eslint-html-reporter/reporter.js -o report.html",
-    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src --ignore-pattern src/types/*"
+    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src --ignore-pattern src/types/*"   
   },
   "jest": {
     "collectCoverageFrom": [

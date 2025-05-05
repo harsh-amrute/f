@@ -7,7 +7,6 @@ import SplitGraphContainer from "../../../Common/SplitGraphContainer";
 import VFInfoToolTip from "../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import { ProductionInsightsAndTrendsString } from "../../../Common/String";
 import { format } from "date-fns";
-import ColorCellRenderer from "../../../../../Pages/MTO/Common/ColorRangeCellRenderer";
 import { useGetOrderRiskData, useGetOrderRiskDataExcelExport } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
 import { ReasonOrderAtRiskType } from "../../../../../../../src/types/MTO/types";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
@@ -20,6 +19,7 @@ import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Comm
 import useFilter from '../../../../../../hooks/useFilter';
 import { notifyError } from "../../../../../../helpers/notify";
 import useColDef from "../../../../../../hooks/useColDef";
+import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -148,7 +148,8 @@ const OrderAtRisk = () => {
 
   const colDefCustomizations = {
     BPP: {
-      cellRenderer: ColorCellRenderer,
+      cellRenderer: BPPRenderer,
+      minWidth:100
     },
   };
 

@@ -156,6 +156,8 @@ export const StepLabel = styled.div`
 export const ContentWrapper = styled.div`
   margin: 2rem;
   width: 70vw;
+  height: 65vh;
+  overflow: auto;
 `;
 export const Text = styled.div`
   font-size: 14px;

@@ -1,6 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react"
 import { AgGridReactProps, } from "ag-grid-react"
-import { AgGridReact } from "@ag-grid-community/react";
 import { useUserData } from "../../../../../context"
 import ColoPriority from "../../Common/ColorPriority/index";
 import AvailabilityToolTip from "../../../MTA/InsightsAndTrends/BTR/AvailabilityToolTip";
@@ -389,7 +388,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }, []);
 
     useEffect(() => {
-        if (currentTab) {
+        if (currentTab && userConfigFetched) {
             if (currentTab.label === 'Shortage') {
                 if(process.env.REACT_APP_ENABLE_SIMULATION === "enabled"){
                     
@@ -407,8 +406,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 fetchData(date, 1, '1', false, userPageSize);
             }
         }
-
-
     }, [currentTab])
 
 

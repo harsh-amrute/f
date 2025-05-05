@@ -12,7 +12,6 @@ import { toast } from 'react-toastify'
 import { notifyError, notifyLoader, notifySuccess } from '../../../../../../helpers/notify'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils'
-import ColorRangeCellRenderer from '../../../Common/ColorRangeCellRenderer'
 import FullkitCellRenderer from '../../../Common/FullKitCellRenderer/FullkitCellRenderer'
 import { FilterPageName, pagination, UIGridCode } from '../../../Common/Enum'
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
@@ -21,6 +20,7 @@ import OverlayLoader from '../../../Common/Loader'
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../../hooks/useFilter';
 import useColDef from '../../../../../../hooks/useColDef'
+import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
 
 const APIFilterConfig = {
     filSecVisConfig: {
@@ -160,25 +160,19 @@ const RMPMOrderwiseCoverage = () => {
 
     const customHeader = {
         BPP: {
-            cellRenderer: ColorRangeCellRenderer,
-            initialWidth: 200,
+            cellRenderer: BPPRenderer,
             autoHeaderHeight: true,
             wrapHeaderText: true,
-        },
-        OrderType: {
-            cellRenderer: () => {
-
-                return (
-                    <>{"END-TO-END"}</>
-                )
-            },
+            minWidth:100
         },
         FullKitAvailable: {
             cellRenderer: FullkitCellRenderer,
-            minWidth: 90,
             cellStyle: {
                 paddingRight: '20px'
             },
+        },
+        RMPMCoverage: {
+            minWidth: 300,
         }
     }
 
@@ -194,30 +188,27 @@ const RMPMOrderwiseCoverage = () => {
     }
 
     const mapDataToColumns = (data: any, columns: ColDef[]) => {
+
         return data?.map((item: any) => {
-            const mappedItem: any = {};
-            columns?.forEach(column => {
-                if (column.field) {
-                    if (column.field === "rmpm") {
-                        if (item['or'] > 0) {
-                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithRMPM;
-                        }
-                        else if (item['po'] > 0) {
-                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitOPO;
-                        }
-                        else if (item['sit'] > 0) {
-                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitSIT;
-                        }
-                        else {
-                            mappedItem[column.field] = InsightsAndTrendsString.ordersWithFullkitOHS;
-                        }
-                    }
-                    else {
-                        mappedItem[column.field] = item[column.field as keyof Order];
-                    }
+
+            const rmpmColumnExist = columns.find((col) => col.field == "rmpm");
+
+            if (rmpmColumnExist && rmpmColumnExist.field) {
+                if (item['or'] > 0) {
+                    item[rmpmColumnExist.field]=InsightsAndTrendsString.ordersWithRMPM;
                 }
-            });
-            return mappedItem;
+                else if (item['po'] > 0) {
+                    item[rmpmColumnExist.field] = InsightsAndTrendsString.ordersWithFullkitOPO;
+                }
+                else if (item['sit'] > 0) {
+                    item[rmpmColumnExist.field] = InsightsAndTrendsString.ordersWithFullkitSIT;
+                }
+                else {
+                    item[rmpmColumnExist.field] = InsightsAndTrendsString.ordersWithFullkitOHS;
+                }
+            }
+
+            return item;
 
         });
     };

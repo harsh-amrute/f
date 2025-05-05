@@ -28,6 +28,7 @@ import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/
 import useColDef from '../../../../../hooks/useColDef';
 import { ColorsMTO } from '../../Common/Colors';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import BPPRenderer from '../../Common/BPRRenderer/BPPRenderer';
 
 
 const APIFilterConfig = {
@@ -292,6 +293,9 @@ const DynamicReleaseManagement = () => {
     },
     ColorPriority: {
       cellRenderer: ColorCellRenderer
+    },
+    BPP: {
+      cellRenderer:BPPRenderer,
     },
     Tags: {
       cellRenderer: ColorCellRenderer,

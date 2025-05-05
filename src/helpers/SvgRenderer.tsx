@@ -77,10 +77,6 @@ export const GridView: React.FC<SvgRendererProps> = ({theme,view }) => {
   const inactiveFillColor = "#a8a8a8";
   const fillColor = view ? activeFillColor : inactiveFillColor;
 
-
-  console.log('Theme:', theme);
-  console.log('View:', view);
-
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="37" height="22" viewBox="0 0 37 22">
       <g id="Group_4112" data-name="Group 4112" transform="translate(-0.348 0.002)">

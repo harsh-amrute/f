@@ -8,6 +8,7 @@ import { notifyError, notifySuccess } from "../../../helpers/notify";
 import WelcomeBoard from "./welcome-board";
 import { useEffect, useState, useRef } from "react";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
+// eslint-disable-next-line import/no-named-as-default
 import ReCAPTCHA from "react-google-recaptcha";
 import { SITE_KEY} from "../../../helpers/constants";
 import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";

@@ -80,48 +80,6 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
 
 
     }
-    useEffect(() => {
-        const animate = () => {
-            const stepGroups = document.querySelectorAll('.step-group');
-            const svg: any = document.querySelector('.line');
-            if (svg?.innerHTML) {
-                svg.innerHTML = "";
-            }
-            for (let i = 0; i < stepGroups?.length - 1; i++) {
-                const start: any = stepGroups[i].getBoundingClientRect();
-                const end: any = stepGroups[i + 1].getBoundingClientRect();
-                if (stepGroups[i + 1].id == "inactive") {
-                    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-                    polyline.setAttribute('points', `${end.left - 8},${end.top + end.height / 2 - 2.5} ${end.left - 8},${end.top - 10} ${end.left + 8 + end.width},${end.top - 10} ${end.left + 8 + end.width},${end.top + end.height / 2 - 2.5}`);
-                    svg.appendChild(polyline);
-                    polyline.setAttribute('stroke', '#82104C');
-                    polyline.setAttribute('fill', 'none');
-                    svg.appendChild(polyline);
-                }
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                let leftOffset = 0
-                let rightOffset = 0
-                if (stepGroups[i].id == "inactive") {
-                    rightOffset = 5
-                }
-                if (stepGroups[i + 1].id == "inactive") {
-                    leftOffset = 5
-                }
-                line.setAttribute('x1', (start.right + 6 + rightOffset).toString());
-                line.setAttribute('y1', start.top + start.height / 2);
-                line.setAttribute('x2', (end.left - 6 - leftOffset).toString());
-                line.setAttribute('y2', end.top + end.height / 2);
-                line.setAttribute('stroke', '#82104C');
-                svg.appendChild(line);
-            }
-            // animationFrameId = 
-            requestAnimationFrame(animate);
-        };
-        requestAnimationFrame(animate);
-
-    }, []);
-
-
 
     const SaveRoute = async () => {
         const data = convertToRequiredFormat(route, lineCCRDetails);
@@ -146,22 +104,20 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
 
 
     
-    const CCRItemTypeMappingMasterLookup = useMemo(() => {
-        const mappingLookup = new Map<string, Set<string>>();
-        if (master?.CCRItemTypeMappingMaster) {
-            master.CCRItemTypeMappingMaster.forEach((mapping: { ccrId: string, it: string }) => {
-                if (!mappingLookup.has(mapping.ccrId)) {
-                    mappingLookup.set(mapping.ccrId, new Set());
-                }
-                mappingLookup.get(mapping.ccrId)!.add(mapping.it);
-            });
-        }
-        return mappingLookup
-    }, [master?.CCRItemTypeMappingMaster])
+    // const CCRItemTypeMappingMasterLookup = useMemo(() => {
+    //     const mappingLookup = new Map<string, Set<string>>();
+    //     if (master?.CCRItemTypeMappingMaster) {
+    //         master.CCRItemTypeMappingMaster.forEach((mapping: { ccrId: string, it: string }) => {
+    //             if (!mappingLookup.has(mapping.ccrId)) {
+    //                 mappingLookup.set(mapping.ccrId, new Set());
+    //             }
+    //             mappingLookup.get(mapping.ccrId)!.add(mapping.it);
+    //         });
+    //     }
+    //     return mappingLookup
+    // }, [master?.CCRItemTypeMappingMaster])
 
     const calculateCCGroups = () => {
-        const itemTypes: Set<string> = new Set()
-        itemTypes.add(itemTypeId)
 
         // Get all CCRs that have mappings for the current item type
         const validCCRs = new Set<string>();
@@ -206,7 +162,7 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
 
             // Filter route to only include CCRs that exist in ccrGroups
             const filteredRoute = route?.filter((routeItem: any) => {
-                const [_, ccr] = routeItem;
+                const [ccr] = routeItem;
                 return validCCRValues?.has(ccr?.value);
             });
 

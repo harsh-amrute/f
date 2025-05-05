@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { InputTypes } from '../VectorFlow/Pages/MTO/Common/Enum';
-import { checkValue, compare, findUniqueKeysAndValues, getDynamicAttributes, getKeyName, getType } from '../helpers/utils';
+import { checkValue, findUniqueKeysAndValues, getDynamicAttributes, getKeyName, getType } from '../helpers/utils';
 import { filterAttributes, staticHeaderConfig } from '../VectorFlow/Pages/MTO/Common/VFCommonFilter/Constants';
 import { FilterState } from '../VectorFlow/types/MTO';
 import _ from 'lodash';

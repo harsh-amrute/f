@@ -14,9 +14,9 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { getColumnDefinations } from '../../../../../../helpers/utils';
 import { UIGridCode} from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
-import ColorRangeCellRenderer from '../../../../../../VectorFlow/Pages/MTO/Common/ColorRangeCellRenderer';
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import useColDef from '../../../../../../hooks/useColDef'
+import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';
 
@@ -221,10 +221,12 @@ const ElapsedTime = () => {
             cellStyle: {
                 display: 'flex',
                 justifyContent: "center",
-            }
+            },
+            minwidth:100
         },
         'BPP': {
-            cellRenderer: ColorRangeCellRenderer,
+            cellRenderer: BPPRenderer,
+            minwidth:100
         },
     }
 

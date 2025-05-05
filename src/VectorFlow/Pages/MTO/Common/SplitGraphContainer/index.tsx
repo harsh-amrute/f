@@ -1,6 +1,6 @@
 import { AgChartOptions } from 'ag-charts-community'
 import { AgCharts } from 'ag-charts-react'
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
+import { Dispatch, SetStateAction, useRef } from 'react'
 import { SCChartContainer, SCChartMainContainer, SCHorizontalDivider, ChartWrapper } from './styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
 import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
@@ -44,7 +44,6 @@ const SplitGraphContainer = ({
   TooltipRenderer,
   graphType,
   columnsData,
-  downloadFileName
 }: SplitGrpahContainerProps) => {
   const chartRef = useRef<any>(null);
   const refGraph1 = useRef<GridRef>(null);

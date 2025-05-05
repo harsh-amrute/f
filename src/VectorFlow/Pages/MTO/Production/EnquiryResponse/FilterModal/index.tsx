@@ -3,7 +3,7 @@ import VFButtonOutline from '../../../../../../components/VectorFLOW/commons/VFB
 import VFButton from '../../../../../../components/VectorFLOW/commons/VFButton';
 import VFModalCard from '../../../../../../components/VectorFLOW/commons/VFModalCard';
 
-import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody, ModalWrapper, Option, OptionsWrapper, } from './styles';
+import { AccordianContainer, ButtonContainer, ButtonFilterWrapper, FilterAccordianWrapper, FilterContainer, FilterHeading, HorizontalLine, ModalBody, Option, OptionsWrapper, } from './styles';
 import FilterCheckboxAccordian from '../../../../../../components/VectorFLOW/commons/MTO/FilterCheckboxAccordian';
 import VFMasterFieldSearch from '../../../../../../components/VectorFLOW/commons/VFMasterFieldSearch';
 import Radio from '../../../../../../components/VectorFLOW/commons/MTO/Radio';

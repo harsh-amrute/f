@@ -33,7 +33,6 @@ const ModalAdvanedPermissions = (props: any) => {
     refetch,
     prdPermissionRef,
     lcPermissionRef,
-    valueSelect,
     stepperDetails,
     activeApplication,
     setActiveApplication,

@@ -21,7 +21,7 @@ import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButt
 import VFPagination from '../../Common/VFPagination';
 import _ from 'lodash';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
-import { useGetCCRGroupMaster, useGetFOLData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import { useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetFOLData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import AvailabilityCellRenderer from './AvailabilityCellRenderer';
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
@@ -63,6 +63,8 @@ const FullKitAssignment = () => {
   const [selectedPlantId, setSelectedPlantId] = useState(null);
   const [selectedRouteId, setSelectedRouteId] = useState(null);
   const [orderKey, setOrderKey] = useState(null);
+  const [itemTypeId, setItemTypeId] = useState<any>();
+
 
   const [orders, setOrders] = useState([]);
   const [masters, setMasters] = useState<any>();
@@ -95,7 +97,8 @@ const FullKitAssignment = () => {
   const { mutateAsync: updateFullkitOnSimulation, isLoading: isSimulationResultsUpdating } = useUpdateFullkitOnSimulation();
   const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
   const { mutateAsync: getFOLData, } = useGetFOLData();
-  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData();
+  const {mutateAsync: getCCRItemTypeMappingMaster} = useGetCCRItemTypeMappingMaster();
   const { 
     state: currFilter, 
     setState: setCurrFilter, 
@@ -120,12 +123,15 @@ const FullKitAssignment = () => {
         return (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "end", gap: "1rem", width: "100%", height: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
-            <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
-              setShowModal(true);
-              setSelectedPlantId(params.data?.plid);
-              setSelectedRouteId(params.data?.r);
-              setOrderKey(params.data?.ok)
-            }} />
+            <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }}
+              onClick={() => {
+                setShowModal(true);
+                setItemTypeId(params.data?.itid);
+                setSelectedPlantId(params.data?.plid);
+                setSelectedRouteId(params.data?.r);
+                setOrderKey(params.data?.ok);
+              }}
+            />
           </div>
         )
       }
@@ -153,7 +159,7 @@ const FullKitAssignment = () => {
     },
     Tags: {
       cellRenderer: ColorCellRenderer,
-      minWidth: 80,
+      minWidth: 120,
       maxWidth: 120,
     }
   })
@@ -347,6 +353,8 @@ useEffect(()=>{
 
     const FOLData = await getFOLData();
     const FOL = FOLData?.data?.data;
+    
+    const CCRItemTypeMappingMaster = await getCCRItemTypeMappingMaster();
 
     ccrGroupData.forEach((group: any) => {
       const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] }
@@ -362,7 +370,10 @@ useEffect(()=>{
       })
       ccrGroups.push(obj);
     })
-    setMasters({ ccrGroups })
+
+    const CCRItemTypeMappingMasterData = Object.values(CCRItemTypeMappingMaster?.data?.data);
+
+    setMasters({ ccrGroups, CCRItemTypeMappingMaster: CCRItemTypeMappingMasterData })
   }
 
   const renderUtilityBtns = useMemo(() => {
@@ -853,10 +864,22 @@ useEffect(()=>{
       <div className='chart-wrapper' style={{ width: "100%", flex: !hide ? 1 : 0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129" }}>
         <AgCharts ref={graph} options={chartoptions} />
       </div>
-      <EditRouteModal orderKey={orderKey} plantId={selectedPlantId} routeId={selectedRouteId} graphData={graphData} showModal={showModal} ccrGroups={masters?.ccrGroups} setShowModal={setShowModal} theme={themeUi} setOrderKey={setOrderKey} loadDataParams={loadDataParams} setLoadDataParams={setLoadDataParams} />
+      <EditRouteModal
+        orderKey={orderKey}
+        plantId={selectedPlantId}
+        routeId={selectedRouteId}
+        graphData={graphData}
+        showModal={showModal}
+        master={masters}
+        setShowModal={setShowModal}
+        theme={themeUi}
+        setOrderKey={setOrderKey}
+        loadDataParams={loadDataParams}
+        setLoadDataParams={setLoadDataParams}
+        itemTypeId={itemTypeId}
+      />
+      
     </Wrapper >
-
-
   )
 }
 

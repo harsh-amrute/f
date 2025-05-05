@@ -62,8 +62,6 @@ const FilterCheckboxAccordian = ({
     config: { duration: "120" },
   });
 
-  const {user} = useUserData()
-  const themeUi = user?.user?.theme_ui;
 
   return (
     <>
@@ -370,41 +368,20 @@ const FilterTextInput = ({
   );
 };
 
-const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState, setFilterState, masterFilterState, resetKey}:any)=>{
 
-  const textComparatorConfig: any = {
-    et : {value:'et',label:'Equal to'},
-    net : {value:'net',label:'Not Equal to'},
-    cn: {value:'cn',label:'Contains'},
-    dnc : {value:'dnc',label:'Does not contain'},
-    sw: {value:'sw',label:'Starts with'},
-    dsw: {value:'dsw',label:'Does not start with'},
-    ew: {value:'ew',label:'Ends with'},
-    dnew: {value:'dnew',label:'Does not end with'},
-    hv: {value:'hv',label:'Has value'},
-  }
-  
-  const numberComparatorConfig: any = {
-    et: {value:'et', label: '='},
-    net:  {value:'net', label: '!='},
-    gt: {value:'gt',label:'>'},
-    gte: {value:'gte',label:'>='},
-    lt: {value:'lt',label:'<'},
-    lte: {value:'lte',label:'<='},
-  }
 
-  const textComparators = [
-    {value:'et',label:'Equal to'},
-    {value:'net',label:'Not Equal to'},
-    {value: "cn", label: "Contains"},
-    {value:'dnc',label:'Does not contain'},
-    {value:'sw',label:'Starts with'},
-    {value:'dsw',label:'Does not start with'},
-    {value:'ew',label:'Ends with'},
-    {value:'dnew',label:'Does not end with'},
-    {value:'hv',label:'Has value'},
-  ]
- 
+    const textComparators = [
+      { value: 'et', label: 'Equal to' },
+      { value: 'net', label: 'Not Equal to' },
+      { value: "cn", label: "Contains" },
+      { value: 'dnc', label: 'Does not contain' },
+      { value: 'sw', label: 'Starts with' },
+      { value: 'dsw', label: 'Does not start with' },
+      { value: 'ew', label: 'Ends with' },
+      { value: 'dnew', label: 'Does not end with' },
+      { value: 'hv', label: 'Has value' },
+    ];
+    
   const numberComparators = [
     {value:'et', label: '='},
     {value:'net', label: '!='},
@@ -413,6 +390,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
     {value:'gt',label:'>'},
     {value:'lt',label:'<'},
   ]
+
+const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState, setFilterState, masterFilterState, resetKey}:any)=>{
 
   const getNameOptions = (type: string) => {
     if(type==='numberCompare'){
@@ -427,6 +406,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   const [selectedOperator, setSelectedOperator] = useState<any>(masterFilterState.filters.map((e:any)=> {return e.operator}))
   const [selectedValue, setSelectedValue] = useState<any[]>(masterFilterState.filters.map((e:any)=> {return e.value}));
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleHeaderChange = (selectedOption: any, type: any, index:any, id: any) => {
 
     if(type==="header"){
@@ -447,7 +427,8 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
       updatedOperator[index] = selectedOption;
       updatedOperator[index].index = index;
       setSelectedOperator(updatedOperator);
-      onChange('numberCompare',selectedHeader?.[index]?.attributeName, updatedOperator, "orders", updatedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}],index)
+      
+      onChange(selectedHeader?.[index]?.type,selectedHeader?.[index]?.attributeName, updatedOperator, "orders", updatedOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: selectedValue?.[index]}],index)
     }
     else if(type==='value'){
     const updatedValues = [...selectedValue]; 
@@ -455,7 +436,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
     setSelectedValue(updatedValues);
     const updateOperator = [...selectedOperator];
     updateOperator[index] = selectedOperator[index];
-    onChange('numberCompare',selectedHeader?.[index]?.attributeName, updateOperator, "orders", updateOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}],index)
+    onChange(selectedHeader?.[index]?.type,selectedHeader?.[index]?.attributeName, updateOperator, "orders", updateOperator?.[index]?.value, selectedHeader?.[index]?.value, [{value: updatedValues?.[index]}],index)
     }
   };
 
@@ -547,6 +528,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   };
   
 
+
       return (
       <>
        {masterFilterState?.filters?.map((filter:any, index:any) => (
@@ -628,5 +610,7 @@ export {
   FilterSelectDropdown,
   FilterTextInput,
   AvailabilityFilter,
-  Checkbox
+  textComparators,
+  numberComparators,
+  Checkbox,
 };

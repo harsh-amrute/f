@@ -342,7 +342,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 if (!mappingLookup.has(mapping.ccrId)) {
                     mappingLookup.set(mapping.ccrId, new Set());
                 }
-                mappingLookup.get(mapping.ccrId)!.add(mapping.it);
+                mappingLookup.get(mapping.ccrId)?.add(mapping.it);
             });
         }
         return mappingLookup
