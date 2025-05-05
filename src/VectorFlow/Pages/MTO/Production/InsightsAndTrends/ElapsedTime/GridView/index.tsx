@@ -5,24 +5,18 @@ import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/Cu
 import './styles.css'
 import { SCDynamicContainer } from './styles';
 import VFPagination from "../../../../Common/VFPagination";
-import { notifyError, notifySuccess } from '../../../../../../../helpers/notify';
-import { useGetElapsedTimeData, useGetElapsedTimeDataForExcelExport } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
+import { notifyError } from '../../../../../../../helpers/notify';
+import { useGetElapsedTimeData } from '../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
 import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader';
-import { FilterPageName, pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
-import { DownloadExcel, formatFilterJSON, getBodyForExcelExport } from '../../../../../../../helpers/utils';
+import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
 
-const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters ,colDefMap}: any,ref) => {    
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalRows, setTotalRows] = useState(1);
-    const [data, setData] = useState([]);
+
+const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, columnState,rowData,userPageSize,handlePageChange,totalRows,currentPage,savePageSize, getGridData,data}: any,ref) => {    
+   
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const gridRef = useRef<any>(null);
-    const { mutateAsync: getElapsedTimeData, isLoading } = useGetElapsedTimeData()
-    const { mutateAsync : getElapsedTimeDataExcelExport } = useGetElapsedTimeDataForExcelExport();    
-
-    useEffect(() => {
-        getGridData()
-    }, [currentPage, appliedFilters])
+    const {isLoading } = useGetElapsedTimeData()
+    
 
     useImperativeHandle(ref, ()=>({
         getExcelExport: ()=>{
@@ -66,45 +60,6 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
     };
 
 
-    const getGridData = async (isExcelExport = false ) => {
-        const formatedFilters = formatFilterJSON(appliedFilters);
-        if(isExcelExport){
-            try{
-                const headersdata = currentGridRef?.current?.api.getColumnState();                
-                const body = getBodyForExcelExport({headersdata,filterData : formatedFilters,colDefMap});                
-                const response = await getElapsedTimeDataExcelExport({body , isExcelExport : 1, report_name : FilterPageName.Poogi_Elapsed_Time})   
-                if(response.status === 200){
-                    DownloadExcel(response,FilterPageName.Poogi_Elapsed_Time);
-                    notifySuccess("Data Exported to Excel Successfully!")
-                }else{
-                    notifyError("Failed to Export to Excel")
-                }
-            }
-            catch(err){
-                console.log(err)
-                notifyError("Failed to Export to Excel")
-            }
-        }
-        else{
-
-            try {
-                const data = await getElapsedTimeData({ page: currentPage, graphflag: 0, appliedFilters: formatedFilters });
-                setData(data?.data?.data?.results)
-                setTotalRows(data?.data?.data?.count)
-                notifySuccess("Data Fetched Successfully!")
-            }
-            catch (err: any) {
-                console.log(err)
-                notifyError("Something Went Wrong")
-            }
-        }
-
-    }
-
-    const handlePageChange = async (currPage: number) => {
-        setCurrentPage(currPage)
-    }
-
     useEffect(() => {
         if (currentGridRef?.current && columnState?.length) {
             const result = currentGridRef.current.api.applyColumnState({
@@ -126,6 +81,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
         }
     }
 
+
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
@@ -138,7 +94,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                 columnDefs={colDef}
                 defaultColDef={defaultColDef}
                 disableZoomScaling
-                rowData={data}
+                rowData={rowData}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
@@ -156,7 +112,17 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
             //     ]
             // }}
             />
-            <VFPagination selectedRows={1} totalRows={totalRows} currentPage={currentPage} rowsPerPage={pagination.mtoPageSize} handleChangePage={handlePageChange} resetGridRef={currentGridRef} isDisabled={isDisabled}
+            <VFPagination
+                selectedRows={1}
+                totalRows={totalRows}
+                currentPage={currentPage}
+                rowsPerPage={userPageSize || pagination.mtoPageSize}
+                handleChangePage={handlePageChange}
+                resetGridRef={currentGridRef}
+                isDisabled={isDisabled}
+                customPageSizeEnabled={true}
+                savePageSize={savePageSize}
+                userPageSize = {userPageSize}
             />
         </SCDynamicContainer>
 
