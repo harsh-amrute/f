@@ -19,7 +19,7 @@ import { AgGridReactProps } from "ag-grid-react";
 import { GridRef } from "../../../../types/MDM";
 import { notifySuccess, notifyError } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
-import { IRowNode } from "ag-grid-enterprise";
+import { ColumnsToolPanelModule, IRowNode } from "ag-grid-enterprise";
 import OverlayLoader from "../../Common/Loader";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import {
@@ -74,7 +74,7 @@ const OrderRescheduling = () => {
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
-  
+  const [ userPageSize, setUserPageSize] = useState<any>();
 
 
   const themeUi = user?.user?.theme_ui;
@@ -96,7 +96,7 @@ const OrderRescheduling = () => {
       }
     } else {
       try {
-        const APIData = await getOrderSchedulingData(pagination.mtoPageSize);
+        const APIData = await getOrderSchedulingData( userPageSize || pagination.mtoPageSize);
         setCurrData(APIData);
         const newRowData = [...APIData.data.data.results];
         if (newRowData.length === 0) {
@@ -372,6 +372,25 @@ const OrderRescheduling = () => {
     return true;
   };
 
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+        setCurrentPage(1)
+        setUserPageSize(pageSize);
+        handleSaveClick(undefined, pageSize);
+    } else {
+        notifyError("Invalide page size");
+    }
+
+    console.log("page sizeeeeee", pageSize);
+    
+    
+}
+useEffect (() => {
+  GetData();
+}, [userPageSize])
+  
+
+
   const PostData = async (data: any, message: string): Promise<boolean> => {
     if (reasonCheck(data.ordData)) {
       try {
@@ -406,6 +425,9 @@ const OrderRescheduling = () => {
     }
     return true;
   };
+
+  console.log("changeee", selectedRowData); 
+  console.log("fetcheeed",GetData)
 
   const unschedule = async () => {
     setIsLoading(true);
@@ -500,25 +522,38 @@ const OrderRescheduling = () => {
     }
   };
 
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        const fullConfig = {cs: coldefs, pageSize:userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOrderRescheduling,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
 
-      } else {
+      } else if(page_size){
+
+        const fullConfig = {cs: columnState, pageSize:page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdOrderRescheduling,
+          cs: JSON.stringify(fullConfig),
+        };
+        await updateUserUIReportConfigData([payload]);
+      }
+      
+      else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
+          const fullConfig = { cs: config, pageSize:userPageSize };
 
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOrderRescheduling,
-            cs: JSON.stringify(config),
+            cs: JSON.stringify(fullConfig),
           };
 
           await updateUserUIReportConfigData([payload]);
@@ -646,12 +681,15 @@ const OrderRescheduling = () => {
               />
               <VFPagination
                 selectedRows={0}
-                rowsPerPage={pagination.mtoPageSize}
+                rowsPerPage={userPageSize || pagination.mtoPageSize}
                 totalRows={currData ? currData?.data?.data?.count : 0}
                 currentPage={currentPage}
                 handleChangePage={handlePageChangeCumulative}
                 resetGridRef={currentGridRef}
                 isDisabled={isDisabled}
+                customPageSizeEnabled = {true}
+                savePageSize={savePageSize}
+                userPageSize={userPageSize}
 
               />
 
