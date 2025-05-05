@@ -380,8 +380,6 @@ const OrderRescheduling = () => {
     } else {
         notifyError("Invalide page size");
     }
-
-    console.log("page sizeeeeee", pageSize);
     
     
 }
@@ -425,9 +423,6 @@ useEffect (() => {
     }
     return true;
   };
-
-  console.log("changeee", selectedRowData); 
-  console.log("fetcheeed",GetData)
 
   const unschedule = async () => {
     setIsLoading(true);
@@ -511,8 +506,9 @@ useEffect (() => {
         rn_id: UIGridCode.ProdOrderRescheduling,
       });
 
-      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setColumnState(newConfig);
+      const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setColumnState(newConfig.cs);
 
       if (!data) {
         console.error("Failed to apply column state");
@@ -535,7 +531,6 @@ useEffect (() => {
         setColumnState([...coldefs]);
 
       } else if(page_size){
-
         const fullConfig = {cs: columnState, pageSize:page_size };
         const payload = {
           un: user.user.name,
