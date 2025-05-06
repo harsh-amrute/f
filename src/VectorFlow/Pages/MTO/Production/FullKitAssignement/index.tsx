@@ -228,17 +228,30 @@ const FullKitAssignment = () => {
 
   
 
-const fetchOrders = async (isExcelExport = false) => {
+const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number) => {
     // if(noOfCalls.current == 0){
     //   await saveOrCancelSimulaton("Delete");
     //   noOfCalls.current += 1;
     // }
     const formatedFilters = formatFilterJSON(appliedFilters);
-    const data = await getFullKitAssignmentDataWithGraphData({
-      ...loadDataParams, 
-      appliedFilters: formatedFilters,
-      pageSize: userPageSize 
-    });
+    let data:any = undefined;
+    if(page && pageSize){
+
+      data = await getFullKitAssignmentDataWithGraphData({
+        ...loadDataParams, 
+        appliedFilters: formatedFilters,
+        pageSize,
+        page
+
+      });
+    }
+    else{
+      data = await getFullKitAssignmentDataWithGraphData({
+        ...loadDataParams, 
+        appliedFilters: formatedFilters,
+        pageSize: userPageSize,
+      });
+    }
 
     const griddata: any = data?.data?.data?.results?.griddata;
     if(isExcelExport){
@@ -305,15 +318,13 @@ const fetchOrders = async (isExcelExport = false) => {
         setCurrentPage(1)
         setUserPageSize(pageSize);
         handleSaveClick(undefined, pageSize);
+        fetchOrders(false,1, pageSize);
     } else {
         notifyError("Invalide page size");
     }
     
 }
 
-useEffect(()=>{
-  fetchOrders();
-},[userPageSize])
 
   const handlePageChange = async (currPage: number) => {
     setCurrentPage(currPage)
@@ -437,9 +448,9 @@ useEffect(()=>{
         rn_id: UIGridCode.ProdFullkitAssignment
       });
 
-      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
       setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
-      setColumnState(newConfig);
+      setColumnState(newConfig.cs);
 
       if (!data) {
         console.error('Failed to apply column state');
