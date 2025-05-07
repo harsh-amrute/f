@@ -250,6 +250,7 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
         ...loadDataParams, 
         appliedFilters: formatedFilters,
         pageSize: userPageSize,
+        page
       });
     }
 
