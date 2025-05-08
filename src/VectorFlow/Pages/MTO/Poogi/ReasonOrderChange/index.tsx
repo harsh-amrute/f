@@ -234,7 +234,7 @@ const ReasonForDelayOrder = () => {
             try {
                 const formatedFilters = formatFilterJSON(appliedFilters);
                 const apiResponse = await getPoogiReasonsDelayedOrder({ 
-                    'wip': wipval === true ? 0 : 1, 
+                    'wip': wipval === true ? false : true, 
                     'curr': page, 
                     appliedFilters: formatedFilters,
                     pageSize: pageSize || userPageSize || pagination.mtoPageSize
