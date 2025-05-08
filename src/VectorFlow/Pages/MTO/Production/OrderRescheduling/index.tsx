@@ -81,7 +81,7 @@ const OrderRescheduling = () => {
 
   const themeUi = user?.user?.theme_ui;
 
-  const GetData = async (isExcelExport = false,) => {
+  const GetData = async (isExcelExport = false,page?:number,page_size?:number) => {
     setIsLoading(true); 
     if (isExcelExport) {
       const headersdata = refGraph1?.current?.api?.getColumnState();
@@ -98,7 +98,7 @@ const OrderRescheduling = () => {
       }
     } else {
       try {
-        const APIData = await getOrderSchedulingData( userPageSize || pagination.mtoPageSize);
+        const APIData = await getOrderSchedulingPageData({pageNum:page, pageSize: page_size || userPageSize || pagination.mtoPageSize});
         setCurrData(APIData);
         const newRowData = [...APIData.data.data.results];
         if (newRowData.length === 0) {
@@ -293,16 +293,10 @@ const OrderRescheduling = () => {
     }
   }, [HeaderData, currTab]);
 
-  const handlePageChangeCumulative = async (pageNumber: number,pageSize?:number) => {
+  const handlePageChangeCumulative = async (pageNumber: number) => {
     setIsLoading(true);
     setCurrentPage(pageNumber);
-    const APIData = await getOrderSchedulingPageData({pageNum: pageNumber,pageSize });
-    setCurrData(APIData);
-    const newDat = [...APIData.data.data.results];
-        newDat.forEach((el)=>{
-          el.oldDate = el.dd;
-        })
-    setRowData(newDat);
+    GetData(false,pageNumber);
     setIsLoading(false);
     // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
   };
@@ -379,7 +373,7 @@ const OrderRescheduling = () => {
         setCurrentPage(1)
         setUserPageSize(pageSize);
         handleSaveClick(undefined, pageSize);
-        handlePageChangeCumulative(1,pageSize);
+        GetData(false,1,pageSize);
     } else {
         notifyError("Invalide page size");
     }
@@ -388,9 +382,9 @@ const OrderRescheduling = () => {
 }
 useEffect (() => {
   if(userConfigFetched){
-    GetData();
+    GetData(false,1);
   }
-}, [userPageSize, userConfigFetched])
+}, [userConfigFetched])
   
 
 
@@ -439,7 +433,7 @@ useEffect (() => {
       );
       if (isSuccesss) {
         setSelectedRowData([]);
-        await handlePageChangeCumulative(currentPage, userPageSize || pagination.mtoPageSize);
+        await handlePageChangeCumulative(currentPage);
       }
     } catch (error) {
       notifyError("Failed to unschedule order!");
@@ -462,7 +456,7 @@ useEffect (() => {
       );
       if (isSuccess) {
         setSelectedRowData([]);
-        await handlePageChangeCumulative(currentPage, userPageSize || pagination.mtoPageSize); // Refresh the grid data
+        await handlePageChangeCumulative(currentPage); // Refresh the grid data
       }
     } catch (error) {
       notifyError("Failed to update Due Date!");
@@ -685,7 +679,7 @@ useEffect (() => {
                 rowsPerPage={userPageSize || pagination.mtoPageSize}
                 totalRows={currData ? currData?.data?.data?.count : 0}
                 currentPage={currentPage}
-                handleChangePage={(page)=>{handlePageChangeCumulative(page, userPageSize || pagination.mtoPageSize)}}
+                handleChangePage={(page)=>{handlePageChangeCumulative(page)}}
                 resetGridRef={currentGridRef}
                 isDisabled={isDisabled}
                 customPageSizeEnabled = {true}

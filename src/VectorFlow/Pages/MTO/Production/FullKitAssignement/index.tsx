@@ -234,25 +234,12 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
     //   noOfCalls.current += 1;
     // }
     const formatedFilters = formatFilterJSON(appliedFilters);
-    let data:any = undefined;
-    if(page && pageSize){
+    const data = await getFullKitAssignmentDataWithGraphData({
+      ...loadDataParams, 
+      appliedFilters: formatedFilters,
+      pageSize: pageSize || userPageSize,
 
-      data = await getFullKitAssignmentDataWithGraphData({
-        ...loadDataParams, 
-        appliedFilters: formatedFilters,
-        pageSize,
-        page
-
-      });
-    }
-    else{
-      data = await getFullKitAssignmentDataWithGraphData({
-        ...loadDataParams, 
-        appliedFilters: formatedFilters,
-        pageSize: userPageSize,
-        page
-      });
-    }
+    });
 
     const griddata: any = data?.data?.data?.results?.griddata;
     if(isExcelExport){
