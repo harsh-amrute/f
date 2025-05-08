@@ -13,7 +13,7 @@ export namespace ReasonOrderChangeServices {
     }
 
     export const getPoogiReasonsDelayedOrder = async (data: {
-        wip: boolean,
+        wip: number,
         curr: number,
         pageSize?: number,
         appliedFilters?: Record<string, any>
