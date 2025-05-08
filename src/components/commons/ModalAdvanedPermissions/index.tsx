@@ -225,6 +225,7 @@ const ModalAdvanedPermissions = (props: any) => {
             } else {
               notifySuccess(res?.data?.msg.message);
               notifyWarning(res?.data?.msg.warning);
+              setStorePermission([]);
               closeModal();
               refetch();
             }

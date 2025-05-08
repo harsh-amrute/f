@@ -19,7 +19,7 @@ import { AgGridReactProps } from "ag-grid-react";
 import { GridRef } from "../../../../types/MDM";
 import { notifySuccess, notifyError } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
-import { IRowNode } from "ag-grid-enterprise";
+import { ColumnsToolPanelModule, IRowNode } from "ag-grid-enterprise";
 import OverlayLoader from "../../Common/Loader";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import {
@@ -75,11 +75,13 @@ const OrderRescheduling = () => {
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
   
+  const [ userPageSize, setUserPageSize] = useState<any>();
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
 
 
   const themeUi = user?.user?.theme_ui;
 
-  const GetData = async (isExcelExport = false) => {
+  const GetData = async (isExcelExport = false,page?:number,page_size?:number) => {
     setIsLoading(true); 
     if (isExcelExport) {
       const headersdata = refGraph1?.current?.api?.getColumnState();
@@ -96,7 +98,7 @@ const OrderRescheduling = () => {
       }
     } else {
       try {
-        const APIData = await getOrderSchedulingData(pagination.mtoPageSize);
+        const APIData = await getOrderSchedulingPageData({pageNum:page, pageSize: page_size || userPageSize || pagination.mtoPageSize});
         setCurrData(APIData);
         const newRowData = [...APIData.data.data.results];
         if (newRowData.length === 0) {
@@ -209,7 +211,7 @@ const OrderRescheduling = () => {
   };
 
   useEffect(() => {
-    GetData();
+    // GetData();
     setColumnDef();
     // getUserColumnConfig();
   }, []);
@@ -294,13 +296,7 @@ const OrderRescheduling = () => {
   const handlePageChangeCumulative = async (pageNumber: number) => {
     setIsLoading(true);
     setCurrentPage(pageNumber);
-    const APIData = await getOrderSchedulingPageData(pageNumber.toString());
-    setCurrData(APIData);
-    const newDat = [...APIData.data.data.results];
-        newDat.forEach((el)=>{
-          el.oldDate = el.dd;
-        })
-    setRowData(newDat);
+    GetData(false,pageNumber);
     setIsLoading(false);
     // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
   };
@@ -371,6 +367,26 @@ const OrderRescheduling = () => {
     }
     return true;
   };
+
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+        setCurrentPage(1)
+        setUserPageSize(pageSize);
+        handleSaveClick(undefined, pageSize);
+        GetData(false,1,pageSize);
+    } else {
+        notifyError("Invalide page size");
+    }
+    
+    
+}
+useEffect (() => {
+  if(userConfigFetched){
+    GetData(false,1);
+  }
+}, [userConfigFetched])
+  
+
 
   const PostData = async (data: any, message: string): Promise<boolean> => {
     if (reasonCheck(data.ordData)) {
@@ -489,8 +505,10 @@ const OrderRescheduling = () => {
         rn_id: UIGridCode.ProdOrderRescheduling,
       });
 
-      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setColumnState(newConfig);
+      setUserConfigFetched(true);
+      const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setColumnState(newConfig.cs);
 
       if (!data) {
         console.error("Failed to apply column state");
@@ -500,25 +518,37 @@ const OrderRescheduling = () => {
     }
   };
 
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        const fullConfig = {cs: coldefs, pageSize:userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdOrderRescheduling,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
 
-      } else {
+      } else if(page_size){
+        const fullConfig = {cs: columnState, pageSize:page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdOrderRescheduling,
+          cs: JSON.stringify(fullConfig),
+        };
+        await updateUserUIReportConfigData([payload]);
+      }
+      
+      else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
+          const fullConfig = { cs: config, pageSize:userPageSize };
 
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOrderRescheduling,
-            cs: JSON.stringify(config),
+            cs: JSON.stringify(fullConfig),
           };
 
           await updateUserUIReportConfigData([payload]);
@@ -646,12 +676,15 @@ const OrderRescheduling = () => {
               />
               <VFPagination
                 selectedRows={0}
-                rowsPerPage={pagination.mtoPageSize}
+                rowsPerPage={userPageSize || pagination.mtoPageSize}
                 totalRows={currData ? currData?.data?.data?.count : 0}
                 currentPage={currentPage}
-                handleChangePage={handlePageChangeCumulative}
+                handleChangePage={(page)=>{handlePageChangeCumulative(page)}}
                 resetGridRef={currentGridRef}
                 isDisabled={isDisabled}
+                customPageSizeEnabled = {true}
+                savePageSize={savePageSize}
+                userPageSize={userPageSize}
 
               />
 
