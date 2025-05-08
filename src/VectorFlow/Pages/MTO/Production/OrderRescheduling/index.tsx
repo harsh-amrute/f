@@ -591,7 +591,7 @@ useEffect (() => {
       setIsReset(false);
     }
   }, [isReset]);
-
+  
   useEffect(() => {
     if (currentGridRef?.current) {
       setMasterUIConfig(currentGridRef?.current.api.getColumnState());

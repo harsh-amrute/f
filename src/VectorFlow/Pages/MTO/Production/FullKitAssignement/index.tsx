@@ -461,7 +461,6 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
     }
   }
 
-  console.log("userrrerrpagesizee",userPageSize)
   
   const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
