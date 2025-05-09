@@ -26,7 +26,6 @@ import { AgChartOptions } from "ag-charts-community";
 // clear cached token and redirect to sso login
 import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
-import { useEffect } from 'react';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
