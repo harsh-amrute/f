@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import axios from 'axios';
-import { pagination } from '../../../../../VectorFlow/Pages/MTO/Common/Enum';
-
 
 export namespace EnquiryResponseService {
 
