@@ -1,0 +1,28 @@
+.custom-details {
+    border-radius: 6px;
+    width: 200px;
+    background-color: #fff;
+    position: relative;
+  }
+  
+  .custom-summary {
+    list-style: none; /* Remove default triangle */
+    cursor: pointer;
+    font-weight: 600;
+    padding: 4px;
+    outline: none;
+    user-select: none;
+    background-color: #d2d2d2;    
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .custom-summary::-webkit-details-marker {
+    display: none; /* Remove default triangle in WebKit browsers */
+  }
+  
+  .custom-dropdown {
+    margin-top: 8px;
+    padding-left: 4px;
+  }
+  
