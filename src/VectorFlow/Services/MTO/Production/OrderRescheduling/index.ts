@@ -12,8 +12,9 @@ export const useGetOrderSchedulingData = () => {
 }
 
 export const useGetOrderSchedulingPageData = () => {
-    return useMutation(async (pageUrl: any) => {
-        return OrderReschedulingService.getOrderReschedulingPageData(pageUrl);
+    return useMutation(async ({pageNum
+           , pageSize}:any) => {
+        return OrderReschedulingService.getOrderReschedulingPageData(pageNum,pageSize);
     })
 }
 

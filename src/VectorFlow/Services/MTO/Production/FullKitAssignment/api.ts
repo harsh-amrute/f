@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace FullKitAssignmentService {
-    export const getFullKitAssignmentDataWithGraphData = async (is_fullkit: boolean, load_data_after_simulation: boolean, load_graph_data: boolean, page: number, appliedFilters: any) => {
+    export const getFullKitAssignmentDataWithGraphData = async (is_fullkit: boolean, load_data_after_simulation: boolean, load_graph_data: boolean, page: number, pageSize: number, appliedFilters: any) => {
         return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getFullKitAssignmentDataWithGraphData/`, 
         appliedFilters,
         {
@@ -14,7 +14,8 @@ export namespace FullKitAssignmentService {
                 is_fullkit,
                 load_data_after_simulation,
                 load_graph_data,
-                page
+                page,
+                page_size: pageSize
             }
         })
     }

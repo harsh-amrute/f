@@ -6,7 +6,7 @@ const colorMapper = (color: string) => {
 
     switch (color) {
         case 'White':
-            return { bg: ColorsMTO.White.code, text: ColorsMTO.Black.code };
+            return { bg: "#A8A8A8", text: ColorsMTO.Black.code };
         case 'Green':
             return { bg: ColorsMTO.Green.code, text: ColorsMTO.White.code };
         case 'Yellow':

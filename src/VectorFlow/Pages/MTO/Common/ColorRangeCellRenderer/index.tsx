@@ -6,7 +6,7 @@ const colorMapper = (color: number) => {
         return {
             "bg": "#cecece",
             "text": "black"
-        }                    
+        }
     }
     if (color < 0) {
         return {
@@ -45,6 +45,7 @@ const ColorRangeCellRenderer = (params: any) => {
 
 
     const cellColor = colorMapper(params.value)
+
 
 
     if (color === null || color === undefined || isNaN(color)) {

@@ -6,16 +6,20 @@ import GridView from './GridView'
 import WeekWiseGraph from './WeekWiseGraph'
 import DeptWiseGraph from './DeptWiseGraph'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig'
-import { useGetElapsedDaysforDeptPlantData, useGetElapsedTimeData } from '../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime'
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
 import _ from 'lodash'
 import OverlayLoader from '../../../Common/Loader'
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { getColumnDefinations } from '../../../../../../helpers/utils';
-import { UIGridCode} from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import useColDef from '../../../../../../hooks/useColDef'
+import { DownloadExcel, formatFilterJSON, getBodyForExcelExport,getColumnDefinations } from '../../../../../../helpers/utils';
+import { FilterPageName,UIGridCode } from '../../../../../../VectorFlow/Pages/MTO/Common/Enum';
+import { useGetElapsedTimeData, useGetElapsedTimeDataForExcelExport,useGetElapsedDaysforDeptPlantData } from '../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/ElapseTime';
+
+
+
+
 import BPPRenderer from '../../../Common/BPRRenderer/BPPRenderer'
 // import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 // import useFilter from '../../../../../../hooks/useFilter';
@@ -69,6 +73,17 @@ const ElapsedTime = () => {
     const { getColDef, colDefMap } = useColDef();
     const reportName = "Elapse Time";
     const [masterUIConfig, setMasterUIConfig] = useState([]);
+
+    //  const [data, setData] = useState([]);
+    const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+    const [userPageSize, setUserPageSize] = useState<any>();
+    const [gridData, setGridData] = useState([]);
+    const [totalRow, setTotalRow] = useState<number>(0)
+    const [currentPage, setCurrentPage] = useState<number>(1)
+    const { mutateAsync: getElapsedTimeDataExcelExport } = useGetElapsedTimeDataForExcelExport();  
+    
+    
+    
     
     const themeUi = user?.user?.theme_ui
 
@@ -135,6 +150,72 @@ const ElapsedTime = () => {
         }
     }
 
+
+    const getGridData = async(isExcelExport = false, page= 1, pageSize?:any ) => {
+         const formatedFilters = formatFilterJSON(null); //filter integration is pending 
+            if(isExcelExport){
+                try{
+                     const headersdata = currentGridRef?.current?.api.getColumnState();                
+                     const body = getBodyForExcelExport({headersdata,filterData : formatedFilters,colDefMap});                
+                     const response = await getElapsedTimeDataExcelExport({body , isExcelExport : 1, report_name : FilterPageName.Poogi_Elapsed_Time})  
+                     if(response.status === 200){
+                        DownloadExcel(response,FilterPageName.Poogi_Elapsed_Time);
+                        notifySuccess("Data Exported to Excel Successfully!")
+                    }else{
+                        notifyError("Failed to Export to Excel")
+                    }
+                }
+                catch(err){
+                    console.log(err)
+                    notifyError("Failed to Export to Excel")
+                }
+            }
+            else{
+    
+                try {
+                    const data = await getElapsedTimeData({ page: page || currentPage, graphflag: 0, appliedFilters: formatedFilters,page_size: pageSize || userPageSize });
+                    setGridData(data?.data?.data?.results);
+                    setTotalRow(data?.data?.data?.count)
+                    notifySuccess("Data Fetched Successfully!")
+
+              
+                }
+                catch (err: any) {
+                    console.log(err)
+                    notifyError("Something Went Wrong")
+                }
+            }
+    
+        }
+   
+
+    const handlePageChange = async (currPage: number) => {
+        setCurrentPage(currPage)
+        getGridData(false, currPage);
+
+    }
+    
+    useEffect(() => {
+        if (userConfigFetched) {
+            setCurrentPage(1);
+            getGridData(false, 1);
+        }
+    }, [userConfigFetched])
+    
+     const savePageSize = (pageSize: any) => {
+        if (pageSize) {
+          setUserPageSize(pageSize);
+            setCurrentPage(1)
+            handleSaveClick(undefined, pageSize);
+            getGridData(false, 1, pageSize);
+          } else {
+            notifyError("Invalide page size");
+        }
+        
+    }
+    
+
+    
     const handleSelectionChange = (newPlant: any, newDept: any) => {
         setSelectedPlant(newPlant);
         setSelectedDept(newDept);
@@ -169,8 +250,10 @@ const ElapsedTime = () => {
                 rn_id: UIGridCode.ProdElapsedTime
             });
 
+            setUserConfigFetched(true)
             const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-            setColumnState(newConfig);
+            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+            setColumnState(newConfig.cs);
 
             if (!data) {
                 console.error('Failed to apply column state');
@@ -180,25 +263,39 @@ const ElapsedTime = () => {
         }
     }
 
-    const handleSaveClick = async (coldefs?: any) => {
+
+
+    const handleSaveClick = async (coldefs?: any,page_size?:any) => {
         try {
             if (coldefs) {
+                const fullConfig = {cs: coldefs, pageSize: userPageSize };
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.ProdElapsedTime,
-                    cs: JSON.stringify(coldefs),
+                    cs: JSON.stringify(fullConfig),
                 };
                 await updateUserUIReportConfigData([payload]);
                 setColumnState([...coldefs]);
 
-            } else {
+            }
+            else if(page_size){
+                const config = columnState;
+                const fullConfig = { cs: config,  pageSize: page_size};        
+                const payload = {
+                  un: user.user.name,
+                  rn_id: UIGridCode.ProdElapsedTime,
+                  cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIReportConfigData([payload]);
+              }
+            else {
                 if (currentGridRef?.current?.api) {
                     const config = currentGridRef.current.api.getColumnState();
-
+                    const fullConfig = { cs: config, pageSize: userPageSize };
                     const payload = {
                         un: user.user.name,
                         rn_id: UIGridCode.ProdElapsedTime,
-                        cs: JSON.stringify(config)
+                        cs: JSON.stringify(fullConfig)
                     }
                     await updateUserUIReportConfigData([payload]);
                     await getUserColumnConfig();
@@ -290,6 +387,13 @@ const ElapsedTime = () => {
                         columnState={columnState}
                         appliedFilters={null}
                         colDefMap={colDefMap}
+
+                        userPageSize={userPageSize}
+                        handlePageChange={handlePageChange}
+                        currentPage={currentPage}
+                        totalRows={totalRow}
+                        savePageSize={savePageSize}
+                        rowData={gridData}
                     />
                 ) : (
                     <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px" }}>

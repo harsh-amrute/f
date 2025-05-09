@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { pagination } from '../../../../../../VectorFlow/Pages/MTO/Common/Enum';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace STPLAndFullKitService {
 
-    export const getSTPLandFullkitInDaysData = async ({ graphflag, page, appliedFilters }: { graphflag: number, page?: number, appliedFilters?: any  }) => {
+    export const getSTPLandFullkitInDaysData = async ({ graphflag, page, appliedFilters,page_size }: { graphflag: number, page?: number, appliedFilters?: any,page_size?:any  }) => {
         if(graphflag){
             return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getSTPLandFullkitInDaysData/?graphflag=${graphflag}`, 
             {
@@ -12,7 +13,7 @@ export namespace STPLAndFullKitService {
                 },
             })
         }
-        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getSTPLandFullkitInDaysData/?graphflag=${graphflag}&page=${page}`, 
+        return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getSTPLandFullkitInDaysData/?graphflag=${graphflag}&page=${page}&page_size=${page_size || pagination.mtoPageSize}`, 
         appliedFilters,
         {
             headers: {
