@@ -1,11 +1,13 @@
 import { ColDef } from "ag-grid-enterprise";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import VFTable from "../../../Common/VFTable";
 import { VFTableWrapper } from "./styles";
 import { GridFilterWrapper, TextBtn } from "../../../Common/VFPagination/styles";
 import { useUserData } from "../../../../../../context";
+import CustomPageSizeInput from "../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput";
+
 
 interface IResizeTableProps {
   colDef: ColDef[];
@@ -13,11 +15,13 @@ interface IResizeTableProps {
   setCurrentGridRef: any,
   currentGridRef: any,
   columnState: any,
-  gridRef: any
+  gridRef: any,
+  userPageSize: number;
+  savePageSize: any;
 }
 
 const ResizableTable = (props: IResizeTableProps) => {
-  const { data, colDef, setCurrentGridRef, currentGridRef, columnState } = props;
+  const { data, colDef, setCurrentGridRef, currentGridRef, columnState, userPageSize, savePageSize } = props;
   const gridRef = props.gridRef;
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
   const { user } = useUserData();
@@ -57,7 +61,7 @@ const ResizableTable = (props: IResizeTableProps) => {
 
   const CustomStatusPanel = () => {
         return (
-            <GridFilterWrapper style={{marginTop:'15px'}}>
+            <GridFilterWrapper style={{marginTop:'15px', paddingTop:'3px'}}>
                 <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
                     Clear All Grid Filters
                 </TextBtn>  
@@ -66,7 +70,7 @@ const ResizableTable = (props: IResizeTableProps) => {
     };  
 
   useEffect(()=>{ 
-    if (currentGridRef?.current && columnState?.length) {
+    if (currentGridRef?.current && currentGridRef.current.api && columnState?.length) {
       const result = currentGridRef.current.api.applyColumnState({
         state: columnState,
         applyOrder: true
@@ -75,19 +79,30 @@ const ResizableTable = (props: IResizeTableProps) => {
         console.error('Failed to apply column state');
       }
     }
-  },[columnState]);
+  }, [columnState]);
+
+
+
+
+
+  const customPage = () => (
+    <div>
+      <CustomPageSizeInput 
+        savePageSize={savePageSize}
+        userPageSize={userPageSize}
+      />
+    </div>
+  );
   
   return (
-    <VFTableWrapper>
-
+    <VFTableWrapper >
       <VFTable
         ref={gridRef}
         columnDefs={colDef}
         rowData={data}
         defaultColDef={defaultColDef}
         getRowStyle={getRowStyle}
-        pagination
-        paginationPageSize={15}
+        pagination={true}
         gridOptions={{
           sideBar: {
             toolPanels: ["agColumnsToolPanel"],
@@ -98,13 +113,16 @@ const ResizableTable = (props: IResizeTableProps) => {
         statusBar = {{
           statusPanels: [
             { statusPanel: CustomStatusPanel, align: "left" },
-            { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'right' },
-            { statusPanel: 'agTotalRowCountComponent', align:'right' },
-            { statusPanel: 'agFilteredRowCountComponent', align:'right' },
-            { statusPanel: 'agSelectedRowCountComponent', align:'right' },
-            { statusPanel: 'agAggregationComponent', align:'right' },
+            { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'left' },
+            { statusPanel: 'agTotalRowCountComponent', align:'left' },
+            { statusPanel: 'agFilteredRowCountComponent', align:'left' },
+            { statusPanel: 'agSelectedRowCountComponent', align:'left' },
+            { statusPanel: 'agAggregationComponent', align: 'left' },
+            { statusPanel: customPage, align:'right' }
           ],
         }}  
+        paginationPageSize={userPageSize}
+        paginationPageSizeSelector={false}
         
         onGridReady={(params: any) => {
           params.api.autoSizeAllColumns();
@@ -120,7 +138,7 @@ const ResizableTable = (props: IResizeTableProps) => {
         }}
 
 
-      />
+        />
     </VFTableWrapper>
 
   );

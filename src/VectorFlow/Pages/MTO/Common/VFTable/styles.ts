@@ -22,4 +22,7 @@ export const VFTableWrapper = styled.div<{ height?: string, disableZoomScaling?:
       top: 0;
       cursor: ew-resize;
     }
+
+    
+   
 ` 
