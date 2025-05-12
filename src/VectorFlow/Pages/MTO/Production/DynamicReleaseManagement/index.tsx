@@ -250,6 +250,8 @@ const DynamicReleaseManagement = () => {
     }
   }, [isSuccess, isError])
 
+  const [isRouteLoading, setIsRouteLoading] = useState(false);
+
   const colDefCustomizations = {
     Action: {
       floatingFilter: false,
@@ -257,7 +259,7 @@ const DynamicReleaseManagement = () => {
       suppressMenu: true,
       cellRenderer: (params: any) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: backgroundColor, fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: backgroundColor, fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setIsRouteLoading(true),setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
             <div >Release &nbsp; </div>
             <img height={14} width={14} src= {userTheme ? '/assets/img/mto/dynamicReleaseManagement/arrow-icon-yellow.svg' : '/assets/img/mto/dynamicReleaseManagement/arrow-icon.svg'} alt='arrow-icon' />
           </div>
@@ -318,6 +320,64 @@ const DynamicReleaseManagement = () => {
 
   ];
 
+  const [wipDataGlobal,setWipDataGlobal] = useState<any>({});
+
+  const getWIPData = async (selectedOrders: any) => {
+    try {
+      // Exclude already fetched order IDs
+
+      console.log("wipDataGlobal",wipDataGlobal)
+
+      const newOrders = selectedOrders.filter(
+        (ok:string) => !wipDataGlobal[ok]
+      );
+
+      console.log("newOrders", newOrders);
+      
+      if (newOrders.length === 0) {
+        console.log("All selected orders are already fetched.");
+        return {};
+      }
+  
+      // Prepare the input for the API
+      const filteredOrders = Object.keys(newOrders.reduce((acc: any, orderId:string) => {
+        acc[orderId] = selectedOrders[orderId];
+        return acc;
+      }, {}));
+
+      console.log("filteredOrders", filteredOrders);
+  
+      // Call the API with the filtered orders
+      const response = await getDynamicReleaseData({
+        graph: 0,
+        ao: 0,
+        page: 1,
+        appliedFilters: formatFilterJSON(appliedFilters),
+        wipObj: filteredOrders,
+      });
+  
+      console.log("response", response.data.data);
+      
+  
+      // Update the global WIP data state
+      setWipDataGlobal((prev: any) => ({
+        ...prev,
+        ...newOrders.reduce((acc: any, orderId:string) => {
+          console.log("orderId", selectedOrders[orderId])
+          
+          acc[orderId] = selectedOrders[orderId]|| {};
+          return acc;
+        }, {}),
+        ...response.data.data,
+      }));
+  
+      return response.data.data;
+    } catch (e) {
+      console.log(e);
+    }
+    return {};
+  };
+
   useEffect(() => {
     const newData = convertData(graphData);
     if (selectedRows.length) {
@@ -325,18 +385,26 @@ const DynamicReleaseManagement = () => {
     }
     else {
       setIsReleaseButtonDisabled(true);
-
     }
 
     if (selectedRows.length) {
-
       newData?.forEach((ele) => {
         ele['selected'] = false;
       })
     }
-    selectedRows.forEach((element: any) => {
+
+    const selectedOrdersWIP:any = getWIPData(selectedRows.map((item: any) => item.ok));
+
+    const newSelectedRows = Object.keys(selectedOrdersWIP).map((ok) => ({
+      ok,
+      wips: selectedOrdersWIP[ok],
+    }));
+
+    newSelectedRows.forEach((element: any) => {
       // Use Object.entries to iterate over the key-value pairs of the wips object
-      Object.entries(element['wips']).forEach(([ccrName, value]: [string, any]) => {
+      if(element.wips){
+
+        Object.entries(element?.['wips']).forEach(([ccrName, value]: [string, any]) => {
         newData?.forEach((ele) => {
           if (ele['category'] === ccrName) {
             // Assuming "Incremental WIP" is a number, initialize it if it's undefined
@@ -345,14 +413,28 @@ const DynamicReleaseManagement = () => {
           }
         });
       });
+    }
     });
 
     setFinalGraphData(newData);
   }, [selectedRows]);
 
-  const updateGraphOnSelect = () => {
+  const updateGraphOnSelect = async () => {
+
+    
     
     const selectedData = refGrid.current?.api.getSelectedRows();
+
+    console.log("selectedData", selectedData)
+    const wipData:any = [];
+    selectedData.forEach((item: any) => {
+      wipData.push(item.ok);
+    });
+
+  
+    
+    
+    
     if (selectedData) {
       let mergedData: any = [...selectedRows]; // Start with the existing selected data
 
@@ -653,6 +735,7 @@ const DynamicReleaseManagement = () => {
         });
 
         setRoute(newRoute);
+        setIsRouteLoading(false);
         // setShowModal(true);
       } catch (error) {
         console.log(error);
@@ -867,7 +950,7 @@ const DynamicReleaseManagement = () => {
     <>
       <Wrapper>
         {
-          (isLoading || isUpdateUserConfig || isGetUserConfig || isGetRouteDetails) && <OverlayLoader />
+          (isRouteLoading || isLoading || isUpdateUserConfig || isGetUserConfig || isGetRouteDetails) && <OverlayLoader />
         }
         <MTOActionToolBar 
           comp="FullKitAssignment" 

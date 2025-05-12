@@ -409,7 +409,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     const order_ccr_data: any = {};
 
                     const ccrIds: any = [];
-                    const ccrNames: any = []
+                    const ccrNames: any = [];
 
                     //TODO: if the New Route Does not exist, use the rid --done
                     let route;
@@ -588,7 +588,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     // const crddFlag = 0;
                     let maxDate;
 
-                    if (crddFlag) {
+                    if (crddFlag.value) {
                         maxDate = max([folDD, bufferDD, crDD]);
                     } else {
                         maxDate = max([folDD, bufferDD]);
