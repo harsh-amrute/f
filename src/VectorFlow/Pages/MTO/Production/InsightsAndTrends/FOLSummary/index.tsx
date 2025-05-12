@@ -9,7 +9,7 @@ import {
 } from "./styles";
 import { useGetEnquiryResData } from "../../../../../Services/MTO/Production/EnquiryResponse";
 import { useUserData } from "../../../../../../context/index";
-import { notifyLoader } from "../../../../../../helpers/notify";
+import { notifyError, notifyLoader } from "../../../../../../helpers/notify";
 import { toast } from "react-toastify"
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { getColumnDefinations } from "../../../../../../helpers/utils";
@@ -31,7 +31,7 @@ const FOLSummary = () => {
   const [isReset, setIsReset] = useState<any>(undefined);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
-  const { data } = useGetEnquiryResData() || {};
+ 
   const [selectedOptions, setSelectedOptions] = useState<any>({
     plantName: "",
     productGroup: [],
@@ -47,6 +47,16 @@ const FOLSummary = () => {
   const [HeaderData, setHeaderData] = useState([]);
   const [myColDefs, setMyColDefs] = useState([{}]);
   const [masterUIConfig, setMasterUIConfig] = useState([]);
+
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalRow, setTotalRow] = useState<number>(0)
+
+
+  // const { data } = useGetEnquiryResData() || {};
+  const { data } = useGetEnquiryResData() || {};
+
 
 
   const handleNameChange = (arr: any) => {
@@ -468,7 +478,39 @@ const FOLSummary = () => {
     });
   };
 
+
   
+  const getEnquiryData = (data: any) => {
+    try {
+      setTableData(data?.data?.data);
+      setTotalRow(data?.data?.data.length);
+    } catch (e) {
+      console.log(e);
+      notifyError('Failed to set Enquiry data!');
+    }
+  };
+  
+  useEffect(() => {
+    notifyLoader("Loading Grid Data");
+    if (data?.data?.data && userConfigFetched) {
+      getEnquiryData(data);
+    }
+    toast.dismiss();
+  }, [data, userConfigFetched]);
+  
+  
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+      setUserPageSize(pageSize);
+        setCurrentPage(1)
+        handleSaveClick(undefined, pageSize);
+        getEnquiryData({data, pageSize,currentPage});
+      } else {
+        notifyError("Invalide page size");
+    }
+    
+}
+
   const getUserColumnConfig = async () => {
     try {
       const data = await getUserUIReportConfigData({
@@ -476,8 +518,10 @@ const FOLSummary = () => {
         rn_id: UIGridCode.ProdFolSummary
       });
 
-      const newConfig =data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-      setColumnState(newConfig);
+      setUserConfigFetched(true)
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setColumnState(newConfig.cs);
 
       if (!data) {
         console.error('Failed to apply column state');
@@ -487,26 +531,38 @@ const FOLSummary = () => {
     }
   }
 
-  const handleSaveClick = async (coldefs?:any) => {
+
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
+        const fullConfig = { cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdFolSummary,
-          cs: JSON.stringify(coldefs),
-        };
+          cs: JSON.stringify(fullConfig),
+        };  
         await updateUserUIReportConfigData([payload]);
-        setColumnState([...coldefs]);
-
+        setColumnState([...coldefs]); 
+  
+      } else if (page_size) {
+        const fullConfig = { cs: columnState, pageSize: page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdFolSummary,
+          cs: JSON.stringify(fullConfig),
+        };  
+        await updateUserUIReportConfigData([payload]);
+  
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
-
+          const fullConfig = { cs: config, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdFolSummary,
-            cs: JSON.stringify(config)
-          }
+            cs: JSON.stringify(fullConfig),
+          };
+  
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
         }
@@ -514,7 +570,8 @@ const FOLSummary = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
+  
 
   const handleResetClick = () => {
     setIsReset(true);
@@ -535,11 +592,12 @@ const FOLSummary = () => {
 
   useEffect(() => {
     notifyLoader("Loading Grid Data")
-    if (data?.data?.data) {
+    if (data?.data?.data && userConfigFetched) {
+      setCurrentPage(1);
       setTableData(data?.data?.data);
     }
     toast.dismiss()
-  }, [data]);
+  }, [data, userConfigFetched]);
 
   useEffect(() => {
     setFilterData(data?.data?.data);
@@ -609,6 +667,8 @@ const FOLSummary = () => {
           setCurrentGridRef={setCurrentGridRef}
           currentGridRef={currentGridRef}
           columnState={columnState}
+          savePageSize={savePageSize}
+          userPageSize={userPageSize}
         />
       </BTRAllomentSection>
 

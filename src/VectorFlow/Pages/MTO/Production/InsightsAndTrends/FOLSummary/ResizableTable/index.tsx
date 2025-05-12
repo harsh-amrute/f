@@ -1,28 +1,30 @@
-import { ColDef } from "ag-grid-enterprise";
-import { useEffect } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import { ColDef } from "ag-grid-enterprise";
+import { useEffect } from "react";
+import CustomPageSizeInput from "../../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput";
 import VFTable from "../../../../../../../VectorFlow/Pages/MTO/Common/VFTable";
-import { VFTableWrapper } from './style'
-import { pagination } from "../../../../../../../VectorFlow/Pages/MTO/Common/Enum";
+import { VFTableWrapper } from './style';
 
 interface IResizeTableProps {
   colDef: ColDef[];
   data: any;
-  setCurrentGridRef: any,
-  currentGridRef: any,
-  columnState: any,
-  gridRef: any
+  setCurrentGridRef: any;
+  currentGridRef: any;
+  columnState: any;
+  gridRef: any;
+  userPageSize: number;
+  savePageSize: any;
 }
 
 const ResizableTable = (props: IResizeTableProps) => {
-  const {data, colDef, setCurrentGridRef, currentGridRef, columnState} = props;
+  const {
+    data, colDef, setCurrentGridRef, currentGridRef, columnState,
+    userPageSize, savePageSize
+  } = props;
 
   const getRowStyle = (params: any) => {
-    if (params.node.rowIndex % 2 === 0) {
-      return { background: "white" };
-    }
-    return { background: "#F4F4F4" };
+    return { background: params.node.rowIndex % 2 === 0 ? "white" : "#F4F4F4" };
   };
 
   const defaultColDef = {
@@ -32,14 +34,14 @@ const ResizableTable = (props: IResizeTableProps) => {
     suppressMenu: true,
     resizable: true,
     cellStyle: {
-      'text-align': 'center',
-      "font-style": "normal",
-      "font-variant": "normal",
-      "font-size": "20px",
-      "font-family": "Roboto",
-      'text-overflow': 'ellipsis',
-      'white-space': 'nowrap',
-      'resizable': 'true',
+      textAlign: 'center',
+      fontStyle: "normal",
+      fontVariant: "normal",
+      fontSize: "20px",
+      fontFamily: "Roboto",
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      resizable: 'true',
     },
     flex: 1,
   };
@@ -50,33 +52,41 @@ const ResizableTable = (props: IResizeTableProps) => {
         state: columnState,
         applyOrder: true
       });
-      if (!result) {
-        console.error('Failed to apply column state');
-      }
+      if (!result) console.error('Failed to apply column state');
     }
-  },[columnState]);
+  }, [columnState]);
+
+
+  const customPage = () => (
+    <div style={{ display: 'flex', justifyContent: 'end', gap: '1rem', width: '100%',paddingBottom: '3px' }}>
+      <CustomPageSizeInput
+        savePageSize={savePageSize}
+        userPageSize={userPageSize}
+      />
+    </div>
+  );
 
   return (
     <VFTableWrapper>
-
       <VFTable
         ref={props.gridRef}
         columnDefs={colDef}
         rowData={data}
         defaultColDef={defaultColDef}
         getRowStyle={getRowStyle}
-        pagination
+        statusBar={{
+          statusPanels: [{ statusPanel: customPage, align:'right' }],
+        }}
+        pagination={true}
         onGridReady={(params: any) => {
           params.api.autoSizeAllColumns();
-
           setCurrentGridRef(props.gridRef);
         }}
-        paginationPageSize={pagination.mtoPageSize}
+        paginationPageSize={userPageSize}
+        paginationPageSizeSelector={false}
         maintainColumnOrder
-
       />
     </VFTableWrapper>
-
   );
 };
 

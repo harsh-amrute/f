@@ -23,7 +23,7 @@ import {
 // import FilterAccordian from "./FilterAccordian";
 import { useGetEnquiryResData } from "../../../../Services/MTO/Production/EnquiryResponse";
 import { useUserData } from "../../../../../context/index";
-import { notifyLoader } from "../../../../../helpers/notify";
+import { notifyError, notifyLoader } from "../../../../../helpers/notify";
 import { toast } from "react-toastify"
 import VFCapsule from "../../../../../components/VectorFLOW/commons/VFCapsule";
 import { Allotment } from "allotment";
@@ -57,6 +57,11 @@ const EnquiryResponse = () => {
 
   const [HeaderData, setHeaderData] = useState([]);
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalRow, setTotalRow] = useState<number>(0)
 
   const reportName = "EnquiryResponse";
   const [myColDefs, setMyColDefs] = useState([{}]);
@@ -579,7 +584,29 @@ const EnquiryResponse = () => {
       ccrName: updtedCCRName
     });
   };
+  
+  const getData = (data: any) => {
+    try {
+          setTableData(data?.data?.data);
+          setTotalRow(data?.data?.data.length);
+        } catch (e) {
+          console.log(e);
+          notifyError('Failed to set Enquiry data!');
+        }
+    
+  }
 
+  const savePageSize = (pageSize: any) => {
+      if (pageSize) {
+        setUserPageSize(pageSize);
+          setCurrentPage(1)
+          handleSaveClick(undefined, pageSize);
+          getData({data, pageSize,currentPage});
+        } else {
+          notifyError("Invalide page size");
+      }
+      
+  }
   const getUserColumnConfig = async () => {   
     try {
       const data = await getUserUIReportConfigData({
@@ -587,8 +614,10 @@ const EnquiryResponse = () => {
         rn_id: UIGridCode.ProdEnquiryResponse
       });
 
+      setUserConfigFetched(true)
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setColumnState(newConfig);
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setColumnState(newConfig.cs);
       if (!data) {
         console.error('Failed to apply column state');
       }
@@ -597,29 +626,36 @@ const EnquiryResponse = () => {
     }
   }
 
-  const handleSaveClick = async (coldefs?:any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
+        const fullConfig = { cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdEnquiryResponse,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
-
-
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
         
-      } else {
+      } else if (page_size) {
+        const fullConfig = { cs: columnState, pageSize: page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdEnquiryResponse,
+          cs: JSON.stringify(fullConfig),
+        };  
+        await updateUserUIReportConfigData([payload]);
+  
+      }
+      else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
-
-
-
+          const fullConfig = { cs: config, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdEnquiryResponse,
-            cs: JSON.stringify(config)
+            cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
@@ -652,11 +688,12 @@ const EnquiryResponse = () => {
 
   useEffect(() => {
     notifyLoader("Loading Grid Data")
-    if (data?.data?.data) {
+    if (data?.data?.data  && userConfigFetched) {
+      setCurrentPage(1);
       setTableData(data?.data?.data);
     }
     toast.dismiss()
-  }, [data]);
+  }, [data, userConfigFetched]);
 
   useEffect(() => {
     setFilterData(data?.data?.data);
@@ -714,6 +751,9 @@ const EnquiryResponse = () => {
                   setCurrentGridRef={setCurrentGridRef}
                   currentGridRef={currentGridRef}
                   columnState={columnState}
+                  savePageSize={savePageSize}
+                  userPageSize={userPageSize}
+
                 />
               </BTRAllomentSection>
             </Allotment.Pane>
