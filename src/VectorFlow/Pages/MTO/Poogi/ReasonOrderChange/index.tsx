@@ -85,6 +85,10 @@ const ReasonForDelayOrder = () => {
     const [masterUIConfig, setMasterUIConfig] = useState([]);
     const unsavedUserData = useRef(new Map());
 
+    const [userPageSize, setUserPageSize] = useState<any>();
+    const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+
+
     const sideBar = useMemo(() => {
         return {
             toolPanels: ['columns'],
@@ -210,8 +214,7 @@ const ReasonForDelayOrder = () => {
         }
     }
 
-    //to get the rowdata for Aggrid
-    const getInitialData = async (wipval = isWIPChecked, page = 1, isExcelExport = false) => {
+    const getInitialData = async (wipval = isWIPChecked, page = 1, isExcelExport = false, pageSize?: any) => {
         if (isExcelExport) {
             try {
                 const headersdata = currentGridRef?.current?.api.getColumnState();
@@ -228,10 +231,14 @@ const ReasonForDelayOrder = () => {
                 console.log(error)
             }
         } else {
-
             try {
                 const formatedFilters = formatFilterJSON(appliedFilters);
-                const apiResponse = await getPoogiReasonsDelayedOrder({ 'wip': wipval === true ? 0 : 1, 'curr': page, appliedFilters: formatedFilters });
+                const apiResponse = await getPoogiReasonsDelayedOrder({ 
+                    'wip': wipval === true ? 0 : 1, 
+                    'curr': page, 
+                    appliedFilters: formatedFilters,
+                    pageSize: pageSize || userPageSize || pagination.mtoPageSize
+                });
                 setRowDataCount(apiResponse.data?.data?.count);
                 setRowData(apiResponse?.data?.data?.results);
             }
@@ -269,8 +276,10 @@ const ReasonForDelayOrder = () => {
                 rn_id: UIGridCode.PoogiReasonForDelayedOrders
             });
     
-            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-            setColumnState(newConfig);
+            setUserConfigFetched(true)
+            const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] : [];
+            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+            setColumnState(newConfig.cs);
     
             if (!data) {
                 console.error('Failed to apply column state');
@@ -280,35 +289,60 @@ const ReasonForDelayOrder = () => {
         }
     }
 
-    const handleSaveClick = async (coldefs?: any) => {
+    const handleSaveClick = async (coldefs?: any, page_size?:any) => {
         try {
             if (coldefs) {
+                const fullConfig = {cs: coldefs, pageSize:userPageSize };
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.PoogiReasonForDelayedOrders,
-                    cs: JSON.stringify(coldefs),
+                    cs: JSON.stringify(fullConfig),
                 };
                 await updateUserUIReportConfigData([payload]);
                 setColumnState([...coldefs]);
-        
-            } else {
+                
+            }
+            else if(page_size){
+                const config = columnState;
+                const fullConfig = { cs: config, pageSize: page_size };        
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.PoogiReasonForDelayedOrders,
+                    cs: JSON.stringify(fullConfig),
+                };
+                await updateUserUIReportConfigData([payload]);
+            }
+            else {
                 if (currentGridRef?.current?.api) {
-                    const config = currentGridRef?.current?.api?.getColumnState() || [];
-        
+                    const config = currentGridRef.current.api.getColumnState();
+    
+                    const fullConfig = { cs: config, pageSize: userPageSize };
+    
                     const payload = {
                         un: user.user.name,
                         rn_id: UIGridCode.PoogiReasonForDelayedOrders,
-                        cs: JSON.stringify(config)
+                        cs: JSON.stringify(fullConfig)
                     }
                     await updateUserUIReportConfigData([payload]);
                     await getUserColumnConfig();
                 }
             }
-
         } catch (error) {
             console.error(error);
         }
     }
+
+
+    const savePageSize = (pageSize: any) => {
+        if (pageSize) {
+            setCurrentPage(1)
+            setUserPageSize(pageSize);
+            handleSaveClick(undefined, pageSize);
+            getInitialData(isWIPChecked, 1, false, pageSize);
+        } else {
+            notifyError("Invalid page size");
+        }
+    }             
 
     const handleResetClick = () => {
         setIsReset(true);
@@ -328,11 +362,11 @@ const ReasonForDelayOrder = () => {
     }, []);
     
     useEffect(() => {
-        if (Object.entries(appliedFilters).length) {
+        if (Object.entries(appliedFilters).length && userConfigFetched) {
             setCurrentPage(1);
             getInitialData();
         }
-    }, [appliedFilters])
+    }, [appliedFilters, userConfigFetched])
     
     useEffect(() => {
         getFilterData();
@@ -392,7 +426,7 @@ const ReasonForDelayOrder = () => {
 
     const handlePageChange = (currPage: number) => {
         setCurrentPage(currPage);
-        getInitialData(isWIPChecked, currPage);
+        getInitialData(isWIPChecked, currPage, false, userPageSize);
     }
 
     const updateUserChanges = (params: any) => {
@@ -490,13 +524,18 @@ const ReasonForDelayOrder = () => {
                 />
                 <VFPagination
                     selectedRows={0}
-                    rowsPerPage={pagination.mtoPageSize}
+                    rowsPerPage={userPageSize || pagination.mtoPageSize}
                     totalRows={rowDataCount}
                     currentPage={currentPage}
-                    handleChangePage={handlePageChange}
+                    handleChangePage={(page) => {
+                        setCurrentPage(page);
+                        getInitialData(isWIPChecked, page, false, userPageSize);
+                    }}
                     resetGridRef={currentGridRef}
                     isDisabled={isDisabled}
-
+                    customPageSizeEnabled={true}
+                    savePageSize={savePageSize}
+                    userPageSize={userPageSize}
                 />
                 
                 <VFSaveRemark onSubmitRemarks={updateMajorMinorReason} />
