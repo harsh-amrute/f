@@ -455,6 +455,34 @@ const ActionToolBar = ({
           );
         }
         break;
+        
+        case "SupplierWiseAllocation":
+          if (pathname === "/supply-chain-intelligence-hub/SupplierWiseAllocation") {
+            return (
+              <VFMultiFilter
+              isFilterOpen={isFilterOpen}
+                onApplyFilter={handleApplyFilter}
+                onGoBack={() => toggleFilter(false)}
+                multiFilter={multiFilter}
+                setMultiFilter={setMultiFilter}
+                productFilterActive={true}
+                supplyChainNodeFilterActive={true}
+                locationFilterActive={true}
+                availabilityFilterActive={true}
+                generalFilterActive={false}
+                generalFilterOptions={generalFilterOptions}
+                supplyChainForLocationCheckBoxList={
+                  locations
+                }
+                supplyChainForChildrenOfCheckBoxList={
+                  locations
+                }
+                currCategory={currCategory}
+  
+              />
+            );
+          }
+          break;
       case "OrderAllocationReport":
         if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
           return (
