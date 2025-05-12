@@ -18,7 +18,7 @@ describe('OrderRescheduling', () => {
  
     it('should get orders from getFullKitAssignmentDataWithGraphData api', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await FullKitAssignmentService.getFullKitAssignmentDataWithGraphData( true, true, true, 1, {});
+        const response = await FullKitAssignmentService.getFullKitAssignmentDataWithGraphData( true, true, true, 1,1 ,{});
         expect(response.status).toBe(200);
     });
  

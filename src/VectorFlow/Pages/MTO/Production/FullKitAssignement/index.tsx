@@ -86,6 +86,8 @@ const FullKitAssignment = () => {
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const graphDataOgFormat = useRef();
+  const [userPageSize, setUserPageSize] = useState<any>();
+
 
   const currentPageSelectedRows = useRef([]);
 
@@ -226,22 +228,33 @@ const FullKitAssignment = () => {
 
   
 
-
-  const fetchOrders = async (isExcelExport = false) => {
+const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number) => {
     // if(noOfCalls.current == 0){
     //   await saveOrCancelSimulaton("Delete");
     //   noOfCalls.current += 1;
     // }
     const formatedFilters = formatFilterJSON(appliedFilters);
-    const data = await getFullKitAssignmentDataWithGraphData({...loadDataParams, appliedFilters: formatedFilters});
+    const data = await getFullKitAssignmentDataWithGraphData({
+      ...loadDataParams, 
+      appliedFilters: formatedFilters,
+      pageSize: pageSize || userPageSize,
+
+    });
+
     const griddata: any = data?.data?.data?.results?.griddata;
     if(isExcelExport){
       try {
         const headersdata = currentGridRef?.current?.api?.getColumnState();
         const formattedFilters = formatFilterJSON(appliedFilters);
         const body = getBodyForExcelExport({headersdata,filterData : formattedFilters,colDefMap})
-        const response = await getFullKitAssignmentDataWithGraphExcelData({...loadDataParams,body, isExcelExport : 1 ,report_name : FilterPageName.Prod_FullKit_Assignment})
-        if(response.status == 200){
+        const response = await getFullKitAssignmentDataWithGraphExcelData({
+          ...loadDataParams,
+          pageSize: userPageSize,  
+          body, 
+          isExcelExport : 1,
+          report_name : FilterPageName.Prod_FullKit_Assignment
+        })       
+         if(response.status == 200){
           DownloadExcel(response, FilterPageName.Prod_FullKit_Assignment);
           notifySuccess('Report downloaded successfully')
         }else{
@@ -287,6 +300,18 @@ const FullKitAssignment = () => {
     }
     setTotalRows(data?.data?.data?.count)
   }
+
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+        setCurrentPage(1)
+        setUserPageSize(pageSize);
+        handleSaveClick(undefined, pageSize);
+        fetchOrders(false,1, pageSize);
+    } else {
+        notifyError("Invalide page size");
+    }
+    
+}
 
 
   const handlePageChange = async (currPage: number) => {
@@ -411,8 +436,9 @@ const FullKitAssignment = () => {
         rn_id: UIGridCode.ProdFullkitAssignment
       });
 
-      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-      setColumnState(newConfig);
+      const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setColumnState(newConfig.cs);
 
       if (!data) {
         console.error('Failed to apply column state');
@@ -421,27 +447,42 @@ const FullKitAssignment = () => {
       console.error(error);
     }
   }
+
   
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        const fullConfig = {cs: coldefs, pageSize:userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdFullkitAssignment,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
 
-      } else {
+      }else if(page_size){
+
+        const config = columnState
+        const fullConfig = {cs: config, pageSize:page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdFullkitAssignment,
+          cs: JSON.stringify(fullConfig),
+        };
+        await updateUserUIReportConfigData([payload]);
+      }
+
+       else {
 
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
+          const fullConfig = {cs: config, pageSize:userPageSize };
   
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdFullkitAssignment,
-            cs: JSON.stringify(config)
+            cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
@@ -814,7 +855,9 @@ const FullKitAssignment = () => {
 
       // }}
       />
-      <VFPagination currentPage={currentPage} rowsPerPage={pagination.mtoPageSize} selectedRows={1} totalRows={totalRows || 0} handleChangePage={handlePageChange} resetGridRef={currentGridRef} isDisabled={isDisabled}/>
+      <VFPagination currentPage={currentPage} rowsPerPage={userPageSize || pagination.mtoPageSize}
+ selectedRows={1} totalRows={totalRows || 0} handleChangePage={handlePageChange} resetGridRef={currentGridRef} isDisabled={isDisabled} customPageSizeEnabled={true}  savePageSize={savePageSize}
+            userPageSize = {userPageSize}/>
       <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
       <div className='chart-wrapper' style={{ width: "100%", flex: !hide ? 1 : 0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129" }}>
         <AgCharts ref={graph} options={chartoptions} />

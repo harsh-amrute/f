@@ -23,9 +23,8 @@ export namespace OrderReschedulingService {
         })
     }
 
-    export const getOrderReschedulingPageData = async (pageNum: string) => {
-        console.log("this url is called", process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?page=${pageNum}`)
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?page=${pageNum}`, {
+    export const getOrderReschedulingPageData = async (pageNum: string, pageSize:number) => {
+        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?page=${pageNum}&page_size=${pageSize}`, {
 
             headers: {
                 'Content-Type': 'application/json',
