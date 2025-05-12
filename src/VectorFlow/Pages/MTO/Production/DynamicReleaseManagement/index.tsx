@@ -425,7 +425,6 @@ const DynamicReleaseManagement = () => {
     
     const selectedData = refGrid.current?.api.getSelectedRows();
 
-    console.log("selectedData", selectedData)
     const wipData:any = [];
     selectedData.forEach((item: any) => {
       wipData.push(item.ok);
