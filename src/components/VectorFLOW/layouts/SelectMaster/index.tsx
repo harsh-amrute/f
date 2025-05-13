@@ -12,7 +12,7 @@ import { type MDMMasterState, type Option } from "../../../../VectorFlow/types/M
 import { useDispatch, useSelector } from 'react-redux';
 import { notifyError } from "../../../../helpers/notify";
 import { RootState } from "../../../../redux/store/store";
-import { ADD_MASTER, FILL_SELECTED_OPTIONS, REMOVE_MASTER, RESET_STATE, UPDATE_MASTER_CHECKED_STATUS } from "../../../../redux/actions/MDM";
+import { ADD_MASTER , FILL_SELECTED_OPTIONS, REMOVE_MASTER, RESET_STATE, UPDATE_ACTIVE_MASTER, UPDATE_MASTER_CHECKED_STATUS } from "../../../../redux/actions/MDM";
 import VFLoader from "../../commons/VFLoader";
 
 interface SelectMasterProps {
@@ -135,6 +135,13 @@ useEffect(()=>{
             addToSelectedMaster(currMaster.id);
             setFilterButtonStatus([...filterButtonStatus, currMaster.id]);
             dispatch(ADD_MASTER(currMaster));
+        }
+        if (masters?.length > 1)
+            { 
+                dispatch(UPDATE_ACTIVE_MASTER((0)))
+            }
+        else{
+            dispatch(UPDATE_ACTIVE_MASTER({id:0,fields:[],filters:[],progress:'default',name:"",colDefs:[],rowData:[],isChecked:true}))
         }
     }
 
