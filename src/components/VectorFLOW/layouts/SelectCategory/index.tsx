@@ -94,7 +94,7 @@ const SelectCategory = (props: CountProp) => {
                     <VFButton onClick={() => toggleFilter(true)} themeUi={themeUi} disabled={false} width={110}>{getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}</VFButton>
                     {
                         isFilterOpen && (
-                            <VFMultiFilter isFilterOpen={isFilterOpen} onApplyFilter={handleApplyFilter} onGoBack={() => toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={locations} supplyChainForChildrenOfCheckBoxList={locations.filter((m: any) => ['plant', 'CWH', 'RWH'].includes(m.id))}></VFMultiFilter>
+                            <VFMultiFilter isFilterOpen={isFilterOpen} onApplyFilter={handleApplyFilter} onGoBack={() => toggleFilter(false)} multiFilter={multiFilter} setMultiFilter={setMultiFilter} locationFilterActive={true} productFilterActive={true} supplyChainNodeFilterActive={true} supplyChainForLocationCheckBoxList={locations} supplyChainForChildrenOfCheckBoxList={locations}></VFMultiFilter>
 
                         )
                     }
