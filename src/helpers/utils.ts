@@ -4476,43 +4476,56 @@ export const getType = (attributes: any, key: any) => {
     return ""
 }
 
-// Function to structure the output of filter modal
-export const formatFilterJSON = (filter: any) => {
-  let formatFilter: any = {};
+// Function to check values already there in Values
+  export const formatFilterJSON = (filter: any) => {
+  const formatFilter: any = {};
 
   for (const key in filter) {
     const { filters } = filter[key];
     for (let i = 0; i < filters?.length; i++) {
       const { attributeName, value, type, operator } = filters[i];
-      if (value?.length > 0) {
-        if (type === 'textCompare') {
-          formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator : 'et', val: value[0].value } };
-        } else if( type === 'numberCompare'){
-          formatFilter = { ...formatFilter, [attributeName]: { op: operator ? operator : 'et', val: parseInt(value[0].value) } };
 
+      if (value?.length > 0) {
+        let formattedVal;
+
+        if (type === 'textCompare') {
+          formattedVal = { op: operator ?? 'et', val: value[0].value };
+        } else if (type === 'numberCompare') {
+          formattedVal = { op: operator ?? 'et', val: value[0].value };
+        } else {
+          formattedVal = value.map((v: any) => v?.value || v?.id);
         }
-         else {
-          formatFilter = { ...formatFilter, [attributeName]: value?.map((v: any) => v?.value || v?.id) };
-        }
+
+        if (type === 'textCompare' || type === 'numberCompare') {
+          if (!formatFilter.attributes) formatFilter.attributes = {};
+          formatFilter.attributes[attributeName] = formattedVal;
+        } else {
+          formatFilter[attributeName] = formattedVal;
+        }}
       }
     }
-  }
 
+  // Cleanup empty or invalid entries
   Object.keys(formatFilter).forEach(key => {
     if (formatFilter[key]?.val === '') {
       delete formatFilter[key];
     }
   });
+
   Object.keys(formatFilter).forEach(key => {
-    if ((formatFilter[key]?.op && (formatFilter[key]?.val === undefined ||  formatFilter[key]?.val === null)) || 
-        (formatFilter[key]?.val && (formatFilter[key]?.op === undefined || formatFilter[key]?.op === null))) {
+    if (
+      (formatFilter[key]?.op && (formatFilter[key]?.val === undefined || formatFilter[key]?.val === null)) ||
+      (formatFilter[key]?.val && (formatFilter[key]?.op === undefined || formatFilter[key]?.op === null))
+    ) {
       delete formatFilter[key];
     }
   });
-  return formatFilter;
-}
 
-// Function to check values already there in Values
+  return formatFilter;
+};
+
+
+
 export const checkValue = (filters: any, value: any) => {
   for (let i = 0; i < filters.length; i++) {
     if (filters[i]?.id === value || filters[i]?.value === value) {
