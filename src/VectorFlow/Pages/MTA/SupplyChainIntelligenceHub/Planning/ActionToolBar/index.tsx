@@ -394,9 +394,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -552,9 +550,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -599,9 +595,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -623,9 +617,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -649,9 +641,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -671,9 +661,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -692,9 +680,7 @@ const ActionToolBar = ({
             supplyChainForLocationCheckBoxList={
               locations
             }
-            supplyChainForChildrenOfCheckBoxList={locations.filter(
-              (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-            )}
+            supplyChainForChildrenOfCheckBoxList={locations}
           />
         );
       default:
