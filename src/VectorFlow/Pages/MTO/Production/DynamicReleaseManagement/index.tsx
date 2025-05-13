@@ -326,16 +326,13 @@ const DynamicReleaseManagement = () => {
     try {
       // Exclude already fetched order IDs
 
-      console.log("wipDataGlobal",wipDataGlobal)
 
       const newOrders = selectedOrders.filter(
         (ok:string) => !wipDataGlobal[ok]
       );
 
-      console.log("newOrders", newOrders);
       
       if (newOrders.length === 0) {
-        console.log("All selected orders are already fetched.");
         return {};
       }
   
@@ -345,7 +342,6 @@ const DynamicReleaseManagement = () => {
         return acc;
       }, {}));
 
-      console.log("filteredOrders", filteredOrders);
   
       // Call the API with the filtered orders
       const response = await getDynamicReleaseData({
@@ -356,14 +352,12 @@ const DynamicReleaseManagement = () => {
         wipObj: filteredOrders,
       });
   
-      console.log("response", response.data.data);
       
   
       // Update the global WIP data state
       setWipDataGlobal((prev: any) => ({
         ...prev,
         ...newOrders.reduce((acc: any, orderId:string) => {
-          console.log("orderId", selectedOrders[orderId])
           
           acc[orderId] = selectedOrders[orderId]|| {};
           return acc;

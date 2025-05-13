@@ -5,7 +5,6 @@ import '@xyflow/react/dist/style.css';
  
 const CustomNode = ({ data }: { data: { label: string, value: boolean } }) => {
 
-    console.log("data", data);
     const [checked, setChecked] = React.useState(data.value);
     return (
         <div style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '5px',color: '#cecece', background: '#000000' }}>

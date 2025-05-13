@@ -250,11 +250,10 @@ export const listMenuParent: any = [
     img: "/assets/img/VectorFLOW/BPR/replacement",
     url: "/supply-chain-intelligence-hub/planning",
     status: false,
-    lp_attr:true,
     lp_img : "/assets/img/Replacement.svg",
     app_id : 2,
     role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
-    // avoidHeader: true,
+    avoidHeader: true,
     child: [
       {
         name: "Supply Chain Intelligence Hub",
@@ -308,7 +307,6 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/rrr-color-bandwise",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
- 
           },
           {
             name: "Buyer Order Report",
