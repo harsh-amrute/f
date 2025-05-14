@@ -14,7 +14,6 @@ interface IRouteAssignmentProps {
 
 const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedRoutes, isEditable = true}: IRouteAssignmentProps) => {
   const [sortedSelectedRoutes, setSortedSelectedRoutes] = useState<any>([]);
-    
   useEffect(() => {
         const adjustLayout = (containerWidth: number, items: any) => {
           let currWidth = 0;

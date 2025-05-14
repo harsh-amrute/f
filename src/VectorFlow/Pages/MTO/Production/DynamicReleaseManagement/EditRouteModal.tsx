@@ -160,15 +160,6 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
                 )
             );
 
-            // Filter route to only include CCRs that exist in ccrGroups
-            const filteredRoute = route?.filter((routeItem: any) => {
-                const [ccr] = routeItem;
-                return validCCRValues?.has(ccr?.value);
-            });
-
-            // if (filteredRoute.length !== route.length) {
-                setRoute(filteredRoute);
-            // }
         }
     }, [ccrGroups]);
 
@@ -205,7 +196,6 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
                             fontWeight: '400',
                             borderRadius: '6px',
                             border: '1px solid grey',
-
                             boxShadow: '0px 6px 25px #00000029'
                         }} >
                             Cancel
