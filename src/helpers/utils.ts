@@ -4491,7 +4491,7 @@ export const getType = (attributes: any, key: any) => {
         if (type === 'textCompare') {
           formattedVal = { op: operator ?? 'et', val: value[0].value };
         } else if (type === 'numberCompare') {
-          formattedVal = { op: operator ?? 'et', val: value[0].value };
+          formattedVal = { op: operator ?? 'et', val: parseInt(value[0].value) };
         } else {
           formattedVal = value.map((v: any) => v?.value || v?.id);
         }

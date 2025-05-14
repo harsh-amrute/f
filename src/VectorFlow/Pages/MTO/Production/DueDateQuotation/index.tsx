@@ -490,6 +490,7 @@ const DueDateQuotation = () => {
       }
     } catch (error) {
       console.error(error);
+  
     }
   }
 
@@ -506,7 +507,7 @@ const DueDateQuotation = () => {
         setColumnState([...coldefs]);
 
       } 
-      else if(page_size){
+      else if (page_size) {
         const config = columnState;
         const fullConfig = { cs: config, pageSize: page_size };        
         const payload = {

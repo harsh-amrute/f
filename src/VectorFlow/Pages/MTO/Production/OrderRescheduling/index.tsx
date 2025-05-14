@@ -320,10 +320,10 @@ const OrderRescheduling = () => {
     },
   };
 
-  // useEffect(() => {
-  //    getFilterData();
+  useEffect(() => {
+     getFilterData();
     
-  // },[])     
+  },[])     
 
 
   useEffect(() => {
