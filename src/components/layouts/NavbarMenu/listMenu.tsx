@@ -323,6 +323,13 @@ export const listMenuParent: any = [
  
           },
           {
+            name: "Supplier Wise Allocation Report",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/SupplierWiseAllocation",
+            role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
+ 
+          },
+          {
             name: "Order Allocation Report",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/order-allocation-report",
