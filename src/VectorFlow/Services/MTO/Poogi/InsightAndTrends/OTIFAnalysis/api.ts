@@ -3,14 +3,16 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OTIFAanalysisService {
 
-    export const getOTIFAnalysisData = async ({graphflag, page, appliedFilters}: any) => {
+    export const getOTIFAnalysisData = async ({graphflag, page, appliedFilters,page_size}: any) => {
+
+        console.log("page size", page_size)
         if(graphflag){
             return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOTIFAnalysisData/`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 params:{
-                    graphflag
+                    graphflag,
                 }
             })
         }
@@ -22,7 +24,8 @@ export namespace OTIFAanalysisService {
             },
             params:{
                 graphflag,
-                page
+                page,
+                page_size
             }
         })
     }
@@ -37,7 +40,8 @@ export namespace OTIFAanalysisService {
             params:{
                 graphflag,
                 report_name,
-                export : isExcelExport
+                export : isExcelExport,
+                
             },
             responseType : 'blob'
         })

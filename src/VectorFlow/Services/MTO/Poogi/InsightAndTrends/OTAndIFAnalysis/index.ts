@@ -3,6 +3,7 @@ import { OTAndIFAanalysisService } from './api'
 
 export const useGetOTAndIFAnalysisData = () => {
     return useMutation(async (params: any) => {
+        console.log("params", params);
         return OTAndIFAanalysisService.getOTAndIFAnalysisData(params);
     })
 }
