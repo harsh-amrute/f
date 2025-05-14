@@ -637,7 +637,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
     }
 
     const getMonitoringDate = () => {
-        if(monitoringData.length == 0){
+        if(monitoringData?.length == 0){
           return '';
         }
         if(suspensionType === 'upwardStockBased') return monitoringData[0]['srrd'];
