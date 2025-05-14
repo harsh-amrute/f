@@ -4898,6 +4898,12 @@ export function getColumnDefinationsMTA(
       filter: getCellFilter(data.DataType),
       filterParams: filterParams,
       position: data.Col_Position,
+
+      ...(getCellDataType(data.DataType) === 'number' && {
+        valueFormatter: (params: any) => {
+          return params.value == null || isNaN(params.value) ? '' : params.value;
+        }
+      })
     };
     // Apply customization if needed
     if (customizationParams[data.Col_Code || data.colCode]) {

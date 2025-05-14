@@ -82,6 +82,8 @@ import ManageURLs from './components/VectorFLOW/layouts/VectorAdmin/ManageURLs'
 
 import RRRColorBandwise from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/RationedRequirementReport  Color Bandwise'
 import BuyerOrderReportColorBandwise from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BuyerOrderReport Color Bandwise'
+import SupplierWiseAllocation from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierWiseAllocation'
+
 import OrderAllocationReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OrderAllocationReport'
 import TotalRequirementReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/TotalRequirementReport'
 
@@ -138,6 +140,7 @@ const lazyLoad = (children: React.ReactNode) => {
 
     '/supply-chain-intelligence-hub/rrr-color-bandwise',
     '/supply-chain-intelligence-hub/bor-color-bandwise',
+    '/supply-chain-intelligence-hub/SupplierWiseAllocation',
     '/supply-chain-intelligence-hub/order-allocation-report',
     '/supply-chain-intelligence-hub/total-requirement-report',
 
@@ -697,6 +700,17 @@ export const initRoutes = (): RouteObject[] => {
         {
         index:true,
         element:lazyLoad(<BuyerOrderReportColorBandwise/>)
+        } ,
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/SupplierWiseAllocation',
+      element:<AppLayout/>,
+      children:[
+        {
+        index:true,
+        element:lazyLoad(<SupplierWiseAllocation/>)
         } ,
         ...getStoreTransferModuleRoutes()
       ]

@@ -1,7 +1,7 @@
 import VFButton from "../../../../../../components/VectorFLOW/commons/VFButton";
 import VFFloatingTab from "../../../../../../components/VectorFLOW/commons/VFFloatingTab";
 import VFSelectedFilters from "../../../../../../components/VectorFLOW/commons/VFSelectedFilters";
-import { useState, useMemo, useContext } from "react";
+import { useState, useMemo, useContext, useEffect } from "react";
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation, Link } from "react-router-dom";
 import useSaveAllState from "../../../../../../hooks/useSaveAllState";
@@ -103,6 +103,7 @@ const ActionToolBar = ({
 
   const themeUi = user?.user?.theme_ui;
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
+  const [isFilterButtonVisible,setIsFilterButtonVisible] = useState<boolean>(false);
 
   
  
@@ -172,6 +173,16 @@ const ActionToolBar = ({
       });
     }
   };
+
+
+  useEffect(() => {
+    if (
+      pathname !== "/supply-chain-intelligence-hub/SupplierWiseAllocation" &&
+      pathname !== "/supply-chain-intelligence-hub/sdr"
+    ) {
+      setIsFilterButtonVisible(true);
+    }
+  }, [pathname]);
 
   const renderFilter = () => {
     switch (currCategory) {
@@ -376,31 +387,31 @@ const ActionToolBar = ({
           );
         }
         break;
-      case "SDR":
-        if (pathname === "/supply-chain-intelligence-hub/sdr") {
-          return (
-            <VFMultiFilter
-            isFilterOpen={isFilterOpen}
-              onApplyFilter={handleApplyFilter}
-              onGoBack={() => toggleFilter(false)}
-              multiFilter={multiFilter}
-              setMultiFilter={setMultiFilter}
-              productFilterActive={true}
-              locationFilterActive={true}
-              generalFilterActive={false}
-              generalFilterOptions={generalFilterOptions}
-              availabilityFilterActive={true}
-              supplyChainNodeFilterActive={true}
-              supplyChainForLocationCheckBoxList={
-                locations
-              }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
-            />
-          );
-        }
-        break;
+      // case "SDR":
+      //   if (pathname === "/supply-chain-intelligence-hub/sdr") {
+      //     return (
+      //       <VFMultiFilter
+      //       isFilterOpen={isFilterOpen}
+      //         onApplyFilter={handleApplyFilter}
+      //         onGoBack={() => toggleFilter(false)}
+      //         multiFilter={multiFilter}
+      //         setMultiFilter={setMultiFilter}
+      //         productFilterActive={true}
+      //         locationFilterActive={true}
+      //         generalFilterActive={false}
+      //         generalFilterOptions={generalFilterOptions}
+      //         availabilityFilterActive={true}
+      //         supplyChainNodeFilterActive={true}
+      //         supplyChainForLocationCheckBoxList={
+      //           locations
+      //         }
+      //         supplyChainForChildrenOfCheckBoxList={locations.filter(
+      //           (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
+      //         )}
+      //       />
+      //     );
+      //   }
+      //   break;
       case "BOR":
         if (pathname === "/supply-chain-intelligence-hub/bor") {
           return (
@@ -455,6 +466,7 @@ const ActionToolBar = ({
           );
         }
         break;
+        
       case "OrderAllocationReport":
         if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
           return (
@@ -524,9 +536,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -571,9 +581,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -595,9 +603,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -621,9 +627,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -643,9 +647,7 @@ const ActionToolBar = ({
               supplyChainForLocationCheckBoxList={
                 locations
               }
-              supplyChainForChildrenOfCheckBoxList={locations.filter(
-                (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-              )}
+              supplyChainForChildrenOfCheckBoxList={locations}
             />
           );
         }
@@ -664,9 +666,7 @@ const ActionToolBar = ({
             supplyChainForLocationCheckBoxList={
               locations
             }
-            supplyChainForChildrenOfCheckBoxList={locations.filter(
-              (m:any) => ['plant', 'CWH', 'RWH'].includes(m.id)
-            )}
+            supplyChainForChildrenOfCheckBoxList={locations}
           />
         );
       default:
@@ -1003,14 +1003,20 @@ const ActionToolBar = ({
             )
           )} */}
           <SCCustomActionsContainer>
-            <VFButton
-              onClick={() => toggleFilter(true)}
-              themeUi={themeUi}
-              disabled={false}
-            >
-                {getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}
-           </VFButton>
-            {isFilterOpen && renderFilter()}
+
+          {( pathname != "/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/supply-chain-intelligence-hub/sdr" ) &&
+               <>
+                    <VFButton
+                    onClick={() => toggleFilter(true)}
+                    themeUi={themeUi}
+                    disabled={false}
+                  >
+                      {getTotalFilterCount(multiFilter) > 0 ? "Edit Filter" : "Add Filter"}
+                  </VFButton> 
+                  {isFilterOpen && renderFilter()}
+                </>
+            
+            }
 
             {/* <VFButton themeUi={themeUi} onClick={()=>console.log("test")}>   Edit Filter</VFButton> */}
 
@@ -1019,7 +1025,7 @@ const ActionToolBar = ({
                 {currCategory === "GuidedInsightchronicunavailability" ||
                 ((currCategory === "BTR" && currentTab === "both")  ) ? null : (
                   <>
-                    <SCVerticalDivider />
+                    {isFilterButtonVisible && <SCVerticalDivider />}
                     {/* <SCViewContainerWithBg onClick={handleExportToExcel}> */}
                     <SCViewContainerWithBg onClick={() => {currCategory === "GuidedInsight" ? handleGIExportExcel() : handleExportToExcel()}}>
                       <>

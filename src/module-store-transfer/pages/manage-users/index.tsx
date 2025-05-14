@@ -12,6 +12,7 @@ import {
   TableUserManagement,
   ModalManageUsers,
   ModalAdvanedPermissions,
+  ButtonOutlineIcon,
 } from "../../../components/index";
 import {
   useGetAllRoles,
@@ -25,6 +26,8 @@ import { useTranslation } from "react-i18next";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
 import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
+import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
+import ModalBulkUpload from "./ModalBulkUpload";
 
 
 interface ManageUsersProps{
@@ -354,6 +357,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     isCheckBoxRef.current.isLcCheck = {}
   };
 
+
+  const [isBulkModalOpen , setIsBulkModalOpen] = useState(false);
+  const handleClickBulkUpload = ()=>{
+    setIsBulkModalOpen(true);
+  }
   
 
   return (
@@ -374,7 +382,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                   icon="/assets/img/profile/icon_plus.svg"
                 />
               </SCItemBtn>
-              {/* <SCItemBtn>
+              <SCItemBtn>
                 <ButtonOutlineIcon
                   text={t("profile.tabContent.manageUsers.button.bulkUpload")}
                   icon={`/assets/img/profile/${
@@ -383,8 +391,9 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                       : "icon_upload"
                   }.svg`}
                   disabled={true}
+                  onClick={handleClickBulkUpload}
                 />
-              </SCItemBtn> */}
+              </SCItemBtn>
             </SCSubTitlePadItem>
           </SCSubTitlePad>
         </SCSubTitleBox>
@@ -454,6 +463,18 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         headers = {headers}
         isCheckBoxRef={isCheckBoxRef}
       />
+
+
+        <VFModalCard
+          openModal={isBulkModalOpen}
+          headerIcon={"/assets/img/profile/icon_upload.svg"}
+          closeModal={()=>{setIsBulkModalOpen(false)}}
+          // children={<>Hello</>}
+        >
+       <ModalBulkUpload/>
+
+        </VFModalCard>
+      
     </>
   );
 };
