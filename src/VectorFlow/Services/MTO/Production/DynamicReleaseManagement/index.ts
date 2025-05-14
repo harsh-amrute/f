@@ -6,7 +6,7 @@ export const QUERY_KEYS = {
 }
 
 export const useGetDynamicReleaseData = () => {
-    return useMutation(async (data: { graph: number, ao: number, page: number, appliedFilters: any,page_size?:any }) => {
+    return useMutation(async (data: { graph: number, ao: number, page: number, appliedFilters: any,page_size?:any, wipObj?:any}) => {
 
         return DynamicReleaseManagementService.getDynamicReleaseData(data)
 

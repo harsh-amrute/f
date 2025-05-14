@@ -285,7 +285,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
             <LockBtnWrapper>
                 <LocktBtnContent style={{ left: lockBtnPosition - 37 }}>
                     <LockBtn src={isLocked ? themeUi === "REGALBLAZE" ? "/assets/img/VectorFLOW/BPR/lock-regal.svg" : "/assets/img/VectorFLOW/BPR/lock.svg" : themeUi === "REGALBLAZE" ? "/assets/img/VectorFLOW/BPR/unlock-regal.svg" : "/assets/img/VectorFLOW/BPR/unlock.svg"} onClick={() => toggleLockMode(!isLocked)} />
-                    <LockLabel>{isLocked ? "Unlock" : "Lock"}</LockLabel>
+                    <LockLabel>{isLocked ? "Lock" : "Unlock"}</LockLabel>
                 </LocktBtnContent>
             </LockBtnWrapper>
 

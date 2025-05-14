@@ -323,7 +323,7 @@ const DueDateQuotation = () => {
     if (pageSize) {
         setCurrentPage(1)
         setUserPageSize(pageSize);
-        handleSaveClick(1, pageSize);
+        handleSaveClick(undefined, pageSize);
         getUpdatedFilterData(false,pageSize)      
 
     } else {
@@ -494,7 +494,7 @@ const DueDateQuotation = () => {
     }
   }
 
-  const handleSaveClick = async (coldefs?: any, page_size?:any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
         const fullConfig = {cs: coldefs, pageSize: userPageSize };

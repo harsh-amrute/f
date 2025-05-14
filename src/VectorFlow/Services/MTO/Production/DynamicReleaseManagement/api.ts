@@ -3,7 +3,7 @@ import { pagination } from '../../../../../VectorFlow/Pages/MTO/Common/Enum';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace DynamicReleaseManagementService {
-    export const getDynamicReleaseData = async ({ graph = 0, ao = 0, page = 1, appliedFilters, page_size }: { graph: number, ao: number, page: number, appliedFilters: any, page_size?:any }) => {
+    export const getDynamicReleaseData = async ({ graph = 0, ao = 0, page = 1, appliedFilters, page_size, wipObj }: { graph: number, ao: number, page: number, appliedFilters: any, page_size?:any , wipObj?: any}) => {
         // if (graph === 0 && ao === 0 && page === 1) {
         //     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDynamicReleaseData/?graph=${graph}&ao=${ao}&page=${page}`, 
         //     appliedFilters,
@@ -70,6 +70,16 @@ export namespace DynamicReleaseManagementService {
         //         }
         //     })
         // }
+
+        if(wipObj){
+            return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDynamicReleaseData/?graph=${graph}&ao=${ao}&page=${page}&page_size=${page_size || pagination.mtoPageSize}`, 
+                {...appliedFilters, wip : wipObj},
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+        }
 
         return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getDynamicReleaseData/?graph=${graph}&ao=${ao}&page=${page}&page_size=${page_size || pagination.mtoPageSize}`, 
         appliedFilters,
