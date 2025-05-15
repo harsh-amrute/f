@@ -5,7 +5,6 @@ export namespace OTIFAanalysisService {
 
     export const getOTIFAnalysisData = async ({graphflag, page, appliedFilters,page_size}: any) => {
 
-        console.log("page size", page_size)
         if(graphflag){
             return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOTIFAnalysisData/`, {
                 headers: {
