@@ -24,6 +24,7 @@ import OverlayLoader from "../../Common/Loader";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import {
   DownloadExcel,
+  formatFilterJSON,
   getBodyForExcelExport,
   getColumnDefinations,
 } from "../../../../../helpers/utils";
@@ -35,6 +36,8 @@ import {
 } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { useUserData } from "../../../../../context/index";
 import useColDef from "../../../../../hooks/useColDef";
+import useFilter from "../../../../../hooks/useFilter";
+import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 
 
 interface RowDataType {
@@ -42,6 +45,16 @@ interface RowDataType {
   dd?: string;
   [key: string]: any; // Add this line to allow for additional properties
 }
+const APIFilterConfig = {
+  filSecVisConfig: {
+    Prod_Order_Rescheduling: {
+      mjr: false,
+      or: true,
+      res: true,
+      cus: true
+    },
+  }
+};
 
 const OrderRescheduling = () => {
   const { mutateAsync: putUpdateOrderDueDate } = usePutUpdateOrderDueDate();
@@ -78,14 +91,38 @@ const OrderRescheduling = () => {
   const [ userPageSize, setUserPageSize] = useState<any>();
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
 
+  const [filterData, setFilterData] = useState({});
+
+  const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+  
+
+  
+
+  
+
+  const {
+    state: currFilter,
+    setState: setCurrFilter,
+    onFilterRemove,
+    isFilterOpen,
+    isMfgSelected,
+    onAddFilter,
+    onApplyFilter,
+    toggleFilter,
+    appliedFilters
+  } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Prod_Order_Rescheduling);
+  
+
+
 
   const themeUi = user?.user?.theme_ui;
 
-  const GetData = async (isExcelExport = false,page?:number,page_size?:number) => {
+  const GetData = async (isExcelExport = false, page?: number, page_size?: number) => {  
     setIsLoading(true); 
     if (isExcelExport) {
       const headersdata = refGraph1?.current?.api?.getColumnState();
-      const body = getBodyForExcelExport({ headersdata, colDefMap });
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const body = getBodyForExcelExport({ headersdata, filterData : formatedFilters, colDefMap });
       try {
         const response = await getOrderReschedulingExcelData({
           body,
@@ -98,7 +135,8 @@ const OrderRescheduling = () => {
       }
     } else {
       try {
-        const APIData = await getOrderSchedulingPageData({pageNum:page, pageSize: page_size || userPageSize || pagination.mtoPageSize});
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const APIData = await getOrderSchedulingPageData({pageNum:page, pageSize: page_size || userPageSize || pagination.mtoPageSize,appliedFilters: formatedFilters});
         setCurrData(APIData);
         const newRowData = [...APIData.data.data.results];
         if (newRowData.length === 0) {
@@ -127,10 +165,7 @@ const OrderRescheduling = () => {
     //     newRowData.dd = newRowData.oldDate; 
     //   }
     // })
-
-
-    /////////////////
-
+    
     if (selectedData) {
       let mergedData = [...selectedRowData]; // Start with the existing selected data
 
@@ -197,6 +232,9 @@ const OrderRescheduling = () => {
       id: "Overwrite Due Date",
     },
   ];
+
+  
+  
 
   const reportName = "OrderRescheduling";
 
@@ -283,15 +321,26 @@ const OrderRescheduling = () => {
   };
 
   useEffect(() => {
+     getFilterData();
+    
+  },[])     
+
+
+  useEffect(() => {
     if (HeaderData.length > 0) {
       const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
       setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
       getUserColumnConfig();
+      // getFilterData();
+      GetData(false, 1);
       if(refGraph1){
         refGraph1.current?.api.deselectAll();
       }
     }
   }, [HeaderData, currTab]);
+
+  
+  
 
   const handlePageChangeCumulative = async (pageNumber: number) => {
     setIsLoading(true);
@@ -377,14 +426,20 @@ const OrderRescheduling = () => {
     } else {
         notifyError("Invalide page size");
     }
-    
-    
-}
-useEffect (() => {
-  if(userConfigFetched){
-    GetData(false,1);
   }
-}, [userConfigFetched])
+  
+  //  useEffect(() => {
+  //     if (Object.entries(appliedFilters).length) {
+  //       GetData(false,currentPage);
+  //     }
+  //   }, [currentPage]);
+   
+
+    useEffect (() => {
+      if(Object.entries(appliedFilters).length && userConfigFetched){
+        GetData(false,1);
+      }
+    }, [appliedFilters,userConfigFetched])
   
 
 
@@ -477,8 +532,7 @@ useEffect (() => {
 
   const onFirstDataRendered = (params: any) => {
     const nodesToSelect: IRowNode[] = [];
-
-    
+  
     params.api.forEachNode((node: any) => {
       if (node.data && node.data.odk && existsInSelected(node.data.odk)) {
         node.data.rs = selectedRowData[0].r;
@@ -491,12 +545,16 @@ useEffect (() => {
           }
         }
         nodesToSelect.push(node);
+        
       }
     });
+  
+   
     params.api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
     params.api.sizeColumnsToFit();
     setCurrentGridRef(refGraph1);
   };
+  
 
   const getUserColumnConfig = async () => {
     try {
@@ -564,6 +622,15 @@ useEffect (() => {
     setIsReset(true);
   };
 
+  const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({page_name: FilterPageName.Prod_Order_Rescheduling });
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   // const resetGridFilters = () =>{
   //   currentGridRef.current.api.setFilterModel(null)
   // }
@@ -597,6 +664,9 @@ useEffect (() => {
     GetData(true);
   };
 
+ 
+
+
   return (
     <>
       <OrderReschedulingWrapper
@@ -615,6 +685,19 @@ useEffect (() => {
           onExcelExportClick={GetExcelData}
           handleSaveClick={handleSaveClick}
           handleResetClick={handleResetClick}
+
+          isAddFilterButton
+          isFilterOpen={isFilterOpen}
+          onAddFilter={onAddFilter}
+          toggleFilter={toggleFilter}
+          onApplyFilter={onApplyFilter}
+          multiFilter={currFilter}
+          setMultiFilter={setCurrFilter}
+          onFilterRemove={onFilterRemove}
+          isMfgSelected={isMfgSelected}
+
+
+
         />
         {(isLoading || isUpdateUserConfig || isGetUserConfig) && (
           <OverlayLoader />
@@ -666,7 +749,7 @@ useEffect (() => {
                   ],
                 }}
                 onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
-
+            
                 onFirstDataRendered={onFirstDataRendered}
                 onGridReady={onFirstDataRendered}
                 onRowDataUpdated={onFirstDataRendered}
