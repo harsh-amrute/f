@@ -25,7 +25,13 @@ describe('MaterialRequirement', () => {
         expect(response.status).toBe(200);
     });
 
-  
+    it('should fetch Poogi Reason for Delayed Order', async () => {
+
+        mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
+        const data = { wip: 1, curr: 1, appliedFilters: {}, pageSize: 10 };
+        const response = await ReasonOrderChangeServices.getPoogiReasonsDelayedOrder(data);
+        expect(response.status).toBe(200);
+    });
 
     it('should fetch Poogi Remarks', async () => {
 

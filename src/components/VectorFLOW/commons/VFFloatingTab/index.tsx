@@ -12,7 +12,7 @@ export interface VFFloatingTabItemProps{
 export interface VFFloatingTabProps{
     tabs:Array<VFFloatingTabItemProps>
     defaultTab?:number
-    handleClick?:(i:any)=>void  
+    handleClick?: (i: any) => void  
 }
 
 interface ActiveShadowDataType{
