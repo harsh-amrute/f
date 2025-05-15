@@ -1,13 +1,13 @@
 
 
 // const {addRow, handleCancel} = useViewModify('modify');
-import { useSelector, useDispatch } from 'react-redux';
-import {  UPDATE_COLDEFS, UPDATE_ROW_DATA} from '../../../../../redux/actions/MDM';
-import type { RootState } from '../../../../../redux/store/store';
-import { notifyError } from '../../../../../helpers/notify';
-import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 import _ from 'lodash';
-import { BUFFER_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from './MDMJoiValidations';
+import { useDispatch, useSelector } from 'react-redux';
+import { notifyError } from '../../../../../helpers/notify';
+import { UPDATE_COLDEFS, UPDATE_ROW_DATA } from '../../../../../redux/actions/MDM';
+import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
+import type { RootState } from '../../../../../redux/store/store';
+import { BUFFER_VALIDATION_SCHEMA, CALENDAR_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from './MDMJoiValidations';
 
 
 const AddRemoveCellRenderer = (params: any) => {
@@ -210,6 +210,20 @@ const AddRemoveCellRenderer = (params: any) => {
           
           dispatch(UPDATE_COLDEFS(newColDefs.filter((item: any) => item.field !==  'actions')))
         }
+      }else if(activeMaster.id === 504){
+        const {error} = CALENDAR_VALIDATION_SCHEMA.validate(params.data,{abortEarly:false})
+
+        if(error){
+          const fieldOrders = activeMaster.colDefs.filter((item:any)=> item.headerName !== "Actions").map((item:any)=> item.field);
+
+          const orderedErrors = fieldOrders.flatMap((key:any)=>(
+            error.details.filter((err:any)=> err.path[0] === key)
+          ))
+
+          return notifyError(orderedErrors[0]?.message)
+          
+        }
+
       }
     }
 

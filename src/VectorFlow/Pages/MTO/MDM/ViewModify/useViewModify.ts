@@ -1,94 +1,93 @@
-import { useState, useEffect, useRef, useMemo } from "react";
-import {
-  type Option,
-  type Field,
-  type GetMasterDataPayload,
-  type GridRef,
-  type QueryFilteredDataConfigs,
-  type MDMMasterState,
-} from "../../../../types/MDM";
-import {
-  generateOptions,
-  areMasterFiltersValid,
-  mapStateFiltersToPayload,
-  mapMasterToMasterState,
-  generateSesonalityChartData,
-  getActionId,
-  createConflictRowData,
-  createErrorRowData,
-  parseMTOExcelData,
-} from "../../../../../helpers/utils";
-import {
-  useCreateDraft,
-  useModifyDraft,
-  useGetSeasonalityDetails,
-  useModifyMasterData,
-  useModifyMasterDataRetail,
-  useDeleteDraft,
-  useDeleteTask,
-  useGetMasterDataRetail,
-  useGetMTOMasterUIConfiguration,
-  useGetBufferMasterData,
-  useGetCCRMasterData,
-  useSaveBufferMasterDraft,
-  useSaveBufferMasterTask,
-  useGetBufferTypeMaster,
-  useGetPOOGIMasterData,
-  useSaveCCRMasterDraft,
-  useGetCalendarMasterData,
-  useSaveCCRMasterTask,
-  useSavePOOGIMasterTask,
-  useSavePOOGIMasterDraft,
-} from "../../../../Services/MTA/MDM";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  FILL_MASTERS,
-  FILL_OPTIONS,
-  TOGGLE_SELECT_MASTER_SCREEN,
-  UPDATE_ACTIVE_MASTER,
-  UPDATE_COLDEFS,
-  STORE_ALL_MASTERS,
-  REMOVE_MASTER,
-  ADD_FILTER,
-  REMOVE_FILTER,
-  SYNC_ACTIVE_MASTER_TO_MASTER,
-  UPDATE_ROW_DATA,
-  UPDATE_PROGRESS_STATE,
-  ADD_COLDEFS,
-  REMOVE_ROW_DATA,
-  REMOVE_COLDEFS,
-  SET_DRAFT_ID,
-  TOGGLE_UPLOAD_MODAL,
-  REMOVE_ALL_FILTERS,
-  SET_RECORD_COUNT,
-  UPDATE_DATA_AVAILABILITY_STATUS,
-  RESET_FILTERS,
-} from "../../../../../redux/actions/MDM";
-import type { RootState } from "../../../../../redux/store/store";
+import { ColDef, SideBarDef } from "ag-grid-enterprise";
+import { AgGridReactProps } from "ag-grid-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import ErrorCell from "../../../../../components/VectorFLOW/commons/ErrorCell";
 import {
   notifyError,
   notifyLoader,
   notifyPromise,
   notifySuccess,
 } from "../../../../../helpers/notify";
-import ErrorCell from "../../../../../components/VectorFLOW/commons/ErrorCell";
-import { AgGridReactProps } from "ag-grid-react";
-import { ColDef, SideBarDef } from "ag-grid-enterprise";
+import {
+  areMasterFiltersValid,
+  createConflictRowData,
+  createErrorRowData,
+  generateOptions,
+  generateSesonalityChartData,
+  getActionId,
+  mapMasterToMasterState,
+  mapStateFiltersToPayload,
+  parseMTOExcelData,
+} from "../../../../../helpers/utils";
+import {
+  ADD_COLDEFS,
+  ADD_FILTER,
+  FILL_MASTERS,
+  FILL_OPTIONS,
+  REMOVE_ALL_FILTERS,
+  REMOVE_COLDEFS,
+  REMOVE_FILTER,
+  REMOVE_MASTER,
+  REMOVE_ROW_DATA,
+  RESET_FILTERS,
+  SET_DRAFT_ID,
+  SET_RECORD_COUNT,
+  STORE_ALL_MASTERS,
+  SYNC_ACTIVE_MASTER_TO_MASTER,
+  TOGGLE_SELECT_MASTER_SCREEN,
+  TOGGLE_UPLOAD_MODAL,
+  UPDATE_ACTIVE_MASTER,
+  UPDATE_COLDEFS,
+  UPDATE_DATA_AVAILABILITY_STATUS,
+  UPDATE_PROGRESS_STATE,
+  UPDATE_ROW_DATA,
+} from "../../../../../redux/actions/MDM";
+import type { RootState } from "../../../../../redux/store/store";
+import {
+  useCreateDraft,
+  useDeleteDraft,
+  useDeleteTask,
+  useGetBufferMasterData,
+  useGetBufferTypeMaster,
+  useGetCalendarMasterData,
+  useGetCCRMasterData,
+  useGetMasterDataRetail,
+  useGetMTOMasterUIConfiguration,
+  useGetPOOGIMasterData,
+  useGetSeasonalityDetails,
+  useModifyDraft,
+  useModifyMasterData,
+  useModifyMasterDataRetail,
+  useSaveBufferMasterDraft,
+  useSaveBufferMasterTask,
+  useSaveCalendarMasterDraft,
+  useSaveCalendarMasterTask,
+  useSaveCCRMasterDraft,
+  useSaveCCRMasterTask,
+  useSavePOOGIMasterDraft,
+  useSavePOOGIMasterTask,
+} from "../../../../Services/MTA/MDM";
+import {
+  type Field,
+  type GetMasterDataPayload,
+  type GridRef,
+  type MDMMasterState,
+  type Option,
+  type QueryFilteredDataConfigs,
+} from "../../../../types/MDM";
 
-import WarningCell from "../../../../../components/VectorFLOW/commons/WarningCell";
+import _ from "lodash";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 import {
   SeasonalityColorCellRenderer,
   SeasonalityGraphCellRenderer,
 } from "../../../../../components/VectorFLOW/commons/SeasonalityCellRenderers";
-import _ from "lodash";
-import { toast } from "react-toastify";
-import ConflictErrorCellRenderer from "./ConflictErrorCellRenderer";
-import { v4 as uuidv4 } from "uuid";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
-import AddRemoveCellRenderer from "./AddRemoveCellRenderer";
+import WarningCell from "../../../../../components/VectorFLOW/commons/WarningCell";
 import { useUserData } from "../../../../../context";
-import MTOErrorWarningCell from "./MTOErrorWarningCell";
-import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import {
   RESET_MTO_STATE,
   SET_BUFFER_INITIAL_DATA,
@@ -97,20 +96,25 @@ import {
   SET_CCR_MODIFY_DATA,
   SET_POOGI_INITIAL_DATA,
   SET_POOGI_MODIFY_DATA,
+  SET_CALENDAR_INITIAL_DATA,
+  SET_CALENDAR_MODIFY_DATA,
 } from "../../../../../redux/actions/MTO";
-import MTOCalendarEditCellRenderer from "./MTOCalendarEditCellRenderer";
-import ToggleButton from "./ToggleButton";
 import {
+  useGetCCRMasterData as useGetCCRMasterDataForCalender,
   useGetDeptMasterData,
-  useGetPlantMasterData,
-  useGetCCRMasterData as useGetCCRMasterDataForCalender
+  useGetPlantMasterData
 } from "../../../../../VectorFlow/Services/MTO/Common/Masters";
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
-import MajReasonDescCell from "./MajReasonDescCell";
-import MinReasonDescCell from "./MinReasonDescCell";
-import { useNavigate } from "react-router-dom";
+import AddRemoveCellRenderer from "./AddRemoveCellRenderer";
+import ConflictErrorCellRenderer from "./ConflictErrorCellRenderer";
 import DaysOfWeekRenderer from "./DaysOfWeekRenderer";
-import { BUFFER_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from "./MDMJoiValidations";
+import MajReasonDescCell from "./MajReasonDescCell";
+import { BUFFER_VALIDATION_SCHEMA, CALENDAR_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from "./MDMJoiValidations";
+import MinReasonDescCell from "./MinReasonDescCell";
+import MTOCalendarEditCellRenderer from "./MTOCalendarEditCellRenderer";
+import MTOErrorWarningCell from "./MTOErrorWarningCell";
+import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
+import ToggleButton from "./ToggleButton";
 
 
 const useViewModify = (pageType: string) => {
@@ -202,6 +206,8 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: saveBufferMasterDraft } = useSaveBufferMasterDraft();
   const { mutateAsync: savePOOGIMasterTask } = useSavePOOGIMasterTask();
   const { mutateAsync: savePOOGIMasterDraft } = useSavePOOGIMasterDraft();
+  const {mutateAsync: saveCalendarMasterTask } = useSaveCalendarMasterTask()
+  const {mutateAsync: saveCalendarMasterDraft } = useSaveCalendarMasterDraft()
   const [bufferTypeData, setBufferTypeData] = useState<any>(undefined);
 
   const [TASK_ID, setTaskId] = useState<string>("");
@@ -250,16 +256,10 @@ const useViewModify = (pageType: string) => {
 
   const validResumeStatuses = [23];
 
-  const bufferInitialData = useSelector(
-    (state: any) => state.mto.bufferInitialData
+  const {bufferInitialData,ccrInitialData,bufferModifyData,ccrModifyData, calendarInitialData} = useSelector(
+    (state: any) => state.mto
   );
-  const ccrInitialData = useSelector((state: any) => state.mto.ccrInitialData);
-
-  const bufferModifyData = useSelector(
-    (state: any) => state.mto.bufferModifyData
-  );
-  const ccrModifyData = useSelector((state: any) => state.mto.ccrModifyData);
-
+  
   const [mtoProgress, setMTOProgress] = useState("initial");
 
   const poogiModifyData = useSelector(
@@ -343,6 +343,10 @@ const useViewModify = (pageType: string) => {
       const result = await getPOOGIMasterData({});
       dispatch(SET_POOGI_INITIAL_DATA(result.data.data));
     }
+    if (activeMaster.id === 504) {
+      const result = await getCalendarMasterData();
+      dispatch(SET_CALENDAR_INITIAL_DATA(result.data.data));
+    }
   };
 
   const { mutateAsync: getCCRMasterData } = useGetCCRMasterData();
@@ -364,7 +368,18 @@ const useViewModify = (pageType: string) => {
 
   const [selectedData, setSelectedData] = useState<any>({});
   
-
+  // adding all ccrName in ccr_names array
+  const ccr_names :string[] = []
+  for(const key in ccrGroupMaster){
+    for(const ccr in ccrGroupMaster[key]){
+      if(ccr === "ccrs"){
+        ccrGroupMaster[key][ccr].forEach((item: any) => {
+          ccr_names.push(item.ccr_name)
+        })
+      }
+    }
+  }
+  
 
   // const [selectedDays, setSelectedDays] = useState<any>({});
 
@@ -382,7 +397,6 @@ const useViewModify = (pageType: string) => {
 
   const getCCRMasterDataForm  = async () =>{
     const response = await getCCRMasterDataForCalender();
-    setCCRNames(response.data.data);
     setCCRNames(response.data.data|| [])
   }
   
@@ -395,6 +409,7 @@ const useViewModify = (pageType: string) => {
     const response = await getCCRGroupMaster();
     setCCRGroupMaster(response.data.data);
   };
+
 
   useEffect(() => {
     if (activeMaster.id === 501 && !bufferTypeData) {
@@ -411,6 +426,10 @@ const useViewModify = (pageType: string) => {
     if (activeMaster.id === 502) {
       getDeptMasterData();
       getCCRGroupMasterData();
+    }
+    else if(activeMaster.id===504){
+      getCCRGroupMasterData();
+
     }
     getInitialData();
   }, [activeMaster.id]);
@@ -447,7 +466,7 @@ const useViewModify = (pageType: string) => {
 
   useEffect(() => {
     if (
-      (activeMaster.id===501 || activeMaster.id === 502 || activeMaster.id === 503) &&
+      (activeMaster.id===501 || activeMaster.id === 502 || activeMaster.id === 503 || activeMaster.id === 504) &&
       ccrGroupMaster &&
       plantMaster &&
       deptMaster &&
@@ -495,11 +514,32 @@ const useViewModify = (pageType: string) => {
           };
           ele.valueFormatter = myCCRFormatter;
         });
+      } else if(activeMaster.id === 504){
+        newColDef.forEach((ele:any)=>{
+          if(ele.headerName !== "Action"){
+
+            ele.cellStyle = (params: any) => {
+              const { data } = params;
+              
+              if (data?.id ) {
+                return { 
+                  filter: "blur(1px)",
+                  opacity: 0.4,
+                  transition: "all 0.3s ease-in-out",
+                  backgroundColor: "#f0f0f0", 
+                }
+              } else if (data?.iu) {
+                return { color: "rgb(128, 0, 64)" };
+              }
+              return {}; // ensure a default return to avoid undefined
+            }
+          }
+        })
       }
 
       dispatch(UPDATE_COLDEFS([...newColDef]));
     }
-  }, [ccrGroupMaster, plantMaster, deptMaster, activeMaster.id]);
+  }, [ccrGroupMaster, plantMaster, deptMaster, activeMaster.id,activeMaster.rowData]);
 
   useEffect(() => {
     if (masters.length > 0 && filterButtonStatus.length !== 0) {
@@ -561,33 +601,45 @@ const useViewModify = (pageType: string) => {
     const getMasterUIConfigurationData = async () => {
       try {
         const { data } = await MTOMasterUIConfiguration();
-        setAllMasterState(mapMasterToMasterState(data.data, onShowChart));
+        if(pageType==='add'){
+          setAllMasterState(mapMasterToMasterState(data.data, onShowChart).map((e: any) => {
+            if (e.id === 504) {
+              e.fields = e.fields.filter((field: any) => field.key !== "dow");
+              e.colDefs = e.colDefs.filter((col: any) => col.colId !== "dow");
+            }
+            return e;
+            }))
+        }
+        else{
+          setAllMasterState(mapMasterToMasterState(data.data, onShowChart));
+
+        }
       } catch (e) {
         console.error(e);
       }
     };
     getMasterUIConfigurationData();
-  }, []);
+  }, [pageType]);
 
-  useEffect(() => {
-    const getMasterUIConfigurationData = async () => {
-      let MtoBufferdata = undefined;
+  // useEffect(() => {
+  //   const getMasterUIConfigurationData = async () => {
+  //     let MtoBufferdata = undefined;
       
-        try {
-          MtoBufferdata = await MTOMasterUIConfiguration();
-        } catch (e) {
-          console.log(e);
-        }
+  //       try {
+  //         MtoBufferdata = await MTOMasterUIConfiguration();
+  //       } catch (e) {
+  //         console.log(e);
+  //       }
 
-        setAllMasterState(
-          mapMasterToMasterState(MtoBufferdata?.data?.data, onShowChart)
-        );
+  //       setAllMasterState(
+  //         mapMasterToMasterState(MtoBufferdata?.data?.data, onShowChart)
+  //       );
 
   
-    };
+  //   };
 
-    getMasterUIConfigurationData();
-  }, []);
+  //   getMasterUIConfigurationData();
+  // }, []);
 
   useEffect(() => {
     if (activeMaster.progress === "default" && pageType === "add") {
@@ -597,7 +649,7 @@ const useViewModify = (pageType: string) => {
 
   // Validatio in process....
 
-  const validateMTOMaster = (masterId: number, newRowData: any) => {
+  const   validateMTOMaster = (masterId: number, newRowData: any) => {
     if (masterId === 501) {
 
       const allRows = [...newRowData];
@@ -842,6 +894,38 @@ const useViewModify = (pageType: string) => {
 
       dispatch(UPDATE_ROW_DATA(newData));
     }
+
+    if(activeMaster.id === 504){
+      const allRows = [...newRowData];
+      const newData: any = [];
+
+      allRows.forEach((e:any)=>{
+        const newVal = _.cloneDeep(e);
+
+        const {error} = CALENDAR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
+
+        if(error){
+          const fieldOrders = activeMaster.fields.map(field =>field.key)
+
+         const errorOrders = fieldOrders.flatMap((field:string)=>{
+            return error.details.filter(err=> err.path[0] === field)
+         })
+
+         newVal.err = {
+            error: errorOrders[0].message,
+            warning: ""
+          }
+
+          newData.push(newVal)
+
+        }else{
+
+          newData.push(newVal)
+        }
+      })
+
+      dispatch(UPDATE_ROW_DATA(newData));
+    }
   };
 
   const sideBar: SideBarDef = {
@@ -991,6 +1075,7 @@ const useViewModify = (pageType: string) => {
       const newValue = event.newValue;
       const newRow = { ...data };
       newRow[field] = newValue;
+      
       // if(activeMaster.id===503){
       //   return;
       // }
@@ -1257,34 +1342,61 @@ const useViewModify = (pageType: string) => {
 
     return resultData;
   };
-
-  // const onCalenderSave = (data: any) => {
-  //   console.log(data);
-  //   console.log(activeMaster);
-  // }
-
+    
+    // on saving a new calender or edit a calender
     const onSaveHandler = () => {
       const index = activeMaster.rowData?.length ? activeMaster.rowData?.findIndex((row) => row.hid === selectedData.hid) : -1;
         const rowData = _.cloneDeep(activeMaster.rowData || []);
+        const {error} = CALENDAR_VALIDATION_SCHEMA.validate(selectedData,{abortEarly:false})
+
+        if(error){
+          const fieldOrders = activeMaster.colDefs.filter((item:any)=> item.headerName !== "Action").map((item:any)=> item.field);
+
+          const orderedErrors = fieldOrders.flatMap((key:any)=>(
+            error.details.filter((err:any)=> err.path[0] === key)
+          ))
+
+          return notifyError(orderedErrors[0]?.message)
+          
+        }
+
+        // edit calendar 
         if(index != -1){
+          if(selectedData.ia !== true){
+            selectedData.iu = true
+          }
           rowData[index] = selectedData
-          dispatch(UPDATE_ROW_DATA(rowData));
         }
+        // add new calendar
         else{
+          selectedData.ia = true
           rowData.unshift(selectedData);
-          dispatch(UPDATE_ROW_DATA(rowData))
         }
-        // dispatch(UPDATE_ROW_DATA(rowData))
+        dispatch(UPDATE_ROW_DATA(rowData))
         setIsModalOpen(false)
     }
 
-    const onDeleteHandler = (index: any) => {
-    
-      const rowData = _.cloneDeep(activeMaster.rowData);
-    
+    // on deleating a calendar from action
+    const onDeleteHandler = (index: any, rowData:any) => {
+      const newData = _.cloneDeep([...rowData])
+      const currDeleteObj = {...newData[index]}
       if (index !== -1) {
-        rowData.splice(index, 1);  // Removes 1 item at the found index
-        // dispatch(UPDATE_ROW_DATA(rowData));  // Dispatch action to update the state
+        if(currDeleteObj.iu){
+          currDeleteObj.iu = false
+        }
+        currDeleteObj.id = true
+        newData[index] = currDeleteObj;
+        dispatch(UPDATE_ROW_DATA(newData)); 
+      }
+    }
+
+    const onDeleteUndoHandler = (index:number,rowData:any)=>{
+      const newData = _.cloneDeep([...rowData])
+      const currDeleteObj = {...newData[index]}
+      if(index !== -1){
+       currDeleteObj.id = !currDeleteObj.id;
+       newData[index] = currDeleteObj
+       dispatch(UPDATE_ROW_DATA(newData))
       }
     }
     
@@ -1377,15 +1489,20 @@ const useViewModify = (pageType: string) => {
         ) {
           const newColDefs = [
             ...activeMaster.colDefs,
-            { headerName: "Action", cellRenderer: MTOCalendarEditCellRenderer, cellRendererParams:{
-              handleOpenClick: (index: number, data: any) => {
-                setIsModalOpen(true);
-                setCalendarFormData(data)
+            {
+              headerName: "Action",
+              cellRenderer: MTOCalendarEditCellRenderer,
+              cellRendererParams: {
+                handleOpenClick: (index: number, data: any) => {
+                  setIsModalOpen(true);
+                  setCalendarFormData(data);
+                },
+                onDeleteUndoHandler,
+                onDeleteHandler,
               },
-              onDeleteHandler: onDeleteHandler
-              // onSave: onCalenderSave
-            } },
+            },
           ];
+          
           const finColDefs = newColDefs.map((col: any) => {
             if (col.field === "dow") {
               return {
@@ -1737,8 +1854,6 @@ const useViewModify = (pageType: string) => {
         const newRow = { ...row };
 
         Object.keys(newRow).map((key) => {
-          // console.log('line no 949',key)
-          // console.log('isMTO line 951',activeMaster.colDefs)
           const currentColDef = activeMaster.colDefs.find(
             (c) => c.colId === key
           );
@@ -1784,7 +1899,7 @@ const useViewModify = (pageType: string) => {
     }
     dispatch(SET_RECORD_COUNT(tempRecordCount));
     dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-  };
+  };    
 
   const onUploadMaster = async () => {
     let intervalID: any;
@@ -1822,7 +1937,7 @@ const useViewModify = (pageType: string) => {
               values: bufferTypeData?.map((item: any) => item.dsc),
             },
           };
-        if (col.field === "pl" || col.field === "plnm")
+        if (col.field === "pl" || col.field === "plnm" || col.field ==='pid')
           return {
             ...col,
             editable: true,
@@ -1831,6 +1946,34 @@ const useViewModify = (pageType: string) => {
               values: plantMaster?.map((item: any) => item.plant_name),
             },
           };
+      
+        
+        if(col.field === "ccrId"){
+          return {
+            ...col,
+            editable: true,
+            cellEditor: "agRichSelectCellEditor",
+            cellEditorParams:{
+              values: ccr_names?.map((ccr: string) => ccr),
+            }
+          }
+        }
+
+        if (col.field === "sd" || col.field === "ed") {
+          return {
+            ...col,
+            cellDataType:'date',
+            editable: true,
+            cellEditor:"agDateCellEditor",
+            valueFormatter: (params: any) => {
+              if(params.value === null || params.value === undefined) return '';
+              const date = new Date(params.value);
+              return date.toLocaleDateString("en-CA");
+
+            },
+            // cellRenderer: DueDateCellRenderer,
+          };
+        }
 
         if (col.field === "dp")
           return {
@@ -1901,7 +2044,7 @@ const useViewModify = (pageType: string) => {
           };
         else return { ...col, editable: true, singleClickEdit: true };
         // return { ...col }
-      });
+      })
 
       dispatch(
         UPDATE_COLDEFS([
@@ -1916,7 +2059,7 @@ const useViewModify = (pageType: string) => {
           ...updatedColdefs,
         ])
       );
-
+      
       ////
       const formData = new FormData();
       formData.append("file", file);
@@ -2254,7 +2397,7 @@ const useViewModify = (pageType: string) => {
       setErrorCount(pureErrorCount);
       setConflictData(tempConflictData);
       setErrorData(errorData);
-      // console.log({isConflicts:pureConflictCount>0,errorCount:pureErrorCount,errorData,conflictCount:pureConflictCount,conflictData} )
+     
       return {
         isConflicts: pureConflictCount > 0,
         errorCount: pureErrorCount,
@@ -2345,8 +2488,6 @@ const useViewModify = (pageType: string) => {
           await deleteDraft(draftID);
         }
       } else {
-        // console.time('That took ')
-        // console.log('Calculating...')
         const tempCon = createConflictRowData(
           localConflictData,
           activeMaster.id
@@ -2359,13 +2500,7 @@ const useViewModify = (pageType: string) => {
           if (exist) tempResult.push(exist);
         });
 
-        // console.log("Conflicts Count : ",tempCon.length)
-        // console.log("Errors Count : ",tempError.length)
-        // console.log("Intersection Count : ",tempResult.length)
-        // console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
-        // console.log("Active master length",activeMaster.rowData.length);
-        // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
-        // console.timeEnd('That took ')
+       
         setConflictData(tempCon);
         setConflictCount(tempCon.length);
         setSubmittedDataCount(
@@ -2410,8 +2545,6 @@ const useViewModify = (pageType: string) => {
           await deleteDraft(draftID);
         }
       } else {
-        // console.time('That took ')
-        // console.log('Calculating...')
 
         const tempCon = createConflictRowData(
           localConflictData,
@@ -2426,13 +2559,7 @@ const useViewModify = (pageType: string) => {
           if (exist) tempResult.push(exist);
         });
 
-        // console.log("Conflicts Count : ",tempCon.length)
-        // console.log("Errors Count : ",tempError.length)
-        // console.log("Intersection Count : ",tempResult.length)
-        // console.log("Not Submitted Count : ",(tempCon.length -tempResult.length )+(tempError.length -tempResult.length ))
-        // console.log("Active master length",activeMaster.rowData.length);
-        // console.log("Submitted Count : ",activeMaster.rowData.length - ((tempCon.length -tempResult.length )+(tempError.length -tempResult.length )))
-        // console.timeEnd('That took ')
+        
         setConflictData(tempCon);
         setConflictCount(tempCon.length);
         setSubmittedDataCount(
@@ -3256,6 +3383,98 @@ const useViewModify = (pageType: string) => {
 
   const navigate = useNavigate();
 
+  const saveCalendarTask = async(pageType: string) => {
+    const calendarObj:any = {
+      mid : activeMaster.id,
+      uid : user.user.user.id.toString(),
+      unm : user.user.user.name,
+      at : pageType === "add" ? "Add" : "Modify",
+      calendarData: []
+    }
+
+    if(pageType === "modify"){
+
+      const newData = _.cloneDeep(activeMaster.rowData)
+
+      newData.forEach((el :any)=>{
+        if((el.ia && !el.id )|| el.iu || (el.id && !el.ia)){
+          if(el.ia){
+            el.hid = null
+          }
+          calendarObj.calendarData.push(el)
+        } 
+      })
+    }else if(pageType === "add"){
+      activeMaster?.rowData?.forEach((el:any)=>{
+        calendarObj.calendarData.push(el)
+      })
+    }  
+    try {
+      
+      notifyLoader("Saving Task...");
+      
+      await saveCalendarMasterTask(calendarObj)
+
+      if(pageType === "add"){
+        dispatch(UPDATE_ROW_DATA([]));
+
+        navigate(-1);
+        resetMtoMasters();
+        RESET_MTO_STATE();
+      }else if(pageType === 'modify'){
+        dispatch(UPDATE_ROW_DATA(calendarInitialData));
+        setMTOProgress("submitted Once");
+      }
+      notifySuccess("Saved Calendar Task Successfully");
+    } catch (error:any) {
+      console.log(error.msg)
+      notifyError("Failed to create task!");
+    }finally{
+      toast.dismiss()
+    }
+  }
+
+  const saveCalendarDraft = async(pageType: string) => {
+    const calendarObj:any = {
+      mid : activeMaster.id,
+      uid : user.user.user.id.toString(),
+      unm : user.user.user.name,
+      at : pageType === "add" ? "Add" : "Modify",
+      calendarData: []
+    }
+
+    if(pageType === "modify"){
+
+      const newData = _.cloneDeep(activeMaster.rowData)
+
+      newData.forEach((el :any)=>{
+        if(el.ia || el.iu || el.id ){
+          if(el.ia){
+            el.hid = null
+          }
+          calendarObj.calendarData.push(el)
+        } 
+      })
+    }else if(pageType === "add"){
+      activeMaster?.rowData?.forEach((el:any)=>{
+        calendarObj.calendarData.push(el)
+      })
+    }  
+    try {
+      
+      notifyLoader("Saving Draft...");
+      
+      await saveCalendarMasterDraft(calendarObj)
+
+      notifySuccess("Saved Calendar Draft Successfully");
+    } catch (error:any) {
+      console.log(error.msg)
+      notifyError("Failed to create Draft!");
+    }finally{
+      toast.dismiss()
+    }
+  }
+
   const onMTOAddSaveBufferData = async () => {
     notifyLoader("Saving Task...");
     const BufferPostObj: any = {
@@ -3503,6 +3722,8 @@ const useViewModify = (pageType: string) => {
   };
 
   const onMTOSaveBufferData = async () => {
+
+    // on MDM add records
     if (pageType === "add") {
       if (activeMaster.id === 501) {
         onMTOAddSaveBufferData();
@@ -3510,11 +3731,13 @@ const useViewModify = (pageType: string) => {
         onMTOAddCCRData();
       } else if (activeMaster.id === 503) {
         onMTOAddPoogiData();
+      }else if(activeMaster.id === 504){
+        saveCalendarTask(pageType);
       }
       return;
     }
 
-    // move this to different function
+    // on MDM view modify records
     if (activeMaster.id === 502) {
       notifyLoader("Saving CCR Task...");
       const CCRPostObj: any = {
@@ -3644,6 +3867,9 @@ const useViewModify = (pageType: string) => {
         console.log(error);
       }
       return;
+    } else if( activeMaster.id === 504){
+      saveCalendarTask(pageType);
+      return;
     }
 
     notifyLoader("Saving Task...");
@@ -3695,6 +3921,8 @@ const useViewModify = (pageType: string) => {
       console.log(error);
     }
   };
+
+
   const onMTOSaveAsDraft = async () => {
     notifyLoader("Saving Draft...");
 
@@ -3995,6 +4223,9 @@ const useViewModify = (pageType: string) => {
         console.log(error);
       }
 
+      return;
+    }else if(activeMaster.id === 504){
+      saveCalendarDraft(pageType);
       return;
     }
   };

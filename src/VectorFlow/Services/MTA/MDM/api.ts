@@ -230,6 +230,14 @@ export namespace MDMService {
     )
   }
 
+  export const saveCalendarMasterTask = async (body:any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + "/SaveCalendarTask/?forwardUsers=true")
+  }
+
+  export const saveCalendarMasterDraft = async (body:any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + "/SaveCalendarMasterDraft/")
+  }
+
   export const savePOOGIMasterTask = async (body: any) => {
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SavePoogiReasonMasterTask/?forwardUsers=true', 
       body

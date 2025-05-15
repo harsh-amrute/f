@@ -252,6 +252,19 @@ export const useSaveBufferMasterTask = () => {
   })
 }
 
+// view and modify save calendar task
+export const useSaveCalendarMasterTask = () => {
+  return useMutation(async (body:any)=>{
+    return await MDMService.saveCalendarMasterTask(body)
+  })
+}
+
+export const useSaveCalendarMasterDraft = ()=>{
+  return useMutation(async (body:any)=>{
+    return await MDMService.saveCalendarMasterDraft(body);
+  })
+}
+
 export const useSaveCCRMasterTask = () => {
   return useMutation(async (body: any) => {
     return await MDMService.saveCCRMasterTask(body)
