@@ -545,6 +545,7 @@ const OrderRescheduling = () => {
           }
         }
         nodesToSelect.push(node);
+        
       }
     });
   
