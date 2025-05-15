@@ -143,7 +143,7 @@ const DptWiseBMReport = () => {
     const [areRowsSelected, setAreRowsSelected] = useState(false);
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [gridData, setGridData] = useState<any>();
-    const [isWIPChecked, setWIPCheck] = useState<boolean>(true);
+    const [isWIPChecked, setWIPCheck] = useState<boolean>(false);
     const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
     const [remarkHistory, setRemarkHistory] = useState<any>();
     const [editedRows, setEditedRows] = useState<Set<number>>(new Set());
@@ -240,11 +240,14 @@ const DptWiseBMReport = () => {
     const getSystemType = async () => {
         const DBRSettingsData: any = await getDBRsettingsData()
         const DBRSettings = DBRSettingsData.data?.data;
-        const systemType = DBRSettings?.find((data: any) => {
-            return data.flag == "SystemType"
-        })
-        // setColumnDef();
-        setSystemType(Number(systemType.value));
+        for(const setting of DBRSettings){
+            if(setting.flag === "SystemType"){
+               setSystemType(Number(setting.value));
+            }
+            if(setting.flag === "DeptwiseDefaultWIP"){
+                setWIPCheck(setting.value == 1 ? true : false)
+            }
+        }
     }
 
     const setColumnDef = async () => {
