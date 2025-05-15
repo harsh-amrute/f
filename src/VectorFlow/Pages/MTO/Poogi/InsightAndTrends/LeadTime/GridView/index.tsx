@@ -11,7 +11,7 @@ import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Load
 import { pagination } from '../../../../../../../VectorFlow/Pages/MTO/Common/Enum';
 import { formatFilterJSON } from '../../../../../../../helpers/utils';
 
-const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters }: any) => {
+const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appliedFilters,userPageSize,savePageSize}: any) => {
     const gridRef = useRef(null);
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -125,7 +125,7 @@ const GridView = ({ colDef, setCurrentGridRef, currentGridRef, columnState, appl
             // }}
             />
             <VFPagination currentPage={currentPage} totalRows={totalRows} rowsPerPage={pagination.mtoPageSize} selectedRows={1} handleChangePage={handlePageChange} resetGridRef={currentGridRef} isDisabled={isDisabled}
-            />
+            customPageSizeEnabled = {true} savePageSize={savePageSize} userPageSize={userPageSize} />
         </SCDynamicContainer>
 
     )

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const getLeadTimeData = async (graphflag: number, page?: number, appliedFilters?: any) => {
+export const getLeadTimeData = async (graphflag: number, page?: number, appliedFilters?: any,page_size?:any) => {
   if(graphflag){
     return await axios.get(
       process.env.REACT_APP_VF_API_HOST_MTO + `/getLeadTimeData/`,
@@ -9,11 +9,13 @@ export const getLeadTimeData = async (graphflag: number, page?: number, appliedF
           "Content-Type": "application/json",
         },
         params: {
-          graphflag,
+          graphflag
+
         },
       }
     );
   }
+  console.log("pageeee",graphflag,page,appliedFilters,page_size)
   return await axios.put(
     process.env.REACT_APP_VF_API_HOST_MTO + `/getLeadTimeData/`,
     appliedFilters,
@@ -23,7 +25,8 @@ export const getLeadTimeData = async (graphflag: number, page?: number, appliedF
       },
       params: {
         graphflag,
-        page,
+        page_size: page_size.page_size,
+        page: page_size.page
       },
     }
   );

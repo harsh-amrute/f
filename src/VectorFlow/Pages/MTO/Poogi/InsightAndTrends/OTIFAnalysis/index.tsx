@@ -88,7 +88,6 @@ const OTIFAnalysis = () => {
   }
 
   const getGraphData = async (params: any,pageSize?:any) => {
-    console.log("pageSize", pageSize);
     if (params.isExcelExport) {
       const headersdata = currentGridRef?.current?.api.getColumnState();
       const formattedFilters = formatFilterJSON(appliedFilters);
@@ -107,7 +106,6 @@ const OTIFAnalysis = () => {
           ...params,
           page_size : pageSize || userPageSize || pagination.mtoPageSize
       });
-      console.log("response",response);
       setGraphData(response.data.data);
       }
       catch (e) {
