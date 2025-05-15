@@ -71,7 +71,7 @@ export const useSupplierWiseAllocation =()=>{
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     //  const rowsPerPage=50;
-     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
+     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_COLORBANDWISE_ROWS_PER_PAGE || '5000');
 
      const {date:lastRunDate} = useGetLastRunData()
 
