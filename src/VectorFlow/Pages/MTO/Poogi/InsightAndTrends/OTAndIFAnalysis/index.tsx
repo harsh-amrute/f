@@ -66,7 +66,6 @@ const OTAndIFAnalysis = () => {
     
     const getGraphData = async (params: any,pageSize?:any) => {
 
-        console.log("paguuueSize", pageSize);
         if(params.isExcelExport){
             const headersdata = currentGridRef?.current?.api.getColumnState();
             const formattedFilters = formatFilterJSON(appliedFilters);
@@ -115,9 +114,7 @@ const OTAndIFAnalysis = () => {
                 rn_id: UIGridCode.PoogiOTAndIFAnalysis
             });
 
-            console.log("data......sdfdsfas", data);
             const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] : [];
-            console.log("newconfig", newConfig), 
             setUserPageSize(newConfig.page_size ? Number(newConfig.page_size) : pagination.mtoPageSize);
             setColumnState(newConfig.cs);
             
