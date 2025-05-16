@@ -73,7 +73,7 @@ const GridView = (props: IGridViewProps) => {
     const getGridData = async (params: any) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const response = await getData({...params, appliedFilters: formatedFilters});
+            const response = await getData({...params, appliedFilters: formatedFilters, page_size: userPageSize || pagination.mtoPageSize, page: currentPage});
             setGridData(response?.data?.data?.results || []);
             setTotalRows(response?.data?.data?.count || 0)
         }

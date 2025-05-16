@@ -59,7 +59,8 @@ const LeadTime = () => {
   const { mutateAsync: getLeadTimeExcelData } = useGetLeadTimeExcelData();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
-  const [userPageSize, setUserPageSize] = useState<any>();
+  const [userPageSize, setUserPageSize] = useState<number>();
+  
   
   const setColumnDef = async () => {
     try {
@@ -155,15 +156,13 @@ const LeadTime = () => {
   },[userPageSize])
   
 
-  const getGridData = async (isExcelExport = false,pageSize?:any) => {
-    console.log("pageSize",pageSize)
+  const getGridData = async (isExcelExport = false,pageSize?:any,page?:any) => {
     if (isExcelExport) {
       const headersdata = currentGridRef?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters)
       const body = getBodyForExcelExport({ headersdata, appliedFilters: formatedFilters, colDefMap })
       try {
         const response = await getLeadTimeExcelData({ body, isExcelExport: 1, report_name: FilterPageName.Poogi_Lead_Time })
-        console.log('api response: ', response)
         DownloadExcel(response, FilterPageName.Poogi_Lead_Time)
       } catch (error) {
         console.log(error);
@@ -171,7 +170,7 @@ const LeadTime = () => {
     } else {
 
       try {
-        const data = await getLeadTimeData({ graphflag: 1,page_size: pageSize });
+        const data = await getLeadTimeData({ graphflag: 1,page_size: pageSize,page:page });
         const chartData: any = []
         const tableData: any = []
         Object.entries(data.data.data).forEach((entry: any) => {
@@ -180,8 +179,6 @@ const LeadTime = () => {
           tableData.push({ ...entry[1], week: entry[0] })
         })
 
-        console.log("chartData", chartData)
-        console.log("table data", tableData)
 
         setChartTableData(tableData);
         setChartData(chartData)
@@ -192,19 +189,6 @@ const LeadTime = () => {
         console.log(err)
         notifyError("Something Went Wrong")
       }
-    }
-  }
-  const getInitialGridData = async (pageSize:any) => {
-    try {
-      return await getLeadTimeData({ graphflag: 0,page_size: pageSize });
-  
-      // setChartTableData(response?.data?.data?.results);
-      
-      notifySuccess("Data Fetched Successfully!");
-    }
-    catch (err: any) {
-      console.log(err)
-      notifyError("Something Went Wrong")
     }
   }
     
@@ -246,11 +230,11 @@ const LeadTime = () => {
     getGridData(true);
   }
 
-  const savePageSize = (pageSize: any) => {
+  const savePageSize = (pageSize: number) => {
     if (pageSize) {
         setUserPageSize(pageSize);
         handleSaveClick(undefined, pageSize);
-        getGridData(false,pageSize);
+        getGridData(false,pageSize,1);
     } 
     
 }
@@ -265,6 +249,7 @@ const LeadTime = () => {
 
 
   const themeUi = user?.user?.theme_ui;
+
     
   return (
     <>
@@ -294,10 +279,10 @@ const LeadTime = () => {
         isGridView ?
           <>
             <GridView
-              getData={(params: any) => getInitialGridData({
+               getData={(params:any) =>  getLeadTimeData({
                 ...params,
                 page_size: userPageSize || pagination.mtoPageSize
-              })}
+            })}   
               colDef={colDef}
               isLoading={isLoading}
               isError={isError}
