@@ -1060,7 +1060,7 @@ const useViewModify = (pageType:string) => {
           const currMasterFilters = activeMaster.filters;
           const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
         
-          const payloadFields:any = getAllVisibleColums();
+          const payloadFields:any = getCurrentVisbileColumns();
           
           const numberOfPages = Math.ceil(recordCount/chunkSize);
           const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)

@@ -862,6 +862,10 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   //Check if File Contains a Column that is Duplicate
   const isDuplicateHeader = data[0].some((header:any,index:number)=>data[0].indexOf(header)!==index);
 
+  if (data.length > parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT || "50000")) {
+    throw new Error(`Number of rows should not exceed ${process.env.REACT_APP_RECORD_UPLOAD_LIMIT}`);
+  }
+  
   if(isDuplicateHeader){
     throw new Error("File Contains Duplicate Headers")
   }
@@ -912,8 +916,6 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
       throw new Error(`File Contains ${headers.join(', ')} field which are not allowed to Upload.`)
     }
 
-  }
-
   //Check if All Selected Keys are Present in The Uploaded
   selectedKeys.forEach((key: string) => {
     const fieldObj = master.fields.find((field: Field) => field.key === key)
@@ -922,6 +924,17 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
       headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
     }
   })
+  }
+
+  if (pageType == "add") {
+    selectedKeys.forEach((key: string) => {
+      const fieldObj = master.fields.find((field: Field) => field.key === key)
+      if (!headerKeys.includes(key) && fieldObj?.isAdd) {
+        error = true;
+        headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+      }
+    })
+  }
 
   if (error) {
     throw new Error(`File is missing the following columns: ${headers.join(', ')}`);
