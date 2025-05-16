@@ -15,7 +15,6 @@ export const getLeadTimeData = async (graphflag: number, page?: number, appliedF
       }
     );
   }
-  console.log("pageeee",graphflag,page,appliedFilters,page_size)
   return await axios.put(
     process.env.REACT_APP_VF_API_HOST_MTO + `/getLeadTimeData/`,
     appliedFilters,
