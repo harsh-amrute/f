@@ -20,11 +20,13 @@ interface IGridViewProps {
     currentGridRef: any,
     columnState: any,
     appliedFilters?: any
+    userPageSize?: number;
+    savePageSize?: any;
 }
 
 const GridView = (props: IGridViewProps) => {
 
-    const { getData, isLoading, isError, isSuccess, setCurrentGridRef, currentGridRef, columnState, colDef, appliedFilters } = props;
+    const { getData, isLoading, isError, isSuccess, setCurrentGridRef, currentGridRef, columnState, colDef, appliedFilters, userPageSize,savePageSize } = props;
 
     const gridRef = useRef<any>(null);
     const [gridData, setGridData] = useState([]);
@@ -83,12 +85,15 @@ const GridView = (props: IGridViewProps) => {
 
     const handlePageChange = (current: any) => {
         setCurrentPage(current);
-        getGridData({ graphflag: 0, page: current })
+        getGridData({ graphflag: 0, page: current})
     }
 
     useEffect(() => {
-        getGridData({ graphflag: 0, page: 1 });
-        setCurrentPage(1);
+        
+        if(Object.keys(appliedFilters).length && userPageSize){
+            getGridData({ graphflag: 0, page: 1 });
+            setCurrentPage(1);
+        }
 
     }, [appliedFilters])
 
@@ -148,12 +153,15 @@ const GridView = (props: IGridViewProps) => {
             />
             <VFPagination
                 selectedRows={0}
-                rowsPerPage={pagination.mtoPageSize}
+                rowsPerPage={userPageSize || pagination.mtoPageSize}
                 totalRows={totalRows}
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
                 resetGridRef={currentGridRef}
                 isDisabled={isDisabled}
+                customPageSizeEnabled ={true}
+                savePageSize={savePageSize}
+                userPageSize={userPageSize}
             />
         </SCDynamicContainer>
 
