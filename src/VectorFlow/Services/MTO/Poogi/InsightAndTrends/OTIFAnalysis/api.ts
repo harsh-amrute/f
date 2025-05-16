@@ -45,5 +45,4 @@ export namespace OTIFAanalysisService {
             responseType : 'blob'
         })
     }
-
 }
