@@ -862,6 +862,10 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   //Check if File Contains a Column that is Duplicate
   const isDuplicateHeader = data[0].some((header:any,index:number)=>data[0].indexOf(header)!==index);
 
+  if (data.length > parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT || "50000")) {
+    throw new Error(`Number of rows should not exceed ${process.env.REACT_APP_RECORD_UPLOAD_LIMIT}`);
+  }
+  
   if(isDuplicateHeader){
     throw new Error("File Contains Duplicate Headers")
   }
