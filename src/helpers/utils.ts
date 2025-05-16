@@ -916,8 +916,6 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
       throw new Error(`File Contains ${headers.join(', ')} field which are not allowed to Upload.`)
     }
 
-  }
-
   //Check if All Selected Keys are Present in The Uploaded
   selectedKeys.forEach((key: string) => {
     const fieldObj = master.fields.find((field: Field) => field.key === key)
@@ -926,6 +924,17 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
       headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
     }
   })
+  }
+
+  if (pageType == "add") {
+    selectedKeys.forEach((key: string) => {
+      const fieldObj = master.fields.find((field: Field) => field.key === key)
+      if (!headerKeys.includes(key) && fieldObj?.isAdd) {
+        error = true;
+        headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+      }
+    })
+  }
 
   if (error) {
     throw new Error(`File is missing the following columns: ${headers.join(', ')}`);
