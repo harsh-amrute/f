@@ -1,7 +1,7 @@
 import { useSelector,useDispatch } from 'react-redux'
 import { RootState } from '../../../../../redux/store/store';
 import { MDMMasterState } from '../../../../../VectorFlow/types/MDM';
-import { RESET_STATE, REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER,ADD_COLDEFS, UPDATE_PROGRESS_STATE, FILL_MASTERS, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN ,SYNC_ACTIVE_MASTER_TO_MASTER,REMOVE_COLDEFS,UPDATE_ROW_DATA,SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
+import { RESET_STATE, REMOVE_MASTER, ADD_MASTER,UPDATE_ACTIVE_MASTER,ADD_COLDEFS, UPDATE_PROGRESS_STATE, FILL_MASTERS,SET_DRAFT_ID, TOGGLE_UPLOAD_MODAL, TOGGLE_SELECT_MASTER_SCREEN ,SYNC_ACTIVE_MASTER_TO_MASTER,REMOVE_COLDEFS,UPDATE_ROW_DATA,SET_RECORD_COUNT} from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { useState } from 'react';
 
@@ -149,7 +149,7 @@ const useAdd=()=>{
         const nextMasterIndex = selectedMasters.findIndex((master:MDMMasterState)=>master.progress !== 'submitted');
   
         if(currMaster.id === selectedMasters[nextMasterIndex].id){
-
+            dispatch(SET_DRAFT_ID(''));
             dispatch(UPDATE_ACTIVE_MASTER(nextMasterIndex))
             dispatch(TOGGLE_UPLOAD_MODAL(true))
             return 
