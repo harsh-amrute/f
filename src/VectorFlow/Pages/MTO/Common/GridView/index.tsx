@@ -90,10 +90,8 @@ const GridView = (props: IGridViewProps) => {
 
     useEffect(() => {
 
-        console.log("calling1",Object.keys(appliedFilters).length, userPageSize)
         
         if(Object.keys(appliedFilters).length && userPageSize){
-            console.log("calling2")
             getGridData({ graphflag: 0, page: 1 });
             setCurrentPage(1);
         }
