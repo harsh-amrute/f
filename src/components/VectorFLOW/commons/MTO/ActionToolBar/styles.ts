@@ -70,7 +70,7 @@ export const SCViewContainerWithBg = styled.div`
   min-height: 58px;
   cursor: pointer;
 `;
-//w-164,h-58
+
 export const SCViewContainerWithBgToggle = styled.div`
   display: flex;
   background: ${ColorsMTO.White} 0% 0% no-repeat padding-box;
