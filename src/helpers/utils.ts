@@ -4509,7 +4509,7 @@ export const getType = (attributes: any, key: any) => {
           formattedVal = value.map((v: any) => v?.value || v?.id);
         }
 
-        if (type === 'textCompare' || type === 'numberCompare') {
+        if ((type === 'textCompare' || type === 'numberCompare' )  && !['ide','ov','pbsz','pcbsz'].includes(attributeName)) {
           if (!formatFilter.attributes) formatFilter.attributes = {};
           formatFilter.attributes[attributeName] = formattedVal;
         } else {
