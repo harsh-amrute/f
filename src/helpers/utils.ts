@@ -4364,7 +4364,7 @@ export function getColumnDefinations(
       rowGroup: false,
       rowGroupIndex: null,
       pivot: false,
-      filter: data.cla==='right' ? "agNumberColumnFilter": "agTextColumnFilter",
+      filter: data.dt==='number' ? "agNumberColumnFilter": "agMultiColumnFilter",
       pivotIndex: null,
       enablePivot: true,
       flex: 1,
