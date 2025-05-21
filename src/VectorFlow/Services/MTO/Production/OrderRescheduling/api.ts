@@ -22,15 +22,17 @@ export namespace OrderReschedulingService {
             responseType: "blob"
         })
     }
-
-    export const getOrderReschedulingPageData = async (pageNum: string, pageSize:number) => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetOrderReschedulingData/?page=${pageNum}&page_size=${pageSize}`, {
-
+    export const getOrderReschedulingPageData = async (pageNum: string,pageSize: number,appliedFilters: any) => {
+        return await axios.put(`${process.env.REACT_APP_VF_API_HOST_MTO}/GetOrderReschedulingData/?page=${pageNum}&page_size=${pageSize}`,
+          appliedFilters, 
+          {
             headers: {
-                'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             }
-        })
-    }
+          }
+        );
+      };
+      
     export const putUpdateOrderDueDate = async (body: any) => {
         const url = `${process.env.REACT_APP_VF_API_HOST_MTO}/UpdateOrderDueDate/`;
         return await axios.put(url, body, {

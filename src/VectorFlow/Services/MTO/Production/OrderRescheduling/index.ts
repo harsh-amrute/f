@@ -13,8 +13,8 @@ export const useGetOrderSchedulingData = () => {
 
 export const useGetOrderSchedulingPageData = () => {
     return useMutation(async ({pageNum
-           , pageSize}:any) => {
-        return OrderReschedulingService.getOrderReschedulingPageData(pageNum,pageSize);
+           , pageSize,appliedFilters}:any) => {
+        return OrderReschedulingService.getOrderReschedulingPageData(pageNum,pageSize,appliedFilters);
     })
 }
 

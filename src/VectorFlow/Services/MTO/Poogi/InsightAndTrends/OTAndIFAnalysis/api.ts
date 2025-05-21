@@ -3,7 +3,7 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OTAndIFAanalysisService {
 
-    export const getOTAndIFAnalysisData = async ({graphflag, page, appliedFilters}: any) => {
+    export const getOTAndIFAnalysisData = async ({graphflag, page, appliedFilters,page_size}: any) => {
         if(graphflag){
             return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOTandIFAnalysisData/`, {
                 headers: {
@@ -22,7 +22,8 @@ export namespace OTAndIFAanalysisService {
             },
             params:{
                 graphflag,
-                page
+                page,
+                page_size
             }
         })
 

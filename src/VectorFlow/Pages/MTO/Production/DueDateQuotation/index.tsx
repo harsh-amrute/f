@@ -323,7 +323,7 @@ const DueDateQuotation = () => {
     if (pageSize) {
         setCurrentPage(1)
         setUserPageSize(pageSize);
-        handleSaveClick(1, pageSize);
+        handleSaveClick(undefined, pageSize);
         getUpdatedFilterData(false,pageSize)      
 
     } else {
@@ -490,10 +490,11 @@ const DueDateQuotation = () => {
       }
     } catch (error) {
       console.error(error);
+  
     }
   }
 
-  const handleSaveClick = async (coldefs?: any, page_size?:any) => {
+  const handleSaveClick = async (coldefs?: any, page_size?: any) => {
     try {
       if (coldefs) {
         const fullConfig = {cs: coldefs, pageSize: userPageSize };
@@ -506,7 +507,7 @@ const DueDateQuotation = () => {
         setColumnState([...coldefs]);
 
       } 
-      else if(page_size){
+      else if (page_size) {
         const config = columnState;
         const fullConfig = { cs: config, pageSize: page_size };        
         const payload = {
