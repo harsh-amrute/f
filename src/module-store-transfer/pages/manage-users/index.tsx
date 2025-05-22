@@ -27,7 +27,7 @@ import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
 import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
-import ModalBulkUpload from "./ModalBulkUpload";
+import PermissionHeirarchyCanvas from "./ModalBulkUpload";
 
 
 interface ManageUsersProps{
@@ -390,7 +390,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                       ? "icon_upload_yellow"
                       : "icon_upload"
                   }.svg`}
-                  disabled={true}
+                  disabled={false}
                   onClick={handleClickBulkUpload}
                 />
               </SCItemBtn>
@@ -469,9 +469,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
           openModal={isBulkModalOpen}
           headerIcon={"/assets/img/profile/icon_upload.svg"}
           closeModal={()=>{setIsBulkModalOpen(false)}}
-          // children={<>Hello</>}
         >
-       <ModalBulkUpload/>
+       <PermissionHeirarchyCanvas  allPermissions={dataAllPermissions}/>
 
         </VFModalCard>
       

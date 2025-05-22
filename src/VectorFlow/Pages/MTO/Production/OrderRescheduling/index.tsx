@@ -141,6 +141,7 @@ const OrderRescheduling = () => {
         const newRowData = [...APIData.data.data.results];
         if (newRowData.length === 0) {
           refGraph1.current?.api.showNoRowsOverlay(); 
+          setRowData(newRowData)
         } else {
           refGraph1.current?.api.hideOverlay(); 
           newRowData.forEach((el) => {
