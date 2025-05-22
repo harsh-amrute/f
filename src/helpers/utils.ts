@@ -4364,7 +4364,7 @@ export function getColumnDefinations(
       rowGroup: false,
       rowGroupIndex: null,
       pivot: false,
-      filter: data.cla==='right' ? "agNumberColumnFilter": "agTextColumnFilter",
+      filter: data.dt==='number' ? "agNumberColumnFilter": "agMultiColumnFilter",
       pivotIndex: null,
       enablePivot: true,
       flex: 1,
@@ -4509,7 +4509,7 @@ export const getType = (attributes: any, key: any) => {
           formattedVal = value.map((v: any) => v?.value || v?.id);
         }
 
-        if (type === 'textCompare' || type === 'numberCompare') {
+        if ((type === 'textCompare' || type === 'numberCompare' )  && !['ide','ov','pbsz','pcbsz'].includes(attributeName)) {
           if (!formatFilter.attributes) formatFilter.attributes = {};
           formatFilter.attributes[attributeName] = formattedVal;
         } else {

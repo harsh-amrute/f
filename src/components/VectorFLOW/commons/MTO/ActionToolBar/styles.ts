@@ -49,7 +49,7 @@ export const SCViewContainer = styled.div`
   overflow: hidden;
 `;
 export const SCHorizontalDivison = styled.div`
-  height: 80%;
+  height: 40px;
   width: 2px;
   background: ${ColorsMTO.LightGrey.code};
   margin: 0 20px;
@@ -64,19 +64,25 @@ export const SCViewContainerWithBg = styled.div`
   padding: 5px;
   justify-content: center;
   align-items: center;
-  width: 82px;
-  height: 58px;
+  width:fit-content;
+  height:fit-content;
+  min-width: 82px;
+  min-height: 58px;
   cursor: pointer;
 `;
+
 export const SCViewContainerWithBgToggle = styled.div`
   display: flex;
   background: ${ColorsMTO.White} 0% 0% no-repeat padding-box;
   box-shadow: -5px 4px 10px #8584843f;
   border-radius: 5px;
+  padding: 5px;
   justify-content: center;
   align-items: center;
-  width: 164px;
-  height: 58px;
+  width:fit-content;
+  height:fit-content;
+  min-width: 164px;
+  min-height: 58px;
   cursor: pointer;
 `;
 export const SCViewBackground = styled.div`
