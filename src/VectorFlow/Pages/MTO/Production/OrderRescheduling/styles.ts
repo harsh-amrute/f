@@ -62,16 +62,47 @@ export const ETACellValue = styled.p`
     padding:4px;
 `
 
-
-export const DatePickerWrapper = styled.div<{ theme: string }>`
-  & > ::-webkit-calendar-picker-indicator {
-    background: ${(props) =>
-      props.theme === 'REGALBLAZE'
-        ? "url('/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg') no-repeat"
-        : "url('/assets/img/mto/OrderRescheduling/edit-calendar.svg') no-repeat"};
-    width: 16px;
-    height: 16px;
-  }
+export const DatePickerWrapper = styled.div`
+    display: flex;
+    cursor: pointer;
+    flex-direction: row;
+    width: 180px;
+    padding: 5px 25px;
 `;
+
+export const TextInputWrapper = styled.input<{theme: string}>`
+    width: 80%;
+    height: 100%;
+    text-align: center;
+    letter-spacing: 0px;
+    opacity: 1;
+    font-size: 12px;
+    padding: 4px;
+    font-weight: 400;
+    font-family: Roboto;
+    border: none;
+    pointer-events: none;
+
+    
+
+`;
+
+export const DateInputWrapper = styled.input`
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+`;
+
+export const ButtonWrapper = styled.button`
+    background: none;
+`;
+
+export const ImageWrapper = styled.img`
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+`;
+
+
 
 

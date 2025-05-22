@@ -29,7 +29,7 @@ const colorMapper = (color: string) => {
 };
 
 const BPPRenderer = (props: any) => {
-    const color = props.data?.cl || props.data?.clr;
+    const color = props.data?.cl || props.data?.clr || props.data?.cp;
     const cellColor = colorMapper(color);
     
     return (
