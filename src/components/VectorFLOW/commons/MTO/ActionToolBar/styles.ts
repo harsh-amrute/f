@@ -55,20 +55,21 @@ export const SCHorizontalDivison = styled.div`
   margin: 0 20px;
 `;
 
-export const SCViewContainerWithBg = styled.div`
+export const SCViewContainerWithBg = styled.div<{styles?:any}>`
   display: flex;
   flex-direction: column;
   background: ${ColorsMTO.White} 0% 0% no-repeat padding-box;
   box-shadow: -5px 4px 10px #8584843f;
-  border-radius: 5px;
-  padding: 5px;
+  border-radius: ${(props)=> props.styles?.borderRadius || "5px"};
+  padding: ${(props)=> props.styles?.padding || "5px"};
   justify-content: center;
   align-items: center;
   width:fit-content;
   height:fit-content;
-  min-width: 82px;
-  min-height: 58px;
+  min-width:  ${(props)=> props.styles?.width || "82px"};
+  min-height: ${(props)=> props.styles?.height || "58px"};
   cursor: pointer;
+  font-size: ${(props)=> props.styles?.fontSize || "16px"};
 `;
 
 export const SCViewContainerWithBgToggle = styled.div`
