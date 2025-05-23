@@ -428,7 +428,7 @@ const MTOActionToolBar = ({
 
                                 <SCHorizontalDivison />
 
-                                <SCViewContainer onClick={() => { !isGridView && setIsGridView && (setIsGridView(!isGridView)) }}>
+                                <SCViewContainer onClick={() => { !isGridView && setIsGridView && (setIsGridView(!isGridView)) }} style={{paddingTop:'7px'}}>
                                     <GridView theme={themeUi} view={isGridView}/>
                                     <p>Grid View</p>
 
