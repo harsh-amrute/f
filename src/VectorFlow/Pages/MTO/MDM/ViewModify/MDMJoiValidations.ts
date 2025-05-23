@@ -157,7 +157,7 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
   )
   .optional(),
 
-  plnm: Joi.string().required().messages({
+  plnm: Joi.string().required().optional().messages({
     "string.base": "Plant name cannot be empty!",
     "any.required": "Plant name cannot be empty!",
     "string.empty": "Plant name cannot be empty!",
@@ -169,7 +169,7 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
     "any.only": "Recurrence must be either Once, Weekly, or Monthly!",
   }),
 
-  hid: Joi.string().optional(),
+  hid: Joi.any().optional(),
 
   rd : Joi.number().allow('').max(4).optional().messages({
     "number.base": "Repeat duration must be a number!",
@@ -177,7 +177,7 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
     "any.required": "Repeat duration cannot be empty!",
   }),
 
-  ccr: Joi.string().required().messages({
+  ccr: Joi.string().required().optional().messages({
     "string.base": "CCR cannot be empty!",
     "string.empty": "CCR cannot be empty!",
     "any.required": "CCR cannot be empty!",

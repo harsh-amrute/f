@@ -1347,6 +1347,7 @@ const useViewModify = (pageType: string) => {
     const onSaveHandler = () => {
       const index = activeMaster.rowData?.length ? activeMaster.rowData?.findIndex((row) => row.hid === selectedData.hid) : -1;
         const rowData = _.cloneDeep(activeMaster.rowData || []);
+        const newData = _.cloneDeep(selectedData);
         const {error} = CALENDAR_VALIDATION_SCHEMA.validate(selectedData,{abortEarly:false})
 
         if(error){
@@ -1362,15 +1363,15 @@ const useViewModify = (pageType: string) => {
 
         // edit calendar 
         if(index != -1){
-          if(selectedData.ia !== true){
-            selectedData.iu = true
+          if(newData.ia !== true){
+            newData.iu = true
           }
-          rowData[index] = selectedData
+          rowData[index] = newData
         }
         // add new calendar
         else{
-          selectedData.ia = true
-          rowData.unshift(selectedData);
+          newData.ia = true
+          rowData.unshift(newData);
         }
         dispatch(UPDATE_ROW_DATA(rowData))
         setIsModalOpen(false)
@@ -3392,8 +3393,9 @@ const useViewModify = (pageType: string) => {
       calendarData: []
     }
 
+    
     if(pageType === "modify"){
-
+      
       const newData = _.cloneDeep(activeMaster.rowData)
 
       newData.forEach((el :any)=>{
@@ -3412,6 +3414,8 @@ const useViewModify = (pageType: string) => {
     try {
       
       notifyLoader("Saving Task...");
+
+      console.log("calneddsfsfsd" , calendarObj);
       
       await saveCalendarMasterTask(calendarObj)
 
