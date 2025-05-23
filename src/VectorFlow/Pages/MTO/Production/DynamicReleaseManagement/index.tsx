@@ -259,7 +259,7 @@ const DynamicReleaseManagement = () => {
       suppressMenu: true,
       cellRenderer: (params: any) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: backgroundColor, fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => { setIsRouteLoading(true),setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: backgroundColor, fontWeight: 'bold', fontFamily: 'roboto' }} onClick={() => {setRowRelease(true), setOrder_Key(params.data.ok), setMessage(`Release Order with id: ${params.data.oid} `), setShowReleaseModal(true) }}>
             <div >Release &nbsp; </div>
             <img height={14} width={14} src= {userTheme ? '/assets/img/mto/dynamicReleaseManagement/arrow-icon-yellow.svg' : '/assets/img/mto/dynamicReleaseManagement/arrow-icon.svg'} alt='arrow-icon' />
           </div>
@@ -276,6 +276,7 @@ const DynamicReleaseManagement = () => {
           <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img height={12} width={12} alt="edit icon" src={userTheme ? "/assets/img/mto/fullKitAssignment/edit_icon_yellow.svg":"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }} onClick={() => {
+              setIsRouteLoading(true);
               if(params.data.rid === null){
                 notifyError("No Route assigned to this order!");
                 return;

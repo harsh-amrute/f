@@ -4,11 +4,11 @@ export const staticHeaderConfig: any = {
     lid: { name:"Line Item", type: 'search'},
     ic: { name:"Item Code", type: 'search'},
     ide: { name:"Item Description", type: 'textCompare'},
-    ov: { name: "Amount", type: 'numberCompare'},
     ot: { name:"Order Type", type: 'multiSelect'},
     ms: { name:"Manufacturing Strategy", type: 'checkbox'},
-    pbsz: { name: "Prod Buffer", type: 'numberCompare'},
-    pcbsz: {name: "Proc Buffer", type: 'numberCompare'},
+    // ov: { name: "Amount", type: 'numberCompare'},
+    // pbsz: { name: "Prod Buffer", type: 'numberCompare'},
+    // pcbsz: {name: "Proc Buffer", type: 'numberCompare'},
     
     // Customer Filter Attributes
     cc: { name:"Customer Code", type: 'search'},
