@@ -378,8 +378,7 @@ const FilterTextInput = ({
       { value: 'sw', label: 'Starts with' },
       { value: 'dsw', label: 'Does not start with' },
       { value: 'ew', label: 'Ends with' },
-      { value: 'dnew', label: 'Does not end with' },
-      { value: 'hv', label: 'Has value' },
+      { value: 'dnew', label: 'Does not end with' }
     ];
     
   const numberComparators = [
