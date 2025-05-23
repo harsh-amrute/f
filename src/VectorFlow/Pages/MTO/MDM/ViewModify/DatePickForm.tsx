@@ -264,6 +264,15 @@ const handleMdOptionsChange = (e: React.ChangeEvent<HTMLSelectElement>,id:number
   ))
 }
 
+// Filter CCR names based on selected plant
+useEffect(() => {
+  if (formData.plid) {
+    const filteredCcrNames = ccrNames
+      .filter((ccr: any) => ccr.plant === formData.plid)
+      .map((ccr: any) => ({ value: ccr.ccr_id, label: ccr.ccr_name }));
+    setCcrNameOptFromPlant(filteredCcrNames);
+  }
+}, [formData.plid, ccrNames]);
 
 
 const onAddClick = ()=>{
@@ -371,22 +380,19 @@ const onRemoveclick = (id: number) => {
           </>
         )}
         {formData.rb === "Monthly" &&
-          formData?.dow?.map((val:any) => {
-
+          formData?.dow?.map((val: any) => {
             return (
-              
               <CalenderMonthlySelect
-              key={val.id}
-              formData={formData}
-              handleMdOptionsChange={handleMdOptionsChange}
-              handleMnOptionsChange={handleMnOptionsChange}
-              onAddClick={onAddClick}
-              onRemoveClick={onRemoveclick}
-              id={val.id}
+                key={val.id}
+                formData={formData}
+                handleMdOptionsChange={handleMdOptionsChange}
+                handleMnOptionsChange={handleMnOptionsChange}
+                onAddClick={onAddClick}
+                onRemoveClick={onRemoveclick}
+                id={val.id}
               />
-            )
-          }
-          )}
+            );
+          })}
 
         <InputWrapper>
           <Label>Plant</Label>
@@ -395,7 +401,7 @@ const onRemoveclick = (id: number) => {
               Select a Plant
             </option>
             {plantNames.map((plant: any, index: number) => (
-              <option key={index} value={plant.plant_id} >
+              <option key={index} value={plant.plant_id}>
                 {plant.plant_name}
               </option>
             ))}
@@ -406,22 +412,26 @@ const onRemoveclick = (id: number) => {
           <Label>CCR</Label>
 
           <SCSwapItem key={0}>
-                <SCFlexCenter>
-                  <SCItemMulSelect width={"85%"}>
-                    <SearchInputMultiple
-                      placeholder={"Select CCR"}
-                      options={ccrNameOptFromPlant}
-                      value={formData?.ccr_id?.map((ccr:any)=> ({value: ccr, label: ccrNames.filter((ccrName:any)=> ccrName.ccr_id == ccr).map((ccrName:any)=>ccrName.ccr_name
-                      )}))}
-                      setValue={onHandleCCRChange}
-                      handleListChild={()=>{return null}}
-                      disabled={false}
-                      key={0}
-                    />
-                  </SCItemMulSelect>
-                </SCFlexCenter>
-              </SCSwapItem>
-          
+            <SCFlexCenter>
+              <SCItemMulSelect width={"85%"}>
+                <SearchInputMultiple
+                  placeholder={"Select CCR"}
+                  options={ccrNameOptFromPlant}
+                  value={formData?.ccr_id?.map((ccr: any) => ({
+                    value: ccr,
+                    label: ccrNames
+                      .find((ccrName: any) => ccrName.ccr_id == ccr)?.ccr_name || "",
+                  }))}
+                  setValue={onHandleCCRChange}
+                  handleListChild={() => {
+                    return null;
+                  }}
+                  disabled={false}
+                  key={0}
+                />
+              </SCItemMulSelect>
+            </SCFlexCenter>
+          </SCSwapItem>
         </InputWrapper>
         <InputWrapper>
           <Label>Ends</Label>
