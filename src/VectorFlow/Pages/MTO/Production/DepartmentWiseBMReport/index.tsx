@@ -127,6 +127,7 @@ const APIFilterConfig = {
     }
 };
 
+
 const DptWiseBMReport = () => {
     const { mutateAsync: getFilteredDeptWiseBMReportData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
     const { mutateAsync: getOverallBMReportData } = useGetOverAllBMReport();
@@ -167,6 +168,19 @@ const DptWiseBMReport = () => {
     
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
+
+  const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
+
+    const excelStyles = useMemo(() => 
+        excelColorArr.map((color) => ({
+          id: color,
+          font: { color: color === "White" ? "000000" : "#ffffff" },
+          interior: {
+            color: color === "White"  ? "#A8A8A8" : ColorsMTO[color as keyof typeof ColorsMTO]?.code,
+            pattern: 'Solid'
+          }
+        }))
+      , []);
 
 
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
@@ -417,6 +431,14 @@ const DptWiseBMReport = () => {
                     // },
                     onClick: child.scc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
                 } : undefined,
+                cellClassRules:
+                child.cc === "BPP" && excelColorArr.reduce(
+                  (acc, color) => ({
+                    ...acc,
+                    [color]: (params: any) => params.data.cl === color
+                  }),
+                  {}
+                ),
                 cellStyle: child.cc === 'Remark' ? {
                     backgroundColor: 'white',
                     border: '1px solid #b9bdba',
@@ -1075,6 +1097,7 @@ const DptWiseBMReport = () => {
                         handlePageChange={(cp) => handlePageChange(cp)}
                         totalRow={gridDataCount}
                         currentPage={currentPage}
+                        excelStyles={excelStyles}
                     />
                 </div>
             </>
