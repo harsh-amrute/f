@@ -47,6 +47,7 @@ export const SCViewContainer = styled.div`
   align-items: center;
   cursor: pointer;
   overflow: hidden;
+  gap:2px;
 `;
 export const SCHorizontalDivison = styled.div`
   height: 40px;
@@ -67,9 +68,9 @@ export const SCViewContainerWithBg = styled.div<{styles?:any}>`
   width:fit-content;
   height:fit-content;
   min-width:  ${(props)=> props.styles?.width || "82px"};
-  min-height: ${(props)=> props.styles?.height || "58px"};
+  min-height: ${(props) => props.styles?.height || "58px"};
   cursor: pointer;
-  font-size: ${(props)=> props.styles?.fontSize || "16px"};
+  // font-size: ${(props)=> props.styles?.fontSize || "16px"};
 `;
 
 export const SCViewContainerWithBgToggle = styled.div`
