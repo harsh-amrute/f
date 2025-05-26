@@ -140,16 +140,37 @@ const Header = (props:HeaderProps) => {
               </HeaderStyled.SCHeaderContent>
             )}
           </HeaderStyled.SCHeaderBoxIst>
-          <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{right: 0, marginTop: "-110px"}}>
+          <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ right: 0, marginTop: "-110px" }}>
             <HeaderStyled.SCImg src="/assets/VectorFlow_black.svg" alt="logo" isHideLogo={isHideLogo} />
           </HeaderStyled.SCWrapperImg>
         </>
       )
     }
 
-    if(urlExcludeHeader.includes(location.pathname)){
-      return(
+    return (
+      <>
+        <HeaderStyled.SCHeaderBox
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 2,
+            paddingTop: 15
+          }}
+        >
+          <HeaderStyled.SCHeaderText>
+            {renderNamePage()}
+          </HeaderStyled.SCHeaderText>
+        </HeaderStyled.SCHeaderBox>
+
         <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ display: 'flex', alignItems: 'center' }}>
+          {!process.env.REACT_APP_CLIENT_LOGO && !process.env.REACT_APP_CLIENT_NAME &&
+            <HeaderStyled.SCImg
+              marginLeft={"15px"}
+              src="/assets/VectorFlow_black.svg"
+              alt="logo"
+              isHideLogo={isHideLogo}
+            />
+          }
           {process.env.REACT_APP_CLIENT_LOGO && (
             <HeaderStyled.SCImg
               src={process.env.REACT_APP_CLIENT_LOGO.toString()}
@@ -158,34 +179,15 @@ const Header = (props:HeaderProps) => {
             />
           )}
           {process.env.REACT_APP_CLIENT_NAME && (
-            <HeaderStyled.ClientNameText isHideLogo={isHideLogo}>
+            <HeaderStyled.ClientNameText marginLeft={!process.env.REACT_APP_CLIENT_LOGO && "15px"} isHideLogo={isHideLogo}>
               {process.env.REACT_APP_CLIENT_NAME}
             </HeaderStyled.ClientNameText>
           )}
         </HeaderStyled.SCWrapperImg>
-      )
-    }
-
-    else {
-      return (
-        <HeaderStyled.SCHeaderBox
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 2,
-            paddingTop:15
-          }}
-        >
-          <HeaderStyled.SCHeaderText>
-            {renderNamePage()}
-          </HeaderStyled.SCHeaderText>
-          <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo}>
-            <HeaderStyled.SCImg src="/assets/VectorFlow_black.svg" alt="logo" isHideLogo={isHideLogo} />
-          </HeaderStyled.SCWrapperImg>
-        </HeaderStyled.SCHeaderBox>
-      )
-    }
+      </>
+    )
   }
+  
 
   return <>{renderHeader()}</>
 }

@@ -60,7 +60,7 @@ const LeadTime = () => {
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
   const [userPageSize, setUserPageSize] = useState<number>();
-  
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   
   const setColumnDef = async () => {
     try {
@@ -80,8 +80,9 @@ const LeadTime = () => {
         rn_id: UIGridCode.PoogiLeadTime
       });
     
+      setUserConfigFetched(true);
       const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] :[];
-      setUserPageSize(newConfig.page_size ? Number(newConfig.page_size) : pagination.mtoPageSize);
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : pagination.mtoPageSize);
       setColumnState(newConfig.cs);
     
       if (!data) {
@@ -95,29 +96,30 @@ const LeadTime = () => {
   const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        const fullConfig = {cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.PoogiLeadTime,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
 
-      }else if (page_size) {
+      } else if (page_size) {
         const config = columnState;
-                const fullConfig = { cs: config, page_size: page_size };
-                const payload = {
-                    un: user.user.name,
-                    rn_id: UIGridCode.PoogiLeadTime,
-                    cs: JSON.stringify(fullConfig),
-                };
-                
-                await updateUserUIReportConfigData([payload]);
-      } 
-      else {
+        const fullConfig = { cs: config, pageSize: page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.PoogiLeadTime,
+          cs: JSON.stringify(fullConfig),
+        };
+
+        await updateUserUIReportConfigData([payload]);
+
+      } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
-          const fullConfig = { cs: config, page_size: userPageSize };
+          const fullConfig = { cs: config, pageSize: userPageSize };
     
           const payload = {
             un: user.user.name,
@@ -148,15 +150,15 @@ const LeadTime = () => {
     
   useEffect(() => {
     setColumnDef();
-    getGridData(false,pagination.mtoPageSize);
+    getGridData(false);
   }, [])
   
   useEffect(()=>{
     getFilterData();
-  },[userPageSize])
+  },[])
   
 
-  const getGridData = async (isExcelExport = false,pageSize?:any,page?:any) => {
+  const getGridData = async (isExcelExport = false) => {
     if (isExcelExport) {
       const headersdata = currentGridRef?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters)
@@ -170,7 +172,7 @@ const LeadTime = () => {
     } else {
 
       try {
-        const data = await getLeadTimeData({ graphflag: 1,page_size: pageSize,page:page });
+        const data = await getLeadTimeData({ graphflag: 1});
         const chartData: any = []
         const tableData: any = []
         Object.entries(data.data.data).forEach((entry: any) => {
@@ -178,8 +180,7 @@ const LeadTime = () => {
           chartData.push({ x: entry[0], y: Object.values(entry[1]).sort((a: any, b: any) => a - b) })
           tableData.push({ ...entry[1], week: entry[0] })
         })
-
-
+        
         setChartTableData(tableData);
         setChartData(chartData)
         
@@ -229,24 +230,15 @@ const LeadTime = () => {
   const GetExcelData = () => {
     getGridData(true);
   }
-
-  const savePageSize = (pageSize: number) => {
-    if (pageSize) {
-        setUserPageSize(pageSize);
-        handleSaveClick(undefined, pageSize);
-        getGridData(false,pageSize,1);
-    } 
-    
-}
-   useEffect(() => {
-        if (isSuccess) {
-          notifySuccess("Fetched Data successfully!")
-        }
-        if (isError) {
-          notifyError("Failed to load data!")
-        }
-    }, [isSuccess, isError])
-
+  
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError]);
 
   const themeUi = user?.user?.theme_ui;
 
@@ -279,10 +271,9 @@ const LeadTime = () => {
         isGridView ?
           <>
             <GridView
-               getData={(params:any) =>  getLeadTimeData({
-                ...params,
-                page_size: userPageSize || pagination.mtoPageSize
-            })}   
+              getData={(params: any) => getLeadTimeData({
+                ...params
+              })}
               colDef={colDef}
               isLoading={isLoading}
               isError={isError}
@@ -291,8 +282,10 @@ const LeadTime = () => {
               currentGridRef={currentGridRef}
               columnState={columnState}
               appliedFilters={appliedFilters}
-              savePageSize={savePageSize}
               userPageSize={userPageSize}
+              setUserPageSize={setUserPageSize}
+              userConfigFetched={userConfigFetched}
+              handleSaveClick={handleSaveClick}
             />
           </>
           :
