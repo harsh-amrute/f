@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { CustomPageSize, PageSizeInput, PageSizeInputDiv } from './styles';
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
-import { useUserData } from '../../../../../context';
-import { notifyError } from '../../../../../helpers/notify';
+import React, { useEffect, useState } from "react";
+import { CustomPageSize, PageSizeInput, PageSizeInputDiv } from "./styles";
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
+import { useUserData } from "../../../../../context";
+import { notifyError } from "../../../../../helpers/notify";
 
- interface props{
+interface props {
   savePageSize: any;
   userPageSize: any;
 }
 
 const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
-  
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
@@ -23,21 +22,25 @@ const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
   }, [userPageSize]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    setCustomPageSize(inputValue);
+    try {
+      const inputValue = parseInt(e.target.value);
+      setCustomPageSize(inputValue);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const validatePageSize = () => {
-    if (customPageSize) {
+    if (isNaN(customPageSize)) {
+      notifyError("Invalid page size");
+    } else {
       if (customPageSize < minPageSize) {
-        notifyError('Page size can not be less than ' + minPageSize);
+        notifyError("Page size can not be less than " + minPageSize);
       } else if (customPageSize > maxPageSize) {
-        notifyError('Page size can not exceed ' + maxPageSize);
+        notifyError("Page size can not exceed " + maxPageSize);
       } else {
         savePageSize && savePageSize(customPageSize);
       }
-    } else {
-      notifyError('Invalid page size');
     }
   };
 
@@ -57,10 +60,10 @@ const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
           themeUi={themeUi}
           disabled={false}
           style={{
-            height: '100%',
-            width: '30%',
-            borderRadius: '0px 3px 3px 0px',
-            boxShadow: 'none',
+            height: "100%",
+            width: "30%",
+            borderRadius: "0px 3px 3px 0px",
+            boxShadow: "none",
           }}
         >
           <img

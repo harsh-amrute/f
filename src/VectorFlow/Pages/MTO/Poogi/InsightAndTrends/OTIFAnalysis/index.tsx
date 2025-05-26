@@ -67,9 +67,6 @@ const OTIFAnalysis = () => {
 
   const [userPageSize, setUserPageSize] = useState<number>();
   const [userConfigFetched, setUserConfigFetched] = useState(false);
-  
-   
-
 
   const colDefCustomizations = {
     Tags: {
@@ -87,7 +84,7 @@ const OTIFAnalysis = () => {
     },
   }
 
-  const getGraphData = async (params: any,pageSize?:any) => {
+  const getGraphData = async (params: any) => {
     if (params.isExcelExport) {
       const headersdata = currentGridRef?.current?.api.getColumnState();
       const formattedFilters = formatFilterJSON(appliedFilters);
@@ -103,10 +100,9 @@ const OTIFAnalysis = () => {
 
       try {
         const response = await getOTIFAnalysisData({
-          ...params,
-          page_size : pageSize || userPageSize || pagination.mtoPageSize
-      });
-      setGraphData(response.data.data);
+          ...params
+        });
+        setGraphData(response.data.data);
       }
       catch (e) {
         console.log(e);
@@ -123,27 +119,23 @@ const OTIFAnalysis = () => {
       console.error(error);
     }
   }
-
-  useEffect(() => {
-    getGraphData({ graphflag: 1 }, userPageSize || pagination.mtoPageSize);
-  }, []);
-
+  
   const getUserColumnConfig = async () => {
     try {
-        const data = await getUserUIReportConfigData({
-            un: user.user.name,
-            rn_id: UIGridCode.PoogiOTIFAnalysis
-        });
+      const data = await getUserUIReportConfigData({
+        un: user.user.name,
+        rn_id: UIGridCode.PoogiOTIFAnalysis
+      });
 
-        setUserConfigFetched(true)
-        const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] : [];
-        setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : pagination.mtoPageSize);
-        setColumnState(newConfig.cs);
+      setUserConfigFetched(true);
+      const newConfig = data?.data?.data[0] ? JSON.parse(data?.data?.data[0]?.columns_settings) || [] : [];
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : pagination.mtoPageSize);
+      setColumnState(newConfig.cs);
         
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
-}
+  }
 
   const setColumnDef = async () => {
     try {
@@ -156,20 +148,12 @@ const OTIFAnalysis = () => {
     }
   }
 
-  useEffect(() => {
-    if (userConfigFetched && isGridView && userPageSize) {
-      getGraphData({ graphflag: 1}, userPageSize);
-      getFilterData()
-      // getUserColumnConfig();
-    }
-}, [userPageSize, userConfigFetched, isGridView]);
-
   const handleSaveClick = async (coldefs?: any, page_size?: number) => {
     try {
         if (coldefs) {
             const fullConfig = { 
                 cs: coldefs, 
-                pageSize: page_size || userPageSize 
+                pageSize: userPageSize 
             };
             const payload = {
                 un: user.user.name,
@@ -212,23 +196,18 @@ const OTIFAnalysis = () => {
     setIsReset(true);
   }
 
-  const savePageSize = (newSize: number) => {
-    const numericSize = Number(newSize);
-    if (!isNaN(numericSize)) {
-        setUserPageSize(numericSize);
-        handleSaveClick(undefined, numericSize);
-        
-    }
-  
-};
-
   useEffect(() => {
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
   }, [HeaderData])
 
   useEffect(() => {
     setColumnDef();
-  }, [])
+    getFilterData();
+  }, []);
+
+  useEffect(() => {
+    getGraphData({ graphflag: 1 });
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
@@ -286,8 +265,7 @@ const OTIFAnalysis = () => {
         {isGridView ? (
           <GridView
           getData={(params:any) => getOTIFAnalysisData({
-            ...params,
-            page_size: userPageSize || pagination.mtoPageSize
+            ...params
         })}   
             colDef={colDef}
             isLoading={isLoading}
@@ -298,7 +276,9 @@ const OTIFAnalysis = () => {
             columnState={columnState}
             appliedFilters={appliedFilters}
             userPageSize={userPageSize}
-            savePageSize={savePageSize}
+            setUserPageSize={setUserPageSize}
+            userConfigFetched={userConfigFetched}
+            handleSaveClick={handleSaveClick}
           />
 
         ) : (
