@@ -312,7 +312,7 @@ const useViewModify = (pageType:string) => {
       tooltipShowDelay:0,
       readOnlyEdit:true,
       tooltipTrigger:'hover',
-      sideBar:['default','view'].includes(activeMaster.progress) ? sideBar : {},
+      sideBar:['default','view','deleteView'].includes(activeMaster.progress) ? sideBar : {},
       getMainMenuItems: MainMenuItemsCustomization,
       gridOptions:{
         getRowStyle: (params: any) => {
@@ -977,7 +977,7 @@ const useViewModify = (pageType:string) => {
 
 
       const onUploadMaster = async () => {
-        let intervalID:any;
+        // let intervalID:any;
         try {
           if(!file){
             notifyError('Please select a file to upload.');
@@ -999,16 +999,16 @@ const useViewModify = (pageType:string) => {
           
           formData.append("process_id",JSON.stringify({processId:processId}));
 
-          intervalID = setInterval(async ()=>{
-            const progress = await getUploadProgress(processId);
-            if(progress.data!==undefined){
-              setUploadProgress(progress.data.progress);
-              setTotalProgress(progress.data.totalRows)
-            }
-          },1000)
+          // intervalID = setInterval(async ()=>{
+          //   const progress = await getUploadProgress(processId);
+          //   if(progress.data!==undefined){
+          //     setUploadProgress(progress.data.progress);
+          //     setTotalProgress(progress.data.totalRows)
+          //   }
+          // },1000)
 
           const response = await validateMaster({formData,masterId:activeMaster.id});
-          clearInterval(intervalID);
+          // clearInterval(intervalID);
           let result = JSON.parse(response.data)
           const errorAndWarningData = result.filter((data:any)=>data.error.length > 0 || data.warning.length > 0 )
           result = [...errorAndWarningData,... result.filter((data:any)=>data.error.length === 0 && data.warning.length === 0 )]
@@ -1050,7 +1050,7 @@ const useViewModify = (pageType:string) => {
           console.error(error)
           notifyError(error.message);
           setIsOverlayVisible(false);
-          if(intervalID) clearInterval(intervalID);
+          // if(intervalID) clearInterval(intervalID);
         }
 
       }
@@ -1060,7 +1060,7 @@ const useViewModify = (pageType:string) => {
           const currMasterFilters = activeMaster.filters;
           const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
         
-          const payloadFields:any = getAllVisibleColums();
+          const payloadFields:any = getCurrentVisbileColumns();
           
           const numberOfPages = Math.ceil(recordCount/chunkSize);
           const toastId = notifyLoader(`Downloading Data 0 / ${recordCount}`)

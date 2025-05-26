@@ -170,7 +170,7 @@ const useSavedDrafts = ()=>{
             deleteDraft(deleteDraftId),
             {
                 pending:'Deleting Draft',
-                success:'Draft has been deleted sucessfully',
+                success:'Draft has been deleted successfully',
                 error:'Something went wrong'
             }
         )

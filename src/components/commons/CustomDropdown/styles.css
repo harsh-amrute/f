@@ -1,0 +1,42 @@
+.custom-details {
+    width: 210px;
+    position: relative;
+    background-color: rgb(215, 214, 214);
+    overflow-x: hidden;
+  }
+  
+  .custom-summary {
+    list-style: none; /* Remove default triangle */
+    cursor: pointer;
+    font-weight: 600;
+    padding: 4px;
+    outline: none;
+    width: auto;
+    user-select: none; 
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .custom-summary::-webkit-details-marker {
+    display: none; /* Remove default triangle in WebKit browsers */
+  }
+
+  .custom-summary:hover{
+    background-color: #ebebeb;
+  }
+  
+  .custom-dropdown {
+    margin-top: 8px;
+    padding-left: 4px;
+  }
+  
+  .open {
+    background-color: #e3e0e0;
+    /* border-radius: 6px; */
+  }
+
+  .truncate {
+    max-width: 35ch; /* roughly 20 characters */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
