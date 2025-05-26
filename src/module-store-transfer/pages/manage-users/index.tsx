@@ -393,7 +393,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                       ? "icon_upload_yellow"
                       : "icon_upload"
                   }.svg`}
-                  disabled={false}
+                  disabled={true}
                   onClick={handleClickBulkUpload}
                 />
               </SCItemBtn>
