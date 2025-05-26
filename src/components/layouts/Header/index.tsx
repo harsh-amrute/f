@@ -21,22 +21,12 @@ const Header = (props:HeaderProps) => {
   let timeoutId: any;
 
   const renderNamePage = () => {
-    if (location.pathname === '/manual-upload') {
-      return <span>{t('header.manualUpload')}</span>
-    } else if (location.pathname === '/') {
-      return <span>{t('header.pendingISTRequests')}</span>
-    } else if (location.pathname === '/ist-forced-closure') {
-      return <span>{t('header.ISTForcedClosure')}</span>
-    } else if (location.pathname === '/store-status') {
-      return <span>{t('header.storeStatus')}</span>
-    } else if (location.pathname === '/profile') {
+    if (location.pathname === '/profile') {
       if (user.user.is_admin || user?.roles?.permission?.includes('IST Admin')) {
         return <span>{t('header.userAdministration')}</span>
       } else {
         return <span>{t('header.myProfile')}</span>
       }
-    } else if (location.pathname === '/availability-comparison') {
-      return <span>{t('header.availabilityComparison')}</span>
     }
   }
 

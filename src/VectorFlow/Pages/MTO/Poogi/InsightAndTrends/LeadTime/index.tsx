@@ -151,12 +151,8 @@ const LeadTime = () => {
   useEffect(() => {
     setColumnDef();
     getGridData(false);
-  }, [])
-  
-  useEffect(()=>{
     getFilterData();
-  },[])
-  
+  }, []);  
 
   const getGridData = async (isExcelExport = false) => {
     if (isExcelExport) {

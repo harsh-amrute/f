@@ -115,7 +115,7 @@ const GridView = (props: IGridViewProps) => {
     };
 
     useEffect(() => {
-        if (currentGridRef?.current && columnState?.length && colDef?.length > 0) {
+        if (currentGridRef?.current && columnState?.length) {
             const result = currentGridRef?.current?.api.applyColumnState({
                 state: columnState,
                 applyOrder: true
@@ -124,7 +124,7 @@ const GridView = (props: IGridViewProps) => {
                 console.error('Failed to apply column state');
             }
         }
-    }, [columnState]);
+    }, [columnState, currentGridRef]);
 
     return (
 
