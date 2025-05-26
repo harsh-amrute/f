@@ -106,10 +106,10 @@ const lazyLoad = (children: React.ReactNode) => {
     '/profile',
     '/',
     '/landing-page',
-    "/profile/bulk-upload"
   ]
   const urlAllPage = [
     ...authenPage,
+    "/profile/bulk-upload",
     '/',
     '/manual-upload',
     '/ist-forced-closure',
