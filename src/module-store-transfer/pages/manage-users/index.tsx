@@ -28,6 +28,7 @@ import _ from 'lodash'
 import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import ModalBulkUpload from "./ModalBulkUpload";
+import { useNavigate } from "react-router";
 
 
 interface ManageUsersProps{
@@ -359,8 +360,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
 
   const [isBulkModalOpen , setIsBulkModalOpen] = useState(false);
+  const navigate = useNavigate()
   const handleClickBulkUpload = ()=>{
-    setIsBulkModalOpen(true);
+    // setIsBulkModalOpen(true);
+    navigate("/profile/bulk-upload")
   }
   
 
