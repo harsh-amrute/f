@@ -14,11 +14,9 @@ const DueDateCellRenderer = (params: any) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const format2 = "YYYY-MM-DD";
   const d = new Date();
-  const [minDate] = useState(new Date()); // for react-calendar minDate
+  const [minDate] = useState(new Date()); 
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const calendarRef = useRef<HTMLDivElement>(null);
-
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
 
  
@@ -47,7 +45,7 @@ const DueDateCellRenderer = (params: any) => {
     }
   };
   
-  const handleDateChange = (value:Value, event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDateChange = (value:Value) => {
     if (value && !(value instanceof Array)) {
       const formattedDate = moment(value).format(format2);
       setCurrDate(formattedDate);
@@ -99,7 +97,6 @@ const DueDateCellRenderer = (params: any) => {
       >
        
         <StyledCalendar
-          ref={calendarRef}
           themeUi={themeUi}
           onChange={handleDateChange}
           value={new Date(currDate)}
