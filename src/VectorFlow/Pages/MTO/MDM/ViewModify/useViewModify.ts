@@ -16,6 +16,7 @@ import {
   generateOptions,
   generateSesonalityChartData,
   getActionId,
+  getCCRNamesFromId,
   mapMasterToMasterState,
   mapStateFiltersToPayload,
   parseMTOExcelData,
@@ -345,7 +346,10 @@ const useViewModify = (pageType: string) => {
     }
     if (activeMaster.id === 504) {
       const result = await getCalendarMasterData();
-      dispatch(SET_CALENDAR_INITIAL_DATA(result.data.data));
+      if(result && result.data){
+
+        dispatch(SET_CALENDAR_INITIAL_DATA(result.data.data));
+      }
     }
   };
 
@@ -781,7 +785,6 @@ const useViewModify = (pageType: string) => {
             error : errorOrders[0].message,
             warning : ""
           }
-
           newData.push(newVal)
         }else{
         
@@ -1511,9 +1514,18 @@ const useViewModify = (pageType: string) => {
                 cellRenderer: DaysOfWeekRenderer,
               };
             }
+            if( col.field === "ccr_Id"){
+              return {
+                ...col,
+                valueFormatter:(params:any)=>{
+                  return getCCRNamesFromId(ccrGroupMaster,params?.data?.ccr_id) 
+                }
+              }
+            }
             return col;
           });
 
+         
           dispatch(UPDATE_COLDEFS(finColDefs))
         }
       }
@@ -1534,6 +1546,7 @@ const useViewModify = (pageType: string) => {
 
     return resultData;
   };
+
 
   const getSelectedMasters = (temp: MDMMasterState[]) => {
     selectedOptions.forEach((selectedOption: Option) => {
@@ -3390,7 +3403,7 @@ const useViewModify = (pageType: string) => {
       uid : user.user.user.id.toString(),
       unm : user.user.user.name,
       at : pageType === "add" ? "Add" : "Modify",
-      calendarData: []
+      cData: []
     }
 
     
@@ -3403,21 +3416,24 @@ const useViewModify = (pageType: string) => {
           if(el.ia){
             el.hid = null
           }
-          calendarObj.calendarData.push(el)
+          calendarObj.cData.push(el)
         } 
       })
     }else if(pageType === "add"){
       activeMaster?.rowData?.forEach((el:any)=>{
-        calendarObj.calendarData.push(el)
+        calendarObj.cData.push(el)
       })
     }  
     try {
       
       notifyLoader("Saving Task...");
-
-      console.log("calneddsfsfsd" , calendarObj);
       
-      await saveCalendarMasterTask(calendarObj)
+      const response = await saveCalendarMasterTask(calendarObj)
+
+      if( response.status !== 200){
+        notifyError("Failed to create task!");
+        return;
+      }
 
       if(pageType === "add"){
         dispatch(UPDATE_ROW_DATA([]));
@@ -3425,7 +3441,7 @@ const useViewModify = (pageType: string) => {
         navigate(-1);
         resetMtoMasters();
         RESET_MTO_STATE();
-      }else if(pageType === 'modify'){
+      }else if(pageType === 'modify' ){
         dispatch(UPDATE_ROW_DATA(calendarInitialData));
         setMTOProgress("submitted Once");
       }
@@ -3433,8 +3449,6 @@ const useViewModify = (pageType: string) => {
     } catch (error:any) {
       console.log(error.msg)
       notifyError("Failed to create task!");
-    }finally{
-      toast.dismiss()
     }
   }
 
@@ -3444,7 +3458,7 @@ const useViewModify = (pageType: string) => {
       uid : user.user.user.id.toString(),
       unm : user.user.user.name,
       at : pageType === "add" ? "Add" : "Modify",
-      calendarData: []
+      cData: []
     }
 
     if(pageType === "modify"){
@@ -3456,26 +3470,27 @@ const useViewModify = (pageType: string) => {
           if(el.ia){
             el.hid = null
           }
-          calendarObj.calendarData.push(el)
+          calendarObj.cData.push(el)
         } 
       })
     }else if(pageType === "add"){
       activeMaster?.rowData?.forEach((el:any)=>{
-        calendarObj.calendarData.push(el)
+        calendarObj.cData.push(el)
       })
     }  
     try {
       
       notifyLoader("Saving Draft...");
       
-      await saveCalendarMasterDraft(calendarObj)
-
+      const response = await saveCalendarMasterDraft(calendarObj)
+      if( response?.data.status !== 200){
+        notifyError("Failed to create Draft!");
+        return;
+      }
       notifySuccess("Saved Calendar Draft Successfully");
     } catch (error:any) {
       console.log(error.msg)
       notifyError("Failed to create Draft!");
-    }finally{
-      toast.dismiss()
     }
   }
 

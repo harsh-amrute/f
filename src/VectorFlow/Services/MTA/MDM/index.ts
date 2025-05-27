@@ -143,8 +143,8 @@ export const useGetMTOPendingTaskData = () => {
 }
 
 export const useGetMTOTaskById = () => {
-  return useMutation(async (taskId: string)=>{
-    return await MDMService.getMTOTaskById(taskId);
+  return useMutation(async ({taskId, mmid}:{taskId:string, mmid: string})=>{
+    return await MDMService.getMTOTaskById(taskId, mmid);
   })
 }
 

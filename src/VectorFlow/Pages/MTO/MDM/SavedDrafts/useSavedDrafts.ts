@@ -5,7 +5,7 @@ import {useGetAllDrafts, useDeleteMTODraft,useGetDraftById,useGetMasterUIConfigu
 import { notifyError, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
 import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS} from "../../../../../redux/actions/MDM"
-import { createMastersStateFromDraftData, generateRandomId, getActionName, mapMasterToMasterState } from "../../../../../helpers/utils"
+import { createMastersStateFromDraftData, generateRandomId, getActionName, getCCRNamesFromId, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
 import { toast } from 'react-toastify';
@@ -15,6 +15,7 @@ import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_MODIFY_DATA } fr
 import { useGetDeptMasterData, useGetPlantMasterData } from "../../../../../VectorFlow/Services/MTO/Common/Masters"
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation"
 import { v4 as uuidv4 } from "uuid";
+import DaysOfWeekRenderer from "../ViewModify/DaysOfWeekRenderer"
 
 
 const useSavedDrafts = ()=>{
@@ -212,11 +213,29 @@ const useSavedDrafts = ()=>{
                   values: Object.values(ccrGroupMaster || {}).map((group: any) => group.ccr_group_code),
                 },
               };
-              if(col.field==='bt')return {...col,  cellEditor: 'agRichSelectCellEditor',
-              editable: (ActionType == "Modify") ? false : true,
-              cellEditorParams: {
-                values: bufferTypeMaster?.map((item: any) =>  item.dsc), 
-              }, }
+              if (col.field === "bt")
+                return {
+                  ...col,
+                  cellEditor: "agRichSelectCellEditor",
+                  editable: ActionType == "Modify" ? false : true,
+                  cellEditorParams: {
+                    values: bufferTypeMaster?.map((item: any) => item.dsc),
+                  },
+                };
+              if(col.field === "dow"){
+                return {
+                    ...col,
+                    cellRenderer: DaysOfWeekRenderer
+                }
+              }
+              if(col.field === "ccr_Id"){
+                return {
+                    ...col,
+                    valueFormatter :(params:any)=>{
+                        return getCCRNamesFromId(ccrGroupMaster,params?.data?.ccr_id)
+                    }
+                }
+              }
               else return col;
         })
       };

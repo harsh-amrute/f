@@ -18,6 +18,7 @@ import _ from "lodash"
 import { SET_TASK_PENDING_ROW_DATA } from "../../../../../redux/actions/MTO"
 import CommentCellRenderer from "./CommentCellRenderer"
 import { v4 as uuidv4 } from "uuid";
+import DaysOfWeekRenderer from "../ViewModify/DaysOfWeekRenderer"
 
 
 
@@ -161,13 +162,27 @@ const useTaskPendingForReview = ()=>{
     }
 
     const sortedColumns = columns.sort((a:any,b:any)=>parseInt(a.col_Position)-parseInt(b.col_Position));
-    return sortedColumns.map((col:any, index:any) => ({
-        field:col.key,
-        headerName:col.displayName,
-        position:index+1,
-        dataType:col.dataType,
-        visible:col.visible
-    }));
+    
+    return sortedColumns.map((col:any, index:any) => {
+        if(col.key === "dow"){
+            return {
+                field: col.key,
+                headerName: col.displayName,
+                position: index + 1,
+                dataType: col.dataType,
+                visible: col.visible,
+                cellRenderer: DaysOfWeekRenderer
+            }
+        }else{
+           return  {
+            field:col.key,
+            headerName:col.displayName,
+            position:index+1,
+            dataType:col.dataType,
+            visible:col.visible
+            }
+        }
+    });
 }
 
     const resetState = ()=>{
@@ -292,7 +307,6 @@ const useTaskPendingForReview = ()=>{
 
     const handleOnClick = async(taskData:TaskDataType|any)=>{
         let toastId;
-        console.log("taskData.mid", taskData);
         setMID(taskData.mid);
         setMTOTask(taskData);
         if(taskData.isMTO){
@@ -303,14 +317,13 @@ const useTaskPendingForReview = ()=>{
                 setTaskId(taskData.TaskID)
                 
                 setTaskActionType(1)
-                const res: any = await getMTOTAskById(taskData.TaskID);
+                const res: any = await getMTOTAskById({taskId: taskData.TaskID, mmid: taskData.mid});
 
                 const taskCount = res.data.data.count;
                 dispatch(SET_RECORD_COUNT(taskCount));
 
                 const taskDataStore = res.data.data.results;
-                toast.dismiss(toastId);
-                console.log("taskDataStore", taskDataStore)
+                toast.dismiss(toastId)
                 const currentTaskMaster = taskDataStore[0];
                 // TODO: get the 
                 const currentTaskMasterId:any = taskData.mid;
@@ -328,7 +341,6 @@ const useTaskPendingForReview = ()=>{
 
                 
                 if(currentMasterFields){
-                    // console.log(currentTaskMaster.data[0].new)
 
                     // TODO do the modification of column definations here!
                     const existingColumns = getExistingColumns(currentTaskMaster);
@@ -441,7 +453,6 @@ const useTaskPendingForReview = ()=>{
             const masters:Master[] = uiConfigurationResponse.data.data
             const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
             if(currentMasterFields){
-                // console.log(currentTaskMaster.data[0].new)
                 const existingColumns = getExistingColumns(
                     (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
                     ? JSON.parse(currentTaskMaster.data[0].new)
@@ -449,7 +460,6 @@ const useTaskPendingForReview = ()=>{
                     );
                     
                     const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                    console.log("detialTable coldef.....",mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                     setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                     setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                 // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));
@@ -480,7 +490,6 @@ const useTaskPendingForReview = ()=>{
        
         let toastId;
         const updatedRowData = createTaskPendingSubmitPayload(detailTableRowData,taskActionype || 0,currMasterId)
-        console.log(updatedRowData)
         
         try {
             const noActionPerformed = updatedRowData.find((row:any)=>row.status === '');
@@ -808,7 +817,6 @@ const useTaskPendingForReview = ()=>{
             }
             
             let isValid = validateBeforeSubmit(newApprovedData);
-            console.log("isvalid", isValid);
             newApprovedData.forEach((ele:any)=>{
                 if(ele.ia===false && ele.cm===""){
                     (!isValid===false) && notifyError("Make sure you provide a comment for the rejected task!");
@@ -841,7 +849,6 @@ const useTaskPendingForReview = ()=>{
            
         const newApprovedData:any = [];
         detailTableRowData.forEach((ele:any)=>{
-            console.log("ele...",ele);
         const newEle = {
             cid: ele.cid? ele.cid: null,
             ccd: ele.ccd,

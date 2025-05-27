@@ -4952,3 +4952,10 @@ export function getColumnDefinationsMTA(
 
 }
 
+export function getCCRNamesFromId(ccrGroupMaster:any,ccrId:any){
+  if(!ccrGroupMaster || !ccrId){
+    return ""
+  }
+  return ccrGroupMaster["CCR Stitching"]["ccrs"].find((ccr:any)=> ccr.ccr_id == ccrId)?.ccr_name || ""; 
+
+}

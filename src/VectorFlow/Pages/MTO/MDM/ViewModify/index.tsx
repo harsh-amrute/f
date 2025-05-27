@@ -145,7 +145,7 @@ const MTOViewModify = () => {
         dow: [{id: 0, mn: "", md: ""}],
         ccr_id: [],
         plid: "",
-        rd: 0,
+        rd: null,
         plnm:"",
         ccr:"",
         ed: "",
@@ -259,7 +259,7 @@ const MTOViewModify = () => {
                     {activeMaster.filters.map((f: Filter, index: number) => {
                       if (f.masterId === activeMaster?.id && index === 0) {
                         return (
-                          <SCFilterAddButtonWrapper>
+                          <SCFilterAddButtonWrapper key={index}>
                             <SCFilterAddButton
                               onClick={() => {
                                 handleOnAddFilter();
@@ -556,15 +556,15 @@ const MTOViewModify = () => {
                       gap: "8px",
                       width: "110px",
                       margin: "8px",
-                      cursor: activeMaster.rowData.length === 0 ? "not-allowed" : "pointer",
+                      cursor: activeMaster?.rowData?.length === 0 ? "not-allowed" : "pointer",
                       background: "#fff",
-                      opacity: activeMaster.rowData.length === 0 ? 0.6 : 1,
-                      color: activeMaster.rowData.length === 0 ? "#999" : "#000", 
+                      opacity: activeMaster?.rowData?.length === 0 ? 0.6 : 1,
+                      color: activeMaster?.rowData?.length === 0 ? "#999" : "#000", 
                     }}
-                    disabled={activeMaster.rowData.length === 0}
+                    disabled={activeMaster?.rowData?.length === 0}
                     onClick={() => {
                       if (
-                        !activeMaster.colDefs.some((x) => x.field === "actions")
+                        !activeMaster?.colDefs.some((x) => x.field === "actions")
                       ) {
                         if (activeMaster.id !== 504) {
                           addRowToMtoGrid();

@@ -171,7 +171,7 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
 
   hid: Joi.any().optional(),
 
-  rd : Joi.number().allow('').max(4).optional().messages({
+  rd : Joi.number().allow(null).max(4).optional().messages({
     "number.base": "Repeat duration must be a number!",
     "number.max": "Repeat duration cannot exceed {#limit}.",
     "any.required": "Repeat duration cannot be empty!",

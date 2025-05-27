@@ -133,12 +133,7 @@ const onHandleTitleChange = (e:any)=>{
 }
 
 const onHandleOptionChange = (e:any)=>{
-  // setFormData({
-  //   ...formData,
-  //   rb: e.target.value
-
-  // })
-  setFormData((prevFormData:any)=> ({...prevFormData, dow :[{id:0,mn:"",md:""}], rd:"", rb: e.target.value}))
+  setFormData((prevFormData:any)=> ({...prevFormData, dow :[{id:0,mn:"",md:""}], rd:null, rb: e.target.value}))
 }
 
 const onHandlePlantChange = (e:any)=>{
@@ -238,7 +233,7 @@ useEffect(() => {
 useEffect(()=>{
   if(formData.rb !== "Weekly"){
     if(formData?.dow?.length===0){
-      setFormData((prevFormData:any)=> ({...prevFormData, dow :[{id:0,mn:"",md:""}], rd:""}))
+      setFormData((prevFormData:any)=> ({...prevFormData, dow :[{id:0,mn:"",md:""}], rd:null}))
     }
   }
   else  {
