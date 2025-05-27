@@ -26,6 +26,7 @@ import { useUserData } from "../../../../../context/index";
 import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer";
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import useColDef from '../../../../../hooks/useColDef';
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 
 
 const APIFilterConfig = {
@@ -266,8 +267,21 @@ const MaterialCov = () => {
 
   useEffect(() => {
     const coldefs = getColumnDefinations(HeaderData, customHeader, extras);
-    setColDef(coldefs);
-  }, [HeaderData])
+    if(detailDataObj?.allOrders){
+      setColDef([
+        {
+          field: "fk_status",
+          headerName: "Status",
+          width: 400,
+          maxWidth: 400,
+          pinned: 'left'
+        },...coldefs]
+      )
+    }else{
+      setColDef(coldefs);
+    }
+  
+  }, [HeaderData, detailDataObj])
 
   useEffect(() => {
     getHeaderData();
@@ -327,7 +341,8 @@ const MaterialCov = () => {
             // onDateChange={() => { console.log('') }}
             // submitDate={() => { console.log('') }}
           />
-          <div>
+          <div >
+            <div style={{display: 'flex', justifyContent: 'right', alignItems: 'center', width: '100%', padding: '0 1rem'}}>
 
             <BTRLayoutTabsWrapper>
               <VFFloatingTab
@@ -335,7 +350,13 @@ const MaterialCov = () => {
                 tabs={tabs}
                 defaultTab={defaultTab}
               />
+
             </BTRLayoutTabsWrapper>
+
+              <VFButton style={{marginLeft: '35%', fontSize: '12px', fontFamily: 'roboto'}} themeUi={themeUi} onClick={() =>{handleToggleComponent(true), handleParameterData({allOrders: true})}}>
+                Show All Orders
+              </VFButton>
+                </div>
             <div style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>
                 <TextXAxis style={{ height: 'max-content', position: "absolute", right: "100%" }}>
