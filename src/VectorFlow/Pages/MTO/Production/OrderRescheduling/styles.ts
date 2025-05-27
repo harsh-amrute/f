@@ -1,5 +1,11 @@
 import styled from 'styled-components';
+import Calendar from 'react-calendar';
+import * as globalStyles from "../../../../../styles/global";
 
+
+interface props {
+    themeUi: string;
+  }
 
 export const ApplyZoomOut = styled.div`
     zoom: 0.7;
@@ -82,9 +88,6 @@ export const TextInputWrapper = styled.input<{theme: string}>`
     font-family: Roboto;
     border: none;
     pointer-events: none;
-
-    
-
 `;
 
 export const DateInputWrapper = styled.input`
@@ -102,6 +105,104 @@ export const ImageWrapper = styled.img`
     height: 15px;
     width: 15px;
 `;
+
+export const StyledCalendar = styled(Calendar)<{themeUi:string}>`
+    width: 250px;
+
+    .react-calendar__navigation__label__labelText {
+        font-weight: 400 !important; 
+    }
+
+    .react-calendar__navigation button:disabled {
+        background-color: #e6e6e6;
+    }
+
+    .react-calendar__navigation button {
+        min-width: 40px;
+        background: none;
+    }
+
+    .react-calendar__navigation button:enabled:focus {  
+        background-color:${(props) => props.themeUi === "REGALBLAZE" ? "#C7810E" : "#82104C"};
+        color:white;  
+    }
+
+    .react-calendar__navigation button:disabled:hover {
+        background-color: rgb(230, 230, 230);
+    }
+
+    .react-calendar__month-view__weekdays__weekday {
+        text-decoration: none;
+    }
+
+    .react-calendar__tile--now {
+        background:${(props)=>props.themeUi==="REGALBLAZE"?"#E1B69F":"#e2a9c8"};  
+    }
+
+    .react-calendar__tile--active {
+        background-color:${(props)=>props.themeUi==="REGALBLAZE"?"#C7810E":"#82104C"};
+        color: white;
+    }
+        .react-calendar__tile--hasActive {
+        background-color:${(props) => props.themeUi === "REGALBLAZE" ? "#C7810E" : "#82104C"};
+         color: white;
+
+    }
+
+    .react-calendar__tile:disabled {
+        background-color: white;
+        color: #ababab;
+    }
+
+    .react-calendar__tile:disabled:hover {
+        background-color: white;
+    }
+
+    .react-calendar__month-view__days__day--weekend {
+        color: #121212;
+    }
+
+    .react-calendar__tile:hover {
+        background-color:${(props)=>props.themeUi==="REGALBLAZE"?"#fee3b7":"rgba(188, 61, 129, 0.2)"};  
+        color: black;
+    }
+
+    .react-calendar__navigation button:hover {
+        background-color:${(props)=>props.themeUi==="REGALBLAZE"?"#fee3b7":"rgba(188, 61, 129, 0.2)"};  
+    }
+    `;
+
+// export const CalendarbtnWrapper = styled.div`
+//     // border:1px solid red;
+//     display:flex;
+//     height: 249px;
+//     flex-direction:column;
+//         // box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
+
+// `
+
+// export const CloseIcon = styled.div`
+//   width: 250px;    
+//   height: 30px;
+//     border: 1px solid #a0a096;
+//   border-bottom:none;
+
+//   align-self: flex-end;
+//   display: flex;    
+//   justify-content: flex-end;
+//   box-sizing: border-box; 
+  
+//   button {
+//     background-color: white;
+//     padding-top: 2px;
+//     border: none;
+//     cursor: pointer;
+//   }
+// `;
+
+    
+    
+
 
 
 

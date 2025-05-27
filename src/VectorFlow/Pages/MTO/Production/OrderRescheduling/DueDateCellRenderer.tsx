@@ -1,72 +1,118 @@
-import { useEffect, useState,useRef} from 'react';
+import { useEffect, useState, useRef } from 'react';
 import moment from 'moment';
+import Calendar,{CalendarProps} from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import { useUserData } from "../../../../../context/index";
-import { DatePickerWrapper ,ImageWrapper,DateInputWrapper,ButtonWrapper,TextInputWrapper} from "./styles"
+import {DatePickerWrapper,ImageWrapper,StyledCalendar,ButtonWrapper, TextInputWrapper} from "./styles";
+import ReactDOM from "react-dom";
+
+
+type Value = CalendarProps['value'];
 
 const DueDateCellRenderer = (params: any) => {
-      const dateInputRef: any = useRef(null); 
-    const [currDate, setCurrDate] = useState(params.data.dd);
-    const format2 = "YYYY-MM-DD"
-    const d = new Date();
-    const [datetime] = useState(moment(d).format(format2));
+  const [currDate, setCurrDate] = useState(params.data.dd);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const format2 = "YYYY-MM-DD";
+  const d = new Date();
+  const [minDate] = useState(new Date()); // for react-calendar minDate
 
-    const { user } = useUserData();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+
+  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
+
+ 
+  const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
 
-    useEffect(()=>{
-        if(!params.node.selected){
-            params.data.dd = params.data.oldDate
-            setCurrDate(params.data.oldDate)
-        }
-    },[params.node.selected])
-
-    const openDatePicker = () => {
-    if (params.node.selected && dateInputRef.current?.showPicker) {
-      dateInputRef.current.showPicker();
+ 
+  useEffect(() => {
+    if (!params.node.selected) {
+      params.data.dd = params.data.oldDate;
+      setCurrDate(params.data.oldDate);
+      setShowCalendar(false); 
+    }
+  }, [params.node.selected]);
+ 
+  const toggleCalendar = () => {
+    if (params.node.selected) {
+      const rect = inputRef.current?.getBoundingClientRect();
+      if (rect) {
+        setCalendarPosition({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX
+        });
+      }
+      setShowCalendar((prev) => !prev);
+    }
+  };
+  
+  const handleDateChange = (value:Value, event: React.MouseEvent<HTMLButtonElement>) => {
+    if (value && !(value instanceof Array)) {
+      const formattedDate = moment(value).format(format2);
+      setCurrDate(formattedDate);
+      params.data.dd = formattedDate;
+      setShowCalendar(false);
     }
   };
 
-    return (
-    <DatePickerWrapper onClick={openDatePicker}>
-      <TextInputWrapper
-        type="text"
-        value={!params.node.selected ? params.data.oldDate : currDate}
-        placeholder="DD-MM-YYYY"
-        readOnly
-        style={{
-      background:'transparent',
-      paddingLeft:'-10px'
+  
+  return (
+  <DatePickerWrapper>
+    <TextInputWrapper 
+      ref={inputRef}
+      type="text"
+      value={!params.node.selected ? params.data.oldDate : currDate}
+      placeholder="DD-MM-YYYY"
+      readOnly
+      onClick={toggleCalendar}
+      style={{
+        background: 'transparent',
+        paddingLeft: '-10px'
       }}
-      />
+    />
 
-      <DateInputWrapper
-        type="date"
-        ref={dateInputRef}
-        value={!params.node.selected ? params.data.oldDate : currDate}
-        min={datetime}
-        onChange={(e) => {
-          params.data.dd = e.target.value;
-          setCurrDate(e.target.value);
+    {params.node.selected && (
+    <>
+    <ButtonWrapper type="button" onClick={toggleCalendar}>
+    <ImageWrapper
+      src={
+        themeUi === "REGALBLAZE"
+          ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
+          : "/assets/img/mto/OrderRescheduling/edit-calendar.svg"
+      }
+      alt="calendar-icon"
+    />
+   </ButtonWrapper>
+ 
+  {params.node.selected && showCalendar &&
+    ReactDOM.createPortal(
+      <div
+        style={{
+          position: "absolute",
+          top: calendarPosition.top,
+          left: calendarPosition.left,
+          zIndex: 9999,
+          backgroundColor: "white",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.3)"
         }}
-        data-testid="datepicker"
-        disabled={!params.node.selected}
-      />
-
-      {params.node.selected && (
-        <ButtonWrapper type="button">
-          <ImageWrapper
-            src={
-              themeUi === "REGALBLAZE"
-                ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
-                : "/assets/img/mto/OrderRescheduling/edit-calendar.svg"
-            }
-            alt="calendar-icon"
-          />
-        </ButtonWrapper>
-      )}
-    </DatePickerWrapper>
-    );
-}
-
-export default DueDateCellRenderer
-
+      >
+       
+        <StyledCalendar
+          ref={calendarRef}
+          themeUi={themeUi}
+          onChange={handleDateChange}
+          value={new Date(currDate)}
+          minDate={minDate}
+        />
+      </div>,
+    document.body
+    )
+  }
+</>
+)}
+</DatePickerWrapper>
+  );
+};
+ 
+export default DueDateCellRenderer;
