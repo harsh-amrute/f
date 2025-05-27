@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 import Calendar from 'react-calendar';
-import * as globalStyles from "../../../../../styles/global";
 
-
-interface props {
-    themeUi: string;
-  }
 
 export const ApplyZoomOut = styled.div`
     zoom: 0.7;
