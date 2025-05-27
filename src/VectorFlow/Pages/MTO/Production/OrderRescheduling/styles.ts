@@ -167,38 +167,3 @@ export const StyledCalendar = styled(Calendar)<{themeUi:string}>`
     }
     `;
 
-// export const CalendarbtnWrapper = styled.div`
-//     // border:1px solid red;
-//     display:flex;
-//     height: 249px;
-//     flex-direction:column;
-//         // box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 8px;
-
-// `
-
-// export const CloseIcon = styled.div`
-//   width: 250px;    
-//   height: 30px;
-//     border: 1px solid #a0a096;
-//   border-bottom:none;
-
-//   align-self: flex-end;
-//   display: flex;    
-//   justify-content: flex-end;
-//   box-sizing: border-box; 
-  
-//   button {
-//     background-color: white;
-//     padding-top: 2px;
-//     border: none;
-//     cursor: pointer;
-//   }
-// `;
-
-    
-    
-
-
-
-
-
