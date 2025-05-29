@@ -1,4 +1,5 @@
-import { SCButton } from "./styles"
+import Tooltip from "../../../VectorFLOW/commons/MTO/Tooltip";
+import { SCButton, TooltipText } from "./styles"
 import React, { CSSProperties, ReactNode } from 'react';
 
 interface VFButtonProps {
@@ -6,12 +7,10 @@ interface VFButtonProps {
     themeUi: string,
     disabled?: boolean,
     width?: number,
-    children: React.ReactNode
-    style?: CSSProperties
-    onHoverChild?: ReactNode
-
-
-
+    children: React.ReactNode,
+    style?: CSSProperties,
+    onHoverChild?: ReactNode,
+    currentStep?: number
 }
 
 const VFButton = (props: VFButtonProps) => {
@@ -23,7 +22,7 @@ const VFButton = (props: VFButtonProps) => {
         width,
         style,
         children,
-
+        currentStep
     } = props
 
     const getChildren = () => {
@@ -36,9 +35,18 @@ const VFButton = (props: VFButtonProps) => {
     }
 
     return (
-        <SCButton onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} style={style} data-testid="vf-button">
-            {getChildren()}
-        </SCButton>
+        <>
+            {disabled && currentStep == 2 ?
+                <Tooltip content={<TooltipText>{"Assign a route and apply the production buffer to all the orders!"}</TooltipText>}>
+                    <SCButton onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} style={style} data-testid="vf-button">
+                        {getChildren()}
+                    </SCButton>
+                </Tooltip >
+                : <SCButton onClick={onClick} themeUi={themeUi} isDisabled={disabled} customWidth={width} style={style} data-testid="vf-button">
+                    {getChildren()}
+                </SCButton>
+            }
+        </>
     )
 }
 
