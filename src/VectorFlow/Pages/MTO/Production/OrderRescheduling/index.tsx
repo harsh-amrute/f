@@ -141,6 +141,7 @@ const OrderRescheduling = () => {
         const newRowData = [...APIData.data.data.results];
         if (newRowData.length === 0) {
           refGraph1.current?.api.showNoRowsOverlay(); 
+          setRowData(newRowData)
         } else {
           refGraph1.current?.api.hideOverlay(); 
           newRowData.forEach((el) => {
@@ -373,6 +374,7 @@ const OrderRescheduling = () => {
       ordData: [],
     };
 
+
     inputArray.forEach((item: any) => {
       const ordDataItem: OutputItem = {
         ok: item.odk || "",
@@ -388,14 +390,21 @@ const OrderRescheduling = () => {
     inputArray: any,
     username: string,
     isUnSch: number
-  ): Output {
+  ): Output| boolean {
     const output: Output = {
       unm: username,
       isUnSch: isUnSch,
       ordData: [],
+
     };
 
+
+    let validData:any = true;
     inputArray.forEach((item: any) => {
+      if(item.dd===item.oldDate){
+        notifyError("Make sure you change the date before overwriting!")
+        validData = false;
+      }
       const ordDataItem: OutputItem = {
         ok: item.odk || "",
         dd: item.dd || "",
@@ -404,6 +413,7 @@ const OrderRescheduling = () => {
       output.ordData.push(ordDataItem);
     });
 
+    if(validData === false)return validData;
     return output;
   }
 
@@ -505,6 +515,11 @@ const OrderRescheduling = () => {
         user.user.name,
         0
       );
+
+      if(finalData===false){
+        setIsLoading(false);
+        return;
+      }
       const isSuccess = await PostData(
         finalData,
         "Order Due date updated successfully !"
