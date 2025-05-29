@@ -374,6 +374,8 @@ const OrderRescheduling = () => {
       ordData: [],
     };
 
+    console.log("inputArray", inputArray);
+
     inputArray.forEach((item: any) => {
       const ordDataItem: OutputItem = {
         ok: item.odk || "",
@@ -389,14 +391,22 @@ const OrderRescheduling = () => {
     inputArray: any,
     username: string,
     isUnSch: number
-  ): Output {
+  ): Output| boolean {
     const output: Output = {
       unm: username,
       isUnSch: isUnSch,
       ordData: [],
+
     };
 
+    console.log("inputArray", inputArray);
+
+    let validData:any = true;
     inputArray.forEach((item: any) => {
+      if(item.dd===item.oldDate){
+        notifyError("Make sure you change the date before overwriting!")
+        validData = false;
+      }
       const ordDataItem: OutputItem = {
         ok: item.odk || "",
         dd: item.dd || "",
@@ -405,10 +415,12 @@ const OrderRescheduling = () => {
       output.ordData.push(ordDataItem);
     });
 
+    if(validData === false)return validData;
     return output;
   }
 
   const reasonCheck = (data: any): boolean => {
+    console.log("datata....", data);
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
       if (element.r.toString().length === 0) {
@@ -506,6 +518,12 @@ const OrderRescheduling = () => {
         user.user.name,
         0
       );
+
+      console.log("finalData", finalData);
+      if(finalData===false){
+        setIsLoading(false);
+        return;
+      }
       const isSuccess = await PostData(
         finalData,
         "Order Due date updated successfully !"

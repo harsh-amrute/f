@@ -35,7 +35,9 @@ const DueDateCellRenderer = (params: any) => {
         readOnly
         style={{
       background:'transparent',
-      paddingLeft:'-10px'
+      paddingLeft:'-10px',
+      color: params.data.oldDate===currDate? 'black' : '#BC3D81',
+
       }}
       />
 
