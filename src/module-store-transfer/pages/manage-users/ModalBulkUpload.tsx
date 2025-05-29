@@ -85,7 +85,6 @@ export default function PermissionHeirarchyCanvas({ heirarchyData,allPermissions
             const parentId = parts[0];
             const label = parts[1].split('_')[1];
             if(opened[key.split('_')[0]]==0){
-                console.log("opened", opened[key.split('_')[0]])
                 index++;
                 indexY++;
                 return;

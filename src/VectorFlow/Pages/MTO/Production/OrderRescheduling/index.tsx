@@ -374,7 +374,6 @@ const OrderRescheduling = () => {
       ordData: [],
     };
 
-    console.log("inputArray", inputArray);
 
     inputArray.forEach((item: any) => {
       const ordDataItem: OutputItem = {
@@ -399,7 +398,6 @@ const OrderRescheduling = () => {
 
     };
 
-    console.log("inputArray", inputArray);
 
     let validData:any = true;
     inputArray.forEach((item: any) => {
@@ -420,7 +418,6 @@ const OrderRescheduling = () => {
   }
 
   const reasonCheck = (data: any): boolean => {
-    console.log("datata....", data);
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
       if (element.r.toString().length === 0) {
@@ -519,7 +516,6 @@ const OrderRescheduling = () => {
         0
       );
 
-      console.log("finalData", finalData);
       if(finalData===false){
         setIsLoading(false);
         return;
