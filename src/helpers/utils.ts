@@ -4584,9 +4584,12 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   return selectedFilter;
 }
 
-export const getBodyForExcelExport = ({headersdata , filterData = {}, colDefMap} : any) => {
+export const getBodyForExcelExport = ({ headersdata, filterData = {}, colDefMap }: any) => {
+  const filteredHeadersData = headersdata?.filter(
+    (col: any) => (col.colId !== "DropDown" || col.colId !== "Action") && (col.hide !== true)
+  );  
   try {
-    const headers = headersdata?.map((col: any) => {
+    const headers = filteredHeadersData?.map((col: any) => {
       const header_data = colDefMap.current.get(col.colId);
       if (header_data?.scc === "bpp" || header_data?.scc === "cp") {
         header_data.isColor = true;

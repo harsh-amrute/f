@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import MTOActionToolBar from '../../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar'
 import ChartView from './ChartView';
-import GridView from './GridView';
+import GridView from '../../../Common/GridView';
 import { useGetLeadTimeData, useGetLeadTimeExcelData } from '../../../../../../VectorFlow/Services/MTO/Poogi/InsightAndTrends/LeadTime'
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify'
 import OverlayLoader from '../../../Common/Loader';
 import { useUserData } from "../../../../../../context/index";
-import { FilterPageName, UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import TagCellToolTip from '../../../Poogi/InsightAndTrends/OTIFAnalysis/TagCellRenderer/TagCellRenderer';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
@@ -54,10 +54,13 @@ const LeadTime = () => {
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { user } = useUserData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-  const { mutateAsync: getLeadTimeData, isLoading } = useGetLeadTimeData()
+  const { mutateAsync: getLeadTimeData, isLoading,isError,isSuccess } = useGetLeadTimeData()
   const { colDefMap, getColDef } = useColDef();
   const { mutateAsync: getLeadTimeExcelData } = useGetLeadTimeExcelData();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
+
+  const [userPageSize, setUserPageSize] = useState<number>();
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   
   const setColumnDef = async () => {
     try {
@@ -77,9 +80,10 @@ const LeadTime = () => {
         rn_id: UIGridCode.PoogiLeadTime
       });
     
-      const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      console.log(newConfig, 'GET');
-      setColumnState(newConfig);
+      setUserConfigFetched(true);
+      const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] :[];
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : pagination.mtoPageSize);
+      setColumnState(newConfig.cs);
     
       if (!data) {
         console.error('Failed to apply column state');
@@ -89,25 +93,38 @@ const LeadTime = () => {
     }
   }
     
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        const fullConfig = {cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.PoogiLeadTime,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
 
+      } else if (page_size) {
+        const config = columnState;
+        const fullConfig = { cs: config, pageSize: page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.PoogiLeadTime,
+          cs: JSON.stringify(fullConfig),
+        };
+
+        await updateUserUIReportConfigData([payload]);
+
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
+          const fullConfig = { cs: config, pageSize: userPageSize };
     
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.PoogiLeadTime,
-            cs: JSON.stringify(config)
+            cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
@@ -133,9 +150,9 @@ const LeadTime = () => {
     
   useEffect(() => {
     setColumnDef();
-    getGridData();
+    getGridData(false);
     getFilterData();
-  }, [])
+  }, []);  
 
   const getGridData = async (isExcelExport = false) => {
     if (isExcelExport) {
@@ -144,7 +161,6 @@ const LeadTime = () => {
       const body = getBodyForExcelExport({ headersdata, appliedFilters: formatedFilters, colDefMap })
       try {
         const response = await getLeadTimeExcelData({ body, isExcelExport: 1, report_name: FilterPageName.Poogi_Lead_Time })
-        console.log('api response: ', response)
         DownloadExcel(response, FilterPageName.Poogi_Lead_Time)
       } catch (error) {
         console.log(error);
@@ -152,7 +168,7 @@ const LeadTime = () => {
     } else {
 
       try {
-        const data = await getLeadTimeData({ graphflag: 1 });
+        const data = await getLeadTimeData({ graphflag: 1});
         const chartData: any = []
         const tableData: any = []
         Object.entries(data.data.data).forEach((entry: any) => {
@@ -160,8 +176,10 @@ const LeadTime = () => {
           chartData.push({ x: entry[0], y: Object.values(entry[1]).sort((a: any, b: any) => a - b) })
           tableData.push({ ...entry[1], week: entry[0] })
         })
+        
         setChartTableData(tableData);
         setChartData(chartData)
+        
         notifySuccess("Data Fetched Successfully!");
       }
       catch (err: any) {
@@ -208,8 +226,18 @@ const LeadTime = () => {
   const GetExcelData = () => {
     getGridData(true);
   }
+  
+  useEffect(() => {
+    if (isSuccess) {
+      notifySuccess("Fetched Data successfully!")
+    }
+    if (isError) {
+      notifyError("Failed to load data!")
+    }
+  }, [isSuccess, isError]);
 
   const themeUi = user?.user?.theme_ui;
+
     
   return (
     <>
@@ -239,11 +267,21 @@ const LeadTime = () => {
         isGridView ?
           <>
             <GridView
+              getData={(params: any) => getLeadTimeData({
+                ...params
+              })}
               colDef={colDef}
+              isLoading={isLoading}
+              isError={isError}
+              isSuccess={isSuccess}
               setCurrentGridRef={setCurrentGridRef}
               currentGridRef={currentGridRef}
               columnState={columnState}
               appliedFilters={appliedFilters}
+              userPageSize={userPageSize}
+              setUserPageSize={setUserPageSize}
+              userConfigFetched={userConfigFetched}
+              handleSaveClick={handleSaveClick}
             />
           </>
           :
