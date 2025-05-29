@@ -1,9 +1,9 @@
 
 import { ColDef, ColGroupDef } from "ag-grid-enterprise"
 import { useEffect, useRef, useState } from "react"
-import { useApproveTask, useGetBufferMasterData, useGetCCRMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCCRMasterData, usePutMtoPoogiMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useApproveTask, useGetBufferMasterData, useGetCCRMasterData, useGetMasterUIConfiguration, useGetMTOMasterUIConfiguration, useGetMTOTaskById, useGetMTOTaskStatusData, usePutMtoBufferMasterData, usePutMtoCalendarMasterData, usePutMtoCCRMasterData, usePutMtoPoogiMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 
-import { createTaskPendingSubmitPayload, getActionName, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
+import { createTaskPendingSubmitPayload, getActionName, getCCRNamesFromId, getExistingColumnFields, getExistingColumns, mapMasterToColumnGroupDefs, mapNewAndOldMasterRowDataToCustomRowData, mapPendingTaskToColumnDefs } from "../../../../../helpers/utils"
 import { GridRef, Master, TaskDataType } from "../../../../../VectorFlow/types/MDM"
 import TaskPendingLinkCellRenderer from "./TaskPendingLinkCellRenderer"
 import { useSelector, useDispatch } from "react-redux"
@@ -27,6 +27,8 @@ const useTaskPendingForReview = ()=>{
     const [mid,setMID] = useState<any>(undefined);
     const { mutateAsync: getBufferMasterData } = useGetBufferMasterData();
     const {mutateAsync: getCCRMasterData} = useGetCCRMasterData();
+    const {mutateAsync: getMtoCalendarMasterData} = usePutMtoCalendarMasterData();
+     
 
     const GetInitialData = async(mid: any)=>{
         if(mid===501){
@@ -57,7 +59,6 @@ const useTaskPendingForReview = ()=>{
     },[mid])
     const ref = useRef<GridRef>()
     const dispatch = useDispatch();
-
     const {user} = useUserData()
 
     const themeUi = user.user.theme_ui
@@ -105,11 +106,10 @@ const useTaskPendingForReview = ()=>{
 
 
 
-
+    
 
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration();
 
-    
     const {mutateAsync : getMTOTAskById} = useGetMTOTaskById();
 
     const {mutateAsync:approveTask } = useApproveTask();
@@ -132,7 +132,8 @@ const useTaskPendingForReview = ()=>{
   const {mutateAsync: putMTOAddPoogiMaster} = usePutMtoPoogiMasterData();
   const {mutateAsync: putMTOCCRData} = usePutMtoCCRMasterData();
 
-  const convertColumnsFormat = (columns:any, mid: any) => {
+
+  const convertColumnsFormat = async (columns:any, mid: any) => {
     if(mid===503){
         const newColDefs = [
             {
@@ -162,8 +163,16 @@ const useTaskPendingForReview = ()=>{
     }
 
     const sortedColumns = columns.sort((a:any,b:any)=>parseInt(a.col_Position)-parseInt(b.col_Position));
-    
+    let ccrsData:any = [];
+    const ccr = await getCCRMasterData({});
+
+
+    if(ccr.data.data.length !== 0){
+        ccrsData = ccr.data.data
+    }
+
     return sortedColumns.map((col:any, index:any) => {
+        
         if(col.key === "dow"){
             return {
                 field: col.key,
@@ -172,6 +181,19 @@ const useTaskPendingForReview = ()=>{
                 dataType: col.dataType,
                 visible: col.visible,
                 cellRenderer: DaysOfWeekRenderer
+            }
+        }
+        if(col.key === "ccr_id"){
+
+            return {
+                field: col.key,
+                headerName: col.displayName,
+                position: index + 1,
+                dataType: "string",
+                visible: col.visible,
+                valueFormatter : (params:any)=>{
+                    return getCCRNamesFromId(ccrsData,params?.data?.ccr_id)
+                }
             }
         }else{
            return  {
@@ -304,7 +326,6 @@ const useTaskPendingForReview = ()=>{
     };
     
     
-
     const handleOnClick = async(taskData:TaskDataType|any)=>{
         let toastId;
         setMID(taskData.mid);
@@ -334,20 +355,14 @@ const useTaskPendingForReview = ()=>{
             
                 const masters:Master[] = uiConfigurationResponse.data.data
                 const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
-
-
-
-   
-
                 
                 if(currentMasterFields){
 
                     // TODO do the modification of column definations here!
                     const existingColumns = getExistingColumns(currentTaskMaster);
 
-                        
                         const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                        const newColDefs = convertColumnsFormat(existingColumnFields, taskData.mid);
+                        const newColDefs = await convertColumnsFormat(existingColumnFields, taskData.mid);
                         newColDefs.push(
                             {
                                 colId: "cm",
@@ -400,9 +415,6 @@ const useTaskPendingForReview = ()=>{
                        
                         setDetailTableColDefs(newColDefs);
 
-                        // dispatch(UPDATE_ROW_DATA(newData));
-                        // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(1).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
-                        // setDetailTableRowData(taskDataStore);
                         if(taskData.mid===503){
                             const poogiModifyData = ConvertToPoogiData(newData);
                             setDetailTableRowData(poogiModifyData);
@@ -410,7 +422,6 @@ const useTaskPendingForReview = ()=>{
                         else{
                             setDetailTableRowData(newData);
                         }
-                        // setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                     dispatch(SET_RECORD_COUNT(res.data.data.count));
                 }
 
@@ -779,7 +790,6 @@ const useTaskPendingForReview = ()=>{
 
     const mtoSubmitTask=async()=>{
 
-
         if(mtoTask.mid===501){
 
             
@@ -961,8 +971,49 @@ const useTaskPendingForReview = ()=>{
             notifyError("Failed to update DB!");
             console.log(error)
         }
+    }else if(mtoTask.mid === 504){
+        notifyLoader("Updating Task...")
+        try {
+
+        const newApprovedData = detailTableRowData
+        let isValid:any = true;
+        newApprovedData.forEach((el:any)=>{
+            if(el.ia===false && !el.cm){
+                isValid = false;
+            }
+ 
+        })
+        if(isValid===false){
+            throw new Error("Make sure you provide a comment for the rejected task!")
+        }
+
+        const finalData = {
+            "tid": mtoTask.TaskID,
+            "ti_id": newApprovedData[0].ti_id,
+            "uid": user.user.id,
+            "unm": user.user.name,
+            "mmid": 4,
+            "cData": newApprovedData
+        }
+        
+        
+            const response = await getMtoCalendarMasterData(finalData);
+            if(response.status=== 200){
+                notifySuccess("DB Updated Successfully");
+                dispatch(SET_TASK_PENDING_ROW_DATA([]));
+                setIsViewTableOpen(true);
+                GetInitialData(mid);
+            }
+            else{
+                notifyError("Failed to update DB!");
+            }
+        } catch (error) {
+            notifyError(error ? "Make sure you provide a comment for the rejected task!" : "Failed to update DB!");
+            console.log(error)
+        }
     }
     }
+
     
     return{
         ref,

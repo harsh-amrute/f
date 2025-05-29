@@ -4952,10 +4952,11 @@ export function getColumnDefinationsMTA(
 
 }
 
-export function getCCRNamesFromId(ccrGroupMaster:any,ccrId:any){
-  if(!ccrGroupMaster || !ccrId){
+export function getCCRNamesFromId(ccrsData:any,ccrIds:number[]){
+  if(!Array.isArray(ccrsData) || !ccrsData || !ccrIds||  !ccrsData?.length || !ccrIds.length){
     return ""
   }
-  return ccrGroupMaster["CCR Stitching"]["ccrs"].find((ccr:any)=> ccr.ccr_id == ccrId)?.ccr_name || ""; 
 
+  const ccrNameFromId = ccrIds.map((id:number)=> ccrsData.find((ccr:any)=> ccr.cid == id)?.cnm).join(', ')
+  return ccrNameFromId ? ccrNameFromId : "";
 }

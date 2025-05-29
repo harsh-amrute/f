@@ -20,11 +20,14 @@ const TaskPendingActionRendererMTO = (props:TaskPendingActionRendererProps| any)
         if(status==='Approved'){
             const newData = _.cloneDeep(detailTableRowData);
             newData[props.node.rowIndex].appStatus = true;
+            newData[props.node.rowIndex].ia = true;
+            
             dispatch(SET_TASK_PENDING_ROW_DATA(newData));
         }
         else{
             const newData = _.cloneDeep(detailTableRowData);
             newData[props.node.rowIndex].appStatus = false;
+            newData[props.node.rowIndex].ia = false;
             dispatch(SET_TASK_PENDING_ROW_DATA(newData));
         }
     }

@@ -157,13 +157,13 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
   )
   .optional(),
 
-  plnm: Joi.string().required().optional().messages({
+  plnm: Joi.string().required().messages({
     "string.base": "Plant name cannot be empty!",
     "any.required": "Plant name cannot be empty!",
     "string.empty": "Plant name cannot be empty!",
   }),
 
-  rb: Joi.string().valid("Once", "Weekly", "Monthly").optional().messages({
+  rb: Joi.string().valid("Once", "Weekly", "Monthly").messages({
     "string.base": "Recurrence cannot be empty!",
     "any.required": "Recurrence cannot be empty!",
     "any.only": "Recurrence must be either Once, Weekly, or Monthly!",
@@ -177,13 +177,13 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
     "any.required": "Repeat duration cannot be empty!",
   }),
 
-  ccr: Joi.string().required().optional().messages({
+  ccr: Joi.string().required().messages({
     "string.base": "CCR cannot be empty!",
     "string.empty": "CCR cannot be empty!",
     "any.required": "CCR cannot be empty!",
   }),
   
-  ccr_id: Joi.array().items(Joi.number()).optional().messages({
+  ccr_id: Joi.array().items(Joi.number()).messages({
     "string.base": "CCR Id cannot be empty!",
     "any.required": "CCR Id cannot be empty!",
   }),
@@ -205,12 +205,12 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
   
   ed: Joi.date()
     .required()
-    .greater(Joi.ref("sd"))
+    .min(Joi.ref('sd')) // ✅ Allows ed >= sd
     .messages({
       "date.base": "End date cannot be empty!",
       "any.required": "End date cannot be empty!",
-      "date.greater": "End date must be greater than Start date!",
-    }),
+      "date.min": "End date must be equal to or after Start date!",
+  }),
   
   iwd: Joi.boolean().required().messages({
     "boolean.base": "Is Working Day must be either true or false!",
@@ -218,7 +218,7 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
 
   }),
 
-  plid: Joi.number().optional().messages({
+  plid: Joi.number().allow(null).messages({
     "number.base": "Plant Id cannot be empty!",
     "any.required": "Plant Id cannot be empty!",
   }),
@@ -232,6 +232,77 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
   iu: Joi.boolean().default(false).optional(),
   id: Joi.boolean().default(false).optional(),
 
+});
+
+export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
+  dow: Joi.any(),
+
+  plnm: Joi.string().required().optional().messages({
+    "string.base": "Plant name cannot be empty!",
+    "any.required": "Plant name cannot be empty!",
+    "string.empty": "Plant name cannot be empty!",
+  }),
+
+  rb: Joi.any(),
+
+  hid: Joi.any().optional(),
+
+  rd : Joi.any(),
+
+  ccr: Joi.string().required().optional().messages({
+    "string.base": "CCR cannot be empty!",
+    "string.empty": "CCR cannot be empty!",
+    "any.required": "CCR cannot be empty!",
+  }),
+  
+  ccr_id: Joi.any(),
+ 
+  dsc: Joi.string().required().max(100).messages({
+    "string.base": "Title cannot be empty!",
+    "any.required": "Title cannot be empty!",
+    "string.max": "Title cannot exceed 100 characters!",
+    "string.empty": "Title cannot be empty!",
+  }),
+
+  sd: Joi.date()
+    .required()
+    .messages({
+      "date.base": "Start date cannot be empty!",
+      "any.required": "Start date cannot be empty!",
+      "date.less": "Start date must be less than End date!",
+    }),
+  
+    ed: Joi.date()
+    .required()
+    .min(Joi.ref('sd')) // ✅ Allows ed >= sd
+    .messages({
+      "date.base": "End date cannot be empty!",
+      "any.required": "End date cannot be empty!",
+      "date.min": "End date must be equal to or after Start date!",
+    }),
+  
+  iwd: Joi.boolean().required().messages({
+    "boolean.base": "Is Working Day must be either true or false!",
+    "any.required": "Is Working Day is required!",
+
+  }),
+
+  plid: Joi.number().allow(null).optional().messages({
+    "number.base": "Plant Id cannot be empty!",
+    "any.required": "Plant Id cannot be empty!",
+  }),
+
+  err: Joi.object({
+    error: Joi.string().allow("").optional(),
+    warning: Joi.string().allow("").optional(),
+  }),
+
+  ia: Joi.boolean().default(false).optional(),
+  iu: Joi.boolean().default(false).optional(),
+  id: Joi.boolean().default(false).optional(),
+  rid: Joi.any(),
+  did: Joi.any(),
+  
 });
 
 

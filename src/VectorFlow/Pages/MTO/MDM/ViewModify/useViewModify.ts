@@ -110,12 +110,13 @@ import AddRemoveCellRenderer from "./AddRemoveCellRenderer";
 import ConflictErrorCellRenderer from "./ConflictErrorCellRenderer";
 import DaysOfWeekRenderer from "./DaysOfWeekRenderer";
 import MajReasonDescCell from "./MajReasonDescCell";
-import { BUFFER_VALIDATION_SCHEMA, CALENDAR_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from "./MDMJoiValidations";
+import { BUFFER_VALIDATION_SCHEMA, CALENDAR_Add_VALIDATION_SCHEMA, CALENDAR_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from "./MDMJoiValidations";
 import MinReasonDescCell from "./MinReasonDescCell";
 import MTOCalendarEditCellRenderer from "./MTOCalendarEditCellRenderer";
 import MTOErrorWarningCell from "./MTOErrorWarningCell";
 import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
+import moment from "moment";
 
 
 const useViewModify = (pageType: string) => {
@@ -330,7 +331,7 @@ const useViewModify = (pageType: string) => {
    
     // if(isToolPanelOpen) ref.current?.api.openToolPanel('columns');
   }, [selectedOptions, activeMaster, allMastersState]);
-
+  const [ccrsData,setCcrsData] = useState<any>([]);
   const getInitialData = async () => {
     if (activeMaster.id === 501) {
       const result = await getBufferMasterData({});
@@ -346,6 +347,8 @@ const useViewModify = (pageType: string) => {
     }
     if (activeMaster.id === 504) {
       const result = await getCalendarMasterData();
+      const ccrs = await getCCRMasterData({});
+      setCcrsData(ccrs.data.data || []);
       if(result && result.data){
 
         dispatch(SET_CALENDAR_INITIAL_DATA(result.data.data));
@@ -374,15 +377,10 @@ const useViewModify = (pageType: string) => {
   
   // adding all ccrName in ccr_names array
   const ccr_names :string[] = []
-  for(const key in ccrGroupMaster){
-    for(const ccr in ccrGroupMaster[key]){
-      if(ccr === "ccrs"){
-        ccrGroupMaster[key][ccr].forEach((item: any) => {
-          ccr_names.push(item.ccr_name)
-        })
-      }
-    }
+  for(const ccr of ccrsData){
+    ccr_names.push(ccr.cnm)
   }
+
   
 
   // const [selectedDays, setSelectedDays] = useState<any>({});
@@ -561,45 +559,6 @@ const useViewModify = (pageType: string) => {
   }, [activeMaster.progress]);
 
 
-  // const concatenateFields = (
-  //   params1: Parameter[],
-  //   params2: Parameter[]
-  // ): ConcatenatedResult[] => {
-  //   // Prepare a result map to avoid duplicates and merge fields
-  //   const resultMap: { [key: string]: ConcatenatedResult } = {};
-
-  //   // Process params1
-  //   params1?.forEach((param) => {
-  //     resultMap[param.name] = {
-  //       id: param.id,
-  //       name: param.name,
-  //       fields: param.fields,
-  //     };
-  //   });
-
-  //   // Process params2
-  //   params2?.forEach((param) => {
-  //     if (resultMap[param.name]) {
-  //       // Merge fields if the name already exists
-  //       resultMap[param.name].fields = [
-  //         ...resultMap[param.name].fields,
-  //         ...param.fields,
-  //       ];
-  //     } else {
-  //       // Otherwise, add the new entry
-  //       resultMap[param.name] = {
-  //         id: param.id,
-  //         name: param.name,
-  //         fields: param.fields,
-  //         isMTO: true, // Add isMTO property
-  //       };
-  //     }
-  //   });
-
-  //   console.log("final ui master states....", Object.values(resultMap));
-  //   // Convert the result map to an array of objects
-  //   return Object.values(resultMap);
-  // };
 
   useEffect(() => {
     const getMasterUIConfigurationData = async () => {
@@ -625,25 +584,6 @@ const useViewModify = (pageType: string) => {
     getMasterUIConfigurationData();
   }, [pageType]);
 
-  // useEffect(() => {
-  //   const getMasterUIConfigurationData = async () => {
-  //     let MtoBufferdata = undefined;
-      
-  //       try {
-  //         MtoBufferdata = await MTOMasterUIConfiguration();
-  //       } catch (e) {
-  //         console.log(e);
-  //       }
-
-  //       setAllMasterState(
-  //         mapMasterToMasterState(MtoBufferdata?.data?.data, onShowChart)
-  //       );
-
-  
-  //   };
-
-  //   getMasterUIConfigurationData();
-  // }, []);
 
   useEffect(() => {
     if (activeMaster.progress === "default" && pageType === "add") {
@@ -653,7 +593,7 @@ const useViewModify = (pageType: string) => {
 
   // Validatio in process....
 
-  const   validateMTOMaster = (masterId: number, newRowData: any) => {
+  const validateMTOMaster = (masterId: number, newRowData: any) => {
     if (masterId === 501) {
 
       const allRows = [...newRowData];
@@ -663,7 +603,7 @@ const useViewModify = (pageType: string) => {
         const newVal = _.cloneDeep(e);
         const { error } = BUFFER_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
         if (error) {
-          // console.log(activeMaster.fields,"this is active master fields")
+
           const fieldOrders = activeMaster.fields.map(field => field.key)
 
           const errorOrders = fieldOrders.flatMap((field) => {
@@ -905,7 +845,7 @@ const useViewModify = (pageType: string) => {
       allRows.forEach((e:any)=>{
         const newVal = _.cloneDeep(e);
 
-        const {error} = CALENDAR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
+        const {error} = CALENDAR_Add_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
 
         if(error){
           const fieldOrders = activeMaster.fields.map(field =>field.key)
@@ -1350,9 +1290,8 @@ const useViewModify = (pageType: string) => {
     const onSaveHandler = () => {
       const index = activeMaster.rowData?.length ? activeMaster.rowData?.findIndex((row) => row.hid === selectedData.hid) : -1;
         const rowData = _.cloneDeep(activeMaster.rowData || []);
-        const newData = _.cloneDeep(selectedData);
+        let newData = _.cloneDeep(selectedData);
         const {error} = CALENDAR_VALIDATION_SCHEMA.validate(selectedData,{abortEarly:false})
-
         if(error){
           const fieldOrders = activeMaster.colDefs.filter((item:any)=> item.headerName !== "Action").map((item:any)=> item.field);
 
@@ -1367,15 +1306,17 @@ const useViewModify = (pageType: string) => {
         // edit calendar 
         if(index != -1){
           if(newData.ia !== true){
-            newData.iu = true
+            newData = {...newData,iu:true,id:false}
           }
           rowData[index] = newData
         }
         // add new calendar
         else{
           newData.ia = true
+          newData = {...newData,iu:false,id:false,}
           rowData.unshift(newData);
         }
+
         dispatch(UPDATE_ROW_DATA(rowData))
         setIsModalOpen(false)
     }
@@ -1389,6 +1330,7 @@ const useViewModify = (pageType: string) => {
           currDeleteObj.iu = false
         }
         currDeleteObj.id = true
+        currDeleteObj.iu = false
         newData[index] = currDeleteObj;
         dispatch(UPDATE_ROW_DATA(newData)); 
       }
@@ -1514,11 +1456,11 @@ const useViewModify = (pageType: string) => {
                 cellRenderer: DaysOfWeekRenderer,
               };
             }
-            if( col.field === "ccr_Id"){
+            if( col.field === "ccr_id"){
               return {
                 ...col,
                 valueFormatter:(params:any)=>{
-                  return getCCRNamesFromId(ccrGroupMaster,params?.data?.ccr_id) 
+                  return getCCRNamesFromId(ccrsData,params?.data?.ccr_id) 
                 }
               }
             }
@@ -1676,6 +1618,7 @@ const useViewModify = (pageType: string) => {
     dispatch(REMOVE_FILTER(id));
     dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
   };
+
 
   const handleApplyFilter = async (showAll?: boolean) => {
     if (showAll) setIsShowAll(showAll);
@@ -3397,6 +3340,30 @@ const useViewModify = (pageType: string) => {
 
   const navigate = useNavigate();
 
+  const AddCalendarModifyData = (data: any) => {
+    data?.forEach((el:any)=>{
+      if(!Array.isArray(el.ccr_id) && !el.hid && !el.plid){
+        const ccrIdAndPlantIdFromName = ccrsData.find((ccr: any) => ccr.cnm === el.ccr_id);
+        if(ccrIdAndPlantIdFromName){
+          el.ccr_id = [ccrIdAndPlantIdFromName.cid];
+          el.plid = ccrIdAndPlantIdFromName.plant;
+          el.hid = null;
+          el.rd = null;
+          el.rb = '';
+          el.sd = moment(el.sd).format('YYYY-MM-DD');
+          el.ed = moment(el.ed).format('YYYY-MM-DD');
+          el.dow = []
+          el.iu = false
+          el.id = false
+        }else{
+          throw new Error("CCR || Plant name is not valid");
+        }
+      
+      }
+    })
+    return data
+  }
+
   const saveCalendarTask = async(pageType: string) => {
     const calendarObj:any = {
       mid : activeMaster.id,
@@ -3406,13 +3373,13 @@ const useViewModify = (pageType: string) => {
       cData: []
     }
 
-    
+    try {
+
     if(pageType === "modify"){
       
       const newData = _.cloneDeep(activeMaster.rowData)
-
       newData.forEach((el :any)=>{
-        if((el.ia && !el.id )|| el.iu || (el.id && !el.ia)){
+        if((el.ia && !el.id )|| el.iu || (el.id && !el.ia) || el.iu === false || el.id === false){
           if(el.ia){
             el.hid = null
           }
@@ -3420,12 +3387,16 @@ const useViewModify = (pageType: string) => {
         } 
       })
     }else if(pageType === "add"){
-      activeMaster?.rowData?.forEach((el:any)=>{
-        calendarObj.cData.push(el)
-      })
-    }  
-    try {
-      
+      const newDataAdd = _.cloneDeep(activeMaster.rowData)
+      calendarObj.cData = AddCalendarModifyData(newDataAdd)
+    } 
+
+    if(calendarObj.cData.length === 0){
+      notifyError("No Data to Save!");
+      return;
+    }
+
+    
       notifyLoader("Saving Task...");
       
       const response = await saveCalendarMasterTask(calendarObj)
@@ -3445,54 +3416,60 @@ const useViewModify = (pageType: string) => {
         dispatch(UPDATE_ROW_DATA(calendarInitialData));
         setMTOProgress("submitted Once");
       }
-      notifySuccess("Saved Calendar Task Successfully");
+      notifySuccess(response.data.msg || "Saved Calendar Task Successfully");
     } catch (error:any) {
-      console.log(error.msg)
-      notifyError("Failed to create task!");
+      console.log(error.msg || error)
+      notifyError(error ? "CCR | Plant name is not valid" : "Failed to create Draft!");
     }
   }
 
-  const saveCalendarDraft = async(pageType: string) => {
-    const calendarObj:any = {
-      mid : activeMaster.id,
-      uid : user.user.user.id.toString(),
-      unm : user.user.user.name,
-      at : pageType === "add" ? "Add" : "Modify",
-      cData: []
-    }
-
-    if(pageType === "modify"){
-
-      const newData = _.cloneDeep(activeMaster.rowData)
-
-      newData.forEach((el :any)=>{
-        if(el.ia || el.iu || el.id ){
-          if(el.ia){
-            el.hid = null
-          }
-          calendarObj.cData.push(el)
-        } 
-      })
-    }else if(pageType === "add"){
-      activeMaster?.rowData?.forEach((el:any)=>{
-        calendarObj.cData.push(el)
-      })
-    }  
+  const saveCalendarDraft = async (pageType: string) => {
+    const calendarObj: any = {
+      mid: activeMaster.id,
+      uid: user.user.user.id.toString(),
+      unm: user.user.user.name,
+      at: pageType === "add" ? "Add" : "Modify",
+      cData: [],
+    };
     try {
-      
+      if (pageType === "modify") {
+        const newDataModify = _.cloneDeep(activeMaster.rowData);
+
+        newDataModify.forEach((el: any) => {
+          if (el.ia || el.iu || el.id || !el.hid) {
+            if (el.ia) {
+              el.hid = null;
+            }
+            calendarObj.cData.push(el);
+          }
+        });
+
+        if (calendarObj.cData.length === 0) {
+          notifyError("No Data to Save!");
+          return;
+        }
+      } else if (pageType === "add") {
+        const newDataAdd = _.cloneDeep(activeMaster.rowData);
+        calendarObj.cData = AddCalendarModifyData(newDataAdd);
+      }
+
       notifyLoader("Saving Draft...");
-      
-      const response = await saveCalendarMasterDraft(calendarObj)
-      if( response?.data.status !== 200){
+
+      const response = await saveCalendarMasterDraft(calendarObj);
+
+      if (response?.status !== 200) {
         notifyError("Failed to create Draft!");
         return;
       }
-      notifySuccess("Saved Calendar Draft Successfully");
-    } catch (error:any) {
-      console.log(error.msg)
-      notifyError("Failed to create Draft!");
+      notifySuccess(response?.data?.msg || "Draft Created Successfully");
+    } catch (error: any) {
+      console.log(error.msg || error);
+      notifyError(
+        error ? "CCR | Plant name is not valid" : "Failed to create Draft!"
+      );
     }
-  }
+  };
+
 
   const onMTOAddSaveBufferData = async () => {
     notifyLoader("Saving Task...");

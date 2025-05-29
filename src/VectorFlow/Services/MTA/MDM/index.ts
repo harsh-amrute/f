@@ -310,6 +310,12 @@ export const usePutMtoCCRMasterData = () => {
   })
 }
 
+export const usePutMtoCalendarMasterData = () => {
+  return useMutation(async (body:any)=>{
+    return await MDMService.putMTOAddCalendarMaster(body)
+  })
+}
+
 export const useGetBufferMasterData = () => {
   return useMutation(async (body:any) => {
     return await MDMService.getBufferMasterData(body)
