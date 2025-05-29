@@ -22,3 +22,7 @@ export const SCButton = styled.button<{ themeUi: string, isDisabled:boolean | un
   opacity:${(props)=>props.isDisabled ? 0.2 : 1};
   pointer-events:${(props)=>props.isDisabled ? 'none' : 'all'};
 `;
+
+export const TooltipText = styled.div`
+    padding: 8px 8px !important;
+`;

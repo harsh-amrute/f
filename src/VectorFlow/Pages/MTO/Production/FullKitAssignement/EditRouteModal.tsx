@@ -260,6 +260,10 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, master, rou
 
     }
 
+    const isSaveDisabled = useMemo(() => {
+        return !selectedRoute.length || selectedRoute.some((route: any) => !route[0] || !route[1]);
+    }, [selectedRoute]);
+
     return (
         <VFModalCard openModal={showModal} closeModal={() => { setOrderKey(null); setShowModal((false)); setSelectedRoute([]) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             <ContentWrapper>
@@ -304,7 +308,9 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, master, rou
                         alignItems: "center",
                         padding: "1rem",
                         fontSize: "14px",
-                        boxShadow: "unset"
+                        boxShadow: "unset",
+                        pointerEvents: isSaveDisabled ? "none" : "auto",
+                        opacity: isSaveDisabled ? "0.5" : "",
                     }} themeUi={theme} onClick={() => { SaveRoute() }}>Save Route</VFButton>
                 </div>
         </VFModalCard>
