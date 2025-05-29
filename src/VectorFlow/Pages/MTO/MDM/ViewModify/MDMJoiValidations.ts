@@ -177,7 +177,7 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
     "any.required": "Repeat duration cannot be empty!",
   }),
 
-  ccr: Joi.string().required().messages({
+  ccr: Joi.string().required().optional().messages({
     "string.base": "CCR cannot be empty!",
     "string.empty": "CCR cannot be empty!",
     "any.required": "CCR cannot be empty!",
@@ -302,7 +302,7 @@ export const CALENDAR_Add_VALIDATION_SCHEMA = Joi.object({
   id: Joi.boolean().default(false).optional(),
   rid: Joi.any(),
   did: Joi.any(),
-  
+
 });
 
 

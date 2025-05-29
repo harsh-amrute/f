@@ -3343,7 +3343,7 @@ const useViewModify = (pageType: string) => {
   const AddCalendarModifyData = (data: any) => {
     data?.forEach((el:any)=>{
       if(!Array.isArray(el.ccr_id) && !el.hid && !el.plid){
-        const ccrIdAndPlantIdFromName = ccrsData.find((ccr: any) => ccr.cnm === el.ccr_id);
+        const ccrIdAndPlantIdFromName = ccrsData.find((ccr: any) => ccr.cnm.toLowerCase().trim() === el.ccr_id.toLowerCase().trim());
         if(ccrIdAndPlantIdFromName){
           el.ccr_id = [ccrIdAndPlantIdFromName.cid];
           el.plid = ccrIdAndPlantIdFromName.plant;
