@@ -71,11 +71,16 @@ const GridView = (props: IGridViewProps) => {
     };
 
     const getGridData = async (params: any) => {
+        console.log("sfdsf")
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const response = await getData({...params, appliedFilters: formatedFilters});
-            setGridData(response?.data?.data?.results || []);
-            setTotalRows(response?.data?.data?.count || 0)
+            const response = await getData({...params, appliedFilters: formatedFilters,pageSize: userPageSize || pagination.mtoPageSize});
+            console.log("response", response.data);
+            setGridData(response?.data?.data?.g || []);
+            setTotalRows(response?.data?.data?.g.length)
+            // setTotalRows(response?.data?.data?.totalCount || 0);
+            console.log(gridData)
+            // setTotalRows(response?.data?.data?.count || 0)
         }
         catch (e) {
             console.log(e);
@@ -118,6 +123,10 @@ const GridView = (props: IGridViewProps) => {
         }
     }, [columnState]);
 
+
+    console.log('pageeee',userPageSize)
+    console.log('total rowss', totalRows)
+
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
@@ -135,16 +144,17 @@ const GridView = (props: IGridViewProps) => {
                 rowData={gridData || []}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
+                pagination={false}
+                paginationPageSize={userPageSize || pagination.mtoPageSize}              
                 onGridReady={(params: any) => {
                     params.api.autoSizeAllColumns();
-
                     setCurrentGridRef(gridRef);
                 }}
                 tooltipMouseTrack={true}
                 ref={gridRef}
                 statusBar={{
                     statusPanels: [
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                        // { statusPanel: 'agTotalRowCountComponent', align: 'left' },
                     ]
                 }}
                 maintainColumnOrder

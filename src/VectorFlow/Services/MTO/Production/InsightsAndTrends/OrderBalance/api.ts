@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OrderBalanceService {
-    export const getOrderBalanceData = async ({graphflag, page, appliedFilters, ordertype}: any) => {
+    export const getOrderBalanceData = async ({graphflag, page, appliedFilters, ordertype,page_size}: any) => {
         console.log("ot...", ordertype)
         
         if(graphflag){
@@ -12,7 +12,8 @@ export namespace OrderBalanceService {
                 },
                 params: {
                     graphflag,
-                    ordertype
+                    ordertype,
+                    page_size
                 }
             })
         }

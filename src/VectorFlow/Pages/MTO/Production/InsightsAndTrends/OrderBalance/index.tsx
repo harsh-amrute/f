@@ -22,10 +22,15 @@ import {
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { FilterPageName, UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
+
+
+
+import { useGetOrderRiskData } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
+
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -73,6 +78,15 @@ const OrderBalance = () => {
   const { mutateAsync: getOrderBalanceGraphDataExcelExport } = useGetOrderBalanceDataExcelExport();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+  const [totalRow, setTotalRow] = useState<number>(0)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+
+
+
+  const { mutateAsync: getOrderAtRiskData } = useGetOrderRiskData();
+  
   const colDefCustomizations = {
     BPP: {
       cellRenderer: BPPRenderer,
@@ -92,7 +106,7 @@ const OrderBalance = () => {
     }
   }
 
-  const getGraphData = async (params: any) => {
+  const getGraphData = async (params: any,pageSize?:any) => {
     if(params.isExcelExport){
       try {
         const headersdata = currentGridRef?.current?.api.getColumnState();
@@ -113,8 +127,11 @@ const OrderBalance = () => {
     }else{
 
       try {
-        const response = await getOrderBalanceData(params);
-        setGraphData(response?.data?.data[0]);
+        // const response = await getOrderBalanceData({params,page_size: pageSize || userPageSize});
+        const response = await getOrderAtRiskData({ page: currentPage,page_size: pageSize || userPageSize });
+        // setGraphData(response?.data?.data[0]);
+        console.log(response.data.data.g)
+        setGraphData(response?.data?.data?.g)
       }
       catch (e) {
         console.log(e);
@@ -142,8 +159,10 @@ const OrderBalance = () => {
         rn_id: UIGridCode.ProdOrderBalance
       });
 
+      setUserConfigFetched(true)
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setColumnState(newConfig);
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setColumnState(newConfig.cs);
 
       if (!data) {
         console.error('Failed to apply column state');
@@ -153,25 +172,38 @@ const OrderBalance = () => {
     }
   }
   
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?: any) => {
     try {
       if (coldefs) {
+        const fullConfig = { cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdStplAndFullKit,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
 
+      }
+      else if (page_size) {
+        console.log('column state', columnState)
+        const config = columnState
+        const fullConfig = { cs: config, pageSize: page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdOrderBalance,
+          cs: JSON.stringify(fullConfig),
+        }
+        await updateUserUIReportConfigData([payload]);
+
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
-
+          const fullConfig = { cs: config, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOrderBalance,
-            cs: JSON.stringify(config)
+            cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
@@ -182,6 +214,16 @@ const OrderBalance = () => {
     }
   }
 
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+      setUserPageSize(pageSize);
+      handleSaveClick(false, pageSize);
+      getGraphData(1,pageSize);
+      } else {
+        notifyError("Invalide page size");
+    }
+    
+}
   const handleResetClick = () => {
     setIsReset(true);
   }
@@ -195,6 +237,12 @@ const OrderBalance = () => {
     }
   }
 
+  const handlePageChange = async (currPage: number) => {
+    setCurrentPage(currPage);
+    getGraphData(1, currPage );
+  }
+
+  console.log('defualt cs', columnState)
   useEffect(() => {
     setColumnDef();
     getGraphData({ graphflag: 1});
@@ -226,11 +274,40 @@ const OrderBalance = () => {
     }
   }, [colDef, currentGridRef]);
 
+
+  useEffect(() => {
+
+    if (Object.entries(appliedFilters).length) {
+      getGraphData({});
+    }
+  }, [currentPage]);
+
+  // useEffect(() => {
+  //   console.log("appliedfilters", appliedFilters);
+  //   if (Object.entries(appliedFilters).length && userConfigFetched ) {
+  //     setCurrentPage(1);
+  //     getGraphData(currentPage,1);
+  //   }
+  // }, [appliedFilters,userConfigFetched])
+
+    useEffect(() => {
+      if (Object.entries(appliedFilters).length && userConfigFetched) {
+        if (currentPage == 1) {
+          getGraphData({});
+        } else {
+          setCurrentPage(1);
+        }      
+      }
+    },[appliedFilters,userConfigFetched])
+
   const ExcelExportData = () => {
     getGraphData({isExcelExport : true})
   }
 
   const themeUi = user?.user?.theme_ui;
+
+  console.log("Current Page:", currentPage);
+   console.log("Page Size:",  userPageSize);
 
 
   return (
@@ -261,7 +338,12 @@ const OrderBalance = () => {
       <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
           <GridView
-            getData={getOrderBalanceData}
+            getData={(params:any) => getOrderAtRiskData({
+                      ...params,
+                      page_size: userPageSize || pagination.mtoPageSize
+            })}   
+            // getData={graphData}
+            // gridData={graphData}
             colDef={colDef}
             isLoading={isLoading}
             isError={isError}
@@ -270,6 +352,11 @@ const OrderBalance = () => {
             currentGridRef={currentGridRef}
             columnState={columnState}
             appliedFilters={appliedFilters}
+            userPageSize={userPageSize}
+            savePageSize={savePageSize}
+            // handleChangePage={handlePageChange}
+
+
           />
         ) : (
           <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom:"10px" }}>

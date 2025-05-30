@@ -66,6 +66,11 @@ const OrderAtRisk = () => {
   const { mutateAsync : getOrderAtRiskDataExcelExport} = useGetOrderRiskDataExcelExport();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+  const [totalRow, setTotalRow] = useState<number>(0)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+
   const themeUi = user?.user?.theme_ui;
 
 
@@ -87,8 +92,10 @@ const OrderAtRisk = () => {
         rn_id: UIGridCode.ProdOrderAtRisk
       });
 
+      setUserConfigFetched(true)
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setColumnState(newConfig);
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setColumnState(newConfig.cs);
 
       if (!data) {
         console.error('Failed to apply column state');
@@ -98,25 +105,38 @@ const OrderAtRisk = () => {
     }
   }
 
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?: any) => {
     try {
       if (coldefs) {
+        const fullConfig = { cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdStplAndFullKit,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
 
-      } else {
+      } 
+      else if (page_size) {
+        console.log('column statee', columnState)
+        const config = columnState
+        const fullConfig = { cs: config, pageSize: page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdOrderAtRisk,
+          cs: JSON.stringify(fullConfig),
+        }
+        await updateUserUIReportConfigData([payload]);
+      }
+      else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
-
+          const fullConfig = { cs: config, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOrderAtRisk,
-            cs: JSON.stringify(config)
+            cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
@@ -127,6 +147,17 @@ const OrderAtRisk = () => {
       console.error(error);
     }
   }
+
+   const savePageSize = (pageSize: any) => {
+        if (pageSize) {
+          setUserPageSize(pageSize);
+          handleSaveClick(false, pageSize);
+          getData(false,pageSize);
+          } else {
+            notifyError("Invalide page size");
+        }
+        
+    }
 
   const handleResetClick = () => {
     setIsReset(true);
@@ -143,6 +174,7 @@ const OrderAtRisk = () => {
 
   useEffect(() => {
     setColumnDef();
+    getUserColumnConfig();
     getFilterData();
   }, [])
 
@@ -334,13 +366,13 @@ const OrderAtRisk = () => {
       //   }
       // }, [data]);
       
-      const getData = async (isExcelExport = false) => {
+      const getData = async (isExcelExport = false,pageSize?:any) => {
         if(isExcelExport) {
             try {
               const headersdata = currentGridRef?.current?.api.getColumnState();
               const formattedFilters = formatFilterJSON(appliedFilters)
               const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
-              const response = await getOrderAtRiskDataExcelExport({body , isExcelExport : 1,report_name : FilterPageName.Prod_Order_At_Risk})
+              const response = await getOrderAtRiskDataExcelExport({body , isExcelExport : 1,report_name : FilterPageName.Prod_Order_At_Risk,page_size: pageSize || userPageSize })
               if(response.status === 200) {
                 DownloadExcel(response,FilterPageName.Prod_Order_At_Risk)
               }else{
@@ -354,9 +386,10 @@ const OrderAtRisk = () => {
 
           try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const response = await getOrderAtRiskData({ appliedFilters: formatedFilters});
+            const response = await getOrderAtRiskData({ page: currentPage,appliedFilters: formatedFilters,page_size: pageSize || userPageSize });
             setRawData(response?.data?.data?.r);
             setGridData(response?.data?.data?.g || []);
+
           }
           catch (e) {
             console.log(e);
@@ -365,9 +398,31 @@ const OrderAtRisk = () => {
         }
   }
 
-  useEffect(()=>{
-    getData();
-  },[appliedFilters])
+  // useEffect(()=>{
+  //   getData();
+  // },[appliedFilters])
+
+
+  
+    useEffect(() => {
+      if (Object.entries(appliedFilters).length) {
+        getData();
+      }
+    }, [currentPage]);
+  
+    useEffect(() => {
+      if (Object.entries(appliedFilters).length && userConfigFetched ) {
+        setCurrentPage(1);
+        getData(false,1);
+      }
+    }, [appliedFilters,userConfigFetched])
+
+  
+
+    const handlePageChange = async (currPage: number) => {
+      setCurrentPage(currPage);
+      getData(false, currPage );
+    }
 
   useEffect(() => {
     if (isReset) {
@@ -418,6 +473,10 @@ const OrderAtRisk = () => {
             setCurrentGridRef={setCurrentGridRef}
             currentGridRef={currentGridRef}
             columnState={columnState}
+            userPageSize={userPageSize}
+            handleChangePage={handlePageChange}
+            savePageSize={savePageSize}
+
           />
         ) : (
           <OrderAtRiskChartWrapper style={{ maxHeight: "95%", paddingLeft: "20px", paddingBottom:"20px" }}>
