@@ -13,7 +13,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../../helpers/utils';
 import { useUserData } from "../../../../../../context/index";
-import { FilterPageName, UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import useColDef from '../../../../../../hooks/useColDef'
@@ -60,8 +60,12 @@ const OTAndIFAnalysis = () => {
     const { colDefMap , getColDef} = useColDef();
     const { mutateAsync: getOTAndIFAnalysisDataExcelExport } = useGetOTAndIFAnalysisDataExcelExport();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
+
+    const [userPageSize, setUserPageSize] = useState<number>();
+    const [userConfigFetched, setUserConfigFetched] = useState(false);
     
-    const getGraphData = async (params: any) => {
+    const getGraphData = async (params: any,pageSize?:any) => {
+
         if(params.isExcelExport){
             const headersdata = currentGridRef?.current?.api.getColumnState();
             const formattedFilters = formatFilterJSON(appliedFilters);
@@ -74,7 +78,9 @@ const OTAndIFAnalysis = () => {
             }
         }else{
             try {
-                const response = await getOTAndIFAnalysisData(params);
+                const response = await getOTAndIFAnalysisData({
+                    ...params
+                });
                 setGraphData(response.data.data);
             }
             catch (e) {
@@ -107,12 +113,11 @@ const OTAndIFAnalysis = () => {
                 rn_id: UIGridCode.PoogiOTAndIFAnalysis
             });
 
-            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-            setColumnState(newConfig);
-
-            if (!data) {
-                console.error('Failed to apply column state');
-            }
+            setUserConfigFetched(true);
+            const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] : [];
+            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : pagination.mtoPageSize);
+            setColumnState(newConfig.cs);
+            
         } catch (error) {
             console.error(error);
         }
@@ -129,32 +134,50 @@ const OTAndIFAnalysis = () => {
         }
     }
 
-    const handleSaveClick = async (coldefs?: any) => {
+    useEffect(() => {
+        getFilterData();
+    }, []);
+    
+    const handleSaveClick = async (coldefs?: any, page_size?: number) => {
         try {
             if (coldefs) {
+                const fullConfig = { 
+                    cs: coldefs, 
+                    pageSize: userPageSize 
+                };
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.PoogiOTAndIFAnalysis,
-                    cs: JSON.stringify(coldefs),
+                    cs: JSON.stringify(fullConfig),
                 };
                 await updateUserUIReportConfigData([payload]);
                 setColumnState([...coldefs]);
-        
-            } else {
+            } 
+            else if (page_size) {
+                const config = columnState;
+                const fullConfig = { cs: config, pageSize: page_size };
+                const payload = {
+                    un: user.user.name,
+                    rn_id: UIGridCode.PoogiOTAndIFAnalysis,
+                    cs: JSON.stringify(fullConfig),
+                };
+                
+                await updateUserUIReportConfigData([payload]);
+            }
+            else {
                 if (currentGridRef?.current?.api) {
                     const config = currentGridRef.current.api.getColumnState();
-    
+                    const fullConfig = { cs: config, pageSize: userPageSize };
+                    
                     const payload = {
                         un: user.user.name,
                         rn_id: UIGridCode.PoogiOTAndIFAnalysis,
-                        cs: JSON.stringify(config)
-                    }
-    
+                        cs: JSON.stringify(fullConfig)
+                    };
                     await updateUserUIReportConfigData([payload]);
                     await getUserColumnConfig();
                 }
             }
-
         } catch (error) {
             console.error(error);
         }
@@ -180,9 +203,8 @@ const OTAndIFAnalysis = () => {
     }, [HeaderData])
 
     useEffect(() => {
-        getGraphData({ graphflag: 1 });
+        getGraphData({ graphflag: 1 }, userPageSize || pagination.mtoPageSize);
         setColumnDef();
-        getFilterData();
     }, [])
 
     useEffect(() => {
@@ -201,12 +223,15 @@ const OTAndIFAnalysis = () => {
         }
     }, [isReset]);
 
+    
     useEffect(() => {
         if (currentGridRef?.current) {
-            setMasterUIConfig(currentGridRef?.current.api.getColumnState());
             getUserColumnConfig();
+            setMasterUIConfig(currentGridRef?.current.api.getColumnState());
         }
     }, [colDef, currentGridRef]);
+
+    
 
     const ExportExcelData = () =>{
         getGraphData({ isExcelExport: true });
@@ -246,12 +271,12 @@ const OTAndIFAnalysis = () => {
                                 <Allotment vertical={false} separator={false}   >
                                     <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                         <BTRAllomentSection>
-                                            <OTFailedGraph  OTFailedData={graphData?.ot}/>
+                                            <OTFailedGraph OTFailedData={graphData?.ot} />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
                                     <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                         <BTRAllomentSection>
-                                            <IFFaildGraph IFFailedData={graphData?.if}/>
+                                            <IFFaildGraph IFFailedData={graphData?.if} />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
                                 </Allotment>
@@ -261,7 +286,9 @@ const OTAndIFAnalysis = () => {
                     :
                     <>
                         <GridView
-                            getData={getOTAndIFAnalysisData}
+                            getData={(params: any) => getOTAndIFAnalysisData({
+                                ...params
+                            })}
                             colDef={colDef}
                             isLoading={isLoading}
                             isError={isError}
@@ -270,6 +297,10 @@ const OTAndIFAnalysis = () => {
                             currentGridRef={currentGridRef}
                             columnState={columnState}
                             appliedFilters={appliedFilters}
+                            userPageSize={userPageSize}
+                            setUserPageSize={setUserPageSize}
+                            userConfigFetched={userConfigFetched}
+                            handleSaveClick={handleSaveClick}
                         />
                     </>
             }

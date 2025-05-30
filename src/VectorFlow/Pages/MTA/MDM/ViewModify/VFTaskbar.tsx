@@ -290,7 +290,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                         {/* <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={false} width={139}>
                        Save as draft
                     </VFButtonOutline> */}
-                        <VFButtonOutline onClick={onEditOnline} themeUi={themeUi} disabled={!editOnline} width={164} onHoverChild={
+                        {/* <VFButtonOutline onClick={onEditOnline} themeUi={themeUi} disabled={!editOnline} width={164} onHoverChild={
                             <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
                                 <img src={"/assets/img/VectorFLOW/NMS/edit-online-disabled.svg"} style={{marginRight:'11px'}}/>
                                 <p>Edit Online</p>
@@ -300,7 +300,7 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                                 <img src={editOnline?themeUi==="REGALBLAZE"?"/assets/img/VectorFLOW/NMS/edit-online-regal.svg":"/assets/img/VectorFLOW/NMS/edit-online.svg":"/assets/img/VectorFLOW/NMS/edit-online-disabled.svg"} style={{marginRight:'11px'}}/>
                                 <p>Edit Online</p>
                             </div>
-                        </VFButtonOutline>
+                        </VFButtonOutline> */}
                     <VFButtonOutline onClick={onModifyData} themeUi={themeUi} disabled={false} width={164}>
                         Modify Data
                     </VFButtonOutline>
@@ -505,9 +505,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                 <TaskBarContainer data-testid="taskbar" style={{width:width}}>
                     <VFTaskBarButtonGroup>
                         <BackButton/>
-                    <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnline} disabled={!deleteOnline}>  
+                    {/* <VFButtonOutline themeUi={themeUi} onClick={onDeleteOnline} disabled={!deleteOnline}>  
                             Delete Online
-                    </VFButtonOutline >
+                    </VFButtonOutline > */}
                     <VFButtonOutline themeUi={themeUi} onClick={onDeleteData} disabled={false}>
                             Delete Data
                         </VFButtonOutline>

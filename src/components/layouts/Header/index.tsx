@@ -21,22 +21,12 @@ const Header = (props:HeaderProps) => {
   let timeoutId: any;
 
   const renderNamePage = () => {
-    if (location.pathname === '/manual-upload') {
-      return <span>{t('header.manualUpload')}</span>
-    } else if (location.pathname === '/') {
-      return <span>{t('header.pendingISTRequests')}</span>
-    } else if (location.pathname === '/ist-forced-closure') {
-      return <span>{t('header.ISTForcedClosure')}</span>
-    } else if (location.pathname === '/store-status') {
-      return <span>{t('header.storeStatus')}</span>
-    } else if (location.pathname === '/profile') {
+    if (location.pathname === '/profile') {
       if (user.user.is_admin || user?.roles?.permission?.includes('IST Admin')) {
         return <span>{t('header.userAdministration')}</span>
       } else {
         return <span>{t('header.myProfile')}</span>
       }
-    } else if (location.pathname === '/availability-comparison') {
-      return <span>{t('header.availabilityComparison')}</span>
     }
   }
 
@@ -140,16 +130,37 @@ const Header = (props:HeaderProps) => {
               </HeaderStyled.SCHeaderContent>
             )}
           </HeaderStyled.SCHeaderBoxIst>
-          <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{right: 0, marginTop: "-110px"}}>
+          <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ right: 0, marginTop: "-110px" }}>
             <HeaderStyled.SCImg src="/assets/VectorFlow_black.svg" alt="logo" isHideLogo={isHideLogo} />
           </HeaderStyled.SCWrapperImg>
         </>
       )
     }
 
-    if(urlExcludeHeader.includes(location.pathname)){
-      return(
+    return (
+      <>
+        <HeaderStyled.SCHeaderBox
+          style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 2,
+            paddingTop: 15
+          }}
+        >
+          <HeaderStyled.SCHeaderText>
+            {renderNamePage()}
+          </HeaderStyled.SCHeaderText>
+        </HeaderStyled.SCHeaderBox>
+
         <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ display: 'flex', alignItems: 'center' }}>
+          {!process.env.REACT_APP_CLIENT_LOGO && !process.env.REACT_APP_CLIENT_NAME &&
+            <HeaderStyled.SCImg
+              marginLeft={"15px"}
+              src="/assets/VectorFlow_black.svg"
+              alt="logo"
+              isHideLogo={isHideLogo}
+            />
+          }
           {process.env.REACT_APP_CLIENT_LOGO && (
             <HeaderStyled.SCImg
               src={process.env.REACT_APP_CLIENT_LOGO.toString()}
@@ -158,34 +169,15 @@ const Header = (props:HeaderProps) => {
             />
           )}
           {process.env.REACT_APP_CLIENT_NAME && (
-            <HeaderStyled.ClientNameText isHideLogo={isHideLogo}>
+            <HeaderStyled.ClientNameText marginLeft={!process.env.REACT_APP_CLIENT_LOGO && "15px"} isHideLogo={isHideLogo}>
               {process.env.REACT_APP_CLIENT_NAME}
             </HeaderStyled.ClientNameText>
           )}
         </HeaderStyled.SCWrapperImg>
-      )
-    }
-
-    else {
-      return (
-        <HeaderStyled.SCHeaderBox
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 2,
-            paddingTop:15
-          }}
-        >
-          <HeaderStyled.SCHeaderText>
-            {renderNamePage()}
-          </HeaderStyled.SCHeaderText>
-          <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo}>
-            <HeaderStyled.SCImg src="/assets/VectorFlow_black.svg" alt="logo" isHideLogo={isHideLogo} />
-          </HeaderStyled.SCWrapperImg>
-        </HeaderStyled.SCHeaderBox>
-      )
-    }
+      </>
+    )
   }
+  
 
   return <>{renderHeader()}</>
 }

@@ -1,12 +1,10 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useState,useRef} from 'react';
 import moment from 'moment';
 import { useUserData } from "../../../../../context/index";
-import { DatePickerWrapper } from "./styles"
-
-// in these component i need to change the color theme dynamically i.e the color of the date picker should be changed dynamically
+import { DatePickerWrapper ,ImageWrapper,DateInputWrapper,ButtonWrapper,TextInputWrapper} from "./styles"
 
 const DueDateCellRenderer = (params: any) => {
-
+      const dateInputRef: any = useRef(null); 
     const [currDate, setCurrDate] = useState(params.data.dd);
     const format2 = "YYYY-MM-DD"
     const d = new Date();
@@ -22,54 +20,55 @@ const DueDateCellRenderer = (params: any) => {
         }
     },[params.node.selected])
 
+    const openDatePicker = () => {
+    if (params.node.selected && dateInputRef.current?.showPicker) {
+      dateInputRef.current.showPicker();
+    }
+  };
+
     return (
-      <DatePickerWrapper theme={themeUi}>
-        <input
-          type="date"
-          className="date-pick"
-          id="dateField"
-          data-testid="datepicker"
-          style={{
-            // top: '141px',
-            left: "651px",
-            // width: '80%',
-            // height: '100%',
-            textAlign: "left",
-            background: "transparent",
-            font: "24px",
-            zoom: 0.75,
-            letterSpacing: "0px",
-            color: "transparent",
-            opacity: 1,
-            fontSize: "15px",
-            padding: "2%",
-            fontFamily: "Roboto",
-            border: "0px solid white",
-            pointerEvents: !params.node.selected ? "none" : "unset",
-            cursor: !params.node.selected ? "not-allowed" : "pointer",
-          }}
-          min={datetime}
-          disabled={!params.node.selected}
-          onChange={(e) => {
-            params.data.dd = e.target.value;
-            setCurrDate(e.target.value);
-          }}
-          value={!params.node.selected ? params.data.oldDate : currDate}
-        />
-        <p
-          style={{
-            position: "absolute",
-            zIndex: "2",
-            top: "9%",
-            left: "25%",
-            padding: "0.8% 6%",
-            background: "transparent",
-          }}
-        >
-          {!params.node.selected ? params.data.oldDate : currDate}
-        </p>
-      </DatePickerWrapper>
+    <DatePickerWrapper onClick={openDatePicker}>
+      <TextInputWrapper
+        type="text"
+        value={!params.node.selected ? params.data.oldDate : currDate}
+        placeholder="DD-MM-YYYY"
+        readOnly
+        style={{
+      background:'transparent',
+      paddingLeft:'-10px',
+      color: params.data.oldDate===currDate? 'black' : '#BC3D81',
+
+      }}
+      />
+
+      <DateInputWrapper
+        type="date"
+        ref={dateInputRef}
+        value={!params.node.selected ? params.data.oldDate : currDate}
+        min={datetime}
+        onChange={(e) => {
+          params.data.dd = e.target.value;
+          setCurrDate(e.target.value);
+        }}
+        data-testid="datepicker"
+        disabled={!params.node.selected}
+      />
+
+      {params.node.selected && (
+        <ButtonWrapper type="button">
+          <ImageWrapper
+            src={
+              themeUi === "REGALBLAZE"
+                ? "/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg"
+                : "/assets/img/mto/OrderRescheduling/edit-calendar.svg"
+            }
+            alt="calendar-icon"
+          />
+        </ButtonWrapper>
+      )}
+    </DatePickerWrapper>
     );
 }
 
 export default DueDateCellRenderer
+

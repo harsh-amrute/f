@@ -122,7 +122,7 @@ export const SKULocationSchema = Joi.object({
     pt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).allow(null,'').messages({'number.unsafe':`Modified PSO Threshold should be less than ${MAX_DECIMAL_VAL}`}),
     dpt:Joi.number().min(MIN_DECIMAL_VAL).max(MAX_DECIMAL_VAL).messages({'number.unsafe':`Default PSO Threshold should be less than ${MAX_DECIMAL_VAL}`}),
     npr:Joi.number().integer().min(0).max(100000000).allow(null,''),
-    frf:Joi.string().valid("fg", "rm").insensitive().allow(null, '').messages({'any.only':`"frf" must be one of [fg, rm]`,'string.base': `"frf" must be one of [fg, rm]`,}), //make this case insensitive
+    frf:Joi.string().valid("fg", "rm").insensitive().messages({'any.only':`"frf" must be one of [fg, rm]`,'string.base': `"frf" must be one of [fg, rm]`}), //make this case insensitive
     da:Joi.string().valid("yes", "no", "y", "n", 1, 0, "1", "0").insensitive().default(1).messages({'any.only':`"da" must be one of [yes, no, y, n, 1, 0]`, 'string.base': `"da" must be one of [yes, no, y, n, 1, 0]`}),
     spr:Joi.number().integer().min(0).max(100000000).allow(null,''),
     // NormPercentReservation:Joi.number().integer().min(0).max(100).default(0),

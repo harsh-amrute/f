@@ -19,24 +19,27 @@ interface IGridViewProps {
     setCurrentGridRef: any,
     currentGridRef: any,
     columnState: any,
-    appliedFilters?: any
+    appliedFilters?: any,
+    userPageSize?: number,
+    setUserPageSize?:any,
+    handleSaveClick?: any,
+    userConfigFetched?:any
 }
 
 const GridView = (props: IGridViewProps) => {
 
-    const { getData, isLoading, isError, isSuccess, setCurrentGridRef, currentGridRef, columnState, colDef, appliedFilters } = props;
+    const { getData, isLoading, isError, isSuccess, setCurrentGridRef, currentGridRef, columnState, colDef, appliedFilters, userPageSize, setUserPageSize, handleSaveClick, userConfigFetched } = props;
 
     const gridRef = useRef<any>(null);
     const [gridData, setGridData] = useState([]);
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalRows, setTotalRows] = useState<number>(0);
-
+    
     const defaultColDef = {
         autoHeaderHeight: true,
         filter: "agTextColumnFilter",
         floatingFilter: true,
-
         enableRowGroup: true,
         floatingFilterComponentParams: { suppressFilterButton: true },
         tooltipComponent: CustomTagTooltip,
@@ -68,10 +71,10 @@ const GridView = (props: IGridViewProps) => {
         },
     };
 
-    const getGridData = async (params: any) => {
+    const getGridData = async (params: any, page_Size?: any) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const response = await getData({...params, appliedFilters: formatedFilters});
+            const response = await getData({ ...params, appliedFilters: formatedFilters, page_size: page_Size || userPageSize || pagination.mtoPageSize });
             setGridData(response?.data?.data?.results || []);
             setTotalRows(response?.data?.data?.count || 0)
         }
@@ -83,14 +86,15 @@ const GridView = (props: IGridViewProps) => {
 
     const handlePageChange = (current: any) => {
         setCurrentPage(current);
-        getGridData({ graphflag: 0, page: current })
+        getGridData({ graphflag: 0, page: current})
     }
 
     useEffect(() => {
-        getGridData({ graphflag: 0, page: 1 });
-        setCurrentPage(1);
-
-    }, [appliedFilters])
+        if (Object.keys(appliedFilters).length && userPageSize) {
+            getGridData({ graphflag: 0, page: 1 });
+            setCurrentPage(1);
+        }
+    }, [appliedFilters, userConfigFetched]);
 
     useEffect(() => {
         if (isSuccess) {
@@ -99,10 +103,19 @@ const GridView = (props: IGridViewProps) => {
         if (isError) {
             notifyError("Failed to load data!")
         }
-    }, [isSuccess, isError]) 
+    }, [isSuccess, isError]);
+
+    const savePageSize = (pageSize: number) => {
+        if (pageSize) {
+            setCurrentPage(1);
+            setUserPageSize(pageSize);
+            handleSaveClick(undefined, pageSize);
+            getGridData({ graphflag: 0, page: 1 }, pageSize);
+        }
+    };
 
     useEffect(() => {
-        if (currentGridRef?.current && columnState?.length && colDef.length > 0) {
+        if (currentGridRef?.current && columnState?.length) {
             const result = currentGridRef?.current?.api.applyColumnState({
                 state: columnState,
                 applyOrder: true
@@ -111,7 +124,7 @@ const GridView = (props: IGridViewProps) => {
                 console.error('Failed to apply column state');
             }
         }
-    }, [columnState]);
+    }, [columnState, currentGridRef]);
 
     return (
 
@@ -148,12 +161,15 @@ const GridView = (props: IGridViewProps) => {
             />
             <VFPagination
                 selectedRows={0}
-                rowsPerPage={pagination.mtoPageSize}
+                rowsPerPage={userPageSize || pagination.mtoPageSize}
                 totalRows={totalRows}
                 currentPage={currentPage}
                 handleChangePage={handlePageChange}
                 resetGridRef={currentGridRef}
                 isDisabled={isDisabled}
+                customPageSizeEnabled ={true}
+                savePageSize={savePageSize}
+                userPageSize={userPageSize}
             />
         </SCDynamicContainer>
 
