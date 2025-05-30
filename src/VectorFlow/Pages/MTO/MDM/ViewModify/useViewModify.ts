@@ -531,7 +531,9 @@ const useViewModify = (pageType: string) => {
                   backgroundColor: "#f0f0f0", 
                 }
               } else if (data?.iu) {
-                return { color: "rgb(128, 0, 64)" };
+                return { color: "rgb(173, 5, 89)" };
+              }else if(data?.ia){
+                return { color: "rgb(173, 5, 89)" };
               }
               return {}; // ensure a default return to avoid undefined
             }
@@ -611,7 +613,7 @@ const useViewModify = (pageType: string) => {
           });
           
           newVal.err = {
-            error: errorOrders[0].message,
+            error: errorOrders[0]?.message,
             warning: "",
           };
         } else {
@@ -710,9 +712,7 @@ const useViewModify = (pageType: string) => {
 
       allRows.forEach((e: any, index: number) => {
         const newVal = _.cloneDeep(e);
-
         const {error} = CCR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
-
         if(error){
 
           const fieldOrders = activeMaster.fields.map(field =>field.key)
@@ -722,7 +722,7 @@ const useViewModify = (pageType: string) => {
           })
 
           newVal.err = {
-            error : errorOrders[0].message,
+            error : errorOrders.length && errorOrders[0]?.message,
             warning : ""
           }
           newData.push(newVal)
@@ -1857,7 +1857,6 @@ const useViewModify = (pageType: string) => {
     dispatch(SET_RECORD_COUNT(tempRecordCount));
     dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
   };    
-
   const onUploadMaster = async () => {
     let intervalID: any;
     try {
@@ -1865,7 +1864,7 @@ const useViewModify = (pageType: string) => {
         notifyError("Please select a file to upload.");
         return;
       }
-      const selectedColumns = ref.current?.api.getAllDisplayedColumns();
+      // const selectedColumns = ref.current?.api.getAllDisplayedColumns();
       // const toasId = notifyLoader("Reading File");
       setIsOverlayVisible(true);
 
@@ -1874,8 +1873,7 @@ const useViewModify = (pageType: string) => {
       const buffData = await parseMTOExcelData(
         file,
         activeMaster,
-        pageType,
-        selectedColumns
+        pageType
       );
       // }
       getInitialData();

@@ -931,8 +931,8 @@ const useTaskPendingForReview = ()=>{
         const newApprovedData = ConvertFromPoogiData(detailTableRowData);
 
         let isValid:any = true;
-
-        detailTableRowData.forEach((el:any)=>{
+        
+        newApprovedData.forEach((el:any)=>{
             if(el.ia===false && el.cm===""){
                 isValid = false;
             }

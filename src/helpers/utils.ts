@@ -4686,7 +4686,7 @@ export const mapDraftDataToMTOTableRowData = (rowData: any[]) => {
   return result
 }
 
-export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageType: string, selectedColumns: any) => {
+export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageType: string) => {
 
   const currMasterKeys = master?.fields?.map((field: Field) => field.key); //array containing keys of current master fields
   const result: object[] = [];
@@ -4698,13 +4698,12 @@ export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageT
   if(pageType==='add'){
     selectedKeys = master?.fields?.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
   }
-  else{
-    selectedKeys = selectedColumns?.map((col:any)=>col.colId);
-  }
+  
    
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
   });
+
   //displayName to key mapper
   const headerKeys = data[0]?.map((headerName: any) => {
     const fieldObj = master?.fields?.find((field: Field) => field.displayName === headerName);
@@ -4712,116 +4711,26 @@ export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageT
     else return '';
   })
 
-
   if(master.id===501 || master.id===502 || master.id===503 || master.id===504){
-    const objKeys: string[] = [];
-    selectedColumns?.forEach((ele:any)=>{
-      objKeys.push(ele.colId);
-    })
 
     const bufferData:any = [];
     for(let i=1; i< data?.length; i++){
       const buffData:any = {};
       for(let j=0; j< data[i].length; j++){
-        buffData[objKeys[j]]= data[i][j];
+        buffData[headerKeys[j]]= data[i][j];
       }
       buffData["err"]= "";
       bufferData.push(buffData);
     }
-
     return bufferData;
   }
 
-  let headers: any = [] //Not Selected Headers
-  let error = false;
+ 
 
-
-  if (pageType === 'modify') {
-
-    //Check if File Contains a Column that is not Downloadabl;
-    headerKeys.forEach((key: string) => {
-      const fieldObj = master.fields.find((field: Field) => (field.key === key) && !field.isDownload)
-      if (fieldObj) {
-        headers.push(fieldObj.displayName);
-        error = true;
-      }
-    })
-
-    if (error) {
-      throw new Error(`File Contains ${headers.join(', ')} field which are not allowed to Upload.`)
-    }
-
-  }
-
-  //Check if All Selected Keys are Present in The Uploaded
-  selectedKeys.forEach((key: string) => {
-    const fieldObj = master.fields.find((field: Field) => field.key === key)
-    if (!headerKeys.includes(key) && fieldObj?.isDownload) {
-      error = true;
-      headers?.push(master.fields.find((field: Field) => field.key === key)?.displayName)
-    }
-  })
-
-  if (error) {
-    throw new Error(`File is Missing ${headers.join(', ')}`);
-  }
-
-  error = false;
-  headers = [];
-
-  headerKeys.forEach((key: string) => {
-
-    if (!currMasterKeys.includes(key)) {
-      throw new Error("Please Upload a Valid Master");
-    }
-    if (!selectedKeys.includes(key)) {
-      error = true;
-      headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
-    }
-  })
-
-  if (error) {
-    throw new Error(`File Contains ${headers.join(', ')} which were not selected`)
-  }
-
-  // let rowObj:any = {};
-  // let temp = 0;
   if (data.slice(1).length === 0) {
     throw new Error(`File Contains zero rows.`)
   }
-  // data.slice(1).map((row:any)=>{
-
-  //   row.map((value:any)=>{
-  //     const attributeName = headerKeys[temp];
-  //     rowObj[attributeName.toString()] = "" + value;
-  //     temp+=1;
-  //   })
-  //   temp = 0;
-  //   //Replace with empty string if null (for Custom keys)
-  //   Object.keys(rowObj).forEach((key:any)=>{
-  //     if(customKeys.includes(key) && rowObj[key]===null){
-  //       rowObj[key] = ''
-  //     }
-  //   })
-
-  //   const {error,warning} = checkError(rowObj,master,pageType);
-
-  //   if(error !== undefined){
-  //     rowObj.error = error;
-  //   }
-  //   if(warning !== undefined){
-  //     rowObj.warning = warning;
-  //   }
-  //   const doesRowExists = result.find((row:any)=>JSON.stringify(row)===JSON.stringify(rowObj));
-  //   if(doesRowExists){
-  //     throw new Error("Duplicate Rows Found in File");
-  //   }
-  //   result.push(rowObj);
-  //   rowObj={}
-
-  // })
-
-
+  
 
 
   return result;

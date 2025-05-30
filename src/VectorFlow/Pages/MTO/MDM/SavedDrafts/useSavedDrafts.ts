@@ -174,7 +174,7 @@ const useSavedDrafts = ()=>{
                 editable: (ActionType == "Modify") ? false : true,
                 cellEditor: 'agRichSelectCellEditor',
                 cellEditorParams: {
-                  values: Object.values(ccrGroupMaster || {}).map((group: any) => group.ccr_group_code),
+                  values: Object.keys(ccrGroupMaster || {}),
                 },
               };
               if (col.field === "bt")

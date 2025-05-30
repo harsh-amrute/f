@@ -22,8 +22,7 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
     "any.required": "MLT cannot be empty!",
   }),
 
-  bt: Joi.string().required().messages({
-    "string.base": "Enter the Buffer Type!",
+  bt: Joi.required().messages({
     "any.required": "Enter the Buffer Type!",
   }),
 
@@ -46,6 +45,7 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
       "string.base": "Is Blue must be either true or false!",
       "any.only": "Is Blue must be either true or false!",
       "any.required": "Is Blue is required!",
+      "alternatives.match": "Is Blue must be either true or false!" ,
     }),
 
   iv: Joi.boolean().allow(null).default(false),
@@ -55,9 +55,11 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
   err : Joi.object({
     error: Joi.string().allow("").optional(), 
     warning: Joi.string().allow("").optional(),
-  }).optional()
+  }).optional(),
   
-  
+  rid : Joi.any().optional(),
+
+  bid: Joi.any().optional(),
 });
 
 
@@ -68,7 +70,7 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
     "any.required": "CCR name cannot be empty!",
   }),
 
-  cgid: Joi.string().required().messages({
+  cgid: Joi.required().messages({
     "string.base":"CCR group cannot be empty!",
     "any.required": "Choose a valid ccrgroup from the dropdown!",
   }),
@@ -85,13 +87,13 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
     "number.min": "CCR Capacity Workload (cwl) should be greater than 0!",
   }),
 
-  dp: Joi.string().required().messages({
+  dp: Joi.required().messages({
     "string.base":"Department cannot be empty!",
     "any.required": "Choose a valid department from the dropdown!",
   }),
 
-  pl: Joi.string().required().messages({
-    "string.base":"Plant cannot be empty!",
+  pl: Joi.required().messages({
+    // "string.base":"Plant cannot be empty!",
     "any.required": "Choose a valid plant from the dropdown!",
   }),
 
