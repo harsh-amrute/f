@@ -891,7 +891,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
     useEffect(() => {
         const filteredRows = rows?.filter((row: any) => {
-            return row.prodc && (row.rn || row.newRoute) ? false : true
+            return row.prodc && ((row.rn != null && row.rn !=="") || row?.newRoute?.length) ? false : true
         }) || [];
         setDisabled(filteredRows.length != 0)
     }, [rows])

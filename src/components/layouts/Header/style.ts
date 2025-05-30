@@ -166,19 +166,22 @@ export const SCWrapperImg = styled.div<{ isHideLogo: boolean }>`
   transition: ${globalStyles.customTransition};
   z-index:1000;
   `
-export const ClientNameText = styled.div<{ isHideLogo: boolean }>`
+export const ClientNameText = styled.div<{marginLeft:any, isHideLogo: boolean }>`
   flex: 1;
   white-space: nowrap;
-  margin-left: 15px;
+  margin-left: ${props => props.marginLeft};
   overflow: hidden;
   text-overflow: ellipsis;
   // display: ${props => (props.isHideLogo ? 'none' : 'block')};
   z-index: 1000;
+  font-size: 1.3rem;
+  font-weight: 500;
+  font-family:Roboto;
 `;
 
-export const SCImg = styled.img<{ isHideLogo: boolean }>`
+export const SCImg = styled.img<{marginLeft?:any, isHideLogo: boolean }>`
   height: 40px; // Example size
-  margin-right: 8px;
   // display: ${props => (props.isHideLogo ? 'none' : 'block')};
   z-index: 1000;
+  margin-left: ${props => (props.marginLeft ? props.marginLeft : '')};
 `;

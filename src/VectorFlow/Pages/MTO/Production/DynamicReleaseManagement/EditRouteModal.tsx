@@ -9,7 +9,6 @@ import { notifyError, notifySuccess } from '../../../../../helpers/notify'
 
 
 const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, setDataUpdated, setRouteNum, lineCCRDetails, master, setRoute, route, showModal, setShowModal, themeUi, orderKey }: any) => {
-    
     const { mutateAsync: saveRouteData, isLoading, isSuccess, isError } = useSaveRouteData();
 
     type Route = {
@@ -163,6 +162,10 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
         }
     }, [ccrGroups]);
 
+    const isSaveDisabled = useMemo(() => {
+        return !route.length || route.some((route: any) => !route[0] || !route[1]);
+    }, [route]);
+
     return (
         <VFModalCard openModal={showModal} closeModal={() => { setRouteNum(''), setShowModal((false)) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
             {isLoading && <OverlayLoader message='Saving route data' />}
@@ -210,7 +213,9 @@ const EditRouteModal = ({selectedPlant, itemTypeId,chartoptions, dataUpdated, se
                             color: 'white',
                             borderRadius: '6px',
                             background: `${themeUi ? '#820F4C' : '#820F4C'}`,
-                            boxShadow: '0px 6px 25px #00000029'
+                            boxShadow: '0px 6px 25px #00000029',
+                            pointerEvents: isSaveDisabled ? "none" : "auto",
+                            opacity: isSaveDisabled ? "0.5" : "",
 
                         }}
                             onClick={() => { SaveRoute() }}

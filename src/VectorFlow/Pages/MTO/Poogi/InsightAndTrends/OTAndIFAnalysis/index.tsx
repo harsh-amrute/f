@@ -62,7 +62,7 @@ const OTAndIFAnalysis = () => {
     const [masterUIConfig, setMasterUIConfig] = useState([]);
 
     const [userPageSize, setUserPageSize] = useState<number>();
-
+    const [userConfigFetched, setUserConfigFetched] = useState(false);
     
     const getGraphData = async (params: any,pageSize?:any) => {
 
@@ -78,9 +78,8 @@ const OTAndIFAnalysis = () => {
             }
         }else{
             try {
-                const response = await getOTAndIFAnalysisData({...params,
-                page_size : pageSize || pagination.mtoPageSize
-                    
+                const response = await getOTAndIFAnalysisData({
+                    ...params
                 });
                 setGraphData(response.data.data);
             }
@@ -114,8 +113,9 @@ const OTAndIFAnalysis = () => {
                 rn_id: UIGridCode.PoogiOTAndIFAnalysis
             });
 
+            setUserConfigFetched(true);
             const newConfig = data?.data?.data[0]? JSON.parse(data?.data?.data[0]?.columns_settings) || [] : [];
-            setUserPageSize(newConfig.page_size ? Number(newConfig.page_size) : pagination.mtoPageSize);
+            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : pagination.mtoPageSize);
             setColumnState(newConfig.cs);
             
         } catch (error) {
@@ -134,15 +134,16 @@ const OTAndIFAnalysis = () => {
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getFilterData();
-    },[userPageSize])
+    }, []);
+    
     const handleSaveClick = async (coldefs?: any, page_size?: number) => {
         try {
             if (coldefs) {
                 const fullConfig = { 
                     cs: coldefs, 
-                    page_size: userPageSize 
+                    pageSize: userPageSize 
                 };
                 const payload = {
                     un: user.user.name,
@@ -154,7 +155,7 @@ const OTAndIFAnalysis = () => {
             } 
             else if (page_size) {
                 const config = columnState;
-                const fullConfig = { cs: config, page_size: page_size };
+                const fullConfig = { cs: config, pageSize: page_size };
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.PoogiOTAndIFAnalysis,
@@ -166,7 +167,7 @@ const OTAndIFAnalysis = () => {
             else {
                 if (currentGridRef?.current?.api) {
                     const config = currentGridRef.current.api.getColumnState();
-                    const fullConfig = { cs: config, page_size: userPageSize };
+                    const fullConfig = { cs: config, pageSize: userPageSize };
                     
                     const payload = {
                         un: user.user.name,
@@ -186,17 +187,6 @@ const OTAndIFAnalysis = () => {
         setIsReset(true);
     }
 
-    const savePageSize = (pageSize: number) => {
-        if (pageSize) {
-            setUserPageSize(pageSize);
-            handleSaveClick(undefined, pageSize);
-            // if (isGridView) {
-            //     getGraphData({ graphflag: 0 }, pageSize);
-            // }
-        }
-      
-    };
-
     const getFilterData = async () => {
         try {
           const response = await getPageWiseFilterData({ page_name: FilterPageName.Poogi_OTIF_And_Analysis });
@@ -213,7 +203,7 @@ const OTAndIFAnalysis = () => {
     }, [HeaderData])
 
     useEffect(() => {
-        // getGraphData({ graphflag: 1 });
+        getGraphData({ graphflag: 1 }, userPageSize || pagination.mtoPageSize);
         setColumnDef();
     }, [])
 
@@ -233,26 +223,15 @@ const OTAndIFAnalysis = () => {
         }
     }, [isReset]);
 
-    useEffect(() => {
-        getGraphData({ graphflag: 1 }, userPageSize || pagination.mtoPageSize);
-    }, []);
-
     
     useEffect(() => {
         if (currentGridRef?.current) {
             getUserColumnConfig();
             setMasterUIConfig(currentGridRef?.current.api.getColumnState());
-            // getFilterData()
         }
     }, [colDef, currentGridRef]);
 
-    // useEffect(() => {
-    //     if (userConfigFetched && isGridView && userPageSize) {
-    //       getGraphData({ graphflag: 1}, userPageSize);
-    //       getFilterData()
-    //       getUserColumnConfig();
-    //     }
-    // }, [userPageSize, userConfigFetched, isGridView]);
+    
 
     const ExportExcelData = () =>{
         getGraphData({ isExcelExport: true });
@@ -292,12 +271,12 @@ const OTAndIFAnalysis = () => {
                                 <Allotment vertical={false} separator={false}   >
                                     <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                         <BTRAllomentSection>
-                                            <OTFailedGraph  OTFailedData={graphData?.ot}/>
+                                            <OTFailedGraph OTFailedData={graphData?.ot} />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
                                     <Allotment.Pane minSize={400} preferredSize={'50%'} className='allotment-pane-custom'>
                                         <BTRAllomentSection>
-                                            <IFFaildGraph IFFailedData={graphData?.if}/>
+                                            <IFFaildGraph IFFailedData={graphData?.if} />
                                         </BTRAllomentSection>
                                     </Allotment.Pane>
                                 </Allotment>
@@ -307,10 +286,9 @@ const OTAndIFAnalysis = () => {
                     :
                     <>
                         <GridView
-                            getData={(params:any) => getOTAndIFAnalysisData({
-                                ...params,
-                                page_size: userPageSize || pagination.mtoPageSize
-                            })}  
+                            getData={(params: any) => getOTAndIFAnalysisData({
+                                ...params
+                            })}
                             colDef={colDef}
                             isLoading={isLoading}
                             isError={isError}
@@ -319,8 +297,10 @@ const OTAndIFAnalysis = () => {
                             currentGridRef={currentGridRef}
                             columnState={columnState}
                             appliedFilters={appliedFilters}
-                            savePageSize={savePageSize}
                             userPageSize={userPageSize}
+                            setUserPageSize={setUserPageSize}
+                            userConfigFetched={userConfigFetched}
+                            handleSaveClick={handleSaveClick}
                         />
                     </>
             }

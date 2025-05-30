@@ -4,7 +4,8 @@
   "private": true,
   "author": "TSO",
   "dependencies": {
-    "@ag-grid-community/react": "^31.3.1",
+    "@ag-grid-community/react": "^31.3.4",
+    "@ag-grid-community/core": "^31.3.4",
     "@headlessui/react": "^1.7.11",
     "@lottiefiles/react-lottie-player": "^3.5.2",
     "@reduxjs/toolkit": "^1.9.7",

@@ -89,8 +89,9 @@ const DueDateCellRenderer = (params: any) => {
         readOnly
         onClick={toggleCalendar}
         style={{
-          background: 'transparent',
-          paddingLeft: '-10px'
+          background:'transparent',
+          paddingLeft:'-10px',
+          color: params.data.oldDate===currDate? 'black' : '#BC3D81',
         }}
       />
 
