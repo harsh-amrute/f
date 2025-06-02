@@ -1044,7 +1044,8 @@ const useViewModify = (pageType:string) => {
           setDownloadData(false);
           setTempDownloadData(false);
           setCurrentPage(1);
-        }
+          setFile(undefined)
+          }
          catch (error:any) {
           toast.dismiss();
           console.error(error)
