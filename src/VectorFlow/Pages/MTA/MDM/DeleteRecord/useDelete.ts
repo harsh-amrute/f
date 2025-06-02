@@ -367,13 +367,13 @@ const useDelete=()=>{
             const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
             if(isDisaster)return
               if(localErrorCount>0 || errorCount>0){
-                let errorRowData
+                  let errorRowData: any[] = [];
                 if(localErrorCount>0){
                   errorRowData = createErrorRowData(localErrorData,activeMaster.id)
                 }
-                else{
-                  errorRowData = createErrorRowData(errorData,activeMaster.id)
-                }
+                // else{                  
+                //   // errorRowData = createErrorRowData(errorData,activeMaster.id)
+                // }
                 if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                   addInvalidDataColDefs('error')
                 }
