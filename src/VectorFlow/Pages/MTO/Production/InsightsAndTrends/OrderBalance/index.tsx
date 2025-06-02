@@ -6,7 +6,7 @@ import {
   BTRTableWrapper,
   HorizontalViewWrapper,
 } from "./styles";
-import GridView from "../../../Common/GridView";
+// import GridView from "../../../Common/GridView";
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
 import TrailDeptCount from "./TrailDeptCount";
 import TrailDeptBalance from "./TrailDeptBalance";
@@ -26,6 +26,7 @@ import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
+import GridView from "../OrderAtRisk/GridView";
 
 
 
@@ -82,6 +83,8 @@ const OrderBalance = () => {
   const [userPageSize, setUserPageSize] = useState<any>();
   const [totalRow, setTotalRow] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const [gridData, setGridData] = useState([]);
+
 
 
 
@@ -132,6 +135,7 @@ const OrderBalance = () => {
         // setGraphData(response?.data?.data[0]);
         console.log(response.data.data.g)
         setGraphData(response?.data?.data?.g)
+        setGridData(response?.data?.data?.g || []);
       }
       catch (e) {
         console.log(e);
@@ -337,27 +341,38 @@ const OrderBalance = () => {
       />
       <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
-          <GridView
-            getData={(params:any) => getOrderAtRiskData({
-                      ...params,
-                      page_size: userPageSize || pagination.mtoPageSize
-            })}   
-            // getData={graphData}
-            // gridData={graphData}
-            colDef={colDef}
-            isLoading={isLoading}
-            isError={isError}
-            isSuccess={isSuccess}
-            setCurrentGridRef={setCurrentGridRef}
-            currentGridRef={currentGridRef}
-            columnState={columnState}
-            appliedFilters={appliedFilters}
-            userPageSize={userPageSize}
-            savePageSize={savePageSize}
-            // handleChangePage={handlePageChange}
+          // <GridView
+          //   getData={(params:any) => getOrderAtRiskData({
+          //             ...params,
+          //             page_size: userPageSize || pagination.mtoPageSize
+          //   })}   
+          //   // getData={graphData}
+          //   // gridData={graphData}
+          //   colDef={colDef}
+          //   isLoading={isLoading}
+          //   isError={isError}
+          //   isSuccess={isSuccess}
+          //   setCurrentGridRef={setCurrentGridRef}
+          //   currentGridRef={currentGridRef}
+          //   columnState={columnState}
+          //   appliedFilters={appliedFilters}
+          //   userPageSize={userPageSize}
+          //   savePageSize={savePageSize}
+          //   // handleChangePage={handlePageChange}
 
 
-          />
+          // />
+           <GridView
+                      gridData={gridData}
+                      colDef={colDef}
+                      setCurrentGridRef={setCurrentGridRef}
+                      currentGridRef={currentGridRef}
+                      columnState={columnState}
+                      userPageSize={userPageSize}
+                      handleChangePage={handlePageChange}
+                      savePageSize={savePageSize}
+          
+                    />
         ) : (
           <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom:"10px" }}>
             <Allotment vertical={false} separator={false}>
