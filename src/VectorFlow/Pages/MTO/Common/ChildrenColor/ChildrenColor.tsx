@@ -8,7 +8,7 @@ const ChildrenColor = (props: ICellRendererParams) => {
         str = "Full Kit"
     }
     else if (props.data.clr === 'Orange') {
-        str = "Partial Kit"
+        str = "Partial Kit/No kit"
     }
     return (
         str !== ""?
