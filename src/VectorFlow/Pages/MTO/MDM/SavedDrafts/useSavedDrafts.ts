@@ -203,7 +203,7 @@ const useSavedDrafts = ()=>{
               else return col;
         })
       };
-      getCCRNamesFromId(ccrGroupMaster,[4,5])
+      
       const convertToPoogiDraftData = (data: any, page: any) => {
         const result: any[] = [];
       
