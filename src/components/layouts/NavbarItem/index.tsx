@@ -64,9 +64,10 @@ const NavbarItem = ({
 
     const allChildUrls = listMenu.child.map((i: any) => i.url);
 
-    if(!allChildUrls.some((url: string) => user?.url_permission.includes(url))) {
+    if(!listMenu?.child?.[0].child && !allChildUrls.some((url: string) => user?.url_permission.includes(url))) {
       return null;
     }
+    
     return (
       <SCMenuItem
         key={listMenu.id}

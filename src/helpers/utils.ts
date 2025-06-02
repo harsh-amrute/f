@@ -4968,3 +4968,16 @@ export function getColumnDefinationsMTA(
 
 }
 
+ export const getNestedChildren = (children: Array<any>): any => {
+    const stack = children? [...children]:[];
+    const result = [];
+    while (stack.length > 0) {
+      const current = stack.pop();
+      if (current.child) {
+        stack.push(...current.child);
+      } else {
+        result.push(current);
+      }
+    }
+    return result.reverse();
+  };
