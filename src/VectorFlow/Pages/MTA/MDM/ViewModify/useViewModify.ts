@@ -1034,9 +1034,27 @@ const useViewModify = (pageType:string) => {
             addCheckBoxColDefs();
            }
           
+          console.log("HA AHE PAGE TYPE",pageType ,result);
+          // const fieldObj =  activeMaster.fields.find((field: Field) => field.key === key)
+           console.log(activeMaster.fields);
+          // if(pageType == "remove"){
+          //   const deletableKeys = activeMaster.fields.filter(field => field.isDelete === true).map(field => field.key)
+          //   result = result.map((obj: any) => {
+          //     return Object.keys(obj).reduce((acc: any, key) => {
+          //       if (deletableKeys.includes(key)) {
+          //         acc[key] = obj[key];
+          //       }
+          //       return acc;
+          //     }, {});
+          //   })
+
+          //   console.log("HA AHE FILTERED RESULT",result);
+            
+          // }
+
           dispatch(SET_RECORD_COUNT(result.length));
           dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-          dispatch(UPDATE_ROW_DATA(result));
+          dispatch(UPDATE_ROW_DATA(result))
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false));
           setIsOverlayVisible(false);

@@ -207,6 +207,17 @@ const useDelete=()=>{
         return tempRow;
       });
 
+      const deletableKeys = activeMaster.fields.filter(field => field.isDelete === true).map(field => field.key)
+      rowData = rowData.map((obj: any) => {
+        return Object.keys(obj).reduce((acc: any, key) => {
+          if (deletableKeys.includes(key)) {
+            acc[key] = obj[key];
+          }
+          return acc;
+        }, {});
+      })
+
+
         let taskId:any   = '';
         let toastId:any = '';
         let conflictCount = 0;

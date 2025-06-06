@@ -15,7 +15,7 @@ const sampleData:Master = {
       isAdd:true,
       isDownload:true,
       isEdit:true,
-      "col_Position":'1',
+      "col_Position":'1',isDelete:true,
       "isApplicable":true,
       dataType:'String'
     },
@@ -26,7 +26,7 @@ const sampleData:Master = {
       isAdd:true,
       isDownload:true,
       isEdit:true,
-      "col_Position":'1',
+      "col_Position":'1',isDelete:true,
       "isApplicable":true,
       dataType:'String'
     },
@@ -36,7 +36,7 @@ const sampleData:Master = {
       ,visible:true,
       isAdd:true,
       isDownload:true,
-      isEdit:true,
+      isEdit:true, isDelete:true,
       "col_Position":'1',
       "isApplicable":true,
       dataType:'String'
