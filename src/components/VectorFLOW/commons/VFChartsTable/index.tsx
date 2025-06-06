@@ -28,16 +28,17 @@ const VFChartsTable = (props:any)=>{
     const {user} = useUserData()
     const theme_ui = user.user.theme_ui
 
-    const generateChartInGridTable = () =>{
-        gridRef?.current?.api?.createRangeChart({
-            chartType:chartType,
-            cellRange: {
-            columns: defaultColForCustomGraph.columns,
-            rowStartIndex:defaultColForCustomGraph.start,
-            rowEndIndex:defaultColForCustomGraph.end
-            }
-        })
-    }
+    // const generateChartInGridTable = () =>{
+
+        // gridRef?.current?.api?.createRangeChart({
+        //     chartType:chartType,
+        //     cellRange: {
+        //     columns: defaultColForCustomGraph.columns,
+        //     rowStartIndex:defaultColForCustomGraph.start,
+        //     rowEndIndex:defaultColForCustomGraph.end
+        //     }
+        // })
+    // }
 
     const myCustomTheme = {
         palette
@@ -132,7 +133,6 @@ const VFChartsTable = (props:any)=>{
             ],
         }}                                        
         onGridReady={(params) => {
-        generateChartInGridTable();
         params.api.addEventListener('filterChanged', () => {
             const filterModel = params.api.getFilterModel();
             if (Object.keys(filterModel).length > 0) {

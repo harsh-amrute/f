@@ -863,7 +863,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   const isDuplicateHeader = data[0].some((header:any,index:number)=>data[0].indexOf(header)!==index);
 
   if (data.length > parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT || "50000")) {
-    throw new Error(`Number of rows should not exceed ${process.env.REACT_APP_RECORD_UPLOAD_LIMIT}`);
+    throw new Error(`Number of rows should not exceed ${process.env.REACT_APP_RECORD_UPLOAD_LIMIT || '50000'}`);
   }
   
   if(isDuplicateHeader){
@@ -4906,13 +4906,13 @@ export function getColumnDefinationsMTA(
       headerName: data.Header || data.header,
       field: data.Col_Code || data.colCode,
       initialHide: !data.Visible,
-      pinned: null,
+      intialPinned: null,
       initialSort: null,
       sortIndex: null,
       aggFunc: null,
       rowGroup: false,
       rowGroupIndex: null,
-      pivot: false,
+      initialPivot: false,
       enablePivot: true,
       enableRowGroup:true,
       enableValue:true,
