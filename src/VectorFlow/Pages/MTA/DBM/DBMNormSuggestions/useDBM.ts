@@ -43,6 +43,8 @@ const useDBM =()=>{
 
     const [exportExcelRowData,setExportExcelRowData] = useState<Array<any>>([])
 
+    const exportTimeout = useRef<NodeJS.Timeout | null>(null);
+
     const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading } = useGetUIConfigData();
     
     const {mutateAsync:getDBMData, isLoading: isDBMDataLoading} =useGetDBMData();
@@ -62,7 +64,7 @@ const useDBM =()=>{
     const dispatch = useDispatch();
 
     const recordsPerPage = parseInt(process.env.REACT_APP_DBM_ROWS_PER_PAGE || '50');
-    const columnsToBeExcluded = ['checkbox', 'dailydatagraph', '0', 'sleep']
+    const columnsToBeExcluded = ['checkbox', 'dailydatagraph', '0', 'Sleep']
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const [DBMColumns,setDBMColumns] = useState<ColDef[]>([])
@@ -298,14 +300,31 @@ const useDBM =()=>{
 
    
 
-    const tempAgGridProps:AgGridReactProps = useMemo(()=> {
-        return {
-        onRowDataUpdated:(event:any)=>{
-           const columnsToBeIncluded = event?.api?.getAllDisplayedColumns().map((c:any)=>c.getColId()).filter((key:string)=>!columnsToBeExcluded.includes(key));
-         if(tempDownloadData) event.api.exportDataAsExcel({fileName:'DBMNormSuggestions',columnKeys:columnsToBeIncluded});
+  const tempAgGridProps: AgGridReactProps = useMemo(() => {
+    return {
+      onRowDataUpdated: (event) => {
+        const columnsToBeIncluded = gridRef.current?.api
+          .getAllDisplayedColumns()
+          .map((c) => c.getColId())
+          .filter((key: string) => !columnsToBeExcluded.includes(key));
+        // const columnsToBeIncluded = ref.current?.api?.getAllDisplayedColumns().map((c:any)=>c.getColId()).filter((key:string)=>!columnsToBeExcluded.includes(key));
+        if (
+          tempDownloadData &&
+          gridRef.current?.api &&
+          gridRef.current.api.getDisplayedRowCount() > 0
+        ) {
+          if (exportTimeout.current) clearTimeout(exportTimeout.current);
+          exportTimeout.current = setTimeout(() => {
+            event?.api?.exportDataAsExcel({
+              fileName: "DBMNormSuggestions",
+              columnKeys: columnsToBeIncluded,
+            });
+            setTempDownloadData(false);
+          }, 300); // adjust debounce as needed
         }
-      }
-    },[tempDownloadData])
+      },
+    };
+  }, [tempDownloadData, gridRef]);
 
     const getDataCount=async (filter:any) => {
         const rowDataCount =await getDBMDataCount({

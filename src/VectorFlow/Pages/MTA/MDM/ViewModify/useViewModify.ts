@@ -831,6 +831,7 @@ const useViewModify = (pageType:string) => {
       // }
 
       toggleWarningModal(true);    
+      setCurrentPage(1);
     }
 
     const onWarningModalClose = ()=>{

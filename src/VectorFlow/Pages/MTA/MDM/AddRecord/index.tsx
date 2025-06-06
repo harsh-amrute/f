@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectGroupedMasters";
 
@@ -15,8 +15,7 @@ import UploadModal from "../ViewModify/UploadModal";
 import VFTaskBar from "../ViewModify/VFTaskbar";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
-
-
+import { GridFilterWrapper ,TextBtn} from "../../../MTO/Common/VFPagination/styles";
 import { useUserData } from "../../../../../context";
 import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
 import { useDispatch } from "react-redux";
@@ -29,6 +28,7 @@ const AddRecord = () => {
 
     const {user} = useUserData()
     const themeUi = user?.user?.theme_ui;
+    const [disabled,setDisabled]=useState(true);
 
     const location = useLocation();
 
@@ -105,7 +105,21 @@ const AddRecord = () => {
         return <VFLoader/>
     }
 
-    
+         const clearGridFilter = () =>{
+                  ref?.current?.api.setFilterModel(null);
+                  setDisabled(true)
+              }
+          
+             
+              const CustomStatusPanel = () => {
+                  return (
+                      <GridFilterWrapper style={{marginTop:'25px'}}>
+                          <TextBtn onClick={clearGridFilter} disabled={disabled} themeUi={themeUi}>
+                              Clear All Grid Filters
+                          </TextBtn>  
+                      </GridFilterWrapper>           
+                  );
+              };
 
 
     if(isSelectMasterOpen){
@@ -154,9 +168,19 @@ const AddRecord = () => {
                       { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
                       { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                       { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
                     ]:
                     [],
+                    
                   }}
+                  onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setDisabled(false);
+                    } else {
+                      setDisabled(true);
+                    }
+                }}
                   />
                   <div style={{display:'none'}}>                
                     <VFTable
