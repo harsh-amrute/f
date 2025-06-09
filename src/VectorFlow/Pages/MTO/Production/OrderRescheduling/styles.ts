@@ -68,7 +68,8 @@ export const DatePickerWrapper = styled.div`
     cursor: pointer;
     flex-direction: row;
     width: 180px;
-    padding: 5px 25px;
+    padding: 5px;
+    justify-content: sapce-between;
 `;
 
 export const TextInputWrapper = styled.input<{theme: string}>`

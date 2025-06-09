@@ -27,6 +27,7 @@ import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer"
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import useColDef from '../../../../../hooks/useColDef';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 
 
 const APIFilterConfig = {
@@ -63,6 +64,7 @@ const MaterialCov = () => {
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
+  const {mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
   
     const { 
     state: currFilter, 
@@ -137,7 +139,7 @@ const MaterialCov = () => {
       try {
         const data = await getUserUIReportConfigData({
           un: user.user.name,
-          rn_id: UIGridCode.ProcMaterialCovOpenSales
+          rn_id: (detailDataObj?.allOrders)?UIGridCode.ProcMaterialCovOpenSalesAll:UIGridCode.ProcMaterialCovOpenSales
         });
   
         setUserConfigFetched(true);
@@ -168,7 +170,7 @@ const MaterialCov = () => {
         const fullConfig = { cs: config, pageSize: page_size };
         const payload = {
           un: user.user.name,
-          rn_id: UIGridCode.ProcMaterialCovOpenSales,
+          rn_id: (detailDataObj?.allOrders)?UIGridCode.ProcMaterialCovOpenSalesAll:UIGridCode.ProcMaterialCovOpenSales,
           cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
@@ -184,7 +186,7 @@ const MaterialCov = () => {
   
         const payload = {
           un: user.user.name,
-          rn_id: UIGridCode.ProcMaterialCovOpenSales,
+          rn_id: (detailDataObj?.allOrders)?UIGridCode.ProcMaterialCovOpenSalesAll:UIGridCode.ProcMaterialCovOpenSales,
           cs: JSON.stringify(fullConfig),
         };
   
@@ -272,9 +274,7 @@ const MaterialCov = () => {
         {
           field: "fk_status",
           headerName: "Status",
-          width: 400,
-          maxWidth: 400,
-          pinned: 'left'
+          minWidth: 150,
         },...coldefs]
       )
     }else{
@@ -293,7 +293,7 @@ const MaterialCov = () => {
       getUserColumnConfig();
     }
 
-  },[defaultColState])
+  },[defaultColState, detailDataObj])
 
   useEffect(() => {
     if (isReset) {
@@ -305,6 +305,8 @@ const MaterialCov = () => {
       notifySuccess("Reset successfully")
     }
   }, [isReset]);
+
+  
   
   const materialSoDetailRef = useRef<any>();
   
@@ -316,6 +318,24 @@ const MaterialCov = () => {
         materialSoDetailRef.current.getExcelExport(body)
     
   }
+
+
+  const [isAllData, setIsAllData] = useState(false);
+
+  const getSettingsData = async()=>{
+    const DBRSettingsData: any = await getDBRsettingsData()
+    const DBRSettings = DBRSettingsData.data?.data;
+
+    for(const setting of DBRSettings){
+      if(setting.flag === "MaterialSOAllData"){
+          setIsAllData(setting.value == 1 ? true : false)
+      }
+  }
+  }
+
+  useEffect(()=>{
+    getSettingsData()
+  },[])
   return (
     <div style={{ width: "100%", height: "100%" }}>
       {!toggleComponent ?
@@ -342,7 +362,7 @@ const MaterialCov = () => {
             // submitDate={() => { console.log('') }}
           />
           <div >
-            <div style={{display: 'flex', justifyContent: 'right', alignItems: 'center', width: '100%', padding: '0 1rem'}}>
+            <div style={{display: 'flex', justifyContent: isAllData?'right':'center', alignItems: 'center', width: '100%', padding: '0 1rem'}}>
 
             <BTRLayoutTabsWrapper>
               <VFFloatingTab
@@ -352,10 +372,12 @@ const MaterialCov = () => {
               />
 
             </BTRLayoutTabsWrapper>
+{ isAllData &&
 
-              <VFButton style={{marginLeft: '35%', fontSize: '12px', fontFamily: 'roboto'}} themeUi={themeUi} onClick={() =>{handleToggleComponent(true), handleParameterData({allOrders: true})}}>
+              <VFButton style={{marginLeft: '30%', fontSize: '10px', height: '30px', fontFamily: 'roboto'}} themeUi={themeUi} onClick={() =>{handleToggleComponent(true), handleParameterData({allOrders: true})}}>
                 Show All Orders
               </VFButton>
+}
                 </div>
             <div style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>

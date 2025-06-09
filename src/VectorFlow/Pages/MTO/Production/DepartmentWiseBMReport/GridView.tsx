@@ -100,7 +100,7 @@ const GridView = memo(({
             </VFWrapper>
             {
                 saveBtn && (
-                    <SaveBtnWrapper style={{ margin: '1rem 0', padding: 0 }}>
+                    <SaveBtnWrapper style={{ margin: '1rem 0', padding: 0, cursor: 'pointer' }}>
                         <SaveBtn onClick={updateReason} theme={themeUi}>
                             Save Remark
                         </SaveBtn>
