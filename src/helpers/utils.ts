@@ -935,6 +935,17 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
       }
     })
   }
+  if (pageType == "remove") {
+    selectedKeys.forEach((key: string) => {
+      const fieldObj = master.fields.find((field: Field) => field.key === key)
+      
+      if (!headerKeys.includes(key) && fieldObj?.isDelete) {
+        error = true;
+        headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+      }
+
+    })
+  }
 
   if (error) {
     throw new Error(`File is missing the following columns: ${headers.join(', ')}`);
