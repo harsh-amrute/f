@@ -1036,7 +1036,7 @@ const useViewModify = (pageType:string) => {
 
           dispatch(SET_RECORD_COUNT(result.length));
           dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
-          dispatch(UPDATE_ROW_DATA(result))
+          dispatch(UPDATE_ROW_DATA(result));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           dispatch(TOGGLE_UPLOAD_MODAL(false));
           setIsOverlayVisible(false);
