@@ -9,14 +9,14 @@ import { generateChartOptions } from "../../../../../../helpers/utils";
 import VFHorizon from "../../../../../../components/VectorFLOW/commons/VFHorizon";
 
 
-const AvailabilityAgeingTrend = ({themeUi,filter, ageing, setAgeing, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
+const AvailabilityAgeingTrend = ({themeUi,filter, horizon, setHorizon}:{themeUi:string,filter:any, ageing:number, setAgeing:any, horizon:number, setHorizon:any}) => {
  
 
   const { mutateAsync: GetAvailabilityAgeing, isLoading } =useGetAvailabilityAgeing();
   const [options, setOptions] = useState({})
-
-  const OnHorizonChange = async (hvalue: any, age: any) => {
-    setAgeing(age);
+  const [age,setAgeing]=useState(1);
+  
+  const OnHorizonChange = async (hvalue: any) => {
     setHorizon(hvalue);
     const param = { horison: hvalue, ageing: age,filters:filter};
     const AvailabilityAgeing = await GetAvailabilityAgeing(param);
@@ -33,7 +33,7 @@ const AvailabilityAgeingTrend = ({themeUi,filter, ageing, setAgeing, horizon, se
   };
 
   useEffect(() => {
-    OnHorizonChange(horizon, ageing);
+    OnHorizonChange(horizon);
   }, [filter]);
 
   // const AvailabilityAgeingTrendOptions: AgChartOptions = {
@@ -153,7 +153,7 @@ const AvailabilityAgeingTrend = ({themeUi,filter, ageing, setAgeing, horizon, se
           </label>
           <select
             onChange={handleAgeChange}
-            value={ageing}
+            value={age}
             style={{
               marginLeft: "4px",
               textAlign: "center",

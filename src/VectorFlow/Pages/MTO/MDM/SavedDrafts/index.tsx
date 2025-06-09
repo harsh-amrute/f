@@ -42,6 +42,7 @@ const MTOSavedDrafts = ()=>{
               isAdd:true,
               isDownload:true,
               isEdit:true,
+              isDelete:true,
               "col_Position":'1',
               "isApplicable":true,
               dataType:'String'
@@ -53,6 +54,7 @@ const MTOSavedDrafts = ()=>{
               isAdd:true,
               isDownload:true,
               isEdit:true,
+              isDelete:true,
               "col_Position":'2',
               "isApplicable":true,
               dataType:'String'
@@ -64,6 +66,7 @@ const MTOSavedDrafts = ()=>{
               isAdd:true,
               isDownload:true,
               isEdit:true,
+              isDelete:true,
               "col_Position":'3',
               "isApplicable":true,
               dataType:'String'
@@ -84,6 +87,7 @@ const MTOSavedDrafts = ()=>{
                 visible:true,
                 isAdd:true,
                 isDownload:true,
+                isDelete:true,
                 isEdit:true,
                 "col_Position":'5',
                 "isApplicable":true,

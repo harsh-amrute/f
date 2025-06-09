@@ -1136,7 +1136,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                   { label: 'Black', id: '4' },
                                   { label: 'White', id: '5' },
                                   { label: 'Blue', id: '6' },
- 
+                                  {label:'Grey',id:'7'}
                                  
                              ]} 
                             
@@ -1157,6 +1157,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                   { label: 'Black', id: '4' },
                                   { label: 'White', id: '5' },
                                   { label: 'Blue', id: '6' },
+                                  {label:'Grey',id:'7'}
                             ]} 
                           
                             filterState={filterState.availabilityFilter.filters.filter((f:any)=>f.name==='AF6')}

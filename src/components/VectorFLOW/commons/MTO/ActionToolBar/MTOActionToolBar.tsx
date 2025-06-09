@@ -202,7 +202,7 @@ const MTOActionToolBar = ({
                 <p>Release Date Till</p>
                 &nbsp;
                 &nbsp;
-                <VFDatePicker date={date} min={datetime} onDateChange={onDateChange} />
+                <VFDatePicker  date={date ? new Date(date) : null} minDate={datetime} onDateChange={onDateChange} />
                             
                 &nbsp;
                 {/* <div style={{ display: 'flex', alignItems: 'center' }}>

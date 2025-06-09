@@ -217,11 +217,7 @@ const useBTR = () => {
             const stateData = await getState({ "reportname": UserUIColumnConfigName.BTROnHand });
             if (stateData.data.data.length !== 0) {
                 const parsedContent = JSON.parse(stateData.data.data)
-                setTechGridState({
-                    charts: parsedContent.charts,
-                    columns: parsedContent.columns,
-                    pivot: parsedContent.pivot,
-                })
+                setTechGridState(parsedContent)
             } else {
                 console.log("State Data not available for BTROnHand");
             }
@@ -232,11 +228,7 @@ const useBTR = () => {
             if (stateData.data.data.length !== 0) {
                 const parsedContent = JSON.parse(stateData.data.data)
 
-                setEcoGridState({
-                    charts: parsedContent.charts,
-                    columns: parsedContent.columns,
-                    pivot: parsedContent.pivot,
-                })
+                setEcoGridState(parsedContent)
         
             } else {
                 console.log("State Data not available BTRPipeline");

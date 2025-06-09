@@ -34,7 +34,7 @@ export const useGetChronicUnavailabilitySku = ()=>{
 //   })
 // }
 export const useGetAvailabilityAgeing = () => {
-    return useMutation(async (body:{horison:number}) => {
+    return useMutation(async (body:{horison:number,ageing:number}) => {
       return await InsightsAndTrendsService.getAvailabilityAgeing(body);
     });
   }

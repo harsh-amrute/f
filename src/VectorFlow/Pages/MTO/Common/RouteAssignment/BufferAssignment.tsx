@@ -3,7 +3,6 @@ import RadioSelect from '../../../../../components/VectorFLOW/commons/MTO/RadioS
 import { StepGroup, StepLabel, StepperWrapper } from './RouteAssignment.styled'
 
 const BufferAssignment = ({theme, bufferMaster, selectedBuffers ,setSelectedBuffers, isEditable}: any) => {
-
   const onValueChange = (newValue: any, type: any) => {
     const buffers = [...selectedBuffers]
     if(type==="prod"){
