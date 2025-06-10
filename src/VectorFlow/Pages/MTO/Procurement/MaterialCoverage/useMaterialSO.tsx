@@ -35,8 +35,13 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
           const formattedFilters = formatFilterJSON(appliedFilters);
           const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'));
           const colorsQuery = colorsArray.map((key: string) => data[key]).join(',');
-      
-          const queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`;
+
+          let queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`;
+        
+          if(data.allOrders ===true){
+            queryString = `?AOD=${true}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`
+          }
+          
       
           if (isExcelExport) {
             const response = await getOpenSODetailsDataForExcelExport({
