@@ -61,10 +61,13 @@ const NavbarItem = ({
       listMenu
     } = props
 
+    const allChildUrls = listMenu?.child?.map((i: any) => i.url);
+    
+    const hasChild = listMenu.child.find((listChild: any) => {
+      return Object.prototype.hasOwnProperty.call(listChild, 'child');
+    })
 
-    const allChildUrls = listMenu.child.map((i: any) => i.url);
-
-    if(!listMenu?.child?.[0].child && !allChildUrls.some((url: string) => user?.url_permission.includes(url))) {
+    if (!hasChild && !allChildUrls?.some((url: string) => user?.url_permission.includes(url))) {
       return null;
     }
     
