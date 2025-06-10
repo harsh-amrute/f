@@ -835,7 +835,7 @@ const useViewModify = (pageType:string) => {
     }
 
     const onWarningModalClose = ()=>{
-      dispatch(UPDATE_ROW_DATA([]));
+      // dispatch(UPDATE_ROW_DATA([]));
       toggleWarningModal(false);
       setIsTableDataLoading(false);
       setTempRecordCount(0)
