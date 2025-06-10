@@ -288,7 +288,7 @@ const DptWiseBMReport = () => {
 
     useEffect(() => {
         setColumnDef();
-      }, [])
+      }, [systemType])
 
     const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
         const modifiedResponse: ApiResponseItem[] = [];

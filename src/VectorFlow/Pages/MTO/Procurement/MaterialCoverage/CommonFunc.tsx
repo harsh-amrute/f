@@ -70,7 +70,8 @@ export interface DetailsObj {
     c3: string,
     kit: string,
     S: string,
-    E: string
+    E: string,
+    allOrders?: string | boolean
 }
 
 export const getToolTipContent = (col: string, ToolTipdata: any) => {

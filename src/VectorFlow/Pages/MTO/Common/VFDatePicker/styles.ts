@@ -2,12 +2,12 @@ import styled from 'styled-components';
 import Calendar, { CalendarProps } from 'react-calendar';
 
 export const DatePickerWrapper = styled.div`
-  display: flex;
-  cursor: pointer;
-  flex-direction: row;
-  width: 180px;
-  border: 0.5px solid #acacac;
-  padding: 5px 3px;
+    display: flex;
+    cursor: pointer;
+    flex-direction: row;
+    width: 180px;
+    padding: 5px;
+    justify-content: sapce-between;
 `;
 
 export const TextInputWrapper = styled.input`

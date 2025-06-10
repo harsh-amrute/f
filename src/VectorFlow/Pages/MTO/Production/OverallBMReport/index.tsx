@@ -854,6 +854,7 @@ const OverallBmReport = () => {
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
+
   const mapApiResponseToColDefs = (apiResponse: ApiResponseItem[]): any => {
     const mapChildren: any = (
       parent: any,
@@ -937,6 +938,8 @@ const OverallBmReport = () => {
       }));
 
     };
+
+    
 
 
     const res = apiResponse.map((section) => ({
@@ -1024,10 +1027,12 @@ const OverallBmReport = () => {
     // //console.log('coldefs', colDefs)
     // setColdef(colDefs)
     // getInitialGridData(1);
-    setColumnDef();
-    getFilterData();
   }, []);
 
+  useEffect(()=>{
+    setColumnDef();
+    getFilterData();
+  },[systemType])
   // useEffect(() => {
   //     if (isGridLoading) {
   //         toast.dismiss();
