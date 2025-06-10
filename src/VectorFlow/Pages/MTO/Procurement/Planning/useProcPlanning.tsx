@@ -267,8 +267,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                     ...item,
                     gap: item.req - item.soh - item.siqc - item.sit,
                     tsfs: item.soh,
-                    children: item.children ? item.children.filter((child: any, index: number, self: any[]) =>
-                        self.findIndex(t => t.on === child.on) === index) : []
+                    children: item.children || []
                 }));
                 const ShortageData = calculateData.filter((item: any) => item.gap > 0);
                 const CompleteAvailableData = calculateData.filter((item: any) => item.gap === 0);
