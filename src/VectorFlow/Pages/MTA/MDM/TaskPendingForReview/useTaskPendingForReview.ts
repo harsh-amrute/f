@@ -55,6 +55,7 @@ const useTaskPendingForReview = ()=>{
 
     const [TASK_ID,setTaskId] = useState<string>('')
 
+    const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
 
     useEffect(() => {
         if (ref.current && detailTableRowData?.length > 0) {
@@ -121,29 +122,38 @@ const useTaskPendingForReview = ()=>{
             // const response = await getTaskDetails(payload)
             toast.dismiss(toastId);
             
-            const currentTaskMaster = taskDataStore[0]
-            const currentTaskMasterId:number = currentTaskMaster.MasterId
-            setCurrMasterId(currentTaskMasterId)
-            
-        
-            const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
-            
-            const masters:Master[] = uiConfigurationResponse.data.data
-            const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
-            if(currentMasterFields){
-                // console.log(currentTaskMaster.data[0].new)
-                const existingColumns = getExistingColumns(
-                    currentTaskMaster.data?
-                    (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
-                    ? JSON.parse(currentTaskMaster?.data[0].new)
-                    : currentTaskMaster?.data[0]:[]
-                );
-                               
-                const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
-                setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
-                setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
-                // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));
+            if (taskDataStore[0].data?.length != undefined) {
+                // Proceed with setting columns and row data
+                const currentTaskMaster = taskDataStore[0];
+                const currentTaskMasterId: number = currentTaskMaster.MasterId;
+                setCurrMasterId(currentTaskMasterId);
+
+                // ...existing code for processing data
+                setNoDataMessage(null); // Clear message if we have data
+                
+                    const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
+                    
+                    const masters:Master[] = uiConfigurationResponse.data.data
+                    const currentMasterFields = masters.find((master:Master)=>master.id==currentTaskMasterId)?.fields
+                    if(currentMasterFields){
+                        // console.log(currentTaskMaster.data[0].new)
+                        const existingColumns = getExistingColumns(
+                            currentTaskMaster.data?
+                            (taskData.Actiontype === 2 && currentTaskMasterId !== 6 && currentTaskMasterId !== 10) || (currentTaskMasterId === 13)
+                            ? JSON.parse(currentTaskMaster?.data[0].new)
+                            : currentTaskMaster?.data[0]:[]
+                        );
+                                       
+                        const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
+                        setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
+                        setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
+                        // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));
+                    }
+            } else {
+                // No data case
+                setNoDataMessage('No records found or task is partially completed.');
             }
+            
 
             notifySuccess("Task Details Fetched Successfully");
             setIsViewTableOpen(false)
@@ -337,7 +347,8 @@ const useTaskPendingForReview = ()=>{
         showRejectAllModal,
         toggleRejectAllModal,
         onSelectionTypeSuccess,
-        setSelectionType
+        setSelectionType,
+        noDataMessage
     }
 }
 
