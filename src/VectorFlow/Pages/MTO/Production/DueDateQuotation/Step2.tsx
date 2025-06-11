@@ -1100,7 +1100,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else {
                                             selectedRoutes.add(null);
                                         }
-                                        if (row.nprid) {
+
+                                        if ("nprid" in row) {
                                             selectedProdBuffer.add(row.nprid);
                                         }
                                         else if (row.prid) {
@@ -1109,7 +1110,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                         else {
                                             selectedProdBuffer.add(null)
                                         }
-                                        if (row.npcid) {
+                                        if ("npcid" in row) {
                                             selectedProcBuffer.add(row.npcid);
                                         }
                                         else if (row.pcid) {

@@ -274,7 +274,7 @@ const useAdd=()=>{
         try{
         if(isSubmitDisabled) return;
         if(activeMaster.rowData.length === 0) return notifyError("No Data to Submit")
-        dispatch(REMOVE_COLDEFS(['checkbox']));
+        dispatch(REMOVE_COLDEFS(['checkbox','warning']));
         setIsSubmitDisabled(true)
  
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER())
@@ -309,7 +309,7 @@ const useAdd=()=>{
           const submittedRecordsCount = totalRecords - errorRowData.length - conflictCount
 
           if(submittedRecordsCount === totalRecords){
-            notifySuccess("Addition Successfull")
+            notifySuccess("Addition Successful")
           }
 
           else if(errorRowData.length > 0 || conflictCount > 0){
@@ -328,7 +328,7 @@ const useAdd=()=>{
               notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${conflictCount} records have conflicts. `)
             }
           }
-          else notifySuccess("Addition Successfull")
+          else notifySuccess("Addition Successful")
           dispatch(UPDATE_PROGRESS_STATE('submitted'));
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           if(draftID.length > 0){

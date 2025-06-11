@@ -14,7 +14,8 @@ import { GridStateContext } from "../../../../../../../../context/GridStateConte
 import { GridState } from "../../../../../../../../VectorFlow/types/BPR";
 import {getProductAndLocationHeirarchiesFromEnv, convertStringNumToNumber, getColumnDefinationsMTA} from '../../../../../../../../helpers/utils';
 import { UserUIColumnConfigName } from "../../../../../../../../helpers/Enum";
-
+import { useUserData } from "../../../../../../../../context";
+import { GridFilterWrapper, TextBtn } from "../../../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
 
 
 
@@ -24,7 +25,10 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
     const [gridState,setGridState] = useState<GridState>()
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
+    const {user} = useUserData()
+    const theme_ui = user.user.theme_ui
     const chunkSize = 10000;
 
     const {mutateAsync:getState,isLoading:isSavedDataLoading} = useGetState()
@@ -146,7 +150,21 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
         ],
         defaultToolPanel:'',
         }
-
+      
+        const clearGridFilter = () =>{
+          ref?.current?.api.setFilterModel(null);
+            setIsDisabled(true);
+      }
+    
+              const CustomStatusPanel = () => {
+                  return (
+                      <GridFilterWrapper style={{marginTop:'25px'}}>
+                          <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                              Clear All Grid Filters
+                          </TextBtn>  
+                      </GridFilterWrapper>           
+                  );
+              };
     
     return(
         <>
@@ -167,8 +185,19 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
                       { statusPanel: 'agFilteredRowCountComponent', align:'left' },
                       { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                       { statusPanel: 'agAggregationComponent', align:'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
+
                     ],
-                  }}                defaultColDef={{
+                  }}
+                  onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                }} 
+                defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}

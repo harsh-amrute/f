@@ -42,7 +42,7 @@ const getStepperState = (data:any):StepItem[]=>{
                 {
                     label:"Submission",
                     status:'completed',
-                    description:data.date,
+                    description:data.PendingSince,
                     prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
                     //description: formatMDMDate(data.date, 'dd/MM/yy hh:mm:ss a'),
                    
@@ -50,7 +50,7 @@ const getStepperState = (data:any):StepItem[]=>{
                 {
                     label:"Rejected",
                     status:'rejected',
-                    description:data.date,
+                    description:data.ApprovedDate,
                     prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />,
                     //description: formatMDMDate(data.date, 'dd/MM/yy hh:mm:ss a'),
                     

@@ -2,7 +2,6 @@ import { BPRColorCellRendererIcon, BPRRemarksCellRendererWrapper } from "../BPR/
 
 export const BORRemarksCellRenderer = (params:any)=>{
 
-   console.log("whcode....", params.data)
     return (
         <BPRRemarksCellRendererWrapper >
             <BPRColorCellRendererIcon 

@@ -54,6 +54,7 @@ export interface Field {
     col_Position: string
     isApplicable: boolean
     dataType: string
+    isDelete : boolean
 }
 
 export interface Tab {

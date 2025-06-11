@@ -207,6 +207,17 @@ const useDelete=()=>{
         return tempRow;
       });
 
+      const deletableKeys = activeMaster.fields.filter(field => field.isDelete === true).map(field => field.key)
+      rowData = rowData.map((obj: any) => {
+        return Object.keys(obj).reduce((acc: any, key) => {
+          if (deletableKeys.includes(key)) {
+            acc[key] = obj[key];
+          }
+          return acc;
+        }, {});
+      })
+
+
         let taskId:any   = '';
         let toastId:any = '';
         let conflictCount = 0;
@@ -367,13 +378,13 @@ const useDelete=()=>{
             const {isDisaster,errorCount:localErrorCount,errorData:localErrorData} = await postMasterDataChunks(activeMaster.rowData,isOverWrite);
             if(isDisaster)return
               if(localErrorCount>0 || errorCount>0){
-                let errorRowData
+                  let errorRowData: any[] = [];
                 if(localErrorCount>0){
                   errorRowData = createErrorRowData(localErrorData,activeMaster.id)
                 }
-                else{
-                  errorRowData = createErrorRowData(errorData,activeMaster.id)
-                }
+                // else{                  
+                //   // errorRowData = createErrorRowData(errorData,activeMaster.id)
+                // }
                 if(!activeMaster.colDefs.find((c:ColDef)=>c.colId==='error')){
                   addInvalidDataColDefs('error')
                 }

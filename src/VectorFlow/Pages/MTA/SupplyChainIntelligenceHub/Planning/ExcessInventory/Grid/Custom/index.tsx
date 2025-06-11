@@ -14,6 +14,8 @@ import { GridStateContext } from "../../../../../../../../context/GridStateConte
 import { GridState } from "../../../../../../../types/BPR";
 import { getProductAndLocationHeirarchiesFromEnv, convertStringNumToNumber, getColumnDefinationsMTA } from '../../../../../../../../helpers/utils';
 import { UserUIColumnConfigName } from "../../../../../../../../helpers/Enum";
+import { useUserData } from "../../../../../../../../context";
+import { GridFilterWrapper, TextBtn } from "../../../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
 
 
 
@@ -23,6 +25,10 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
     const [rowData,setRowData] = useState<any>();
     const [colDefs,setColDefs] = useState<any>();
     const {ref,gridColDefs, setGlobalColDef} = useContext(GridStateContext);
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+
+    const {user} = useUserData()
+    const theme_ui = user.user.theme_ui
 
     const [gridState,setGridState] = useState<GridState>()
 
@@ -150,7 +156,20 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
     defaultToolPanel:'',
     }
 
+    const clearGridFilter = () =>{
+      ref?.current?.api.setFilterModel(null);
+        setIsDisabled(true);
+  }
 
+          const CustomStatusPanel = () => {
+              return (
+                  <GridFilterWrapper style={{marginTop:'25px'}}>
+                      <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                          Clear All Grid Filters
+                      </TextBtn>  
+                  </GridFilterWrapper>           
+              );
+          };
     
     return(
         <>
@@ -170,8 +189,18 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                       { statusPanel: 'agFilteredRowCountComponent', align:'left' },
                       { statusPanel: 'agSelectedRowCountComponent', align:'left' },
                       { statusPanel: 'agAggregationComponent', align:'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
                     ],
-                  }}                defaultColDef={{
+                  }}          
+                  onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                }}      
+                defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
                 }}

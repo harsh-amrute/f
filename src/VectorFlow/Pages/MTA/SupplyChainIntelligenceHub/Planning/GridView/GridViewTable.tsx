@@ -186,7 +186,6 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                     { statusPanel: "agFilteredRowCountComponent", align: "left" },
                                     { statusPanel: "agSelectedRowCountComponent", align: "left" },
                                     { statusPanel: "agAggregationComponent", align: "left" },
-                                    { statusPanel: CustomStatusPanel, align: "right" },
                                 ],
                             }}
                             onFilterChanged={() => {
@@ -224,7 +223,6 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                         { statusPanel: "agFilteredRowCountComponent", align: "left" },
                                         { statusPanel: "agSelectedRowCountComponent", align: "left" },
                                         { statusPanel: "agAggregationComponent", align: "left" },
-                                        { statusPanel: CustomStatusPanel, align: "right" },
                                     ],
                                 }}
                                 onFilterChanged={() => {
