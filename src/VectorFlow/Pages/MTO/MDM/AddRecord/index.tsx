@@ -117,7 +117,20 @@ const MTOAddRecord = () => {
       params.api.sizeColumnsToFit();
     };
 
-   
+
+   const calendarModifiedColDefs = ()=>{
+    if(activeMaster.id === 504){
+      const calendarModifiedColDef = activeMaster.colDefs.filter((colDef: any) => {
+        if (colDef.field !== "plid" && colDef.field !== "rb" && colDef.field !== "rd") {
+          return true;
+        }
+        return false;
+      })
+      return calendarModifiedColDef
+    }else{
+      return activeMaster.colDefs
+    }
+   }
 
     return(
         <React.Fragment>
@@ -135,7 +148,7 @@ const MTOAddRecord = () => {
                   <VFTable
                   height={"95%"}
                   ref={ref}
-                  columnDefs={activeMaster.colDefs}
+                  columnDefs={calendarModifiedColDefs()}
                   onGridReady={onGridReady}
 
                   rowData={activeMaster.rowData}

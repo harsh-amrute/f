@@ -15,6 +15,7 @@ const TaskPendingActionHeader = (props:any)=>{
         const newRowData = _.cloneDeep([...detailTableRowData]);
         newRowData.forEach((e)=>{
           e.appStatus = true;
+          e.ia = true
         })
         dispatch(SET_TASK_PENDING_ROW_DATA(newRowData));
       }
@@ -22,6 +23,7 @@ const TaskPendingActionHeader = (props:any)=>{
         const newRowData = _.cloneDeep([...detailTableRowData]);
         newRowData.forEach((e)=>{
           e.appStatus = false;
+          e.ia = false
         })
         dispatch(SET_TASK_PENDING_ROW_DATA(newRowData));
       }

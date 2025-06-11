@@ -57,30 +57,13 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
                       >
                         <SCTabContent>
                           <SCTabTitle status={getTabStatus(master)}>{master.name}</SCTabTitle>
-                          {
-                            !isAdd && 
-                          <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onTabClose(e,master)}} src={getTabStatus(master) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : (master.progress === 'submitted' || master.progress === 'editOnlineSubmitted') ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/>
-                          }
+                         
                         </SCTabContent>
                     </SCTabButton>
                   )
                 })
               }
-              {(!isAdd )&&<SCTabButton
-                status={''}
-                zIndex={0}
-                marLeft={true}
-                themeUi={themeUi}
-                onClick={() => {
-                  if(newTabHandler) newTabHandler();
-                }}
-                data-testid="new-tab"
-              >
-                  <SCTabContent>
-                    <img style={{marginRight:'18px'}} src={newTabIcon}/>
-                    <SCTabTitle status={''}>{newTabTitle}</SCTabTitle>
-                  </SCTabContent>
-              </SCTabButton>}
+             
             </SCTabHeaderLeft>
 
         </SCTabHeader>
