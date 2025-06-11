@@ -4896,16 +4896,17 @@ export function getCCRNamesFromId(ccrsData:any,ccrIds:number[]){
   const ccrNameFromId = ccrIds.map((id:number)=> ccrsData.find((ccr:any)=> ccr.cid == id)?.cnm).join(', ')
   return ccrNameFromId ? ccrNameFromId : "";
 }
- export const getNestedChildren = (children: Array<any>): any => {
-    const stack = children? [...children]:[];
-    const result = [];
-    while (stack.length > 0) {
-      const current = stack.pop();
-      if (current.child) {
-        stack.push(...current.child);
-      } else {
-        result.push(current);
-      }
+
+export const getNestedChildren = (children: Array<any>): any => {
+  const stack = children? [...children]:[];
+  const result = [];
+  while (stack.length > 0) {
+    const current = stack.pop();
+    if (current.child) {
+      stack.push(...current.child);
+    } else {
+      result.push(current);
     }
-    return result.reverse();
-  };
+  }
+  return result.reverse();
+};
