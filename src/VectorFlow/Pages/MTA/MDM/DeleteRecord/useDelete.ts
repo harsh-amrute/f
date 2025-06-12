@@ -195,10 +195,6 @@ const useDelete=()=>{
     const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
 
         const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key) 
-        if(([6].includes(parseInt(String(activeMaster.id),10)) === false)){
-          //CleanUp Row Data
-          rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
-        }
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
 
        // Convert To String
