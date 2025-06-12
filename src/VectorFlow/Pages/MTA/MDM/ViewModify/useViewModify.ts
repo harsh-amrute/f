@@ -1645,7 +1645,6 @@ const useViewModify = (pageType:string) => {
      }
 
      const onBackButton = (backUrl?: string) => {
-      console.log(activeMaster.progress);
       if (activeMaster.progress === 'submitted' || activeMaster.progress === 'editOnlineSubmitted' || activeMaster.progress === 'view') {
         // Directly perform the actions without showing the confirmation dialog
         handleBackNavigation(backUrl);
