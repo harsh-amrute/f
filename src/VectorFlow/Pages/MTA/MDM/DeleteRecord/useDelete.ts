@@ -370,6 +370,7 @@ const useDelete=()=>{
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
               }
               if(draftID.length > 0){
+                dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
               }
               dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
