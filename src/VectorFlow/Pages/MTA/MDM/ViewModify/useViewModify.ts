@@ -1645,7 +1645,7 @@ const useViewModify = (pageType:string) => {
      }
 
      const onBackButton = (backUrl?: string) => {
-      if (activeMaster.progress === 'submitted' || activeMaster.progress === 'editOnlineSubmitted' || activeMaster.progress === 'view') {
+      if (activeMaster.progress === 'submitted' || activeMaster.progress === 'editOnlineSubmitted' || activeMaster.progress === 'view' || activeMaster.progress === 'deleteView') {
         // Directly perform the actions without showing the confirmation dialog
         handleBackNavigation(backUrl);
       } else {
