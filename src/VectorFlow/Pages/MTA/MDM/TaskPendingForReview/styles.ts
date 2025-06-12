@@ -73,7 +73,7 @@ export const SubmitButtonWrapper = styled.div`
     margin-left:-73px;
     margin-right:-73px;
     border-top:dashed 1px gray;
-    padding:10px 20px 0px 10px;
+    padding:10px 20px 10px 10px;
 `
 export const DeleteFileModalText=styled.div`
 text-align: left;
