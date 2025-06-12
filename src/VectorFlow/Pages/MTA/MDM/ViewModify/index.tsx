@@ -327,7 +327,7 @@ import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/
           <UploadModal 
             header={"Modification"}
             openModal={isUploadModalOpen} 
-            onCloseModal={()=>toggleUploadModal(false)} 
+            onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
             onDownload={()=>exportToExcel(true)} 
             onUpload={onUploadMaster}
             inputText={downloadFileName}
