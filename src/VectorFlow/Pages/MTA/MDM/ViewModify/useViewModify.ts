@@ -739,6 +739,13 @@ const useViewModify = (pageType:string) => {
 
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
       e.stopPropagation();
+      const incompleteMastersCount = masters.filter((master: MDMMasterState) => 
+        master.progress !== 'submitted' && master.progress !== 'editOnlineSubmitted'
+      ).length;
+    
+      if (incompleteMastersCount === 1 && currMaster.progress !== 'submitted' && currMaster.progress !== 'editOnlineSubmitted') {
+        return notifyError('Cannot close the tab as it is the only incomplete master'); // Notify if this is the only incomplete master
+      }
       if(checkMasterProgress(masters)) {return notifyError("There Should be atleast one selected Master")}
       const nextMasterIndex = masters?.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
       if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
@@ -1638,10 +1645,20 @@ const useViewModify = (pageType:string) => {
      }
 
      const onBackButton = (backUrl?: string) => {
+      if (activeMaster.progress === 'submitted' || activeMaster.progress === 'editOnlineSubmitted' || activeMaster.progress === 'view' || activeMaster.progress === 'deleteView') {
+        // Directly perform the actions without showing the confirmation dialog
+        handleBackNavigation(backUrl);
+      } else {
+        // Show confirmation dialog if current master is incomplete
+        const user = confirm("Are you sure you want to go back? All the progress will be lost! Please save to draft.");
+        if (user) {
+          handleBackNavigation(backUrl);
+        }
+      }
+    };
+      
 
-      const user = confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")
-      if(user)  
-      {
+    const handleBackNavigation = (backUrl?: string) =>{
        if(backUrl){
          navigate(backUrl)
        }
@@ -1673,8 +1690,8 @@ const useViewModify = (pageType:string) => {
        if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
        // dispatch(UPDATE_COLDEFS([]));
        // dispatch(UPDATE_ACTIVE_MASTER([]))
-      }      
-     }
+      };      
+     
     
 
       const postDraftChunks = async (rowData:any) => {

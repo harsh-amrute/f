@@ -2,7 +2,7 @@ import { useSelector,useDispatch } from 'react-redux'
 import { useEffect,useState } from 'react';
 import { RootState } from '../../../../../redux/store/store';
 import { MDMMasterState,Field } from '../../../../../VectorFlow/types/MDM';
-import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS } from '../../../../../redux/actions/MDM';
+import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS,SET_DRAFT_ID } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
 import { useDeleteMasterData ,useDeleteTask,useDeleteDraft,useDeleteMasterDataRetail} from '../../../../..//VectorFlow/Services/MTA/MDM';
@@ -370,6 +370,7 @@ const useDelete=()=>{
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
               }
               if(draftID.length > 0){
+                dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
               }
               dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
@@ -399,6 +400,7 @@ const useDelete=()=>{
               notifySuccess(`Deletions Submitted Successfully`);
               toast.dismiss();
               if(draftID.length > 0){
+                dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
               }
             
