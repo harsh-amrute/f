@@ -34,6 +34,7 @@ export const OrderAtRiskChartWrapper = styled.div`
     width:100%;
     // padding-right: 25px;
     display: flex;
+    flex-direction: column;
     height: 100%;
     margin: 20px 0px;
     & .ag-theme-alpine {

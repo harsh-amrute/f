@@ -2,9 +2,7 @@ import axios from 'axios';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OrderBalanceService {
-    export const getOrderBalanceData = async ({graphflag, page, appliedFilters, ordertype,page_size}: any) => {
-        console.log("ot...", ordertype)
-        
+    export const getOrderBalanceData = async ({graphflag, page, appliedFilters, ordertype,page_size}: any) => {        
         if(graphflag){
             return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrderBalanceData/`, {
                 headers: {
@@ -38,14 +36,15 @@ export namespace OrderBalanceService {
         })
     }
 
-    export const getOrderBalanceGraphDataExcelExport = async ({ body , isExcelExport, report_name }: any) => {
+    export const getOrderBalanceGraphDataExcelExport = async ({ body , isExcelExport, report_name, graphflag }: any) => {
         return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrderBalanceData/`, body,{
             headers: {
                 'Content-Type': 'application/json',
             },
             params: {
                 export : isExcelExport,
-                report_name
+                report_name,
+                graphflag
             },
             responseType: 'blob' 
         })

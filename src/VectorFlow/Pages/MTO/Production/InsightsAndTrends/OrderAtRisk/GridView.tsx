@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from "react"
 import VFTable from "../../../Common/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
-import CustomPageSizeInput from "../../../Common/VFPagination/CustomPageSizeInput";
 import { VFTableWrapper } from "./styles";
 import { GridFilterWrapper, TextBtn } from "../../../Common/VFPagination/styles";
 import { useUserData } from "../../../../../../context/index";
 import { AgGridReact } from "ag-grid-react";
+import VFPagination from "../../../Common/VFPagination";
+import { pagination } from '../../../Common/Enum';
 
 
 
 
-const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGridRef,savePageSize,userPageSize}: any) => {
+
+const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGridRef,savePageSize,userPageSize, totalRows, customPageSize, handleChangePage, currentPage,rowsPerPage}: any) => {
     // const gridRef = useRef();
     const gridRef = useRef<AgGridReact>(null);
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -57,37 +59,14 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
         }
     }, [columnState]);
 
-
-    const customPage = () => (
-        <div style={{paddingBottom:'4px', paddingRight:'7px'}}>
-          <CustomPageSizeInput 
-            savePageSize={savePageSize}
-            userPageSize={userPageSize}
-          />
-        </div>
-      );
-
-      console.log('fdata',gridData )
-
       const clearGridFilter = () =>{
         gridRef?.current?.api?.setFilterModel(null);
           setIsDisabled(true);
     }
     
-      const CustomStatusPanel = () => {
-            return (
-                <GridFilterWrapper>
-                    <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
-                        Clear All Grid Filters
-                    </TextBtn>  
-                </GridFilterWrapper>           
-            );
-        }; 
-
-
     return (
         // <div data-testid="grid-view" style={{ height:"95%", width: '100%', margin:"20px", paddingRight:"20px", paddingBottom:"10px"}}>
-             <VFTableWrapper data-testid="grid-view" >
+            <VFTableWrapper data-testid="grid-view" >
             <VFTable
                 {...gridOptions}
                 columnDefs={colDef}
@@ -96,15 +75,9 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
                 ref={gridRef}
-                pagination={true}
-                paginationPageSize={userPageSize}
-                paginationPageSizeSelector={false}        
+                pagination={false}      
                 statusBar={{
                     statusPanels: [
-                        // { statusPanel: "agTotalRowCountComponent", align: "left" },
-                        { statusPanel: customPage, align:'right' },
-                        { statusPanel: CustomStatusPanel, align: "left" }
-
                     ],
                 }}
                 onGridReady={(params: any) => {
@@ -121,7 +94,22 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                   }}
                 maintainColumnOrder
             />
+
+                <VFPagination
+                    selectedRows={0}
+                    rowsPerPage={userPageSize || pagination.mtoPageSize}
+                    totalRows={totalRows}
+                    currentPage={currentPage}
+                    handleChangePage={handleChangePage}
+                    // resetGridRef={reference}
+                    isDisabled = {isDisabled}
+                    customPageSizeEnabled={true}
+                    savePageSize={savePageSize}
+                    userPageSize={userPageSize}
+                />
           </VFTableWrapper>
+
+          
         // </div>
     )
 }

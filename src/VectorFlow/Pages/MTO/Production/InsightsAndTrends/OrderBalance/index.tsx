@@ -109,13 +109,15 @@ const OrderBalance = () => {
     }
   }
 
+  const [isFirstRendered, setIsFirstRendered] = useState(true);
+
   const getGraphData = async (params: any,pageSize?:any) => {
     if(params.isExcelExport){
       try {
         const headersdata = currentGridRef?.current?.api.getColumnState();
         const formattedFilters = formatFilterJSON(appliedFilters);
         const body = getBodyForExcelExport({headersdata,filterData :formattedFilters,colDefMap})
-        const response = await getOrderBalanceGraphDataExcelExport({body , report_name : FilterPageName.Prod_Order_Balance , isExcelExport : 1})
+        const response = await getOrderBalanceGraphDataExcelExport({body , report_name : FilterPageName.Prod_Order_Balance , isExcelExport : 1,graphflag:0})
         if(response.status === 200){
           DownloadExcel(response,FilterPageName.Prod_Order_Balance)
           notifySuccess("Excel data exported successfully")
@@ -127,15 +129,29 @@ const OrderBalance = () => {
          console.log(error)
       }
          
-    }else{
+    }
+    
+    else{
 
       try {
-        // const response = await getOrderBalanceData({params,page_size: pageSize || userPageSize});
-        const response = await getOrderAtRiskData({ page: currentPage,page_size: pageSize || userPageSize });
-        // setGraphData(response?.data?.data[0]);
-        console.log(response.data.data.g)
-        setGraphData(response?.data?.data?.g)
-        setGridData(response?.data?.data?.g || []);
+        let payload;
+        if(isFirstRendered){
+          payload={graphflag:1}
+          setIsFirstRendered(false);
+        }
+        else {
+          payload = {
+            page: currentPage,
+            page_size: pageSize || userPageSize,
+            graphflag: 0
+          };
+        }
+
+        const response = await getOrderBalanceData(payload);
+        setGraphData(response?.data?.data)
+        setGridData(response.data.data.results || []);
+        setTotalRow(response?.data?.data?.count)
+
       }
       catch (e) {
         console.log(e);
@@ -190,7 +206,6 @@ const OrderBalance = () => {
 
       }
       else if (page_size) {
-        console.log('column state', columnState)
         const config = columnState
         const fullConfig = { cs: config, pageSize: page_size };
         const payload = {
@@ -221,9 +236,9 @@ const OrderBalance = () => {
   const savePageSize = (pageSize: any) => {
     if (pageSize) {
       setUserPageSize(pageSize);
-      handleSaveClick(false, pageSize);
-      getGraphData(1,pageSize);
-      } else {
+      handleSaveClick(false, pageSize, );
+      getGraphData({ graphflag: 1 }, pageSize);
+    } else {
         notifyError("Invalide page size");
     }
     
@@ -241,12 +256,10 @@ const OrderBalance = () => {
     }
   }
 
-  const handlePageChange = async (currPage: number) => {
+  const handleChangePage = async (currPage: number) => {
     setCurrentPage(currPage);
-    getGraphData(1, currPage );
   }
 
-  console.log('defualt cs', columnState)
   useEffect(() => {
     setColumnDef();
     getGraphData({ graphflag: 1});
@@ -282,22 +295,14 @@ const OrderBalance = () => {
   useEffect(() => {
 
     if (Object.entries(appliedFilters).length) {
-      getGraphData({});
+      getGraphData({ graphflag: 1 });
     }
   }, [currentPage]);
-
-  // useEffect(() => {
-  //   console.log("appliedfilters", appliedFilters);
-  //   if (Object.entries(appliedFilters).length && userConfigFetched ) {
-  //     setCurrentPage(1);
-  //     getGraphData(currentPage,1);
-  //   }
-  // }, [appliedFilters,userConfigFetched])
 
     useEffect(() => {
       if (Object.entries(appliedFilters).length && userConfigFetched) {
         if (currentPage == 1) {
-          getGraphData({});
+          getGraphData({graphflag: 1});
         } else {
           setCurrentPage(1);
         }      
@@ -309,10 +314,6 @@ const OrderBalance = () => {
   }
 
   const themeUi = user?.user?.theme_ui;
-
-  console.log("Current Page:", currentPage);
-   console.log("Page Size:",  userPageSize);
-
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -341,38 +342,20 @@ const OrderBalance = () => {
       />
       <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
-          // <GridView
-          //   getData={(params:any) => getOrderAtRiskData({
-          //             ...params,
-          //             page_size: userPageSize || pagination.mtoPageSize
-          //   })}   
-          //   // getData={graphData}
-          //   // gridData={graphData}
-          //   colDef={colDef}
-          //   isLoading={isLoading}
-          //   isError={isError}
-          //   isSuccess={isSuccess}
-          //   setCurrentGridRef={setCurrentGridRef}
-          //   currentGridRef={currentGridRef}
-          //   columnState={columnState}
-          //   appliedFilters={appliedFilters}
-          //   userPageSize={userPageSize}
-          //   savePageSize={savePageSize}
-          //   // handleChangePage={handlePageChange}
-
-
-          // />
            <GridView
-                      gridData={gridData}
-                      colDef={colDef}
-                      setCurrentGridRef={setCurrentGridRef}
-                      currentGridRef={currentGridRef}
-                      columnState={columnState}
-                      userPageSize={userPageSize}
-                      handleChangePage={handlePageChange}
-                      savePageSize={savePageSize}
-          
-                    />
+              gridData={gridData}
+              colDef={colDef}
+              setCurrentGridRef={setCurrentGridRef}
+              currentGridRef={currentGridRef}
+              columnState={columnState}
+              userPageSize={userPageSize}
+              handleChangePage={handleChangePage}
+              savePageSize={savePageSize}
+              totalRows={totalRow}
+              currentPage={currentPage}
+              customPageSize={true}
+
+            />
         ) : (
           <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom:"10px" }}>
             <Allotment vertical={false} separator={false}>
