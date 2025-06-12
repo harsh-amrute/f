@@ -195,7 +195,6 @@ const useDelete=()=>{
     const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
 
         const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key) 
-
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
 
        // Convert To String
@@ -240,7 +239,7 @@ const useDelete=()=>{
           for(let i=0; i < rowData.length; i+=chunkSize){
           
               if(i+chunkSize < rowData.length){
-                payload.data = activeMaster.rowData.slice(i,i+chunkSize);
+                payload.data = rowData.slice(i,i+chunkSize);  
                 toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${rowData.length}`})
                 submitProgress+=chunkSize;
               }
@@ -254,11 +253,14 @@ const useDelete=()=>{
               }
               else{
                 data = await deleteMasterData(payload);
+                if (data.status !== 200) {
+                  throw new Error(`Request failed with status`);
+               }
               }
               
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
 
-              if(TASK_ID === ''){
+              if(TASK_ID === '' || TASK_ID === undefined){
                 payload.TaskId = data.data.taskId;
                 taskId = data.data.taskId;
               }
@@ -267,7 +269,7 @@ const useDelete=()=>{
                 taskId = TASK_ID;
               }
 
-              setTaskId(data.data.taskId  );
+              setTaskId(data.data.taskId);
               
               if(data.data.conflictErrorCount){
                 conflictCount += parseInt(data.data.conflictErrorCount,10);

@@ -207,7 +207,10 @@ const AddRecord = () => {
           <UploadModal 
             header={"Addition"}
             openModal={isUploadModalOpen} 
-            onCloseModal={()=>dispatch(TOGGLE_SELECT_MASTER_SCREEN(true))}
+            onCloseModal={() => {
+              setFile(undefined);
+              dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+            }}
             // onDownload={()=>ref.current?.api.exportDataAsExcel({
             //   fileName:downloadFileName.length>0?downloadFileName :activeMaster.name,
             // })} 
