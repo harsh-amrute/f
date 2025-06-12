@@ -1211,7 +1211,7 @@ const useViewModify = (pageType:string) => {
             id:activeMaster.id,
             action:actionStatus,
             TaskId:'',
-            IsOverWrite:isOverWrite===true?true:false,
+            IsOverWrite:true,
             data:[],
             uiconfig:activeMaster.fields
           }

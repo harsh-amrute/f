@@ -143,8 +143,8 @@ export const useGetMTOPendingTaskData = () => {
 }
 
 export const useGetMTOTaskById = () => {
-  return useMutation(async (taskId: string)=>{
-    return await MDMService.getMTOTaskById(taskId);
+  return useMutation(async ({taskId, mmid}:{taskId:string, mmid: string})=>{
+    return await MDMService.getMTOTaskById(taskId, mmid);
   })
 }
 
@@ -252,6 +252,19 @@ export const useSaveBufferMasterTask = () => {
   })
 }
 
+// view and modify save calendar task
+export const useSaveCalendarMasterTask = () => {
+  return useMutation(async (body:any)=>{
+    return await MDMService.saveCalendarMasterTask(body)
+  })
+}
+
+export const useSaveCalendarMasterDraft = ()=>{
+  return useMutation(async (body:any)=>{
+    return await MDMService.saveCalendarMasterDraft(body);
+  })
+}
+
 export const useSaveCCRMasterTask = () => {
   return useMutation(async (body: any) => {
     return await MDMService.saveCCRMasterTask(body)
@@ -294,6 +307,12 @@ export const usePutMtoPoogiMasterData = ()=>{
 export const usePutMtoCCRMasterData = () => {
   return useMutation(async (body: any) => {
     return await MDMService.putMTOAddCCRMaster(body);
+  })
+}
+
+export const usePutMtoCalendarMasterData = () => {
+  return useMutation(async (body:any)=>{
+    return await MDMService.putMTOAddCalendarMaster(body)
   })
 }
 

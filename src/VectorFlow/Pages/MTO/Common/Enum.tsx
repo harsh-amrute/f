@@ -49,6 +49,7 @@ export enum UIGridCode {
 
     // Procurement
         "ProcMaterialCovOpenSales" = 100,  
+        "ProcMaterialCovOpenSalesAll" = 106,  
         "ProcPlanning" = 101, 
         "ProcMaterialRequirement" = 102,  
         "ProcDayWiseCov" = 103,  

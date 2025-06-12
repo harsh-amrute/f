@@ -1,4 +1,4 @@
-import React,{ useEffect } from "react";
+import React,{ useEffect, useState } from "react";
 
 
 import useDelete from "./useDelete";
@@ -117,7 +117,8 @@ const DeleteRecord = () => {
         }
       }
     },[isTableDataLoading])
-
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    
 
     if(isLoading){
         return <VFLoader/>
@@ -218,6 +219,14 @@ const DeleteRecord = () => {
                     rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}
+                    onFilterChanged={() => {
+                      const filterModel = ref?.current?.api?.getFilterModel();
+                      if (filterModel && Object.keys(filterModel).length > 0) {
+                        setIsDisabled(false);
+                      } else {
+                        setIsDisabled(true);
+                      }
+                    }}
                   statusBar={{
                     statusPanels: isDataAvailableLocally?[
                       { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
@@ -232,12 +241,14 @@ const DeleteRecord = () => {
                   {
                 (!['default'].includes(activeMaster.progress) && (!isDataAvailableLocally && !isSelectMasterOpen)) 
                   && 
-                  <VFPagination 
+                  <VFPagination
+                  resetGridRef={ref} 
                     selectedRows={selectedRowsCount} 
                     totalRows={recordCount} 
                     currentPage={currentPage} 
                     rowsPerPage={parseInt(process.env.REACT_APP_DELETERECORD_PAGE || '100')}
-                    handleChangePage={(e)=>handleChangePage(e)}  
+                    handleChangePage={(e)=>handleChangePage(e)} 
+                    isDisabled={isDisabled}
                   />
               }
                   <div style={{display:'none'}}>                

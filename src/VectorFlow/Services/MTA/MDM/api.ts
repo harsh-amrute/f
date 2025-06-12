@@ -217,8 +217,12 @@ export namespace MDMService {
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/AddCCRMaster/', body )
   }
 
-  export const getMTOTaskById = async (taskId: string) => {
-    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetTaskById/?tid=${taskId}&mmid=3`, {
+  export const putMTOAddCalendarMaster = async (body:any)=>{
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/AddCalendarMaster/', body )
+  }
+
+  export const getMTOTaskById = async (taskId: string, mmid: string) => {
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetTaskById/?tid=${taskId}&mmid=${mmid}`, {
       headers: { 'Content-Type': 'application/json' }
     })
   }
@@ -228,6 +232,14 @@ export namespace MDMService {
     return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + '/SaveBufferMasterTask/?forwardUsers=true', 
       body
     )
+  }
+
+  export const saveCalendarMasterTask = async (body:any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + "/SaveCalendarTask/?forwardUsers=true", body)
+  }
+
+  export const saveCalendarMasterDraft = async (body:any) => {
+    return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + "/SaveCalendarMasterDraft/",body)
   }
 
   export const savePOOGIMasterTask = async (body: any) => {
@@ -286,7 +298,6 @@ export namespace MDMService {
   }
 
   export const getMTODraftById = async (id: any, mid: any)=>{
-    console.log("mid id",mid, id);
     if(mid===501){
       return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetBufferDraftData/?did=${id}&mid=501`)
     }
@@ -295,6 +306,8 @@ export namespace MDMService {
     }
     else if(mid===503){
       return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO+ `/GetPoogiReasonDraftData/?did=${id}&mid=503`)
+    }else if(mid === 504){
+      return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/GetCalendarMasterDraft/?did=${id}&mid=504`)
     }
   }
 
