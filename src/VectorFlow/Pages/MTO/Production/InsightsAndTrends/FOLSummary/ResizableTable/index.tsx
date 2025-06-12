@@ -1,10 +1,14 @@
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { ColDef } from "ag-grid-enterprise";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CustomPageSizeInput from "../../../../../../../VectorFlow/Pages/MTO/Common/VFPagination/CustomPageSizeInput";
 import VFTable from "../../../../../../../VectorFlow/Pages/MTO/Common/VFTable";
 import { VFTableWrapper } from './style';
+import { GridFilterWrapper, TextBtn } from "../../../../Common/VFPagination/styles";
+import { useUserData } from "../../../../../../../context/index";
+
+
 
 interface IResizeTableProps {
   colDef: ColDef[];
@@ -22,6 +26,12 @@ const ResizableTable = (props: IResizeTableProps) => {
     data, colDef, setCurrentGridRef, currentGridRef, columnState,
     userPageSize, savePageSize
   } = props;
+
+    const gridRef = props.gridRef;
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    const { user } = useUserData();
+    const theme_ui = user.user.theme_ui
+      
 
   const getRowStyle = (params: any) => {
     return { background: params.node.rowIndex % 2 === 0 ? "white" : "#F4F4F4" };
@@ -66,6 +76,21 @@ const ResizableTable = (props: IResizeTableProps) => {
     </div>
   );
 
+    const clearGridFilter = () =>{
+      gridRef?.current?.api.setFilterModel(null);
+        setIsDisabled(true);
+  }
+  
+    const CustomStatusPanel = () => {
+          return (
+              <GridFilterWrapper>
+                  <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                      Clear All Grid Filters
+                  </TextBtn>  
+              </GridFilterWrapper>           
+          );
+      }; 
+
   return (
     <VFTableWrapper>
       <VFTable
@@ -75,15 +100,26 @@ const ResizableTable = (props: IResizeTableProps) => {
         defaultColDef={defaultColDef}
         getRowStyle={getRowStyle}
         statusBar={{
-          statusPanels: [{ statusPanel: customPage, align:'right' }],
+          statusPanels: [{ statusPanel: customPage, align:'right' },
+                        { statusPanel: CustomStatusPanel, align: "left" }
+          ],
         }}
         pagination={true}
+        paginationPageSize={userPageSize}
+        paginationPageSizeSelector={false}
         onGridReady={(params: any) => {
           params.api.autoSizeAllColumns();
           setCurrentGridRef(props.gridRef);
+          params.api.addEventListener('filterChanged', () => {
+            const filterModel = params.api.getFilterModel();
+            if (Object.keys(filterModel).length > 0) {
+                setIsDisabled(false); 
+            } else {
+                setIsDisabled(true); 
+            }
+            });
         }}
-        paginationPageSize={userPageSize}
-        paginationPageSizeSelector={false}
+
         maintainColumnOrder
       />
     </VFTableWrapper>

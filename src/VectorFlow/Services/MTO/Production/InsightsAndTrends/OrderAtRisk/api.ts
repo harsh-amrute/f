@@ -6,12 +6,6 @@ export namespace OrderAtRiskService {
    
 
     export const getOrderAtRiskData = async ({ page, appliedFilters, page_size, graphflag }: any) => {
-        const queryParams = {
-            page,
-            page_size,
-            graphflag,
-          };
-          console.log('queryrrr', queryParams)
         if (graphflag) {
           return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersAtRiskData/`, {
             headers: {

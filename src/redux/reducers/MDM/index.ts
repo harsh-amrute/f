@@ -35,7 +35,6 @@ const setMasters = (state:any,action:PayloadAction<MDMMasterState[]>|PayloadActi
             break;
 
         case UPDATE_COLDEFS.type:
-            console.log(action.payload)
             state.activeMaster = {...state.activeMaster,colDefs:action.payload};
             // state.masters = state.masters.map((master:MDMMasterState)=>{
             //     if(master.id === action.payload.id){

@@ -1,57 +1,50 @@
+import _ from "lodash";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import {
-  SCContainer,
-  SCFilterContainer,
-  SCFilterControls,
-  SCLegend,
-  SCFilterAddControls,
-  SCFilterAddButton,
-  SCFilterAddButtonWrapper,
-  SCFilterSeperator,
-  SCFilterButtonGroup,
-  SeasonalityQuickFilterWrapper,
-  SeasonalityQuickFilter,
-  SeasonalityQuickFilterHeader,
-  SeasonalityQuickFilterText,
-  MTOPoogiTableContainer,
-  PoogiSection,
-  PoogiAddButtonWrapper,
-} from "./styles";
-import { useUserData } from "../../../../../context";
-import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMasterMTO";
-import {
-  areMasterFiltersValid,
-  generateMTOFilterOptions,
-} from "../../../../../helpers/utils";
-import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
 import VFFilter from "../../../../../components/VectorFLOW/commons/VFFilterMDM";
-import useViewModify from "./useViewModify";
+import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
+import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
+import SelectMaster from "../../../../../components/VectorFLOW/layouts/SelectMasterMTO";
+import { useUserData } from "../../../../../context";
 import {
   operators,
   seasonalityQuickFilterData,
 } from "../../../../../helpers/MDMConstants";
+import {
+  areMasterFiltersValid,
+  generateMTOFilterOptions,
+} from "../../../../../helpers/utils";
+import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
+import { } from "../../../../Services/MTA/MDM";
 import { SeasonalityQuickFilterType, type Filter } from "../../../../types/MDM";
 import VFTable from "../../Common/VFTable";
-import WarningModal from "./WarningModal";
-import React, { useCallback, useEffect, useMemo, useState} from "react";
-import VFTaskBar from "./VFTaskbar";
+import CalenderModalCard from "./CalenderModalCard";
+import {
+  MTOPoogiTableContainer,
+  PoogiAddButtonWrapper,
+  PoogiSection,
+  SCContainer,
+  SCFilterAddButton,
+  SCFilterAddButtonWrapper,
+  SCFilterAddControls,
+  SCFilterButtonGroup,
+  SCFilterContainer,
+  SCFilterControls,
+  SCFilterSeperator,
+  SCLegend,
+  SeasonalityQuickFilter,
+  SeasonalityQuickFilterHeader,
+  SeasonalityQuickFilterText,
+  SeasonalityQuickFilterWrapper,
+} from "./styles";
 import SubmitConflictModal from "./SubmitConflictModal";
-import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
-import _ from "lodash";
-import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
-import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
-import {} from "../../../../Services/MTA/MDM";
-import { useSelector } from "react-redux";
-import { DayPicker } from "react-day-picker";
-import { CalenderHeading } from "../../../../../VectorFlow/Pages/MTO/Poogi/InsightAndTrends/ResourceUtilization/styles";
-import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
-import CustomCalenderCaption from "../../../MTA/InsightsAndTrends/ResearchInsights/CustomCalenderCaption";
-import CustomCalenderDay from "../../../MTA/InsightsAndTrends/ResearchInsights/CustomCalenderDay";
-import { CalenderWrapper } from "../../../MTA/InsightsAndTrends/ResearchInsights/styles";
-import DatePickForm from "./DatePickForm";
-import { v4 as uuidv4 } from "uuid";
-import moment from "moment";
+import useViewModify from "./useViewModify";
+import VFTaskBar from "./VFTaskbar";
+import WarningModal from "./WarningModal";
 
 
 const MTOViewModify = () => {
@@ -136,144 +129,30 @@ const MTOViewModify = () => {
     setCalendarFormData,
   } = useViewModify("modify");
 
+
   const bufferModifyData = useSelector(
     (state: any) => state.mto.bufferModifyData
   );
   const ccrModifyData = useSelector((state: any) => state.mto.ccrModifyData);
   const editStatus: string = useSelector((state: any) => state.mto.editStatus);
-
-  // const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-  const [highlightedDates, setHighlightedDates] = useState<string[]>([])
-
-  // Mapping days to their respective index in JavaScript's Date object (0 for Sunday, 6 for Saturday)
-  const dayMap: Record<string, number> = {
-    Su: 0,
-    Mo: 1,
-    Tu: 2,
-    We: 3,
-    Th: 4,
-    Fr: 5,
-    Sa: 6,
-  };
-
-// Function to generate highlighted dates, memoized using useCallback
-const generateHighlightedDates = useCallback(() => {
-  if (!selectedData?.sd || !selectedData?.ed) return [];
-
-  const startDate = moment(selectedData.sd, "YYYY-MM-DD");
-  const endDate = moment(selectedData.ed, "YYYY-MM-DD");
-  const selectedDays = selectedData.dow
-    ? selectedData.dow.includes(",")
-      ? selectedData.dow.split(",")
-      : [selectedData.dow]
-    : [];
-
-  const result: string[] = [];
-
-  // If the recurrence is "monthly"
-  if (selectedData.rb === "Monthly" && selectedData.mn && selectedData.md) {
-    const currentMonth = moment(startDate).startOf("month");
-
-    while (currentMonth.isSameOrBefore(endDate, "month")) {
-      const matchingDate = getNthOccurrenceOfDay(
-        currentMonth.year(),
-        currentMonth.month(),
-        selectedData.mn,
-        selectedData.md
-      );
-
-      // Ensure the date is within the valid range
-      if (matchingDate && matchingDate.isBetween(startDate, endDate, "day", "[]")) {
-        result.push(matchingDate.format("YYYY-MM-DD"));
-      }
-
-      currentMonth.add(1, "month"); // Move to next month
-    }
-
-    return result;
-  }
-
-  // Default behavior (daily or weekly recurrence)
-  while (startDate.isSameOrBefore(endDate)) {
-    const dayOfWeek = startDate.day();
-    if (selectedDays.length === 0 || selectedDays.some((day: any) => dayMap[day] === dayOfWeek)) {
-      result.push(startDate.format("YYYY-MM-DD"));
-    }
-    startDate.add(1, "day");
-  }
-
-  return result;
-}, [selectedData]);
-
-const getNthOccurrenceOfDay = (year: number, month: number, occurrence: string, dayType: string) => {
-  const firstDayOfMonth = moment({ year, month, day: 1 });
-  const lastDayOfMonth = moment({ year, month }).endOf("month");
-
-  // If "md" is "day", return the exact nth day of the month
-  if (dayType === "day") {
-    let dayNumber = 1;
-    if (occurrence === "second") dayNumber = 2;
-    if (occurrence === "third") dayNumber = 3;
-    if (occurrence === "fourth") dayNumber = 4;
-    if (occurrence === "last") dayNumber = lastDayOfMonth.date();
-
-    const specificDate = moment({ year, month, day: dayNumber });
-
-    // Ensure the date falls within the valid range
-    return specificDate.isValid() ? specificDate : null;
-  }
-
-  // Handle weekday/weekend/specific day logic as before
-  const dates: moment.Moment[] = [];
-  for (let d = moment(firstDayOfMonth); d.isSameOrBefore(lastDayOfMonth); d.add(1, "day")) {
-    const weekday = d.isoWeekday();
-    const dayOfWeek = d.day();
-
-    if (
-      (dayType === "weekday" && weekday <= 5) ||
-      (dayType === "weekend day" && weekday >= 6) ||
-      (dayType in dayMap && dayOfWeek === dayMap[dayType])
-    ) {
-      dates.push(moment(d));
-    }
-  }
-
-  // Get required occurrence for weekdays/weekends
-  if (occurrence === "first") return dates[0];
-  if (occurrence === "second") return dates[1];
-  if (occurrence === "third") return dates[2];
-  if (occurrence === "fourth") return dates[3];
-  if (occurrence === "last") return dates[dates.length - 1];
-
-  return null;
-};
-
-
-
-// Memoize the result so it's only recomputed when necessary
-const getHighlightedDates = useMemo(() => generateHighlightedDates(), [generateHighlightedDates]);
-
-
-// Update the state when highlightedDates changes
-useEffect(() => {
-  setHighlightedDates(getHighlightedDates);
-}, [getHighlightedDates]);
-
+  
   const calendarOnClickHandler = () => {
       setCalendarFormData({
-        dsc: "",
         iwd: true,
-        sd: "",
-        dow: "",
-        ccr: "",
+        dsc: "",
         rb: "",
-        mn: "", // first , second, third , fourth, last
-        md: "", // day, weekday, weekend day, su , mo , tu, we, th,fr, sa
-        pl: "",
+        sd: "",
+        dow: [{id: 0, mn: "", md: ""}],
+        ccr_id: [],
+        plid: "",
+        rd: null,
+        plnm:"",
+        ccr:"",
         ed: "",
-        rd: "",
         hid: uuidv4(),
+        ia:false,
+        id:false,
+        iu:false,
       });
       setIsModalOpen(true);
   };
@@ -380,7 +259,7 @@ useEffect(() => {
                     {activeMaster.filters.map((f: Filter, index: number) => {
                       if (f.masterId === activeMaster?.id && index === 0) {
                         return (
-                          <SCFilterAddButtonWrapper>
+                          <SCFilterAddButtonWrapper key={index}>
                             <SCFilterAddButton
                               onClick={() => {
                                 handleOnAddFilter();
@@ -674,15 +553,18 @@ useEffect(() => {
                     style={{
                       display: "flex",
                       justifyContent: "left",
-                      gap: "12px",
+                      gap: "8px",
                       width: "110px",
                       margin: "8px",
-                      cursor: "pointer",
+                      cursor: activeMaster?.rowData?.length === 0 ? "not-allowed" : "pointer",
                       background: "#fff",
+                      opacity: activeMaster?.rowData?.length === 0 ? 0.6 : 1,
+                      color: activeMaster?.rowData?.length === 0 ? "#999" : "#000", 
                     }}
+                    disabled={activeMaster?.rowData?.length === 0}
                     onClick={() => {
                       if (
-                        !activeMaster.colDefs.some((x) => x.field === "actions")
+                        !activeMaster?.colDefs.some((x) => x.field === "actions")
                       ) {
                         if (activeMaster.id !== 504) {
                           addRowToMtoGrid();
@@ -739,101 +621,16 @@ useEffect(() => {
         )}
       </SCContainer>
       {isModalOpen && (
-        <VFModalCard
-          openModal={isModalOpen}
-          closeModal={() => {
-            setIsModalOpen(false);
-          }}
-          headerText={"Add Details"}
-          headerIcon={""}
-          closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
-        >
-          <div
-            style={{
-              height: "76vh",
-              width: "65vw",
-              overflow: "auto",
-              background: "#f4f4f4",
-            }}
-          >
-            <div
-              style={{
-                height: "100%",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    padding: "10px",
-                    width: "100%",
-                    margin: "50px 0 0 30px",
-                  }}
-                >
-                  <CalenderWrapper
-                    style={{
-                      zoom: "1",
-                      background: "white",
-                      borderRadius: "12px",
-                    }}
-                  >
-                    <CalenderHeading
-                      style={{ width: "100%", fontWeight: "bold" }}
-                      data-testid="utilization"
-                    >
-                      Calendar
-                    </CalenderHeading>
-                    <DayPicker
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                      mode="single"
-                      components={{
-                        Caption: CustomCalenderCaption,
-                        Day: (props) => {
-                          const formattedDate = moment(props?.date).format(
-                            "YYYY-MM-DD"
-                          );
-                          const color = highlightedDates.includes(formattedDate)
-                            ? "Red"
-                            : "";
-                          return <CustomCalenderDay {...props} color={color} />;
-                        },
-                      }}
-                      styles={{
-                        cell: {
-                          padding: "5px",
-                        },
-                      }}
-                    />
-                  </CalenderWrapper>
-                </div>
-              </div>
-              <div
-                style={{
-                  height: "90%",
-                  borderLeft: "2px solid #A0A0A0",
-                  margin: "40px 0",
-                }}
-              ></div>
-              <div>
-                {
-                  <DatePickForm
-                    plantNames={plantNames}
-                    calendarFormData={calendarFormData}
-                    ccrNames={ccrNames}
-                    formData={selectedData}
-                    setFormData={setSelectedData}
-                    onSaveHandler={onSaveHandler}
-                    setIsModalOpen={setIsModalOpen}
-                  />
-                }
-              </div>
-            </div>
-          </div>
-        </VFModalCard>
+        <CalenderModalCard
+          selectedData={selectedData}
+          setSelectedData={setSelectedData}
+          plantNames={plantNames}
+          calendarFormData={calendarFormData}
+          ccrNames={ccrNames}
+          onSaveHandler={onSaveHandler}
+          setIsModalOpen={setIsModalOpen}
+          isModalOpen={isModalOpen} 
+        />
       )}
       {isWarningModalOpen && (
         <WarningModal

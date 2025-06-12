@@ -1,7 +1,28 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createReducer } from '@reduxjs/toolkit';
 import { MTOStore } from '../../../VectorFlow/types/MTO';
-import { SAVE_ANALYTICS_DATA, DAYWISE_COVERAGE_ANALYTICS, PROCPLANNING_ANALYTICS, RESOURCE_UTIL_ANALYTICS, BM_REPORT_ANALYTICS, SET_TASK_PENDING_SELECTED ,APPLIED_FILTERS, SET_POOGI_INITIAL_DATA, SET_EDITABLE_MAJ_ROW, SET_EDITABLE_MIN_ROW, SET_BUFFER_INITIAL_DATA, SET_BUFFER_MODIFY_DATA, SET_TASK_PENDING_ROW_DATA, SET_CCR_INITIAL_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_MODIFY_DATA, RESET_MTO_STATE, SET_EDIT_STATUS} from '../../actions/MTO';
+import {
+  SAVE_ANALYTICS_DATA,
+  DAYWISE_COVERAGE_ANALYTICS,
+  PROCPLANNING_ANALYTICS,
+  RESOURCE_UTIL_ANALYTICS,
+  BM_REPORT_ANALYTICS,
+  SET_TASK_PENDING_SELECTED,
+  APPLIED_FILTERS,
+  SET_POOGI_INITIAL_DATA,
+  SET_EDITABLE_MAJ_ROW,
+  SET_EDITABLE_MIN_ROW,
+  SET_BUFFER_INITIAL_DATA,
+  SET_CALENDAR_INITIAL_DATA,
+  SET_CALENDAR_MODIFY_DATA,
+  SET_BUFFER_MODIFY_DATA,
+  SET_TASK_PENDING_ROW_DATA,
+  SET_CCR_INITIAL_DATA,
+  SET_CCR_MODIFY_DATA,
+  SET_POOGI_MODIFY_DATA,
+  RESET_MTO_STATE,
+  SET_EDIT_STATUS,
+} from "../../actions/MTO";
 
 
 
@@ -52,6 +73,13 @@ const setBufferInitialData= (state: any, action: PayloadAction<any>)=>{
 const setBufferModifyData = (state: any, action: PayloadAction<any>)=>{
     state.bufferModifyData = action.payload;
 }
+const setCalenderInitialData= (state: any, action: PayloadAction<any>)=>{
+    state.calendarInitialData = action.payload;
+}
+
+const setCalenderModifyData = (state: any, action: PayloadAction<any>)=>{
+    state.calendarModifyData = action.payload;
+}
 
 const setCCRInitialData = (state: any, action: PayloadAction<any>)=>{
     state.ccrInitialData = action.payload;
@@ -81,6 +109,8 @@ const resetMtoState = (state: any)=>{
     state.ccrInitialData = null;
     state.bufferInitialData = null;
     state.bufferModifyData = null;
+    state.calendarInitialData = null;
+    state.calendarModifyData = null;
     state.editableMajRow = null;
     state.editableMinRow;
     state.taskPendingSelected = null;
@@ -99,6 +129,8 @@ const mtoReducer = (initialState: MTOStore) => createReducer(initialState, (buil
     builder.addCase(SET_POOGI_INITIAL_DATA, setPoogiIntialData)
     builder.addCase(SET_BUFFER_INITIAL_DATA, setBufferInitialData)
     builder.addCase(SET_BUFFER_MODIFY_DATA, setBufferModifyData)
+    builder.addCase(SET_CALENDAR_INITIAL_DATA, setCalenderInitialData)
+    builder.addCase(SET_CALENDAR_MODIFY_DATA, setCalenderModifyData)
     builder.addCase(SET_TASK_PENDING_ROW_DATA, setTaskPendingRowData)
     builder.addCase(SET_CCR_INITIAL_DATA, setCCRInitialData)
     builder.addCase(SET_CCR_MODIFY_DATA, setCCRModifyData)    

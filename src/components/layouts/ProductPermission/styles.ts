@@ -84,6 +84,6 @@ export const SCItemTitle = styled.span`
   }
 `;
 
-export const SCItemMulSelect = styled.div`
-  width: 70%;
+export const SCItemMulSelect = styled.div<{width?:string}>`
+  width: ${(props)=> props.width ? props.width : '70%'};
 `;

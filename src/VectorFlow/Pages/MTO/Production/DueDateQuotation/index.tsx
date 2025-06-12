@@ -672,6 +672,7 @@ const DueDateQuotation = () => {
               assignmentRef.current.onScheduled();
             }
           }}
+          currentStep={step}
           style={{ fontSize: "12px", width: "100px", height: "40px", display: "flex", justifyContent: "center", alignItems: "center" }}>
           {renderSubmitText()}
         </VFButton>

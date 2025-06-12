@@ -831,10 +831,11 @@ const useViewModify = (pageType:string) => {
       // }
 
       toggleWarningModal(true);    
+      setCurrentPage(1);
     }
 
     const onWarningModalClose = ()=>{
-      dispatch(UPDATE_ROW_DATA([]));
+      // dispatch(UPDATE_ROW_DATA([]));
       toggleWarningModal(false);
       setIsTableDataLoading(false);
       setTempRecordCount(0)
@@ -1032,7 +1033,7 @@ const useViewModify = (pageType:string) => {
             else  dispatch(UPDATE_PROGRESS_STATE('uploaded'));
             addCheckBoxColDefs();
            }
-          
+
           dispatch(SET_RECORD_COUNT(result.length));
           dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
           dispatch(UPDATE_ROW_DATA(result));
@@ -1044,7 +1045,8 @@ const useViewModify = (pageType:string) => {
           setDownloadData(false);
           setTempDownloadData(false);
           setCurrentPage(1);
-        }
+          setFile(undefined)
+          }
          catch (error:any) {
           toast.dismiss();
           console.error(error)
@@ -1209,7 +1211,7 @@ const useViewModify = (pageType:string) => {
             id:activeMaster.id,
             action:actionStatus,
             TaskId:'',
-            IsOverWrite:isOverWrite===true?true:false,
+            IsOverWrite:true,
             data:[],
             uiconfig:activeMaster.fields
           }

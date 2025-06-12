@@ -141,51 +141,82 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
 
     },[selectedRoutes, ccrGroupMaster])
     
+  
+  useEffect(() => {
+    if (isEditable && ccrGroupMaster && ccrGroupMaster.length == 1) {
+      if (!selectedRoutes.length) {
+        setSelectedRoutes(new Array([ccrGroupMaster[0], null]));
+      }
+    }
+  }, [isEditable]);
+  
+  const updateOption = (ccrGroupMaster: any, selectedRoute: any) => {
+    if (!sortedSelectedRoutes || !sortedSelectedRoutes.length) {
+      return ccrGroupMaster;
+    }
+
+    const ccrGroupCopy = _.cloneDeep(ccrGroupMaster);
+
+    const selectedCCRGroupValues = sortedSelectedRoutes.map((route: any) => route[0].value);
+
+    return ccrGroupCopy.filter((ccrGroup: any) =>
+      !selectedCCRGroupValues.includes(ccrGroup.value) || ccrGroup.value === selectedRoute?.value
+    );
+   
+  }
+    
   return (
-    <StepperWrapper ccrMasterLength={ccrGroupMaster.length}
-       key="route-assignment" className="route-assignment">
-        {ccrGroupMaster.map((ccrGroup: any, index: number)=>{
-            return(
-            <StepGroup $step={true} key={`route-assignment-${index}`}>
-                <RadioSelect 
-                    key={`route-assignment-${index}-${1}`}
-                    isDisabled={!isEditable}
-                    theme={theme} 
-                    color="lightgrey" 
-                    options={ccrGroupMaster} 
-                    isClearable
-                    value={sortedSelectedRoutes?.[index]?.[0] || null}
-                    onChange={(newValue: any)=>{
-                        const newGroups = [...sortedSelectedRoutes];
-                        if(newValue == null || newValue == undefined){
-                            newGroups[index] = null
-                        }else{
-                            newGroups[index] = [newValue,null];
-                        }
-                        setSelectedRoutes(newGroups.filter(item => item !== undefined && item !== null));
-                    }}
+    <StepperWrapper
+      ccrMasterLength={ccrGroupMaster.length}
+      key="route-assignment"
+      className="route-assignment">
+      {
+        ccrGroupMaster.length ? (
+          ccrGroupMaster.map((ccrGroup: any, index: number) => {
+            return (
+              <StepGroup $step={true} key={`route-assignment-${index}`}>
+                <RadioSelect
+                  key={`route-assignment-${index}-${1}`}
+                  isDisabled={!isEditable}
+                  theme={theme}
+                  color="lightgrey"
+                  options={updateOption(ccrGroupMaster,sortedSelectedRoutes?.[index]?.[0])}
+                  isClearable
+                  value={sortedSelectedRoutes?.[index]?.[0] || null}
+                  onChange={(newValue: any) => {
+                    const newGroups = [...sortedSelectedRoutes];
+                    if (newValue == null || newValue == undefined) {
+                      newGroups[index] = null
+                    } else {
+                      newGroups[index] = [newValue, null];
+                    }
+                    setSelectedRoutes(newGroups.filter(item => item !== undefined && item !== null));
+                  }}
                 />
-                <RadioSelect 
-                    key={`route-assignment-${index}-${2}`}
-                    isClearable
-                    isDisabled={!isEditable}
-                    theme={theme} 
-                    value={sortedSelectedRoutes[index]?.[1] || null}
-                    options={sortedSelectedRoutes[index]?.[0]?.ccrs.filter((ccr: any) => ccrGroupMaster.some((group: any) => group.ccrs.some((c: any) => c.value === ccr.value)))}
-                    onChange={(newValue: any)=>{
-                        const newGroups = [...sortedSelectedRoutes];
-                        newGroups[index][1] = newValue;
-                        setSelectedRoutes(newGroups);
-                    }}
-                    Icon={(props:any)=>{
-                        const data = props.props.data;
-                        const color = data.fol === data.minFol? "green": "red";
-                        return <div style={{color:color, display:"flex", alignItems:"center", gap:"5px"}}><FOLIcon width={(data.fol/data.maxFol)*100} color={color}/><span>[{data.fol}]</span></div>
-                    }}
+                <RadioSelect
+                  key={`route-assignment-${index}-${2}`}
+                  isClearable
+                  isDisabled={!isEditable}
+                  theme={theme}
+                  value={sortedSelectedRoutes[index]?.[1] || null}
+                  options={sortedSelectedRoutes[index]?.[0]?.ccrs.filter((ccr: any) => ccrGroupMaster.some((group: any) => group.ccrs.some((c: any) => c.value === ccr.value)))}
+                  onChange={(newValue: any) => {
+                    const newGroups = [...sortedSelectedRoutes];
+                    newGroups[index][1] = newValue;
+                    setSelectedRoutes(newGroups);
+                  }}
+                  Icon={(props: any) => {
+                    const data = props.props.data;
+                    const color = data.fol === data.minFol ? "green" : "red";
+                    return <div style={{ color: color, display: "flex", alignItems: "center", gap: "5px" }}><FOLIcon width={(data.fol / data.maxFol) * 100} color={color} /><span>[{data.fol}]</span></div>
+                  }}
                 />
-            </StepGroup>
+              </StepGroup>
             )
-        })}
+          })
+        ) : (<span>No CCR's available for selected item type.</span>)
+      }
+        
         {/* <StepGroup $step={true}>
             <RadioSelect theme={theme} selected={ccrGroupMaster[0]} color="lightgrey" options={ccrGroupMaster}/>
             <RadioSelect theme={theme} selected={{}}/>
@@ -211,4 +242,4 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     )
 }
 
-export default RouteAssignment
+export default React.memo(RouteAssignment)

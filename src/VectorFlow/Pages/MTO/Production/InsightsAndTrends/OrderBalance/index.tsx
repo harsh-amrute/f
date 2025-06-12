@@ -29,10 +29,6 @@ import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
 import GridView from "../OrderAtRisk/GridView";
 
 
-
-import { useGetOrderRiskData } from "../../../../../Services/MTO/Production/InsightsAndTrends/OrderAtRisk";
-
-
 const APIFilterConfig = {
   filSecVisConfig: {
     "Prod_Order_Balance": {
@@ -85,10 +81,6 @@ const OrderBalance = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [gridData, setGridData] = useState([]);
 
-
-
-
-  const { mutateAsync: getOrderAtRiskData } = useGetOrderRiskData();
   
   const colDefCustomizations = {
     BPP: {

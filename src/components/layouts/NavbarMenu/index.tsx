@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
 import _ from 'lodash'
 import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
+import { getNestedChildren } from "../../../helpers/utils";
 
 const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
   const { mutateAsync: getAllReports } = useGetAllReports();
@@ -224,23 +225,8 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
         return true;
       }
     })
-    
     return childMenuItem;
   }
-
-  const getNestedChildren = (children: Array<any>): any => {
-    const stack = children? [...children]:[];
-    const result = [];
-    while (stack.length > 0) {
-      const current = stack.pop();
-      if (current.child) {
-        stack.push(...current.child);
-      } else {
-        result.push(current);
-      }
-    }
-    return result.reverse();
-  };
 
   const navigate = useNavigate();
 
