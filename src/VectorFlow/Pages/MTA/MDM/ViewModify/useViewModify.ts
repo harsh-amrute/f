@@ -1099,7 +1099,6 @@ const useViewModify = (pageType:string) => {
         }
         
       }
-
       const onClearExportError = (source:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
@@ -1119,9 +1118,28 @@ const useViewModify = (pageType:string) => {
           dispatch(UPDATE_ROW_DATA(validData));
         
           dispatch(REMOVE_COLDEFS(['error','warning']));
-          if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-          else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-          else if(validData.length===0){
+          
+          
+          if(pageType==='remove') {
+            
+            if(validData.length===0){
+              
+              dispatch(UPDATE_PROGRESS_STATE('submitted'))
+            }
+            else{
+            dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+            }
+          }
+          else if(pageType === 'add' || pageType == 'modify'){
+            if( validData.length===0){
+              dispatch(UPDATE_PROGRESS_STATE('submitted'))
+            }
+            else{
+              dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+            }
+          }
+          // else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+         else if(validData.length===0){
             if(draftID.length===0){
               dispatch(UPDATE_PROGRESS_STATE('Discard'))
             }else{
