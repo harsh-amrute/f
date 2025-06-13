@@ -1137,7 +1137,7 @@ const useViewModify = (pageType:string) => {
             }
           }
           // else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-          else if(validData.length===0){
+         if(validData.length===0){
             if(draftID.length===0){
               dispatch(UPDATE_PROGRESS_STATE('Discard'))
             }else{
