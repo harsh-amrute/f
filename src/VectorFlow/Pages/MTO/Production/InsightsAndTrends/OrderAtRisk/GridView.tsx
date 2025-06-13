@@ -76,10 +76,6 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                 tooltipMouseTrack={true}
                 ref={gridRef}
                 pagination={false}      
-                statusBar={{
-                    statusPanels: [
-                    ],
-                }}
                 onGridReady={(params: any) => {
                     params.api.autoSizeAllColumns();
                     setCurrentGridRef(gridRef);
