@@ -4363,6 +4363,15 @@ export function getColumnDefinations(
 ) {
  
   const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => {
+
+    let filterType = 'agMultiColumnFilter'; 
+
+    if (data.dt === 'date') {
+      filterType = 'agDateColumnFilter';
+    } else if (data.dt === 'number') {
+      filterType = 'agNumberColumnFilter';
+    }
+
     const columnDef = {
       colId: data.cc,
       headerName: data.hd,
@@ -4375,18 +4384,35 @@ export function getColumnDefinations(
       rowGroup: false,
       rowGroupIndex: null,
       pivot: false,
-      filter: data.dt==='number' ? "agNumberColumnFilter": "agMultiColumnFilter",
+      filter:filterType,
       pivotIndex: null,
       enablePivot: true,
       flex: 1,
       minWidth: 150,
       filterParams: {
-        buttons: ['reset'], // Adds Apply and Clear buttons
+        buttons: ['reset'], 
+        comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
+          if (!cellValue) return -1;
+        
+          const cellDate = new Date(cellValue);
+          if (isNaN(cellDate.getTime())) return -1;
+        
+          const cellDateOnly = new Date(
+            cellDate.getFullYear(),
+            cellDate.getMonth(),
+            cellDate.getDate()
+          );
+        
+          if (cellDateOnly < filterLocalDateAtMidnight) return -1;
+          if (cellDateOnly > filterLocalDateAtMidnight) return 1;
+          return 0;
+        }
+        
       },
       cellStyle: {
         justifyContent: data.cla
       }
-    };
+    }; 
     // Apply customization if needed
     if (customizationParams[data.cc]) {
       // Object.assign(columnDef, customizationParams[data.cc]);

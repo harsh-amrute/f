@@ -2,7 +2,7 @@ import { useSelector,useDispatch } from 'react-redux'
 import { useEffect,useState } from 'react';
 import { RootState } from '../../../../../redux/store/store';
 import { MDMMasterState,Field } from '../../../../../VectorFlow/types/MDM';
-import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS } from '../../../../../redux/actions/MDM';
+import { UPDATE_ACTIVE_MASTER,RESET_STATE, REMOVE_MASTER, ADD_MASTER,SET_RECORD_COUNT,TOGGLE_SELECT_MASTER_SCREEN,UPDATE_PROGRESS_STATE,UPDATE_COLDEFS,FILL_MASTERS, TOGGLE_UPLOAD_MODAL, UPDATE_ROW_DATA, SYNC_ACTIVE_MASTER_TO_MASTER, REMOVE_COLDEFS,ADD_COLDEFS,SET_DRAFT_ID } from '../../../../../redux/actions/MDM';
 import { useNavigate } from "react-router";
 import { ColDef } from 'ag-grid-enterprise';
 import { useDeleteMasterData ,useDeleteTask,useDeleteDraft,useDeleteMasterDataRetail} from '../../../../..//VectorFlow/Services/MTA/MDM';
@@ -195,7 +195,6 @@ const useDelete=()=>{
     const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
 
         const columnsToOmit = activeMaster.fields.filter((field:Field)=>!field.isDownload).map((field:Field)=>field.key) 
-
         rowData = rowData.map((row:any)=>_.omit(row,'error','warning','users',columnsToOmit));
 
        // Convert To String
@@ -240,7 +239,7 @@ const useDelete=()=>{
           for(let i=0; i < rowData.length; i+=chunkSize){
           
               if(i+chunkSize < rowData.length){
-                payload.data = activeMaster.rowData.slice(i,i+chunkSize);
+                payload.data = rowData.slice(i,i+chunkSize);  
                 toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${rowData.length}`})
                 submitProgress+=chunkSize;
               }
@@ -254,11 +253,14 @@ const useDelete=()=>{
               }
               else{
                 data = await deleteMasterData(payload);
+                if (data.status !== 200) {
+                  throw new Error(`Request failed with status`);
+               }
               }
               
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
 
-              if(TASK_ID === ''){
+              if(TASK_ID === '' || TASK_ID === undefined){
                 payload.TaskId = data.data.taskId;
                 taskId = data.data.taskId;
               }
@@ -267,7 +269,7 @@ const useDelete=()=>{
                 taskId = TASK_ID;
               }
 
-              setTaskId(data.data.taskId  );
+              setTaskId(data.data.taskId);
               
               if(data.data.conflictErrorCount){
                 conflictCount += parseInt(data.data.conflictErrorCount,10);
@@ -368,6 +370,7 @@ const useDelete=()=>{
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
               }
               if(draftID.length > 0){
+                dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
               }
               dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
@@ -397,6 +400,7 @@ const useDelete=()=>{
               notifySuccess(`Deletions Submitted Successfully`);
               toast.dismiss();
               if(draftID.length > 0){
+                dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
               }
             
