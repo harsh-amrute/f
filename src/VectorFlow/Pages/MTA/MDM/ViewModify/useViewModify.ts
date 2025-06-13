@@ -1063,7 +1063,6 @@ const useViewModify = (pageType:string) => {
         }
 
       }
-      useEffect(()=>{console.log("Progress of vaibhav",activeMaster.progress)},[activeMaster.progress])
 
       const exportToExcel = async (fromUploadModal?:boolean)=>{
         try {
