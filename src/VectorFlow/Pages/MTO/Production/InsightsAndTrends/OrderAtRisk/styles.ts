@@ -10,7 +10,7 @@ export const ChartWrapper = styled.div`
 `
 export const HorizontalViewWrapper = styled.div`
       width:100%;
-      height:100%;
+      height:90%;
       & .ag-theme-alpine{
             height: 100%;
             margin-top: 0 !important;

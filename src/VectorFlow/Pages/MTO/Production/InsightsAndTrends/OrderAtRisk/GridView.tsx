@@ -65,7 +65,7 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
     }
     
     return (
-        // <div data-testid="grid-view" style={{ height:"95%", width: '100%', margin:"20px", paddingRight:"20px", paddingBottom:"10px"}}>
+        <div data-testid="grid-view" style={{ height:"95%", width: '100%', margin:"20px", paddingRight:"20px", paddingBottom:"10px"}}>
             <VFTableWrapper data-testid="grid-view" >
             <VFTable
                 {...gridOptions}
@@ -101,16 +101,13 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                     totalRows={totalRows}
                     currentPage={currentPage}
                     handleChangePage={handleChangePage}
-                    // resetGridRef={reference}
                     isDisabled = {isDisabled}
                     customPageSizeEnabled={true}
                     savePageSize={savePageSize}
                     userPageSize={userPageSize}
                 />
           </VFTableWrapper>
-
-          
-        // </div>
+          </div>
     )
 }
 

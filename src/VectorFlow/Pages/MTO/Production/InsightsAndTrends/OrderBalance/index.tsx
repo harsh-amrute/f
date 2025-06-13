@@ -140,10 +140,13 @@ const OrderBalance = () => {
         }
 
         const response = await getOrderBalanceData(payload);
-        setGraphData(response?.data?.data)
-        setGridData(response.data.data.results || []);
+        if(payload.graphflag==1){
+          setGraphData(response?.data?.data)
+        }
+        else{
+          setGridData(response.data.data.results || []);
+        }
         setTotalRow(response?.data?.data?.count)
-
       }
       catch (e) {
         console.log(e);

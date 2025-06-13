@@ -396,8 +396,12 @@ const OrderAtRisk = () => {
             }
         
             const response = await getOrderAtRiskData(payload);
-            setRawData(response?.data?.data);
-            setGridData(response.data.data.results || []);
+            if(payload.graphflag==1){
+              setRawData(response?.data?.data);
+            }
+            else{
+              setGridData(response.data.data.results || []);
+            }
             setTotalRow(response?.data?.data?.count)
 
           }
