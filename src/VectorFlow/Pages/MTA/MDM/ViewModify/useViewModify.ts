@@ -1121,10 +1121,8 @@ const useViewModify = (pageType:string) => {
           
           
           if(pageType==='remove') {
-            console.log("VALID DATA",validData.length);
             
             if(validData.length===0){
-              console.log("hello",draftID.length);
               
               dispatch(UPDATE_PROGRESS_STATE('submitted'))
             }
