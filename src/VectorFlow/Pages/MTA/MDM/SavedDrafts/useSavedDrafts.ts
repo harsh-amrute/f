@@ -60,7 +60,7 @@ const useSavedDrafts = ()=>{
             for(let i=1; i<=numberOfPages; i++){
                 payload.pageNumber = i;
                 const result = await getDraftById({id:draftDetails.DraftId,body:payload})
-                draftDataRaw.push(...result);
+                draftDataRaw.push(result.data[0]);
                 if(i===numberOfPages) toast.update(toastId,{render:`Downloading Data ${draftCount} / ${draftCount}`})
                 else toast.update(toastId,{render:`Downloading Data ${i*chunkSize} / ${draftCount}`})
             }

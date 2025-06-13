@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { useUserData } from '../../../../../context'
-import { useEffect} from "react";
+import { ReactHTMLElement, useEffect, useState} from "react";
+import CalenderMonthlySelect from "./CalenderMonthlySelect";
+import _, { set } from "lodash";
+import { SCFlexCenter, SCItemMulSelect, SCItemTitle, SCSwapItem } from "../../../../../components/layouts/ProductPermission/styles";
+import { SearchInputMultiple } from "../../../../../components";
 
 
 
@@ -97,26 +101,22 @@ text-align: left;
 margin-top: -10px;
 `;
 
-const MonthlyWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 20px;
-`
+
+
+
 
 const DatePickForm=({ plantNames, calendarFormData, ccrNames, formData, setFormData,setIsModalOpen,onSaveHandler}: any)=>{
 
   const {user} = useUserData()
   const themeUi = user.user.theme_ui
   const isDisabled =  formData.sd === '' || formData.ed === ''
+  const [ccrNameOptFromPlant,setCcrNameOptFromPlant] = useState<any>(ccrNames) 
 
   
-  useEffect(()=>{
-    setFormData(calendarFormData);
-  }, [calendarFormData]);
-  
+useEffect(()=>{
+  setFormData(calendarFormData);
+}, [calendarFormData]);
+
 
 const onHandleChange=(e:any)=>{
   setFormData({
@@ -124,8 +124,6 @@ const onHandleChange=(e:any)=>{
     iwd: e.target.value == "holiday" ? false : true
   })
 }
-
-
 
 const onHandleTitleChange = (e:any)=>{
   setFormData({
@@ -135,27 +133,33 @@ const onHandleTitleChange = (e:any)=>{
 }
 
 const onHandleOptionChange = (e:any)=>{
-  setFormData({
-    ...formData,
-    rb: e.target.value
-
-  })
+  setFormData((prevFormData:any)=> ({...prevFormData, dow :[{id:0,mn:"",md:""}], rd:null, rb: e.target.value}))
 }
 
 const onHandlePlantChange = (e:any)=>{
-  setFormData({
-    ...formData,
-    pl: Number(e.target.value),
-    plant__plant_name:plantNames.find((pl:any)=> pl.plant_id === e.target.value)?.plant_name
+  const selectedPlantId = Number(e.target.value);
+  const filteredCcrNames = ccrNames
+    .filter((ccr: any) => ccr.plant === selectedPlantId)
+    .map((ccr: any) => ({ value: ccr.ccr_id, label: ccr.ccr_name }));
 
-  })
+  setCcrNameOptFromPlant(filteredCcrNames);
+
+  setFormData((prevFormData:any)=>({
+    ...prevFormData,
+    plid: selectedPlantId,
+    plnm:plantNames.find((pl:any)=> pl.plant_id == selectedPlantId)?.plant_name,
+    ccr_id: [],
+    ccr:"",
+  }))
 }
-const onHandleCCRChange = (e:any)=>{
 
+
+
+const onHandleCCRChange = (e:any)=>{
   setFormData({
     ...formData,
-    ccr: Number(e.target.value),
-    ccr__ccr_name: ccrNames.find((ccr: any) => ccr.ccr_id == e.target.value)?.ccr_name
+    ccr_id: e.map((ccr:any)=> ccr.value),
+    ccr: e.map((ccr:any)=> ccr.label).join(","),
     
   })
 }
@@ -181,23 +185,29 @@ const onHandleStartDateChange = (e:any) =>{
 const onHandleEVeryChange = (e:any)=>{
   setFormData({
     ...formData,
-    rd: e.target.value
+    rd: Number(e.target.value)
 
   })
 
 }
 
-const handleAddDow = (day: string) => {
-  setFormData((prevFormData: any) => {
-    const currentDow = prevFormData.dow || "";
-    const dowArray = currentDow.split(",").filter(Boolean);
 
-    const newDow = dowArray.includes(day)
-      ? dowArray.filter((d:string) => d !== day).join(",")
-      : [...dowArray, day].join(",");
-  
-    return { ...prevFormData, dow: newDow };
-  });
+const handleAddDow = (day: string) => {
+
+
+  setFormData((prevFormData: any) => {
+    const updatedDow = [...prevFormData.dow];
+    if(updatedDow.length === 1 && updatedDow[0].md === ""){
+      updatedDow[0] = { id: 0, mn: "", md: day };
+    }else if (!updatedDow.some((entry: any) => entry.md === day)) {
+      updatedDow.push({ id: updatedDow.length, mn: "", md: day });
+    } else {
+      const index = updatedDow.findIndex((entry: any) => entry.md === day);
+      updatedDow.splice(index, 1);
+    }
+    return { ...prevFormData, dow: updatedDow };
+  })
+
 };
 
 useEffect(() => {
@@ -206,35 +216,70 @@ useEffect(() => {
   document.querySelectorAll(".selected").forEach((el) => {
     el.classList.remove("selected");
   });
-  
-  // Apply the correct class to selected days
-  const days = formData?.dow?.includes(",") ? formData?.dow.split(",") : [formData.dow];
 
-  days.forEach((day: string) => {
-    const element = document.getElementById(day);
-    if (element) {
-      element.classList.add("selected");
-    }
-  });
+  // Apply the correct class to selected days
+ if(formData && formData.dow && Array.isArray(formData.dow)){
+
+   formData?.dow.map((day:any)=> day.md).forEach((day: string) => {
+     const element = document.getElementById(day);
+     if (element) {
+       element.classList.add("selected");
+     }
+   });
+ }
 }, [formData.dow]);
 
 
 useEffect(()=>{
-  if(formData?.rb !== "Weekly"){
-    setFormData((prevFormData:any)=> ({...prevFormData, dow :""}))
+  if(formData.rb !== "Weekly"){
+    if(formData?.dow?.length===0){
+      setFormData((prevFormData:any)=> ({...prevFormData, dow :[{id:0,mn:"",md:""}], rd:null}))
+    }
+  }
+  else  {
+    if(formData?.dow?.length===0){
+      setFormData((prevFormData:any)=> ({...prevFormData, dow :[]}))
+    }
   }
 },[formData.rb])
 
-const handleMnOptionsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+const handleMnOptionsChange = (e: React.ChangeEvent<HTMLSelectElement>,id:number) => {
   setFormData((prevFormData : any) => (
-    { ...prevFormData, mn: e.target.value }
+    { ...prevFormData,
+      dow : prevFormData.dow.map((month:any)=> month.id == id ? {...month, mn:e.target.value}: month)
+     }
   ));
 }
 
-const handleMdOptionsChange = (e: React.ChangeEvent<HTMLSelectElement>)=>{
+const handleMdOptionsChange = (e: React.ChangeEvent<HTMLSelectElement>,id:number)=>{
   setFormData((prevFormData: any) => (
-    {...prevFormData, md : e.target.value}
+    {...prevFormData, 
+      dow : prevFormData.dow.map((month:any)=> month.id == id ? {...month, md: e.target.value} : month),
+    }
   ))
+}
+
+// Filter CCR names based on selected plant
+useEffect(() => {
+  if (formData.plid) {
+    const filteredCcrNames = ccrNames
+      .filter((ccr: any) => ccr.plant === formData.plid)
+      .map((ccr: any) => ({ value: ccr.ccr_id, label: ccr.ccr_name }));
+    setCcrNameOptFromPlant(filteredCcrNames);
+  }
+}, [formData.plid, ccrNames]);
+
+
+const onAddClick = ()=>{
+  const newFormData = _.cloneDeep(formData);
+  newFormData.dow.push({id: formData.dow.length, mn: "", md: ""});
+  setFormData(newFormData);
+}
+
+const onRemoveclick = (id: number) => {
+  const newFormData = _.cloneDeep(formData);
+  newFormData.dow = newFormData.dow.filter((val:any) => val.id !== id);
+  setFormData(newFormData)
 }
 
 
@@ -276,13 +321,14 @@ const handleMdOptionsChange = (e: React.ChangeEvent<HTMLSelectElement>)=>{
         <InputWrapper>
           <Label>Repeat</Label>
           <Select value={formData.rb} onChange={onHandleOptionChange}>
-            {["Select an option", "Once", "Weekly","Monthly"].map(
-              (option, index) => (
-                <option key={index} value={option} >
-                  {option}
-                </option>
-              )
-            )}
+            <option value="" selected disabled hidden>
+              Select an option
+            </option>
+            {["Once", "Weekly", "Monthly"].map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
           </Select>
         </InputWrapper>
 
@@ -294,83 +340,61 @@ const handleMdOptionsChange = (e: React.ChangeEvent<HTMLSelectElement>)=>{
             onChange={onHandleStartDateChange}
           />
         </InputWrapper>
-        <InputWrapper>
-          <Label>Every</Label>
-          <Input
-            type="number"
-            defaultValue="1"
-            min="1"
-            value={formData?.dow}
-            onChange={onHandleEVeryChange}
-            disabled={!(formData.hid == null)}
-          />
-          Week(s)
-        </InputWrapper>
+
         {formData.rb === "Weekly" && (
-          <InputWrapper>
-            <Label>On</Label>
-            <DaysContainer>
-            {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(
-              (day: any, index) => (
-                <Day
-                  key={index}
-                  id={day}
-                  onClick={() => {
-                    handleAddDow(day);
-                  }}
-                >
-                  {day}
-                </Day>
-              )
-            )}
-          </DaysContainer>
-          </InputWrapper>
+          <>
+            <InputWrapper>
+              <Label>Every</Label>
+              <Input
+                type="number"
+                max="4"
+                value={formData?.rd}
+                onChange={onHandleEVeryChange}
+                // disabled={!(formData.hid == null)}
+              />
+              Week(s)
+            </InputWrapper>
+            <InputWrapper>
+              <Label>On</Label>
+              <DaysContainer>
+                {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(
+                  (day: any, index) => (
+                    <Day
+                      key={index}
+                      id={day}
+                      onClick={() => {
+                        handleAddDow(day);
+                      }}
+                    >
+                      {day}
+                    </Day>
+                  )
+                )}
+              </DaysContainer>
+            </InputWrapper>
+          </>
         )}
-        {formData.rb === "Monthly" && (
-        
-          <MonthlyWrapper>
-            <label htmlFor="the" style={{display:"flex",justifyContent:"center", alignItems:"center", fontSize:"1.2rem"}}>
-              <input type="radio" id="the" checked /> The
-            </label>
-            <Select value={formData.mn} onChange={handleMnOptionsChange} style={{width:"auto", marginBottom:"0px"}}>
-            {["first","second","third","fourth","last"].map(
-              (option, index) => (
-                <option key={index} value={option} >
-                  {option}
-                </option>
-              )
-            )}
-          </Select>
-          <Select value={formData.md} onChange={handleMdOptionsChange} style={{width:"auto",marginBottom:"0px"}}>
-            {["day","weekday","weekend day","Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(
-              (option, index) => (
-                <option key={index} value={option} >
-                  {option}
-                </option>
-              )
-            )}
-          </Select>
-          </MonthlyWrapper>
-          
-        )}
-        <InputWrapper>
-          <Label>CCR</Label>
-          <Select onChange={onHandleCCRChange}>
-            {ccrNames.map((ccr: any, index: number) => (
-              <option
-                key={index}
-                value={ccr.ccr_id}
-                selected={formData.ccr == ccr.ccr_id}
-              >
-                {ccr.ccr_name}
-              </option>
-            ))}
-          </Select>
-        </InputWrapper>
+        {formData.rb === "Monthly" &&
+          formData?.dow?.map((val: any) => {
+            return (
+              <CalenderMonthlySelect
+                key={val.id}
+                formData={formData}
+                handleMdOptionsChange={handleMdOptionsChange}
+                handleMnOptionsChange={handleMnOptionsChange}
+                onAddClick={onAddClick}
+                onRemoveClick={onRemoveclick}
+                id={val.id}
+              />
+            );
+          })}
 
         <InputWrapper>
           <Label>Plant</Label>
-          <Select value={formData.pl} onChange={onHandlePlantChange}>
+          <Select value={formData.plid} onChange={onHandlePlantChange}>
+            <option value="" selected disabled hidden>
+              Select a Plant
+            </option>
             {plantNames.map((plant: any, index: number) => (
               <option key={index} value={plant.plant_id}>
                 {plant.plant_name}
@@ -379,6 +403,31 @@ const handleMdOptionsChange = (e: React.ChangeEvent<HTMLSelectElement>)=>{
           </Select>
         </InputWrapper>
 
+        <InputWrapper>
+          <Label>CCR</Label>
+
+          <SCSwapItem key={0}>
+            <SCFlexCenter>
+              <SCItemMulSelect width={"85%"}>
+                <SearchInputMultiple
+                  placeholder={"Select CCR"}
+                  options={ccrNameOptFromPlant}
+                  value={formData?.ccr_id?.map((ccr: any) => ({
+                    value: ccr,
+                    label: ccrNames
+                      .find((ccrName: any) => ccrName.ccr_id == ccr)?.ccr_name || "",
+                  }))}
+                  setValue={onHandleCCRChange}
+                  handleListChild={() => {
+                    return null;
+                  }}
+                  disabled={false}
+                  key={0}
+                />
+              </SCItemMulSelect>
+            </SCFlexCenter>
+          </SCSwapItem>
+        </InputWrapper>
         <InputWrapper>
           <Label>Ends</Label>
           {/* <Select value={formData.ed} onChange={onHandleEndsChange}>
