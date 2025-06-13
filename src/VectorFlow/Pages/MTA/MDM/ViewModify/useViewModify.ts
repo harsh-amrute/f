@@ -1121,14 +1121,18 @@ const useViewModify = (pageType:string) => {
           
           
           if(pageType==='remove') {
+            console.log("VALID DATA",validData.length);
+            
             if(validData.length===0){
+              console.log("hello",draftID.length);
+              
               dispatch(UPDATE_PROGRESS_STATE('submitted'))
             }
             else{
             dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
             }
           }
-          if(pageType === 'add' || pageType == 'modify'){
+          else if(pageType === 'add' || pageType == 'modify'){
             if( validData.length===0){
               dispatch(UPDATE_PROGRESS_STATE('submitted'))
             }
@@ -1137,7 +1141,7 @@ const useViewModify = (pageType:string) => {
             }
           }
           // else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-         if(validData.length===0){
+         else if(validData.length===0){
             if(draftID.length===0){
               dispatch(UPDATE_PROGRESS_STATE('Discard'))
             }else{
