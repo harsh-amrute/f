@@ -1063,6 +1063,7 @@ const useViewModify = (pageType:string) => {
         }
 
       }
+      useEffect(()=>{console.log("Progress of vaibhav",activeMaster.progress)},[activeMaster.progress])
 
       const exportToExcel = async (fromUploadModal?:boolean)=>{
         try {
@@ -1099,7 +1100,6 @@ const useViewModify = (pageType:string) => {
         }
         
       }
-
       const onClearExportError = (source:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
@@ -1119,7 +1119,9 @@ const useViewModify = (pageType:string) => {
           dispatch(UPDATE_ROW_DATA(validData));
         
           dispatch(REMOVE_COLDEFS(['error','warning']));
-          if(pageType==='remove' || pageType === 'add') {
+          
+          
+          if(pageType==='remove') {
             if(validData.length===0){
               dispatch(UPDATE_PROGRESS_STATE('submitted'))
             }
@@ -1127,7 +1129,15 @@ const useViewModify = (pageType:string) => {
             dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
             }
           }
-          else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+          if(pageType === 'add' || pageType == 'modify'){
+            if( validData.length===0){
+              dispatch(UPDATE_PROGRESS_STATE('submitted'))
+            }
+            else{
+              dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+            }
+          }
+          // else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
           else if(validData.length===0){
             if(draftID.length===0){
               dispatch(UPDATE_PROGRESS_STATE('Discard'))
