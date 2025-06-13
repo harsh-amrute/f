@@ -27,7 +27,7 @@
       "dataContent": "Powerful control tower with dashboards ensures you get a hawk eye view of the whole supply chain."
     },
     "notify": {
-      "success": "Login Success",
+      "success": "Login Successful",
       "completeReCaptcha": "Please complete reCAPTCHA to continue"
     }
   },

@@ -120,7 +120,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     });
     setIsOpenUser(true);
     setIsEditUser(false)
-
+    setStorePermission([]);
     isCheckBoxRef.current.isPrdCheck = {},
     isCheckBoxRef.current.isLcCheck = {}
   };
@@ -152,12 +152,12 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         parent.push({ label: valueParent, value: valueParent });
       }
 
-      if (!checkAddChild?.includes(valueChild) && item[txtChild]?.length > 0) {
+      if (!checkAddChild?.includes(valueChild) && txtChild in item) {
         checkAddChild.push(valueChild);
         child.push({ label: valueChild, value: valueChild });
       }
 
-      if (!checkAddGrandChild?.includes(valueGrandChild) && item[txtGrandChild]?.length > 0) {
+      if (!checkAddGrandChild?.includes(valueGrandChild) && txtGrandChild in item) {
         checkAddGrandChild.push(valueGrandChild);
         grandChild.push({ label: valueGrandChild, value: valueGrandChild });
       }
@@ -205,7 +205,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   
       fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
       
-      if(prevPremission.length > 0){
+      const prevValidApplications = prevPremission.map((perm: any) => perm.application_id).sort((a: number, b: number) => a - b);
+      const isValidApplicationChanged = !_.isEqual(prevValidApplications, validApplications);
+     
+      if(prevPremission.length > 0 && !isValidApplicationChanged){
         setStorePermission(prevPremission);
       }else{
 

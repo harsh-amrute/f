@@ -10,6 +10,7 @@ import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
 import _ from 'lodash'
 import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
 import { getNestedChildren } from "../../../helpers/utils";
+import { Tooltip } from 'react-tooltip';
 
 const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
   const { mutateAsync: getAllReports } = useGetAllReports();
@@ -291,7 +292,8 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
         })}
       </NavStyle.SCNavBox>
       <NavStyle.SCNavLogout onClick={handleLogout}>
-        <NavStyle.SCIconLogout src="/assets/img/nav/logout.png" alt="logo" />
+        <NavStyle.SCIconLogout data-tooltip-id = {"logout-tooltip"} src="/assets/img/nav/logout_icon.svg" alt="logo" />
+        <Tooltip id="logout-tooltip" place="right" content={"Logout"} className="logout-tooltip" />
       </NavStyle.SCNavLogout>
     </NavStyle.SCGridNav>
   );

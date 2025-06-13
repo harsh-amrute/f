@@ -182,8 +182,8 @@ const ModalAdvanedPermissions = (props: any) => {
       console.log(brand,"brand");
       console.log(lcRegion,"lcRegion")
       
-    // if(brand?.length > 0 && lcRegion?.length > 0) {
-      // setIsLoadSpinner(true);
+    if(brand?.length > 0 && lcRegion?.length > 0) {
+      setIsLoadSpinner(true);
       const formData: any = {
         ...infoUser,
         tc: true,
@@ -276,13 +276,12 @@ const ModalAdvanedPermissions = (props: any) => {
           },
         });
       }
-    // } else {
-    //   notifyError(
-    //     "somethin .."+
-    //     t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
-    //   );
-    //   setIsLoadSpinner(false);
-    // }
+    } else {
+      notifyError(
+        t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
+      );
+      setIsLoadSpinner(false);
+    }
   };
 
   const saveAndGoToNext = () => {
