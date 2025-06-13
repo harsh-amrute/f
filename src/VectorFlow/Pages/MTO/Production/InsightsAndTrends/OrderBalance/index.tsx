@@ -109,7 +109,7 @@ const OrderBalance = () => {
         const headersdata = currentGridRef?.current?.api.getColumnState();
         const formattedFilters = formatFilterJSON(appliedFilters);
         const body = getBodyForExcelExport({headersdata,filterData :formattedFilters,colDefMap})
-        const response = await getOrderBalanceGraphDataExcelExport({body , report_name : FilterPageName.Prod_Order_Balance , isExcelExport : 1,graphflag:0})
+        const response = await getOrderBalanceGraphDataExcelExport({body , report_name : FilterPageName.Prod_Order_Balance , isExcelExport : 1})
         if(response.status === 200){
           DownloadExcel(response,FilterPageName.Prod_Order_Balance)
           notifySuccess("Excel data exported successfully")
@@ -346,7 +346,6 @@ const OrderBalance = () => {
               totalRows={totalRow}
               currentPage={currentPage}
               customPageSize={true}
-
             />
         ) : (
           <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom:"10px" }}>

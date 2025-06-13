@@ -360,13 +360,13 @@ const OrderAtRisk = () => {
  
       const [isFirstRendered,setIsFirstRendered]=useState(true)
       
-      const getData = async (isExcelExport = false,pageSize?:any, graphflag=0) => {
+      const getData = async (isExcelExport = false,pageSize?:any) => {
         if(isExcelExport) {
             try {
               const headersdata = currentGridRef?.current?.api.getColumnState();
               const formattedFilters = formatFilterJSON(appliedFilters)
               const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
-              const response = await getOrderAtRiskDataExcelExport({body , isExcelExport : 1,report_name : FilterPageName.Prod_Order_At_Risk,page_size: pageSize || userPageSize,graphflag })
+              const response = await getOrderAtRiskDataExcelExport({body , isExcelExport : 1,report_name : FilterPageName.Prod_Order_At_Risk,page_size: pageSize || userPageSize })
               if(response.status === 200) {
                 DownloadExcel(response,FilterPageName.Prod_Order_At_Risk)
               }else{
@@ -419,11 +419,7 @@ const OrderAtRisk = () => {
   
     useEffect(() => {
       if (Object.entries(appliedFilters).length && userConfigFetched ) {
-      if (currentPage == 1) {
-        // getData(false,1,0);
-      } else {
         setCurrentPage(1);
-      }      
     }
     }, [appliedFilters,userConfigFetched])
 
@@ -451,7 +447,7 @@ const OrderAtRisk = () => {
   }
 
   useEffect(()=>{
-    getData(false,userPageSize,0);
+    getData(false,userPageSize);
   },[userPageSize])
 
   return (
@@ -488,13 +484,9 @@ const OrderAtRisk = () => {
             userPageSize={userPageSize}
             handleChangePage={handleChangePage}
             savePageSize={savePageSize}
-
             totalRows={totalRow}
             currentPage={currentPage}
             customPageSize={true}
-
-
-
           />
         ) : (
           <OrderAtRiskChartWrapper style={{ maxHeight: "95%", paddingLeft: "20px", paddingBottom:"20px" }}>

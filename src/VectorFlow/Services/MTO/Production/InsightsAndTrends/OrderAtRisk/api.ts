@@ -12,8 +12,6 @@ export namespace OrderAtRiskService {
               'Content-Type': 'application/json',
             },
             params: {
-              page,
-              page_size,
               graphflag,
             },
           });

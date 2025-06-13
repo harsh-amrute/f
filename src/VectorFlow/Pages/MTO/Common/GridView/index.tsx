@@ -127,9 +127,6 @@ const GridView = (props: IGridViewProps) => {
     }, [columnState, currentGridRef]);
 
 
-    console.log('pageeee',userPageSize)
-    console.log('total rowss', totalRows)
-
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
@@ -148,18 +145,12 @@ const GridView = (props: IGridViewProps) => {
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 pagination={false}
-                paginationPageSize={userPageSize || pagination.mtoPageSize}              
                 onGridReady={(params: any) => {
                     params.api.autoSizeAllColumns();
                     setCurrentGridRef(gridRef);
                 }}
                 tooltipMouseTrack={true}
                 ref={gridRef}
-                statusBar={{
-                    statusPanels: [
-                        // { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    ]
-                }}
                 maintainColumnOrder
                 onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 

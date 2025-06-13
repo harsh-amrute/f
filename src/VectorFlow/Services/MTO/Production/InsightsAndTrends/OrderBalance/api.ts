@@ -9,8 +9,6 @@ export namespace OrderBalanceService {
                     'Content-Type': 'application/json',
                 },
                 params: {
-                    page,
-                    page_size,
                     graphflag,
                     ordertype,
                 }
