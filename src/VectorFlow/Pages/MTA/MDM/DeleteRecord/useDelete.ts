@@ -393,15 +393,31 @@ const useDelete=()=>{
                 }
                 dispatch(UPDATE_ROW_DATA(errorRowData))
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
-              }
+                const totalRecords = activeMaster.rowData.length;
+                const submittedRecordsCount = totalRecords - errorRowData.length 
 
+                if(errorRowData.length  === totalRecords){
+                  notifyError(`${errorRowData.length} records have error`)
+                }
+                else if(errorRowData.length  > 0){
+                  notifyError(`Submitted ${submittedRecordsCount} records out of ${totalRecords}. ${errorRowData.length} records have error. `)
+                }
+              }
+              if(localErrorCount === 0)
+              {
+                notifySuccess(`Deletions Submitted Successfully`);
+              }
               dispatch(UPDATE_PROGRESS_STATE('submitted'));
-              dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
-              notifySuccess(`Deletions Submitted Successfully`);
-              toast.dismiss();
+              
+              dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());          
               if(draftID.length > 0){
                 dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
+              }
+              if(activeMaster.rowData.length === 0) 
+              {
+                  dispatch(UPDATE_PROGRESS_STATE('submitted')); 
+                  dispatch(REMOVE_COLDEFS(['error','warning']));
               }
             
          }
