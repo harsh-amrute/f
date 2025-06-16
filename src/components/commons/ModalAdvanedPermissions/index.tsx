@@ -170,19 +170,31 @@ const ModalAdvanedPermissions = (props: any) => {
     });
 
     if(!isValid)return;
+    
+    console.log(productPermissions, "productPermissions");
+    console.log(locationPermissions, "locationPermissions");
 
-    const { brand} =
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      prdPermissionRef.current?.getPrdPermissionValue();
+    //check if permissions are filled for MTA, have added check for MTA only, considering in MTO Permissions are not compulsory.
+    const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == 2).permissions;
+    const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == 2).permissions;
 
-      const { lcRegion} =
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      lcPermissionRef.current?.getLcPermissionValue();
+    
+    console.log(isProductPermission, "isProductPermission");
+    console.log(isLocationPermission, "isLocationPermission");
 
-      console.log(brand,"brand");
-      console.log(lcRegion,"lcRegion")
+
+    // const { brand} =
+    //   // eslint-disable-next-line no-unsafe-optional-chaining
+    //   prdPermissionRef.current?.getPrdPermissionValue();
+
+    //   const { lcRegion} =
+    //   // eslint-disable-next-line no-unsafe-optional-chaining
+    //   lcPermissionRef.current?.getLcPermissionValue();
+
+    //   console.log(brand,"brand");
+    //   console.log(lcRegion,"lcRegion")
       
-    if(brand?.length > 0 && lcRegion?.length > 0) {
+    if(isProductPermission?.length > 0 && isLocationPermission?.length > 0) {
       setIsLoadSpinner(true);
       const formData: any = {
         ...infoUser,
