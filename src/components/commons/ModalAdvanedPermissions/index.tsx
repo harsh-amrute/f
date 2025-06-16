@@ -170,18 +170,10 @@ const ModalAdvanedPermissions = (props: any) => {
     });
 
     if(!isValid)return;
-    
-    console.log(productPermissions, "productPermissions");
-    console.log(locationPermissions, "locationPermissions");
 
     //check if permissions are filled for MTA, have added check for MTA only, considering in MTO Permissions are not compulsory.
     const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == 2).permissions;
     const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == 2).permissions;
-
-    
-    console.log(isProductPermission, "isProductPermission");
-    console.log(isLocationPermission, "isLocationPermission");
-
 
     // const { brand} =
     //   // eslint-disable-next-line no-unsafe-optional-chaining
