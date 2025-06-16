@@ -6,7 +6,7 @@ import {
   BTRTableWrapper,
   HorizontalViewWrapper,
 } from "./styles";
-import GridView from "../../../Common/GridView";
+// import GridView from "../../../Common/GridView";
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from "../../../../../../helpers/utils";
 import TrailDeptCount from "./TrailDeptCount";
 import TrailDeptBalance from "./TrailDeptBalance";
@@ -22,10 +22,12 @@ import {
 import OverlayLoader from '../../../Common/Loader';
 import { notifyError, notifySuccess } from '../../../../../../helpers/notify';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
-import { FilterPageName, UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useColDef from "../../../../../../hooks/useColDef";
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
+import GridView from "../OrderAtRisk/GridView";
+
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -73,6 +75,13 @@ const OrderBalance = () => {
   const { mutateAsync: getOrderBalanceGraphDataExcelExport } = useGetOrderBalanceDataExcelExport();
   const [masterUIConfig, setMasterUIConfig] = useState([]);
 
+  const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+  const [userPageSize, setUserPageSize] = useState<any>();
+  const [totalRow, setTotalRow] = useState<number>(0)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [gridData, setGridData] = useState([]);
+
+  
   const colDefCustomizations = {
     BPP: {
       cellRenderer: BPPRenderer,
@@ -92,7 +101,9 @@ const OrderBalance = () => {
     }
   }
 
-  const getGraphData = async (params: any) => {
+  const [isFirstRendered, setIsFirstRendered] = useState(true);
+
+  const getGraphData = async (params: any,pageSize?:any) => {
     if(params.isExcelExport){
       try {
         const headersdata = currentGridRef?.current?.api.getColumnState();
@@ -110,11 +121,32 @@ const OrderBalance = () => {
          console.log(error)
       }
          
-    }else{
+    }
+    
+    else{
 
       try {
-        const response = await getOrderBalanceData(params);
-        setGraphData(response?.data?.data[0]);
+        let payload;
+        if(isFirstRendered){
+          payload={graphflag:1}
+          setIsFirstRendered(false);
+        }
+        else {
+          payload = {
+            page: currentPage,
+            page_size: pageSize || userPageSize,
+            graphflag: 0
+          };
+        }
+
+        const response = await getOrderBalanceData(payload);
+        if(payload.graphflag==1){
+          setGraphData(response?.data?.data)
+        }
+        else{
+          setGridData(response.data.data.results || []);
+        }
+        setTotalRow(response?.data?.data?.count)
       }
       catch (e) {
         console.log(e);
@@ -142,8 +174,10 @@ const OrderBalance = () => {
         rn_id: UIGridCode.ProdOrderBalance
       });
 
+      setUserConfigFetched(true)
       const newConfig = JSON.parse(data?.data?.data[0]?.columns_settings) || [];
-      setColumnState(newConfig);
+      setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
+      setColumnState(newConfig.cs);
 
       if (!data) {
         console.error('Failed to apply column state');
@@ -153,25 +187,37 @@ const OrderBalance = () => {
     }
   }
   
-  const handleSaveClick = async (coldefs?: any) => {
+  const handleSaveClick = async (coldefs?: any,page_size?: any) => {
     try {
       if (coldefs) {
+        const fullConfig = { cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
           rn_id: UIGridCode.ProdStplAndFullKit,
-          cs: JSON.stringify(coldefs),
+          cs: JSON.stringify(fullConfig),
         };
         await updateUserUIReportConfigData([payload]);
         setColumnState([...coldefs]);
 
+      }
+      else if (page_size) {
+        const config = columnState
+        const fullConfig = { cs: config, pageSize: page_size };
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.ProdOrderBalance,
+          cs: JSON.stringify(fullConfig),
+        }
+        await updateUserUIReportConfigData([payload]);
+
       } else {
         if (currentGridRef?.current?.api) {
           const config = currentGridRef.current.api.getColumnState();
-
+          const fullConfig = { cs: config, pageSize: userPageSize };
           const payload = {
             un: user.user.name,
             rn_id: UIGridCode.ProdOrderBalance,
-            cs: JSON.stringify(config)
+            cs: JSON.stringify(fullConfig)
           }
           await updateUserUIReportConfigData([payload]);
           await getUserColumnConfig();
@@ -182,6 +228,16 @@ const OrderBalance = () => {
     }
   }
 
+  const savePageSize = (pageSize: any) => {
+    if (pageSize) {
+      setUserPageSize(pageSize);
+      handleSaveClick(false, pageSize, );
+      getGraphData({ graphflag: 1 }, pageSize);
+    } else {
+        notifyError("Invalide page size");
+    }
+    
+}
   const handleResetClick = () => {
     setIsReset(true);
   }
@@ -193,6 +249,10 @@ const OrderBalance = () => {
     } catch (error) {
         console.error(error);
     }
+  }
+
+  const handleChangePage = async (currPage: number) => {
+    setCurrentPage(currPage);
   }
 
   useEffect(() => {
@@ -226,12 +286,29 @@ const OrderBalance = () => {
     }
   }, [colDef, currentGridRef]);
 
+
+  useEffect(() => {
+
+    if (Object.entries(appliedFilters).length) {
+      getGraphData({ graphflag: 1 });
+    }
+  }, [currentPage]);
+
+    useEffect(() => {
+      if (Object.entries(appliedFilters).length && userConfigFetched) {
+        if (currentPage == 1) {
+          getGraphData({graphflag: 1});
+        } else {
+          setCurrentPage(1);
+        }      
+      }
+    },[appliedFilters,userConfigFetched])
+
   const ExcelExportData = () => {
     getGraphData({isExcelExport : true})
   }
 
   const themeUi = user?.user?.theme_ui;
-
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -260,17 +337,20 @@ const OrderBalance = () => {
       />
       <HorizontalViewWrapper style={{ flex: 1 }}>
         {isGridView ? (
-          <GridView
-            getData={getOrderBalanceData}
-            colDef={colDef}
-            isLoading={isLoading}
-            isError={isError}
-            isSuccess={isSuccess}
-            setCurrentGridRef={setCurrentGridRef}
-            currentGridRef={currentGridRef}
-            columnState={columnState}
-            appliedFilters={appliedFilters}
-          />
+           <GridView
+              gridData={gridData}
+              colDef={colDef}
+              setCurrentGridRef={setCurrentGridRef}
+              currentGridRef={currentGridRef}
+              columnState={columnState}
+              userPageSize={userPageSize}
+              handleChangePage={handleChangePage}
+              savePageSize={savePageSize}
+              totalRows={totalRow}
+              currentPage={currentPage}
+              customPageSize={true}
+              reportName={reportName}
+            />
         ) : (
           <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom:"10px" }}>
             <Allotment vertical={false} separator={false}>
