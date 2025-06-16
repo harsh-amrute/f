@@ -349,6 +349,7 @@ const OrderBalance = () => {
               totalRows={totalRow}
               currentPage={currentPage}
               customPageSize={true}
+              reportName={reportName}
             />
         ) : (
           <BTRTableWrapper style={{ height:"95%", paddingLeft: "20px", paddingBottom:"10px" }}>

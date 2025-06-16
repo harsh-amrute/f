@@ -64,8 +64,10 @@ export const OrderAtRiskChartWrapper = styled.div`
       justify-content: space-between !important;
       align-items: center !important;
       border:none !important;
-      width: calc(100% - 230px) !important;
       position: absolute !important;
       bottom:0 !important; 
+      background-color: white !important;
+      width:100%  !important; 
+
     }    
 ` 

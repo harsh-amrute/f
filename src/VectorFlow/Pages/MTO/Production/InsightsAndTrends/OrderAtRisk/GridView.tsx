@@ -2,17 +2,13 @@ import React, { useEffect, useRef, useState } from "react"
 import VFTable from "../../../Common/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
 import { VFTableWrapper } from "./styles";
-import { GridFilterWrapper, TextBtn } from "../../../Common/VFPagination/styles";
 import { useUserData } from "../../../../../../context/index";
 import { AgGridReact } from "ag-grid-react";
 import VFPagination from "../../../Common/VFPagination";
 import { pagination } from '../../../Common/Enum';
 
 
-
-
-
-const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGridRef,savePageSize,userPageSize, totalRows, customPageSize, handleChangePage, currentPage,rowsPerPage}: any) => {
+const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGridRef,savePageSize,userPageSize, totalRows, customPageSize, handleChangePage, currentPage,rowsPerPage, reportName}: any) => {
     // const gridRef = useRef();
     const gridRef = useRef<AgGridReact>(null);
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -59,14 +55,9 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
         }
     }, [columnState]);
 
-      const clearGridFilter = () =>{
-        gridRef?.current?.api?.setFilterModel(null);
-          setIsDisabled(true);
-    }
-    
     return (
         <div data-testid="grid-view" style={{ height:"95%", width: '100%', margin:"20px", paddingRight:"20px", paddingBottom:"10px"}}>
-            <VFTableWrapper data-testid="grid-view" >
+            <VFTableWrapper data-testid="grid-view">
             <VFTable
                 {...gridOptions}
                 columnDefs={colDef}
@@ -75,7 +66,25 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
                 ref={gridRef}
-                pagination={false}      
+                pagination={false}   
+                statusBar={{
+                    statusPanels: [
+                      {
+                        statusPanel: "agTotalAndFilteredRowCountComponent",
+                        align: "left",
+                      },
+                      { statusPanel: "agTotalRowCountComponent", align: "left" },
+                      {
+                        statusPanel: "agFilteredRowCountComponent",
+                        align: "left",
+                      },
+                      {
+                        statusPanel: "agSelectedRowCountComponent",
+                        align: "left",
+                      },
+                      { statusPanel: "agAggregationComponent", align: "left" },
+                    ],
+                  }}   
                 onGridReady={(params: any) => {
                     params.api.autoSizeAllColumns();
                     setCurrentGridRef(gridRef);
@@ -91,7 +100,8 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                 maintainColumnOrder
             />
 
-                <VFPagination
+                <div style={{marginTop:reportName==='OrderBalance'?'15px':''}}>
+                  <VFPagination
                     selectedRows={0}
                     rowsPerPage={userPageSize || pagination.mtoPageSize}
                     totalRows={totalRows}
@@ -101,7 +111,9 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                     customPageSizeEnabled={true}
                     savePageSize={savePageSize}
                     userPageSize={userPageSize}
-                />
+                /> 
+                </div>
+                
           </VFTableWrapper>
           </div>
     )
