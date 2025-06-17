@@ -54,6 +54,8 @@ export const SCText = styled.p<{fontWeight:number,fontSize:number,hideDefaultMar
     font-weight:${props => props.fontWeight};
     font-size:${props => props.fontSize}px;
     margin:${props => props.hideDefaultMargin ? 0 : 12}px 0px;
+    white-space: nowrap;
+    overflow:hidden;
 `
 
 export const SCSeasonalityDetailsBody = styled.div`

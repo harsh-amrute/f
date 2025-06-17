@@ -1685,7 +1685,9 @@ const useViewModify = (pageType:string) => {
        toggleEditOnline(false);
        removeModalOpenParameterWithoutReload();
        setCanToggleMaster(true);
-       dispatch(UPDATE_PROGRESS_STATE('default'));
+      if(activeMaster.progress !== "submitted") { 
+        dispatch(UPDATE_PROGRESS_STATE('default')); 
+      }
        dispatch(UPDATE_ROW_DATA([]));
        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !== 'error') .map((m: any) => {
         const copy= { ...m };  
@@ -1705,7 +1707,7 @@ const useViewModify = (pageType:string) => {
        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
        dispatch(SET_DRAFT_ID(''))
 
-       if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+       if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(false))
        // dispatch(UPDATE_COLDEFS([]));
        // dispatch(UPDATE_ACTIVE_MASTER([]))
       };      
