@@ -177,9 +177,9 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 columnDefs={staticTableColDefs}
                                 rowData={techTable.rowData}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
-                               
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
+
                                 defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 1)}
                                 
@@ -209,8 +209,8 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 columnDefs={techTableColDefs}
                                 rowData={techTable.rowData}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
                                
                                 defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 2)}
@@ -255,8 +255,8 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 columnDefs={ecoTableColDefs}
                                 rowData={ecoTable.rowData}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
                                
                                 defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 3)}

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction,useRef } from 'react'
+import React, { Dispatch, SetStateAction,useEffect,useRef } from 'react'
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import { UploadModalWrapper, UploadModalSection, UploadBorderContainer, UploadModalContent, TextContent, InputWrapper, UploadModalInput, UploadModalText, UploadFileText, UploadModalRadioWrapper } from "./styles"
 import { SCManualUploadBtn, SCManualUploadButton } from "../../../../../module-store-transfer/pages/manual-upload/styles"
@@ -63,6 +63,12 @@ const UploadModal = (props:UploadModalProps)=>{
           notifyError("Only xlsx files are accepted");
       }
     };
+
+    useEffect(() => {
+      if (radioButtons && radioButtons.length>0 && handleRadioButton) {
+        handleRadioButton(11);
+      }
+    }, []);
 
    return(
    <VFModalCard headerText={header} headerIcon={"/assets/img/VectorFLOW/NMS/settings.svg"} openModal={openModal} closeModal={onCloseModal} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} >

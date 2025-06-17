@@ -672,7 +672,10 @@ const useResearchInsights = () => {
             lockPosition: true,
             resizable: false,
             floatingFilter: false,
-            suppressColumnsToolPanel: false
+            suppressColumnsToolPanel: false,
+            headerTooltip: "Daily Data Graph",
+            
+
         },
         Tags: {
             cellRenderer: 'tagsCellRenderer',
