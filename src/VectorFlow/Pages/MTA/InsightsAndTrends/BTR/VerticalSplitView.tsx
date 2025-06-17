@@ -187,7 +187,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                             </div>
                             <div style={{ zoom: 0.7, margin: '0px -15px'}}>
                                 <VFPagination style={{ width:'95%', marginTop:'-30px'}}
-                                    {...techTable.paginationProps}
+                                    {...techTable.paginationProps} isClearGridFilter={false}
                                 />
                             </div>
                         </div>
@@ -219,7 +219,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                             </div>
                             <div style={{ zoom: 0.7, margin: '0px -15px'  }}>
                                 <VFPagination style={{marginTop:'-30px'}} 
-                                    {...techTable.paginationProps}
+                                    {...techTable.paginationProps} isClearGridFilter={false}
                                 />
                             </div>
                         </div>
@@ -265,7 +265,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                             </div>
                         <div style={{ zoom: 0.7, margin: '0px -15px'}}>
                             <VFPagination style={{marginTop:'-30px',paddingRight:'10px'}}
-                                {...ecoTable.paginationProps}
+                                {...ecoTable.paginationProps} isClearGridFilter={false}
                             />
                         </div>
                     </div>

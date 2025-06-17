@@ -151,7 +151,7 @@ const useTaskPendingForReview = ()=>{
                     }
             } else {
                 // No data case
-                setNoDataMessage('No records found or task is partially completed.');
+                setNoDataMessage('No Data To Approve.');
             }
             
 
