@@ -232,7 +232,9 @@ const useDBM =()=>{
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             tooltipField: "DailyDataGraph",
-            suppressMenu: true
+            suppressMenu: true,
+            headerTooltip: "Daily Data Graph",
+
         },
         Sleep: {
             lockPosition: true,

@@ -402,6 +402,7 @@ const useBTR = () => {
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             pinned: 'left',
+            headerTooltip: "Daily Data Graph",
         },
         Category: {
             cellRenderer: 'categoryCellRenderer',

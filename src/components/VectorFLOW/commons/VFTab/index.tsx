@@ -79,7 +79,11 @@ const VFTab = ({activeMaster,themeUi,onTabChange,onTabClose,newTabTitle,newTabIc
                       data-testid="tab-button"
                       >
                         <SCTabContent>
-                          <SCTabTitle status={getTabStatus(master)}>{master.name}</SCTabTitle>
+                          <SCTabTitle status={getTabStatus(master)}>          
+                            {master.id == 11 ? 'AbsoluteValueSeasonality' : 
+                             master.id == 12 ? 'DeltaPercentageSeasonality' : 
+                             master.name}
+                          </SCTabTitle>
                           {/* <img data-testid="tab-close" onClick={(e:React.MouseEvent<HTMLElement>) => {onTabClose(e,master)}} src={getTabStatus(master) === 'active' ? "/assets/img/VectorFLOW/NMS/close-white.svg" : (master.progress === 'submitted' || master.progress === 'editOnlineSubmitted') ? "/assets/img/VectorFLOW/NMS/tick.svg" : "/assets/img/VectorFLOW/NMS/close.svg"}/> */}
                           <img
                             data-testid="tab-close"

@@ -127,8 +127,8 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                                         statusPanels:[]
                                 }}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
                                 columnDefs={techTable.columnDefs}
                                 rowData={techTable.rowData}                                
                                 onBodyScroll={(params)=>onBodyScroll(params,1)}
@@ -163,8 +163,8 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                                         statusPanels:[]
                                 }}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
                                 columnDefs={techTable.columnDefs}
                                 rowData={ecoTable.rowData}                             
                                 onBodyScroll={(params)=>onBodyScroll(params,2)}
