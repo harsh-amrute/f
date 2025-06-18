@@ -211,8 +211,6 @@ const OverallBmReport = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui; 
 
-  // const isOrderCloseEnabled =
-  //   process.env.REACT_APP_ORDER_CLOSE === "enabled" ? true : false;
    
   const isOrderCloseEnabled = orderClosingEnable
 
