@@ -26,7 +26,6 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../.
 import { FilterPageName, pagination, UIGridCode } from "../../Common/Enum";
 import useColDef from "../../../../../hooks/useColDef";
 import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
-import { set } from "lodash";
 
 
 
@@ -390,7 +389,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
             }
         }
-    }, [HeaderData])
+    }, [HeaderData,simulationEnable])
 
     const icons = useMemo(() => {
         return {
