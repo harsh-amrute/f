@@ -602,7 +602,8 @@
         },
         "notifyError": {
           "pleaseSelectRole": "Please select the role for the user",
-          "PleaseSelectPermission": "Please select permission"
+          "PleaseSelectPermissionMTA": "Please select both Product and Location permissions",
+          "PleaseSelectPermissionMTO": "Please select both Order and Location permission"
         },
         "validate": {
           "userNameMaxLength": "* Upto 8 characters allowed. [Any alpha-numeric, spcl chr: “_” , “.” only]",
