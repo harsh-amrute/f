@@ -782,7 +782,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     const ccr = masters.CCRMaster.find((ccr: any) => {
                         return ccr.ccr_id === ccrId
                     })
-                    let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
+                    const ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
                     // ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
 
                     console.log("CCRItemTypeMappingMaster", masters.CCRItemTypeMappingMaster)
