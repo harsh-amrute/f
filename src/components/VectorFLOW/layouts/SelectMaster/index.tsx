@@ -202,7 +202,8 @@ useEffect(()=>{
                                 flexWrap: 'wrap',
                                 maxWidth: '900px',
                                 gap: '10px',
-                                marginBottom: '10px'
+                                marginBottom: '10px',
+                                marginTop:'10px',
                             }}
                         >
                             {data?.map((master: MDMMasterState) => {

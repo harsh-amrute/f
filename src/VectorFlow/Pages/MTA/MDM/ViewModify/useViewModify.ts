@@ -95,6 +95,9 @@ const useViewModify = (pageType:string) => {
     const [uploadProgress,setUploadProgress] = useState('');
 
     const [totalProgress,setTotalProgress] = useState('');
+    
+    const [WarningFlag,setWarningFlag]=useState(false)
+
 
     // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
@@ -460,10 +463,13 @@ const useViewModify = (pageType:string) => {
       if(doesInvalidColDefExists){
        return [...activeMasterColDefsRequiredCols]
       }
-
+       
       if (activeMaster.name === 'SKULocation') {
-        return [...invalidDataColdefs.filter(colDef => colDef.field === 'error' || colDef.field === 'warning'), ...activeMasterColDefsRequiredCols];
-        
+        if(WarningFlag){
+          return [...invalidDataColdefs.filter(colDef => colDef.field === 'error' || colDef.field === 'warning'), ...activeMasterColDefsRequiredCols];
+        }else{
+          return [...invalidDataColdefs.filter(colDef => colDef.field === 'error'), ...activeMasterColDefsRequiredCols];
+        }
     } else {
         return [...invalidDataColdefs.filter(colDef => colDef.field === 'error'), ...activeMasterColDefsRequiredCols];
     }
@@ -739,6 +745,13 @@ const useViewModify = (pageType:string) => {
 
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
       e.stopPropagation();
+      const incompleteMastersCount = masters.filter((master: MDMMasterState) => 
+        master.progress !== 'submitted' && master.progress !== 'editOnlineSubmitted'
+      ).length;
+    
+      if (incompleteMastersCount === 1 && currMaster.progress !== 'submitted' && currMaster.progress !== 'editOnlineSubmitted') {
+        return notifyError('Cannot close the tab as it is the only incomplete master'); // Notify if this is the only incomplete master
+      }
       if(checkMasterProgress(masters)) {return notifyError("There Should be atleast one selected Master")}
       const nextMasterIndex = masters?.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
       if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
@@ -1092,13 +1105,17 @@ const useViewModify = (pageType:string) => {
         }
         
       }
-
       const onClearExportError = (source:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
+          if(data['warning'] && data['warning'].length>0){
+            setWarningFlag(true)
+            erroneusData.push(data)
+          }
+
           if (data['error'] && data['error'].length > 0 ) {
-              erroneusData.push(data);
+            erroneusData.push(data);
           }
           else{
             validData.push(data);
@@ -1112,9 +1129,28 @@ const useViewModify = (pageType:string) => {
           dispatch(UPDATE_ROW_DATA(validData));
         
           dispatch(REMOVE_COLDEFS(['error','warning']));
-          if(pageType==='remove') dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
-          else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
-          else if(validData.length===0){
+          
+          
+          if(pageType==='remove') {
+            
+            if(validData.length===0){
+              
+              dispatch(UPDATE_PROGRESS_STATE('submitted'))
+            }
+            else{
+            dispatch(UPDATE_PROGRESS_STATE('deleteUploaded'));
+            }
+          }
+          else if(pageType === 'add' || pageType == 'modify'){
+            if( validData.length===0){
+              dispatch(UPDATE_PROGRESS_STATE('submitted'))
+            }
+            else{
+              dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+            }
+          }
+          // else if(validData.length!==0) dispatch(UPDATE_PROGRESS_STATE('uploaded'));
+         else if(validData.length===0){
             if(draftID.length===0){
               dispatch(UPDATE_PROGRESS_STATE('Discard'))
             }else{
@@ -1638,10 +1674,20 @@ const useViewModify = (pageType:string) => {
      }
 
      const onBackButton = (backUrl?: string) => {
+      if (activeMaster.progress === 'submitted' || activeMaster.progress === 'editOnlineSubmitted' || activeMaster.progress === 'view' || activeMaster.progress === 'deleteView') {
+        // Directly perform the actions without showing the confirmation dialog
+        handleBackNavigation(backUrl);
+      } else {
+        // Show confirmation dialog if current master is incomplete
+        const user = confirm("Are you sure you want to go back? All the progress will be lost! Please save to draft.");
+        if (user) {
+          handleBackNavigation(backUrl);
+        }
+      }
+    };
+      
 
-      const user = confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft")
-      if(user)  
-      {
+    const handleBackNavigation = (backUrl?: string) =>{
        if(backUrl){
          navigate(backUrl)
        }
@@ -1650,7 +1696,9 @@ const useViewModify = (pageType:string) => {
        toggleEditOnline(false);
        removeModalOpenParameterWithoutReload();
        setCanToggleMaster(true);
-       dispatch(UPDATE_PROGRESS_STATE('default'));
+      if(activeMaster.progress !== "submitted") { 
+        dispatch(UPDATE_PROGRESS_STATE('default')); 
+      }
        dispatch(UPDATE_ROW_DATA([]));
        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !== 'error') .map((m: any) => {
         const copy= { ...m };  
@@ -1670,11 +1718,11 @@ const useViewModify = (pageType:string) => {
        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
        dispatch(SET_DRAFT_ID(''))
 
-       if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+       if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(false))
        // dispatch(UPDATE_COLDEFS([]));
        // dispatch(UPDATE_ACTIVE_MASTER([]))
-      }      
-     }
+      };      
+     
     
 
       const postDraftChunks = async (rowData:any) => {

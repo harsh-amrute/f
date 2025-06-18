@@ -7,6 +7,7 @@ import { TaskPendingWrapper } from "./styles"
 import ApproveAllModal from "./ApproveAllModal"
 import RejectAllModal from "./RejectAllModal"
 import { useUserData } from "../../../../../context"
+import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
 
 
 const TaskPendingForReview = ()=>{
@@ -30,7 +31,8 @@ const TaskPendingForReview = ()=>{
         showRejectAllModal,
         toggleRejectAllModal,
         onSelectionTypeSuccess,
-        setSelectionType
+        setSelectionType,
+        noDataMessage
     } = useTaskPendingForReview()
 
     if(showLoader) return <VFLoader/>
@@ -62,6 +64,7 @@ const TaskPendingForReview = ()=>{
                     ]
                   }}
                 rowData={mapRowDataWithSrNo(viewTableRowData)}
+                localeText={{ noRowsToShow: noDataMessage?noDataMessage:"No data to approve."}}
                 pagination={true}
                 paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
             />

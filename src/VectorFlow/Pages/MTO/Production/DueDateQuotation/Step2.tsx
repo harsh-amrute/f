@@ -448,8 +448,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             errors.push(`Touch Time not available for CCR Name: ${ccrNames[index]} and Item ID: ${order.itid} in MapCCRItemType Master`)
                             // throw new Error(`Touch Time not available for CCR Name: ${ccrNames[index]} and Item ID: ${order.itid} in MapCCRItemType Master`);
                         }
-                        let ccrWorkingHoursPerDay = ccr.working_hours_per_day;
-                        ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
+                        const ccrWorkingHoursPerDay = ccr.working_hours_per_day;
+                        // ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
                         // console.log("ccritem", ccrItem)
                         // console.log("lineCCR[order.ok]?.[ccrId]?.pcqty", lineCCR[order.ok]?.[ccrId]?.pcqty)
                         // console.log("order.pcqty", order.pcQty)
@@ -783,7 +783,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         return ccr.ccr_id === ccrId
                     })
                     let ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
-                    ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
+                    // ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
 
                     console.log("CCRItemTypeMappingMaster", masters.CCRItemTypeMappingMaster)
 

@@ -127,8 +127,8 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                                         statusPanels:[]
                                 }}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
                                 columnDefs={techTable.columnDefs}
                                 rowData={techTable.rowData}                                
                                 onBodyScroll={(params)=>onBodyScroll(params,1)}
@@ -140,7 +140,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
 
           <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
                             <VFPagination style={{marginTop:'-30px'}}
-                                {...techTable.paginationProps}
+                                {...techTable.paginationProps} isClearGridFilter={false}
                             />
                          </div>
                     </BTRAllomentSection>
@@ -163,8 +163,8 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
                                         statusPanels:[]
                                 }}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
                                 columnDefs={techTable.columnDefs}
                                 rowData={ecoTable.rowData}                             
                                 onBodyScroll={(params)=>onBodyScroll(params,2)}
@@ -176,7 +176,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
               
                          <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
                             <VFPagination style={{marginTop:'-30px'}}
-                                {...ecoTable.paginationProps}
+                                {...ecoTable.paginationProps} isClearGridFilter={false}
                             />
                          </div>
                     </BTRAllomentSection>
