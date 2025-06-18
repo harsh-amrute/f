@@ -165,8 +165,7 @@ const OverallBmReport = () => {
   const [masterUIConfig, setMasterUIConfig] = useState([]);
   const [isPivot, setIsPivot] = useState<any>(false);
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
-
-
+  const [orderClosingEnable, setorderClosingEnable] = useState<any>();
 
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
@@ -174,14 +173,14 @@ const OverallBmReport = () => {
     }
   );
   const [deptWiseWipData, setDeptWiseWipData] = useState<any>();
-
+  
   const [deptName, setDeptName] = useState<any>([]);
   const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
   const [filterData, setFilterData] = useState({});
   const [systemType, setSystemType] = useState<any>();
   const [isGridLoading, setIsGridLoading] = useState(false);
   const { mutateAsync: getPageWiseFilterData /*isLoading*/ } =
-    useGetFilterData();
+  useGetFilterData();
   const {
     state: currFilter,
     setState: setCurrFilter,
@@ -212,8 +211,7 @@ const OverallBmReport = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui; 
 
-  const isOrderCloseEnabled =
-    process.env.REACT_APP_ORDER_CLOSE === "enabled" ? true : false;
+   
   const dispatch = useDispatch();
   const [userPageSize, setUserPageSize] = useState<any>();
 
@@ -269,9 +267,19 @@ const OverallBmReport = () => {
     const systemType = DBRSettings?.find((data: any) => {
       return data.flag == "SystemType";
     });
-    setSystemType(Number(systemType.value));
+    const orderClosingEnable = DBRSettings?.find((data: any) => {
+      return data.flag == "OrderCloseEnable";
+    });
+    
+    setorderClosingEnable( Number(orderClosingEnable.value));
+    setSystemType(Number(systemType.value || 0));
     // setColumnDef();
   };
+
+  
+
+
+
 
   // const mapInitalColumnDefs = async () => {
   //   try {
@@ -305,7 +313,7 @@ const OverallBmReport = () => {
       console.log(e);
     }
   };
-
+  
   const addDefaultAttributes = (
     apiResponse: ApiResponseItem[]
   ): ApiResponseItem[] => {
@@ -410,7 +418,7 @@ const OverallBmReport = () => {
     // Add the additional object to the end of the modified response
     modifiedResponse.push(additionalObject);
 
-    if (isOrderCloseEnabled) modifiedResponse.push(short_complete_OrderColumn);
+    if (orderClosingEnable) modifiedResponse.push(short_complete_OrderColumn);
 
     return modifiedResponse;
   };
@@ -1551,7 +1559,7 @@ const OverallBmReport = () => {
           toggleFilter={toggleFilter}
           onApplyFilter={onApplyFilter}
           multiFilter={currFilter}
-          WIPFilter={isOrderCloseEnabled ? OrderCloseHeader : null}
+          WIPFilter={orderClosingEnable ? OrderCloseHeader : null}
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
           isMfgSelected={isMfgSelected}
