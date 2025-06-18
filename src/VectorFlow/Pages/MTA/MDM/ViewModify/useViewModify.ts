@@ -95,6 +95,9 @@ const useViewModify = (pageType:string) => {
     const [uploadProgress,setUploadProgress] = useState('');
 
     const [totalProgress,setTotalProgress] = useState('');
+    
+    const [WarningFlag,setWarningFlag]=useState(false)
+
 
     // const [isDataAvailableLocally,setIsDataAvailableLocally] = useState(false);
    
@@ -460,10 +463,13 @@ const useViewModify = (pageType:string) => {
       if(doesInvalidColDefExists){
        return [...activeMasterColDefsRequiredCols]
       }
-
+       
       if (activeMaster.name === 'SKULocation') {
-        return [...invalidDataColdefs.filter(colDef => colDef.field === 'error' || colDef.field === 'warning'), ...activeMasterColDefsRequiredCols];
-        
+        if(WarningFlag){
+          return [...invalidDataColdefs.filter(colDef => colDef.field === 'error' || colDef.field === 'warning'), ...activeMasterColDefsRequiredCols];
+        }else{
+          return [...invalidDataColdefs.filter(colDef => colDef.field === 'error'), ...activeMasterColDefsRequiredCols];
+        }
     } else {
         return [...invalidDataColdefs.filter(colDef => colDef.field === 'error'), ...activeMasterColDefsRequiredCols];
     }
@@ -1103,8 +1109,13 @@ const useViewModify = (pageType:string) => {
         const erroneusData:any[] = [];
         const validData:any[] = [] 
         activeMaster.rowData.forEach((data:any)=>{
+          if(data['warning'] && data['warning'].length>0){
+            setWarningFlag(true)
+            erroneusData.push(data)
+          }
+
           if (data['error'] && data['error'].length > 0 ) {
-              erroneusData.push(data);
+            erroneusData.push(data);
           }
           else{
             validData.push(data);
@@ -1685,7 +1696,9 @@ const useViewModify = (pageType:string) => {
        toggleEditOnline(false);
        removeModalOpenParameterWithoutReload();
        setCanToggleMaster(true);
-       dispatch(UPDATE_PROGRESS_STATE('default'));
+      if(activeMaster.progress !== "submitted") { 
+        dispatch(UPDATE_PROGRESS_STATE('default')); 
+      }
        dispatch(UPDATE_ROW_DATA([]));
        dispatch(UPDATE_COLDEFS(activeMaster.colDefs.filter((item: any) => item.field !== 'error') .map((m: any) => {
         const copy= { ...m };  
@@ -1705,7 +1718,7 @@ const useViewModify = (pageType:string) => {
        dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
        dispatch(SET_DRAFT_ID(''))
 
-       if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(true))
+       if(pageType==='add')dispatch(TOGGLE_UPLOAD_MODAL(false))
        // dispatch(UPDATE_COLDEFS([]));
        // dispatch(UPDATE_ACTIVE_MASTER([]))
       };      

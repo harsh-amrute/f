@@ -177,9 +177,9 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 columnDefs={staticTableColDefs}
                                 rowData={techTable.rowData}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
-                               
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
+
                                 defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 1)}
                                 
@@ -187,7 +187,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                             </div>
                             <div style={{ zoom: 0.7, margin: '0px -15px'}}>
                                 <VFPagination style={{ width:'95%', marginTop:'-30px'}}
-                                    {...techTable.paginationProps}
+                                    {...techTable.paginationProps} isClearGridFilter={false}
                                 />
                             </div>
                         </div>
@@ -209,8 +209,8 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 columnDefs={techTableColDefs}
                                 rowData={techTable.rowData}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
                                
                                 defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 2)}
@@ -219,7 +219,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                             </div>
                             <div style={{ zoom: 0.7, margin: '0px -15px'  }}>
                                 <VFPagination style={{marginTop:'-30px'}} 
-                                    {...techTable.paginationProps}
+                                    {...techTable.paginationProps} isClearGridFilter={false}
                                 />
                             </div>
                         </div>
@@ -255,8 +255,8 @@ const VerticalSplitView = (props: SplitViewProps) => {
                                 columnDefs={ecoTableColDefs}
                                 rowData={ecoTable.rowData}
                                 tooltipMouseTrack={true}
-                                tooltipShowDelay={0}
-                                tooltipHideDelay={100000}
+                                tooltipShowDelay={100}
+                                // tooltipHideDelay={100000}
                                
                                 defaultColDef={defaultColDef}
                                 onBodyScroll={(params:any) => onBodyScroll(params, 3)}
@@ -265,7 +265,7 @@ const VerticalSplitView = (props: SplitViewProps) => {
                             </div>
                         <div style={{ zoom: 0.7, margin: '0px -15px'}}>
                             <VFPagination style={{marginTop:'-30px',paddingRight:'10px'}}
-                                {...ecoTable.paginationProps}
+                                {...ecoTable.paginationProps} isClearGridFilter={false}
                             />
                         </div>
                     </div>

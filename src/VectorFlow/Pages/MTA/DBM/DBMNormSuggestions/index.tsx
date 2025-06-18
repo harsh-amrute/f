@@ -132,6 +132,7 @@ const [isDisabled, setIsDisabled]= useState<boolean>(true)
                 ],
               }}
               maintainColumnOrder
+              tooltipShowDelay={500}                  
               onFilterChanged={() => {
                 const filterModel = gridRef?.current?.api?.getFilterModel();
                 if (filterModel && Object.keys(filterModel).length > 0) {

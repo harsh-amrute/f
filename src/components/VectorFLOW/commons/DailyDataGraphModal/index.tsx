@@ -26,6 +26,7 @@ import { TOGGLE_GRAPH_MODAL, TOGGLE_NORM_CHANGE_HISTORY_TABLE } from "../../../.
 import {addDays, eachDayOfInterval, format, subDays} from 'date-fns';
 import { useUserData } from "../../../../context";
 import useGetLastRunData from "../../../../hooks/useGetLastRunData";
+import Tooltip from '../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip';
 interface DailyDataGraphModalProps{
   rowData:any,
   chartData:any[]
@@ -719,9 +720,11 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                     <SCHorizontalDivider/>
                     <SCDataRow>
                       <SCDataNode>
-                        <SCText fontWeight={300} fontSize={16}>Location :</SCText>
-                        <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{rowData[whKey]}</SCText>
-                      </SCDataNode>
+                         <SCText fontWeight={300} fontSize={16}>Location :   
+                          <Tooltip content={<div style={{padding:"0.5rem 1rem", fontSize:"12px"}}>{rowData[whKey]}</div>} tooltipZoom={1}>{<SCText fontWeight={500} fontSize={18} hideDefaultMargin>{rowData[whKey].slice(0, 13) + '…'}</SCText>}
+                         </Tooltip>
+                         </SCText>                           
+                      </SCDataNode>             
                       <SCVerticalDivider/>
                       <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>RLT :</SCText>

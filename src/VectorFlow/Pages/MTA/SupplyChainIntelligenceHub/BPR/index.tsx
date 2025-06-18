@@ -161,6 +161,7 @@ const BPR = ()=>{
                 enableRangeSelection={true} 
                 rowSelection="multiple"
                 statusBar = {Statusbar}
+                tooltipShowDelay={500}
                 onFilterChanged={() => {
                     const filterModel = ref?.current?.api?.getFilterModel();
                     if (filterModel && Object.keys(filterModel).length > 0) {

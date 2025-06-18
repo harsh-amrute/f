@@ -74,9 +74,16 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
       const targetObject = updatedMenu.find((item: any) => item.id === 8);
   
       if (targetObject) {
-        targetObject.child.push(...transformedData, ...transformedMTOData);
-        const reportUrls = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
-        setReportUrls(reportUrls);
+
+        if(user.url_permission.includes('mta-report-urls')){
+        targetObject.child.push(...transformedData);
+        }
+        if(user.url_permission.includes('mto-report-urls')){
+          targetObject.child.push(...transformedMTOData);
+        }
+        const reportUrlsCombined = targetObject.child.map((child: any) => child.url).filter((url: string) => url);
+
+        setReportUrls(reportUrlsCombined);
       }
   
       setListMenu(updatedMenu);

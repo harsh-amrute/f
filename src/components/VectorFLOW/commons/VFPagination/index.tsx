@@ -18,7 +18,8 @@ export interface VFPaginationProps{
     showPagination?:boolean,
     style?:CSSProperties,
     resetGridRef?: any,
-    isDisabled?:any
+    isDisabled?:any,
+    isClearGridFilter?:boolean
     
 }
 
@@ -32,7 +33,8 @@ const VFPagination  = (props:VFPaginationProps)=>{
         style,
         handleChangePage,
         resetGridRef,
-        isDisabled
+        isDisabled,
+        isClearGridFilter = true
     } = props
 
 
@@ -71,9 +73,9 @@ const VFPagination  = (props:VFPaginationProps)=>{
     return(
         <PaginationWrapper data-testid="vf_pagination" style={style}>
             <PaginationContainer>
-                 <GridFilterWrapper>
+                 {isClearGridFilter && <GridFilterWrapper>
                                     <TextBtn onClick={clearGridFilter} disabled={ isDisabled} themeUi={themeUi}>Clear All Grid Filters</TextBtn>  
-                                </GridFilterWrapper>
+                                </GridFilterWrapper>}
             <StatusBarLabel>
                 <StatusBarLabelBold>
                 {getTotalItemsString()} 
