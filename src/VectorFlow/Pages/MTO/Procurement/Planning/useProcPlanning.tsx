@@ -368,14 +368,14 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             return data.flag == "simulationEnable";
           });
 
-          setSimulationEnable(simulation.value);
+          setSimulationEnable(simulation.value || "disabled");
     }
     useEffect(() => {  
         getSimulationEnable();
     },[])
 
     useEffect(() => {
-        if(HeaderData && HeaderData.length>0){
+        if(HeaderData && HeaderData.length>0 && simulationEnable){
             if (currentTab?.label === 'Shortage') {
                 if(simulationEnable === "enabled"){
 
