@@ -272,7 +272,7 @@ const OverallBmReport = () => {
     });
     
     setorderClosingEnable( Number(orderClosingEnable.value));
-    setSystemType(Number(systemType.value));
+    setSystemType(Number(systemType.value || 0));
     // setColumnDef();
   };
 
