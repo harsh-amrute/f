@@ -212,8 +212,6 @@ const OverallBmReport = () => {
   const themeUi = user?.user?.theme_ui; 
 
    
-  const isOrderCloseEnabled = orderClosingEnable
-
   const dispatch = useDispatch();
   const [userPageSize, setUserPageSize] = useState<any>();
 
@@ -420,7 +418,7 @@ const OverallBmReport = () => {
     // Add the additional object to the end of the modified response
     modifiedResponse.push(additionalObject);
 
-    if (isOrderCloseEnabled) modifiedResponse.push(short_complete_OrderColumn);
+    if (orderClosingEnable) modifiedResponse.push(short_complete_OrderColumn);
 
     return modifiedResponse;
   };
@@ -1561,7 +1559,7 @@ const OverallBmReport = () => {
           toggleFilter={toggleFilter}
           onApplyFilter={onApplyFilter}
           multiFilter={currFilter}
-          WIPFilter={isOrderCloseEnabled ? OrderCloseHeader : null}
+          WIPFilter={orderClosingEnable ? OrderCloseHeader : null}
           setMultiFilter={setCurrFilter}
           onFilterRemove={onFilterRemove}
           isMfgSelected={isMfgSelected}
