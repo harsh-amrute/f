@@ -743,7 +743,8 @@ const DptWiseBMReport = () => {
 
     const cache = useRef<any>({});
 
-    useEffect(() => {
+
+    const cellRendererParamsConfig =useMemo(() => {
     if(columnBomDefs){
     const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
 
@@ -791,10 +792,9 @@ const DptWiseBMReport = () => {
         },
     };
 
-    setDetailCellRendererParamsConfig(config);
+    return config
     }
     }, [columnBomDefs]);
-
 
 
     const agGridProps: AgGridReactProps = useMemo(()=>{
@@ -1105,7 +1105,7 @@ const DptWiseBMReport = () => {
                                             // key={isReset? 1: 2}
                                             reference={refGraph1}
                                             agGridProps={agGridProps}
-                                            detailCellRendererParamsConfig={detailCellRendererParamsConfig}
+                                            detailCellRendererParamsConfig={cellRendererParamsConfig}
                                             columDef={coldefs}
                                             convercolumnDef={gridData}
                                                 updateReason={handleUpdateReason}
@@ -1147,7 +1147,7 @@ const DptWiseBMReport = () => {
                         totalRow={gridDataCount}
                         currentPage={currentPage}
                         excelStyles={excelStyles}
-                        detailCellRendererParamsConfig={detailCellRendererParamsConfig}                        
+                        detailCellRendererParamsConfig={cellRendererParamsConfig}                        
                     />
                 </div>
             </>
