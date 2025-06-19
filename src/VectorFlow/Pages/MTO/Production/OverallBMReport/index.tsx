@@ -280,7 +280,7 @@ const OverallBmReport = () => {
       return data.flag == "OrderCloseEnable";
     });
     
-    setorderClosingEnable( Number(orderClosingEnable.value));
+    setorderClosingEnable( Number(orderClosingEnable?.value));
     setSystemType(Number(systemType.value || 0));
     // setColumnDef();
   };
@@ -1097,10 +1097,7 @@ const OverallBmReport = () => {
           return getColumnDefinations(bomHeader);
         }, [bomHeader]);
 
-        useEffect(() => {
-          getSystemType();
-        }, []); 
-          
+       
 
   const getInitialGridData = async (currentPage: number, pageSize?:any) => {
     try {

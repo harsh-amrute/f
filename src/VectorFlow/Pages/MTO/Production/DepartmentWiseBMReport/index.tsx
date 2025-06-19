@@ -263,8 +263,8 @@ const DptWiseBMReport = () => {
     const getSystemType = async () => {
         const DBRSettingsData: any = await getDBRsettingsData()
         const DBRSettings = DBRSettingsData.data?.data;
-        const systemType = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
-        if(systemType){
+        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
+        if(BomFlag){
             setBomActive(true)
         }
         for(const setting of DBRSettings){
@@ -277,9 +277,6 @@ const DptWiseBMReport = () => {
         }
     }
 
-   useEffect(() => {
-        getSystemType();
-     }, []); 
    
      useEffect(()=>{
        if(!isUIConfigLoading && bomActive){
@@ -747,6 +744,7 @@ const DptWiseBMReport = () => {
     const cache = useRef<any>({});
 
     useEffect(() => {
+    if(columnBomDefs){
     const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
 
     const config = {
@@ -794,7 +792,8 @@ const DptWiseBMReport = () => {
     };
 
     setDetailCellRendererParamsConfig(config);
-    }, [columnBomDefs, bomHeader]);
+    }
+    }, [columnBomDefs]);
 
 
 

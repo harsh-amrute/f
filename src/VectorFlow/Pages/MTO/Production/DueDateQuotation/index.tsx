@@ -144,9 +144,9 @@ const DueDateQuotation = () => {
     const fetchDBRSettings = async () => {
         const DBRSettingsData = await getDBRsettingsData();
         const DBRSettings = DBRSettingsData.data?.data;
-        const systemType = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
+        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
 
-        if (systemType) {
+        if (BomFlag) {
           setBomActive(true);
         } 
     };
