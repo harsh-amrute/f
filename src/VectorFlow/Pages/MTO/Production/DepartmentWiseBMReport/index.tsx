@@ -131,11 +131,11 @@ const APIFilterConfig = {
 
 const DptWiseBMReport = () => {
     const { mutateAsync: getFilteredDeptWiseBMReportData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
-    const { mutateAsync: getOverallBMReportData } = useGetOverAllBMReport();
+    const { mutateAsync: getOverallBMReportData, isLoading:isUIConfigLoading } = useGetOverAllBMReport();
     const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
-    const { mutateAsync: getDeptWiseWipData, isLoading:isUIConfigLoading } = useGetDeptWiseWipData();
+    const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -166,6 +166,8 @@ const DptWiseBMReport = () => {
     const [isPivot, setIsPivot] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+    const [detailCellRendererParamsConfig, setDetailCellRendererParamsConfig] = useState<any>();
+
     
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
@@ -260,6 +262,10 @@ const DptWiseBMReport = () => {
     const getSystemType = async () => {
         const DBRSettingsData: any = await getDBRsettingsData()
         const DBRSettings = DBRSettingsData.data?.data;
+        const systemType = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
+        if(systemType){
+            setBomActive(true)
+        }
         for(const setting of DBRSettings){
             if(setting.flag === "SystemType"){
                setSystemType(Number(setting.value));
@@ -271,20 +277,8 @@ const DptWiseBMReport = () => {
     }
 
    useEffect(() => {
-       const fetchDBRSettings = async () => {
-           const DBRSettingsData = await getDBRsettingsData();
-           const DBRSettings = DBRSettingsData.data?.data;
-           const systemType = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
-   
-           if (systemType) {
-             setBomActive(true);
-           } 
-       };
-     
-       fetchDBRSettings();
+        getSystemType();
      }, []); 
-
-     console.log('bomActuve sttae', bomActive)
    
      useEffect(()=>{
        if(!isUIConfigLoading && bomActive){
@@ -748,61 +742,60 @@ const DptWiseBMReport = () => {
         
     }
 
-    console.log('columnBIF', columnBomDefs)
 
     const cache = useRef<any>({});
 
-    const detailCellRendererParamsConfig = useMemo(() => {
-        const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
-      
-        const config = {
-          masterDetail: bomActive?true:false,
-          detailRowAutoHeight: true,
-            detailCellRendererParams: {
-                suppressMenu: true,
-                detailCellRendererParams: {
-                    suppressMenu: true,
-                    detailGridOptions: {
-                        rowHeight: 45,
-                        domLayout: "autoHeight",
-                        autoGroupColumnDef: {
-                            headerName:itemNameColumnDef?.headerName,
-                            cellRendererParams: {
-                                suppressCount: true
-                            }
-                        },
-                        columnDefs:columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
-                        defaultColDef: {
-                            flex: 1,
-                            suppressMenu: true,
-                            cellStyle: {
-                                fontSize: "16px",
-                                display: "flex",
-                                alignItems: "center"
-                            }
-                        },
-                        treeData: true,
-                        getDataPath: (data: any) => {
-                            return data.path;
-                        },
-                    },
-                    getDetailRowData: async (params: any) => {
-                        if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
-                            params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
-                            return
-                        }
-                        const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
-                        cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
-                        params.successCallback(data?.data?.data)
-                        return
-                    }
-                },
+    useEffect(() => {
+    const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
+
+    const config = {
+        masterDetail: bomActive ? true : false,
+        detailCellRendererParams: {
+        suppressMenu: true,
+        detailGridOptions: {
+            rowHeight: 45,
+            domLayout: "autoHeight",
+            autoGroupColumnDef: {
+            headerName: itemNameColumnDef?.headerName,
+            cellRendererParams: {
+                suppressCount: true,
+            },
+            },
+            columnDefs: columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
+            defaultColDef: {
+            flex: 1,
+            suppressMenu: true,
+            cellStyle: {
+                fontSize: "16px",
+                display: "flex",
+                alignItems: "center",
+            },
+            },
+            treeData: true,
+            getDataPath: (data: any) => {
+            return data.path;
+            },
+        },
+        getDetailRowData: async (params: any) => {
+            const cacheKey = `${params.data.oid}-${params.data.lid}`;
+            if (cache.current[cacheKey]) {
+            params.successCallback(cache.current[cacheKey]);
+            return;
             }
-        };
-      
-        return config;
-      }, [columnBomDefs]);
-      
+            const data = await getBOMExplosionData({
+            orderId: params.data.oid,
+            lineId: params.data.lid,
+            });
+            cache.current[cacheKey] = data?.data?.data;
+            params.successCallback(data?.data?.data);
+        },
+        },
+    };
+
+    setDetailCellRendererParamsConfig(config);
+    }, [columnBomDefs, bomHeader]);
+
+
 
     const agGridProps: AgGridReactProps = useMemo(()=>{
         return {
@@ -859,50 +852,6 @@ const DptWiseBMReport = () => {
             onCellValueChanged: onCellValueChanged,
             stopEditingWhenCellsLoseFocus: true,
             onRowDataUpdated: onFirstDataRendered,
-            // masterDetail: true,
-            // detailRowAutoHeight: true,
-            // detailCellRendererParams: {
-            //     suppressMenu: true,
-            //     detailGridOptions: {
-            //         rowHeight: 45,
-            //         domLayout: "autoHeight",
-            //         // autoGroupColumnDef: {
-            //         //     headerName: "Item Name",
-            //         //     cellRendererParams: {
-            //         //         suppressCount: true
-            //         //     }
-            //         // },
-            //         // columnDefs: [
-            //         //     { field: "qty", headerName: "Requirement", },
-            //         //     { field: "soh", headerName: "Stock", },
-            //         //     { field: "wip", headerName: "WIP", },
-            //         //     { field: "gap", headerName: "Gap", },
-            //         // ],
-            //         defaultColDef: {
-            //             flex: 1,
-            //             suppressMenu: true,
-            //             cellStyle: {
-            //                 fontSize: "16px",
-            //                 display: "flex",
-            //                 alignItems: "center"
-            //             }
-            //         },
-            //         treeData: true,
-            //         getDataPath: (data: any) => {
-            //             return data.path;
-            //         },
-            //     },
-            //     getDetailRowData: async (params: any) => {
-            //         if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
-            //             params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
-            //             return
-            //         }
-            //         const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
-            //         cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
-            //         params.successCallback(data?.data?.data)
-            //         return
-            //     }
-            // },
         };
     }, [masterSelectedRowData, gridData])
     

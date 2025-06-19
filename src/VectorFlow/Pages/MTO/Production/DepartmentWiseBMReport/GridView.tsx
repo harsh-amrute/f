@@ -51,7 +51,6 @@ const GridView = memo(({
         
     const [isDisabled, setIsDisabled]= useState<boolean>(true);
 
-    console.log(detailCellRendererParamsConfig?.masterDetail)
 
     return (
         <>

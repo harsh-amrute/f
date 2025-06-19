@@ -151,7 +151,6 @@ const DueDateQuotation = () => {
         } 
     };
   
-    console.log('DBR  valaa a a useEffect');
     fetchDBRSettings();
   }, []); 
 
