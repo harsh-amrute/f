@@ -343,6 +343,7 @@ const DeleteRecord = () => {
               masterId={activeMaster.id}
               DataCount={activeMaster.rowData.length}
               onDiscardDraftCallback={onDiscardDraftCallback}
+              showExportErrors={activeMaster.rowData?.find((rowdata) => (rowdata.error && rowdata.error !== '')) ? true : false}
             />
           </div>
         }

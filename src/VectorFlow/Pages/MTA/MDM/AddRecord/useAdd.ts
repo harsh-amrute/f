@@ -109,7 +109,14 @@ const useAdd=()=>{
     }
 
     const handleSubmitSelectMaster = ()=>{
-        dispatch(UPDATE_ACTIVE_MASTER(0));
+      // dispatch(UPDATE_ACTIVE_MASTER(0));
+      const firstDefaultIndex = selectedMasters.findIndex(
+        (item) => item.progress === 'default'
+      );
+      
+      if (firstDefaultIndex !== -1) {
+        dispatch(UPDATE_ACTIVE_MASTER(firstDefaultIndex));
+      }
         dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
         
         if(selectedMasters[0].progress==='default' || selectedMasters[0].progress==='view'){

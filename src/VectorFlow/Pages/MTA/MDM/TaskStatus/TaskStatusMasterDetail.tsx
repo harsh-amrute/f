@@ -13,34 +13,34 @@ export interface TaskStatusMasterDetailProps{
 
 const getStepperState = (data:any):StepItem[]=>{
     switch(data.TaskStatus){
-        case "DB Update Pending":
-            return [
-                {
-                    label:"Submission",
-                    status:'completed',
-                    description:data.PendingSince,
-                    prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
-                    //description: formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a'),
+        // case "DB Update Pending":
+        //     return [
+        //         {
+        //             label:"Submission",
+        //             status:'completed',
+        //             description:data.PendingSince,
+        //             prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
+        //             //description: formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a'),
                  
                     
-                },
-                {
-                    label:"DB Update Pending",
-                    status:'pending',
-                    description:'',
-                    prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
-                },
-                {
-                    label:"DB Updated",
-                    status:'pending',
-                    description:'',
-                    prefix:<div style={{height:'15px'}}/>
-                }
-            ]
+        //         },
+        //         {
+        //             label:"DB Update Pending",
+        //             status:'pending',
+        //             description:'',
+        //             prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
+        //         },
+        //         {
+        //             label:"DB Updated",
+        //             status:'pending',
+        //             description:'',
+        //             prefix:<div style={{height:'15px'}}/>
+        //         }
+        //     ]
         case "Rejected":
             return [
                 {
-                    label:"Submission",
+                    label:"Submitted",
                     status:'completed',
                     description:data.PendingSince,
                     prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
@@ -56,42 +56,42 @@ const getStepperState = (data:any):StepItem[]=>{
                     
                 }
             ]
-        case "Approved":
-            return [
-                {
-                    label:"Submission",
-                    status:'completed',
-                    description:data.PendingSince,
-                    prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
-                    //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a'),
-                },
-                {
-                    label:"Approved",
-                    status:'completed',
-                    description:data.ApprovedDate,
-                    prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
-                    //description:formatMDMDate(data.ApprovedDate, 'dd/MM/yy hh:mm:ss a')
+        // case "Approved":
+        //     return [
+        //         {
+        //             label:"Submission",
+        //             status:'completed',
+        //             description:data.PendingSince,
+        //             prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
+        //             //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a'),
+        //         },
+        //         {
+        //             label:"Approved",
+        //             status:'completed',
+        //             description:data.ApprovedDate,
+        //             prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
+        //             //description:formatMDMDate(data.ApprovedDate, 'dd/MM/yy hh:mm:ss a')
                     
-                },
-                {
-                    label:"DB Updated",
-                    status:'completed',
-                    description:data.DBUpdatedDate,
-                    prefix:<div style={{height:'15px'}}/>
-                    //description:formatMDMDate(data.DBUpdatedDate,'dd/MM/yy hh:mm:ss a' )
-                }
-            ]
+        //         },
+        //         {
+        //             label:"DB Updated",
+        //             status:'completed',
+        //             description:data.DBUpdatedDate,
+        //             prefix:<div style={{height:'15px'}}/>
+        //             //description:formatMDMDate(data.DBUpdatedDate,'dd/MM/yy hh:mm:ss a' )
+        //         }
+        //     ]
         case "Approved - DB Updated":
             return [
                 {
-                    label:"Submission",
+                    label:"Submitted",
                     status:'completed',
                     description:data.PendingSince,
                     prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
                     //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a')
                 },
                 {
-                    label:"Approved - DB Updated",
+                    label:"Approved",
                     status:'completed',
                     description:data.ApprovedDate,
                     prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
@@ -108,21 +108,21 @@ const getStepperState = (data:any):StepItem[]=>{
         case "Partially Approved - DB update Pending":
             return [
                 {
-                    label:"Submission",
+                    label:"Submitted",
                     status:'completed',
                     description:data.PendingSince,
                     prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
                     //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a')
                 },
                 {
-                    label:"Partially Approved",
+                    label:"Partial Action Taken",
                     status:'completed',
                     description:data.ApprovedDate,
                     prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
                     //description:formatMDMDate(data.ApprovedDate, 'dd/MM/yy hh:mm:ss a')
                 },
                 {
-                    label:"Partially Approved - DB Update Pending",
+                    label:"DB Update Pending",
                     status:'pending',
                     description:'',
                     prefix:<div style={{height:'15px'}}/>
@@ -131,14 +131,37 @@ const getStepperState = (data:any):StepItem[]=>{
         case "Approved - DB update Pending":
             return [
                 {
-                    label:"Submission",
+                    label:"Submitted",
                     status:'completed',
                     description:data.PendingSince,
                     prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
                     //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a')
                 },
                 {
-                    label:"Approved - DB update Pending",
+                    label:"Approved",
+                    status:'completed',
+                    description:data.ApprovedDate,
+                    prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
+                    //description:formatMDMDate(data.ApprovedDate, 'dd/MM/yy hh:mm:ss a')
+                },
+                {
+                    label:"DB Update Pending",
+                    status:'pending',
+                    description:'',
+                    prefix:<div style={{height:'15px'}}/>
+                }
+            ]
+        case "Partially Approved - DB Updated":
+            return [
+                {
+                    label:"Submitted",
+                    status:'completed',
+                    description:data.PendingSince,
+                    prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
+                    //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a')
+                },
+                {
+                    label:"Partial Action Taken",
                     status:'completed',
                     description:data.ApprovedDate,
                     prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
@@ -146,6 +169,28 @@ const getStepperState = (data:any):StepItem[]=>{
                 },
                 {
                     label:"DB Updated",
+                    status:'completed',
+                    description:data.DBUpdatedDate,
+                    prefix:<div style={{height:'15px'}}/>
+                }
+            ]
+        case "Pending":
+           return [
+                {
+                    label:"Submitted",
+                    status:'completed',
+                    description:data.PendingSince,
+                    prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
+                    //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a')
+                },
+                {
+                    label:"Approval Pending",
+                    status:'pending',
+                    description:'',
+                    prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
+                },
+                {
+                    label:"DB Update Pending",
                     status:'pending',
                     description:'',
                     prefix:<div style={{height:'15px'}}/>
@@ -154,20 +199,20 @@ const getStepperState = (data:any):StepItem[]=>{
         default:
             return [
                 {
-                    label:"Submission",
+                    label:"Submitted",
                     status:'completed',
                     description:data.PendingSince,
                     prefix:<StepperPrefix label={data.Requester} subLabel={"Requester"} />
                     //description:formatMDMDate(data.PendingSince, 'dd/MM/yy hh:mm:ss a')
                 },
                 {
-                    label:"DB Update Pending",
+                    label:"Approval Pending",
                     status:'pending',
                     description:'',
                     prefix:<StepperPrefix label={data.Approver} subLabel={"Approver"} />
                 },
                 {
-                    label:"DB Updated",
+                    label:"DB Update Pending",
                     status:'pending',
                     description:'',
                     prefix:<div style={{height:'15px'}}/>
@@ -183,12 +228,12 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
         onDownload
     } = props
     // const approvedStatuses = ["Approved","Partially Approved - DB update Pending","Approved - DB update Pending","Approved - DB Updated"]
-    const approvedStatuses = ["Approved","Approved - DB Updated"]
+    const approvedStatuses = ["Pending"]
     const {user} = useUserData()
     const {Approvers} = data
 
     const showDisplayDownloadButton = (status:string):boolean=>{
-        return approvedStatuses.includes(status)
+        return !approvedStatuses.includes(status)
     }
     const gridFraction ="5fr 1fr"
 

@@ -532,7 +532,10 @@ const useBPR =()=>{
             lockPosition: true,
             resizable: false,
             floatingFilter: false,
-            suppressColumnsToolPanel: false
+            suppressColumnsToolPanel: false,
+            headerTooltip: "Daily Data Graph",
+
+
         },
         remarks: {
             cellStyle: {
@@ -550,6 +553,7 @@ const useBPR =()=>{
             suppressMenu: true,
             resizable: false,
             floatingFilter: false,
+            headerTooltip: "Enter New Remark",
         },
         rh: {
             cellRenderer: 'remarksCellRenderer',
@@ -564,6 +568,7 @@ const useBPR =()=>{
             suppressMenu: true,
             resizable: false,
             floatingFilter: false,
+            headerTooltip: "Remark History",
         },
         Tags: {
             cellRenderer: 'tagsCellRenderer',
