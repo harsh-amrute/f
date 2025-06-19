@@ -28,6 +28,7 @@ import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import useColDef from '../../../../../hooks/useColDef';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
 
 
 const APIFilterConfig = {
@@ -55,6 +56,7 @@ const MaterialCov = () => {
   const [isReset, setIsReset] = useState<boolean | undefined>(undefined);
   const [colDef, setColDef] = useState<any>([]);
   const [HeaderData, setHeaderData] = useState([]);
+  const [HeaderDataChild, setHeaderDataChild] = useState([]);
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
@@ -65,6 +67,7 @@ const MaterialCov = () => {
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
   const {mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
+  const [childColDef,setChildColDef] = useState<any>();
   
     const { 
     state: currFilter, 
@@ -212,17 +215,20 @@ const MaterialCov = () => {
 
 
   const reportName = 'MaterialCoverageforOpenSalesOrder';
+  const childReportName = "MaterialCoverageforOpenSalesOrder_Child"
   const getHeaderData = async () => {
       try {
           const response = await getUIConfigData(reportName);
-          getColDef(response)
+          const childResponse = await getUIConfigData(childReportName)
+          getColDef([...response.data.data, ...childResponse.data.data])
           setHeaderData(response.data.data);
+          setHeaderDataChild(childResponse.data.data)
       }
       catch (e) {
           console.log(e);
       }
   }
-  
+
   const customHeader =
   {
       ColorPriority: {
@@ -241,6 +247,12 @@ const MaterialCov = () => {
               return `${fka}/${oq} kits can be manufactured`;
           },
       }
+  }
+
+  const childCustomheader = {
+    clr:{
+      cellRenderer : ChildrenColor
+    }
   }
 
   const extras = [
@@ -269,6 +281,7 @@ const MaterialCov = () => {
 
   useEffect(() => {
     const coldefs = getColumnDefinations(HeaderData, customHeader, extras);
+    const childColDefs = getColumnDefinations(HeaderDataChild,childCustomheader)
     if(detailDataObj?.allOrders){
       setColDef([
         {
@@ -278,10 +291,11 @@ const MaterialCov = () => {
         },...coldefs]
       )
     }else{
-      setColDef(coldefs);
+    setColDef(coldefs);
     }
   
-  }, [HeaderData, detailDataObj])
+    setChildColDef(childColDefs)
+  }, [HeaderData, detailDataObj,HeaderDataChild])
 
   useEffect(() => {
     getHeaderData();
@@ -313,7 +327,7 @@ const MaterialCov = () => {
   const callExportExcel = () => {
       const headersdata = currentGridRef?.current?.api.getColumnState();
       const formattedFilters = formatFilterJSON(appliedFilters)
-      const body = getBodyForExcelExport({headersdata: headersdata, filterData : formattedFilters , colDefMap})
+      const body = getBodyForExcelExport({headersdata: [...headersdata, ...childColDef], filterData : formattedFilters , colDefMap})
       if(materialSoDetailRef.current?.getExcelExport)
         materialSoDetailRef.current.getExcelExport(body)
     
@@ -465,6 +479,7 @@ const MaterialCov = () => {
             userConfigFetched={userConfigFetched}
             userPageSize={userPageSize}
             setUserPageSize={setUserPageSize}
+            childColDef={childColDef}
           />
         </div>
 

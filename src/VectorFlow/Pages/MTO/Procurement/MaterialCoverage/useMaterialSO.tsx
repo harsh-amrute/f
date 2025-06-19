@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { FilterPageName, pagination } from "../../Common/Enum";
 import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
 
-const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userConfigFetched:any,userPageSize:any,setUserPageSize:any) => {
+const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userConfigFetched:any,userPageSize:any,setUserPageSize:any,childColDef:any) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
     const [rowDataCount, setRowDataCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -32,27 +32,28 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
 
     const getInitialData = async (currPage: number, isExcelExport = false, body = {}, pageSize?: any) => {
         try {
-          const formattedFilters = formatFilterJSON(appliedFilters);
-          const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'));
-          const colorsQuery = colorsArray.map((key: string) => data[key]).join(',');
-
-          let queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`;
+            const formattedFilters = formatFilterJSON(appliedFilters);
+            const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'));
+            const colorsQuery = colorsArray.map((key: string) => data[key]).join(',');
+      
+            let queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`;
         
           if(data.allOrders ===true){
             queryString = `?AOD=${true}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`
           }
           
-      
-          if (isExcelExport) {
+            
+            if (isExcelExport) {
+              notifyLoader("Exporting data")
             const response = await getOpenSODetailsDataForExcelExport({
               data: queryString,
               isExcelExport: 1,
               body,
-              report_name: FilterPageName.Proc_Material_Coverage_For_OpenSO
+              report_name: FilterPageName.Proc_MaterialCoverageforOpenSalesOrder_Child
             });
       
             if (response.status === 200) {
-              DownloadExcel(response, FilterPageName.Proc_Material_Coverage_For_OpenSO);
+              DownloadExcel(response, FilterPageName.Proc_MaterialCoverageforOpenSalesOrder_Child);
               notifySuccess("Excel Export Successfully");
             } else {
               notifyError("Failed to export Excel");
@@ -174,6 +175,9 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
         },
         masterDetail: true,
         detailCellRenderer: DetailCellRenderer,
+        detailCellRendererParams:{
+            colDef : childColDef
+        },
         detailRowHeight: 240,
         autoGroupColumnDef: autoGroupColumnDef,
         paginationAutoPageSize: true,
