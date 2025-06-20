@@ -54,7 +54,7 @@ import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { BM_REPORT_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { modifyAnalyticsData } from "../DepartmentWiseBMReport/helper";
-import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
+import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
 import _ from "lodash";
 import {
   useGetUserUIConfigData,

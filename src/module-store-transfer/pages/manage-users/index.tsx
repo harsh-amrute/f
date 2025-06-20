@@ -29,6 +29,7 @@ import SearchInputManageUser from "../../../components/commons/SearchInputManage
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import PermissionHeirarchyCanvas from "./ModalBulkUpload";
 import { useNavigate } from "react-router";
+import { notifyError } from "../../../helpers/notify";
 
 
 interface ManageUsersProps{
@@ -120,7 +121,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     });
     setIsOpenUser(true);
     setIsEditUser(false)
-
+    setStorePermission([]);
     isCheckBoxRef.current.isPrdCheck = {},
     isCheckBoxRef.current.isLcCheck = {}
   };
@@ -152,12 +153,12 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         parent.push({ label: valueParent, value: valueParent });
       }
 
-      if (!checkAddChild?.includes(valueChild) && item[txtChild]?.length > 0) {
+      if (!checkAddChild?.includes(valueChild) && txtChild in item) {
         checkAddChild.push(valueChild);
         child.push({ label: valueChild, value: valueChild });
       }
 
-      if (!checkAddGrandChild?.includes(valueGrandChild) && item[txtGrandChild]?.length > 0) {
+      if (!checkAddGrandChild?.includes(valueGrandChild) && txtGrandChild in item) {
         checkAddGrandChild.push(valueGrandChild);
         grandChild.push({ label: valueGrandChild, value: valueGrandChild });
       }
@@ -205,7 +206,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   
       fillEmptyPermission.sort((a:any,b:any)=>a.application_id-b.application_id);
       
-      if(prevPremission.length > 0){
+      const prevValidApplications = prevPremission.map((perm: any) => perm.application_id).sort((a: number, b: number) => a - b);
+      const isValidApplicationChanged = !_.isEqual(prevValidApplications, validApplications);
+     
+      if(prevPremission.length > 0 && !isValidApplicationChanged){
         setStorePermission(prevPremission);
       }else{
 
@@ -344,7 +348,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       name: item.name,
       email: item.email,
       roles: roles,
-      edit:true
+      edit: true
     });
 
     setContentModal({
@@ -354,9 +358,43 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     });
     setIsOpenUser(true);
 
-    isCheckBoxRef.current.isPrdCheck = {},
-    isCheckBoxRef.current.isLcCheck = {}
-  };
+    const ApplicationIdMTA = dataAllPermissions.find((dataAllPermission: any) => dataAllPermission.application_name === "Orders")?.application_id;
+    const ApplicationIdMTO = dataAllPermissions.find((dataAllPermission: any) => dataAllPermission.application_name === "Distribution")?.application_id;
+
+    if (!ApplicationIdMTA || !ApplicationIdMTO) {
+
+      isCheckBoxRef.current.isPrdCheck = {};
+      isCheckBoxRef.current.isLcCheck = {};
+      notifyError("Application ID or Application Name did not match!")
+      
+    }
+
+    const applicationIds = [ApplicationIdMTA, ApplicationIdMTO]; // Key application IDs for check
+    const isPRDCheck: any = {};
+    const isLcCheck: any = {};
+
+    const findPermissionLength = (array: any, appId: any) =>
+      array.find((entry: any) => entry.application_id === appId)?.permissions?.length;
+
+    const findPermissionAllLength = (array: any, appId: any, key: any) =>
+      array.find((entry: any) => entry.application_id === appId)?.[key]?.length;
+
+    applicationIds.forEach(applicationId => {
+
+      const productPermission = findPermissionLength(item.product_id, applicationId);
+      const locationPermission = findPermissionLength(item.location_id, applicationId);
+
+      const productPermissionAll = findPermissionAllLength(dataAllPermissions, applicationId, 'product_permission_ids');
+      const locationPermissionAll = findPermissionAllLength(dataAllPermissions, applicationId, 'location_permission_ids');
+
+      isPRDCheck[applicationId] = productPermission === productPermissionAll;
+      isLcCheck[applicationId] = locationPermission === locationPermissionAll;
+
+    });
+
+    isCheckBoxRef.current.isPrdCheck = isPRDCheck;
+    isCheckBoxRef.current.isLcCheck = isLcCheck;
+  }
 
 
   const [isBulkModalOpen , setIsBulkModalOpen] = useState(false);

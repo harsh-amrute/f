@@ -20,9 +20,9 @@ export const staticHeaderConfig: any = {
     
     // Resource Filter Attributes
     pn: { name: "Plant", type: 'search'},
-    deptid: { name: "Department", type: 'multiSelect'},
-    ccrid: { name: "CCR", type: 'multiSelect'},
-    grpid: { name: "CCR Group", type: 'multiSelect'},
+    deptid: { name: "Department", type: 'search'},
+    ccrid: { name: "CCR", type: 'search'},
+    grpid: { name: "CCR Group", type: 'search'},
 }
 
 export const filterAttributes: any = {

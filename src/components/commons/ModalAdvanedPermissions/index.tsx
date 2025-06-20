@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import "./styles.css";
 import { useTranslation } from "react-i18next";
 import { notifyError, notifySuccess, notifyWarning } from "../../../helpers/notify";
@@ -8,6 +8,7 @@ import LoadingSpinner from "../LoadingSpinner";
 import PrdPermissions from "../../../components/layouts/ProductPermission/common-mulselect";
 import LcPermissions from "../../../components/layouts/LocationPermission/common-mulselect";
 import UserMangementStepper from "../../VectorFLOW/commons/UserManagementStepper";
+import { useGetDBRsettingsData } from '../../../VectorFlow/Services/MTO/Common/DBRSettings';
 import {
   formDataPermission,
   handleSelectParent,
@@ -21,7 +22,7 @@ const ModalAdvanedPermissions = (props: any) => {
   const { t } = useTranslation();
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-
+  const [isMTOPermissionsRequired, setIsMTOPermissionsRequired] = useState(false);
 
   const {
     openModal,
@@ -48,7 +49,18 @@ const ModalAdvanedPermissions = (props: any) => {
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
   const { mutateAsync: mutateRegister } = useRegisterUser();
   const { mutateAsync: mutatePutEditUser } = usePutEditUser();  
+  const {mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
 
+  const getSettingsData = async () => {
+    const DBRSettingsData: any = await getDBRsettingsData()
+    const DBRSettings = DBRSettingsData.data?.data;
+    setIsMTOPermissionsRequired(DBRSettings?.find((DBRSetting: any) => DBRSetting.flag === "isPermissionRequiredMTO")?.value || false);
+  };
+  
+  useEffect(() => {
+    getSettingsData()
+  }, []);
+  
   const backModalUser = () => {
  
     //Reset Current Application Permissions
@@ -171,19 +183,32 @@ const ModalAdvanedPermissions = (props: any) => {
 
     if(!isValid)return;
 
-    const { brand} =
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      prdPermissionRef.current?.getPrdPermissionValue();
-
-      const { lcRegion} =
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      lcPermissionRef.current?.getLcPermissionValue();
-
-      console.log(brand,"brand");
-      console.log(lcRegion,"lcRegion")
+    //check if permissions are filled for MTA, have added check for MTA only, considering in MTO Permissions are not compulsory.
+    const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == 2)?.permissions;
+    const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == 2)?.permissions;
       
-    // if(brand?.length > 0 && lcRegion?.length > 0) {
-      // setIsLoadSpinner(true);
+    if (!isProductPermission || !isLocationPermission) {
+      notifyError(
+        t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermissionMTA")
+      );
+      setIsLoadSpinner(false);
+      return;
+    }
+    
+    if (isMTOPermissionsRequired) {
+      const isMTOProductPermission = isMTOPermissionsRequired && productPermissions.find((productPermission: any) => productPermission.application_id == 3)?.permissions;
+      const isMTOLocationPermission = isMTOPermissionsRequired && locationPermissions.find((locationPermission: any) => locationPermission.application_id == 3)?.permissions;
+
+      if (!isMTOProductPermission || !isMTOLocationPermission) {
+        notifyError(
+          t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermissionMTO")
+        );
+        setIsLoadSpinner(false);
+        return;
+      }
+    }
+      
+      setIsLoadSpinner(true);
       const formData: any = {
         ...infoUser,
         tc: true,
@@ -204,8 +229,6 @@ const ModalAdvanedPermissions = (props: any) => {
         }
       })
 
-
-      setIsLoadSpinner(true);
       if (contentModal.callApi === 1 ) {
         mutateRegister(formData, {
           onSuccess: (res: any) => {
@@ -276,13 +299,6 @@ const ModalAdvanedPermissions = (props: any) => {
           },
         });
       }
-    // } else {
-    //   notifyError(
-    //     "somethin .."+
-    //     t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
-    //   );
-    //   setIsLoadSpinner(false);
-    // }
   };
 
   const saveAndGoToNext = () => {
