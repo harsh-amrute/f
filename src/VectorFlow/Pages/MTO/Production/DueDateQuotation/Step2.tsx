@@ -420,7 +420,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         route = await getRoute(order.rid);
                     }
 
-                    console.log(route);
 
                     route.forEach((r: any) => {
                         if (r[1]?.value) {
@@ -429,7 +428,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         }
                     });
 
-                    console.log(ccrIds)
 
                     //calculating order load
                     const errors: any = []
@@ -453,13 +451,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         // console.log("ccritem", ccrItem)
                         // console.log("lineCCR[order.ok]?.[ccrId]?.pcqty", lineCCR[order.ok]?.[ccrId]?.pcqty)
                         // console.log("order.pcqty", order.pcQty)
-                        console.log('lineCCR', lineCCR);
 
                         const lineCCRPendingQty = lineCCR[order.ok]?.[ccrId]?.pcqty || 0;
                         const orderPendingCCRQty = order.pcqty || 0
 
-                        console.log("lineCCRPendingQty", lineCCRPendingQty)
-                        console.log("orderPendingQty", orderPendingCCRQty)
 
                         if (lineCCRPendingQty !== null && lineCCRPendingQty < 0 && lineCCRPendingQty === undefined) {
                             if (!orderPendingCCRQty) {
@@ -468,10 +463,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         }
 
                         const orderLoad = Math.ceil(((ccrItem?.tt || 0) * (lineCCRPendingQty && lineCCRPendingQty >= 0 ? lineCCRPendingQty : orderPendingCCRQty)));
-                        console.log('ccrItem?.tt', ccrItem?.tt);
-
-                        console.log('orderLoad', orderLoad);
-
+                    
                         //for calculating the initial value for prevPending
                         if (!ccr_prev_pending[ccrId]) {
                             const ccr_fol_data = masters.FOL[ccrId];
@@ -487,16 +479,10 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             // console.log("folInDays", folInDays)
                             // console.log("prev pending",  Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm))
 
-                            console.log("FOLinDays", folInDays)
-                            console.log("ccrWorkingHoursPerDay", ccrWorkingHoursPerDay)
-                            console.log("ocm", ocm)
-                            console.log(orderLoad)
-
                             ccr_prev_pending[ccrId] = {
                                 ccr_id: ccrId,
                                 prevPend: Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ocm)
                             }
-                            console.log("prev pending", Math.ceil((folInDays * ccrWorkingHoursPerDay * 60) + ccr_fol_data.ocm))
                         }
                         ccr_prev_pending[ccrId].prevPend = (ccr_prev_pending[ccrId].prevPend) + orderLoad;
 
@@ -510,7 +496,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                             folSpan: ((ccr_prev_pending[ccrId].prevPend)) / (ccrWorkingHoursPerDay * 60),
                         }
 
-                        console.log("ccr_prev_pending", ccr_prev_pending)
                         // console.log(ccrId, "orderLoad", order_ccr_data[ccrId].orderLoad, "folSpan" ,order_ccr_data[ccrId].folSpan, "order pending qty",row.pcqty, "ccr tt", ccrItem.tt, "ccrWorkingHoursPerDay" ,ccrWorkingHoursPerDay)                     
                     });
                     if (errors.length > 0) {
@@ -521,16 +506,12 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
 
 
-                    console.log("order_ccr_data", order_ccr_data)
 
 
                     //DDIndex
                     const maxFolSpan: any = Object.values(order_ccr_data).reduce((prev: any, current: any) => (current.folSpan > prev.folSpan) ? current : prev);
 
-                    console.log(maxFolSpan);
-                    console.log(order.plid);
-                    console.log(order);
-
+                  
                     // const formattedDate = format(new Date(), 'yyyy-MM-dd');
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
@@ -541,13 +522,11 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         return new Date(data.wd) >= today && data.ccrId == maxFolSpan.ccr_id && data.PlId == order.plid
                     })?.lno;
 
-                    console.log("latestWorkingDayLno", latestWorkingDayLno)
                     if (!latestWorkingDayLno) {
                         throw new Error(`Working calender missing for CCR ${maxFolSpan.ccr_name} and Plant ${order.pn}`)
                     }
 
                     const residualBuffer = parseFloat(masters?.CCRMaster.find((ccr: any) => ccr.ccr_id == maxFolSpan.ccr_id)?.residual_buffer);
-                    console.log("residualBuffer", residualBuffer);
                     if (residualBuffer == undefined || residualBuffer == null) {
                         throw new Error(`Residual Missing for CCR: ${maxFolSpan.ccr_name}`)
                     }
@@ -566,14 +545,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         return data.lno == bufferDDIndex && data.ccrId == maxFolSpan.ccr_id && data.PlId == order.plid
                     })?.wd;
 
-                    console.log("prodBufferSize", prodBufferSize)
-                    console.log("procBufferSize", procBufferSize)
-                    console.log("residualBuffer", residualBuffer)
-                    console.log("max fol span", maxFolSpan.folSpan)
-                    // console.log(folDDIndex, bufferDDIndex)
-
-                    console.log(folDDIndex)
-                    console.log(bufferDDIndex)
 
                     const crDD = order.cedd;
                     const crDDIndex = masters.WorkingCalender.find((data: any) => {
@@ -582,9 +553,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
 
                     const crddFlag = masters.DBRSettings.find((setting: any) => setting.flag == "ConsiderCRDDInDDQ");
-                    console.log(masters.DBRSettings)
-                    console.log("crDD",)
-                    console.log("crDDIndex", crDDIndex)
+                  
                     // const crddFlag = 0;
                     let maxDate;
 
@@ -594,10 +563,8 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                         maxDate = max([folDD, bufferDD]);
                     }
 
-                    // console.log(maxDate);
 
                     order.cdd = format(maxDate, 'yyyy-MM-dd');
-                    console.log(folDDIndex, bufferDDIndex, crDDIndex)
                     order.dueDateLno = Math.max(folDDIndex, bufferDDIndex, crDDIndex);
                     order.maxFolSpan = maxFolSpan;
 
@@ -785,7 +752,6 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     const ccrWorkingHoursPerDay = ccr.working_hours_per_day || "1";
                     // ccrWorkingHoursPerDay = parseInt(ccrWorkingHoursPerDay);
 
-                    console.log("CCRItemTypeMappingMaster", masters.CCRItemTypeMappingMaster)
 
 
                     const ccrItemTypeMapping = masters?.CCRItemTypeMappingMaster.find((ccr: any) => ccr.ccrId === ccrId && ccr.it == order.itid)
@@ -924,8 +890,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     })
                 }
             })
-            console.log("bufferAssignmentObj", bufferAssignmentObj);
-            console.log("routeAssignmentObj", routeAssignmentObj);
+         
             if (bufferAssignmentObj.length != 0 && routeAssignmentObj.length != 0) { //TODO: check if this is a OR condition or AND condition
                 const data = await updateBuffRouteCCREstDate({ bufferData: { ordData: bufferAssignmentObj }, routeData: { orders: routeAssignmentObj } });
                 notifySuccess(data.data.msg)

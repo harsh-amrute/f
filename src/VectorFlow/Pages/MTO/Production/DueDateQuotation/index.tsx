@@ -22,6 +22,8 @@ import useFilter from '../../../../../hooks/useFilter';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { FilterPageName, UIGridCode } from '../../Common/Enum'
 import useColDef from '../../../../../hooks/useColDef'
+import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
+
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -73,6 +75,7 @@ const DueDateQuotation = () => {
   const { mutateAsync: getBOMExplosionData, } = useGetBOMExplosionData();
   const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
   const { data: UIConfig, isLoading: isUIConfigLoading } = useGetUIConfig("DueDateQuotation");
+  const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { mutateAsync: getFilteredOrdersForDDQ, isLoading: isFilteredDataLoaded } = useGetFilteredOrdersForDDQ();
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: updateScheduleOrders, isLoading: isUpdateScheduleOrders } = useUpdateScheduleOrders();
@@ -81,9 +84,14 @@ const DueDateQuotation = () => {
   const {  mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const { mutateAsync: getFilteredOrdersForExcelDDQ} = useGetOrdersForExcelDDQ();
   const {colDefMap , getColDef} = useColDef();
+  const [bomHeader, setBomHeader]= useState([])
+  const [bomActive, setBomActive] = useState(false);
+  
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
+
+  const ReportName='BomExplosion'
 
   const  { 
     state: currFilter, 
@@ -124,38 +132,54 @@ const DueDateQuotation = () => {
     }
   }
 
+  
   const columnDefs = useMemo(() => {
     return getColumnDefinations(UIConfig?.data ? UIConfig?.data?.data : [], customization, extras);
   }, [isUIConfigLoading]);
 
-  const gridOptions: GridOptions = {
-    getRowStyle: (params: any) => {
-      return {
-        background: params.node.rowIndex % 2 === 0 ? "#F4F4F4" : "#FFFFFF",
-      };
-    },
-    rowSelection: "multiple",
-    columnDefs: columnDefs,
-    suppressRowClickSelection: true,
-    masterDetail: true,
-    detailRowAutoHeight: true,
-    detailCellRendererParams: {
+  const columnBomDefs = useMemo(() => {
+    return getColumnDefinations(bomHeader);
+  }, [bomHeader]);
+
+  useEffect(() => {
+    const fetchDBRSettings = async () => {
+        const DBRSettingsData = await getDBRsettingsData();
+        const DBRSettings = DBRSettingsData.data?.data;
+        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
+
+        if (BomFlag) {
+          setBomActive(true);
+        } 
+    };
+  
+    fetchDBRSettings();
+  }, []); 
+
+  useEffect(()=>{
+    if(!isUIConfigLoading && bomActive){
+      getBOMUIConfigData()
+    }
+  }, [isUIConfigLoading, bomActive])
+
+
+    const detailCellRendererParamsConfig= useMemo(()=> {
+
+      const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === 'ItemName');
+      
+      const config= {
+      masterDetail:bomActive?true:false,
+      detailCellRendererParams:{
       suppressMenu: true,
       detailGridOptions: {
         rowHeight: 30,
         domLayout: "autoHeight",
         autoGroupColumnDef: {
-          headerName: "Item Name",
+          headerName:itemNameColumnDef?.headerName,
           cellRendererParams: {
-            suppressCount: true
+          suppressCount: true
           }
         },
-        columnDefs: [
-          { field: "qty", headerName: "Requirement", },
-          { field: "soh", headerName: "Stock", },
-          { field: "wip", headerName: "WIP", },
-          { field: "gap", headerName: "Gap", },
-        ],
+        columnDefs:columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
         defaultColDef: {
           flex: 1,
           suppressMenu: true,
@@ -174,7 +198,22 @@ const DueDateQuotation = () => {
         const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
         params.successCallback(data?.data?.data)
       }
+    }
+  }
+    return config;
+
+  },[columnBomDefs]);
+
+  const gridOptions: GridOptions = {
+    getRowStyle: (params: any) => {
+      return {
+        background: params.node.rowIndex % 2 === 0 ? "#F4F4F4" : "#FFFFFF",
+      };
     },
+    rowSelection: "multiple",
+    columnDefs: columnDefs,
+    suppressRowClickSelection: true,    
+    detailRowAutoHeight: true,
     defaultColDef: {
       wrapHeaderText: true,
       autoHeaderHeight: true,
@@ -220,6 +259,19 @@ const DueDateQuotation = () => {
       getUserColumnConfig();
     }
   },[UIConfig])
+
+
+
+  const getBOMUIConfigData = async () => {
+    try {
+      const response = await getUIConfigData (ReportName);
+      setBomHeader(response?.data?.data)
+    } catch (err) {
+      console.error(err);
+      notifyError("Something Went Wrong!");
+    }
+  };
+
 
   // useEffect(()=>{
   //   setLoading(false)
@@ -300,7 +352,7 @@ const DueDateQuotation = () => {
 
       const DBRSettingsData = await getDBRsettingsData();
       const DBRSettings = DBRSettingsData.data?.data;
-
+  
       setMasters({ procMaster, prodMaster, ccrGroups, CCRItemTypeMappingMaster, FOL, CCRMaster, WorkingCalender, MarketLeadTimeMaster, DBRSettings });
 
       const orders = Array.from(selectedRows.values()).map((row: any) => {
@@ -333,7 +385,6 @@ const DueDateQuotation = () => {
     
 }
 
-
   const getCurrentStep = () => {
     switch (step) {
       case 1: {
@@ -341,6 +392,7 @@ const DueDateQuotation = () => {
           <Step1
             ref={gridRef}
             gridOptions={gridOptions}
+            detailCellRendererParamsConfig={detailCellRendererParamsConfig}
             colDef={columnDefs}
             rows={rows}
             selectedRows={selectedRows}
@@ -420,6 +472,8 @@ const DueDateQuotation = () => {
       }
     }
   }
+
+
 
   const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any ) => {
     if(isExcelExport){
@@ -662,6 +716,7 @@ const DueDateQuotation = () => {
             }
             else if (assignmentRef.current?.onConfirm && step == 2) {
               const isDDQActiveFlag = masters.DBRSettings.find((setting: any) => setting.flag == "IsDDQActive");
+
               // const isDDQActiveFlag = false;
               assignmentRef.current.onConfirm().then((data: any) => {
                 if (data && isDDQActiveFlag) { //TODO: what to do when the flag is false and no changes are made, what message to show
