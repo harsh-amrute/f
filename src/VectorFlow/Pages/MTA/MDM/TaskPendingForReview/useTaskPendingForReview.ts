@@ -55,10 +55,10 @@ const useTaskPendingForReview = ()=>{
 
     const [TASK_ID,setTaskId] = useState<string>('')
 
-    const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
+    const [noDataMessage, setNoDataMessage] = useState<string>('');
 
     useEffect(() => {
-        if (ref.current && detailTableRowData?.length > 0) {
+        if (!isViewTableOpen && ref.current?.api && detailTableRowData?.length > 0) {
           ref.current.api.forEachNode((rowNode) => {
             if (rowNode.data.status === "Rejected") {
               rowNode.setSelected(true);
@@ -129,7 +129,7 @@ const useTaskPendingForReview = ()=>{
                 setCurrMasterId(currentTaskMasterId);
 
                 // ...existing code for processing data
-                setNoDataMessage(null); // Clear message if we have data
+                setNoDataMessage(''); // Clear message if we have data
                 
                     const uiConfigurationResponse = await getMasterUIConfiguration(getActionName(taskData.Actiontype).value)
                     

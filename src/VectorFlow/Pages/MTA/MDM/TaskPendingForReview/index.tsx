@@ -37,110 +37,214 @@ const TaskPendingForReview = ()=>{
 
     if(showLoader) return <VFLoader/>
     const suppressMovable = true;
-    if(isViewTableOpen){
-        return(
+        return (
+          isViewTableOpen ? (
+            <TaskPendingWrapper>
+                    <VFTable
+                    height={"100%"}
+                    columnDefs={viewTableColDefs}
+                    suppressMovableColumns={suppressMovable}
+                    gridOptions={{
+                        getRowStyle: (params: any) => {
+                          if (params.node.rowIndex % 2 === 0) {
+                            return { background: "#EBEBEB" };
+                          }
+                          return { background: "#F7F7F7" };
+                        },
+                        enableRangeSelection:true,
+                        rowSelection:'multiple',
+                      }}
+                      statusBar={{
+                        statusPanels:[
+                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                          { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                          { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                          { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                          { statusPanel: 'agAggregationComponent', align: 'left' },
+                        ]
+                      }}
+                    rowData={mapRowDataWithSrNo(viewTableRowData)}
+                    localeText={{ noRowsToShow: noDataMessage.length>0?noDataMessage:"No data to approve."}}
+                    pagination={true}
+                    paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
+                />
+                </TaskPendingWrapper>
+          ): (
             <TaskPendingWrapper>
                 <VFTable
-                height={"100%"}
-                columnDefs={viewTableColDefs}
-                suppressMovableColumns={suppressMovable}
-                gridOptions={{
-                    getRowStyle: (params: any) => {
-                      if (params.node.rowIndex % 2 === 0) {
-                        return { background: "#EBEBEB" };
-                      }
-                      return { background: "#F7F7F7" };
-                    },
-                    enableRangeSelection:true,
-                    rowSelection:'multiple',
-                  }}
-                  statusBar={{
-                    statusPanels:[
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                      { statusPanel: 'agAggregationComponent', align: 'left' },
-                    ]
-                  }}
-                rowData={mapRowDataWithSrNo(viewTableRowData)}
-                localeText={{ noRowsToShow: noDataMessage?noDataMessage:"No data to approve."}}
-                pagination={true}
-                paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
-            />
+                    height={"85%"}
+                    ref={ref}
+                    columnDefs={detailTableColDefs}
+                    gridOptions={{
+                        readOnlyEdit:false,
+                        getRowStyle: (params: any) => {
+    
+                        if (params.node.rowIndex % 2 === 0) {
+                            return { background: "#EBEBEB" };
+                        }
+    
+                        return { background: "#F7F7F7" };
+                        },
+                        enableRangeSelection:true,
+                        rowSelection:'multiple',
+                      }}
+                      statusBar={{
+                        statusPanels:[
+                          { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                          { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                          { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                          { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                          { statusPanel: 'agAggregationComponent', align: 'left' },
+                        ]
+                      }}
+                    rowData={detailTableRowData}
+                    localeText={{ noRowsToShow: noDataMessage.length>0?noDataMessage:"No data to approve."}}
+                    suppressRowClickSelection 
+                    onSelectionChanged={()=>{
+                        if(ref && ref.current){
+                            setSelectedRows(ref.current.api.getSelectedRows().length)
+                        }
+    
+                    }}
+                    pagination={true}
+                    paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
+                    // paginationPageSize={50}
+                    // suppressPaginationPanel={true}
+                />
+    
+    
+                {/* <VFPagination
+                    selectedRows={selectedRows}
+                    totalRows={recordCount}
+                    currentPage={currentPage}
+                    rowsPerPage={rowsPerPage}
+                    handleChangePage={handleChangePage}
+                    showPagination={false}
+                    showTotalItems={false}
+    
+                /> */}
+                {
+                    showApproveAllModal && 
+                        <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType}/>
+                }
+                {
+                    showRejectAllModal && 
+                        <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
+                }
+                <TaskPendingTaskBar
+                    isSideBarOpen={isSideBarOpen}
+                    disableSubmit={selectedRows!==detailTableRowData?.length}
+                    onCancel={onCancel}
+                    onSubmit={onTaskSubmit}
+                />
             </TaskPendingWrapper>
-        )
-    }
-    return (
-        <TaskPendingWrapper>
-            <VFTable
-                height={"85%"}
-                ref={ref}
-                columnDefs={detailTableColDefs}
-                gridOptions={{
-                    readOnlyEdit:false,
-                    getRowStyle: (params: any) => {
+          )
+        )   
+     
+    // if(isViewTableOpen){
+    //     return(
+    //         <TaskPendingWrapper>
+    //             <VFTable
+    //             height={"100%"}
+    //             columnDefs={viewTableColDefs}
+    //             suppressMovableColumns={suppressMovable}
+    //             gridOptions={{
+    //                 getRowStyle: (params: any) => {
+    //                   if (params.node.rowIndex % 2 === 0) {
+    //                     return { background: "#EBEBEB" };
+    //                   }
+    //                   return { background: "#F7F7F7" };
+    //                 },
+    //                 enableRangeSelection:true,
+    //                 rowSelection:'multiple',
+    //               }}
+    //               statusBar={{
+    //                 statusPanels:[
+    //                   { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+    //                   { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+    //                   { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+    //                   { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+    //                   { statusPanel: 'agAggregationComponent', align: 'left' },
+    //                 ]
+    //               }}
+    //             rowData={mapRowDataWithSrNo(viewTableRowData)}
+    //             localeText={{ noRowsToShow: noDataMessage?noDataMessage:"No data to approve."}}
+    //             pagination={true}
+    //             paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
+    //         />
+    //         </TaskPendingWrapper>
+    //     )
+    // }
+    // return (
+    //     <TaskPendingWrapper>
+    //         <VFTable
+    //             height={"85%"}
+    //             ref={ref}
+    //             columnDefs={detailTableColDefs}
+    //             gridOptions={{
+    //                 readOnlyEdit:false,
+    //                 getRowStyle: (params: any) => {
                         
-                    if (params.node.rowIndex % 2 === 0) {
-                        return { background: "#EBEBEB" };
-                    }
+    //                 if (params.node.rowIndex % 2 === 0) {
+    //                     return { background: "#EBEBEB" };
+    //                 }
                     
-                    return { background: "#F7F7F7" };
-                    },
-                    enableRangeSelection:true,
-                    rowSelection:'multiple',
-                  }}
-                  statusBar={{
-                    statusPanels:[
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                      { statusPanel: 'agAggregationComponent', align: 'left' },
-                    ]
-                  }}
-                rowData={detailTableRowData}
-                suppressRowClickSelection 
-                onSelectionChanged={()=>{
-                    if(ref && ref.current){
-                        setSelectedRows(ref.current.api.getSelectedRows().length)
-                    }
+    //                 return { background: "#F7F7F7" };
+    //                 },
+    //                 enableRangeSelection:true,
+    //                 rowSelection:'multiple',
+    //               }}
+    //               statusBar={{
+    //                 statusPanels:[
+    //                   { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+    //                   { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+    //                   { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+    //                   { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+    //                   { statusPanel: 'agAggregationComponent', align: 'left' },
+    //                 ]
+    //               }}
+    //             rowData={detailTableRowData}
+    //             suppressRowClickSelection 
+    //             onSelectionChanged={()=>{
+    //                 if(ref && ref.current){
+    //                     setSelectedRows(ref.current.api.getSelectedRows().length)
+    //                 }
                     
-                }}
-                pagination={true}
-                paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
-                // paginationPageSize={50}
-                // suppressPaginationPanel={true}
-            />
+    //             }}
+    //             pagination={true}
+    //             paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
+    //             // paginationPageSize={50}
+    //             // suppressPaginationPanel={true}
+    //         />
                     
 
-            {/* <VFPagination
-                selectedRows={selectedRows}
-                totalRows={recordCount}
-                currentPage={currentPage}
-                rowsPerPage={rowsPerPage}
-                handleChangePage={handleChangePage}
-                showPagination={false}
-                showTotalItems={false}
+    //         {/* <VFPagination
+    //             selectedRows={selectedRows}
+    //             totalRows={recordCount}
+    //             currentPage={currentPage}
+    //             rowsPerPage={rowsPerPage}
+    //             handleChangePage={handleChangePage}
+    //             showPagination={false}
+    //             showTotalItems={false}
 
-            /> */}
-            {
-                showApproveAllModal && 
-                    <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType}/>
-            }
-            {
-                showRejectAllModal && 
-                    <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
-            }
-            <TaskPendingTaskBar
-                isSideBarOpen={isSideBarOpen}
-                disableSubmit={selectedRows!==detailTableRowData?.length}
-                onCancel={onCancel}
-                onSubmit={onTaskSubmit}
-            />
-        </TaskPendingWrapper>
+    //         /> */}
+    //         {
+    //             showApproveAllModal && 
+    //                 <ApproveAllModal onSuccess={()=>onSelectionTypeSuccess('Approved')} onClose={()=>toggleApproveAllModal(false)} setSelectionType={setSelectionType}/>
+    //         }
+    //         {
+    //             showRejectAllModal && 
+    //                 <RejectAllModal onSuccess={()=>onSelectionTypeSuccess('Rejected')} onClose={()=>toggleRejectAllModal(false)} setSelectionType={setSelectionType} />
+    //         }
+    //         <TaskPendingTaskBar
+    //             isSideBarOpen={isSideBarOpen}
+    //             disableSubmit={selectedRows!==detailTableRowData?.length}
+    //             onCancel={onCancel}
+    //             onSubmit={onTaskSubmit}
+    //         />
+    //     </TaskPendingWrapper>
         
-    )
+    // )
 }
 
 export default TaskPendingForReview
