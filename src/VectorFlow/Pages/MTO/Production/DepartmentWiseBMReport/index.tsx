@@ -198,6 +198,7 @@ const DptWiseBMReport = () => {
     const [tempGridData, setTempGridData] = useState<any>(undefined);
     const tempGraph = useRef<GridRef>(null);
     const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
+    
     const customCellRenderers = useMemo(() => (
         {
             "colorCellRenderer": BPPRenderer,
