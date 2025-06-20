@@ -10,15 +10,21 @@ import moment from 'moment'
 import { formatFilterJSON } from '../../../../../../../helpers/utils'
 import { useUserData } from '../../../../../../../../src/context'
 import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton'
+import { notifyError } from '../../../../../../../helpers/notify'
+import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader'
 
 const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, setRmHorizon: (day: any) => void, getFilterData: () => void, appliedFilters: any }) => {
     const { date, rmHorizon, setRmHorizon, getFilterData, appliedFilters } = props;
     const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
     const [numericData, setNumericData] = useState<any>();
-
+    const [loading,setLoading] = useState<boolean>(false);
+    
     let RMPMExpeditionOBj = {}
     useEffect(() => {
-        getRMHorizonBasedData();
+        if(Object.keys(appliedFilters).length){
+
+            getRMHorizonBasedData();
+        }
     }, [appliedFilters])
 
     function TooltipRenderer({ datum }: any) {
@@ -113,18 +119,27 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
 
     const getRMHorizonBasedData = async () => {
         //setNumericData(null)
-        RMPMExpeditionOBj = {
-            'horizon': rmHorizon,
-            'val': 'rm'
+        try {
+            setLoading(true);
+            RMPMExpeditionOBj = {
+                'horizon': rmHorizon,
+                'val': 'rm'
+            }
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const someData = await getRMPMExpedition({...RMPMExpeditionOBj, appliedFilters: formatedFilters });
+            setNumericData(someData.data?.data?.rm)
+        } catch (error) {
+            console.log("Error fetching RM expediting data:", error);
+            notifyError("Failed to fetch RM expediting data. Please try again later.");
+        }finally{
+            setLoading(false);
+
         }
-        const formatedFilters = formatFilterJSON(appliedFilters);
-        const someData = await getRMPMExpedition({...RMPMExpeditionOBj, appliedFilters: formatedFilters });
-        setNumericData(someData.data?.data?.rm)
     }
 
     const handleSubmitClick = () => {
         //setNumericData();
-        getFilterData();
+        // getFilterData();
         getRMHorizonBasedData();
     }
 
@@ -168,6 +183,7 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
     const generateHeader = () => {
         return (
             <>
+            {loading && <OverlayLoader />}
                 <SCChartMainContainer style={{ zoom: 1, width: '100%' }}>
                     <SCChartSliderContainer style={{ zoom: 0.75, marginTop: '6px' }}>
                         <label style={{

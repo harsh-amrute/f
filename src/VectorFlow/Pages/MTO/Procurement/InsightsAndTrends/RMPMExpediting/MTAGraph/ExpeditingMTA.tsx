@@ -37,7 +37,10 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
     const [numericData, setNumericData] = useState<any>();
 
     useEffect(() => {
-        getRMHorizonBasedData();
+        if(Object.keys(appliedFilters).length){
+
+            getRMHorizonBasedData();
+        }
     }, [appliedFilters])
 
 
