@@ -120,8 +120,6 @@ const ModalAdvanedPermissions = (props: any) => {
         product = prdPermissionRef.current?.getPrdPermissionValue();
         location = lcPermissionRef.current?.getLcPermissionValue();
 
-       
-
         //Store Permissions
         const storePermissionCopy = [...storePermission]
         const currentPermission:any = storePermissionCopy.find((app:any)=>app.application_id === activeApplication);
@@ -183,11 +181,13 @@ const ModalAdvanedPermissions = (props: any) => {
 
     if(!isValid)return;
 
-    //check if permissions are filled for MTA, have added check for MTA only, considering in MTO Permissions are not compulsory.
+    
+    //check if permissions are filled for MTA, have added check for MTA.
+    const MTARole = storePermission.find((storePermission: any) => storePermission.application_name == "Distribution");
     const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == 2)?.permissions;
     const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == 2)?.permissions;
       
-    if (!isProductPermission || !isLocationPermission) {
+    if (MTARole && (!isProductPermission || !isLocationPermission)) {
       notifyError(
         t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermissionMTA")
       );
