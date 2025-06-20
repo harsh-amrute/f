@@ -27,8 +27,7 @@ import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer"
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import useColDef from '../../../../../hooks/useColDef';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
-import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
-
+import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
 
 const APIFilterConfig = {
   filSecVisConfig: {

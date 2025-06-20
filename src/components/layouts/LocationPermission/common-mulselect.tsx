@@ -161,9 +161,9 @@ export default forwardRef(({ ...props }: any, ref) => {
     },
     {
       title: process.env.REACT_APP_LOCATION_PERMISSION_L2 || '',
-      placeholder: "", 
+      placeholder: "",
       options: lcRegion.length === 0 ? [] : listLcType.filter((type: any) =>
-        lcRegion.some((region: any) => type.value.startsWith(region.value.split(' ')[0])) // Filter lcType based on selected lcRegion
+        lcRegion.some((region: any) => type.value.split(" > ")[0] == region.value) // Filter lcType based on selected lcRegion
       ),
       value: lcType,
       setValue: setLcType,

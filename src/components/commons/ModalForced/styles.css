@@ -82,6 +82,7 @@
 .close-forced {
   font-weight: 300;
   font-size: 2.6rem;
+  cursor:pointer;
 }
 
 .modal-input--box {

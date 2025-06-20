@@ -91,12 +91,6 @@ export const useUpdateScheduleOrders = () => {
     })
 }
 
-export const useGetDBRsettingsData = () => {
-    return useMutation(async () => {
-        return DueDateQuotationService.getDBRsettingsData()
-    })
-}
-
 export const useGetOrdersForExcelDDQ = () =>{
     return useMutation(async (data: any) => {
         return DueDateQuotationService.getFilteredOrdersForExcelDDQ(data)

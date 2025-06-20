@@ -38,7 +38,7 @@ import { useGetOverAllBMReport } from '../../../../../VectorFlow/Services/MTO/Pr
 import { BM_REPORT_ANALYTICS } from '../../../../../redux/actions/MTO';
 import { modifyAnalyticsData } from './helper';
 import { useDispatch } from 'react-redux';
-import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
+import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import _, { debounce } from 'lodash';
