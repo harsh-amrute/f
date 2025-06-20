@@ -64,7 +64,7 @@ const TaskPendingForReview = ()=>{
                         ]
                       }}
                     rowData={mapRowDataWithSrNo(viewTableRowData)}
-                    localeText={{ noRowsToShow: noDataMessage.length>0?noDataMessage:"No data to approve."}}
+                    localeText={{ noRowsToShow: noDataMessage?.length>0?noDataMessage:"No data to approve."}}
                     pagination={true}
                     paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
                 />
@@ -98,7 +98,7 @@ const TaskPendingForReview = ()=>{
                         ]
                       }}
                     rowData={detailTableRowData}
-                    localeText={{ noRowsToShow: noDataMessage.length>0?noDataMessage:"No data to approve."}}
+                    localeText={{ noRowsToShow: noDataMessage?.length>0?noDataMessage:"No data to approve."}}
                     suppressRowClickSelection 
                     onSelectionChanged={()=>{
                         if(ref && ref.current){
