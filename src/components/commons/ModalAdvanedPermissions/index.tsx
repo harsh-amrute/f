@@ -195,7 +195,8 @@ const ModalAdvanedPermissions = (props: any) => {
       return;
     }
     
-    if (isMTOPermissionsRequired) {
+    const MTORole = storePermission.find((storePermission: any) => storePermission.application_name == "Orders");
+    if (MTORole && isMTOPermissionsRequired) {
       const isMTOProductPermission = isMTOPermissionsRequired && productPermissions.find((productPermission: any) => productPermission.application_id == 3)?.permissions;
       const isMTOLocationPermission = isMTOPermissionsRequired && locationPermissions.find((locationPermission: any) => locationPermission.application_id == 3)?.permissions;
 
