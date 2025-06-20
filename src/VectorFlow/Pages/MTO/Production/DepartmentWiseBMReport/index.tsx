@@ -31,7 +31,7 @@ import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/C
 import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
-import { formatFilterJSON } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetOverAllBMReport } from '../../../../../VectorFlow/Services/MTO/Production/OverallBMReport';
@@ -44,6 +44,7 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
+
 
 interface ApiResponse {
     cc: string;
@@ -130,7 +131,7 @@ const APIFilterConfig = {
 
 const DptWiseBMReport = () => {
     const { mutateAsync: getFilteredDeptWiseBMReportData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
-    const { mutateAsync: getOverallBMReportData } = useGetOverAllBMReport();
+    const { mutateAsync: getOverallBMReportData, isLoading:isUIConfigLoading } = useGetOverAllBMReport();
     const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
@@ -165,9 +166,14 @@ const DptWiseBMReport = () => {
     const [isPivot, setIsPivot] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
+    const [detailCellRendererParamsConfig, setDetailCellRendererParamsConfig] = useState<any>();
+
     
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
+
+     const [bomHeader, setBomHeader]= useState([])
+      const [bomActive, setBomActive] = useState(false);
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
@@ -181,6 +187,8 @@ const DptWiseBMReport = () => {
           }
         }))
       , []);
+
+      const ReportName='BomExplosion'
 
 
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
@@ -255,6 +263,10 @@ const DptWiseBMReport = () => {
     const getSystemType = async () => {
         const DBRSettingsData: any = await getDBRsettingsData()
         const DBRSettings = DBRSettingsData.data?.data;
+        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
+        if(BomFlag){
+            setBomActive(true)
+        }
         for(const setting of DBRSettings){
             if(setting.flag === "SystemType"){
                setSystemType(Number(setting.value));
@@ -264,6 +276,29 @@ const DptWiseBMReport = () => {
             }
         }
     }
+
+   
+     useEffect(()=>{
+       if(!isUIConfigLoading && bomActive){
+         getBOMUIConfigData()
+       }
+     }, [isUIConfigLoading, bomActive])
+   
+
+      const getBOMUIConfigData = async () => {
+        try {
+          const response = await getUIConfigData (ReportName);
+          setBomHeader(response?.data?.data)
+        } catch (err) {
+          console.error(err);
+          notifyError("Something Went Wrong!");
+        }
+      };
+    
+       const columnBomDefs = useMemo(() => {
+          return getColumnDefinations(bomHeader);
+        }, [bomHeader]);
+
 
     const setColumnDef = async () => {
         try {
@@ -705,7 +740,62 @@ const DptWiseBMReport = () => {
         
     }
 
+
     const cache = useRef<any>({});
+
+
+    const cellRendererParamsConfig =useMemo(() => {
+    if(columnBomDefs){
+    const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
+
+    const config = {
+        masterDetail: bomActive ? true : false,
+        detailCellRendererParams: {
+        suppressMenu: true,
+        detailGridOptions: {
+            rowHeight: 45,
+            domLayout: "autoHeight",
+            autoGroupColumnDef: {
+            headerName: itemNameColumnDef?.headerName,
+            cellRendererParams: {
+                suppressCount: true,
+            },
+            },
+            columnDefs: columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
+            defaultColDef: {
+            flex: 1,
+            suppressMenu: true,
+            cellStyle: {
+                fontSize: "16px",
+                display: "flex",
+                alignItems: "center",
+            },
+            },
+            treeData: true,
+            getDataPath: (data: any) => {
+            return data.path;
+            },
+        },
+        getDetailRowData: async (params: any) => {
+            const cacheKey = `${params.data.oid}-${params.data.lid}`;
+            if (cache.current[cacheKey]) {
+            params.successCallback(cache.current[cacheKey]);
+            return;
+            }
+            const data = await getBOMExplosionData({
+            orderId: params.data.oid,
+            lineId: params.data.lid,
+            });
+            cache.current[cacheKey] = data?.data?.data;
+            params.successCallback(data?.data?.data);
+        },
+        },
+    };
+
+    return config
+    }
+    }, [columnBomDefs]);
+
 
     const agGridProps: AgGridReactProps = useMemo(()=>{
         return {
@@ -751,7 +841,6 @@ const DptWiseBMReport = () => {
                 },
             },
             sideBar: sideBar,
-            //masterDetail: true,
             //detailCellRenderer: RowGroupRenderer,
             //detailCellRendererParams:RowGroupRenderer,
             paginationAutoPageSize: true,
@@ -763,52 +852,10 @@ const DptWiseBMReport = () => {
             onCellValueChanged: onCellValueChanged,
             stopEditingWhenCellsLoseFocus: true,
             onRowDataUpdated: onFirstDataRendered,
-            masterDetail: true,
-            detailRowAutoHeight: true,
-            detailCellRendererParams: {
-                suppressMenu: true,
-                detailGridOptions: {
-                    rowHeight: 45,
-                    domLayout: "autoHeight",
-                    autoGroupColumnDef: {
-                        headerName: "Item Name",
-                        cellRendererParams: {
-                            suppressCount: true
-                        }
-                    },
-                    columnDefs: [
-                        { field: "qty", headerName: "Requirement", },
-                        { field: "soh", headerName: "Stock", },
-                        { field: "wip", headerName: "WIP", },
-                        { field: "gap", headerName: "Gap", },
-                    ],
-                    defaultColDef: {
-                        flex: 1,
-                        suppressMenu: true,
-                        cellStyle: {
-                            fontSize: "16px",
-                            display: "flex",
-                            alignItems: "center"
-                        }
-                    },
-                    treeData: true,
-                    getDataPath: (data: any) => {
-                        return data.path;
-                    },
-                },
-                getDetailRowData: async (params: any) => {
-                    if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
-                        params.successCallback(cache.current[`${params.data.oid}-${params.data.lid}`])
-                        return
-                    }
-                    const data = await getBOMExplosionData({ orderId: params.data.oid, lineId: params.data.lid });
-                    cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
-                    params.successCallback(data?.data?.data)
-                    return
-                }
-            },
         };
     }, [masterSelectedRowData, gridData])
+    
+   
     
 
     const getUpdatedFilteredData = async (page: any, pageSize?:any) => {
@@ -1058,6 +1105,7 @@ const DptWiseBMReport = () => {
                                             // key={isReset? 1: 2}
                                             reference={refGraph1}
                                             agGridProps={agGridProps}
+                                            detailCellRendererParamsConfig={cellRendererParamsConfig}
                                             columDef={coldefs}
                                             convercolumnDef={gridData}
                                                 updateReason={handleUpdateReason}
@@ -1099,6 +1147,7 @@ const DptWiseBMReport = () => {
                         totalRow={gridDataCount}
                         currentPage={currentPage}
                         excelStyles={excelStyles}
+                        detailCellRendererParamsConfig={cellRendererParamsConfig}                        
                     />
                 </div>
             </>

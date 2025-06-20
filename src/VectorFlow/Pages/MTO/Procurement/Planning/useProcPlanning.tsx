@@ -368,7 +368,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             return data.flag == "simulationEnable";
           });
 
-          setSimulationEnable(simulation.value || "disabled");
+          setSimulationEnable(simulation?.value || "disabled");
     }
     useEffect(() => {  
         getSimulationEnable();
