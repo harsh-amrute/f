@@ -54,7 +54,7 @@ const ModalAdvanedPermissions = (props: any) => {
   const getSettingsData = async () => {
     const DBRSettingsData: any = await getDBRsettingsData()
     const DBRSettings = DBRSettingsData.data?.data;
-    setIsMTOPermissionsRequired(DBRSettings.find((DBRSetting: any) => DBRSetting.flag === "isPermissionRequired")?.value || false);
+    setIsMTOPermissionsRequired(DBRSettings?.find((DBRSetting: any) => DBRSetting.flag === "isPermissionRequiredMTO")?.value || false);
   };
   
   useEffect(() => {
