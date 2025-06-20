@@ -9,6 +9,8 @@ import moment from 'moment'
 import { formatFilterJSON } from '../../../../../../../helpers/utils'
 import { useUserData } from '../../../../../../../../src/context'
 import VFButton from '../../../../../../../components/VectorFLOW/commons/VFButton'
+import { notifyError } from './../../../../../../../helpers/notify'
+import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Loader'
 
 
 interface SupplierData {
@@ -35,6 +37,7 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
 
     const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
     const [numericData, setNumericData] = useState<any>();
+    const [loading ,setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if(Object.keys(appliedFilters).length){
@@ -169,19 +172,27 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
     ]
     const getRMHorizonBasedData = async () => {
         //setNumericData(null)
-        RMPMExpeditionOBj = {
-            'horizon': supplierHorizon,
-            'val': 'supplier'
+        try {
+            setLoading(true)
+            RMPMExpeditionOBj = {
+                'horizon': supplierHorizon,
+                'val': 'supplier'
+            }
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const someData = await getRMPMExpedition({...RMPMExpeditionOBj, appliedFilters: formatedFilters});
+            const xAxisValue = transformSupplierData(someData?.data?.data?.supplier);
+            setNumericData(xAxisValue)
+        } catch (error) {
+            console.error("Error fetching RM Horizon based data:", error);
+            notifyError("Failed to fetch RM Horizon based data. Please try again later.");
+        }finally{
+            setLoading(false)
         }
-        const formatedFilters = formatFilterJSON(appliedFilters);
-        const someData = await getRMPMExpedition({...RMPMExpeditionOBj, appliedFilters: formatedFilters});
-        const xAxisValue = transformSupplierData(someData?.data?.data?.supplier);
-        setNumericData(xAxisValue)
     }
 
     const handleSubmitClick = () => {
         //setNumericData();
-        getFilterData();
+        // getFilterData();
         getRMHorizonBasedData();
     }
 
@@ -290,7 +301,7 @@ const ExpeditingMTA = (props: { isMTO: boolean, date: string, supplierHorizon: a
         <div style={{ height: "100%", display: 'flex', justifyContent: 'left', marginLeft: '12px', paddingBottom: '5px' }}>
 
 
-
+            {loading && <OverlayLoader/>}
             <SplitGraphContainer
                 tableLoading={tableLoading}
                 chartLoading={chartLoading}
