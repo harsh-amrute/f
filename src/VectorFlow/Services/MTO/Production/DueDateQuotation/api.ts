@@ -150,15 +150,6 @@ export namespace DueDateQuotationService {
         })
     }
 
-    export const getDBRsettingsData = async () => {
-        return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getDBRsettingsData/`,{
-            headers: {
-                'Content-Type': 'application/json',
-                //'X-CSRFToken': 'RYW30tp0vOYHuintw34PVIwgqdUrLADeO0ADgpwgYz8KFDCxbSY7Bt6PAalrUUp2'
-            },
-        }) 
-    }
-
     export const getFilteredOrdersForExcelDDQ = async ({ body , isExcelExport, report_name,unSch}: any) => {
         return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOrdersForDDQ/?export=${isExcelExport}&report_name=${report_name}&unSch=${unSch ? 1 : 0}`,body,{
             headers: {

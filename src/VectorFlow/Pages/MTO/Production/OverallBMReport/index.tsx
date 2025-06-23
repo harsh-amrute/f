@@ -48,13 +48,13 @@ import OverlayLoader from "../../Common/Loader";
 import { ColorsMTO } from "../../Common/Colors";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../hooks/useFilter";
-import { formatFilterJSON } from "../../../../../helpers/utils";
+import { formatFilterJSON, getColumnDefinations } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
 import { BM_REPORT_ANALYTICS } from "../../../../../redux/actions/MTO";
 import { modifyAnalyticsData } from "../DepartmentWiseBMReport/helper";
-import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
+import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
 import _ from "lodash";
 import {
   useGetUserUIConfigData,
@@ -137,7 +137,7 @@ const APIFilterConfig = {
 };
 
 const OverallBmReport = () => {
-  const { mutateAsync: getOverallBMReportData } = useGetOverAllBMReport();
+  const { mutateAsync: getOverallBMReportData,isLoading:isUIConfigLoading } = useGetOverAllBMReport();
   const { mutateAsync: getBOMExplosionData /*isLoading :BombDataLoading*/ } =
     useGetBOMExplosionData();
   const { mutateAsync: getDBRsettingsData } = useGetDBRsettingsData();
@@ -197,6 +197,11 @@ const OverallBmReport = () => {
   );
   const [highAgeing, sethighAgeing] = useState<any>();
   const [tempColdef, setTempColdef] = useState<any>();
+
+  const [bomHeader, setBomHeader]= useState([])
+  const [bomActive, setBomActive] = useState(false);
+  const ReportName='BomExplosion'
+
 
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
     useGetUserUIConfigData();
@@ -264,6 +269,10 @@ const OverallBmReport = () => {
   const getSystemType = async () => {
     const DBRSettingsData: any = await getDBRsettingsData();
     const DBRSettings = DBRSettingsData.data?.data;
+    const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
+    if(BomFlag){
+        setBomActive(true)
+    }
     const systemType = DBRSettings?.find((data: any) => {
       return data.flag == "SystemType";
     });
@@ -271,7 +280,7 @@ const OverallBmReport = () => {
       return data.flag == "OrderCloseEnable";
     });
     
-    setorderClosingEnable( Number(orderClosingEnable.value));
+    setorderClosingEnable( Number(orderClosingEnable?.value));
     setSystemType(Number(systemType.value || 0));
     // setColumnDef();
   };
@@ -1067,6 +1076,29 @@ const OverallBmReport = () => {
     };
   }, []);
 
+   useEffect(()=>{
+         if(!isUIConfigLoading && bomActive ){
+           getBOMUIConfigData()
+         }
+       }, [isUIConfigLoading,bomActive])
+     
+  
+        const getBOMUIConfigData = async () => {
+          try {
+            const response = await getUIConfigData (ReportName);
+            setBomHeader(response?.data?.data)
+          } catch (err) {
+            console.error(err);
+            notifyError("Something Went Wrong!");
+          }
+        };
+      
+        const columnBomDefs = useMemo(() => {
+          return getColumnDefinations(bomHeader);
+        }, [bomHeader]);
+
+       
+
   const getInitialGridData = async (currentPage: number, pageSize?:any) => {
     try {
       setIsGridLoading(true);
@@ -1255,6 +1287,62 @@ const OverallBmReport = () => {
     setIsPivot(isPivotOn);
   };
 
+      const detailCellRendererParamsConfig = useMemo(() => {
+          const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
+        
+          const config = {
+            masterDetail: bomActive?true:false,
+            detailCellRendererParams: {
+              suppressMenu: true,
+              detailGridOptions: {
+                rowHeight: 45,
+                domLayout: "autoHeight",
+                autoGroupColumnDef: {
+                  headerName:itemNameColumnDef?.headerName,
+                  cellRendererParams: {
+                    suppressCount: true,
+                  },
+                },
+                columnDefs:columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
+                defaultColDef: {
+                  flex: 1,
+                  suppressMenu: true,
+                  cellStyle: {
+                    fontSize: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                  },
+                },
+      
+                treeData: true,
+                getDataPath: (data: any) => {
+                  return data.path;
+                },
+              },
+              getDetailRowData: async (params: any) => {
+                if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
+                  params.successCallback(
+                    cache.current[`${params.data.oid}-${params.data.lid}`]
+                  );
+                  return;
+                }
+                const data = await getBOMExplosionData({
+                  orderId: params.data.oid,
+                  lineId: params.data.lid,
+                });
+                cache.current[`${params.data.oid}-${params.data.lid}`] =
+                  data.data.data;
+                params.successCallback(data?.data?.data);
+                return;
+              },
+            },
+           
+             
+          };
+        
+          return config;
+        }, [columnBomDefs, bomHeader]);
+
   const agGridProps: AgGridReactProps = useMemo(() => {
     return {
       tooltipShowDelay: 0,
@@ -1309,55 +1397,55 @@ const OverallBmReport = () => {
       onSelectionChanged: getSelectedRow,
       onRowDataUpdated: onFirstDataRendered,
       onColumnPivotModeChanged: onPivotModeChanged,
-      detailCellRendererParams: {
-        suppressMenu: true,
-        detailGridOptions: {
-          rowHeight: 45,
-          domLayout: "autoHeight",
-          autoGroupColumnDef: {
-            headerName: "Item Name",
-            cellRendererParams: {
-              suppressCount: true,
-            },
-          },
-          columnDefs: [
-            { field: "qty", headerName: "Requirement" },
-            { field: "soh", headerName: "Stock" },
-            { field: "wip", headerName: "WIP" },
-            { field: "gap", headerName: "Gap" },
-          ],
-          defaultColDef: {
-            flex: 1,
-            suppressMenu: true,
-            cellStyle: {
-              fontSize: "16px",
-              display: "flex",
-              alignItems: "center",
-            },
-          },
+      // detailCellRendererParams: {
+      //   suppressMenu: true,
+      //   detailGridOptions: {
+      //     rowHeight: 45,
+      //     domLayout: "autoHeight",
+      //     autoGroupColumnDef: {
+      //       headerName: "Item Name",
+      //       cellRendererParams: {
+      //         suppressCount: true,
+      //       },
+      //     },
+      //     columnDefs: [
+      //       { field: "qty", headerName: "Requirement" },
+      //       { field: "soh", headerName: "Stock" },
+      //       { field: "wip", headerName: "WIP" },
+      //       { field: "gap", headerName: "Gap" },
+      //     ],
+      //     defaultColDef: {
+      //       flex: 1,
+      //       suppressMenu: true,
+      //       cellStyle: {
+      //         fontSize: "16px",
+      //         display: "flex",
+      //         alignItems: "center",
+      //       },
+      //     },
 
-          treeData: true,
-          getDataPath: (data: any) => {
-            return data.path;
-          },
-        },
-        getDetailRowData: async (params: any) => {
-          if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
-            params.successCallback(
-              cache.current[`${params.data.oid}-${params.data.lid}`]
-            );
-            return;
-          }
-          const data = await getBOMExplosionData({
-            orderId: params.data.oid,
-            lineId: params.data.lid,
-          });
-          cache.current[`${params.data.oid}-${params.data.lid}`] =
-            data.data.data;
-          params.successCallback(data?.data?.data);
-          return;
-        },
-      },
+      //     treeData: true,
+      //     getDataPath: (data: any) => {
+      //       return data.path;
+      //     },
+      //   },
+      //   getDetailRowData: async (params: any) => {
+      //     if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
+      //       params.successCallback(
+      //         cache.current[`${params.data.oid}-${params.data.lid}`]
+      //       );
+      //       return;
+      //     }
+      //     const data = await getBOMExplosionData({
+      //       orderId: params.data.oid,
+      //       lineId: params.data.lid,
+      //     });
+      //     cache.current[`${params.data.oid}-${params.data.lid}`] =
+      //       data.data.data;
+      //     params.successCallback(data?.data?.data);
+      //     return;
+      //   },
+      // },
     };
   }, [masterSelectedRowData, gridData]);
 
@@ -1611,6 +1699,7 @@ const OverallBmReport = () => {
                   customPageSize={true}
                   savePageSize={savePageSize}
                   userPageSize = {userPageSize}
+                  detailCellRendererParamsConfig={detailCellRendererParamsConfig}
                 />
                 {/* This Grid is only for the user to download the excel report */}
                 <div style={{ display: "none" }}>
@@ -1626,6 +1715,7 @@ const OverallBmReport = () => {
                     excelStyles={excelStyles}
                     savePageSize={savePageSize}
                     userPageSize = {userPageSize}
+                    detailCellRendererParamsConfig={detailCellRendererParamsConfig}
                   />
                 </div>
               </BTRAllomentSection>

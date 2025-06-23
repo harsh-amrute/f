@@ -155,8 +155,8 @@ const Header = (props:HeaderProps) => {
         <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ display: 'flex', alignItems: 'center' }}>
           {!process.env.REACT_APP_CLIENT_LOGO && !process.env.REACT_APP_CLIENT_NAME &&
             <HeaderStyled.SCImg
-              marginLeft={"15px"}
-              src="/assets/VectorFlow_black.svg"
+              marginLeft={"20px"}
+              src="/assets/img/header/VectorFlowLogoBlackNew.svg"
               alt="logo"
               isHideLogo={isHideLogo}
             />

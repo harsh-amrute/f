@@ -62,11 +62,17 @@ export const SCNavLogout = styled.div`
     padding: 10px 0 20px 0;
   }
 
+  .logout-tooltip{
+    font-weight: 500;
+    font-family: Roboto;
+    font-size: 1.2rem;
+  }
+
 `;
 
 export const SCIconLogout = styled.img`
-  width: 25px;
-  height: 25px;
+  width: 24px;
+  height: 24px;
 
   @media (min-width: ${gridSystem.size.laptop}) and (max-width: ${gridSystem
     .size.laptopL}) {

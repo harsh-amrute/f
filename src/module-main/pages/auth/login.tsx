@@ -146,11 +146,7 @@ function LoginContainer() {
                 <IputLogin
                   type="password"
                   {...register("password", {
-                    required: true,
-                    minLength: {
-                      value: 8,
-                      message: t("loginPage.validate.password"),
-                    },
+                    required: true
                   })}
                   placeholder={t("loginPage.placeholder.password")}
                 />

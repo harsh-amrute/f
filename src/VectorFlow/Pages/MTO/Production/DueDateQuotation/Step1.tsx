@@ -22,11 +22,12 @@ interface IStep1Props {
   pageCallBack: any,
   setPageCallBack:any,
   savePageSize:any,
-  userPageSize:any
+  userPageSize:any,
+  detailCellRendererParamsConfig?:any
 }
 
 
-const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState, pageCallBack, setPageCallBack, savePageSize,userPageSize }: IStep1Props, ref: any) => {
+const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPageSelectedRows, totalRows, currentPage, setCurrentPage, setSelectedRows, currentGridRef, setCurrentGridRef, columnState, pageCallBack, setPageCallBack, savePageSize,userPageSize,detailCellRendererParamsConfig }: IStep1Props, ref: any) => {
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
@@ -87,6 +88,8 @@ const Step1 = forwardRef(({ gridOptions, colDef, rows, selectedRows, currentPage
         key="allRows"
         ref={gridRef}
         gridOptions={gridOptions}
+        masterDetail={detailCellRendererParamsConfig.masterDetail}
+        detailCellRendererParams={detailCellRendererParamsConfig.detailCellRendererParams}
         columnDefs={colDef}
         rowData={rows}
         isRowSelectable={isRowSelectable}

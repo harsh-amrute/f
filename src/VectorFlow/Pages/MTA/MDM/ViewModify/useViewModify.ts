@@ -642,7 +642,13 @@ const useViewModify = (pageType:string) => {
         }
       })
       if(activeMaster.id===0){
-        dispatch(UPDATE_ACTIVE_MASTER(0));
+        // dispatch(UPDATE_ACTIVE_MASTER(0));
+        const firstDefaultIndex = masters.findIndex(
+          (item) => item.progress === 'default'
+        );   
+        if (firstDefaultIndex !== -1) {
+          dispatch(UPDATE_ACTIVE_MASTER(firstDefaultIndex));
+        }
       }
       // else{
       //   dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
@@ -752,7 +758,7 @@ const useViewModify = (pageType:string) => {
       if (incompleteMastersCount === 1 && currMaster.progress !== 'submitted' && currMaster.progress !== 'editOnlineSubmitted') {
         return notifyError('Cannot close the tab as it is the only incomplete master'); // Notify if this is the only incomplete master
       }
-      if(checkMasterProgress(masters)) {return notifyError("There Should be atleast one selected Master")}
+      if(checkMasterProgress(masters)) {return notifyError(`Please Complete the ${currMaster.name}`)}
       const nextMasterIndex = masters?.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
       if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
       if(masters.length === 1){
