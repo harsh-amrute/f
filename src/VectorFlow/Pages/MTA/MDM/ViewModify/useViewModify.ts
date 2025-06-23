@@ -642,7 +642,13 @@ const useViewModify = (pageType:string) => {
         }
       })
       if(activeMaster.id===0){
-        dispatch(UPDATE_ACTIVE_MASTER(0));
+        // dispatch(UPDATE_ACTIVE_MASTER(0));
+        const firstDefaultIndex = masters.findIndex(
+          (item) => item.progress === 'default'
+        );   
+        if (firstDefaultIndex !== -1) {
+          dispatch(UPDATE_ACTIVE_MASTER(firstDefaultIndex));
+        }
       }
       // else{
       //   dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
