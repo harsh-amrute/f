@@ -251,6 +251,7 @@ export const listMenuParent: any = [
     url: "/supply-chain-intelligence-hub/planning",
     status: false,
     lp_img : "/assets/img/Replacement.svg",
+    lp_attr: true,
     app_id : 2,
     role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
     avoidHeader: true,
