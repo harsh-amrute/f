@@ -200,6 +200,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       
       const fillEmptyPermission = dataAllPermissions.map((app:any)=>validApplications.includes(app.application_id) ? ({
         application_id:app.application_id,
+        application_name:app.application_name,
         productPermission:[],
         locationPermission:[]
       }) : undefined).filter((element:any) => element !== undefined)
@@ -320,7 +321,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       }
       else{
         return {
-          application_id:id,
+          application_id: id,
+          application_name: listRoles.find((app:any) => app.id === id)?.title || "",
           productPermission:[],
           locationPermission:[]
         }
