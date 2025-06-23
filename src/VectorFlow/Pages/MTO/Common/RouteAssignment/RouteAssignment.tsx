@@ -150,6 +150,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
     }
   }, [isEditable]);
   
+  //if one ccrgroup is already selected then dont show that group for selection in another dropdown route assignment
   const updateOption = (ccrGroupMaster: any, selectedRoute: any) => {
     if (!sortedSelectedRoutes || !sortedSelectedRoutes.length) {
       return ccrGroupMaster;

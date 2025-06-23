@@ -557,7 +557,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                     // const crddFlag = 0;
                     let maxDate;
 
-                    if (crddFlag.value) {
+                    if (crddFlag?.value===1) {
                         maxDate = max([folDD, bufferDD, crDD]);
                     } else {
                         maxDate = max([folDD, bufferDD]);
