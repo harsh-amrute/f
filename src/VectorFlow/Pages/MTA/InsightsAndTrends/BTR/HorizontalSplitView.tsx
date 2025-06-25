@@ -139,7 +139,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
               
 
           <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
-                            <VFPagination style={{marginTop:'-30px'}}
+                            <VFPagination 
                                 {...techTable.paginationProps} isClearGridFilter={false}
                             />
                          </div>
@@ -175,7 +175,7 @@ const HorizontalSplitView = (props:SplitViewProps)=>{
     
               
                          <div style={{zoom:0.7,margin:'0px -15px 20px -15px'}}>
-                            <VFPagination style={{marginTop:'-30px'}}
+                            <VFPagination 
                                 {...ecoTable.paginationProps} isClearGridFilter={false}
                             />
                          </div>
