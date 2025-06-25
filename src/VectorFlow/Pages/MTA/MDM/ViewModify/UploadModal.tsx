@@ -66,9 +66,18 @@ const UploadModal = (props:UploadModalProps)=>{
 
     useEffect(() => {
       if (radioButtons && radioButtons.length>0 && handleRadioButton) {
-        handleRadioButton(11);
+         console.log("RadioButton",radioButtons)
+ 
+         console.log("Active Master")
+         if(radioButtons[0].label=="Phase Out"){        
+            handleRadioButton(7);
+         }
+         else if(radioButtons[0].label=="Absolute Value"){        
+            handleRadioButton(11);
+         }
       }
     }, []);
+ 
 
    return(
    <VFModalCard headerText={header} headerIcon={"/assets/img/VectorFLOW/NMS/settings.svg"} openModal={openModal} closeModal={onCloseModal} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} >
