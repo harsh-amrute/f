@@ -54,7 +54,7 @@ const ModalAdvanedPermissions = (props: any) => {
   const getSettingsData = async () => {
     const DBRSettingsData: any = await getDBRsettingsData()
     const DBRSettings = DBRSettingsData.data?.data;
-    setIsMTOPermissionsRequired(DBRSettings?.find((DBRSetting: any) => DBRSetting.flag === "isPermissionRequiredMTO")?.value || false);
+    setIsMTOPermissionsRequired(DBRSettings?.find((DBRSetting: any) => DBRSetting.flag === "isPermissionRequiredMTO")?.value == 1 ? true : false || false);
   };
   
   useEffect(() => {
@@ -247,8 +247,10 @@ const ModalAdvanedPermissions = (props: any) => {
                 notifyError(element);
               });
             } else {
-              notifySuccess(res?.data?.msg.message);
-              notifyWarning(res?.data?.msg.warning);
+              notifySuccess(res?.data?.msg || res?.data?.msg?.message);
+              if (res?.data?.msg.warning) {
+                notifyWarning(res?.data?.msg.warning);
+              }
               setStorePermission([]);
               closeModal();
               refetch();
