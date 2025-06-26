@@ -893,7 +893,7 @@ const OverallBmReport = () => {
 
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
-          child.cc === "ec" && systemType >= 3
+          child.cc === "ec" && bomActive
             ? "agGroupCellRenderer"
             : child.cc === "ic"
             ? "AgeingCellRenderer"
@@ -989,7 +989,7 @@ const OverallBmReport = () => {
       // pinned: section.scc==="scos"?'right':"",
 
       cellRenderer:
-        section.cc === "ec" || (section.scc === "chckbx" && systemType >= 3)
+        section.cc === "ec" || (section.scc === "chckbx" && bomActive)
           ? "agGroupCellRenderer"
           : section.cc === "ic"
           ? "AgeingCellRenderer"
@@ -1295,8 +1295,9 @@ const OverallBmReport = () => {
             detailCellRendererParams: {
               suppressMenu: true,
               detailGridOptions: {
-                rowHeight: 45,
-                domLayout: "autoHeight",
+                rowHeight: 28,
+                headerHeight:30,
+                // domLayout: "autoHeight",
                 autoGroupColumnDef: {
                   headerName:itemNameColumnDef?.headerName,
                   cellRendererParams: {
@@ -1335,11 +1336,8 @@ const OverallBmReport = () => {
                 params.successCallback(data?.data?.data);
                 return;
               },
-            },
-           
-             
+            },    
           };
-        
           return config;
         }, [columnBomDefs, bomHeader]);
 

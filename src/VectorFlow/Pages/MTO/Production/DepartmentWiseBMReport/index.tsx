@@ -502,7 +502,7 @@ const DptWiseBMReport = () => {
             colId: section.cc,
             openByDefault: section.scc === "chckbx" ? undefined : section.scc === 'rmk' ? false : true,
             children: section.scc === "chckbx" || section.cc === 'ic' ? undefined : mapChildren(section.cc, section.ch || []),
-            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && systemType >= 3 ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
+            cellRenderer: section.cc === 'ec' || section.scc === "chckbx" && bomActive ? "agGroupCellRenderer" : section.cc === 'ic' ? "AgeingCellRenderer" : undefined,
             valueFormatter: (params: any) => {
                 if (params.value && typeof params.value === 'number') {
                     return params.value.toFixed(2).toLocaleString();
@@ -743,7 +743,6 @@ const DptWiseBMReport = () => {
 
     const cache = useRef<any>({});
 
-
     const cellRendererParamsConfig =useMemo(() => {
     if(columnBomDefs){
     const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === "ItemName");
@@ -753,7 +752,8 @@ const DptWiseBMReport = () => {
         detailCellRendererParams: {
         suppressMenu: true,
         detailGridOptions: {
-            rowHeight: 45,
+            rowHeight: 28,
+            headerHeight:30,
             domLayout: "autoHeight",
             autoGroupColumnDef: {
             headerName: itemNameColumnDef?.headerName,

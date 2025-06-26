@@ -161,18 +161,20 @@ const DueDateQuotation = () => {
     }
   }, [isUIConfigLoading, bomActive])
 
-
     const detailCellRendererParamsConfig= useMemo(()=> {
 
       const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === 'ItemName');
       
       const config= {
       masterDetail:bomActive?true:false,
+      detailRowHeight: 320,  
       detailCellRendererParams:{
       suppressMenu: true,
       detailGridOptions: {
-        rowHeight: 30,
-        domLayout: "autoHeight",
+        rowHeight: 28,
+        headerHeight:30,
+        // domLayout: "autoHeight",
+        // style: { height: '300px', width: '100%', border:'1px solid red' },
         autoGroupColumnDef: {
           headerName:itemNameColumnDef?.headerName,
           cellRendererParams: {
@@ -212,7 +214,7 @@ const DueDateQuotation = () => {
     },
     rowSelection: "multiple",
     columnDefs: columnDefs,
-    suppressRowClickSelection: true,    
+    suppressRowClickSelection: true,  
     detailRowAutoHeight: true,
     defaultColDef: {
       wrapHeaderText: true,
