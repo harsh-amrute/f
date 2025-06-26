@@ -14,7 +14,7 @@ enum SchedulingType {
     Basket
 }
 
-const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, setStep, setDisabled, setSelectedRows, setMasters, updateScheduleOrders, columnState }: any, ref: any) => {
+const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmedRows, theme, WorkingCalender, setStep, setDisabled, setSelectedRows, setMasters, updateScheduleOrders, columnState, setCurrentPage }: any, ref: any) => {
     
     useEffect(()=>{
         setDisabled(true);
@@ -126,6 +126,7 @@ const Step3 = forwardRef(({ columnData, gridOptions, confirmedRows, setConfirmed
 
             
             if(newConfirmedRows.length == 0){
+                setCurrentPage(1); //afetr scheduling all orders from step3, getting redirected to step 1 then the current page needs to be reset to 1 else NAN issue occurs
                 setStep(1);
                 setConfirmedRows(null);
                 setSelectedRows(new Map());
