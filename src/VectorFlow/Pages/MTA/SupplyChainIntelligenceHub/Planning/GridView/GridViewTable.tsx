@@ -177,8 +177,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             {...agGridProps}
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
+                            maintainColumnOrder={true}
                             height={gridHeight ? gridHeight : '380px'}
-                            maintainColumnOrder
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
@@ -214,6 +214,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                 ref={ref}
                                 {...agGridProps}
                                 columnDefs={agGridColDefs}
+                                maintainColumnOrder={true}
                                 rowData={agGridRowData}
                                 height={gridHeight ? gridHeight : '380px'}
                                 statusBar={{

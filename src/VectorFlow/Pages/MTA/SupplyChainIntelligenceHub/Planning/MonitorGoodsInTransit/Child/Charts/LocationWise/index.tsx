@@ -71,13 +71,17 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
             {
                 field:'delay',
                 colId:'delay',
-                headerName:'Delay'
+                headerName:'Delay',
+                filter:"agNumberColumnFilter"
+
                 
             },
             {
                 field:'superdelay',
                 colId:'superdelay',
                 headerName:'Super Delay',
+                filter:"agNumberColumnFilter"
+
             
             }
         ]
@@ -125,23 +129,31 @@ const MonitorGITChildLocationWiseCharts = ({data}:MonitorGITChildLocationWisePro
             {
                 field:'maxd',
                 colId:'maxd',
-                headerName:'Maximum'
+                headerName:'Maximum',
+                filter:"agNumberColumnFilter"
+
             },
             {
                 field:'mean',
                 colId:'mean',
-                headerName:'Mean'
+                headerName:'Mean',
+                filter:"agNumberColumnFilter"
+
             },
             {
                 field:'median',
                 colId:'median',
-                headerName:'Median'
+                headerName:'Median',
+                filter:"agNumberColumnFilter"
+
             },
            
             {
                 field:'mind',
                 colId:'mind',
-                headerName:'Minimum'
+                headerName:'Minimum',
+                filter:"agNumberColumnFilter"
+
             },
                
         ]

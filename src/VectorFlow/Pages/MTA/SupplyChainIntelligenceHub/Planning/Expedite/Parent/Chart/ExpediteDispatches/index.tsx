@@ -37,16 +37,22 @@ const ExpediteDispatches = ({ data }: ExpediteParentDispatchesProps) => {
         field: "SKUCounts",
         headerName: "Count Of SKUs",
         colId: "SKUCounts",
+        filter:"agNumberColumnFilter"
+
       },
       {
         field:'BlackCount',
         colId:'BlackCount',
-        headerName:'Black'
+        headerName:'Black',
+        filter:"agNumberColumnFilter"
+
       },
       {
           field:'RedCount',
           colId:'RedCount',
-          headerName:'Red'
+          headerName:'Red',
+          filter:"agNumberColumnFilter"
+
       },
     ];
     
