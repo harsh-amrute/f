@@ -17,6 +17,7 @@ import {
 } from "./common-func";
 import { useUserData } from "../../../context";
 import _ from "lodash";
+import { APPLICATION_NAMES } from "../../../helpers/constants";
 
 const ModalAdvanedPermissions = (props: any) => {
   const { t } = useTranslation();
@@ -181,8 +182,18 @@ const ModalAdvanedPermissions = (props: any) => {
 
     if(!isValid)return;
 
+    const application_names = [APPLICATION_NAMES.MTA, APPLICATION_NAMES.MTO];
+    const applicationIds = storePermission
+      .filter((dataAllPermission: any) => application_names.includes(dataAllPermission.application_name))
+      .map((filterItem: any) => filterItem.application_id);
+    
+    if (!applicationIds.length) {
+      notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"));
+      return;
+    }
+
     //check if permissions are filled for MTA, have added check for MTA.
-    const MTARole = storePermission.find((storePermission: any) => storePermission.application_name == "Distribution");
+    const MTARole = storePermission.find((storePermission: any) => storePermission.application_name == APPLICATION_NAMES.MTA);
     const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == MTARole?.application_id)?.permissions;
     const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == MTARole?.application_id)?.permissions;
       
@@ -194,7 +205,7 @@ const ModalAdvanedPermissions = (props: any) => {
       return;
     }
     
-    const MTORole = storePermission.find((storePermission: any) => storePermission.application_name == "Orders");
+    const MTORole = storePermission.find((storePermission: any) => storePermission.application_name == APPLICATION_NAMES.MTO);
     if (MTORole && isMTOPermissionsRequired) {
       const isMTOProductPermission = isMTOPermissionsRequired && productPermissions.find((productPermission: any) => productPermission.application_id == MTORole?.application_id)?.permissions;
       const isMTOLocationPermission = isMTOPermissionsRequired && locationPermissions.find((locationPermission: any) => locationPermission.application_id == MTORole?.application_id)?.permissions;
