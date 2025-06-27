@@ -501,7 +501,7 @@
     "tabContent": {
       "overview": {
         "notify": {
-          "changePswSuccess": "Change password success"
+          "changePswSuccess": "Password changed successfully"
         },
         "title": "Profile Details",
         "fullName": "Full Name",

@@ -54,7 +54,7 @@ const ModalAdvanedPermissions = (props: any) => {
   const getSettingsData = async () => {
     const DBRSettingsData: any = await getDBRsettingsData()
     const DBRSettings = DBRSettingsData.data?.data;
-    setIsMTOPermissionsRequired(DBRSettings?.find((DBRSetting: any) => DBRSetting.flag === "isPermissionRequiredMTO")?.value || false);
+    setIsMTOPermissionsRequired(DBRSettings?.find((DBRSetting: any) => DBRSetting.flag === "isPermissionRequiredMTO")?.value == 1 ? true : false || false);
   };
   
   useEffect(() => {
@@ -181,11 +181,10 @@ const ModalAdvanedPermissions = (props: any) => {
 
     if(!isValid)return;
 
-    
     //check if permissions are filled for MTA, have added check for MTA.
     const MTARole = storePermission.find((storePermission: any) => storePermission.application_name == "Distribution");
-    const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == 2)?.permissions;
-    const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == 2)?.permissions;
+    const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == MTARole?.application_id)?.permissions;
+    const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == MTARole?.application_id)?.permissions;
       
     if (MTARole && (!isProductPermission || !isLocationPermission)) {
       notifyError(
@@ -197,8 +196,8 @@ const ModalAdvanedPermissions = (props: any) => {
     
     const MTORole = storePermission.find((storePermission: any) => storePermission.application_name == "Orders");
     if (MTORole && isMTOPermissionsRequired) {
-      const isMTOProductPermission = isMTOPermissionsRequired && productPermissions.find((productPermission: any) => productPermission.application_id == 3)?.permissions;
-      const isMTOLocationPermission = isMTOPermissionsRequired && locationPermissions.find((locationPermission: any) => locationPermission.application_id == 3)?.permissions;
+      const isMTOProductPermission = isMTOPermissionsRequired && productPermissions.find((productPermission: any) => productPermission.application_id == MTORole?.application_id)?.permissions;
+      const isMTOLocationPermission = isMTOPermissionsRequired && locationPermissions.find((locationPermission: any) => locationPermission.application_id == MTORole?.application_id)?.permissions;
 
       if (!isMTOProductPermission || !isMTOLocationPermission) {
         notifyError(
@@ -247,8 +246,10 @@ const ModalAdvanedPermissions = (props: any) => {
                 notifyError(element);
               });
             } else {
-              notifySuccess(res?.data?.msg.message);
-              notifyWarning(res?.data?.msg.warning);
+              notifySuccess(res?.data?.msg || res?.data?.msg?.message);
+              if (res?.data?.msg.warning) {
+                notifyWarning(res?.data?.msg.warning);
+              }
               setStorePermission([]);
               closeModal();
               refetch();

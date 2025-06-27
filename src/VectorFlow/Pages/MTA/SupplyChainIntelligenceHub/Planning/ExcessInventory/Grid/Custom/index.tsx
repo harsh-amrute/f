@@ -145,13 +145,6 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
         toolPanel: "agColumnsToolPanel",
         // toolPanelParams: {},
       },
-      {
-        id: 'filters',
-        labelDefault: 'Filters',
-        labelKey: 'filters',
-        iconKey: 'filter',
-        toolPanel: 'agFiltersToolPanel',
-      }
     ],
     defaultToolPanel:'',
     }

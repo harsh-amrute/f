@@ -452,6 +452,7 @@ const DueDateQuotation = () => {
             setMasters={setMasters}
             updateScheduleOrders={updateScheduleOrders}
             columnState={columnState}
+            setCurrentPage = {setCurrentPage}
           />
         )
       }
