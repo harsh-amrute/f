@@ -188,7 +188,7 @@ const ModalAdvanedPermissions = (props: any) => {
       .map((filterItem: any) => filterItem.application_id);
     
     if (!applicationIds.length) {
-      notifyError("Application name mismatch. Contact your system administrator.")
+      notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"));
       return;
     }
 

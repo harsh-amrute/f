@@ -117,7 +117,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const handleClickAddNewUser = () => {
     if (!getApplicationIds().length) {
-      notifyError("Application name mismatch. Contact your system administrator.")
+      notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"))
       return;
     }
     setvalueSelect({});
@@ -356,7 +356,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const handleClickEdit = (item: any) => {
     const applicationIds = getApplicationIds();
     if (!applicationIds.length) {
-      notifyError("Application name mismatch. Contact your system administrator.")
+      notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"));
       return;
     }
     setCurrentItem(item)
