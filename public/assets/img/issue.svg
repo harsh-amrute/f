@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <g id="exclamation" transform="translate(2.586 1.576)">
+    <g id="Ellipse_199" data-name="Ellipse 199" transform="translate(-2.586 -1.576)" fill="#fff" stroke="#000" stroke-width="2">
+      <circle cx="25" cy="25" r="25" stroke="none"/>
+      <circle cx="25" cy="25" r="24" fill="none"/>
+    </g>
+    <g id="Group_2216" data-name="Group 2216" transform="translate(0.366 0.09)">
+      <g id="Group_2213" data-name="Group 2213" transform="translate(19.367 30.492)">
+        <g id="Group_2212" data-name="Group 2212">
+          <circle id="Ellipse_198" data-name="Ellipse 198" cx="2.68" cy="2.68" r="2.68" fill="#bc3d81"/>
+        </g>
+      </g>
+      <g id="Group_2211" data-name="Group 2211" transform="translate(20.062 10.334)">
+        <g id="Group_2210" data-name="Group 2210">
+          <path id="Path_906" data-name="Path 906" d="M237.985,128.877A1.985,1.985,0,0,0,236,130.862v12.786a1.985,1.985,0,0,0,3.971,0V130.862A1.985,1.985,0,0,0,237.985,128.877Z" transform="translate(-236 -128.877)" fill="#bc3d81"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

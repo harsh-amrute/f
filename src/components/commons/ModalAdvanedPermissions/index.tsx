@@ -181,11 +181,10 @@ const ModalAdvanedPermissions = (props: any) => {
 
     if(!isValid)return;
 
-    
     //check if permissions are filled for MTA, have added check for MTA.
     const MTARole = storePermission.find((storePermission: any) => storePermission.application_name == "Distribution");
-    const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == 2)?.permissions;
-    const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == 2)?.permissions;
+    const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == MTARole?.application_id)?.permissions;
+    const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == MTARole?.application_id)?.permissions;
       
     if (MTARole && (!isProductPermission || !isLocationPermission)) {
       notifyError(
@@ -197,8 +196,8 @@ const ModalAdvanedPermissions = (props: any) => {
     
     const MTORole = storePermission.find((storePermission: any) => storePermission.application_name == "Orders");
     if (MTORole && isMTOPermissionsRequired) {
-      const isMTOProductPermission = isMTOPermissionsRequired && productPermissions.find((productPermission: any) => productPermission.application_id == 3)?.permissions;
-      const isMTOLocationPermission = isMTOPermissionsRequired && locationPermissions.find((locationPermission: any) => locationPermission.application_id == 3)?.permissions;
+      const isMTOProductPermission = isMTOPermissionsRequired && productPermissions.find((productPermission: any) => productPermission.application_id == MTORole?.application_name)?.permissions;
+      const isMTOLocationPermission = isMTOPermissionsRequired && locationPermissions.find((locationPermission: any) => locationPermission.application_id == MTORole?.application_name)?.permissions;
 
       if (!isMTOProductPermission || !isMTOLocationPermission) {
         notifyError(
