@@ -217,7 +217,8 @@ const useRRR =()=>{
           // setRecordCount(rowData.data.recordCount)
           setCurrFilter(filter);
           setCurrentPage(1);
-          setRRRRowData(rowData?.data?.data);
+          if(rowData.data.data && Array.isArray(rowData.data.data))setRRRRowData(rowData?.data?.data);
+          else setRRRRowData([])
           toast.dismiss();
           notifySuccess("Data Loaded Successfully")
         } catch (err: any) {

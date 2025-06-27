@@ -152,7 +152,19 @@ const VFChartsTable = (props:any)=>{
         floatingFilter: true,
         filter: "agMultiColumnFilter",
         flex:1,
-        minWidth:100
+        minWidth:100,
+        cellStyle:{
+            "flex":1,
+            'text-align':'center',
+            'height':'50px',
+            "font-style":"normal",
+            " font-variant":"normal",
+            " font-weight":"300",
+            " font-family":"Roboto",
+            "display":"block",
+            'text-overflow':'ellipsis',
+            'white-space':'nowrap'
+        }
         }}
         height={'480px'}
         sideBar={sideBar}

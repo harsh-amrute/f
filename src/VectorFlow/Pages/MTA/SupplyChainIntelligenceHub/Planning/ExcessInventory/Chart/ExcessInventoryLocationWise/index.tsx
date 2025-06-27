@@ -25,12 +25,14 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             {
                 field:'WHDescription',
                 colId:'WHDescription',
-                headerName:'Location Name'
+                headerName:'Location Name',
+                
             },
             {
                 field:'SKUCounts',
                 colId:'SKUCounts',
-                headerName:'Count Of SKUs'
+                headerName:'Count Of SKUs',
+                filter:"agNumberColumnFilter",
             }
         ]
         
@@ -62,7 +64,8 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
             {
                 field:'SumOfAmount',
                 colId:'SumOfAmount',
-                headerName:'Value in (Lakhs)'
+                headerName:'Value in (Lakhs)',
+                filter:"agNumberColumnFilter"
             }
         ]
         
