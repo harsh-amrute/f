@@ -32,17 +32,23 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             {
                 field:'Counts',
                 colId:'Counts',
-                headerName:'Count Of SKU Locations'
+                headerName:'Count Of SKU Locations',
+                filter:"agNumberColumnFilter"
+
             },
             {
                 field:'BlackCount',
                 colId:'BlackCount',
-                headerName:'Black'
+                headerName:'Black',
+                filter:"agNumberColumnFilter"
+
               },
               {
                   field:'RedCount',
                   colId:'RedCount',
-                  headerName:'Red'
+                  headerName:'Red',
+                  filter:"agNumberColumnFilter"
+
               },
           
         ]
@@ -75,17 +81,23 @@ const CreateAvailabilityAtParent = ({data}:CreateAvailabilityAtParentProps) => {
             {
                 field:'SKUCounts',
                 colId:'SKUCounts',
-                headerName:'Count Of SKU Locations'
+                headerName:'Count Of SKU Locations',
+                filter:"agNumberColumnFilter"
+
             },
             {
                 field:'BlackCount',
                 colId:'BlackCount',
-                headerName:'Black'
+                headerName:'Black',
+                filter:"agNumberColumnFilter"
+
               },
               {
                   field:'RedCount',
                   colId:'RedCount',
-                  headerName:'Red'
+                  headerName:'Red',
+                  filter:"agNumberColumnFilter"
+
               },
         ]
         

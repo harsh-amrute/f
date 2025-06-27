@@ -272,7 +272,8 @@ export const useBORColorBandwise =()=>{
             paginationParameter:{pageNumber:pageNo,recordsPerPage:rowsPerPage}
         }
         const result = await getData(payload);
-        setRowData(result.data.data)
+        if(result.data.data && Array.isArray(result.data.data))setRowData(result?.data?.data);
+        else setRowData([])
         toast.dismiss()
         notifySuccess("Data Loaded Successfully")
         }catch(err:any){

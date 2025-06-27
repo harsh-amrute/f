@@ -184,6 +184,7 @@ const useBTR = () => {
 
 
                 },
+                suppressDragLeaveHidesColumns: true,
                 getRowStyle: (params: any) => {
                     if (params.node.rowIndex % 2 === 0) {
                         return { background: "#EBEBEB" };
@@ -579,7 +580,7 @@ const useBTR = () => {
                             {...gridProps}
                             pagination={false}
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
-                            maintainColumnOrder
+                            maintainColumnOrder={true}
                             onGridReady={(params) => setTechInternalRef(params)}
                             onFilterChanged={() => {
                                 const filterModel = techRef?.current?.api?.getFilterModel();
