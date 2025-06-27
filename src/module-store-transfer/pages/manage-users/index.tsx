@@ -30,6 +30,7 @@ import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import PermissionHeirarchyCanvas from "./ModalBulkUpload";
 import { useNavigate } from "react-router";
 import { notifyError } from "../../../helpers/notify";
+import { APPLICATION_NAMES } from "../../../helpers/constants";
 
 
 interface ManageUsersProps{
@@ -106,7 +107,19 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     setAllPermissions(dataAllPermissions.find((app:any)=>app.application_id===applicationId))
   }
 
+  const getApplicationIds = () => {
+    const application_names = [APPLICATION_NAMES.MTA, APPLICATION_NAMES.MTO];
+    const applicationIds = dataAllPermissions
+      .filter((dataAllPermission: any) => application_names.includes(dataAllPermission.application_name))
+      .map((filterItem: any) => filterItem.application_id);
+    return applicationIds;
+  }
+
   const handleClickAddNewUser = () => {
+    if (!getApplicationIds().length) {
+      notifyError("Application name mismatch. Contact your system administrator.")
+      return;
+    }
     setvalueSelect({});
     setInfoUser({
       name: "",
@@ -341,6 +354,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
 
   const handleClickEdit = (item: any) => {
+    const applicationIds = getApplicationIds();
+    if (!applicationIds.length) {
+      notifyError("Application name mismatch. Contact your system administrator.")
+      return;
+    }
     setCurrentItem(item)
     setIsEditUser(true)
     const roles = item.role_id.map((role: any) => role.id);
@@ -358,20 +376,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       title: t("profile.tabContent.manageUsers.modal.editUserTitle"),
       buttonSubmit: "Update User",
     });
-    setIsOpenUser(true);
 
-    const ApplicationIdMTA = dataAllPermissions.find((dataAllPermission: any) => dataAllPermission.application_name === "Orders")?.application_id;
-    const ApplicationIdMTO = dataAllPermissions.find((dataAllPermission: any) => dataAllPermission.application_name === "Distribution")?.application_id;
-
-    if (!ApplicationIdMTA || !ApplicationIdMTO) {
-
-      isCheckBoxRef.current.isPrdCheck = {};
-      isCheckBoxRef.current.isLcCheck = {};
-      notifyError("Application ID or Application Name did not match!")
-      
-    }
-
-    const applicationIds = [ApplicationIdMTA, ApplicationIdMTO]; // Key application IDs for check
     const isPRDCheck: any = {};
     const isLcCheck: any = {};
 
@@ -381,7 +386,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     const findPermissionAllLength = (array: any, appId: any, key: any) =>
       array.find((entry: any) => entry.application_id === appId)?.[key]?.length;
 
-    applicationIds.forEach(applicationId => {
+    applicationIds.forEach((applicationId: any) => {
 
       const productPermission = findPermissionLength(item.product_id, applicationId);
       const locationPermission = findPermissionLength(item.location_id, applicationId);
@@ -396,6 +401,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
     isCheckBoxRef.current.isPrdCheck = isPRDCheck;
     isCheckBoxRef.current.isLcCheck = isLcCheck;
+
+    setIsOpenUser(true);
   }
 
 
