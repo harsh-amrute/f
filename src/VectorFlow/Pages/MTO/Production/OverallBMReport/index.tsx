@@ -1046,9 +1046,14 @@ const OverallBmReport = () => {
     // getInitialGridData(1);
   }, []);
 
+
+ 
   useEffect(()=>{
-    setColumnDef();
+    // setColumnDef();
     getFilterData();
+    if(bomActive || systemType){
+      setColumnDef();
+    }
   },[systemType])
   // useEffect(() => {
   //     if (isGridLoading) {
@@ -1080,7 +1085,7 @@ const OverallBmReport = () => {
          if(!isUIConfigLoading && bomActive ){
            getBOMUIConfigData()
          }
-       }, [isUIConfigLoading,bomActive])
+       }, [bomActive])
      
   
         const getBOMUIConfigData = async () => {

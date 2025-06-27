@@ -132,7 +132,7 @@ const APIFilterConfig = {
 const DptWiseBMReport = () => {
     const { mutateAsync: getFilteredDeptWiseBMReportData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
     const { mutateAsync: getOverallBMReportData, isLoading:isUIConfigLoading } = useGetOverAllBMReport();
-    const { mutateAsync: getDBRsettingsData, } = useGetDBRsettingsData();
+    const { mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
@@ -323,6 +323,7 @@ const DptWiseBMReport = () => {
     }
 
     useEffect(() => {
+        if(bomActive || systemType  )
         setColumnDef();
       }, [systemType])
 
