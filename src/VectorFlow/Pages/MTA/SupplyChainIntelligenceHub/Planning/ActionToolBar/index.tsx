@@ -29,6 +29,7 @@ import { UPDATE_PLANNING_DATA } from "../../../../../../redux/actions/MTA";
 import { RootState } from "../../../../../../redux/store/store";
 import useGetLocation from "../../../../../../hooks/useGetLocation";
 import { Skeleton } from "../../../../../../components/commons/styled";
+import ConfirmationDataModal from "../../../DBM/DBMNormSuggestions/ConfirmationModal";
 
 interface ActionToolBarProps {
   view: string;
@@ -104,10 +105,13 @@ const ActionToolBar = ({
   const themeUi = user?.user?.theme_ui;
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
   const [isFilterButtonVisible,setIsFilterButtonVisible] = useState<boolean>(false);
-
-  
- 
- 
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+    const closeModal = () => {
+    setIsConfirmationModalOpen(false);
+  };
+  const handleFailure = () => {
+    closeModal();
+  };
   const handleApplyFilter = (params: any) => {
     if (onApplyFilter) onApplyFilter(params);
     toggleFilter(false);
@@ -932,10 +936,17 @@ const ActionToolBar = ({
       }
       height={50.02}
       width={76.83}
-      onClick={handleGoButton}
+      onClick={()=>{setIsConfirmationModalOpen(true)}}
     />
   </Tooltip>
 ) : null}
+ {isConfirmationModalOpen && (
+        <ConfirmationDataModal
+          onSuccess={handleGoButton}
+          onFailure={handleFailure}
+          onCloseModal={closeModal}
+        />
+      )}
 
             {/* (currCategory === 'GuidedInsight' && view!=='grid') :null ?
             <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters> */}
