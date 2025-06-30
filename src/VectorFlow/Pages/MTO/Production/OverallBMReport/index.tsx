@@ -315,7 +315,6 @@ const OverallBmReport = () => {
   // }, [systemType]);
 
   const setColumnDef = async () => {
-    console.log('loop 1')
     try {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
