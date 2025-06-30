@@ -5,7 +5,7 @@ import { useState, useMemo, useContext, useEffect } from "react";
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation, Link } from "react-router-dom";
 import useSaveAllState from "../../../../../../hooks/useSaveAllState";
-
+import Tooltip from '../../../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip';
 import {
   SCTaskBarContainer,
   SCGoBackContainer,
@@ -916,19 +916,27 @@ const ActionToolBar = ({
             {currCategory === "DBMNorm" ? (
               <DBMApplyNormChange onCheck={showAllTick} />
             ) : null}
-            {currCategory === "DBMNorm" ? (
-              <img
-                style={{ cursor: "pointer" }}
-                src={
-                  themeUi === "REGALBLAZE"
-                    ? "/assets/img/Group 627-regal.svg"
-                    : "/assets/img/Group 627.svg"
-                }
-                height={50.02}
-                width={76.83}
-                onClick={handleGoButton}
-              />
-            ) : null}
+           {currCategory === "DBMNorm" ? (
+  <Tooltip
+    content={
+      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>{"Sleep"}</div>
+    }
+    tooltipZoom={1}
+  >
+    <img
+      style={{ cursor: "pointer" }}
+      src={
+        themeUi === "REGALBLAZE"
+          ? "/assets/img/Group 627-regal.svg"
+          : "/assets/img/Group 627.svg"
+      }
+      height={50.02}
+      width={76.83}
+      onClick={handleGoButton}
+    />
+  </Tooltip>
+) : null}
+
             {/* (currCategory === 'GuidedInsight' && view!=='grid') :null ?
             <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters> */}
             {/* }
