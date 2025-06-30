@@ -137,10 +137,10 @@ const APIFilterConfig = {
 };
 
 const OverallBmReport = () => {
-  const { mutateAsync: getOverallBMReportData,isLoading:isUIConfigLoading } = useGetOverAllBMReport();
+  const { mutateAsync: getOverallBMReportData} = useGetOverAllBMReport();
   const { mutateAsync: getBOMExplosionData /*isLoading :BombDataLoading*/ } =
     useGetBOMExplosionData();
-  const { mutateAsync: getDBRsettingsData } = useGetDBRsettingsData();
+  const { mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
   const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
   const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
   const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
@@ -199,8 +199,9 @@ const OverallBmReport = () => {
   const [tempColdef, setTempColdef] = useState<any>();
 
   const [bomHeader, setBomHeader]= useState([])
-  const [bomActive, setBomActive] = useState(false);
+  const [bomActive, setBomActive] = useState<any>(undefined);
   const ReportName='BomExplosion'
+  
 
 
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
@@ -273,18 +274,23 @@ const OverallBmReport = () => {
     if(BomFlag){
         setBomActive(true)
     }
-    const systemType = DBRSettings?.find((data: any) => {
-      return data.flag == "SystemType";
-    });
+    else {
+      setBomActive(false)
+    }
     const orderClosingEnable = DBRSettings?.find((data: any) => {
       return data.flag == "OrderCloseEnable";
     });
     
     setorderClosingEnable( Number(orderClosingEnable?.value));
-    setSystemType(Number(systemType.value || 0));
-    // setColumnDef();
+    setSystemType(Number(systemType?.value || 0));
   };
 
+   useEffect(()=>{
+    if(bomActive != undefined){
+      setColumnDef();
+    }
+    },[bomActive])
+  
   
 
 
@@ -893,7 +899,7 @@ const OverallBmReport = () => {
 
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
-          child.cc === "ec" && systemType >= 3
+          child.cc === "ec" && bomActive
             ? "agGroupCellRenderer"
             : child.cc === "ic"
             ? "AgeingCellRenderer"
@@ -989,7 +995,7 @@ const OverallBmReport = () => {
       // pinned: section.scc==="scos"?'right':"",
 
       cellRenderer:
-        section.cc === "ec" || (section.scc === "chckbx" && systemType >= 3)
+        section.cc === "ec" || (section.scc === "chckbx" && bomActive)
           ? "agGroupCellRenderer"
           : section.cc === "ic"
           ? "AgeingCellRenderer"
@@ -1047,9 +1053,9 @@ const OverallBmReport = () => {
   }, []);
 
   useEffect(()=>{
-    setColumnDef();
     getFilterData();
   },[systemType])
+ 
   // useEffect(() => {
   //     if (isGridLoading) {
   //         toast.dismiss();
@@ -1077,10 +1083,10 @@ const OverallBmReport = () => {
   }, []);
 
    useEffect(()=>{
-         if(!isUIConfigLoading && bomActive ){
+         if(coldefs && bomActive ){
            getBOMUIConfigData()
          }
-       }, [isUIConfigLoading,bomActive])
+       }, [coldefs,bomActive])
      
   
         const getBOMUIConfigData = async () => {
@@ -1295,8 +1301,9 @@ const OverallBmReport = () => {
             detailCellRendererParams: {
               suppressMenu: true,
               detailGridOptions: {
-                rowHeight: 45,
-                domLayout: "autoHeight",
+                rowHeight: 28,
+                headerHeight:30,
+                // domLayout: "autoHeight",
                 autoGroupColumnDef: {
                   headerName:itemNameColumnDef?.headerName,
                   cellRendererParams: {
@@ -1335,11 +1342,8 @@ const OverallBmReport = () => {
                 params.successCallback(data?.data?.data);
                 return;
               },
-            },
-           
-             
+            },    
           };
-        
           return config;
         }, [columnBomDefs, bomHeader]);
 
@@ -1362,7 +1366,6 @@ const OverallBmReport = () => {
         pagination: true,
         // pivotMode: false,
         defaultColDef: {
-          enableValue: true,
           enableRowGroup: true,
           enablePivot: true,
 
