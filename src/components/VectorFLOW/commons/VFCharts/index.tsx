@@ -43,7 +43,39 @@ const VFCharts = (props:any) =>{
                 return;
             }
     
-            const headerHeight = 40;
+            const titleText = title || '';
+            const fontSize = 16;
+            const lineHeight = 24;
+            const padding = 10;
+    
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+
+            if (!tempCtx) {
+                console.error("Failed to get temp canvas context.");
+                return;
+            }
+
+            tempCtx.font = `bold ${fontSize}px Arial`;
+            const maxWidth = chartCanvas.width - 2 * padding;
+            const words = titleText.split(' ');
+            const lines = [];
+            let currentLine = '';
+    
+            for (const word of words) {
+                const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                const testWidth = tempCtx.measureText(testLine).width;
+                if (testWidth > maxWidth) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            if (currentLine) lines.push(currentLine);
+    
+            const headerHeight = lines.length * lineHeight;
+    
             const combinedCanvas = document.createElement('canvas');
             combinedCanvas.width = chartCanvas.width;
             combinedCanvas.height = chartCanvas.height + headerHeight;
@@ -54,24 +86,23 @@ const VFCharts = (props:any) =>{
                 return;
             }
     
-            const titleText = title || '';
-    
-            ctx.font = 'bold 16px Arial';  
-            const textWidth = ctx.measureText(titleText).width;
-            
-            const xCoordinate = (combinedCanvas.width - textWidth) / 2;
-    
             ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, combinedCanvas.width, headerHeight);
+            ctx.fillRect(0, 0, combinedCanvas.width, combinedCanvas.height);
+            ctx.font = `bold ${fontSize}px Arial`;
             ctx.fillStyle = 'black';
-            ctx.fillText(titleText, xCoordinate, 25);
+    
+            lines.forEach((line, i) => {
+                const textWidth = ctx.measureText(line).width;
+                const x = (combinedCanvas.width - textWidth) / 2;
+                const y = (i + 1) * lineHeight - (lineHeight - fontSize) / 2;
+                ctx.fillText(line, x, y);
+            });
     
             ctx.drawImage(chartCanvas, 0, headerHeight);
     
-            // Sanitize the filename
             const sanitizedFilename = (titleText || 'chart')
-                .replace(/[/\\?%*:|"<>]/g, '_')  // Replace invalid characters with underscore
-                .trim();                         // Remove leading/trailing spaces
+                .replace(/[/\\?%*:|"<>]/g, '_')
+                .trim();
     
             const link = document.createElement('a');
             link.href = combinedCanvas.toDataURL('image/png');
