@@ -137,10 +137,10 @@ const APIFilterConfig = {
 };
 
 const OverallBmReport = () => {
-  const { mutateAsync: getOverallBMReportData,isLoading:isUIConfigLoading } = useGetOverAllBMReport();
+  const { mutateAsync: getOverallBMReportData} = useGetOverAllBMReport();
   const { mutateAsync: getBOMExplosionData /*isLoading :BombDataLoading*/ } =
     useGetBOMExplosionData();
-  const { mutateAsync: getDBRsettingsData } = useGetDBRsettingsData();
+  const { mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
   const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
   const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
   const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
@@ -199,8 +199,9 @@ const OverallBmReport = () => {
   const [tempColdef, setTempColdef] = useState<any>();
 
   const [bomHeader, setBomHeader]= useState([])
-  const [bomActive, setBomActive] = useState(false);
+  const [bomActive, setBomActive] = useState<any>(undefined);
   const ReportName='BomExplosion'
+  
 
 
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
@@ -273,18 +274,23 @@ const OverallBmReport = () => {
     if(BomFlag){
         setBomActive(true)
     }
-    const systemType = DBRSettings?.find((data: any) => {
-      return data.flag == "SystemType";
-    });
+    else {
+      setBomActive(false)
+    }
     const orderClosingEnable = DBRSettings?.find((data: any) => {
       return data.flag == "OrderCloseEnable";
     });
     
     setorderClosingEnable( Number(orderClosingEnable?.value));
-    setSystemType(Number(systemType.value || 0));
-    // setColumnDef();
+    setSystemType(Number(systemType?.value || 0));
   };
 
+   useEffect(()=>{
+    if(bomActive != undefined){
+      setColumnDef();
+    }
+    },[bomActive])
+  
   
 
 
@@ -309,6 +315,7 @@ const OverallBmReport = () => {
   // }, [systemType]);
 
   const setColumnDef = async () => {
+    console.log('loop 1')
     try {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
@@ -1046,15 +1053,10 @@ const OverallBmReport = () => {
     // getInitialGridData(1);
   }, []);
 
-
- 
   useEffect(()=>{
-    // setColumnDef();
     getFilterData();
-    if(bomActive || systemType){
-      setColumnDef();
-    }
   },[systemType])
+ 
   // useEffect(() => {
   //     if (isGridLoading) {
   //         toast.dismiss();
@@ -1082,10 +1084,10 @@ const OverallBmReport = () => {
   }, []);
 
    useEffect(()=>{
-         if(!isUIConfigLoading && bomActive ){
+         if(coldefs && bomActive ){
            getBOMUIConfigData()
          }
-       }, [bomActive])
+       }, [coldefs,bomActive])
      
   
         const getBOMUIConfigData = async () => {
@@ -1365,7 +1367,6 @@ const OverallBmReport = () => {
         pagination: true,
         // pivotMode: false,
         defaultColDef: {
-          enableValue: true,
           enableRowGroup: true,
           enablePivot: true,
 

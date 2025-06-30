@@ -131,17 +131,16 @@ const APIFilterConfig = {
 
 const DptWiseBMReport = () => {
     const { mutateAsync: getFilteredDeptWiseBMReportData, isLoading: isFilteredDataLoaded } = useGetFilteredDeptWiseBMReport();
-    const { mutateAsync: getOverallBMReportData, isLoading:isUIConfigLoading } = useGetOverAllBMReport();
+    const { mutateAsync: getOverallBMReportData } = useGetOverAllBMReport();
     const { mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
     const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
     const { mutateAsync: addBMReportRemark } = useAddBMReportRemark();
     const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
     const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
     const { mutateAsync: getBOMExplosionData, /*isLoading :BombDataLoading*/ } = useGetBOMExplosionData();
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    const { mutateAsync: getUIConfigData} = useGetUIConfigData()
     const [coldefs, setColdef] = useState<any>();
     const [tempColdef, setTempColdef] = useState<any>([{}]);
-    const [systemType, setSystemType] = useState<any>()
     const [areRowsSelected, setAreRowsSelected] = useState(false);
     const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] = useState<boolean>(false);
     const [gridData, setGridData] = useState<any>();
@@ -168,12 +167,13 @@ const DptWiseBMReport = () => {
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
     const [detailCellRendererParamsConfig, setDetailCellRendererParamsConfig] = useState<any>();
 
+
     
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
 
      const [bomHeader, setBomHeader]= useState([])
-      const [bomActive, setBomActive] = useState(false);
+      const [bomActive, setBomActive] = useState<any>(undefined);
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
@@ -261,33 +261,39 @@ const DptWiseBMReport = () => {
     };
 
     const getSystemType = async () => {
-        const DBRSettingsData: any = await getDBRsettingsData()
+        const DBRSettingsData: any = await getDBRsettingsData();
         const DBRSettings = DBRSettingsData.data?.data;
         const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
         if(BomFlag){
             setBomActive(true)
+        } else {
+            setBomActive(false)
         }
         for(const setting of DBRSettings){
-            if(setting.flag === "SystemType"){
-               setSystemType(Number(setting.value));
-            }
             if(setting.flag === "DeptwiseDefaultWIP"){
                 setWIPCheck(setting.value == 1 ? true : false)
             }
-        }
+        }  
+        
     }
+
+    useEffect(()=>{
+        if(bomActive != undefined){
+            setColumnDef();
+        }
+    },[bomActive])
 
    
      useEffect(()=>{
-       if(!isUIConfigLoading && bomActive){
+       if(coldefs && bomActive){
          getBOMUIConfigData()
        }
-     }, [isUIConfigLoading, bomActive])
+     }, [coldefs, bomActive])
    
 
       const getBOMUIConfigData = async () => {
         try {
-          const response = await getUIConfigData (ReportName);
+          const response = await getUIConfigData(ReportName);
           setBomHeader(response?.data?.data)
         } catch (err) {
           console.error(err);
@@ -321,11 +327,6 @@ const DptWiseBMReport = () => {
             console.log(e);
         }
     }
-
-    useEffect(() => {
-        if(bomActive || systemType  )
-        setColumnDef();
-      }, [systemType])
 
     const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
         const modifiedResponse: ApiResponseItem[] = [];
@@ -817,8 +818,6 @@ const DptWiseBMReport = () => {
                 components: customCellRenderers,
                 pagination: true,
                 defaultColDef: {
-
-                    enableValue: true,
                     enableRowGroup:true,
                     enablePivot: true,
 

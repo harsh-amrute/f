@@ -214,6 +214,7 @@ const DueDateQuotation = () => {
     },
     rowSelection: "multiple",
     columnDefs: columnDefs,
+    enableRangeSelection:true,
     suppressRowClickSelection: true,  
     detailRowAutoHeight: true,
     defaultColDef: {
