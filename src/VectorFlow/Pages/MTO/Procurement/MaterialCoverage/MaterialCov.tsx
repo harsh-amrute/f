@@ -27,13 +27,9 @@ import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer"
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import useColDef from '../../../../../hooks/useColDef';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
-<<<<<<< HEAD
-import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
+import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Common/DBRSettings';
 
-=======
-import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
->>>>>>> develop-vflow
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -70,10 +66,7 @@ const MaterialCov = () => {
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
-<<<<<<< Updated upstream
   const {mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
-=======
->>>>>>> Stashed changes
   const [childColDef,setChildColDef] = useState<any>();
   
     const { 
@@ -236,6 +229,7 @@ const MaterialCov = () => {
       }
   }
 
+
   const customHeader =
   {
       ColorPriority: {
@@ -288,7 +282,6 @@ const MaterialCov = () => {
 
   useEffect(() => {
     const coldefs = getColumnDefinations(HeaderData, customHeader, extras);
-<<<<<<< Updated upstream
     const childColDefs = getColumnDefinations(HeaderDataChild,childCustomheader)
     if(detailDataObj?.allOrders){
       setColDef([
@@ -304,12 +297,6 @@ const MaterialCov = () => {
   
     setChildColDef(childColDefs)
   }, [HeaderData, detailDataObj,HeaderDataChild])
-=======
-    const childColDefs = getColumnDefinations(HeaderDataChild)
-    setColDef(coldefs);
-    setChildColDef(childColDefs)
-  }, [HeaderData,HeaderDataChild])
->>>>>>> Stashed changes
 
   useEffect(() => {
     getHeaderData();
@@ -341,7 +328,7 @@ const MaterialCov = () => {
   const callExportExcel = () => {
       const headersdata = currentGridRef?.current?.api.getColumnState();
       const formattedFilters = formatFilterJSON(appliedFilters)
-      const body = getBodyForExcelExport({headersdata: [...headersdata, ...childColDef], filterData : formattedFilters , colDefMap})
+      const body = getBodyForExcelExport({headersdata, filterData : formattedFilters , colDefMap})
       if(materialSoDetailRef.current?.getExcelExport)
         materialSoDetailRef.current.getExcelExport(body)
     
