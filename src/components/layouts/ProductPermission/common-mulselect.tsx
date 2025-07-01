@@ -191,7 +191,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L2 || '',
       placeholder:"", 
       options: brand.length === 0 ? [] : listSubBrand.filter((sub: Option) =>
-        brand.some((b) => sub.value.startsWith(b.value.split(' ')[0])) // Filter based on selected brand
+        brand.some((b) => sub.value.split(" > ")[0] == b.value)  // Filter based on selected brand
       ),
       value: subBrand,
       setValue: setSubBrand,
@@ -205,11 +205,12 @@ export default forwardRef(({ ...props }: any, ref) => {
       title: process.env.REACT_APP_PRODUCT_PERMISSION_L3 || '',
       placeholder: "", 
       options: subBrand.length === 0 ? [] : (() => {
-        const currentSubBrandValues = subBrand.map(s => s.value); 
-          const filteredCategories = listCategory.filter((c: Option) => {
-          return currentSubBrandValues.some(subBrandValue => c.value.startsWith(subBrandValue));
+        const currentSubBrandValues = subBrand.map(sub => sub.value);
+        const filteredCategories = listCategory.filter((category: Option) => {
+          const splitValue = category.value.split(" > ").slice(0, 3);
+          const exactMatchValue = splitValue[0] + " > " + splitValue[1];
+          return currentSubBrandValues.includes(exactMatchValue);
         });
-    
         return filteredCategories;
       })(),
       value: category,

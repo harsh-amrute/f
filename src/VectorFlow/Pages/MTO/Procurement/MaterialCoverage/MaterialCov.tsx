@@ -27,9 +27,13 @@ import ColorCellRenderer from "../../Common/ColorCellRenderer/ColorCellRenderer"
 import CustomGroupCellRenderer from "./CustomGroupCellRenderer";
 import useColDef from '../../../../../hooks/useColDef';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+<<<<<<< HEAD
 import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
 
+=======
+import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
+>>>>>>> develop-vflow
 
 const APIFilterConfig = {
   filSecVisConfig: {

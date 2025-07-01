@@ -33,6 +33,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
 
   const defaultGridOptions = {
     defaultColDef: {
+      enableValue: true,
       filter: "agTextColumnFilter",
       floatingFilterComponentParams: { suppressFilterButton: false },
       floatingFilter: true,

@@ -25,7 +25,7 @@ import { APPLIED_FILTERS, PROCPLANNING_ANALYTICS } from "../../../../../redux/ac
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { FilterPageName, pagination, UIGridCode } from "../../Common/Enum";
 import useColDef from "../../../../../hooks/useColDef";
-import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
+import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Common/DBRSettings";
 
 
 
@@ -368,7 +368,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             return data.flag == "simulationEnable";
           });
 
-          setSimulationEnable(simulation.value || "disabled");
+          setSimulationEnable(simulation?.value || "disabled");
     }
     useEffect(() => {  
         getSimulationEnable();

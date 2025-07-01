@@ -33,11 +33,14 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                 field:'overdue',
                 headerName:'Overdue',
                 colId:'overdue',
+                filter:"agNumberColumnFilter"
             },
             {
                 field:'due',
                 headerName:'Due',
                 colId:'due',
+                filter:"agNumberColumnFilter"
+
             },
             {
                 field:'others',
@@ -74,16 +77,22 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
                 field:'greater',
                 headerName:'Gap > 67%',
                 colId:'greater',
+                filter:"agNumberColumnFilter"
+
             },
             {
                 field:'between',
                 headerName:'33% <= Gap <= 67%',
                 colId:'between',
+                filter:"agNumberColumnFilter"
+
             },
             {
                 field:'smaller',
                 headerName:'Gap < 33%',
                 colId:'smaller',
+                filter:"agNumberColumnFilter"
+
             },
         ];
         

@@ -169,7 +169,7 @@ const useSaveAllState = (isPlanning?:boolean) => {
         const tempRef = ref.current.api.getChartRef(c.chartId)
         tempRef.destroyChart()
       })
-      notifySuccess("State has been resetted");
+      notifySuccess("State has been reset");
     } catch (err: any) {
       notifyError(err);
     }

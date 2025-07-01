@@ -145,7 +145,7 @@ const ModalManageUsers = ({
                         <div className="modal-Per-input--box">
                           <label
                             htmlFor="user-name"
-                            className="modal-Per-label"
+                            className="modal-Per-label required"
                           >
                             {t("profile.tabContent.manageUsers.modal.username")}
                           </label>
@@ -180,7 +180,7 @@ const ModalManageUsers = ({
                         </div>
 
                         <div className="modal-Per-input--box">
-                          <label htmlFor="email-id" className="modal-Per-label">
+                          <label htmlFor="email-id" className="modal-Per-label required">
                             {t("profile.tabContent.manageUsers.modal.emailID")}
                           </label>
                           <input
@@ -216,7 +216,7 @@ const ModalManageUsers = ({
                             <div className="modal-Per-input--box">
                             <label
                               htmlFor="password"
-                              className="modal-Per-label"
+                              className="modal-Per-label required"
                             >
                               {t(
                               "profile.tabContent.manageUsers.modal.password"
@@ -275,7 +275,7 @@ const ModalManageUsers = ({
 
                       <div className="list-roles">
                         <div className="list-roles--title">
-                          <span className="title-text">
+                          <span className="title-text required">
                             {t("profile.tabContent.manageUsers.modal.roles")}
                           </span>
                         </div>
