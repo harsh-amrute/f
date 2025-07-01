@@ -145,13 +145,6 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
         toolPanel: "agColumnsToolPanel",
         // toolPanelParams: {},
       },
-      {
-        id: 'filters',
-        labelDefault: 'Filters',
-        labelKey: 'filters',
-        iconKey: 'filter',
-        toolPanel: 'agFiltersToolPanel',
-      }
     ],
     defaultToolPanel:'',
     }
@@ -210,6 +203,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 rowHeight={30}
                 height={'100%'}
                 maintainColumnOrder
+                suppressColumnVirtualisation={true}
             />
         </SCDynamicContainer>
         </>

@@ -71,9 +71,16 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
         iconKey: "columns",
         toolPanel: "agColumnsToolPanel",
         // toolPanelParams: {},
+        toolPanelParams: {
+          suppressPivots: true,
+          suppressPivotMode: true,
+          suppressRowGroups: true,
+          suppressValues: true,
+        }
       }
     ],
     defaultToolPanel: "",
+
   };
 
   const agGridProps: AgGridReactProps = {

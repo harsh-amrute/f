@@ -39,7 +39,7 @@ const TableUserManagement = ({
   const changeStatus = (id: number, status: boolean) => {
     const data = {
       user_id: id,
-      is_active: !status,
+      is_active: status,
     };
 
     mutateChangeStatus(data, {
@@ -131,8 +131,8 @@ const TableUserManagement = ({
           labelOn={t("profile.tabContent.manageUsers.button.active")}
           labelOff={t("profile.tabContent.manageUsers.button.inactive")}
           toggled={item?.is_active}
-          onClick={() => {
-            changeStatus(item.id, item.is_active);
+          onClick={(param:any) => {
+            changeStatus(item.id,param);
           }}
         />
       </Tab.SCTableTdCenter>

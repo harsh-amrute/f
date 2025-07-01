@@ -501,7 +501,7 @@
     "tabContent": {
       "overview": {
         "notify": {
-          "changePswSuccess": "Change password success"
+          "changePswSuccess": "Password changed successfully"
         },
         "title": "Profile Details",
         "fullName": "Full Name",
@@ -603,7 +603,8 @@
         "notifyError": {
           "pleaseSelectRole": "Please select the role for the user",
           "PleaseSelectPermissionMTA": "Please select both Product and Location permissions",
-          "PleaseSelectPermissionMTO": "Please select both Order and Location permission"
+          "PleaseSelectPermissionMTO": "Please select both Order and Location permission",
+          "RoleMismatch":"Application name mismatch. Contact your system administrator."
         },
         "validate": {
           "userNameMaxLength": "* Upto 8 characters allowed. [Any alpha-numeric, spcl chr: “_” , “.” only]",

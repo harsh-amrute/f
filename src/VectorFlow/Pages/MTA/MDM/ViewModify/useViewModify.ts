@@ -641,7 +641,7 @@ const useViewModify = (pageType:string) => {
           dispatch(REMOVE_MASTER(master.id));
         }
       })
-      if(activeMaster.id===0){
+      // if(activeMaster.id===0){
         // dispatch(UPDATE_ACTIVE_MASTER(0));
         const firstDefaultIndex = masters.findIndex(
           (item) => item.progress === 'default'
@@ -649,7 +649,7 @@ const useViewModify = (pageType:string) => {
         if (firstDefaultIndex !== -1) {
           dispatch(UPDATE_ACTIVE_MASTER(firstDefaultIndex));
         }
-      }
+      // }
       // else{
       //   dispatch(UPDATE_ACTIVE_MASTER(masters[0]))
       // }

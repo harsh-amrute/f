@@ -32,7 +32,8 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             {
                 field:'WHCount',
                 colId:'WHCount',
-                headerName:'Count of Locations'
+                headerName:'Count of Locations',
+                filter:"agNumberColumnFilter",
             }
         ]
         
@@ -63,7 +64,8 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
             {
                 field:'SumAmount',
                 colId:'SumAmount',
-                headerName:'Value in (Lakhs)'
+                headerName:'Value in (Lakhs)',
+                filter:"agNumberColumnFilter",
             }
         ]
         
