@@ -178,7 +178,8 @@ const ActionToolBar = ({
   useEffect(() => {
     if (
       pathname !== "/supply-chain-intelligence-hub/SupplierWiseAllocation" &&
-      pathname !== "/supply-chain-intelligence-hub/sdr"
+      pathname !== "/supply-chain-intelligence-hub/sdr" &&
+      pathname !== "/supply-chain-intelligence-hub/eo"
     ) {
       setIsFilterButtonVisible(true);
     }
@@ -1004,7 +1005,7 @@ const ActionToolBar = ({
           )} */}
           <SCCustomActionsContainer>
 
-          {( pathname != "/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/supply-chain-intelligence-hub/sdr" ) &&
+          {( pathname != "/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/supply-chain-intelligence-hub/sdr" && pathname != "/supply-chain-intelligence-hub/eo" ) &&
                <>
                     <VFButton
                     onClick={() => toggleFilter(true)}
@@ -1097,6 +1098,7 @@ const ActionToolBar = ({
             currCategory === "BufferTrend" ||
             currCategory === "BPR" ||
             currCategory === "SDR" ||
+            currCategory === "EO" ||
             currCategory === "RRR" ||
             currCategory === "BOR" ||
             currCategory === "BTR" ||

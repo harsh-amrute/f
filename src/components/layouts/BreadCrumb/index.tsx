@@ -29,6 +29,7 @@ const BreadCrumb = () => {
   if (location.pathname === '/supply-chain-intelligence-hub/buffer-trend-report') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>BTR </BoldSpan></span>
   if (location.pathname === '/supply-chain-intelligence-hub/open-expediting-requests') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> OER </BoldSpan></span>
   if (location.pathname === '/supply-chain-intelligence-hub/sdr') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> SDR </BoldSpan></span>
+  if (location.pathname === '/supply-chain-intelligence-hub/eo') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> EO </BoldSpan></span>
   if (location.pathname === '/supply-chain-intelligence-hub/planning') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Planning</BoldSpan></span>
   if (location.pathname === '/supply-chain-intelligence-hub/bpr') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> BPR </BoldSpan></span>
   if (location.pathname === '/supply-chain-intelligence-hub/rrr') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> RRR </BoldSpan></span>
@@ -36,6 +37,7 @@ const BreadCrumb = () => {
   if (location.pathname === '/supply-chain-intelligence-hub/buffer-trend-report') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> BTR</BoldSpan></span>
   if (location.pathname === '/supply-chain-intelligence-hub/open-expediting-requests') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>OER</BoldSpan></span>
   if (location.pathname === '/supply-chain-intelligence-hub/sdr') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>SDR</BoldSpan></span>
+  if (location.pathname === '/supply-chain-intelligence-hub/eo') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>EO</BoldSpan></span>
   if (location.pathname === '/supply-chain-intelligence-hub/total-requirement-report') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Total Requirement Report</BoldSpan></span>
 
   if (location.pathname === '/logistics/intransit-whereabouts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>In Transit whereabouts</BoldSpan></span>
