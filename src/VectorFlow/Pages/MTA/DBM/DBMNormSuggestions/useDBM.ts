@@ -272,6 +272,7 @@ const useDBM =()=>{
         // const handleGoButton =  ()=>{
         const selectedRows = gridRef.current?.api.getSelectedRows();
         //console.log(selectedRows)
+        if (!selectedRows || selectedRows.length === 0) { toast.dismiss();return;}
         const extractedData:any = selectedRows?.map (items => ({
             SKUCode:items.SKUCode,
             WHCode:items.LocCode
