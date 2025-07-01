@@ -1,9 +1,20 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import VFTable from "../../../Common/VFTable";
 import { GridOptions } from "ag-grid-enterprise";
+import { VFTableWrapper } from "./styles";
+import { useUserData } from "../../../../../../context/index";
+import { AgGridReact } from "ag-grid-react";
+import VFPagination from "../../../Common/VFPagination";
+import { pagination } from '../../../Common/Enum';
 
-const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGridRef}: any) => {
-    const gridRef = useRef();
+
+const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGridRef,savePageSize,userPageSize, totalRows, customPageSize, handleChangePage, currentPage,rowsPerPage, reportName}: any) => {
+    // const gridRef = useRef();
+    const gridRef = useRef<AgGridReact>(null);
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    const { user } = useUserData();
+    const theme_ui = user.user.theme_ui
+
 
     const gridOptions: GridOptions = {
         sideBar: {
@@ -46,6 +57,7 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
 
     return (
         <div data-testid="grid-view" style={{ height:"95%", width: '100%', margin:"20px", paddingRight:"20px", paddingBottom:"10px"}}>
+            <VFTableWrapper data-testid="grid-view">
             <VFTable
                 {...gridOptions}
                 columnDefs={colDef}
@@ -54,19 +66,56 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
                 ref={gridRef}
-                onGridReady={(params: any) => {
-                    params.api.autoSizeAllColumns();
-                    
-                    setCurrentGridRef(gridRef);
-                }}
+                pagination={false}   
                 statusBar={{
                     statusPanels: [
-                        { statusPanel: "agTotalRowCountComponent", align: "left" },
+                      {
+                        statusPanel: "agTotalAndFilteredRowCountComponent",
+                        align: "left",
+                      },
+                      { statusPanel: "agTotalRowCountComponent", align: "left" },
+                      {
+                        statusPanel: "agFilteredRowCountComponent",
+                        align: "left",
+                      },
+                      {
+                        statusPanel: "agSelectedRowCountComponent",
+                        align: "left",
+                      },
+                      { statusPanel: "agAggregationComponent", align: "left" },
                     ],
-                }}
+                  }}   
+                onGridReady={(params: any) => {
+                    params.api.autoSizeAllColumns();
+                    setCurrentGridRef(gridRef);
+                    params.api.addEventListener('filterChanged', () => {
+                      const filterModel = params.api.getFilterModel();
+                      if (Object.keys(filterModel).length > 0) {
+                          setIsDisabled(false); 
+                      } else {
+                          setIsDisabled(true); 
+                      }
+                      });
+                  }}
                 maintainColumnOrder
             />
-        </div>
+
+                <div style={{marginTop:reportName==='OrderBalance'?'15px':''}}>
+                  <VFPagination
+                    selectedRows={0}
+                    rowsPerPage={userPageSize || pagination.mtoPageSize}
+                    totalRows={totalRows}
+                    currentPage={currentPage}
+                    handleChangePage={handleChangePage}
+                    isDisabled = {isDisabled}
+                    customPageSizeEnabled={true}
+                    savePageSize={savePageSize}
+                    userPageSize={userPageSize}
+                /> 
+                </div>
+                
+          </VFTableWrapper>
+          </div>
     )
 }
 

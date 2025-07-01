@@ -25,6 +25,7 @@ import { APPLIED_FILTERS, PROCPLANNING_ANALYTICS } from "../../../../../redux/ac
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { FilterPageName, pagination, UIGridCode } from "../../Common/Enum";
 import useColDef from "../../../../../hooks/useColDef";
+import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
 
 
 
@@ -213,6 +214,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
     const [isLoading, setIsLoading] = useState(false);
     const { mutateAsync : GetProcPlanningDataForExcelData} = useGetProcurementPlanningDataForExcelExport()
+    const { mutateAsync: getDBRsettingsData } = useGetDBRsettingsData();
+    const [simulationEnable, setSimulationEnable] = useState<any>();
+    
 
     const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any) => {
         setIsLoading(true);
@@ -357,10 +361,23 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         }
     ]
 
+    const getSimulationEnable = async () => {
+        const DBRSettingsData = await getDBRsettingsData();
+        const DBRSettings = DBRSettingsData.data?.data;
+        const simulation = DBRSettings?.find((data: any) => {
+            return data.flag == "simulationEnable";
+          });
+
+          setSimulationEnable(simulation.value || "disabled");
+    }
+    useEffect(() => {  
+        getSimulationEnable();
+    },[])
+
     useEffect(() => {
-        if(HeaderData && HeaderData.length>0){
+        if(HeaderData && HeaderData.length>0 && simulationEnable){
             if (currentTab?.label === 'Shortage') {
-                if(process.env.REACT_APP_ENABLE_SIMULATION === "enabled"){
+                if(simulationEnable === "enabled"){
 
                     setColDef(getColumnDefinations(HeaderData, customHeader, extras))
                 }
@@ -372,7 +389,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
             }
         }
-    }, [HeaderData])
+    }, [HeaderData,simulationEnable])
 
     const icons = useMemo(() => {
         return {
@@ -389,7 +406,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     useEffect(() => {
         if (currentTab && userConfigFetched) {
             if (currentTab.label === 'Shortage') {
-                if(process.env.REACT_APP_ENABLE_SIMULATION === "enabled"){
+                if(simulationEnable === "enabled"){
                     
                     setColDef(getColumnDefinations(HeaderData, customHeader, extras))
                 }
@@ -659,7 +676,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             userPageSize = {userPageSize}
 
                         />
-                        { process.env.REACT_APP_ENABLE_SIMULATION==='enabled'  && (
+                        { simulationEnable ==='enabled'  && (
             <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
