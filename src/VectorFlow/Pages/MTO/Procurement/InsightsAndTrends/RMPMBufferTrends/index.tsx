@@ -11,35 +11,37 @@ import { BufferTrendData } from "../../../../../../types/MTO/types"
 import { toast } from "react-toastify"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../../helpers/notify"
 import { useUserData } from "../../../../../../context"
-// import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
-// import useFilter from '../../../../../../hooks/useFilter';
-// import { FilterPageName } from "../../../Common/Enum";
+import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
+import useFilter from '../../../../../../hooks/useFilter';
+import { FilterPageName } from "../../../Common/Enum";
+import { formatFilterJSON } from "../../../../../../helpers/utils"
 
-// const APIFilterConfig = {
-//     filSecVisConfig: {
-//         "Proc_RM_PM_BufferTrend" : {
-//             mjr : false,
-//             or: true,
-//             res: true,
-//             cus: true
-//         },
-//     }
-// };
+const APIFilterConfig = {
+    filSecVisConfig: {
+        "Proc_RM_PM_BufferTrend" : {
+            mjr : false,
+            or: true,
+            res: true,
+            cus: true
+        },
+    }
+};
 
 
 const RMPMBufferTrends = () => {
-    // const [filterData, setFilterData] = useState({});
-    // const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    // const { 
-    //     state: currFilter, 
-    //     setState: setCurrFilter, 
-    //     onFilterRemove, 
-    //     isFilterOpen, 
-    //     isMfgSelected,
-    //     onAddFilter, 
-    //     onApplyFilter, 
-    //     toggleFilter 
-    //   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_BufferTrend);
+    const [filterData, setFilterData] = useState({});
+    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { 
+        state: currFilter, 
+        setState: setCurrFilter, 
+        onFilterRemove, 
+        isFilterOpen, 
+        isMfgSelected,
+        onAddFilter, 
+        onApplyFilter,
+        appliedFilters, 
+        toggleFilter 
+      } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_RM_PM_BufferTrend);
 
 
     const formatDate = (date: Date): string => {
@@ -122,7 +124,8 @@ const RMPMBufferTrends = () => {
         try {
             toast.dismiss();
             notifyLoader("Loading Graph Data ...")
-            const APIData = await getRMPMBufferTrendsData();
+            const formatedFilters = formatFilterJSON(appliedFilters);
+            const APIData = await getRMPMBufferTrendsData({appliedFilters: formatedFilters});
             console.log("sdfsdfsdf")
             const updatedDataMTO = convertToGraphData(APIData?.data?.data.MTO);
             const updatedDataMTA = convertToGraphData(APIData?.data?.data.MTA);
@@ -139,14 +142,21 @@ const RMPMBufferTrends = () => {
 
     }
 
-    // const getFilterData = async () => {
-    // try {
-    //     const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_RM_PM_BufferTrend});
-    //     setFilterData(response?.data.data);
-    // } catch (error) {
-    //     console.error(error);
-    // }
-    // }
+    const getFilterData = async () => {
+    try {
+        const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_RM_PM_BufferTrend});
+        setFilterData(response?.data.data);
+    } catch (error) {
+        console.error(error);
+    }
+    }
+
+    useEffect (() => {
+        if(Object.entries(appliedFilters).length){
+          GetData();
+        }
+      }, [appliedFilters])
+
 
     useEffect(() => {
         console.log('MTA data', MTAData)
@@ -155,7 +165,7 @@ const RMPMBufferTrends = () => {
 
     useEffect(() => {
         GetData();
-        // getFilterData()
+        getFilterData()
     }, [])
 
 
@@ -165,15 +175,15 @@ const RMPMBufferTrends = () => {
             <MTOActionToolBar 
                 comp={"BTRMTO"} 
                 themeUi={themeUi}
-                // isAddFilterButton 
-                // isFilterOpen={isFilterOpen}
-                // onAddFilter={onAddFilter}
-                // toggleFilter={toggleFilter}
-                // onApplyFilter={onApplyFilter}
-                // multiFilter={currFilter}
-                // setMultiFilter={setCurrFilter}
-                // onFilterRemove={onFilterRemove}
-                // isMfgSelected={isMfgSelected}
+                isAddFilterButton 
+                isFilterOpen={isFilterOpen}
+                onAddFilter={onAddFilter}
+                toggleFilter={toggleFilter}
+                onApplyFilter={onApplyFilter}
+                multiFilter={currFilter}
+                setMultiFilter={setCurrFilter}
+                onFilterRemove={onFilterRemove}
+                isMfgSelected={isMfgSelected}
             />
             <HorizontalViewWrapper>
                 <BTRTableWrapper>

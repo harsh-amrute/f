@@ -3,7 +3,7 @@ import { RMPMBufferTrendsService } from './api'
 
 
 export const useGetRMPMBufferTrendsData = () => {
-    return useMutation(async () => {
-        return RMPMBufferTrendsService.getRMPMBufferTrendsData()
+    return useMutation(async (params:any) => {
+        return RMPMBufferTrendsService.getRMPMBufferTrendsData(params)
     })
 }
