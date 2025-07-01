@@ -220,7 +220,7 @@ const MaterialCov = () => {
       try {
           const response = await getUIConfigData(reportName);
           const childResponse = await getUIConfigData(childReportName)
-          getColDef([...response.data.data, ...childResponse.data.data])
+          getColDef(response)
           setHeaderData(response.data.data);
           setHeaderDataChild(childResponse.data.data)
       }
