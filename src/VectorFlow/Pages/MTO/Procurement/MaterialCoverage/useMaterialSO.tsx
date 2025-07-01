@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { FilterPageName, pagination } from "../../Common/Enum";
 import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
 
-const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userConfigFetched:any,userPageSize:any,setUserPageSize:any,childColDef:any) => {
+const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userConfigFetched:any,userPageSize:any,setUserPageSize:any,childColDef:any,childColDef:any) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
     const [rowDataCount, setRowDataCount] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -175,6 +175,9 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
         },
         masterDetail: true,
         detailCellRenderer: DetailCellRenderer,
+        detailCellRendererParams:{
+            colDef : childColDef
+        },
         detailCellRendererParams:{
             colDef : childColDef
         },

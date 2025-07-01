@@ -66,7 +66,10 @@ const MaterialCov = () => {
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
+<<<<<<< Updated upstream
   const {mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
+=======
+>>>>>>> Stashed changes
   const [childColDef,setChildColDef] = useState<any>();
   
     const { 
@@ -281,6 +284,7 @@ const MaterialCov = () => {
 
   useEffect(() => {
     const coldefs = getColumnDefinations(HeaderData, customHeader, extras);
+<<<<<<< Updated upstream
     const childColDefs = getColumnDefinations(HeaderDataChild,childCustomheader)
     if(detailDataObj?.allOrders){
       setColDef([
@@ -296,6 +300,12 @@ const MaterialCov = () => {
   
     setChildColDef(childColDefs)
   }, [HeaderData, detailDataObj,HeaderDataChild])
+=======
+    const childColDefs = getColumnDefinations(HeaderDataChild)
+    setColDef(coldefs);
+    setChildColDef(childColDefs)
+  }, [HeaderData,HeaderDataChild])
+>>>>>>> Stashed changes
 
   useEffect(() => {
     getHeaderData();
