@@ -26,6 +26,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../.
 import { FilterPageName, pagination, UIGridCode } from "../../Common/Enum";
 import useColDef from "../../../../../hooks/useColDef";
 import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Common/DBRSettings";
+import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
 
 
 
@@ -383,6 +384,12 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         getSimulationEnable();
     },[])
 
+    const childCustomHeaders = {
+        clr:{
+            cellRenderer : ChildrenColor
+          }
+    }
+
     useEffect(() => {
         if(HeaderData && HeaderData.length>0 && simulationEnable){
             if (currentTab?.label === 'Shortage') {
@@ -402,7 +409,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
     useEffect(()=>{
         if(childHeaderData && childHeaderData.length>0){
-            setChildColDef(getColumnDefinations(childHeaderData))
+            setChildColDef(getColumnDefinations(childHeaderData,childCustomHeaders))
         }
     },[childHeaderData])
 
