@@ -78,10 +78,12 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 
 const useProcPlanning = (date: string, appliedFilters: any) => {
     const [HeaderData, setHeaderData] = useState<any>([]);
+    const [childHeaderData, setChildHeaderData] = useState<any>([])
     const gridRef = useRef<any>(null);
     const [columnState, setColumnState] = useState<any>([]);
     const [isReset, setIsReset] = useState<boolean|undefined>(undefined);
     const [colDef, setColDef] = useState<any>([{}]);
+    const [childColDef, setChildColDef] = useState<any>([{}])
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -102,6 +104,13 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             setHeaderData(response.data.data);
         }
         catch (e) {
+            console.log(e);
+        }
+        try{
+            const reponse = await getUIConfigData("ProcPlanningReportChildren");
+            setChildHeaderData(reponse.data.data);
+        }
+        catch(e){
             console.log(e);
         }
     }
@@ -390,6 +399,12 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             }
         }
     }, [HeaderData,simulationEnable])
+
+    useEffect(()=>{
+        if(childHeaderData && childHeaderData.length>0){
+            setChildColDef(getColumnDefinations(childHeaderData))
+        }
+    },[childHeaderData])
 
     const icons = useMemo(() => {
         return {
@@ -814,6 +829,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         },
         masterDetail: true,
         detailCellRenderer: ChildrenProcPlanningCellRenderer,
+        detailCellRendererParams: {
+            colDef: childColDef
+        },
         detailRowHeight: 225,
         autoGroupColumnDef: autoGroupColumnDef,
         enterNavigatesVertically: true,
