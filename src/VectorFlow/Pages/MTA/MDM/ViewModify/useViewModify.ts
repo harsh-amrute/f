@@ -670,13 +670,19 @@ const useViewModify = (pageType:string) => {
 
     const generateDraftPayload = (rowData:any,draftId?:string)=>{
       const pathName = window.location.pathname.split('/')
-      const instanceName = activeMaster?.name || '';
+      const instanceName = activeMaster
+      ? activeMaster.id == 12
+          ? 'DeltaPercentageSeasonality'
+          : activeMaster.id == 11
+          ? 'AbsoluteValueSeasonality'
+          : activeMaster?.name || ''
+      : '';      
       // masters.map((master:MDMMasterState)=>{
       //   instanceName += ` ${master.name}`
       // })
       return{
         instanceName:instanceName,
-        searchKey:activeMaster.name,
+        searchKey:instanceName, 
         actionType:getActionId(pathName[pathName.length-1]).id,
         draftId:draftId,
         // draftData:masters.map((master:MDMMasterState)=>{
