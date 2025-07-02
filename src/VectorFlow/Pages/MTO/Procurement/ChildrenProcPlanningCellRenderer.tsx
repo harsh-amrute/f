@@ -6,7 +6,6 @@ import ChildrenColor from "../Common/ChildrenColor/ChildrenColor";
 import { ChildTableWrapper } from './Planning/styles';
 
 const ChildrenProcPlanningCellRenderer = (params: any) => {
-    console.log("params. in child", params);
     const {colDef} = params
 
     const customChildrenCellRenderers = useMemo(() => ({

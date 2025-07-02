@@ -49,11 +49,11 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
               data: queryString,
               isExcelExport: 1,
               body,
-              report_name: FilterPageName.Proc_MaterialCoverageforOpenSalesOrder_Child
+              report_name: FilterPageName.Proc_Material_Coverage_For_OpenSO
             });
       
             if (response.status === 200) {
-              DownloadExcel(response, FilterPageName.Proc_MaterialCoverageforOpenSalesOrder_Child);
+              DownloadExcel(response, FilterPageName.Proc_Material_Coverage_For_OpenSO);
               notifySuccess("Excel Export Successfully");
             } else {
               notifyError("Failed to export Excel");
