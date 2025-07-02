@@ -9,13 +9,7 @@
         "plugin:import/typescript"
     ],
     "parser": "@typescript-eslint/parser",
-    "overrides": [
-        {
-            "files": ["src/VectorFlow/Services/MTO/Common/DBRSettings/api.ts"],
-            "excludedFiles": "**/*"// ignore everything in this override
-          }
-      
-    ],
+    "overrides": [],
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module",

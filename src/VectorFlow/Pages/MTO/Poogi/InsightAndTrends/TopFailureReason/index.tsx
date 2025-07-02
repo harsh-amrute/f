@@ -218,7 +218,6 @@ const TopFailureReasons = () => {
   useEffect(() => {
     if (isReset) {
       handleSaveClick(masterUIConfig);
-      console.log("Resetting to master UI config", masterUIConfig);
       setIsReset(false);
     }
   }, [isReset]);
