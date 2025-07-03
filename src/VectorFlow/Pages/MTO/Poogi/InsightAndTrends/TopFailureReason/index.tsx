@@ -64,6 +64,7 @@ const TopFailureReasons = () => {
   const [masterUIConfig, setMasterUIConfig] = useState([]);
   const [userPageSize, setUserPageSize] = useState<number>();
   const [userConfigFetched, setUserConfigFetched] = useState(false);
+  console.log(colDef,"colDef");
 
   const reportName = "TopFailureReasons";
 
@@ -197,6 +198,7 @@ const TopFailureReasons = () => {
   }
 
   useEffect(() => {
+    console.log("HeaderData", HeaderData);
     setColDef(getColumnDefinations(HeaderData, colDefCustomizations))
   }, [HeaderData])
 
