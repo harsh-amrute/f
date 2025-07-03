@@ -6,9 +6,7 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import ActionToolBar from "../Planning/ActionToolBar";
 import { useState } from "react";
-import DatePicker from "../../../../../components/VectorFLOW/commons/MTO/DatePicker"
-import { render, fireEvent } from '@testing-library/react';
-   
+import VFSave from "./VFSave";
 
 const ElephantOrder = () => {
   
@@ -36,7 +34,8 @@ const ElephantOrder = () => {
     ref,
     agGridProps,
     generalFilterOptions,
-    onResetCallback
+    onResetCallback,
+    onSubmitDueDate
   } = useElephantOrders();
 
       const [isDisabled, setIsDisabled]= useState<boolean>(true)
@@ -83,7 +82,7 @@ const ElephantOrder = () => {
       {(isLoading )?(
           <VFLoader/>
         ):
-      (<div style={{height:'70vh'}}>
+      (<div style={{height:'60vh'}}>
        <VFTable
                   ref={ref}
                   {...agGridProps}
@@ -112,6 +111,8 @@ const ElephantOrder = () => {
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
               />
+              <VFSave onSubmitRemarks={onSubmitDueDate}/>
+
             </div>
         </div>
       )}
@@ -128,15 +129,4 @@ const ElephantOrder = () => {
   );
 };
 
-describe('DatePicker', () => {
-  it('should update value when date changes', () => {
-      const setDate = jest.fn();
-      const { getByDisplayValue } = render(<DatePicker date="2024-06-26" setDate={setDate} type="date" />);
-
-      const input = getByDisplayValue('2024-06-26');
-      fireEvent.change(input, { target: { value: '2024-06-27' } });
-
-      expect(setDate).toHaveBeenCalledWith('2024-06-27');
-  });
-});
 export default ElephantOrder;

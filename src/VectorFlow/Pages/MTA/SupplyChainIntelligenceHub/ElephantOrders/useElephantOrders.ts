@@ -1,6 +1,6 @@
 
 import { useGetEOUIConfiguration ,useGetEOData,useGetEODataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/ElephantOrders/index';
-import { convertUiConfigToOptions, getColumnDefinationsMTA, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
+import { convertUiConfigToOptions, getCellFilter, getColumnDefinationsMTA, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
@@ -12,11 +12,12 @@ import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants'
 import { GridRef } from '../../../../types/MDM';
 import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig';
 import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum';
+import DateCellRenderer from './DateCellRenderer';
 
 const useElephantOrders= ()=>{
 
     const ref = useRef<GridRef>();
-
+    const [editedRows,setEditedRows] = useState<Array<any>>([])
     const [internalRef,setInternalRef] = useState<any>()
     const [gridState,setGridState] = useState<any>()
     const [EOCount,setEOCount]=useState<any>()
@@ -33,7 +34,6 @@ const useElephantOrders= ()=>{
     const {mutateAsync:getEOData, isLoading: isEODataLoading} =useGetEOData();
     const {mutateAsync:getEODataCount,isLoading:isEODataCountLoading}=useGetEODataCount();
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
-
     const {mutateAsync:getState} = useGetState()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
@@ -62,7 +62,22 @@ const useElephantOrders= ()=>{
             notifyError(err)
         }
     }
-  
+    const onSubmitDueDate =async () => {
+        try {
+            if (editedRows.length === 0) {
+              notifyError('Please add a due date to save');
+              return;
+            }
+        
+            const toastId = notifyLoader("Submitting Due Dates");
+        
+        
+            toast.dismiss(toastId);
+          } catch (err: any) {
+            notifyError(err.message);
+          }
+    }
+
     const getBPRUiConfig = async () => {
         try {
             const response = await getUiConfig(UIColumnConfigName.EO);
@@ -76,7 +91,25 @@ const useElephantOrders= ()=>{
             const getTableState = async () => {
                 try {
                     const MappedColumns = getColumnDefinationsMTA(initialColumnState, CustomHeader);
-                      
+                    console.log("MappedColumns = ",MappedColumns)
+                    
+                    if (!MappedColumns.some((col: any) => col.field === 'Due Date')) {
+                        MappedColumns.push({
+                            headerName: "Action",
+                            field: "dueDateAction",
+                            cellRenderer: DateCellRenderer ,
+                            editable: true,
+                            width: 200,
+                            suppressMenu: true,
+                            cellRendererParams: {
+                                onDateChange: (newDate: string) => {
+                                  console.log("User selected new date:", newDate);
+                                },
+                            },
+                            
+                        });
+                    }
+                   
                     setGridState({
                         charts: [],
                         columns: MappedColumns,
@@ -137,7 +170,7 @@ const useElephantOrders= ()=>{
                 recordsPerPage:rowsPerPage
             }
         })
-        console.log("Data Count = ",);     
+        console.log("Data Count = ",DataCount.data["recordCount"]);     
         setEOCount(DataCount.data["recordCount"]);
 
     }
@@ -182,7 +215,7 @@ const useElephantOrders= ()=>{
         },
         WHDescription: {
             rowGroup: false,
-        },
+        }
     }
 
     const agGridProps: AgGridReactProps = useMemo(() => {
@@ -326,7 +359,8 @@ const useElephantOrders= ()=>{
         agGridProps,
         ref,
         generalFilterOptions,
-        onResetCallback
+        onResetCallback,
+        onSubmitDueDate
     }
     
 
