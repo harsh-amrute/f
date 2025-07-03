@@ -10,7 +10,7 @@ export namespace TopFailureReasonsService {
                     'Content-Type': 'application/json',
                 },
                 params: {
-                    graphflag,
+                    graphflag
                 }
             })
         }

@@ -22,7 +22,6 @@ import { useUserData } from "../../../../../../context/index";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
 import BPPRenderer from "../../../Common/BPRRenderer/BPPRenderer";
-import useColDef from "../../../../../../hooks/useColDef";
 
 
 const APIFilterConfig = {
@@ -42,7 +41,7 @@ const TopFailureReasons = () => {
   const [graphData, setGraphData] = useState<any>({});
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState<any>();
   const [colDef, setColDef] = useState([{}]);
   const [HeaderData, setHeaderData] = useState([]);
   const [filterData, setFilterData] = useState({});
@@ -230,7 +229,6 @@ const TopFailureReasons = () => {
   }, [colDef, currentGridRef]);
 
   const themeUi = user?.user?.theme_ui;
-  console.log("isGridView", isGridView);
 
   return (
     <div>
