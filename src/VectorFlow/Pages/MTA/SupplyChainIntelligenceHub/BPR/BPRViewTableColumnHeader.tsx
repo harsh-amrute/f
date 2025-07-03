@@ -17,12 +17,14 @@ const BPRViewTableColumnHeader = ({colDef,query}:{colDef:BPRViewTableColDef,quer
     })
     const filterRef = useRef<HTMLDivElement>(null)
 
-    const handleClick = (e:React.MouseEvent<HTMLDivElement>)=>{
-        const {top, left} = e.currentTarget.getBoundingClientRect()
-        setFilterPosition({top:(top * 0.8) + 20, left:(left * 0.8) - 85})
-        setFilterOpen((prev)=>!prev)
-        e.stopPropagation()
-    }
+    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        const { top, left } = e.currentTarget.getBoundingClientRect();
+        const newTop = top + e.currentTarget.offsetHeight + 10; 
+        const newLeft = left - 85; 
+        setFilterPosition({ top: newTop, left: newLeft });
+        setFilterOpen((prev) => !prev);
+        e.stopPropagation();
+    };
 
     const handleClickAway = (e: MouseEvent) => {
         if (filterRef.current && !filterRef.current.contains(e.target as Node)) {

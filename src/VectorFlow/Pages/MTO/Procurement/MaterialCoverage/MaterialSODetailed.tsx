@@ -19,9 +19,10 @@ interface MaterialSODetailedProps {
     userConfigFetched:any,
     userPageSize:any,
     setUserPageSize:any
+    childColDef:any
 }
 
-    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize}: MaterialSODetailedProps, ref) => {
+    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef}: MaterialSODetailedProps, ref) => {
     const {
         agGridProps,
         RRRRowData,
@@ -31,7 +32,7 @@ interface MaterialSODetailedProps {
         currentPage,
         ExcelExportData,
         savePageSize,
-    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize);
+    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef);
     const gridRef = useRef<any>(null);
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true);

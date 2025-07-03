@@ -21,7 +21,9 @@ interface GridProps {
     excelStyles?: any,
     customPageSize?:boolean,
     savePageSize?: (e: any) => void,
-    userPageSize?:any
+    userPageSize?:any,
+    detailCellRendererParamsConfig?:any
+
 }
 
 const GridView = memo(({
@@ -38,6 +40,7 @@ const GridView = memo(({
     saveBtn = true,
     customPageSize=false,
     userPageSize,
+    detailCellRendererParamsConfig,
     savePageSize}: GridProps) => {
 
     const rowsPerPage = userPageSize || Number(process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE) || pagination.mtoPageSize;
@@ -47,6 +50,7 @@ const GridView = memo(({
     const themeUi = user?.user?.theme_ui;
         
     const [isDisabled, setIsDisabled]= useState<boolean>(true);
+
 
     return (
         <>
@@ -64,6 +68,8 @@ const GridView = memo(({
                     rowSelection={'multiple'}
                     detailRowAutoHeight
                     tooltipMouseTrack={true}
+                    masterDetail={detailCellRendererParamsConfig?.masterDetail}
+                    detailCellRendererParams={detailCellRendererParamsConfig?.detailCellRendererParams}
                     //defaultColDef={{maxWidth:150}}
                     onGridReady = {()=>{
                         if(onGridReady){

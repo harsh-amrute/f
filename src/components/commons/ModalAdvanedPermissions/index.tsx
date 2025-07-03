@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import "./styles.css";
 import { useTranslation } from "react-i18next";
 import { notifyError, notifySuccess, notifyWarning } from "../../../helpers/notify";
@@ -8,6 +8,7 @@ import LoadingSpinner from "../LoadingSpinner";
 import PrdPermissions from "../../../components/layouts/ProductPermission/common-mulselect";
 import LcPermissions from "../../../components/layouts/LocationPermission/common-mulselect";
 import UserMangementStepper from "../../VectorFLOW/commons/UserManagementStepper";
+import { useGetDBRsettingsData } from '../../../VectorFlow/Services/MTO/Common/DBRSettings';
 import {
   formDataPermission,
   handleSelectParent,
@@ -16,12 +17,13 @@ import {
 } from "./common-func";
 import { useUserData } from "../../../context";
 import _ from "lodash";
+import { APPLICATION_NAMES } from "../../../helpers/constants";
 
 const ModalAdvanedPermissions = (props: any) => {
   const { t } = useTranslation();
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-
+  const [isMTOPermissionsRequired, setIsMTOPermissionsRequired] = useState(false);
 
   const {
     openModal,
@@ -48,7 +50,18 @@ const ModalAdvanedPermissions = (props: any) => {
   const [isLoadSpinner, setIsLoadSpinner] = useState<any>(false);
   const { mutateAsync: mutateRegister } = useRegisterUser();
   const { mutateAsync: mutatePutEditUser } = usePutEditUser();  
+  const {mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
 
+  const getSettingsData = async () => {
+    const DBRSettingsData: any = await getDBRsettingsData()
+    const DBRSettings = DBRSettingsData.data?.data;
+    setIsMTOPermissionsRequired(DBRSettings?.find((DBRSetting: any) => DBRSetting.flag === "isPermissionRequiredMTO")?.value == 1 ? true : false || false);
+  };
+  
+  useEffect(() => {
+    getSettingsData()
+  }, []);
+  
   const backModalUser = () => {
  
     //Reset Current Application Permissions
@@ -107,8 +120,6 @@ const ModalAdvanedPermissions = (props: any) => {
       if(index===storePermission.length-1){
         product = prdPermissionRef.current?.getPrdPermissionValue();
         location = lcPermissionRef.current?.getLcPermissionValue();
-
-       
 
         //Store Permissions
         const storePermissionCopy = [...storePermission]
@@ -171,19 +182,44 @@ const ModalAdvanedPermissions = (props: any) => {
 
     if(!isValid)return;
 
-    const { brand} =
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      prdPermissionRef.current?.getPrdPermissionValue();
+    const application_names = [APPLICATION_NAMES.MTA, APPLICATION_NAMES.MTO];
+    const applicationIds = storePermission
+      .filter((dataAllPermission: any) => application_names.includes(dataAllPermission.application_name))
+      .map((filterItem: any) => filterItem.application_id);
+    
+    if (!applicationIds.length) {
+      notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"));
+      return;
+    }
 
-      const { lcRegion} =
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      lcPermissionRef.current?.getLcPermissionValue();
-
-      console.log(brand,"brand");
-      console.log(lcRegion,"lcRegion")
+    //check if permissions are filled for MTA, have added check for MTA.
+    const MTARole = storePermission.find((storePermission: any) => storePermission.application_name == APPLICATION_NAMES.MTA);
+    const isProductPermission = productPermissions.find((productPermission: any) => productPermission.application_id == MTARole?.application_id)?.permissions;
+    const isLocationPermission = locationPermissions.find((locationPermission: any) => locationPermission.application_id == MTARole?.application_id)?.permissions;
       
-    // if(brand?.length > 0 && lcRegion?.length > 0) {
-      // setIsLoadSpinner(true);
+    if (MTARole && (!isProductPermission || !isLocationPermission)) {
+      notifyError(
+        t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermissionMTA")
+      );
+      setIsLoadSpinner(false);
+      return;
+    }
+    
+    const MTORole = storePermission.find((storePermission: any) => storePermission.application_name == APPLICATION_NAMES.MTO);
+    if (MTORole && isMTOPermissionsRequired) {
+      const isMTOProductPermission = isMTOPermissionsRequired && productPermissions.find((productPermission: any) => productPermission.application_id == MTORole?.application_id)?.permissions;
+      const isMTOLocationPermission = isMTOPermissionsRequired && locationPermissions.find((locationPermission: any) => locationPermission.application_id == MTORole?.application_id)?.permissions;
+
+      if (!isMTOProductPermission || !isMTOLocationPermission) {
+        notifyError(
+          t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermissionMTO")
+        );
+        setIsLoadSpinner(false);
+        return;
+      }
+    }
+      
+      setIsLoadSpinner(true);
       const formData: any = {
         ...infoUser,
         tc: true,
@@ -204,8 +240,6 @@ const ModalAdvanedPermissions = (props: any) => {
         }
       })
 
-
-      setIsLoadSpinner(true);
       if (contentModal.callApi === 1 ) {
         mutateRegister(formData, {
           onSuccess: (res: any) => {
@@ -223,8 +257,10 @@ const ModalAdvanedPermissions = (props: any) => {
                 notifyError(element);
               });
             } else {
-              notifySuccess(res?.data?.msg.message);
-              notifyWarning(res?.data?.msg.warning);
+              notifySuccess(res?.data?.msg || res?.data?.msg?.message);
+              if (res?.data?.msg.warning) {
+                notifyWarning(res?.data?.msg.warning);
+              }
               setStorePermission([]);
               closeModal();
               refetch();
@@ -276,13 +312,6 @@ const ModalAdvanedPermissions = (props: any) => {
           },
         });
       }
-    // } else {
-    //   notifyError(
-    //     "somethin .."+
-    //     t("profile.tabContent.manageUsers.notifyError.PleaseSelectPermission")
-    //   );
-    //   setIsLoadSpinner(false);
-    // }
   };
 
   const saveAndGoToNext = () => {

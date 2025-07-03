@@ -73,16 +73,12 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
 
     useEffect(()=>{
         if(gridState && Array.isArray(gridState.columns) && gridState.columns.length !== 0){
-            ref?.current?.api?.applyColumnState({state:gridState.columns,applyOrder:true})
-            ref?.current?.api?.sizeColumnsToFit();
-        }else{
-            if(ref && ref.current){
-                ref?.current?.api?.sizeColumnsToFit();
-            }
-        }
-    },[gridState, ref])
+            ref?.current?.api?.applyColumnState({state: gridState.columns,applyOrder: true});
 
+        }
+    }, [gridState, agGridColDefs, agGridRowData, ref])
     
+      
      const clearGridFilter = () =>{
               ref?.current?.api.setFilterModel(null);
                 setIsDisabled(true);
@@ -177,8 +173,8 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                             {...agGridProps}
                             columnDefs={agGridColDefs}
                             rowData={agGridRowData}
+                            maintainColumnOrder={true}
                             height={gridHeight ? gridHeight : '380px'}
-                            maintainColumnOrder
                             statusBar={{
                                 statusPanels: [
                                     { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
@@ -214,6 +210,7 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
                                 ref={ref}
                                 {...agGridProps}
                                 columnDefs={agGridColDefs}
+                                maintainColumnOrder={true}
                                 rowData={agGridRowData}
                                 height={gridHeight ? gridHeight : '380px'}
                                 statusBar={{

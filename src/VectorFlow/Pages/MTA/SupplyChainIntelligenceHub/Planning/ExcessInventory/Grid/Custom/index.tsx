@@ -81,7 +81,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
         gridState.columns?.length !== 0 
       ) {
         ref?.current?.api?.applyColumnState({ state: gridState.columns, applyOrder: true });
-        ref?.current?.api?.sizeColumnsToFit();
+        // ref?.current?.api?.sizeColumnsToFit();
         ref?.current?.api?.setGridOption("pivotMode", gridState.pivot);
       }
     }, [ref,gridState]);
@@ -145,13 +145,6 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
         toolPanel: "agColumnsToolPanel",
         // toolPanelParams: {},
       },
-      {
-        id: 'filters',
-        labelDefault: 'Filters',
-        labelKey: 'filters',
-        iconKey: 'filter',
-        toolPanel: 'agFiltersToolPanel',
-      }
     ],
     defaultToolPanel:'',
     }
@@ -203,6 +196,12 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
+                cellStyle: {
+                  textAlign: "center",
+                  fontStyle: "normal",
+                  fontVariant: "normal",
+                  height: "50px", 
+                }
                 }}
                 pivotMode={false}
                 suppressDragLeaveHidesColumns={true}
@@ -210,6 +209,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 rowHeight={30}
                 height={'100%'}
                 maintainColumnOrder
+                suppressColumnVirtualisation={true}
             />
         </SCDynamicContainer>
         </>

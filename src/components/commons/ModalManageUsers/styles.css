@@ -438,3 +438,8 @@
     font-size: 1.8rem;
   }
 }
+
+.required:after {
+  content:" *";
+  color: red;
+}

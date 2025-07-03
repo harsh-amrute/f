@@ -66,7 +66,7 @@ function ForgotPasswordContainer() {
     if (recaptchaValue) {
       mutateForgotPassword(data, {
         onSuccess: (data: any) => {
-          setMessage(data.data.msg);
+          setMessage(data?.data?.msg);
           if (data?.status === 400) {
             recaptchaRefFP.current?.reset();
             notifyError(data?.response?.msg[0]);

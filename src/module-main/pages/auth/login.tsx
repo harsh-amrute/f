@@ -47,7 +47,7 @@ function LoginContainer() {
   } = form;
 
   const { mutate: mutateLogin,isLoading } = useLoginAccount();
-  const [remember, setRemember] = useState(true);
+  // const [remember, setRemember] = useState(true);
   const recaptchaRef: any = useRef();
 
   const onSave = async () => {
@@ -60,7 +60,6 @@ function LoginContainer() {
       formData.password = await hashPassword(formData.password)
       mutateLogin(formData, {
         onSuccess: (data: any) => {
-
           if (data?.status !== 200) {
             if(data.response.msg==='User is inactive please contact admin'){
               notifyError("User is inactive please contact admin")
@@ -87,7 +86,11 @@ function LoginContainer() {
           }
         },
         onError(error: any) {
-          notifyError(error?.error?.non_field_errors[0]);
+          if (error?.code === "ERR_NETWORK") {
+            notifyError(t("loginPage.notify.networkError"));
+          } else {
+            notifyError(error?.error?.non_field_errors[0]);
+          }
         },
       });
     } else {
@@ -146,17 +149,19 @@ function LoginContainer() {
                 <IputLogin
                   type="password"
                   {...register("password", {
-                    required: true,
-                    minLength: {
-                      value: 8,
-                      message: t("loginPage.validate.password"),
-                    },
+                    required: true
                   })}
                   placeholder={t("loginPage.placeholder.password")}
                 />
               </InputGroup>
-              <Errors errors={errors} name="password" />
+              <Errors style={{ marginLeft: "30px" }} errors={errors} name="password" />
             </InputArea>
+            <ChangePassText>
+              <LinkRouter to={"/forgot-password"}>
+                {t("loginPage.forgotPassword")}
+              </LinkRouter>
+            </ChangePassText>
+            
 
             <ReCAPTCHA
               className="recaptcha"
@@ -165,7 +170,7 @@ function LoginContainer() {
               sitekey={SITE_KEY}
             />
 
-            <KeepSingIn>
+            {/* <KeepSingIn>
               <div>
                 <CheckboxButton
                   type="checkbox"
@@ -181,7 +186,7 @@ function LoginContainer() {
                   {t("loginPage.forgotPassword")}
                 </LinkRouter>
               </ChangePassText>
-            </KeepSingIn>
+            </KeepSingIn> */}
 
             <SCButtonLogin disabled={isLoading}>
               <ButtonSubmit>
