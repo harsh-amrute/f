@@ -195,7 +195,7 @@ const useAdd=()=>{
           for(let i=0; i < rowData.length; i+=chunkSize){
           
               if(i+chunkSize < rowData.length){
-                payload.data = activeMaster.rowData.slice(i,i+chunkSize);
+                payload.data = rowData.slice(i,i+chunkSize);
                 toast.update(toastId,{render:`Submitting Data ${i+chunkSize}/${rowData.length}`})
                 submitProgress+=chunkSize;
               }
@@ -213,7 +213,7 @@ const useAdd=()=>{
 
               if(taskId === '' && i!==0) throw new Error("Something Went Wrong");
 
-              if(TASK_ID === ''){
+              if(TASK_ID === ''  || TASK_ID === undefined){
                 payload.TaskId = data.data.taskId;
                 taskId = data.data.taskId;
               }
