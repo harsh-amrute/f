@@ -15,9 +15,8 @@ import OverlayLoader from '../../../../../../../VectorFlow/Pages/MTO/Common/Load
 
 const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, setRmHorizon: (day: any) => void, getFilterData: () => void, appliedFilters: any }) => {
     const { date, rmHorizon, setRmHorizon, getFilterData, appliedFilters } = props;
-    const { mutateAsync: getRMPMExpedition } = useGetRMExpeditingData()
+    const { mutateAsync: getRMPMExpedition , isLoading: loading} = useGetRMExpeditingData()
     const [numericData, setNumericData] = useState<any>();
-    const [loading,setLoading] = useState<boolean>(false);
     
     let RMPMExpeditionOBj = {}
     useEffect(() => {
@@ -120,7 +119,6 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
     const getRMHorizonBasedData = async () => {
         //setNumericData(null)
         try {
-            setLoading(true);
             RMPMExpeditionOBj = {
                 'horizon': rmHorizon,
                 'val': 'rm'
@@ -131,9 +129,6 @@ const ExpeditingMTO = (props: { isMTO: boolean, date: string, rmHorizon: any, se
         } catch (error) {
             console.log("Error fetching RM expediting data:", error);
             notifyError("Failed to fetch RM expediting data. Please try again later.");
-        }finally{
-            setLoading(false);
-
         }
     }
 
