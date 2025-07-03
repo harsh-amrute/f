@@ -5,7 +5,7 @@ import { useState, useMemo, useContext, useEffect } from "react";
 import VFMultiFilter from "../../../../../../components/VectorFLOW/commons/VFMultiFilter";
 import { useLocation, Link } from "react-router-dom";
 import useSaveAllState from "../../../../../../hooks/useSaveAllState";
-
+import Tooltip from '../../../../../../../src/VectorFlow/Pages/MTO/Common/Tooltip';
 import {
   SCTaskBarContainer,
   SCGoBackContainer,
@@ -29,6 +29,7 @@ import { UPDATE_PLANNING_DATA } from "../../../../../../redux/actions/MTA";
 import { RootState } from "../../../../../../redux/store/store";
 import useGetLocation from "../../../../../../hooks/useGetLocation";
 import { Skeleton } from "../../../../../../components/commons/styled";
+import ConfirmationDataModal from "../../../DBM/DBMNormSuggestions/ConfirmationModal";
 
 interface ActionToolBarProps {
   view: string;
@@ -104,10 +105,13 @@ const ActionToolBar = ({
   const themeUi = user?.user?.theme_ui;
   const [isFilterOpen, toggleFilter] = useState<boolean>(false);
   const [isFilterButtonVisible,setIsFilterButtonVisible] = useState<boolean>(false);
-
-  
- 
- 
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+    const closeModal = () => {
+    setIsConfirmationModalOpen(false);
+  };
+  const handleFailure = () => {
+    closeModal();
+  };
   const handleApplyFilter = (params: any) => {
     if (onApplyFilter) onApplyFilter(params);
     toggleFilter(false);
@@ -916,19 +920,34 @@ const ActionToolBar = ({
             {currCategory === "DBMNorm" ? (
               <DBMApplyNormChange onCheck={showAllTick} />
             ) : null}
-            {currCategory === "DBMNorm" ? (
-              <img
-                style={{ cursor: "pointer" }}
-                src={
-                  themeUi === "REGALBLAZE"
-                    ? "/assets/img/Group 627-regal.svg"
-                    : "/assets/img/Group 627.svg"
-                }
-                height={50.02}
-                width={76.83}
-                onClick={handleGoButton}
-              />
-            ) : null}
+           {currCategory === "DBMNorm" ? (
+  <Tooltip
+    content={
+      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>{"Sleep"}</div>
+    }
+    tooltipZoom={1}
+  >
+    <img
+      style={{ cursor: "pointer" }}
+      src={
+        themeUi === "REGALBLAZE"
+          ? "/assets/img/Group 627-regal.svg"
+          : "/assets/img/Group 627.svg"
+      }
+      height={50.02}
+      width={76.83}
+      onClick={()=>{setIsConfirmationModalOpen(true)}}
+    />
+  </Tooltip>
+) : null}
+ {isConfirmationModalOpen && (
+        <ConfirmationDataModal
+          onSuccess={handleGoButton}
+          onFailure={handleFailure}
+          onCloseModal={closeModal}
+        />
+      )}
+
             {/* (currCategory === 'GuidedInsight' && view!=='grid') :null ?
             <VFSelectedFilters filters={multiFilter} onRemoveFilter={onDelete}></VFSelectedFilters> */}
             {/* }

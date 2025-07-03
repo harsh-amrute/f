@@ -1,13 +1,11 @@
 import { useMemo } from 'react';
 import VFTable from '../../Common/VFTable';
 import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
-import { HeaderChildren } from './Data';
-import { mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../helpers/utils';
 import { SCDynamicContainer } from './styles';
 const MaterialCellRenderer = (params: any) => {
     //  const {HeaderChildren} = HeaderChildren
-    const columnDef = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren)
-
+    // const columnDef = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren)
+    const {colDef} = params
     const customChildrenCellRenderers = useMemo(() => ({
         "coloPriorityOfBall": ChildrenColor,
     }), []);
@@ -19,10 +17,9 @@ const MaterialCellRenderer = (params: any) => {
             <SCDynamicContainer>
                 <VFTable
                     className='child-grid'
-                    columnDefs={columnDef}
+                    columnDefs={colDef}
                     disableZoomScaling
                     defaultColDef={{
-
                         cellStyle: {
                             'flex': 1,
                             'text-align': 'center',
@@ -39,7 +36,7 @@ const MaterialCellRenderer = (params: any) => {
                             "display": "block",
                         },
                         flex: 1,
-                    floatingFilter: true, 
+                    floatingFilter: false, 
                     filter: true, 
                     menuTabs: ["filterMenuTab"],       
                     }}

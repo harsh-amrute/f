@@ -203,6 +203,7 @@ const ExcessInventoryCustomCharts = ({recordCount}:{recordCount:any}) => {
                 rowHeight={30}
                 height={'100%'}
                 maintainColumnOrder
+                suppressColumnVirtualisation={true}
             />
         </SCDynamicContainer>
         </>

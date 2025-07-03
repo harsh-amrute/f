@@ -203,6 +203,7 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 }}
                 disableZoomScaling={true}
                 rowHeight={30}
+                suppressColumnVirtualisation={true}
             />
         </SCDynamicContainer>
         </>

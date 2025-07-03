@@ -6,8 +6,7 @@ import ChildrenColor from "../Common/ChildrenColor/ChildrenColor";
 import { ChildTableWrapper } from './Planning/styles';
 
 const ChildrenProcPlanningCellRenderer = (params: any) => {
-    const { HeaderChildren } = GetProcHeaderChildren;
-    const ProcPlanningChildrenColumns = mapProcPlanningChildrenFieldsToColDefs(HeaderChildren);
+    const {colDef} = params
 
     const customChildrenCellRenderers = useMemo(() => ({
         "coloPriorityOfBall": ChildrenColor
@@ -21,7 +20,7 @@ const ChildrenProcPlanningCellRenderer = (params: any) => {
                     data-testid='VFTable'
                     disableZoomScaling
                     className='child-grid'
-                    columnDefs={ProcPlanningChildrenColumns}
+                    columnDefs={colDef}
                     defaultColDef={{
                         cellStyle: {
                             'text-align': 'center',

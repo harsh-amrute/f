@@ -4,20 +4,20 @@ import { mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../../help
 import GetSimulateHeaderChildren from './GetSimulateChildrenHeader.json';
 import ChildrenColor from "../../../Common/ChildrenColor/ChildrenColor";
 
-const DetailCellRenderer = (params: any) => {
-    const { HeaderChildren } = GetSimulateHeaderChildren;
-    const SimulateChildrenColumns = mapSimulateHedaerChildrenFieldsToColDefs(HeaderChildren);
-
+const DetailCellRenderer = (params: any, childColDef:any) => {
+    const columnDef = params?.colDef
+    const rowData = params?.data?.children   
     const customChildrenCellRenderers = useMemo(() => ({
         "coloPriorityOfBall": ChildrenColor
     }), []);
+
 
     return (
         <div style={{ backgroundColor: 'white' }}>
             <h3 style={{ marginLeft: 20, fontSize: 17 }}>Raw Material Details</h3>
             <VFTable
                 className='child-grid'
-                columnDefs={SimulateChildrenColumns}
+                columnDefs={columnDef}
                 defaultColDef={{
                     cellStyle: {
                         'flex': 1,
@@ -36,7 +36,7 @@ const DetailCellRenderer = (params: any) => {
                     },
                     flex: 0,
                 }}
-                rowData={params.data.children}
+                rowData={rowData}
                 height={'260px'}
                 pagination={true}
                 components={customChildrenCellRenderers}
