@@ -75,7 +75,7 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
     useEffect(()=>{
         if(ref?.current && gridState && gridState?.columns.length>0){
             ref?.current?.api.applyColumnState({state:gridState.columns, applyOrder:true})
-            ref?.current?.api.sizeColumnsToFit();
+            // ref?.current?.api.sizeColumnsToFit();
             ref?.current?.api.setGridOption('pivotMode',gridState.pivot)
         }
     },[gridState,ref])
@@ -200,9 +200,16 @@ const OrderFulfillmentCustomCharts = ({recordCount}:{recordCount:any}) => {
                 defaultColDef={{
                 floatingFilter:true,
                 filter: "agMultiColumnFilter",
+                cellStyle: {
+                  textAlign: "center",
+                  fontStyle: "normal",
+                  fontVariant: "normal",
+                  height: "50px", 
+                }
                 }}
                 disableZoomScaling={true}
                 rowHeight={30}
+                suppressColumnVirtualisation={true}
             />
         </SCDynamicContainer>
         </>

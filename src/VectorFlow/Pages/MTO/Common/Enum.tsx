@@ -88,6 +88,7 @@ export enum FilterPageName {
     Proc_RM_PM_OrderWise="Proc_RM_PM_OrderWise",
     Proc_RM_PM_BufferTrend= "Proc_RM_PM_BufferTrend",
     Proc_Expediting_RM_And_Suppliers= "Proc_Expediting_RM_And_Suppliers",
+    Proc_MaterialCoverageforOpenSalesOrder_Child= "MaterialCoverageforOpenSalesOrder_Child",
 
     Prod_DDQ= "Prod_DDQ",
     Prod_FullKit_Assignment="Prod_FullKit_Assignment",
