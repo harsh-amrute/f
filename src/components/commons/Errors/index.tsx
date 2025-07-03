@@ -1,8 +1,9 @@
 interface ErrorsProps {
   errors: any
   name: string
+  style?: any
 }
-const Errors = ({ errors, name }: ErrorsProps) => {
+const Errors = ({ style, errors, name }: ErrorsProps) => {
   const renderError = () => {
     const text = name.replace(/_/g, " ")
     switch (errors[name].type) {
@@ -23,7 +24,7 @@ const Errors = ({ errors, name }: ErrorsProps) => {
     }
   }
   return (
-    <p style={{ color: 'red', marginTop: 10, fontSize: 12,maxWidth:'350px', }}>
+    <p style={{ color: 'red', marginTop: 10, fontSize: 12,maxWidth:'350px',...style}}>
       {errors[name] && renderError()}
     </p>
   )
