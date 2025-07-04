@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
@@ -22,6 +22,7 @@ import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
 import { } from "../../../../Services/MTA/MDM";
 import { SeasonalityQuickFilterType, type Filter } from "../../../../types/MDM";
 import VFTable from "../../Common/VFTable";
+import { CustomStatusPanel } from "../CustomStatusPannel";
 import CalenderModalCard from "./CalenderModalCard";
 import {
   MTOPoogiTableContainer,
@@ -50,6 +51,9 @@ import WarningModal from "./WarningModal";
 const MTOViewModify = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+  const [isDisabledPoogi1,setIsDisabledPoogi1,] = useState(true)
+  const [isDisabledPoogi2,setIsDisabledPoogi2,] = useState(true)
+
 
   // const disabled=true;
   // const dummyFn =()=>{return}
@@ -167,6 +171,17 @@ const MTOViewModify = () => {
       }
     }
   }, [isTableDataLoading]);
+
+  const tempRefPoogi = React.useRef<any>(null);
+
+  const clearGridFilterPoogi1 = () =>{
+    ref?.current?.api.setFilterModel(null);
+      setIsDisabledPoogi1(true);
+  }
+  const clearGridFilterPoogi2 = () =>{
+    tempRefPoogi?.current?.api.setFilterModel(null);
+    setIsDisabledPoogi2(true);
+  }
 
   return (
     <>
@@ -318,6 +333,16 @@ const MTOViewModify = () => {
                             align: "left",
                           },
                           {
+                                    statusPanel: CustomStatusPanel,
+                                    key: 'clearGridFilters',
+                                    align:'right',
+                                    statusPanelParams: {
+                                      isDisabled: isDisabledPoogi1,
+                                      clearGridFilter:clearGridFilterPoogi1,
+                                      themeUi,
+                                    },  
+                          },
+                          {
                             statusPanel: "agTotalRowCountComponent",
                             align: "left",
                           },
@@ -354,13 +379,33 @@ const MTOViewModify = () => {
                             : "95%"
                           : "90%"
                       }
+                      onFilterChanged={() => {
+                        if(ref && ref.current && ref.current.api){
+        
+                          Object.keys(ref.current.api.getFilterModel())?.length > 0
+                            ? setIsDisabledPoogi1(false)
+                            : setIsDisabledPoogi1(true);
+                        }
+                      }}
                     />
                     <VFTable
                       columnDefs={MTOPoogiMinorColdef}
                       rowData={minReasonRowData}
+                      ref={tempRefPoogi}
                       {...agGridProps}
                       statusBar={{
                         statusPanels: [
+                          
+                          {
+                            statusPanel: CustomStatusPanel,
+                            key: 'clearGridFilters',
+                            align:'right',
+                            statusPanelParams: {
+                              isDisabled: isDisabledPoogi2,
+                              clearGridFilter:clearGridFilterPoogi2,
+                              themeUi,
+                            },  
+                          },
                           {
                             statusPanel: "agTotalAndFilteredRowCountComponent",
                             align: "left",
@@ -396,6 +441,15 @@ const MTOViewModify = () => {
                       }
                       onCellEditingStopped={onMinReasonEditingStopped}
                       suppressRowClickSelection={true}
+                      onFilterChanged={() => {
+                        if(tempRefPoogi && tempRefPoogi.current && tempRefPoogi.current.api){
+        
+                          Object.keys(tempRefPoogi.current.api.getFilterModel())?.length > 0
+                            ? setIsDisabledPoogi2(false)
+                            : setIsDisabledPoogi2(true);
+                        }
+                      }}
+
                     />
                   </MTOPoogiTableContainer>
                   <PoogiAddButtonWrapper>
@@ -546,6 +600,7 @@ const MTOViewModify = () => {
                   rowData={tempGridData}
                   {...tempAgGridProps}
                 />
+                
               </div>
               {activeMaster.isMTO && activeMaster.id !== 503 && (
                 <>

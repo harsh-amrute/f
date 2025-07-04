@@ -70,68 +70,62 @@ const VFPagination  = (props:VFPaginationProps)=>{
         }
     };
 
-    return(
-        <PaginationWrapper data-testid="vf_pagination" style={style}>
-            <PaginationContainer>
-                 {isClearGridFilter && <GridFilterWrapper>
-                                    <TextBtn onClick={clearGridFilter} disabled={ isDisabled} themeUi={themeUi}>Clear All Grid Filters</TextBtn>  
-                                </GridFilterWrapper>}
-            <StatusBarLabel>
-                <StatusBarLabelBold>
-                {getTotalItemsString()} 
-                </StatusBarLabelBold>
-                <StatusBarLabelLight>
-                    of
-                </StatusBarLabelLight>
-                <StatusBarLabelBold>
-                    {totalRows}
-                </StatusBarLabelBold>
-            </StatusBarLabel>
-            <StatusBarLabel style={{marginLeft:'10px'}}>
-                <PaginationArrowIcon 
-                    disabled={currentPage===1}
-                    src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg" 
-                    style={{transform:'rotate(180deg)'}} 
-                    onClick={()=>handleOnClick(1)}
-                    alt="pagination-last-prev-arrow"
-                />
-                <PaginationArrowIcon 
-                    disabled={currentPage===1}
-                    src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg" 
-                    style={{transform:'rotate(180deg)'}} 
-                    onClick={()=>handleOnClick(currentPage - 1)}
-                    alt="pagination-prev-arrow"
-                />
-                <StatusBarLabelLight>
-                    Page
-                </StatusBarLabelLight>
-                <StatusBarLabelBold>
-                    {currentPage}
-                </StatusBarLabelBold>
-                <StatusBarLabelLight>
-                    of
-                </StatusBarLabelLight>
-                <StatusBarLabelBold>
-                    {totalPages}
-                </StatusBarLabelBold>  
-                
-                <PaginationArrowIcon 
-                    disabled={currentPage===totalPages}
-                    src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg" 
-                    onClick={()=>handleOnClick(currentPage + 1)}
-                    alt="pagination-next-arrow"    
-                />
-                <PaginationArrowIcon 
-                    disabled={currentPage===totalPages}
-                    src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg" 
-                    onClick={()=>handleOnClick(totalPages)}
-                    alt="pagination-last-next-arrow"  
-                />
-            </StatusBarLabel>
-            </PaginationContainer>
-            
-        </PaginationWrapper>
-    )
+
+    return (
+      <PaginationWrapper data-testid="vf_pagination" style={style}>
+        <PaginationContainer>
+          {isClearGridFilter && (
+            <GridFilterWrapper>
+              <TextBtn
+                onClick={clearGridFilter}
+                disabled={isDisabled}
+                themeUi={themeUi}
+              >
+                Clear All Grid Filters
+              </TextBtn>
+            </GridFilterWrapper>
+          )}
+          <StatusBarLabel>
+            <StatusBarLabelBold>{getTotalItemsString()}</StatusBarLabelBold>
+            <StatusBarLabelLight>of</StatusBarLabelLight>
+            <StatusBarLabelBold>{totalRows}</StatusBarLabelBold>
+          </StatusBarLabel>
+          <StatusBarLabel style={{ marginLeft: "10px" }}>
+            <PaginationArrowIcon
+              disabled={currentPage === 1}
+              src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg"
+              style={{ transform: "rotate(180deg)" }}
+              onClick={() => handleOnClick(1)}
+              alt="pagination-last-prev-arrow"
+            />
+            <PaginationArrowIcon
+              disabled={currentPage === 1}
+              src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg"
+              style={{ transform: "rotate(180deg)" }}
+              onClick={() => handleOnClick(currentPage - 1)}
+              alt="pagination-prev-arrow"
+            />
+            <StatusBarLabelLight>Page</StatusBarLabelLight>
+            <StatusBarLabelBold>{currentPage}</StatusBarLabelBold>
+            <StatusBarLabelLight>of</StatusBarLabelLight>
+            <StatusBarLabelBold>{totalPages}</StatusBarLabelBold>
+
+            <PaginationArrowIcon
+              disabled={currentPage === totalPages}
+              src="/assets/img/VectorFLOW/NMS/pagination-arrow.svg"
+              onClick={() => handleOnClick(currentPage + 1)}
+              alt="pagination-next-arrow"
+            />
+            <PaginationArrowIcon
+              disabled={currentPage === totalPages}
+              src="/assets/img/VectorFLOW/NMS/pagination-last-arrow.svg"
+              onClick={() => handleOnClick(totalPages)}
+              alt="pagination-last-next-arrow"
+            />
+          </StatusBarLabel>
+        </PaginationContainer>
+      </PaginationWrapper>
+    );
 }
 
 export default VFPagination

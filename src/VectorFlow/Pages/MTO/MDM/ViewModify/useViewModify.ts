@@ -117,10 +117,14 @@ import MTOErrorWarningCell from "./MTOErrorWarningCell";
 import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
 import moment from "moment";
+import {CustomStatusPanel } from "../CustomStatusPannel";
+
 
 
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
+  const user = useUserData();
+  const themeUi = user.user.theme_ui
   const options = useSelector((state: RootState) => state.mdm.options);
   const selectedOptions = useSelector(
     (state: RootState) => state.mdm.selectedOptions
@@ -888,6 +892,14 @@ const useViewModify = (pageType: string) => {
     defaultToolPanel: defaultToolPanel,
   };
 
+  const [isDisabled,setIsDisabled] = useState(true)
+
+
+  const clearGridFilter = () =>{
+    ref?.current?.api.setFilterModel(null);
+      setIsDisabled(true);
+  }
+
   const agGridProps: AgGridReactProps = {
     tooltipShowDelay: 0,
     readOnlyEdit: true,
@@ -1066,6 +1078,48 @@ const useViewModify = (pageType: string) => {
         dispatch(UPDATE_ROW_DATA([...newRowData]));
       }
     },
+    statusBar:{
+      statusPanels: [
+        {
+          statusPanel: "agTotalAndFilteredRowCountComponent",
+          align: 'left',
+          
+        },
+        {
+          statusPanel: CustomStatusPanel,
+          key: 'clearGridFilters',
+          align:'right',
+          statusPanelParams: {
+            isDisabled,
+            clearGridFilter,
+            themeUi,
+          },
+        },
+        {
+          statusPanel: "agTotalRowCountComponent",
+          align: "left",
+        },
+        {
+          statusPanel: "agFilteredRowCountComponent",
+          align: "left",
+        },
+        {
+          statusPanel: "agSelectedRowCountComponent",
+          align: "left",
+        },
+        {
+          statusPanel: "agAggregationComponent",
+          align: "left",
+        },
+      ],
+    },
+    onFilterChanged:() => {
+      if(ref && ref.current && ref.current.api){
+        Object.keys(ref.current.api.getFilterModel())?.length > 0
+          ? setIsDisabled(false)
+          : setIsDisabled(true);
+      }
+    }
   };
 
   const getTempGridColDefs = () => {
@@ -3334,7 +3388,7 @@ const useViewModify = (pageType: string) => {
     addEditableToLastMinColumn();
   };
 
-  const user = useUserData();
+  
 
   const navigate = useNavigate();
 
