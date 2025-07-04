@@ -628,18 +628,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                 // setDefaultColState(params?.api?.getColumnState())
                                 
                             }}
-                            maintainColumnOrder={true}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
-                            
-                            // onFilterChanged={() => { 
-                            //     const filterModel = gridRef?.current?.api?.getFilterModel() || {};
-                            //     console.log("filterModelwewew", filterModel.length)
-                            //     Object.keys(filterModel).length > 0 ? clearFilterDisabled(false) : clearFilterDisabled(true);
-                            // }}        
+                            maintainColumnOrder={true}        
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
 
                         />
@@ -677,11 +666,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                 params.api.autoSizeAllColumns();
                             }}
                             maintainColumnOrder={true}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
                         onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
 
                         />
@@ -768,11 +752,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                 
                             }}
                             maintainColumnOrder={true}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
 
                         />

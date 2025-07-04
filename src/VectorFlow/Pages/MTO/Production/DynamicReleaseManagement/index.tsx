@@ -980,11 +980,6 @@ const DynamicReleaseManagement = () => {
           disableZoomScaling
           gridOptions={options}
           columnDefs={options.columnDefs}
-          statusBar={{
-            statusPanels: [
-              { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-            ]
-          }}
           onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
           rowSelection="multiple"
           onSelectionChanged={updateGraphOnSelect}

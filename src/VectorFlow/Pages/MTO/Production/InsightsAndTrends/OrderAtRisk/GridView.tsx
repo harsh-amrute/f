@@ -73,16 +73,14 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                         statusPanel: "agTotalAndFilteredRowCountComponent",
                         align: "left",
                       },
-                      { statusPanel: "agTotalRowCountComponent", align: "left" },
                       {
-                        statusPanel: "agFilteredRowCountComponent",
-                        align: "left",
-                      },
-                      {
-                        statusPanel: "agSelectedRowCountComponent",
-                        align: "left",
-                      },
-                      { statusPanel: "agAggregationComponent", align: "left" },
+                        statusPanel: "agAggregationComponent",
+                        align:'left',
+                        statusPanelParams: {
+                            aggFuncs: ["avg", "sum", "min", "max", "count"],
+                        },
+                    },
+                  
                     ],
                   }}   
                 onGridReady={(params: any) => {

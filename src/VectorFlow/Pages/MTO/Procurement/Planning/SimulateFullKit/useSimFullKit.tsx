@@ -331,11 +331,6 @@ const useSimFullKit = () => {
             
                                 setCurrentGridRef(gridRef);
                             }}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
                         />
                         <VFPagination
                             key={1}
@@ -366,11 +361,6 @@ const useSimFullKit = () => {
                                 params.api.autoSizeAllColumns();
             
                                 setCurrentGridRef(gridRef);
-                            }}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
                             }}
                         />
                         <VFPagination

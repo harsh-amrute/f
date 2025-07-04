@@ -51,6 +51,12 @@ const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, curre
                 statusBar={{
                     statusPanels: [
                         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                        {
+                            statusPanel: "agAggregationComponent",
+                            statusPanelParams: {
+                                aggFuncs: ["avg", "sum"],
+                            },
+                        },
                     ]
                 }}
                 maintainColumnOrder

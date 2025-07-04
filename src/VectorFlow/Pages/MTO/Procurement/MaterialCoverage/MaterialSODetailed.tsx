@@ -126,11 +126,6 @@ interface MaterialSODetailedProps {
                     }}
                     paginationPageSize={pagination.mtoPageSize}
                     pagination={false}
-                    statusBar={{
-                        statusPanels: [
-                            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                        ]
-                    }}
                     maintainColumnOrder
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 

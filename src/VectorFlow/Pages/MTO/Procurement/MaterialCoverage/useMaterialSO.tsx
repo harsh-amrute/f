@@ -168,7 +168,7 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
                 {
                     statusPanel: "agAggregationComponent",
                     statusPanelParams: {
-                        aggFuncs: ["avg", "sum"],
+                        aggFuncs: ["avg", "sum", "min", "max", "count"],
                     },
                 },
             ],

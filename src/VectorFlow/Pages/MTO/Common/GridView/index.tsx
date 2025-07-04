@@ -145,6 +145,22 @@ const GridView = (props: IGridViewProps) => {
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 pagination={false}
+                statusBar={{
+                    statusPanels: [
+                      {
+                        statusPanel: "agTotalAndFilteredRowCountComponent",
+                        align: "left",
+                      },
+                      {
+                        statusPanel: "agAggregationComponent",
+                        align: "right", // or "left" if you prefer
+                        statusPanelParams: {
+                          aggFuncs: ["avg", "sum", "min", "max","count" ],
+                        },
+                      },
+                    ],
+                  }}
+
                 onGridReady={(params: any) => {
                     params.api.autoSizeAllColumns();
                     setCurrentGridRef(gridRef);

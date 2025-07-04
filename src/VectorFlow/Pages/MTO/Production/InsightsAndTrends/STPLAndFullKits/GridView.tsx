@@ -128,6 +128,13 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef,rowDat
           statusBar={{
             statusPanels: [
               { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+              {
+                statusPanel: "agAggregationComponent",
+                align:'left',
+                statusPanelParams: {
+                    aggFuncs: ["avg", "sum", "min", "max", "count"],
+                },
+            },
             ]
           }}
           maintainColumnOrder

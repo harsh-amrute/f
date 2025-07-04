@@ -106,11 +106,18 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                 }}
                 maintainColumnOrder
                 onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
-            // statusBar={{
-            //     statusPanels: [
-            //         { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-            //     ]
-            // }}
+            statusBar={{
+                statusPanels: [
+                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                    {
+                        statusPanel: "agAggregationComponent",
+                        align:'left',
+                        statusPanelParams: {
+                            aggFuncs: ["avg", "sum", "min", "max", "count"],
+                        },
+                    },
+                ]
+            }}
             />
             <VFPagination
                 selectedRows={1}

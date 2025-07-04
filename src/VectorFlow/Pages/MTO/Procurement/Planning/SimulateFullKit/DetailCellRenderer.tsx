@@ -46,11 +46,6 @@ const DetailCellRenderer = (params: any) => {
                 enableRangeSelection={true}
                 paginationAutoPageSize={true}
                 alwaysShowVerticalScroll={true}
-                statusBar={{
-                    statusPanels: [
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    ]
-                }}
             />
         </div>
     );
