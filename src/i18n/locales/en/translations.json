@@ -28,7 +28,8 @@
     },
     "notify": {
       "success": "Login Successful",
-      "completeReCaptcha": "Please complete reCAPTCHA to continue"
+      "completeReCaptcha": "Please complete reCAPTCHA to continue",
+      "networkError": "Please check your network connection; if the issue persists, contact the administrator."
     }
   },
   "forgotPasswordPage": {

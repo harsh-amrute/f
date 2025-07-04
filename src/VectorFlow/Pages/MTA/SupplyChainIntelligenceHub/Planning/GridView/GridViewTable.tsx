@@ -73,16 +73,12 @@ const GridViewTable = ({agGridProps,agGridColDefs,agGridRowData,customGridRowDat
 
     useEffect(()=>{
         if(gridState && Array.isArray(gridState.columns) && gridState.columns.length !== 0){
-            ref?.current?.api?.applyColumnState({state:gridState.columns,applyOrder:true})
-            ref?.current?.api?.sizeColumnsToFit();
-        }else{
-            if(ref && ref.current){
-                ref?.current?.api?.sizeColumnsToFit();
-            }
-        }
-    },[gridState, ref])
+            ref?.current?.api?.applyColumnState({state: gridState.columns,applyOrder: true});
 
+        }
+    }, [gridState, agGridColDefs, agGridRowData, ref])
     
+      
      const clearGridFilter = () =>{
               ref?.current?.api.setFilterModel(null);
                 setIsDisabled(true);
