@@ -689,14 +689,26 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
       {
         type: 'scatter',
         xKey: 'ccr_name',
+        xName:'CCR name',
         yKey: 'cumulative_wip_limit',
+        yName: 'Cumulative wip limit',
         marker: {
           size: 10,
           fill: '#E53F3F',
           shape: Rectangle,
           strokeWidth: 0
+        }, 
+        tooltip: {
+          renderer: (params:any) => {
+            const xVal = params.datum[params.xKey];
+            const yVal = params.datum[params.yKey];
+            return {
+              title: '',
+              content: `${params.xName}: ${xVal} <br>
+                        ${params.yName}: ${yVal}`,
+            };
+          },
         },
-
       },
     ],
     axes: [
@@ -731,9 +743,9 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
             else if (props.value === 'allowed_full_kits') {
               return 'Allocated Full Kits'
             }
-            else {
-              return 'Cummulative WIP Limit'
-            }
+            else if (props.value === 'Cumulative wip limit') { 
+              return 'cumulative wip limit' 
+          }
           }
         },
         showSeriesStroke: true,

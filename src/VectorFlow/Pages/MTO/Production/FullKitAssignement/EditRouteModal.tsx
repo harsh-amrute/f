@@ -79,7 +79,6 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, master, rou
                     shape: Rectangle,
                     strokeWidth: 0
                 },
-
             },
         ],
         axes: [

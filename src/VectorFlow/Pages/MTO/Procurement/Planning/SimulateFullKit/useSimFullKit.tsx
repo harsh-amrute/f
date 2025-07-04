@@ -11,13 +11,16 @@ import { DownloadExcel, getBodyForExcelExport, getColumnDefinations } from '../.
 import DetailCellRenderer from "./DetailCellRenderer";
 import { useGetProcAfterSimulationPlanningDataForExcelExport, userGetProcAfterSimulationPlanningData } from "../../../../../Services/MTO/Procurement/ProcPlanning/index";
 import OverlayLoader from "../../../Common/Loader";
-import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
+// import VFPagination from "../../../../../../components/VectorFLOW/commons/VFPagination";
+import VFPagination from "../../../Common/VFPagination";
 import { notifyError, notifySuccess } from "../../../../../../helpers/notify";
 import { toast } from "react-toastify";
 import { useGetUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig";
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import useColDef from "../../../../../../hooks/useColDef";
+import ChildrenColor from "../../../Common/ChildrenColor/ChildrenColor";
+
 
 
 const useSimFullKit = () => {
@@ -37,11 +40,18 @@ const useSimFullKit = () => {
     const [cumulativeFullKitData, setCumulativeFullKitDara] = useState<any[]>([]);
     const { mutateAsync: getUIConfigData } = useGetUIConfigData()
     const reportName = "SimulateFullkit";
+    const childReportName = "ProcPlanningReport_Child"
     const gridRef = useRef<AgGridReact>(null);
     const { user } = useUserData();
     const [masterUIConfig, setMasterUIConfig] = useState([]);
     const { colDefMap, getColDef } = useColDef();
     const [totalRows, setTotalRows] = useState(0);
+    const [HeaderDataChild, setHeaderDataChild] = useState([]);
+    const [childColDef,setChildColDef] = useState<any>();
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    
+
+
 
     const { mutateAsync: userGetProcAfterSimulationData, isLoading, isSuccess, isError } = userGetProcAfterSimulationPlanningData();
     const { mutateAsync: userGetProcAfterSimulationDataForExcelExport } = useGetProcAfterSimulationPlanningDataForExcelExport();
@@ -64,8 +74,10 @@ const useSimFullKit = () => {
     const setColumnDef = async () => {
         try {
             const response = await getUIConfigData(reportName);
+            const childResponse = await getUIConfigData(childReportName)
             getColDef(response)
             setHeaderData(response.data.data);
+            setHeaderDataChild(childResponse.data.data)
         }
         catch (e) {
             console.log(e);
@@ -145,7 +157,7 @@ const useSimFullKit = () => {
         if (isExcelExport) {
             try {
                 const headersdata = gridRef?.current?.api.getColumnState();
-                const body = getBodyForExcelExport({ headersdata, colDefMap })
+                const body = getBodyForExcelExport({ headersdata:headersdata, colDefMap })
                 const response = await userGetProcAfterSimulationDataForExcelExport({ date, body, eas, report_name: FilterPageName.Proc_Procurement_Planning, isExcelExport: 1 });
                 if (response.status === 200) {
                     DownloadExcel(response);
@@ -232,7 +244,10 @@ const useSimFullKit = () => {
 
     useEffect(() => {
         setColDef(getColumnDefinations(HeaderData, CustomDef, []))
-    }, [HeaderData])
+        const childColDefs = getColumnDefinations(HeaderDataChild,childCustomheader)
+        setChildColDef(childColDefs)
+
+    }, [HeaderData,HeaderDataChild])
 
     const icons = useMemo(() => {
         return {
@@ -331,6 +346,7 @@ const useSimFullKit = () => {
             
                                 setCurrentGridRef(gridRef);
                             }}
+                            onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
                         />
                         <VFPagination
                             key={1}
@@ -339,7 +355,8 @@ const useSimFullKit = () => {
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
-
+                            isDisabled={isDisabled}
+                            resetGridRef={gridRef}
                         />
 
                     </>
@@ -362,6 +379,7 @@ const useSimFullKit = () => {
             
                                 setCurrentGridRef(gridRef);
                             }}
+                            onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
                         />
                         <VFPagination
                             key={1}
@@ -370,6 +388,8 @@ const useSimFullKit = () => {
                             totalRows={totalRows}
                             currentPage={currentPage}
                             handleChangePage={handlePageChangeCumulative}
+                            isDisabled={isDisabled}
+                            resetGridRef={gridRef}
                         />
                     </>
                 );
@@ -377,6 +397,12 @@ const useSimFullKit = () => {
                 return <VFTable columnDefs={[]} rowData={[]} {...agGridProps} />
         }
     }
+    const childCustomheader = {
+        clr:{
+          cellRenderer : ChildrenColor
+        },
+      }
+
     const agGridProps: AgGridReactProps = {
         tooltipShowDelay: 0,
         tooltipTrigger: "focus",
@@ -415,6 +441,10 @@ const useSimFullKit = () => {
         },
         masterDetail: true,
         detailCellRenderer: DetailCellRenderer,
+        detailCellRendererParams:{
+            colDef : childColDef
+        },
+   
         autoGroupColumnDef: autoGroupColumnDef,
         paginationAutoPageSize: true,
         enterNavigatesVertically: true,
@@ -430,7 +460,8 @@ const useSimFullKit = () => {
         currentTab,
         handleSaveClick,
         handleResetClick,
-        ExcelExportData
+        ExcelExportData,
+        childColDef
     }
 }
 
