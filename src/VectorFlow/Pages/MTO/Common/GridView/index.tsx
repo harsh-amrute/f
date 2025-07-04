@@ -126,8 +126,6 @@ const GridView = (props: IGridViewProps) => {
         }
     }, [columnState, currentGridRef]);
 
-    console.log("griddat", gridData);
-
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
@@ -142,7 +140,7 @@ const GridView = (props: IGridViewProps) => {
                 defaultColDef={defaultColDef}
                 columnDefs={colDef}
                 disableZoomScaling
-                rowData={gridData}
+                rowData={gridData || []}
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 pagination={false}

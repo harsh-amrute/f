@@ -45,7 +45,6 @@ const RMPMBufferTrends = () => {
 
 
     const formatDate = (date: Date): string => {
-        // console.log("dateddd", date)
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
@@ -65,7 +64,6 @@ const RMPMBufferTrends = () => {
 
             for (let i = 0; i < numDays; i++) {
                 const day = formatDate(date);
-                console.log(day)
                 let entry: any = {
                     'dt': day,
                     'b': 0,
@@ -126,10 +124,8 @@ const RMPMBufferTrends = () => {
             notifyLoader("Loading Graph Data ...")
             const formatedFilters = formatFilterJSON(appliedFilters);
             const APIData = await getRMPMBufferTrendsData({appliedFilters: formatedFilters});
-            console.log("sdfsdfsdf")
             const updatedDataMTO = convertToGraphData(APIData?.data?.data.MTO);
             const updatedDataMTA = convertToGraphData(APIData?.data?.data.MTA);
-            console.log('==>', updatedDataMTA)
             setMTOData(updatedDataMTO);
             setMTAData(updatedDataMTA);
             toast.dismiss();
@@ -159,12 +155,6 @@ const RMPMBufferTrends = () => {
 
 
     useEffect(() => {
-        console.log('MTA data', MTAData)
-        console.log('MTO data', MTOData)
-    }, [MTAData, MTOData])
-
-    useEffect(() => {
-        GetData();
         getFilterData()
     }, [])
 
