@@ -465,6 +465,14 @@ const useViewModify = (pageType: string) => {
             }
           };
         });
+        const actionsCol: any = {
+          field: "actions",
+          headerName: "Actions",
+          colId: "actions",
+          pinned: "left",
+          width: 100,
+          cellRenderer: AddRemoveCellRenderer,
+        };
         dispatch(UPDATE_COLDEFS([...newColDef]));
       }
     }
@@ -490,19 +498,46 @@ const useViewModify = (pageType: string) => {
         if(col.colId === "bt"){
           col.valueFormatter = myFormatter
         }
+        if(col.colId !== "actions" && col.colId !== "iv"){
+          col.cellStyle = (params:any)=>{
+            const { data } = params;
+  
+            if (data?.isdel ) {
+              return { 
+                filter: "blur(1px)",
+                opacity: 0.6,
+                transition: "all 0.3s ease-in-out",
+                backgroundColor: "#f0f0f0", 
+              }
+            } else if(data?.ia){
+              return { color: "rgb(173, 5, 89)" };
+            }
+            return {};
+          }
+        }
+          
+        
       });
 
       if (activeMaster.id === 502) {
         newColDef.forEach((ele: any) => {
-          ele.cellStyle = (params: any) => {
-            if (
-              params.data.cid === null ||
-              params.data.cid === undefined ||
-              params.data.iv === false
-            ) {
-              return { color: "rgb(128, 0, 64)" };
+          if(ele.colId !== "actions" && ele.colId !== "iv"){
+            ele.cellStyle = (params:any)=>{
+              const { data } = params;
+    
+              if (data?.isdel ) {
+                return { 
+                  filter: "blur(1px)",
+                  opacity: 0.6,
+                  transition: "all 0.3s ease-in-out",
+                  backgroundColor: "#f0f0f0", 
+                }
+              } else if(data?.ia){
+                return { color: "rgb(173, 5, 89)" };
+              }
+              return {};
             }
-          };
+          }
           ele.valueFormatter = myCCRFormatter;
         });
       } else if (activeMaster.id === 503) {
@@ -3054,8 +3089,7 @@ const useViewModify = (pageType: string) => {
 
   const addEditableToLastColumn = async () => {
     const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
-      const editable = (params: any) => params.node.rowIndex === 0;
-
+      const editable = (params: any) => {return params.data.isEditing === true};
       if (colDef.field === "bt") {
         return {
           ...colDef,
@@ -3236,14 +3270,19 @@ const useViewModify = (pageType: string) => {
       pinned: "left",
       width: 100,
       cellRenderer: AddRemoveCellRenderer,
+      cellRendererParams: {
+        addEditableToLastColumn,
+      }
     };
 
     // return [actionsCol, ...modifiedColDefs];
     if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
+      dispatch(UPDATE_COLDEFS([ ...modifiedColDefs]));
       return;
+    }else{
+      dispatch(UPDATE_COLDEFS([ actionsCol, ...modifiedColDefs ]));
     }
 
-    dispatch(UPDATE_COLDEFS([actionsCol, ...modifiedColDefs]));
   };
 
   const addEditableToLastMinColumn = async () => {
@@ -3286,25 +3325,26 @@ const useViewModify = (pageType: string) => {
       }
     });
 
-    const actionsCol: any = {
-      field: "pactions",
-      headerName: "Actions",
-      colId: "pactions",
-      pinned: "left",
-      width: 100,
-      cellRenderer: AddRemoveCellRenderer,
-    };
+    // const actionsCol: any = {
+    //   field: "pactions",
+    //   headerName: "Actions",
+    //   colId: "pactions",
+    //   pinned: "left",
+    //   width: 100,
+    //   cellRenderer: AddRemoveCellRenderer,
+    // };
 
     // return [actionsCol, ...modifiedColDefs];
     if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
       return;
     }
 
-    dispatch(UPDATE_COLDEFS([actionsCol, ...modifiedColDefs]));
+    dispatch(UPDATE_COLDEFS([ ...modifiedColDefs]));
   };
 
   const addRowToMtoGrid = () => {
     let newRow: any = {};
+
 
     if (activeMaster.id === 501) {
       newRow = {
@@ -3316,7 +3356,11 @@ const useViewModify = (pageType: string) => {
         ib: false,
         bt: 1,
         iv: true,
+        ia:true,
+        isEditing: true,
         editable: true,
+        id:uuidv4(),
+        isdel: false,
       };
     } else if (activeMaster.id === 502) {
       newRow = {
@@ -3343,6 +3387,10 @@ const useViewModify = (pageType: string) => {
         cwl: null,
         cgid: null,
         iv: true,
+        ia:true,
+        isEditing: true,
+        id: uuidv4(),
+        isdel: false,
       };
     } else if (activeMaster.id === 503) {
       const newId = "maj" + uuidv4();
@@ -3769,6 +3817,16 @@ const useViewModify = (pageType: string) => {
     }
   };
 
+  const keysToDelete = (ele:any)=>{
+      const e = _.cloneDeep(ele);
+      delete e.isdel;
+      delete e.isEditing;
+      delete e.ia;
+      delete e.id;
+      
+      return e
+  }
+
   const onMTOSaveBufferData = async () => {
 
     // on MDM add records
@@ -3796,8 +3854,10 @@ const useViewModify = (pageType: string) => {
         ccrData: [],
       };
 
-      ccrModifyData.forEach((ele: any) => {
-        const e = _.cloneDeep(ele);
+      const ccrData = ccrModifyData.filter((ele:any)=> !ele.isdel)
+
+      ccrData.forEach((ele: any) => {
+        const e = keysToDelete(ele)
         const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id
           ? ccrGroupMaster[e.cgid]?.ccr_group_id
           : e.cgid;
@@ -3814,6 +3874,7 @@ const useViewModify = (pageType: string) => {
           _.omit(e, ["editable", "error", "warning", "pl", "dp"])
         );
       });
+
 
       try {
         const response = await saveCCRMasterTask(CCRPostObj);
@@ -3930,8 +3991,10 @@ const useViewModify = (pageType: string) => {
       buffData: [],
     };
 
-    activeMaster.rowData.forEach((ele: any) => {
-      const e = _.cloneDeep(ele);
+    const bufferData = bufferModifyData.filter((ele:any)=> !ele.isdel)
+
+    bufferData.forEach((ele: any) => {
+      const e = keysToDelete(ele);
       bufferTypeData.forEach((elm: any) => {
         if (elm.dsc === ele.bt) {
           e.bt = elm.id;
@@ -4010,8 +4073,10 @@ const useViewModify = (pageType: string) => {
           }
         });
       } else {
-        bufferModifyData.forEach((ele: any) => {
-          const e = _.cloneDeep(ele);
+        const bufferData = bufferModifyData.filter((ele:any)=> !ele.isdel)
+
+        bufferData.forEach((ele: any) => {
+          const e = keysToDelete(ele)
           let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
             if (elm.dsc === ele.bt) {
@@ -4060,12 +4125,16 @@ const useViewModify = (pageType: string) => {
         ccrData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
-      let tempModifyData = _.cloneDeep(ccrModifyData);
+      let tempModifyData = ccrModifyData.filter((ele:any)=> !ele.isdel);
       if (pageType === "add") {
         tempModifyData = _.cloneDeep(activeMaster.rowData);
       }
       tempModifyData.forEach((ele: any) => {
-        const e = _.cloneDeep(ele);
+        let e = keysToDelete(ele)
+        if(pageType === 'add'){
+          e = _.cloneDeep(ele);
+        }
+        e = _.cloneDeep(ele);
         const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id
           ? ccrGroupMaster[e.cgid]?.ccr_group_id
           : e.cgid;
@@ -4089,7 +4158,7 @@ const useViewModify = (pageType: string) => {
         e.err = "";
         CCRPostObj.ccrData.push(_.omit(e, ["editable", "error", "warning"]));
       });
-
+      
       try {
         const response = await saveCCRMasterDraft([CCRPostObj]);
         if (response.status === 200) {

@@ -60,6 +60,14 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
   rid : Joi.any().optional(),
 
   bid: Joi.any().optional(),
+
+  ia: Joi.optional(),
+
+  isEditing: Joi.optional(),
+
+  id : Joi.any().optional(),
+
+  isdel : Joi.optional(),
 });
 
 
@@ -139,7 +147,17 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
   a8: Joi.any().default(null),
   a9: Joi.any().default(null),
   a10: Joi.any().default(null),
-  iv: Joi.boolean().allow(null).default(false),
+  iv: Joi.boolean().allow(null).default(false).messages({
+    "boolean.base": "Is Active must be either true or false!",
+    "any.required": "Is Active is required! It should be either true or false.",
+  }),
+  ia: Joi.optional(),
+
+  isEditing: Joi.optional(),
+
+  id : Joi.any().optional(),
+
+  isdel : Joi.optional(),
 });
 
 export const CALENDAR_VALIDATION_SCHEMA = Joi.object({

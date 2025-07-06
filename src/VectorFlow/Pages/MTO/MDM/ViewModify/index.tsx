@@ -611,16 +611,12 @@ const MTOViewModify = () => {
                       gap: "8px",
                       width: "110px",
                       margin: "8px",
-                      cursor: activeMaster?.rowData?.length === 0 ? "not-allowed" : "pointer",
+                      cursor:  "pointer",
                       background: "#fff",
-                      opacity: activeMaster?.rowData?.length === 0 ? 0.6 : 1,
-                      color: activeMaster?.rowData?.length === 0 ? "#999" : "#000", 
                     }}
-                    disabled={activeMaster?.rowData?.length === 0}
+                    // disabled={activeMaster?.rowData?.length === 0}
                     onClick={() => {
-                      if (
-                        !activeMaster?.colDefs.some((x) => x.field === "actions")
-                      ) {
+                      
                         if (activeMaster.id !== 504) {
                           addRowToMtoGrid();
                         }
@@ -629,11 +625,9 @@ const MTOViewModify = () => {
                         }
                       }
                     
-                    }}
+                    }
                   >
-                    {!activeMaster.colDefs.some(
-                      (x) => x.field === "actions"
-                    ) ? (
+                    
                       <>
                         <img
                           src="/assets/img/AddBufferMasterIcon.svg"
@@ -650,24 +644,7 @@ const MTOViewModify = () => {
                           Add {activeMaster.name}
                         </p>
                       </>
-                    ) : (
-                      <>
-                        <img
-                          height={14}
-                          width={14}
-                          src="/assets/img/AddBufferMasterIconGrey.svg"
-                          alt="Add Master Button"
-                        />
-                        <p
-                          style={{
-                            fontSize: "12px",
-                            color: ColorsMTO.LightGrey.code,
-                          }}
-                        >
-                          Add {activeMaster.name}
-                        </p>
-                      </>
-                    )}
+                    
                   </button>
                 </>
               )}
