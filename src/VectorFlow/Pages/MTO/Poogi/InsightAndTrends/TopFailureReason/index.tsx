@@ -17,7 +17,7 @@ import GridView from "../../../Common/GridView";
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import { useGetUIConfigData } from '../../../../../Services/MTO/Common/UIConfig';
 import { getColumnDefinations } from '../../../../../../helpers/utils';
-import { FilterPageName, pagination, UIGridCode } from "../../../Common/Enum";
+import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import useFilter from '../../../../../../hooks/useFilter'
 import { useGetFilterData } from '../../../../../../VectorFlow/Services/MTO/Common/CommonFilter'
@@ -41,7 +41,7 @@ const TopFailureReasons = () => {
   const [graphData, setGraphData] = useState<any>({});
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
-  const [isReset, setIsReset] = useState<any>();
+  const [isReset, setIsReset] = useState(false);
   const [colDef, setColDef] = useState([{}]);
   const [HeaderData, setHeaderData] = useState([]);
   const [filterData, setFilterData] = useState({});
@@ -61,9 +61,6 @@ const TopFailureReasons = () => {
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData()
   const { user } = useUserData();
-  const [masterUIConfig, setMasterUIConfig] = useState([]);
-  const [userPageSize, setUserPageSize] = useState<number>();
-  const [userConfigFetched, setUserConfigFetched] = useState(false);
 
   const reportName = "TopFailureReasons";
 
@@ -83,9 +80,9 @@ const TopFailureReasons = () => {
     },
   }
 
-  const getGraphData = async (params: any) => {
+  const getGraphData = async (isGraph: any) => {
     try {
-      const response = await getTopFailureData({...params});
+      const response = await getTopFailureData(isGraph);
       setGraphData(response.data.data);
     }
     catch (e) {
@@ -115,10 +112,8 @@ const TopFailureReasons = () => {
         rn_id: UIGridCode.PoogiTopFailureReason
       });
 
-      setUserConfigFetched(true);
-           const newConfig = data?.data?.data[0] ? JSON.parse(data?.data?.data[0]?.columns_settings) || [] : [];
-           setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : pagination.mtoPageSize);
-           setColumnState(newConfig.cs);
+      const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
+      setColumnState(newConfig);
 
       if (!data) {
         console.error('Failed to apply column state');
@@ -131,6 +126,7 @@ const TopFailureReasons = () => {
   const setColumnDef = async () => {
     try {
       const response = await getUIConfigData(reportName);
+     
       setHeaderData(response?.data?.data);
     }
     catch (e) {
@@ -138,49 +134,23 @@ const TopFailureReasons = () => {
     }
   }
 
-    const handleSaveClick = async (coldefs?: any, page_size?: number) => {
-      try {
-          if (coldefs) {
-              const fullConfig = { 
-                  cs: coldefs, 
-                  pageSize: userPageSize 
-              };
-              const payload = {
-                  un: user.user.name,
-                  rn_id: UIGridCode.PoogiTopFailureReason,
-                  cs: JSON.stringify(fullConfig),
-              };
-              await updateUserUIReportConfigData([payload]);
-              setColumnState([...coldefs]);
-          } 
-          else if (page_size) {
-              const config = columnState;
-              const fullConfig = { cs: config, pageSize: page_size };
-              const payload = {
-                  un: user.user.name,
-                  rn_id: UIGridCode.PoogiTopFailureReason,
-                  cs: JSON.stringify(fullConfig),
-              };
-              
-              await updateUserUIReportConfigData([payload]);
-          }
-          else {
-              if (currentGridRef?.current?.api) {
-                  const config = currentGridRef.current.api.getColumnState();
-                  const fullConfig = { cs: config, pageSize: userPageSize };
-                  
-                  const payload = {
-                      un: user.user.name,
-                      rn_id: UIGridCode.PoogiTopFailureReason,
-                      cs: JSON.stringify(fullConfig)
-                  };
-                  await updateUserUIReportConfigData([payload]);
-                  await getUserColumnConfig();
-              }
-          }
-      } catch (error) {
-          console.error(error);
+  const handleSaveClick = async () => {
+    try {
+      if(currentGridRef?.current?.api){
+        const config = currentGridRef.current.api.getColumnState();
+  
+        const payload = {
+          un: user.user.name,
+          rn_id: UIGridCode.PoogiTopFailureReason,
+          cs: JSON.stringify(config)
+        }
+        await updateUserUIReportConfigData([payload]);
+        await getUserColumnConfig();
       }
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const handleResetClick = () => {
@@ -201,6 +171,7 @@ const TopFailureReasons = () => {
   }, [HeaderData])
 
   useEffect(() => {
+    getUserColumnConfig();
     setColumnDef();
     getFilterData();
   }, [])
@@ -216,17 +187,12 @@ const TopFailureReasons = () => {
 
   useEffect(() => {
     if (isReset) {
-      handleSaveClick(masterUIConfig);
-      setIsReset(false);
+      setColumnState(colDef);
+      setIsReset(false)
+    }else{
+      handleSaveClick();
     }
   }, [isReset]);
-
-  useEffect(() => {
-    if (currentGridRef?.current) {
-      setMasterUIConfig(currentGridRef?.current.api.getColumnState());
-      getUserColumnConfig();
-    }
-  }, [colDef, currentGridRef]);
 
   const themeUi = user?.user?.theme_ui;
 
@@ -239,8 +205,8 @@ const TopFailureReasons = () => {
         isGridView={isGridView}
         setIsGridView={setIsGridView}
         themeUi={themeUi}
-        isChartGridToggle 
-        isAddFilterButton
+        // isChartGridToggle //commented for grid view
+        // isAddFilterButton
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
         isFilterOpen={isFilterOpen}
@@ -255,7 +221,7 @@ const TopFailureReasons = () => {
       <HorizontalViewWrapper style={{ marginTop: "20px", marginLeft: '15px' }}>
         {isGridView ? (
           <GridView
-            getData={(params: any) => getTopFailureData({...params})}
+            getData={getTopFailureData}
             isLoading={isLoading}
             isError={isError}
             isSuccess={isSuccess}
@@ -264,10 +230,6 @@ const TopFailureReasons = () => {
             currentGridRef={currentGridRef}
             columnState={columnState}
             appliedFilters={appliedFilters}
-            userPageSize={userPageSize}
-            setUserPageSize={setUserPageSize}
-            handleSaveClick={handleSaveClick}
-            userConfigFetched={userConfigFetched}
           />
         ) : (
           <BTRTableWrapper style={{ height: screenHeight - 190, margin: "0" }}>
