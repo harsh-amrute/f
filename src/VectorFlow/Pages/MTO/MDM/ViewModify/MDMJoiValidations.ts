@@ -52,10 +52,7 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
 
   editable: Joi.any().optional(),
   
-  err : Joi.object({
-    error: Joi.string().allow("").optional(), 
-    warning: Joi.string().allow("").optional(),
-  }).optional(),
+  err : Joi.any().optional(),
   
   rid : Joi.any().optional(),
 
@@ -68,6 +65,7 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
   id : Joi.any().optional(),
 
   isdel : Joi.optional(),
+
 });
 
 
@@ -130,10 +128,7 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
     "any.required": "CCR Code is required!"
     }),
 
-  err : Joi.object({
-    error: Joi.string().allow("").optional(), 
-    warning: Joi.string().allow("").optional(),
-  }).optional(),
+  err : Joi.any().optional(),
 
   cid: Joi.any().default(null),
   fh: Joi.any().default(null),
@@ -151,6 +146,16 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
     "boolean.base": "Is Active must be either true or false!",
     "any.required": "Is Active is required! It should be either true or false.",
   }),
+  
+  rid: Joi.any().optional(),
+  cgcd: Joi.any().optional(),
+  cgm: Joi.any().optional(),
+  plcd: Joi.any().optional(),
+  plnm: Joi.any().optional(),
+  dpcd: Joi.any().optional(),
+  dpnm: Joi.any().optional(),
+  did: Joi.any().optional(),
+  cgnm: Joi.any().optional(),
   ia: Joi.optional(),
 
   isEditing: Joi.optional(),

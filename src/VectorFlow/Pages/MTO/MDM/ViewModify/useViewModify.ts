@@ -118,7 +118,7 @@ import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
 import moment from "moment";
 import {CustomStatusPanel } from "../CustomStatusPannel";
-
+import { getPrevPath } from "../history";
 
 
 const useViewModify = (pageType: string) => {
@@ -378,6 +378,8 @@ const useViewModify = (pageType: string) => {
   const [ccrNames, setCCRNames]= useState([]);
 
   const [selectedData, setSelectedData] = useState<any>({});
+
+  const [prevPath , setPrevPath] = useState<string | undefined>(getPrevPath().split('/').pop());
   
   // adding all ccrName in ccr_names array
   const ccr_names :string[] = []
@@ -465,14 +467,7 @@ const useViewModify = (pageType: string) => {
             }
           };
         });
-        const actionsCol: any = {
-          field: "actions",
-          headerName: "Actions",
-          colId: "actions",
-          pinned: "left",
-          width: 100,
-          cellRenderer: AddRemoveCellRenderer,
-        };
+        
         dispatch(UPDATE_COLDEFS([...newColDef]));
       }
     }
@@ -579,8 +574,24 @@ const useViewModify = (pageType: string) => {
           }
         })
       }
+      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === "saved-drafts"){
+        newColDef.unshift({
+          field: "actions",
+          headerName: "Actions",
+          colId: "actions",
+          pinned: "left",
+          width: 100,
+          cellRenderer: AddRemoveCellRenderer,
+          cellRendererParams:{
+            addEditableToLastColumn
+          }
+        })
+        dispatch(UPDATE_COLDEFS([...newColDef]));
 
-      dispatch(UPDATE_COLDEFS([...newColDef]));
+      }else{
+
+        dispatch(UPDATE_COLDEFS([...newColDef]));
+      }
     }
   }, [ccrGroupMaster, plantMaster, deptMaster, activeMaster.id,activeMaster.rowData]);
 
@@ -3406,7 +3417,9 @@ const useViewModify = (pageType: string) => {
         majdsc: "",
         majId: newId,
         ie: false,
-        minData: [{ majId: newId, mindsc: "", minId: newIdMin, ie: false }],
+        minData: [{ majId: newId, mindsc: "", minId: newIdMin, ie: false, ia: true, isEditing: true,}],
+        ia: true,
+        isEditing: true,
       };
     }
     // addRowToMtoMinGrid();
@@ -3425,6 +3438,7 @@ const useViewModify = (pageType: string) => {
           ie: false,
           minId: newMinId,
           mindsc: "",
+       
         },
         ...selectedMajReason.minData,
       ],

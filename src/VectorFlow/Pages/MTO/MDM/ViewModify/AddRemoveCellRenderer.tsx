@@ -200,6 +200,7 @@ const AddRemoveCellRenderer = (params: any) => {
         );
         if (poogiModifyData && poogiModifyData.length) {
           // Find if a node with the matching majId exists
+          console.log('inslide first if')
           const existingIndex = poogiModifyData.findIndex(
             (item: any) => item.majId === params.data.majId
           );
@@ -212,6 +213,7 @@ const AddRemoveCellRenderer = (params: any) => {
             );
             dispatch(SET_POOGI_MODIFY_DATA([...newPoogiModifyData]));
           } else {
+            console.log('inslide else if')
             // Add the new node if it doesn't exist
             const newNode = activeMaster.rowData.find(
               (row) => row.majId === params.data.majId
@@ -411,7 +413,7 @@ const AddRemoveCellRenderer = (params: any) => {
     dispatch(SET_MODIFY_DATA(newModifiedData));
   };
 
-  if (params.data.ia && params.data.isEditing) {
+  if (params.data.ia && params.data.isEditing && activeMaster.id !== 503 && activeMaster.id !== 504) {
     return (
       <div
         style={{
@@ -445,7 +447,7 @@ const AddRemoveCellRenderer = (params: any) => {
         </div>
       </div>
     );
-  } else if (!params.data.isEditing && params.data.ia) {
+  } else if (!params.data.isEditing && params.data.ia && activeMaster.id !== 503 && activeMaster.id !== 504) {
     return (
       <div
         style={{
