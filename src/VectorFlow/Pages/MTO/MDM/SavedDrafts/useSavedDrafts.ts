@@ -284,7 +284,7 @@ const useSavedDrafts = ()=>{
           });
           let draftData: any = res.data.data.results;
           if(draftDetails.mid !== 503 && draftDetails.mid !== 504){
-              draftData = draftData.map((item:any)=> ({...item, isEditing:false,ia:true,isdel:false}));
+              draftData = draftData.map((item:any)=> ({...item, isEditing:false,ia:true,isdel:false,id:uuidv4()}));
           }
           dispatch(SET_RECORD_COUNT(res.data.data.results.length));
 

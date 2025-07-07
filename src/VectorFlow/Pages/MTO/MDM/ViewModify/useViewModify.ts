@@ -574,7 +574,7 @@ const useViewModify = (pageType: string) => {
           }
         })
       }
-      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === "saved-drafts"){
+      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === "saved-drafts" && activeMaster.id !== 503 && activeMaster.id !== 504){
         newColDef.unshift({
           field: "actions",
           headerName: "Actions",

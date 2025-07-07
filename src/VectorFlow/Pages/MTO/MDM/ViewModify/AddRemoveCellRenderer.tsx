@@ -8,6 +8,8 @@ import { UPDATE_COLDEFS, UPDATE_ROW_DATA } from '../../../../../redux/actions/MD
 import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SET_POOGI_MODIFY_DATA } from '../../../../../redux/actions/MTO';
 import type { RootState } from '../../../../../redux/store/store';
 import { BUFFER_VALIDATION_SCHEMA, CALENDAR_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from './MDMJoiValidations';
+import { useState } from 'react';
+import { getPrevPath } from '../history';
 
 
 const AddRemoveCellRenderer = (params: any) => {
@@ -29,6 +31,8 @@ const AddRemoveCellRenderer = (params: any) => {
   const poogiInitialData = useSelector(
     (state: any) => state.mto.poogiIntialData
   );
+
+  const [prevPath, setPrevPath] = useState(getPrevPath().split('/').pop())
 
   const validateCCR = () => {
     const { error } = CCR_VALIDATION_SCHEMA.validate(params.data, {
@@ -200,7 +204,6 @@ const AddRemoveCellRenderer = (params: any) => {
         );
         if (poogiModifyData && poogiModifyData.length) {
           // Find if a node with the matching majId exists
-          console.log('inslide first if')
           const existingIndex = poogiModifyData.findIndex(
             (item: any) => item.majId === params.data.majId
           );
@@ -213,7 +216,6 @@ const AddRemoveCellRenderer = (params: any) => {
             );
             dispatch(SET_POOGI_MODIFY_DATA([...newPoogiModifyData]));
           } else {
-            console.log('inslide else if')
             // Add the new node if it doesn't exist
             const newNode = activeMaster.rowData.find(
               (row) => row.majId === params.data.majId
@@ -497,6 +499,40 @@ const AddRemoveCellRenderer = (params: any) => {
             />
           </button>
         )}
+      </div>
+    );
+  }if(activeMaster.id === 503 && params?.node?.rowIndex === 0 && prevPath !== 'saved-drafts'){
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+          marginTop: "4px",
+          gap: "8px",
+        }}
+      >
+        <div
+          //   onClick={() => dispatch(UPDATE_ROW_DATA(activeMaster.rowData.filter((item: any) => item.id !== params.data.id))) }
+          onClick={() => addRow()}
+          style={{ cursor: "pointer" }}
+        >
+          <img
+            height={17}
+            width={17}
+            src="/assets/img/MTOapprovalBuffer.svg"
+            alt="ApproveMaster"
+          />
+        </div>
+
+        <div onClick={() => onRemoveRow()} style={{ cursor: "pointer" }}>
+          <img
+            height={17}
+            width={17}
+            src="/assets/img/MTOcancelBuffer.svg"
+            alt="CancelMaster"
+          />
+        </div>
       </div>
     );
   }
