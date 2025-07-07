@@ -249,7 +249,7 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
                             <VFStepper
                                 items={getStepperState({...approver, Requester: props.data.Requester, Approver: props.data.Approver[index], TaskStatus: props.data.TaskStatus})}
                                 dashWidth="500px"
-                                zoom={0.9}
+                                zoom={0.8}
                             />
                             {showDisplayDownloadButton(approver.TaskStatus) && (
                                 <VFButton 
