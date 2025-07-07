@@ -3089,7 +3089,13 @@ const useViewModify = (pageType: string) => {
 
   const addEditableToLastColumn = async () => {
     const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
-      const editable = (params: any) => {return params.data.isEditing === true};
+      const editable = (params: any) => {
+        if(activeMaster.id === 503){
+          return params.data.ia === true
+        }else{
+          return params.data.isEditing === true
+        }
+      };
       if (colDef.field === "bt") {
         return {
           ...colDef,
@@ -4158,7 +4164,7 @@ const useViewModify = (pageType: string) => {
         e.err = "";
         CCRPostObj.ccrData.push(_.omit(e, ["editable", "error", "warning"]));
       });
-      
+
       try {
         const response = await saveCCRMasterDraft([CCRPostObj]);
         if (response.status === 200) {
