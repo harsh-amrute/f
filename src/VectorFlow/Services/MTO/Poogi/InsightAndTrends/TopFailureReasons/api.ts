@@ -3,7 +3,7 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace TopFailureReasonsService {
 
-    export const getTopFailureData = async ({graphflag, page, appliedFilters,page_size}: any) => {
+    export const getTopFailureData = async ({graphflag, page, appliedFilters}: any) => {
         if(graphflag){
             return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getTopFailureReasonsData/`, {
                 headers: {
@@ -22,8 +22,7 @@ export namespace TopFailureReasonsService {
             },
             params: {
                 graphflag,
-                page,
-                page_size
+                page
             }
         })
     }
