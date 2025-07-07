@@ -889,6 +889,7 @@ const useViewModify = (pageType: string) => {
   };
 
   const agGridProps: AgGridReactProps = {
+    singleClickEdit:true,
     tooltipShowDelay: 0,
     readOnlyEdit: true,
     tooltipTrigger: "hover",

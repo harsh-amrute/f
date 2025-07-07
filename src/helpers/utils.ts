@@ -2210,7 +2210,7 @@ export const navigateWithPrompt = (onRouteChange: () => void, url: any, state: a
       onRouteChange();
     }
     else {
-      if (confirm("Are you sure you want to leave this page?")) {
+      if (confirm("Are you sure you want to leave this page?  All the Progress will be lost!")) {
         onRouteChange();
         resetState()
       }
