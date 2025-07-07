@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 
 
 const SimulateFullKit = () => {
-    const { renderView, toggleCurrentTab, handleResetClick, handleSaveClick, ExcelExportData } = useSimFullKit();
+    const { renderView, toggleCurrentTab, handleResetClick, handleSaveClick, ExcelExportData} = useSimFullKit();
     const { user } = useUserData();
     const navigate = useNavigate();
     const themeUi = user.user.theme_ui;

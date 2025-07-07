@@ -4862,7 +4862,7 @@ export function getColumnDefinationsMTA(
       rowGroupIndex: null,
       initialPivot: false,
       enablePivot: true,
-      enableRowGroup:true,
+      enableRowGroup:false,
       enableValue:true,
       pivotIndex: null,
       flex: 1,

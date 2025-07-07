@@ -119,7 +119,9 @@ export const KeepMe: any = styled.label`
 `;
 
 export const ChangePassText: any = styled.div`
-  padding-top: 5px;
+  padding-top: 30px;
+  width: 28vw;
+  margin-left:65px;
 `;
 
 export const SCButtonLogin = styled.button<{ disabled?: boolean }>`
