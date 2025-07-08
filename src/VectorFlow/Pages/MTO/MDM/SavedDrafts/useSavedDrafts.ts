@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useDispatch,useSelector } from "react-redux"
-import { useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import {useGetAllDrafts, useDeleteMTODraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration, useGetBufferTypeMaster,useGetCCRMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
 import { notifyError, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
 
-import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS} from "../../../../../redux/actions/MDM"
+import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, UPDATE_DATA_AVAILABILITY_STATUS} from "../../../../../redux/actions/MDM"
 import { createMastersStateFromDraftData, generateRandomId, getActionName, getCCRNamesFromId, mapMasterToMasterState } from "../../../../../helpers/utils"
 import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import type { RootState } from '../../../../../redux/store/store';
@@ -16,6 +16,7 @@ import { useGetDeptMasterData, useGetPlantMasterData  } from "../../../../../Vec
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation"
 import { v4 as uuidv4 } from "uuid";
 import DaysOfWeekRenderer from "../ViewModify/DaysOfWeekRenderer"
+
 
 
 const useSavedDrafts = ()=>{
@@ -48,6 +49,7 @@ const useSavedDrafts = ()=>{
     const [ccrsData,setCcrsData] = useState<any>();
     
     const user = useUserData();
+
 
     const convertDateFormat = (inputDate: string)=>{
         const [date, ltime] = inputDate.split("T");
@@ -137,7 +139,8 @@ const useSavedDrafts = ()=>{
     useEffect(()=>{
         getInitalData();
     },[])
-    const convertToColDefs = (data:any, ActionType: string) => {
+    const convertToColDefs = (data:any,draftDetails:any) => {
+        const { ActionType } = draftDetails;
         const newColDef =  data
           .sort((a:any, b:any) => (a.col_Position || 0) - (b.col_Position || 0))
           .map((item: any) => ({
@@ -270,7 +273,10 @@ const useSavedDrafts = ()=>{
             draftId: draftDetails.DraftId,
             mid: draftDetails.mid,
           });
-          const draftData: any = res.data.data.results;
+          let draftData: any = res.data.data.results;
+          if(draftDetails.mid !== 503 && draftDetails.mid !== 504){
+              draftData = draftData.map((item:any)=> ({...item, isEditing:false,ia:true,isdel:false,id:uuidv4()}));
+          }
           dispatch(SET_RECORD_COUNT(res.data.data.results.length));
 
           const mastersDataRes = await getMTOMasterUIConfiguration();
@@ -301,7 +307,7 @@ const useSavedDrafts = ()=>{
               id: draftDetails.mid,
               name: draftDetails.dnm,
               colDefs: [
-                ...convertToColDefs(fields, draftDetails.ActionType),
+                ...convertToColDefs(fields, draftDetails),
                 {
                   colId: "err",
                   colPosition: 100,

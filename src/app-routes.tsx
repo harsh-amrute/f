@@ -1,5 +1,5 @@
-import React, { Suspense, useEffect } from 'react'
-import { type RouteObject } from 'react-router-dom'
+import React, { Suspense, useEffect, useRef } from 'react'
+import { useLocation, type RouteObject } from 'react-router-dom'
 import { AppLayout } from './components'
 import { getStoreTransferModuleRoutes } from './module-store-transfer/app-routes-store-transfer'
 import Login from './module-main/pages/auth/login'
@@ -87,6 +87,7 @@ import SupplierWiseAllocation from './VectorFlow/Pages/MTA/SupplyChainIntelligen
 import OrderAllocationReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OrderAllocationReport'
 import TotalRequirementReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/TotalRequirementReport'
 import BulkUploadPage from './module-store-transfer/pages/bulk-upload'
+import { setPrevPath } from './VectorFlow/Pages/MTO/MDM/history'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -227,6 +228,18 @@ const lazyLoad = (children: React.ReactNode) => {
   const newUrlPermiss = [...authenPage, ...urlPermissionArr]
 
   const urlCurrent = window.location.pathname
+
+  const location = useLocation()
+  const previousPathRef = useRef(location.pathname)
+
+  useEffect(()=>{
+    if(location.pathname !== previousPathRef.current){
+
+      setPrevPath(previousPathRef.current)
+      previousPathRef.current = location.pathname
+    }
+  },[location])
+
 
   if (urlAllPage.includes(urlCurrent)) {
     if (newUrlPermiss.includes(urlCurrent)) {
