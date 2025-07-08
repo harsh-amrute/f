@@ -133,79 +133,87 @@ const useTaskPendingForReview = ()=>{
   const {mutateAsync: putMTOCCRData} = usePutMtoCCRMasterData();
 
 
-  const convertColumnsFormat = async (columns:any, mid: any) => {
-    if(mid===503){
-        const newColDefs = [
-            {
-                field: "majdsc",
-                headerName: "Major Reason",
-                position: 1,
-                dataType: "string",
-                visible: true
-            },
-            {
-                field: "mindsc",
-                headerName: "Minor Reason",
-                position: 2,
-                dataType: "string",
-                visible: true
-            },
-            {
-                field: "plnm",
-                headerName: "Plant",
-                position: 3,
-                dataType: "string",
-                visible: true
-            },
-
-        ]
-        return newColDefs;
-    }
-
-    const sortedColumns = columns.sort((a:any,b:any)=>parseInt(a.col_Position)-parseInt(b.col_Position));
-    let ccrsData:any = [];
-    const ccr = await getCCRMasterData({});
-
-
-    if(ccr.data.data.length !== 0){
-        ccrsData = ccr.data.data
-    }
-
-    return sortedColumns.map((col:any, index:any) => {
-        
-        if(col.key === "dow"){
-            return {
-                field: col.key,
-                headerName: col.displayName,
-                position: index + 1,
-                dataType: col.dataType,
-                visible: col.visible,
-                cellRenderer: DaysOfWeekRenderer
-            }
-        }
-        if(col.key === "ccr_id"){
-
-            return {
-                field: col.key,
-                headerName: col.displayName,
-                position: index + 1,
-                dataType: "string",
-                visible: col.visible,
-                valueFormatter : (params:any)=>{
-                    return getCCRNamesFromId(ccrsData,params?.data?.ccr_id)
+    const convertColumnsFormat = async (columns: any, mid: any) => {
+        // Case for mid = 503 — fixed column list
+        if (mid === 503) {
+            return [
+                {
+                    field: "majdsc",
+                    headerName: "Major Reason",
+                    position: 1,
+                    dataType: "string",
+                    visible: true
+                },
+                {
+                    field: "mindsc",
+                    headerName: "Minor Reason",
+                    position: 2,
+                    dataType: "string",
+                    visible: true
+                },
+                {
+                    field: "plnm",
+                    headerName: "Plant",
+                    position: 3,
+                    dataType: "string",
+                    visible: true
                 }
-            }
-        }else{
-           return  {
-            field:col.key,
-            headerName:col.displayName,
-            position:index+1,
-            dataType:col.dataType,
-            visible:col.visible
-            }
+            ];
         }
-    });
-}
+
+        // Sort columns once upfront for all other cases
+        const sortedColumns = columns?.sort(
+            (a: any, b: any) => parseInt(a.col_Position) - parseInt(b.col_Position)
+        );
+
+        // Case for mid = 504 — special renderers/formatters
+        if (mid === 504) {
+            let ccrsData: any[] = [];
+            const ccr = await getCCRMasterData({});
+            if (ccr?.data?.data?.length) {
+                ccrsData = ccr.data.data;
+            }
+
+            return sortedColumns.map((col: any, index: number) => {
+                const baseColDef = {
+                    field: col.key,
+                    headerName: col.displayName,
+                    position: index + 1,
+                    dataType: col.dataType,
+                    visible: col.visible,
+                    minWidth: 200
+                };
+
+                if (col.key === "dow") {
+                    return {
+                        ...baseColDef,
+                        cellRenderer: DaysOfWeekRenderer
+                    };
+                } else if (col.key === "ccr_id") {
+                    return {
+                        ...baseColDef,
+                        dataType: "string",
+                        valueFormatter: (params: any) => {
+                            return getCCRNamesFromId(ccrsData, params?.data?.ccr_id);
+                        }
+                    };
+                } else {
+                    return baseColDef;
+                }
+            });
+        }
+
+        // Default mapping for all other mids
+        return sortedColumns.map((col: any, index: number) => ({
+            field: col.key,
+            headerName: col.displayName,
+            position: index + 1,
+            dataType: col.dataType,
+            visible: col.visible,
+            minWidth: 200
+        }));
+    }
+
 
     const resetState = ()=>{
         setDetailTableColDefs([])
@@ -219,34 +227,20 @@ const useTaskPendingForReview = ()=>{
         const result: any[] = [];
         
         data.forEach((item: any) => {
-            // Push the main object without minData
-            const tempMajId = "maj_"+ uuidv4();
-            result.push({
-                majId: item.majId? item.majId: tempMajId,
-                majdsc: item.majdsc,
-                plnm: item.plnm,
-                trmId: item.trmId? item.trmId: item.mintid,
-                tid: item.tid,
-                ti_id: item.ti_id,
-                ie: item.ie || false,
-                id: item.id || false,
-                iu: item.iu || false,
-                pl: item.pl,
-                majcd: item.majcd,
-                aon: item.aon,
-                aid: item.aid,
-                anm: item.anm,
-                st: item.st,
-                stnm: item.stnm
-            });
+            const tempMajId = "maj_" + uuidv4();
+            const tempMinId = "min_" + uuidv4();
     
             // Push each minData object with the corresponding majId and plnm
             if (item.minData && Array.isArray(item.minData)) {
-            const tempMinId = "min_"+uuidv4();
-
+                
                 item.minData.forEach((minItem: any) => {
                     result.push({
-                        majId: minItem.majId || tempMajId,
+                        majId: item.majId ? item.majId : tempMajId,
+                        majdsc: item.majdsc,
+                        majcd: item.majcd,
+                        trmId: item.trmId ? item.trmId : item.mintid,
+                        tid: item.tid,
+                        ti_id: item.ti_id,
                         minId: minItem.minId || tempMinId,
                         mindsc: minItem.mindsc,
                         mintid: minItem.mintid,
@@ -269,61 +263,52 @@ const useTaskPendingForReview = ()=>{
         return result;
     };
 
-    const ConvertFromPoogiData = (data: any) => {
-        const result: any = [];
+    const ConvertFromPoogiData = (data: any[]) => {
+        const result: any[] = [];
+        const majIdMap = new Map<string | null, any>();
     
-        // Create a map to track majId and its corresponding object in the result
-        const majIdMap = new Map();
+        data.forEach((item) => {
+            const majId = item.majId?.startsWith('m') ? null : item.majId;
+            const minId = item.minId?.startsWith('m') ? null : item.minId;
     
-        data.forEach((item: any) => {
-            // Check and set majId to null if it starts with 'm'
-            const majId = item.majId && item.majId.startsWith('m') ? null : item.majId;
-    
-            if (item.minId) {
-                // Check and set minId to null if it starts with 'm'
-                const minId = item.minId.startsWith('m') ? null : item.minId;
-    
-                // Handle minData objects
-                const parent = majIdMap.get(majId);
-    
-                if (parent) {
-                    // Add minData to the corresponding parent object
-                    parent.minData.push({
-                        minid: minId,
-                        mindsc: item.mindsc,
-                        mintid: item.mintid,
-                        ie: item.ie || false,
-                        id: item.id || false,
-                        ia: item.appStatus === true ? true : false,
-                        iu: item.iu || false,
-                        mincd: item.mincd,
-                        cm: item.cm || "",
-
-                    });
-                }
-            } else {
-                // Handle main objects
-                const mainObject = {
+            // Get or create the main object
+            let mainObject = majIdMap.get(majId);
+            if (!mainObject) {
+                mainObject = {
                     majdsc: item.majdsc,
                     majid: majId,
                     trmId: item.trmId,
-                    ia: item.appStatus === true ? true : false,
-                    ie: item.ie || false,
-                    id: item.id || false,
-                    iu: item.iu || false,
-                    cm: item.cm|| "",
+                    ia: !!item.appStatus,
+                    ie: !!item.ie,
+                    id: !!item.id,
+                    iu: !!item.iu,
+                    cm: item.cm || "",
                     majcd: item.majcd,
                     pl: item.pl,
-                    minData: [], // Initialize an empty array for minData
+                    minData: [],
                 };
-    
+                majIdMap.set(majId, mainObject);
                 result.push(mainObject);
-                majIdMap.set(majId, mainObject); // Add to the map for reference
+            }
+    
+            // Add minData only if minId exists
+            if (item.minId) {
+                mainObject.minData.push({
+                    minid: minId,
+                    mindsc: item.mindsc,
+                    mintid: item.mintid,
+                    ie: !!item.ie,
+                    id: !!item.id,
+                    ia: !!item.appStatus,
+                    iu: !!item.iu,
+                    mincd: item.mincd,
+                    cm: item.cm || "",
+                });
             }
         });
     
         return result;
-    };
+    };    
     
     
     const handleOnClick = async(taskData:TaskDataType|any)=>{
@@ -369,7 +354,9 @@ const useTaskPendingForReview = ()=>{
                                 field: "cm",
                                 headerName: "Comments",
                                 cellRenderer: CommentCellRenderer,
-                                pinned: 'right'
+                                pinned: 'right',
+                                minWidth: 300,
+                                maxWidth:300
                             }
                         )
                         newColDefs.push(
@@ -394,15 +381,15 @@ const useTaskPendingForReview = ()=>{
                                     mtoActionStatus,
                                     setActionStatus
                                 },
-                                width: 300,
+                                width: 200,
+                                minWidth: 200,
+                                maxWidth:200,
                                 cellStyle: {
                                   "border-left": "solid 1px #B9B9B9"
                                 },
                                 pinned: 'right'
                               }  
                         )
-
-                       
 
                         const newData:any = [];
 
@@ -411,7 +398,6 @@ const useTaskPendingForReview = ()=>{
                             newEle.selectStatus = '';
                             newData.push(newEle);
                         })
-                        
                        
                         setDetailTableColDefs(newColDefs);
 
@@ -495,9 +481,16 @@ const useTaskPendingForReview = ()=>{
       }
 
     const onCancel = ()=>setIsViewTableOpen(true)
-
-    const onTaskSubmit = async () => {  
+    
+    const updateTableOnSubmit = (taskIdToRemove: any) => {
         
+        setMTOPendingTaskData((mtoPendingTaskData: any) =>
+        {
+            return mtoPendingTaskData.filter((task: any) => task.TaskID != taskIdToRemove) 
+        });
+    }
+
+    const onTaskSubmit = async () => {
        
         let toastId;
         const updatedRowData = createTaskPendingSubmitPayload(detailTableRowData,taskActionype || 0,currMasterId)
@@ -645,25 +638,20 @@ const useTaskPendingForReview = ()=>{
         return formattedDate;
     }
 
-    const MTOToMTAFormat=(inData: any)=>{
-
-        const newData:any = [];
-        inData.forEach((val:any)=>{
-            const newVal:any = {}
-            newVal.TaskID = val.tid;
-            newVal.PendingSince = convertDateFormat(val.co);
-            newVal.TaskName = val.tnm;
-            newVal.TaskStatus = val.std;
-            newVal.RequesterName = val.r_nm;
-            newVal.mid = val.mid;
-            newVal.isMTO = true,
-            newVal.ageing = getDaysDifference(val.co);
-  
-            newData.push(newVal);
-        })
-  
-        return newData;
-    }
+    const MTOToMTAFormat = (inData: any[]) => {
+        return inData
+            .filter((val: any) => val.std === "Pending")
+            .map((val: any) => ({
+                TaskID: val.tid,
+                PendingSince: convertDateFormat(val.co),
+                TaskName: val.tnm,
+                TaskStatus: val.std,
+                RequesterName: val.r_nm,
+                mid: val.mid,
+                isMTO: true,
+                ageing: getDaysDifference(val.co)
+            }));
+    };    
 
     useEffect(()=>{
         if(actionStatus==='Approve All'){
@@ -844,6 +832,7 @@ const useTaskPendingForReview = ()=>{
                         dispatch(SET_TASK_PENDING_ROW_DATA([]));
                         setIsViewTableOpen(true);
                         GetInitialData(mid);
+                        updateTableOnSubmit(mtoTask.TaskID);
                     }
                     else{
                         notifyError("Failed to update DB!");
@@ -913,6 +902,7 @@ const useTaskPendingForReview = ()=>{
                     dispatch(SET_TASK_PENDING_ROW_DATA([]));
                     setIsViewTableOpen(true);
                     GetInitialData(mid);
+                    updateTableOnSubmit(mtoTask.TaskID);
                 }
                 else{
                     notifyError("Failed to Update DB!")
@@ -927,7 +917,7 @@ const useTaskPendingForReview = ()=>{
     else if(mtoTask.mid===503){
 
         notifyLoader("Updating Task...")
-
+        try{
         const newApprovedData = ConvertFromPoogiData(detailTableRowData);
 
         let isValid:any = true;
@@ -943,7 +933,7 @@ const useTaskPendingForReview = ()=>{
             })
         })
         if(isValid===false){
-            notifyError("Make sure you provide a comment for the rejected task!")
+            throw new Error("Make sure you provide a comment for the rejected task!");
         }
 
         const finData ={
@@ -955,20 +945,21 @@ const useTaskPendingForReview = ()=>{
             "reasonData": newApprovedData
         }
         
-        try{
             const response = await putMTOAddPoogiMaster([finData]);
             if(response.status=== 200){
                 notifySuccess("DB Updated Successfully");
                 dispatch(SET_TASK_PENDING_ROW_DATA([]));
                 setIsViewTableOpen(true);
                 GetInitialData(mid);
+                updateTableOnSubmit(mtoTask.TaskID);
+
             }
             else{
                 notifyError("Failed to update DB!");
             }
         }
         catch(error){
-            notifyError("Failed to update DB!");
+            notifyError(error ? "Make sure you provide a comment for the rejected task!" : "Failed to update DB!");
             console.log(error)
         }
     }else if(mtoTask.mid === 504){
@@ -1003,6 +994,7 @@ const useTaskPendingForReview = ()=>{
                 dispatch(SET_TASK_PENDING_ROW_DATA([]));
                 setIsViewTableOpen(true);
                 GetInitialData(mid);
+                updateTableOnSubmit(mtoTask.TaskID);
             }
             else{
                 notifyError("Failed to update DB!");
