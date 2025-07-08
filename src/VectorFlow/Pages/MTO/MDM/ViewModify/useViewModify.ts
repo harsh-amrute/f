@@ -3980,7 +3980,6 @@ const useViewModify = (pageType: string) => {
           _.omit(e, ["editable", "error", "warning", "plnm"])
         );
       });
-      console.log(POOGIPostObj,'this is poogi post obj')
       try {
         const response = await savePOOGIMasterTask(POOGIPostObj);
         if (response.status === 200) {
@@ -4315,7 +4314,6 @@ const useViewModify = (pageType: string) => {
         at: pageType === "add" ? "Add" : "Modify",
       };
 
-      console.log(poogiModifyData,'this is modified data')
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
@@ -4359,7 +4357,6 @@ const useViewModify = (pageType: string) => {
           _.omit(e, ["editable", "error", "warning", "plnm"])
         );
       });
-      console.log(POOGIPostObj,'this is poogi post obj')
       try {
         const response = await savePOOGIMasterDraft([POOGIPostObj]);
         if (response.status === 200) {
