@@ -381,6 +381,7 @@ const useViewModify = (pageType: string) => {
 
   const [prevPath , setPrevPath] = useState<string | undefined>(getPrevPath().split('/').pop());
   
+  const saveDraft = "saved-drafts"
   // adding all ccrName in ccr_names array
   const ccr_names :string[] = []
   for(const ccr of ccrsData){
@@ -574,7 +575,7 @@ const useViewModify = (pageType: string) => {
           }
         })
       }
-      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === "saved-drafts" && activeMaster.id !== 503 && activeMaster.id !== 504){
+      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === saveDraft && activeMaster.id !== 503 && activeMaster.id !== 504){
         newColDef.unshift({
           field: "actions",
           headerName: "Actions",
@@ -3098,6 +3099,7 @@ const useViewModify = (pageType: string) => {
     }
   };
 
+
   const addEditableToLastColumn = async () => {
     const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
       const editable = (params: any) => {
@@ -3293,12 +3295,22 @@ const useViewModify = (pageType: string) => {
     };
 
     // return [actionsCol, ...modifiedColDefs];
-    if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
-      dispatch(UPDATE_COLDEFS([ ...modifiedColDefs]));
-      return;
-    }else{
-      dispatch(UPDATE_COLDEFS([ actionsCol, ...modifiedColDefs ]));
+    const isFromSaveDraft503 = prevPath === saveDraft && activeMaster.id === 503;
+    const hasActionCol = modifiedColDefs.some((col:any)=> col.field === "actions");
+
+    if(isFromSaveDraft503){
+      const newColDef = modifiedColDefs.filter((colDef: any) => colDef.field !== "actions");
+      dispatch(UPDATE_COLDEFS([ ...newColDef ]));
+      return
     }
+
+    if(hasActionCol){
+      dispatch(UPDATE_COLDEFS([ ...modifiedColDefs ]));
+      return;
+    }
+
+    dispatch(UPDATE_COLDEFS([ actionsCol, ...modifiedColDefs ]));
+
 
   };
 
@@ -3968,7 +3980,7 @@ const useViewModify = (pageType: string) => {
           _.omit(e, ["editable", "error", "warning", "plnm"])
         );
       });
-
+      console.log(POOGIPostObj,'this is poogi post obj')
       try {
         const response = await savePOOGIMasterTask(POOGIPostObj);
         if (response.status === 200) {
@@ -4274,6 +4286,7 @@ const useViewModify = (pageType: string) => {
           });
         }
         PoogiPostObj.reasonData = finPoogiPostData;
+        
         try {
           const response = await savePOOGIMasterDraft([PoogiPostObj]);
     
@@ -4301,6 +4314,8 @@ const useViewModify = (pageType: string) => {
         reasonData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
+
+      console.log(poogiModifyData,'this is modified data')
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
@@ -4344,7 +4359,7 @@ const useViewModify = (pageType: string) => {
           _.omit(e, ["editable", "error", "warning", "plnm"])
         );
       });
-
+      console.log(POOGIPostObj,'this is poogi post obj')
       try {
         const response = await savePOOGIMasterDraft([POOGIPostObj]);
         if (response.status === 200) {

@@ -182,6 +182,8 @@ const AddRemoveCellRenderer = (params: any) => {
         dispatch(UPDATE_COLDEFS(newColDefs));
       }
     } else if (activeMaster.id === 503) {
+      const hasActionsCol = activeMaster.colDefs.some((col:any)=> col.field === 'actions' || col.field === 'pactions');
+
       if (params.data.mindsc !== undefined) {
         if (params.data.mindsc === "") {
           notifyError("Add a minor reason for the selected major reason");
@@ -194,14 +196,17 @@ const AddRemoveCellRenderer = (params: any) => {
           delete newColDef.editable;
           newColDefs.push(newColDef);
         });
-        dispatch(
-          UPDATE_COLDEFS(
-            newColDefs.filter(
-              (item: any) =>
-                item.field !== "actions" && item.field !== "pactions"
+        if(hasActionsCol){
+
+          dispatch(
+            UPDATE_COLDEFS(
+              newColDefs.filter(
+                (item: any) =>
+                  item.field !== "actions" && item.field !== "pactions"
+              )
             )
-          )
-        );
+          );
+        }
         if (poogiModifyData && poogiModifyData.length) {
           // Find if a node with the matching majId exists
           const existingIndex = poogiModifyData.findIndex(
@@ -252,7 +257,6 @@ const AddRemoveCellRenderer = (params: any) => {
           notifyError("Please select a valid plant from the dropdown");
           return;
         }
-
         const newColDefs: any = [];
         activeMaster.colDefs.forEach((ele: any) => {
           const newColDef = { ...ele };
@@ -266,11 +270,16 @@ const AddRemoveCellRenderer = (params: any) => {
           dispatch(SET_POOGI_MODIFY_DATA([params.data, ...poogiModifyData]));
         else dispatch(SET_POOGI_MODIFY_DATA([activeMaster.rowData[0]]));
 
-        dispatch(
-          UPDATE_COLDEFS(
-            newColDefs.filter((item: any) => item.field !== "actions")
-          )
-        );
+        if(hasActionsCol){
+          dispatch(
+            UPDATE_COLDEFS(
+              newColDefs.filter(
+                (item: any) =>
+                  item.field !== "actions" && item.field !== "pactions"
+              )
+            )
+          );
+        }
       }
     } else if (activeMaster.id === 504) {
       const { error } = CALENDAR_VALIDATION_SCHEMA.validate(params.data, {

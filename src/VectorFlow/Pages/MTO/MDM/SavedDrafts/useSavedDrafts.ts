@@ -16,8 +16,6 @@ import { useGetDeptMasterData, useGetPlantMasterData  } from "../../../../../Vec
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation"
 import { v4 as uuidv4 } from "uuid";
 import DaysOfWeekRenderer from "../ViewModify/DaysOfWeekRenderer"
-import AddRemoveCellRenderer from "../ViewModify/AddRemoveCellRenderer"
-import { setPrevPath } from "../history"
 
 
 
@@ -49,16 +47,9 @@ const useSavedDrafts = ()=>{
     const [ccrGroupMaster, setCcrGroupMaster] = useState<any>();
     const [bufferTypeMaster, setBufferTypeMaster] = useState<any>();
     const [ccrsData,setCcrsData] = useState<any>();
-
-    const location = useLocation()
-    const previousLocation = useRef(location.pathname);
     
     const user = useUserData();
 
-    useEffect(() => {
-      setPrevPath(previousLocation.current);
-      previousLocation.current = location.pathname;
-    }, [location]);
 
     const convertDateFormat = (inputDate: string)=>{
         const [date, ltime] = inputDate.split("T");
