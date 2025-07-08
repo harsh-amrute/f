@@ -374,7 +374,7 @@ const useViewModify = (pageType: string) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [plantNames, setPlantNames] =  useState([]);
+  const [plantNames, setPlantNames] =  useState<any>([]);
   const [ccrNames, setCCRNames]= useState([]);
 
   const [selectedData, setSelectedData] = useState<any>({});
@@ -483,7 +483,6 @@ const useViewModify = (pageType: string) => {
       activeMaster.colDefs.length > 0
     ) {
       const newColDef = _.cloneDeep(activeMaster.colDefs);
-      // newColDef[newColDef.length-2].valueFormatter =  myCCRFormatter;
 
       // Iterate over the column definitions and update based on colId
       newColDef.forEach((col: any) => {
@@ -575,19 +574,22 @@ const useViewModify = (pageType: string) => {
           }
         })
       }
-      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === saveDraft && activeMaster.id !== 503 && activeMaster.id !== 504){
-        newColDef.unshift({
+      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === saveDraft && activeMaster.id !== 503 && activeMaster.id !== 504 && pageType === "modify"){
+        const actionsCol: any = {
           field: "actions",
           headerName: "Actions",
           colId: "actions",
           pinned: "left",
           width: 100,
+          editable:false,
+          floatingFilter: false,
+          suppressExcelExport: true,
           cellRenderer: AddRemoveCellRenderer,
-          cellRendererParams:{
-            addEditableToLastColumn
+          cellRendererParams: {
+            addEditableToLastColumn,
           }
-        })
-        dispatch(UPDATE_COLDEFS([...newColDef]));
+        };
+        dispatch(UPDATE_COLDEFS([actionsCol,...newColDef]));
 
       }else{
 
@@ -1050,11 +1052,7 @@ const useViewModify = (pageType: string) => {
           });
         }
         if (currentMaster) {
-          event.api.exportDataAsExcel({
-            fileName:
-              downloadFileName === "" ? currentMaster.name : downloadFileName,
-            columnKeys: validColumnKeys,
-          });
+          event.api.exportDataAsExcel(onExcelExprot(colDefs));
         }
       }
     },
@@ -2163,7 +2161,6 @@ const useViewModify = (pageType: string) => {
       //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
       // }
       // else{
-
       dispatch(SET_RECORD_COUNT(buffData?.length));
       dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
 
@@ -2275,6 +2272,72 @@ const useViewModify = (pageType: string) => {
       notifyError("Please Select Rows to Delete");
     }
   };
+
+  const onExcelExprot = useMemo(()=>(
+    (columnDefs = colDefs,buffTypeData = bufferTypeData,plantData = plantNames,deptData = deptMaster,ccrGroupData = ccrGroupMaster )=>{
+      const isBufferExport = activeMaster.id === 501;
+      const isCCRExport = activeMaster.id === 502;
+      
+      const bufferType = (value: any) => {
+        return buffTypeData?.find((type: any) => type.id === value)?.dsc;
+      };
+  
+      const plantNameFromId = (value:any)=>{
+        return plantData.find((plant:any)=> plant.plant_id === value)?.plant_name
+      }
+  
+      const deptNameFromId = (value:any)=>{
+        return deptData.find((dept:any)=> dept.dept_id === value)?.dept_name
+      }
+  
+      const ccrGroupNameFromId = (value:any)=>{
+        for(const key in ccrGroupData){
+          if(ccrGroupData[key]?.ccr_group_id === value){
+            return key
+          }
+        }
+        return null
+      }
+      return {
+        fileName : `${activeMaster.name} MTo`,
+        columnKeys: columnDefs
+          .filter((col: any) => col.field !== 'actions') 
+          .map((col: any) => col.field),             
+      
+        processCellCallback: (params: any) => {
+          const { column, value } = params;
+      
+          if (isBufferExport && column.getColId() === 'bt') {
+            const match = bufferType(value);
+            return match ? match : value;  
+          }
+  
+          if(isCCRExport && column.getColId() === 'pl'){
+            const match = plantNameFromId(value)
+            return match ? match : value
+          }
+  
+          if(isCCRExport && column.getColId() === 'dp'){
+            const match = deptNameFromId(value)
+            return match ? match : value
+          }
+  
+          if(isCCRExport && column.getColId() === 'cgid'){
+            const match = ccrGroupNameFromId(value)
+            return match ? match : value
+          }
+      
+          return value?.toString() || "";       
+        },
+      
+        processHeaderCallback: (params: any) => {
+          const { column } = params;
+          return column.getColDef().headerName || column.getColId();
+        }
+      };
+    }
+  ),[deptMaster,plantNames,ccrGroupMaster,ref,bufferTypeData,activeMaster?.id])
+  
 
   const handleChangePage = async (pageNo: any) => {
     setCurrentPage(pageNo);
@@ -3110,6 +3173,12 @@ const useViewModify = (pageType: string) => {
           return params.data.isEditing === true
         }
       };
+      if(colDef.field === 'actions'){
+        return {
+          ...colDef,
+          editable:false
+        }
+      }
       if (colDef.field === "bt") {
         return {
           ...colDef,
@@ -3178,6 +3247,12 @@ const useViewModify = (pageType: string) => {
       }
 
       if (activeMaster.id === 502) {
+        if(colDef.field === 'actions'){
+          return {
+            ...colDef,
+            editable:false
+          }
+        }
         if (
           colDef.field === "pl" ||
           colDef.field === "dp" ||
@@ -3289,13 +3364,15 @@ const useViewModify = (pageType: string) => {
       colId: "actions",
       pinned: "left",
       width: 100,
+      editable:false,
+      floatingFilter: false,
+      suppressExcelExport: true,
       cellRenderer: AddRemoveCellRenderer,
       cellRendererParams: {
         addEditableToLastColumn,
       }
     };
 
-    // return [actionsCol, ...modifiedColDefs];
     const isFromSaveDraft503 = prevPath === saveDraft && activeMaster.id === 503;
     const hasActionCol = modifiedColDefs.some((col:any)=> col.field === "actions");
 
@@ -3355,16 +3432,6 @@ const useViewModify = (pageType: string) => {
       }
     });
 
-    // const actionsCol: any = {
-    //   field: "pactions",
-    //   headerName: "Actions",
-    //   colId: "pactions",
-    //   pinned: "left",
-    //   width: 100,
-    //   cellRenderer: AddRemoveCellRenderer,
-    // };
-
-    // return [actionsCol, ...modifiedColDefs];
     if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
       return;
     }
@@ -3887,7 +3954,7 @@ const useViewModify = (pageType: string) => {
         ccrData: [],
       };
 
-      const ccrData = ccrModifyData.filter((ele:any)=> !ele.isdel)
+      const ccrData = ccrModifyData?.filter((ele:any)=> !ele.isdel)
 
       ccrData.forEach((ele: any) => {
         const e = keysToDelete(ele)
@@ -4023,8 +4090,7 @@ const useViewModify = (pageType: string) => {
       buffData: [],
     };
 
-    const bufferData = bufferModifyData.filter((ele:any)=> !ele.isdel)
-
+    const bufferData = bufferModifyData?.filter((ele:any)=> !ele.isdel)
     bufferData.forEach((ele: any) => {
       const e = keysToDelete(ele);
       bufferTypeData.forEach((elm: any) => {
@@ -4081,16 +4147,11 @@ const useViewModify = (pageType: string) => {
       if (pageType === "add") {
         activeMaster.rowData.forEach((ele: any) => {
           const e = _.cloneDeep(ele);
-          let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt) {
-              isBuffChanged = true;
+            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
-          if (isBuffChanged === false) {
-            e.bt = bufferTypeData[0].id;
-          }
           e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
@@ -4105,20 +4166,15 @@ const useViewModify = (pageType: string) => {
           }
         });
       } else {
-        const bufferData = bufferModifyData.filter((ele:any)=> !ele.isdel)
+        const bufferData = bufferModifyData?.filter((ele:any)=> !ele.isdel)
 
         bufferData.forEach((ele: any) => {
           const e = keysToDelete(ele)
-          let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt) {
-              isBuffChanged = true;
+            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
-          if (isBuffChanged === false) {
-            e.bt = bufferTypeData[0].id;
-          }
           e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
@@ -4157,7 +4213,7 @@ const useViewModify = (pageType: string) => {
         ccrData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
-      let tempModifyData = ccrModifyData.filter((ele:any)=> !ele.isdel);
+      let tempModifyData = ccrModifyData?.filter((ele:any)=> !ele.isdel);
       if (pageType === "add") {
         tempModifyData = _.cloneDeep(activeMaster.rowData);
       }
@@ -4522,6 +4578,7 @@ const useViewModify = (pageType: string) => {
     setSelectedData,
     onMTOSaveAsDraft,
     setCalendarFormData,
+    onExcelExprot,
     MTOPoogiMinorColdef: [
       {
         headerName: "Sr No.",

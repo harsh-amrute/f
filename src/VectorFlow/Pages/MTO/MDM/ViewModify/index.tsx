@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
@@ -131,6 +131,7 @@ const MTOViewModify = () => {
     selectedData,
     setSelectedData,
     setCalendarFormData,
+    onExcelExprot,
   } = useViewModify("modify");
 
 
@@ -139,6 +140,10 @@ const MTOViewModify = () => {
   );
   const ccrModifyData = useSelector((state: any) => state.mto.ccrModifyData);
   const editStatus: string = useSelector((state: any) => state.mto.editStatus);
+
+  const handleExportData = useCallback(() => {
+    ref?.current?.api?.exportDataAsExcel(onExcelExprot());
+  }, [ref, onExcelExprot]);
   
   const calendarOnClickHandler = () => {
       setCalendarFormData({
@@ -745,12 +750,7 @@ const MTOViewModify = () => {
             onBack={onBackButton}
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
-            onExportData={() => {
-              ref?.current?.api &&
-                ref?.current?.api.exportDataAsExcel({
-                  fileName: `${activeMaster.name} (MTO)`,
-                });
-            }}
+            onExportData={handleExportData}
             onSubmit={onSubmit}
             onSubmitConflictData={() => onSubmit(true)}
             onDeleteSelected={deleteSelected}

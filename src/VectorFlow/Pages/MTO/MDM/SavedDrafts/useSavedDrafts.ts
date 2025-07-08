@@ -1,21 +1,21 @@
-import { useEffect, useRef, useState } from "react"
-import { useDispatch,useSelector } from "react-redux"
-import { useLocation, useNavigate } from "react-router"
-import {useGetAllDrafts, useDeleteMTODraft,useGetDraftById,useGetMasterUIConfiguration, useGetDraftCount, useGetMTODrafts, useGetMTODraftById, useGetMTOMasterUIConfiguration, useGetBufferTypeMaster,useGetCCRMasterData } from "../../../../../VectorFlow/Services/MTA/MDM"
-import { notifyError, notifySuccess, notifyLoader } from "../../../../../helpers/notify"
+import { useCallback, useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router"
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
+import { useDeleteMTODraft, useGetAllDrafts, useGetBufferTypeMaster, useGetCCRMasterData, useGetDraftById, useGetDraftCount, useGetMasterUIConfiguration, useGetMTODraftById, useGetMTODrafts, useGetMTOMasterUIConfiguration } from "../../../../../VectorFlow/Services/MTA/MDM"
 
-import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_COLDEFS, UPDATE_DATA_AVAILABILITY_STATUS} from "../../../../../redux/actions/MDM"
-import { createMastersStateFromDraftData, generateRandomId, getActionName, getCCRNamesFromId, mapMasterToMasterState } from "../../../../../helpers/utils"
-import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
-import type { RootState } from '../../../../../redux/store/store';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
+import { v4 as uuidv4 } from "uuid"
 import { useUserData } from "../../../../../context"
-import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
+import { createMastersStateFromDraftData, generateRandomId, getActionName, getCCRNamesFromId, mapMasterToMasterState } from "../../../../../helpers/utils"
+import { FILL_MASTERS, SET_DRAFT_ID, SET_RECORD_COUNT, STORE_ALL_MASTERS, TOGGLE_SELECT_MASTER_SCREEN, TOGGLE_UPLOAD_MODAL, UPDATE_ACTIVE_MASTER, UPDATE_DATA_AVAILABILITY_STATUS } from "../../../../../redux/actions/MDM"
 import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_MODIFY_DATA } from "../../../../../redux/actions/MTO"
-import { useGetDeptMasterData, useGetPlantMasterData  } from "../../../../../VectorFlow/Services/MTO/Common/Masters"
+import type { RootState } from '../../../../../redux/store/store'
+import { useGetDeptMasterData, useGetPlantMasterData } from "../../../../../VectorFlow/Services/MTO/Common/Masters"
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation"
-import { v4 as uuidv4 } from "uuid";
+import { MDMMasterState } from "../../../../../VectorFlow/types/MDM"
 import DaysOfWeekRenderer from "../ViewModify/DaysOfWeekRenderer"
+import MTOErrorWarningCell from "../ViewModify/MTOErrorWarningCell"
 
 
 
@@ -139,73 +139,90 @@ const useSavedDrafts = ()=>{
     useEffect(()=>{
         getInitalData();
     },[])
-    const convertToColDefs = (data:any,draftDetails:any) => {
-        const { ActionType } = draftDetails;
-        const newColDef =  data
-          .sort((a:any, b:any) => (a.col_Position || 0) - (b.col_Position || 0))
-          .map((item: any) => ({
-            field: item?.key,                    // Use the "key" as the "field"
-            colId: item?.key,                    // Also set "colId" from "key"
-            headerName: item?.displayName,        // Set "headerName" from "displayName"
-            floatingFilter: false,              // Set default values for additional properties
-            wrapText: true,
-            autoHeight: true,
-            editable: (ActionType == "Modify") ? false : true
-          }));
 
-        return newColDef.map((col:any)=>{
-            if (col.field === 'pl' || col.field === 'plnm') return {
+    
+    const convertToColDefs = useCallback(((data:any,draftDetails:any) => {
+      const { ActionType } = draftDetails;
+      const newColDef =  data
+        .sort((a:any, b:any) => (a.col_Position || 0) - (b.col_Position || 0))
+        .map((item: any) => ({
+          field: item?.key,                    // Use the "key" as the "field"
+          colId: item?.key,                    // Also set "colId" from "key"
+          headerName: item?.displayName,        // Set "headerName" from "displayName"
+          // floatingFilter: false,              // Set default values for additional properties
+          wrapText: true,
+          autoHeight: true,
+          editable: (ActionType == "Modify") ? false : true
+        }));
+
+      const colDef = newColDef.map((col:any)=>{
+          if (col.field === 'pl' || col.field === 'plnm') return {
+              ...col,
+              editable: (ActionType == "Modify") ? false : true,
+              cellEditor: 'agRichSelectCellEditor',
+              cellEditorParams: {
+                values: plantMaster?.map((item: any) => item.plant_name),
+              },
+            };
+
+            if(col.field === 'actions'){
+              return {
                 ...col,
-                editable: (ActionType == "Modify") ? false : true,
-                cellEditor: 'agRichSelectCellEditor',
+                editable:false
+              }
+            }
+
+            if(col.field === 'iv'){
+              return {
+                ...col,
+                editable:false
+              }
+            }
+
+            if (col.field === 'dp') return {
+              ...col,
+              editable: (ActionType == "Modify") ? false : true,
+              cellEditor: 'agRichSelectCellEditor',
+              cellEditorParams: {
+                values: deptMaster?.map((item: any) => item.dept_name),
+              },
+            };
+            
+            if (col.field === 'cgid') return {
+              ...col,
+              editable: (ActionType == "Modify") ? false : true,
+              cellEditor: 'agRichSelectCellEditor',
+              cellEditorParams: {
+                values: Object.keys(ccrGroupMaster || {}),
+              },
+            };
+            if (col.field === "bt")
+              return {
+                ...col,
+                cellEditor: "agRichSelectCellEditor",
+                editable: ActionType == "Modify" ? false : true,
                 cellEditorParams: {
-                  values: plantMaster?.map((item: any) => item.plant_name),
+                  values: bufferTypeMaster?.map((item: any) => item.dsc),
                 },
               };
-              
-              if (col.field === 'dp') return {
-                ...col,
-                editable: (ActionType == "Modify") ? false : true,
-                cellEditor: 'agRichSelectCellEditor',
-                cellEditorParams: {
-                  values: deptMaster?.map((item: any) => item.dept_name),
-                },
-              };
-              
-              if (col.field === 'cgid') return {
-                ...col,
-                editable: (ActionType == "Modify") ? false : true,
-                cellEditor: 'agRichSelectCellEditor',
-                cellEditorParams: {
-                  values: Object.keys(ccrGroupMaster || {}),
-                },
-              };
-              if (col.field === "bt")
-                return {
+            if(col.field === "dow"){
+              return {
                   ...col,
-                  cellEditor: "agRichSelectCellEditor",
-                  editable: ActionType == "Modify" ? false : true,
-                  cellEditorParams: {
-                    values: bufferTypeMaster?.map((item: any) => item.dsc),
-                  },
-                };
-              if(col.field === "dow"){
-                return {
-                    ...col,
-                    cellRenderer: DaysOfWeekRenderer
-                }
+                  cellRenderer: DaysOfWeekRenderer
               }
-              if(col.field === "ccr_id"){
-                return {
-                    ...col,
-                    valueFormatter :(params:any)=>{
-                        return getCCRNamesFromId(ccrsData,params.data.ccr_id)
-                    }
-                }
+            }
+            if(col.field === "ccr_id"){
+              return {
+                  ...col,
+                  valueFormatter :(params:any)=>{
+                      return getCCRNamesFromId(ccrsData,params.data.ccr_id)
+                  }
               }
-              else return col;
-        })
-      };
+            }
+            else return col;
+      })
+      return colDef
+    }),[])
       
       const convertToPoogiDraftData = (data: any, page: any) => {
         const result: any[] = [];
@@ -338,7 +355,7 @@ const useSavedDrafts = ()=>{
 
           if (draftDetails.isMTO && draftDetails.ActionType === "Modify") {
             masterState[0].colDefs = [
-              ...convertToColDefs(fields, draftDetails.ActionType),
+              ...convertToColDefs(fields, draftDetails),
             ];
           }
 
