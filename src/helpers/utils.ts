@@ -878,6 +878,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   })
 
 
+
   if(master.id===501 || master.id===502 || master.id===503 || master.id===504){
     const objKeys: string[] = [];
     selectedColumns.forEach((ele:any)=>{
@@ -924,7 +925,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
       headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
     }
   })
-  }
+}
 
   if (pageType == "add") {
     selectedKeys.forEach((key: string) => {
@@ -4747,17 +4748,31 @@ export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageT
   const result: object[] = [];
   const buffer = await file?.arrayBuffer();
 
-  let selectedKeys:any;
-
-  //Selected Columns Keys
-  if(pageType==='add'){
-    selectedKeys = master?.fields?.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+  const numberOfSheets = await readSheetNames(file);
+  if(numberOfSheets.length > 1){
+    throw new Error('File cannot contain multiple sheets');
   }
-  
+
+  if (numberOfSheets[0] != 'ag-grid') {
+    throw new Error('Sheet Name is changed');
+  }
+
+  const selectedKeys = master?.fields?.filter((field: Field) => field.isAdd).map((field: Field) => field.key); 
    
   const data = await readXlsxFile(buffer,{
     parseNumber: (string:any) => string
   });
+
+   //Check if File Contains a Column that is Duplicate
+   const isDuplicateHeader = data[0].some((header:any,index:number)=>data[0].indexOf(header)!==index);
+
+   if (data.length > parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT || "50000")) {
+     throw new Error(`Number of rows should not exceed ${process.env.REACT_APP_RECORD_UPLOAD_LIMIT || '50000'}`);
+   }
+   
+   if(isDuplicateHeader){
+     throw new Error("File Contains Duplicate Headers")
+   }
 
   //displayName to key mapper
   const headerKeys = data[0]?.map((headerName: any) => {
@@ -4765,6 +4780,48 @@ export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageT
     if (fieldObj) return fieldObj.key;
     else return '';
   })
+
+  console.log(headerKeys, "headerKeys");
+  
+  let headers: any = []; //Not Selected Headers
+  let error = false;
+  //Selected Columns Keys
+  if(pageType==='add'){
+    
+    selectedKeys.forEach((key: string) => {
+      const fieldObj = master.fields.find((field: Field) => field.key === key);
+      if (!headerKeys.includes(key) && fieldObj?.isAdd) {
+        error = true;
+        headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+      }
+    })
+  }
+
+  if (error) {
+    throw new Error(`File is missing the following columns: ${headers.join(', ')}`);
+  }
+
+  error = false;
+  headers = [];
+
+  headerKeys.forEach((key: string) => {
+
+    if (!currMasterKeys.includes(key)) {
+      throw new Error("Please Upload a Valid Master");
+    }
+    if (!selectedKeys.includes(key)) {
+      error = true;
+      headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
+    }
+  })
+
+  if (error) {
+    throw new Error(`File Contains ${headers.join(', ')} which were not selected`)
+  }
+
+  if (data.slice(1).length === 0) {
+    throw new Error(`File Contains zero rows.`)
+  }
 
   if(master.id===501 || master.id===502 || master.id===503 || master.id===504){
 
@@ -4779,14 +4836,6 @@ export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageT
     }
     return bufferData;
   }
-
- 
-
-  if (data.slice(1).length === 0) {
-    throw new Error(`File Contains zero rows.`)
-  }
-  
-
 
   return result;
 }
