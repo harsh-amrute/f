@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
@@ -14,6 +14,7 @@ import {
   operators,
   seasonalityQuickFilterData,
 } from "../../../../../helpers/MDMConstants";
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import {
   areMasterFiltersValid,
   generateMTOFilterOptions,
@@ -131,7 +132,9 @@ const MTOViewModify = () => {
     selectedData,
     setSelectedData,
     setCalendarFormData,
+    onExcelExport,
   } = useViewModify("modify");
+
 
 
   const bufferModifyData = useSelector(
@@ -139,6 +142,16 @@ const MTOViewModify = () => {
   );
   const ccrModifyData = useSelector((state: any) => state.mto.ccrModifyData);
   const editStatus: string = useSelector((state: any) => state.mto.editStatus);
+
+  const handleExportData = useCallback(() => {
+    notifyLoader('Exporting Data')
+    try {
+      ref?.current?.api?.exportDataAsExcel(onExcelExport());
+      notifySuccess('Exported Data Successfully')
+    } catch (error:any) {
+      notifyError(error.message || "Failed to Export Data")
+    }
+  }, [ref, onExcelExport]);
   
   const calendarOnClickHandler = () => {
       setCalendarFormData({
@@ -745,12 +758,7 @@ const MTOViewModify = () => {
             onBack={onBackButton}
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
-            onExportData={() => {
-              ref?.current?.api &&
-                ref?.current?.api.exportDataAsExcel({
-                  fileName: `${activeMaster.name} (MTO)`,
-                });
-            }}
+            onExportData={handleExportData}
             onSubmit={onSubmit}
             onSubmitConflictData={() => onSubmit(true)}
             onDeleteSelected={deleteSelected}
