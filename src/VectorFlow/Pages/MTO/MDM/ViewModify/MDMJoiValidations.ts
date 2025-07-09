@@ -1,10 +1,14 @@
 import Joi from "joi";
 
+const patternCode = /^[a-zA-Z0-9 _-]+$/;
+const patternDesc = /^[a-zA-Z0-9/() _.,-]+$/;
+
 export const BUFFER_VALIDATION_SCHEMA = Joi.object({
   bsz: Joi.number().integer().min(1).max(364).required().messages({
     "number.base": "Buffer Size must be a valid number.",
     "number.min": "Buffer Size must be at least {#limit}.",
     "number.max": "Buffer size cannot exceed for over a year.",
+    "number.integer": "Buffer size must be an integer!",
     "any.required": "Enter the Buffer Size!",
   }),
 
@@ -12,6 +16,7 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
     "number.base": "SLT must be a valid number.",
     "number.min": "SLT must be at least {#limit}.",
     "number.max": "SLT must be at most {#limit}.",
+    "number.integer": "SLT must be an integer!",
     "any.required": "SLT cannot be empty!",
   }),
 
@@ -19,6 +24,7 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
     "number.base": "MLT must be a valid number.",
     "number.min": "MLT must be at least {#limit}.",
     "number.max": "MLT must be at most {#limit}.",
+    "number.integer": "MLT must be an integer!",
     "any.required": "MLT cannot be empty!",
   }),
 
@@ -26,13 +32,17 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
     "any.required": "Enter the Buffer Type!",
   }),
 
-  bcd: Joi.string().required().messages({
+  bcd: Joi.string().pattern(patternCode).max(100).required().messages({
     "string.base":"Enter a valid Buffer Code!",
-    "any.required": "Enter a valid Buffer Code!",
+    "string.pattern.base": "Buffer Code must contain only letters, numbers, underscores, and hyphens!",
+    "string.max": "Buffer Code must be no more than 100 characters long!",
+    "any.required": "Enter a valid Buffer Code!"
   }),
 
-  bd: Joi.string().required().messages({
+  bd: Joi.string().pattern(patternDesc).max(200).required().messages({
     "string.base":"Enter a valid Buffer Description!",
+    "string.pattern.base": "Special characters are not permitted in the Buffer Description!",
+    "string.max": "Buffer Description must be no more than 200 characters long!",
     "any.required": "Enter a valid Buffer Description!",
   }),
 
@@ -48,7 +58,11 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
       "alternatives.match": "Is Blue must be either true or false!" ,
     }),
 
-  iv: Joi.boolean().allow(null).default(false),
+  iv: Joi.boolean().allow(null).default(false).messages({
+    "any.required": "Is Active must be either False or True",
+    "boolean.base":"Is Active must be either False or True"
+
+  }),
 
   editable: Joi.any().optional(),
   
@@ -71,8 +85,10 @@ export const BUFFER_VALIDATION_SCHEMA = Joi.object({
 
 export const CCR_VALIDATION_SCHEMA = Joi.object({
 
-  cnm: Joi.string().required().messages({
-    "string.base":"CCR name cannot be empty!",
+  cnm: Joi.string().pattern(patternDesc).max(200).required().messages({
+    "string.base": "CCR name cannot be empty!",
+    "string.pattern.base": "Special characters are not permitted in the CCR name!",
+    "string.max": "CCR name must be no more than 200 characters long!",
     "any.required": "CCR name cannot be empty!",
   }),
 
@@ -110,11 +126,18 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
     "any.required": "CCR Resource Buffer (rb) is required!",
   }),
 
-  sh: Joi.number()
-    .required()
-    .messages({ 
-    "number.base":"Scheduling horizon must be a number!","any.required": "Scheduling horizon cannot be empty!" }),
+  sh: Joi.number().integer().required().messages({ 
+      "number.base": "Scheduling horizon must be a number!",
+      "number.integer": "Scheduling horizon must be an integer!",
+      "any.required": "Scheduling horizon cannot be empty!"
+    }),
 
+  fh: Joi.number().integer().required().messages({ 
+    "number.base": "FOL Horizon must be a number!",
+    "number.integer": "FOL Horizon must be an integer!",
+    "any.required": "FOL Horizon cannot be empty!"
+  }),
+    
   whpd: Joi.number()
     .min(1)
     .required()
@@ -123,15 +146,16 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
       "any.required": "Working hours Per Day cannot be empty!",
       "number.min": "Working hours Per Day should be greater than 0!",
     }),
-  ccd: Joi.string().required().messages({
-    "string.base":"CCR Code cannot be empty!",
+  ccd: Joi.string().pattern(patternCode).max(100).required().messages({
+    "string.base": "CCR Code cannot be empty!",
+    "string.pattern.base": "CCR Code must contain only letters, numbers, underscores, and hyphens!",
+    "string.max": "CCR Code must be no more than 100 characters long!",
     "any.required": "CCR Code is required!"
     }),
 
   err : Joi.any().optional(),
 
   cid: Joi.any().default(null),
-  fh: Joi.any().default(null),
   a1: Joi.any().default(null),
   a2: Joi.any().default(null),
   a3: Joi.any().default(null),
