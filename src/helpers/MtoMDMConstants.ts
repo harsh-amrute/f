@@ -218,7 +218,7 @@ export const  seasonalityQuickFilterData:SeasonalityQuickFilterType[] = [
 ]
 export const masterGroupMapper:masterGroupMapperType[] = [
     {
-      name:"Buffer/CCR/Poogi",
+      name:"MDM Master",
       masters:['501', '502','503','504']
     },
   ]
