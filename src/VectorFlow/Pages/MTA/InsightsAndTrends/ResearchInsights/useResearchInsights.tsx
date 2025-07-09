@@ -674,7 +674,7 @@ const useResearchInsights = () => {
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             headerTooltip: "Daily Data Graph",
-            
+            sortable:false,
 
         },
         Tags: {
