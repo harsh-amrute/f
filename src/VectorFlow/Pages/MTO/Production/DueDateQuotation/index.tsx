@@ -86,6 +86,8 @@ const DueDateQuotation = () => {
   const {colDefMap , getColDef} = useColDef();
   const [bomHeader, setBomHeader]= useState([])
   const [bomActive, setBomActive] = useState(false);
+  const [showExcelModal, setShowExcelModal] = useState(false);
+
   
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
@@ -623,8 +625,17 @@ const DueDateQuotation = () => {
   }, [isReset]);
   
  const ExcelData = ()=>{
+  setShowExcelModal(true);
     getUpdatedFilterData(true);
  }
+
+ const handleExcelExportConfirm = () => {
+  setShowExcelModal(false); 
+  getUpdatedFilterData(true); 
+};
+
+
+
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
       {step === 1 ?
@@ -710,6 +721,28 @@ const DueDateQuotation = () => {
           style={{ fontSize: "12px", width: "100px", height: "40px" }}>
           Deselect Orders
         </VFButtonOutline>}
+        <VFModalCard
+          openModal={showExcelModal}
+          closeModal={() => setShowExcelModal(false)}
+          headerText="Excel Export Bomb Confirmation"
+          headerIcon=""
+          headerBgColor="white"
+          headerTextColor="black"
+          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
+          paddingLeftAndRight={27}
+          >
+  <div style={{ fontSize: "16px", padding: "1rem", textAlign: "center" }}>
+    Do you want to download Excel with BOMB data?
+  </div>
+  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: "0 1.5rem 1rem", height:'100px' }}>
+    <VFButtonOutline themeUi={themeUi} onClick={() => setShowExcelModal(false)}>
+      Cancel
+    </VFButtonOutline>
+    <VFButton themeUi={themeUi} onClick={handleExcelExportConfirm}>
+      Confirm
+    </VFButton>
+  </div>
+</VFModalCard>
 
         <VFButton themeUi={themeUi}
           disabled={disabled}
