@@ -361,7 +361,6 @@ const useBTR = () => {
                     minWidth: 100,
                     position: (index + initialColumnState.length),  //column should be at position onwards main columns
                     ...(item[0].startsWith('D') && parseInt(item[0].slice(1)) >= 1 && parseInt(item[0].slice(1)) <= 90 ? { filter: 'agNumberColumnFilter' } : {}),
- 
                 }
             })
         } else {
