@@ -619,6 +619,10 @@ const useViewModify = (pageType: string) => {
         const { data } = await MTOMasterUIConfiguration();
         if(pageType==='add'){
           setAllMasterState(mapMasterToMasterState(data.data, onShowChart).map((e: any) => {
+            if (e.id === 501 || e.id === 502) {
+              e.fields = e.fields.filter((field: any) => field.key !== "iv");
+              e.colDefs = e.colDefs.filter((col: any) => col.colId !== "iv");
+            }
             if (e.id === 504) {
               e.fields = e.fields.filter((field: any) => field.key !== "dow");
               e.colDefs = e.colDefs.filter((col: any) => col.colId !== "dow");
@@ -880,6 +884,18 @@ const useViewModify = (pageType: string) => {
           newVal.err = {
             error: "State the major reason to which the minor reason belongs!",
             warning: "",
+          };
+        }
+
+        // Assuming newData is an array of objects and e is an object with majdsc and mindsc properties
+        const isDuplicate = newData.some((item:any) => (
+          item.majdsc === e.majdsc && item.mindsc === e.mindsc
+        ));
+
+        if (isDuplicate) {
+          newVal.err = {
+            error: "Minor reason should be unique for each major reason!",
+            warning: ""
           };
         }
 
@@ -4095,7 +4111,7 @@ const useViewModify = (pageType: string) => {
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
           e.err = "";
-          !(e.iv === true || e.iv === false) && (e.iv = false);
+          e.iv = true;
           if (!e.bid) e.bid = null;
 
           if (e.bid === null || e.iv === false) {

@@ -130,8 +130,9 @@ const MTOAddRecord = () => {
         return false;
       })
       return calendarModifiedColDef
-    }else{
-      return activeMaster.colDefs
+    }else {
+      //return all columns except is active, not needed while adding records.     
+      return activeMaster.colDefs.filter((colDef: any) => colDef.field !== "iv");
     }
    }
 
