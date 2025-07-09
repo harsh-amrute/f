@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectMTOGroupedMasters";
 import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 import { MDMMasterState,Field } from "../../../../types/MDM";
 import { CustomStatusPanel } from "../CustomStatusPannel";
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 
 
 const MTOAddRecord = () => {
@@ -60,8 +61,8 @@ const MTOAddRecord = () => {
         isOverlayVisible,
         errorCount,
         onMTOSaveBufferData,
-        onMTOSaveAsDraft
-
+        onMTOSaveAsDraft,
+        onExcelExport,
     } = useViewModify('add');
 
     const {
@@ -91,7 +92,15 @@ const MTOAddRecord = () => {
       }
     },[isTableDataLoading])
 
-
+    const handleExportData = useCallback(() => {
+      notifyLoader('Exporting Data')
+      try {
+        ref?.current?.api?.exportDataAsExcel(onExcelExport());
+        notifySuccess('Exported Data Successfully')
+      } catch (error:any) {
+        notifyError(error.message || "Failed to Export Data")
+      }
+    }, [ref, onExcelExport]);
 
     if(isLoading){
         return <VFLoader/>
@@ -283,7 +292,7 @@ const MTOAddRecord = () => {
             onBack={onBackButton}
             onClearAndExportErrors={()=>onClearExportError()}
             onModifyData={()=>toggleUploadModal(true)}
-            onExportData={exportToExcel}
+            onExportData={handleExportData}
             onSubmit={onSubmit}
             onDeleteSelected={deleteSelected}
             onPhaseInPhaseOutStop={()=>console.log('')}

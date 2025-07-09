@@ -367,7 +367,11 @@ const useSavedDrafts = ()=>{
           dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
           dispatch(UPDATE_ACTIVE_MASTER(0));       
           if (draftDetails.ActionType == "Modify") {
-            navigate(`/mto/master-data-management/control-panel/view-modify`);
+            navigate(`/mto/master-data-management/control-panel/view-modify`,{
+              state:{
+                backUrl : '/mto/master-data-management/saved-drafts'
+              }
+            });
           } else if (draftDetails.ActionType === "Add") {
             navigate(
               `/mto/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`

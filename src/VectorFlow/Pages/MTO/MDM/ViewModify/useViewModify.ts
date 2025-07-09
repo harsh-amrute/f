@@ -79,7 +79,8 @@ import {
 } from "../../../../types/MDM";
 
 import _ from "lodash";
-import { useNavigate } from "react-router-dom";
+import moment from "moment";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -93,12 +94,11 @@ import {
   RESET_MTO_STATE,
   SET_BUFFER_INITIAL_DATA,
   SET_BUFFER_MODIFY_DATA,
+  SET_CALENDAR_INITIAL_DATA,
   SET_CCR_INITIAL_DATA,
   SET_CCR_MODIFY_DATA,
   SET_POOGI_INITIAL_DATA,
-  SET_POOGI_MODIFY_DATA,
-  SET_CALENDAR_INITIAL_DATA,
-  SET_CALENDAR_MODIFY_DATA,
+  SET_POOGI_MODIFY_DATA
 } from "../../../../../redux/actions/MTO";
 import {
   useGetCCRMasterData as useGetCCRMasterDataForCalender,
@@ -106,6 +106,7 @@ import {
   useGetPlantMasterData
 } from "../../../../../VectorFlow/Services/MTO/Common/Masters";
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
+import { CustomStatusPanel } from "../CustomStatusPannel";
 import AddRemoveCellRenderer from "./AddRemoveCellRenderer";
 import ConflictErrorCellRenderer from "./ConflictErrorCellRenderer";
 import DaysOfWeekRenderer from "./DaysOfWeekRenderer";
@@ -116,9 +117,6 @@ import MTOCalendarEditCellRenderer from "./MTOCalendarEditCellRenderer";
 import MTOErrorWarningCell from "./MTOErrorWarningCell";
 import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
-import moment from "moment";
-import {CustomStatusPanel } from "../CustomStatusPannel";
-import { getPrevPath } from "../history";
 
 
 const useViewModify = (pageType: string) => {
@@ -379,7 +377,14 @@ const useViewModify = (pageType: string) => {
 
   const [selectedData, setSelectedData] = useState<any>({});
 
-  const [prevPath , setPrevPath] = useState<string | undefined>(getPrevPath().split('/').pop());
+  const location = useLocation()
+
+  const [prevPath , setPrevPath] = useState<string | undefined>(location?.state?.backUrl.split('/').pop());
+
+  const backUrl = location?.state?.backUrl || ""
+
+  const navigate = useNavigate()
+
   
   const saveDraft = "saved-drafts"
   // adding all ccrName in ccr_names array
@@ -762,12 +767,20 @@ const useViewModify = (pageType: string) => {
     if (masterId === 502) {
       const allRows = [...newRowData];
       const newData: any = [];
-
+      let isValidCCRGroup :boolean
       allRows.forEach((e: any, index: number) => {
         const newVal = _.cloneDeep(e);
         const {error} = CCR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
+        
+        if(e.cgid){
+          for(const key in ccrGroupMaster){
+            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid){
+              isValidCCRGroup = true
+              break
+            }
+          }
+        }
         if(error){
-
           const fieldOrders = activeMaster.fields.map(field =>field.key)
 
           const errorOrders = fieldOrders.flatMap((field)=>{
@@ -801,10 +814,7 @@ const useViewModify = (pageType: string) => {
               error: "Please select a valid department from the dropdown",
               warning: "",
             };
-          } else if (
-            ccrGroupMaster &&
-            !Object.keys(ccrGroupMaster).includes(e.cgid)
-          ) {
+          } else if (!isValidCCRGroup) {
             newVal.err = {
               error: "Please select a valid CCR Group from the dropdown",
               warning: ""
@@ -1051,9 +1061,9 @@ const useViewModify = (pageType: string) => {
             validColumnKeys.push(col.colId);
           });
         }
-        if (currentMaster) {
-          event.api.exportDataAsExcel(onExcelExprot(colDefs));
-        }
+        // if (currentMaster) {
+        //   event.api.exportDataAsExcel(onExcelExprot(colDefs));
+        // }
       }
     },
     rowSelection: "multiple",
@@ -2217,8 +2227,7 @@ const useViewModify = (pageType: string) => {
             render: `Downloading Data ${i * chunkSize} / ${recordCount}`,
           });
       }
-
-      dispatch(UPDATE_ROW_DATA(rows));
+      // dispatch(UPDATE_ROW_DATA(rows));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       setDownloadData(true);
       toast.dismiss(toastId);
@@ -2273,11 +2282,11 @@ const useViewModify = (pageType: string) => {
     }
   };
 
-  const onExcelExprot = useMemo(()=>(
+  const onExcelExport = useMemo(()=>(
     (columnDefs = colDefs,buffTypeData = bufferTypeData,plantData = plantNames,deptData = deptMaster,ccrGroupData = ccrGroupMaster )=>{
       const isBufferExport = activeMaster.id === 501;
       const isCCRExport = activeMaster.id === 502;
-      
+
       const bufferType = (value: any) => {
         return buffTypeData?.find((type: any) => type.id === value)?.dsc;
       };
@@ -2301,9 +2310,8 @@ const useViewModify = (pageType: string) => {
       return {
         fileName : `${activeMaster.name} MTo`,
         columnKeys: columnDefs
-          .filter((col: any) => col.field !== 'actions') 
+          .filter((col: any) => col.field !== 'actions' && col.field !== 'err') 
           .map((col: any) => col.field),             
-      
         processCellCallback: (params: any) => {
           const { column, value } = params;
       
@@ -2785,33 +2793,10 @@ const useViewModify = (pageType: string) => {
   };
 
   const onBackButton = () => {
-    if (
-      !bufferModifyData ||
-      (bufferModifyData && bufferModifyData.length === 0)
-    ) {
-      dispatch(UPDATE_PROGRESS_STATE("default"));
-      dispatch(UPDATE_ROW_DATA([]));
-      dispatch(SET_BUFFER_INITIAL_DATA([]));
-      dispatch(SET_BUFFER_MODIFY_DATA([]));
-      dispatch(SET_CCR_INITIAL_DATA([]));
-      dispatch(SET_CCR_MODIFY_DATA([]));
-      dispatch(UPDATE_COLDEFS([]));
-      dispatch(REMOVE_ALL_FILTERS());
-      // dispatch(UPDATE_ACTIVE_MASTER([]))
+    
+    const conf = confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft");
 
-      dispatch(ADD_FILTER());
-      setDownloadData(false);
-      setTempDownloadData(false);
-      dispatch(FILL_MASTERS([]));
-      setFilterButtonStatus([]);
-      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-
-      if (pageType === "add") dispatch(TOGGLE_UPLOAD_MODAL(true));
-    } else if (
-      confirm(
-        "Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft"
-      )
-    ) {
+    if(conf){
       dispatch(RESET_MTO_STATE());
       dispatch(UPDATE_PROGRESS_STATE("default"));
       dispatch(UPDATE_ROW_DATA([]));
@@ -2832,6 +2817,11 @@ const useViewModify = (pageType: string) => {
 
       if (pageType === "add") dispatch(TOGGLE_UPLOAD_MODAL(true));
     }
+
+    if(backUrl){
+      navigate(backUrl)
+    }
+
   };
 
   const postDraftChunks = async (rowData: any) => {
@@ -3536,9 +3526,6 @@ const useViewModify = (pageType: string) => {
     addEditableToLastMinColumn();
   };
 
-  
-
-  const navigate = useNavigate();
 
   const AddCalendarModifyData = (data: any) => {
     data?.forEach((el:any)=>{
@@ -4442,9 +4429,9 @@ const useViewModify = (pageType: string) => {
         if ((ccrGroupMaster && plantMaster && deptMaster) || bufferTypeData) {
           const newRowData = _.cloneDeep(activeMaster.rowData);
           newRowData.forEach((ele: any) => {
-            if (typeof ele.err === "string") {
+            if (typeof ele.err === "string"  ) {
               ele.err = { error: "" };
-            } else {
+            } else if(ele.err && ele.err.error){
               ele.err.error = "";
             }
           });
@@ -4578,7 +4565,7 @@ const useViewModify = (pageType: string) => {
     setSelectedData,
     onMTOSaveAsDraft,
     setCalendarFormData,
-    onExcelExprot,
+    onExcelExport,
     MTOPoogiMinorColdef: [
       {
         headerName: "Sr No.",

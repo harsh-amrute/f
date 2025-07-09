@@ -14,6 +14,7 @@ import {
   operators,
   seasonalityQuickFilterData,
 } from "../../../../../helpers/MDMConstants";
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import {
   areMasterFiltersValid,
   generateMTOFilterOptions,
@@ -131,8 +132,9 @@ const MTOViewModify = () => {
     selectedData,
     setSelectedData,
     setCalendarFormData,
-    onExcelExprot,
+    onExcelExport,
   } = useViewModify("modify");
+
 
 
   const bufferModifyData = useSelector(
@@ -142,8 +144,14 @@ const MTOViewModify = () => {
   const editStatus: string = useSelector((state: any) => state.mto.editStatus);
 
   const handleExportData = useCallback(() => {
-    ref?.current?.api?.exportDataAsExcel(onExcelExprot());
-  }, [ref, onExcelExprot]);
+    notifyLoader('Exporting Data')
+    try {
+      ref?.current?.api?.exportDataAsExcel(onExcelExport());
+      notifySuccess('Exported Data Successfully')
+    } catch (error:any) {
+      notifyError(error.message || "Failed to Export Data")
+    }
+  }, [ref, onExcelExport]);
   
   const calendarOnClickHandler = () => {
       setCalendarFormData({
