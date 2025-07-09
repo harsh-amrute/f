@@ -3,7 +3,7 @@ import { AgCharts } from 'ag-charts-react'
 import { Dispatch, SetStateAction, useRef } from 'react'
 import { SCChartContainer, SCChartMainContainer, SCHorizontalDivider, ChartWrapper } from './styles'
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard'
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
+import VFTable from "../../Common/VFTable";
 import { GridRef } from '../../../../../VectorFlow/types/MDM'
 import { renderToStaticMarkup } from 'react-dom/server';
 interface SplitGrpahContainerProps {

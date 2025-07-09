@@ -1,6 +1,6 @@
 import { GridOptions } from 'ag-grid-enterprise';
 import React, { useEffect, useRef, useState } from 'react'
-import VFTable from '../../../../../components/VectorFLOW/commons/VFTable'
+import VFTable from "../../Common/VFTable";
 import './style.css'
 import { SCDynamicContainer } from './styles';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
@@ -145,22 +145,6 @@ const GridView = (props: IGridViewProps) => {
                 tooltipHideDelay={100000}
                 tooltipShowDelay={0}
                 pagination={false}
-                statusBar={{
-                    statusPanels: [
-                      {
-                        statusPanel: "agTotalAndFilteredRowCountComponent",
-                        align: "left",
-                      },
-                      {
-                        statusPanel: "agAggregationComponent",
-                        align: "right", // or "left" if you prefer
-                        statusPanelParams: {
-                          aggFuncs: ["avg", "sum", "min", "max","count" ],
-                        },
-                      },
-                    ],
-                  }}
-
                 onGridReady={(params: any) => {
                     params.api.autoSizeAllColumns();
                     setCurrentGridRef(gridRef);

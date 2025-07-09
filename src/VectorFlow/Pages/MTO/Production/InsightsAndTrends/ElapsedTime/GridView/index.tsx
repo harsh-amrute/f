@@ -1,6 +1,6 @@
 import { GridOptions } from 'ag-grid-enterprise';
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import VFTable from '../../../../../../../components/VectorFLOW/commons/VFTable'
+import VFTable from "../../../../Common/VFTable";
 import CustomTagTooltip from '../../../../Poogi/InsightAndTrends/OTIFAnalysis/CustomTagTooltip';
 import './styles.css'
 import { SCDynamicContainer } from './styles';
@@ -106,18 +106,6 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
                 }}
                 maintainColumnOrder
                 onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
-            statusBar={{
-                statusPanels: [
-                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    {
-                        statusPanel: "agAggregationComponent",
-                        align:'left',
-                        statusPanelParams: {
-                            aggFuncs: ["avg", "sum", "min", "max", "count"],
-                        },
-                    },
-                ]
-            }}
             />
             <VFPagination
                 selectedRows={1}

@@ -125,18 +125,6 @@ const GridView = ({setCurrentGridRef, currentGridRef, columnState, colDef,rowDat
 
             setCurrentGridRef(gridRef);
           }}
-          statusBar={{
-            statusPanels: [
-              { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-              {
-                statusPanel: "agAggregationComponent",
-                align:'left',
-                statusPanelParams: {
-                    aggFuncs: ["avg", "sum", "min", "max", "count"],
-                },
-            },
-            ]
-          }}
           maintainColumnOrder
           onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 
