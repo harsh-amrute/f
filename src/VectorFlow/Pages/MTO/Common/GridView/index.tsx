@@ -126,7 +126,6 @@ const GridView = (props: IGridViewProps) => {
         }
     }, [columnState, currentGridRef]);
 
-
     return (
 
         <SCDynamicContainer className="ag-theme-planning-custom">
