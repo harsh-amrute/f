@@ -121,6 +121,10 @@ import {CustomStatusPanel } from "../CustomStatusPannel";
 import { getPrevPath } from "../history";
 
 
+
+
+
+
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
   const user = useUserData();
@@ -129,9 +133,13 @@ const useViewModify = (pageType: string) => {
   const selectedOptions = useSelector(
     (state: RootState) => state.mdm.selectedOptions
   );
+
+
   const activeMaster = useSelector(
     (state: RootState) => state.mdm.activeMaster
   );
+
+
 
   const masters = useSelector((state: RootState) => state.mdm.masters);
 
@@ -581,7 +589,7 @@ const useViewModify = (pageType: string) => {
           headerName: "Actions",
           colId: "actions",
           pinned: "left",
-          width: 100,
+          width: 250,
           cellRenderer: AddRemoveCellRenderer,
           cellRendererParams:{
             addEditableToLastColumn
@@ -808,6 +816,12 @@ const useViewModify = (pageType: string) => {
               warning: ""
             };
           }
+          else if (e.fh < e.sh){
+            newVal.err = {
+              error: "FOL horizon cannot be less than scheduling horizon",
+              warning: ""
+            }
+          }
 
           if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
             newVal.err = {
@@ -932,7 +946,9 @@ const useViewModify = (pageType: string) => {
         toolPanel: "agColumnsToolPanel",
         toolPanelParams: {
           suppressPivots: true,
+          suppressRowGroups: true,
           suppressPivotMode: true,
+          suppressValues: true
         },
       },
     ],
@@ -3138,10 +3154,6 @@ const useViewModify = (pageType: string) => {
         return {
           ...colDef,
           cellEditor: "agNumberCellEditor",
-          cellEditorParams: {
-            min: 0,
-            max: 365,
-          },
           cellStyle: (params: any) => {
             if (
               params.data.bid === null ||
@@ -3197,11 +3209,7 @@ const useViewModify = (pageType: string) => {
           return {
             ...colDef,
             editable,
-            cellEditor: "agNumberCellEditor",
-            cellEditorParams: {
-              min: 0,
-              max: 1,
-            },
+            cellEditor: "agNumberCellEditor"
           };
         }
         if (
@@ -3305,14 +3313,7 @@ const useViewModify = (pageType: string) => {
       return
     }
 
-    if(hasActionCol){
-      dispatch(UPDATE_COLDEFS([ ...modifiedColDefs ]));
-      return;
-    }
-
-    dispatch(UPDATE_COLDEFS([ actionsCol, ...modifiedColDefs ]));
-
-
+    dispatch(UPDATE_COLDEFS([ actionsCol,...modifiedColDefs.filter((ele)=>ele.field!=='actions') ]));
   };
 
   const addEditableToLastMinColumn = async () => {
@@ -4083,7 +4084,7 @@ const useViewModify = (pageType: string) => {
           const e = _.cloneDeep(ele);
           let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt) {
+            if (elm.dsc === ele.bt || elm.id===ele.bt) {
               isBuffChanged = true;
               e.bt = elm.id;
             }
@@ -4107,11 +4108,15 @@ const useViewModify = (pageType: string) => {
       } else {
         const bufferData = bufferModifyData.filter((ele:any)=> !ele.isdel)
 
+        
+        
         bufferData.forEach((ele: any) => {
+          console.log("ele bt", ele.bt)
           const e = keysToDelete(ele)
           let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt) {
+            console.log("elm", elm);
+            if (elm.dsc === ele.bt || elm.id===ele.bt) {
               isBuffChanged = true;
               e.bt = elm.id;
             }
@@ -4157,7 +4162,7 @@ const useViewModify = (pageType: string) => {
         ccrData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
-      let tempModifyData = ccrModifyData.filter((ele:any)=> !ele.isdel);
+      let tempModifyData = ccrModifyData?.filter((ele:any)=> !ele.isdel);
       if (pageType === "add") {
         tempModifyData = _.cloneDeep(activeMaster.rowData);
       }
@@ -4426,6 +4431,24 @@ const useViewModify = (pageType: string) => {
     setSelectedMajReason(newData[majIdIndex]);
   };
 
+  const getCombinedPoogiDataForExcelExport = () => {
+    if(activeMaster?.id!== 503) return [];
+    const allRowsData:any = []
+    
+    activeMaster?.rowData?.forEach((ele => {
+    
+        ele?.minData?.forEach((minEle: any) => {
+          allRowsData.push(
+            {majdsc: ele.majdsc, mindsc: minEle.mindsc, plnm: ele.plnm}
+          )
+        });
+      
+    }
+    ))
+    return allRowsData;
+
+  }
+
   return {
     colDefs,
     isSelectMasterOpen,
@@ -4577,6 +4600,15 @@ const useViewModify = (pageType: string) => {
               cellRenderer: MajReasonDescCell,
             };
           }
+          else if(col.colId === 'plnm'){
+            return {
+              ...col,
+              cellEditor: "agRichSelectCellEditor",
+              cellEditorParams: {
+                values: plantMaster?.map((item: any) => item.plant_name),
+              },
+            }
+          }
           return col;
         }),
       {
@@ -4592,6 +4624,7 @@ const useViewModify = (pageType: string) => {
     onMinReasonEditingStopped,
     addRowToMtoMinGrid,
     mtoProgress,
+    getCombinedPoogiDataForExcelExport
   };
 };
 export default useViewModify;

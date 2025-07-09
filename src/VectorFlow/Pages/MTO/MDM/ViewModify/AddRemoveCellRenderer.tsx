@@ -52,12 +52,18 @@ const AddRemoveCellRenderer = (params: any) => {
       return false;
     }
 
+
     ccrInitialData.forEach((e: any) => {
       if (e.ccd === params.data.ccd) {
         notifyError("CCR Code must be unique!");
         return false;
       }
     });
+
+    if(params.data.fh< params.data.sh){
+      notifyError("FOL Horizon cannot be less than scheduling horizon!");
+      return false;
+    }
 
     // const tempData = _.cloneDeep(activeMaster.rowData);
     // tempData.shift();

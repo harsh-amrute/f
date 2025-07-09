@@ -46,6 +46,7 @@ import SubmitConflictModal from "./SubmitConflictModal";
 import useViewModify from "./useViewModify";
 import VFTaskBar from "./VFTaskbar";
 import WarningModal from "./WarningModal";
+import useSimpleBlocker from "./UseSimpleBlocker";
 
 
 const MTOViewModify = () => {
@@ -131,8 +132,13 @@ const MTOViewModify = () => {
     selectedData,
     setSelectedData,
     setCalendarFormData,
+    getCombinedPoogiDataForExcelExport
   } = useViewModify("modify");
 
+
+
+
+  useSimpleBlocker(activeMaster,onBackButton);
 
   const bufferModifyData = useSelector(
     (state: any) => state.mto.bufferModifyData
@@ -172,6 +178,7 @@ const MTOViewModify = () => {
     }
   }, [isTableDataLoading]);
 
+
   const tempRefPoogi = React.useRef<any>(null);
 
   const clearGridFilterPoogi1 = () =>{
@@ -182,6 +189,7 @@ const MTOViewModify = () => {
     tempRefPoogi?.current?.api.setFilterModel(null);
     setIsDisabledPoogi2(true);
   }
+
 
   return (
     <>
@@ -597,7 +605,8 @@ const MTOViewModify = () => {
               <div style={{ display: "none" }}>
                 <VFTable
                   ref={tempRef}
-                  rowData={tempGridData}
+                  rowData={getCombinedPoogiDataForExcelExport()}
+                  columnDefs={[...MTOPoogiMajorColdef, ...MTOPoogiMinorColdef].filter((ele)=>ele.field!=='Warning' && ele.field!=='Error')}
                   {...tempAgGridProps}
                 />
                 
@@ -746,6 +755,15 @@ const MTOViewModify = () => {
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
             onExportData={() => {
+              if(activeMaster.id === 503){
+                console.log("yep this is calling")
+                tempRef?.current?.api &&
+                tempRef?.current?.api.exportDataAsExcel({
+                  fileName: `${activeMaster.name} (MTO)`,
+                  columnKeys: [...MTOPoogiMajorColdef, ...MTOPoogiMinorColdef].filter((ele)=>ele.field!=='Warning' && ele.field!=='Error').map((col) => col.field)
+                });
+                return;
+              }
               ref?.current?.api &&
                 ref?.current?.api.exportDataAsExcel({
                   fileName: `${activeMaster.name} (MTO)`,

@@ -1031,7 +1031,7 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       cellDataType: cellDataType,
       onCellClicked:(params:any)=>console.log(),
       tooltipComponent: 'conflictErrorToolTip',
-      suppressColumnsToolPanel: !f.isApplicable,
+      // suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
         return (params.value === null || params.value === undefined) ? '' : params.value.toString();
       },

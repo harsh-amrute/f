@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 import { MDMMasterState,Field } from "../../../../types/MDM";
 import { CustomStatusPanel } from "../CustomStatusPannel";
+import useSimpleBlocker from "../ViewModify/UseSimpleBlocker";
 
 
 const MTOAddRecord = () => {
@@ -23,6 +24,8 @@ const MTOAddRecord = () => {
     const {user} = useUserData()
     const themeUi = user?.user?.theme_ui;
    const [isDisabled, setIsDisabled] = useState(true);
+
+
 
 
     const {
@@ -79,6 +82,10 @@ const MTOAddRecord = () => {
         options,
         selectedOptions
       } = useAdd()
+
+
+    useSimpleBlocker(activeMaster,onBackButton);
+
     
     useEffect(()=>{
       if(ref.current && ref.current.api){
@@ -159,7 +166,7 @@ const MTOAddRecord = () => {
                   ref={ref}
                   columnDefs={calendarModifiedColDefs()}
                   onGridReady={onGridReady}
-
+                  
                   rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}
