@@ -4759,7 +4759,7 @@ export const parseMTOExcelData = async (file: File, master: MDMMasterState, page
   const data = await readXlsxFile(buffer, { parseNumber: (string) => string });
 
   // Validate row count
-  const recordLimit = parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT || "50000", 10);
+  const recordLimit = parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT_MTO || "50000", 10);
   if (data.length > recordLimit) {
     throw new Error(`Number of rows should not exceed ${recordLimit}`);
   }
