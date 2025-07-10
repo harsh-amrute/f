@@ -218,10 +218,11 @@ export const  seasonalityQuickFilterData:SeasonalityQuickFilterType[] = [
 ]
 export const masterGroupMapper:masterGroupMapperType[] = [
     {
-      name:"Plant/CCR",
+      name:"MDM Master",
       masters:['501', '502','503','504']
     },
   ]
+   
 
   export const ImageMapper:any={
     '1':'/assets/img/VectorFLOW/NMS/AddRecords/sku-1.svg', 

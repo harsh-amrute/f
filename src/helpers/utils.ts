@@ -878,6 +878,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   })
 
 
+
   if(master.id===501 || master.id===502 || master.id===503 || master.id===504){
     const objKeys: string[] = [];
     selectedColumns.forEach((ele:any)=>{
@@ -924,7 +925,7 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
       headers.push(master.fields.find((field: Field) => field.key === key)?.displayName)
     }
   })
-  }
+}
 
   if (pageType == "add") {
     selectedKeys.forEach((key: string) => {
@@ -4741,55 +4742,75 @@ export const mapDraftDataToMTOTableRowData = (rowData: any[]) => {
   return result
 }
 
-export const parseMTOExcelData = async (file: any, master: MDMMasterState, pageType: string) => {
+export const parseMTOExcelData = async (file: File, master: MDMMasterState, pageType: string) => {
+  const currMasterKeys = master.fields?.map((field) => field.key) || [];
+  const buffer = await file.arrayBuffer();
+  const numberOfSheets = await readSheetNames(file);
 
-  const currMasterKeys = master?.fields?.map((field: Field) => field.key); //array containing keys of current master fields
-  const result: object[] = [];
-  const buffer = await file?.arrayBuffer();
-
-  let selectedKeys:any;
-
-  //Selected Columns Keys
-  if(pageType==='add'){
-    selectedKeys = master?.fields?.filter((field:Field)=>field.isAdd).map((field:Field)=>field.key);
+  // Validate sheet constraints
+  if (numberOfSheets.length > 1) {
+    throw new Error('File cannot contain multiple sheets');
   }
-  
-   
-  const data = await readXlsxFile(buffer,{
-    parseNumber: (string:any) => string
+  if (numberOfSheets[0] !== 'ag-grid') {
+    throw new Error('Sheet Name is changed');
+  }
+
+  // Parse Excel data
+  const data = await readXlsxFile(buffer, { parseNumber: (string) => string });
+
+  // Validate row count
+  const recordLimit = parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT_MTO || "50000", 10);
+  if (data.length > recordLimit) {
+    throw new Error(`Number of rows should not exceed ${recordLimit}`);
+  }
+
+  // Check for duplicate headers
+  const headersRow = data[0];
+  const isDuplicateHeader = new Set(headersRow).size !== headersRow.length;
+  if (isDuplicateHeader) {
+    throw new Error("File Contains Duplicate Headers");
+  }
+
+  // Map headers to master field keys
+  const headerKeys = headersRow.map((headerName:any) => {
+    const field = master.fields?.find((field) => field.displayName === headerName);
+    return field ? field.key : headerName;
   });
 
-  //displayName to key mapper
-  const headerKeys = data[0]?.map((headerName: any) => {
-    const fieldObj = master?.fields?.find((field: Field) => field.displayName === headerName);
-    if (fieldObj) return fieldObj.key;
-    else return '';
-  })
+  // Check for missing headers and invalid headers while adding through excel
+  const missingHeaders = currMasterKeys.filter((key) => !headerKeys.includes(key));
+  if (pageType === 'add' && missingHeaders.length > 0) {
+    throw new Error(`File is missing the following columns: ${missingHeaders.map((key) => {
+      return master.fields?.find((field) => field.key === key)?.displayName;
+    }).join(', ')}`);
+  }
 
-  if(master.id===501 || master.id===502 || master.id===503 || master.id===504){
+  const invalidHeaders = headerKeys.filter((key:any) => !currMasterKeys.includes(key));
+  if (invalidHeaders.length > 0) {
+    throw new Error(`File contains columns ${invalidHeaders.join(', ')}, which are not valid columns`);
+  }
 
-    const bufferData:any = [];
-    for(let i=1; i< data?.length; i++){
-      const buffData:any = {};
-      for(let j=0; j< data[i].length; j++){
-        buffData[headerKeys[j]]= data[i][j];
+  // Validate data presence
+  if (data.slice(1).length === 0) {
+    throw new Error('File Contains zero rows.');
+  }
+
+    if (master.id === 501 || master.id === 502 || master.id === 503 || master.id === 504) {
+
+    const bufferData: any = [];
+    for (let i = 1; i < data?.length; i++) {
+      const buffData: any = {};
+      for (let j = 0; j < data[i].length; j++) {
+        buffData[headerKeys[j]] = data[i][j];
       }
-      buffData["err"]= "";
+      buffData["err"] = "";
       bufferData.push(buffData);
     }
     return bufferData;
   }
 
- 
-
-  if (data.slice(1).length === 0) {
-    throw new Error(`File Contains zero rows.`)
-  }
-  
-
-
-  return result;
-}
+  return [];
+};
 
 export const generateMTOFilterOptions = (data: Master[], currentFilters:any) => {
   const temp: string[] = [];

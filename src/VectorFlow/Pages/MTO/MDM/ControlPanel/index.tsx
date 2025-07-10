@@ -37,7 +37,7 @@ const MTOControlPanel = ()=>{
             <PanelGridWrapper>
                 <PanelGrid>
                     <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/edit.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/edit-hover.svg'} text={'View / Modify Records '}  onClick={()=>navigate('/mto/master-data-management/control-panel/view-modify')} themeUi={themeUi}/>
-                    <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/add.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/add-hover.svg'} text={'Add Records '} onClick={()=>navigate('/mto/master-data-management/control-panel/add')} themeUi={themeUi}/>
+                    <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/add.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/add-hover.svg'} text={'Add Records (Using Excel) '} onClick={()=>navigate('/mto/master-data-management/control-panel/add')} themeUi={themeUi}/>
                 </PanelGrid>
             </PanelGridWrapper>
         </Container>
