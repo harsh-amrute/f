@@ -79,7 +79,7 @@ import {
 } from "../../../../types/MDM";
 
 import _ from "lodash";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -93,12 +93,11 @@ import {
   RESET_MTO_STATE,
   SET_BUFFER_INITIAL_DATA,
   SET_BUFFER_MODIFY_DATA,
+  SET_CALENDAR_INITIAL_DATA,
   SET_CCR_INITIAL_DATA,
   SET_CCR_MODIFY_DATA,
   SET_POOGI_INITIAL_DATA,
-  SET_POOGI_MODIFY_DATA,
-  SET_CALENDAR_INITIAL_DATA,
-  SET_CALENDAR_MODIFY_DATA,
+  SET_POOGI_MODIFY_DATA
 } from "../../../../../redux/actions/MTO";
 import {
   useGetCCRMasterData as useGetCCRMasterDataForCalender,
@@ -118,11 +117,6 @@ import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
 import moment from "moment";
 import {CustomStatusPanel } from "../CustomStatusPannel";
-import { getPrevPath } from "../history";
-
-
-
-
 
 
 const useViewModify = (pageType: string) => {
@@ -382,12 +376,19 @@ const useViewModify = (pageType: string) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [plantNames, setPlantNames] =  useState([]);
+  const [plantNames, setPlantNames] =  useState<any>([]);
   const [ccrNames, setCCRNames]= useState([]);
 
   const [selectedData, setSelectedData] = useState<any>({});
 
-  const [prevPath , setPrevPath] = useState<string | undefined>(getPrevPath().split('/').pop());
+  const location = useLocation()
+
+  const [prevPath , setPrevPath] = useState<string | undefined>(location?.state?.backUrl.split('/').pop());
+
+  const backUrl = location?.state?.backUrl || ""
+
+  const navigate = useNavigate()
+
   
   const saveDraft = "saved-drafts"
   // adding all ccrName in ccr_names array
@@ -491,7 +492,6 @@ const useViewModify = (pageType: string) => {
       activeMaster.colDefs.length > 0
     ) {
       const newColDef = _.cloneDeep(activeMaster.colDefs);
-      // newColDef[newColDef.length-2].valueFormatter =  myCCRFormatter;
 
       // Iterate over the column definitions and update based on colId
       newColDef.forEach((col: any) => {
@@ -583,19 +583,22 @@ const useViewModify = (pageType: string) => {
           }
         })
       }
-      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === saveDraft && activeMaster.id !== 503 && activeMaster.id !== 504){
-        newColDef.unshift({
+      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === saveDraft && activeMaster.id !== 503 && activeMaster.id !== 504 && pageType === "modify"){
+        const actionsCol: any = {
           field: "actions",
           headerName: "Actions",
           colId: "actions",
           pinned: "left",
-          width: 250,
+          width: 100,
+          editable:false,
+          floatingFilter: false,
+          suppressExcelExport: true,
           cellRenderer: AddRemoveCellRenderer,
-          cellRendererParams:{
-            addEditableToLastColumn
+          cellRendererParams: {
+            addEditableToLastColumn,
           }
-        })
-        dispatch(UPDATE_COLDEFS([...newColDef]));
+        };
+        dispatch(UPDATE_COLDEFS([actionsCol,...newColDef]));
 
       }else{
 
@@ -627,6 +630,10 @@ const useViewModify = (pageType: string) => {
         const { data } = await MTOMasterUIConfiguration();
         if(pageType==='add'){
           setAllMasterState(mapMasterToMasterState(data.data, onShowChart).map((e: any) => {
+            if (e.id === 501 || e.id === 502) {
+              e.fields = e.fields.filter((field: any) => field.key !== "iv");
+              e.colDefs = e.colDefs.filter((col: any) => col.colId !== "iv");
+            }
             if (e.id === 504) {
               e.fields = e.fields.filter((field: any) => field.key !== "dow");
               e.colDefs = e.colDefs.filter((col: any) => col.colId !== "dow");
@@ -768,12 +775,20 @@ const useViewModify = (pageType: string) => {
     if (masterId === 502) {
       const allRows = [...newRowData];
       const newData: any = [];
-
+      let isValidCCRGroup :boolean
       allRows.forEach((e: any, index: number) => {
         const newVal = _.cloneDeep(e);
         const {error} = CCR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
+        
+        if(e.cgid){
+          for(const key in ccrGroupMaster){
+            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid){
+              isValidCCRGroup = true
+              break
+            }
+          }
+        }
         if(error){
-
           const fieldOrders = activeMaster.fields.map(field =>field.key)
 
           const errorOrders = fieldOrders.flatMap((field)=>{
@@ -807,10 +822,7 @@ const useViewModify = (pageType: string) => {
               error: "Please select a valid department from the dropdown",
               warning: "",
             };
-          } else if (
-            ccrGroupMaster &&
-            !Object.keys(ccrGroupMaster).includes(e.cgid)
-          ) {
+          } else if (!isValidCCRGroup) {
             newVal.err = {
               error: "Please select a valid CCR Group from the dropdown",
               warning: ""
@@ -894,6 +906,18 @@ const useViewModify = (pageType: string) => {
           newVal.err = {
             error: "State the major reason to which the minor reason belongs!",
             warning: "",
+          };
+        }
+
+        // Assuming newData is an array of objects and e is an object with majdsc and mindsc properties
+        const isDuplicate = newData.some((item:any) => (
+          item.majdsc === e.majdsc && item.mindsc === e.mindsc
+        ));
+
+        if (isDuplicate) {
+          newVal.err = {
+            error: "Minor reason should be unique for each major reason!",
+            warning: ""
           };
         }
 
@@ -1065,13 +1089,9 @@ const useViewModify = (pageType: string) => {
             validColumnKeys.push(col.colId);
           });
         }
-        if (currentMaster) {
-          event.api.exportDataAsExcel({
-            fileName:
-              downloadFileName === "" ? currentMaster.name : downloadFileName,
-            columnKeys: validColumnKeys,
-          });
-        }
+        // if (currentMaster) {
+        //   event.api.exportDataAsExcel(onExcelExprot(colDefs));
+        // }
       }
     },
     rowSelection: "multiple",
@@ -2179,7 +2199,6 @@ const useViewModify = (pageType: string) => {
       //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
       // }
       // else{
-
       dispatch(SET_RECORD_COUNT(buffData?.length));
       dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
 
@@ -2236,8 +2255,7 @@ const useViewModify = (pageType: string) => {
             render: `Downloading Data ${i * chunkSize} / ${recordCount}`,
           });
       }
-
-      dispatch(UPDATE_ROW_DATA(rows));
+      // dispatch(UPDATE_ROW_DATA(rows));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       setDownloadData(true);
       toast.dismiss(toastId);
@@ -2291,6 +2309,71 @@ const useViewModify = (pageType: string) => {
       notifyError("Please Select Rows to Delete");
     }
   };
+
+  const onExcelExport = useMemo(()=>(
+    (columnDefs = colDefs,buffTypeData = bufferTypeData,plantData = plantNames,deptData = deptMaster,ccrGroupData = ccrGroupMaster )=>{
+      const isBufferExport = activeMaster.id === 501;
+      const isCCRExport = activeMaster.id === 502;
+
+      const bufferType = (value: any) => {
+        return buffTypeData?.find((type: any) => type.id === value)?.dsc;
+      };
+  
+      const plantNameFromId = (value:any)=>{
+        return plantData.find((plant:any)=> plant.plant_id === value)?.plant_name
+      }
+  
+      const deptNameFromId = (value:any)=>{
+        return deptData.find((dept:any)=> dept.dept_id === value)?.dept_name
+      }
+  
+      const ccrGroupNameFromId = (value:any)=>{
+        for(const key in ccrGroupData){
+          if(ccrGroupData[key]?.ccr_group_id === value){
+            return key
+          }
+        }
+        return null
+      }
+      return {
+        fileName : `${activeMaster.name} MTo`,
+        columnKeys: columnDefs
+          .filter((col: any) => col.field !== 'actions' && col.field !== 'err') 
+          .map((col: any) => col.field),             
+        processCellCallback: (params: any) => {
+          const { column, value } = params;
+      
+          if (isBufferExport && column.getColId() === 'bt') {
+            const match = bufferType(value);
+            return match ? match : value;  
+          }
+  
+          if(isCCRExport && column.getColId() === 'pl'){
+            const match = plantNameFromId(value)
+            return match ? match : value
+          }
+  
+          if(isCCRExport && column.getColId() === 'dp'){
+            const match = deptNameFromId(value)
+            return match ? match : value
+          }
+  
+          if(isCCRExport && column.getColId() === 'cgid'){
+            const match = ccrGroupNameFromId(value)
+            return match ? match : value
+          }
+      
+          return value?.toString() || "";       
+        },
+      
+        processHeaderCallback: (params: any) => {
+          const { column } = params;
+          return column.getColDef().headerName || column.getColId();
+        }
+      };
+    }
+  ),[deptMaster,plantNames,ccrGroupMaster,ref,bufferTypeData,activeMaster?.id])
+  
 
   const handleChangePage = async (pageNo: any) => {
     setCurrentPage(pageNo);
@@ -2738,33 +2821,10 @@ const useViewModify = (pageType: string) => {
   };
 
   const onBackButton = () => {
-    if (
-      !bufferModifyData ||
-      (bufferModifyData && bufferModifyData.length === 0)
-    ) {
-      dispatch(UPDATE_PROGRESS_STATE("default"));
-      dispatch(UPDATE_ROW_DATA([]));
-      dispatch(SET_BUFFER_INITIAL_DATA([]));
-      dispatch(SET_BUFFER_MODIFY_DATA([]));
-      dispatch(SET_CCR_INITIAL_DATA([]));
-      dispatch(SET_CCR_MODIFY_DATA([]));
-      dispatch(UPDATE_COLDEFS([]));
-      dispatch(REMOVE_ALL_FILTERS());
-      // dispatch(UPDATE_ACTIVE_MASTER([]))
+    
+    const conf = confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft");
 
-      dispatch(ADD_FILTER());
-      setDownloadData(false);
-      setTempDownloadData(false);
-      dispatch(FILL_MASTERS([]));
-      setFilterButtonStatus([]);
-      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-
-      if (pageType === "add") dispatch(TOGGLE_UPLOAD_MODAL(true));
-    } else if (
-      confirm(
-        "Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft"
-      )
-    ) {
+    if(conf){
       dispatch(RESET_MTO_STATE());
       dispatch(UPDATE_PROGRESS_STATE("default"));
       dispatch(UPDATE_ROW_DATA([]));
@@ -2785,6 +2845,11 @@ const useViewModify = (pageType: string) => {
 
       if (pageType === "add") dispatch(TOGGLE_UPLOAD_MODAL(true));
     }
+
+    if(backUrl){
+      navigate(backUrl)
+    }
+
   };
 
   const postDraftChunks = async (rowData: any) => {
@@ -3126,6 +3191,12 @@ const useViewModify = (pageType: string) => {
           return params.data.isEditing === true
         }
       };
+      if(colDef.field === 'actions'){
+        return {
+          ...colDef,
+          editable:false
+        }
+      }
       if (colDef.field === "bt") {
         return {
           ...colDef,
@@ -3190,6 +3261,12 @@ const useViewModify = (pageType: string) => {
       }
 
       if (activeMaster.id === 502) {
+        if(colDef.field === 'actions'){
+          return {
+            ...colDef,
+            editable:false
+          }
+        }
         if (
           colDef.field === "pl" ||
           colDef.field === "dp" ||
@@ -3297,13 +3374,15 @@ const useViewModify = (pageType: string) => {
       colId: "actions",
       pinned: "left",
       width: 100,
+      editable:false,
+      floatingFilter: false,
+      suppressExcelExport: true,
       cellRenderer: AddRemoveCellRenderer,
       cellRendererParams: {
         addEditableToLastColumn,
       }
     };
 
-    // return [actionsCol, ...modifiedColDefs];
     const isFromSaveDraft503 = prevPath === saveDraft && activeMaster.id === 503;
     const hasActionCol = modifiedColDefs.some((col:any)=> col.field === "actions");
 
@@ -3356,16 +3435,6 @@ const useViewModify = (pageType: string) => {
       }
     });
 
-    // const actionsCol: any = {
-    //   field: "pactions",
-    //   headerName: "Actions",
-    //   colId: "pactions",
-    //   pinned: "left",
-    //   width: 100,
-    //   cellRenderer: AddRemoveCellRenderer,
-    // };
-
-    // return [actionsCol, ...modifiedColDefs];
     if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
       return;
     }
@@ -3470,9 +3539,6 @@ const useViewModify = (pageType: string) => {
     addEditableToLastMinColumn();
   };
 
-  
-
-  const navigate = useNavigate();
 
   const AddCalendarModifyData = (data: any) => {
     data?.forEach((el:any)=>{
@@ -3888,7 +3954,7 @@ const useViewModify = (pageType: string) => {
         ccrData: [],
       };
 
-      const ccrData = ccrModifyData.filter((ele:any)=> !ele.isdel)
+      const ccrData = ccrModifyData?.filter((ele:any)=> !ele.isdel)
 
       ccrData.forEach((ele: any) => {
         const e = keysToDelete(ele)
@@ -4024,8 +4090,7 @@ const useViewModify = (pageType: string) => {
       buffData: [],
     };
 
-    const bufferData = bufferModifyData.filter((ele:any)=> !ele.isdel)
-
+    const bufferData = bufferModifyData?.filter((ele:any)=> !ele.isdel)
     bufferData.forEach((ele: any) => {
       const e = keysToDelete(ele);
       bufferTypeData.forEach((elm: any) => {
@@ -4082,21 +4147,16 @@ const useViewModify = (pageType: string) => {
       if (pageType === "add") {
         activeMaster.rowData.forEach((ele: any) => {
           const e = _.cloneDeep(ele);
-          let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt || elm.id===ele.bt) {
-              isBuffChanged = true;
+            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
-          if (isBuffChanged === false) {
-            e.bt = bufferTypeData[0].id;
-          }
           e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
           e.err = "";
-          !(e.iv === true || e.iv === false) && (e.iv = false);
+          e.iv = true;
           if (!e.bid) e.bid = null;
 
           if (e.bid === null || e.iv === false) {
@@ -4106,24 +4166,16 @@ const useViewModify = (pageType: string) => {
           }
         });
       } else {
-        const bufferData = bufferModifyData.filter((ele:any)=> !ele.isdel)
+        const bufferData = bufferModifyData?.filter((ele:any)=> !ele.isdel)
 
-        
-        
         bufferData.forEach((ele: any) => {
           console.log("ele bt", ele.bt)
           const e = keysToDelete(ele)
-          let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
-            console.log("elm", elm);
-            if (elm.dsc === ele.bt || elm.id===ele.bt) {
-              isBuffChanged = true;
+            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
-          if (isBuffChanged === false) {
-            e.bt = bufferTypeData[0].id;
-          }
           e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
@@ -4391,9 +4443,9 @@ const useViewModify = (pageType: string) => {
         if ((ccrGroupMaster && plantMaster && deptMaster) || bufferTypeData) {
           const newRowData = _.cloneDeep(activeMaster.rowData);
           newRowData.forEach((ele: any) => {
-            if (typeof ele.err === "string") {
+            if (typeof ele.err === "string"  ) {
               ele.err = { error: "" };
-            } else {
+            } else if(ele.err && ele.err.error){
               ele.err.error = "";
             }
           });
@@ -4545,6 +4597,7 @@ const useViewModify = (pageType: string) => {
     setSelectedData,
     onMTOSaveAsDraft,
     setCalendarFormData,
+    onExcelExport,
     MTOPoogiMinorColdef: [
       {
         headerName: "Sr No.",
