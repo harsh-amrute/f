@@ -1,5 +1,5 @@
 
-import { useGetEOUIConfiguration ,useGetEOData,useGetEODataCount} from '../../../../Services/MTA/SupplyChainIntelligenceHub/ElephantOrders/index';
+import { useGetEOUIConfiguration ,useGetEOData,useGetEODataCount, useSubmitDueDates} from '../../../../Services/MTA/SupplyChainIntelligenceHub/ElephantOrders/index';
 import { convertUiConfigToOptions, getCellFilter, getColumnDefinationsMTA, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
@@ -41,7 +41,52 @@ const useElephantOrders= ()=>{
     const [VDRColumns,setVDRColumns] = useState<any[]>([])
 
     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+    const {mutateAsync:submitDueDates} = useSubmitDueDates();
+    const [editedDueDateRows, setEditedDueDateRows] = useState<any[]>([]);
 
+    const handleDueDateChange = (
+        newDate: string,
+        rowData: any,
+        skuKey: string,
+        whKey: string,
+        orderIdKey: string
+      ) => {
+        if (!newDate || !rowData) return;
+      
+        const skucode = rowData[skuKey];
+        const whcode = rowData[whKey];
+        const orderid = rowData[orderIdKey];
+      
+        if (!skucode || !whcode || !orderid) {
+          console.warn("❌ Required fields missing in rowData:", rowData);
+          return;
+        }
+      
+        const updated = {
+          skucode,
+          whcode,
+          orderid,
+          duedate: newDate,
+        };
+      
+        setEditedDueDateRows((prev) => {
+          const index = prev.findIndex(
+            (row) =>
+              row.skucode === skucode &&
+              row.whcode === whcode &&
+              row.orderid === orderid
+          );
+      
+          if (index > -1) {
+            const updatedList = [...prev];
+            updatedList[index] = updated;
+            return updatedList;
+          } else {
+            return [...prev, updated];
+          }
+        });
+      };
+      
     const customCellRenderers = useMemo(() => (
         {
             grapCellRenderer: '',
@@ -64,17 +109,42 @@ const useElephantOrders= ()=>{
     }
     const onSubmitDueDate =async () => {
         try {
-            if (editedRows.length === 0) {
-              notifyError('Please add a due date to save');
+            console.log("📝 editedDueDateRows =", editedDueDateRows); // Debug
+
+            if (editedDueDateRows.length === 0) {
+              notifyError("Please select due date(s) to save");
               return;
             }
         
             const toastId = notifyLoader("Submitting Due Dates");
         
+            const payload = editedDueDateRows.map((e) => {
+                return{
+                    skucode: e.skucode,
+                    whcode: e.whcode,
+                    orderid: e.orderid,
+                    duedate: e.duedate,
+               }
+           
+            });
+        
+            const { data } = await submitDueDates({ data: payload }); // API Call
+            console.log("Data ===> ",data);
+            // Optional: Update UI
+            editedDueDateRows.forEach((row) => {
+              const rowNode: any = ref.current?.api.getRowNode(
+                `${row.skucode}-${row.whcode}-${row.orderid}`
+              );
+              if (rowNode) {
+                rowNode.setDataValue("Due Date", row.duedate);
+              }
+            });
         
             toast.dismiss(toastId);
+            notifySuccess(data.msg || "Due dates updated successfully");
+            setEditedDueDateRows([]);
           } catch (err: any) {
-            notifyError(err.message);
+            notifyError(err.message || "Something went wrong");
           }
     }
 
@@ -102,8 +172,10 @@ const useElephantOrders= ()=>{
                             width: 200,
                             suppressMenu: true,
                             cellRendererParams: {
-                                onDateChange: (newDate: string) => {
+                                onDateChange: (newDate: string, rowData: any) => {
                                   console.log("User selected new date:", newDate);
+                                  handleDueDateChange(newDate, rowData, 'SKUCode', 'WhCode', 'CustomerOrderID');
+
                                 },
                             },
                             

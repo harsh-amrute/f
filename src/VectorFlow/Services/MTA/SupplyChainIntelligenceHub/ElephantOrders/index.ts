@@ -2,6 +2,7 @@ import { useQuery,useMutation } from '@tanstack/react-query'
 
 import { EOServices } from './api'
 import {RRRDataPayload} from '../../../../types/RRR'
+import {SubmitDueDatePayload} from "../../../../types/BPR";
 
 
 export const QUERY_KEYS = {
@@ -29,3 +30,8 @@ export const useGetEODataCount  = ()=>{
   })
 }
 
+export const useSubmitDueDates = () => {
+  return useMutation(async (payload: { data: Array<SubmitDueDatePayload> }) => {
+    return await EOServices.submitDueDates(payload);
+  });
+};

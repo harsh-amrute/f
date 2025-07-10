@@ -16,7 +16,7 @@ interface AGGridProps {
   value: string;
   data: any;
   setValue?: (value: any) => void;
-  onDateChange?: (date: string) => void;
+  onDateChange?: (date: string, rowData: any) => void;
   // cellRendererParams will be merged into props by AG Grid
   [key: string]: any;
 }
@@ -67,20 +67,19 @@ const DateCellRenderer = (props: AGGridProps) => {
   const handleCalendarChange = (value: Value) => {
     if (value instanceof Date) {
       const formatted = moment(value).format('YYYY-MM-DD');
-
-      // 1. Update grid cell value if setValue is available
+  
       if (typeof props.setValue === 'function') {
-        props.setValue(formatted);
+        props.setValue(formatted); // update AG Grid cell
       }
-
-      // 2. Call external handler if provided via cellRendererParams
+  
       if (typeof externalOnDateChange === 'function') {
-        externalOnDateChange(formatted);
+        externalOnDateChange(formatted, props.data); // ✅ send row data back
       }
-
+  
       setShowCalendar(false);
     }
   };
+  
 
   return (
     <DatePickerWrapper>

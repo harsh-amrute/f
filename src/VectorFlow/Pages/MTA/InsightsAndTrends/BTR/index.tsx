@@ -141,6 +141,7 @@ const BufferTrendReport = () => {
                         columnDefs={currentTab.id==='2'?techColDefs:ecoColDefs}
                         rowData={exportExcelRowData}
                         {...tempAgGridProps}
+                        maintainColumnOrder={true}
                     />
                 </div>
             </BTRLayoutWrapper>

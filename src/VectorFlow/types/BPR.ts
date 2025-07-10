@@ -56,6 +56,13 @@ export interface SubmitBPRRemarkPayload{
     skucode:string
 }
 
+export interface SubmitDueDatePayload{
+    skucode: string;
+    whcode: string;
+    orderid: string;
+    duedate: string;
+}
+
 export interface SubmitBORRemarkPayload extends SubmitBPRRemarkPayload{
     spc:string
 }

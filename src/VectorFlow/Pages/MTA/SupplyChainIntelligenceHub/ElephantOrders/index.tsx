@@ -7,6 +7,7 @@ import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPaginatio
 import ActionToolBar from "../Planning/ActionToolBar";
 import { useState } from "react";
 import VFSave from "./VFSave";
+import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
 
 const ElephantOrder = () => {
   
@@ -80,7 +81,8 @@ const ElephantOrder = () => {
       </div>
       <EOLayout>
       {(isLoading )?(
-          <VFLoader/>
+          // <VFLoader/>
+          <OverlayLoader/> 
         ):
       (<div style={{height:'60vh'}}>
        <VFTable
@@ -88,7 +90,17 @@ const ElephantOrder = () => {
                   {...agGridProps}
                   columnDefs={VDRColumns}
                   rowData={RowData}
-                  height={'100%'}
+                  statusBar={{
+                    statusPanels: [
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                    ],
+                  }}
+                  height={"100%"}
+                  maintainColumnOrder
                   onFilterChanged={() => {
                     const filterModel = ref?.current?.api?.getFilterModel();
                     if (filterModel && Object.keys(filterModel).length > 0) {
@@ -97,7 +109,6 @@ const ElephantOrder = () => {
                       setIsDisabled(true);
                     }
                 }}
-                
         />
        
         <div>
@@ -122,6 +133,7 @@ const ElephantOrder = () => {
             columnDefs={VDRColumns}
             rowData={exportExcelRowData}
             {...tempAgGridProps}
+            maintainColumnOrder={true}
           />
         </div>
       </EOLayout>

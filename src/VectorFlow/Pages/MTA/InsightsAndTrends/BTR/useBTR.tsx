@@ -580,7 +580,7 @@ const useBTR = () => {
                             {...gridProps}
                             pagination={false}
                             paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
-                            maintainColumnOrder={true}
+                            maintainColumnOrder
                             onGridReady={(params) => setTechInternalRef(params)}
                             onFilterChanged={() => {
                                 const filterModel = techRef?.current?.api?.getFilterModel();
