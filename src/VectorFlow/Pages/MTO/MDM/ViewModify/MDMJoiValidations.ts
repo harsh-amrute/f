@@ -104,9 +104,9 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
   }),
 
   cwl: Joi.number().min(1).required().messages({
-    "number.base":"CCR Capacity Workload (cwl) must be a number!",
-    "any.required": "CCR Capacity Workload (cwl) cannot be empty!",
-    "number.min": "CCR Capacity Workload (cwl) should be greater than 0!",
+    "number.base":"Cummulative WIP Limit (cwl) must be a number!",
+    "any.required": "Cummulative WIP Limit (cwl) cannot be empty!",
+    "number.min": "Cummulative WIP Limit (cwl) should be greater than 0!",
   }),
 
   dp: Joi.required().messages({

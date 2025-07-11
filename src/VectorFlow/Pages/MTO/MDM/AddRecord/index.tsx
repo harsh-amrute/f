@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectMTOGroupedMasters";
 import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
@@ -17,6 +17,7 @@ import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 import { MDMMasterState,Field } from "../../../../types/MDM";
 import { CustomStatusPanel } from "../CustomStatusPannel";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
+import useSimpleBlocker from "../ViewModify/UseSimpleBlocker";
 
 
 const MTOAddRecord = () => {
@@ -24,6 +25,8 @@ const MTOAddRecord = () => {
     const {user} = useUserData()
     const themeUi = user?.user?.theme_ui;
    const [isDisabled, setIsDisabled] = useState(true);
+
+
 
 
     const {
@@ -61,8 +64,8 @@ const MTOAddRecord = () => {
         isOverlayVisible,
         errorCount,
         onMTOSaveBufferData,
-        onMTOSaveAsDraft,
-        onExcelExport,
+        onMTOSaveAsDraft
+
     } = useViewModify('add');
 
     const {
@@ -80,6 +83,10 @@ const MTOAddRecord = () => {
         options,
         selectedOptions
       } = useAdd()
+
+
+    useSimpleBlocker(activeMaster,onBackButton);
+
     
     useEffect(()=>{
       if(ref.current && ref.current.api){
@@ -92,15 +99,7 @@ const MTOAddRecord = () => {
       }
     },[isTableDataLoading])
 
-    const handleExportData = useCallback(() => {
-      notifyLoader('Exporting Data')
-      try {
-        ref?.current?.api?.exportDataAsExcel(onExcelExport());
-        notifySuccess('Exported Data Successfully')
-      } catch (error:any) {
-        notifyError(error.message || "Failed to Export Data")
-      }
-    }, [ref, onExcelExport]);
+
 
     if(isLoading){
         return <VFLoader/>
@@ -139,9 +138,8 @@ const MTOAddRecord = () => {
         return false;
       })
       return calendarModifiedColDef
-    }else {
-      //return all columns except is active, not needed while adding records.     
-      return activeMaster.colDefs.filter((colDef: any) => colDef.field !== "iv");
+    }else{
+      return activeMaster.colDefs
     }
    }
 
@@ -169,7 +167,7 @@ const MTOAddRecord = () => {
                   ref={ref}
                   columnDefs={calendarModifiedColDefs()}
                   onGridReady={onGridReady}
-
+                  
                   rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}
@@ -293,7 +291,7 @@ const MTOAddRecord = () => {
             onBack={onBackButton}
             onClearAndExportErrors={()=>onClearExportError()}
             onModifyData={()=>toggleUploadModal(true)}
-            onExportData={handleExportData}
+            onExportData={exportToExcel}
             onSubmit={onSubmit}
             onDeleteSelected={deleteSelected}
             onPhaseInPhaseOutStop={()=>console.log('')}
