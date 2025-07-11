@@ -786,7 +786,6 @@ const MTOViewModify = () => {
             onModifyData={() => toggleUploadModal(true)}
             onExportData={() => {
               if(activeMaster.id === 503){
-                console.log("yep this is calling")
                 tempRef?.current?.api &&
                 tempRef?.current?.api.exportDataAsExcel({
                   fileName: `${activeMaster.name} (MTO)`,

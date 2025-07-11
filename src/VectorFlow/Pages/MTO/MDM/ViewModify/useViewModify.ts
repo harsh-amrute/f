@@ -3530,7 +3530,6 @@ const useViewModify = (pageType: string) => {
 
   const addRowToMtoMinGrid = () => {
     const newMinId = "min" + uuidv4();
-    console.log("this is the selecte maj Id", selectedMajReason.majId)
     const newSelectedMajReason = {
       ...selectedMajReason,
       minData: [
@@ -4198,7 +4197,6 @@ const useViewModify = (pageType: string) => {
         const bufferData = bufferModifyData?.filter((ele:any)=> !ele.isdel)
 
         bufferData.forEach((ele: any) => {
-          console.log("ele bt", ele.bt)
           const e = keysToDelete(ele)
           bufferTypeData?.forEach((elm: any) => {
             if (elm.dsc === ele.bt || elm.id === ele.bt ) {
@@ -4400,7 +4398,6 @@ const useViewModify = (pageType: string) => {
         at: pageType === "add" ? "Add" : "Modify",
       };
 
-      console.log("PoogiModifyData....", poogiModifyData);
 
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
