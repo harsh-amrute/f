@@ -44,10 +44,8 @@ const LandingPage = () => {
   }
 
   const CreateMenuFunction = (app_id: any, item: any) => {
-    console.log("item", item);
     if (item?.lp_attr) {
         const currentList = map.current.get(app_id) || [];
-        console.log("currentList", currentList);  
         if (
           !currentList.some(
             (existingItem: any) => existingItem.name === item.name
@@ -57,7 +55,6 @@ const LandingPage = () => {
           const checkUrl = user?.url_permission?.some((value : any)=>{
             return item.url == value;
           })
-          console.log("checkUrl", checkUrl);
           let url = undefined;
           if(checkUrl){
               url = item.url
