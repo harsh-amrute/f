@@ -85,7 +85,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const [isReset, setIsReset] = useState<boolean|undefined>(undefined);
     const [colDef, setColDef] = useState<any>([{}]);
     const [childColDef, setChildColDef] = useState<any>([{}])
-    const { mutateAsync: getUIConfigData } = useGetUIConfigData()
+    const { mutateAsync: getUIConfigData, isLoading: isUIConfigDataLoading } = useGetUIConfigData()
     const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
     const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
     const { colDefMap , getColDef} = useColDef();
@@ -97,6 +97,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
+    const [isPivot, setIsPivot] = useState<any>(false);
 
     const setColumnDef = async () => {
         try {
@@ -128,6 +129,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
             setColumnState(newConfig.cs);
+            setIsPivot(newConfig.pivot);
 
             if (!data) {
                 console.error('Failed to apply column state');
@@ -138,13 +140,12 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }
 
     const handleSaveClick = async (isReset = false, page_size?: any) => {
-
-        const config = isReset ? defaultColState : gridRef?.current?.api?.getColumnState();
     
         try {
             if (page_size) {
                 const config = columnState;
-                const fullConfig = { cs: config, pageSize: page_size };
+                const isPivot = gridRef?.current?.api.isPivotMode();
+                const fullConfig = { pivot: isPivot, cs: config, pageSize: page_size };
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.ProcPlanning,
@@ -154,9 +155,12 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         
             } else {
                 const fullConfig = {
-                    cs: config,
+                    pivot: isReset ? false : gridRef?.current?.api.isPivotMode(),
+                    cs: isReset ? defaultColState : gridRef?.current?.api?.getColumnState(),
                     pageSize: userPageSize
                 };
+
+                console.log(fullConfig,"fullConfig")
     
                 const payload = {
                     un: user.user.name,
@@ -165,9 +169,12 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 };
     
                 await updateUserUIReportConfigData([payload]);
-                !isReset && notifySuccess("Saved Successfully");
+                if (isReset) {
+                    notifySuccess("Reset Layout Successfully");
+                } else {
+                    notifySuccess("Saved Layout Successfully");
+                }
             }
-    
         } catch (error) {
             console.error(error);
             notifyError("Error while saving");
@@ -182,22 +189,16 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     useEffect(() => {
 
         if (isReset) {
-            setColumnState([...defaultColState]);
             handleSaveClick(true);
-            setIsReset(false)
-            notifySuccess("Reset Successfully")
+            setIsReset(false);
+            setColumnState([...defaultColState]);
+            setIsPivot(false);
         } 
     }, [isReset]);
 
     useEffect(() => {
         setColumnDef();
     }, [])
-
-    useEffect(()=>{
-        if(colDef.length>1){
-            getUserColumnConfig();
-        }
-    },[colDef])
 
     const { isSideBarOpen } = useUserData()
     const navigate = useNavigate();
@@ -220,16 +221,14 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         label: 'Completely Available',
         value: 'ca'
     });
-    const { mutateAsync: getProcPlanningData } = userGetProcPlanningData()
+    const { mutateAsync: getProcPlanningData, isLoading: isGetProcPlanningData } = userGetProcPlanningData()
     const { mutateAsync: UpdateProcurementSimulationData } = putUpdateProcurementSimulationData()
-    const [isLoading, setIsLoading] = useState(false);
-    const { mutateAsync : GetProcPlanningDataForExcelData} = useGetProcurementPlanningDataForExcelExport()
-    const { mutateAsync: getDBRsettingsData } = useGetDBRsettingsData();
+    const { mutateAsync : GetProcPlanningDataForExcelData, isLoading: isProcurementPlanningDataForExcelExport} = useGetProcurementPlanningDataForExcelExport()
+    const { mutateAsync: getDBRsettingsData, isLoading: isGetDBRsettingsData } = useGetDBRsettingsData();
     const [simulationEnable, setSimulationEnable] = useState<any>();
     
 
     const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any) => {
-        setIsLoading(true);
         if(isExcelExport){
             try {
                 const headersdata = gridRef?.current?.api.getColumnState();
@@ -245,31 +244,22 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             } catch (error) {
                 notifyError("Failed to export")
             }
-            setIsLoading(false);
         }else{
 
         try {
-            toast.dismiss();
-            notifyLoader("Loading data...")
             const formatedFilters = formatFilterJSON(appliedFilters);
             const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab, appliedFilters: formatedFilters,page_size: pageSize || userPageSize });
             if (response.status === 200) {
                 setCurrentPage(pageNumber)
-                toast.dismiss();
                 notifySuccess("Data fetched Successfully!");
-                setIsLoading(false);
             }
             else {
-                toast.dismiss();
                 notifyError("Failed to fetch data!");
-                setIsLoading(false);
             }
             setTotalRows(response?.data?.data?.count)
             setData(response?.data?.data?.results || []);
         } catch (error) {
-            toast.dismiss();
             notifyError("Failed to fetch data!");
-            setIsLoading(false);
         }
     }
     }, [getProcPlanningData,appliedFilters]);
@@ -380,6 +370,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
           setSimulationEnable(simulation?.value || "disabled");
     }
+
     useEffect(() => {  
         getSimulationEnable();
     },[])
@@ -490,7 +481,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 // Handle the response and perform subsequent actions
                 setIsOverlayLoading(false);
                 if (response.status === 200) {
-                    toast.dismiss();
                     notifySuccess("Simulation updated successfully!")
                     navigate("/planning/simulative-fullkit", { state: { ShortageDatas, date } });
 
@@ -590,24 +580,32 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }
 
     useEffect(() => {
-        if (gridRef?.current && columnState?.length && colDef.length > 0) {
+        if (gridRef?.current && columnState?.length) {
+            console.log(gridRef,"gridRef")
+            console.log(columnState, "columnState");
+            console.log(isPivot, "isPivot");
+
             const result = gridRef?.current?.api?.applyColumnState({
                 state: columnState,
                 applyOrder: true
             });
-            if (!result) {
+            const applyPivot = gridRef?.current?.api.setGridOption(
+                "pivotMode",
+                isPivot
+            );
+            if (!result || !applyPivot) {
                 console.error('Failed to apply column state');
             }
         }
-    },[columnState]);
+    },[gridRef, columnState]);
 
-    useEffect(()=>{
-
-        if(colDef){
+    useEffect(() => {
+        if (gridRef?.current?.api && colDef) {
+            console.log("calling user ui");
             setDefaultColState(gridRef?.current?.api?.getColumnState());
-            
+            getUserColumnConfig();
         }
-    },[colDef])
+    }, [colDef])
 
     const renderView = () => {
         switch (currentTab?.id) {
@@ -886,9 +884,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         GetCount,
         fetchData,
         date,
-        isLoading,
-        isUpdateUserConfig,
-        isGetUserConfig,
+        isLoading : isProcurementPlanningDataForExcelExport || isUpdateUserConfig || isGetUserConfig || isUIConfigDataLoading || isGetProcPlanningData || isGetDBRsettingsData,
         handleResetClick,
         handleSaveClick,
         currentTab

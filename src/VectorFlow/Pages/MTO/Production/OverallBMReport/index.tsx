@@ -1538,6 +1538,7 @@ const OverallBmReport = () => {
   const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        //reset case
         const fullConfig = { pivot: false, cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
@@ -1550,7 +1551,7 @@ const OverallBmReport = () => {
         setIsPivot(false);
       } else if (page_size) {
         const config = columnState;
-        const isPivot = refGraph2.current?.api.isPivotMode();
+        const isPivot = refGraph2?.current?.api.isPivotMode();
         const fullConfig = { pivot: isPivot, cs: config, pageSize: page_size };
 
         const payload = {
@@ -1566,6 +1567,7 @@ const OverallBmReport = () => {
           const isPivot = refGraph2.current?.api.isPivotMode();
           const fullConfig = { pivot: isPivot, cs: config, pageSize: userPageSize };
 
+          console.log(config,"config")
           // setColumnState(config);
 
           const payload = {
@@ -1604,6 +1606,7 @@ const OverallBmReport = () => {
 
   useEffect(() => {
     if (refGraph2?.current && columnState?.length) {
+      console.log(refGraph2,"columnstate update")
       const result = refGraph2.current.api.applyColumnState({
         state: columnState,
         applyOrder: true,

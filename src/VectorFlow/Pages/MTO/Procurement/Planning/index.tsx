@@ -38,14 +38,12 @@ const ProcurementPlanning = () => {
         toggleFilter,
         appliedFilters
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Procurement_Planning);
-    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
+    const { mutateAsync: getPageWiseFilterData, isLoading: getFilterdataLoading } = useGetFilterData()
     const {
         renderView, 
         toggleCurrentTab, 
         fetchData, isLoading, 
-        currentTab, 
-        isUpdateUserConfig,
-        isGetUserConfig,
+        currentTab,
         handleResetClick,
         handleSaveClick, 
     } = useProcPlanning(date, appliedFilters);
@@ -77,7 +75,7 @@ const ProcurementPlanning = () => {
     return (
         <>
 
-            {(isLoading || isUpdateUserConfig || isGetUserConfig) && (
+            {(isLoading || getFilterdataLoading) && (
                 <OverlayLoader />
             )}
 
