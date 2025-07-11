@@ -63,7 +63,10 @@ const DateCellRenderer = (props: AGGridProps) => {
     }
     setShowCalendar(prev => !prev);
   };
-
+  const handleClearDate = () =>{
+    props.setValue?.('');
+    externalOnDateChange?.('', props.data);
+  }
   const handleCalendarChange = (value: Value) => {
     if (value instanceof Date) {
       const formatted = moment(value).format('YYYY-MM-DD');
@@ -80,7 +83,6 @@ const DateCellRenderer = (props: AGGridProps) => {
     }
   };
   
-
   return (
     <DatePickerWrapper>
       <TextInputWrapper
@@ -103,6 +105,18 @@ const DateCellRenderer = (props: AGGridProps) => {
               : '/assets/img/mto/OrderRescheduling/edit-calendar.svg'
           }
           alt="calendar-icon"
+        />
+      </ButtonWrapper>
+
+      <ButtonWrapper type="button" onClick={handleClearDate}>
+        <ImageWrapper
+          style={imgStyle}
+          src={
+            themeUi === 'REGALBLAZE'
+              ? '/assets/img/Clear_Due_Date_Yellow.svg'
+              : '/assets/img/Clear_Due_Date.svg'
+          }
+          alt="clear-icon"
         />
       </ButtonWrapper>
 

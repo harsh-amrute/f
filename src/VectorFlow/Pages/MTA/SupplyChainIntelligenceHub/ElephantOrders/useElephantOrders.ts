@@ -107,47 +107,52 @@ const useElephantOrders= ()=>{
             notifyError(err)
         }
     }
-    const onSubmitDueDate =async () => {
+
+    const onSubmitDueDate = async () => {
         try {
-            console.log("📝 editedDueDateRows =", editedDueDateRows); // Debug
-
-            if (editedDueDateRows.length === 0) {
-              notifyError("Please select due date(s) to save");
-              return;
-            }
-        
-            const toastId = notifyLoader("Submitting Due Dates");
-        
-            const payload = editedDueDateRows.map((e) => {
-                return{
-                    skucode: e.skucode,
-                    whcode: e.whcode,
-                    orderid: e.orderid,
-                    duedate: e.duedate,
-               }
-           
-            });
-        
-            const { data } = await submitDueDates({ data: payload }); // API Call
-            console.log("Data ===> ",data);
-            // Optional: Update UI
-            editedDueDateRows.forEach((row) => {
-              const rowNode: any = ref.current?.api.getRowNode(
-                `${row.skucode}-${row.whcode}-${row.orderid}`
-              );
-              if (rowNode) {
-                rowNode.setDataValue("Due Date", row.duedate);
-              }
-            });
-        
-            toast.dismiss(toastId);
-            notifySuccess(data.msg || "Due dates updated successfully");
-            setEditedDueDateRows([]);
-          } catch (err: any) {
-            notifyError(err.message || "Something went wrong");
+          if (editedDueDateRows.length === 0) {
+            notifyError("Please select due date(s) to save");
+            return;
           }
-    }
-
+      
+          const toastId = notifyLoader("Submitting Due Dates");
+      
+          const payload = editedDueDateRows.map((e) => ({
+            skucode: e.skucode,
+            whcode: e.whcode,
+            orderid: e.orderid,
+            duedate: e.duedate,
+          }));
+      
+          const { data } = await submitDueDates({ data: payload });
+      
+          const updatedRowData = RowData.map((row) => {
+            const match = editedDueDateRows.find(
+              (e) =>
+                e.skucode === row.SKUCode &&
+                e.whcode === row.WhCode &&
+                e.orderid === row.CustomerOrderID
+            );
+            if (match) {
+              return {
+                ...row,
+                DueDate: match.duedate, 
+                dueDateAction: null,
+              };
+            }
+            return row;
+          });
+      
+          setRowData(updatedRowData); 
+      
+          toast.dismiss(toastId);
+          notifySuccess(data.msg || "Due dates updated successfully");
+          setEditedDueDateRows([]);
+        } catch (err: any) {
+          notifyError(err.message || "Something went wrong");
+        }
+      };
+      
     const getBPRUiConfig = async () => {
         try {
             const response = await getUiConfig(UIColumnConfigName.EO);
@@ -168,7 +173,7 @@ const useElephantOrders= ()=>{
                             headerName: "Action",
                             field: "dueDateAction",
                             cellRenderer: DateCellRenderer ,
-                            editable: true,
+                            editable: false,
                             width: 200,
                             suppressMenu: true,
                             cellRendererParams: {
