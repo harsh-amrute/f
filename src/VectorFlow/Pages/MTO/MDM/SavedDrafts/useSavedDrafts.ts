@@ -374,11 +374,22 @@ const useSavedDrafts = ()=>{
             });
           } else if (draftDetails.ActionType === "Add") {
             navigate(
-              `/mto/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`
+              `/mto/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`,
+              {
+                state:{
+                  backUrl : '/mto/master-data-management/saved-drafts',
+                  draftId: draftDetails.DraftId,
+                }
+              }
             );
           } else {
             navigate(
-              `/mto/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`
+              `/mto/master-data-management/control-panel/${draftDetails.ActionType.toLowerCase()}`,{
+                state:{
+                  backUrl : '/mto/master-data-management/saved-drafts',
+                  draftId: draftDetails.DraftId,
+                }
+              }
             );
           }
           toast.dismiss();
