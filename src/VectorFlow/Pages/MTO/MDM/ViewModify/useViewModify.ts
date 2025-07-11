@@ -385,7 +385,7 @@ const useViewModify = (pageType: string) => {
 
   const location = useLocation()
 
-  const [prevPath , setPrevPath] = useState<string | undefined>(location?.state?.backUrl.split('/').pop());
+  const prevPath: string | undefined  = location?.state?.backUrl.split('/').pop();
 
   const backUrl = location?.state?.backUrl || ""
 
@@ -2340,7 +2340,7 @@ const useViewModify = (pageType: string) => {
       return {
         fileName : `${activeMaster.name} MTO`,
         columnKeys: columnDefs
-          .filter((col: any) => col.field !== 'actions' && col.field !== 'err') 
+          .filter((col: any) => col.field !== 'actions' && col.field !== 'err' && col.field !== 'iv') 
           .map((col: any) => col.field),             
         processCellCallback: (params: any) => {
           const { column, value } = params;
@@ -3386,7 +3386,6 @@ const useViewModify = (pageType: string) => {
     };
 
     const isFromSaveDraft503 = prevPath === saveDraft && activeMaster.id === 503;
-    const hasActionCol = modifiedColDefs.some((col:any)=> col.field === "actions");
 
     if(isFromSaveDraft503){
       const newColDef = modifiedColDefs.filter((colDef: any) => colDef.field !== "actions");
@@ -4152,9 +4151,9 @@ const useViewModify = (pageType: string) => {
   const onMTOSaveAsDraft = async () => {
     notifyLoader("Saving Draft...");
 
-    if(location.state.draftId){
+    if(location?.state?.draftId){
       try{
-        await deleteDraft(location.state.draftId)
+        await deleteDraft(location?.state?.draftId)
       }
       catch(e){
         toast.dismiss();

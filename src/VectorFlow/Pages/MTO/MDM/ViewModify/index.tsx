@@ -516,7 +516,7 @@ const MTOViewModify = () => {
                           />
                           <p
                             style={{
-                              fontSize: "14px",
+                              fontSize: "10px",
                               color: ColorsMTO.Pink.code,
                             }}
                           >
@@ -531,7 +531,7 @@ const MTOViewModify = () => {
                           />
                           <p
                             style={{
-                              fontSize: "14px",
+                              fontSize: "10px",
                               color: ColorsMTO.LightGrey.code,
                             }}
                           >
@@ -544,8 +544,8 @@ const MTOViewModify = () => {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
-                        width: "130px",
-                        margin: "10px",
+                        width: "90px",
+                        margin: "8px",
                         cursor: "pointer",
                         background: "#fff",
                       }}
@@ -572,7 +572,7 @@ const MTOViewModify = () => {
                           />
                           <p
                             style={{
-                              fontSize: "14px",
+                              fontSize: "10px",
                               color: ColorsMTO.Pink.code,
                             }}
                           >
@@ -587,7 +587,7 @@ const MTOViewModify = () => {
                           />
                           <p
                             style={{
-                              fontSize: "14px",
+                              fontSize: "10px",
                               color: ColorsMTO.LightGrey.code,
                             }}
                           >
