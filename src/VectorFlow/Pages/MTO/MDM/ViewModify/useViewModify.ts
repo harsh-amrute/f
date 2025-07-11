@@ -48,6 +48,7 @@ import type { RootState } from "../../../../../redux/store/store";
 import {
   useCreateDraft,
   useDeleteDraft,
+  useDeleteMTODraft,
   useDeleteTask,
   useGetBufferMasterData,
   useGetBufferTypeMaster,
@@ -248,7 +249,7 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: getCalendarMasterData } = useGetCalendarMasterData();
   const { mutateAsync: modifyDraft } = useModifyDraft();
 
-  const { mutateAsync: deleteDraft } = useDeleteDraft();
+  const { mutateAsync: deleteDraft } = useDeleteMTODraft();
 
   const { mutateAsync: modifyMaster } = useModifyMasterData();
 
@@ -300,6 +301,7 @@ const useViewModify = (pageType: string) => {
       suppressColumnsToolPanel: true,
       wrapText: true,
       autoHeight: true,
+      minWidth: 300
     },
   ];
 
@@ -782,7 +784,7 @@ const useViewModify = (pageType: string) => {
         
         if(e.cgid){
           for(const key in ccrGroupMaster){
-            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid){
+            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid || key=== e.cgid){
               isValidCCRGroup = true
               break
             }
@@ -961,21 +963,21 @@ const useViewModify = (pageType: string) => {
   };
 
   const sideBar: SideBarDef = {
-    toolPanels: [
-      {
-        id: "columns",
-        labelDefault: "Columns",
-        labelKey: "columns",
-        iconKey: "columns",
-        toolPanel: "agColumnsToolPanel",
-        toolPanelParams: {
-          suppressPivots: true,
-          suppressRowGroups: true,
-          suppressPivotMode: true,
-          suppressValues: true
-        },
-      },
-    ],
+    // toolPanels: [
+    //   {
+    //     id: "columns",
+    //     labelDefault: "Columns",
+    //     labelKey: "columns",
+    //     iconKey: "columns",
+    //     toolPanel: "agColumnsToolPanel",
+    //     toolPanelParams: {
+    //       suppressPivots: true,
+    //       suppressRowGroups: true,
+    //       suppressPivotMode: true,
+    //       suppressValues: true
+    //     },
+    //   },
+    // ],
     defaultToolPanel: defaultToolPanel,
   };
 
@@ -2336,7 +2338,7 @@ const useViewModify = (pageType: string) => {
         return null
       }
       return {
-        fileName : `${activeMaster.name} MTo`,
+        fileName : `${activeMaster.name} MTO`,
         columnKeys: columnDefs
           .filter((col: any) => col.field !== 'actions' && col.field !== 'err') 
           .map((col: any) => col.field),             
@@ -3435,11 +3437,26 @@ const useViewModify = (pageType: string) => {
       }
     });
 
-    if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
-      return;
-    }
+    const pactionsCol: any = {
+      field: "pactions",
+      headerName: "Actions",
+      colId: "pactions",
+      pinned: "left",
+      width: 100,
+      editable:false,
+      floatingFilter: false,
+      suppressExcelExport: true,
+      cellRenderer: AddRemoveCellRenderer,
+      cellRendererParams: {
+        addEditableToLastColumn,
+      }
+    };
 
-    dispatch(UPDATE_COLDEFS([ ...modifiedColDefs]));
+    // if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
+    //   return;
+    // }
+
+    dispatch(UPDATE_COLDEFS([pactionsCol, ...modifiedColDefs]));
   };
 
   const addRowToMtoGrid = () => {
@@ -3513,6 +3530,7 @@ const useViewModify = (pageType: string) => {
 
   const addRowToMtoMinGrid = () => {
     const newMinId = "min" + uuidv4();
+    console.log("this is the selecte maj Id", selectedMajReason.majId)
     const newSelectedMajReason = {
       ...selectedMajReason,
       minData: [
@@ -4135,6 +4153,17 @@ const useViewModify = (pageType: string) => {
   const onMTOSaveAsDraft = async () => {
     notifyLoader("Saving Draft...");
 
+    if(location.state.draftId){
+      try{
+        await deleteDraft(location.state.draftId)
+      }
+      catch(e){
+        toast.dismiss();
+        notifyError("Failed to save Draft!")
+        return;
+      }
+    }
+
     if (activeMaster.id === 501) {
       const BufferPostObj: any = {
         mid: activeMaster.id,
@@ -4152,9 +4181,9 @@ const useViewModify = (pageType: string) => {
               e.bt = elm.id;
             }
           });
-          e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
-          e.mlt = parseInt(e.mlt);
-          e.slt = parseInt(e.slt);
+          // e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
+          // e.mlt = parseInt(e.mlt);
+          // e.slt = parseInt(e.slt);
           e.err = "";
           e.iv = true;
           if (!e.bid) e.bid = null;
@@ -4331,7 +4360,6 @@ const useViewModify = (pageType: string) => {
             existingMajor.minData.push({
               mindsc,
               minid: null,
-              majid: null,
               majId: null,
               minId: null,
               mincd: "*",
@@ -4372,6 +4400,8 @@ const useViewModify = (pageType: string) => {
         at: pageType === "add" ? "Add" : "Modify",
       };
 
+      console.log("PoogiModifyData....", poogiModifyData);
+
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
@@ -4380,6 +4410,7 @@ const useViewModify = (pageType: string) => {
           e.ie = false;
         } else {
           e.ie = true;
+          e.majid = e.majId;
         }
         e.id = ele.id ? ele.id : false;
         e.iu = ele.iu ? ele.iu : false;
@@ -4395,8 +4426,10 @@ const useViewModify = (pageType: string) => {
           ) {
             minElement.minId = null;
             minElement.ie = false;
-            minElement.majId = null;
-            minElement.majid = null;
+            if(minElement?.majId && minElement?.majId?.length && minElement?.majId?.startsWith("m")){
+              minElement.majId = null;
+              minElement.majid = null;
+            }
             minElement.mincd = minElement.mincd ? minElement.mincd : "*";
           } else {
             minElement.ie = true;

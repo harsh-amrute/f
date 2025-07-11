@@ -339,9 +339,11 @@ const MTOViewModify = () => {
               {activeMaster?.isMTO && activeMaster?.id === 503 ? (
                 <PoogiSection>
                   <MTOPoogiTableContainer
+                    id="myGrid"
                     style={{ display: "flex", height: "50%", flex: "1" }}
                   >
                     <VFTable
+                      
                       ref={ref}
                       columnDefs={MTOPoogiMajorColdef}
                       rowData={activeMaster.rowData}
@@ -382,6 +384,14 @@ const MTOViewModify = () => {
                       }}
                       defaultColDef={{ ...agGridProps.defaultColDef, flex: 1 }}
                       rowSelection={"single"}
+                      tabToNextCell={()=>{
+                        return null;
+                      }}
+                      onCellKeyDown={(e:any)=>{
+                        if(e.event.key === 'Tab'){
+                          return;
+                        }
+                      }}
                       suppressRowClickSelection={
                         activeMaster.colDefs.some(
                           (colDef) =>
@@ -413,6 +423,14 @@ const MTOViewModify = () => {
                       rowData={minReasonRowData}
                       ref={tempRefPoogi}
                       {...agGridProps}
+                      tabToNextCell={()=>{
+                        return null;
+                      }}
+                      onCellKeyDown={(e:any)=>{
+                        if(e.event.key === 'Tab'){
+                          return;
+                        }
+                      }}
                       statusBar={{
                         statusPanels: [
                           

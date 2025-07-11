@@ -190,7 +190,20 @@ const AddRemoveCellRenderer = (params: any) => {
     } else if (activeMaster.id === 503) {
       const hasActionsCol = activeMaster.colDefs.some((col:any)=> col.field === 'actions' || col.field === 'pactions');
 
-      if (params.data.mindsc !== undefined) {
+      // this is the case for adding the minor reason
+      if (params.data.mindsc !== undefined) { 
+        // check if minreason already exists
+        if(poogiInitialData && poogiInitialData.length){
+          const existingData = poogiInitialData.find(
+            (item: any) => item.majId === params.data.majId
+          );
+
+          if (existingData && existingData.minData.some((ele: any) => ele.mindsc === params.data.mindsc)) {
+            notifyError("Minor reason already exists for the selected major reason");
+            return;
+          }
+        }
+        ///////////////////////////////////
         if (params.data.mindsc === "") {
           notifyError("Add a minor reason for the selected major reason");
           return;
@@ -213,7 +226,7 @@ const AddRemoveCellRenderer = (params: any) => {
             )
           );
         }
-        if (poogiModifyData && poogiModifyData.length) {
+        if (poogiModifyData && poogiModifyData.length) { 
           // Find if a node with the matching majId exists
           const existingIndex = poogiModifyData.findIndex(
             (item: any) => item.majId === params.data.majId
@@ -263,6 +276,20 @@ const AddRemoveCellRenderer = (params: any) => {
           notifyError("Please select a valid plant from the dropdown");
           return;
         }
+        // here is the case for adding the major reason
+        // check if major reason already exists
+        if (poogiInitialData && poogiInitialData.length) {
+          const existingData = poogiInitialData.find(
+            (item: any) => (item.majdsc === params.data.majdsc && item.plnm === params.data.plnm)
+          );
+
+          if (existingData) {
+            notifyError("Major reason already exists for the selected plant");
+            return;
+          }
+        }
+
+        ///////////////////////////////
         const newColDefs: any = [];
         activeMaster.colDefs.forEach((ele: any) => {
           const newColDef = { ...ele };

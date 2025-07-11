@@ -330,6 +330,7 @@ const useSavedDrafts = ()=>{
                   cellRenderer: MTOErrorWarningCell,
                   headerName: "Error",
                   pinned: "left",
+                  minWidth: 300
                 },
               ],
               rowData:
@@ -367,7 +368,8 @@ const useSavedDrafts = ()=>{
           if (draftDetails.ActionType == "Modify") {
             navigate(`/mto/master-data-management/control-panel/view-modify`,{
               state:{
-                backUrl : '/mto/master-data-management/saved-drafts'
+                backUrl : '/mto/master-data-management/saved-drafts',
+                draftId: draftDetails.DraftId,
               }
             });
           } else if (draftDetails.ActionType === "Add") {
