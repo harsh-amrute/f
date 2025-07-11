@@ -543,7 +543,7 @@ const AddRemoveCellRenderer = (params: any) => {
         )}
       </div>
     );
-  }if(activeMaster.id === 503 && params?.node?.rowIndex === 0 && location?.state?.backUrl !== 'saved-drafts'){
+  }if(activeMaster.id === 503 && params?.node?.rowIndex === 0 && location?.state?.backUrl.split('/').pop() !== 'saved-drafts'){
     return (
       <div
         style={{
