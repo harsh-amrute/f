@@ -17,7 +17,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { FilterPageName, UIGridCode } from "../../../Common/Enum";
 import { useUserData } from "../../../../../../context/index";
 import { useGetUIConfigData } from "../../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-import { getColumnDefinations } from "../../../../../../helpers/utils";
+import { formatFilterJSON, getColumnDefinations } from "../../../../../../helpers/utils";
 import ColorCellRenderer from "../../../Common/ColorCellRenderer/ColorCellRenderer";
 import VFLoader from '../../../../../../components/VectorFLOW/commons/VFLoader';
 import { useGetFilterData } from '../../../../../..//VectorFlow/Services/MTO/Common/CommonFilter';
@@ -85,7 +85,13 @@ const DayWiseCoverage = () => {
     const themeUi = user?.user?.theme_ui;
 
     const getCalenderData = async () => {
-        const data = await getData({ startDate: format(startOfMonth(startDate), "yyyy-MM-dd"), endDate: format(endOfMonth(endDate), "yyyy-MM-dd") });
+        const formatedFilters = formatFilterJSON(appliedFilters);
+        const param = {
+            startDate: format(startOfMonth(startDate), "yyyy-MM-dd"),
+            endDate: format(endOfMonth(endDate), "yyyy-MM-dd"),
+            appliedFilters: formatedFilters 
+        };
+        const data = await getData(param);
         setCalenderData(data?.data?.data);
     }
 
@@ -93,7 +99,7 @@ const DayWiseCoverage = () => {
 
     useEffect(() => {
         getCalenderData()
-    }, [startDate, endDate]);
+    }, [startDate, endDate,appliedFilters]);
 
     const setDateRange = (start: string, end: string) => {
         setStartDate(start);
@@ -102,8 +108,13 @@ const DayWiseCoverage = () => {
 
     useEffect(() => {
         getFilterData();
-
     },[])
+
+    useEffect(() => {
+        if (Object.entries(appliedFilters).length) {
+            getCalenderData();
+        }
+    }, [appliedFilters]);
 
     const getColor = (id: string) => {
         if (!calenderData?.[id]) {
@@ -306,7 +317,7 @@ const DayWiseCoverage = () => {
           } 
           else {
               if (currentGridRef?.current?.api) {
-                  const config = currentGridRef.current.api.getColumnState();
+                  const config = currentGridRef.currexnt.api.getColumnState();
                   
                 const payload = {
                   un: user.user.name,
@@ -368,6 +379,7 @@ const DayWiseCoverage = () => {
                     onExcelExportClick={ExcelExport}
                     handleSaveClick={()=>handleSaveClick()}
                     handleResetClick={handleResetClick}
+                
                 />
             </div>
             <DayWiseCoverageHeader max={maxDate} min={minDate} startDate={startDate} endDate={endDate} setDateRange={setDateRange} />
