@@ -7,13 +7,7 @@ const useSimpleBlocker = (activeMaster:any,backFunction:any,message = 'You have 
     useEffect(() => {
   
       const handlePopState = () => {
-        const userConfirmed = window.confirm(message);
-        if (!userConfirmed) {
-          return;
-        }
-        else{
            backFunction(); 
-        }
       };
     
       window.history.pushState(null, '', location.pathname);

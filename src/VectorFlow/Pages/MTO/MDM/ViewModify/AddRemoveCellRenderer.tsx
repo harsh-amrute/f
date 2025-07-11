@@ -9,11 +9,12 @@ import { SET_BUFFER_MODIFY_DATA, SET_CCR_MODIFY_DATA, SET_POOGI_INITIAL_DATA, SE
 import type { RootState } from '../../../../../redux/store/store';
 import { BUFFER_VALIDATION_SCHEMA, CALENDAR_VALIDATION_SCHEMA, CCR_VALIDATION_SCHEMA } from './MDMJoiValidations';
 import { useState } from 'react';
-import { getPrevPath } from '../history';
+import { useLocation } from 'react-router';
 
 
 const AddRemoveCellRenderer = (params: any) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const activeMaster = useSelector(
     (state: RootState) => state.mdm.activeMaster
   );
@@ -32,7 +33,6 @@ const AddRemoveCellRenderer = (params: any) => {
     (state: any) => state.mto.poogiIntialData
   );
 
-  const [prevPath, setPrevPath] = useState(getPrevPath().split('/').pop())
 
   const validateCCR = () => {
     const { error } = CCR_VALIDATION_SCHEMA.validate(params.data, {
@@ -543,7 +543,7 @@ const AddRemoveCellRenderer = (params: any) => {
         )}
       </div>
     );
-  }if(activeMaster.id === 503 && params?.node?.rowIndex === 0 && prevPath !== 'saved-drafts'){
+  }if(activeMaster.id === 503 && params?.node?.rowIndex === 0 && location?.state?.backUrl !== 'saved-drafts'){
     return (
       <div
         style={{
