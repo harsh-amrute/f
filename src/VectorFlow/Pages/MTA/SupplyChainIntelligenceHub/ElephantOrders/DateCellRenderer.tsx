@@ -17,14 +17,14 @@ interface AGGridProps {
   data: any;
   setValue?: (value: any) => void;
   onDateChange?: (date: string, rowData: any) => void;
-  // cellRendererParams will be merged into props by AG Grid
+  onClearDate?: (rowData: any) => void;
   [key: string]: any;
 }
 
 type Value = CalendarProps['value'];
 
 const DateCellRenderer = (props: AGGridProps) => {
-  const { value, onDateChange: externalOnDateChange, disabled = false, style, imgStyle } = props;
+  const { value, onDateChange: externalOnDateChange, onClearDate, disabled = false, style, imgStyle } = props;
 
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
@@ -63,10 +63,13 @@ const DateCellRenderer = (props: AGGridProps) => {
     }
     setShowCalendar(prev => !prev);
   };
-  const handleClearDate = () =>{
+
+  const handleClearDate = () => {
     props.setValue?.('');
-    externalOnDateChange?.('', props.data);
-  }
+    externalOnDateChange?.('', props.data); // optional fall-back
+    onClearDate?.(props.data); // ✅ Call to parent clear handler
+  };
+  
   const handleCalendarChange = (value: Value) => {
     if (value instanceof Date) {
       const formatted = moment(value).format('YYYY-MM-DD');

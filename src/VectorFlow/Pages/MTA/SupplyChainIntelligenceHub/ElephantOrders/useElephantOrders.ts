@@ -61,7 +61,6 @@ const useElephantOrders= ()=>{
           console.warn("❌ Required fields missing in rowData:", rowData);
           return;
         }
-      
         const updated = {
           skucode,
           whcode,
@@ -85,6 +84,59 @@ const useElephantOrders= ()=>{
             return [...prev, updated];
           }
         });
+      };
+    
+      const handleClearDueDate = (rowData: any) => {
+        const skucode = rowData['SKUCode'];
+        const whcode = rowData['WhCode'];
+        const orderid = rowData['CustomerOrderID'];
+      
+        if (!skucode || !whcode || !orderid) {
+          console.warn("❌ Required fields missing for clearing due date:", rowData);
+          return;
+        }
+      
+        const cleared = {
+          skucode,
+          whcode,
+          orderid,
+          duedate: null,  // Explicit null for backend
+        };
+      
+        setEditedDueDateRows((prev) => {
+          const index = prev.findIndex(
+            (row) =>
+              row.skucode === skucode &&
+              row.whcode === whcode &&
+              row.orderid === orderid
+          );
+      
+          if (index > -1) {
+            const updatedList = [...prev];
+            updatedList[index] = cleared;
+            return updatedList;
+          } else {
+            return [...prev, cleared];
+          }
+        });
+      
+        // Reflect removal in UI immediately
+        setRowData((prev) =>
+          prev.map((row) => {
+            if (
+              row.SKUCode === skucode &&
+              row.WhCode === whcode &&
+              row.CustomerOrderID === orderid
+            ) {
+              return {
+                ...row,
+                DueDate: null,
+                dueDateAction: null,
+              };
+            }
+            return row;
+          })
+        );
       };
       
     const customCellRenderers = useMemo(() => (
@@ -181,6 +233,10 @@ const useElephantOrders= ()=>{
                                   console.log("User selected new date:", newDate);
                                   handleDueDateChange(newDate, rowData, 'SKUCode', 'WhCode', 'CustomerOrderID');
 
+                                },
+
+                                onClearDate: (rowData: any) => {
+                                    handleClearDueDate(rowData);
                                 },
                             },
                             
