@@ -48,6 +48,7 @@ import type { RootState } from "../../../../../redux/store/store";
 import {
   useCreateDraft,
   useDeleteDraft,
+  useDeleteMTODraft,
   useDeleteTask,
   useGetBufferMasterData,
   useGetBufferTypeMaster,
@@ -79,7 +80,7 @@ import {
 } from "../../../../types/MDM";
 
 import _ from "lodash";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -93,12 +94,11 @@ import {
   RESET_MTO_STATE,
   SET_BUFFER_INITIAL_DATA,
   SET_BUFFER_MODIFY_DATA,
+  SET_CALENDAR_INITIAL_DATA,
   SET_CCR_INITIAL_DATA,
   SET_CCR_MODIFY_DATA,
   SET_POOGI_INITIAL_DATA,
-  SET_POOGI_MODIFY_DATA,
-  SET_CALENDAR_INITIAL_DATA,
-  SET_CALENDAR_MODIFY_DATA,
+  SET_POOGI_MODIFY_DATA
 } from "../../../../../redux/actions/MTO";
 import {
   useGetCCRMasterData as useGetCCRMasterDataForCalender,
@@ -117,17 +117,24 @@ import MTOErrorWarningCell from "./MTOErrorWarningCell";
 import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
 import moment from "moment";
+import {CustomStatusPanel } from "../CustomStatusPannel";
 
 
 const useViewModify = (pageType: string) => {
   const dispatch = useDispatch();
+  const user = useUserData();
+  const themeUi = user.user.theme_ui
   const options = useSelector((state: RootState) => state.mdm.options);
   const selectedOptions = useSelector(
     (state: RootState) => state.mdm.selectedOptions
   );
+
+
   const activeMaster = useSelector(
     (state: RootState) => state.mdm.activeMaster
   );
+
+
 
   const masters = useSelector((state: RootState) => state.mdm.masters);
 
@@ -242,7 +249,7 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: getCalendarMasterData } = useGetCalendarMasterData();
   const { mutateAsync: modifyDraft } = useModifyDraft();
 
-  const { mutateAsync: deleteDraft } = useDeleteDraft();
+  const { mutateAsync: deleteDraft } = useDeleteMTODraft();
 
   const { mutateAsync: modifyMaster } = useModifyMasterData();
 
@@ -294,6 +301,7 @@ const useViewModify = (pageType: string) => {
       suppressColumnsToolPanel: true,
       wrapText: true,
       autoHeight: true,
+      minWidth: 300
     },
   ];
 
@@ -370,11 +378,21 @@ const useViewModify = (pageType: string) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [plantNames, setPlantNames] =  useState([]);
+  const [plantNames, setPlantNames] =  useState<any>([]);
   const [ccrNames, setCCRNames]= useState([]);
 
   const [selectedData, setSelectedData] = useState<any>({});
+
+  const location = useLocation()
+
+  const prevPath: string | undefined  = location?.state?.backUrl.split('/').pop();
+
+  const backUrl = location?.state?.backUrl || ""
+
+  const navigate = useNavigate()
+
   
+  const saveDraft = "saved-drafts"
   // adding all ccrName in ccr_names array
   const ccr_names :string[] = []
   for(const ccr of ccrsData){
@@ -461,6 +479,7 @@ const useViewModify = (pageType: string) => {
             }
           };
         });
+        
         dispatch(UPDATE_COLDEFS([...newColDef]));
       }
     }
@@ -475,7 +494,6 @@ const useViewModify = (pageType: string) => {
       activeMaster.colDefs.length > 0
     ) {
       const newColDef = _.cloneDeep(activeMaster.colDefs);
-      // newColDef[newColDef.length-2].valueFormatter =  myCCRFormatter;
 
       // Iterate over the column definitions and update based on colId
       newColDef.forEach((col: any) => {
@@ -486,19 +504,46 @@ const useViewModify = (pageType: string) => {
         if(col.colId === "bt"){
           col.valueFormatter = myFormatter
         }
+        if(col.colId !== "actions" && col.colId !== "iv"){
+          col.cellStyle = (params:any)=>{
+            const { data } = params;
+  
+            if (data?.isdel ) {
+              return { 
+                filter: "blur(1px)",
+                opacity: 0.6,
+                transition: "all 0.3s ease-in-out",
+                backgroundColor: "#f0f0f0", 
+              }
+            } else if(data?.ia){
+              return { color: "rgb(173, 5, 89)" };
+            }
+            return {};
+          }
+        }
+          
+        
       });
 
       if (activeMaster.id === 502) {
         newColDef.forEach((ele: any) => {
-          ele.cellStyle = (params: any) => {
-            if (
-              params.data.cid === null ||
-              params.data.cid === undefined ||
-              params.data.iv === false
-            ) {
-              return { color: "rgb(128, 0, 64)" };
+          if(ele.colId !== "actions" && ele.colId !== "iv"){
+            ele.cellStyle = (params:any)=>{
+              const { data } = params;
+    
+              if (data?.isdel ) {
+                return { 
+                  filter: "blur(1px)",
+                  opacity: 0.6,
+                  transition: "all 0.3s ease-in-out",
+                  backgroundColor: "#f0f0f0", 
+                }
+              } else if(data?.ia){
+                return { color: "rgb(173, 5, 89)" };
+              }
+              return {};
             }
-          };
+          }
           ele.valueFormatter = myCCRFormatter;
         });
       } else if (activeMaster.id === 503) {
@@ -540,8 +585,27 @@ const useViewModify = (pageType: string) => {
           }
         })
       }
+      if(!newColDef.find((col:any)=> col.colId === "actions") && prevPath === saveDraft && activeMaster.id !== 503 && activeMaster.id !== 504 && pageType === "modify"){
+        const actionsCol: any = {
+          field: "actions",
+          headerName: "Actions",
+          colId: "actions",
+          pinned: "left",
+          width: 100,
+          editable:false,
+          floatingFilter: false,
+          suppressExcelExport: true,
+          cellRenderer: AddRemoveCellRenderer,
+          cellRendererParams: {
+            addEditableToLastColumn,
+          }
+        };
+        dispatch(UPDATE_COLDEFS([actionsCol,...newColDef]));
 
-      dispatch(UPDATE_COLDEFS([...newColDef]));
+      }else{
+
+        dispatch(UPDATE_COLDEFS([...newColDef]));
+      }
     }
   }, [ccrGroupMaster, plantMaster, deptMaster, activeMaster.id,activeMaster.rowData]);
 
@@ -568,6 +632,10 @@ const useViewModify = (pageType: string) => {
         const { data } = await MTOMasterUIConfiguration();
         if(pageType==='add'){
           setAllMasterState(mapMasterToMasterState(data.data, onShowChart).map((e: any) => {
+            if (e.id === 501 || e.id === 502) {
+              e.fields = e.fields.filter((field: any) => field.key !== "iv");
+              e.colDefs = e.colDefs.filter((col: any) => col.colId !== "iv");
+            }
             if (e.id === 504) {
               e.fields = e.fields.filter((field: any) => field.key !== "dow");
               e.colDefs = e.colDefs.filter((col: any) => col.colId !== "dow");
@@ -709,12 +777,20 @@ const useViewModify = (pageType: string) => {
     if (masterId === 502) {
       const allRows = [...newRowData];
       const newData: any = [];
-
+      let isValidCCRGroup :boolean
       allRows.forEach((e: any, index: number) => {
         const newVal = _.cloneDeep(e);
         const {error} = CCR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
+        
+        if(e.cgid){
+          for(const key in ccrGroupMaster){
+            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid || key=== e.cgid){
+              isValidCCRGroup = true
+              break
+            }
+          }
+        }
         if(error){
-
           const fieldOrders = activeMaster.fields.map(field =>field.key)
 
           const errorOrders = fieldOrders.flatMap((field)=>{
@@ -748,14 +824,17 @@ const useViewModify = (pageType: string) => {
               error: "Please select a valid department from the dropdown",
               warning: "",
             };
-          } else if (
-            ccrGroupMaster &&
-            !Object.keys(ccrGroupMaster).includes(e.cgid)
-          ) {
+          } else if (!isValidCCRGroup) {
             newVal.err = {
               error: "Please select a valid CCR Group from the dropdown",
               warning: ""
             };
+          }
+          else if (e.fh < e.sh){
+            newVal.err = {
+              error: "FOL horizon cannot be less than scheduling horizon",
+              warning: ""
+            }
           }
 
           if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
@@ -832,6 +911,18 @@ const useViewModify = (pageType: string) => {
           };
         }
 
+        // Assuming newData is an array of objects and e is an object with majdsc and mindsc properties
+        const isDuplicate = newData.some((item:any) => (
+          item.majdsc === e.majdsc && item.mindsc === e.mindsc
+        ));
+
+        if (isDuplicate) {
+          newVal.err = {
+            error: "Minor reason should be unique for each major reason!",
+            warning: ""
+          };
+        }
+
         newData.push(newVal);
       });
 
@@ -872,23 +963,34 @@ const useViewModify = (pageType: string) => {
   };
 
   const sideBar: SideBarDef = {
-    toolPanels: [
-      {
-        id: "columns",
-        labelDefault: "Columns",
-        labelKey: "columns",
-        iconKey: "columns",
-        toolPanel: "agColumnsToolPanel",
-        toolPanelParams: {
-          suppressPivots: true,
-          suppressPivotMode: true,
-        },
-      },
-    ],
+    // toolPanels: [
+    //   {
+    //     id: "columns",
+    //     labelDefault: "Columns",
+    //     labelKey: "columns",
+    //     iconKey: "columns",
+    //     toolPanel: "agColumnsToolPanel",
+    //     toolPanelParams: {
+    //       suppressPivots: true,
+    //       suppressRowGroups: true,
+    //       suppressPivotMode: true,
+    //       suppressValues: true
+    //     },
+    //   },
+    // ],
     defaultToolPanel: defaultToolPanel,
   };
 
+  const [isDisabled,setIsDisabled] = useState(true)
+
+
+  const clearGridFilter = () =>{
+    ref?.current?.api.setFilterModel(null);
+      setIsDisabled(true);
+  }
+
   const agGridProps: AgGridReactProps = {
+    singleClickEdit:true,
     tooltipShowDelay: 0,
     readOnlyEdit: true,
     tooltipTrigger: "hover",
@@ -989,13 +1091,9 @@ const useViewModify = (pageType: string) => {
             validColumnKeys.push(col.colId);
           });
         }
-        if (currentMaster) {
-          event.api.exportDataAsExcel({
-            fileName:
-              downloadFileName === "" ? currentMaster.name : downloadFileName,
-            columnKeys: validColumnKeys,
-          });
-        }
+        // if (currentMaster) {
+        //   event.api.exportDataAsExcel(onExcelExprot(colDefs));
+        // }
       }
     },
     rowSelection: "multiple",
@@ -1066,6 +1164,48 @@ const useViewModify = (pageType: string) => {
         dispatch(UPDATE_ROW_DATA([...newRowData]));
       }
     },
+    statusBar:{
+      statusPanels: [
+        {
+          statusPanel: "agTotalAndFilteredRowCountComponent",
+          align: 'left',
+          
+        },
+        {
+          statusPanel: CustomStatusPanel,
+          key: 'clearGridFilters',
+          align:'right',
+          statusPanelParams: {
+            isDisabled,
+            clearGridFilter,
+            themeUi,
+          },
+        },
+        {
+          statusPanel: "agTotalRowCountComponent",
+          align: "left",
+        },
+        {
+          statusPanel: "agFilteredRowCountComponent",
+          align: "left",
+        },
+        {
+          statusPanel: "agSelectedRowCountComponent",
+          align: "left",
+        },
+        {
+          statusPanel: "agAggregationComponent",
+          align: "left",
+        },
+      ],
+    },
+    onFilterChanged:() => {
+      if(ref && ref.current && ref.current.api){
+        Object.keys(ref.current.api.getFilterModel())?.length > 0
+          ? setIsDisabled(false)
+          : setIsDisabled(true);
+      }
+    }
   };
 
   const getTempGridColDefs = () => {
@@ -2061,7 +2201,6 @@ const useViewModify = (pageType: string) => {
       //   dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
       // }
       // else{
-
       dispatch(SET_RECORD_COUNT(buffData?.length));
       dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
 
@@ -2118,8 +2257,7 @@ const useViewModify = (pageType: string) => {
             render: `Downloading Data ${i * chunkSize} / ${recordCount}`,
           });
       }
-
-      dispatch(UPDATE_ROW_DATA(rows));
+      // dispatch(UPDATE_ROW_DATA(rows));
       dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
       setDownloadData(true);
       toast.dismiss(toastId);
@@ -2173,6 +2311,71 @@ const useViewModify = (pageType: string) => {
       notifyError("Please Select Rows to Delete");
     }
   };
+
+  const onExcelExport = useMemo(()=>(
+    (columnDefs = colDefs,buffTypeData = bufferTypeData,plantData = plantNames,deptData = deptMaster,ccrGroupData = ccrGroupMaster )=>{
+      const isBufferExport = activeMaster.id === 501;
+      const isCCRExport = activeMaster.id === 502;
+
+      const bufferType = (value: any) => {
+        return buffTypeData?.find((type: any) => type.id === value)?.dsc;
+      };
+  
+      const plantNameFromId = (value:any)=>{
+        return plantData.find((plant:any)=> plant.plant_id === value)?.plant_name
+      }
+  
+      const deptNameFromId = (value:any)=>{
+        return deptData.find((dept:any)=> dept.dept_id === value)?.dept_name
+      }
+  
+      const ccrGroupNameFromId = (value:any)=>{
+        for(const key in ccrGroupData){
+          if(ccrGroupData[key]?.ccr_group_id === value){
+            return key
+          }
+        }
+        return null
+      }
+      return {
+        fileName : `${activeMaster.name} MTO`,
+        columnKeys: columnDefs
+          .filter((col: any) => col.field !== 'actions' && col.field !== 'err' && col.field !== 'iv') 
+          .map((col: any) => col.field),             
+        processCellCallback: (params: any) => {
+          const { column, value } = params;
+      
+          if (isBufferExport && column.getColId() === 'bt') {
+            const match = bufferType(value);
+            return match ? match : value;  
+          }
+  
+          if(isCCRExport && column.getColId() === 'pl'){
+            const match = plantNameFromId(value)
+            return match ? match : value
+          }
+  
+          if(isCCRExport && column.getColId() === 'dp'){
+            const match = deptNameFromId(value)
+            return match ? match : value
+          }
+  
+          if(isCCRExport && column.getColId() === 'cgid'){
+            const match = ccrGroupNameFromId(value)
+            return match ? match : value
+          }
+      
+          return value?.toString() || "";       
+        },
+      
+        processHeaderCallback: (params: any) => {
+          const { column } = params;
+          return column.getColDef().headerName || column.getColId();
+        }
+      };
+    }
+  ),[deptMaster,plantNames,ccrGroupMaster,ref,bufferTypeData,activeMaster?.id])
+  
 
   const handleChangePage = async (pageNo: any) => {
     setCurrentPage(pageNo);
@@ -2620,33 +2823,10 @@ const useViewModify = (pageType: string) => {
   };
 
   const onBackButton = () => {
-    if (
-      !bufferModifyData ||
-      (bufferModifyData && bufferModifyData.length === 0)
-    ) {
-      dispatch(UPDATE_PROGRESS_STATE("default"));
-      dispatch(UPDATE_ROW_DATA([]));
-      dispatch(SET_BUFFER_INITIAL_DATA([]));
-      dispatch(SET_BUFFER_MODIFY_DATA([]));
-      dispatch(SET_CCR_INITIAL_DATA([]));
-      dispatch(SET_CCR_MODIFY_DATA([]));
-      dispatch(UPDATE_COLDEFS([]));
-      dispatch(REMOVE_ALL_FILTERS());
-      // dispatch(UPDATE_ACTIVE_MASTER([]))
+    
+    const conf = confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft");
 
-      dispatch(ADD_FILTER());
-      setDownloadData(false);
-      setTempDownloadData(false);
-      dispatch(FILL_MASTERS([]));
-      setFilterButtonStatus([]);
-      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-
-      if (pageType === "add") dispatch(TOGGLE_UPLOAD_MODAL(true));
-    } else if (
-      confirm(
-        "Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft"
-      )
-    ) {
+    if(conf){
       dispatch(RESET_MTO_STATE());
       dispatch(UPDATE_PROGRESS_STATE("default"));
       dispatch(UPDATE_ROW_DATA([]));
@@ -2667,6 +2847,11 @@ const useViewModify = (pageType: string) => {
 
       if (pageType === "add") dispatch(TOGGLE_UPLOAD_MODAL(true));
     }
+
+    if(backUrl){
+      navigate(backUrl)
+    }
+
   };
 
   const postDraftChunks = async (rowData: any) => {
@@ -2998,10 +3183,22 @@ const useViewModify = (pageType: string) => {
     }
   };
 
+
   const addEditableToLastColumn = async () => {
     const modifiedColDefs = activeMaster.colDefs.map((colDef: any) => {
-      const editable = (params: any) => params.node.rowIndex === 0;
-
+      const editable = (params: any) => {
+        if(activeMaster.id === 503){
+          return params.data.ia === true
+        }else{
+          return params.data.isEditing === true
+        }
+      };
+      if(colDef.field === 'actions'){
+        return {
+          ...colDef,
+          editable:false
+        }
+      }
       if (colDef.field === "bt") {
         return {
           ...colDef,
@@ -3030,10 +3227,6 @@ const useViewModify = (pageType: string) => {
         return {
           ...colDef,
           cellEditor: "agNumberCellEditor",
-          cellEditorParams: {
-            min: 0,
-            max: 365,
-          },
           cellStyle: (params: any) => {
             if (
               params.data.bid === null ||
@@ -3070,6 +3263,12 @@ const useViewModify = (pageType: string) => {
       }
 
       if (activeMaster.id === 502) {
+        if(colDef.field === 'actions'){
+          return {
+            ...colDef,
+            editable:false
+          }
+        }
         if (
           colDef.field === "pl" ||
           colDef.field === "dp" ||
@@ -3089,11 +3288,7 @@ const useViewModify = (pageType: string) => {
           return {
             ...colDef,
             editable,
-            cellEditor: "agNumberCellEditor",
-            cellEditorParams: {
-              min: 0,
-              max: 1,
-            },
+            cellEditor: "agNumberCellEditor"
           };
         }
         if (
@@ -3181,15 +3376,24 @@ const useViewModify = (pageType: string) => {
       colId: "actions",
       pinned: "left",
       width: 100,
+      editable:false,
+      floatingFilter: false,
+      suppressExcelExport: true,
       cellRenderer: AddRemoveCellRenderer,
+      cellRendererParams: {
+        addEditableToLastColumn,
+      }
     };
 
-    // return [actionsCol, ...modifiedColDefs];
-    if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
-      return;
+    const isFromSaveDraft503 = prevPath === saveDraft && activeMaster.id === 503;
+
+    if(isFromSaveDraft503){
+      const newColDef = modifiedColDefs.filter((colDef: any) => colDef.field !== "actions");
+      dispatch(UPDATE_COLDEFS([ ...newColDef ]));
+      return
     }
 
-    dispatch(UPDATE_COLDEFS([actionsCol, ...modifiedColDefs]));
+    dispatch(UPDATE_COLDEFS([ actionsCol,...modifiedColDefs.filter((ele)=>ele.field!=='actions') ]));
   };
 
   const addEditableToLastMinColumn = async () => {
@@ -3232,25 +3436,31 @@ const useViewModify = (pageType: string) => {
       }
     });
 
-    const actionsCol: any = {
+    const pactionsCol: any = {
       field: "pactions",
       headerName: "Actions",
       colId: "pactions",
       pinned: "left",
       width: 100,
+      editable:false,
+      floatingFilter: false,
+      suppressExcelExport: true,
       cellRenderer: AddRemoveCellRenderer,
+      cellRendererParams: {
+        addEditableToLastColumn,
+      }
     };
 
-    // return [actionsCol, ...modifiedColDefs];
-    if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
-      return;
-    }
+    // if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
+    //   return;
+    // }
 
-    dispatch(UPDATE_COLDEFS([actionsCol, ...modifiedColDefs]));
+    dispatch(UPDATE_COLDEFS([pactionsCol, ...modifiedColDefs]));
   };
 
   const addRowToMtoGrid = () => {
     let newRow: any = {};
+
 
     if (activeMaster.id === 501) {
       newRow = {
@@ -3262,7 +3472,11 @@ const useViewModify = (pageType: string) => {
         ib: false,
         bt: 1,
         iv: true,
+        ia:true,
+        isEditing: true,
         editable: true,
+        id:uuidv4(),
+        isdel: false,
       };
     } else if (activeMaster.id === 502) {
       newRow = {
@@ -3289,6 +3503,10 @@ const useViewModify = (pageType: string) => {
         cwl: null,
         cgid: null,
         iv: true,
+        ia:true,
+        isEditing: true,
+        id: uuidv4(),
+        isdel: false,
       };
     } else if (activeMaster.id === 503) {
       const newId = "maj" + uuidv4();
@@ -3298,7 +3516,9 @@ const useViewModify = (pageType: string) => {
         majdsc: "",
         majId: newId,
         ie: false,
-        minData: [{ majId: newId, mindsc: "", minId: newIdMin, ie: false }],
+        minData: [{ majId: newId, mindsc: "", minId: newIdMin, ie: false, ia: true, isEditing: true,}],
+        ia: true,
+        isEditing: true,
       };
     }
     // addRowToMtoMinGrid();
@@ -3317,6 +3537,7 @@ const useViewModify = (pageType: string) => {
           ie: false,
           minId: newMinId,
           mindsc: "",
+       
         },
         ...selectedMajReason.minData,
       ],
@@ -3334,9 +3555,6 @@ const useViewModify = (pageType: string) => {
     addEditableToLastMinColumn();
   };
 
-  const user = useUserData();
-
-  const navigate = useNavigate();
 
   const AddCalendarModifyData = (data: any) => {
     data?.forEach((el:any)=>{
@@ -3715,6 +3933,16 @@ const useViewModify = (pageType: string) => {
     }
   };
 
+  const keysToDelete = (ele:any)=>{
+      const e = _.cloneDeep(ele);
+      delete e.isdel;
+      delete e.isEditing;
+      delete e.ia;
+      delete e.id;
+      
+      return e
+  }
+
   const onMTOSaveBufferData = async () => {
 
     // on MDM add records
@@ -3742,8 +3970,10 @@ const useViewModify = (pageType: string) => {
         ccrData: [],
       };
 
-      ccrModifyData.forEach((ele: any) => {
-        const e = _.cloneDeep(ele);
+      const ccrData = ccrModifyData?.filter((ele:any)=> !ele.isdel)
+
+      ccrData.forEach((ele: any) => {
+        const e = keysToDelete(ele)
         const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id
           ? ccrGroupMaster[e.cgid]?.ccr_group_id
           : e.cgid;
@@ -3760,6 +3990,7 @@ const useViewModify = (pageType: string) => {
           _.omit(e, ["editable", "error", "warning", "pl", "dp"])
         );
       });
+
 
       try {
         const response = await saveCCRMasterTask(CCRPostObj);
@@ -3833,7 +4064,6 @@ const useViewModify = (pageType: string) => {
           _.omit(e, ["editable", "error", "warning", "plnm"])
         );
       });
-
       try {
         const response = await savePOOGIMasterTask(POOGIPostObj);
         if (response.status === 200) {
@@ -3876,8 +4106,9 @@ const useViewModify = (pageType: string) => {
       buffData: [],
     };
 
-    activeMaster.rowData.forEach((ele: any) => {
-      const e = _.cloneDeep(ele);
+    const bufferData = bufferModifyData?.filter((ele:any)=> !ele.isdel)
+    bufferData.forEach((ele: any) => {
+      const e = keysToDelete(ele);
       bufferTypeData.forEach((elm: any) => {
         if (elm.dsc === ele.bt) {
           e.bt = elm.id;
@@ -3920,6 +4151,17 @@ const useViewModify = (pageType: string) => {
   const onMTOSaveAsDraft = async () => {
     notifyLoader("Saving Draft...");
 
+    if(location?.state?.draftId){
+      try{
+        await deleteDraft(location?.state?.draftId)
+      }
+      catch(e){
+        toast.dismiss();
+        notifyError("Failed to save Draft!")
+        return;
+      }
+    }
+
     if (activeMaster.id === 501) {
       const BufferPostObj: any = {
         mid: activeMaster.id,
@@ -3932,21 +4174,16 @@ const useViewModify = (pageType: string) => {
       if (pageType === "add") {
         activeMaster.rowData.forEach((ele: any) => {
           const e = _.cloneDeep(ele);
-          let isBuffChanged = false;
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt) {
-              isBuffChanged = true;
+            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
-          if (isBuffChanged === false) {
-            e.bt = bufferTypeData[0].id;
-          }
-          e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
-          e.mlt = parseInt(e.mlt);
-          e.slt = parseInt(e.slt);
+          // e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
+          // e.mlt = parseInt(e.mlt);
+          // e.slt = parseInt(e.slt);
           e.err = "";
-          !(e.iv === true || e.iv === false) && (e.iv = false);
+          e.iv = true;
           if (!e.bid) e.bid = null;
 
           if (e.bid === null || e.iv === false) {
@@ -3956,18 +4193,15 @@ const useViewModify = (pageType: string) => {
           }
         });
       } else {
-        bufferModifyData.forEach((ele: any) => {
-          const e = _.cloneDeep(ele);
-          let isBuffChanged = false;
+        const bufferData = bufferModifyData?.filter((ele:any)=> !ele.isdel)
+
+        bufferData.forEach((ele: any) => {
+          const e = keysToDelete(ele)
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt) {
-              isBuffChanged = true;
+            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
-          if (isBuffChanged === false) {
-            e.bt = bufferTypeData[0].id;
-          }
           e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
           e.mlt = parseInt(e.mlt);
           e.slt = parseInt(e.slt);
@@ -4006,12 +4240,16 @@ const useViewModify = (pageType: string) => {
         ccrData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
-      let tempModifyData = _.cloneDeep(ccrModifyData);
+      let tempModifyData = ccrModifyData?.filter((ele:any)=> !ele.isdel);
       if (pageType === "add") {
         tempModifyData = _.cloneDeep(activeMaster.rowData);
       }
       tempModifyData.forEach((ele: any) => {
-        const e = _.cloneDeep(ele);
+        let e = keysToDelete(ele)
+        if(pageType === 'add'){
+          e = _.cloneDeep(ele);
+        }
+        e = _.cloneDeep(ele);
         const ccrGid = ccrGroupMaster[e.cgid]?.ccr_group_id
           ? ccrGroupMaster[e.cgid]?.ccr_group_id
           : e.cgid;
@@ -4119,7 +4357,6 @@ const useViewModify = (pageType: string) => {
             existingMajor.minData.push({
               mindsc,
               minid: null,
-              majid: null,
               majId: null,
               minId: null,
               mincd: "*",
@@ -4131,6 +4368,7 @@ const useViewModify = (pageType: string) => {
           });
         }
         PoogiPostObj.reasonData = finPoogiPostData;
+        
         try {
           const response = await savePOOGIMasterDraft([PoogiPostObj]);
     
@@ -4158,6 +4396,8 @@ const useViewModify = (pageType: string) => {
         reasonData: [],
         at: pageType === "add" ? "Add" : "Modify",
       };
+
+
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
@@ -4166,6 +4406,7 @@ const useViewModify = (pageType: string) => {
           e.ie = false;
         } else {
           e.ie = true;
+          e.majid = e.majId;
         }
         e.id = ele.id ? ele.id : false;
         e.iu = ele.iu ? ele.iu : false;
@@ -4181,8 +4422,10 @@ const useViewModify = (pageType: string) => {
           ) {
             minElement.minId = null;
             minElement.ie = false;
-            minElement.majId = null;
-            minElement.majid = null;
+            if(minElement?.majId && minElement?.majId?.length && minElement?.majId?.startsWith("m")){
+              minElement.majId = null;
+              minElement.majid = null;
+            }
             minElement.mincd = minElement.mincd ? minElement.mincd : "*";
           } else {
             minElement.ie = true;
@@ -4201,7 +4444,6 @@ const useViewModify = (pageType: string) => {
           _.omit(e, ["editable", "error", "warning", "plnm"])
         );
       });
-
       try {
         const response = await savePOOGIMasterDraft([POOGIPostObj]);
         if (response.status === 200) {
@@ -4230,9 +4472,9 @@ const useViewModify = (pageType: string) => {
         if ((ccrGroupMaster && plantMaster && deptMaster) || bufferTypeData) {
           const newRowData = _.cloneDeep(activeMaster.rowData);
           newRowData.forEach((ele: any) => {
-            if (typeof ele.err === "string") {
+            if (typeof ele.err === "string"  ) {
               ele.err = { error: "" };
-            } else {
+            } else if(ele.err && ele.err.error){
               ele.err.error = "";
             }
           });
@@ -4269,6 +4511,24 @@ const useViewModify = (pageType: string) => {
     dispatch(UPDATE_ROW_DATA(newData));
     setSelectedMajReason(newData[majIdIndex]);
   };
+
+  const getCombinedPoogiDataForExcelExport = () => {
+    if(activeMaster?.id!== 503) return [];
+    const allRowsData:any = []
+    
+    activeMaster?.rowData?.forEach((ele => {
+    
+        ele?.minData?.forEach((minEle: any) => {
+          allRowsData.push(
+            {majdsc: ele.majdsc, mindsc: minEle.mindsc, plnm: ele.plnm}
+          )
+        });
+      
+    }
+    ))
+    return allRowsData;
+
+  }
 
   return {
     colDefs,
@@ -4366,6 +4626,7 @@ const useViewModify = (pageType: string) => {
     setSelectedData,
     onMTOSaveAsDraft,
     setCalendarFormData,
+    onExcelExport,
     MTOPoogiMinorColdef: [
       {
         headerName: "Sr No.",
@@ -4421,6 +4682,15 @@ const useViewModify = (pageType: string) => {
               cellRenderer: MajReasonDescCell,
             };
           }
+          else if(col.colId === 'plnm'){
+            return {
+              ...col,
+              cellEditor: "agRichSelectCellEditor",
+              cellEditorParams: {
+                values: plantMaster?.map((item: any) => item.plant_name),
+              },
+            }
+          }
           return col;
         }),
       {
@@ -4436,6 +4706,7 @@ const useViewModify = (pageType: string) => {
     onMinReasonEditingStopped,
     addRowToMtoMinGrid,
     mtoProgress,
+    getCombinedPoogiDataForExcelExport
   };
 };
 export default useViewModify;

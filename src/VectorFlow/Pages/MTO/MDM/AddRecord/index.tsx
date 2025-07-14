@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SelectGroupedMasters from "../../../../../components/VectorFLOW/layouts/SelectMTOGroupedMasters";
 import useViewModify from "../ViewModify/useViewModify";
 import useAdd from "./useAdd";
@@ -15,12 +15,19 @@ import {getUploadModalRadioButtons } from "../../../../../helpers/utils";
 import { useDispatch } from "react-redux";
 import { TOGGLE_SELECT_MASTER_SCREEN } from "../../../../../redux/actions/MDM";
 import { MDMMasterState,Field } from "../../../../types/MDM";
+import { CustomStatusPanel } from "../CustomStatusPannel";
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
+import useSimpleBlocker from "../ViewModify/UseSimpleBlocker";
 
 
 const MTOAddRecord = () => {
 
     const {user} = useUserData()
     const themeUi = user?.user?.theme_ui;
+   const [isDisabled, setIsDisabled] = useState(true);
+
+
+
 
     const {
         activeMaster,
@@ -76,6 +83,10 @@ const MTOAddRecord = () => {
         options,
         selectedOptions
       } = useAdd()
+
+
+    useSimpleBlocker(activeMaster,onBackButton);
+
     
     useEffect(()=>{
       if(ref.current && ref.current.api){
@@ -132,6 +143,12 @@ const MTOAddRecord = () => {
     }
    }
 
+   const clearGridFilter = () =>{
+    ref?.current?.api.setFilterModel(null);
+    setIsDisabled(true);
+  }
+
+
     return(
         <React.Fragment>
           <SCContainer>
@@ -150,7 +167,7 @@ const MTOAddRecord = () => {
                   ref={ref}
                   columnDefs={calendarModifiedColDefs()}
                   onGridReady={onGridReady}
-
+                  
                   rowData={activeMaster.rowData}
                     {...agGridProps}
                     suppressPaginationPanel={!isDataAvailableLocally}
@@ -161,8 +178,24 @@ const MTOAddRecord = () => {
                         { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
                         { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                       { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel,
+                        key: 'clearGridFilters',
+                        align:'right',
+                        statusPanelParams: {
+                          isDisabled,
+                          clearGridFilter,
+                          themeUi,
+                        },
+                      },
                     ]:
                     [],
+                  }}
+                  onFilterChanged={()=>{
+                    if(ref && ref.current && ref.current.api){
+                      Object.keys(ref.current.api.getFilterModel())?.length > 0
+                        ? setIsDisabled(false)
+                        : setIsDisabled(true);
+                    }
                   }}
                   defaultColDef= {
                     {flex: (activeMaster.id===501 || activeMaster.id===503)? 1: 0}

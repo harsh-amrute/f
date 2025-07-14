@@ -8,7 +8,7 @@ import VFMasterFieldSearch from "../../commons/VFMasterFieldSearch";
 import { useSpring, animated } from "react-spring";
 import Select from "react-select";
 import './styles.css';
-import { notifyError} from "../../../../helpers/notify";
+import { notifyError , notifySuccess} from "../../../../helpers/notify";
 
 import { useGetAllSKUs,  useGetAllLocations } from "../../../../VectorFlow/Services/MTA/SupplyChainIntelligenceHub/BPR";
 
@@ -807,6 +807,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         });
         setFilterState(resetMultiFilter);
         setMultiFilter(resetMultiFilter); // Update the parent state as well
+        notifySuccess(`Filters reset Successfully`);
       };
 
       useEffect(() => {

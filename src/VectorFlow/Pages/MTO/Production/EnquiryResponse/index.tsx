@@ -127,9 +127,6 @@ const EnquiryResponse = () => {
     return simData;
   };
 
-
-
-
   function getWeekOfMonth(dateString: string): string {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',

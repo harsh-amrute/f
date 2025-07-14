@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import VFTab from "../../../../../components/VectorFLOW/commons/MTO/VFTab";
@@ -14,6 +14,7 @@ import {
   operators,
   seasonalityQuickFilterData,
 } from "../../../../../helpers/MDMConstants";
+import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify";
 import {
   areMasterFiltersValid,
   generateMTOFilterOptions,
@@ -22,6 +23,7 @@ import { ColorsMTO } from "../../../../../VectorFlow/Pages/MTO/Common/Colors";
 import { } from "../../../../Services/MTA/MDM";
 import { SeasonalityQuickFilterType, type Filter } from "../../../../types/MDM";
 import VFTable from "../../Common/VFTable";
+import { CustomStatusPanel } from "../CustomStatusPannel";
 import CalenderModalCard from "./CalenderModalCard";
 import {
   MTOPoogiTableContainer,
@@ -45,11 +47,15 @@ import SubmitConflictModal from "./SubmitConflictModal";
 import useViewModify from "./useViewModify";
 import VFTaskBar from "./VFTaskbar";
 import WarningModal from "./WarningModal";
+import useSimpleBlocker from "./UseSimpleBlocker";
 
 
 const MTOViewModify = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
+  const [isDisabledPoogi1,setIsDisabledPoogi1,] = useState(true)
+  const [isDisabledPoogi2,setIsDisabledPoogi2,] = useState(true)
+
 
   // const disabled=true;
   // const dummyFn =()=>{return}
@@ -127,14 +133,30 @@ const MTOViewModify = () => {
     selectedData,
     setSelectedData,
     setCalendarFormData,
+    getCombinedPoogiDataForExcelExport,
+    onExcelExport,
   } = useViewModify("modify");
 
+
+
+
+  useSimpleBlocker(activeMaster,onBackButton);
 
   const bufferModifyData = useSelector(
     (state: any) => state.mto.bufferModifyData
   );
   const ccrModifyData = useSelector((state: any) => state.mto.ccrModifyData);
   const editStatus: string = useSelector((state: any) => state.mto.editStatus);
+
+  const handleExportData = useCallback(() => {
+    notifyLoader('Exporting Data')
+    try {
+      ref?.current?.api?.exportDataAsExcel(onExcelExport());
+      notifySuccess('Exported Data Successfully')
+    } catch (error:any) {
+      notifyError(error.message || "Failed to Export Data")
+    }
+  }, [ref, onExcelExport]);
   
   const calendarOnClickHandler = () => {
       setCalendarFormData({
@@ -167,6 +189,19 @@ const MTOViewModify = () => {
       }
     }
   }, [isTableDataLoading]);
+
+
+  const tempRefPoogi = React.useRef<any>(null);
+
+  const clearGridFilterPoogi1 = () =>{
+    ref?.current?.api.setFilterModel(null);
+      setIsDisabledPoogi1(true);
+  }
+  const clearGridFilterPoogi2 = () =>{
+    tempRefPoogi?.current?.api.setFilterModel(null);
+    setIsDisabledPoogi2(true);
+  }
+
 
   return (
     <>
@@ -304,9 +339,11 @@ const MTOViewModify = () => {
               {activeMaster?.isMTO && activeMaster?.id === 503 ? (
                 <PoogiSection>
                   <MTOPoogiTableContainer
+                    id="myGrid"
                     style={{ display: "flex", height: "50%", flex: "1" }}
                   >
                     <VFTable
+                      
                       ref={ref}
                       columnDefs={MTOPoogiMajorColdef}
                       rowData={activeMaster.rowData}
@@ -316,6 +353,16 @@ const MTOViewModify = () => {
                           {
                             statusPanel: "agTotalAndFilteredRowCountComponent",
                             align: "left",
+                          },
+                          {
+                                    statusPanel: CustomStatusPanel,
+                                    key: 'clearGridFilters',
+                                    align:'right',
+                                    statusPanelParams: {
+                                      isDisabled: isDisabledPoogi1,
+                                      clearGridFilter:clearGridFilterPoogi1,
+                                      themeUi,
+                                    },  
                           },
                           {
                             statusPanel: "agTotalRowCountComponent",
@@ -337,6 +384,14 @@ const MTOViewModify = () => {
                       }}
                       defaultColDef={{ ...agGridProps.defaultColDef, flex: 1 }}
                       rowSelection={"single"}
+                      tabToNextCell={()=>{
+                        return null;
+                      }}
+                      onCellKeyDown={(e:any)=>{
+                        if(e.event.key === 'Tab'){
+                          return;
+                        }
+                      }}
                       suppressRowClickSelection={
                         activeMaster.colDefs.some(
                           (colDef) =>
@@ -354,13 +409,41 @@ const MTOViewModify = () => {
                             : "95%"
                           : "90%"
                       }
+                      onFilterChanged={() => {
+                        if(ref && ref.current && ref.current.api){
+        
+                          Object.keys(ref.current.api.getFilterModel())?.length > 0
+                            ? setIsDisabledPoogi1(false)
+                            : setIsDisabledPoogi1(true);
+                        }
+                      }}
                     />
                     <VFTable
                       columnDefs={MTOPoogiMinorColdef}
                       rowData={minReasonRowData}
+                      ref={tempRefPoogi}
                       {...agGridProps}
+                      tabToNextCell={()=>{
+                        return null;
+                      }}
+                      onCellKeyDown={(e:any)=>{
+                        if(e.event.key === 'Tab'){
+                          return;
+                        }
+                      }}
                       statusBar={{
                         statusPanels: [
+                          
+                          {
+                            statusPanel: CustomStatusPanel,
+                            key: 'clearGridFilters',
+                            align:'right',
+                            statusPanelParams: {
+                              isDisabled: isDisabledPoogi2,
+                              clearGridFilter:clearGridFilterPoogi2,
+                              themeUi,
+                            },  
+                          },
                           {
                             statusPanel: "agTotalAndFilteredRowCountComponent",
                             align: "left",
@@ -396,6 +479,15 @@ const MTOViewModify = () => {
                       }
                       onCellEditingStopped={onMinReasonEditingStopped}
                       suppressRowClickSelection={true}
+                      onFilterChanged={() => {
+                        if(tempRefPoogi && tempRefPoogi.current && tempRefPoogi.current.api){
+        
+                          Object.keys(tempRefPoogi.current.api.getFilterModel())?.length > 0
+                            ? setIsDisabledPoogi2(false)
+                            : setIsDisabledPoogi2(true);
+                        }
+                      }}
+
                     />
                   </MTOPoogiTableContainer>
                   <PoogiAddButtonWrapper>
@@ -424,7 +516,7 @@ const MTOViewModify = () => {
                           />
                           <p
                             style={{
-                              fontSize: "14px",
+                              fontSize: "10px",
                               color: ColorsMTO.Pink.code,
                             }}
                           >
@@ -439,7 +531,7 @@ const MTOViewModify = () => {
                           />
                           <p
                             style={{
-                              fontSize: "14px",
+                              fontSize: "10px",
                               color: ColorsMTO.LightGrey.code,
                             }}
                           >
@@ -452,8 +544,8 @@ const MTOViewModify = () => {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
-                        width: "130px",
-                        margin: "10px",
+                        width: "90px",
+                        margin: "8px",
                         cursor: "pointer",
                         background: "#fff",
                       }}
@@ -480,7 +572,7 @@ const MTOViewModify = () => {
                           />
                           <p
                             style={{
-                              fontSize: "14px",
+                              fontSize: "10px",
                               color: ColorsMTO.Pink.code,
                             }}
                           >
@@ -495,7 +587,7 @@ const MTOViewModify = () => {
                           />
                           <p
                             style={{
-                              fontSize: "14px",
+                              fontSize: "10px",
                               color: ColorsMTO.LightGrey.code,
                             }}
                           >
@@ -543,9 +635,11 @@ const MTOViewModify = () => {
               <div style={{ display: "none" }}>
                 <VFTable
                   ref={tempRef}
-                  rowData={tempGridData}
+                  rowData={getCombinedPoogiDataForExcelExport()}
+                  columnDefs={[...MTOPoogiMajorColdef, ...MTOPoogiMinorColdef].filter((ele)=>ele.field!=='Warning' && ele.field!=='Error')}
                   {...tempAgGridProps}
                 />
+                
               </div>
               {activeMaster.isMTO && activeMaster.id !== 503 && (
                 <>
@@ -556,16 +650,12 @@ const MTOViewModify = () => {
                       gap: "8px",
                       width: "110px",
                       margin: "8px",
-                      cursor: activeMaster?.rowData?.length === 0 ? "not-allowed" : "pointer",
+                      cursor:  "pointer",
                       background: "#fff",
-                      opacity: activeMaster?.rowData?.length === 0 ? 0.6 : 1,
-                      color: activeMaster?.rowData?.length === 0 ? "#999" : "#000", 
                     }}
-                    disabled={activeMaster?.rowData?.length === 0}
+                    // disabled={activeMaster?.rowData?.length === 0}
                     onClick={() => {
-                      if (
-                        !activeMaster?.colDefs.some((x) => x.field === "actions")
-                      ) {
+                      
                         if (activeMaster.id !== 504) {
                           addRowToMtoGrid();
                         }
@@ -574,11 +664,9 @@ const MTOViewModify = () => {
                         }
                       }
                     
-                    }}
+                    }
                   >
-                    {!activeMaster.colDefs.some(
-                      (x) => x.field === "actions"
-                    ) ? (
+                    
                       <>
                         <img
                           src="/assets/img/AddBufferMasterIcon.svg"
@@ -595,30 +683,13 @@ const MTOViewModify = () => {
                           Add {activeMaster.name}
                         </p>
                       </>
-                    ) : (
-                      <>
-                        <img
-                          height={14}
-                          width={14}
-                          src="/assets/img/AddBufferMasterIconGrey.svg"
-                          alt="Add Master Button"
-                        />
-                        <p
-                          style={{
-                            fontSize: "12px",
-                            color: ColorsMTO.LightGrey.code,
-                          }}
-                        >
-                          Add {activeMaster.name}
-                        </p>
-                      </>
-                    )}
+                    
                   </button>
                 </>
               )}
             </VFTab>
           </React.Fragment>
-        )}
+         )}
       </SCContainer>
       {isModalOpen && (
         <CalenderModalCard
@@ -714,10 +785,15 @@ const MTOViewModify = () => {
             onClearAndExportErrors={onClearExportError}
             onModifyData={() => toggleUploadModal(true)}
             onExportData={() => {
-              ref?.current?.api &&
-                ref?.current?.api.exportDataAsExcel({
+              if(activeMaster.id === 503){
+                tempRef?.current?.api &&
+                tempRef?.current?.api.exportDataAsExcel({
                   fileName: `${activeMaster.name} (MTO)`,
+                  columnKeys: [...MTOPoogiMajorColdef, ...MTOPoogiMinorColdef].filter((ele)=>ele.field!=='Warning' && ele.field!=='Error').map((col) => col.field)
                 });
+                return;
+              }
+              handleExportData();
             }}
             onSubmit={onSubmit}
             onSubmitConflictData={() => onSubmit(true)}

@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import VFTable from '../../Common/VFTable';
 import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
-import { HeaderChildren } from './Data';
-import { mapSimulateHedaerChildrenFieldsToColDefs } from '../../../../../helpers/utils';
 import { SCDynamicContainer } from './styles';
 const MaterialCellRenderer = (params: any) => {
     //  const {HeaderChildren} = HeaderChildren

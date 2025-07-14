@@ -100,7 +100,7 @@ const SelectMaster = (
 
         <Container style={{paddingTop: '15px'}} >
             <Container style={{ flexDirection: 'row', gap: '44px' }}>
-                <VFMasterFieldSearch
+                {/* <VFMasterFieldSearch
                     value={selectedOptions}
                     setValue={setValue}
                     options={options}
@@ -109,7 +109,7 @@ const SelectMaster = (
                     maxToShow={3}
                     backgroundColor={'#FFFFFF'}
                     disabled={toggledFromAddMaster()}
-                />
+                /> */}
                 <Container style={{ flexDirection: 'row' }}>
                     <QuickFilterHeader>
                         Quick Filters -

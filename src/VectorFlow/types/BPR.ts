@@ -8,7 +8,7 @@ export interface BPRField {
     Visible:boolean
     CellAlignment:string
     Value:string
-    DataType:"Number" | "String" | "Boolean"
+    DataType:"Number" | "String" | "Boolean" | "number"
 }
 
 export interface BPRDataPayload{

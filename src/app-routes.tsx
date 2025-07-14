@@ -1,5 +1,5 @@
-import React, { Suspense, useEffect } from 'react'
-import { type RouteObject } from 'react-router-dom'
+import React, { Suspense, useEffect, useRef } from 'react'
+import { useLocation, type RouteObject } from 'react-router-dom'
 import { AppLayout } from './components'
 import { getStoreTransferModuleRoutes } from './module-store-transfer/app-routes-store-transfer'
 import Login from './module-main/pages/auth/login'
@@ -228,6 +228,7 @@ const lazyLoad = (children: React.ReactNode) => {
   const newUrlPermiss = [...authenPage, ...urlPermissionArr]
 
   const urlCurrent = window.location.pathname
+
 
   if (urlAllPage.includes(urlCurrent)) {
     if (newUrlPermiss.includes(urlCurrent)) {

@@ -16,6 +16,7 @@ const MajReasonDescCell = (props:any) => {
     const undo = ()=>{
         if(!props.data.id){
 
+
             const newData = _.cloneDeep(activeMaster.rowData);
             newData.forEach((ele: any)=>{
                 if(ele.majId===props.data.majId){
