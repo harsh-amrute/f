@@ -150,7 +150,7 @@ const SupplierWiseAllocation = ()=>{
                   resetGridRef={ref} 
                   isDisabled={isDisabled}  />
 
-                <VFSaveRemark onSubmitRemarks={onSubmitRemarks} />
+                {/* <VFSaveRemark onSubmitRemarks={onSubmitRemarks} /> */}
 
               </div>
           <div style={{ display: 'none' }}>
