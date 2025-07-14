@@ -145,7 +145,7 @@ const useDelete=()=>{
         dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         // dispatch(UPDATE_ACTIVE_MASTER(0));
         const firstDefaultIndex = selectedMasters.findIndex(
-          (item) => item.progress === 'default'
+          (item) => item.progress !== 'submitted'
         );
         if (firstDefaultIndex !== -1) {
           dispatch(UPDATE_ACTIVE_MASTER(firstDefaultIndex));

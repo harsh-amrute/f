@@ -148,7 +148,7 @@ const OrderFulfillmentGrid = ({data, paginationProps, onOpenDailyDataGraph, curr
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             headerTooltip: "Daily Data Graph",
-
+            sortable:false,
         },
         t: {
             cellRenderer: 'tagsCellRenderer',
