@@ -284,7 +284,7 @@ export const TaskPendingAvoidColumnsMapper:any ={
     "2":['wc'],
     "3":['sc','wc'],
     "4":['sc','spc','wc'],
-    "5":['sc'],
+    "5":['sc','spc'],
     "6":['sc','wc'],
     "7":['sc','wc'],
     "8":['sc','wc','pi'],
