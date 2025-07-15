@@ -199,7 +199,6 @@ const useAdd=()=>{
               }
               else{
                 payload.data = rowData.slice(i)
-                console.log("dataaaaa",payload.data);
                 toast.update(toastId,{render:`Submitting Data ${rowData.length}/${rowData.length}`})
               }
               let data:any;
