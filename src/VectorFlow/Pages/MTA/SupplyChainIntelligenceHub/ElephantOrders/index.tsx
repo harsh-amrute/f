@@ -2,7 +2,6 @@ import useElephantOrders from "./useElephantOrders";
 import VFTable from "../../../../../components/VectorFLOW/commons/VFTable";
 import { GridStateContext } from "../../../../../context/GridStateContext";
 import { EOLayout } from "./styles";
-import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import ActionToolBar from "../Planning/ActionToolBar";
 import { useState } from "react";
@@ -81,7 +80,6 @@ const ElephantOrder = () => {
       </div>
       <EOLayout>
       {(isLoading )?(
-          // <VFLoader/>
           <OverlayLoader/> 
         ):
       (<div style={{height:'60vh'}}>

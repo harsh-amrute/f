@@ -67,7 +67,7 @@ const DateCellRenderer = (props: AGGridProps) => {
   const handleClearDate = () => {
     props.setValue?.('');
     externalOnDateChange?.('', props.data); // optional fall-back
-    onClearDate?.(props.data); // ✅ Call to parent clear handler
+    onClearDate?.(props.data); // Call to parent clear handler
   };
   
   const handleCalendarChange = (value: Value) => {
@@ -79,7 +79,7 @@ const DateCellRenderer = (props: AGGridProps) => {
       }
   
       if (typeof externalOnDateChange === 'function') {
-        externalOnDateChange(formatted, props.data); // ✅ send row data back
+        externalOnDateChange(formatted, props.data); // send row data back
       }
   
       setShowCalendar(false);
