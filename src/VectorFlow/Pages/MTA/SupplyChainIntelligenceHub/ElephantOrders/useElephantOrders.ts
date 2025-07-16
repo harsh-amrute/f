@@ -205,7 +205,7 @@ const useElephantOrders= ()=>{
             const response = await getUiConfig(UIColumnConfigName.EO);
             setInitialColumnState(response.data.data);
         } catch (err: any) {
-            notifyError("Something Went Wrong")
+            console.error("Something Went Wrong")
         }
     }
 
@@ -245,7 +245,7 @@ const useElephantOrders= ()=>{
                     getUserColumnConfig();
                     
                 } catch (err: any) {
-                    notifyError("Something Went Wrong")
+                    console.error("Something Went Wrong")
                 }
             }
             if (initialColumnState !== undefined) {
@@ -274,7 +274,7 @@ const useElephantOrders= ()=>{
             })
         
         } else {
-            notifyError("Data not available");
+            console.error("Data not available");
         }
     }
     
@@ -283,7 +283,7 @@ const useElephantOrders= ()=>{
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
             internalRef?.api.sizeColumnsToFit();
             if (!result) {
-                notifyError("Failed to apply column state");
+                console.error("Failed to apply column state");
             }
         }
     }, [internalRef, gridState]);
@@ -321,7 +321,7 @@ const useElephantOrders= ()=>{
             notifySuccess("Data Loaded Successfully")
         }
         catch(err:any){
-            notifyError("Error")
+            console.error("Error")
         }
     }
 
