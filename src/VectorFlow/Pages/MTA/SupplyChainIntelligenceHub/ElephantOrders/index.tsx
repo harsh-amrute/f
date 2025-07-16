@@ -12,6 +12,7 @@ const ElephantOrder = () => {
   
 
   const {
+    isSavedDataLoading,
     VDRColumns,
     RowData,
     EOCount,
@@ -79,7 +80,7 @@ const ElephantOrder = () => {
       />
       </div>
       <EOLayout>
-      {(isLoading )?(
+      {(isLoading || isSavedDataLoading)?(
           <OverlayLoader/> 
         ):
       (<div style={{height:'60vh'}}>
@@ -98,7 +99,7 @@ const ElephantOrder = () => {
                     ],
                   }}
                   height={"100%"}
-                  maintainColumnOrder
+                  maintainColumnOrder={true}
                   onFilterChanged={() => {
                     const filterModel = ref?.current?.api?.getFilterModel();
                     if (filterModel && Object.keys(filterModel).length > 0) {
@@ -120,7 +121,7 @@ const ElephantOrder = () => {
                 resetGridRef={ref} 
                 isDisabled={isDisabled}
               />
-              <VFSave onSubmitRemarks={onSubmitDueDate}/>
+              <VFSave onSubmitDueDate={onSubmitDueDate}/>
 
             </div>
         </div>
@@ -131,7 +132,6 @@ const ElephantOrder = () => {
             columnDefs={VDRColumns}
             rowData={exportExcelRowData}
             {...tempAgGridProps}
-            maintainColumnOrder={true}
           />
         </div>
       </EOLayout>

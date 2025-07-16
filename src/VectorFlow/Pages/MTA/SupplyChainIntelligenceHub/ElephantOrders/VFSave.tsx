@@ -3,13 +3,13 @@ import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButt
 import { useUserData } from "../../../../../context/UserDataContext";
 
 interface VFSaveDueDateProps {
-    onSubmitRemarks: () => void;
+    onSubmitDueDate: () => void;
     isDisabled?:boolean
 }
 
 const VFSave = (props: VFSaveDueDateProps) => {
     const {
-        onSubmitRemarks,
+        onSubmitDueDate,
         isDisabled
     } = props;
 
@@ -21,7 +21,7 @@ const VFSave = (props: VFSaveDueDateProps) => {
             <VFButtonOutline 
                 style={{ height: '30px', width: '159px', borderRadius: '4px', fontSize: '14px', fontWeight: '400', cursor: 'pointer' }} 
                 themeUi={themeUi} 
-                onClick={onSubmitRemarks}
+                onClick={onSubmitDueDate}
                 disabled = {isDisabled}
             >
                 Save Due Date

@@ -32,7 +32,7 @@ const useElephantOrders= ()=>{
     const {mutateAsync:getEOData, isLoading: isEODataLoading} =useGetEOData();
     const {mutateAsync:getEODataCount,isLoading:isEODataCountLoading}=useGetEODataCount();
     const {state:currFilter,setState:setCurrFilter,onDelete} = useBPRFilter()
-    const {mutateAsync:getState} = useGetState()
+    const {mutateAsync:getState,isLoading: isSavedDataLoading} = useGetState()
     const [generalFilterOptions,setGeneralFilterOptions] = useState();
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
@@ -348,11 +348,11 @@ const useElephantOrders= ()=>{
             ),
     
             suppressRowTransform: true,
-            tooltipShowDelay: 0.3,
+            tooltipShowDelay: 0,
             tooltipTrigger: "focus",
             tooltipInteraction: true,
-            readOnlyEdit: true,
-            
+            readOnlyEdit: false,
+            enableBrowserTooltips:true,
             gridOptions: {
                 sideBar: defaultAgGridSideBarForBPR,
                 rowHeight: 50,
@@ -437,7 +437,6 @@ const useElephantOrders= ()=>{
             })
             
         
-        // setRecordCount(rowData.data.recordCount)
             setCurrFilter(filter)
             setCurrentPage(1)
             setRowData(rowData?.data?.data)
@@ -457,6 +456,7 @@ const useElephantOrders= ()=>{
         
 
     return{
+        isSavedDataLoading,
         VDRColumns,
         RowData,
         EOCount,
