@@ -25,13 +25,15 @@ const VFInfoToolTip = (props:VFInfoToolTipProps)=>{
         top:0,
         left:0
     })
-
+    
     const onOpenToolTip = (e:React.MouseEvent<HTMLElement>)=>{
-        const {top,left} = e.currentTarget.getBoundingClientRect()
+        const rect = e.currentTarget.getBoundingClientRect();
         setTooltipPosition({
-            top:(top /0.75) + 30,
-            left
-        })
+            top: window.scrollY + rect.top +120,
+            left: window.scrollX + rect.left - 90
+            
+        });
+
         setIsOpen(true)
     }
 
@@ -40,7 +42,14 @@ const VFInfoToolTip = (props:VFInfoToolTipProps)=>{
             {isOpen?<Icon src={"/assets/img/VectorFLOW/BPR/cancel.svg"} onClick={()=>setIsOpen(false)}/>:<Icon src={"/assets/img/VectorFLOW/BPR/info.svg"} onClick={onOpenToolTip}/>}
             {isOpen &&  (
                 <Portal  wrapperId='tooltip'>
-                    <TextWrapper style={{...tooltipPosition}} >
+                    <TextWrapper
+                        style={{
+                            position: 'absolute',
+                            top: tooltipPosition.top,
+                            left: tooltipPosition.left
+                        }}
+                        >
+
                         {infoList.map(((s,index)=>{
                             return(
                                 <Text key={index}>{s}</Text>
