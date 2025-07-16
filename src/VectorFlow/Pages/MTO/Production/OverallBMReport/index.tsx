@@ -278,10 +278,10 @@ const OverallBmReport = () => {
       setBomActive(false)
     }
     const orderClosingEnable = DBRSettings?.find((data: any) => {
-      return data.flag == "OrderCloseEnable";
+      return data.flag == "CloseOrdersFromUI";
     });
     
-    setorderClosingEnable( Number(orderClosingEnable?.value));
+    setorderClosingEnable(orderClosingEnable?.value);
     setSystemType(Number(systemType?.value || 0));
   };
 
@@ -935,7 +935,7 @@ const OverallBmReport = () => {
           child.cc === "BPP" && excelColorArr.reduce(
             (acc, color) => ({
               ...acc,
-              [color]: (params: any) => params.data.cl === color
+              [color]: (params: any) => params.data?.cl === color
             }),
             {}
           ),
@@ -1367,7 +1367,6 @@ const OverallBmReport = () => {
         // pivotMode: false,
         defaultColDef: {
           enableRowGroup: true,
-          enablePivot: true,
 
           filter: "agTextColumnFilter",
           floatingFilter: true,
@@ -1606,7 +1605,6 @@ const OverallBmReport = () => {
 
   useEffect(() => {
     if (refGraph2?.current && columnState?.length) {
-      console.log(refGraph2,"columnstate update")
       const result = refGraph2.current.api.applyColumnState({
         state: columnState,
         applyOrder: true,

@@ -120,22 +120,26 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
     const getUserColumnConfig = async () => {
         try {
-            const data = await getUserUIReportConfigData({
+            const response = await getUserUIReportConfigData({
                 un: user.user.name,
                 rn_id: UIGridCode.ProcPlanning
             });
-
-            setUserConfigFetched(true)
-            const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-            setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
-            setColumnState(newConfig.cs);
-            setIsPivot(newConfig.pivot);
-
-            if (!data) {
+    
+            const configData = response?.data?.data?.[0]?.columns_settings;
+            if (configData) {
+                const newConfig = JSON.parse(configData);
+                console.log(newConfig, "newConfig");
+    
+                setUserPageSize(Number(newConfig.pageSize) || undefined);
+                setColumnState(newConfig.cs || []);
+                setIsPivot(!!newConfig.pivot);
+            } else {
                 console.error('Failed to apply column state');
             }
+    
+            setUserConfigFetched(true);
         } catch (error) {
-            console.error(error);
+            console.error('Error fetching user column config:', error);
         }
     }
 
@@ -160,8 +164,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                     pageSize: userPageSize
                 };
 
-                console.log(fullConfig,"fullConfig")
-    
                 const payload = {
                     un: user.user.name,
                     rn_id: UIGridCode.ProcPlanning,
@@ -262,7 +264,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             notifyError("Failed to fetch data!");
         }
     }
-    }, [getProcPlanningData,appliedFilters]);
+    }, [getProcPlanningData,appliedFilters,userPageSize]);
 
     useEffect(() => {
         if (datas && HeaderData.length) {
@@ -305,10 +307,39 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             cellRenderer: 'coloPriority',
             floatingFilter: false,
             suppressHeaderFilterButton: true,
+            valueGetter: (params: any) => {
+                let cpData: any;
+                if (params.node.group) {
+                    const allData: any = params?.node?.allLeafChildren?.[0];
+                    cpData = allData?.data?.cp[0];
+                } else {
+                    cpData = params.data?.cp[0];
+                }
+
+                if (!cpData) return '';
+            
+                // Sort keys to ensure consistent ordering
+                const sortedKeys: any = Object.keys(cpData).sort();
+                const sortedObj: any = {};
+                sortedKeys.forEach((key: any) => {
+                    sortedObj[key] = cpData[key];
+                });
+            
+                return JSON.stringify(sortedObj);
+            },
             tooltipValueGetter: (params: any) => {
-                const cpData = params.data.cp[0];
-                const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
                 let tooltipText = '';
+                let cpData: any;
+                if (params.node.group) {
+                    const allData: any = params?.node?.allLeafChildren?.[0];
+                    cpData = allData?.data?.cp[0];
+                } else {
+                    cpData = params.data?.cp[0];
+                }
+                
+                if (!cpData) return tooltipText;
+
+                const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
                 keysToPrint.forEach((key) => {
                     if (Object.prototype.hasOwnProperty.call(cpData, key)) {
                         if (tooltipText !== '') {
@@ -581,10 +612,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
     useEffect(() => {
         if (gridRef?.current && columnState?.length) {
-            console.log(gridRef,"gridRef")
-            console.log(columnState, "columnState");
-            console.log(isPivot, "isPivot");
-
             const result = gridRef?.current?.api?.applyColumnState({
                 state: columnState,
                 applyOrder: true
@@ -601,7 +628,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
     useEffect(() => {
         if (gridRef?.current?.api && colDef) {
-            console.log("calling user ui");
             setDefaultColState(gridRef?.current?.api?.getColumnState());
             getUserColumnConfig();
         }
@@ -808,6 +834,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             enableRangeSelection: true,
             icons: icons,
             defaultColDef: {
+                enableRowGroup: true,
                 resizable: true,
                 floatingFilter: true,
                 filter: "agMultiColumnFilter",
@@ -817,13 +844,13 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 cellStyle: {
                     'text-align': 'center',
                     'height': '50px',
-                    "font-style": "normal",
-                    "font-variant": "normal",
-                    "font-weight": "300",
-                    "font-size": "20px",
-                    "font-family": "Roboto",
-                    'text-overflow': 'ellipsis',
-                    'white-space': 'nowrap',
+                    "fontStyle": "normal",
+                    "fontVariant": "normal",
+                    "fontWeight": "300",
+                    "fontSize": "20px",
+                    "fontFamily": "Roboto",
+                    'textOverflow': 'ellipsis',
+                    'whiteSpace': 'nowrap',
                     'resizable': 'true',
                 },
                 flex: 1,
