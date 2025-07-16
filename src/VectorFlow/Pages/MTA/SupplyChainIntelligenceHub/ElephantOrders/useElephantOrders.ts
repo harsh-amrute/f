@@ -6,7 +6,6 @@ import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/n
 import useBPRFilter from '../../../../../hooks/useBPRFilter';
 import { toast } from 'react-toastify';
 import { AgGridReactProps } from 'ag-grid-react';
-import {EODispatchColorCellRenderer} from './EOCellRenderers'
 import { useGetState } from '../../../../Services/MTA/Common/UserUIConfig';
 import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants';
 import { GridRef } from '../../../../types/MDM';
@@ -142,8 +141,6 @@ const useElephantOrders= ()=>{
     const customCellRenderers = useMemo(() => (
         {
             grapCellRenderer: '',
-            colorDispatchRender: EODispatchColorCellRenderer
-        
         }), []);
 
     useEffect(() => {
