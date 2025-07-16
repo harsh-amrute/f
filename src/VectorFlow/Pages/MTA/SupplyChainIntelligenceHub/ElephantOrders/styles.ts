@@ -158,7 +158,7 @@ export const StyledCalendar = styled(Calendar)<StyledCalendarProps>`
 `;
 
 
-export const SaveRemarkWrapper = styled.div`
+export const SaveDueDateWrapper = styled.div`
     height:35px;
     width:100%;
     display:flex;

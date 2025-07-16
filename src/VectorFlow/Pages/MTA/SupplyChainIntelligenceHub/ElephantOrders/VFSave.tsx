@@ -1,14 +1,13 @@
-import React from 'react';
-import { SaveRemarkWrapper } from "./styles";
+import { SaveDueDateWrapper } from "./styles";
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import { useUserData } from "../../../../../context/UserDataContext";
 
-interface VFSaveRemarkProps {
+interface VFSaveDueDateProps {
     onSubmitRemarks: () => void;
     isDisabled?:boolean
 }
 
-const VFSave = (props: VFSaveRemarkProps) => {
+const VFSave = (props: VFSaveDueDateProps) => {
     const {
         onSubmitRemarks,
         isDisabled
@@ -18,7 +17,7 @@ const VFSave = (props: VFSaveRemarkProps) => {
     const themeUi = user?.user?.theme_ui;
 
     return (
-        <SaveRemarkWrapper style={{ margin: '1rem 0', padding: 0 }}>
+        <SaveDueDateWrapper style={{ margin: '1rem 0', padding: 0 }}>
             <VFButtonOutline 
                 style={{ height: '30px', width: '159px', borderRadius: '4px', fontSize: '14px', fontWeight: '400', cursor: 'pointer' }} 
                 themeUi={themeUi} 
@@ -27,7 +26,7 @@ const VFSave = (props: VFSaveRemarkProps) => {
             >
                 Save Due Date
             </VFButtonOutline>
-        </SaveRemarkWrapper>
+        </SaveDueDateWrapper>
     );
 };
 

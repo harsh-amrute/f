@@ -1,5 +1,5 @@
 
-import { useGetEOUIConfiguration ,useGetEOData,useGetEODataCount, useSubmitDueDates} from '../../../../Services/MTA/SupplyChainIntelligenceHub/ElephantOrders/index';
+import { useGetEOData,useGetEODataCount, useSubmitDueDates} from '../../../../Services/MTA/SupplyChainIntelligenceHub/ElephantOrders/index';
 import { convertUiConfigToOptions, getCellFilter, getColumnDefinationsMTA, mapVDRFieldsToColDefs } from '../../../../../helpers/utils';
 import { useEffect, useState,useRef,useMemo } from 'react';
 import { notifyError,notifyLoader, notifySuccess} from '../../../../../helpers/notify';
@@ -28,7 +28,6 @@ const useElephantOrders= ()=>{
 
     const tempRef = useRef()
 
-    // const { data, isLoading: isSDRUILoading } = useGetSDRUIConfiguration();
     const { mutateAsync: getUiConfig, isLoading: isUIConfigLoading, isError } = useGetUIConfigData();
     const {mutateAsync:getEOData, isLoading: isEODataLoading} =useGetEOData();
     const {mutateAsync:getEODataCount,isLoading:isEODataCountLoading}=useGetEODataCount();
@@ -143,7 +142,7 @@ const useElephantOrders= ()=>{
 
     useEffect(() => {
         getInitialEORowData();
-        getBPRUiConfig();
+        getEOUiConfig();
     }, []);
 
     const getInitialEORowData = async () => {
@@ -200,7 +199,7 @@ const useElephantOrders= ()=>{
         }
       };
       
-    const getBPRUiConfig = async () => {
+    const getEOUiConfig = async () => {
         try {
             const response = await getUiConfig(UIColumnConfigName.EO);
             setInitialColumnState(response.data.data);
