@@ -91,7 +91,6 @@ const useElephantOrders= ()=>{
         const orderid = rowData['CustomerOrderID'];
       
         if (!skucode || !whcode || !orderid) {
-          console.warn("❌ Required fields missing for clearing due date:", rowData);
           return;
         }
       
