@@ -477,14 +477,20 @@ const OverallBmReport = () => {
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
     setIsCheckboxChecked(isChecked); // Update state based on checkbox
-
-    if (isChecked) {
-      refGraph2.current.api.selectAll();
-    } else {
+  
+    if (refGraph2.current?.api) {
       refGraph2.current.api.deselectAll();
+      
+      if (isChecked) {
+        refGraph2.current.api.forEachNodeAfterFilterAndSort((node:any) => {
+          node.setSelected(true);
+        });
+      }
     }
     getSelectedRow();
   };
+
+  
 
   const toggleCheckBox = () => {
     const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
