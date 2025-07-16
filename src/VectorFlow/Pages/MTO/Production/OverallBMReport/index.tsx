@@ -1566,7 +1566,6 @@ const OverallBmReport = () => {
           const isPivot = refGraph2.current?.api.isPivotMode();
           const fullConfig = { pivot: isPivot, cs: config, pageSize: userPageSize };
 
-          console.log(config,"config")
           // setColumnState(config);
 
           const payload = {
