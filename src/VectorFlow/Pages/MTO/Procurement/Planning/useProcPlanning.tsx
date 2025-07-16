@@ -78,6 +78,7 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
 };
 
 const useProcPlanning = (date: string, appliedFilters: any) => {
+    
     const [HeaderData, setHeaderData] = useState<any>([]);
     const [childHeaderData, setChildHeaderData] = useState<any>([])
     const gridRef = useRef<any>(null);
@@ -93,6 +94,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const [defaultColState,setDefaultColState] = useState<any>([])
 
     const [clearFilter, clearFilterDisabled]= useState<boolean>(true);
+    const [childrenModal, setChildrenModal] = useState(false)
+    const [isPivot, setIsPivot] = useState<any>(false);
+    
+    
 
     
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
@@ -109,6 +114,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         }
         try{
             const reponse = await getUIConfigData("ProcPlanningReportChildren");
+            setChildrenModal(true)
             setChildHeaderData(reponse.data.data);
         }
         catch(e){
@@ -128,6 +134,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
             setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
             setColumnState(newConfig.cs);
+            setIsPivot(newConfig.pivot);
+
 
             if (!data) {
                 console.error('Failed to apply column state');
@@ -183,7 +191,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
         if (isReset) {
             setColumnState([...defaultColState]);
-            handleSaveClick(true);
+            handleSaveClick(undefined,true);
             setIsReset(false)
             notifySuccess("Reset Successfully")
         } 
@@ -210,6 +218,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const { user } = useUserData();
 
 
+
     const dispatch = useDispatch()
 
     dispatch(PROCPLANNING_ANALYTICS({ date }));
@@ -226,16 +235,17 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const { mutateAsync : GetProcPlanningDataForExcelData} = useGetProcurementPlanningDataForExcelExport()
     const { mutateAsync: getDBRsettingsData } = useGetDBRsettingsData();
     const [simulationEnable, setSimulationEnable] = useState<any>();
+    const [showExcelModal, setShowExcelModal] = useState(false);
     
-
-    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any) => {
+    
+    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any, isChildren?:any) => {
         setIsLoading(true);
         if(isExcelExport){
             try {
                 const headersdata = gridRef?.current?.api.getColumnState();
                 const formattedFilters = formatFilterJSON(appliedFilters)
                 const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
-                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning });
+                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning,isChildren });
                 if (response.status === 200) {
                     DownloadExcel(response, FilterPageName.Proc_Procurement_Planning);
                     notifySuccess('Excel Export Successfully')
@@ -266,6 +276,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             }
             setTotalRows(response?.data?.data?.count)
             setData(response?.data?.data?.results || []);
+
+
         } catch (error) {
             toast.dismiss();
             notifyError("Failed to fetch data!");
@@ -512,6 +524,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
     }, [navigate, ShortageDatas, date]);
 
+   
     const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
         return {
             getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
@@ -682,8 +695,8 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             userPageSize = {userPageSize}
 
                         />
-                        { simulationEnable ==='enabled'  && (
-            <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
+                   { simulationEnable ==='enabled'  && (
+                    <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
                                     onClick={() => { (!isDisabled) && fetchData(date, 1, '0',false,userPageSize) }}
@@ -870,7 +883,11 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         isGetUserConfig,
         handleResetClick,
         handleSaveClick,
-        currentTab
+        currentTab,
+        childrenModal,
+        setShowExcelModal,
+        showExcelModal,
+        isPivot
     }
 }
 

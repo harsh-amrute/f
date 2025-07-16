@@ -4626,14 +4626,9 @@ export const getBodyForExcelExport = ({ headersdata, filterData = {}, colDefMap 
   const filteredHeadersData = headersdata?.filter(
     (col: any) => (col.colId !== "DropDown" || col.colId !== "Action") && (col.hide !== true)
   ); 
-
   try {
     const headers = filteredHeadersData?.map((col: any) => {
-      const header_data = colDefMap.current.get(col.colId);
-      if (header_data?.scc === "bpp" || header_data?.scc === "cp" || header_data?.scc === 'clr') {
-        header_data.isColor = true;
-      }
-      
+      const header_data = colDefMap.current.get(col.colId);      
       return {
         ...header_data
       }
@@ -4652,6 +4647,44 @@ export const getBodyForExcelExport = ({ headersdata, filterData = {}, colDefMap 
   }
         
 } 
+
+export const getBodyForGroupedExcelExport = ({ headersdata, filterData = {}, groupedColDefsRef }: any) => {
+
+  const filteredHeadersData = headersdata?.filter(
+    (col: any) => (col.colId !== "DropDown" || col.colId !== "Action") && (col.hide !== true)
+  );
+
+  try {
+    const headers = filteredHeadersData?.map((col: any) => col.colId);
+    
+    const filteredGroupedColDefs = groupedColDefsRef?.current?.map((group: any) => { //0,1
+      const filteredChildren = group.ch.filter((child: any) =>
+        headers.includes(child.groupHeaderKey) // cc,ch
+      );
+      
+      if (filteredChildren.length > 0) {
+        return {
+          cc: group.cc,
+          ch: filteredChildren
+        };
+      }
+      
+      return null;
+    }).filter(Boolean);
+    const body = {
+      headers: filteredGroupedColDefs,
+      isGrouped: true,
+      ...filterData
+    };
+    return body;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+
+
+
 
 export const DownloadExcel = (response : any,filename = "ReportFile") => {
   try {

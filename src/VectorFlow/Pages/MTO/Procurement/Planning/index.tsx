@@ -8,6 +8,9 @@ import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { FilterPageName } from "../../Common/Enum";
 import { useUserData } from '../../../../../context'
+import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 
 
 const APIFilterConfig = {
@@ -36,7 +39,7 @@ const ProcurementPlanning = () => {
         onAddFilter, 
         onApplyFilter, 
         toggleFilter,
-        appliedFilters
+      appliedFilters,
     } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Procurement_Planning);
     const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
     const {
@@ -48,6 +51,9 @@ const ProcurementPlanning = () => {
         isGetUserConfig,
         handleResetClick,
         handleSaveClick, 
+        childrenModal,
+        setShowExcelModal,
+        showExcelModal,
     } = useProcPlanning(date, appliedFilters);
 
     const handleDateChange = (date: string) => {
@@ -70,68 +76,153 @@ const ProcurementPlanning = () => {
         getFilterData()
     }, []);
 
-    const ExcelExportData = ()=>{
-        fetchData(date ,1 , currentTab?.label === 'Shortage' ? '0' : '1', true)
+  const ExcelExportData = () => {
+        if(childrenModal){
+            setShowExcelModal(true) 
+        }
+        else{
+            fetchData(date ,1 , currentTab?.label === 'Shortage' ? '0' : '1', true,1,0)
+
+        }
     }
     
     return (
-        <>
+      <>
+        <VFModalCard
+          openModal={showExcelModal}
+          closeModal={() => setShowExcelModal(false)}
+          headerText="Excel Export Bomb Confirmation"
+          headerIcon=""
+          headerBgColor="white"
+          headerTextColor="black"
+          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
+          paddingLeftAndRight={27}
+        >
+          <div
+            style={{
+              fontSize: "16px",
+              padding: "1rem",
+              textAlign: "center",
+              height: "125px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            Do you want to download Excel with BOMB data?
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "13px",
+              padding: "15px 1.5rem 15px 1.5rem",
+              boxShadow: "0px -4px 10px rgba(0, 0, 0, 0.06)",
+            }}
+          >
+            <VFButtonOutline
+              themeUi={themeUi}
+              onClick={() => {
+                setShowExcelModal(false);
+                fetchData(
+                  date,
+                  1,
+                  currentTab?.label === "Shortage" ? "0" : "1",
+                  true,
+                  1,
+                  1
+                );
+              }}
+            >
+              Yes
+            </VFButtonOutline>
+            <VFButton
+              themeUi={themeUi}
+              onClick={() => {
+                setShowExcelModal(false);
+                fetchData(
+                  date,
+                  1,
+                  currentTab?.label === "Shortage" ? "0" : "1",
+                  true,
+                  0,
+                  0
+                );
+              }}
+            >
+              No
+            </VFButton>
+          </div>
+        </VFModalCard>
 
-            {(isLoading || isUpdateUserConfig || isGetUserConfig) && (
-                <OverlayLoader />
-            )}
+        {(isLoading || isUpdateUserConfig || isGetUserConfig ) && (
+          <OverlayLoader />
+        )}
 
-            <div style={{ display: "flex", height: "100%", flexDirection: "column", paddingBottom: "2rem" }}>
-                <ActionToolBar
-                    comp={'Procurement Planning'}
-                    onDateChange={handleDateChange}
-                    isReleaseDate
-                    isAddFilterButton
-                    themeUi={themeUi}
-                    isExcelExport
-                    onExcelExportClick={ExcelExportData}
-                    submitDate={() => { 
-                        // fetchData(date, 1, currentTab?.label === 'Shortage' ? '0' : '1') 
-                        getFilterData()
-                    }}
-                    date={date}
-                    handleSaveClick={handleSaveClick}
-                    handleResetClick={handleResetClick}
-                    isFilterOpen={isFilterOpen}
-                    onAddFilter={onAddFilter}
-                    toggleFilter={toggleFilter}
-                    onApplyFilter={onApplyFilter}
-                    multiFilter={currFilter}
-                    setMultiFilter={setCurrFilter}
-                    onFilterRemove={onFilterRemove}
-                    isMfgSelected={isMfgSelected}
-                />
-                <div style={{ zoom: 0.75 }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
-                        <VFFloatingTab
-                            handleClick={(tab) => toggleCurrentTab(tab)}
-                            tabs={[
-                                {
-                                    id: 'ca',
-                                    label: 'Completely Available',
-                                    value: 'ca'
-                                },
-                                {
-                                    id: 'short',
-                                    label: 'Shortage',
-                                    value: 'short'
-                                }
-                            ]}
-                        />
+        <div
+          style={{
+            display: "flex",
+            height: "100%",
+            flexDirection: "column",
+            paddingBottom: "2rem",
+          }}
+        >
+          <ActionToolBar
+            comp={"Procurement Planning"}
+            onDateChange={handleDateChange}
+            isReleaseDate
+            isAddFilterButton
+            themeUi={themeUi}
+            isExcelExport
+            onExcelExportClick={ExcelExportData}
+            submitDate={() => {
+              // fetchData(date, 1, currentTab?.label === 'Shortage' ? '0' : '1')
+              getFilterData();
+            }}
+            date={date}
+            handleSaveClick={handleSaveClick}
+            handleResetClick={handleResetClick}
+            isFilterOpen={isFilterOpen}
+            onAddFilter={onAddFilter}
+            toggleFilter={toggleFilter}
+            onApplyFilter={onApplyFilter}
+            multiFilter={currFilter}
+            setMultiFilter={setCurrFilter}
+            onFilterRemove={onFilterRemove}
+            isMfgSelected={isMfgSelected}
+          />
 
-                    </div>
-                </div>
-                {/* <ProcurementLayout> */}
-                {renderView()}
-                {/* </ProcurementLayout> */}
+          <div style={{ zoom: 0.75 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "2px",
+              }}
+            >
+              <VFFloatingTab
+                handleClick={(tab) => toggleCurrentTab(tab)}
+                tabs={[
+                  {
+                    id: "ca",
+                    label: "Completely Available",
+                    value: "ca",
+                  },
+                  {
+                    id: "short",
+                    label: "Shortage",
+                    value: "short",
+                  },
+                ]}
+              />
             </div>
-        </>
-    )
+          </div>
+          {/* <ProcurementLayout> */}
+          {renderView()}
+          {/* </ProcurementLayout> */}
+        </div>
+      </>
+    );
 }
 
 export default ProcurementPlanning

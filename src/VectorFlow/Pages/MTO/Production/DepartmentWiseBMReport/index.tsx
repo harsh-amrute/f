@@ -31,7 +31,7 @@ import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/C
 import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForGroupedExcelExport } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetOverAllBMReport } from '../../../../../VectorFlow/Services/MTO/Production/OverallBMReport';
@@ -44,6 +44,10 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
+import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import useGroupedColDef from "../../../../../hooks/useGroupedColDef";
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 
 
 interface ApiResponse {
@@ -165,15 +169,16 @@ const DptWiseBMReport = () => {
     const [isPivot, setIsPivot] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
-    const [detailCellRendererParamsConfig, setDetailCellRendererParamsConfig] = useState<any>();
-
-
     
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
 
-     const [bomHeader, setBomHeader]= useState([])
-      const [bomActive, setBomActive] = useState<any>(undefined);
+    const [bomHeader, setBomHeader]= useState([])
+    const [bomActive, setBomActive] = useState<any>(undefined);
+    const { getGroupedColDef, groupedColDefsRef } = useGroupedColDef();
+    const [showExcelModal, setShowExcelModal] = useState(false);
+    
+
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
@@ -223,6 +228,8 @@ const DptWiseBMReport = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        
+        
         try {
             getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
                 const response: any = data?.data?.data;
@@ -236,6 +243,8 @@ const DptWiseBMReport = () => {
 
     }, [])
 
+  
+    
    
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
@@ -310,6 +319,8 @@ const DptWiseBMReport = () => {
         try {
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
+            getGroupedColDef(response)
+
             // const modifiedResponse = addDefaultAttributes(response?.data?.data);
 
             const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(response?.data?.data);
@@ -473,7 +484,7 @@ const DptWiseBMReport = () => {
                 child.cc === "BPP" && excelColorArr.reduce(
                   (acc, color) => ({
                     ...acc,
-                    [color]: (params: any) => params.data.cl === color
+                    [color]: (params: any) => params?.data?.cl === color
                   }),
                   {}
                 ),
@@ -798,6 +809,11 @@ const DptWiseBMReport = () => {
     }
     }, [columnBomDefs]);
 
+    const onPivotModeChanged = (event: any) => {
+        const isPivotOn = event.api.isPivotMode();
+        setIsPivot(isPivotOn);
+      };
+
 
     const agGridProps: AgGridReactProps = useMemo(()=>{
         return {
@@ -847,36 +863,57 @@ const DptWiseBMReport = () => {
             enterNavigatesVertically: true,
             enterNavigatesVerticallyAfterEdit: true,
             groupDefaultExpanded: 0,
-            pivotMode: false,
+            // pivotMode: false,
             onSelectionChanged: debounce(getSelectedRow, 1000),
             onCellValueChanged: onCellValueChanged,
             stopEditingWhenCellsLoseFocus: true,
             onRowDataUpdated: onFirstDataRendered,
+            onColumnPivotModeChanged: onPivotModeChanged,
+
         };
     }, [masterSelectedRowData, gridData])
     
    
     
 
-    const getUpdatedFilteredData = async (page: any, pageSize?:any) => {
-        try {
+    const getUpdatedFilteredData = async (page: any, pageSize?: any, isExcelExport=false, isBomExplosion=0) => {
+        if (isExcelExport) {
+
+            const headersdata = refGraph1?.current?.api?.getColumnState();
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({
-                'wip': isWIPChecked ? 1 : 0,
-                'curr': page,
-                appliedFilters: formatedFilters,
-                page_size: pageSize || userPageSize
-            });
-            if(!gridData.data.data || gridData.data.data.length===0){
-                setGridDataCount(0);
-                setGridData([])
-                return;
+            const body = getBodyForGroupedExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
+            try {
+                const response = await getFilteredDeptWiseBMReportData({ body, appliedFilters: formatedFilters, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
+                if (response.status == 200) {
+                    DownloadExcel(response, FilterPageName.Prod_OverAll_BMReport)
+                } else {
+                    notifyError("Error exporting Excel!");
+                }
+            } catch (e) {
+                console.error("Error exporting Excel", e);
+                notifyError("Error exporting Excel!");
             }
-            setGridData(gridData?.data?.data?.results)
-            setGridDataCount(gridData?.data?.data?.count)
-        }
-        catch (e) {
-            console.log(e);
+           
+        } else {
+            try {
+                const formatedFilters = formatFilterJSON(appliedFilters);
+                const gridData = await getFilteredDeptWiseBMReportData({
+                    'wip': isWIPChecked ? 1 : 0,
+                    'curr': page,
+                    appliedFilters: formatedFilters,
+                    page_size: pageSize || userPageSize
+                });
+                if (!gridData.data.data || gridData.data.data.length === 0) {
+                    setGridDataCount(0);
+                    setGridData([])
+                    return;
+                }
+                setGridData(gridData?.data?.data?.results)
+                setGridDataCount(gridData?.data?.data?.count)
+            }
+            catch (e) {
+                console.log(e);
+            }
         }
     }
     
@@ -884,18 +921,20 @@ const DptWiseBMReport = () => {
     
     
     const getTempUpdatedFilteredData = async () => {
-        try {
-            const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': 1, appliedFilters: formatedFilters, page_size: gridDataCount });
-            setTempGridData(gridData?.data?.data?.results);
+            try {
+                const formatedFilters = formatFilterJSON(appliedFilters);
+                const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': 1, appliedFilters: formatedFilters, page_size: gridDataCount });
+                setTempGridData(gridData?.data?.data?.results);
+            }
+            catch (e) {
+                console.log(e);
+            }
+            finally {
+                setIsExcelLoading(false);
+            }
         }
-        catch (e) {
-            console.log(e);
-        }
-        finally {
-            setIsExcelLoading(false);
-        }
-    }
+        
+        
 
     useEffect(() => {
         if (Object.keys(appliedFilters).length) {
@@ -916,9 +955,16 @@ const DptWiseBMReport = () => {
 
 
     const onExcelExport = () => {
-        setIsExcelLoading(true);
-        getTempUpdatedFilteredData();
-    }
+        if (isPivot) {
+            getTempUpdatedFilteredData(); 
+        } else {
+          if (bomActive) {
+            setShowExcelModal(true)
+          } else {
+            getUpdatedFilteredData(1, userPageSize, true, 0);
+          }
+        }
+      }
 
     useEffect(() => {
 
@@ -1092,6 +1138,35 @@ const DptWiseBMReport = () => {
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto', marginTop: "10px",}}>
             <p>{(date && date.length)? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
+
+            <VFModalCard
+          openModal={showExcelModal}
+          closeModal={() => setShowExcelModal(false)}
+          headerText="Excel Export Bomb Confirmation"
+          headerIcon=""
+          headerBgColor="white"
+          headerTextColor="black"
+          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
+          paddingLeftAndRight={27}
+          >
+        <div style={{ fontSize: "16px", padding: "1rem", textAlign: "center",height:'125px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          Do you want to download Excel with BOMB data?
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '13px', padding: "15px 1.5rem 15px 1.5rem", boxShadow: '0px -4px 10px rgba(0, 0, 0, 0.06)',  }}>
+          <VFButtonOutline themeUi={themeUi}  onClick={() => {
+            setShowExcelModal(false);   
+            getUpdatedFilteredData(1,userPageSize, true, 1)
+          }}>
+            Yes
+          </VFButtonOutline>
+            <VFButton themeUi={themeUi} onClick={() => {
+            setShowExcelModal(false);   
+            getUpdatedFilteredData(1,userPageSize, true,0)
+          }} >
+            No
+          </VFButton>
+        </div>
+        </VFModalCard>
             <>
                 {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }

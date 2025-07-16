@@ -48,7 +48,7 @@ import OverlayLoader from "../../Common/Loader";
 import { ColorsMTO } from "../../Common/Colors";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../hooks/useFilter";
-import { formatFilterJSON, getColumnDefinations } from "../../../../../helpers/utils";
+import { formatFilterJSON, getColumnDefinations,getBodyForExcelExport,DownloadExcel, getBodyForGroupedExcelExport } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
@@ -67,6 +67,9 @@ import VFSelect from "../../../../../../src/components/VectorFLOW/commons/MTO/VF
 import ConfirmationModal from "./ConfirmationModal";
 import { InputCheckBox } from "./styles";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
+import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
+import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import useGroupedColDef from "../../../../../hooks/useGroupedColDef";
 
 interface ApiResponse {
   cc: string;
@@ -166,6 +169,7 @@ const OverallBmReport = () => {
   const [isPivot, setIsPivot] = useState<any>(false);
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [orderClosingEnable, setorderClosingEnable] = useState<any>();
+  const { getGroupedColDef, groupedColDefsRef } = useGroupedColDef();
 
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
@@ -179,6 +183,9 @@ const OverallBmReport = () => {
   const [filterData, setFilterData] = useState({});
   const [systemType, setSystemType] = useState<any>();
   const [isGridLoading, setIsGridLoading] = useState(false);
+  const [showExcelModal, setShowExcelModal] = useState(false);
+  
+
   const { mutateAsync: getPageWiseFilterData /*isLoading*/ } =
   useGetFilterData();
   const {
@@ -201,7 +208,7 @@ const OverallBmReport = () => {
   const [bomHeader, setBomHeader]= useState([])
   const [bomActive, setBomActive] = useState<any>(undefined);
   const ReportName='BomExplosion'
-  
+
 
 
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
@@ -318,10 +325,14 @@ const OverallBmReport = () => {
     try {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
+      getGroupedColDef(response)
+      
 
       const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(
         response?.data?.data
       );
+
+     
       const coldef = mapApiResponseToColDefs(modifiedResponse);
       setColdef(coldef);
     } catch (e) {
@@ -935,7 +946,7 @@ const OverallBmReport = () => {
           child.cc === "BPP" && excelColorArr.reduce(
             (acc, color) => ({
               ...acc,
-              [color]: (params: any) => params.data.cl === color
+              [color]: (params: any) => params?.data?.cl === color
             }),
             {}
           ),
@@ -1103,9 +1114,27 @@ const OverallBmReport = () => {
           return getColumnDefinations(bomHeader);
         }, [bomHeader]);
 
-       
 
-  const getInitialGridData = async (currentPage: number, pageSize?:any) => {
+  const getInitialGridData = async (currentPage: number, pageSize?: any, isExcelExport = false, isBomExplosion=0) => {
+    //excellll
+    if (isExcelExport) {
+      const headersdata = refGraph2?.current?.api?.getColumnState();
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const body = getBodyForGroupedExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
+          try{
+              const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage, page_size: pageSize || userPageSize,isBomExplosion})
+              if(response.status == 200){
+                DownloadExcel(response,FilterPageName.Prod_OverAll_BMReport)
+              }else{
+                notifyError("Error exporting Excel!");
+              }
+            }catch(e){
+              console.error("Error exporting Excel", e);
+              notifyError("Error exporting Excel!");
+            }
+      
+      
+    } else {
     try {
       setIsGridLoading(true);
       const formatedFilters = formatFilterJSON(appliedFilters);
@@ -1141,7 +1170,9 @@ const OverallBmReport = () => {
       setIsGridLoading(false);
       console.log(e);
     }
+  }
   };
+
 
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
@@ -1473,6 +1504,7 @@ const OverallBmReport = () => {
   const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
 
   const getTempGridData = async () => {
+    
     setIsExcelLoading(true);
     try {
       const formatedFilters = formatFilterJSON(appliedFilters);
@@ -1490,8 +1522,22 @@ const OverallBmReport = () => {
   };
 
   const onExcelExport = () => {
-    getTempGridData();
+    if (isPivot) {
+      getTempGridData(); 
+    } else {
+      if (bomActive) {
+        setShowExcelModal(true)
+      } else {
+        getInitialGridData(1, userPageSize, true, 0);
+      }
+    }
   };
+  
+  
+
+
+
+  
 
   useEffect(() => {
     if (tempGridData) {
@@ -1559,7 +1605,6 @@ const OverallBmReport = () => {
           cs: JSON.stringify(fullConfig),
         };
         await updateUserUIConfigData([payload]);
-
       } else {
         if (refGraph2?.current?.api) {
           const config = refGraph2.current.api.getColumnState();
@@ -1671,6 +1716,35 @@ const OverallBmReport = () => {
       >
         <p>{date && date.length ? moment(date).format("D MMM YYYY") : " "}</p>
       </div>
+
+      <VFModalCard
+          openModal={showExcelModal}
+          closeModal={() => setShowExcelModal(false)}
+          headerText="Excel Export Bomb Confirmation"
+          headerIcon=""
+          headerBgColor="white"
+          headerTextColor="black"
+          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
+          paddingLeftAndRight={27}
+          >
+        <div style={{ fontSize: "16px", padding: "1rem", textAlign: "center",height:'125px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          Do you want to download Excel with BOMB data?
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '13px', padding: "15px 1.5rem 15px 1.5rem", boxShadow: '0px -4px 10px rgba(0, 0, 0, 0.06)',  }}>
+          <VFButtonOutline themeUi={themeUi}  onClick={() => {
+            setShowExcelModal(false);   
+            getInitialGridData(1, userPageSize, true, 1);
+          }}>
+            Yes
+          </VFButtonOutline>
+            <VFButton themeUi={themeUi} onClick={() => {
+            setShowExcelModal(false);   
+            getInitialGridData(1, userPageSize, true, 0);
+          }} >
+            No
+          </VFButton>
+        </div>
+        </VFModalCard>
 
       {(isGridLoading ||
         isExcelLoading ||

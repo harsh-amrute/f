@@ -1,22 +1,42 @@
 import axios from 'axios';
+import { formatFilterJSON, getBodyForExcelExport } from '../../../../../helpers/utils';
 
 type OverallBMReportInputType = {
-    page: number,
-    appliedFilters: any,
+    page?: number,
+    appliedFilters?: any,
     page_size?: number,
     analytics?: 0 | 1,
-    user?: any
+    user?: any,
+    isBomExplosion?: any,
+    headersdata?:any,
+    colDefMap?: any,
+    isExcelExport?: any,
+    body?: any,
+    report_name?:any,
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace OverallBMReportService {
 
-    export const getOverallBMReportData = async ({ page, appliedFilters, page_size, analytics = 0 }: OverallBMReportInputType) => {
-        // Create a new body object with the user info attached
-        const requestBody = {
-            ...appliedFilters, // Keep the existing applied filters
-        };
-
+    export const getOverallBMReportData = async ({ body,page, appliedFilters, page_size, analytics = 0,isBomExplosion,isExcelExport = false }: OverallBMReportInputType) => {
+        if (isExcelExport) {
+                return await axios.put(
+                    process.env.REACT_APP_VF_API_HOST_MTO + `/getOverAllBMReportData/?avawip=${0}&page=${page}&page_size=${page_size || process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE}&analytics=${analytics}`,
+                    body,
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                        params : {
+                            // report_name,
+                            export : isExcelExport,
+                            isBomExplosion:isBomExplosion,
+                        },
+                        responseType : 'blob'
+                    });
+                }
+            
+              const requestBody = {
+                ...appliedFilters,
+              };
         if (analytics == 0) {
             return await axios.put(
                 process.env.REACT_APP_VF_API_HOST_MTO + `/getOverAllBMReportData/?avawip=${0}&page=${page}&page_size=${page_size || process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE}&analytics=${analytics}`,
@@ -28,6 +48,7 @@ export namespace OverallBMReportService {
                 }
             );
         } else {
+
             return await axios.put(
                 process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${0}&analytics=${analytics}`,
                 requestBody, // Pass the modified body

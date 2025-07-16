@@ -481,13 +481,15 @@ const DueDateQuotation = () => {
 
 
 
-  const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any ) => {
+  const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any,isBomExplosion?:any ) => {
     if(isExcelExport){
       const headersdata = currentGridRef?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
+
+
       const body = getBodyForExcelExport({headersdata , filterData : formatedFilters, colDefMap});
       try{
-        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize})
+        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize,isBomExplosion})
         if(response.status == 200){
           DownloadExcel(response,FilterPageName.Prod_DDQ)
         }else{
@@ -495,7 +497,7 @@ const DueDateQuotation = () => {
         }
       }catch(e){
         console.error("Error exporting Excel", e);
-        notifyError("Error exporting Excel!");
+        notifyError("Error exporting Excel!");66
       }
     }else{
 
@@ -625,14 +627,12 @@ const DueDateQuotation = () => {
   }, [isReset]);
   
  const ExcelData = ()=>{
-  setShowExcelModal(true);
-    getUpdatedFilterData(true);
+  if (bomActive) {
+    setShowExcelModal(true); 
+  } else {
+    getUpdatedFilterData(true, undefined, 0); 
+  }
  }
-
- const handleExcelExportConfirm = () => {
-  setShowExcelModal(false); 
-  getUpdatedFilterData(true); 
-};
 
 
 
@@ -721,6 +721,7 @@ const DueDateQuotation = () => {
           style={{ fontSize: "12px", width: "100px", height: "40px" }}>
           Deselect Orders
         </VFButtonOutline>}
+
         <VFModalCard
           openModal={showExcelModal}
           closeModal={() => setShowExcelModal(false)}
@@ -731,18 +732,24 @@ const DueDateQuotation = () => {
           closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
           paddingLeftAndRight={27}
           >
-  <div style={{ fontSize: "16px", padding: "1rem", textAlign: "center" }}>
-    Do you want to download Excel with BOMB data?
-  </div>
-  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', padding: "0 1.5rem 1rem", height:'100px' }}>
-    <VFButtonOutline themeUi={themeUi} onClick={() => setShowExcelModal(false)}>
-      Cancel
-    </VFButtonOutline>
-    <VFButton themeUi={themeUi} onClick={handleExcelExportConfirm}>
-      Confirm
-    </VFButton>
-  </div>
-</VFModalCard>
+        <div style={{ fontSize: "16px", padding: "1rem", textAlign: "center",height:'125px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          Do you want to download Excel with BOMB data?
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '13px', padding: "15px 1.5rem 15px 1.5rem", boxShadow: '0px -4px 10px rgba(0, 0, 0, 0.06)',  }}>
+          <VFButtonOutline themeUi={themeUi}  onClick={() => {
+            setShowExcelModal(false);   
+            getUpdatedFilterData(true, undefined, 1); 
+          }}>
+            Yes
+          </VFButtonOutline>
+            <VFButton themeUi={themeUi} onClick={() => {
+            setShowExcelModal(false);   
+            getUpdatedFilterData(true, undefined, 0); 
+          }} >
+            No
+          </VFButton>
+        </div>
+        </VFModalCard>
 
         <VFButton themeUi={themeUi}
           disabled={disabled}
