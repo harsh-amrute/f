@@ -215,8 +215,7 @@ const useElephantOrders= ()=>{
             const getTableState = async () => {
                 try {
                     const MappedColumns = getColumnDefinationsMTA(initialColumnState, CustomHeader);
-                    console.log("MappedColumns = ",MappedColumns)
-                    
+        
                     if (!MappedColumns.some((col: any) => col.field === 'Due Date')) {
                         MappedColumns.push({
                             headerName: "Action",
@@ -227,7 +226,6 @@ const useElephantOrders= ()=>{
                             suppressMenu: true,
                             cellRendererParams: {
                                 onDateChange: (newDate: string, rowData: any) => {
-                                  console.log("User selected new date:", newDate);
                                   handleDueDateChange(newDate, rowData, 'SKUCode', 'WhCode', 'CustomerOrderID');
 
                                 },
@@ -249,7 +247,7 @@ const useElephantOrders= ()=>{
                     getUserColumnConfig();
                     
                 } catch (err: any) {
-                    console.log(err)
+                    notifyError("Something Went Wrong")
                 }
             }
             if (initialColumnState !== undefined) {
@@ -278,7 +276,7 @@ const useElephantOrders= ()=>{
             })
         
         } else {
-            console.log("Data not available");
+            notifyError("Data not available");
         }
     }
     
@@ -299,8 +297,7 @@ const useElephantOrders= ()=>{
                 pageNumber: 1,
                 recordsPerPage:rowsPerPage
             }
-        })
-        console.log("Data Count = ",DataCount.data["recordCount"]);     
+        })    
         setEOCount(DataCount.data["recordCount"]);
 
     }
@@ -321,7 +318,6 @@ const useElephantOrders= ()=>{
                 }
             })
             setRowData(VDRData.data.data);
-            console.log(VDRData.data.data)
             setCurrentPage(PageNo);
             toast.dismiss()
             notifySuccess("Data Loaded Successfully")
