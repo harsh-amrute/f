@@ -92,7 +92,7 @@ const DateCellRenderer = (props: AGGridProps) => {
         ref={inputRef}
         type="text"
         value={value ? moment(value).format('YYYY-MM-DD') : ''}
-        placeholder="DD-MM-YYYY"
+        placeholder="YYYY-MM-DD"
         readOnly
         onClick={toggleCalendar}
         disabled={disabled}
