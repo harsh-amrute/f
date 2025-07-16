@@ -2331,13 +2331,13 @@ export const createIconColumn = (params: any): ColDef => {
   }
 }
 
-export const getCellDataType = (dataType: "Number" | "String" | "Boolean"): string => {
+export const getCellDataType = (dataType: "Number"|"number"| "String" | "Boolean"): string => {
   if (dataType === 'Number') return "number"
   return 'text'
 }
 
-export const getCellFilter = (dataType: "Number" | "String" | "Boolean"): string => {
-  if (dataType === 'Number') return "agNumberColumnFilter"
+export const getCellFilter = (dataType: "Number"| "number" | "String" | "Boolean"): string => {
+  if (dataType === 'number' || dataType==="Number") return "agNumberColumnFilter"
   // else if(dataType==='String') return 'agTextColumnFilter'
   // else if(dataType==='Boolean') return "agSetColumnFilter"
   return 'agMultiColumnFilter'

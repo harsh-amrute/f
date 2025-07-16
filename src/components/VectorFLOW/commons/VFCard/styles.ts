@@ -15,6 +15,10 @@ export const Card = styled.div<{imgSrc:string}>`
 
 export const IconCardContainer = styled(Card)`
     aspect-ratio:1.824;
+    cursor: pointer;
+    :hover {
+        transform: scale(1.02);
+    }
 
     
 `

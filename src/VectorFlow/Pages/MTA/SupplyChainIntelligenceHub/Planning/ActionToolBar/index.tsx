@@ -182,7 +182,8 @@ const ActionToolBar = ({
   useEffect(() => {
     if (
       pathname !== "/supply-chain-intelligence-hub/SupplierWiseAllocation" &&
-      pathname !== "/supply-chain-intelligence-hub/sdr"
+      pathname !== "/supply-chain-intelligence-hub/sdr" &&
+      pathname !== "/supply-chain-intelligence-hub/total-requirement-report"
     ) {
       setIsFilterButtonVisible(true);
     }
@@ -1023,7 +1024,7 @@ const ActionToolBar = ({
           )} */}
           <SCCustomActionsContainer>
 
-          {( pathname != "/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/supply-chain-intelligence-hub/sdr" ) &&
+          {( pathname != "/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/supply-chain-intelligence-hub/sdr" && pathname !== "/supply-chain-intelligence-hub/total-requirement-report") &&
                <>
                     <VFButton
                     onClick={() => toggleFilter(true)}

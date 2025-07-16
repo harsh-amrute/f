@@ -48,6 +48,7 @@ import type { RootState } from "../../../../../redux/store/store";
 import {
   useCreateDraft,
   useDeleteDraft,
+  useDeleteMTODraft,
   useDeleteTask,
   useGetBufferMasterData,
   useGetBufferTypeMaster,
@@ -79,7 +80,6 @@ import {
 } from "../../../../types/MDM";
 
 import _ from "lodash";
-import moment from "moment";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
@@ -106,7 +106,6 @@ import {
   useGetPlantMasterData
 } from "../../../../../VectorFlow/Services/MTO/Common/Masters";
 import { useGetCCRGroupMaster } from "../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation";
-import { CustomStatusPanel } from "../CustomStatusPannel";
 import AddRemoveCellRenderer from "./AddRemoveCellRenderer";
 import ConflictErrorCellRenderer from "./ConflictErrorCellRenderer";
 import DaysOfWeekRenderer from "./DaysOfWeekRenderer";
@@ -117,6 +116,8 @@ import MTOCalendarEditCellRenderer from "./MTOCalendarEditCellRenderer";
 import MTOErrorWarningCell from "./MTOErrorWarningCell";
 import PoogiEditDeleteCell from "./PoogiEditDeleteCell";
 import ToggleButton from "./ToggleButton";
+import moment from "moment";
+import {CustomStatusPanel } from "../CustomStatusPannel";
 
 
 const useViewModify = (pageType: string) => {
@@ -127,9 +128,13 @@ const useViewModify = (pageType: string) => {
   const selectedOptions = useSelector(
     (state: RootState) => state.mdm.selectedOptions
   );
+
+
   const activeMaster = useSelector(
     (state: RootState) => state.mdm.activeMaster
   );
+
+
 
   const masters = useSelector((state: RootState) => state.mdm.masters);
 
@@ -244,7 +249,7 @@ const useViewModify = (pageType: string) => {
   const { mutateAsync: getCalendarMasterData } = useGetCalendarMasterData();
   const { mutateAsync: modifyDraft } = useModifyDraft();
 
-  const { mutateAsync: deleteDraft } = useDeleteDraft();
+  const { mutateAsync: deleteDraft } = useDeleteMTODraft();
 
   const { mutateAsync: modifyMaster } = useModifyMasterData();
 
@@ -296,6 +301,7 @@ const useViewModify = (pageType: string) => {
       suppressColumnsToolPanel: true,
       wrapText: true,
       autoHeight: true,
+      minWidth: 300
     },
   ];
 
@@ -379,7 +385,7 @@ const useViewModify = (pageType: string) => {
 
   const location = useLocation()
 
-  const [prevPath , setPrevPath] = useState<string | undefined>(location?.state?.backUrl.split('/').pop());
+  const prevPath: string | undefined  = location?.state?.backUrl.split('/').pop();
 
   const backUrl = location?.state?.backUrl || ""
 
@@ -778,7 +784,7 @@ const useViewModify = (pageType: string) => {
         
         if(e.cgid){
           for(const key in ccrGroupMaster){
-            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid){
+            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid || key=== e.cgid){
               isValidCCRGroup = true
               break
             }
@@ -823,6 +829,12 @@ const useViewModify = (pageType: string) => {
               error: "Please select a valid CCR Group from the dropdown",
               warning: ""
             };
+          }
+          else if (e.fh < e.sh){
+            newVal.err = {
+              error: "FOL horizon cannot be less than scheduling horizon",
+              warning: ""
+            }
           }
 
           if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
@@ -951,19 +963,21 @@ const useViewModify = (pageType: string) => {
   };
 
   const sideBar: SideBarDef = {
-    toolPanels: [
-      {
-        id: "columns",
-        labelDefault: "Columns",
-        labelKey: "columns",
-        iconKey: "columns",
-        toolPanel: "agColumnsToolPanel",
-        toolPanelParams: {
-          suppressPivots: true,
-          suppressPivotMode: true,
-        },
-      },
-    ],
+    // toolPanels: [
+    //   {
+    //     id: "columns",
+    //     labelDefault: "Columns",
+    //     labelKey: "columns",
+    //     iconKey: "columns",
+    //     toolPanel: "agColumnsToolPanel",
+    //     toolPanelParams: {
+    //       suppressPivots: true,
+    //       suppressRowGroups: true,
+    //       suppressPivotMode: true,
+    //       suppressValues: true
+    //     },
+    //   },
+    // ],
     defaultToolPanel: defaultToolPanel,
   };
 
@@ -2324,9 +2338,9 @@ const useViewModify = (pageType: string) => {
         return null
       }
       return {
-        fileName : `${activeMaster.name} MTo`,
+        fileName : `${activeMaster.name} MTO`,
         columnKeys: columnDefs
-          .filter((col: any) => col.field !== 'actions' && col.field !== 'err') 
+          .filter((col: any) => col.field !== 'actions' && col.field !== 'err' && col.field !== 'iv') 
           .map((col: any) => col.field),             
         processCellCallback: (params: any) => {
           const { column, value } = params;
@@ -3213,10 +3227,6 @@ const useViewModify = (pageType: string) => {
         return {
           ...colDef,
           cellEditor: "agNumberCellEditor",
-          cellEditorParams: {
-            min: 0,
-            max: 365,
-          },
           cellStyle: (params: any) => {
             if (
               params.data.bid === null ||
@@ -3278,11 +3288,7 @@ const useViewModify = (pageType: string) => {
           return {
             ...colDef,
             editable,
-            cellEditor: "agNumberCellEditor",
-            cellEditorParams: {
-              min: 0,
-              max: 1,
-            },
+            cellEditor: "agNumberCellEditor"
           };
         }
         if (
@@ -3380,7 +3386,6 @@ const useViewModify = (pageType: string) => {
     };
 
     const isFromSaveDraft503 = prevPath === saveDraft && activeMaster.id === 503;
-    const hasActionCol = modifiedColDefs.some((col:any)=> col.field === "actions");
 
     if(isFromSaveDraft503){
       const newColDef = modifiedColDefs.filter((colDef: any) => colDef.field !== "actions");
@@ -3388,14 +3393,7 @@ const useViewModify = (pageType: string) => {
       return
     }
 
-    if(hasActionCol){
-      dispatch(UPDATE_COLDEFS([ ...modifiedColDefs ]));
-      return;
-    }
-
-    dispatch(UPDATE_COLDEFS([ actionsCol, ...modifiedColDefs ]));
-
-
+    dispatch(UPDATE_COLDEFS([ actionsCol,...modifiedColDefs.filter((ele)=>ele.field!=='actions') ]));
   };
 
   const addEditableToLastMinColumn = async () => {
@@ -3438,11 +3436,26 @@ const useViewModify = (pageType: string) => {
       }
     });
 
-    if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
-      return;
-    }
+    const pactionsCol: any = {
+      field: "pactions",
+      headerName: "Actions",
+      colId: "pactions",
+      pinned: "left",
+      width: 100,
+      editable:false,
+      floatingFilter: false,
+      suppressExcelExport: true,
+      cellRenderer: AddRemoveCellRenderer,
+      cellRendererParams: {
+        addEditableToLastColumn,
+      }
+    };
 
-    dispatch(UPDATE_COLDEFS([ ...modifiedColDefs]));
+    // if (modifiedColDefs.find((colDef: any) => colDef.field === "actions")) {
+    //   return;
+    // }
+
+    dispatch(UPDATE_COLDEFS([pactionsCol, ...modifiedColDefs]));
   };
 
   const addRowToMtoGrid = () => {
@@ -4138,6 +4151,17 @@ const useViewModify = (pageType: string) => {
   const onMTOSaveAsDraft = async () => {
     notifyLoader("Saving Draft...");
 
+    if(location?.state?.draftId){
+      try{
+        await deleteDraft(location?.state?.draftId)
+      }
+      catch(e){
+        toast.dismiss();
+        notifyError("Failed to save Draft!")
+        return;
+      }
+    }
+
     if (activeMaster.id === 501) {
       const BufferPostObj: any = {
         mid: activeMaster.id,
@@ -4155,9 +4179,9 @@ const useViewModify = (pageType: string) => {
               e.bt = elm.id;
             }
           });
-          e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
-          e.mlt = parseInt(e.mlt);
-          e.slt = parseInt(e.slt);
+          // e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
+          // e.mlt = parseInt(e.mlt);
+          // e.slt = parseInt(e.slt);
           e.err = "";
           e.iv = true;
           if (!e.bid) e.bid = null;
@@ -4333,7 +4357,6 @@ const useViewModify = (pageType: string) => {
             existingMajor.minData.push({
               mindsc,
               minid: null,
-              majid: null,
               majId: null,
               minId: null,
               mincd: "*",
@@ -4374,6 +4397,7 @@ const useViewModify = (pageType: string) => {
         at: pageType === "add" ? "Add" : "Modify",
       };
 
+
       poogiModifyData?.forEach((ele: any) => {
         const e = _.cloneDeep(ele);
         if (typeof e.majId === "string" && e.majId.startsWith("m")) {
@@ -4382,6 +4406,7 @@ const useViewModify = (pageType: string) => {
           e.ie = false;
         } else {
           e.ie = true;
+          e.majid = e.majId;
         }
         e.id = ele.id ? ele.id : false;
         e.iu = ele.iu ? ele.iu : false;
@@ -4397,8 +4422,10 @@ const useViewModify = (pageType: string) => {
           ) {
             minElement.minId = null;
             minElement.ie = false;
-            minElement.majId = null;
-            minElement.majid = null;
+            if(minElement?.majId && minElement?.majId?.length && minElement?.majId?.startsWith("m")){
+              minElement.majId = null;
+              minElement.majid = null;
+            }
             minElement.mincd = minElement.mincd ? minElement.mincd : "*";
           } else {
             minElement.ie = true;
@@ -4484,6 +4511,24 @@ const useViewModify = (pageType: string) => {
     dispatch(UPDATE_ROW_DATA(newData));
     setSelectedMajReason(newData[majIdIndex]);
   };
+
+  const getCombinedPoogiDataForExcelExport = () => {
+    if(activeMaster?.id!== 503) return [];
+    const allRowsData:any = []
+    
+    activeMaster?.rowData?.forEach((ele => {
+    
+        ele?.minData?.forEach((minEle: any) => {
+          allRowsData.push(
+            {majdsc: ele.majdsc, mindsc: minEle.mindsc, plnm: ele.plnm}
+          )
+        });
+      
+    }
+    ))
+    return allRowsData;
+
+  }
 
   return {
     colDefs,
@@ -4637,6 +4682,15 @@ const useViewModify = (pageType: string) => {
               cellRenderer: MajReasonDescCell,
             };
           }
+          else if(col.colId === 'plnm'){
+            return {
+              ...col,
+              cellEditor: "agRichSelectCellEditor",
+              cellEditorParams: {
+                values: plantMaster?.map((item: any) => item.plant_name),
+              },
+            }
+          }
           return col;
         }),
       {
@@ -4652,6 +4706,7 @@ const useViewModify = (pageType: string) => {
     onMinReasonEditingStopped,
     addRowToMtoMinGrid,
     mtoProgress,
+    getCombinedPoogiDataForExcelExport
   };
 };
 export default useViewModify;
