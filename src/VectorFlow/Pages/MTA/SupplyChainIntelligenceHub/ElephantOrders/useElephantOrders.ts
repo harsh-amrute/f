@@ -57,7 +57,6 @@ const useElephantOrders= ()=>{
         const orderid = rowData[orderIdKey];
       
         if (!skucode || !whcode || !orderid) {
-          console.warn("❌ Required fields missing in rowData:", rowData);
           return;
         }
         const updated = {
@@ -284,7 +283,7 @@ const useElephantOrders= ()=>{
             const result = internalRef?.api.applyColumnState({ state: gridState.columns, applyOrder: true });
             internalRef?.api.sizeColumnsToFit();
             if (!result) {
-                console.error("Failed to apply column state", result);
+                notifyError("Failed to apply column state");
             }
         }
     }, [internalRef, gridState]);
@@ -322,7 +321,7 @@ const useElephantOrders= ()=>{
             notifySuccess("Data Loaded Successfully")
         }
         catch(err:any){
-            notifyError(err)
+            notifyError("Error")
         }
     }
 
