@@ -154,6 +154,7 @@ const MaterialCov = () => {
         const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
         setUserPageSize(newConfig.pageSize? Number(newConfig.pageSize) : undefined);
         setColumnState(newConfig.cs)
+
   
         if (!data) {
           console.error('Failed to apply column state');
@@ -185,7 +186,8 @@ const MaterialCov = () => {
 
       } else {
 
-        const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState();
+        const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState(); 
+        
   
         const fullConfig = {
           cs: config,
@@ -324,6 +326,7 @@ const MaterialCov = () => {
 
       setIsReset(false) 
       notifySuccess("Reset successfully")
+
     }
   }, [isReset]);
 

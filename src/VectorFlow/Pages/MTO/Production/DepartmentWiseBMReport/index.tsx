@@ -44,10 +44,8 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
-import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import useGroupedColDef from "../../../../../hooks/useGroupedColDef";
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import BombExcelModal from '../../Common/BombExcelModal';
 
 
 interface ApiResponse {
@@ -883,9 +881,9 @@ const DptWiseBMReport = () => {
             const formatedFilters = formatFilterJSON(appliedFilters);
             const body = getBodyForGroupedExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
             try {
-                const response = await getFilteredDeptWiseBMReportData({ body, page: currentPage, appliedFilters: formatedFilters,report_name:FilterPageName.Prod_OverAll_BMReport, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
+                const response = await getFilteredDeptWiseBMReportData({ body, page: currentPage, appliedFilters: formatedFilters,report_name:FilterPageName.Prod_Dept_Wise_BM_Report, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
                 if (response.status == 200) {
-                    DownloadExcel(response, FilterPageName.Prod_OverAll_BMReport)
+                    DownloadExcel(response, FilterPageName.Prod_Dept_Wise_BM_Report)
                 } else {
                     notifyError("Error exporting Excel!");
                 }
@@ -1104,6 +1102,16 @@ const DptWiseBMReport = () => {
 
     const date = apiResponseData?.data?.data;
 
+    const handleExcelConfirm = () => {
+        setShowExcelModal(false);   
+        getUpdatedFilteredData(1,userPageSize, true, 1)
+    }
+
+    const handleExcelCancel = () => {
+        setShowExcelModal(false);   
+        getUpdatedFilteredData(1,userPageSize, true,0)
+    }
+
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -1139,34 +1147,13 @@ const DptWiseBMReport = () => {
             <p>{(date && date.length)? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
 
-            <VFModalCard
-          openModal={showExcelModal}
-          closeModal={() => setShowExcelModal(false)}
-          headerText="Excel Export Bomb Confirmation"
-          headerIcon=""
-          headerBgColor="white"
-          headerTextColor="black"
-          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
-          paddingLeftAndRight={27}
-          >
-        <div style={{ fontSize: "16px", padding: "1rem", textAlign: "center",height:'125px', display:'flex', alignItems:'center', justifyContent:'center' }}>
-          Do you want to download Excel with BOMB data?
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '13px', padding: "15px 1.5rem 15px 1.5rem", boxShadow: '0px -4px 10px rgba(0, 0, 0, 0.06)',  }}>
-          <VFButtonOutline themeUi={themeUi}  onClick={() => {
-            setShowExcelModal(false);   
-            getUpdatedFilteredData(1,userPageSize, true, 1)
-          }}>
-            Yes
-          </VFButtonOutline>
-            <VFButton themeUi={themeUi} onClick={() => {
-            setShowExcelModal(false);   
-            getUpdatedFilteredData(1,userPageSize, true,0)
-          }} >
-            No
-          </VFButton>
-        </div>
-        </VFModalCard>
+            <BombExcelModal
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+            />
             <>
                 {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }

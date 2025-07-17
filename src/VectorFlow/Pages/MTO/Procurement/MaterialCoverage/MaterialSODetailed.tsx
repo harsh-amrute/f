@@ -5,10 +5,9 @@ import VFPagination from '../../Common/VFPagination';
 import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
-import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
-import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard';
 import { useUserData } from "../../../../../context"
+import BombExcelModal from '../../Common/BombExcelModal';
+import { SideBarDef } from 'ag-grid-enterprise';
 
 
 interface MaterialSODetailedProps {
@@ -118,7 +117,37 @@ interface MaterialSODetailedProps {
             }
         }
 
-    },[columnState,currentGridRef?.current]);
+    }, [columnState, currentGridRef?.current]);
+      
+      const handleExcelConfirm = () => {
+        setShowExcelModal(false);
+        getInitialData(0, true,excelBody,userPageSize,1)  
+      }
+
+      const handleExcelCancel = () => {
+        setShowExcelModal(false);
+        getInitialData(0, true,excelBody,userPageSize,0) 
+        }
+        
+     const sideBar:SideBarDef = {
+            toolPanels: [
+              {
+                id: "columns",
+                labelDefault: "Columns",
+                labelKey: "columns",
+                iconKey: "columns",
+                toolPanel: "agColumnsToolPanel",
+                toolPanelParams: {
+                    suppressPivots: true,
+                    suppressPivotMode: true,
+                    suppressRowGroups: true,
+                    suppressValues: true,
+                  },
+              },
+            ],
+            defaultToolPanel:'',
+          }
+    
     
     return (
         <>
@@ -135,71 +164,30 @@ interface MaterialSODetailedProps {
                     tooltipShowDelay={0}
                     tooltipMouseTrack={true}
                     // height={'780px'}
+                    sideBar={
+                       sideBar
+                    }
                     ref={gridRef}
                     onGridReady={(params: any) => {
                         params.api.autoSizeAllColumns();
                         setCurrentGridRef(gridRef);
                     }}
+                    
                     paginationPageSize={pagination.mtoPageSize}
                     pagination={false}
                     maintainColumnOrder
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 
                 />
-                   <VFModalCard
-          openModal={showExcelModal}
-          closeModal={() => setShowExcelModal(false)}
-          headerText="Excel Export Bomb Confirmation"
-          headerIcon=""
-          headerBgColor="white"
-          headerTextColor="black"
-          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
-          paddingLeftAndRight={27}
-        >
-          <div
-            style={{
-              fontSize: "16px",
-              padding: "1rem",
-              textAlign: "center",
-              height: "125px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            Do you want to download Excel with BOMB data?
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: "13px",
-              padding: "15px 1.5rem 15px 1.5rem",
-              boxShadow: "0px -4px 10px rgba(0, 0, 0, 0.06)",
-            }}
-          >
-            <VFButtonOutline
-              themeUi={themeUi}
-              onClick={() => {
-                setShowExcelModal(false);
-                getInitialData(0, true,excelBody,userPageSize,1)
 
-              }}
-            >
-              Yes
-            </VFButtonOutline>
-            <VFButton
-              themeUi={themeUi}
-              onClick={() => {
-                setShowExcelModal(false);
-                getInitialData(0, true,excelBody,userPageSize,0)
+          <BombExcelModal
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+          />
 
-              }}
-            >
-              No
-            </VFButton>
-          </div>
-        </VFModalCard>
                 <VFPagination
                     selectedRows={0}
                     resetGridRef={gridRef}

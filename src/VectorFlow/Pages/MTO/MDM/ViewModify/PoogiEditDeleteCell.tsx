@@ -327,7 +327,8 @@ dispatch(SET_POOGI_MODIFY_DATA(newModifyData));
     }
     dispatch(
       UPDATE_COLDEFS(
-        activeMaster?.colDefs?.map((colDef: any) => ({
+        activeMaster?.colDefs?.map((colDef: any) => (
+          {
           ...colDef,
           editable: (para: any) =>
             para.node.rowIndex === params?.node?.rowIndex,

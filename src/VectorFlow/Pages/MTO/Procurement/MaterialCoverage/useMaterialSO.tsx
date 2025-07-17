@@ -16,6 +16,7 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
     const [rowDataCount, setRowDataCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+
  
 
     // const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
@@ -29,8 +30,8 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
         }
     }, [appliedFilters, userConfigFetched])  
 
-    const [isLoading, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  
 
     const getInitialData = async (currPage: number, isExcelExport = false, body = {}, pageSize?: any,isChildren?:any) => {
         try {
@@ -140,8 +141,10 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,
             enableRangeSelection: true,
-            components: customCellRenderers,
-            defaultColDef: {
+          components: customCellRenderers,
+            
+          defaultColDef: {
+                
                 resizable: true,
                 flex: 1,
                 filter: 'agTextColumnFilter',
@@ -161,7 +164,7 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
 
             },
         },
-
+        
         sideBar: sideBar,
         masterDetail: true,
         detailCellRenderer: DetailCellRenderer,

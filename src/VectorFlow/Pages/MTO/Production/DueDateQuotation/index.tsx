@@ -23,7 +23,8 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { FilterPageName, UIGridCode } from '../../Common/Enum'
 import useColDef from '../../../../../hooks/useColDef'
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-
+import { useNavigate } from 'react-router';
+import BombExcelModal from '../../Common/BombExcelModal'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -88,10 +89,10 @@ const DueDateQuotation = () => {
   const [bomActive, setBomActive] = useState(false);
   const [showExcelModal, setShowExcelModal] = useState(false);
 
-  
-
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
+  const [showWarningModal, setShowWarningModal] = useState(false);
+  const navigate = useNavigate();
 
   const ReportName='BomExplosion'
 
@@ -143,19 +144,38 @@ const DueDateQuotation = () => {
     return getColumnDefinations(bomHeader);
   }, [bomHeader]);
 
+  const onCloseWarningModal = () => {
+    navigate("/landing-page");
+  }
+
   useEffect(() => {
     const fetchDBRSettings = async () => {
+      try {
+        
+      
         const DBRSettingsData = await getDBRsettingsData();
         const DBRSettings = DBRSettingsData.data?.data;
-        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
-
-        if (BomFlag) {
-          setBomActive(true);
-        } 
-    };
+        if (DBRSettings && DBRSettings.length) {
+          const isDDQFromUI = DBRSettings.find((data: any) => data.flag === "IsDDQFromUI")?.value === "1" || true;
+          if (!isDDQFromUI) {
+            setShowWarningModal(true);
+          } else {
+            const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value == 1);
+            if (BomFlag) {
+              setBomActive(true);
+            }
+            getFilterData();
+          }
+        } else {
+          getFilterData();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
   
     fetchDBRSettings();
-  }, []); 
+  }, []);
 
   useEffect(()=>{
     if(!isUIConfigLoading && bomActive){
@@ -616,10 +636,6 @@ const DueDateQuotation = () => {
   };
 
   useEffect(() => {
-    getFilterData();
-  }, []);
-
-  useEffect(() => {
     if (isReset) {
       handleSaveClick(masterUIConfig);
       setIsReset(false);
@@ -632,9 +648,17 @@ const DueDateQuotation = () => {
   } else {
     getUpdatedFilterData(true, undefined, 0); 
   }
+  }
+  
+  const handleExcelConfirm = () => {
+    setShowExcelModal(false);   
+    getUpdatedFilterData(true, undefined, 1);  
+  }
+  const handleExcelCancel = () => {
+    setShowExcelModal(false);   
+    getUpdatedFilterData(true, undefined, 0); 
  }
-
-
+  
 
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
@@ -721,35 +745,14 @@ const DueDateQuotation = () => {
           style={{ fontSize: "12px", width: "100px", height: "40px" }}>
           Deselect Orders
         </VFButtonOutline>}
-
-        <VFModalCard
-          openModal={showExcelModal}
-          closeModal={() => setShowExcelModal(false)}
-          headerText="Excel Export Bomb Confirmation"
-          headerIcon=""
-          headerBgColor="white"
-          headerTextColor="black"
-          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
-          paddingLeftAndRight={27}
-          >
-        <div style={{ fontSize: "16px", padding: "1rem", textAlign: "center",height:'125px', display:'flex', alignItems:'center', justifyContent:'center' }}>
-          Do you want to download Excel with BOMB data?
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '13px', padding: "15px 1.5rem 15px 1.5rem", boxShadow: '0px -4px 10px rgba(0, 0, 0, 0.06)',  }}>
-          <VFButtonOutline themeUi={themeUi}  onClick={() => {
-            setShowExcelModal(false);   
-            getUpdatedFilterData(true, undefined, 1); 
-          }}>
-            Yes
-          </VFButtonOutline>
-            <VFButton themeUi={themeUi} onClick={() => {
-            setShowExcelModal(false);   
-            getUpdatedFilterData(true, undefined, 0); 
-          }} >
-            No
-          </VFButton>
-        </div>
-        </VFModalCard>
+        
+        <BombExcelModal
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+          />
 
         <VFButton themeUi={themeUi}
           disabled={disabled}
@@ -777,6 +780,14 @@ const DueDateQuotation = () => {
           {renderSubmitText()}
         </VFButton>
       </Footer>
+      <VFModalCard headerText={"Warning"} openModal={showWarningModal} closeModal={() => onCloseWarningModal()} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
+        <p data-testid="warning-test" style={{ textAlign: "center", color: "#313131", paddingTop: "36px", fontStyle: "normal", fontVariant: "normal", fontWeight: 300, fontSize: "16px", fontFamily: "Roboto", width: '400px' }}>
+          Access to this page is restricted because due date assignment is automatic in the current system.
+        </p>
+        <div style={{ display: "flex", gap: "28px", alignItems: "center", justifyContent: "center", paddingTop: "38px", paddingBottom: "36px" }}>
+          <VFButtonOutline themeUi={user.user.theme_ui} onClick={() => onCloseWarningModal()}>OK</VFButtonOutline>
+        </div>
+      </VFModalCard>
       {/* <BomExplosionPOC/> */}
     </Wrapper>
   )

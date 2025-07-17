@@ -67,9 +67,8 @@ import VFSelect from "../../../../../../src/components/VectorFLOW/commons/MTO/VF
 import ConfirmationModal from "./ConfirmationModal";
 import { InputCheckBox } from "./styles";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import useGroupedColDef from "../../../../../hooks/useGroupedColDef";
+import BombExcelModal from "../../Common/BombExcelModal";
 
 interface ApiResponse {
   cc: string;
@@ -285,10 +284,10 @@ const OverallBmReport = () => {
       setBomActive(false)
     }
     const orderClosingEnable = DBRSettings?.find((data: any) => {
-      return data.flag == "OrderCloseEnable";
+      return data.flag == "CloseOrdersFromUI";
     });
     
-    setorderClosingEnable( Number(orderClosingEnable?.value));
+    setorderClosingEnable(orderClosingEnable?.value);
     setSystemType(Number(systemType?.value || 0));
   };
 
@@ -488,14 +487,20 @@ const OverallBmReport = () => {
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
     setIsCheckboxChecked(isChecked); // Update state based on checkbox
-
-    if (isChecked) {
-      refGraph2.current.api.selectAll();
-    } else {
+  
+    if (refGraph2.current?.api) {
       refGraph2.current.api.deselectAll();
+      
+      if (isChecked) {
+        refGraph2.current.api.forEachNodeAfterFilterAndSort((node:any) => {
+          node.setSelected(true);
+        });
+      }
     }
     getSelectedRow();
   };
+
+  
 
   const toggleCheckBox = () => {
     const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
@@ -1398,7 +1403,6 @@ const OverallBmReport = () => {
         // pivotMode: false,
         defaultColDef: {
           enableRowGroup: true,
-          enablePivot: true,
 
           filter: "agTextColumnFilter",
           floatingFilter: true,
@@ -1584,6 +1588,7 @@ const OverallBmReport = () => {
   const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        //reset case
         const fullConfig = { pivot: false, cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
@@ -1596,7 +1601,7 @@ const OverallBmReport = () => {
         setIsPivot(false);
       } else if (page_size) {
         const config = columnState;
-        const isPivot = refGraph2.current?.api.isPivotMode();
+        const isPivot = refGraph2?.current?.api.isPivotMode();
         const fullConfig = { pivot: isPivot, cs: config, pageSize: page_size };
 
         const payload = {
@@ -1679,6 +1684,16 @@ const OverallBmReport = () => {
       }
     }))
   , []);
+
+  const handleExcelConfirm = () => {
+    setShowExcelModal(false);   
+    getInitialGridData(1, userPageSize, true, 1);
+  };
+
+  const handleExcelCancel = () => {
+    setShowExcelModal(false);
+    getInitialGridData(1, userPageSize, true, 0);
+  };
   
 
   return (
@@ -1716,36 +1731,15 @@ const OverallBmReport = () => {
       >
         <p>{date && date.length ? moment(date).format("D MMM YYYY") : " "}</p>
       </div>
-
-      <VFModalCard
-          openModal={showExcelModal}
-          closeModal={() => setShowExcelModal(false)}
-          headerText="Excel Export Bomb Confirmation"
-          headerIcon=""
-          headerBgColor="white"
-          headerTextColor="black"
-          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
-          paddingLeftAndRight={27}
-          >
-        <div style={{ fontSize: "16px", padding: "1rem", textAlign: "center",height:'125px', display:'flex', alignItems:'center', justifyContent:'center' }}>
-          Do you want to download Excel with BOMB data?
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '13px', padding: "15px 1.5rem 15px 1.5rem", boxShadow: '0px -4px 10px rgba(0, 0, 0, 0.06)',  }}>
-          <VFButtonOutline themeUi={themeUi}  onClick={() => {
-            setShowExcelModal(false);   
-            getInitialGridData(1, userPageSize, true, 1);
-          }}>
-            Yes
-          </VFButtonOutline>
-            <VFButton themeUi={themeUi} onClick={() => {
-            setShowExcelModal(false);   
-            getInitialGridData(1, userPageSize, true, 0);
-          }} >
-            No
-          </VFButton>
-        </div>
-        </VFModalCard>
-
+      
+        <BombExcelModal
+        open={showExcelModal}
+        onClose={() => setShowExcelModal(false)}
+        onConfirm={handleExcelConfirm}
+        onCancel={handleExcelCancel}
+        themeUi={themeUi}
+      />
+      
       {(isGridLoading ||
         isExcelLoading ||
         isGetStateLoading ||

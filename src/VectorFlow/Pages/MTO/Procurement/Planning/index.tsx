@@ -1,230 +1,206 @@
 import ActionToolBar from "../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar";
-import useProcPlanning from './useProcPlanning';
+import useProcPlanning from "./useProcPlanning";
 import VFFloatingTab from "../../../../../components/VectorFLOW/commons/VFFloatingTab";
-import { useEffect, useState } from 'react';
-import moment from 'moment';
-import OverlayLoader from '../../Common/Loader';
+import { useEffect, useState } from "react";
+import moment from "moment";
+import OverlayLoader from "../../Common/Loader";
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { FilterPageName } from "../../Common/Enum";
-import { useUserData } from '../../../../../context'
-import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard";
-import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-
+import { useUserData } from "../../../../../context";
+import BombExcelModal from "../../Common/BombExcelModal";
 
 const APIFilterConfig = {
-    filSecVisConfig: {
-        "Proc_Procurement_Planning" : {
-            mjr : false,
-            or: true,
-            res: true,
-            cus: true
-        },
-    }
+  filSecVisConfig: {
+    Proc_Procurement_Planning: {
+      mjr: false,
+      or: true,
+      res: true,
+      cus: true,
+    },
+  },
 };
 
 const ProcurementPlanning = () => {
-    const [filterData, setFilterData] = useState({});
-    const format2 = "YYYY-MM-DD"
-    const d = new Date();
-    const datetime = moment(d).format(format2);
-    const [date, selectedDate] = useState<string>(datetime);
-    const { 
-        state: currFilter, 
-        setState: setCurrFilter, 
-        onFilterRemove, 
-        isFilterOpen,
-        isMfgSelected, 
-        onAddFilter, 
-        onApplyFilter, 
-        toggleFilter,
-      appliedFilters,
-    } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Procurement_Planning);
-    const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
-    const {
-        renderView, 
-        toggleCurrentTab, 
-        fetchData, isLoading, 
-        currentTab, 
-        isUpdateUserConfig,
-        isGetUserConfig,
-        handleResetClick,
-        handleSaveClick, 
-        childrenModal,
-        setShowExcelModal,
-        showExcelModal,
-    } = useProcPlanning(date, appliedFilters);
+  const [filterData, setFilterData] = useState({});
+  const [showExcelModal, setShowExcelModal] = useState(false);
 
-    const handleDateChange = (date: string) => {
-        selectedDate(date);
-    };
+  const {
+    state: currFilter,
+    setState: setCurrFilter,
+    onFilterRemove,
+    isFilterOpen,
+    isMfgSelected,
+    onAddFilter,
+    onApplyFilter,
+    toggleFilter,
+    appliedFilters,
+  } = useFilter(
+    filterData,
+    APIFilterConfig.filSecVisConfig.Proc_Procurement_Planning
+  );
+  const {
+    mutateAsync: getPageWiseFilterData,
+    isLoading: getFilterdataLoading,
+  } = useGetFilterData();
+  const {
+    renderView,
+    toggleCurrentTab,
+    fetchData,
+    isLoading,
+    currentTab,
+    handleResetClick,
+    handleSaveClick,
+    childrenModal,
+    // setShowExcelModal,
+    // showExcelModal,
+    getTempGridData,
+    selectedDate,
+    setSelectedDate,
+    isPivot,
+  } = useProcPlanning(appliedFilters);
 
-    const {user} = useUserData();
-    const themeUi = user?.user?.theme_ui
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+  };
 
-    const getFilterData = async () => {
-        try {
-          const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Procurement_Planning, release_date: date});
-          setFilterData(response?.data.data);
-        } catch (error) {
-          console.error(error);
-        }
+  const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
+
+  const getFilterData = async () => {
+    try {
+      const response = await getPageWiseFilterData({
+        page_name: FilterPageName.Proc_Procurement_Planning,
+        release_date: selectedDate,
+      });
+      setFilterData(response?.data.data);
+    } catch (error) {
+      console.error(error);
     }
-    
-    useEffect(() => {
-        getFilterData()
-    }, []);
+  };
+
+  useEffect(() => {
+    getFilterData();
+  }, []);
 
   const ExcelExportData = () => {
-        if(childrenModal){
-            setShowExcelModal(true) 
-        }
-        else{
-            fetchData(date ,1 , currentTab?.label === 'Shortage' ? '0' : '1', true,1,0)
-
-        }
+    if (isPivot) {
+      getTempGridData();
+      return;
     }
-    
-    return (
-      <>
-        <VFModalCard
-          openModal={showExcelModal}
-          closeModal={() => setShowExcelModal(false)}
-          headerText="Excel Export Bomb Confirmation"
-          headerIcon=""
-          headerBgColor="white"
-          headerTextColor="black"
-          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
-          paddingLeftAndRight={27}
-        >
-          <div
-            style={{
-              fontSize: "16px",
-              padding: "1rem",
-              textAlign: "center",
-              height: "125px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            Do you want to download Excel with BOMB data?
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: "13px",
-              padding: "15px 1.5rem 15px 1.5rem",
-              boxShadow: "0px -4px 10px rgba(0, 0, 0, 0.06)",
-            }}
-          >
-            <VFButtonOutline
-              themeUi={themeUi}
-              onClick={() => {
-                setShowExcelModal(false);
-                fetchData(
-                  date,
-                  1,
-                  currentTab?.label === "Shortage" ? "0" : "1",
-                  true,
-                  1,
-                  1
-                );
-              }}
-            >
-              Yes
-            </VFButtonOutline>
-            <VFButton
-              themeUi={themeUi}
-              onClick={() => {
-                setShowExcelModal(false);
-                fetchData(
-                  date,
-                  1,
-                  currentTab?.label === "Shortage" ? "0" : "1",
-                  true,
-                  0,
-                  0
-                );
-              }}
-            >
-              No
-            </VFButton>
-          </div>
-        </VFModalCard>
+    if (childrenModal) {
+      setShowExcelModal(true);
+    } else {
+      fetchData(
+        selectedDate,
+        1,
+        currentTab?.label === "Shortage" ? "0" : "1",
+        true,
+        1,
+        0
+      );
+    }
+  };
 
-        {(isLoading || isUpdateUserConfig || isGetUserConfig ) && (
-          <OverlayLoader />
-        )}
-
-        <div
-          style={{
-            display: "flex",
-            height: "100%",
-            flexDirection: "column",
-            paddingBottom: "2rem",
-          }}
-        >
-          <ActionToolBar
-            comp={"Procurement Planning"}
-            onDateChange={handleDateChange}
-            isReleaseDate
-            isAddFilterButton
-            themeUi={themeUi}
-            isExcelExport
-            onExcelExportClick={ExcelExportData}
-            submitDate={() => {
-              // fetchData(date, 1, currentTab?.label === 'Shortage' ? '0' : '1')
-              getFilterData();
-            }}
-            date={date}
-            handleSaveClick={handleSaveClick}
-            handleResetClick={handleResetClick}
-            isFilterOpen={isFilterOpen}
-            onAddFilter={onAddFilter}
-            toggleFilter={toggleFilter}
-            onApplyFilter={onApplyFilter}
-            multiFilter={currFilter}
-            setMultiFilter={setCurrFilter}
-            onFilterRemove={onFilterRemove}
-            isMfgSelected={isMfgSelected}
-          />
-
-          <div style={{ zoom: 0.75 }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginBottom: "2px",
-              }}
-            >
-              <VFFloatingTab
-                handleClick={(tab) => toggleCurrentTab(tab)}
-                tabs={[
-                  {
-                    id: "ca",
-                    label: "Completely Available",
-                    value: "ca",
-                  },
-                  {
-                    id: "short",
-                    label: "Shortage",
-                    value: "short",
-                  },
-                ]}
-              />
-            </div>
-          </div>
-          {/* <ProcurementLayout> */}
-          {renderView()}
-          {/* </ProcurementLayout> */}
-        </div>
-      </>
+  const handleExcelConfirm = () => {
+    setShowExcelModal(false);
+    fetchData(
+      selectedDate,
+      1,
+      currentTab?.label === "Shortage" ? "0" : "1",
+      true,
+      1,
+      1
     );
-}
+  };
+  const handleExcelCancel = () => {
+    setShowExcelModal(false);
+    fetchData(
+      selectedDate,
+      1,
+      currentTab?.label === "Shortage" ? "0" : "1",
+      true,
+      0,
+      0
+    );
+  };
 
-export default ProcurementPlanning
+  return (
+    <>
+      <BombExcelModal
+        open={showExcelModal}
+        onClose={() => setShowExcelModal(false)}
+        onConfirm={handleExcelConfirm}
+        onCancel={handleExcelCancel}
+        themeUi={themeUi}
+      />
 
+      {(isLoading || getFilterdataLoading) && <OverlayLoader />}
 
+      <div
+        style={{
+          display: "flex",
+          height: "100%",
+          flexDirection: "column",
+          paddingBottom: "2rem",
+        }}
+      >
+        <ActionToolBar
+          comp={"Procurement Planning"}
+          onDateChange={handleDateChange}
+          isReleaseDate
+          isAddFilterButton
+          themeUi={themeUi}
+          isExcelExport
+          onExcelExportClick={ExcelExportData}
+          submitDate={() => {
+            // fetchData(date, 1, currentTab?.label === 'Shortage' ? '0' : '1')
+            getFilterData();
+          }}
+          date={selectedDate}
+          handleSaveClick={handleSaveClick}
+          handleResetClick={handleResetClick}
+          isFilterOpen={isFilterOpen}
+          onAddFilter={onAddFilter}
+          toggleFilter={toggleFilter}
+          onApplyFilter={onApplyFilter}
+          multiFilter={currFilter}
+          setMultiFilter={setCurrFilter}
+          onFilterRemove={onFilterRemove}
+          isMfgSelected={isMfgSelected}
+        />
+
+        <div style={{ zoom: 0.75 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "2px",
+            }}
+          >
+            <VFFloatingTab
+              handleClick={(tab) => toggleCurrentTab(tab)}
+              tabs={[
+                {
+                  id: "ca",
+                  label: "Completely Available",
+                  value: "ca",
+                },
+                {
+                  id: "short",
+                  label: "Shortage",
+                  value: "short",
+                },
+              ]}
+            />
+          </div>
+        </div>
+        {/* <ProcurementLayout> */}
+        {renderView()}
+        {/* </ProcurementLayout> */}
+      </div>
+    </>
+  );
+};
+
+export default ProcurementPlanning;
