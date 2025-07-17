@@ -3152,7 +3152,7 @@ const useViewModify = (pageType: string) => {
     if (bufferTypeData) {
       bufferTypeData.forEach((ele: any) => {
         if (ele.id.toString() === currBuff?.toString()) {
-          val = ele.dsc;
+          val = ele.nm;
         }
       });
     }
