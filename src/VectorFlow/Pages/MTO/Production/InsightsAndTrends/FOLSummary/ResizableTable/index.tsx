@@ -102,6 +102,18 @@ const ResizableTable = (props: IResizeTableProps) => {
         statusBar={{
           statusPanels: [{ statusPanel: customPage, align:'right' },
             { statusPanel: CustomStatusPanel, align: "left" },
+              { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left"  },
+              { statusPanel: "agTotalRowCountComponent", align: "left"  },
+              { statusPanel: "agFilteredRowCountComponent", align: "left"  },
+              { statusPanel: "agSelectedRowCountComponent", align: "left"  },
+        
+              {
+                statusPanel: "agAggregationComponent",
+                align:'left',
+                statusPanelParams: {
+                    aggFuncs: ["avg", "sum", "min", "max", "count",  ],
+                },
+            },
           ],
         }}
         pagination={true}
