@@ -3,10 +3,10 @@ import axios from 'axios';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace DepartmentWiseBMReport {
 
-    export const getFilteredDeptWiseBMReport = async ({ wip, curr, appliedFilters, page_size, isBomExplosion, isExcelExport = false,body }: any) => {
+    export const getFilteredDeptWiseBMReport = async ({ wip, curr, appliedFilters, page_size, isBomExplosion, isExcelExport = false,body,page, report_name }: any) => {
         if (isExcelExport) {
             return await axios.put(
-                process.env.REACT_APP_VF_API_HOST_MTO + `/getOverAllBMReportData/?avawip=${0}&page_size=${page_size || process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE}`,
+                process.env.REACT_APP_VF_API_HOST_MTO + `/getDeptWiseBMReportData/?avawip=${0}&report_name=${report_name}&page=${page}&page_size=${page_size || process.env.REACT_APP_MTO_BM_REPORT_ROWS_PER_PAGE}`,
                 body,
                 {
                     headers: { 'Content-Type': 'application/json' },

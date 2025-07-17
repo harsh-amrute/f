@@ -1122,8 +1122,8 @@ const OverallBmReport = () => {
       const formatedFilters = formatFilterJSON(appliedFilters);
       const body = getBodyForGroupedExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
           try{
-              const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage, page_size: pageSize || userPageSize,isBomExplosion})
-              if(response.status == 200){
+              const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
+              if(response.status == 200){//1,userpage,true,0
                 DownloadExcel(response,FilterPageName.Prod_OverAll_BMReport)
               }else{
                 notifyError("Error exporting Excel!");

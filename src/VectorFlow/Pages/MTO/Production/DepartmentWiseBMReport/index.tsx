@@ -883,7 +883,7 @@ const DptWiseBMReport = () => {
             const formatedFilters = formatFilterJSON(appliedFilters);
             const body = getBodyForGroupedExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
             try {
-                const response = await getFilteredDeptWiseBMReportData({ body, appliedFilters: formatedFilters, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
+                const response = await getFilteredDeptWiseBMReportData({ body, page: currentPage, appliedFilters: formatedFilters,report_name:FilterPageName.Prod_OverAll_BMReport, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
                 if (response.status == 200) {
                     DownloadExcel(response, FilterPageName.Prod_OverAll_BMReport)
                 } else {

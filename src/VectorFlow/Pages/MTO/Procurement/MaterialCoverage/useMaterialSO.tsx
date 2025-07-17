@@ -11,10 +11,12 @@ import { toast } from "react-toastify";
 import { FilterPageName, pagination } from "../../Common/Enum";
 import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
 
-const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userConfigFetched:any,userPageSize:any,setUserPageSize:any,childColDef:any) => {
+const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, userConfigFetched: any, userPageSize: any, setUserPageSize: any, childColDef: any, 
+  setShowExcelModal: (e: boolean) => void, childrenModal: any, excelBody: any,) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
     const [rowDataCount, setRowDataCount] = useState<number>(0);
-    const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+ 
 
     // const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
     const { mutateAsync: getOpenSODetailsData } = useGetOpenSODetailsData()
@@ -30,7 +32,7 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
     const [isLoading, setIsLoading] = useState(false);
 
 
-    const getInitialData = async (currPage: number, isExcelExport = false, body = {}, pageSize?: any) => {
+    const getInitialData = async (currPage: number, isExcelExport = false, body = {}, pageSize?: any,isChildren?:any) => {
         try {
             const formattedFilters = formatFilterJSON(appliedFilters);
             const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'));
@@ -43,13 +45,15 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
           }
           
             
-            if (isExcelExport) {
+          if (isExcelExport) {
+            const queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}&isChildren=${isChildren}`;
               notifyLoader("Exporting data")
             const response = await getOpenSODetailsDataForExcelExport({
               data: queryString,
               isExcelExport: 1,
               body,
-              report_name: FilterPageName.Proc_Material_Coverage_For_OpenSO
+              report_name: FilterPageName.Proc_Material_Coverage_For_OpenSO,
+              isChildren
             });
       
             if (response.status === 200) {
@@ -172,9 +176,16 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
         enterNavigatesVerticallyAfterEdit: true,
     };
 
-    const ExcelExportData = (body : any) =>{    
-        getInitialData(0, true, body)
+  
+  const ExcelExportData = (body: any) => {
+    if (childrenModal) {
+        setShowExcelModal(true) 
     }
+    else{
+      getInitialData(0, true,excelBody,0)
+
+    }
+}
 
     return {
         agGridProps,
@@ -186,6 +197,7 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
         ExcelExportData,
         savePageSize,
         userPageSize,
+        getInitialData
     }
 }
 

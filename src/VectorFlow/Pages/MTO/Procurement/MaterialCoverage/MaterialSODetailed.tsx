@@ -5,6 +5,11 @@ import VFPagination from '../../Common/VFPagination';
 import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
+import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
+import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard';
+import { useUserData } from "../../../../../context"
+
 
 interface MaterialSODetailedProps {
     parameterData: any,
@@ -19,10 +24,16 @@ interface MaterialSODetailedProps {
     userConfigFetched:any,
     userPageSize:any,
     setUserPageSize:any
-    childColDef:any
+    childColDef: any
+    showExcelModal: any,
+    setShowExcelModal: any,
+    childrenModal: any,
+    setChildrenModal: any,
+    excelBody:any,
+    
 }
 
-    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef}: MaterialSODetailedProps, ref) => {
+    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef, showExcelModal, setShowExcelModal, childrenModal, excelBody}: MaterialSODetailedProps, ref) => {
     const {
         agGridProps,
         RRRRowData,
@@ -32,8 +43,13 @@ interface MaterialSODetailedProps {
         currentPage,
         ExcelExportData,
         savePageSize,
-    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef);
-    const gridRef = useRef<any>(null);
+        getInitialData,
+
+    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef,setShowExcelModal,childrenModal ,excelBody  );
+        const gridRef = useRef<any>(null);
+        
+            const {user} = useUserData();
+            const themeUi = user?.user?.theme_ui
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true);
     
@@ -130,6 +146,60 @@ interface MaterialSODetailedProps {
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 
                 />
+                   <VFModalCard
+          openModal={showExcelModal}
+          closeModal={() => setShowExcelModal(false)}
+          headerText="Excel Export Bomb Confirmation"
+          headerIcon=""
+          headerBgColor="white"
+          headerTextColor="black"
+          closeIcon="/assets/img/VectorFLOW/NMS/close-dark.svg"
+          paddingLeftAndRight={27}
+        >
+          <div
+            style={{
+              fontSize: "16px",
+              padding: "1rem",
+              textAlign: "center",
+              height: "125px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            Do you want to download Excel with BOMB data?
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "13px",
+              padding: "15px 1.5rem 15px 1.5rem",
+              boxShadow: "0px -4px 10px rgba(0, 0, 0, 0.06)",
+            }}
+          >
+            <VFButtonOutline
+              themeUi={themeUi}
+              onClick={() => {
+                setShowExcelModal(false);
+                getInitialData(0, true,excelBody,userPageSize,1)
+
+              }}
+            >
+              Yes
+            </VFButtonOutline>
+            <VFButton
+              themeUi={themeUi}
+              onClick={() => {
+                setShowExcelModal(false);
+                getInitialData(0, true,excelBody,userPageSize,0)
+
+              }}
+            >
+              No
+            </VFButton>
+          </div>
+        </VFModalCard>
                 <VFPagination
                     selectedRows={0}
                     resetGridRef={gridRef}
