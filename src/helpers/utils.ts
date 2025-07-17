@@ -4751,9 +4751,6 @@ export const parseMTOExcelData = async (file: File, master: MDMMasterState, page
   if (numberOfSheets.length > 1) {
     throw new Error('File cannot contain multiple sheets');
   }
-  if (numberOfSheets[0] !== 'ag-grid') {
-    throw new Error('Sheet Name is changed');
-  }
 
   // Parse Excel data
   const data = await readXlsxFile(buffer, { parseNumber: (string) => string });

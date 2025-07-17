@@ -1,6 +1,6 @@
 import { ColDef, SideBarDef } from "ag-grid-enterprise";
 import { AgGridReactProps } from "ag-grid-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ErrorCell from "../../../../../components/VectorFLOW/commons/ErrorCell";
 import {
@@ -500,10 +500,12 @@ const useViewModify = (pageType: string) => {
         if (col.colId === "iv") {
           col.cellRenderer = ToggleButton;
           col.pinned = 'right';
+          col.floatingFilter = false
         }
         if(col.colId === "bt"){
           col.valueFormatter = myFormatter
         }
+
         if(col.colId !== "actions" && col.colId !== "iv"){
           col.cellStyle = (params:any)=>{
             const { data } = params;
@@ -661,6 +663,25 @@ const useViewModify = (pageType: string) => {
     }
   }, [activeMaster]);
 
+
+  const mapCCRGroupMater = new Map()
+
+  const ccrGroupValidationFn = useCallback(()=>{
+    activeMaster.rowData.forEach((data:any)=>{
+      for(const key in ccrGroupMaster){
+        if(ccrGroupMaster[key]?.ccr_group_id === data.cgid || key=== data.cgid){
+          mapCCRGroupMater.set(data.cgid,[ccrGroupMaster[key].ccr_group_id,key])
+          break
+        }
+      }
+    })
+  },[ccrGroupMaster,activeMaster,activeMaster.rowData])
+
+  useEffect(()=>{
+    ccrGroupValidationFn()
+  },[ccrGroupMaster,activeMaster,activeMaster.rowData])
+
+
   // Validatio in process....
 
   const validateMTOMaster = (masterId: number, newRowData: any) => {
@@ -781,14 +802,8 @@ const useViewModify = (pageType: string) => {
       allRows.forEach((e: any, index: number) => {
         const newVal = _.cloneDeep(e);
         const {error} = CCR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
-        
-        if(e.cgid){
-          for(const key in ccrGroupMaster){
-            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid || key=== e.cgid){
-              isValidCCRGroup = true
-              break
-            }
-          }
+        if(mapCCRGroupMater.has(e.cgid) ){
+          isValidCCRGroup = mapCCRGroupMater.get(e.cgid)[0] === e.cgid || mapCCRGroupMater.get(e.cgid)[1] === e.cgid
         }
         if(error){
           const fieldOrders = activeMaster.fields.map(field =>field.key)
@@ -830,12 +845,12 @@ const useViewModify = (pageType: string) => {
               warning: ""
             };
           }
-          else if (e.fh < e.sh){
-            newVal.err = {
-              error: "FOL horizon cannot be less than scheduling horizon",
-              warning: ""
-            }
-          }
+          // else if (e.fh < e.sh){
+          //   newVal.err = {
+          //     error: "FOL horizon cannot be less than scheduling horizon",
+          //     warning: ""
+          //   }
+          // }
 
           if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
             newVal.err = {
@@ -864,6 +879,7 @@ const useViewModify = (pageType: string) => {
           newData.push(newVal);
         }
       });
+      
 
       // Dispatch the updated row data
       dispatch(UPDATE_ROW_DATA(newData));
@@ -2374,7 +2390,7 @@ const useViewModify = (pageType: string) => {
         }
       };
     }
-  ),[deptMaster,plantNames,ccrGroupMaster,ref,bufferTypeData,activeMaster?.id])
+  ),[deptMaster,plantNames,ccrGroupMaster,ref,bufferTypeData,activeMaster?.id,activeMaster])
   
 
   const handleChangePage = async (pageNo: any) => {
@@ -3193,12 +3209,14 @@ const useViewModify = (pageType: string) => {
           return params.data.isEditing === true
         }
       };
-      if(colDef.field === 'actions'){
+      if(colDef.field === 'actions' || colDef.field === 'iv' ){
         return {
           ...colDef,
-          editable:false
+          editable:false,
+          floatingFilter: false,
         }
       }
+
       if (colDef.field === "bt") {
         return {
           ...colDef,
@@ -3263,12 +3281,15 @@ const useViewModify = (pageType: string) => {
       }
 
       if (activeMaster.id === 502) {
-        if(colDef.field === 'actions'){
+        if(colDef.field === 'actions' || colDef.field === 'iv'){
           return {
             ...colDef,
-            editable:false
+            editable:false,
+            floatingFilter: false,
+            
           }
         }
+        
         if (
           colDef.field === "pl" ||
           colDef.field === "dp" ||

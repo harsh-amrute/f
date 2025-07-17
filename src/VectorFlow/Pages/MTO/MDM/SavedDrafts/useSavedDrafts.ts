@@ -163,17 +163,12 @@ const useSavedDrafts = ()=>{
               },
             };
 
-            if(col.field === 'actions'){
+            if(col.field === 'actions' || col.field === 'iv'){
               return {
                 ...col,
-                editable:false
-              }
-            }
+                editable:false,
+                floatingFilter: false,
 
-            if(col.field === 'iv'){
-              return {
-                ...col,
-                editable:false
               }
             }
 
@@ -219,8 +214,13 @@ const useSavedDrafts = ()=>{
             }
             else return col;
       })
+
+      if(ActionType !== 'Modify'){
+        return colDef.filter((col:any)=> col.field !== 'iv')
+      }
+
       return colDef
-    }),[])
+    }),[plantMaster,ccrGroupMaster, bufferTypeMaster,ccrsData, deptMaster])
       
       const convertToPoogiDraftData = (data: any, page: any) => {
         const result: any[] = [];
