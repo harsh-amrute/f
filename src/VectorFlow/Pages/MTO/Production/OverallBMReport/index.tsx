@@ -278,10 +278,10 @@ const OverallBmReport = () => {
       setBomActive(false)
     }
     const orderClosingEnable = DBRSettings?.find((data: any) => {
-      return data.flag == "OrderCloseEnable";
+      return data.flag == "CloseOrdersFromUI";
     });
     
-    setorderClosingEnable( Number(orderClosingEnable?.value));
+    setorderClosingEnable(orderClosingEnable?.value);
     setSystemType(Number(systemType?.value || 0));
   };
 
@@ -477,14 +477,20 @@ const OverallBmReport = () => {
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
     setIsCheckboxChecked(isChecked); // Update state based on checkbox
-
-    if (isChecked) {
-      refGraph2.current.api.selectAll();
-    } else {
+  
+    if (refGraph2.current?.api) {
       refGraph2.current.api.deselectAll();
+      
+      if (isChecked) {
+        refGraph2.current.api.forEachNodeAfterFilterAndSort((node:any) => {
+          node.setSelected(true);
+        });
+      }
     }
     getSelectedRow();
   };
+
+  
 
   const toggleCheckBox = () => {
     const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
@@ -935,7 +941,7 @@ const OverallBmReport = () => {
           child.cc === "BPP" && excelColorArr.reduce(
             (acc, color) => ({
               ...acc,
-              [color]: (params: any) => params.data.cl === color
+              [color]: (params: any) => params.data?.cl === color
             }),
             {}
           ),
@@ -1367,7 +1373,6 @@ const OverallBmReport = () => {
         // pivotMode: false,
         defaultColDef: {
           enableRowGroup: true,
-          enablePivot: true,
 
           filter: "agTextColumnFilter",
           floatingFilter: true,
@@ -1538,6 +1543,7 @@ const OverallBmReport = () => {
   const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        //reset case
         const fullConfig = { pivot: false, cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
@@ -1550,7 +1556,7 @@ const OverallBmReport = () => {
         setIsPivot(false);
       } else if (page_size) {
         const config = columnState;
-        const isPivot = refGraph2.current?.api.isPivotMode();
+        const isPivot = refGraph2?.current?.api.isPivotMode();
         const fullConfig = { pivot: isPivot, cs: config, pageSize: page_size };
 
         const payload = {

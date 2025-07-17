@@ -45,10 +45,6 @@ const LandingPage = () => {
 
   const CreateMenuFunction = (app_id: any, item: any) => {
     if (item?.lp_attr) {
-      const allowed = user?.roles?.permission?.some((value: any) => {
-        return item?.role?.includes(value);
-      });
-      if (allowed) {
         const currentList = map.current.get(app_id) || [];
         if (
           !currentList.some(
@@ -89,7 +85,7 @@ const LandingPage = () => {
           curr.img = themeUi === "REGALBLAZE" ? item.rp_img : item.lp_img;
         }   
       }
-    }  
+    
     } else if (item?.child) {
       item?.child.forEach((child: any) => {
         CreateMenuFunction(app_id, child);
@@ -99,16 +95,9 @@ const LandingPage = () => {
 
   const createMenu = () => {
     listMenu?.forEach((item: any) => {
-      const role = user?.roles?.permission?.some((value: any) => {
-        return item?.role?.includes(value);
-      });
 
-      if (role) {
-        if (!map.current.has(item?.app_id)) {
-          map.current.set(item?.app_id, []);
-        }
         CreateMenuFunction(item?.app_id, item);
-      }
+      
     });
   };
 

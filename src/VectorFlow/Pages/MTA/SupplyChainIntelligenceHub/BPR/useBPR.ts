@@ -534,8 +534,8 @@ const useBPR =()=>{
             floatingFilter: false,
             suppressColumnsToolPanel: false,
             headerTooltip: "Daily Data Graph",
-
-
+            headerName:"Daily Data Graph",
+            sortable:false,
         },
         remarks: {
             cellStyle: {

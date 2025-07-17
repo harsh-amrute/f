@@ -74,9 +74,7 @@ const useAdd=()=>{
           floatingFilter:false,
           cellRenderer:'warningCell',
           minWidth:200,
-          suppressColumnsToolPanel:true,
-          wrapText:true,
-          autoHeight:true,
+          suppressColumnsToolPanel:true
         },
         {
           field:'error',
@@ -85,8 +83,7 @@ const useAdd=()=>{
           floatingFilter:false, 
           cellRenderer:'errorCell',
           suppressColumnsToolPanel:true,
-          wrapText:true,
-          autoHeight:true,
+          minWidth: 300
         }
     ];
 
