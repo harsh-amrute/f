@@ -15,7 +15,7 @@ import { BPRViewTableHeaderTab, InputCheckBox, SCTabHeader } from './styles';
 import ReleaseModal from './ReleaseModal';
 import './styles.css'
 import { useGetDynamicReleaseData, useGetDynamicReleaseExcelData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
-import { notifyError, notifySuccess } from '../../../../../helpers/notify';
+import { notifyError, notifySuccess, notifyWarning } from '../../../../../helpers/notify';
 import { useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetFOLData, useGetLineCCRDetails, useGetRouteDetails } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import OverlayLoader from '../../Common/Loader';
 import VFPagination from '../../Common/VFPagination';
@@ -29,6 +29,10 @@ import useColDef from '../../../../../hooks/useColDef';
 import { ColorsMTO } from '../../Common/Colors';
 import VFButton from '../../../../../components/VectorFLOW/commons/VFButton';
 import BPPRenderer from '../../Common/BPRRenderer/BPPRenderer';
+import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettings';
+import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard';
+import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
+import { useNavigate } from 'react-router';
 
 
 const APIFilterConfig = {
@@ -70,8 +74,9 @@ const DynamicReleaseManagement = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
   const [order_key, setOrder_Key] = useState('');
-  const [table1, setTable1] = useState(true);
+  const [table1, setTable1] = useState<any>(undefined);
   const [showReleaseModal, setShowReleaseModal] = useState(false)
+  const { mutateAsync: getDBRsettingsData, isLoading: isDBRSettingData } = useGetDBRsettingsData();
   const { mutateAsync: getDynamicReleaseData, isLoading, isError, isSuccess } = useGetDynamicReleaseData();
   const { mutateAsync: updateUserUIReportConfigData, isLoading: isUpdateUserConfig } = useUpdateUserUIConfigData();
   const { mutateAsync: getUserUIReportConfigData, isLoading: isGetUserConfig } = useGetUserUIConfigData();
@@ -121,7 +126,8 @@ const DynamicReleaseManagement = () => {
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
-
+  const navigate = useNavigate();
+  const [showWarningModal, setShowWarningModal] = useState(false);
 
   const setColumnDef = async () => {
     try {
@@ -198,12 +204,35 @@ const DynamicReleaseManagement = () => {
     }
   }
 
+  const onCloseWarningModal = () => {
+    navigate("/landing-page");
+  }
+
+  const fetchDBRSettingsData = async () => {
+    try {
+      const DBRSettingsData = await getDBRsettingsData();
+      const DBRSettings = DBRSettingsData?.data?.data || [];
+      if (DBRSettings && DBRSettings.length) {
+        const isAutoRelease = DBRSettings.find((data: any) => data.flag === "AutoRelease")?.value === "1" || false;
+        if (isAutoRelease) {
+          setShowWarningModal(true);
+        } else {
+          setTable1(true);
+          getMastersData();
+          setColumnDef();
+        }
+      } else {
+        getMastersData();
+        setColumnDef();
+      }
+
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   useEffect(() => {
-    getMastersData();
-    // GetData();
-    setColumnDef();
-    // getUserColumnConfig();
-    // getFilterData()
+    fetchDBRSettingsData();
   }, [])
 
   useEffect(() => {
@@ -225,8 +254,10 @@ const DynamicReleaseManagement = () => {
     }
   }, [dataUpdated])
 
-  useEffect(()=>{
-    getFilterData();
+  useEffect(() => {
+    if (table1) {
+      getFilterData();
+    }
   },[table1])
   
   useEffect(()=>{
@@ -944,7 +975,7 @@ const DynamicReleaseManagement = () => {
     <>
       <Wrapper>
         {
-          (isRouteLoading || isLoading || isUpdateUserConfig || isGetUserConfig || isGetRouteDetails) && <OverlayLoader />
+          (isRouteLoading || isLoading || isDBRSettingData || isUpdateUserConfig || isGetUserConfig || isGetRouteDetails) && <OverlayLoader />
         }
         <MTOActionToolBar 
           comp="FullKitAssignment" 
@@ -964,6 +995,14 @@ const DynamicReleaseManagement = () => {
           isMfgSelected={isMfgSelected}
           ReleaseOrderHeader={ReleaseOrderHeader}
         />
+        <VFModalCard headerText={"Warning"} openModal={showWarningModal} closeModal={() => onCloseWarningModal()} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
+          <p data-testid="warning-test" style={{ textAlign: "center", color: "#313131", paddingTop: "36px", fontStyle: "normal", fontVariant: "normal", fontWeight: 300, fontSize: "16px", fontFamily: "Roboto", width: '400px' }}>
+            Access to this page is restricted because orders will be automatically released in the current system.
+          </p>
+          <div style={{ display: "flex", gap: "28px", alignItems: "center", justifyContent: "center", paddingTop: "38px", paddingBottom: "36px" }}>
+            <VFButtonOutline themeUi={user.user.theme_ui} onClick={() => onCloseWarningModal()}>OK</VFButtonOutline>
+          </div>
+        </VFModalCard>
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 
