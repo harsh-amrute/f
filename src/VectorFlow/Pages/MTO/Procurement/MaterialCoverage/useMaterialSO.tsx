@@ -159,20 +159,6 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
         },
 
         sideBar: sideBar,
-        statusBar: {
-            statusPanels: [
-                {
-                    statusPanel: "agTotalRowCountComponent",
-                    align: "left",
-                },
-                {
-                    statusPanel: "agAggregationComponent",
-                    statusPanelParams: {
-                        aggFuncs: ["avg", "sum"],
-                    },
-                },
-            ],
-        },
         masterDetail: true,
         detailCellRenderer: DetailCellRenderer,
         detailCellRendererParams:{

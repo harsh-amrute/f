@@ -76,18 +76,6 @@ const GridView = memo(({
                             onGridReady();
                         }
                     }}
-                    statusBar={{
-                        statusPanels: [
-                            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                            { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                            {
-                                statusPanel: 'agAggregationComponent',
-                                statusPanelParams: {
-                                    aggFuncs: ['avg', 'count', 'min', 'max', 'sum']
-                                }
-                            },
-                        ],
-                    }}
                     ref={reference}
                     onFilterChanged={()=>{Object.keys((reference?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
                 />
