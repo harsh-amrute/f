@@ -1,6 +1,6 @@
 import { ColDef, SideBarDef } from "ag-grid-enterprise";
 import { AgGridReactProps } from "ag-grid-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ErrorCell from "../../../../../components/VectorFLOW/commons/ErrorCell";
 import {
@@ -661,6 +661,29 @@ const useViewModify = (pageType: string) => {
     }
   }, [activeMaster]);
 
+  const CCRGroupMaterSetRef = useRef<Set<string>>(new Set());
+
+  const ccrGroupValidationFn = useCallback(() => {
+
+    const tempSet = new Set<string>();
+
+    Object.entries(ccrGroupMaster).forEach((entry: any) => {
+      const [key, value] = entry
+      if (value?.ccr_group_id != null) {
+        tempSet.add(String(value.ccr_group_id));
+      }
+      tempSet.add(String(key));
+    });
+
+    CCRGroupMaterSetRef.current = tempSet;
+
+  }, [ccrGroupMaster]);
+    
+  useEffect(() => {
+    ccrGroupValidationFn();
+  }, [ccrGroupValidationFn]);
+
+
   // Validatio in process....
 
   const validateMTOMaster = (masterId: number, newRowData: any) => {
@@ -777,19 +800,16 @@ const useViewModify = (pageType: string) => {
     if (masterId === 502) {
       const allRows = [...newRowData];
       const newData: any = [];
-      let isValidCCRGroup :boolean
       allRows.forEach((e: any, index: number) => {
+        let isValideCCRGroup = true;
         const newVal = _.cloneDeep(e);
         const {error} = CCR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
         
-        if(e.cgid){
-          for(const key in ccrGroupMaster){
-            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid || key=== e.cgid){
-              isValidCCRGroup = true
-              break
-            }
-          }
+        if (CCRGroupMaterSetRef.current.size &&
+          !CCRGroupMaterSetRef.current.has(String(e.cgid))) {
+            isValideCCRGroup = false;
         }
+        
         if(error){
           const fieldOrders = activeMaster.fields.map(field =>field.key)
 
@@ -802,10 +822,9 @@ const useViewModify = (pageType: string) => {
             warning : ""
           }
           newData.push(newVal)
-        }else{
-        
+        } else {  
           if (
-            plantMaster &&
+            plantMaster.length &&
             !plantMaster?.some(
               (plant: any) => plant.plant_name === e.pl || plant.plant_id === e.pl
             )
@@ -815,7 +834,7 @@ const useViewModify = (pageType: string) => {
               warning: "",
             };
           } else if (
-            deptMaster &&
+            deptMaster.length &&
             !deptMaster?.some(
               (dept: any) => dept.dept_name === e.dp || dept.dept_id === e.dp
             )
@@ -824,7 +843,7 @@ const useViewModify = (pageType: string) => {
               error: "Please select a valid department from the dropdown",
               warning: "",
             };
-          } else if (!isValidCCRGroup) {
+          } else if (!isValideCCRGroup) {
             newVal.err = {
               error: "Please select a valid CCR Group from the dropdown",
               warning: ""
@@ -2823,10 +2842,9 @@ const useViewModify = (pageType: string) => {
   };
 
   const onBackButton = () => {
-    
-    const conf = confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft");
-
-    if(conf){
+    console.log(activeMaster, "activeMaster");
+  
+    const clearAllStates = () => {
       dispatch(RESET_MTO_STATE());
       dispatch(UPDATE_PROGRESS_STATE("default"));
       dispatch(UPDATE_ROW_DATA([]));
@@ -2836,23 +2854,35 @@ const useViewModify = (pageType: string) => {
       dispatch(REMOVE_ALL_FILTERS());
       dispatch(SET_CCR_INITIAL_DATA([]));
       dispatch(SET_CCR_MODIFY_DATA([]));
-      // dispatch(UPDATE_ACTIVE_MASTER([]))
-
+      // dispatch(UPDATE_ACTIVE_MASTER([])); // Uncomment if needed
       dispatch(ADD_FILTER());
+      dispatch(FILL_MASTERS([]));
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+      
       setDownloadData(false);
       setTempDownloadData(false);
-      dispatch(FILL_MASTERS([]));
       setFilterButtonStatus([]);
-      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-
-      if (pageType === "add") dispatch(TOGGLE_UPLOAD_MODAL(true));
+  
+      if (pageType === "add") {
+        dispatch(TOGGLE_UPLOAD_MODAL(true));
+      }
+  
+      if (backUrl) {
+        navigate(backUrl);
+      }
+    };
+  
+    const hasUnsavedData = activeMaster?.rowData?.length;
+  
+    if (hasUnsavedData) {
+      const confirmed = confirm(
+        "Are you sure you want to go back? All progress will be lost! Please Save to Draft."
+      );
+      if (!confirmed) return;
     }
-
-    if(backUrl){
-      navigate(backUrl)
-    }
-
-  };
+  
+    clearAllStates();
+  }  
 
   const postDraftChunks = async (rowData: any) => {
     let draftId = "";
