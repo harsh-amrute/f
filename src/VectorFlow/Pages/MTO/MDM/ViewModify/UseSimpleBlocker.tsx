@@ -2,15 +2,12 @@ import { useEffect } from "react";
 import { useLocation } from "react-router";
 
 const useSimpleBlocker = (activeMaster:any,backFunction:any,message = 'You have unsaved changes. Are you sure you want to leave?') => {
-  console.log(activeMaster, "activeMaster");
     const location = useLocation();
   
     useEffect(() => {
   
       const handlePopState = () => {
-        
           backFunction(activeMaster?.rowdata?.length);
-        
       };
     
       window.history.pushState(null, '', location.pathname);

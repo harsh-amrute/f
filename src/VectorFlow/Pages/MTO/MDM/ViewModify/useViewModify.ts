@@ -2842,8 +2842,7 @@ const useViewModify = (pageType: string) => {
   };
 
   const onBackButton = () => {
-    console.log(activeMaster, "activeMaster");
-  
+    
     const clearAllStates = () => {
       dispatch(RESET_MTO_STATE());
       dispatch(UPDATE_PROGRESS_STATE("default"));
