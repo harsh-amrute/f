@@ -48,7 +48,7 @@ import OverlayLoader from "../../Common/Loader";
 import { ColorsMTO } from "../../Common/Colors";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../hooks/useFilter";
-import { formatFilterJSON, getColumnDefinations,getBodyForExcelExport,DownloadExcel, getBodyForGroupedExcelExport } from "../../../../../helpers/utils";
+import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForExcelExport } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
@@ -67,8 +67,8 @@ import VFSelect from "../../../../../../src/components/VectorFLOW/commons/MTO/VF
 import ConfirmationModal from "./ConfirmationModal";
 import { InputCheckBox } from "./styles";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
-import useGroupedColDef from "../../../../../hooks/useGroupedColDef";
 import BomExcelModal from "../../Common/BomExcelModal";
+import useColDef from "../../../../../hooks/useColDef";
 
 interface ApiResponse {
   cc: string;
@@ -168,7 +168,7 @@ const OverallBmReport = () => {
   const [isPivot, setIsPivot] = useState<any>(false);
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [orderClosingEnable, setorderClosingEnable] = useState<any>();
-  const { getGroupedColDef, groupedColDefsRef } = useGroupedColDef();
+  const { getGroupedColDef, groupedColDefsRef } = useColDef();
 
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
@@ -1125,7 +1125,7 @@ const OverallBmReport = () => {
     if (isExcelExport) {
       const headersdata = refGraph2?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
-      const body = getBodyForGroupedExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
+      const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
           try{
               const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
               if(response.status == 200){//1,userpage,true,0

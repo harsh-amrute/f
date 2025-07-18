@@ -31,7 +31,7 @@ import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/C
 import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
-import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForGroupedExcelExport } from "../../../../../helpers/utils";
+import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForExcelExport } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetOverAllBMReport } from '../../../../../VectorFlow/Services/MTO/Production/OverallBMReport';
@@ -44,8 +44,8 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
-import useGroupedColDef from "../../../../../hooks/useGroupedColDef";
 import BomExcelModal from '../../Common/BomExcelModal';
+import useColDef from '../../../../../hooks/useColDef';
 
 
 interface ApiResponse {
@@ -154,6 +154,7 @@ const DptWiseBMReport = () => {
     const [highAgeing, sethighAgeing] = useState<any>();
     // const { screenHeight } = useViewPort();
     const { user } = useUserData();
+    const UserAllRoles = user?.roles?.permission;
     const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
     const [deptName, setDeptName] = useState<any>([]);
@@ -173,7 +174,7 @@ const DptWiseBMReport = () => {
 
     const [bomHeader, setBomHeader]= useState([])
     const [bomActive, setBomActive] = useState<any>(undefined);
-    const { getGroupedColDef, groupedColDefsRef } = useGroupedColDef();
+    const { getGroupedColDef, groupedColDefsRef } = useColDef();
     const [showExcelModal, setShowExcelModal] = useState(false);
     
 
@@ -337,6 +338,7 @@ const DptWiseBMReport = () => {
         }
     }
 
+    console.log('coldefa', coldefs)
     const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
         const modifiedResponse: ApiResponseItem[] = [];
         const cpMap: { [key: string]: number } = {};
@@ -394,6 +396,8 @@ const DptWiseBMReport = () => {
         // Calculate cp for the additional object based on existing cp values
         const maxCp = Math.max(...modifiedResponse.map(item => item.cp || 0));
 
+        const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
+
         // Create the additional object to be added at the end
         const additionalObject: ApiResponseItem = {
             cc: "",
@@ -402,8 +406,28 @@ const DptWiseBMReport = () => {
             v: true,
             cla: "Centre",
             scc: "rmk",
-            pinned:'right',
-            ch: [
+            pinned: 'right',
+            ch: isBMReportViewer ? [
+                {
+                    cc: "lr",
+                    cp: 29,
+                    hd: "Latest Remark",
+                    v: true,
+                    cla: "Centre",
+                    scc: "lr",
+                    pinned:'right',
+                },
+                {
+                    cc: "Remark History",
+                    cp: 30,
+                    hd: "Remark History",
+                    v: true,
+                    cla: "Centre",
+                    scc: "Remark History",
+                    pinned:'right',
+                }
+            ] : 
+             [
                 {
                     cc: "Remark",
                     cp: 28,
@@ -879,7 +903,7 @@ const DptWiseBMReport = () => {
 
             const headersdata = refGraph1?.current?.api?.getColumnState();
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const body = getBodyForGroupedExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
+            const body = getBodyForExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
             try {
                 const response = await getFilteredDeptWiseBMReportData({ body, page: currentPage, appliedFilters: formatedFilters,report_name:FilterPageName.Prod_Dept_Wise_BM_Report, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
                 if (response.status == 200) {
