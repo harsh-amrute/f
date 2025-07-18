@@ -500,10 +500,12 @@ const useViewModify = (pageType: string) => {
         if (col.colId === "iv") {
           col.cellRenderer = ToggleButton;
           col.pinned = 'right';
+          col.floatingFilter = false
         }
         if(col.colId === "bt"){
           col.valueFormatter = myFormatter
         }
+
         if(col.colId !== "actions" && col.colId !== "iv"){
           col.cellStyle = (params:any)=>{
             const { data } = params;
@@ -849,12 +851,12 @@ const useViewModify = (pageType: string) => {
               warning: ""
             };
           }
-          else if (e.fh < e.sh){
-            newVal.err = {
-              error: "FOL horizon cannot be less than scheduling horizon",
-              warning: ""
-            }
-          }
+          // else if (e.fh < e.sh){
+          //   newVal.err = {
+          //     error: "FOL horizon cannot be less than scheduling horizon",
+          //     warning: ""
+          //   }
+          // }
 
           if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
             newVal.err = {
@@ -883,6 +885,7 @@ const useViewModify = (pageType: string) => {
           newData.push(newVal);
         }
       });
+      
 
       // Dispatch the updated row data
       dispatch(UPDATE_ROW_DATA(newData));
@@ -2393,7 +2396,7 @@ const useViewModify = (pageType: string) => {
         }
       };
     }
-  ),[deptMaster,plantNames,ccrGroupMaster,ref,bufferTypeData,activeMaster?.id])
+  ),[deptMaster,plantNames,ccrGroupMaster,ref,bufferTypeData,activeMaster?.id,activeMaster])
   
 
   const handleChangePage = async (pageNo: any) => {
@@ -3165,7 +3168,7 @@ const useViewModify = (pageType: string) => {
     if (bufferTypeData) {
       bufferTypeData.forEach((ele: any) => {
         if (ele.id.toString() === currBuff?.toString()) {
-          val = ele.dsc;
+          val = ele.nm;
         }
       });
     }
@@ -3222,12 +3225,14 @@ const useViewModify = (pageType: string) => {
           return params.data.isEditing === true
         }
       };
-      if(colDef.field === 'actions'){
+      if(colDef.field === 'actions' || colDef.field === 'iv' ){
         return {
           ...colDef,
-          editable:false
+          editable:false,
+          floatingFilter: false,
         }
       }
+
       if (colDef.field === "bt") {
         return {
           ...colDef,
@@ -3292,12 +3297,15 @@ const useViewModify = (pageType: string) => {
       }
 
       if (activeMaster.id === 502) {
-        if(colDef.field === 'actions'){
+        if(colDef.field === 'actions' || colDef.field === 'iv'){
           return {
             ...colDef,
-            editable:false
+            editable:false,
+            floatingFilter: false,
+            
           }
         }
+        
         if (
           colDef.field === "pl" ||
           colDef.field === "dp" ||

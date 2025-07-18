@@ -120,22 +120,23 @@ export const CCR_VALIDATION_SCHEMA = Joi.object({
   }),
 
   rb: Joi.number().min(0).max(1).required().messages({
-    "number.base":"CCR Resource Buffer must be a number!",
-    "number.min": "CCR Resource Buffer (rb) should be a value between 0 and 1!",
-    "number.max": "CCR Resource Buffer (rb) should be a value between 0 and 1!",
-    "any.required": "CCR Resource Buffer (rb) is required!",
+    "number.base":"Residual Buffer must be a number!",
+    "number.min": "Residual Buffer (rb) should be a value between 0 and 1!",
+    "number.max": "Residual Buffer (rb) should be a value between 0 and 1!",
+    "any.required": "Residual Buffer (rb) is required!",
   }),
 
   sh: Joi.number().integer().required().messages({ 
-      "number.base": "Scheduling horizon must be a number!",
-      "number.integer": "Scheduling horizon must be an integer!",
-      "any.required": "Scheduling horizon cannot be empty!"
+      "number.base": "Scheduling Horizon must be a number!",
+      "number.integer": "Scheduling Horizon must be an integer!",
+      "any.required": "Scheduling Horizon cannot be empty!"
     }),
 
-  fh: Joi.number().integer().required().messages({ 
+  fh: Joi.number().min(Joi.ref('sh')).integer().required().messages({ 
     "number.base": "FOL Horizon must be a number!",
     "number.integer": "FOL Horizon must be an integer!",
-    "any.required": "FOL Horizon cannot be empty!"
+    "any.required": "FOL Horizon cannot be empty!",
+    "number.min": "Fol Horizon should be at least equal to the Scheduling Horizon."
   }),
     
   whpd: Joi.number()

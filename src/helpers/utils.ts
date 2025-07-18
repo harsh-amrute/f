@@ -4742,6 +4742,7 @@ export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) 
       },
       flex: 1,
       cellRenderer: f.key === "action" && MTOActionRenderer,
+      filter: "agMultiColumnFilter",
       ...customParams
     }
   })
@@ -4777,9 +4778,6 @@ export const parseMTOExcelData = async (file: File, master: MDMMasterState, page
   // Validate sheet constraints
   if (numberOfSheets.length > 1) {
     throw new Error('File cannot contain multiple sheets');
-  }
-  if (numberOfSheets[0] !== 'ag-grid') {
-    throw new Error('Sheet Name is changed');
   }
 
   // Parse Excel data
