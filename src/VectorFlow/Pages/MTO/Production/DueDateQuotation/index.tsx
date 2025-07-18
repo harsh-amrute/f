@@ -24,6 +24,7 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum'
 import useColDef from '../../../../../hooks/useColDef'
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useNavigate } from 'react-router';
+import BomExcelModal from '../../Common/BomExcelModal'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -86,6 +87,8 @@ const DueDateQuotation = () => {
   const {colDefMap , getColDef} = useColDef();
   const [bomHeader, setBomHeader]= useState([])
   const [bomActive, setBomActive] = useState(false);
+  const [showExcelModal, setShowExcelModal] = useState(false);
+
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
   const [showWarningModal, setShowWarningModal] = useState(false);
@@ -498,13 +501,15 @@ const DueDateQuotation = () => {
 
 
 
-  const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any ) => {
+  const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any,isBomExplosion?:any ) => {
     if(isExcelExport){
       const headersdata = currentGridRef?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
+
+
       const body = getBodyForExcelExport({headersdata , filterData : formatedFilters, colDefMap});
       try{
-        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize})
+        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize,isBomExplosion})
         if(response.status == 200){
           DownloadExcel(response,FilterPageName.Prod_DDQ)
         }else{
@@ -638,8 +643,23 @@ const DueDateQuotation = () => {
   }, [isReset]);
   
  const ExcelData = ()=>{
-    getUpdatedFilterData(true);
+  if (bomActive) {
+    setShowExcelModal(true); 
+  } else {
+    getUpdatedFilterData(true, undefined, 0); 
+  }
+  }
+  
+  const handleExcelConfirm = () => {
+    setShowExcelModal(false);   
+    getUpdatedFilterData(true, undefined, 1);  
+  }
+  const handleExcelCancel = () => {
+    setShowExcelModal(false);   
+    getUpdatedFilterData(true, undefined, 0); 
  }
+  
+
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
       {step === 1 ?
@@ -725,6 +745,14 @@ const DueDateQuotation = () => {
           style={{ fontSize: "12px", width: "100px", height: "40px" }}>
           Deselect Orders
         </VFButtonOutline>}
+        
+        <BomExcelModal
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+          />
 
         <VFButton themeUi={themeUi}
           disabled={disabled}
