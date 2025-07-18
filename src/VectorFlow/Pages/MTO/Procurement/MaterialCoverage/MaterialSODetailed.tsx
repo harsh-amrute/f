@@ -5,6 +5,10 @@ import VFPagination from '../../Common/VFPagination';
 import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useUserData } from "../../../../../context"
+import BomExcelModal from '../../Common/BomExcelModal';
+import { SideBarDef } from 'ag-grid-enterprise';
+
 
 interface MaterialSODetailedProps {
     parameterData: any,
@@ -19,10 +23,14 @@ interface MaterialSODetailedProps {
     userConfigFetched:any,
     userPageSize:any,
     setUserPageSize:any
-    childColDef:any
+    childColDef: any
+    showExcelModal: any,
+    setShowExcelModal: any,
+    excelBody:any,
+    setExcelBody:any
 }
 
-    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef}: MaterialSODetailedProps, ref) => {
+    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef, showExcelModal, setShowExcelModal, excelBody, setExcelBody}: MaterialSODetailedProps, ref) => {
     const {
         agGridProps,
         RRRRowData,
@@ -30,20 +38,19 @@ interface MaterialSODetailedProps {
         rowDataCount,
         handlePageChangeOnHook,
         currentPage,
-        ExcelExportData,
         savePageSize,
-    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef);
-    const gridRef = useRef<any>(null);
+        getInitialData,
+
+    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef,setShowExcelModal,excelBody, setExcelBody  );
+        const gridRef = useRef<any>(null);
+        
+            const {user} = useUserData();
+            const themeUi = user?.user?.theme_ui
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true);
     
 
-    useImperativeHandle(ref, ()=>({
-        getExcelExport: (body : any)=>{
-            console.log('materail so ',body)
-            ExcelExportData(body);
-        }
-    }))
+    
 
     const handlePageChange = (currPage: number) => {
         handlePageChangeOnHook(currPage, false, {}, userPageSize);
@@ -102,7 +109,37 @@ interface MaterialSODetailedProps {
             }
         }
 
-    },[columnState,currentGridRef?.current]);
+    }, [columnState, currentGridRef?.current]);
+      
+      const handleExcelConfirm = () => {
+        setShowExcelModal(false);
+        getInitialData(0, true,excelBody,userPageSize,1)  
+      }
+
+      const handleExcelCancel = () => {
+        setShowExcelModal(false);
+        getInitialData(0, true,excelBody,userPageSize,0) 
+        }
+        
+     const sideBar:SideBarDef = {
+            toolPanels: [
+              {
+                id: "columns",
+                labelDefault: "Columns",
+                labelKey: "columns",
+                iconKey: "columns",
+                toolPanel: "agColumnsToolPanel",
+                toolPanelParams: {
+                    suppressPivots: true,
+                    suppressPivotMode: true,
+                    suppressRowGroups: true,
+                    suppressValues: true,
+                  },
+              },
+            ],
+            defaultToolPanel:'',
+          }
+    
     
     return (
         <>
@@ -119,17 +156,30 @@ interface MaterialSODetailedProps {
                     tooltipShowDelay={0}
                     tooltipMouseTrack={true}
                     // height={'780px'}
+                    sideBar={
+                       sideBar
+                    }
                     ref={gridRef}
                     onGridReady={(params: any) => {
                         params.api.autoSizeAllColumns();
                         setCurrentGridRef(gridRef);
                     }}
+                    
                     paginationPageSize={pagination.mtoPageSize}
                     pagination={false}
                     maintainColumnOrder
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 
                 />
+
+          <BomExcelModal
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+          />
+
                 <VFPagination
                     selectedRows={0}
                     resetGridRef={gridRef}

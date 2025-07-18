@@ -97,6 +97,7 @@
         "bufferTrendGraph": "Buffer Trend Graph",
         "rationedRequirementReport": "Rationed Requirement Report",
         "supplierDispatchReport": "Supplier Dispatch Report",
+        "elephantOrders": "Elephant Orders",
         "buyerOrderReport": "Buyer Order Report",
         "vendorDispatchReport": "Vendor Dispatch Report",
         "availabilityComparison": "Availability Comparison"

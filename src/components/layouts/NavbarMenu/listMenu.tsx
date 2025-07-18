@@ -351,6 +351,13 @@ export const listMenuParent: any = [
  
           },
           {
+            name: "Elephant Order",
+            img: "/assets/img/nav/arrow_down.svg",
+            url: "/supply-chain-intelligence-hub/eo",
+            role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
+ 
+          },
+          {
             name: "Merchandising Grid",
             img: "/assets/img/nav/arrow_down.svg",
             url: "/supply-chain-intelligence-hub/merchandising-grid",
