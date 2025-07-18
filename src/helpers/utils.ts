@@ -4627,7 +4627,6 @@ export const getBodyForExcelExport = ({
       (col.colId !== "DropDown" || col.colId !== "Action") &&
       col.hide !== true
   );
-  console.log(groupedColDefsRef)
 
   try {
     //grouped data
