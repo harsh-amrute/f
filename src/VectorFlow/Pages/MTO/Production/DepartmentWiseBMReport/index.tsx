@@ -338,7 +338,6 @@ const DptWiseBMReport = () => {
         }
     }
 
-    console.log('coldefa', coldefs)
     const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
         const modifiedResponse: ApiResponseItem[] = [];
         const cpMap: { [key: string]: number } = {};
