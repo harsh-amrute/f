@@ -23,7 +23,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { FilterPageName, UIGridCode } from '../../Common/Enum'
 import useColDef from '../../../../../hooks/useColDef'
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-
+import { useNavigate } from 'react-router';
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -86,10 +86,10 @@ const DueDateQuotation = () => {
   const {colDefMap , getColDef} = useColDef();
   const [bomHeader, setBomHeader]= useState([])
   const [bomActive, setBomActive] = useState(false);
-  
-
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
+  const [showWarningModal, setShowWarningModal] = useState(false);
+  const navigate = useNavigate();
 
   const ReportName='BomExplosion'
 
@@ -141,19 +141,38 @@ const DueDateQuotation = () => {
     return getColumnDefinations(bomHeader);
   }, [bomHeader]);
 
+  const onCloseWarningModal = () => {
+    navigate("/landing-page");
+  }
+
   useEffect(() => {
     const fetchDBRSettings = async () => {
+      try {
+        
+      
         const DBRSettingsData = await getDBRsettingsData();
         const DBRSettings = DBRSettingsData.data?.data;
-        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
-
-        if (BomFlag) {
-          setBomActive(true);
-        } 
-    };
+        if (DBRSettings && DBRSettings.length) {
+          const isDDQFromUI = DBRSettings.find((data: any) => data.flag === "IsDDQFromUI")?.value === "1" || true;
+          if (!isDDQFromUI) {
+            setShowWarningModal(true);
+          } else {
+            const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value == 1);
+            if (BomFlag) {
+              setBomActive(true);
+            }
+            getFilterData();
+          }
+        } else {
+          getFilterData();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
   
     fetchDBRSettings();
-  }, []); 
+  }, []);
 
   useEffect(()=>{
     if(!isUIConfigLoading && bomActive){
@@ -612,10 +631,6 @@ const DueDateQuotation = () => {
   };
 
   useEffect(() => {
-    getFilterData();
-  }, []);
-
-  useEffect(() => {
     if (isReset) {
       handleSaveClick(masterUIConfig);
       setIsReset(false);
@@ -737,6 +752,14 @@ const DueDateQuotation = () => {
           {renderSubmitText()}
         </VFButton>
       </Footer>
+      <VFModalCard headerText={"Warning"} openModal={showWarningModal} closeModal={() => onCloseWarningModal()} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
+        <p data-testid="warning-test" style={{ textAlign: "center", color: "#313131", paddingTop: "36px", fontStyle: "normal", fontVariant: "normal", fontWeight: 300, fontSize: "16px", fontFamily: "Roboto", width: '400px' }}>
+          Access to this page is restricted because due date assignment is automatic in the current system.
+        </p>
+        <div style={{ display: "flex", gap: "28px", alignItems: "center", justifyContent: "center", paddingTop: "38px", paddingBottom: "36px" }}>
+          <VFButtonOutline themeUi={user.user.theme_ui} onClick={() => onCloseWarningModal()}>OK</VFButtonOutline>
+        </div>
+      </VFModalCard>
       {/* <BomExplosionPOC/> */}
     </Wrapper>
   )

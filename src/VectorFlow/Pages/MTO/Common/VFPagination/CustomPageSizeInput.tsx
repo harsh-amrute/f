@@ -15,7 +15,7 @@ const CustomPageSizeInput = ({ savePageSize, userPageSize }: props) => {
 
   const [customPageSize, setCustomPageSize] = useState<any>();
   const minPageSize = 1;
-  const maxPageSize = 10000;
+  const maxPageSize = 5000;
 
   useEffect(() => {
     setCustomPageSize(userPageSize);
