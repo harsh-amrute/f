@@ -29,7 +29,7 @@ describe('ProcPlanningService', () => {
     it('should fetch procurement planning data correctly', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         
-        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum, '1', {});
+        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum, '1', '');
 
         // expect(axios.put).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}&page=${pageNum}&ca=1&page_size=500`, 
         // {},
@@ -43,7 +43,7 @@ describe('ProcPlanningService', () => {
     it('should fetch procurement planning data correctly with ca =0', async () => {
         mockedAxios.put.mockResolvedValueOnce({ data: 'test', status: 200 });
         
-        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum, '0', {});
+        const response = await ProcPlanningService.GetProcPlanningData(mockDate, pageNum, '0', '');
 
         // expect(axios.put).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProcPlanningData/?releaseDate=${mockDate}&page=${pageNum}&ca=0&page_size=500`, 
         // {},
@@ -56,7 +56,7 @@ describe('ProcPlanningService', () => {
     });
 
     it('should fetch procurement data after simulation correctly', async () => {
-        const response = await ProcPlanningService.GetProcDataAfterSimulation(mockDate, '0', '1');
+        const response = await ProcPlanningService.GetProcDataAfterSimulation(mockDate, '0', '');
 
         expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_VF_API_HOST_MTO}/getProdDataAfterSimulation/?releaseDate=${mockDate}&eas=0&page=1&page_size=500`, {
             headers: { 'Content-Type': 'application/json' }

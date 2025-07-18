@@ -11,10 +11,13 @@ import { toast } from "react-toastify";
 import { FilterPageName, pagination } from "../../Common/Enum";
 import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
 
-const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userConfigFetched:any,userPageSize:any,setUserPageSize:any,childColDef:any) => {
+const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, userConfigFetched: any, userPageSize: any, setUserPageSize: any, childColDef: any, 
+  setShowExcelModal: (e: boolean) => void,  excelBody: any,setExcelBody:any) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
     const [rowDataCount, setRowDataCount] = useState<number>(0);
-    const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+ 
 
     // const columnDef = mapMaterialCoverageFieldsToColDefs(HeaderData);
     const { mutateAsync: getOpenSODetailsData } = useGetOpenSODetailsData()
@@ -27,29 +30,24 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
         }
     }, [appliedFilters, userConfigFetched])  
 
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
 
-
-    const getInitialData = async (currPage: number, isExcelExport = false, body = {}, pageSize?: any) => {
+    const getInitialData = async (currPage: number, isExcelExport = false, body = {}, pageSize?: any,isChildren?:any) => {
         try {
             const formattedFilters = formatFilterJSON(appliedFilters);
             const colorsArray = Object.keys(data).filter((k: string) => k.startsWith('c'));
             const colorsQuery = colorsArray.map((key: string) => data[key]).join(',');
-      
-            let queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`;
         
-          if(data.allOrders ===true){
-            queryString = `?AOD=${true}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`
-          }
-          
-            
-            if (isExcelExport) {
+          if (isExcelExport) {
+            const queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}&isChildren=${isChildren}`;
               notifyLoader("Exporting data")
             const response = await getOpenSODetailsDataForExcelExport({
               data: queryString,
               isExcelExport: 1,
               body,
-              report_name: FilterPageName.Proc_Material_Coverage_For_OpenSO
+              report_name: FilterPageName.Proc_Material_Coverage_For_OpenSO,
+              isChildren
             });
       
             if (response.status === 200) {
@@ -59,6 +57,12 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
               notifyError("Failed to export Excel");
             }
           } else {
+            let queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`;
+        
+            if(data.allOrders ===true){
+              queryString = `?AOD=${true}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`
+            }
+            
             setIsLoading(true);
             toast.dismiss();
             notifyLoader("Loading data...");
@@ -136,8 +140,10 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
             suppressRowClickSelection: true,
             enableBrowserTooltips: true,
             enableRangeSelection: true,
-            components: customCellRenderers,
-            defaultColDef: {
+          components: customCellRenderers,
+            
+          defaultColDef: {
+                
                 resizable: true,
                 flex: 1,
                 filter: 'agTextColumnFilter',
@@ -157,22 +163,8 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
 
             },
         },
-
+        
         sideBar: sideBar,
-        statusBar: {
-            statusPanels: [
-                {
-                    statusPanel: "agTotalRowCountComponent",
-                    align: "left",
-                },
-                {
-                    statusPanel: "agAggregationComponent",
-                    statusPanelParams: {
-                        aggFuncs: ["avg", "sum"],
-                    },
-                },
-            ],
-        },
         masterDetail: true,
         detailCellRenderer: DetailCellRenderer,
         detailCellRendererParams:{
@@ -186,9 +178,14 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
         enterNavigatesVerticallyAfterEdit: true,
     };
 
-    const ExcelExportData = (body : any) =>{    
-        getInitialData(0, true, body)
+  
+
+  
+  useEffect(() => {
+    if (Object.keys(excelBody).length) {
+      setShowExcelModal(true)
     }
+  },[excelBody])
 
     return {
         agGridProps,
@@ -197,9 +194,9 @@ const useMaterialSO = (data: any, appliedFilters:any,handleSaveClick:any,userCon
         rowDataCount: rowDataCount,
         handlePageChangeOnHook,
         currentPage: currentPage,
-        ExcelExportData,
         savePageSize,
         userPageSize,
+        getInitialData
     }
 }
 

@@ -23,7 +23,9 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../.
 import { FilterPageName, UIGridCode } from '../../Common/Enum'
 import useColDef from '../../../../../hooks/useColDef'
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
-
+import { useNavigate } from 'react-router';
+import VFWarningModal from '../../../../../components/VectorFLOW/commons/MTO/VFWarningModal'
+import BomExcelModal from '../../Common/BomExcelModal'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -86,10 +88,12 @@ const DueDateQuotation = () => {
   const {colDefMap , getColDef} = useColDef();
   const [bomHeader, setBomHeader]= useState([])
   const [bomActive, setBomActive] = useState(false);
-  
+  const [showExcelModal, setShowExcelModal] = useState(false);
 
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
+  const [showWarningModal, setShowWarningModal] = useState(false);
+  const navigate = useNavigate();
 
   const ReportName='BomExplosion'
 
@@ -141,19 +145,38 @@ const DueDateQuotation = () => {
     return getColumnDefinations(bomHeader);
   }, [bomHeader]);
 
+  const onCloseWarningModal = () => {
+    navigate("/landing-page");
+  }
+
   useEffect(() => {
     const fetchDBRSettings = async () => {
+      try {
+        
+      
         const DBRSettingsData = await getDBRsettingsData();
         const DBRSettings = DBRSettingsData.data?.data;
-        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
-
-        if (BomFlag) {
-          setBomActive(true);
-        } 
-    };
+        if (DBRSettings && DBRSettings.length) {
+          const isDDQFromUI = DBRSettings.find((data: any) => data.flag === "IsDDQFromUI")?.value === "1" || true;
+          if (!isDDQFromUI) {
+            setShowWarningModal(true);
+          } else {
+            const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value == 1);
+            if (BomFlag) {
+              setBomActive(true);
+            }
+            getFilterData();
+          }
+        } else {
+          getFilterData();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
   
     fetchDBRSettings();
-  }, []); 
+  }, []);
 
   useEffect(()=>{
     if(!isUIConfigLoading && bomActive){
@@ -479,13 +502,15 @@ const DueDateQuotation = () => {
 
 
 
-  const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any ) => {
+  const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any,isBomExplosion?:any ) => {
     if(isExcelExport){
       const headersdata = currentGridRef?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
+
+
       const body = getBodyForExcelExport({headersdata , filterData : formatedFilters, colDefMap});
       try{
-        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize})
+        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize,isBomExplosion})
         if(response.status == 200){
           DownloadExcel(response,FilterPageName.Prod_DDQ)
         }else{
@@ -612,10 +637,6 @@ const DueDateQuotation = () => {
   };
 
   useEffect(() => {
-    getFilterData();
-  }, []);
-
-  useEffect(() => {
     if (isReset) {
       handleSaveClick(masterUIConfig);
       setIsReset(false);
@@ -623,8 +644,23 @@ const DueDateQuotation = () => {
   }, [isReset]);
   
  const ExcelData = ()=>{
-    getUpdatedFilterData(true);
+  if (bomActive) {
+    setShowExcelModal(true); 
+  } else {
+    getUpdatedFilterData(true, undefined, 0); 
+  }
+  }
+  
+  const handleExcelConfirm = () => {
+    setShowExcelModal(false);   
+    getUpdatedFilterData(true, undefined, 1);  
+  }
+  const handleExcelCancel = () => {
+    setShowExcelModal(false);   
+    getUpdatedFilterData(true, undefined, 0); 
  }
+  
+
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
       {step === 1 ?
@@ -710,6 +746,14 @@ const DueDateQuotation = () => {
           style={{ fontSize: "12px", width: "100px", height: "40px" }}>
           Deselect Orders
         </VFButtonOutline>}
+        
+        <BomExcelModal
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+          />
 
         <VFButton themeUi={themeUi}
           disabled={disabled}
@@ -737,6 +781,13 @@ const DueDateQuotation = () => {
           {renderSubmitText()}
         </VFButton>
       </Footer>
+      <VFWarningModal
+        warningMsg={"Access to this page is restricted because due date assignment is automatic in the current system."}
+        actionButtonText={"Ok"}
+        showWarningModal={showWarningModal}
+        onCloseWarningModal={onCloseWarningModal}
+        themeUI={user.user.theme_ui}
+      />
       {/* <BomExplosionPOC/> */}
     </Wrapper>
   )

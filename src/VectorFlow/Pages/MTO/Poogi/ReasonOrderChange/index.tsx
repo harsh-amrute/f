@@ -18,7 +18,7 @@ import { ColorsMTO } from '../../Common/Colors';
 import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
 import OverlayLoader from '../../Common/Loader';
 import VFPagination from "../../Common/VFPagination";
-import VFTable from '../../Common/VFTable';
+import VFTable from "../../../../../VectorFlow/Pages/MTO/Common/VFTable";
 import MTORemarkHistoryModal from '../../Production/DepartmentWiseBMReport/MTORemarkHistoryModal';
 import RemarkHistoryRenderer from '../../Production/DepartmentWiseBMReport/RemarkHistoryRenderer';
 import CustomCellEditor from './MajorDropDownRenderer';

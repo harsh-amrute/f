@@ -72,9 +72,7 @@ const EditRouteModal = ({ showModal, setShowModal, graphData, theme, master, rou
             {
                 type: 'scatter',
                 xKey: 'ccr_name',
-                // xName:'ccr name',
                 yKey: 'cumulative_wip_limit',
-                // yName:'Cumulative wiplimit',
                 marker: {
                     size: 10,
                     fill: '#E53F3F',

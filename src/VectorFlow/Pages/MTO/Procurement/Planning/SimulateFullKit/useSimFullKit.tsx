@@ -347,11 +347,6 @@ const useSimFullKit = () => {
                                 setCurrentGridRef(gridRef);
                             }}
                             onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
                         />
                         <VFPagination
                             key={1}
@@ -385,11 +380,6 @@ const useSimFullKit = () => {
                                 setCurrentGridRef(gridRef);
                             }}
                             onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
                         />
                         <VFPagination
                             key={1}

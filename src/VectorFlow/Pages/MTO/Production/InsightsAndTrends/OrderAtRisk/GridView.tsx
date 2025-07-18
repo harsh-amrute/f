@@ -66,25 +66,7 @@ const GridView = ({gridData, colDef, columnState, setCurrentGridRef, currentGrid
                 tooltipShowDelay={0}
                 tooltipMouseTrack={true}
                 ref={gridRef}
-                pagination={false}   
-                statusBar={{
-                    statusPanels: [
-                      {
-                        statusPanel: "agTotalAndFilteredRowCountComponent",
-                        align: "left",
-                      },
-                      { statusPanel: "agTotalRowCountComponent", align: "left" },
-                      {
-                        statusPanel: "agFilteredRowCountComponent",
-                        align: "left",
-                      },
-                      {
-                        statusPanel: "agSelectedRowCountComponent",
-                        align: "left",
-                      },
-                      { statusPanel: "agAggregationComponent", align: "left" },
-                    ],
-                  }}   
+                pagination={false}    
                 onGridReady={(params: any) => {
                     params.api.autoSizeAllColumns();
                     setCurrentGridRef(gridRef);

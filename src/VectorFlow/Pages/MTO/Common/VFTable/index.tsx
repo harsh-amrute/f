@@ -67,7 +67,13 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       { statusPanel: "agTotalRowCountComponent" },
       { statusPanel: "agFilteredRowCountComponent" },
       { statusPanel: "agSelectedRowCountComponent" },
-      { statusPanel: "agAggregationComponent" },
+
+      {
+        statusPanel: "agAggregationComponent",
+        statusPanelParams: {
+            aggFuncs: ["avg", "sum", "min", "max", "count"],
+        },
+    },
     ],
   };
 

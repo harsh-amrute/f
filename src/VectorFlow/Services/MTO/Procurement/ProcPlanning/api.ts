@@ -29,14 +29,15 @@ export namespace ProcPlanningService {
         })
     }
 
-    export const GetProcPlanningDataForExcelData = async ({date, body ,ca , report_name,isExcelExport}:{date: string,body : any, ca: string, report_name : any , isExcelExport : any }) => {
+    export const GetProcPlanningDataForExcelData = async ({date, body ,ca , report_name,isExcelExport, isChildren}:{date: string,body : any, ca: string, report_name : any , isExcelExport : any, isChildren: boolean }) => {
         return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getProcPlanningData/?releaseDate=${date}&ca=${ca}`, 
         body,
         {
             headers: { 'Content-Type': 'application/json' },
             params : {
                 report_name,
-                export : isExcelExport
+                export: isExcelExport,
+                isChildren
             },
             responseType : 'blob'
         });

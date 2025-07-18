@@ -31,7 +31,7 @@ import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/C
 import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForExcelExport } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetOverAllBMReport } from '../../../../../VectorFlow/Services/MTO/Production/OverallBMReport';
@@ -44,6 +44,8 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
+import BomExcelModal from '../../Common/BomExcelModal';
+import useColDef from '../../../../../hooks/useColDef';
 
 
 interface ApiResponse {
@@ -152,6 +154,7 @@ const DptWiseBMReport = () => {
     const [highAgeing, sethighAgeing] = useState<any>();
     // const { screenHeight } = useViewPort();
     const { user } = useUserData();
+    const UserAllRoles = user?.roles?.permission;
     const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
     const [deptName, setDeptName] = useState<any>([]);
@@ -165,15 +168,16 @@ const DptWiseBMReport = () => {
     const [isPivot, setIsPivot] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
-    const [detailCellRendererParamsConfig, setDetailCellRendererParamsConfig] = useState<any>();
-
-
     
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
 
-     const [bomHeader, setBomHeader]= useState([])
-      const [bomActive, setBomActive] = useState<any>(undefined);
+    const [bomHeader, setBomHeader]= useState([])
+    const [bomActive, setBomActive] = useState<any>(undefined);
+    const { getGroupedColDef, groupedColDefsRef } = useColDef();
+    const [showExcelModal, setShowExcelModal] = useState(false);
+    
+
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
@@ -223,6 +227,8 @@ const DptWiseBMReport = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        
+        
         try {
             getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
                 const response: any = data?.data?.data;
@@ -236,6 +242,8 @@ const DptWiseBMReport = () => {
 
     }, [])
 
+  
+    
    
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
@@ -310,6 +318,8 @@ const DptWiseBMReport = () => {
         try {
             const reportName = "BMReport";
             const response = await getUIConfigData(reportName);
+            getGroupedColDef(response)
+
             // const modifiedResponse = addDefaultAttributes(response?.data?.data);
 
             const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(response?.data?.data);
@@ -385,6 +395,8 @@ const DptWiseBMReport = () => {
         // Calculate cp for the additional object based on existing cp values
         const maxCp = Math.max(...modifiedResponse.map(item => item.cp || 0));
 
+        const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
+
         // Create the additional object to be added at the end
         const additionalObject: ApiResponseItem = {
             cc: "",
@@ -393,8 +405,28 @@ const DptWiseBMReport = () => {
             v: true,
             cla: "Centre",
             scc: "rmk",
-            pinned:'right',
-            ch: [
+            pinned: 'right',
+            ch: isBMReportViewer ? [
+                {
+                    cc: "lr",
+                    cp: 29,
+                    hd: "Latest Remark",
+                    v: true,
+                    cla: "Centre",
+                    scc: "lr",
+                    pinned:'right',
+                },
+                {
+                    cc: "Remark History",
+                    cp: 30,
+                    hd: "Remark History",
+                    v: true,
+                    cla: "Centre",
+                    scc: "Remark History",
+                    pinned:'right',
+                }
+            ] : 
+             [
                 {
                     cc: "Remark",
                     cp: 28,
@@ -473,7 +505,7 @@ const DptWiseBMReport = () => {
                 child.cc === "BPP" && excelColorArr.reduce(
                   (acc, color) => ({
                     ...acc,
-                    [color]: (params: any) => params.data.cl === color
+                    [color]: (params: any) => params?.data?.cl === color
                   }),
                   {}
                 ),
@@ -798,6 +830,11 @@ const DptWiseBMReport = () => {
     }
     }, [columnBomDefs]);
 
+    const onPivotModeChanged = (event: any) => {
+        const isPivotOn = event.api.isPivotMode();
+        setIsPivot(isPivotOn);
+      };
+
 
     const agGridProps: AgGridReactProps = useMemo(()=>{
         return {
@@ -847,36 +884,57 @@ const DptWiseBMReport = () => {
             enterNavigatesVertically: true,
             enterNavigatesVerticallyAfterEdit: true,
             groupDefaultExpanded: 0,
-            pivotMode: false,
+            // pivotMode: false,
             onSelectionChanged: debounce(getSelectedRow, 1000),
             onCellValueChanged: onCellValueChanged,
             stopEditingWhenCellsLoseFocus: true,
             onRowDataUpdated: onFirstDataRendered,
+            onColumnPivotModeChanged: onPivotModeChanged,
+
         };
     }, [masterSelectedRowData, gridData])
     
    
     
 
-    const getUpdatedFilteredData = async (page: any, pageSize?:any) => {
-        try {
+    const getUpdatedFilteredData = async (page: any, pageSize?: any, isExcelExport=false, isBomExplosion=0) => {
+        if (isExcelExport) {
+
+            const headersdata = refGraph1?.current?.api?.getColumnState();
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({
-                'wip': isWIPChecked ? 1 : 0,
-                'curr': page,
-                appliedFilters: formatedFilters,
-                page_size: pageSize || userPageSize
-            });
-            if(!gridData.data.data || gridData.data.data.length===0){
-                setGridDataCount(0);
-                setGridData([])
-                return;
+            const body = getBodyForExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
+            try {
+                const response = await getFilteredDeptWiseBMReportData({ body, page: currentPage, appliedFilters: formatedFilters,report_name:FilterPageName.Prod_Dept_Wise_BM_Report, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
+                if (response.status == 200) {
+                    DownloadExcel(response, FilterPageName.Prod_Dept_Wise_BM_Report)
+                } else {
+                    notifyError("Error exporting Excel!");
+                }
+            } catch (e) {
+                console.error("Error exporting Excel", e);
+                notifyError("Error exporting Excel!");
             }
-            setGridData(gridData?.data?.data?.results)
-            setGridDataCount(gridData?.data?.data?.count)
-        }
-        catch (e) {
-            console.log(e);
+           
+        } else {
+            try {
+                const formatedFilters = formatFilterJSON(appliedFilters);
+                const gridData = await getFilteredDeptWiseBMReportData({
+                    'wip': isWIPChecked ? 1 : 0,
+                    'curr': page,
+                    appliedFilters: formatedFilters,
+                    page_size: pageSize || userPageSize
+                });
+                if (!gridData.data.data || gridData.data.data.length === 0) {
+                    setGridDataCount(0);
+                    setGridData([])
+                    return;
+                }
+                setGridData(gridData?.data?.data?.results)
+                setGridDataCount(gridData?.data?.data?.count)
+            }
+            catch (e) {
+                console.log(e);
+            }
         }
     }
     
@@ -884,18 +942,20 @@ const DptWiseBMReport = () => {
     
     
     const getTempUpdatedFilteredData = async () => {
-        try {
-            const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': 1, appliedFilters: formatedFilters, page_size: gridDataCount });
-            setTempGridData(gridData?.data?.data?.results);
+            try {
+                const formatedFilters = formatFilterJSON(appliedFilters);
+                const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': 1, appliedFilters: formatedFilters, page_size: gridDataCount });
+                setTempGridData(gridData?.data?.data?.results);
+            }
+            catch (e) {
+                console.log(e);
+            }
+            finally {
+                setIsExcelLoading(false);
+            }
         }
-        catch (e) {
-            console.log(e);
-        }
-        finally {
-            setIsExcelLoading(false);
-        }
-    }
+        
+        
 
     useEffect(() => {
         if (Object.keys(appliedFilters).length) {
@@ -916,9 +976,16 @@ const DptWiseBMReport = () => {
 
 
     const onExcelExport = () => {
-        setIsExcelLoading(true);
-        getTempUpdatedFilteredData();
-    }
+        if (isPivot) {
+            getTempUpdatedFilteredData(); 
+        } else {
+          if (bomActive) {
+            setShowExcelModal(true)
+          } else {
+            getUpdatedFilteredData(1, userPageSize, true, 0);
+          }
+        }
+      }
 
     useEffect(() => {
 
@@ -1058,6 +1125,16 @@ const DptWiseBMReport = () => {
 
     const date = apiResponseData?.data?.data;
 
+    const handleExcelConfirm = () => {
+        setShowExcelModal(false);   
+        getUpdatedFilteredData(1,userPageSize, true, 1)
+    }
+
+    const handleExcelCancel = () => {
+        setShowExcelModal(false);   
+        getUpdatedFilteredData(1,userPageSize, true,0)
+    }
+
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -1092,6 +1169,14 @@ const DptWiseBMReport = () => {
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto', marginTop: "10px",}}>
             <p>{(date && date.length)? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
+
+            <BomExcelModal
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+            />
             <>
                 {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }

@@ -745,24 +745,6 @@ const OrderRescheduling = () => {
                 ref={refGraph1}
                 enableRangeSelection={true}
                 rowSelection="multiple"
-                statusBar={{
-                  statusPanels: [
-                    {
-                      statusPanel: "agTotalAndFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agTotalRowCountComponent", align: "left" },
-                    {
-                      statusPanel: "agFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    {
-                      statusPanel: "agSelectedRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agAggregationComponent", align: "left" },
-                  ],
-                }}
                 onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
             
                 onFirstDataRendered={onFirstDataRendered}

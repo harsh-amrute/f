@@ -514,11 +514,6 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                                     setCurrentGridRef(gridRef);
                                 }}
                                 pagination={false}
-                                statusBar={{
-                                    statusPanels: [
-                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                    ]
-                                }}
                                 maintainColumnOrder
                                onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 
@@ -559,11 +554,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
                 
                                     setCurrentGridRef(gridRef);
                                 }}
-                                statusBar={{
-                                    statusPanels: [
-                                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                    ]
-                                }}
+
                                 maintainColumnOrder
                                onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 
