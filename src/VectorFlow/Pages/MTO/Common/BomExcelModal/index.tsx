@@ -11,7 +11,7 @@ type BomExcelModalProps = {
   themeUi: any;
 };
 
-const BombExcelModal: React.FC<BomExcelModalProps> = ({
+const BomExcelModal: React.FC<BomExcelModalProps> = ({
   open,
   onClose,
   onConfirm,
@@ -22,7 +22,7 @@ const BombExcelModal: React.FC<BomExcelModalProps> = ({
     <VFModalCard
       openModal={open}
       closeModal={onClose}
-      headerText="Excel Export Bomb Confirmation"
+      headerText="Excel Export Bom Confirmation"
       headerIcon=""
       headerBgColor="white"
       headerTextColor="black"
@@ -62,4 +62,4 @@ const BombExcelModal: React.FC<BomExcelModalProps> = ({
   );
 };
 
-export default BombExcelModal;
+export default BomExcelModal;

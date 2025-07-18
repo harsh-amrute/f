@@ -245,15 +245,12 @@ const useProcPlanning = ( appliedFilters: any) => {
     const [showExcelModal, setShowExcelModal] = useState(false);
     const tempGridRef = useRef<any>(null);
     const [tempGridData, setTempGridData] = useState<any>(undefined);
-    const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
-    const [gridDataCount, setGridDataCount] = useState<number>(0);
     const [gridData, setGridData] = useState<any>();
     
     
     
      const getTempGridData = async () => {
         
-         setIsExcelLoading(true);
         try {
           const formatedFilters = formatFilterJSON(appliedFilters);
             const response = await getProcPlanningData({
@@ -261,13 +258,11 @@ const useProcPlanning = ( appliedFilters: any) => {
             date: selectedDate,
             pageNum: '1',
             appliedFilters: formatedFilters,
-            page_size: gridDataCount,
+            page_size: totalRows,
           });
           setTempGridData(response?.data?.data?.results || []);
         } catch (e) {
           console.log(e);
-        } finally {
-          setIsExcelLoading(false);
         }
     };
     
@@ -314,13 +309,11 @@ const useProcPlanning = ( appliedFilters: any) => {
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
             const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab, appliedFilters: formatedFilters, page_size: pageSize || userPageSize });
-            setGridDataCount(gridData?.data?.data?.count);
             if (response.status === 200) {
                 setCurrentPage(pageNumber)
                 notifySuccess("Data fetched Successfully!");
             }
             if (!gridData?.data?.data || gridData?.data?.data?.length === 0) {
-                setGridDataCount(0);
                 setGridData([]);
                 // return;
               }
@@ -606,13 +599,6 @@ const useProcPlanning = ( appliedFilters: any) => {
     }, [navigate, ShortageDatas, selectedDate]);
 
    
-    const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
-        return {
-            // getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
-            columnWidth: 120,
-            fileName: "ag-grid.xlsx",
-        };
-    }, []);
     const excelDownload = useCallback(() => {
         gridRef.current?.api.exportDataAsExcel();
     }, []);
@@ -890,7 +876,6 @@ const useProcPlanning = ( appliedFilters: any) => {
                 enableRowGroup: true,
                 resizable: true,
                 floatingFilter: true,
-                enablePivot:true,
                 filter: "agMultiColumnFilter",
                 // minWidth: 140,
                 // wrapHeaderText: true,
@@ -924,7 +909,6 @@ const useProcPlanning = ( appliedFilters: any) => {
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
-        defaultExcelExportParams: defaultExcelExportParams,
         excelStyles: excelStyles,
         sideBar: sideBar,
         onCellEditingStopped(event: any) {

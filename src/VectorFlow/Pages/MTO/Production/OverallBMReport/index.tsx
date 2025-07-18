@@ -68,7 +68,7 @@ import ConfirmationModal from "./ConfirmationModal";
 import { InputCheckBox } from "./styles";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import useGroupedColDef from "../../../../../hooks/useGroupedColDef";
-import BombExcelModal from "../../Common/BombExcelModal";
+import BomExcelModal from "../../Common/BomExcelModal";
 
 interface ApiResponse {
   cc: string;
@@ -1732,7 +1732,7 @@ const OverallBmReport = () => {
         <p>{date && date.length ? moment(date).format("D MMM YYYY") : " "}</p>
       </div>
       
-        <BombExcelModal
+        <BomExcelModal
         open={showExcelModal}
         onClose={() => setShowExcelModal(false)}
         onConfirm={handleExcelConfirm}

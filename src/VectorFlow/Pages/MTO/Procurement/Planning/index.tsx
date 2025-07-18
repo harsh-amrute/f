@@ -8,7 +8,7 @@ import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import { FilterPageName } from "../../Common/Enum";
 import { useUserData } from "../../../../../context";
-import BombExcelModal from "../../Common/BombExcelModal";
+import BomExcelModal from "../../Common/BomExcelModal";
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -51,9 +51,6 @@ const ProcurementPlanning = () => {
     currentTab,
     handleResetClick,
     handleSaveClick,
-    // childrenModal,
-    // setShowExcelModal,
-    // showExcelModal,
     getTempGridData,
     selectedDate,
     setSelectedDate,
@@ -119,7 +116,7 @@ const ProcurementPlanning = () => {
 
   return (
     <>
-      <BombExcelModal
+      <BomExcelModal
         open={showExcelModal}
         onClose={() => setShowExcelModal(false)}
         onConfirm={handleExcelConfirm}

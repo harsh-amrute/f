@@ -45,7 +45,7 @@ import _, { debounce } from 'lodash';
 import moment from 'moment';
 import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
 import useGroupedColDef from "../../../../../hooks/useGroupedColDef";
-import BombExcelModal from '../../Common/BombExcelModal';
+import BomExcelModal from '../../Common/BomExcelModal';
 
 
 interface ApiResponse {
@@ -1147,7 +1147,7 @@ const DptWiseBMReport = () => {
             <p>{(date && date.length)? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
 
-            <BombExcelModal
+            <BomExcelModal
             open={showExcelModal}
             onClose={() => setShowExcelModal(false)}
             onConfirm={handleExcelConfirm}

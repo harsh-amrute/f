@@ -24,7 +24,7 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum'
 import useColDef from '../../../../../hooks/useColDef'
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useNavigate } from 'react-router';
-import BombExcelModal from '../../Common/BombExcelModal'
+import BomExcelModal from '../../Common/BomExcelModal'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -746,7 +746,7 @@ const DueDateQuotation = () => {
           Deselect Orders
         </VFButtonOutline>}
         
-        <BombExcelModal
+        <BomExcelModal
             open={showExcelModal}
             onClose={() => setShowExcelModal(false)}
             onConfirm={handleExcelConfirm}

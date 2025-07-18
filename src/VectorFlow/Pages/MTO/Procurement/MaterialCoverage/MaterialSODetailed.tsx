@@ -6,7 +6,7 @@ import OverlayLoader from '../../Common/Loader';
 import { pagination } from '../../Common/Enum';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useUserData } from "../../../../../context"
-import BombExcelModal from '../../Common/BombExcelModal';
+import BomExcelModal from '../../Common/BomExcelModal';
 import { SideBarDef } from 'ag-grid-enterprise';
 
 
@@ -172,7 +172,7 @@ interface MaterialSODetailedProps {
 
                 />
 
-          <BombExcelModal
+          <BomExcelModal
             open={showExcelModal}
             onClose={() => setShowExcelModal(false)}
             onConfirm={handleExcelConfirm}
