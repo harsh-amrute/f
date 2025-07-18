@@ -24,6 +24,7 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum'
 import useColDef from '../../../../../hooks/useColDef'
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useNavigate } from 'react-router';
+import VFWarningModal from '../../../../../components/VectorFLOW/commons/MTO/VFWarningModal'
 import BomExcelModal from '../../Common/BomExcelModal'
 
 const APIFilterConfig = {
@@ -780,14 +781,13 @@ const DueDateQuotation = () => {
           {renderSubmitText()}
         </VFButton>
       </Footer>
-      <VFModalCard headerText={"Warning"} openModal={showWarningModal} closeModal={() => onCloseWarningModal()} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
-        <p data-testid="warning-test" style={{ textAlign: "center", color: "#313131", paddingTop: "36px", fontStyle: "normal", fontVariant: "normal", fontWeight: 300, fontSize: "16px", fontFamily: "Roboto", width: '400px' }}>
-          Access to this page is restricted because due date assignment is automatic in the current system.
-        </p>
-        <div style={{ display: "flex", gap: "28px", alignItems: "center", justifyContent: "center", paddingTop: "38px", paddingBottom: "36px" }}>
-          <VFButtonOutline themeUi={user.user.theme_ui} onClick={() => onCloseWarningModal()}>OK</VFButtonOutline>
-        </div>
-      </VFModalCard>
+      <VFWarningModal
+        warningMsg={"Access to this page is restricted because due date assignment is automatic in the current system."}
+        actionButtonText={"Ok"}
+        showWarningModal={showWarningModal}
+        onCloseWarningModal={onCloseWarningModal}
+        themeUI={user.user.theme_ui}
+      />
       {/* <BomExplosionPOC/> */}
     </Wrapper>
   )
