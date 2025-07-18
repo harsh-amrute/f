@@ -27,7 +27,8 @@ export enum UIColumnConfigName{
     TRR = "RRR_OA",
     InTransit = "InTransitWhereAbouts",
     BuffertrendReport = "BufferTrendReport",
-    SDR = "SupplierDispatchReport"
+    SDR = "SupplierDispatchReport",
+    EO = "ElephantOrderReport"
 }
 
 export enum UserUIColumnConfigName{
@@ -50,5 +51,6 @@ export enum UserUIColumnConfigName{
     InTransit = "InTransitWhereAbouts",
     BTROnHand = "BTRon-hand",
     BTRPipeline = "BTRpipeline",
-    SDR = "SDR"
+    SDR = "SDR",
+    EO = "EO"
 }
