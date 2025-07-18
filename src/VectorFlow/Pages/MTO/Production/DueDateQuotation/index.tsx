@@ -517,7 +517,7 @@ const DueDateQuotation = () => {
         }
       }catch(e){
         console.error("Error exporting Excel", e);
-        notifyError("Error exporting Excel!");66
+        notifyError("Error exporting Excel!");
       }
     }else{
 

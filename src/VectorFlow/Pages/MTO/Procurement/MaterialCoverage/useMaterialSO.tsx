@@ -12,7 +12,7 @@ import { FilterPageName, pagination } from "../../Common/Enum";
 import { DownloadExcel, formatFilterJSON } from "../../../../../helpers/utils";
 
 const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, userConfigFetched: any, userPageSize: any, setUserPageSize: any, childColDef: any, 
-  setShowExcelModal: (e: boolean) => void, childrenModal: any, excelBody: any,) => {
+  setShowExcelModal: (e: boolean) => void,  excelBody: any,setExcelBody:any) => {
     const [orderDetailsData, setOrderDetailsData] = useState<any>();
     const [rowDataCount, setRowDataCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -180,15 +180,13 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
     };
 
   
-  const ExcelExportData = (body: any) => {
-    if (childrenModal) {
-        setShowExcelModal(true) 
-    }
-    else{
-      getInitialData(0, true,excelBody,0)
 
+  
+  useEffect(() => {
+    if (Object.keys(excelBody).length) {
+      setShowExcelModal(true)
     }
-}
+  },[excelBody])
 
     return {
         agGridProps,
@@ -197,7 +195,6 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
         rowDataCount: rowDataCount,
         handlePageChangeOnHook,
         currentPage: currentPage,
-        ExcelExportData,
         savePageSize,
         userPageSize,
         getInitialData

@@ -40,7 +40,7 @@ const BombExcelModal: React.FC<BomExcelModalProps> = ({
           justifyContent: "center",
         }}
       >
-        Do you want to download Excel with BOMB data?
+        Do you want to download Excel with BOM data?
       </div>
       <div
         style={{

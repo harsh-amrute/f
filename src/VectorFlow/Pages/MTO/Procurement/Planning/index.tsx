@@ -51,7 +51,7 @@ const ProcurementPlanning = () => {
     currentTab,
     handleResetClick,
     handleSaveClick,
-    childrenModal,
+    // childrenModal,
     // setShowExcelModal,
     // showExcelModal,
     getTempGridData,
@@ -88,20 +88,12 @@ const ProcurementPlanning = () => {
       getTempGridData();
       return;
     }
-    if (childrenModal) {
+    else{
       setShowExcelModal(true);
-    } else {
-      fetchData(
-        selectedDate,
-        1,
-        currentTab?.label === "Shortage" ? "0" : "1",
-        true,
-        1,
-        0
-      );
-    }
+    } 
   };
 
+  
   const handleExcelConfirm = () => {
     setShowExcelModal(false);
     fetchData(

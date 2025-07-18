@@ -26,13 +26,11 @@ interface MaterialSODetailedProps {
     childColDef: any
     showExcelModal: any,
     setShowExcelModal: any,
-    childrenModal: any,
-    setChildrenModal: any,
     excelBody:any,
-    
+    setExcelBody:any
 }
 
-    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef, showExcelModal, setShowExcelModal, childrenModal, excelBody}: MaterialSODetailedProps, ref) => {
+    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef, showExcelModal, setShowExcelModal, excelBody, setExcelBody}: MaterialSODetailedProps, ref) => {
     const {
         agGridProps,
         RRRRowData,
@@ -40,11 +38,10 @@ interface MaterialSODetailedProps {
         rowDataCount,
         handlePageChangeOnHook,
         currentPage,
-        ExcelExportData,
         savePageSize,
         getInitialData,
 
-    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef,setShowExcelModal,childrenModal ,excelBody  );
+    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef,setShowExcelModal,excelBody, setExcelBody  );
         const gridRef = useRef<any>(null);
         
             const {user} = useUserData();
@@ -53,12 +50,7 @@ interface MaterialSODetailedProps {
     const [isDisabled, setIsDisabled]= useState<boolean>(true);
     
 
-    useImperativeHandle(ref, ()=>({
-        getExcelExport: (body : any)=>{
-            console.log('materail so ',body)
-            ExcelExportData(body);
-        }
-    }))
+    
 
     const handlePageChange = (currPage: number) => {
         handlePageChangeOnHook(currPage, false, {}, userPageSize);

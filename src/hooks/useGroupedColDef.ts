@@ -4,7 +4,6 @@ const useColDef = () => {
     const groupedColDefsRef = useRef<any>(null);
 
     const getGroupedColDef = (response: any) => {
-        console.log(response?.data?.data)
         const HeaderData = response?.data?.data || [];
 
         const headersData = HeaderData.map((group: any) => ({

@@ -95,7 +95,6 @@ const useProcPlanning = ( appliedFilters: any) => {
     const [defaultColState,setDefaultColState] = useState<any>([])
 
     const [clearFilter, clearFilterDisabled]= useState<boolean>(true);
-    const [childrenModal, setChildrenModal] = useState(false)
     const format2 = "YYYY-MM-DD"
     const d = new Date();
     const datetime = moment(d).format(format2);
@@ -120,7 +119,6 @@ const useProcPlanning = ( appliedFilters: any) => {
         }
         try{
             const reponse = await getUIConfigData("ProcPlanningReportChildren");
-            setChildrenModal(true)
             setChildHeaderData(reponse.data.data);
         }
         catch(e){
@@ -973,7 +971,6 @@ const useProcPlanning = ( appliedFilters: any) => {
         handleResetClick,
         handleSaveClick,
         currentTab,
-        childrenModal,
         setShowExcelModal,
         showExcelModal,
         isPivot,

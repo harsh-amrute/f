@@ -227,7 +227,6 @@ const MaterialCov = () => {
       try {
           const response = await getUIConfigData(reportName);
         const childResponse = await getUIConfigData(childReportName)
-        setChildrenModal(true)
           getColDef(response)
           setHeaderData(response.data.data);
           setHeaderDataChild(childResponse.data.data)
@@ -337,10 +336,8 @@ const MaterialCov = () => {
   const callExportExcel = () => {
       const headersdata = currentGridRef?.current?.api.getColumnState();
       const formattedFilters = formatFilterJSON(appliedFilters)
-    const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
-    setExcelBody(body)
-      if(materialSoDetailRef.current?.getExcelExport)
-        materialSoDetailRef.current.getExcelExport(body)
+      const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
+      setExcelBody(body)
     
   }
 
@@ -493,12 +490,10 @@ const MaterialCov = () => {
             userPageSize={userPageSize}
             setUserPageSize={setUserPageSize}
             childColDef={childColDef}
-
             showExcelModal={showExcelModal}
             setShowExcelModal={setShowExcelModal}
-            setChildrenModal={setChildrenModal}
-            childrenModal={childrenModal}
             excelBody={excelBody}
+            setExcelBody={setExcelBody}
            
           />
         </div>
