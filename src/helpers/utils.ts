@@ -4615,41 +4615,75 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   return selectedFilter;
 }
 
-export const getBodyForExcelExport = ({ headersdata, filterData = {}, colDefMap }: any) => {
-  
+
+export const getBodyForExcelExport = ({
+  headersdata,
+  filterData = {},
+  colDefMap,
+  groupedColDefsRef,
+}: any) => {
   const filteredHeadersData = headersdata?.filter(
-    (col: any) => (col.colId !== "DropDown" || col.colId !== "Action") && (col.hide !== true)
-  ); 
+    (col: any) =>
+      (col.colId !== "DropDown" || col.colId !== "Action") &&
+      col.hide !== true
+  );
 
   try {
-    const headers = filteredHeadersData?.map((col: any) => {
-      const header_data = colDefMap.current.get(col.colId);
-      if (header_data?.scc === "bpp" || header_data?.scc === "cp" || header_data?.scc === 'clr') {
-        header_data.isColor = true;
-      }
-      
-      return {
-        ...header_data
-      }
-    }).filter((col: any) => {
-      return col.hd != undefined && col.scc != undefined
-    })
-    const body = {
-      headers: headers,
-      ...filterData
-    }
-    return body;
-  }
-  catch (e){
-    console.log(e)
+    //grouped data
+    if (groupedColDefsRef?.current) {
+      const headers = filteredHeadersData?.map((col: any) => col.colId);
 
+      const filteredGroupedColDefs = groupedColDefsRef.current
+        .map((group: any) => {
+          const filteredChildren = group.ch.filter((child: any) =>
+            headers.includes(child.groupHeaderKey)
+          );
+
+          if (filteredChildren.length > 0) {
+            return {
+              cc: group.cc,
+              ch: filteredChildren,
+            };
+          }
+
+          return null;
+        })
+        .filter(Boolean);
+
+      return {
+        headers: filteredGroupedColDefs,
+        isGrouped: true,
+        ...filterData,
+      };
+    }
+    //flat data
+    else {
+      const headers = filteredHeadersData
+        ?.map((col: any) => {
+          const header_data = colDefMap?.current?.get(col.colId);
+          return {
+            ...header_data,
+          };
+        })
+        .filter(
+          (col: any) => col?.hd !== undefined && col?.scc !== undefined
+        );
+
+      return {
+        headers,
+        ...filterData,
+      };
+    }
+  } catch (e) {
+    console.log(e);
   }
-        
-} 
+};
+
+
 
 export const DownloadExcel = (response : any,filename = "ReportFile") => {
   try {
-    if (response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    if ((response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (response.headers['content-type'] ===  'application/octet-stream')) {
       const blob = new Blob([response.data], { type: response.headers['content-type'] });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -4708,6 +4742,7 @@ export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) 
       },
       flex: 1,
       cellRenderer: f.key === "action" && MTOActionRenderer,
+      filter: "agMultiColumnFilter",
       ...customParams
     }
   })
@@ -4743,9 +4778,6 @@ export const parseMTOExcelData = async (file: File, master: MDMMasterState, page
   // Validate sheet constraints
   if (numberOfSheets.length > 1) {
     throw new Error('File cannot contain multiple sheets');
-  }
-  if (numberOfSheets[0] !== 'ag-grid') {
-    throw new Error('Sheet Name is changed');
   }
 
   // Parse Excel data

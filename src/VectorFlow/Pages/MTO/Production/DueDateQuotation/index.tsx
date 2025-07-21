@@ -24,6 +24,8 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum'
 import useColDef from '../../../../../hooks/useColDef'
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { useNavigate } from 'react-router';
+import VFWarningModal from '../../../../../components/VectorFLOW/commons/MTO/VFWarningModal'
+import BomExcelModal from '../../Common/BomExcelModal'
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -86,6 +88,8 @@ const DueDateQuotation = () => {
   const {colDefMap , getColDef} = useColDef();
   const [bomHeader, setBomHeader]= useState([])
   const [bomActive, setBomActive] = useState(false);
+  const [showExcelModal, setShowExcelModal] = useState(false);
+
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
   const [showWarningModal, setShowWarningModal] = useState(false);
@@ -498,13 +502,15 @@ const DueDateQuotation = () => {
 
 
 
-  const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any ) => {
+  const getUpdatedFilterData = async (isExcelExport = false,pageSize?:any,isBomExplosion?:any ) => {
     if(isExcelExport){
       const headersdata = currentGridRef?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
+
+
       const body = getBodyForExcelExport({headersdata , filterData : formatedFilters, colDefMap});
       try{
-        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize})
+        const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize,isBomExplosion})
         if(response.status == 200){
           DownloadExcel(response,FilterPageName.Prod_DDQ)
         }else{
@@ -638,8 +644,23 @@ const DueDateQuotation = () => {
   }, [isReset]);
   
  const ExcelData = ()=>{
-    getUpdatedFilterData(true);
+  if (bomActive) {
+    setShowExcelModal(true); 
+  } else {
+    getUpdatedFilterData(true, undefined, 0); 
+  }
+  }
+  
+  const handleExcelConfirm = () => {
+    setShowExcelModal(false);   
+    getUpdatedFilterData(true, undefined, 1);  
+  }
+  const handleExcelCancel = () => {
+    setShowExcelModal(false);   
+    getUpdatedFilterData(true, undefined, 0); 
  }
+  
+
   return (
     <Wrapper style={{ height: step === 2 && rowsSelectedForAssignment ? "130vh" : "100%" }} className="wrapper">
       {step === 1 ?
@@ -725,6 +746,14 @@ const DueDateQuotation = () => {
           style={{ fontSize: "12px", width: "100px", height: "40px" }}>
           Deselect Orders
         </VFButtonOutline>}
+        
+        <BomExcelModal
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+          />
 
         <VFButton themeUi={themeUi}
           disabled={disabled}
@@ -752,14 +781,13 @@ const DueDateQuotation = () => {
           {renderSubmitText()}
         </VFButton>
       </Footer>
-      <VFModalCard headerText={"Warning"} openModal={showWarningModal} closeModal={() => onCloseWarningModal()} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
-        <p data-testid="warning-test" style={{ textAlign: "center", color: "#313131", paddingTop: "36px", fontStyle: "normal", fontVariant: "normal", fontWeight: 300, fontSize: "16px", fontFamily: "Roboto", width: '400px' }}>
-          Access to this page is restricted because due date assignment is automatic in the current system.
-        </p>
-        <div style={{ display: "flex", gap: "28px", alignItems: "center", justifyContent: "center", paddingTop: "38px", paddingBottom: "36px" }}>
-          <VFButtonOutline themeUi={user.user.theme_ui} onClick={() => onCloseWarningModal()}>OK</VFButtonOutline>
-        </div>
-      </VFModalCard>
+      <VFWarningModal
+        warningMsg={"Access to this page is restricted because due date assignment is automatic in the current system."}
+        actionButtonText={"Ok"}
+        showWarningModal={showWarningModal}
+        onCloseWarningModal={onCloseWarningModal}
+        themeUI={user.user.theme_ui}
+      />
       {/* <BomExplosionPOC/> */}
     </Wrapper>
   )
