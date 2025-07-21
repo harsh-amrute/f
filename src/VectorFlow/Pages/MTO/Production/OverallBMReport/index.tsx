@@ -154,8 +154,7 @@ const OverallBmReport = () => {
   const [gridData, setGridData] = useState<any>();
   const [gridDataCount, setGridDataCount] = useState<number>(0);
   const rowsSelected = useRef(false);
-  const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] =
-    useState<boolean>(false);
+  const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] =useState<boolean>(false);
   const [remarkHistory, setRemarkHistory] = useState<any>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const cache = useRef<any>({});
@@ -245,6 +244,7 @@ const OverallBmReport = () => {
       setTempColdef(tempcoldeflatest);
     }
   }, [coldefs]);
+
 
   const onOpenRemarkHistory = async (data: any) => {
     // Function implementation for remark history
@@ -348,6 +348,7 @@ const OverallBmReport = () => {
 
     apiResponse.forEach((item) => {
       const modifiedItem = { ...item };
+      console.log('modified itrm', modifiedItem)
       // Initialize cp for this cc if not already done
       if (!(item.cc in cpMap)) {
         cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
@@ -358,13 +359,21 @@ const OverallBmReport = () => {
       modifiedItem.cla = "Centre"; // Fixed value
       modifiedItem.scc = item.scc; // Set scc to the name of ccc
 
+      // const a = modifiedItem.ch.map((child: any) => child.cc); 
+      // console.log("All child cc values:", a);
+      
+      console.log(modifiedItem)
+
       if (item.cc) {
         if (item.cc.includes("Dept") && modifiedItem.ch) {
           modifiedItem.ch = item.ch?.map((child) => {
             return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
           });
         }
+
       }
+
+      if(item)
 
       // If it's the first object, add default items to the ch array
 
@@ -397,8 +406,11 @@ const OverallBmReport = () => {
       cla: "Centre",
       scc: "rmk",
       pinned: "right",
-      ch: [],
+      // ch: [],
+      ch: [
+      ]
     };
+
 
     // const short_complete_OrderColumn: ApiResponseItem = {
     //     cc: "oca",
@@ -889,6 +901,7 @@ const OverallBmReport = () => {
       parent: any,
       children: ApiResponse[]
     ): ColDefChild[] => {
+      console.log(children, 'childen')
       return children.map((child: ApiResponse) => ({
         field: child.scc.trim(),
         headerName: child.hd,
@@ -911,7 +924,7 @@ const OverallBmReport = () => {
             ? "AgeingCellRenderer"
             : child.cc === "BPP"
             ? "colorCellRenderer"
-            : child.cc === "RemarksHistory"
+            : child.cc === "RemarkHistory"
             ? "RemarkHistoryRenderer"
             : child.cc === "ct"
             ? "DropDownCellRenderer"
@@ -929,15 +942,11 @@ const OverallBmReport = () => {
           }
           return props.value;
         },
-        cellRendererParams: child.hd.includes("Remark")
-          ? {
-              onClick:
-                child.scc === "rm"
-                  ? (data: string) => onOpenRemarkHistory(data)
-                  : undefined,
-            }
-          : undefined,
-          cellClassRules:
+        cellRendererParams: child?.hd.includes("Remark") ? {
+          onClick: child?.cc === 'RemarkHistory' ? (data: string) => onOpenRemarkHistory(data) : undefined
+        } : undefined,
+  
+        cellClassRules:
           child.cc === "BPP" && excelColorArr.reduce(
             (acc, color) => ({
               ...acc,

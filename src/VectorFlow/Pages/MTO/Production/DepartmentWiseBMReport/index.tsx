@@ -165,7 +165,6 @@ const DptWiseBMReport = () => {
     const [isPivot, setIsPivot] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
-    const [detailCellRendererParamsConfig, setDetailCellRendererParamsConfig] = useState<any>();
 
 
     
@@ -211,7 +210,7 @@ const DptWiseBMReport = () => {
         {
             "colorCellRenderer": BPPRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
-            "RemarkHistoryRenderer": RemarkHistoryRenderer,
+            RemarkHistoryRenderer: RemarkHistoryRenderer,
         }), []);
 
     const sideBar = useMemo(() => {
@@ -308,7 +307,7 @@ const DptWiseBMReport = () => {
 
     const setColumnDef = async () => {
         try {
-            const reportName = "BMReport";
+            const reportName = "DeptWiseReport";
             const response = await getUIConfigData(reportName);
             // const modifiedResponse = addDefaultAttributes(response?.data?.data);
 
@@ -394,35 +393,35 @@ const DptWiseBMReport = () => {
             cla: "Centre",
             scc: "rmk",
             pinned:'right',
-            ch: [
-                {
-                    cc: "Remark",
-                    cp: 28,
-                    hd: "Remark",
-                    v: true,
-                    cla: "Centre",
-                    scc: "r",
-                    pinned:'right',
-                },
-                {
-                    cc: "lr",
-                    cp: 29,
-                    hd: "Latest Remark",
-                    v: true,
-                    cla: "Centre",
-                    scc: "lr",
-                    pinned:'right',
-                },
-                {
-                    cc: "Remark History",
-                    cp: 30,
-                    hd: "Remark History",
-                    v: true,
-                    cla: "Centre",
-                    scc: "Remark History",
-                    pinned:'right',
-                }
-            ]
+            // ch: [
+            //     {
+            //         cc: "Remark",
+            //         cp: 28,
+            //         hd: "Remark",
+            //         v: true,
+            //         cla: "Centre",
+            //         scc: "r",
+            //         pinned:'right',
+            //     },
+            //     {
+            //         cc: "lr",
+            //         cp: 29,
+            //         hd: "Latest Remark",
+            //         v: true,
+            //         cla: "Centre",
+            //         scc: "lr",
+            //         pinned:'right',
+            //     },
+            //     {
+            //         cc: "Remark History",
+            //         cp: 30,
+            //         hd: "Remark History",
+            //         v: true,
+            //         cla: "Centre",
+            //         scc: "Remark History",
+            //         pinned:'right',
+            //     }
+            // ]
         };
 
         // Add the additional object to the end of the modified response
@@ -447,14 +446,24 @@ const DptWiseBMReport = () => {
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
-                cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
+                // cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
+                cellRenderer:
+                child.cc === "ec" && bomActive
+                  ? "agGroupCellRenderer"
+                  : child.cc === "ic"
+                  ? "AgeingCellRenderer"
+                  : child.cc === "BPP"
+                  ? "colorCellRenderer"
+                  : child.cc === "Remark History"
+                  ? "RemarkHistoryRenderer"
+                  : undefined,
                 minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
                 filter:
                 child.cla === "right"
                 ? "agNumberColumnFilter"
                 : "agTextColumnFilter",
-                pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
+                pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
                 editable: child.cc === 'Remark' ? true : false,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 valueFormatter: (params: any) => {
@@ -463,12 +472,9 @@ const DptWiseBMReport = () => {
                     }
                     return params.value;
                 },
-                cellRendererParams: child.hd.includes("Remark") ? {
-                    // visible: {
-                    //     flag: child.scc === 'Remark' ? true : child.scc === 'Latest Remark' ? false : undefined,
-                    // },
-                    onClick: child.scc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
-                } : undefined,
+                cellRendererParams: child?.hd.includes("Remark") ? {
+                    onClick: child?.cc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
+                  } : undefined,
                 cellClassRules:
                 child.cc === "BPP" && excelColorArr.reduce(
                   (acc, color) => ({
@@ -649,18 +655,18 @@ const DptWiseBMReport = () => {
     };
 
     const handleUpdateReason = async () => {
-        //  console.log('editedRows', editedRows)
         try {
             if (refGraph1.current) {
                 // Get the grid API reference
                 const api = refGraph1.current.api;
+                console.log('api', api)
 
                 // Ensure that any ongoing editing is stopped and values are committed
                 api.stopEditing();
                 const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
-                //console.log('updated row', updatedRow)
+                console.log('updated row', updatedRow)
                 if (updatedRow.length > 0) {
-                    let putData: UpdateRemarkObj[] = [];
+                    const putData: UpdateRemarkObj[] = [];
                     updatedRow.forEach((e: any) => {
                         const singleData: any = {
                             "ok": e.ok,
@@ -669,14 +675,28 @@ const DptWiseBMReport = () => {
                             "user": user?.user?.name
                         }
                         putData.push(singleData);
+                        
                     })
-                    // console.log('putData', putData)
+                    console.log('putData', putData)
                     const RemarkHistory = await addBMReportRemark(putData);
-                    //console.log('REmakrf', RemarkHistory)
+                     notifySuccess('Remark saved successfully')
+                    // }
                     if (RemarkHistory.status === 200) {
-                        putData = [];
+                        const newGridData = [...gridData].map((row) => {
+                            const currentRemark = row.r || ""
+                            if (editedRows.has(row.ok)) {
+                                return {
+                                    ...row,
+                                    r: "",
+                                    lr: currentRemark,  
+                                }; 
+                            }
+                            return row;
+                        });                
+                        console.log('newgriddara', newGridData)
+                        setGridData(newGridData);
                         setEditedRows(new Set());
-                        notifySuccess('Remark saved successfully')
+                        notifySuccess('Remark saved successfully');
                     }
                     else {
                         notifyError('Failed to save the remark(s)')
