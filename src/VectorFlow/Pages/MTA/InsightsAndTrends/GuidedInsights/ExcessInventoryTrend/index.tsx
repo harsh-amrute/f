@@ -92,7 +92,7 @@ const ExcessInventoryTrend = ({
         .filter((d: any) => d.locationtype === locationType)
         .map((d: any) => ({ date: d.date, value: d.value }));
       return {
-        ...chartParams1.series[0],
+        ...chartParams2.series[0],
         yName: locationType,
         data: seriesData,
         stroke: greyShades[index % greyShades.length],
