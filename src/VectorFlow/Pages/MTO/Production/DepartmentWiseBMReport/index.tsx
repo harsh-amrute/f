@@ -355,7 +355,6 @@ const DptWiseBMReport = () => {
         apiResponse.forEach((item) => {
             const modifiedItem = { ...item };
 
-            console.log('modifiedItem', modifiedItem)
 
             // Initialize cp for this cc if not already done
             if (!(item.cc in cpMap)) {
@@ -377,7 +376,6 @@ const DptWiseBMReport = () => {
 
                 if (item.cc.includes('Default Attribute') && modifiedItem.ch) {
                     modifiedItem.ch = item.ch?.filter((child)=>{
-                        console.log('child.cc', child.cc)
                         if (isBMReportViewer) {
                             return child.cc !== 'Remark'  
                         }
@@ -410,7 +408,6 @@ const DptWiseBMReport = () => {
         // Calculate cp for the additional object based on existing cp values
         const maxCp = Math.max(...modifiedResponse.map(item => item.cp || 0));
 
-        // const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
 
         // Create the additional object to be added at the end
         const additionalObject: ApiResponseItem = {
@@ -421,55 +418,6 @@ const DptWiseBMReport = () => {
             cla: "Centre",
             scc: "rmk",
             pinned: 'right',
-            // ch: isBMReportViewer ? [
-            //     {
-            //         cc: "lr",
-            //         cp: 29,
-            //         hd: "Latest Remark",
-            //         v: true,
-            //         cla: "Centre",
-            //         scc: "lr",
-            //         pinned:'right',
-            //     },
-            //     {
-            //         cc: "Remark History",
-            //         cp: 30,
-            //         hd: "Remark History",
-            //         v: true,
-            //         cla: "Centre",
-            //         scc: "Remark History",
-            //         pinned:'right',
-            //     }
-            // ] : 
-            //  [
-            //     {
-            //         cc: "Remark",
-            //         cp: 28,
-            //         hd: "Remark",
-            //         v: true,
-            //         cla: "Centre",
-            //         scc: "r",
-            //         pinned:'right',
-            //     },
-            //     {
-            //         cc: "lr",
-            //         cp: 29,
-            //         hd: "Latest Remark",
-            //         v: true,
-            //         cla: "Centre",
-            //         scc: "lr",
-            //         pinned:'right',
-            //     },
-            //     {
-            //         cc: "Remark History",
-            //         cp: 30,
-            //         hd: "Remark History",
-            //         v: true,
-            //         cla: "Centre",
-            //         scc: "Remark History",
-            //         pinned:'right',
-            //     }
-            // ]
         };
 
         // Add the additional object to the end of the modified response
@@ -494,7 +442,6 @@ const DptWiseBMReport = () => {
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
-                // cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
                 cellRenderer:
                 child.cc === "ec" && bomActive
                   ? "agGroupCellRenderer"

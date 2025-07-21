@@ -380,8 +380,6 @@ const OverallBmReport = () => {
 
       }
 
-      if(item)
-
       // If it's the first object, add default items to the ch array
 
       // Push the modified item to the response array
@@ -413,9 +411,6 @@ const OverallBmReport = () => {
       cla: "Centre",
       scc: "rmk",
       pinned: "right",
-      // ch: [],
-      ch: [
-      ]
     };
 
 
