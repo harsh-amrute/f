@@ -156,8 +156,7 @@ const OverallBmReport = () => {
   const [gridData, setGridData] = useState<any>();
   const [gridDataCount, setGridDataCount] = useState<number>(0);
   const rowsSelected = useRef(false);
-  const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] =
-    useState<boolean>(false);
+  const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] =useState<boolean>(false);
   const [remarkHistory, setRemarkHistory] = useState<any>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const cache = useRef<any>({});
@@ -251,6 +250,7 @@ const OverallBmReport = () => {
       setTempColdef(tempcoldeflatest);
     }
   }, [coldefs]);
+
 
   const onOpenRemarkHistory = async (data: any) => {
     // Function implementation for remark history
@@ -368,12 +368,16 @@ const OverallBmReport = () => {
       modifiedItem.cla = "Centre"; // Fixed value
       modifiedItem.scc = item.scc; // Set scc to the name of ccc
 
+ 
+  
+
       if (item.cc) {
         if (item.cc.includes("Dept") && modifiedItem.ch) {
           modifiedItem.ch = item.ch?.map((child) => {
             return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
           });
         }
+
       }
 
       // If it's the first object, add default items to the ch array
@@ -407,8 +411,8 @@ const OverallBmReport = () => {
       cla: "Centre",
       scc: "rmk",
       pinned: "right",
-      ch: [],
     };
+
 
     // const short_complete_OrderColumn: ApiResponseItem = {
     //     cc: "oca",
@@ -921,7 +925,7 @@ const OverallBmReport = () => {
             ? "AgeingCellRenderer"
             : child.cc === "BPP"
             ? "colorCellRenderer"
-            : child.cc === "RemarksHistory"
+            : child.cc === "RemarkHistory"
             ? "RemarkHistoryRenderer"
             : child.cc === "ct"
             ? "DropDownCellRenderer"
@@ -939,15 +943,11 @@ const OverallBmReport = () => {
           }
           return props.value;
         },
-        cellRendererParams: child.hd.includes("Remark")
-          ? {
-              onClick:
-                child.scc === "rm"
-                  ? (data: string) => onOpenRemarkHistory(data)
-                  : undefined,
-            }
-          : undefined,
-          cellClassRules:
+        cellRendererParams: child?.hd.includes("Remark") ? {
+          onClick: child?.cc === 'RemarkHistory' ? (data: string) => onOpenRemarkHistory(data) : undefined
+        } : undefined,
+  
+        cellClassRules:
           child.cc === "BPP" && excelColorArr.reduce(
             (acc, color) => ({
               ...acc,

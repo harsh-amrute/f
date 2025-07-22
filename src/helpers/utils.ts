@@ -4683,7 +4683,7 @@ export const getBodyForExcelExport = ({
 
 export const DownloadExcel = (response : any,filename = "ReportFile") => {
   try {
-    if (response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    if ((response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (response.headers['content-type'] ===  'application/octet-stream')) {
       const blob = new Blob([response.data], { type: response.headers['content-type'] });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
