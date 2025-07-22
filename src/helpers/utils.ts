@@ -4703,27 +4703,49 @@ export const DownloadExcel = (response : any,filename = "ReportFile") => {
 };
 
 
-export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
+export const DownloadExcelMTA = async ( payload: any, filename = "ReportFile") => {
   try {
-    const responseData = response.data?.data || response;
-    const binaryString = atob(responseData.fileContent);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
+    const token = await MainService.refreshToken();
+    const response = await fetch(process.env.REACT_APP_API_HOST + `api/mta/GetBTRDataExport`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`,
+        "Content-Type": "application/json",
+      },
+      method:"post",
+      body:JSON.stringify(payload)
+    })  
+ 
+    if (!response.ok) {
+      throw new Error("Failed to download file");
     }
-
-    const blob = new Blob([bytes.buffer], { type: responseData.fileType });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`);
+ 
+    const blob = await response.blob();
+    const fileExtension = getFileExtensionFromContentType(response.headers.get("Content-Type"));
+    const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+ 
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.setAttribute("download", downloadFileName);
     document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
-    document.body.removeChild(link);
+    link.remove();
+    window.URL.revokeObjectURL(blobUrl);
   } catch (e) {
-    console.error("Error downloading Excel file:", e);
-    notifyError("Something went wrong");
+    console.error("Error downloading file:", e);
+    notifyError("Something went wrong while exporting");
+  }
+};
+ 
+// Optional helper
+const getFileExtensionFromContentType = (contentType: string | null) => {
+  switch (contentType) {
+    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+      return "xlsx";
+    case "text/csv":
+      return "csv";
+    default:
+      return "bin";
   }
 };
 

@@ -682,12 +682,19 @@ const useBTR = () => {
                 pageNumber: pageNumber
             },
             ISExport:"1",
+            reportName:"BTR",
             responseType: `arraybuffer`
         }
         notifyLoader("Downloading Data...")
         try {
-            const data = await getBTRData(payload)
-            DownloadExcelMTA(data?.data?.data ,data?.data?.data?.fileName )
+            // const data = await getBTRData(payload)
+            let filename = "";
+            if (page === "on-hand") {
+                filename = "On Hand Inventory";
+              } else {
+                filename = "Pipeline Inventory";
+              }
+            DownloadExcelMTA(payload, filename)
             notifySuccess(`Data Exported Successfully`);
         }
         catch(error) {
