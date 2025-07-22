@@ -671,7 +671,6 @@ const DptWiseBMReport = () => {
                         
                     })
                     const RemarkHistory = await addBMReportRemark(putData);
-                     notifySuccess('Remark saved successfully')
                     // }
                     if (RemarkHistory.status === 200) {
                         const newGridData = [...gridData].map((row) => {
