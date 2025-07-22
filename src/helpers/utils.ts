@@ -4703,7 +4703,31 @@ export const DownloadExcel = (response : any,filename = "ReportFile") => {
 };
 
 
-export const DownloadExcelMTA = async ( payload: any, filename = "ReportFile") => {
+export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
+  try {
+    const responseData = response.data?.data || response;
+    const binaryString = atob(responseData.fileContent);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const blob = new Blob([bytes.buffer], { type: responseData.fileType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${filename}__${format(Date.now(), "dd/MM/yyyy")}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  } catch (e) {
+    console.error("Error downloading Excel file:", e);
+    notifyError("Something went wrong");
+  }
+};
+
+export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
   try {
     const token = await MainService.refreshToken();
     const response = await fetch(process.env.REACT_APP_API_HOST + `api/mta/GetBTRDataExport`, {

@@ -6,7 +6,7 @@ import { VFFloatingTabItemProps } from "../../../../../components/VectorFLOW/com
 import HorizontalSplitView from "./HorizontalSplitView"
 
 import VerticalSplitView from "./VerticalSplitView"
-import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA, DownloadExcel, DownloadExcelMTA } from "../../../../../helpers/utils"
+import { getColumnsForExcelExport, mapBTRRowData, mapBTRRowDataToColDefs, MainMenuItemsCustomization, getColumnDefinationsMTA, DownloadExcel, DownloadExcelMTA , CsvExportMTA} from "../../../../../helpers/utils"
 
 import { useGetBTRDataCount, useGetBTRData } from "../../../../../VectorFlow/Services/MTA/InsightsAndTrends/BTR"
 
@@ -690,11 +690,11 @@ const useBTR = () => {
             // const data = await getBTRData(payload)
             let filename = "";
             if (page === "on-hand") {
-                filename = "On Hand Inventory";
+                filename = "On_Hand_Inventory";
               } else {
-                filename = "Pipeline Inventory";
+                filename = "Pipeline_Inventory";
               }
-            DownloadExcelMTA(payload, filename)
+            await CsvExportMTA(payload, filename);
             notifySuccess(`Data Exported Successfully`);
         }
         catch(error) {
