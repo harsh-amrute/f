@@ -126,7 +126,6 @@ const RMPMBufferTrends = () => {
             notifyLoader("Loading Graph Data ...")
             const formatedFilters = formatFilterJSON(appliedFilters);
             const APIData = await getRMPMBufferTrendsData({appliedFilters: formatedFilters});
-            console.log("sdfsdfsdf")
             const updatedDataMTO = convertToGraphData(APIData?.data?.data.MTO);
             const updatedDataMTA = convertToGraphData(APIData?.data?.data.MTA);
             console.log('==>', updatedDataMTA)
