@@ -1058,7 +1058,7 @@ const ActionToolBar = ({
                           }
                           alt=""
                         />
-                        <p>Excel Export</p>
+                         <p>{currCategory === "BTR" ? "CSV Export" : "Excel Export"}</p>
                       </>
                       {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
                                     <p>Excel Export</p> */}

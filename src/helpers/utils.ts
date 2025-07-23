@@ -4727,6 +4727,52 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
   }
 };
 
+export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
+  try {
+    const token = await MainService.refreshToken();
+    const response = await fetch(process.env.REACT_APP_API_HOST + `api/mta/GetBTRDataExport`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`,
+        "Content-Type": "application/json",
+      },
+      method:"post",
+      body:JSON.stringify(payload)
+    })  
+ 
+    if (!response.ok) {
+      throw new Error("Failed to download file");
+    }
+ 
+    const blob = await response.blob();
+    const fileExtension = getFileExtensionFromContentType(response.headers.get("Content-Type"));
+    const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+ 
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.setAttribute("download", downloadFileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (e) {
+    console.error("Error downloading file:", e);
+    notifyError("Something went wrong while exporting");
+  }
+};
+ 
+// Optional helper
+const getFileExtensionFromContentType = (contentType: string | null) => {
+  switch (contentType) {
+    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+      return "xlsx";
+    case "text/csv":
+      return "csv";
+    default:
+      return "bin";
+  }
+};
+
 // MDM MTO Utils
 export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) => {
   let result: ColDef[] = []
