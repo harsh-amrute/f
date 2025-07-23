@@ -1267,7 +1267,7 @@ const OverallBmReport = () => {
       });
 
       gridData?.forEach((item: any) => {
-        if (item?.ok) {
+        if (item && item.ok) {
           let isThere = 0;
           selectedData.forEach((selectedD: any) => {
             if (selectedD.ok === item.ok) {
