@@ -195,7 +195,7 @@ const useSavedDrafts = ()=>{
                 cellEditor: "agRichSelectCellEditor",
                 editable: ActionType == "Modify" ? false : true,
                 cellEditorParams: {
-                  values: bufferTypeMaster?.map((item: any) => item.dsc),
+                  values: bufferTypeMaster?.map((item: any) => item.nm),
                 },
               };
             if(col.field === "dow"){
