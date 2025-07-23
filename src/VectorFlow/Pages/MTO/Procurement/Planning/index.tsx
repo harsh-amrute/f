@@ -122,6 +122,8 @@ const ProcurementPlanning = () => {
         onConfirm={handleExcelConfirm}
         onCancel={handleExcelCancel}
         themeUi={themeUi}
+        headerText={"Excel Export"}
+        messageText={"Do you want to download Excel with Order details?"}        
       />
 
       {(isLoading || getFilterdataLoading) && <OverlayLoader />}

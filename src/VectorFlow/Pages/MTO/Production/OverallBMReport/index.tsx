@@ -411,6 +411,7 @@ const OverallBmReport = () => {
       cla: "Centre",
       scc: "rmk",
       pinned: "right",
+      ch:[]
     };
 
 
@@ -863,31 +864,37 @@ const OverallBmReport = () => {
                 margin: "10px",
               }}
             >
-              <p>{props.data?.ct}</p>
-              <div
-                onClick={() => {
-                  undoClicked(props, props.data.ok);
-                }}
-                style={{
-                  marginLeft: "10px",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <img
-                  style={{
-                    transform: "rotateY(180deg)",
-                    margin: "4px",
-                    cursor: "pointer",
-                  }}
-                  src="/assets/img/VectorFLOW/reset.svg"
-                  alt="Undo"
-                  title="Undo"
-                  height={14}
-                  width={14}
-                />
-              </div>
+                {
+                  props?.data?.ct &&
+                  <>
+                    <p>{props.data?.ct}</p>
+                    <div
+                      onClick={() => {
+                        undoClicked(props, props.data.ok);
+                      }}
+                      style={{
+                        marginLeft: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <img
+                        style={{
+                          transform: "rotateY(180deg)",
+                          margin: "4px",
+                          cursor: "pointer",
+                        }}
+                        src="/assets/img/VectorFLOW/reset.svg"
+                        alt="Undo"
+                        title="Undo"
+                        height={14}
+                        width={14}
+                      />
+                    </div>
+                  </>
+                }
+              
             </div>
           </>
         )}
@@ -1260,14 +1267,16 @@ const OverallBmReport = () => {
       });
 
       gridData?.forEach((item: any) => {
-        let isThere = 0;
-        selectedData.forEach((selectedD: any) => {
-          if (selectedD.ok === item.ok) {
-            isThere = 1;
+        if (item && item.ok) {
+          let isThere = 0;
+          selectedData.forEach((selectedD: any) => {
+            if (selectedD.ok === item.ok) {
+              isThere = 1;
+            }
+          });
+          if (isThere == 0) {
+            mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
           }
-        });
-        if (isThere == 0) {
-          mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
         }
       });
       // if (!_.isEqual(mergedData, masterSelectedRowData)) {
@@ -1738,6 +1747,9 @@ const OverallBmReport = () => {
         onConfirm={handleExcelConfirm}
         onCancel={handleExcelCancel}
         themeUi={themeUi}
+        headerText={"Excel Export"}
+        messageText={"Do you want to download Excel with BOM Data?"}
+                
       />
       
       {(isGridLoading ||
