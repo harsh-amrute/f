@@ -157,10 +157,6 @@ const RMPMBufferTrends = () => {
       }, [appliedFilters])
 
 
-    useEffect(() => {
-        console.log('MTA data', MTAData)
-        console.log('MTO data', MTOData)
-    }, [MTAData, MTOData])
 
     useEffect(() => {
         GetData();
