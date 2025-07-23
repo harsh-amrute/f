@@ -683,6 +683,7 @@ const useBTR = () => {
             },
             ISExport:"1",
             reportName:"BTR",
+            stream:1,
             responseType: `arraybuffer`
         }
         notifyLoader("Downloading Data...")

@@ -4730,7 +4730,7 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
 export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
   try {
     const token = await MainService.refreshToken();
-    const response = await fetch(process.env.REACT_APP_API_HOST + `api/mta/GetBTRDataExport`, {
+    const response = await fetch(process.env.REACT_APP_API_HOST + `api/mta/GetExportDataAsync`, {
       headers: {
         Authorization: `Bearer ${token?.access}`,
         "Content-Type": "application/json",
