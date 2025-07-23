@@ -27,10 +27,9 @@ interface MaterialSODetailedProps {
     showExcelModal: any,
     setShowExcelModal: any,
     excelBody:any,
-    setExcelBody:any
 }
 
-    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef, showExcelModal, setShowExcelModal, excelBody, setExcelBody}: MaterialSODetailedProps, ref) => {
+    const MaterialSODetailed = forwardRef(({ isUpdateUserConfig, isGetUserConfig, parameterData, setCurrentGridRef, currentGridRef, columnState, colDef,appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef, showExcelModal, setShowExcelModal, excelBody}: MaterialSODetailedProps, ref) => {
     const {
         agGridProps,
         RRRRowData,
@@ -41,7 +40,7 @@ interface MaterialSODetailedProps {
         savePageSize,
         getInitialData,
 
-    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef,setShowExcelModal,excelBody, setExcelBody  );
+    } = useMaterialSO(parameterData, appliedFilters,handleSaveClick,userConfigFetched,userPageSize,setUserPageSize,childColDef);
         const gridRef = useRef<any>(null);
         
             const {user} = useUserData();
@@ -171,14 +170,15 @@ interface MaterialSODetailedProps {
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 
                 />
-
-          <BomExcelModal
-            open={showExcelModal}
-            onClose={() => setShowExcelModal(false)}
-            onConfirm={handleExcelConfirm}
-            onCancel={handleExcelCancel}
-            themeUi={themeUi}
-          />
+                <BomExcelModal
+                    open={showExcelModal}
+                    onClose={() => setShowExcelModal(false)}
+                    onConfirm={handleExcelConfirm}
+                    onCancel={handleExcelCancel}
+                    themeUi={themeUi}
+                    headerText={"Excel Export"}
+                    messageText={"Do you want to download Excel with RM/PM details?"}
+                />
 
                 <VFPagination
                     selectedRows={0}

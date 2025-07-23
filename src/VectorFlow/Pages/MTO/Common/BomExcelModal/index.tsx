@@ -9,6 +9,8 @@ type BomExcelModalProps = {
   onConfirm: () => void;
   onCancel: () => void;
   themeUi: any;
+  messageText: string;
+  headerText: string;
 };
 
 const BomExcelModal: React.FC<BomExcelModalProps> = ({
@@ -17,12 +19,14 @@ const BomExcelModal: React.FC<BomExcelModalProps> = ({
   onConfirm,
   onCancel,
   themeUi,
+  messageText,
+  headerText,
 }) => {
   return (
     <VFModalCard
       openModal={open}
       closeModal={onClose}
-      headerText="Excel Export Bom Confirmation"
+      headerText={headerText}
       headerIcon=""
       headerBgColor="white"
       headerTextColor="black"
@@ -40,7 +44,7 @@ const BomExcelModal: React.FC<BomExcelModalProps> = ({
           justifyContent: "center",
         }}
       >
-        Do you want to download Excel with BOM data?
+        {messageText}
       </div>
       <div
         style={{

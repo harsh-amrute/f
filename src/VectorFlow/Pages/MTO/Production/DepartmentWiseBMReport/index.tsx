@@ -176,8 +176,7 @@ const DptWiseBMReport = () => {
     const [bomActive, setBomActive] = useState<any>(undefined);
     const { getGroupedColDef, groupedColDefsRef } = useColDef();
     const [showExcelModal, setShowExcelModal] = useState(false);
-    
-
+    const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
@@ -339,7 +338,6 @@ const DptWiseBMReport = () => {
     }
 
     const addDefaultAttributes = (apiResponse: ApiResponseItem[]): ApiResponseItem[] => {
-        const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
         const modifiedResponse: ApiResponseItem[] = [];
         const cpMap: { [key: string]: number } = {};
 
@@ -1154,6 +1152,8 @@ const DptWiseBMReport = () => {
             onConfirm={handleExcelConfirm}
             onCancel={handleExcelCancel}
             themeUi={themeUi}
+            headerText={"Excel Export"}
+            messageText={"Do you want to download Excel with BOM Data?"}
             />
             <>
                 {
@@ -1171,13 +1171,14 @@ const DptWiseBMReport = () => {
                                             detailCellRendererParamsConfig={cellRendererParamsConfig}
                                             columDef={coldefs}
                                             convercolumnDef={gridData}
-                                                updateReason={handleUpdateReason}
-                                                handlePageChange={handlePageChange}
-                                                totalRow={gridDataCount}
-                                                currentPage={currentPage}
-                                                customPageSize={true}
-                                                savePageSize={savePageSize}
-                                                userPageSize = {userPageSize}
+                                            updateReason={handleUpdateReason}
+                                            handlePageChange={handlePageChange}
+                                            currentPage={currentPage}
+                                            totalRow={gridDataCount}
+                                            savePageSize={savePageSize}
+                                            customPageSize={true}
+                                            saveBtn={!isBMReportViewer}
+                                            userPageSize={userPageSize}
                                                 // onGridReady={() => {applyColumnState()}}
                                                 />
                                         

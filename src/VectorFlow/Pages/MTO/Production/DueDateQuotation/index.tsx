@@ -753,6 +753,8 @@ const DueDateQuotation = () => {
             onConfirm={handleExcelConfirm}
             onCancel={handleExcelCancel}
             themeUi={themeUi}
+            headerText={"Excel Export"}
+            messageText={"Do you want to download Excel with BOM Details?"} 
           />
 
         <VFButton themeUi={themeUi}
