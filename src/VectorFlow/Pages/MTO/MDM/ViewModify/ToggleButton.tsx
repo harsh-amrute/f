@@ -35,6 +35,7 @@ const ToggleButton: React.FC = (props: any) => {
           
           if(props.data.bid && !isActive){
             const newBufferModifyData = bufferModifyData? _.cloneDeep(bufferModifyData).filter((row:any) => row.bid !== props.data.bid): [];
+            newBufferModifyData.push({...props.data, iv: !isActive});
             dispatch(SET_BUFFER_MODIFY_DATA(newBufferModifyData));
             
           }
@@ -70,6 +71,7 @@ const ToggleButton: React.FC = (props: any) => {
           
           if(props.data.cid && !isActive){
             const newCCRModifyData = ccrModifyData? _.cloneDeep(ccrModifyData).filter((row:any) => row.cid !== props.data.cid): [];
+            newCCRModifyData.push({...props.data, iv: !isActive});
             dispatch(SET_CCR_MODIFY_DATA(newCCRModifyData));
             
           }

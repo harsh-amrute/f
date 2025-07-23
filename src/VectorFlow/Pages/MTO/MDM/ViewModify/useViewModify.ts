@@ -4157,11 +4157,11 @@ const useViewModify = (pageType: string) => {
       e.iv = (e?.iv ===false|| e?.iv===true)? e.iv : true
       if (!e.bid) e.bid = null;
 
-      if (e.bid === null || e.iv === false) {
-        BufferPostObj.buffData.push(
-          _.omit(e, ["editable", "error", "warning"])
-        );
-      }
+     
+      BufferPostObj.buffData.push(
+        _.omit(e, ["editable", "error", "warning"])
+      );
+      
     });
 
     try {
@@ -4246,14 +4246,13 @@ const useViewModify = (pageType: string) => {
           !(e.iv === true || e.iv === false) && (e.iv = false);
           if (!e.bid) e.bid = null;
 
-          if (e.bid === null || e.iv === false) {
-            BufferPostObj.buffData.push(
-              _.omit(e, ["editable", "error", "warning"])
-            );
-          }
+          
+          BufferPostObj.buffData.push(
+            _.omit(e, ["editable", "error", "warning"])
+          );
+          
         });
       }
-
       try {
         const response = await saveBufferMasterDraft([BufferPostObj]);
         if (response.status === 200) {

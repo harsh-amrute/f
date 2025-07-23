@@ -290,7 +290,14 @@ const useSavedDrafts = ()=>{
           });
           let draftData: any = res.data.data.results;
           if(draftDetails.mid !== 503 && draftDetails.mid !== 504){
-              draftData = draftData.map((item:any)=> ({...item, isEditing:false,ia:true,isdel:false,id:uuidv4()}));
+              draftData = draftData.map((item:any)=> {
+                // this is for ccr and buffer that are already added and that dont required action buttons 
+                if(item.bid || item.cid){
+                  return item
+                }else{
+                 return {...item, isEditing:false,ia:true,isdel:false,id:uuidv4()}
+                }
+              });
           }
           dispatch(SET_RECORD_COUNT(res.data.data.results.length));
 
