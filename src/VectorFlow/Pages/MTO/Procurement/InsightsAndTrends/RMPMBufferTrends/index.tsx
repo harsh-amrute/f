@@ -159,7 +159,6 @@ const RMPMBufferTrends = () => {
 
 
     useEffect(() => {
-        GetData();
         getFilterData()
     }, [])
 

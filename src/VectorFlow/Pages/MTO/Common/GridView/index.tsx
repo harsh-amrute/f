@@ -96,14 +96,14 @@
             }
         }, [appliedFilters, userConfigFetched]);
 
-        useEffect(() => {
-            if (isSuccess) {
-                notifySuccess("Fetched Data successfully!")
-            }
-            if (isError) {
-                notifyError("Failed to load data!")
-            }
-        }, [isSuccess, isError]);
+        // useEffect(() => {
+        //     if (isSuccess) {
+        //         notifySuccess("Fetched Data successfully!")
+        //     }
+        //     if (isError) {
+        //         notifyError("Failed to load data!")
+        //     }
+        // }, [isSuccess, isError]);
 
         const savePageSize = (pageSize: number) => {
             if (pageSize) {
