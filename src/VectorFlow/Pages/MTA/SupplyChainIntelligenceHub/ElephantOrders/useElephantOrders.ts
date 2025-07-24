@@ -338,6 +338,21 @@ const useElephantOrders= ()=>{
         },
         WHDescription: {
             rowGroup: false,
+        },
+        EPD:{
+            headerTooltip: "Earliest Possible Due Date"
+        },
+        RLTUptoSuppOrPlant:{
+            headerTooltip: "RLT Upto Supplier/Plant"
+        },
+        TopmostWhCode:{
+            headerTooltip: "Topmost Location Code"
+        },
+        TopmostWhNorm:{
+            headerTooltip:"Topmost Location Norm"
+        },
+        CustomerExpectedDate:{
+            headerTooltip: "Customer Expected Date"
         }
     }
 
