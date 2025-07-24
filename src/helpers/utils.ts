@@ -4758,6 +4758,7 @@ export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
   } catch (e) {
     console.error("Error downloading file:", e);
     notifyError("Something went wrong while exporting");
+    throw e;
   }
 };
  
