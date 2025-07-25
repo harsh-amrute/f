@@ -25,7 +25,7 @@ interface FormDataType {
   name: string;
   code: string;
   description: string;
-  applicationId: string;
+  application_id: string;
   urls: Array<any>;
 }
 
@@ -50,7 +50,7 @@ const AddRole = (props: { cb: () => void }) => {
     name: "",
     code: "",
     description: "",
-    applicationId: "",
+    application_id: "",
     urls: [],
   });
 
@@ -93,7 +93,7 @@ const AddRole = (props: { cb: () => void }) => {
   };
 
   const handleSelectChange = (value: any) => {
-    setFormData({ ...formData, applicationId: value });
+    setFormData({ ...formData, application_id: value });
   };
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>, data: any) => {
