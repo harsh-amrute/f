@@ -502,7 +502,7 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   };
 
     const { user } = useUserData();
-    const themeUi = user.user.theme_ui;
+  const themeUi = user.user.theme_ui;
 
   const getFilteredHeaderOptions = (index: number) => {
 
@@ -525,12 +525,12 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
   
     return filteredOptions;
   };
-  
 
+  
 
       return (
       <>
-       {masterFilterState?.filters?.map((filter:any, index:any) => (
+      {masterFilterState?.filters?.map((filter: any, index: any) => (
       <div key={filter.id} style={{ display: "flex",  width: index === 0 ? "100%" : "90%"}}>
     
       <div style={{ display: "flex", justifyContent: "space-between", width: index === 0 ? 'calc(100% - 40px)' : '100%' }}>
@@ -578,21 +578,37 @@ const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,
       </DropdownGroupWrapper>
     </div>
 
-    {index === 0 && (
-      <div style={{
+   
+  {index === 0 && (() => {
+  const filteredOptions = getFilteredHeaderOptions(index);
+  const isDisabled = filteredOptions.length === 1;
+
+  return (
+    <div
+      style={{
         width: "40px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-      }}>
-        <SCFilterAddButton
-          onClick={addFilter}
-          src={themeUi==="REGALBLAZE" ? "/assets/img/VectorFLOW/NMS/add-filter-regal.svg"
-            :"/assets/img/VectorFLOW/NMS/add-filter.svg"}
-          data-testid="add-filter"
-        />
-      </div>
-    )}
+        opacity: isDisabled ? 0.5 : 1,
+        cursor: isDisabled ? "not-allowed" : "pointer",
+      }}
+    >
+      <SCFilterAddButton
+        onClick={isDisabled ? undefined : addFilter}
+        src={
+          themeUi === "REGALBLAZE"
+            ? "/assets/img/VectorFLOW/NMS/add-filter-regal.svg"
+            : "/assets/img/VectorFLOW/NMS/add-filter.svg"
+        }
+        data-testid="add-filter"
+      />
+    </div>
+  );
+})()}
+
+
+
   </div>
 
   
