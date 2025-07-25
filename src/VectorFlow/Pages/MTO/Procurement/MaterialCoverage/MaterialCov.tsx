@@ -246,7 +246,7 @@ const MaterialCov = () => {
           cellStyle: {
               paddingRight: '25px'
           },
-          cellRenderer: "avlCellRenderer",
+        cellRenderer: "avlCellRenderer",
           tooltipComponent: 'availabilityToolTip',
           tooltipValueGetter: (params: any) => {
               const oq = params.data.oq;

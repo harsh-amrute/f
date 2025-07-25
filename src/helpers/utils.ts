@@ -4414,6 +4414,9 @@ export function getColumnDefinations(
     }
     return columnDef;
   });
+
+
+  
   // Add extra columns
   extraFields?.forEach((field: any) => {
     let position = field.position;
@@ -4593,7 +4596,7 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
       const { name, attributeName, value, type, operator } = filters[i];
 
       if (attributeName === 'ms') {
-        if (value.length > 0 && isMfgStrgyIncluded) {
+        if (value?.length > 0 && isMfgStrgyIncluded) {
           newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
         }
       } else {

@@ -145,8 +145,11 @@ const ProcurementPlanning = () => {
           isExcelExport
           onExcelExportClick={ExcelExportData}
           submitDate={() => {
-            // fetchData(date, 1, currentTab?.label === 'Shortage' ? '0' : '1')
-            getFilterData();
+            fetchData(
+              selectedDate,
+              1,
+              currentTab?.label === "Shortage" ? "0" : "1"
+            );
           }}
           date={selectedDate}
           handleSaveClick={handleSaveClick}

@@ -22,11 +22,11 @@ export const AvailabiltyCellRendererWrapper = styled.div`
             content: '';
             position: absolute;
             top: 0;
-            right: 0;
+            left: 0;
             bottom:0;
             max-width: 45px;
             width:${(props) => props.value}%;
             // background: transparent linear-gradient(270deg, #EB73B3 0%, #820F4C 100%) 0% 0% no-repeat padding-box;
-             background:  ${(props)=>props.themeUi==="REGALBLAZE"?"transparent linear-gradient(270deg, #FCA311  0%, #CB830E 100%) 0% 0% no-repeat padding-box" :"transparent linear-gradient(270deg, #EB73B3 0%, #820F4C 100%) 0% 0% no-repeat padding-box"};
+            background: ${(props) =>props.themeUi === "REGALBLAZE"? "linear-gradient(90deg, #FCA311 0%, #CB830E 100%) 0% 0% no-repeat padding-box": "linear-gradient(90deg, #EB73B3 0%, #820F4C 100%) 0% 0% no-repeat padding-box"};
             }
     `
