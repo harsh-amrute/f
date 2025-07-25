@@ -1183,7 +1183,7 @@ const DptWiseBMReport = () => {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }
 
                         <HorizontalViewWrapper style={{ marginTop: '0px', paddingLeft:"25px" }}>
-                            <BTRTableWrapper style={{ height: "75vh", margin: '0' }}>
+                            <BTRTableWrapper style={{  height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
                                 <Allotment vertical={true} separator={true} ref={allotementRef}>
                                     <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
                                         <BTRAllomentSection>

@@ -214,7 +214,6 @@ const OrderRescheduling = () => {
       // minWidth: 140,
       wrapHeaderText: true,
       autoHeaderHeight: true,
-      filter: "agTextColumnFilter",
       cellStyle: {
         "text-align": "center",
         "text-overflow": "ellipsis",
