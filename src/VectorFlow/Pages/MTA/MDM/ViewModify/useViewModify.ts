@@ -1105,7 +1105,6 @@ const useViewModify = (pageType:string) => {
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           setDownloadData(true);
           toast.dismiss(toastId);
-          
           if(fromUploadModal){
             setIsUploadButtonDisabled(false);
             notifySuccess(`Data Downloaded Successfully`);
