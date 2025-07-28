@@ -1,9 +1,13 @@
+import _ from 'lodash';
 import {
     BPRRemarksCellRendererWrapper,
     BPRColorCellRendererIcon
 } from '../../../MTA/SupplyChainIntelligenceHub/BPR/styles';
 
 const RemarkHistoryRenderer = (params: any) => {
+    if (_.isEmpty(params.data)) {
+        return<></>
+    }
     return (
         <BPRRemarksCellRendererWrapper >
             <BPRColorCellRendererIcon

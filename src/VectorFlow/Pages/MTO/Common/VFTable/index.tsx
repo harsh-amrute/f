@@ -37,7 +37,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       filter: "agTextColumnFilter",
       floatingFilterComponentParams: { suppressFilterButton: false },
       floatingFilter: true,
-      
+      enableRowGroup: true,
     },
     sideBar: {
       toolPanels: [
@@ -49,6 +49,9 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
           toolPanel: "agColumnsToolPanel",
         },
       ],
+    },
+    autoGroupColumnDef: {
+      minWidth: 250,
     },
   };
 
