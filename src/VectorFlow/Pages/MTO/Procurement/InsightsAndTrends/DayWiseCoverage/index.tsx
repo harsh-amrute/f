@@ -349,7 +349,11 @@ const DayWiseCoverage = () => {
 
     const getFilterData = async () => {
     try {
-        const response = await getPageWiseFilterData({page_name: FilterPageName.Proc_Day_Wise_Coverage});
+        const response = await getPageWiseFilterData({
+            page_name: FilterPageName.Proc_Day_Wise_Coverage,
+            start_date: startDate,  
+            end_date: endDate    
+        });
         setFilterData(response?.data.data);
     } catch (error) {
         console.error(error);
