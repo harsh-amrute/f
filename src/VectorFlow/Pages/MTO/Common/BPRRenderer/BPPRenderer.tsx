@@ -1,5 +1,6 @@
 import React from 'react';
 import { ColorsMTO } from '../Colors';
+import _ from 'lodash';
 
 const colorMapper = (color: string) => {
 
@@ -29,7 +30,9 @@ const colorMapper = (color: string) => {
 };
 
 const BPPRenderer = (props: any) => {
-    const color = props.data?.cl || props.data?.clr || props.data?.cp;
+    console.log(props, "props");
+    const color = !_.isEmpty(props.data) && (props.data?.cl || props.data?.clr || props.data?.cp);
+    console.log(color,"color")
     const cellColor = colorMapper(color);
     
     return (

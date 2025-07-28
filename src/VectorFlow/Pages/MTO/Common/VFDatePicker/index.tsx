@@ -18,27 +18,30 @@ interface CustomDatePickerProps {
     themeUi?: string;
     minDate?: any;
     disabled?: boolean;
-    style?: React.CSSProperties;
-    imgStyle?:React.CSSProperties
+    dateInputStyle?: React.CSSProperties;
+    imgStyle?: React.CSSProperties;
+    showCalendarIcon?: boolean;
 }
 
 type Value = CalendarProps['value'];
 
 
 const VFDatePicker = ({
-    date,
-    onDateChange,
-    disabled = false,
-    style,
-    imgStyle
+  date,
+  onDateChange,
+  disabled = false,
+  dateInputStyle,
+  imgStyle,
+  showCalendarIcon,
+  minDate
 }: CustomDatePickerProps) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
 
-    const { user } = useUserData();
-    const themeUi = user?.user?.theme_ui;
+  const { user } = useUserData();
+  const themeUi = user?.user?.theme_ui;
     
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -72,15 +75,15 @@ const VFDatePicker = ({
 
   const handleCalendarChange = (value: Value) => {
     if (value instanceof Date) {
-        const formatted = moment(value).format('YYYY-MM-DD')
-        onDateChange(formatted);
+      const formatted = moment(value).format('YYYY-MM-DD')
+      onDateChange(formatted);
       setShowCalendar(false);
     }
   };
 
   return (
     <DatePickerWrapper>
-        <TextInputWrapper
+      <TextInputWrapper
         ref={inputRef}
         type="text"
         value={date ? moment(date).format('YYYY-MM-DD') : ''}
@@ -88,44 +91,49 @@ const VFDatePicker = ({
         readOnly
         onClick={toggleCalendar}
         disabled={disabled}
-        style={style}
+        style={dateInputStyle}
       />
 
-      <ButtonWrapper type="button" onClick={toggleCalendar}>
-        <ImageWrapper
-        style={imgStyle}
-          src={
-            themeUi === 'REGALBLAZE'
-              ? '/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg'
-              : '/assets/img/mto/OrderRescheduling/edit-calendar.svg'
-          }
-          alt="calendar-icon"
-        />
-      </ButtonWrapper>
+      {showCalendarIcon &&
+        <>
+          <ButtonWrapper type="button" onClick={toggleCalendar}>
+            <ImageWrapper
+              style={imgStyle}
+              src={
+                themeUi === 'REGALBLAZE'
+                  ? '/assets/img/mto/OrderRescheduling/edit-calendar-yellow.svg'
+                  : '/assets/img/mto/OrderRescheduling/edit-calendar.svg'
+              }
+              alt="calendar-icon"
+            />
+          </ButtonWrapper>
 
-      {showCalendar &&
-        ReactDOM.createPortal(
-          <div
-            ref={calendarRef}
-            style={{
-              position: 'absolute',
-              top: calendarPosition.top,
-              left: calendarPosition.left,
-              zIndex: 9999,
-              backgroundColor: 'white',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-            }}
-          >
-        <StyledCalendar
-           themeUi={themeUi}
-           onChange={handleCalendarChange}
-            value={date ? new Date(date) : new Date()}
-        />
-          </div>,
-          document.body
-        )}
+          {showCalendar &&
+            ReactDOM.createPortal(
+              <div
+                ref={calendarRef}
+                style={{
+                  position: 'absolute',
+                  top: calendarPosition.top,
+                  left: calendarPosition.left,
+                  zIndex: 9999,
+                  backgroundColor: 'white',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                }}
+              >
+                <StyledCalendar
+                  themeUi={themeUi}
+                  onChange={handleCalendarChange}
+                  value={date ? new Date(date) : new Date()}
+                  minDate={minDate}
+                />
+              </div>,
+              document.body
+            )}
+        </>
+      }
     </DatePickerWrapper>
   );
-};
+}
 
 export default VFDatePicker;

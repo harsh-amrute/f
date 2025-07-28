@@ -457,7 +457,7 @@ const DptWiseBMReport = () => {
                 ? "agNumberColumnFilter"
                 : "agTextColumnFilter",
                 pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
-                editable: child.cc === 'Remark' ? true : false,
+                editable: (params: any) => { !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false },
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 valueFormatter: (params: any) => {
                     if (params.value && typeof params.value === 'number') {
@@ -472,27 +472,37 @@ const DptWiseBMReport = () => {
                 child.cc === "BPP" && excelColorArr.reduce(
                   (acc, color) => ({
                     ...acc,
-                    [color]: (params: any) => params?.data?.cl === color
+                    [color]: (params: any) => !_.isEmpty(params.data) && params.data?.cl === color
                   }),
                   {}
                 ),
-                cellStyle: child.cc === 'Remark' ? {
-                    backgroundColor: 'white',
-                    border: '1px solid #b9bdba',
-                    color: 'black',
-                    padding: '1px'
-                } : child.cc === 'da' ? {
-                    'color': ColorsMTO.Pink.code
-                } : undefined
+                cellStyle: (params: any) => {
+                    !_.isEmpty(params.data) && child.cc === 'Remark' ? {
+                        backgroundColor: 'white',
+                        border: '1px solid #b9bdba',
+                        color: 'black',
+                        padding: '1px'
+                    } : child.cc === 'da' ? {
+                        'color': ColorsMTO.Pink.code
+                    } : undefined
+                }
             }));
         };
 
         const res = apiResponse.map(section => ({
-            headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+            headerCheckboxSelection: (params:any) => {
+                // Only show if no grouping is applied
+                return section.scc === "chckbx" && params.api.getRowGroupColumns().length === 0;
+              },
+              checkboxSelection: (params:any) => {
+                // Only show on leaf rows, not group rows
+                return section.scc === "chckbx" && params.node && !params.node.group;
+              },
+            // headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+            // checkboxSelection: section.scc === "chckbx" ? true : undefined,
             floatingFilterComponentParams: section.scc === "chckbx" || section.cc == "ic"  ? { suppressFilterButton: false } : undefined,
             suppressHeaderFilterButton: section.scc === "chckbx" || section.cc == "ic" ? true : false,
             suppressMenu: section.scc === "chckbx" || section.cc == "ic" ? true : false,
-            checkboxSelection: section.scc === "chckbx" ? true : undefined,
             maxWidth: section.scc === "chckbx" || section.cc == "ic" ? 60 : undefined,
             sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
             floatingFilter: section.scc === "chckbx" || section.cc == "ic" ? false : undefined,
@@ -787,17 +797,19 @@ const DptWiseBMReport = () => {
             },
         },
         getDetailRowData: async (params: any) => {
-            const cacheKey = `${params.data.oid}-${params.data.lid}`;
-            if (cache.current[cacheKey]) {
-            params.successCallback(cache.current[cacheKey]);
-            return;
+            if (!_.isEmpty(params.data)) {
+                const cacheKey = `${params.data.oid}-${params.data.lid}`;
+                if (cache.current[cacheKey]) {
+                    params.successCallback(cache.current[cacheKey]);
+                    return;
+                }
+                const data = await getBOMExplosionData({
+                    orderId: params.data.oid,
+                    lineId: params.data.lid,
+                });
+                cache.current[cacheKey] = data?.data?.data;
+                params.successCallback(data?.data?.data);
             }
-            const data = await getBOMExplosionData({
-            orderId: params.data.oid,
-            lineId: params.data.lid,
-            });
-            cache.current[cacheKey] = data?.data?.data;
-            params.successCallback(data?.data?.data);
         },
         },
     };
@@ -831,7 +843,6 @@ const DptWiseBMReport = () => {
                 components: customCellRenderers,
                 pagination: true,
                 defaultColDef: {
-                    enableRowGroup:true,
                     enablePivot: true,
 
                     filter: 'agTextColumnFilter',
