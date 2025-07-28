@@ -78,7 +78,7 @@ const TaskPendingActionHeader = (props:any)=>{
     return( 
         <ActionHeaderWrapper>   
             <ActionHeaderContent>
-                <TaskPendingActionHeaderButton themeUi={themeUi}  onClick={()=>handleChange(props.actionStatus==='Approved',"Approved")} >Approve All</TaskPendingActionHeaderButton>
+                <TaskPendingActionHeaderButton themeUi={themeUi}  onClick={()=>handleChange(props.actionStatus==='Approved',"Approved")} disabled={props.disabled} >Approve All</TaskPendingActionHeaderButton>
             </ActionHeaderContent>
             <ActionHeaderContent>
                 <TaskPendingActionHeaderButton themeUi={themeUi} onClick={()=>handleChange(props.actionStatus==='Rejected',"Rejected")} >Reject All</TaskPendingActionHeaderButton>

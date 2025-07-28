@@ -477,9 +477,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityResume} disabled={disableResumeSeasonality()}>  
                             Resume
                     </VFButtonOutline >
-                    <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14 || isSavingToDraft} width={139}>
+                    {/* <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14 || isSavingToDraft} width={139}>
                         Save as draft
-                        </VFButtonOutline> 
+                        </VFButtonOutline>  */}
                     <VFButtonOutline themeUi={themeUi} onClick={onSeasonalityStop} disabled={disableStopSeasonality()}>
                             Stop Selected
                         </VFButtonOutline>
@@ -494,9 +494,9 @@ const VFTaskBar =(props:VFTaskBarProps)=>{
                     <VFButton themeUi={themeUi} onClick={onPhaseInPhaseOutStop}>
                             Stop Selected
                         </VFButton>
-                        <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14 || isSavingToDraft} width={139}>
+                        {/* <VFButtonOutline onClick={onSaveToDraft} themeUi={themeUi} disabled={masterId > 14 || isSavingToDraft} width={139}>
                         Save as draft
-                        </VFButtonOutline> 
+                        </VFButtonOutline>  */}
                     </VFTaskBarButtonGroup>
                 </TaskBarContainer>
             )

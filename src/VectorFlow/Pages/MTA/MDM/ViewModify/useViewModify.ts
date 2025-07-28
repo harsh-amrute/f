@@ -315,7 +315,8 @@ const useViewModify = (pageType:string) => {
       tooltipShowDelay:0,
       readOnlyEdit:true,
       tooltipTrigger:'hover',
-      sideBar:['default','view','deleteView'].includes(activeMaster.progress) ? sideBar : {},
+      sideBar: (activeMaster.progress === 'deleteView' || (['default', 'view'].includes(activeMaster.progress) && activeMaster?.name !== "ForceNormChange")) ? sideBar : {},
+     // sideBar:['default','view','deleteView'].includes(activeMaster.progress) ? sideBar : {},
       getMainMenuItems: MainMenuItemsCustomization,
       gridOptions:{
         getRowStyle: (params: any) => {
@@ -1084,6 +1085,8 @@ const useViewModify = (pageType:string) => {
 
       const exportToExcel = async (fromUploadModal?:boolean)=>{
         try {
+          console.log("ACTIVE MASTER",activeMaster);
+          
           const currMasterFilters = activeMaster.filters;
           const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
         
@@ -1104,6 +1107,8 @@ const useViewModify = (pageType:string) => {
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           setDownloadData(true);
           toast.dismiss(toastId);
+          console.log("ACTIVE MASTER 2",activeMaster);
+          
           if(fromUploadModal){
             setIsUploadButtonDisabled(false);
             notifySuccess(`Data Downloaded Successfully`);
