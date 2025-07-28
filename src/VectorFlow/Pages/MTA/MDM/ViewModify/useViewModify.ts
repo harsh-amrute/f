@@ -1085,7 +1085,6 @@ const useViewModify = (pageType:string) => {
 
       const exportToExcel = async (fromUploadModal?:boolean)=>{
         try {
-          console.log("ACTIVE MASTER",activeMaster);
           
           const currMasterFilters = activeMaster.filters;
           const payloadFilters = areMasterFiltersValid(currMasterFilters)? mapStateFiltersToPayload(currMasterFilters) : [];
