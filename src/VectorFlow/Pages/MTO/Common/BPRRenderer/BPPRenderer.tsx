@@ -30,9 +30,7 @@ const colorMapper = (color: string) => {
 };
 
 const BPPRenderer = (props: any) => {
-    console.log(props, "props");
     const color = !_.isEmpty(props.data) && (props.data?.cl || props.data?.clr || props.data?.cp);
-    console.log(color,"color")
     const cellColor = colorMapper(color);
     
     return (

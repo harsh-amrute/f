@@ -3,14 +3,6 @@ import moment from 'moment';
 import Calendar, { CalendarProps } from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useUserData } from "../../../../../context/index";
-import {
-  DatePickerWrapper,
-  ImageWrapper,
-  StyledCalendar,
-  ButtonWrapper,
-  TextInputWrapper
-} from "./styles";
-import ReactDOM from "react-dom";
 import VFDatePicker from '../../Common/VFDatePicker';
 import _ from 'lodash';
 

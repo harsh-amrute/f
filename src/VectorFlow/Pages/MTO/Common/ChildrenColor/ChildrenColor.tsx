@@ -4,7 +4,7 @@ import { ProcPlanningChildrenColor, ChildrenColorCellRenderer, Tooltipcontainer 
 import _ from "lodash";
 
 const ChildrenColor = (props: ICellRendererParams) => {
-    if (!_.isEmpty(props.data)) {
+    if (_.isEmpty(props.data)) {
         return <></>
     }
 
