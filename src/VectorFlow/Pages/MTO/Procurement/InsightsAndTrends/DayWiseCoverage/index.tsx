@@ -351,8 +351,8 @@ const DayWiseCoverage = () => {
     try {
         const response = await getPageWiseFilterData({
             page_name: FilterPageName.Proc_Day_Wise_Coverage,
-            start_date: startDate,  
-            end_date: endDate    
+            FromDate: format(startOfMonth(startDate), "yyyy-MM-dd"),  
+            ToDate: format(endOfMonth(endDate), "yyyy-MM-dd"),    
         });
         setFilterData(response?.data.data);
     } catch (error) {
