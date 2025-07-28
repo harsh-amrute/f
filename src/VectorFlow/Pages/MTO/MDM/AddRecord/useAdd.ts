@@ -350,7 +350,7 @@ const useAdd=()=>{
           if (isBufferCodeDuplicate) {
             return { error: "Buffer code already exists in master", warning: "" };
           }
-        const isBufferTypeValid = bufferTypeData?.some((btData:any) => btData.dsc === ele.bt);
+        const isBufferTypeValid = bufferTypeData?.some((btData:any) => btData.nm === ele.bt);
           if (!isBufferTypeValid) {
             return { error: "Choose a valid buffer type from the drop down", warning: "" };
           }

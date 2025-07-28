@@ -7,7 +7,7 @@ const FullkitCellRenderer = (props: ICellRendererParams) => {
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;
 
-    const formatNumber = (num: any) => {
+    const formatNumber = (num: any) => { 
         if (num >= 10000000) {
             return (num / 10000000).toFixed(1) + 'Cr';
         } else if (num >= 100000) {
@@ -21,7 +21,7 @@ const FullkitCellRenderer = (props: ICellRendererParams) => {
 
     return (
         <AvailabiltyCellRendererWrapper data-testid="avl-cell-renderer">
-            <div>{formatNumber(props.data.fol)}</div>
+            <div>{formatNumber(props.data.fol)}</div> 
             <AvailabiltyCellRenderer value={props.data.fol} themeUi={themeUi}/>     
         </AvailabiltyCellRendererWrapper>
     )

@@ -740,7 +740,7 @@ const useViewModify = (pageType: string) => {
           });
 
           const isBufferTypeValid = bufferTypeData?.some(
-            (btData: any) => btData.dsc === e.bt || btData.id === e.bt
+            (btData: any) => btData.nm === e.bt || btData.id === e.bt
           );
           if (!isBufferTypeValid) {
             newVal.err = {
@@ -2051,7 +2051,7 @@ const useViewModify = (pageType: string) => {
             cellEditor: "agRichSelectCellEditor",
             valueFormatter: myFormatter,
             cellEditorParams: {
-              values: bufferTypeData?.map((item: any) => item.dsc),
+              values: bufferTypeData?.map((item: any) => item.nm),
             },
           };
         if (col.field === "pl" || col.field === "plnm" || col.field ==='pid')
@@ -2340,7 +2340,7 @@ const useViewModify = (pageType: string) => {
       const isCCRExport = activeMaster.id === 502;
 
       const bufferType = (value: any) => {
-        return buffTypeData?.find((type: any) => type.id === value)?.dsc;
+        return buffTypeData?.find((type: any) => type.id === value)?.nm;
       };
   
       const plantNameFromId = (value:any)=>{
@@ -3239,7 +3239,7 @@ const useViewModify = (pageType: string) => {
           cellEditor: "agRichSelectCellEditor",
           valueFormatter: myFormatter,
           cellEditorParams: {
-            values: bufferTypeData?.map((item: any) => item.dsc), // Dropdown values
+            values: bufferTypeData?.map((item: any) => item.nm), // Dropdown values
           },
           cellStyle: (params: any) => {
             if (
@@ -3740,7 +3740,7 @@ const useViewModify = (pageType: string) => {
     selectedRows.forEach((e: any) => {
       const newVal = JSON.parse(JSON.stringify(e));
       bufferTypeData.forEach((ele: any) => {
-        if (ele.dsc === e.bt) {
+        if (ele.nm === e.bt) {
           newVal.bt = ele.id;
         }
       });
@@ -4147,7 +4147,7 @@ const useViewModify = (pageType: string) => {
     bufferData.forEach((ele: any) => {
       const e = keysToDelete(ele);
       bufferTypeData.forEach((elm: any) => {
-        if (elm.dsc === ele.bt) {
+        if (elm.nm === ele.bt) {
           e.bt = elm.id;
         }
       });
@@ -4157,11 +4157,11 @@ const useViewModify = (pageType: string) => {
       e.iv = (e?.iv ===false|| e?.iv===true)? e.iv : true
       if (!e.bid) e.bid = null;
 
-      if (e.bid === null || e.iv === false) {
-        BufferPostObj.buffData.push(
-          _.omit(e, ["editable", "error", "warning"])
-        );
-      }
+     
+      BufferPostObj.buffData.push(
+        _.omit(e, ["editable", "error", "warning"])
+      );
+      
     });
 
     try {
@@ -4212,7 +4212,7 @@ const useViewModify = (pageType: string) => {
         activeMaster.rowData.forEach((ele: any) => {
           const e = _.cloneDeep(ele);
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
+            if (elm.nm === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
@@ -4235,7 +4235,7 @@ const useViewModify = (pageType: string) => {
         bufferData.forEach((ele: any) => {
           const e = keysToDelete(ele)
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
+            if (elm.nm === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
@@ -4246,14 +4246,13 @@ const useViewModify = (pageType: string) => {
           !(e.iv === true || e.iv === false) && (e.iv = false);
           if (!e.bid) e.bid = null;
 
-          if (e.bid === null || e.iv === false) {
-            BufferPostObj.buffData.push(
-              _.omit(e, ["editable", "error", "warning"])
-            );
-          }
+          
+          BufferPostObj.buffData.push(
+            _.omit(e, ["editable", "error", "warning"])
+          );
+          
         });
       }
-
       try {
         const response = await saveBufferMasterDraft([BufferPostObj]);
         if (response.status === 200) {

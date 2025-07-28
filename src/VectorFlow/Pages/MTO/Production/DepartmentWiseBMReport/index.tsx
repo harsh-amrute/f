@@ -905,13 +905,14 @@ const DptWiseBMReport = () => {
         } else {
             try {
                 const formatedFilters = formatFilterJSON(appliedFilters);
-                const gridData = await getFilteredDeptWiseBMReportData({
+                const gridData:any = await getFilteredDeptWiseBMReportData({
                     'wip': isWIPChecked ? 1 : 0,
                     'curr': page,
                     appliedFilters: formatedFilters,
                     page_size: pageSize || userPageSize
                 });
-                if (!gridData.data.data || gridData.data.data.length === 0) {
+               
+                if (!gridData?.data?.data || gridData?.data?.data.length === 0 || gridData?.response?.data?.length === 0) {
                     setGridDataCount(0);
                     setGridData([])
                     return;
@@ -920,7 +921,7 @@ const DptWiseBMReport = () => {
                 setGridDataCount(gridData?.data?.data?.count)
             }
             catch (e) {
-                console.log(e);
+                console.log(e);                
             }
         }
     }
@@ -1171,7 +1172,7 @@ const DptWiseBMReport = () => {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }
 
                         <HorizontalViewWrapper style={{ marginTop: '0px', paddingLeft:"25px" }}>
-                            <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
+                            <BTRTableWrapper style={{  height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
                                 <Allotment vertical={true} separator={true} ref={allotementRef}>
                                     <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
                                         <BTRAllomentSection>
