@@ -39,8 +39,8 @@ export const SCChartLayout = styled.div`
     // margin-top:30px;
 `;
 
-export const SCChartHeaderContainer = styled.div`
-    height:60px;
+export const SCChartHeaderContainer = styled.div<{height?:string}>`
+    height: ${(props) => props.height || '60px'};
     background-color:white;
     display:flex;
     justify-content:space-between;

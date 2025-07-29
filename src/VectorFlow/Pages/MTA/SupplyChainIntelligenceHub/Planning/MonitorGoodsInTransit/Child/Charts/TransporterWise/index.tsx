@@ -254,7 +254,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
 
                     <Allotment.Pane preferredSize={'50%'}>
                         <SCChartContainer height={"95%"} style={{marginLeft:'20px'}}>
-                            <SCChartHeaderContainer>
+                            <SCChartHeaderContainer height="40px">
                                 <div style={{display:'flex',width:'100%',justifyContent:'center' , overflow:"hidden"}}><SCChartHeader style={{marginRight:10}}>Statistical Overview Of Delay Days In Transport At Receiving Locations</SCChartHeader></div>
                                 <div style={{display:'flex',alignItems:'center',marginRight:'18px'}}>
                                     <div style={{marginBottom:'-5px',marginRight:'10px'}}><VFInfoToolTip infoList={graph2}/></div>
@@ -353,7 +353,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
                                     }}
                                     series={series} // Make sure you have defined the series data
                                     type="boxPlot"
-                                    height={265} //290
+                                    height={362} //290
 
                                 />
                                 <Xaxislegend style={{marginTop:'-20px'}}>Transporter Name</Xaxislegend>
