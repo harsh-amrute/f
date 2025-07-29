@@ -176,8 +176,7 @@ const DptWiseBMReport = () => {
     const [bomActive, setBomActive] = useState<any>(undefined);
     const { getGroupedColDef, groupedColDefsRef } = useColDef();
     const [showExcelModal, setShowExcelModal] = useState(false);
-    
-
+    const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
@@ -215,7 +214,7 @@ const DptWiseBMReport = () => {
         {
             "colorCellRenderer": BPPRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
-            "RemarkHistoryRenderer": RemarkHistoryRenderer,
+            RemarkHistoryRenderer: RemarkHistoryRenderer,
         }), []);
 
     const sideBar = useMemo(() => {
@@ -316,7 +315,7 @@ const DptWiseBMReport = () => {
 
     const setColumnDef = async () => {
         try {
-            const reportName = "BMReport";
+            const reportName = "DeptWiseReport";
             const response = await getUIConfigData(reportName);
             getGroupedColDef(response)
 
@@ -354,6 +353,7 @@ const DptWiseBMReport = () => {
         apiResponse.forEach((item) => {
             const modifiedItem = { ...item };
 
+
             // Initialize cp for this cc if not already done
             if (!(item.cc in cpMap)) {
                 cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
@@ -369,6 +369,17 @@ const DptWiseBMReport = () => {
                 if(item.cc.includes("Dept") && modifiedItem.ch){
                     modifiedItem.ch = item.ch?.map((child)=>{
                         return {...child, scc: `ddtl.${item.cc}.${child.scc}`}
+                    })
+                }
+
+                if (item.cc.includes('Default Attribute') && modifiedItem.ch) {
+                    modifiedItem.ch = item.ch?.filter((child)=>{
+                        if (isBMReportViewer) {
+                            return child.cc !== 'Remark'  
+                        }
+                        else {
+                            return true;
+                        }
                     })
                 }
             }
@@ -395,7 +406,6 @@ const DptWiseBMReport = () => {
         // Calculate cp for the additional object based on existing cp values
         const maxCp = Math.max(...modifiedResponse.map(item => item.cp || 0));
 
-        const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
 
         // Create the additional object to be added at the end
         const additionalObject: ApiResponseItem = {
@@ -406,55 +416,6 @@ const DptWiseBMReport = () => {
             cla: "Centre",
             scc: "rmk",
             pinned: 'right',
-            ch: isBMReportViewer ? [
-                {
-                    cc: "lr",
-                    cp: 29,
-                    hd: "Latest Remark",
-                    v: true,
-                    cla: "Centre",
-                    scc: "lr",
-                    pinned:'right',
-                },
-                {
-                    cc: "Remark History",
-                    cp: 30,
-                    hd: "Remark History",
-                    v: true,
-                    cla: "Centre",
-                    scc: "Remark History",
-                    pinned:'right',
-                }
-            ] : 
-             [
-                {
-                    cc: "Remark",
-                    cp: 28,
-                    hd: "Remark",
-                    v: true,
-                    cla: "Centre",
-                    scc: "r",
-                    pinned:'right',
-                },
-                {
-                    cc: "lr",
-                    cp: 29,
-                    hd: "Latest Remark",
-                    v: true,
-                    cla: "Centre",
-                    scc: "lr",
-                    pinned:'right',
-                },
-                {
-                    cc: "Remark History",
-                    cp: 30,
-                    hd: "Remark History",
-                    v: true,
-                    cla: "Centre",
-                    scc: "Remark History",
-                    pinned:'right',
-                }
-            ]
         };
 
         // Add the additional object to the end of the modified response
@@ -479,15 +440,24 @@ const DptWiseBMReport = () => {
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
-                cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
+                cellRenderer:
+                child.cc === "ec" && bomActive
+                  ? "agGroupCellRenderer"
+                  : child.cc === "ic"
+                  ? "AgeingCellRenderer"
+                  : child.cc === "BPP"
+                  ? "colorCellRenderer"
+                  : child.cc === "Remark History"
+                  ? "RemarkHistoryRenderer"
+                  : undefined,
                 minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
                 filter:
                 child.cla === "right"
                 ? "agNumberColumnFilter"
                 : "agTextColumnFilter",
-                pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
-                editable: child.cc === 'Remark' ? true : false,
+                pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
+                editable: (params: any) => { !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false },
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 valueFormatter: (params: any) => {
                     if (params.value && typeof params.value === 'number') {
@@ -495,37 +465,44 @@ const DptWiseBMReport = () => {
                     }
                     return params.value;
                 },
-                cellRendererParams: child.hd.includes("Remark") ? {
-                    // visible: {
-                    //     flag: child.scc === 'Remark' ? true : child.scc === 'Latest Remark' ? false : undefined,
-                    // },
-                    onClick: child.scc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
-                } : undefined,
+                cellRendererParams: child?.hd.includes("Remark") ? {
+                    onClick: child?.cc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
+                  } : undefined,
                 cellClassRules:
                 child.cc === "BPP" && excelColorArr.reduce(
                   (acc, color) => ({
                     ...acc,
-                    [color]: (params: any) => params?.data?.cl === color
+                    [color]: (params: any) => !_.isEmpty(params.data) && params.data?.cl === color
                   }),
                   {}
                 ),
-                cellStyle: child.cc === 'Remark' ? {
-                    backgroundColor: 'white',
-                    border: '1px solid #b9bdba',
-                    color: 'black',
-                    padding: '1px'
-                } : child.cc === 'da' ? {
-                    'color': ColorsMTO.Pink.code
-                } : undefined
+                cellStyle: (params: any) => {
+                    !_.isEmpty(params.data) && child.cc === 'Remark' ? {
+                        backgroundColor: 'white',
+                        border: '1px solid #b9bdba',
+                        color: 'black',
+                        padding: '1px'
+                    } : child.cc === 'da' ? {
+                        'color': ColorsMTO.Pink.code
+                    } : undefined
+                }
             }));
         };
 
         const res = apiResponse.map(section => ({
-            headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+            headerCheckboxSelection: (params:any) => {
+                // Only show if no grouping is applied
+                return section.scc === "chckbx" && params.api.getRowGroupColumns().length === 0;
+              },
+              checkboxSelection: (params:any) => {
+                // Only show on leaf rows, not group rows
+                return section.scc === "chckbx" && params.node && !params.node.group;
+              },
+            // headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+            // checkboxSelection: section.scc === "chckbx" ? true : undefined,
             floatingFilterComponentParams: section.scc === "chckbx" || section.cc == "ic"  ? { suppressFilterButton: false } : undefined,
             suppressHeaderFilterButton: section.scc === "chckbx" || section.cc == "ic" ? true : false,
             suppressMenu: section.scc === "chckbx" || section.cc == "ic" ? true : false,
-            checkboxSelection: section.scc === "chckbx" ? true : undefined,
             maxWidth: section.scc === "chckbx" || section.cc == "ic" ? 60 : undefined,
             sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
             floatingFilter: section.scc === "chckbx" || section.cc == "ic" ? false : undefined,
@@ -681,7 +658,6 @@ const DptWiseBMReport = () => {
     };
 
     const handleUpdateReason = async () => {
-        //  console.log('editedRows', editedRows)
         try {
             if (refGraph1.current) {
                 // Get the grid API reference
@@ -690,9 +666,8 @@ const DptWiseBMReport = () => {
                 // Ensure that any ongoing editing is stopped and values are committed
                 api.stopEditing();
                 const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
-                //console.log('updated row', updatedRow)
                 if (updatedRow.length > 0) {
-                    let putData: UpdateRemarkObj[] = [];
+                    const putData: UpdateRemarkObj[] = [];
                     updatedRow.forEach((e: any) => {
                         const singleData: any = {
                             "ok": e.ok,
@@ -701,14 +676,25 @@ const DptWiseBMReport = () => {
                             "user": user?.user?.name
                         }
                         putData.push(singleData);
+                        
                     })
-                    // console.log('putData', putData)
                     const RemarkHistory = await addBMReportRemark(putData);
-                    //console.log('REmakrf', RemarkHistory)
+                    // }
                     if (RemarkHistory.status === 200) {
-                        putData = [];
+                        const newGridData = [...gridData].map((row) => {
+                            const currentRemark = row.r || ""
+                            if (editedRows.has(row.ok)) {
+                                return {
+                                    ...row,
+                                    r: "",
+                                    lr: currentRemark,  
+                                }; 
+                            }
+                            return row;
+                        });                
+                        setGridData(newGridData);
                         setEditedRows(new Set());
-                        notifySuccess('Remark saved successfully')
+                        notifySuccess('Remark saved successfully');
                     }
                     else {
                         notifyError('Failed to save the remark(s)')
@@ -811,17 +797,19 @@ const DptWiseBMReport = () => {
             },
         },
         getDetailRowData: async (params: any) => {
-            const cacheKey = `${params.data.oid}-${params.data.lid}`;
-            if (cache.current[cacheKey]) {
-            params.successCallback(cache.current[cacheKey]);
-            return;
+            if (!_.isEmpty(params.data)) {
+                const cacheKey = `${params.data.oid}-${params.data.lid}`;
+                if (cache.current[cacheKey]) {
+                    params.successCallback(cache.current[cacheKey]);
+                    return;
+                }
+                const data = await getBOMExplosionData({
+                    orderId: params.data.oid,
+                    lineId: params.data.lid,
+                });
+                cache.current[cacheKey] = data?.data?.data;
+                params.successCallback(data?.data?.data);
             }
-            const data = await getBOMExplosionData({
-            orderId: params.data.oid,
-            lineId: params.data.lid,
-            });
-            cache.current[cacheKey] = data?.data?.data;
-            params.successCallback(data?.data?.data);
         },
         },
     };
@@ -855,7 +843,6 @@ const DptWiseBMReport = () => {
                 components: customCellRenderers,
                 pagination: true,
                 defaultColDef: {
-                    enableRowGroup:true,
                     enablePivot: true,
 
                     filter: 'agTextColumnFilter',
@@ -918,13 +905,14 @@ const DptWiseBMReport = () => {
         } else {
             try {
                 const formatedFilters = formatFilterJSON(appliedFilters);
-                const gridData = await getFilteredDeptWiseBMReportData({
+                const gridData:any = await getFilteredDeptWiseBMReportData({
                     'wip': isWIPChecked ? 1 : 0,
                     'curr': page,
                     appliedFilters: formatedFilters,
                     page_size: pageSize || userPageSize
                 });
-                if (!gridData.data.data || gridData.data.data.length === 0) {
+               
+                if (!gridData?.data?.data || gridData?.data?.data.length === 0 || gridData?.response?.data?.length === 0) {
                     setGridDataCount(0);
                     setGridData([])
                     return;
@@ -933,7 +921,7 @@ const DptWiseBMReport = () => {
                 setGridDataCount(gridData?.data?.data?.count)
             }
             catch (e) {
-                console.log(e);
+                console.log(e);                
             }
         }
     }
@@ -1176,13 +1164,15 @@ const DptWiseBMReport = () => {
             onConfirm={handleExcelConfirm}
             onCancel={handleExcelCancel}
             themeUi={themeUi}
+            headerText={"Excel Export"}
+            messageText={"Do you want to download Excel with BOM Data?"}
             />
             <>
                 {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }
 
                         <HorizontalViewWrapper style={{ marginTop: '0px', paddingLeft:"25px" }}>
-                            <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
+                            <BTRTableWrapper style={{  height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
                                 <Allotment vertical={true} separator={true} ref={allotementRef}>
                                     <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
                                         <BTRAllomentSection>
@@ -1193,13 +1183,14 @@ const DptWiseBMReport = () => {
                                             detailCellRendererParamsConfig={cellRendererParamsConfig}
                                             columDef={coldefs}
                                             convercolumnDef={gridData}
-                                                updateReason={handleUpdateReason}
-                                                handlePageChange={handlePageChange}
-                                                totalRow={gridDataCount}
-                                                currentPage={currentPage}
-                                                customPageSize={true}
-                                                savePageSize={savePageSize}
-                                                userPageSize = {userPageSize}
+                                            updateReason={handleUpdateReason}
+                                            handlePageChange={handlePageChange}
+                                            currentPage={currentPage}
+                                            totalRow={gridDataCount}
+                                            savePageSize={savePageSize}
+                                            customPageSize={true}
+                                            saveBtn={!isBMReportViewer}
+                                            userPageSize={userPageSize}
                                                 // onGridReady={() => {applyColumnState()}}
                                                 />
                                         

@@ -21,6 +21,7 @@ import { useGetUserUIConfigData, useUpdateUserUIConfigData } from "../../../../.
 import { useUserData } from "../../../../../context"
 import useColDef from "../../../../../hooks/useColDef";
 import { notifyError, notifySuccess } from "../../../../../helpers/notify";
+import _ from "lodash";
 
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
@@ -207,18 +208,20 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
         ColorPriority: {
             cellRenderer: 'coloPriority',
             tooltipValueGetter: (params: any) => {
-                const cpData = params.data.cp[0];
-                const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
-                let tooltipText = '';
-                keysToPrint.forEach((key) => {
-                    if (Object.prototype.hasOwnProperty.call(cpData, key)) {
-                        if (tooltipText !== '') {
-                            tooltipText += ' | ';
+                if (!_.isEmpty(params.data)) {
+                    const cpData = params.data.cp[0];
+                    const keysToPrint = ["B", "R", "Y", "G", "W", "Bl"];
+                    let tooltipText = '';
+                    keysToPrint.forEach((key) => {
+                        if (Object.prototype.hasOwnProperty.call(cpData, key)) {
+                            if (tooltipText !== '') {
+                                tooltipText += ' | ';
+                            }
+                            tooltipText += `${key}: ${cpData[key]}`;
                         }
-                        tooltipText += `${key}: ${cpData[key]}`;
-                    }
-                });
-                return tooltipText;
+                    });
+                    return tooltipText;
+                }
             },
             tooltipComponent: "availabilityToolTip",
             initialWidth: 200, //160
@@ -227,7 +230,7 @@ const useMaterialReq = (appliedFilters: any, forDate?: string) => {
 
         },
         "net_r": {
-            valueFormatter: (params: any) => Math.max(0, Number(params.data.net_r))
+            valueFormatter: (params: any) => !_.isEmpty(params.data) ? Math.max(0, Number(params.data.net_r)) : undefined
         }
 
     }

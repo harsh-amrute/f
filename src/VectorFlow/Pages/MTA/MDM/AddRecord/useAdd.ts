@@ -117,8 +117,11 @@ const useAdd=()=>{
       if (firstDefaultIndex !== -1) {
         dispatch(UPDATE_ACTIVE_MASTER(firstDefaultIndex));
       }
-        dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
-        
+      else{
+        dispatch(UPDATE_ACTIVE_MASTER(selectedMasters?.length - 1));
+        dispatch(TOGGLE_UPLOAD_MODAL(false))
+      }      
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(false))
         if(selectedMasters[0].progress==='default' || selectedMasters[0].progress==='view'){
             if(selectedMasters[0].rowData.length<=0)dispatch(TOGGLE_UPLOAD_MODAL(true))
             dispatch(UPDATE_PROGRESS_STATE('view'))
@@ -161,7 +164,7 @@ const useAdd=()=>{
             dispatch(TOGGLE_UPLOAD_MODAL(true))
             return 
         }
-        else return notifyError(`Please complete the activity in ${selectedMasters[nextMasterIndex].name}`);  
+        else return notifyError(`Please complete the activity in ${activeMaster.name}`);  
   
         
         

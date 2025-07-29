@@ -6,7 +6,7 @@ import { ITooltipParams } from 'ag-grid-enterprise'
 const AvailabilityToolTip = (params: ITooltipParams) => {
     return (
         <AvailabilityToolTipWrapper>
-            {params.value}% Availability
+            {params?.value}% Availability
         </AvailabilityToolTipWrapper>
 
     )

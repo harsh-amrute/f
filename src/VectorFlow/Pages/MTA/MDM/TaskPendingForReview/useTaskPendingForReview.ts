@@ -144,7 +144,10 @@ const useTaskPendingForReview = ()=>{
                             : currentTaskMaster?.data[0]:[]
                         );
                                        
-                        const existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields)
+                        let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields);
+                        if(taskData.Actiontype === 3){
+                            existingColumnFields = existingColumnFields.filter(field => field.isDelete);
+                        }
                         setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus))
                         setDetailTableRowData(mapNewAndOldMasterRowDataToCustomRowData(currentTaskMaster.data,existingColumnFields,getActionName(taskData.Actiontype).value,currentTaskMasterId))
                         // dispatch(SET_RECORD_COUNT(currentTaskMaster.data.length));

@@ -152,9 +152,9 @@ const InTransitWhereAbouts = ()=>{
                 />
                 </div>
                 </div>
-                <ButtonWrapper>
+                {/* <ButtonWrapper>
                     <VFButtonOutline disabled={editedRows.length===0} themeUi={themeUi} width={169} style={{fontSize:'20px', fontWeight:'500'}} onClick={onSubmitEditedRows}>Save  Remarks</VFButtonOutline>
-                </ButtonWrapper>
+                </ButtonWrapper> */}
             </div>
         }
           

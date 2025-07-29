@@ -70,7 +70,6 @@ const MaterialCov = () => {
   const {mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
   const [childColDef, setChildColDef] = useState<any>();
   const [showExcelModal, setShowExcelModal] = useState(false);
-  const [childrenModal, setChildrenModal] = useState(false);
   const [excelBody, setExcelBody] = useState<any>({});
 
   
@@ -247,7 +246,7 @@ const MaterialCov = () => {
           cellStyle: {
               paddingRight: '25px'
           },
-          cellRenderer: "avlCellRenderer",
+        cellRenderer: "avlCellRenderer",
           tooltipComponent: 'availabilityToolTip',
           tooltipValueGetter: (params: any) => {
               const oq = params.data.oq;
@@ -334,11 +333,11 @@ const MaterialCov = () => {
   const materialSoDetailRef = useRef<any>();
   
   const callExportExcel = () => {
-      const headersdata = currentGridRef?.current?.api.getColumnState();
-      const formattedFilters = formatFilterJSON(appliedFilters)
-      const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
-      setExcelBody(body)
-    
+    const headersdata = currentGridRef?.current?.api.getColumnState();
+    const formattedFilters = formatFilterJSON(appliedFilters)
+    const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
+    setExcelBody(body);
+    setShowExcelModal(true);
   }
 
 
@@ -396,12 +395,12 @@ const MaterialCov = () => {
               </BTRLayoutTabsWrapper>
               
            
-{ isAllData &&
+              {isAllData &&
 
-              <VFButton style={{marginLeft: '30%', fontSize: '10px', height: '30px', fontFamily: 'roboto'}} themeUi={themeUi} onClick={() =>{handleToggleComponent(true), handleParameterData({allOrders: true})}}>
-                Show All Orders
-              </VFButton>
-}
+                <VFButton style={{ marginLeft: '30%', fontSize: '10px', height: '30px', fontFamily: 'roboto' }} themeUi={themeUi} onClick={() => { handleToggleComponent(true), handleParameterData({ allOrders: true }) }}>
+                  Show All Orders
+                </VFButton>
+              }
                 </div>
             <div style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>
@@ -493,8 +492,6 @@ const MaterialCov = () => {
             showExcelModal={showExcelModal}
             setShowExcelModal={setShowExcelModal}
             excelBody={excelBody}
-            setExcelBody={setExcelBody}
-           
           />
         </div>
 

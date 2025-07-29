@@ -157,7 +157,7 @@ const DueDateQuotation = () => {
         const DBRSettingsData = await getDBRsettingsData();
         const DBRSettings = DBRSettingsData.data?.data;
         if (DBRSettings && DBRSettings.length) {
-          const isDDQFromUI = DBRSettings.find((data: any) => data.flag === "IsDDQFromUI")?.value === "1" || true;
+          const isDDQFromUI = DBRSettings.find((data: any) => data.flag === "IsDDQFromUI")?.value == "1" || true;
           if (!isDDQFromUI) {
             setShowWarningModal(true);
           } else {
@@ -754,6 +754,8 @@ const DueDateQuotation = () => {
             onConfirm={handleExcelConfirm}
             onCancel={handleExcelCancel}
             themeUi={themeUi}
+            headerText={"Excel Export"}
+            messageText={"Do you want to download Excel with BOM Details?"} 
           />
 
         <VFButton themeUi={themeUi}
@@ -764,7 +766,7 @@ const DueDateQuotation = () => {
               setStep(step + 1);
             }
             else if (assignmentRef.current?.onConfirm && step == 2) {
-              const isDDQActiveFlag = masters.DBRSettings.find((setting: any) => setting.flag == "IsDDQActive");
+              const isDDQActiveFlag = masters.DBRSettings.find((setting: any) => (setting.flag == "IsDDQActive" && setting.value==1));
 
               // const isDDQActiveFlag = false;
               assignmentRef.current.onConfirm().then((data: any) => {

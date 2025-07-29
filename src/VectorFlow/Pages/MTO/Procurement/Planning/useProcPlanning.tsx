@@ -28,6 +28,7 @@ import useColDef from "../../../../../hooks/useColDef";
 import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Common/DBRSettings";
 import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
 import moment from "moment";
+import _ from "lodash";
 
 
 
@@ -374,10 +375,7 @@ const useProcPlanning = ( appliedFilters: any) => {
             suppressHeaderFilterButton: true,
             valueGetter: (params: any) => {
                 let cpData: any;
-                if (params.node.group) {
-                    const allData: any = params?.node?.allLeafChildren?.[0];
-                    cpData = allData?.data?.cp[0];
-                } else {
+                if (!_.isEmpty(params.data)) {
                     cpData = params.data?.cp[0];
                 }
 
@@ -395,10 +393,7 @@ const useProcPlanning = ( appliedFilters: any) => {
             tooltipValueGetter: (params: any) => {
                 let tooltipText = '';
                 let cpData: any;
-                if (params.node.group) {
-                    const allData: any = params?.node?.allLeafChildren?.[0];
-                    cpData = allData?.data?.cp[0];
-                } else {
+                if (!_.isEmpty(params.data)) {
                     cpData = params.data?.cp[0];
                 }
                 

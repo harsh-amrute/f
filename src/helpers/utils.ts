@@ -4414,6 +4414,9 @@ export function getColumnDefinations(
     }
     return columnDef;
   });
+
+
+  
   // Add extra columns
   extraFields?.forEach((field: any) => {
     let position = field.position;
@@ -4593,7 +4596,7 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
       const { name, attributeName, value, type, operator } = filters[i];
 
       if (attributeName === 'ms') {
-        if (value.length > 0 && isMfgStrgyIncluded) {
+        if (value?.length > 0 && isMfgStrgyIncluded) {
           newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
         }
       } else {
@@ -4683,7 +4686,7 @@ export const getBodyForExcelExport = ({
 
 export const DownloadExcel = (response : any,filename = "ReportFile") => {
   try {
-    if (response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    if ((response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (response.headers['content-type'] ===  'application/octet-stream')) {
       const blob = new Blob([response.data], { type: response.headers['content-type'] });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -4724,6 +4727,53 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
   } catch (e) {
     console.error("Error downloading Excel file:", e);
     notifyError("Something went wrong");
+  }
+};
+
+export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
+  try {
+    const token = await MainService.refreshToken();
+    const response = await fetch(process.env.REACT_APP_API_HOST + `api/mta/GetExportDataAsync`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`,
+        "Content-Type": "application/json",
+      },
+      method:"post",
+      body:JSON.stringify(payload)
+    })  
+ 
+    if (!response.ok) {
+      throw new Error("Failed to download file");
+    }
+ 
+    const blob = await response.blob();
+    const fileExtension = getFileExtensionFromContentType(response.headers.get("Content-Type"));
+    const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+ 
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.setAttribute("download", downloadFileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (e) {
+    console.error("Error downloading file:", e);
+    notifyError("Something went wrong while exporting");
+    throw e;
+  }
+};
+ 
+// Optional helper
+const getFileExtensionFromContentType = (contentType: string | null) => {
+  switch (contentType) {
+    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+      return "xlsx";
+    case "text/csv":
+      return "csv";
+    default:
+      return "bin";
   }
 };
 

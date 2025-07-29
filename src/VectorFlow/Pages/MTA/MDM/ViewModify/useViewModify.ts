@@ -1545,6 +1545,10 @@ const useViewModify = (pageType:string) => {
 
       const onSeasonalityStatusUpdate = async (status:string) => {
         const selectedRows = ref.current?.api.getSelectedRows();
+        if(selectedRows?.length === 0)  {
+          notifyError("Please select atleast 1 row");
+          return;
+        }
         let error = false;
 
         if(selectedRows){
