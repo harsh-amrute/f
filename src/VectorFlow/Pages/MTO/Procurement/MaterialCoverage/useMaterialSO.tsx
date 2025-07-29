@@ -49,11 +49,14 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
               report_name: FilterPageName.Proc_Material_Coverage_For_OpenSO,
             });
       
-            if (response.status === 200) {
-              DownloadExcel(response, FilterPageName.Proc_Material_Coverage_For_OpenSO);
-              notifySuccess("Excel Export Successfully");
+            if (response.status === 200) {        
+              const isSuccess = DownloadExcel(response, FilterPageName.Proc_Material_Coverage_For_OpenSO);
+              if(isSuccess){
+                notifySuccess("Excel Export Successfully");
+              }
             } else {
               notifyError("Failed to export Excel");
+              return;
             }
           } else {
             let queryString = `?Color=${colorsQuery}&KitStatus=${data.kit}&S=${data.S}&E=${data.E}&page=${currPage}&page_size=${pageSize || userPageSize || pagination.mtoPageSize}`;
@@ -78,11 +81,13 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
             notifySuccess("Fetched data successfully!");
           }
         } catch (error) {
-          console.error("An error occurred while fetching data:", error);
+          if(error==="No orders found for the given filters"){
+            notifyError("No orders found for the given filters");
+            return;
+          }
           notifyError("An error occurred while fetching data.");
         } finally {
           setIsLoading(false);
-          toast.dismiss();
         }
       }
 

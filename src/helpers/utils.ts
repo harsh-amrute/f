@@ -4696,9 +4696,10 @@ export const DownloadExcel = (response : any,filename = "ReportFile") => {
       link.click();
       URL.revokeObjectURL(url);
       document.body.removeChild(link);
+      return true;
     } else {
-      notifyError('Error Downloading the excel as the response is not the expected response')
-      console.error('The response is not of the expected file type.');
+      notifyError('No orders found for the given filters');
+      return false;
     }
   } catch (e) {
     console.log(e);
