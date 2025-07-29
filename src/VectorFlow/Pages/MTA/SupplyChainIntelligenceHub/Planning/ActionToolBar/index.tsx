@@ -1025,7 +1025,7 @@ const ActionToolBar = ({
           )} */}
           <SCCustomActionsContainer>
 
-          {( pathname != "/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/supply-chain-intelligence-hub/sdr" && pathname !== "/supply-chain-intelligence-hub/total-requirement-report" && pathname != "/supply-chain-intelligence-hub/eo" ) &&
+          {( pathname != "/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/supply-chain-intelligence-hub/sdr" && pathname !== "/supply-chain-intelligence-hub/total-requirement-report" && pathname != "/supply-chain-intelligence-hub/eo" ) && currentTab !== "custom" &&
                <>
                     <VFButton
                     onClick={() => toggleFilter(true)}

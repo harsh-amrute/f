@@ -313,7 +313,7 @@ const DeleteRecord = () => {
           <div style={{zoom:'var(--nms-filter-zoom)'}}>
             <VFTaskBar
               disableSubmit={isSubmitDisabled}
-              showSubmittedExportError={errorCount>0}
+              showSubmittedExportError={activeMaster?.rowData.length > 0 && errorCount>0}
               enableEditOnlineReset={enableEditOnlineReset}
               disableResumeSeasonality={()=>false}
               disableStopSeasonality={()=>false}
