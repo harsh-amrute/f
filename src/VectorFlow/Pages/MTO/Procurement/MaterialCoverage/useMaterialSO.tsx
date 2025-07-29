@@ -81,10 +81,6 @@ const useMaterialSO = (data: any, appliedFilters: any, handleSaveClick: any, use
             notifySuccess("Fetched data successfully!");
           }
         } catch (error) {
-          if(error==="No orders found for the given filters"){
-            notifyError("No orders found for the given filters");
-            return;
-          }
           notifyError("An error occurred while fetching data.");
         } finally {
           setIsLoading(false);
