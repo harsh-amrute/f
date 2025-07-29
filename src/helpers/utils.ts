@@ -4698,7 +4698,7 @@ export const DownloadExcel = (response : any,filename = "ReportFile") => {
       document.body.removeChild(link);
       return true;
     } else {
-      notifyError('No orders found for the given filters');
+      notifyError('No orders found to export data!');
       return false;
     }
   } catch (e) {
