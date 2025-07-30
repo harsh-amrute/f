@@ -107,4 +107,11 @@ export const StyledCalendar = styled(Calendar)<StyledCalendarProps>`
   .react-calendar__navigation button:hover {
     background-color: ${(props) => props.themeUi === "REGALBLAZE" ? "#fee3b7" : "rgba(188, 61, 129, 0.2)"};  
   }
+
+.react-calendar__month-view__days__day--neighboringMonth,
+.react-calendar__month-view__days__day--neighboringMonth.react-calendar__tile--weekend {
+  color: #757575 !important;
+}
+
+
 `;
