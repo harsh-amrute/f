@@ -1259,7 +1259,7 @@ const ReasonForDelayOrder = () => {
         MinorReason: {
             pinned: "right",
             lockPosition: true,
-            minWidth: 300,
+            initialWidth: 300,
             cellStyle: {
                 'background': 'none',
                 'border': "none",

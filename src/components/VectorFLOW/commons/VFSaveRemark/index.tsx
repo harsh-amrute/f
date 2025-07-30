@@ -25,7 +25,7 @@ const VFSaveRemark = (props: VFSaveRemarkProps) => {
                 onClick={onSubmitRemarks}
                 disabled = {isDisabled}
             >
-                Save Remark
+                Save Reasons
             </VFButtonOutline>
         </SaveRemarkWrapper>
     );

@@ -598,7 +598,7 @@ const EnquiryResponse = () => {
         setUserPageSize(pageSize);
           setCurrentPage(1)
           handleSaveClick(undefined, pageSize);
-          getData({data, pageSize,currentPage});
+          // getData({data, pageSize,currentPage});
         } else {
           notifyError("Invalide page size");
       }
