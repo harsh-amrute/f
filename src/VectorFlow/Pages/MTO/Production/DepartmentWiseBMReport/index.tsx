@@ -602,7 +602,7 @@ const DptWiseBMReport = () => {
         if (selectedData) {
             let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
             selectedData.forEach((newItem: any) => {
-                const index = mergedData.findIndex((item: any) => item.oid === newItem.oid);
+                const index = mergedData.findIndex((item: any) => item.ok === newItem.ok);
                 if (index !== -1) {
                     // If the item exists, replace it
                     mergedData[index] = newItem;
@@ -615,12 +615,12 @@ const DptWiseBMReport = () => {
             gridData?.forEach((item: any) => {
                 let isThere = 0;
                 selectedData.forEach((selectedD: any) => {
-                    if (selectedD.oid === item.oid) {
+                    if (selectedD.ok === item.ok) {
                         isThere = 1;
                     }
                 })
                 if (isThere == 0) {
-                    mergedData = mergedData.filter((e: any) => e.oid !== item.oid)
+                    mergedData = mergedData.filter((e: any) => e.ok !== item.ok)
                 }
             })
 
@@ -711,10 +711,10 @@ const DptWiseBMReport = () => {
         }
     }
 
-    const existsInSelected = (reqOid: string): boolean => {
+    const existsInSelected = (reqOk: string): boolean => {
         for (let index = 0; index < masterSelectedRowData.length; index++) {
             const element: any = masterSelectedRowData[index];
-            if (element.oid === reqOid) {
+            if (element.ok === reqOk) {
                 return true;
             }
 
@@ -726,11 +726,11 @@ const DptWiseBMReport = () => {
         const nodesToSelect: IRowNode[] = [];
 
         params.api.forEachNode((node: any) => {
-            if (node.data && node.data.oid && existsInSelected(node.data.oid)) {
+            if (node.data && node.data.ok && existsInSelected(node.data.ok)) {
                 node.data.Remark = masterSelectedRowData[0].Remark;
                 for (let index = 0; index < masterSelectedRowData.length; index++) {
                     const element = masterSelectedRowData[index];
-                    if (element.oid === node.data.oid) {
+                    if (element.ok === node.data.ok) {
                         node.data.Remark = element.Remark;
 
                     }
@@ -798,7 +798,7 @@ const DptWiseBMReport = () => {
         },
         getDetailRowData: async (params: any) => {
             if (!_.isEmpty(params.data)) {
-                const cacheKey = `${params.data.oid}-${params.data.lid}`;
+                const cacheKey = `${params.data.ok}`;
                 if (cache.current[cacheKey]) {
                     params.successCallback(cache.current[cacheKey]);
                     return;
