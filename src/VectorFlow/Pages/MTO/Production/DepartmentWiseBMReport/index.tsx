@@ -57,7 +57,8 @@ interface ApiResponse {
     scc: string;
     children?: ApiResponse[];
     cgs?: string
-    pinned?:string
+    pinned?: string;
+    dt?: string;
 }
 
 
@@ -453,9 +454,9 @@ const DptWiseBMReport = () => {
                 minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
                 filter:
-                child.cla === "right"
+                child.dt === "number"
                 ? "agNumberColumnFilter"
-                : "agTextColumnFilter",
+                : "agMultiColumnFilter",
                 pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
                 editable: (params: any) => !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false ,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
