@@ -723,7 +723,10 @@ const OverallBmReport = () => {
               icon={DropdownArrowIcon}
               placeholder="Select Action"
               disabled={!props.node.selected}
-              value={actionOptions.find((opt) => opt.value === props.node.data?.oca) || null}
+              value={
+                props.node.selected ? 
+                  actionOptions.find((opt) => opt.value === props.node.data?.oca) :
+                  null}
               onChange={(option: any) => {
               if (option) {
               onSelectChange(props, option, props.node.rowIndex);
@@ -1071,7 +1074,6 @@ const OverallBmReport = () => {
         },
         []
       );
-      setGridData(modifiedGridData);
       setGridData(modifiedGridData);
       setGridDataCount(gridData?.data?.data?.count);
       setIsGridLoading(false);
