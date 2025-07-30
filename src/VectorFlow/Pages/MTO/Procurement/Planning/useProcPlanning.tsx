@@ -142,7 +142,6 @@ const useProcPlanning = ( appliedFilters: any) => {
             const configData = response?.data?.data?.[0]?.columns_settings;
             if (configData) {
                 const newConfig = JSON.parse(configData);
-                console.log(newConfig, "newConfig");
     
                 setUserPageSize(Number(newConfig.pageSize) || undefined);
                 setColumnState(newConfig.cs || []);
@@ -909,20 +908,22 @@ const useProcPlanning = ( appliedFilters: any) => {
         onCellEditingStopped(event: any) {
             const field = event.colDef.field;
             const newValue = +event.newValue;
-            const rowIndex = event.rowIndex;
 
-            if (!field || rowIndex == null) {
+            if (!field || !event.node || event.node.group) {
+                console.warn("Invalid editing event or it's a group node, skipping update.");
                 return;
             }
-
+    
+            const nodeId = event.node.data.rm;  // Assuming 'rm' is a unique identifier in your data
             SetShortageData((prevData: any) => {
-                const newData = [...prevData];
-                const updatedRow = {
-                    ...newData[rowIndex],
-                    [field]: newValue,
-                    tsfs: newData[rowIndex].soh + newValue
-                };
-                newData[rowIndex] = updatedRow;
+                const newData = prevData.map((row: any) => {
+                    if (row.id !== nodeId) return row;
+                    return {
+                        ...row,
+                        [field]: newValue,
+                        tsfs: row.soh + newValue
+                    };
+                });
                 return newData;
             });
             gridRef.current?.api.refreshCells({ force: true });

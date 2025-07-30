@@ -457,7 +457,7 @@ const DptWiseBMReport = () => {
                 ? "agNumberColumnFilter"
                 : "agTextColumnFilter",
                 pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
-                editable: (params: any) => { !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false },
+                editable: (params: any) => !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false ,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 valueFormatter: (params: any) => {
                     if (params.value && typeof params.value === 'number') {
@@ -476,7 +476,7 @@ const DptWiseBMReport = () => {
                   }),
                   {}
                 ),
-                cellStyle: (params: any) => {
+                cellStyle: (params: any) => 
                     !_.isEmpty(params.data) && child.cc === 'Remark' ? {
                         backgroundColor: 'white',
                         border: '1px solid #b9bdba',
@@ -485,7 +485,7 @@ const DptWiseBMReport = () => {
                     } : child.cc === 'da' ? {
                         'color': ColorsMTO.Pink.code
                     } : undefined
-                }
+                
             }));
         };
 
