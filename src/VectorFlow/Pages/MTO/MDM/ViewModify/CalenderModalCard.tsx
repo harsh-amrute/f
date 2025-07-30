@@ -12,8 +12,10 @@ import { DayPicker } from "react-day-picker";
 function CalenderModalCard({selectedData, setSelectedData, isModalOpen, setIsModalOpen, onSaveHandler, plantNames, ccrNames, calendarFormData}:any) {
 
     
+    const [maxFol,setMaxFol] = useState<any>(null)
     
     const [highlightedDates, setHighlightedDates] = useState<string[]>([]) 
+    const [disableDates,setDisableDates] = useState<any>([])
 
     // Mapping days to their respective index in JavaScript's Date object (0 for Sunday, 6 for Saturday)
     const dayMap: Record<string, number> = {
@@ -122,7 +124,6 @@ function CalenderModalCard({selectedData, setSelectedData, isModalOpen, setIsMod
     };
     
     
-    
     // Memoize the result so it's only recomputed when necessary
     const getHighlightedDates = useMemo(() => generateHighlightedDates(), [generateHighlightedDates]);
     
@@ -131,6 +132,61 @@ function CalenderModalCard({selectedData, setSelectedData, isModalOpen, setIsMod
     useEffect(() => {
       setHighlightedDates(getHighlightedDates);
     }, [getHighlightedDates]);
+
+    // to get disable date till maxfol for ui purpose
+    const disableTillMaxFol = () => {
+      const maxDate = moment(maxFol); // parse maxFol correctly
+      const startDate = moment(new Date()).clone().startOf('month'); // get first day of that month
+    
+      const dates: any = [];
+      const d = startDate.clone();
+    
+      while (d.isSameOrBefore(maxDate)) {
+        dates.push(d.clone().format("YYYY-MM-DD")); // use clone to avoid mutation
+        d.add(1, 'day');
+      }
+      setDisableDates(dates);
+    };
+    
+    // to call the disabletillmaxfol fn and to also empty sates if ccrid is empty 
+    useEffect(()=>{
+      if (selectedData?.ccr_id?.length === 0) {
+        setMaxFol(null)
+        setDisableDates([]);
+        setHighlightedDates([]);
+        setSelectedData((prev: any) => {
+          return {
+            ...prev,
+            sd: "",
+            ed: "",
+          };
+        });
+      } else {
+        disableTillMaxFol();
+      }
+
+    },[maxFol,selectedData?.ccr_id])
+
+    
+    // to update the left side of the calender to max of maxFol and startdate
+    const safeMaxDate = useMemo(() => {
+      const datesToCompare :any= [
+        moment(maxFol, "YYYY-MM-DD").add(1,'day'),
+        selectedData?.sd ? moment(selectedData.sd, "YYYY-MM-DD").add(1,'day') : null,
+      ].filter((m) => m && m.isValid());
+      
+      return datesToCompare.length > 0
+      ? moment.max(datesToCompare).toDate()
+      : new Date();
+    }, [maxFol, selectedData?.sd]);
+
+    const [visibleMonth, setVisibleMonth] = useState<Date>(safeMaxDate);
+    
+    useEffect(() => {
+      setVisibleMonth(safeMaxDate);
+    }, [safeMaxDate]);
+
+    
 
   return (
     <VFModalCard
@@ -183,6 +239,10 @@ function CalenderModalCard({selectedData, setSelectedData, isModalOpen, setIsMod
                   display: "flex",
                   justifyContent: "center",
                 }}
+                // defaultMonth={safeMaxDate}
+                month={visibleMonth}
+                onMonthChange={setVisibleMonth}
+                fromMonth={new Date()}
                 mode="single"
                 components={{
                   Caption: CustomCalenderCaption,
@@ -191,9 +251,11 @@ function CalenderModalCard({selectedData, setSelectedData, isModalOpen, setIsMod
                       "YYYY-MM-DD"
                     );
                     const color = highlightedDates.includes(formattedDate)
-                      ? "Red"
-                      : "";
-                    return <CustomCalenderDay {...props} color={color} />;
+                      ? "selected"
+                      : disableDates.includes(formattedDate) ? "disabled" : "default";
+
+                    const opacity :string = disableDates.includes(formattedDate) ? "0.6" : "1"
+                    return <CustomCalenderDay {...props} color={color} opacity={opacity} />;
                   },
                 }}
                 styles={{
@@ -222,6 +284,8 @@ function CalenderModalCard({selectedData, setSelectedData, isModalOpen, setIsMod
               setFormData={setSelectedData}
               onSaveHandler={onSaveHandler}
               setIsModalOpen={setIsModalOpen}
+              setMaxFol={setMaxFol}
+              maxFol={maxFol}
             />
           }
         </div>

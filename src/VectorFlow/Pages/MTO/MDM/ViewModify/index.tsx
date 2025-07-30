@@ -162,7 +162,7 @@ const MTOViewModify = () => {
       setCalendarFormData({
         iwd: true,
         dsc: "",
-        rb: "",
+        rb: "Once",
         sd: "",
         dow: [{id: 0, mn: "", md: ""}],
         ccr_id: [],

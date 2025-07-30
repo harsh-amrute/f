@@ -5,6 +5,7 @@ import CalenderMonthlySelect from "./CalenderMonthlySelect";
 import _, { set } from "lodash";
 import { SCFlexCenter, SCItemMulSelect, SCItemTitle, SCSwapItem } from "../../../../../components/layouts/ProductPermission/styles";
 import { SearchInputMultiple } from "../../../../../components";
+import moment from "moment";
 
 
 
@@ -105,7 +106,7 @@ margin-top: -10px;
 
 
 
-const DatePickForm=({ plantNames, calendarFormData, ccrNames, formData, setFormData,setIsModalOpen,onSaveHandler}: any)=>{
+const DatePickForm=({ plantNames, calendarFormData, ccrNames, formData, setFormData,setIsModalOpen,onSaveHandler,maxFol,setMaxFol}: any)=>{
 
   const {user} = useUserData()
   const themeUi = user.user.theme_ui
@@ -153,15 +154,61 @@ const onHandlePlantChange = (e:any)=>{
   }))
 }
 
+const ccrMapFol :any = {
+  "1": {
+    "1": "28/07/2025",
+    "2": "29/07/2025",
+    "3": "30/07/2025",
+    "4": "31/07/2025",
+    "5": "01/08/2025",
+    "6": "02/08/2025",
+    "7": "03/08/2025",
+    '8': "12/08/2025",
+    "38": "04/08/2025"
+  },
+  "2": {
+    "9": "28/07/2025",
+    "10": "29/07/2025",
+    "11": "30/07/2025",
+    "12": "31/07/2025",
+    "13": "01/08/2025",
+    "14": "02/08/2025",
+    "15": "03/08/2025",
+    "16": "04/08/2025"
+  },
+  "3": {
+    "17": "28/07/2025",
+    "18": "29/07/2025"
+  }
+}
+
 
 
 const onHandleCCRChange = (e:any)=>{
+  const ccrIds = e.map((ccr:any)=> ccr.value)
+  const ccrNames = e.map((ccr:any)=> ccr.label).join(",")
   setFormData({
     ...formData,
-    ccr_id: e.map((ccr:any)=> ccr.value),
-    ccr: e.map((ccr:any)=> ccr.label).join(","),
-    
+    ccr_id: ccrIds,
+    ccr: ccrNames,
   })
+  setMaxFolFn(ccrIds)
+}
+
+const setMaxFolFn = (ccrs:any)=>{
+  const dates = []
+  const plant = formData.plid
+  if(plant in ccrMapFol){
+    for(const ccr of ccrs){
+      if(ccr in ccrMapFol[plant]){
+        dates.push(ccrMapFol[plant][ccr])
+      }
+    }
+    const momentDates = dates.map(date => moment(date, 'DD/MM/YYYY'));
+
+    const maxDate = moment.max(momentDates);
+    setMaxFol(maxDate.format('YYYY-MM-DD'))
+  }
 }
 
 const onHandleEndDateChange = (e:any) =>{
@@ -319,11 +366,48 @@ const onRemoveclick = (id: number) => {
         </InputWrapper>
 
         <InputWrapper>
+          <Label>Plant</Label>
+          <Select value={formData.plid} onChange={onHandlePlantChange}>
+            <option value="" selected disabled hidden>
+              Select a Plant
+            </option>
+            {plantNames.map((plant: any, index: number) => (
+              <option key={index} value={plant.plant_id}>
+                {plant.plant_name}
+              </option>
+            ))}
+          </Select>
+        </InputWrapper>
+
+        <InputWrapper style={{marginBottom:'10px'}}>
+          <Label>CCR</Label>
+
+          <SCSwapItem key={0}>
+            <SCFlexCenter>
+              <SCItemMulSelect width={"85%"}>
+                <SearchInputMultiple
+                  placeholder={"Select CCR"}
+                  options={formData.plid ? ccrNameOptFromPlant : []}
+                  value={formData?.ccr_id?.map((ccr: any) => ({
+                    value: ccr,
+                    label: ccrNames
+                      .find((ccrName: any) => ccrName.ccr_id == ccr)?.ccr_name || "",
+                  }))}
+                  setValue={onHandleCCRChange}
+                  handleListChild={() => {
+                    return null;
+                  }}
+                  disabled={false}
+                  key={0}
+                />
+              </SCItemMulSelect>
+            </SCFlexCenter>
+          </SCSwapItem>
+        </InputWrapper>
+
+        <InputWrapper>
           <Label>Repeat</Label>
           <Select value={formData.rb} onChange={onHandleOptionChange}>
-            <option value="" selected disabled hidden>
-              Select an option
-            </option>
             {["Once", "Weekly", "Monthly"].map((option, index) => (
               <option key={index} value={option}>
                 {option}
@@ -335,7 +419,9 @@ const onRemoveclick = (id: number) => {
         <InputWrapper>
           <Label>Start</Label>
           <Input
+            disabled={formData?.ccr_id?.length === 0 }
             type="date"
+            min={moment(maxFol).add(1,'day').format('YYYY-MM-DD')}
             value={formData.sd}
             onChange={onHandleStartDateChange}
           />
@@ -389,53 +475,14 @@ const onRemoveclick = (id: number) => {
             );
           })}
 
-        <InputWrapper>
-          <Label>Plant</Label>
-          <Select value={formData.plid} onChange={onHandlePlantChange}>
-            <option value="" selected disabled hidden>
-              Select a Plant
-            </option>
-            {plantNames.map((plant: any, index: number) => (
-              <option key={index} value={plant.plant_id}>
-                {plant.plant_name}
-              </option>
-            ))}
-          </Select>
-        </InputWrapper>
-
-        <InputWrapper>
-          <Label>CCR</Label>
-
-          <SCSwapItem key={0}>
-            <SCFlexCenter>
-              <SCItemMulSelect width={"85%"}>
-                <SearchInputMultiple
-                  placeholder={"Select CCR"}
-                  options={ccrNameOptFromPlant}
-                  value={formData?.ccr_id?.map((ccr: any) => ({
-                    value: ccr,
-                    label: ccrNames
-                      .find((ccrName: any) => ccrName.ccr_id == ccr)?.ccr_name || "",
-                  }))}
-                  setValue={onHandleCCRChange}
-                  handleListChild={() => {
-                    return null;
-                  }}
-                  disabled={false}
-                  key={0}
-                />
-              </SCItemMulSelect>
-            </SCFlexCenter>
-          </SCSwapItem>
-        </InputWrapper>
+        
         <InputWrapper>
           <Label>Ends</Label>
-          {/* <Select value={formData.ed} onChange={onHandleEndsChange}>
-            <option>On this day</option>
-            <option>After</option>
-          </Select> */}
           <Input
+          disabled={formData?.ccr_id?.length === 0 }
             type="date"
+            min={formData.sd ? moment(formData.sd).format('YYYY-MM-DD'): moment(maxFol).add(1,'day').format('YYYY-MM-DD')}
+            // defaultValue={}
             value={formData.ed}
             onChange={onHandleEndDateChange}
           />
