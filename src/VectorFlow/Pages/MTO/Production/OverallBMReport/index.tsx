@@ -70,6 +70,7 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import BomExcelModal from "../../Common/BomExcelModal";
 import useColDef from "../../../../../hooks/useColDef";
 
+
 interface ApiResponse {
   cc: string;
   cp: number;
@@ -447,22 +448,28 @@ const OverallBmReport = () => {
   const [totalOrderCount, setTotalOrderCount] = useState<any>(0);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
+  const debouncedRef = useRef<any>(null);
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
-    setIsCheckboxChecked(isChecked); // Update state based on checkbox
   
-    if (refGraph2.current?.api) {
-      refGraph2.current.api.deselectAll();
-      
-      if (isChecked) {
-        refGraph2.current.api.forEachNodeAfterFilterAndSort((node:any) => {
-          node.setSelected(true);
-        });
-      }
+    if (debouncedRef.current) {
+      debouncedRef.current.cancel();
     }
-    getSelectedRow();
+   debouncedRef.current = _.debounce(() => {
+      setIsCheckboxChecked(isChecked);
+      if (refGraph2.current?.api) {
+        refGraph2.current.api.deselectAll();
+  
+        if (isChecked) {
+          refGraph2.current.api.forEachNodeAfterFilterAndSort((node: any) => {
+            node.setSelected(true);
+          });
+        }
+      }
+      getSelectedRow();
+    }, 300); 
+    debouncedRef.current();
   };
-
   
 
   const toggleCheckBox = () => {
@@ -476,7 +483,7 @@ const OverallBmReport = () => {
     setSelectedAction(option);
     // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
     const newData: any = [];
-    gridData.forEach((ele: any) => {
+    gridData?.forEach((ele: any) => {
       const newEle = _.cloneDeep(ele);
       newEle.oca = option.value;
       newData.push(newEle);
@@ -697,17 +704,12 @@ const OverallBmReport = () => {
   );
 
   const onSelectChange = (props: any, option: any, index: number) => {
-    const newGridData: any = [];
-    props.api.forEachNode((node: any) => {
-      newGridData.push(node.data);
-    });
+  
+    const updatedData = { ...props.data, oca: option.value };
+    props.node.setData(updatedData); 
+    props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
 
-    if (Array.isArray(newGridData)) {
-      const dup_gridData = [...newGridData];
-      dup_gridData[index].oca = option.value;
-      setGridData(dup_gridData);
-    }
-  };
+};
 
   const DropDownCellRenderer = (props: any) => {
     return (
@@ -715,21 +717,19 @@ const OverallBmReport = () => {
         
         {!_.isEmpty(props.data) && props.data?.ct === null ? (
           <>
-            <VFSelect
+          <VFSelect
               options={actionOptions}
               themeUi={themeUi}
               icon={DropdownArrowIcon}
               placeholder="Select Action"
               disabled={!props.node.selected}
-              value={
-                props.node.selected
-                  ? actionOptions.find((opt) => opt.value === props.data?.oca)
-                  : null
-              }
+              value={actionOptions.find((opt) => opt.value === props.node.data?.oca) || null}
               onChange={(option: any) => {
-                onSelectChange(props, option, props.node.rowIndex);
-              }}
-            />
+              if (option) {
+              onSelectChange(props, option, props.node.rowIndex);
+              }
+            }}
+          />
 
             <div
               style={{
@@ -1072,6 +1072,7 @@ const OverallBmReport = () => {
         []
       );
       setGridData(modifiedGridData);
+      setGridData(modifiedGridData);
       setGridDataCount(gridData?.data?.data?.count);
       setIsGridLoading(false);
     } catch (e) {
@@ -1190,7 +1191,7 @@ const OverallBmReport = () => {
   useEffect(() => {
     if (masterSelectedRowData.length > 0) {
       const selectedOrderKeys: orderkeyObj[] = [];
-      masterSelectedRowData.map((ele: any) => {
+      masterSelectedRowData?.map((ele: any) => {
         selectedOrderKeys.push(ele.ok);
       });
 
