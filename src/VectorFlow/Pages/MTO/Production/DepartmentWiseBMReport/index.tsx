@@ -459,12 +459,28 @@ const DptWiseBMReport = () => {
                 pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
                 editable: (params: any) => { !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false },
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
+                // valueFormatter: (params: any) => {
+                //     if (params.value && typeof params.value === 'number') {
+                //         return params.value.toFixed(2).toLocaleString();
+                //     }
+                //     return params.value;
+                // },
                 valueFormatter: (params: any) => {
+                    console.log(child)
+                    const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+                    const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+                  
                     if (params.value && typeof params.value === 'number') {
-                        return params.value.toFixed(2).toLocaleString();
+                      return locale ? params.value.toLocaleString(locale) : params.value;
                     }
+                  
+                    if (params.colDef.cellDataType=='decimal' ) {
+                      const fixedValue =params.value.toFixed(2).toLocaleString();
+                      return locale ? fixedValue.toLocaleString(locale) : fixedValue;
+                    }
+                  
                     return params.value;
-                },
+                  }, 
                 cellRendererParams: child?.hd.includes("Remark") ? {
                     onClick: child?.cc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
                   } : undefined,
