@@ -127,6 +127,7 @@ interface ApiResponseItem {
   scc: string; // Sub-channel code (will be set to the name of cc)
   ch?: ApiResponse[]; // Array of channel items
   pinned?: string; // Pin property
+  dt?: string;
 }
 
 const APIFilterConfig = {
@@ -376,7 +377,7 @@ const OverallBmReport = () => {
     };
 
     // Prepend the default outer object
-    modifiedResponse.unshift(defaultOuterObject, defaultSecondObject);
+    modifiedResponse.unshift(defaultOuterObject);
 
     // Calculate cp for the additional object based on existing cp values
     const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
@@ -843,7 +844,7 @@ const OverallBmReport = () => {
           buttons: ['reset']
         },
         filter:
-        child.dt === "number"
+        (child.dt === "number" || child.dt==='decimal')
           ? "agNumberColumnFilter"
           : "agMultiColumnFilter",
 
@@ -867,12 +868,23 @@ const OverallBmReport = () => {
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
           child.cc === "ec" ? false : child.cc === "ic" ? false : true,
-        valueFormatter: (props: any) => {
-          if (typeof props.value === "number") {
-            return props.value.toFixed(2);
+        valueFormatter: (params: any) => {
+          if (params.value) {
+              const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+              const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+        
+              if (child.dt === 'number') {
+                  return locale ? params.value.toLocaleString(locale) : params.value;
+              }
+        
+              if (child.dt === 'decimal') {
+                  const fixedValue = params.value.toFixed(2).toLocaleString();
+                  return locale ? fixedValue.toLocaleString(locale) : fixedValue;
+              }
+        
+              return params.value;
           }
-          return props.value;
-        },
+        }, 
         cellRendererParams: child?.hd.includes("Remark") ? {
           onClick: child?.cc === 'RemarkHistory' ? (data: string) => onOpenRemarkHistory(data) : undefined
         } : undefined,
@@ -908,7 +920,13 @@ const OverallBmReport = () => {
 
     };
 
-    const res = apiResponse.map((section) => ({
+    const res1 = apiResponse.map((section) => {
+      console.log(section,"section")
+
+    });
+
+    const res = apiResponse.map((section) => (
+      {
       headerCheckboxSelection: (params:any) => {
         // Only show if no grouping is applied
         return section.scc === "chckbx" && params.api.getRowGroupColumns().length === 0;
@@ -936,13 +954,6 @@ const OverallBmReport = () => {
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
-      valueFormatter: (props: any) => {
-        if (typeof props.value === "number") {
-          return props.value.toFixed(2);
-        }
-        return props.value;
-      },
-
       // pinned: section.scc==="scos"?'right':"",
 
       cellRenderer:

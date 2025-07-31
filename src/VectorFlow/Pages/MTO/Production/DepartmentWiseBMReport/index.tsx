@@ -455,27 +455,28 @@ const DptWiseBMReport = () => {
                 minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
                 filter:
-                child.dt === "number"
+                (child.dt === "number" || child.dt==='decimal')
                 ? "agNumberColumnFilter"
                 : "agMultiColumnFilter",
                 pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
                 editable: (params: any) => !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false ,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 valueFormatter: (params: any) => {
-                    console.log(child)
-                    const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
-                    const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+                    if (params.value) {
+                        const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+                        const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
                   
-                    if (child.dt === 'number') {
-                      return locale ? params.value.toLocaleString(locale) : params.value;
+                        if (child.dt === 'number') {
+                            return locale ? params.value.toLocaleString(locale) : params.value;
+                        }
+                  
+                        if (child.dt === 'decimal') {
+                            const fixedValue = params.value.toFixed(2).toLocaleString();
+                            return locale ? fixedValue.toLocaleString(locale) : fixedValue;
+                        }
+                  
+                        return params.value;
                     }
-                  
-                    if (child.dt==='decimal' ) {
-                      const fixedValue =params.value.toFixed(2).toLocaleString();
-                      return locale ? fixedValue.toLocaleString(locale) : fixedValue;
-                    }
-                  
-                    return params.value;
                   }, 
                 cellRendererParams: child?.hd.includes("Remark") ? {
                     onClick: child?.cc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
