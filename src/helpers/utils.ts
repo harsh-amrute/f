@@ -4383,6 +4383,12 @@ export function getColumnDefinations(
       enablePivot: true,
       flex: 1,
       minWidth: 150,
+      valueFormatter: (params: any) => {
+        if (process.env.REACT_APP_NUMBER_FORMAT == 'USA') { 
+          return params.value.toLocaleString('en-us');
+        }
+          return params.value.toLocaleString('hi-IN');
+      },
       filterParams: {
         buttons: ['reset'], 
         comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
@@ -4961,6 +4967,7 @@ export function getColumnDefinationsMTA(
       enableRowGroup:false,
       enableValue:true,
       pivotIndex: null,
+     
       flex: 1,
       minWidth: 180,
       cellStyle: {
