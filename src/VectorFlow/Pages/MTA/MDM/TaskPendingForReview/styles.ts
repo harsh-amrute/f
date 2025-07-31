@@ -139,6 +139,9 @@ export const TaskPendingActionHeaderButton = styled.button<{ themeUi: string}>`
   border: none;
   box-shadow: -5px 4px 10px #919191B3;
   zoom:0.9;
+     &:disabled {
+        cursor: not-allowed;
+    }
 `
 
 export const ButtonSeperator = styled.div`

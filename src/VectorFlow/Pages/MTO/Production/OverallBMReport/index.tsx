@@ -81,6 +81,7 @@ interface ApiResponse {
   children?: ApiResponse[];
   cgs?: string;
   pinned?: string;
+  dt?: string;
 }
 
 interface ColDefChild {
@@ -842,9 +843,9 @@ const OverallBmReport = () => {
           buttons: ['reset']
         },
         filter:
-        child.cla === "right"
+        child.dt === "number"
           ? "agNumberColumnFilter"
-          : "agTextColumnFilter",
+          : "agMultiColumnFilter",
 
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:

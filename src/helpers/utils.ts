@@ -1291,7 +1291,7 @@ export const areValuesEqual = (a: any, b: any): boolean => {
   return a === b
 }
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, themeUi: string, tasktype?: string, showApproveAllModal?: any, showRejectAllModal?: any, actionStatus?: string): ColGroupDef[] | ColDef[] | Array<any> => {
+export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, themeUi: string, tasktype?: string, showApproveAllModal?: any, showRejectAllModal?: any, actionStatus?: string , isDisabled?:boolean): ColGroupDef[] | ColDef[] | Array<any> => {
 
   const textColor = themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D81"
 
@@ -1485,6 +1485,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
         {
           headerComponent: TaskPendingActionHeader,
           headerComponentParams: {
+            disabled:isDisabled,
             showApproveAllModal: showApproveAllModal,
             showRejectAllModal: showRejectAllModal,
             actionStatus: actionStatus
@@ -1607,7 +1608,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
     //   headerCheckboxSelectionCurrentPageOnly:true,
     //   width:10
     // }
-    ...colDefs, ...taskPendingCustomColDefs]
+    ...taskPendingCustomColDefs ,...colDefs]
 }
 
 export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, tasktype?: string): ColGroupDef[] | ColDef[] => {
@@ -4743,9 +4744,10 @@ export const DownloadExcel = (response : any,filename = "ReportFile") => {
       link.click();
       URL.revokeObjectURL(url);
       document.body.removeChild(link);
+      return true;
     } else {
-      notifyError('Error Downloading the excel as the response is not the expected response')
-      console.error('The response is not of the expected file type.');
+      notifyError('No orders found to export data!');
+      return false;
     }
   } catch (e) {
     console.log(e);
