@@ -124,6 +124,7 @@ const useBTR = () => {
     const [ecoGridState, setEcoGridState] = useState<any>();
     const [techMasterUIConfig, setTechMasterUIConfig] = useState<any>([]);
     const [ecoMasterUIConfig, setEcoMasterUIConfig] = useState<any>([]);
+    const [maintainOrderFilter, setMaintainOrderFilter] = useState<any>(0);
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
 
@@ -332,6 +333,7 @@ const useBTR = () => {
         }
         getBTRDataCount(payload)
         getData(tempFilter, 1)
+        setMaintainOrderFilter(maintainOrderFilter+1 % 2);
     }
 
 
@@ -484,7 +486,7 @@ const useBTR = () => {
         if (currentTab.id === "2" || currentTab.id === "3") {
             getUserColumnConfig();   
         }
-    },[currentTab])
+    },[currentTab, maintainOrderFilter])
 
     useEffect(() => {
         if (currentTab.id === "2" && techColDefs.length && techInternalRef?.api) {

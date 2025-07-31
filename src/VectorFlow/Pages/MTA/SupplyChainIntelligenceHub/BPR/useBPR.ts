@@ -94,6 +94,7 @@ const useBPR =()=>{
     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
+    const [maintainOrderFilter, setMaintainOrderFilter] = useState<any>(0);
 
     useEffect(() => {   
         getInitialBPRRowData()
@@ -130,7 +131,7 @@ const useBPR =()=>{
             getTableState();
             setGeneralFilterOptions(convertUiConfigToOptions(initialColumnState));
         }
-    }, [initialColumnState]);
+    }, [initialColumnState, maintainOrderFilter]);
 
     useEffect(() => {
         if (BPRColumns.length) {
@@ -619,6 +620,7 @@ const useBPR =()=>{
         getBPRRecordCount(filter)
         setCurrGridPage(1)
         getBPRRowData(filter,1)
+        setMaintainOrderFilter(maintainOrderFilter+1 % 2);
     }
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
