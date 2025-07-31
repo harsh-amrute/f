@@ -4370,7 +4370,7 @@ export function getColumnDefinations(
 
     if (data.dt === 'date') {
       filterType = 'agDateColumnFilter';
-    } else if (data.dt === 'number') {
+    } else if (data.dt === 'number' || data.dt ==='decimal') {
       filterType = 'agNumberColumnFilter';
     }
 
@@ -4384,6 +4384,22 @@ export function getColumnDefinations(
       enablePivot: true,
       flex: 1,
       minWidth: 150,
+      valueFormatter: (params: any) => {
+        if (params.value) {
+          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+      
+          if (data.dt === 'number') {
+            return locale ? params.value.toLocaleString(locale) : params.value;
+          }
+      
+          if (data.dt === 'decimal') {
+            const fixedValue = params.value.toFixed(2).toLocaleString();
+            return locale ? fixedValue.toLocaleString(locale) : fixedValue;
+          }
+          return params.value;
+        }
+      }, 
       filterParams: {
         buttons: ['reset'], 
         comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
@@ -4963,6 +4979,7 @@ export function getColumnDefinationsMTA(
       enableRowGroup:false,
       enableValue:true,
       pivotIndex: null,
+     
       flex: 1,
       minWidth: 180,
       cellStyle: {
