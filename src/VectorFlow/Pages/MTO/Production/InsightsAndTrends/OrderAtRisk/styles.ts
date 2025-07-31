@@ -32,6 +32,8 @@ export const OrderAtRiskChartWrapper = styled.div`
     position: relative;
     zoom: 1;
     width:100%;
+    width: 100%;
+    overflow-x: auto;
     // padding-right: 25px;
     display: flex;
     flex-direction: column;
@@ -64,8 +66,8 @@ export const OrderAtRiskChartWrapper = styled.div`
       justify-content: space-between !important;
       align-items: center !important;
       border:none !important;
-      position: absolute !important;
-      bottom:0 !important; 
+      // position: absolute !important;
+      // bottom:-100px !important; 
       background-color: white !important;
       width:100%  !important; 
 
