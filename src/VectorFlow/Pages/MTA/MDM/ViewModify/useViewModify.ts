@@ -315,7 +315,7 @@ const useViewModify = (pageType:string) => {
       tooltipShowDelay:0,
       readOnlyEdit:true,
       tooltipTrigger:'hover',
-      sideBar: (activeMaster.progress === 'deleteView' || (['default', 'view'].includes(activeMaster.progress) && activeMaster?.name !== "ForceNormChange" &&  activeMaster?.name  !== "MOQ" &&  activeMaster?.name  !== "SOB")) ? sideBar : {},
+      sideBar: ((['deleteView','default', 'view'].includes(activeMaster.progress) && activeMaster?.name !== "ForceNormChange" &&  activeMaster?.name  !== "MOQ" &&  activeMaster?.name  !== "SOB")) ? sideBar : {},
      // sideBar:['default','view','deleteView'].includes(activeMaster.progress) ? sideBar : {},
       getMainMenuItems: MainMenuItemsCustomization,
       gridOptions:{
