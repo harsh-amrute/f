@@ -4984,7 +4984,6 @@ export function getColumnDefinationsMTA(
       ...(getCellDataType(data.DataType) === 'number' && {
         valueFormatter: (params: any) => {
           const locale = process.env.REACT_APP_NUMBER_FORMAT_LOCALE ;
-          console.log("locale",locale);
           if(params.value == null || isNaN(params.value)) return ''
           else if(locale)  return params.value.toLocaleString(locale);
           return params.value;
