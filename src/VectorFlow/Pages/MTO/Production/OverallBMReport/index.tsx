@@ -727,7 +727,7 @@ const OverallBmReport = () => {
               disabled={!props.node.selected}
               value={
                 props.node.selected ? 
-                  actionOptions.find((opt) => opt.value === props.node.data?.oca) :
+                  actionOptions.find((opt) => opt.value === props.data?.oca) :
                   null}
               onChange={(option: any) => {
               if (option) {
