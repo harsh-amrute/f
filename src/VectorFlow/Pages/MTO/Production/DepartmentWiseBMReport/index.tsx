@@ -116,6 +116,7 @@ interface ApiResponseItem {
     scc: string;      // Sub-channel code (will be set to the name of cc)
     ch?: ApiResponse[]; // Array of channel items
     pinned?:string;
+    
 }
 
 
@@ -474,7 +475,7 @@ const DptWiseBMReport = () => {
                       return locale ? params.value.toLocaleString(locale) : params.value;
                     }
                   
-                    if (params.colDef.cellDataType=='decimal' ) {
+                    if (child.dt==='decimal' ) {
                       const fixedValue =params.value.toFixed(2).toLocaleString();
                       return locale ? fixedValue.toLocaleString(locale) : fixedValue;
                     }
