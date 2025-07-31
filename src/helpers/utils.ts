@@ -4384,37 +4384,6 @@ export function getColumnDefinations(
       enablePivot: true,
       flex: 1,
       minWidth: 150,
-      // valueFormatter: (params: any) => {
-      //   if (data.dt === 'number') {
-      //       const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
-      //     if (format === 'USA') {
-      //       return params.value?.toLocaleString?.('en-US') ?? params.value;
-      //     }
-      //     else if (format==='IND') {
-      //       return params.value?.toLocaleString?.('hi-IN') ?? params.value;
-      //     }
-      //     else {
-      //       return params.value;            
-      //     }
-      //   }
-
-      //   if (data.dt === 'decimal') {
-      //     const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
-      //     const fixedValue = Number(params.value.toFixed(2)); // Round to 2 decimal places
-      //   if (format === 'USA') {
-      //      return fixedValue.toLocaleString('en-US');
-      //     }
-      //     else if (format==='IND') {
-      //       return fixedValue.toLocaleString?.('hi-IN') ;
-      //     }
-      //   else {
-      //     return fixedValue;
-      //     }
-      //   }
-      //   return params.value;
-      //   }
-      //   }
-      // },    
       valueFormatter: (params: any) => {
         const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
         const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
@@ -4424,11 +4393,9 @@ export function getColumnDefinations(
         }
       
         if (data.dt === 'decimal' ) {
-          const fixedValue = Number(params.value.toFixed(2));
+          const fixedValue = params.value.toFixed(2).toLocaleString();
           return locale ? fixedValue.toLocaleString(locale) : fixedValue;
         }
-
-      
         return params.value;
       }, 
       filterParams: {

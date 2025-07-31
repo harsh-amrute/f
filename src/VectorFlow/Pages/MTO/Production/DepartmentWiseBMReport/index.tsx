@@ -461,18 +461,12 @@ const DptWiseBMReport = () => {
                 pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
                 editable: (params: any) => !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false ,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
-                // valueFormatter: (params: any) => {
-                //     if (params.value && typeof params.value === 'number') {
-                //         return params.value.toFixed(2).toLocaleString();
-                //     }
-                //     return params.value;
-                // },
                 valueFormatter: (params: any) => {
                     console.log(child)
                     const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
                     const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
                   
-                    if (params.value && typeof params.value === 'number') {
+                    if (child.dt === 'number') {
                       return locale ? params.value.toLocaleString(locale) : params.value;
                     }
                   
