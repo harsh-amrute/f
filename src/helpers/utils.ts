@@ -4385,7 +4385,6 @@ export function getColumnDefinations(
       flex: 1,
       minWidth: 150,
       valueFormatter: (params: any) => {
-        console.log(params.value)
         if (params.value) {
           const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
           const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
