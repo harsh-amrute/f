@@ -1034,7 +1034,14 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       tooltipComponent: 'conflictErrorToolTip',
       suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
-        return (params.value === null || params.value === undefined) ? '' : params.value.toString();
+        if(params.value == null || params.value === undefined)  return ''
+        else if (cellDataType === 'number') {
+          const locale = process.env.REACT_APP_NUMBER_FORMAT_LOCALE;
+          if(locale) return params.value.toLocaleString(locale)
+          else       return params.value.toString()
+        }
+        else return params.value.toString()
+        // return (params.value === null || params.value === undefined) ? '' : params.value.toString();
       },
       valueGetter: (params: any) => {
         if (f.key === 'sts') {
@@ -4976,7 +4983,12 @@ export function getColumnDefinationsMTA(
 
       ...(getCellDataType(data.DataType) === 'number' && {
         valueFormatter: (params: any) => {
-          return params.value == null || isNaN(params.value) ? '' : params.value;
+          const locale = process.env.REACT_APP_NUMBER_FORMAT_LOCALE ;
+          console.log("locale",locale);
+          if(params.value == null || isNaN(params.value)) return ''
+          else if(locale)  return params.value.toLocaleString(locale);
+          return params.value;
+          // return params.value == null || isNaN(params.value) ? '' : params.value;
         }
       })
     };
