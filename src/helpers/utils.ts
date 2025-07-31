@@ -1036,7 +1036,8 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       valueFormatter: (params: any) => {
         if(params.value == null || params.value === undefined)  return ''
         else if (cellDataType === 'number') {
-          const locale = process.env.REACT_APP_NUMBER_FORMAT_LOCALE;
+          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
           if(locale) return params.value.toLocaleString(locale)
           else       return params.value.toString()
         }
@@ -4983,7 +4984,8 @@ export function getColumnDefinationsMTA(
 
       ...(getCellDataType(data.DataType) === 'number' && {
         valueFormatter: (params: any) => {
-          const locale = process.env.REACT_APP_NUMBER_FORMAT_LOCALE ;
+          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
           if(params.value == null || isNaN(params.value)) return ''
           else if(locale)  return params.value.toLocaleString(locale);
           return params.value;
