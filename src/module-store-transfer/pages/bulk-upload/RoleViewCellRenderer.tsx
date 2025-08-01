@@ -1,0 +1,412 @@
+import React, { useEffect, useRef, useState } from "react";
+import styled, { css, CSSProperties, keyframes } from "styled-components";
+import { CustomCellRendererProps } from "ag-grid-react";
+import VFButton from "../../../components/VectorFLOW/commons/VFButton";
+import { useUserData } from "../../../context";
+import Tooltip from "../../../VectorFlow/Pages/MTO/Common/Tooltip";
+import { TooltipContainer } from "../../../VectorFlow/Pages/MTO/Common/Tooltip/styles";
+import Portal from "../../../components/VectorFLOW/layouts/Portal";
+import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
+import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
+import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutline";
+
+// Styled Components
+type ScrollContainerProps = {
+  isScroll: boolean;
+};
+
+const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+  overflow: hidden;
+  width: 100%;
+`;
+const scrollAnimation = keyframes`
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+`;
+
+const ScrollWrapper = styled.div`
+  overflow: hidden;
+  width: 100%;
+`;
+
+const ScrollContainer = styled.div<ScrollContainerProps>`
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  will-change: transform;
+
+  ${({ isScroll }) =>
+    isScroll &&
+    css`
+      animation: ${scrollAnimation} 30s linear infinite;
+
+      &:hover {
+        animation-play-state: paused;
+      }
+    `}
+`;
+
+const RoleTab = styled.div`
+  padding: 2px 6px;
+  background-color: rgb(44, 43, 43);
+  color: white;
+  border-radius: 12px;
+  white-space: nowrap;
+  font-size: 8px;
+`;
+const ButtonGroup = styled.span`
+  gap: 6px;
+  background: transparent;
+`;
+
+export const RoleTile = styled.div`
+  background-color: rgb(44, 43, 43);
+  color: white;
+  padding: 4px 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  text-align: center;
+  white-space: nowrap;
+`;
+
+const ContainerDrop = styled.div`
+  width: 240px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  background: white;
+`;
+
+const CheckboxRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-weight: 420;
+
+  &:hover{
+    font-size: 14px;
+    font-weight: 450;
+  }
+`;
+
+const CategoryHeader = styled.div`
+  font-weight: bold;
+  padding: 6px;
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  &:hover {
+    background: #f0f0f0;
+    font-size: 16px;
+  }
+`;
+
+const SubItem = styled.div`
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+  &:hover {
+    background: #f0f0f0;
+    font-size: 15px;
+
+    }
+`;
+
+const BottomButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+`;
+
+
+type RoleItem = {
+  id: string;
+  label: string;
+};
+
+type RoleGroup = {
+  name: string;
+  roles: RoleItem[];
+};
+
+const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
+  const user = useUserData();
+  const themeUi = user.user.user.theme_ui;
+  const [selected, setSelected] = useState<Set<string>>(new Set(currentRoles));
+  const allIds = allRoles;
+
+  console.log("allRoles .. in drops", allRoles);
+
+  console.log("currentRoles", currentRoles);
+  const [selectedRoles, setSelectedRoles] = useState<Set<any>>(
+    currentRoles ? currentRoles : new Set()
+  );
+  const addRole = (item: any) => {
+    setSelectedRoles((prev) => new Set(prev).add(item));
+  };
+  const removeRole = (item: any) => {
+    setSelectedRoles((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(item);
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    const allSelected = allRoles.every((id: any) => selected.has(id));
+    setSelectedRoles(allSelected ? new Set() : new Set(allRoles));
+  };
+
+  const applicationGroups = Array.from(
+    new Set(allRoles.map((role: any) => role.application_name))
+  );
+
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(
+    Object.fromEntries(applicationGroups.map((app) => [app, true]))
+  );
+
+  const toggleExpand = (name: string) => {
+    setExpanded((prev) => ({ ...prev, [name]: !prev[name] }));
+  };
+
+  return (
+    <ContainerDrop style={{ width: width + "px" }}>
+      <CheckboxRow style={{ width: "100%", cursor: 'pointer' }} onClick={handleSelectAll}>
+        <Checkbox
+          type="checkbox"
+          style={{ zoom: 0.6 }}
+          theme={themeUi}
+          checked={
+            allRoles.length > 0 && selectedRoles?.size>0 &&
+            allRoles.every((id: any) => selectedRoles?.has(id))
+          }
+          onClick={(e) => e.stopPropagation()} // prevent double trigger
+          onChange={handleSelectAll}
+        />
+        <label style={{cursor: 'pointer'}}>Select all</label>
+      </CheckboxRow>
+
+      {applicationGroups.map((appName: any) => {
+        const roles = allRoles.filter(
+          (role: any) => role.application_name === appName
+        );
+        return (
+          <div key={appName}>
+            <CategoryHeader onClick={() => toggleExpand(appName)}>
+              <span>{appName}</span>
+              <span>{expanded[appName] ? "⌄" : ">"}</span>
+            </CategoryHeader>
+            {expanded[appName] &&
+              roles.map((role: any) => (
+                <SubItem
+                  key={role.id}
+                  style={{
+                    userSelect: "none",
+                    display: "flex",
+                    alignContent: "center",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                   selectedRoles?.size>0 &&  selectedRoles?.has(role) ? removeRole(role) : addRole(role);
+                  }}
+                >
+                  <Checkbox
+                    style={{ zoom: 0.6 }}
+                    theme={themeUi}
+                    type="checkbox"
+                    checked={selectedRoles?.size>0 && selectedRoles?.has(role)}
+                    onClick={(e) => e.stopPropagation()} // prevent double trigger
+                    onChange={(e) =>
+                      e.target.checked ? addRole(role) : removeRole(role)
+                    }
+                  />
+                  <label style={{ cursor: "pointer" }}>{role.name}</label>
+                </SubItem>
+              ))}
+          </div>
+        );
+      })}
+
+      <BottomButtons>
+        <VFButtonOutline
+          style={{ fontSize: "12px", height: "28px", width: "64px" }}
+          themeUi={themeUi}
+          onClick={() => setSelectedRoles(new Set())}
+        >
+          Clear
+        </VFButtonOutline>
+        <VFButton
+          style={{ fontSize: "12px", height: "28px", width: "64px" }}
+          themeUi={themeUi}
+          onClick={() => {
+            console.log("selected Roles", selectedRoles);
+            onApplyRole(selectedRoles);
+          }}
+        >
+          Apply
+        </VFButton>
+      </BottomButtons>
+    </ContainerDrop>
+  );
+};
+
+interface MyCellRendererProps extends CustomCellRendererProps {
+  allRoles?: any[];
+}
+
+const RoleViewCellRenderer = (params: MyCellRendererProps) => {
+  const user = useUserData();
+
+  const themeUi = user.user.themeUi;
+  const roles = params?.data?.roles
+    ? [...params.data.roles].map((role) => role.name)
+    : [];
+  const allRoles = params.allRoles || [];
+  const [isSelectAll, setIsSelectAll] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [selectedView, setSelectedView] = useState<null | string>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(e.target as Node) &&
+      !buttonRef.current?.contains(e.target as Node)
+    ) {
+      setOpen(false);
+      if (!selectedView) {
+        setSelected([]);
+        setIsSelectAll(false);
+      }
+    } else {
+      console.log("no ref found");
+    }
+  };
+
+  useEffect(() => {
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+  const [dropdownPosition, setDropdownPosition] = useState<CSSProperties>({});
+
+  const onSelectClick = (e: React.MouseEvent<HTMLElement>) => {
+    const { bottom, left } = params.eGridCell.getBoundingClientRect();
+    setDropdownPosition({
+      top: bottom + window.scrollY,
+      bottom: bottom,
+      left: left + window.scrollX,
+    });
+    setOpen(!open);
+  };
+
+  const onApplyRole = (selectedRoles: Set<any>) => {
+    params.data.roles = selectedRoles;
+    params.api?.refreshCells({ rowNodes: [params.node] });
+    setOpen(false);
+  };
+
+  if (!roles || roles.length === 0) {
+    return (
+      <Container
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <VFButton
+          disabled={false}
+          style={{ width: "60%", height: "25px", fontSize: "1rem" }}
+          themeUi={themeUi}
+          onClick={onSelectClick}
+        >
+          {"Select Roles"}
+        </VFButton>
+        {open && (
+          <Portal wrapperId="checkbox-dropdown">
+            <DropdownWrapper
+              ref={dropdownRef}
+              topPos={dropdownPosition.top + "px"}
+              leftPos={dropdownPosition.left + "px"}
+            >
+              <RoleDropdown
+                currentRoles={params.data.roles}
+                onApplyRole={onApplyRole}
+                allRoles={allRoles}
+                width={
+                  params.eGridCell.getBoundingClientRect().right -
+                  params.eGridCell.getBoundingClientRect().left
+                }
+              ></RoleDropdown>
+            </DropdownWrapper>
+          </Portal>
+        )}
+      </Container>
+    );
+  }
+  return (
+    <Container>
+      <ScrollWrapper>
+        <ScrollContainer isScroll={roles.length > 3}>
+          {roles?.map((role: any, index: number) => (
+            <RoleTab key={index}>{role}</RoleTab>
+          ))}
+        </ScrollContainer>
+      </ScrollWrapper>
+
+      <ButtonGroup>
+        <VFButton
+          disabled={false}
+          style={{ width: "90px", height: "25px", fontSize: "1rem" }}
+          themeUi={themeUi}
+          onClick={onSelectClick}
+        >
+          {"Edit Roles"}
+        </VFButton>
+      </ButtonGroup>
+      {open && (
+        <Portal wrapperId="checkbox-dropdown">
+          <DropdownWrapper
+            ref={dropdownRef}
+            topPos={dropdownPosition.top + "px"}
+            leftPos={dropdownPosition.left + "px"}
+          >
+            <RoleDropdown
+              allRoles={allRoles}
+              currentRoles={params.data.roles}
+              
+              onApplyRole={onApplyRole}
+              width={
+                params.eGridCell.getBoundingClientRect().right -
+                params.eGridCell.getBoundingClientRect().left
+              }
+            ></RoleDropdown>
+          </DropdownWrapper>
+        </Portal>
+      )}
+    </Container>
+  );
+};
+
+export default RoleViewCellRenderer;

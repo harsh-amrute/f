@@ -8,10 +8,57 @@ import { BaseEdge, getStraightPath } from '@xyflow/react';
 
 
 import { useUserData } from '../../../context';
+import styled from 'styled-components';
 
 const NodeDataContext = createContext<any>(undefined);
 
-export default function PermissionHeirarchyCanvas({ heirarchyData,allPermissions}:any) {
+
+const ToggleContainer = styled.div`
+  display: flex;
+  background-color: #fff;
+//   border: 1.5px solid #d08ba5;
+  border-radius: 999px;
+  overflow: hidden;
+  width: fit-content;
+  padding: 3px;
+  gap: 8px;
+  font-size: 8px;
+`;
+
+const ToggleButton = styled.button<{ active: boolean }>`
+  padding: 4px 14px;
+  border: none;
+  background-color: ${({ active }) => (active ? '#f1d2e0' : '#f5f5f5')};
+  color: ${({ active }) => (active ? '#c72e64' : '#000')};
+  font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 10px;
+  transition: background 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: ${({ active }) => (active ? '#f1d2e0' : '#f5f5f5')};
+  }
+`;
+//@TODO: add type definations later
+const ViewToggle = ({allApplications, selectedApplication, setSelectedApplication}:any) => {
+
+  return (
+    <ToggleContainer>
+        {allApplications.map((app: string) => (
+            <ToggleButton
+            key={app}
+            active={selectedApplication === app}
+            onClick={() => setSelectedApplication(app)}
+            >
+            {app==='location_permission'? 'Location': 'Product'}
+            </ToggleButton>
+        ))}
+    </ToggleContainer>
+  );
+};
+
+export default function PermissionHeirarchyCanvas({ selectedAppAllPermissions}:any) {
 
     function useNodeDataContext() {
         const context = useContext(NodeDataContext);
@@ -20,6 +67,9 @@ export default function PermissionHeirarchyCanvas({ heirarchyData,allPermissions
         }
         return context;
     }
+
+    const [permissionType, setPermissionType] = useState<'location_permission'| 'product_permission'>('location_permission');
+
 
     const [opened, setOpened] = useState<any>([]);
 
@@ -56,7 +106,13 @@ export default function PermissionHeirarchyCanvas({ heirarchyData,allPermissions
 
             arr.forEach((item) => {
                 allNodes[key][item].forEach((ele:any)=>{
-                    level3.push(`${index}_${key}>${inIndex}_${item}>${inIndex2}_${ele.location_heirarchy_3}`);
+                    if(permissionType==='location_permission'){
+                        level3.push(`${index}_${key}>${inIndex}_${item}>${inIndex2}_${ele[permissionType.split('_')[0]+"_heirarchy_3"]}`);
+                    }
+                    else{
+                        level3.push(`${index}_${key}>${inIndex}_${item}>${inIndex2}_${ele[permissionType.split('_')[0]+"_hierarchy_3"]}`);
+
+                    }
                     inIndex2++;
                 });
                 inIndex++;
@@ -131,9 +187,6 @@ export default function PermissionHeirarchyCanvas({ heirarchyData,allPermissions
 
         const { opened, setOpened, checked, setChecked } = useNodeDataContext();
 
-        // if(opened?.[data.index]==1){
-        //     setOpen(true);
-        // }
 
         const setTheIndex = ()=>{
             const newArr = [...opened];
@@ -155,10 +208,10 @@ export default function PermissionHeirarchyCanvas({ heirarchyData,allPermissions
         }
 
         return (
-            <div style={{ padding: '10px', border: '1px solid #ddd',display: 'flex',flexDirection: 'row', alignItems: 'center',  borderRadius: '5px',color: 'black', background: '#cecece' }}>
-                <Checkbox checked={checked[data?.index]}  onChange={(e)=>{setTheChecked()}} theme={user.user.theme_ui} style={{ zoom: 0.7}} />
+            <div style={{ padding: '8px', border: '1px solid #ddd',display: 'flex',flexDirection: 'row', alignItems: 'center',  borderRadius: '5px',color: 'black', background: '#cecece' }}>
+                <Checkbox checked={checked[data?.index]}  onChange={(e)=>{setTheChecked()}} theme={user.user.theme_ui} style={{ zoom: 0.5}} />
                 <span style={{padding: '10px', fontSize: '11px', fontFamily: 'roboto'}}>{data.label}</span>
-                {(!(data?.level==2)) && <div onClick={setTheIndex} style={{margin: '4px', font: 'bold', fontSize: '20px', cursor: 'pointer'}}>{opened?.[data?.index]!=1?`<`:`>`}</div>}
+                {(!(data?.level==2)) && <div onClick={setTheIndex} style={{margin: '2px', font: 'bold', fontSize: '14px', cursor: 'pointer'}}>{opened?.[data?.index]!=1?`<`:`>`}</div>}
                 {(!(data?.level==0)) && <Handle type="target" position={Position.Left} style={{ background: '#555' }} />}
                 {(!(data?.level==2)) && <Handle type="source" position={Position.Right} style={{ background: '#555' }} />}
             </div>
@@ -178,19 +231,25 @@ export default function PermissionHeirarchyCanvas({ heirarchyData,allPermissions
 
 
     React.useEffect(() => {
+        console.log("checked", checked, "\n open", opened)
         if(checked && checked.length && opened && opened.length){
 
-            const {nodes: generatedNodes, edges: generatedEdges} = generateTreeNodesAndEdges(allPermissions?.[0]?.location_permission);
+            const {nodes: generatedNodes, edges: generatedEdges} = generateTreeNodesAndEdges(selectedAppAllPermissions[permissionType]);
             setNodes(generatedNodes);
             setEdges(generatedEdges);
+
+            console.log("gneratedNodes,,,,,,,", generatedNodes);
         }
     }, [opened, checked]);
+
    
+    // @TODO: tell backend to fix the spelling of heirarchy and hierarychy
 
     React.useEffect(()=>{
-        if(allPermissions?.[0]?.location_permission){
+        console.log("selectedAppAllPermissions", selectedAppAllPermissions, "\n permissionType", permissionType, selectedAppAllPermissions[permissionType]);
+        if(selectedAppAllPermissions && selectedAppAllPermissions[permissionType]){
 
-            const allNodes = allPermissions?.[0]?.location_permission
+            const allNodes = selectedAppAllPermissions[permissionType]
             const level1 = Object.keys(allNodes);
             let level2:string[] = [];
             let inIndex = level1.length;
@@ -213,23 +272,36 @@ export default function PermissionHeirarchyCanvas({ heirarchyData,allPermissions
 
             arr.forEach((item) => {
                 allNodes[key][item].forEach((ele:any)=>{
-                    level3.push(`${index}_${key}>${inIndex}_${item}>${inIndex2}_${ele.location_heirarchy_3}`);
+                    if(permissionType==='location_permission'){
+
+                        level3.push(`${index}_${key}>${inIndex}_${item}>${inIndex2}_${ele[permissionType.split('_')[0]+"_heirarchy_3"]}`);
+                    }
+                    else{
+                        level3.push(`${index}_${key}>${inIndex}_${item}>${inIndex2}_${ele[permissionType.split('_')[0]+"_hierarchy_3"]}`);
+                    }
                     inIndex2++;
                 });
                 inIndex++;
             })
         })
 
+        console.log("level1", level1, "\n level2", level2, "\n level3", level3);
+
         setOpened(Array(level1.length + level2.length + level3.length).fill(1));
         setChecked(Array(level1.length + level2.length + level3.length).fill(0));
     }
-    },[allPermissions])
+    },[selectedAppAllPermissions, permissionType]);
+
+
     
     
     return (
         <NodeDataContext.Provider value={{ nodes, edges, opened, setOpened, checked, setChecked}}>
-        <div style={{ width: '80vw', height: '80vh' }}>
+        <div style={{ width: '100%', height: '84%',margin:'8px auto 0 auto', border: '1.5px dashed #cecece', borderRadius: '10px', padding: '8px' }}>
+            <ViewToggle allApplications={['location_permission', 'product_permission']} selectedApplication={permissionType} setSelectedApplication={setPermissionType} />
+        <div style={{position:'relative', width: '100%', height: '94%', borderRadius: '10px' }}>
             <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} />
+            </div>
         </div>
         </NodeDataContext.Provider>
     );

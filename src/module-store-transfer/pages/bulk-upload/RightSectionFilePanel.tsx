@@ -7,6 +7,7 @@ interface RightSectionFilePanelProps {
   btnIcon: string;
   iconStyles: React.CSSProperties;
   text: string;
+  onClick: () => void;
 }
 
 function RightSectionFilePanel({
@@ -14,7 +15,8 @@ function RightSectionFilePanel({
   imgStyles,
   btnIcon,
   iconStyles,
-  text
+  text,
+  onClick
 }: RightSectionFilePanelProps) {
   return (
     <FilePanel>
@@ -27,9 +29,7 @@ function RightSectionFilePanel({
       <ButtonFloat
         icon={btnIcon}
         text=""
-        onClick={() => {
-          console.log("click");
-        }}
+        onClick={onClick}
         styles={{
           width: "6rem",
           padding: "0.5rem 1rem",

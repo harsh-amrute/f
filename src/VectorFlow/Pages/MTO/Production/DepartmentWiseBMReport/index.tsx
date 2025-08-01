@@ -712,7 +712,7 @@ const DptWiseBMReport = () => {
                 node.data.Remark = masterSelectedRowData[0].Remark;
                 for (let index = 0; index < masterSelectedRowData.length; index++) {
                     const element = masterSelectedRowData[index];
-                    if (element.oid === node.data.oid) {
+                    if (element.ok=== node.data.ok) {
                         node.data.Remark = element.Remark;
 
                     }

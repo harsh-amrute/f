@@ -27,7 +27,7 @@ import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
 import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
-import PermissionHeirarchyCanvas from "./ModalBulkUpload";
+import PermissionHeirarchyCanvas from "./PermissioinHeirarchyCanvas";
 import { useNavigate } from "react-router";
 import { notifyError } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
@@ -72,12 +72,10 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   const [searchUserBasedOn, setSearchUserBasedOn] = useState("");
   
-  
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
     setListRoles(dataAllRoles);
   });
-  
   
   const getHeaderDatafunct = async() =>{
     const reponse = await usegetHeaderData();
@@ -440,7 +438,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                       ? "icon_upload_yellow"
                       : "icon_upload"
                   }.svg`}
-                  disabled={true}
+                  disabled={false}
                   onClick={handleClickBulkUpload}
                 />
               </SCItemBtn>
@@ -515,14 +513,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
       />
 
 
-        <VFModalCard
-          openModal={isBulkModalOpen}
-          headerIcon={"/assets/img/profile/icon_upload.svg"}
-          closeModal={()=>{setIsBulkModalOpen(false)}}
-        >
-       <PermissionHeirarchyCanvas  allPermissions={dataAllPermissions}/>
-
-        </VFModalCard>
+        
       
     </>
   );

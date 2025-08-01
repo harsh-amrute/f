@@ -2,7 +2,7 @@ import { SCButtonFloat, SCImg } from './style'
 import { useUserData } from "../../../context";
 
 interface ButtonFloatProps {
-  onClick: () => void
+  onClick: any
   text: string
   icon: string
   styles?: React.CSSProperties

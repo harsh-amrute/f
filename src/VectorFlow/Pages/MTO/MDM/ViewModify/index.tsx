@@ -612,6 +612,7 @@ const MTOViewModify = () => {
                         : "95%"
                       : "75%"
                   }
+                  readOnlyEdit
                   maintainColumnOrder
                 />
               )}

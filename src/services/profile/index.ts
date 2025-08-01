@@ -77,3 +77,9 @@ export const useGetHeadersData = () => {
     return await MainService.getHeadersData()
   })
 }
+
+export const usePostHeadersDataForValidations = () => {
+  return useMutation(async (data: any) => {
+    return await MainService.postHeadersDataForValidation(data)
+  })
+}

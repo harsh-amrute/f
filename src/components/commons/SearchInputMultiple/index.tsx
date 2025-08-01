@@ -8,7 +8,7 @@ interface SelectSearchMultipleProps {
   setValue: any;
   options: any;
   placeholder: string;
-  handleListChild: (e: object) => void;
+  handleListChild?: (e: object) => void;
   disabled: any;
   icon?: any;
   maxToShow?: number;
@@ -41,7 +41,7 @@ const SearchInputMultiple = ({
 
   const handleSelect = (e: any) => {
     setValue(e);
-    handleListChild(e);
+    handleListChild && handleListChild(e);
 
     if (isCheckBoxRef?.current?.isPrdCheck && from && activeApplicationId) {
       isCheckBoxRef.current[from][activeApplicationId] = false;
