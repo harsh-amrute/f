@@ -163,17 +163,12 @@ const useSavedDrafts = ()=>{
               },
             };
 
-            if(col.field === 'actions'){
+            if(col.field === 'actions' || col.field === 'iv'){
               return {
                 ...col,
-                editable:false
-              }
-            }
+                editable:false,
+                floatingFilter: false,
 
-            if(col.field === 'iv'){
-              return {
-                ...col,
-                editable:false
               }
             }
 
@@ -200,7 +195,7 @@ const useSavedDrafts = ()=>{
                 cellEditor: "agRichSelectCellEditor",
                 editable: ActionType == "Modify" ? false : true,
                 cellEditorParams: {
-                  values: bufferTypeMaster?.map((item: any) => item.dsc),
+                  values: bufferTypeMaster?.map((item: any) => item.nm),
                 },
               };
             if(col.field === "dow"){
@@ -219,8 +214,13 @@ const useSavedDrafts = ()=>{
             }
             else return col;
       })
+
+      if(ActionType !== 'Modify'){
+        return colDef.filter((col:any)=> col.field !== 'iv')
+      }
+
       return colDef
-    }),[])
+    }),[plantMaster,ccrGroupMaster, bufferTypeMaster,ccrsData, deptMaster])
       
       const convertToPoogiDraftData = (data: any, page: any) => {
         const result: any[] = [];
@@ -290,7 +290,14 @@ const useSavedDrafts = ()=>{
           });
           let draftData: any = res.data.data.results;
           if(draftDetails.mid !== 503 && draftDetails.mid !== 504){
-              draftData = draftData.map((item:any)=> ({...item, isEditing:false,ia:true,isdel:false,id:uuidv4()}));
+              draftData = draftData.map((item:any)=> {
+                // this is for ccr and buffer that are already added and that dont required action buttons 
+                if(item.bid || item.cid){
+                  return item
+                }else{
+                 return {...item, isEditing:false,ia:true,isdel:false,id:uuidv4()}
+                }
+              });
           }
           dispatch(SET_RECORD_COUNT(res.data.data.results.length));
 

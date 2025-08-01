@@ -315,7 +315,8 @@ const useViewModify = (pageType:string) => {
       tooltipShowDelay:0,
       readOnlyEdit:true,
       tooltipTrigger:'hover',
-      sideBar:['default','view','deleteView'].includes(activeMaster.progress) ? sideBar : {},
+      sideBar: ((['deleteView','default', 'view'].includes(activeMaster.progress) && activeMaster?.name !== "ForceNormChange" &&  activeMaster?.name  !== "MOQ" &&  activeMaster?.name  !== "SOB")) ? sideBar : {},
+     // sideBar:['default','view','deleteView'].includes(activeMaster.progress) ? sideBar : {},
       getMainMenuItems: MainMenuItemsCustomization,
       gridOptions:{
         getRowStyle: (params: any) => {
@@ -1545,6 +1546,10 @@ const useViewModify = (pageType:string) => {
 
       const onSeasonalityStatusUpdate = async (status:string) => {
         const selectedRows = ref.current?.api.getSelectedRows();
+        if(selectedRows?.length === 0)  {
+          notifyError("Please select atleast 1 row");
+          return;
+        }
         let error = false;
 
         if(selectedRows){

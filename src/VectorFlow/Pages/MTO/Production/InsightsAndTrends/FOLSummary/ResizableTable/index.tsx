@@ -84,7 +84,7 @@ const ResizableTable = (props: IResizeTableProps) => {
     const CustomStatusPanel = () => {
           return (
               <GridFilterWrapper>
-                  <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={theme_ui}>
+                  <TextBtn  onClick={clearGridFilter} style={{marginTop:'15px'}} disabled={isDisabled} themeUi={theme_ui}>
                       Clear All Grid Filters
                   </TextBtn>  
               </GridFilterWrapper>           
@@ -101,7 +101,19 @@ const ResizableTable = (props: IResizeTableProps) => {
         getRowStyle={getRowStyle}
         statusBar={{
           statusPanels: [{ statusPanel: customPage, align:'right' },
-                        { statusPanel: CustomStatusPanel, align: "left" }
+            { statusPanel: CustomStatusPanel, align: "left" },
+              { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left"  },
+              { statusPanel: "agTotalRowCountComponent", align: "left"  },
+              { statusPanel: "agFilteredRowCountComponent", align: "left"  },
+              { statusPanel: "agSelectedRowCountComponent", align: "left"  },
+        
+              {
+                statusPanel: "agAggregationComponent",
+                align:'left',
+                statusPanelParams: {
+                    aggFuncs: ["avg", "sum", "min", "max", "count",  ],
+                },
+            },
           ],
         }}
         pagination={true}

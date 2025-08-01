@@ -31,7 +31,7 @@ import { useGetBOMExplosionData } from '../../../../../VectorFlow/Services/MTO/C
 import { ColorsMTO } from '../../Common/Colors';
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
 import useFilter from '../../../../../hooks/useFilter';
-import { formatFilterJSON, getColumnDefinations } from '../../../../../helpers/utils';
+import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForExcelExport } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetOverAllBMReport } from '../../../../../VectorFlow/Services/MTO/Production/OverallBMReport';
@@ -44,6 +44,8 @@ import { FilterPageName, UIGridCode } from '../../Common/Enum';
 import _, { debounce } from 'lodash';
 import moment from 'moment';
 import { useGetDate } from '../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting';
+import BomExcelModal from '../../Common/BomExcelModal';
+import useColDef from '../../../../../hooks/useColDef';
 
 
 interface ApiResponse {
@@ -55,7 +57,8 @@ interface ApiResponse {
     scc: string;
     children?: ApiResponse[];
     cgs?: string
-    pinned?:string
+    pinned?: string;
+    dt?: string;
 }
 
 
@@ -114,6 +117,7 @@ interface ApiResponseItem {
     scc: string;      // Sub-channel code (will be set to the name of cc)
     ch?: ApiResponse[]; // Array of channel items
     pinned?:string;
+    
 }
 
 
@@ -152,6 +156,7 @@ const DptWiseBMReport = () => {
     const [highAgeing, sethighAgeing] = useState<any>();
     // const { screenHeight } = useViewPort();
     const { user } = useUserData();
+    const UserAllRoles = user?.roles?.permission;
     const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
     const [deptName, setDeptName] = useState<any>([]);
@@ -165,15 +170,15 @@ const DptWiseBMReport = () => {
     const [isPivot, setIsPivot] = useState<any>(false);
     const [userPageSize, setUserPageSize] = useState<any>();
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
-    const [detailCellRendererParamsConfig, setDetailCellRendererParamsConfig] = useState<any>();
-
-
     
     const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } = useGetUserUIConfigData();
     const { mutateAsync: updateUserUIConfigData } = useUpdateUserUIConfigData();
 
-     const [bomHeader, setBomHeader]= useState([])
-      const [bomActive, setBomActive] = useState<any>(undefined);
+    const [bomHeader, setBomHeader]= useState([])
+    const [bomActive, setBomActive] = useState<any>(undefined);
+    const { getGroupedColDef, groupedColDefsRef } = useColDef();
+    const [showExcelModal, setShowExcelModal] = useState(false);
+    const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
@@ -211,7 +216,7 @@ const DptWiseBMReport = () => {
         {
             "colorCellRenderer": BPPRenderer,
             "AgeingCellRenderer": AgeingCellRenderer,
-            "RemarkHistoryRenderer": RemarkHistoryRenderer,
+            RemarkHistoryRenderer: RemarkHistoryRenderer,
         }), []);
 
     const sideBar = useMemo(() => {
@@ -223,6 +228,8 @@ const DptWiseBMReport = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        
+        
         try {
             getOverallBMReportData({ page: 1, appliedFilters, analytics: 1 }).then((data) => {
                 const response: any = data?.data?.data;
@@ -236,6 +243,8 @@ const DptWiseBMReport = () => {
 
     }, [])
 
+  
+    
    
     const onOpenRemarkHistory = async (data: any) => {
         // Function implementation for remark history
@@ -308,8 +317,10 @@ const DptWiseBMReport = () => {
 
     const setColumnDef = async () => {
         try {
-            const reportName = "BMReport";
+            const reportName = "DeptWiseReport";
             const response = await getUIConfigData(reportName);
+            getGroupedColDef(response)
+
             // const modifiedResponse = addDefaultAttributes(response?.data?.data);
 
             const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(response?.data?.data);
@@ -344,6 +355,7 @@ const DptWiseBMReport = () => {
         apiResponse.forEach((item) => {
             const modifiedItem = { ...item };
 
+
             // Initialize cp for this cc if not already done
             if (!(item.cc in cpMap)) {
                 cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
@@ -359,6 +371,17 @@ const DptWiseBMReport = () => {
                 if(item.cc.includes("Dept") && modifiedItem.ch){
                     modifiedItem.ch = item.ch?.map((child)=>{
                         return {...child, scc: `ddtl.${item.cc}.${child.scc}`}
+                    })
+                }
+
+                if (item.cc.includes('Default Attribute') && modifiedItem.ch) {
+                    modifiedItem.ch = item.ch?.filter((child)=>{
+                        if (isBMReportViewer) {
+                            return child.cc !== 'Remark'  
+                        }
+                        else {
+                            return true;
+                        }
                     })
                 }
             }
@@ -385,6 +408,7 @@ const DptWiseBMReport = () => {
         // Calculate cp for the additional object based on existing cp values
         const maxCp = Math.max(...modifiedResponse.map(item => item.cp || 0));
 
+
         // Create the additional object to be added at the end
         const additionalObject: ApiResponseItem = {
             cc: "",
@@ -393,36 +417,7 @@ const DptWiseBMReport = () => {
             v: true,
             cla: "Centre",
             scc: "rmk",
-            pinned:'right',
-            ch: [
-                {
-                    cc: "Remark",
-                    cp: 28,
-                    hd: "Remark",
-                    v: true,
-                    cla: "Centre",
-                    scc: "r",
-                    pinned:'right',
-                },
-                {
-                    cc: "lr",
-                    cp: 29,
-                    hd: "Latest Remark",
-                    v: true,
-                    cla: "Centre",
-                    scc: "lr",
-                    pinned:'right',
-                },
-                {
-                    cc: "Remark History",
-                    cp: 30,
-                    hd: "Remark History",
-                    v: true,
-                    cla: "Centre",
-                    scc: "Remark History",
-                    pinned:'right',
-                }
-            ]
+            pinned: 'right',
         };
 
         // Add the additional object to the end of the modified response
@@ -447,53 +442,80 @@ const DptWiseBMReport = () => {
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
-                cellRenderer: child.cc === 'ec' ? "agGroupCellRenderer" : child.cc === 'ic' ? "AgeingCellRenderer" : child.cc === 'BPP' ? "colorCellRenderer" :/* child.cc === 'Remark' || child.cc === 'Latest Remark' ? 'inputbox' :*/ child.cc === 'Remark History' ? 'RemarkHistoryRenderer' : undefined,
+                cellRenderer:
+                child.cc === "ec" && bomActive
+                  ? "agGroupCellRenderer"
+                  : child.cc === "ic"
+                  ? "AgeingCellRenderer"
+                  : child.cc === "BPP"
+                  ? "colorCellRenderer"
+                  : child.cc === "Remark History"
+                  ? "RemarkHistoryRenderer"
+                  : undefined,
                 minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
                 filter:
-                child.cla === "right"
+                (child.dt === "number" || child.dt==='decimal')
                 ? "agNumberColumnFilter"
-                : "agTextColumnFilter",
-                pinned: child.cc === 'Remark' || child.cc === 'lr' || child.scc === 'Remark History' ? 'right' : undefined,
-                editable: child.cc === 'Remark' ? true : false,
+                : "agMultiColumnFilter",
+                pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
+                editable: (params: any) => !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false ,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 valueFormatter: (params: any) => {
-                    if (params.value && typeof params.value === 'number') {
-                        return params.value.toFixed(2).toLocaleString();
+                    if (params.value) {
+                        const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+                        const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+                  
+                        if (child.dt === 'number') {
+                            return locale ? params.value.toLocaleString(locale) : params.value;
+                        }
+                  
+                        if (child.dt === 'decimal') {
+                            const fixedValue = params.value.toFixed(2).toLocaleString();
+                            return locale ? fixedValue.toLocaleString(locale) : fixedValue;
+                        }
+                  
+                        return params.value;
                     }
-                    return params.value;
-                },
-                cellRendererParams: child.hd.includes("Remark") ? {
-                    // visible: {
-                    //     flag: child.scc === 'Remark' ? true : child.scc === 'Latest Remark' ? false : undefined,
-                    // },
-                    onClick: child.scc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
-                } : undefined,
+                  }, 
+                cellRendererParams: child?.hd.includes("Remark") ? {
+                    onClick: child?.cc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
+                  } : undefined,
                 cellClassRules:
                 child.cc === "BPP" && excelColorArr.reduce(
                   (acc, color) => ({
                     ...acc,
-                    [color]: (params: any) => params.data.cl === color
+                    [color]: (params: any) => !_.isEmpty(params.data) && params.data?.cl === color
                   }),
                   {}
                 ),
-                cellStyle: child.cc === 'Remark' ? {
-                    backgroundColor: 'white',
-                    border: '1px solid #b9bdba',
-                    color: 'black',
-                    padding: '1px'
-                } : child.cc === 'da' ? {
-                    'color': ColorsMTO.Pink.code
-                } : undefined
+                cellStyle: (params: any) => 
+                    !_.isEmpty(params.data) && child.cc === 'Remark' ? {
+                        backgroundColor: 'white',
+                        border: '1px solid #b9bdba',
+                        color: 'black',
+                        padding: '1px'
+                    } : child.cc === 'da' ? {
+                        'color': ColorsMTO.Pink.code
+                    } : undefined
+                
             }));
         };
 
         const res = apiResponse.map(section => ({
-            headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+            headerCheckboxSelection: (params:any) => {
+                // Only show if no grouping is applied
+                return section.scc === "chckbx" && params.api.getRowGroupColumns().length === 0;
+              },
+              checkboxSelection: (params:any) => {
+                // Only show on leaf rows, not group rows
+                return section.scc === "chckbx" && params.node && !params.node.group;
+              },
+            // headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+            // checkboxSelection: section.scc === "chckbx" ? true : undefined,
             floatingFilterComponentParams: section.scc === "chckbx" || section.cc == "ic"  ? { suppressFilterButton: false } : undefined,
             suppressHeaderFilterButton: section.scc === "chckbx" || section.cc == "ic" ? true : false,
             suppressMenu: section.scc === "chckbx" || section.cc == "ic" ? true : false,
-            checkboxSelection: section.scc === "chckbx" ? true : undefined,
             maxWidth: section.scc === "chckbx" || section.cc == "ic" ? 60 : undefined,
             sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
             floatingFilter: section.scc === "chckbx" || section.cc == "ic" ? false : undefined,
@@ -593,7 +615,7 @@ const DptWiseBMReport = () => {
         if (selectedData) {
             let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
             selectedData.forEach((newItem: any) => {
-                const index = mergedData.findIndex((item: any) => item.oid === newItem.oid);
+                const index = mergedData.findIndex((item: any) => item.ok === newItem.ok);
                 if (index !== -1) {
                     // If the item exists, replace it
                     mergedData[index] = newItem;
@@ -606,12 +628,12 @@ const DptWiseBMReport = () => {
             gridData?.forEach((item: any) => {
                 let isThere = 0;
                 selectedData.forEach((selectedD: any) => {
-                    if (selectedD.oid === item.oid) {
+                    if (selectedD.ok === item.ok) {
                         isThere = 1;
                     }
                 })
                 if (isThere == 0) {
-                    mergedData = mergedData.filter((e: any) => e.oid !== item.oid)
+                    mergedData = mergedData.filter((e: any) => e.ok !== item.ok)
                 }
             })
 
@@ -649,7 +671,6 @@ const DptWiseBMReport = () => {
     };
 
     const handleUpdateReason = async () => {
-        //  console.log('editedRows', editedRows)
         try {
             if (refGraph1.current) {
                 // Get the grid API reference
@@ -658,9 +679,8 @@ const DptWiseBMReport = () => {
                 // Ensure that any ongoing editing is stopped and values are committed
                 api.stopEditing();
                 const updatedRow = gridData.filter((row: any) => editedRows.has(row.ok))
-                //console.log('updated row', updatedRow)
                 if (updatedRow.length > 0) {
-                    let putData: UpdateRemarkObj[] = [];
+                    const putData: UpdateRemarkObj[] = [];
                     updatedRow.forEach((e: any) => {
                         const singleData: any = {
                             "ok": e.ok,
@@ -669,14 +689,25 @@ const DptWiseBMReport = () => {
                             "user": user?.user?.name
                         }
                         putData.push(singleData);
+                        
                     })
-                    // console.log('putData', putData)
                     const RemarkHistory = await addBMReportRemark(putData);
-                    //console.log('REmakrf', RemarkHistory)
+                    // }
                     if (RemarkHistory.status === 200) {
-                        putData = [];
+                        const newGridData = [...gridData].map((row) => {
+                            const currentRemark = row.r || ""
+                            if (editedRows.has(row.ok)) {
+                                return {
+                                    ...row,
+                                    r: "",
+                                    lr: currentRemark,  
+                                }; 
+                            }
+                            return row;
+                        });                
+                        setGridData(newGridData);
                         setEditedRows(new Set());
-                        notifySuccess('Remark saved successfully')
+                        notifySuccess('Remark saved successfully');
                     }
                     else {
                         notifyError('Failed to save the remark(s)')
@@ -693,10 +724,10 @@ const DptWiseBMReport = () => {
         }
     }
 
-    const existsInSelected = (reqOid: string): boolean => {
+    const existsInSelected = (reqOk: string): boolean => {
         for (let index = 0; index < masterSelectedRowData.length; index++) {
             const element: any = masterSelectedRowData[index];
-            if (element.oid === reqOid) {
+            if (element.ok === reqOk) {
                 return true;
             }
 
@@ -708,11 +739,11 @@ const DptWiseBMReport = () => {
         const nodesToSelect: IRowNode[] = [];
 
         params.api.forEachNode((node: any) => {
-            if (node.data && node.data.oid && existsInSelected(node.data.oid)) {
+            if (node.data && node.data.ok && existsInSelected(node.data.ok)) {
                 node.data.Remark = masterSelectedRowData[0].Remark;
                 for (let index = 0; index < masterSelectedRowData.length; index++) {
                     const element = masterSelectedRowData[index];
-                    if (element.oid === node.data.oid) {
+                    if (element.ok === node.data.ok) {
                         node.data.Remark = element.Remark;
 
                     }
@@ -779,17 +810,19 @@ const DptWiseBMReport = () => {
             },
         },
         getDetailRowData: async (params: any) => {
-            const cacheKey = `${params.data.oid}-${params.data.lid}`;
-            if (cache.current[cacheKey]) {
-            params.successCallback(cache.current[cacheKey]);
-            return;
+            if (!_.isEmpty(params.data)) {
+                const cacheKey = `${params.data.ok}`;
+                if (cache.current[cacheKey]) {
+                    params.successCallback(cache.current[cacheKey]);
+                    return;
+                }
+                const data = await getBOMExplosionData({
+                    orderId: params.data.oid,
+                    lineId: params.data.lid,
+                });
+                cache.current[cacheKey] = data?.data?.data;
+                params.successCallback(data?.data?.data);
             }
-            const data = await getBOMExplosionData({
-            orderId: params.data.oid,
-            lineId: params.data.lid,
-            });
-            cache.current[cacheKey] = data?.data?.data;
-            params.successCallback(data?.data?.data);
         },
         },
     };
@@ -797,6 +830,11 @@ const DptWiseBMReport = () => {
     return config
     }
     }, [columnBomDefs]);
+
+    const onPivotModeChanged = (event: any) => {
+        const isPivotOn = event.api.isPivotMode();
+        setIsPivot(isPivotOn);
+      };
 
 
     const agGridProps: AgGridReactProps = useMemo(()=>{
@@ -818,7 +856,6 @@ const DptWiseBMReport = () => {
                 components: customCellRenderers,
                 pagination: true,
                 defaultColDef: {
-                    enableRowGroup:true,
                     enablePivot: true,
 
                     filter: 'agTextColumnFilter',
@@ -847,36 +884,58 @@ const DptWiseBMReport = () => {
             enterNavigatesVertically: true,
             enterNavigatesVerticallyAfterEdit: true,
             groupDefaultExpanded: 0,
-            pivotMode: false,
+            // pivotMode: false,
             onSelectionChanged: debounce(getSelectedRow, 1000),
             onCellValueChanged: onCellValueChanged,
             stopEditingWhenCellsLoseFocus: true,
             onRowDataUpdated: onFirstDataRendered,
+            onColumnPivotModeChanged: onPivotModeChanged,
+
         };
     }, [masterSelectedRowData, gridData])
     
    
     
 
-    const getUpdatedFilteredData = async (page: any, pageSize?:any) => {
-        try {
+    const getUpdatedFilteredData = async (page: any, pageSize?: any, isExcelExport=false, isBomExplosion=0) => {
+        if (isExcelExport) {
+
+            const headersdata = refGraph1?.current?.api?.getColumnState();
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({
-                'wip': isWIPChecked ? 1 : 0,
-                'curr': page,
-                appliedFilters: formatedFilters,
-                page_size: pageSize || userPageSize
-            });
-            if(!gridData.data.data || gridData.data.data.length===0){
-                setGridDataCount(0);
-                setGridData([])
-                return;
+            const body = getBodyForExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
+            try {
+                const response = await getFilteredDeptWiseBMReportData({ body, page: currentPage, appliedFilters: formatedFilters,report_name:FilterPageName.Prod_Dept_Wise_BM_Report, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
+                if (response.status == 200) {
+                    DownloadExcel(response, FilterPageName.Prod_Dept_Wise_BM_Report)
+                } else {
+                    notifyError("Error exporting Excel!");
+                }
+            } catch (e) {
+                console.error("Error exporting Excel", e);
+                notifyError("Error exporting Excel!");
             }
-            setGridData(gridData?.data?.data?.results)
-            setGridDataCount(gridData?.data?.data?.count)
-        }
-        catch (e) {
-            console.log(e);
+           
+        } else {
+            try {
+                const formatedFilters = formatFilterJSON(appliedFilters);
+                const gridData:any = await getFilteredDeptWiseBMReportData({
+                    'wip': isWIPChecked ? 1 : 0,
+                    'curr': page,
+                    appliedFilters: formatedFilters,
+                    page_size: pageSize || userPageSize
+                });
+               
+                if (!gridData?.data?.data || gridData?.data?.data.length === 0 || gridData?.response?.data?.length === 0) {
+                    setGridDataCount(0);
+                    setGridData([])
+                    return;
+                }
+                setGridData(gridData?.data?.data?.results)
+                setGridDataCount(gridData?.data?.data?.count)
+            }
+            catch (e) {
+                console.log(e);                
+            }
         }
     }
     
@@ -884,18 +943,20 @@ const DptWiseBMReport = () => {
     
     
     const getTempUpdatedFilteredData = async () => {
-        try {
-            const formatedFilters = formatFilterJSON(appliedFilters);
-            const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': 1, appliedFilters: formatedFilters, page_size: gridDataCount });
-            setTempGridData(gridData?.data?.data?.results);
+            try {
+                const formatedFilters = formatFilterJSON(appliedFilters);
+                const gridData = await getFilteredDeptWiseBMReportData({ 'wip': isWIPChecked ? 1 : 0, 'curr': 1, appliedFilters: formatedFilters, page_size: gridDataCount });
+                setTempGridData(gridData?.data?.data?.results);
+            }
+            catch (e) {
+                console.log(e);
+            }
+            finally {
+                setIsExcelLoading(false);
+            }
         }
-        catch (e) {
-            console.log(e);
-        }
-        finally {
-            setIsExcelLoading(false);
-        }
-    }
+        
+        
 
     useEffect(() => {
         if (Object.keys(appliedFilters).length) {
@@ -916,9 +977,16 @@ const DptWiseBMReport = () => {
 
 
     const onExcelExport = () => {
-        setIsExcelLoading(true);
-        getTempUpdatedFilteredData();
-    }
+        if (isPivot) {
+            getTempUpdatedFilteredData(); 
+        } else {
+          if (bomActive) {
+            setShowExcelModal(true)
+          } else {
+            getUpdatedFilteredData(1, userPageSize, true, 0);
+          }
+        }
+      }
 
     useEffect(() => {
 
@@ -1058,6 +1126,16 @@ const DptWiseBMReport = () => {
 
     const date = apiResponseData?.data?.data;
 
+    const handleExcelConfirm = () => {
+        setShowExcelModal(false);   
+        getUpdatedFilteredData(1,userPageSize, true, 1)
+    }
+
+    const handleExcelCancel = () => {
+        setShowExcelModal(false);   
+        getUpdatedFilteredData(1,userPageSize, true,0)
+    }
+
     return (
         <BMDepWrapper>
             <BMDepHeaderWraper>
@@ -1092,12 +1170,22 @@ const DptWiseBMReport = () => {
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: 'bold', fontFamily: 'Roboto', marginTop: "10px",}}>
             <p>{(date && date.length)? moment(date).format('D MMM YYYY'): ""}</p>
             </div>
+
+            <BomExcelModal
+            open={showExcelModal}
+            onClose={() => setShowExcelModal(false)}
+            onConfirm={handleExcelConfirm}
+            onCancel={handleExcelCancel}
+            themeUi={themeUi}
+            headerText={"Excel Export"}
+            messageText={"Do you want to download Excel with BOM Data?"}
+            />
             <>
                 {
                     (isFilteredDataLoaded || isExcelLoading || isGetStateLoading) && <OverlayLoader /> }
 
                         <HorizontalViewWrapper style={{ marginTop: '0px', paddingLeft:"25px" }}>
-                            <BTRTableWrapper style={{ height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
+                            <BTRTableWrapper style={{  height: areRowsSelected ? "120vh" : "75vh", margin: '0' }}>
                                 <Allotment vertical={true} separator={true} ref={allotementRef}>
                                     <Allotment.Pane preferredSize={areRowsSelected ? "60%" : '70%'}>
                                         <BTRAllomentSection>
@@ -1108,13 +1196,14 @@ const DptWiseBMReport = () => {
                                             detailCellRendererParamsConfig={cellRendererParamsConfig}
                                             columDef={coldefs}
                                             convercolumnDef={gridData}
-                                                updateReason={handleUpdateReason}
-                                                handlePageChange={handlePageChange}
-                                                totalRow={gridDataCount}
-                                                currentPage={currentPage}
-                                                customPageSize={true}
-                                                savePageSize={savePageSize}
-                                                userPageSize = {userPageSize}
+                                            updateReason={handleUpdateReason}
+                                            handlePageChange={handlePageChange}
+                                            currentPage={currentPage}
+                                            totalRow={gridDataCount}
+                                            savePageSize={savePageSize}
+                                            customPageSize={true}
+                                            saveBtn={!isBMReportViewer}
+                                            userPageSize={userPageSize}
                                                 // onGridReady={() => {applyColumnState()}}
                                                 />
                                         

@@ -245,7 +245,7 @@ const LeadTime = () => {
         handleSaveClick={handleSaveClick}
         handleResetClick={handleResetClick}
         handleGoBack={() => { setIsGridView(false) }}
-        isGoBackButton={isGridView}
+        // isGoBackButton={isGridView}
         themeUi={themeUi}
         isChartGridToggle
         isGridView={isGridView}

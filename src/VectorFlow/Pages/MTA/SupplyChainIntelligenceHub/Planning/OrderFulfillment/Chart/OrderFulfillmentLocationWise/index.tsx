@@ -108,7 +108,7 @@ const OrderFulfillmentLocationWise = ({data}:OrderFulfillmentProps) => {
         return [...customColdefs,...colDefs];
     }
 
-    const colDefs2 = mapUIConfigToColdefs2(data['maxNumberOfLocationsWithGap']['uiconfig']);
+    const colDefs2 = mapUIConfigToColdefs2(data['maxSkuWithGap']['uiconfig']);
 
     const sortData = (data:any,key1:string,key2:string,key3:string) => {
         data.sort((row1:any,row2:any)=>{

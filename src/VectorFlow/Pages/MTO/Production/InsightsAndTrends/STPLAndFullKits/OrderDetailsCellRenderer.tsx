@@ -1,7 +1,7 @@
 import { GridOptions } from 'ag-grid-enterprise'
 import { useMemo } from 'react';
 import { getColumnDefinations } from '../../../../../../helpers/utils';
-import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
+import VFTable from "../../../Common/VFTable";
 import { orderDetailsConfigCol } from './ColumnData';
 import RMMaterialCellRenderer from './RMMaterialCellRenderer';
 

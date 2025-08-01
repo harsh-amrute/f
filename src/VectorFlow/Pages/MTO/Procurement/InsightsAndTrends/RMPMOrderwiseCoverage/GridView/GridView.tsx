@@ -48,11 +48,6 @@ const GridView = ({ agGridProps, colDef, ShortageDatas, setCurrentGridRef, curre
 
                     setCurrentGridRef(gridRef);
                 }}
-                statusBar={{
-                    statusPanels: [
-                        { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                    ]
-                }}
                 maintainColumnOrder
                 onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
 

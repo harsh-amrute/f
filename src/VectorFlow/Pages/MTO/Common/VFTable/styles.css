@@ -373,3 +373,8 @@
 /* .ag-theme-alpine:has(> .child-grid) {
   margin: 20px 0;
 } */
+
+.ag-overlay-no-rows-center{
+  padding-top:100px;
+
+}

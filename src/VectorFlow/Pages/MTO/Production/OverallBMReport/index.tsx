@@ -48,7 +48,7 @@ import OverlayLoader from "../../Common/Loader";
 import { ColorsMTO } from "../../Common/Colors";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
 import useFilter from "../../../../../hooks/useFilter";
-import { formatFilterJSON, getColumnDefinations } from "../../../../../helpers/utils";
+import { formatFilterJSON, getColumnDefinations,DownloadExcel, getBodyForExcelExport } from "../../../../../helpers/utils";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import { FilterPageName, UIGridCode } from "../../Common/Enum";
 import { useDispatch } from "react-redux";
@@ -67,6 +67,9 @@ import VFSelect from "../../../../../../src/components/VectorFLOW/commons/MTO/VF
 import ConfirmationModal from "./ConfirmationModal";
 import { InputCheckBox } from "./styles";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
+import BomExcelModal from "../../Common/BomExcelModal";
+import useColDef from "../../../../../hooks/useColDef";
+
 
 interface ApiResponse {
   cc: string;
@@ -78,6 +81,7 @@ interface ApiResponse {
   children?: ApiResponse[];
   cgs?: string;
   pinned?: string;
+  dt?: string;
 }
 
 interface ColDefChild {
@@ -123,6 +127,7 @@ interface ApiResponseItem {
   scc: string; // Sub-channel code (will be set to the name of cc)
   ch?: ApiResponse[]; // Array of channel items
   pinned?: string; // Pin property
+  dt?: string;
 }
 
 const APIFilterConfig = {
@@ -154,8 +159,7 @@ const OverallBmReport = () => {
   const [gridData, setGridData] = useState<any>();
   const [gridDataCount, setGridDataCount] = useState<number>(0);
   const rowsSelected = useRef(false);
-  const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] =
-    useState<boolean>(false);
+  const [isRemarkHistoryOpen, setIsRemarkHistoryOpen] =useState<boolean>(false);
   const [remarkHistory, setRemarkHistory] = useState<any>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const cache = useRef<any>({});
@@ -166,6 +170,7 @@ const OverallBmReport = () => {
   const [isPivot, setIsPivot] = useState<any>(false);
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [orderClosingEnable, setorderClosingEnable] = useState<any>();
+  const { getGroupedColDef, groupedColDefsRef } = useColDef();
 
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
@@ -179,6 +184,9 @@ const OverallBmReport = () => {
   const [filterData, setFilterData] = useState({});
   const [systemType, setSystemType] = useState<any>();
   const [isGridLoading, setIsGridLoading] = useState(false);
+  const [showExcelModal, setShowExcelModal] = useState(false);
+  
+
   const { mutateAsync: getPageWiseFilterData /*isLoading*/ } =
   useGetFilterData();
   const {
@@ -201,7 +209,7 @@ const OverallBmReport = () => {
   const [bomHeader, setBomHeader]= useState([])
   const [bomActive, setBomActive] = useState<any>(undefined);
   const ReportName='BomExplosion'
-  
+
 
 
   const { mutateAsync: getUserUIConfigData, isLoading: isGetStateLoading } =
@@ -246,6 +254,7 @@ const OverallBmReport = () => {
     }
   }, [coldefs]);
 
+
   const onOpenRemarkHistory = async (data: any) => {
     // Function implementation for remark history
     try {
@@ -278,10 +287,10 @@ const OverallBmReport = () => {
       setBomActive(false)
     }
     const orderClosingEnable = DBRSettings?.find((data: any) => {
-      return data.flag == "OrderCloseEnable";
+      return data.flag == "CloseOrdersFromUI";
     });
     
-    setorderClosingEnable( Number(orderClosingEnable?.value));
+    setorderClosingEnable(orderClosingEnable?.value);
     setSystemType(Number(systemType?.value || 0));
   };
 
@@ -290,38 +299,19 @@ const OverallBmReport = () => {
       setColumnDef();
     }
     },[bomActive])
-  
-  
-
-
-
-
-  // const mapInitalColumnDefs = async () => {
-  //   try {
-  // const data = await getUserUIConfigData({
-  //   un: user.user.name,
-  //   rn_id: UIGridCode.ProdOverallBMReport,
-  // });
-
-  // const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
-  // setInitialColumnState(newConfig);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   mapInitalColumnDefs();
-  // }, [systemType]);
 
   const setColumnDef = async () => {
     try {
       const reportName = "BMReport";
       const response = await getUIConfigData(reportName);
+      getGroupedColDef(response)
+      
 
       const modifiedResponse: ApiResponseItem[] = addDefaultAttributes(
         response?.data?.data
       );
+
+     
       const coldef = mapApiResponseToColDefs(modifiedResponse);
       setColdef(coldef);
     } catch (e) {
@@ -358,12 +348,16 @@ const OverallBmReport = () => {
       modifiedItem.cla = "Centre"; // Fixed value
       modifiedItem.scc = item.scc; // Set scc to the name of ccc
 
+ 
+  
+
       if (item.cc) {
         if (item.cc.includes("Dept") && modifiedItem.ch) {
           modifiedItem.ch = item.ch?.map((child) => {
             return { ...child, scc: `ddtl.${item.cc}.${child.scc}` };
           });
         }
+
       }
 
       // If it's the first object, add default items to the ch array
@@ -383,7 +377,7 @@ const OverallBmReport = () => {
     };
 
     // Prepend the default outer object
-    modifiedResponse.unshift(defaultOuterObject, defaultSecondObject);
+    modifiedResponse.unshift(defaultOuterObject);
 
     // Calculate cp for the additional object based on existing cp values
     const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
@@ -397,8 +391,9 @@ const OverallBmReport = () => {
       cla: "Centre",
       scc: "rmk",
       pinned: "right",
-      ch: [],
+      ch:[]
     };
+
 
     // const short_complete_OrderColumn: ApiResponseItem = {
     //     cc: "oca",
@@ -438,25 +433,6 @@ const OverallBmReport = () => {
     return modifiedResponse;
   };
 
-  //   res.forEach((resParent: any) => {
-  //     const parentColumn = columnState.find(
-  //       (state: any) => state.colId === resParent.colId
-  //     );
-  //     if (parentColumn) {
-  //       resParent.initialHide = parentColumn.hide;
-  //     }
-  //     resParent.children?.forEach((resChild: any) => {
-  //       const childColumn = columnState.find(
-  //         (state: any) => state.colId === resChild.colId
-  //       );
-  //       if (childColumn) {
-  //         resChild.initialHide = childColumn.hide;
-  //       }
-  //     });
-  //   });
-  //   return res;
-  // };
-
   interface ActionOption {
     value: string;
     label: string;
@@ -474,17 +450,29 @@ const OverallBmReport = () => {
   const [totalOrderCount, setTotalOrderCount] = useState<any>(0);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
+  const debouncedRef = useRef<any>(null);
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
-    setIsCheckboxChecked(isChecked); // Update state based on checkbox
-
-    if (isChecked) {
-      refGraph2.current.api.selectAll();
-    } else {
-      refGraph2.current.api.deselectAll();
+  
+    if (debouncedRef.current) {
+      debouncedRef.current.cancel();
     }
-    getSelectedRow();
+   debouncedRef.current = _.debounce(() => {
+      setIsCheckboxChecked(isChecked);
+      if (refGraph2.current?.api) {
+        refGraph2.current.api.deselectAll();
+  
+        if (isChecked) {
+          refGraph2.current.api.forEachNodeAfterFilterAndSort((node: any) => {
+            node.setSelected(true);
+          });
+        }
+      }
+      getSelectedRow();
+    }, 300); 
+    debouncedRef.current();
   };
+  
 
   const toggleCheckBox = () => {
     const selectedNodes = refGraph2?.current?.api?.getSelectedRows();
@@ -497,7 +485,7 @@ const OverallBmReport = () => {
     setSelectedAction(option);
     // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
     const newData: any = [];
-    gridData.forEach((ele: any) => {
+    gridData?.forEach((ele: any) => {
       const newEle = _.cloneDeep(ele);
       newEle.oca = option.value;
       newData.push(newEle);
@@ -545,14 +533,7 @@ const OverallBmReport = () => {
   const handleRightArrowClick1 = (action: string, orderId: string) => {
     setShowModal(true); // Open the modal
     setTextAction(action);
-
-    //   if (Array.isArray(masterSelectedRowData)) {
-    //     const okValues = masterSelectedRowData
-    //       .map((item) => item?.ok)
-    //       .filter((value) => value !== undefined);
-
     setTotalOrderCount(orderId);
-    // }
   };
 
   const handleModalClose = () => {
@@ -627,42 +608,6 @@ const OverallBmReport = () => {
       throw error;
     }
   };
-
-  // const onRowSelectionChanged = () => {
-  //   if (refGraph2?.current?.api) {
-  //     const selectedNodes = refGraph2.current.api.getSelectedNodes();
-  //     setSelectedRowCount(selectedNodes.length);
-  //   } else {
-  //     console.error("Row selection ");
-  //   }
-  // };
-
-  // useEffect(()=>{
-  //   if(selectedAction){
-  //     const mySelectedNodes = refGraph2.current.api.getSelectedRows();
-  //     setGridData(gridData?.map((data: any) => {
-  //       if(mySelectedNodes.find((el:any)=>{data.ok===el.ok})){
-  //         return {...data, oca: selectedAction.value}
-  //       }
-  //       return data;
-  //     }));
-  //   }
-
-  // }, [selectedAction])
-
-  // useEffect(() => {
-  //   if (refGraph2?.current?.api) {
-  //     refGraph2.current.api.addEventListener('selectionChanged', onRowSelectionChanged);
-
-  //     return () => {
-  //       if (refGraph2?.current?.api) {
-  //         refGraph2.current.api.removeEventListener('selectionChanged', onRowSelectionChanged);
-  //       }
-  //     };
-  //   } else {
-  //     console.error("something went wrong");
-  //   }
-  // }, [refGraph2?.current?.api]);
 
   const isRightArrowEnabled =
     (isCheckboxChecked || masterSelectedRowData.length > 1) &&
@@ -761,38 +706,35 @@ const OverallBmReport = () => {
   );
 
   const onSelectChange = (props: any, option: any, index: number) => {
-    const newGridData: any = [];
-    props.api.forEachNode((node: any) => {
-      newGridData.push(node.data);
-    });
+  
+    const updatedData = { ...props.data, oca: option.value };
+    props.node.setData(updatedData); 
+    props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
 
-    if (Array.isArray(newGridData)) {
-      const dup_gridData = [...newGridData];
-      dup_gridData[index].oca = option.value;
-      setGridData(dup_gridData);
-    }
-  };
+};
 
   const DropDownCellRenderer = (props: any) => {
     return (
       <>
-        {props.data?.ct === null ? (
+        
+        {!_.isEmpty(props.data) && props.data?.ct === null ? (
           <>
-            <VFSelect
+          <VFSelect
               options={actionOptions}
               themeUi={themeUi}
               icon={DropdownArrowIcon}
               placeholder="Select Action"
               disabled={!props.node.selected}
               value={
-                props.node.selected
-                  ? actionOptions.find((opt) => opt.value === props.data?.oca)
-                  : null
-              }
+                props.node.selected ? 
+                  actionOptions.find((opt) => opt.value === props.data?.oca) :
+                  null}
               onChange={(option: any) => {
-                onSelectChange(props, option, props.node.rowIndex);
-              }}
-            />
+              if (option) {
+              onSelectChange(props, option, props.node.rowIndex);
+              }
+            }}
+          />
 
             <div
               style={{
@@ -834,6 +776,7 @@ const OverallBmReport = () => {
           </>
         ) : (
           <>
+          {!_.isEmpty(props.data) && 
             <div
               style={{
                 justifyContent: "space-between",
@@ -843,34 +786,42 @@ const OverallBmReport = () => {
                 margin: "10px",
               }}
             >
-              <p>{props.data?.ct}</p>
-              <div
-                onClick={() => {
-                  undoClicked(props, props.data.ok);
-                }}
-                style={{
-                  marginLeft: "10px",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <img
-                  style={{
-                    transform: "rotateY(180deg)",
-                    margin: "4px",
-                    cursor: "pointer",
-                  }}
-                  src="/assets/img/VectorFLOW/reset.svg"
-                  alt="Undo"
-                  title="Undo"
-                  height={14}
-                  width={14}
-                />
-              </div>
+                {
+                  props?.data?.ct &&
+                  <>
+                    <p>{props.data?.ct}</p>
+                    <div
+                      onClick={() => {
+                        undoClicked(props, props.data.ok);
+                      }}
+                      style={{
+                        marginLeft: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <img
+                        style={{
+                          transform: "rotateY(180deg)",
+                          margin: "4px",
+                          cursor: "pointer",
+                        }}
+                        src="/assets/img/VectorFLOW/reset.svg"
+                        alt="Undo"
+                        title="Undo"
+                        height={14}
+                        width={14}
+                      />
+                    </div>
+                  </>
+                }
+              
             </div>
+          }
           </>
-        )}
+          )}
+          
       </>
     );
   };
@@ -893,9 +844,9 @@ const OverallBmReport = () => {
           buttons: ['reset']
         },
         filter:
-        child.cla === "right"
+        (child.dt === "number" || child.dt==='decimal')
           ? "agNumberColumnFilter"
-          : "agTextColumnFilter",
+          : "agMultiColumnFilter",
 
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
@@ -905,7 +856,7 @@ const OverallBmReport = () => {
             ? "AgeingCellRenderer"
             : child.cc === "BPP"
             ? "colorCellRenderer"
-            : child.cc === "RemarksHistory"
+            : child.cc === "RemarkHistory"
             ? "RemarkHistoryRenderer"
             : child.cc === "ct"
             ? "DropDownCellRenderer"
@@ -917,25 +868,32 @@ const OverallBmReport = () => {
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
           child.cc === "ec" ? false : child.cc === "ic" ? false : true,
-        valueFormatter: (props: any) => {
-          if (typeof props.value === "number") {
-            return props.value.toFixed(2);
+        valueFormatter: (params: any) => {
+          if (params.value) {
+              const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+              const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+        
+              if (child.dt === 'number') {
+                  return locale ? params.value.toLocaleString(locale) : params.value;
+              }
+        
+              if (child.dt === 'decimal') {
+                  const fixedValue = params.value.toFixed(2).toLocaleString();
+                  return locale ? fixedValue.toLocaleString(locale) : fixedValue;
+              }
+        
+              return params.value;
           }
-          return props.value;
-        },
-        cellRendererParams: child.hd.includes("Remark")
-          ? {
-              onClick:
-                child.scc === "rm"
-                  ? (data: string) => onOpenRemarkHistory(data)
-                  : undefined,
-            }
-          : undefined,
-          cellClassRules:
+        }, 
+        cellRendererParams: child?.hd.includes("Remark") ? {
+          onClick: child?.cc === 'RemarkHistory' ? (data: string) => onOpenRemarkHistory(data) : undefined
+        } : undefined,
+  
+        cellClassRules:
           child.cc === "BPP" && excelColorArr.reduce(
             (acc, color) => ({
               ...acc,
-              [color]: (params: any) => params.data.cl === color
+              [color]: (params: any) => !_.isEmpty(params.data) && params.data?.cl === color
             }),
             {}
           ),
@@ -962,11 +920,23 @@ const OverallBmReport = () => {
 
     };
 
-    
+    const res1 = apiResponse.map((section) => {
+      console.log(section,"section")
 
+    });
 
-    const res = apiResponse.map((section) => ({
-      headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+    const res = apiResponse.map((section) => (
+      {
+      headerCheckboxSelection: (params:any) => {
+        // Only show if no grouping is applied
+        return section.scc === "chckbx" && params.api.getRowGroupColumns().length === 0;
+      },
+      checkboxSelection: (params:any) => {
+        // Only show on leaf rows, not group rows
+        return section.scc === "chckbx" && params.node && !params.node.group;
+      },
+      // headerCheckboxSelection: section.scc === "chckbx" ? true : undefined,
+      // checkboxSelection: section.scc === "chckbx" ? true : undefined,
       pinned: section.pinned || null,
       floatingFilterComponentParams:
         section.scc === "chckbx" || section.scc == "ic"
@@ -977,7 +947,6 @@ const OverallBmReport = () => {
       suppressMenu:
         section.scc === "chckbx" || section.scc === "ic" ? true : false,
       sortable: section.scc === "chckbx" || section.scc === "ic" ? false : true,
-      checkboxSelection: section.scc === "chckbx" ? true : undefined,
       maxWidth:
         section.scc === "chckbx" || section.scc == "ic" ? 60 : undefined,
       floatingFilter:
@@ -985,13 +954,6 @@ const OverallBmReport = () => {
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
-      valueFormatter: (props: any) => {
-        if (typeof props.value === "number") {
-          return props.value.toFixed(2);
-        }
-        return props.value;
-      },
-
       // pinned: section.scc==="scos"?'right':"",
 
       cellRenderer:
@@ -1002,17 +964,7 @@ const OverallBmReport = () => {
           : section.scc == "oca"
           ? "DropDownCellRenderer"
           : undefined,
-      // : undefined,
-
-      // TODO: remove this
-      // valueFormatter: (props:any)=>{console.log("value formater val", props); return props.data.ct},
-      // cellRendererParams:
-      //   section.scc == "oca" ? {
-      //     data: {
-      //       setSelectedAction
-      //     }
-      //   } : undefined
-      // ,
+      
       openByDefault:
         section.scc === "chckbx"
           ? undefined
@@ -1045,26 +997,11 @@ const OverallBmReport = () => {
 
   useEffect(() => {
     getSystemType();
-    // setColumnDef();
-    // const colDefs = mapApiResponseToColDefs(apiResponse);
-    // //console.log('coldefs', colDefs)
-    // setColdef(colDefs)
-    // getInitialGridData(1);
   }, []);
 
   useEffect(()=>{
     getFilterData();
   },[systemType])
- 
-  // useEffect(() => {
-  //     if (isGridLoading) {
-  //         toast.dismiss();
-  //         notifyLoader("Loading Data ...")
-  //     }
-  //     else {
-  //         toast.dismiss();
-  //     }
-  // }, [isGridLoading])
 
   const customCellRenderers = useMemo(
     () => ({
@@ -1103,9 +1040,27 @@ const OverallBmReport = () => {
           return getColumnDefinations(bomHeader);
         }, [bomHeader]);
 
-       
 
-  const getInitialGridData = async (currentPage: number, pageSize?:any) => {
+  const getInitialGridData = async (currentPage: number, pageSize?: any, isExcelExport = false, isBomExplosion=0) => {
+    //excellll
+    if (isExcelExport) {
+      const headersdata = refGraph2?.current?.api?.getColumnState();
+      const formatedFilters = formatFilterJSON(appliedFilters);
+      const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
+          try{
+              const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
+              if(response.status == 200){//1,userpage,true,0
+                DownloadExcel(response,FilterPageName.Prod_OverAll_BMReport)
+              }else{
+                notifyError("Error exporting Excel!");
+              }
+            }catch(e){
+              console.error("Error exporting Excel", e);
+              notifyError("Error exporting Excel!");
+            }
+      
+      
+    } else {
     try {
       setIsGridLoading(true);
       const formatedFilters = formatFilterJSON(appliedFilters);
@@ -1141,7 +1096,9 @@ const OverallBmReport = () => {
       setIsGridLoading(false);
       console.log(e);
     }
+  }
   };
+
 
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
@@ -1224,14 +1181,16 @@ const OverallBmReport = () => {
       });
 
       gridData?.forEach((item: any) => {
-        let isThere = 0;
-        selectedData.forEach((selectedD: any) => {
-          if (selectedD.ok === item.ok) {
-            isThere = 1;
+        if (item && item.ok) {
+          let isThere = 0;
+          selectedData.forEach((selectedD: any) => {
+            if (selectedD.ok === item.ok) {
+              isThere = 1;
+            }
+          });
+          if (isThere == 0) {
+            mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
           }
-        });
-        if (isThere == 0) {
-          mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
         }
       });
       // if (!_.isEqual(mergedData, masterSelectedRowData)) {
@@ -1246,7 +1205,7 @@ const OverallBmReport = () => {
   useEffect(() => {
     if (masterSelectedRowData.length > 0) {
       const selectedOrderKeys: orderkeyObj[] = [];
-      masterSelectedRowData.map((ele: any) => {
+      masterSelectedRowData?.map((ele: any) => {
         selectedOrderKeys.push(ele.ok);
       });
 
@@ -1327,20 +1286,21 @@ const OverallBmReport = () => {
                 },
               },
               getDetailRowData: async (params: any) => {
-                if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
-                  params.successCallback(
-                    cache.current[`${params.data.oid}-${params.data.lid}`]
-                  );
+                if (!_.isEmpty(params.data)) {                
+                  if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
+                    params.successCallback(
+                      cache.current[`${params.data.oid}-${params.data.lid}`]
+                    );
+                    return;
+                  }
+                  const data = await getBOMExplosionData({
+                    orderId: params.data.oid,
+                    lineId: params.data.lid,
+                  });
+                  cache.current[`${params.data.oid}-${params.data.lid}`] = data.data.data;
+                  params.successCallback(data?.data?.data);
                   return;
                 }
-                const data = await getBOMExplosionData({
-                  orderId: params.data.oid,
-                  lineId: params.data.lid,
-                });
-                cache.current[`${params.data.oid}-${params.data.lid}`] =
-                  data.data.data;
-                params.successCallback(data?.data?.data);
-                return;
               },
             },    
           };
@@ -1366,9 +1326,7 @@ const OverallBmReport = () => {
         pagination: true,
         // pivotMode: false,
         defaultColDef: {
-          enableRowGroup: true,
           enablePivot: true,
-
           filter: "agTextColumnFilter",
           floatingFilter: true,
           //suppressFiltersToolPanel:true,
@@ -1400,55 +1358,6 @@ const OverallBmReport = () => {
       onSelectionChanged: getSelectedRow,
       onRowDataUpdated: onFirstDataRendered,
       onColumnPivotModeChanged: onPivotModeChanged,
-      // detailCellRendererParams: {
-      //   suppressMenu: true,
-      //   detailGridOptions: {
-      //     rowHeight: 45,
-      //     domLayout: "autoHeight",
-      //     autoGroupColumnDef: {
-      //       headerName: "Item Name",
-      //       cellRendererParams: {
-      //         suppressCount: true,
-      //       },
-      //     },
-      //     columnDefs: [
-      //       { field: "qty", headerName: "Requirement" },
-      //       { field: "soh", headerName: "Stock" },
-      //       { field: "wip", headerName: "WIP" },
-      //       { field: "gap", headerName: "Gap" },
-      //     ],
-      //     defaultColDef: {
-      //       flex: 1,
-      //       suppressMenu: true,
-      //       cellStyle: {
-      //         fontSize: "16px",
-      //         display: "flex",
-      //         alignItems: "center",
-      //       },
-      //     },
-
-      //     treeData: true,
-      //     getDataPath: (data: any) => {
-      //       return data.path;
-      //     },
-      //   },
-      //   getDetailRowData: async (params: any) => {
-      //     if (cache.current[`${params.data.oid}-${params.data.lid}`]) {
-      //       params.successCallback(
-      //         cache.current[`${params.data.oid}-${params.data.lid}`]
-      //       );
-      //       return;
-      //     }
-      //     const data = await getBOMExplosionData({
-      //       orderId: params.data.oid,
-      //       lineId: params.data.lid,
-      //     });
-      //     cache.current[`${params.data.oid}-${params.data.lid}`] =
-      //       data.data.data;
-      //     params.successCallback(data?.data?.data);
-      //     return;
-      //   },
-      // },
     };
   }, [masterSelectedRowData, gridData]);
 
@@ -1473,6 +1382,7 @@ const OverallBmReport = () => {
   const [isExcelLoading, setIsExcelLoading] = useState<boolean>(false);
 
   const getTempGridData = async () => {
+    
     setIsExcelLoading(true);
     try {
       const formatedFilters = formatFilterJSON(appliedFilters);
@@ -1490,8 +1400,22 @@ const OverallBmReport = () => {
   };
 
   const onExcelExport = () => {
-    getTempGridData();
+    if (isPivot) {
+      getTempGridData(); 
+    } else {
+      if (bomActive) {
+        setShowExcelModal(true)
+      } else {
+        getInitialGridData(1, userPageSize, true, 0);
+      }
+    }
   };
+  
+  
+
+
+
+  
 
   useEffect(() => {
     if (tempGridData) {
@@ -1538,6 +1462,7 @@ const OverallBmReport = () => {
   const handleSaveClick = async (coldefs?: any,page_size?:any) => {
     try {
       if (coldefs) {
+        //reset case
         const fullConfig = { pivot: false, cs: coldefs, pageSize: userPageSize };
         const payload = {
           un: user.user.name,
@@ -1550,7 +1475,7 @@ const OverallBmReport = () => {
         setIsPivot(false);
       } else if (page_size) {
         const config = columnState;
-        const isPivot = refGraph2.current?.api.isPivotMode();
+        const isPivot = refGraph2?.current?.api.isPivotMode();
         const fullConfig = { pivot: isPivot, cs: config, pageSize: page_size };
 
         const payload = {
@@ -1559,7 +1484,6 @@ const OverallBmReport = () => {
           cs: JSON.stringify(fullConfig),
         };
         await updateUserUIConfigData([payload]);
-
       } else {
         if (refGraph2?.current?.api) {
           const config = refGraph2.current.api.getColumnState();
@@ -1634,6 +1558,16 @@ const OverallBmReport = () => {
       }
     }))
   , []);
+
+  const handleExcelConfirm = () => {
+    setShowExcelModal(false);   
+    getInitialGridData(1, userPageSize, true, 1);
+  };
+
+  const handleExcelCancel = () => {
+    setShowExcelModal(false);
+    getInitialGridData(1, userPageSize, true, 0);
+  };
   
 
   return (
@@ -1671,7 +1605,18 @@ const OverallBmReport = () => {
       >
         <p>{date && date.length ? moment(date).format("D MMM YYYY") : " "}</p>
       </div>
-
+      
+        <BomExcelModal
+        open={showExcelModal}
+        onClose={() => setShowExcelModal(false)}
+        onConfirm={handleExcelConfirm}
+        onCancel={handleExcelCancel}
+        themeUi={themeUi}
+        headerText={"Excel Export"}
+        messageText={"Do you want to download Excel with BOM Data?"}
+                
+      />
+      
       {(isGridLoading ||
         isExcelLoading ||
         isGetStateLoading ||

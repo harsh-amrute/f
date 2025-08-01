@@ -31,6 +31,7 @@ import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
 import { useGetDBRsettingsData } from '../../../../../VectorFlow/Services/MTO/Common/DBRSettings';
 
 
+
 const APIFilterConfig = {
   filSecVisConfig: {
     "Proc_Material_Coverage_For_OpenSO": {
@@ -67,7 +68,10 @@ const MaterialCov = () => {
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [userPageSize, setUserPageSize] = useState<any>();
   const {mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
-  const [childColDef,setChildColDef] = useState<any>();
+  const [childColDef, setChildColDef] = useState<any>();
+  const [showExcelModal, setShowExcelModal] = useState(false);
+  const [excelBody, setExcelBody] = useState<any>({});
+
   
     const { 
     state: currFilter, 
@@ -78,7 +82,7 @@ const MaterialCov = () => {
     onAddFilter, 
     onApplyFilter, 
     toggleFilter,
-    appliedFilters
+      appliedFilters,
   } = useFilter(filterData, APIFilterConfig.filSecVisConfig.Proc_Material_Coverage_For_OpenSO);
 
     const themeUi = user?.user?.theme_ui;
@@ -149,6 +153,7 @@ const MaterialCov = () => {
         const newConfig = data?.data?.data[0]?.columns_settings ? JSON.parse(data?.data?.data[0]?.columns_settings) : [];
         setUserPageSize(newConfig.pageSize? Number(newConfig.pageSize) : undefined);
         setColumnState(newConfig.cs)
+
   
         if (!data) {
           console.error('Failed to apply column state');
@@ -180,7 +185,8 @@ const MaterialCov = () => {
 
       } else {
 
-        const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState();
+        const config = isReset ? defaultColState : currentGridRef.current.api.getColumnState(); 
+        
   
         const fullConfig = {
           cs: config,
@@ -219,7 +225,7 @@ const MaterialCov = () => {
   const getHeaderData = async () => {
       try {
           const response = await getUIConfigData(reportName);
-          const childResponse = await getUIConfigData(childReportName)
+        const childResponse = await getUIConfigData(childReportName)
           getColDef(response)
           setHeaderData(response.data.data);
           setHeaderDataChild(childResponse.data.data)
@@ -240,7 +246,7 @@ const MaterialCov = () => {
           cellStyle: {
               paddingRight: '25px'
           },
-          cellRenderer: "avlCellRenderer",
+        cellRenderer: "avlCellRenderer",
           tooltipComponent: 'availabilityToolTip',
           tooltipValueGetter: (params: any) => {
               const oq = params.data.oq;
@@ -318,6 +324,7 @@ const MaterialCov = () => {
 
       setIsReset(false) 
       notifySuccess("Reset successfully")
+
     }
   }, [isReset]);
 
@@ -326,12 +333,11 @@ const MaterialCov = () => {
   const materialSoDetailRef = useRef<any>();
   
   const callExportExcel = () => {
-      const headersdata = currentGridRef?.current?.api.getColumnState();
-      const formattedFilters = formatFilterJSON(appliedFilters)
-      const body = getBodyForExcelExport({headersdata, filterData : formattedFilters , colDefMap})
-      if(materialSoDetailRef.current?.getExcelExport)
-        materialSoDetailRef.current.getExcelExport(body)
-    
+    const headersdata = currentGridRef?.current?.api.getColumnState();
+    const formattedFilters = formatFilterJSON(appliedFilters)
+    const body = getBodyForExcelExport({ headersdata, filterData: formattedFilters, colDefMap })
+    setExcelBody(body);
+    setShowExcelModal(true);
   }
 
 
@@ -386,13 +392,15 @@ const MaterialCov = () => {
                 defaultTab={defaultTab}
               />
 
-            </BTRLayoutTabsWrapper>
-{ isAllData &&
+              </BTRLayoutTabsWrapper>
+              
+           
+              {isAllData &&
 
-              <VFButton style={{marginLeft: '30%', fontSize: '10px', height: '30px', fontFamily: 'roboto'}} themeUi={themeUi} onClick={() =>{handleToggleComponent(true), handleParameterData({allOrders: true})}}>
-                Show All Orders
-              </VFButton>
-}
+                <VFButton style={{ marginLeft: '30%', fontSize: '10px', height: '30px', fontFamily: 'roboto' }} themeUi={themeUi} onClick={() => { handleToggleComponent(true), handleParameterData({ allOrders: true }) }}>
+                  Show All Orders
+                </VFButton>
+              }
                 </div>
             <div style={{ display: 'flex', justifyContent: "center", width: "100%" }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "max-content", position: "relative" }}>
@@ -481,6 +489,9 @@ const MaterialCov = () => {
             userPageSize={userPageSize}
             setUserPageSize={setUserPageSize}
             childColDef={childColDef}
+            showExcelModal={showExcelModal}
+            setShowExcelModal={setShowExcelModal}
+            excelBody={excelBody}
           />
         </div>
 

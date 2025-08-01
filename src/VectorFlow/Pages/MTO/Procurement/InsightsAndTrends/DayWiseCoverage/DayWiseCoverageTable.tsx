@@ -132,18 +132,12 @@ const DayWiseCoverageTable = ({
       columnDefs={options.columnDefs}
       rowData={rowData}
       // pagination={true}
-      
       statusBar = {{
         statusPanels: [
           { statusPanel: CustomStatusPanel, align: "left" },
-          { statusPanel: 'agTotalAndFilteredRowCountComponent', align:'right' },
-          { statusPanel: 'agTotalRowCountComponent', align:'right' },
-          { statusPanel: 'agFilteredRowCountComponent', align:'right' },
-          { statusPanel: 'agSelectedRowCountComponent', align:'right' },
-          { statusPanel: 'agAggregationComponent', align:'right' },
         ],
-      }}  
-      
+      }} 
+    
       onGridReady={(params: any) => {
         params.api.autoSizeAllColumns();
         setCurrentGridRef(gridRef);
