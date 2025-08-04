@@ -1291,14 +1291,27 @@ export const getExistingColumnFields = (columns: string[], fields: Field[]): Fie
   return updatedFields
 }
 
+// export const areValuesEqual = (a: any, b: any): boolean => {
+//   if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
+//     // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
+//     return parseFloat(a) === parseFloat(b) 
+//   }  
+//   return a === b
+// }
 export const areValuesEqual = (a: any, b: any): boolean => {
-  if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
-    // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
-    return parseFloat(a) === parseFloat(b) 
-  }  
-  return a === b
-}
 
+  const numA = Number(a);
+  const numB = Number(b);
+
+  const isAValidNumber = a !== '' && a !== null && !Number.isNaN(numA) && Number.isFinite(numA);
+  const isBValidNumber = b !== '' && b !== null && !Number.isNaN(numB) && Number.isFinite(numB);
+
+  if (isAValidNumber && isBValidNumber) {
+    return numA === numB;
+  }
+
+  return a === b;
+};
 export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, themeUi: string, tasktype?: string, showApproveAllModal?: any, showRejectAllModal?: any, actionStatus?: string , isDisabled?:boolean): ColGroupDef[] | ColDef[] | Array<any> => {
 
   const textColor = themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D81"
@@ -1688,13 +1701,16 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
 
+console.log("old data",oldData , newData);
 
       const oldDataPrefixed: any = {};
       const newDataPrefixed: any = {};
       let isRowModified = false // A flag to check equality of the current and previous rows
       existingColumnFields.map((f: Field) => {
+        console.log("HELLLO 1",oldData[f.key], newData[f.key] , f.key);
 
         if (!areValuesEqual(oldData[f.key], newData[f.key])) {
+console.log("HELLLO 2",oldData[f.key], newData[f.key] , f.key);
 
           isRowModified = true
         }
