@@ -1707,10 +1707,8 @@ console.log("old data",oldData , newData);
       const newDataPrefixed: any = {};
       let isRowModified = false // A flag to check equality of the current and previous rows
       existingColumnFields.map((f: Field) => {
-        console.log("HELLLO 1",oldData[f.key], newData[f.key] , f.key);
 
         if (!areValuesEqual(oldData[f.key], newData[f.key])) {
-console.log("HELLLO 2",oldData[f.key], newData[f.key] , f.key);
 
           isRowModified = true
         }
