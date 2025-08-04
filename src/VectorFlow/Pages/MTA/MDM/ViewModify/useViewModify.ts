@@ -292,6 +292,21 @@ const useViewModify = (pageType:string) => {
         }
       },[activeMaster])
 
+      const SIDEBAR_CONFIG = {
+        allowedProgressStates: new Set(['deleteView', 'default', 'view']),
+        excludedMasterNames: new Set([
+          "ForceNormChange",
+          "MOQ",
+          "SOB",
+          "phaseInPhaseOut",
+          "SeasonalityStatus"
+        ]),
+      };
+
+     const isProgressStateValid = SIDEBAR_CONFIG.allowedProgressStates.has(activeMaster?.progress);
+     const isMasterNameAllowed = !SIDEBAR_CONFIG.excludedMasterNames.has(activeMaster?.name);
+     const shouldShowSidebar = isProgressStateValid && isMasterNameAllowed;
+
     const sideBar:SideBarDef = {
       toolPanels: [
         {
@@ -315,7 +330,7 @@ const useViewModify = (pageType:string) => {
       tooltipShowDelay:0,
       readOnlyEdit:true,
       tooltipTrigger:'hover',
-      sideBar: ((['deleteView','default', 'view'].includes(activeMaster.progress) && activeMaster?.name !== "ForceNormChange" &&  activeMaster?.name  !== "MOQ" &&  activeMaster?.name  !== "SOB")) ? sideBar : {},
+      sideBar: shouldShowSidebar ? sideBar : {}, 
      // sideBar:['default','view','deleteView'].includes(activeMaster.progress) ? sideBar : {},
       getMainMenuItems: MainMenuItemsCustomization,
       gridOptions:{

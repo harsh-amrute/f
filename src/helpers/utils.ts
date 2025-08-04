@@ -1291,14 +1291,27 @@ export const getExistingColumnFields = (columns: string[], fields: Field[]): Fie
   return updatedFields
 }
 
+// export const areValuesEqual = (a: any, b: any): boolean => {
+//   if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
+//     // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
+//     return parseFloat(a) === parseFloat(b) 
+//   }  
+//   return a === b
+// }
 export const areValuesEqual = (a: any, b: any): boolean => {
-  if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
-    // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
-    return parseFloat(a) === parseFloat(b) 
-  }  
-  return a === b
-}
 
+  const numA = Number(a);
+  const numB = Number(b);
+
+  const isAValidNumber = a !== '' && a !== null && !Number.isNaN(numA) && Number.isFinite(numA);
+  const isBValidNumber = b !== '' && b !== null && !Number.isNaN(numB) && Number.isFinite(numB);
+
+  if (isAValidNumber && isBValidNumber) {
+    return numA === numB;
+  }
+
+  return a === b;
+};
 export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, themeUi: string, tasktype?: string, showApproveAllModal?: any, showRejectAllModal?: any, actionStatus?: string , isDisabled?:boolean): ColGroupDef[] | ColDef[] | Array<any> => {
 
   const textColor = themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D81"
