@@ -1701,7 +1701,6 @@ export const mapNewAndOldMasterRowDataToCustomRowData = (dirtyRowData: any[], ex
       const oldData = JSON.parse(entry.old);
       const newData = JSON.parse(entry.new);
 
-console.log("old data",oldData , newData);
 
       const oldDataPrefixed: any = {};
       const newDataPrefixed: any = {};
