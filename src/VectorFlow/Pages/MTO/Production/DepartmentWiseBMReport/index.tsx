@@ -436,9 +436,6 @@ const DptWiseBMReport = () => {
             return children.map((child) => ({
                 field: child.scc.trim(),
                 suppressHeaderFilterButton: true,
-                filterParams: {
-                    buttons: ['reset']
-                },
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
@@ -455,9 +452,11 @@ const DptWiseBMReport = () => {
                 minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
                 filter:
-                (child.dt === "number" || child.dt==='decimal')
-                ? "agNumberColumnFilter"
-                : "agMultiColumnFilter",
+                (child.dt === "number" || child.dt === "decimal")
+                  ? "agNumberColumnFilter"
+                        : child.dt === "date"      
+                    ? "agDateColumnFilter"
+                    : "agMultiColumnFilter",
                 pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
                 editable: (params: any) => !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false ,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
@@ -477,7 +476,27 @@ const DptWiseBMReport = () => {
                   
                         return params.value;
                     }
-                  }, 
+                }, 
+                filterParams: {
+                    buttons: ['reset'], 
+                    comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
+                      if (!cellValue) return -1;
+                    
+                      const cellDate = new Date(cellValue);
+                      if (isNaN(cellDate.getTime())) return -1;
+                    
+                      const cellDateOnly = new Date(
+                        cellDate.getFullYear(),
+                        cellDate.getMonth(),
+                        cellDate.getDate()
+                      );
+                    
+                      if (cellDateOnly < filterLocalDateAtMidnight) return -1;
+                      if (cellDateOnly > filterLocalDateAtMidnight) return 1;
+                      return 0;
+                    }
+                    
+                  },
                 cellRendererParams: child?.hd.includes("Remark") ? {
                     onClick: child?.cc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
                   } : undefined,
