@@ -108,11 +108,13 @@ const useBufferTrends = () => {
     }
 
     useEffect(() => {
-        const { percentage , summary , avail} = graphData.data;
-        if(percentage.length!==0){
+        const { absolute, percentage, summary, avail } = graphData.data;
+        if (currentPageTab === 'absolute' && absolute.length !== 0) {
+            setCurrentGraphData(absolute);
+        } else if (currentPageTab === 'percentage' && percentage.length !== 0) {
             setCurrentGraphData(percentage);
         }
-        if(summary.length!==0){
+        if(summary.length!==0) {
             setSummaryData(summary);
         }
         setAvailability(avail);
@@ -121,7 +123,7 @@ const useBufferTrends = () => {
    const onFloatingTabChange = (tab:any) =>{
 
      setCurrentTab(tab.value);
-     updateGraphState(1,"pen",{label:'Absolute',value:'Absolute'})
+     updateGraphState(1, 'pen', { label: currentPageTab === 'absolute' ? 'Absolute' : 'Percentage', value: currentPageTab });
     //  setHorizondays(30);
     
    } 

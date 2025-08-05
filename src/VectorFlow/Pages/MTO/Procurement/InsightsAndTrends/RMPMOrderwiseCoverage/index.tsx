@@ -241,10 +241,13 @@ const RMPMOrderwiseCoverage = () => {
                     setApiGraphData(APIData?.data?.data);
                     notifySuccess("Data Fetched Successfully!")
                 }
+                else {
+                    toast.dismiss();
+                    notifyError("Failed to fetch Data");
+                }
                 
             } catch (e) {
-                toast.dismiss();
-                notifyError("Failed to fetch Data");
+               console.log(e)
             }
         }
         else {
