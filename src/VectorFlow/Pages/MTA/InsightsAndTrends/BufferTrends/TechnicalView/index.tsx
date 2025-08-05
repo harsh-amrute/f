@@ -90,7 +90,7 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                                         </div>
                                     </td>
                                     <td style="padding: 5px; background-color: #6C696A; text-align: right;">
-                                        ${graphs[0].pen.label === 'Percentage' 
+                                            ${graphs[0].pen.label === 'Percentage' 
                                             ? (() => {
                                                 const value = parseFloat(datum[key]);
                                                 const total = parseFloat(datum.total);
@@ -98,7 +98,13 @@ const TechnicalWise = ({ data, isLoading, graphs, updateGraphState, setHorizonda
                                                 ? Math.round((value / total) * 100) + '%'
                                                 : '0%';
                                             })()
-                                            : datum[key]}   
+                                            : (() => {
+                                                const val = parseFloat(datum[key]);
+                                                if (isNaN(val)) return '0';
+                                                return Number.isInteger(val) ? val : val.toFixed(2);
+                                            })()
+                                            }
+                                        
                                     </td>
                                 </tr>
                             `;
