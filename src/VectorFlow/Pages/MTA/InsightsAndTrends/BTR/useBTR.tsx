@@ -332,6 +332,7 @@ const useBTR = () => {
         }
         getBTRDataCount(payload)
         getData(tempFilter, 1)
+        getBPRUiConfig()
     }
 
 
@@ -484,7 +485,7 @@ const useBTR = () => {
         if (currentTab.id === "2" || currentTab.id === "3") {
             getUserColumnConfig();   
         }
-    },[currentTab])
+    },[currentTab, initialColumnState])
 
     useEffect(() => {
         if (currentTab.id === "2" && techColDefs.length && techInternalRef?.api) {

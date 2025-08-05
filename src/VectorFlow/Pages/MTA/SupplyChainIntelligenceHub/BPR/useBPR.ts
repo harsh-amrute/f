@@ -619,6 +619,7 @@ const useBPR =()=>{
         getBPRRecordCount(filter)
         setCurrGridPage(1)
         getBPRRowData(filter,1)
+        getBPRUiConfig()
     }
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
