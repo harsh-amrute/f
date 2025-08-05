@@ -72,7 +72,7 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
         }
     }, [currentGridRef, columnState]);
     const ExcelExportData = () =>{
-        if(data.length> 0){
+        if(data?.length> 0){
             
             getGridData(true)
         }
