@@ -179,7 +179,7 @@ const ReasonForDelayOrder = () => {
             pinned: "right",
             lockPosition: true,
             resizable: true,
-            minWidth: 300,
+            initialWidth: 300,
             cellStyle: {
                 'background': 'none',
                 'border': "none",
