@@ -508,7 +508,7 @@ const DueDateQuotation = () => {
       const formatedFilters = formatFilterJSON(appliedFilters);
 
 
-      const body = getBodyForExcelExport({headersdata , filterData : formatedFilters, colDefMap});
+      const body = getBodyForExcelExport({ headersdata,filterData: formatedFilters, colDefMap });
       try{
         const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize,isBomExplosion})
         if(response.status == 200){

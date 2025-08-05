@@ -840,14 +840,13 @@ const OverallBmReport = () => {
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
-        filterParams: {
-          buttons: ['reset']
-        },
         filter:
-        (child.dt === "number" || child.dt==='decimal')
+        (child.dt === "number" || child.dt === "decimal")
           ? "agNumberColumnFilter"
-          : "agMultiColumnFilter",
-
+          : child.dt === "date"
+            ? "agDateColumnFilter"
+              : "agMultiColumnFilter",
+        
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
           child.cc === "ec" && bomActive
@@ -885,6 +884,26 @@ const OverallBmReport = () => {
               return params.value;
           }
         }, 
+        filterParams: {
+          buttons: ['reset'], 
+          comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
+            if (!cellValue) return -1;
+          
+            const cellDate = new Date(cellValue);
+            if (isNaN(cellDate.getTime())) return -1;
+          
+            const cellDateOnly = new Date(
+              cellDate.getFullYear(),
+              cellDate.getMonth(),
+              cellDate.getDate()
+            );
+          
+            if (cellDateOnly < filterLocalDateAtMidnight) return -1;
+            if (cellDateOnly > filterLocalDateAtMidnight) return 1;
+            return 0;
+          }
+          
+        },
         cellRendererParams: child?.hd.includes("Remark") ? {
           onClick: child?.cc === 'RemarkHistory' ? (data: string) => onOpenRemarkHistory(data) : undefined
         } : undefined,
@@ -1047,6 +1066,7 @@ const OverallBmReport = () => {
       const headersdata = refGraph2?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
       const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
+      console.log('overal body',headersdata)
           try{
               const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
               if(response.status == 200){//1,userpage,true,0
