@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   SCHorizontalDivison,
@@ -9,6 +9,8 @@ import { useUserData } from "../../../context";
 import { ChartView, GridView } from "../../../helpers/SvgRenderer";
 import PermissionHeirarchyCanvas from "../manage-users/PermissioinHeirarchyCanvas";
 import PermissionForm from "./PermissionForm";
+import VFButton from "../../../components/VectorFLOW/commons/VFButton";
+import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutline";
 
 const ToggleContainer = styled.div`
   display: flex;
@@ -87,7 +89,7 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
 };
 
 // @TODO: add type definations
-const PermissionSelectionModal = ({ dataAllPermissions }: any) => {
+const PermissionSelectionModal = ({ dataAllPermissions,closeModal, updatePermissions }: any) => {
   const [isChartView, setIsChartView] = React.useState(false);
   console.log("DataAllPermissions", dataAllPermissions);
   const allApplications = dataAllPermissions?.map(
@@ -99,6 +101,13 @@ const PermissionSelectionModal = ({ dataAllPermissions }: any) => {
   >(allApplications[0]);
 
   const [selectedPermissions, setSelectedPermissions] = useState<any>({});
+
+  const user = useUserData();
+  const themeUi = user.user.user.theme_ui;
+
+  useEffect(()=>{
+    console.log("this are the selectedPermissions", selectedPermissions);
+  },[selectedPermissions])
 
   return (
     <>
@@ -123,9 +132,7 @@ const PermissionSelectionModal = ({ dataAllPermissions }: any) => {
         </div>
         {isChartView ? (
           <PermissionHeirarchyCanvas
-            selectedAppAllPermissions={dataAllPermissions.find(
-              (ele: any) => ele.application_name === selectedApplication
-            )}
+            dataAllPermissions={dataAllPermissions}
             selectedApplication={selectedApplication}
             selectedPermissions={selectedPermissions}
             setSelectedPermissions={setSelectedPermissions}
@@ -140,6 +147,18 @@ const PermissionSelectionModal = ({ dataAllPermissions }: any) => {
             setSelectedPermissions={setSelectedPermissions}
           />
         )}
+        <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '20px', gap: '10px'}}>
+          <VFButtonOutline
+            themeUi={themeUi}
+            onClick={() => {closeModal()}}
+
+          >Cancel</VFButtonOutline>
+          <VFButton
+          themeUi={themeUi}
+          onClick={() => {updatePermissions(selectedPermissions); closeModal()}}
+          >Apply</VFButton>
+          
+        </div>
       </div>
     </>
   );
