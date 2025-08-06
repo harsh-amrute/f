@@ -27,7 +27,7 @@
       "dataContent": "Powerful control tower with dashboards ensures you get a hawk eye view of the whole supply chain."
     },
     "notify": {
-      "success": "Login Successful",
+      "success": "Logged in successfully",
       "completeReCaptcha": "Please complete reCAPTCHA to continue",
       "networkError": "Please check your network connection; if the issue persists, contact the administrator."
     }
@@ -97,6 +97,7 @@
         "bufferTrendGraph": "Buffer Trend Graph",
         "rationedRequirementReport": "Rationed Requirement Report",
         "supplierDispatchReport": "Supplier Dispatch Report",
+        "elephantOrders": "Elephant Orders",
         "buyerOrderReport": "Buyer Order Report",
         "vendorDispatchReport": "Vendor Dispatch Report",
         "availabilityComparison": "Availability Comparison"

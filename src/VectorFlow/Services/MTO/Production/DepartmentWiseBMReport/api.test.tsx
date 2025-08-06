@@ -46,7 +46,7 @@ describe('MaterialRequirement', () => {
         expect(response.status).toBe(200);
     });
 
-    it('should fetch the bomb level datar', async () => {
+    it('should fetch the bom level datar', async () => {
 
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
         const data = { wip: true, curr: 1 };

@@ -1,5 +1,5 @@
 export const chartParams1 = {
-    title:'Top 10 Parent Locations : Max Pipeline Black/Red/Yellow SKUs With Nil Rationed Stock For Receiving Locations',
+    title:'Top 10 Parent Locations : Max Pipeline Black/Red SKUs With Nil Rationed Stock For Receiving Locations',
     chartType:'stackedColumn',
     downloadName:'Top-10 Parent Loc (Max Pipeline for receiving loc)',
     LabelPosition:'bottom',
@@ -55,7 +55,7 @@ export const chartParams1 = {
 
 
 export const chartParams2 = {
-    title:'Top 10 Parent Location: Max Continuous Pipeline Black/Red/Yellow SKUs With Nil Rationed Stock Available For Receiving Location',
+    title:'Top 10 Parent Location: Max Continuous Pipeline Black/Red SKUs With Nil Rationed Stock Available For Receiving Location',
     chartType:'stackedColumn',
     downloadName:'Top-10 Parent Loc (Max Continuous for receiving loc)',
     LabelPosition:'bottom',

@@ -9,7 +9,7 @@ import { InsightsAndTrendsString } from "../../../../Common/String";
 import { ProcurementSeriesDataFill, ProcurementSeriesDataYKey, ProcurementSeriesDataYName } from "../../../../Common/Enum";
 import VFInfoToolTip from "../../../../../../../components/VectorFLOW/commons/VFInfoToolTip";
 import VFModalCard from "../../../../../../../components/VectorFLOW/commons/VFModalCard";
-import VFTable from "../../../../../../../components/VectorFLOW/commons/VFTable";
+import VFTable from "../../../../Common/VFTable";
 import { GridRef } from "../../../../../../../VectorFlow/types/MDM";
 import { useGetDate } from "../../../../../../../VectorFlow/Services/MTO/Production/InsightsAndTrends/RMPMExpediting";
 import moment from "moment";
@@ -187,7 +187,7 @@ const GraphView = ({ shortageData }: any) => {
     });
 
     const TableData = _.cloneDeep(shortageData);
-    TableData.forEach((e: any) => {
+    TableData?.forEach((e: any) => {
         if (e.start_date === '1') {
             e.start_date = '0-7 Days';
         }

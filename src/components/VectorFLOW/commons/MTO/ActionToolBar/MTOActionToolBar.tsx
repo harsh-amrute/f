@@ -130,9 +130,7 @@ const MTOActionToolBar = ({
     }
 
 
-    const format2 = "yyyy-MM-dd"
-    const d = new Date();
-    const datetime = moment(d).format(format2); 
+    const format2 = "yyyy-MM-dd";
     
     const newFilters = getSelectedFilters(multiFilter, isMfgSelected);
 
@@ -202,7 +200,13 @@ const MTOActionToolBar = ({
                 <p>Release Date Till</p>
                 &nbsp;
                 &nbsp;
-                <VFDatePicker  date={date ? new Date(date) : null} minDate={datetime} onDateChange={onDateChange} />
+                <VFDatePicker  
+                    date={date ? new Date(date) : null} 
+                    onDateChange={onDateChange} 
+                    dateInputStyle = {{fontSize:"18px",fontWeight:"bold"}}
+                    imgStyle={{height:'25px', width:'25px'}}
+                    showCalendarIcon={true}
+                />
                             
                 &nbsp;
                 {/* <div style={{ display: 'flex', alignItems: 'center' }}>

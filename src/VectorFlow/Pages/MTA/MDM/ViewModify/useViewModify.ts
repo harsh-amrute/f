@@ -292,6 +292,21 @@ const useViewModify = (pageType:string) => {
         }
       },[activeMaster])
 
+      const SIDEBAR_CONFIG = {
+        allowedProgressStates: new Set(['deleteView', 'default', 'view']),
+        excludedMasterNames: new Set([
+          "ForceNormChange",
+          "MOQ",
+          "SOB",
+          "phaseInPhaseOut",
+          "SeasonalityStatus"
+        ]),
+      };
+
+     const isProgressStateValid = SIDEBAR_CONFIG.allowedProgressStates.has(activeMaster?.progress);
+     const isMasterNameAllowed = !SIDEBAR_CONFIG.excludedMasterNames.has(activeMaster?.name);
+     const shouldShowSidebar = isProgressStateValid && isMasterNameAllowed;
+
     const sideBar:SideBarDef = {
       toolPanels: [
         {
@@ -315,7 +330,8 @@ const useViewModify = (pageType:string) => {
       tooltipShowDelay:0,
       readOnlyEdit:true,
       tooltipTrigger:'hover',
-      sideBar:['default','view','deleteView'].includes(activeMaster.progress) ? sideBar : {},
+      sideBar: shouldShowSidebar ? sideBar : {}, 
+     // sideBar:['default','view','deleteView'].includes(activeMaster.progress) ? sideBar : {},
       getMainMenuItems: MainMenuItemsCustomization,
       gridOptions:{
         getRowStyle: (params: any) => {
@@ -1545,6 +1561,10 @@ const useViewModify = (pageType:string) => {
 
       const onSeasonalityStatusUpdate = async (status:string) => {
         const selectedRows = ref.current?.api.getSelectedRows();
+        if(selectedRows?.length === 0)  {
+          notifyError("Please select atleast 1 row");
+          return;
+        }
         let error = false;
 
         if(selectedRows){

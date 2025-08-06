@@ -1,8 +1,13 @@
 import { ICellRendererParams } from "ag-grid-enterprise";
 import Tooltip from "../Tooltip";
 import { ProcPlanningChildrenColor, ChildrenColorCellRenderer, Tooltipcontainer } from "./styles";
+import _ from "lodash";
 
 const ChildrenColor = (props: ICellRendererParams) => {
+    if (_.isEmpty(props.data)) {
+        return <></>
+    }
+
     let str = ''
     if (props.data.clr === 'Purple') {
         str = "Full Kit"

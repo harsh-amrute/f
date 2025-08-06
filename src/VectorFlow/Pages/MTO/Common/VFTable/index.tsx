@@ -44,7 +44,7 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       filter: "agTextColumnFilter",
       floatingFilterComponentParams: { suppressFilterButton: false },
       floatingFilter: true,
-      
+      enableRowGroup: true,
     },
     sideBar: {
       toolPanels: [
@@ -56,6 +56,9 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
           toolPanel: "agColumnsToolPanel",
         },
       ],
+    },
+    autoGroupColumnDef: {
+      minWidth: 250,
     },
   };
 
@@ -74,7 +77,13 @@ const VFTable = forwardRef((props: VFTableProps, ref: any) => {
       { statusPanel: "agTotalRowCountComponent" },
       { statusPanel: "agFilteredRowCountComponent" },
       { statusPanel: "agSelectedRowCountComponent" },
-      { statusPanel: "agAggregationComponent" },
+
+      {
+        statusPanel: "agAggregationComponent",
+        statusPanelParams: {
+            aggFuncs: ["avg", "sum", "min", "max", "count"],
+        },
+    },
     ],
   };
 

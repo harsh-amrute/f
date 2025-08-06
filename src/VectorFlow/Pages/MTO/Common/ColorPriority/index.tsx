@@ -1,5 +1,6 @@
 import { ICellRendererParams } from "ag-grid-enterprise";
 import { ColorPriorityCellRendererWrapper, ColorPriorityCellRenderer } from "./styles";
+import _ from "lodash";
 
 interface ColorValues {
     B: number;
@@ -11,13 +12,10 @@ interface ColorValues {
 }
 
 const ColorPriority = (props: ICellRendererParams) => {
-    let colorValues: ColorValues;
-    if (props.node.group) {
-        const allData: any = props?.node?.allLeafChildren?.[0];
-        colorValues = allData?.data?.cp[0];
-    } else {
+    let colorValues: ColorValues | undefined;
+    if (!_.isEmpty(props.data)) {
         colorValues = props.data?.cp[0];
-    }    
+    }
 
     //in some cases like grouping color value might me null or undefined
     if (!colorValues) {

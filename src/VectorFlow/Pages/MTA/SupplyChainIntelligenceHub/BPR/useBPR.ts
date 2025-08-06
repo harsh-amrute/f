@@ -3,7 +3,7 @@ import { AgGridReactProps } from "ag-grid-react"
 
 import { useGetBPRData, useGetBPRRemarkHistory, useSubmitBPRRemark, useGetDailyData, useGetBPRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BPR"
 import { BPREcoColorCellRenderer,BPRRemarksCellRenderer,BPRSubmitRemarkCellRenderer,BPRTagsCellRenderer,BPRTechColorCellRenderer } from "./BPRCellRenderers"
-import { convertUiConfigToOptions, mapBPRRowData, MainMenuItemsCustomization, getColumnDefinationsMTA } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, mapBPRRowData, MainMenuItemsCustomization, getColumnDefinationsMTA, CsvExportMTA } from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess } from "../../../../../helpers/notify"
 import { toast } from "react-toastify"
 import BPRGraphCellRenderer from "./BPRGraphCellRenderer"
@@ -499,18 +499,45 @@ const useBPR =()=>{
         dispatch(TOGGLE_GRAPH_MODAL(true));
     }
 
+    // const onExportToExcelCallBack=async(pageNumber:number)=>{
+    //     const rowDta =  await getBPRDataForExcelDownload({
+    //         id:1,
+    //         name:'',
+    //         fields:[],
+    //         filters:currFilter,
+    //         paginationParameter:{
+    //             pageNumber:pageNumber,
+    //             recordsPerPage:5000
+    //         }
+    //     })
+    //     return rowDta.data.data
+    // }
+
     const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const rowDta =  await getBPRDataForExcelDownload({
-            id:1,
-            name:'',
-            fields:[],
-            filters:currFilter,
-            paginationParameter:{
-                pageNumber:pageNumber,
-                recordsPerPage:5000
-            }
-        })
-        return rowDta.data.data
+        const payload = {
+            id: 1,
+            name: '',
+            fields: [],
+            filters: currFilter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: 5000
+            },
+            ISExport:"1",
+            reportName:"BPR",
+            stream:1,
+            responseType: `arraybuffer`
+        }
+        notifyLoader("Downloading Data...")
+        try {
+            await CsvExportMTA(payload, "BufferPenetrationReport");
+            notifySuccess(`Data Exported Successfully`);
+        }
+        catch(error) {
+            console.log(error);
+            notifyError("Error Exporting Excel")
+            throw error;
+        }
     }
 
     const onResetCallback = async () => {
@@ -592,6 +619,7 @@ const useBPR =()=>{
         getBPRRecordCount(filter)
         setCurrGridPage(1)
         getBPRRowData(filter,1)
+        getBPRUiConfig()
     }
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{

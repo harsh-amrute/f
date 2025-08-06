@@ -513,12 +513,12 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
         }
         if(filterId==='AF6'){
             filterObj.attributeName='PIC';
-            filterObj.label='PIc';
+            filterObj.label='PIC';
             filterObj.operator='='
         }
         if(filterId==='AF7'){
             filterObj.attributeName='PIPO,Seasonality';
-            filterObj.label='PIPO,Seasonality';
+            filterObj.label='Tags';
             filterObj.operator='='
         }
         if(filterId==='AF8'){

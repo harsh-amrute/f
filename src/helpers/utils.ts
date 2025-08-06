@@ -1034,7 +1034,15 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       tooltipComponent: 'conflictErrorToolTip',
       suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
-        return (params.value === null || params.value === undefined) ? '' : params.value.toString();
+        if(params.value == null || params.value === undefined)  return ''
+        else if (cellDataType === 'number') {
+          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+          if(locale) return params.value.toLocaleString(locale)
+          else       return params.value.toString()
+        }
+        else return params.value.toString()
+        // return (params.value === null || params.value === undefined) ? '' : params.value.toString();
       },
       valueGetter: (params: any) => {
         if (f.key === 'sts') {
@@ -1283,15 +1291,28 @@ export const getExistingColumnFields = (columns: string[], fields: Field[]): Fie
   return updatedFields
 }
 
+// export const areValuesEqual = (a: any, b: any): boolean => {
+//   if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
+//     // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
+//     return parseFloat(a) === parseFloat(b) 
+//   }  
+//   return a === b
+// }
 export const areValuesEqual = (a: any, b: any): boolean => {
-  if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
-    // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
-    return parseFloat(a) === parseFloat(b) 
-  }  
-  return a === b
-}
 
-export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, themeUi: string, tasktype?: string, showApproveAllModal?: any, showRejectAllModal?: any, actionStatus?: string): ColGroupDef[] | ColDef[] | Array<any> => {
+  const numA = Number(a);
+  const numB = Number(b);
+
+  const isAValidNumber = a !== '' && a !== null && !Number.isNaN(numA) && Number.isFinite(numA);
+  const isBValidNumber = b !== '' && b !== null && !Number.isNaN(numB) && Number.isFinite(numB);
+
+  if (isAValidNumber && isBValidNumber) {
+    return numA === numB;
+  }
+
+  return a === b;
+};
+export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, themeUi: string, tasktype?: string, showApproveAllModal?: any, showRejectAllModal?: any, actionStatus?: string , isDisabled?:boolean): ColGroupDef[] | ColDef[] | Array<any> => {
 
   const textColor = themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D81"
 
@@ -1485,6 +1506,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
         {
           headerComponent: TaskPendingActionHeader,
           headerComponentParams: {
+            disabled:isDisabled,
             showApproveAllModal: showApproveAllModal,
             showRejectAllModal: showRejectAllModal,
             actionStatus: actionStatus
@@ -1607,7 +1629,7 @@ export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], maste
     //   headerCheckboxSelectionCurrentPageOnly:true,
     //   width:10
     // }
-    ...colDefs, ...taskPendingCustomColDefs]
+    ...taskPendingCustomColDefs ,...colDefs]
 }
 
 export const mapMasterToTaskStatusColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, tasktype?: string): ColGroupDef[] | ColDef[] => {
@@ -4369,7 +4391,7 @@ export function getColumnDefinations(
 
     if (data.dt === 'date') {
       filterType = 'agDateColumnFilter';
-    } else if (data.dt === 'number') {
+    } else if (data.dt === 'number' || data.dt ==='decimal') {
       filterType = 'agNumberColumnFilter';
     }
 
@@ -4383,6 +4405,22 @@ export function getColumnDefinations(
       enablePivot: true,
       flex: 1,
       minWidth: 150,
+      valueFormatter: (params: any) => {
+        if (params.value) {
+          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+      
+          if (data.dt === 'number') {
+            return locale ? params.value.toLocaleString(locale) : params.value;
+          }
+      
+          if (data.dt === 'decimal') {
+            const fixedValue = params.value.toFixed(2).toLocaleString();
+            return locale ? fixedValue.toLocaleString(locale) : fixedValue;
+          }
+          return params.value;
+        }
+      }, 
       filterParams: {
         buttons: ['reset'], 
         comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
@@ -4414,6 +4452,9 @@ export function getColumnDefinations(
     }
     return columnDef;
   });
+
+
+  
   // Add extra columns
   extraFields?.forEach((field: any) => {
     let position = field.position;
@@ -4593,7 +4634,7 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
       const { name, attributeName, value, type, operator } = filters[i];
 
       if (attributeName === 'ms') {
-        if (value.length > 0 && isMfgStrgyIncluded) {
+        if (value?.length > 0 && isMfgStrgyIncluded) {
           newFilter.filters.push({ filterId: attributeName, type, operator, label: name, value: value?.filter((v: any) => v.value || v.id) });
         }
       } else {
@@ -4615,41 +4656,77 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   return selectedFilter;
 }
 
-export const getBodyForExcelExport = ({ headersdata, filterData = {}, colDefMap }: any) => {
-  
+export const getBodyForExcelExport = ({
+  headersdata,
+  filterData = {},
+  colDefMap,
+  groupedColDefsRef,
+}: any) => {
   const filteredHeadersData = headersdata?.filter(
-    (col: any) => (col.colId !== "DropDown" || col.colId !== "Action") && (col.hide !== true)
-  ); 
+    (col: any) =>
+      col.colId !== "DropDown" && col.colId !== "Action" && col.hide !== true
+  );
 
   try {
-    const headers = filteredHeadersData?.map((col: any) => {
-      const header_data = colDefMap.current.get(col.colId);
-      if (header_data?.scc === "bpp" || header_data?.scc === "cp" || header_data?.scc === 'clr') {
-        header_data.isColor = true;
-      }
-      
-      return {
-        ...header_data
-      }
-    }).filter((col: any) => {
-      return col.hd != undefined && col.scc != undefined
-    })
-    const body = {
-      headers: headers,
-      ...filterData
-    }
-    return body;
-  }
-  catch (e){
-    console.log(e)
+    // Grouped data
+    if (groupedColDefsRef?.current) {
+      const colOrder = filteredHeadersData.reduce((map: any, col: any, index: number) => {
+        map[col.colId] = index;
+        return map;
+      }, {});
 
+      const headers = groupedColDefsRef.current
+        .map((group: any) => {
+          const filteredChildren = group.ch
+            .filter((child: any) =>  colOrder[child.groupHeaderKey] !== undefined) 
+            .sort((a: any, b: any) => {
+              const aColId = a.groupHeaderKey;
+              const bColId = b.groupHeaderKey; 
+              return (colOrder[aColId] ?? Infinity) - (colOrder[bColId] ?? Infinity); //infinty so that even if data comes undefined/nully it wil be handled
+            })
+          if (filteredChildren.length > 0) {
+            return {
+              cc: group.cc,
+              ch: filteredChildren,
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      return {
+        headers,
+        isGrouped: true,
+        ...filterData,
+      };
+    }
+
+    // Flat data
+    else {
+      const headers = filteredHeadersData
+        ?.map((col: any) => {
+          const header_data = colDefMap?.current?.get(col.colId);
+          return {
+            ...header_data,
+          };
+        })
+        .filter(
+          (col: any) => col?.hd !== undefined && col?.scc !== undefined
+        );
+
+      return {
+        headers,
+        ...filterData,
+      };
+    }
+  } catch (e) {
+    console.log(e);
   }
-        
-} 
+};
 
 export const DownloadExcel = (response : any,filename = "ReportFile") => {
   try {
-    if (response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    if ((response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (response.headers['content-type'] ===  'application/octet-stream')) {
       const blob = new Blob([response.data], { type: response.headers['content-type'] });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -4659,9 +4736,10 @@ export const DownloadExcel = (response : any,filename = "ReportFile") => {
       link.click();
       URL.revokeObjectURL(url);
       document.body.removeChild(link);
+      return true;
     } else {
-      notifyError('Error Downloading the excel as the response is not the expected response')
-      console.error('The response is not of the expected file type.');
+      notifyError('No orders found to export data!');
+      return false;
     }
   } catch (e) {
     console.log(e);
@@ -4693,6 +4771,53 @@ export const DownloadExcelMTA = (response: any, filename = "ReportFile") => {
   }
 };
 
+export const CsvExportMTA = async ( payload: any, filename = "ReportFile") => {
+  try {
+    const token = await MainService.refreshToken();
+    const response = await fetch(process.env.REACT_APP_API_HOST + `api/mta/GetExportDataAsync`, {
+      headers: {
+        Authorization: `Bearer ${token?.access}`,
+        "Content-Type": "application/json",
+      },
+      method:"post",
+      body:JSON.stringify(payload)
+    })  
+ 
+    if (!response.ok) {
+      throw new Error("Failed to download file");
+    }
+ 
+    const blob = await response.blob();
+    const fileExtension = getFileExtensionFromContentType(response.headers.get("Content-Type"));
+    const downloadFileName = `${filename}__${format(Date.now(), "dd-MM-yyyy")}.${fileExtension}`;
+ 
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.setAttribute("download", downloadFileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (e) {
+    console.error("Error downloading file:", e);
+    notifyError("Something went wrong while exporting");
+    throw e;
+  }
+};
+ 
+// Optional helper
+const getFileExtensionFromContentType = (contentType: string | null) => {
+  switch (contentType) {
+    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+      return "xlsx";
+    case "text/csv":
+      return "csv";
+    default:
+      return "bin";
+  }
+};
+
 // MDM MTO Utils
 export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) => {
   let result: ColDef[] = []
@@ -4708,6 +4833,7 @@ export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) 
       },
       flex: 1,
       cellRenderer: f.key === "action" && MTOActionRenderer,
+      filter: "agMultiColumnFilter",
       ...customParams
     }
   })
@@ -4743,9 +4869,6 @@ export const parseMTOExcelData = async (file: File, master: MDMMasterState, page
   // Validate sheet constraints
   if (numberOfSheets.length > 1) {
     throw new Error('File cannot contain multiple sheets');
-  }
-  if (numberOfSheets[0] !== 'ag-grid') {
-    throw new Error('Sheet Name is changed');
   }
 
   // Parse Excel data
@@ -4879,6 +5002,7 @@ export function getColumnDefinationsMTA(
       enableRowGroup:false,
       enableValue:true,
       pivotIndex: null,
+     
       flex: 1,
       minWidth: 180,
       cellStyle: {
@@ -4892,7 +5016,12 @@ export function getColumnDefinationsMTA(
 
       ...(getCellDataType(data.DataType) === 'number' && {
         valueFormatter: (params: any) => {
-          return params.value == null || isNaN(params.value) ? '' : params.value;
+          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+          if(params.value == null || isNaN(params.value)) return ''
+          else if(locale)  return params.value.toLocaleString(locale);
+          return params.value;
+          // return params.value == null || isNaN(params.value) ? '' : params.value;
         }
       })
     };

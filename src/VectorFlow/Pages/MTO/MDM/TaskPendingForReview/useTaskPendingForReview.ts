@@ -166,6 +166,32 @@ const useTaskPendingForReview = ()=>{
             (a: any, b: any) => parseInt(a.col_Position) - parseInt(b.col_Position)
         );
 
+        // Case for mid = 502 — special renderers/formatters
+        if (mid === 502) {
+            return sortedColumns.map((col: any, index: number) => {
+                const baseColDef = {
+                    field: col.key,
+                    headerName: col.displayName,
+                    position: index + 1,
+                    dataType: col.dataType,
+                    visible: col.visible,
+                    minWidth: 100
+                };
+
+                if (col.key === "cgid") {
+                    return {
+                        ...baseColDef,
+                        dataType: "string",
+                        valueFormatter: (params: any) => {
+                            return params?.data?.cgnm;
+                        }
+                    };
+                } else {
+                    return baseColDef;
+                }
+            });
+        }
+
         // Case for mid = 504 — special renderers/formatters
         if (mid === 504) {
             let ccrsData: any[] = [];

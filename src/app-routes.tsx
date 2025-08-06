@@ -47,7 +47,6 @@ import OrderRescheduling from './VectorFlow/Pages/MTO/Production/OrderRescheduli
 import RMExpeditionSuppliers from './VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMExpediting/index'
 import BMTrends from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/BMTrends'
 import SupplierDispatchReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/SupplierDispatchReport'
-
 import DataModificationHistory from './VectorFlow/Pages/MTA/MDM/DataModificationHistory'
 import MCGrid from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/MerchandisingGrid'
 import STPLAndFullKits from './VectorFlow/Pages/MTO/Production/InsightsAndTrends/STPLAndFullKits'
@@ -87,6 +86,7 @@ import SupplierWiseAllocation from './VectorFlow/Pages/MTA/SupplyChainIntelligen
 import OrderAllocationReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/OrderAllocationReport'
 import TotalRequirementReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/TotalRequirementReport'
 import BulkUploadPage from './module-store-transfer/pages/bulk-upload'
+import ElephantOrder from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/ElephantOrders'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -169,6 +169,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
     '/production-planning-scheduling/full-kit-assignment',
     '/supply-chain-intelligence-hub/sdr',
+    '/supply-chain-intelligence-hub/eo',
     '/master-data-management/data-modification-history',
     '/supply-chain-intelligence-hub/merchandising-grid',
     '/production-planning-and-scheduling/due-date-quotation',
@@ -990,6 +991,17 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<SupplierDispatchReport />)
+        },
+        ...getStoreTransferModuleRoutes()
+      ]
+    },
+    {
+      path: '/supply-chain-intelligence-hub/eo',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<ElephantOrder />)
         },
         ...getStoreTransferModuleRoutes()
       ]

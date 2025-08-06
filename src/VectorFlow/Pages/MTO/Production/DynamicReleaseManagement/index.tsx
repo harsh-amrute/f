@@ -33,7 +33,7 @@ import { useGetDBRsettingsData } from '../../../../Services/MTO/Common/DBRSettin
 import VFModalCard from '../../../../../components/VectorFLOW/commons/VFModalCard';
 import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButtonOutline';
 import { useNavigate } from 'react-router';
-
+import VFWarningModal from '../../../../../components/VectorFLOW/commons/MTO/VFWarningModal';
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -995,14 +995,13 @@ const DynamicReleaseManagement = () => {
           isMfgSelected={isMfgSelected}
           ReleaseOrderHeader={ReleaseOrderHeader}
         />
-        <VFModalCard headerText={"Warning"} openModal={showWarningModal} closeModal={() => onCloseWarningModal()} headerIcon={'/assets/img/VectorFLOW/NMS/warning.svg'} closeIcon={'/assets/img/VectorFLOW/NMS/close-dark.svg'}>
-          <p data-testid="warning-test" style={{ textAlign: "center", color: "#313131", paddingTop: "36px", fontStyle: "normal", fontVariant: "normal", fontWeight: 300, fontSize: "16px", fontFamily: "Roboto", width: '400px' }}>
-            Access to this page is restricted because orders will be automatically released in the current system.
-          </p>
-          <div style={{ display: "flex", gap: "28px", alignItems: "center", justifyContent: "center", paddingTop: "38px", paddingBottom: "36px" }}>
-            <VFButtonOutline themeUi={user.user.theme_ui} onClick={() => onCloseWarningModal()}>OK</VFButtonOutline>
-          </div>
-        </VFModalCard>
+        <VFWarningModal
+          warningMsg={"Access to this page is restricted because orders will be automatically released in the current system."}
+          actionButtonText={"Ok"}
+          showWarningModal={showWarningModal}
+          onCloseWarningModal={onCloseWarningModal}
+          themeUI={user.user.theme_ui}
+        />
 
         <SCTabHeader style={{ marginTop: '5px' }}>
 
@@ -1019,11 +1018,6 @@ const DynamicReleaseManagement = () => {
           disableZoomScaling
           gridOptions={options}
           columnDefs={options.columnDefs}
-          statusBar={{
-            statusPanels: [
-              { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-            ]
-          }}
           onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
           rowSelection="multiple"
           onSelectionChanged={updateGraphOnSelect}

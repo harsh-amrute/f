@@ -144,7 +144,10 @@ const CustomCellEditor = (props: any) => {
   }
 
   return (
-    <div style={{ height: '100%', width: "100%", display: 'flex', border: '1px solid #707070', borderRadius: '4px', marginRight: "20px" }}>
+    <div style={{
+      height: '100%', width: "100%", display: 'flex', border: '1px solid #707070', borderRadius: '4px',
+      // marginRight: "20px"
+    }}>
       <div style={{ width: '100%', height: "100%", paddingLeft: "2px", paddingRight: "2px" }} >
         {props.colDef.colId === 'MajorReason' ? renderMajorSelect() : renderMinorSelect()}
       </div>

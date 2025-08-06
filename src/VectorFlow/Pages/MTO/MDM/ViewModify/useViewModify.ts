@@ -1,6 +1,6 @@
 import { ColDef, SideBarDef } from "ag-grid-enterprise";
 import { AgGridReactProps } from "ag-grid-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ErrorCell from "../../../../../components/VectorFLOW/commons/ErrorCell";
 import {
@@ -500,10 +500,12 @@ const useViewModify = (pageType: string) => {
         if (col.colId === "iv") {
           col.cellRenderer = ToggleButton;
           col.pinned = 'right';
+          col.floatingFilter = false
         }
         if(col.colId === "bt"){
           col.valueFormatter = myFormatter
         }
+
         if(col.colId !== "actions" && col.colId !== "iv"){
           col.cellStyle = (params:any)=>{
             const { data } = params;
@@ -661,6 +663,29 @@ const useViewModify = (pageType: string) => {
     }
   }, [activeMaster]);
 
+  const CCRGroupMaterSetRef = useRef<Set<string>>(new Set());
+
+  const ccrGroupValidationFn = useCallback(() => {
+
+    const tempSet = new Set<string>();
+
+    Object.entries(ccrGroupMaster).forEach((entry: any) => {
+      const [key, value] = entry
+      if (value?.ccr_group_id != null) {
+        tempSet.add(String(value.ccr_group_id));
+      }
+      tempSet.add(String(key));
+    });
+
+    CCRGroupMaterSetRef.current = tempSet;
+
+  }, [ccrGroupMaster]);
+    
+  useEffect(() => {
+    ccrGroupValidationFn();
+  }, [ccrGroupValidationFn]);
+
+
   // Validatio in process....
 
   const validateMTOMaster = (masterId: number, newRowData: any) => {
@@ -715,7 +740,7 @@ const useViewModify = (pageType: string) => {
           });
 
           const isBufferTypeValid = bufferTypeData?.some(
-            (btData: any) => btData.dsc === e.bt || btData.id === e.bt
+            (btData: any) => btData.nm === e.bt || btData.id === e.bt
           );
           if (!isBufferTypeValid) {
             newVal.err = {
@@ -777,19 +802,16 @@ const useViewModify = (pageType: string) => {
     if (masterId === 502) {
       const allRows = [...newRowData];
       const newData: any = [];
-      let isValidCCRGroup :boolean
       allRows.forEach((e: any, index: number) => {
+        let isValideCCRGroup = true;
         const newVal = _.cloneDeep(e);
         const {error} = CCR_VALIDATION_SCHEMA.validate(e,{abortEarly:false})
         
-        if(e.cgid){
-          for(const key in ccrGroupMaster){
-            if(ccrGroupMaster[key]?.ccr_group_id === e.cgid || key=== e.cgid){
-              isValidCCRGroup = true
-              break
-            }
-          }
+        if (CCRGroupMaterSetRef.current.size &&
+          !CCRGroupMaterSetRef.current.has(String(e.cgid))) {
+            isValideCCRGroup = false;
         }
+        
         if(error){
           const fieldOrders = activeMaster.fields.map(field =>field.key)
 
@@ -802,10 +824,9 @@ const useViewModify = (pageType: string) => {
             warning : ""
           }
           newData.push(newVal)
-        }else{
-        
+        } else {  
           if (
-            plantMaster &&
+            plantMaster.length &&
             !plantMaster?.some(
               (plant: any) => plant.plant_name === e.pl || plant.plant_id === e.pl
             )
@@ -815,7 +836,7 @@ const useViewModify = (pageType: string) => {
               warning: "",
             };
           } else if (
-            deptMaster &&
+            deptMaster.length &&
             !deptMaster?.some(
               (dept: any) => dept.dept_name === e.dp || dept.dept_id === e.dp
             )
@@ -824,18 +845,18 @@ const useViewModify = (pageType: string) => {
               error: "Please select a valid department from the dropdown",
               warning: "",
             };
-          } else if (!isValidCCRGroup) {
+          } else if (!isValideCCRGroup) {
             newVal.err = {
               error: "Please select a valid CCR Group from the dropdown",
               warning: ""
             };
           }
-          else if (e.fh < e.sh){
-            newVal.err = {
-              error: "FOL horizon cannot be less than scheduling horizon",
-              warning: ""
-            }
-          }
+          // else if (e.fh < e.sh){
+          //   newVal.err = {
+          //     error: "FOL horizon cannot be less than scheduling horizon",
+          //     warning: ""
+          //   }
+          // }
 
           if (ccrInitialData?.some((ele: any) => ele.ccd === e.ccd)) {
             newVal.err = {
@@ -864,6 +885,7 @@ const useViewModify = (pageType: string) => {
           newData.push(newVal);
         }
       });
+      
 
       // Dispatch the updated row data
       dispatch(UPDATE_ROW_DATA(newData));
@@ -2029,7 +2051,7 @@ const useViewModify = (pageType: string) => {
             cellEditor: "agRichSelectCellEditor",
             valueFormatter: myFormatter,
             cellEditorParams: {
-              values: bufferTypeData?.map((item: any) => item.dsc),
+              values: bufferTypeData?.map((item: any) => item.nm),
             },
           };
         if (col.field === "pl" || col.field === "plnm" || col.field ==='pid')
@@ -2318,7 +2340,7 @@ const useViewModify = (pageType: string) => {
       const isCCRExport = activeMaster.id === 502;
 
       const bufferType = (value: any) => {
-        return buffTypeData?.find((type: any) => type.id === value)?.dsc;
+        return buffTypeData?.find((type: any) => type.id === value)?.nm;
       };
   
       const plantNameFromId = (value:any)=>{
@@ -2374,7 +2396,7 @@ const useViewModify = (pageType: string) => {
         }
       };
     }
-  ),[deptMaster,plantNames,ccrGroupMaster,ref,bufferTypeData,activeMaster?.id])
+  ),[deptMaster,plantNames,ccrGroupMaster,ref,bufferTypeData,activeMaster?.id,activeMaster])
   
 
   const handleChangePage = async (pageNo: any) => {
@@ -2824,9 +2846,7 @@ const useViewModify = (pageType: string) => {
 
   const onBackButton = () => {
     
-    const conf = confirm("Are you sure you want to go back. All the Progress will be lost!. Please Save to Draft");
-
-    if(conf){
+    const clearAllStates = () => {
       dispatch(RESET_MTO_STATE());
       dispatch(UPDATE_PROGRESS_STATE("default"));
       dispatch(UPDATE_ROW_DATA([]));
@@ -2836,23 +2856,35 @@ const useViewModify = (pageType: string) => {
       dispatch(REMOVE_ALL_FILTERS());
       dispatch(SET_CCR_INITIAL_DATA([]));
       dispatch(SET_CCR_MODIFY_DATA([]));
-      // dispatch(UPDATE_ACTIVE_MASTER([]))
-
+      // dispatch(UPDATE_ACTIVE_MASTER([])); // Uncomment if needed
       dispatch(ADD_FILTER());
+      dispatch(FILL_MASTERS([]));
+      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
+      
       setDownloadData(false);
       setTempDownloadData(false);
-      dispatch(FILL_MASTERS([]));
       setFilterButtonStatus([]);
-      dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-
-      if (pageType === "add") dispatch(TOGGLE_UPLOAD_MODAL(true));
+  
+      if (pageType === "add") {
+        dispatch(TOGGLE_UPLOAD_MODAL(true));
+      }
+  
+      if (backUrl) {
+        navigate(backUrl);
+      }
+    };
+  
+    const hasUnsavedData = activeMaster?.rowData?.length;
+  
+    if (hasUnsavedData) {
+      const confirmed = confirm(
+        "Are you sure you want to go back? All progress will be lost! Please Save to Draft."
+      );
+      if (!confirmed) return;
     }
-
-    if(backUrl){
-      navigate(backUrl)
-    }
-
-  };
+  
+    clearAllStates();
+  }  
 
   const postDraftChunks = async (rowData: any) => {
     let draftId = "";
@@ -3136,7 +3168,7 @@ const useViewModify = (pageType: string) => {
     if (bufferTypeData) {
       bufferTypeData.forEach((ele: any) => {
         if (ele.id.toString() === currBuff?.toString()) {
-          val = ele.dsc;
+          val = ele.nm;
         }
       });
     }
@@ -3193,19 +3225,21 @@ const useViewModify = (pageType: string) => {
           return params.data.isEditing === true
         }
       };
-      if(colDef.field === 'actions'){
+      if(colDef.field === 'actions' || colDef.field === 'iv' ){
         return {
           ...colDef,
-          editable:false
+          editable:false,
+          floatingFilter: false,
         }
       }
+
       if (colDef.field === "bt") {
         return {
           ...colDef,
           cellEditor: "agRichSelectCellEditor",
           valueFormatter: myFormatter,
           cellEditorParams: {
-            values: bufferTypeData?.map((item: any) => item.dsc), // Dropdown values
+            values: bufferTypeData?.map((item: any) => item.nm), // Dropdown values
           },
           cellStyle: (params: any) => {
             if (
@@ -3263,12 +3297,15 @@ const useViewModify = (pageType: string) => {
       }
 
       if (activeMaster.id === 502) {
-        if(colDef.field === 'actions'){
+        if(colDef.field === 'actions' || colDef.field === 'iv'){
           return {
             ...colDef,
-            editable:false
+            editable:false,
+            floatingFilter: false,
+            
           }
         }
+        
         if (
           colDef.field === "pl" ||
           colDef.field === "dp" ||
@@ -3703,7 +3740,7 @@ const useViewModify = (pageType: string) => {
     selectedRows.forEach((e: any) => {
       const newVal = JSON.parse(JSON.stringify(e));
       bufferTypeData.forEach((ele: any) => {
-        if (ele.dsc === e.bt) {
+        if (ele.nm === e.bt) {
           newVal.bt = ele.id;
         }
       });
@@ -4110,7 +4147,7 @@ const useViewModify = (pageType: string) => {
     bufferData.forEach((ele: any) => {
       const e = keysToDelete(ele);
       bufferTypeData.forEach((elm: any) => {
-        if (elm.dsc === ele.bt) {
+        if (elm.nm === ele.bt) {
           e.bt = elm.id;
         }
       });
@@ -4120,11 +4157,11 @@ const useViewModify = (pageType: string) => {
       e.iv = (e?.iv ===false|| e?.iv===true)? e.iv : true
       if (!e.bid) e.bid = null;
 
-      if (e.bid === null || e.iv === false) {
-        BufferPostObj.buffData.push(
-          _.omit(e, ["editable", "error", "warning"])
-        );
-      }
+     
+      BufferPostObj.buffData.push(
+        _.omit(e, ["editable", "error", "warning"])
+      );
+      
     });
 
     try {
@@ -4175,7 +4212,7 @@ const useViewModify = (pageType: string) => {
         activeMaster.rowData.forEach((ele: any) => {
           const e = _.cloneDeep(ele);
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
+            if (elm.nm === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
@@ -4198,7 +4235,7 @@ const useViewModify = (pageType: string) => {
         bufferData.forEach((ele: any) => {
           const e = keysToDelete(ele)
           bufferTypeData?.forEach((elm: any) => {
-            if (elm.dsc === ele.bt || elm.id === ele.bt ) {
+            if (elm.nm === ele.bt || elm.id === ele.bt ) {
               e.bt = elm.id;
             }
           });
@@ -4209,14 +4246,13 @@ const useViewModify = (pageType: string) => {
           !(e.iv === true || e.iv === false) && (e.iv = false);
           if (!e.bid) e.bid = null;
 
-          if (e.bid === null || e.iv === false) {
-            BufferPostObj.buffData.push(
-              _.omit(e, ["editable", "error", "warning"])
-            );
-          }
+          
+          BufferPostObj.buffData.push(
+            _.omit(e, ["editable", "error", "warning"])
+          );
+          
         });
       }
-
       try {
         const response = await saveBufferMasterDraft([BufferPostObj]);
         if (response.status === 200) {

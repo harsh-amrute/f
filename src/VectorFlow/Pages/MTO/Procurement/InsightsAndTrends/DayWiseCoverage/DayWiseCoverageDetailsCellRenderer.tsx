@@ -1,6 +1,6 @@
 import React from 'react'
 import { GridOptions } from 'ag-grid-enterprise'
-import VFTable from '../../../../../../components/VectorFLOW/commons/VFTable'
+import VFTable from "../../../Common/VFTable";
 import { VFTableWrapper } from '../../../../../../components/VectorFLOW/commons/VFTable/styles'
 
 const DayWiseCoverageDetailsCellRenderer = (params: any) => {

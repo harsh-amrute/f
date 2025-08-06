@@ -395,7 +395,7 @@ import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/
               
               return false;
             }}
-            showSubmittedExportError={errorCount>0}
+            showSubmittedExportError={activeMaster?.rowData.length > 0 && errorCount>0}
             masterProgress={activeMaster.progress}
             disableSubmit={activeMaster.rowData?.length===0 || isSubmitDisabled}
             enableEditOnlineReset = {enableEditOnlineReset}

@@ -18,9 +18,9 @@ describe('OrderRescheduling', () => {
 
     it('should UIConfig for DDQ', async () => {
         mockedAxios.get.mockResolvedValueOnce({ data: 'test', status: 200 });
-        const response = await RMPMBufferTrendsService.getRMPMBufferTrendsData();
+        const response = await RMPMBufferTrendsService.getRMPMBufferTrendsData({
+            appliedFilters: {}
+        });
         expect(response.status).toBe(200);
-    });
-
-
+    });    
 });

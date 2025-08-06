@@ -19,7 +19,7 @@ import { AgGridReactProps } from "ag-grid-react";
 import { GridRef } from "../../../../types/MDM";
 import { notifySuccess, notifyError } from "../../../../../helpers/notify";
 import { toast } from "react-toastify";
-import { ColumnsToolPanelModule, IRowNode } from "ag-grid-enterprise";
+import { IRowNode } from "ag-grid-enterprise";
 import OverlayLoader from "../../Common/Loader";
 import { useGetUIConfigData } from "../../../../../VectorFlow/Services/MTO/Common/UIConfig";
 import {
@@ -38,6 +38,7 @@ import { useUserData } from "../../../../../context/index";
 import useColDef from "../../../../../hooks/useColDef";
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from "../../../../../VectorFlow/Services/MTO/Common/CommonFilter";
+import _ from "lodash";
 
 
 interface RowDataType {
@@ -215,8 +216,8 @@ const OrderRescheduling = () => {
       wrapHeaderText: true,
       autoHeaderHeight: true,
       cellStyle: {
-        "text-align": "center",
-        "text-overflow": "ellipsis",
+        "textAlign": "center",
+        "textOverflow": "ellipsis",
       },
       flex: 1,
     },
@@ -250,9 +251,7 @@ const OrderRescheduling = () => {
   };
 
   useEffect(() => {
-    // GetData();
     setColumnDef();
-    // getUserColumnConfig();
   }, []);
 
   const extras = [
@@ -261,8 +260,15 @@ const OrderRescheduling = () => {
       colId: "",
       resizable: false,
       position: 0,
-      headerCheckboxSelection: true,
-      checkboxSelection: true,
+      headerCheckboxSelection: (params:any) => {
+        // Only show if no grouping is applied
+        return params.api.getRowGroupColumns().length === 0;
+      },
+      checkboxSelection: (params:any) => {
+        // Only show on leaf rows, not group rows
+        return params.node && !params.node.group;
+      },
+      minWidth: 50,
       maxWidth: 50,
       flex: 1,
       initialHide: false,
@@ -293,10 +299,12 @@ const OrderRescheduling = () => {
       headerName: "Reason",
       hide: false,
       cellRenderer: (params: any) => {
-        if (!params.node.isSelected()) {
+        if (!params.node.isSelected() && !_.isEmpty(params.data)) {
           params.data.rs = "";
+        } else if (!_.isEmpty(params.data)) {
+          return params.data.rs;
         }
-        return params.data.rs;
+        return "";
       },
       autoHeaderHeight: true,
       wrapHeaderText: true,
@@ -332,23 +340,25 @@ const OrderRescheduling = () => {
       const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
       setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
       getUserColumnConfig();
-      // getFilterData();
+    }
+  }, [HeaderData]);
+
+  useEffect(() => {
+    if(currTab && userConfigFetched) {
+      const headerDataCopy = JSON.parse(JSON.stringify(HeaderData));
+      setColDef(getColumnDefinations(headerDataCopy, customHeader, extras));
       GetData(false, 1);
       if(refGraph1){
         refGraph1.current?.api.deselectAll();
       }
     }
-  }, [HeaderData, currTab]);
-
-  
-  
+  }, [currTab]);
 
   const handlePageChangeCumulative = async (pageNumber: number) => {
     setIsLoading(true);
     setCurrentPage(pageNumber);
     GetData(false,pageNumber);
     setIsLoading(false);
-    // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
   };
 
   type OutputItem = {
@@ -436,14 +446,7 @@ const OrderRescheduling = () => {
     } else {
         notifyError("Invalide page size");
     }
-  }
-  
-  //  useEffect(() => {
-  //     if (Object.entries(appliedFilters).length) {
-  //       GetData(false,currentPage);
-  //     }
-  //   }, [currentPage]);
-   
+  }   
 
     useEffect (() => {
       if(Object.entries(appliedFilters).length && userConfigFetched){
@@ -578,10 +581,10 @@ const OrderRescheduling = () => {
         rn_id: UIGridCode.ProdOrderRescheduling,
       });
 
-      setUserConfigFetched(true);
       const newConfig = data?.data?.data?.length ? JSON.parse(data?.data?.data?.[0]?.columns_settings) || [] : [];
       setUserPageSize(newConfig.pageSize ? Number(newConfig.pageSize) : undefined);
       setColumnState(newConfig.cs);
+      setUserConfigFetched(true);
 
       if (!data) {
         console.error("Failed to apply column state");
@@ -669,7 +672,7 @@ const OrderRescheduling = () => {
   }, [isReset]);
   
   useEffect(() => {
-    if (currentGridRef?.current) {
+    if (currentGridRef?.current && !masterUIConfig.length) {
       setMasterUIConfig(currentGridRef?.current.api.getColumnState());
     }
   }, [colDef]);
@@ -745,24 +748,6 @@ const OrderRescheduling = () => {
                 ref={refGraph1}
                 enableRangeSelection={true}
                 rowSelection="multiple"
-                statusBar={{
-                  statusPanels: [
-                    {
-                      statusPanel: "agTotalAndFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agTotalRowCountComponent", align: "left" },
-                    {
-                      statusPanel: "agFilteredRowCountComponent",
-                      align: "left",
-                    },
-                    {
-                      statusPanel: "agSelectedRowCountComponent",
-                      align: "left",
-                    },
-                    { statusPanel: "agAggregationComponent", align: "left" },
-                  ],
-                }}
                 onFilterChanged={()=>{Object.keys((currentGridRef?.current?.api?.getFilterModel()))?.length>0 ? setIsDisabled(false) : setIsDisabled(true)}}
             
                 onFirstDataRendered={onFirstDataRendered}

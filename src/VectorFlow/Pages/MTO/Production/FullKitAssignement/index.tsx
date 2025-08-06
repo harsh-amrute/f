@@ -382,7 +382,7 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
         return <VFButtonOutline themeUi={themeUi}
           onClick={() => {
             setEditMode("Deselect")
-          }}>Deselect</VFButtonOutline>
+          }}>Deselect Order</VFButtonOutline>
       }
       case "Deselect": {
         return <>

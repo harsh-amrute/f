@@ -27,6 +27,8 @@ import { FilterPageName, pagination, UIGridCode } from "../../Common/Enum";
 import useColDef from "../../../../../hooks/useColDef";
 import { useGetDBRsettingsData } from "../../../../../VectorFlow/Services/MTO/Common/DBRSettings";
 import ChildrenColor from "../../Common/ChildrenColor/ChildrenColor";
+import moment from "moment";
+import _ from "lodash";
 
 
 
@@ -46,7 +48,7 @@ const getRows = (params: ProcessRowGroupForExportParams) => {
             ],
         },
     ].concat(
-        ...params.node.data.children.map((record: any) => [
+        ...(params?.node?.data?.children ?? []).map((record: any) => [
             {
                 outlineLevel: 1,
                 cells: [
@@ -77,7 +79,8 @@ const cell: (text: string, styleId?: string) => ExcelCell = (
     };
 };
 
-const useProcPlanning = (date: string, appliedFilters: any) => {
+const useProcPlanning = ( appliedFilters: any) => {
+    
     const [HeaderData, setHeaderData] = useState<any>([]);
     const [childHeaderData, setChildHeaderData] = useState<any>([])
     const gridRef = useRef<any>(null);
@@ -93,6 +96,13 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const [defaultColState,setDefaultColState] = useState<any>([])
 
     const [clearFilter, clearFilterDisabled]= useState<boolean>(true);
+    const format2 = "YYYY-MM-DD"
+    const d = new Date();
+    const datetime = moment(d).format(format2);
+    
+    const [selectedDate, setSelectedDate] = useState<string>(datetime);
+
+    
 
     
     const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
@@ -117,6 +127,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         }
     }
 
+    const onPivotModeChanged = (event: any) => {
+        const isPivotOn = event.api.isPivotMode();
+        setIsPivot(isPivotOn);
+      };
 
     const getUserColumnConfig = async () => {
         try {
@@ -128,7 +142,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             const configData = response?.data?.data?.[0]?.columns_settings;
             if (configData) {
                 const newConfig = JSON.parse(configData);
-                console.log(newConfig, "newConfig");
     
                 setUserPageSize(Number(newConfig.pageSize) || undefined);
                 setColumnState(newConfig.cs || []);
@@ -191,7 +204,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     useEffect(() => {
 
         if (isReset) {
-            handleSaveClick(true);
+            handleSaveClick(undefined,true);
             setIsReset(false);
             setColumnState([...defaultColState]);
             setIsPivot(false);
@@ -213,9 +226,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const { user } = useUserData();
 
 
+
     const dispatch = useDispatch()
 
-    dispatch(PROCPLANNING_ANALYTICS({ date }));
+    dispatch(PROCPLANNING_ANALYTICS({ date:selectedDate }));
     dispatch(APPLIED_FILTERS( {...formatFilterJSON(appliedFilters)} ));
 
     const [currentTab, setCurrentTab] = useState<VFFloatingTabItemProps | undefined>({
@@ -228,15 +242,59 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     const { mutateAsync : GetProcPlanningDataForExcelData, isLoading: isProcurementPlanningDataForExcelExport} = useGetProcurementPlanningDataForExcelExport()
     const { mutateAsync: getDBRsettingsData, isLoading: isGetDBRsettingsData } = useGetDBRsettingsData();
     const [simulationEnable, setSimulationEnable] = useState<any>();
+    const [showExcelModal, setShowExcelModal] = useState(false);
+    const tempGridRef = useRef<any>(null);
+    const [tempGridData, setTempGridData] = useState<any>(undefined);
+    const [gridData, setGridData] = useState<any>();
     
-
-    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any) => {
+    
+    
+     const getTempGridData = async () => {
+        
+        try {
+          const formatedFilters = formatFilterJSON(appliedFilters);
+            const response = await getProcPlanningData({
+            ca: '1',
+            date: selectedDate,
+            pageNum: '1',
+            appliedFilters: formatedFilters,
+            page_size: totalRows,
+          });
+          setTempGridData(response?.data?.data?.results || []);
+        } catch (e) {
+          console.log(e);
+        }
+    };
+    
+     useEffect(() => {
+        if (tempGridData) {
+          const colState = gridRef?.current?.api?.getColumnState();
+          tempGridRef.current?.api?.applyColumnState({
+            state: colState,
+            applyOrder: true,
+          });
+    
+          const isPivotMode = gridRef?.current?.api?.isPivotMode();
+          if (isPivotMode) {
+            gridRef?.current?.api?.exportDataAsExcel({
+              fileName: "Proc_Planning",
+            });
+          } else {
+            tempGridRef.current?.api?.exportDataAsExcel({
+              fileName: "Proc_Planning",
+            });
+          }
+        }
+      }, [tempGridData]);
+    
+    
+    const fetchData = useCallback(async (date: string, pageNumber = 1, currentTab = '1', isExcelExport = false, pageSize?:any, isChildren?:any) => {
         if(isExcelExport){
             try {
                 const headersdata = gridRef?.current?.api.getColumnState();
                 const formattedFilters = formatFilterJSON(appliedFilters)
                 const body = getBodyForExcelExport({headersdata, filterData : formattedFilters,colDefMap})
-                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning });
+                const response = await GetProcPlanningDataForExcelData({body ,ca: currentTab, isExcelExport: 1 , date , report_name : FilterPageName.Proc_Procurement_Planning,isChildren });
                 if (response.status === 200) {
                     DownloadExcel(response, FilterPageName.Proc_Procurement_Planning);
                     notifySuccess('Excel Export Successfully')
@@ -250,16 +308,23 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
 
         try {
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab, appliedFilters: formatedFilters,page_size: pageSize || userPageSize });
+            const response = await getProcPlanningData({ date, pageNum: pageNumber.toString(), ca: currentTab, appliedFilters: formatedFilters, page_size: pageSize || userPageSize });
             if (response.status === 200) {
                 setCurrentPage(pageNumber)
                 notifySuccess("Data fetched Successfully!");
             }
+            if (!gridData?.data?.data || gridData?.data?.data?.length === 0) {
+                setGridData([]);
+                // return;
+              }
+              
             else {
                 notifyError("Failed to fetch data!");
             }
             setTotalRows(response?.data?.data?.count)
             setData(response?.data?.data?.results || []);
+
+
         } catch (error) {
             notifyError("Failed to fetch data!");
         }
@@ -309,10 +374,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             suppressHeaderFilterButton: true,
             valueGetter: (params: any) => {
                 let cpData: any;
-                if (params.node.group) {
-                    const allData: any = params?.node?.allLeafChildren?.[0];
-                    cpData = allData?.data?.cp[0];
-                } else {
+                if (!_.isEmpty(params.data)) {
                     cpData = params.data?.cp[0];
                 }
 
@@ -330,10 +392,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             tooltipValueGetter: (params: any) => {
                 let tooltipText = '';
                 let cpData: any;
-                if (params.node.group) {
-                    const allData: any = params?.node?.allLeafChildren?.[0];
-                    cpData = allData?.data?.cp[0];
-                } else {
+                if (!_.isEmpty(params.data)) {
                     cpData = params.data?.cp[0];
                 }
                 
@@ -458,12 +517,12 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                     setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
                 }
                 setCurrentPage(1);
-                fetchData(date, 1, '0', false, userPageSize);
+                fetchData(selectedDate, 1, '0', false, userPageSize);
             }
             else {
                 setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]))
                 setCurrentPage(1);
-                fetchData(date, 1, '1', false, userPageSize);
+                fetchData(selectedDate, 1, '1', false, userPageSize);
             }
         }
     }, [currentTab])
@@ -513,7 +572,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                 setIsOverlayLoading(false);
                 if (response.status === 200) {
                     notifySuccess("Simulation updated successfully!")
-                    navigate("/planning/simulative-fullkit", { state: { ShortageDatas, date } });
+                    navigate("/planning/simulative-fullkit", { state: { ShortageDatas, date: selectedDate } });
 
                 }
                 else {
@@ -531,15 +590,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             });
 
 
-    }, [navigate, ShortageDatas, date]);
+    }, [navigate, ShortageDatas, selectedDate]);
 
-    const defaultExcelExportParams = useMemo<ExcelExportParams>(() => {
-        return {
-            getCustomContentBelowRow: (params) => getRows(params) as ExcelRow[],
-            columnWidth: 120,
-            fileName: "ag-grid.xlsx",
-        };
-    }, []);
+   
     const excelDownload = useCallback(() => {
         gridRef.current?.api.exportDataAsExcel();
     }, []);
@@ -573,9 +626,9 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
     }, []);
 
     useEffect(() => {
-        if (date && Object.keys(appliedFilters).length > 0 && userConfigFetched) {
+        if (selectedDate && Object.keys(appliedFilters).length > 0 && userConfigFetched) {
             setCurrentPage(1);
-            fetchData(date, 1, currentTab?.label === "Shortage" ? '0' : '1');
+            fetchData(selectedDate, 1, currentTab?.label === "Shortage" ? '0' : '1');
         }
     }, [appliedFilters, userConfigFetched])
 
@@ -590,10 +643,10 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         // setData(newDat);
         // setIsLoading(false);
         if (currentTab?.id === 'ca') {
-            fetchData(date, pageNumber, '1', false, userPageSize);
+            fetchData(selectedDate, pageNumber, '1', false, userPageSize);
         }
         else {
-            fetchData(date, pageNumber, '0', false, userPageSize);
+            fetchData(selectedDate, pageNumber, '0', false, userPageSize);
         }
         // (refGraph1.current?.api.getRowNode) && refGraph1.current?.api.set
     };
@@ -603,7 +656,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
             setCurrentPage(1)
             setUserPageSize(pageSize);
             handleSaveClick(undefined, pageSize);
-            fetchData(date,1,currentTab?.label === "Shortage" ? '0':'1', false,pageSize);
+            fetchData(selectedDate,1,currentTab?.label === "Shortage" ? '0':'1', false,pageSize);
         } else {
             notifyError("Invalide page size");
         }
@@ -652,18 +705,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                 // setDefaultColState(params?.api?.getColumnState())
                                 
                             }}
-                            maintainColumnOrder={true}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
-                            
-                            // onFilterChanged={() => { 
-                            //     const filterModel = gridRef?.current?.api?.getFilterModel() || {};
-                            //     console.log("filterModelwewew", filterModel.length)
-                            //     Object.keys(filterModel).length > 0 ? clearFilterDisabled(false) : clearFilterDisabled(true);
-                            // }}        
+                            maintainColumnOrder={true}        
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
 
                         />
@@ -701,11 +743,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                 params.api.autoSizeAllColumns();
                             }}
                             maintainColumnOrder={true}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
                         onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
 
                         />
@@ -719,14 +756,15 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                             handleChangePage={handlePageChangeCumulative}
                             customPageSizeEnabled={true}
                             savePageSize={savePageSize}
-                            userPageSize = {userPageSize}
+                            userPageSize={userPageSize}
+
 
                         />
-                        { simulationEnable ==='enabled'  && (
-            <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
+                   { simulationEnable ==='enabled'  && (
+                    <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline
-                                    onClick={() => { (!isDisabled) && fetchData(date, 1, '0',false,userPageSize) }}
+                                    onClick={() => { (!isDisabled) && fetchData(selectedDate, 1, '0',false,userPageSize) }}
                                 themeUi=""
                                 disabled={isDisabled}
                                 width={135}
@@ -792,11 +830,6 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
                                 
                             }}
                             maintainColumnOrder={true}
-                            statusBar={{
-                                statusPanels: [
-                                    { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                                ]
-                            }}
                     onFilterChanged={()=>{Object.keys((gridRef?.current?.api?.getFilterModel()))?.length>0 ? clearFilterDisabled(false) : clearFilterDisabled(true)}}
 
                         />
@@ -861,6 +894,7 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         },
         masterDetail: true,
         detailCellRenderer: ChildrenProcPlanningCellRenderer,
+        onColumnPivotModeChanged: onPivotModeChanged,
         detailCellRendererParams: {
             colDef: childColDef
         },
@@ -869,26 +903,27 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         enterNavigatesVertically: true,
         enterNavigatesVerticallyAfterEdit: true,
         groupDefaultExpanded: 0,
-        defaultExcelExportParams: defaultExcelExportParams,
         excelStyles: excelStyles,
         sideBar: sideBar,
         onCellEditingStopped(event: any) {
             const field = event.colDef.field;
             const newValue = +event.newValue;
-            const rowIndex = event.rowIndex;
 
-            if (!field || rowIndex == null) {
+            if (!field || !event.node || event.node.group) {
+                console.warn("Invalid editing event or it's a group node, skipping update.");
                 return;
             }
-
+    
+            const nodeId = event.node.data.rm;  // Assuming 'rm' is a unique identifier in your data
             SetShortageData((prevData: any) => {
-                const newData = [...prevData];
-                const updatedRow = {
-                    ...newData[rowIndex],
-                    [field]: newValue,
-                    tsfs: newData[rowIndex].soh + newValue
-                };
-                newData[rowIndex] = updatedRow;
+                const newData = prevData.map((row: any) => {
+                    if (row.id !== nodeId) return row;
+                    return {
+                        ...row,
+                        [field]: newValue,
+                        tsfs: row.soh + newValue
+                    };
+                });
                 return newData;
             });
             gridRef.current?.api.refreshCells({ force: true });
@@ -910,11 +945,16 @@ const useProcPlanning = (date: string, appliedFilters: any) => {
         excelDownload,
         GetCount,
         fetchData,
-        date,
+        selectedDate,
+        setSelectedDate,
         isLoading : isProcurementPlanningDataForExcelExport || isUpdateUserConfig || isGetUserConfig || isUIConfigDataLoading || isGetProcPlanningData || isGetDBRsettingsData,
         handleResetClick,
         handleSaveClick,
-        currentTab
+        currentTab,
+        setShowExcelModal,
+        showExcelModal,
+        isPivot,
+        getTempGridData
     }
 }
 

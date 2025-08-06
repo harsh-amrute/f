@@ -25,3 +25,11 @@
 /* .split-view-view{
     overflow: visible !important;
 } */
+ 
+.vfwrap .ag-icon-filter{
+    color:white;
+  zoom:1.0;
+  pointer-events: none; 
+   
+}
+

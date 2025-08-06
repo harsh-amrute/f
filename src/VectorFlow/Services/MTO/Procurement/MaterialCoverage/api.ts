@@ -26,7 +26,7 @@ export namespace MaterialCoverageServices {
         })
     }
 
-    export const getOpenSODetailsDataForExcelExport =async ({data , body , isExcelExport, report_name} : {data : string , body : any , isExcelExport : number , report_name : string} ) => {
+    export const getOpenSODetailsDataForExcelExport =async ({data , body , isExcelExport, report_name, isChildren} : {data : string , body : any , isExcelExport : number , report_name : string,isChildren:any} ) => {
         return await axios.put(process.env.REACT_APP_VF_API_HOST_MTO + `/getOpenSODetailsData/${data}`, body,{
             headers: {
                 'Content-Type': 'application/json',
@@ -34,7 +34,8 @@ export namespace MaterialCoverageServices {
             },
             params : {
                 export : isExcelExport,
-                report_name
+                report_name,
+                isChildren
             },
             responseType : 'blob'
         })    

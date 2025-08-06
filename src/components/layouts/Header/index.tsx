@@ -139,19 +139,22 @@ const Header = (props:HeaderProps) => {
 
     return (
       <>
-        <HeaderStyled.SCHeaderBox
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 2,
-            paddingTop: 15
-          }}
-        >
-          <HeaderStyled.SCHeaderText>
-            {renderNamePage()}
-          </HeaderStyled.SCHeaderText>
-        </HeaderStyled.SCHeaderBox>
-
+        {
+          !urlExcludeHeader.includes(location.pathname) &&
+          <HeaderStyled.SCHeaderBox
+            style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 2,
+              paddingTop: 15
+            }}
+          >
+            <HeaderStyled.SCHeaderText>
+              {renderNamePage()}
+            </HeaderStyled.SCHeaderText>
+          </HeaderStyled.SCHeaderBox>
+        }
+        
         <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ display: 'flex', alignItems: 'center' }}>
           {!process.env.REACT_APP_CLIENT_LOGO && !process.env.REACT_APP_CLIENT_NAME &&
             <HeaderStyled.SCImg
