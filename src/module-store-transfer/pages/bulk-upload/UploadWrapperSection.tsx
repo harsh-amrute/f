@@ -5,11 +5,15 @@ import UploadLeftSection from "./UploadLeftSection";
 import NoDataToDisplay from "./NoDataToDisplay";
 import { notifyError } from "../../../helpers/notify";
 import { useUserData } from "../../../context";
-import { usePostHeadersDataForValidations } from "../../../services/profile";
+import { usePostUsersDataForValidations } from "../../../services/profile";
 import readXlsxFile from "read-excel-file";
 import _ from "lodash";
 
-function UploadWrapperSection({ setIsAssignPageOpen, setValidUserData, validUserData }: any) {
+function UploadWrapperSection({
+  setIsAssignPageOpen,
+  setValidUserData,
+  validUserData,
+}: any) {
   const [noData, setNoData] = useState(true);
   const [errorCount, setErrorCount] = useState(0);
   const [errorData, setErrorData] = useState<any>([]);
@@ -17,14 +21,13 @@ function UploadWrapperSection({ setIsAssignPageOpen, setValidUserData, validUser
   const [progress, setProgress] = useState(0);
 
   const {
-    mutateAsync: postHeadersDataForValidation,
+    mutateAsync: postUsersDataForValidation,
     isLoading,
     isSuccess,
-  } = usePostHeadersDataForValidations();
+  } = usePostUsersDataForValidations();
 
   const [file, setFile] = useState<any>();
 
-  
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null); // Track when loading started
 
@@ -112,42 +115,47 @@ function UploadWrapperSection({ setIsAssignPageOpen, setValidUserData, validUser
       };
     });
 
+    console.log("userData", userData);
+
     userData.shift();
 
     // @TODO: commented for testing needs to be uncommented for api call
-    // try {
-    //   const response = await postHeadersDataForValidation({ userData });
-    //   console.log("response", response);
-    //   setNoData(false);
-    //   if (response?.data?.ec && response?.data?.ec > 0) {
-    //     if (response?.data.inv_ent) {
-    //       const errorRowData = response?.data?.inv_ent.map((row: any) => {
-    //         return {
-    //           error: row?.err,
-    //           username: userData[row.id - 1].username,
-    //           email: userData[row.id - 1].email,
-    //           pwd: userData[row.id - 1].pwd,
-    //           roles: null,
-    //           permissions: null
-    //         };
-    //       });
+    try {
+      const response = await postUsersDataForValidation({ userData });
+      console.log("response", response);
+      setNoData(false);
+      if (response?.data?.ec && response?.data?.ec > 0) {
+        if (response?.data.inv_ent) {
+          const errorRowData = response?.data?.inv_ent?.map((row: any) => {
+            return {
+              error: row?.err,
+              username: userData[row.id - 1].username,
+              email: userData[row.id - 1].email,
+              pwd: userData[row.id - 1].pwd,
+              roles: null,
+              permissions: null,
+            };
+          });
 
-    //       setErrorData(errorRowData);
-    //       const validData = userData.filter((row:any)=>{
-    //         return (!response.data.inv_ent.some((errorRow:any) => errorRow.id === row.id))
-    //       })
-    //       console.log("validData",validData)
-    //       validData.forEach((ele:any,index: number)=>{
-    //         ele.id = index+1;
-    //       })
-    //       setValidUserData(validData);
-    //     }
-    //   }
-    // } catch (error: any) {
-    //   notifyError("Failed to validate data!");
-    // }
-    setValidUserData(userData);
-    setNoData(false);
+          setErrorData(errorRowData);
+        }
+        const validData = userData.filter((row: any) => {
+          return !response?.data?.inv_ent?.some(
+            (errorRow: any) => errorRow.id === row.id
+          );
+        });
+        validData.forEach((ele: any, index: number) => {
+          ele.id = index + 1;
+        });
+        setValidUserData(validData);
+        setNoData(false);
+      } else {
+        setValidUserData(userData);
+        setNoData(false);
+      }
+    } catch (error: any) {
+      notifyError("Failed to validate data!");
+    }
   };
 
   const handleFileChange = (e: any) => {

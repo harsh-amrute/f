@@ -4,20 +4,19 @@ import { TableWrapper } from "../../../VectorFlow/Pages/MTO/Procurement/Insights
 import { ColDef, FillOperationParams } from "ag-grid-enterprise";
 import { AgGridReactProps } from "ag-grid-react";
 import BulkUploadHeader from "./BulkUploadHeader";
-import CustomDropdown from "../../../components/commons/CustomDropdown";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import {
   useGetAllPermissions,
   useGetAllRoles,
+  usePostBulkUploadUsers,
 } from "../../../services/profile";
 import RoleSelectionModal from "./RoleSelectionModal";
-import { generateRolesObject } from "../../../helpers/utils";
 import RoleViewCellRenderer from "./RoleViewCellRenderer";
 import { GridRef } from "../../../VectorFlow/types/MDM";
 import PermissionSelectionModal from "./PermissionSelectionModal";
 import PermissionViewCellRenderer from "./PermissionViewCellRenderer";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
-import { AgGridEvent } from "@ag-grid-community/core";
+import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
 
 type Role = {
   id: number;
@@ -27,17 +26,17 @@ type Role = {
 
 const PermissionSelectionPage = ({
   validUserData,
-  setValidUserData,
   themeUi,
 }: {
   validUserData: any;
-  setValidUserData: any;
   themeUi: any;
 }) => {
   const [isPermissionModalOpen, setIsPermissionModalOpen] =
     React.useState(false);
   const [isPermissionModalOpenForRow, setIsPermissionModalOpenForRow] =
     React.useState(false);
+
+  const {mutateAsync: postPostBulkUploadUsers, isLoading} = usePostBulkUploadUsers();
   const [isRoleModalOpen, setIsRoleModalOpen] = React.useState(false);
   const { data: dataPermissions } = useGetAllPermissions();
   const [listRoles, setListRoles] = useState<any>([]);
@@ -50,6 +49,7 @@ const PermissionSelectionPage = ({
 
         userData.roles = selectedRoles;
         node.setData(userData);
+       
       }
     });
   };
@@ -89,14 +89,105 @@ const PermissionSelectionPage = ({
 
     const dataAllPermissions = dataPermissions?.data;
 
+
+    const transformUserData=(inputUsers: any[])=> {
+      const output: any = {
+        users: [],
+        permissions: {},
+        roles: {}
+      };
+    
+      let permIdCounter = 1;
+    
+      for (const user of inputUsers) {
+        const currentPermId = permIdCounter++;
+        const currentRoleId = currentPermId; // Linking role ID to perm ID (can be adjusted if needed)
+    
+        // Push to users array
+        output.users.push({
+          id: user.id,
+          email: user.email,
+          name: user.username,
+          pwd: user.pwd,
+          tc: true,
+          rid: currentRoleId,
+          perm_id: currentPermId
+        });
+    
+        // Set roles
+        const roleIds = [...user.roles]?.map((r: any) => r.id) || [];
+        output.roles[currentRoleId] = { roles: roleIds };
+    
+        // Set permissions
+        const userPerms:any = user.permissions || {};
+        const formattedPerms:any = {
+          location_permissions: [],
+          product_permissions: []
+        };
+    
+        for (const [appName, perms] of Object.entries(userPerms) as [string, any][]) {
+          const application_id = getAppId(appName); // You can customize this mapping
+          if (perms.location_permission) {
+            formattedPerms.location_permissions.push({
+              application_id,
+              permissions: perms.location_permission.map((locPath: string[]) => {
+                const obj: any = {};
+                locPath.forEach((lvl, i) => {
+                  obj[`location_heirarchy_${i + 1}`] = lvl;
+                });
+                return obj;
+              })
+            });
+          }
+    
+          if (perms.product_permission) {
+            formattedPerms.product_permissions.push({
+              application_id,
+              permissions: perms.product_permission.map((prodPath: string[]) => {
+                const obj: any = {};
+                prodPath.forEach((lvl, i) => {
+                  obj[`product_hierarchy_${i + 1}`] = lvl;
+                });
+                return obj;
+              })
+            });
+          }
+        }
+    
+        output.permissions[currentPermId] = formattedPerms;
+      }
+    
+      return output;
+    }
+    
+    // Helper to assign application IDs (you can customize this)
+    const getAppId=(appName: string)=> {
+      const appMap: Record<string, number> = {
+        Distribution: 2,
+        Orders: 3
+      };
+      return appMap[appName] || 1;
+    }
+    
+
     const createUsers = ()=>{
-      const userData:any = [];
+      const userDataAll: string[] = [];
       gridRef &&  gridRef.current && gridRef?.current.api.forEachNode((node: any)=>{
         console.log("node", node);
-        console.log("userData", userData);
-        userData.push(node.data)
-        setValidUserData(userData);
+        userDataAll.push(node.data)
+        
       })
+      console.log("userData", userDataAll);
+      // return;
+      try{
+        const finalData = transformUserData(userDataAll);
+        const response = postPostBulkUploadUsers({...finalData})
+        console.log("response", response);
+      }catch(e){
+        console.error("Error updating roles for selected users", e);
+      }
+      console.log("userData", userDataAll);
+
     }
 
     console.log("dataAllPermissions", dataAllPermissions);
@@ -142,6 +233,8 @@ const PermissionSelectionPage = ({
     ];
     const [isBulkActionEnabled, setIsBulkActionEnabled] = useState(false);
 
+    console.log("ValidUserData", validUserData)
+
     const agGridProps: AgGridReactProps = {
       rowSelection: "multiple",
       enableFillHandle: true,
@@ -166,6 +259,7 @@ const PermissionSelectionPage = ({
 
     return (
       <TableWrapper style={{ paddingBottom: "50px" }}>
+        { isLoading && <VFLoader/>}
         <BulkUploadHeader
           themeUi={themeUi}
           isBulkActionEnabled={isBulkActionEnabled}
@@ -180,21 +274,29 @@ const PermissionSelectionPage = ({
           tooltipHideDelay={100000}
           tooltipShowDelay={0}
           tooltipMouseTrack={true}
-          cellSelection={{
-            handle: {
-              mode: "fill",
-              setFillValue: (params: FillOperationParams) => {
-                if (params.column.getColId() === "roles") {
-                  params.api.forEachNode((node: any, index: number) => {
-                    if (params.rowNode.rowIndex === index) {
-                      const userData = node.data;
-                      userData.roles = params.initialValues[0];
-                      node.setData(userData);
-                    }
-                  });
+          enableFillHandle={
+            true
+          }
+          fillHandleDirection={"y"}
+          fillOperation={(params: FillOperationParams) => {
+            if (params.column.getColId() === "roles") {
+              params.api.forEachNode((node: any, index: number) => {
+                if (params.rowNode.rowIndex === index) {
+                  const userData = node.data;
+                  userData.roles = params.initialValues[0];
+                  node.setData(userData);
                 }
-              },
-            },
+              });
+            }
+            if(params.column.getColId() === 'permissions') {
+              params.api.forEachNode((node: any, index: number) => {
+                if (params.rowNode.rowIndex === index) {
+                  const userData = node.data;
+                  userData.permissions = params.initialValues[0];
+                  node.setData(userData);
+                }
+              });
+            }
           }}
           statusBar={{
             statusPanels: [

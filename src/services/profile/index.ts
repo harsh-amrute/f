@@ -78,8 +78,13 @@ export const useGetHeadersData = () => {
   })
 }
 
-export const usePostHeadersDataForValidations = () => {
+export const usePostUsersDataForValidations = () => {
   return useMutation(async (data: any) => {
-    return await MainService.postHeadersDataForValidation(data)
+    return await MainService.postUsersDataForValidation(data)
+  })
+}
+export const usePostBulkUploadUsers = () => {
+  return useMutation(async (data: any) => {
+    return await MainService.postBulkUploadUsers(data)
   })
 }

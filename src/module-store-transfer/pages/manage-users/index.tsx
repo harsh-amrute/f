@@ -27,7 +27,6 @@ import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
 import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
-import PermissionHeirarchyCanvas from "./PermissioinSelectionModal";
 import { useNavigate } from "react-router";
 import { notifyError } from "../../../helpers/notify";
 import { APPLICATION_NAMES } from "../../../helpers/constants";
@@ -404,10 +403,8 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   }
 
 
-  const [isBulkModalOpen , setIsBulkModalOpen] = useState(false);
   const navigate = useNavigate()
   const handleClickBulkUpload = ()=>{
-    // setIsBulkModalOpen(true);
     navigate("/profile/bulk-upload")
   }
   
