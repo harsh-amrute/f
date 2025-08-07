@@ -13,14 +13,17 @@ const CustomCellEditor = (props: any) => {
 
   const initialData = useMemo(() => {
     if (props.reasonData && Object.entries(props.reasonData.data.data).length) {
-      const result = getOuterObjectByKey(props.reasonData?.data?.data, props.data.pid);
-      const selectedVal = Object.values(result).map((item: any) => {
-        return { 'des': item.majd, 'id': item.majid, 'min': item.min }
-      })
-      return selectedVal;
+      const result = getOuterObjectByKey(props.reasonData?.data?.data, props.data.pid);  
+      if (result) {
+        const selectedVal = Object.values(result).map((item: any) => {
+          return { 'des': item.majd, 'id': item.majid, 'min': item.min };
+        });
+        return selectedVal;
+      } 
     }
     return undefined;
   }, [props.reasonData]);
+  
 
   const extractMinDetails = (data: any, keyId: string) => {
     const item = data.find((d: any) => d.id == keyId);
