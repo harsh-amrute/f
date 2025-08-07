@@ -30,9 +30,10 @@ const useColDef = () => {
     return {
         getColDef,
         colDefMap,
-        getGroupedColDef, 
+        getGroupedColDef,
         groupedColDefsRef
     }
 }
 
 export default useColDef
+

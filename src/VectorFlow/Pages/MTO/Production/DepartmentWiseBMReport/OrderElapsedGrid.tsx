@@ -75,6 +75,11 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
             defaultColDef: {
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
+                enablePivot: true, 
+                enableRowGroup: true, 
+                enableValue: true, 
+                sortable: true, 
+                resizable: true,
                 cellStyle: {
                     'text-align': 'center',
                     "font-style": "normal",
@@ -108,30 +113,36 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
                     background: params.node.rowIndex % 2 === 0 ? "#EBEBEB" : "#F7F7F7"
                 };
             },
-            pagination: true,
+            pagination: true, 
+            suppressDragLeaveHidesColumns: true, 
             defaultColDef: {
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
+                enablePivot: true, 
+                enableRowGroup: true, 
+                enableValue: true, 
+                sortable: true, 
+                
+                resizable: true, 
                 cellStyle: {
                     'text-align': 'center',
                     "font-style": "normal",
                     "font-variant": "normal",
-                    //"font-weight": "300",
                     "font-size": "18px",
                     "font-family": "Roboto",
                     'text-overflow': 'ellipsis',
                     'white-space': 'nowrap',
-                    'resizable': 'true',
                 },
                 floatingFilterComponentParams: {
                     suppressFilterButton: true
                 },
                 initialFlex: 1
-
             },
+            
         },
-        sideBar: sideBar,
-        pivotMode: false
+        enableRangeSelection: true,
+        suppressAggFuncInHeader: true,
+        suppressMakeColumnVisibleAfterUnGroup: true,
     };
 
     const dropDownButton = (val: number) => {
@@ -266,6 +277,10 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
                 headerName: apiColumn.hd,
                 field: apiColumn.scc,
                 colId: apiColumn.scc,
+                enableRowGroup: true, // Allow grouping by this column
+            enablePivot: true, // Allow pivoting on this column
+            enableValue: true, // Allow aggregation on this column
+            floatingFilter: true, 
             };
 
             if (apiColumn.children && apiColumn.children.length > 0) {
@@ -699,7 +714,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
                                 </ExpansionHeader>
                                 {(isLeftPanelOrderStatusOpen) && (
                                     <ExpansionContent>
-                                        <VFWrapper style={{height: "300px"}}>
+                                        <VFWrapper style={{height: "400px"}}>
                                             <VFTable
                                                 {...agGridProps}
                                                 columnDefs={ordeStatusColDef}
@@ -737,7 +752,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
                                 </ExpansionHeader>
                                 {(isleftPanelElapsedTimeOpen) && (
                                     <ExpansionContent >
-                                        <VFWrapper style={{height: "300px"}}>
+                                        <VFWrapper style={{height: "400px"}}>
                                             <VFTable
                                                 {...agGridPropsElapsedTime}
                                                 height='400px'
@@ -803,7 +818,7 @@ const OrderElapsedGrid = ({ isTrue, data, deptName, selectedOrderCount, highAgei
                             </ExpansionHeader>
                             {(isRightPanel) && (
                                 <ExpansionContent>
-                                    <VFWrapper style={{height: "300px"}}>
+                                    <VFWrapper style={{height: "400px"}}>
                                         <VFTable
                                             {...agGridProps}
                                             height='400px'

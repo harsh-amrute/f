@@ -4656,7 +4656,6 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   return selectedFilter;
 }
 
-
 export const getBodyForExcelExport = ({
   headersdata,
   filterData = {},
@@ -4665,39 +4664,44 @@ export const getBodyForExcelExport = ({
 }: any) => {
   const filteredHeadersData = headersdata?.filter(
     (col: any) =>
-      (col.colId !== "DropDown" || col.colId !== "Action") &&
-      col.hide !== true
+      col.colId !== "DropDown" && col.colId !== "Action" && col.hide !== true
   );
 
   try {
-    //grouped data
+    // Grouped data
     if (groupedColDefsRef?.current) {
-      const headers = filteredHeadersData?.map((col: any) => col.colId);
+      const colOrder = filteredHeadersData.reduce((map: any, col: any, index: number) => {
+        map[col.colId] = index;
+        return map;
+      }, {});
 
-      const filteredGroupedColDefs = groupedColDefsRef.current
+      const headers = groupedColDefsRef.current
         .map((group: any) => {
-          const filteredChildren = group.ch.filter((child: any) =>
-            headers.includes(child.groupHeaderKey)
-          );
-
+          const filteredChildren = group.ch
+            .filter((child: any) =>  colOrder[child.groupHeaderKey] !== undefined) 
+            .sort((a: any, b: any) => {
+              const aColId = a.groupHeaderKey;
+              const bColId = b.groupHeaderKey; 
+              return (colOrder[aColId] ?? Infinity) - (colOrder[bColId] ?? Infinity); //infinty so that even if data comes undefined/nully it wil be handled
+            })
           if (filteredChildren.length > 0) {
             return {
               cc: group.cc,
               ch: filteredChildren,
             };
           }
-
           return null;
         })
         .filter(Boolean);
 
       return {
-        headers: filteredGroupedColDefs,
+        headers,
         isGrouped: true,
         ...filterData,
       };
     }
-    //flat data
+
+    // Flat data
     else {
       const headers = filteredHeadersData
         ?.map((col: any) => {
@@ -4719,8 +4723,6 @@ export const getBodyForExcelExport = ({
     console.log(e);
   }
 };
-
-
 
 export const DownloadExcel = (response : any,filename = "ReportFile") => {
   try {
