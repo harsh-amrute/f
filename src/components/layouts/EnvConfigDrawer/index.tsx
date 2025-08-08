@@ -5,7 +5,6 @@ import { useState } from "react"
 import AddRole from "./Add"
 import NavigationTab from "../NavigationTab"
 import ViewURLs from "./View"
-import DeleteUrl from "./Delete"
 import { notifySuccess,notifyError } from "../../../helpers/notify"
 import EditRole from "./Edit"
 
@@ -34,28 +33,28 @@ console.log("WAGGGGGGGG");
         setCurrRole(row)
     }
 
-    const onDeleteRole = (row:any)=>{
-        setCurrTab(2)
-        setCurrRole(row)
-    }
+    // const onDeleteRole = (row:any)=>{
+    //     setCurrTab(2)
+    //     setCurrRole(row)
+    // }
 
     const resetTab = ()=>{
         setCurrTab(0)
         setCurrRole(null)
     }
 
-    const handleDelete = async()=>{
-        try{
-            await fetch(`${process.env.REACT_APP_API_HOST}api/user/delete-role/${currRole.id}/`,{
-                method:'DELETE'
-            })
-            notifySuccess("Deleted Role Successfully")
-            setCurrTab(0)
-        }catch(error){
-            console.error(error)
-            notifyError("Server Went Unresponsive")
-        }
-    }
+    // const handleDelete = async()=>{
+    //     try{
+    //         await fetch(`${process.env.REACT_APP_API_HOST}api/user/delete-role/${currRole.id}/`,{
+    //             method:'DELETE'
+    //         })
+    //         notifySuccess("Deleted Role Successfully")
+    //         setCurrTab(0)
+    //     }catch(error){
+    //         console.error(error)
+    //         notifyError("Server Went Unresponsive")
+    //     }
+    // }
 
     
 
@@ -80,18 +79,9 @@ console.log("WAGGGGGGGG");
                 <Content>
                     <ViewURLs
                         onEdit={onEditRole}
-                        onDelete={onDeleteRole}
                     />
                 </Content>
-            )}
-            {currTab === 2 && (
-                <Content>
-                    <DeleteUrl  
-                        onSuccess={handleDelete}
-                        onFailure={resetTab}
-                    />
-                </Content>
-            )}
+            )}          
             {currTab === 3 && (
                 <Content>
                     <EditRole data={currRole} cb={resetTab}/>

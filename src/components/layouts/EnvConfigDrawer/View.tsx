@@ -11,10 +11,9 @@ import { notifyError } from '../../../helpers/notify'
 import { useGetAllEnvironmentConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
 
 
-const ViewURLs = (props:{onDelete:(data:any)=>void,onEdit:(data:any)=>void})=>{
+const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
 
     const {
-        onDelete,
         onEdit
     } = props
 
@@ -27,13 +26,8 @@ const ViewURLs = (props:{onDelete:(data:any)=>void,onEdit:(data:any)=>void})=>{
     const getAllEnvConfig = useCallback(async()=>{
         try{
             const response = await getAllEnvConfiguration();
-            const data1 = response?.data?.data;
-            console.log("DATA1",data1);
-            
-            const {data} = await axios.get(`${process.env.REACT_APP_API_HOST}/api/user/all-role/`);
-            console.log("DATAAAA",data);
-            
-            setRowData(data1.sort((row1:any,row2:any)=>row1.id - row2.id))
+            const data = response?.data?.data;
+            setRowData(data.sort((row1:any,row2:any)=>row1.id - row2.id))
         }catch(error:any){
             console.error(error)
             notifyError("Server Went Unresponsive")
@@ -110,32 +104,9 @@ const ViewURLs = (props:{onDelete:(data:any)=>void,onEdit:(data:any)=>void})=>{
                                 <img src="/assets/img/VectorFLOW/NMS/edit-draft.svg" height={20} width={20}/>
                             </SecondaryButton>
                         )
-                    },
-                    {
-                        colId:'delete',
-                        field:'delete',
-                        headerName:'',
-                        maxWidth:80,
-                        cellStyle:{
-                            display:'flex',
-                            'align-items':'center',
-                        },
-                        cellRenderer:(params:any)=>(
-                            <SecondaryButton
-                                style={{backgroundColor:'transparent'}}
-                                themeUi={themeUi}
-                                onClick={()=>onDelete(params.data)}
-                            >
-                               
-                                <img src="/assets/img/VectorFLOW/NMS/delete-draft.svg" height={20} width={20}/>
-                            </SecondaryButton>
-                        )
-                    }
+                    },                  
                 ]}
             />
-            {/* <Skeleton
-                style={{height:300,width:'100%'}}
-            /> */}
             </TableWrapper>
     )
 }

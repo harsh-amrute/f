@@ -13,6 +13,7 @@ const DeleteUrl  = (props:{
     } = props
 
     const {user} = useUserData()
+console.log("user",user);
 
     const themeUi = user.user.theme_ui
 
