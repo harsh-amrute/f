@@ -73,10 +73,14 @@ const useViewModify = (pageType:string) => {
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
     const [currentPage,setCurrentPage] = useState(1);
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const VIEWRECORD_PAGE = EnvConfig['VIEWRECORD_PAGE'];  
+    const ADDRECORD_PAGE = EnvConfig['ADDRECORD_PAGE'];  
+    const DELETERECORD_PAGE = EnvConfig['DELETERECORD_PAGE'];  
     const rowsPerPage = useMemo(()=>{
-      if(pageType === 'add') return parseInt(process.env.REACT_APP_ADDRECORD_PAGE || '50')
-      else if(pageType === 'remove') return parseInt(process.env.REACT_APP_DELETERECORD_PAGE || '50');
-      else return parseInt(process.env.REACT_APP_VIEWRECORD_PAGE || '50');
+      if(pageType === 'add') return parseInt(ADDRECORD_PAGE || '50')
+      else if(pageType === 'remove') return parseInt(DELETERECORD_PAGE || '50');
+      else return parseInt(VIEWRECORD_PAGE || '50');
     },[]);
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
@@ -1199,9 +1203,12 @@ const useViewModify = (pageType:string) => {
         const selectedRows = ref.current?.api.getSelectedRows();
         if(selectedRows && selectedRows.length > 0){
           dispatch(REMOVE_ROW_DATA(selectedRows));
-          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           notifySuccess(`${selectedRows?.length} records deleted successfully`);
           setSelectedRowsCount(0);
+          if(recordCount - selectedRows?.length === 0){
+            dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          }
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           if(recordCount===selectedRows.length){
             if(draftID.length===0){
               dispatch(UPDATE_PROGRESS_STATE('Discard'))

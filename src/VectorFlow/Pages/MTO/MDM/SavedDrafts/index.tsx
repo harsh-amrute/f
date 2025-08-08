@@ -8,6 +8,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../../redux/store/store"
 
 
 
@@ -29,6 +31,10 @@ const MTOSavedDrafts = ()=>{
   if(isLoading){
     return <VFLoader/>
   }
+
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const SAVEDRAFT_PAGE = EnvConfig['SAVEDRAFT_PAGE'];  
+
 
   return(
     <div style={{paddingTop:'20px',paddingLeft: '25px',height:'90%'}}>
@@ -102,7 +108,7 @@ const MTOSavedDrafts = ()=>{
           rowData={mapDraftDataToMTOTableRowData(allDrafts)}
           pagination={true}
           // paginationPageSize={50}
-          paginationPageSize={parseInt(process.env.REACT_APP_SAVEDRAFT_PAGE || '100')}
+          paginationPageSize={parseInt(SAVEDRAFT_PAGE || '100')}
 
           gridOptions={{
             getRowStyle: (params: any) => {

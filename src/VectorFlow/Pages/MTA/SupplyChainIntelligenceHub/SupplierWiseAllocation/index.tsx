@@ -12,6 +12,8 @@ import LastRunDateComponent from "../../../../../components/commons/lastRundate"
 import BPRRemarkHistoryModal from "../BPR/BPRRemarkHistoryModal";
 import OverlayLoader from "../../../MTO/Common/Loader";
 import { useState } from "react";
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../../redux/store/store"
 
 
 const SupplierWiseAllocation = ()=>{
@@ -53,7 +55,8 @@ const SupplierWiseAllocation = ()=>{
     } = useSupplierWiseAllocation()
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
-    
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];  
 
     return(
       <GridStateContext.Provider
@@ -145,7 +148,7 @@ const SupplierWiseAllocation = ()=>{
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
-                  rowsPerPage={parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')}
+                  rowsPerPage={parseInt(BOR_ROWS_PER_PAGE || '100')}
                   handleChangePage={handleChangePage}
                   resetGridRef={ref} 
                   isDisabled={isDisabled}  />

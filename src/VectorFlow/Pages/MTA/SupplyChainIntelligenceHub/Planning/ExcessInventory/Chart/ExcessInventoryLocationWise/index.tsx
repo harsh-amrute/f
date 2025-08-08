@@ -1,11 +1,13 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useMemo} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import "../../styles.css";
 import {SCDynamicContainer} from '../../styles';
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOptions} from '../../../../../../../../helpers/utils';
 import VFCharts from "../../../../../../../../components/VectorFLOW/commons/VFCharts";
-import {chartParams1 , chartParams2} from './chartParams'
+import {createChartParams} from './chartParams'
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../../../redux/store/store";
 interface ExcessInventoryProps{
     data:any
 }
@@ -17,6 +19,13 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
 
     const [rowData1,setRowData1] = useState<any>([])
     const [rowData2,setRowData2] = useState<any>([])
+
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const currency = EnvConfig?.CURRENCY || 'Rupee';
+
+    // Generate the two different chart parameter objects from the single function
+    const chartParams1 = useMemo(() => createChartParams('sku', currency), [currency]);
+    const chartParams2 = useMemo(() => createChartParams('value', currency), [currency]);
 
     const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];

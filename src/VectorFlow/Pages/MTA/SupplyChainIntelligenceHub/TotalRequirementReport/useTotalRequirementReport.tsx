@@ -21,6 +21,8 @@ import { TextToTextColorMapper } from "../BPR/BPRCellRenderers"
 import BPRGraphCellRenderer from "../BPR/BPRGraphCellRenderer"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../../redux/store/store"
 
 
 const useTotalRequirementReport =()=>{
@@ -67,6 +69,9 @@ const useTotalRequirementReport =()=>{
 
     // const [rowData,setRowData] = useState([]);
 
+ 
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
 
     const rowsPerPage = parseInt(process.env.REACT_APP_TOTAL_REQUIREMENT_ROWS_PER_PAGE || '100');
 
@@ -196,7 +201,7 @@ const useTotalRequirementReport =()=>{
             getMainMenuItems: MainMenuItemsCustomization,          
             // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
             // rowSelection:'multiple',
-            paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),
+            paginationPageSize:parseInt(RRR_ROWS_PER_PAGE || '200'),
             suppressRowClickSelection:true,
             components:customCellRenderers,
             enableBrowserTooltips:true,

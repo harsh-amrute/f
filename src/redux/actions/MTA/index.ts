@@ -7,7 +7,8 @@ const actions =  {
     TOGGLE_NORM_CHANGE_HISTORY_TABLE: createAction<boolean>("TOGGLE_NORM_CHANGE_HISTORY_TABLE"),
     UPDATE_GRID_STATE:createAction<any>(" UPDATE_GRID_STATE"),
     UPDATE_PLANNING_DATA:createAction<any>("UPDATE_PLANNING_DATA"),
-    UPDATE_LAST_RUN_DATE:createAction<string>("UPDATE_LAST_RUN_DATE")
+    UPDATE_LAST_RUN_DATE:createAction<string>("UPDATE_LAST_RUN_DATE"),
+    UPDATE_ENV_CONFIG:createAction<string>("UPDATE_ENV_CONFIG")
 }
 
 export const {
@@ -16,5 +17,6 @@ export const {
     TOGGLE_NORM_CHANGE_HISTORY_TABLE,
     UPDATE_GRID_STATE,
     UPDATE_PLANNING_DATA,
-    UPDATE_LAST_RUN_DATE
+    UPDATE_LAST_RUN_DATE,
+    UPDATE_ENV_CONFIG
 } = actions;

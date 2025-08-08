@@ -16,6 +16,8 @@ import VFRangeSlider from "../VFRangeSlider";
 import {  BPRFilter, BPRFilterState } from "../../../../VectorFlow/types/BPR";
 import { BTRCategoryNumberToTextMapper } from "../../../../helpers/BPRConstants";
 import { Skeleton } from "../../../../components/commons/styled";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store/store";
 
 // import { generalFilterOptions } from '../../utils';
 
@@ -271,21 +273,29 @@ const FilterTextInput = ({placeholder, onChange,disabled=false, value}:any) => {
 
 
 const AvailabilityFilter = ({placeholder, header, onChange,filterId,filterState,generalFilterOptions}:any)=>{
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
 
+    const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];   
+    const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2'];   
+    const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3'];   
+
+    const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+    const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+    const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
 
 
     const filterLocationOptions = [
-        {value:'l1',label:process.env.REACT_APP_LOCATION_PERMISSION_L1},
-        {value:'l2',label:process.env.REACT_APP_LOCATION_PERMISSION_L2},
-        {value:'l3',label:process.env.REACT_APP_LOCATION_PERMISSION_L3},
+        {value:'l1',label:LOCATION_PERMISSION_L1},
+        {value:'l2',label:LOCATION_PERMISSION_L2},
+        {value:'l3',label:LOCATION_PERMISSION_L3},
         {value:'l4',label:'L4'},
         {value:'l5',label:'L5'}, 
     ]
 
     const filterProductOptions = [
-        {value:'p1',label:process.env.REACT_APP_PRODUCT_PERMISSION_L1},
-        {value:'p2',label:process.env.REACT_APP_PRODUCT_PERMISSION_L2},
-        {value:'p3',label:process.env.REACT_APP_PRODUCT_PERMISSION_L3},
+        {value:'p1',label:PRODUCT_PERMISSION_L1},
+        {value:'p2',label:PRODUCT_PERMISSION_L2},
+        {value:'p3',label:PRODUCT_PERMISSION_L3},
         {value:'p4',label:'P4'},
         {value:'p5',label:'P5'},  
     ]

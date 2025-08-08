@@ -7,6 +7,8 @@ import ActionToolBar from "../Planning/ActionToolBar";
 import { useState } from "react";
 import VFSave from "./VFSave";
 import OverlayLoader from "../../../../../VectorFlow/Pages/MTO/Common/Loader";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 const ElephantOrder = () => {
   
@@ -41,7 +43,8 @@ const ElephantOrder = () => {
 
       const [isDisabled, setIsDisabled]= useState<boolean>(true)
   
-  
+      const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+      const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
 
   
   return (
@@ -115,7 +118,7 @@ const ElephantOrder = () => {
                 selectedRows={0} 
                 totalRows={EOCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
+                rowsPerPage={parseInt(RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>GetEOData(e)} 
 
                 resetGridRef={ref} 

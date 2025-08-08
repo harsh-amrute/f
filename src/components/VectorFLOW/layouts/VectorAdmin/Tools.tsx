@@ -29,6 +29,15 @@ const Tools = ()=>{
                     themeUi="NOIRFUSION"
                 />
                 </div>
+                <div style={{flex:1,margin:'20px'}}>
+                <IconCard
+                    text="Manage Configuration"
+                    iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
+                    iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
+                    onClick={()=>navigate('/vector-admin/manage-env-configuration')}
+                    themeUi="NOIRFUSION"
+                />
+                </div>
             </PanelGrid>
         </ToolsWrapper>
     )

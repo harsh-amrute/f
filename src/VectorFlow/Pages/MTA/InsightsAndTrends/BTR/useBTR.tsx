@@ -91,8 +91,9 @@ const useBTR = () => {
 
     const { state: currFilter, setState: setCurrFilter, onDelete } = useBPRFilter()
 
-
-    const rowsPerPage = parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '50');
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BTR_ROWS_PER_PAGE = EnvConfig['BTR_ROWS_PER_PAGE'];  
+    const rowsPerPage = parseInt(BTR_ROWS_PER_PAGE || '50');
 
     const { mutateAsync: getBTRData, isLoading } = useGetBTRData()
 
@@ -583,7 +584,7 @@ const useBTR = () => {
                             rowData={techRowData}
                             {...gridProps}
                             pagination={false}
-                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
+                            paginationPageSize={parseInt(BTR_ROWS_PER_PAGE || '100')}
                             maintainColumnOrder
                             onGridReady={(params) => setTechInternalRef(params)}
                             onFilterChanged={() => {
@@ -621,7 +622,7 @@ const useBTR = () => {
                             rowData={ecoRowData}
                             {...gridProps}
                             pagination={false}
-                            paginationPageSize={parseInt(process.env.REACT_APP_BTR_ROWS_PER_PAGE || '100')}
+                            paginationPageSize={parseInt(BTR_ROWS_PER_PAGE || '100')}
                             maintainColumnOrder
                             onGridReady={(params) => setEcoInternalRef(params)}
                             onFilterChanged={() => {

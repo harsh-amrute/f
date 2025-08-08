@@ -77,8 +77,9 @@ const useResearchInsights = () => {
     const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
-    
-
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BPR_ROWS_PER_PAGE = EnvConfig['BPR_ROWS_PER_PAGE'];   
+    const RESEARCHINSIGHT_ROWS_PER_PAGE = EnvConfig['RESEARCHINSIGHT_ROWS_PER_PAGE'];
     const [graphs, setGraphs] = useState<Array<ReseachInsightsGraphState>>([
         {
             type: { label: 'Self', value: 'Self' },
@@ -232,7 +233,7 @@ const useResearchInsights = () => {
             sideBar:defaultAgGridSideBarForBPR,
             // paginationPageSize:25,
             getMainMenuItems: MainMenuItemsCustomization,
-            paginationPageSize:parseInt(process.env.REACT_APP_RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
+            paginationPageSize:parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE || '100'),
             suppressRowClickSelection:true,
             components:customCellRenderers,
             defaultColDef:defaultColDefObject,
@@ -256,7 +257,7 @@ const useResearchInsights = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: 1,
-                recordsPerPage: parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50')
+                recordsPerPage: parseInt(BPR_ROWS_PER_PAGE || '50')
             }
         })
 
@@ -272,7 +273,7 @@ const useResearchInsights = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: pageNo,
-                recordsPerPage: parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50')
+                recordsPerPage: parseInt(BPR_ROWS_PER_PAGE || '50')
             }
         })
         toast.dismiss()
@@ -689,7 +690,7 @@ const useResearchInsights = () => {
         }
     }
 
-    const rowsPerPage = useMemo(() => parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'), [])
+    const rowsPerPage = useMemo(() => parseInt(BPR_ROWS_PER_PAGE|| '50'), [])
 
     return {
         ref,

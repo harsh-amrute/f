@@ -26,6 +26,8 @@ import { AgChartOptions } from "ag-charts-community";
 // clear cached token and redirect to sso login
 import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store/store';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -2455,7 +2457,7 @@ export const getRemarkRelatedColumns = (onOpenRemarkHistory: (params: any, e: an
   ]
 }
 
-const filterParams =  {
+export const filterParams =  {
   filters: [
     {
       filter: 'agTextColumnFilter',
@@ -2474,7 +2476,7 @@ const filterParams =  {
 
 
 
-const CellRenderersMapping:any = {
+export const CellRenderersMapping:any = {
   'DispatchPen':'colorDispatchRender',
   'TechPen':'colorTechCellRenderer',
   'EcoPen':'colorEcoCellRenderer',
@@ -3810,11 +3812,21 @@ export const getMCGridStoreIconColor = (status: string): string => {
 
 
 export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProperties: any) => {
+  
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1']; 
+  const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2']; 
+  const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
+  
+  const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+  const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+  const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
+  console.log("HI VAIBHAV",column ,LOCATION_PERMISSION_L1, LOCATION_PERMISSION_L3);
   if (column.colCode === 'sl1') {
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
+      headerName: PRODUCT_PERMISSION_L1,
       ...extraProperties
     }
   }
@@ -3822,7 +3834,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
+      headerName: PRODUCT_PERMISSION_L2,
       ...extraProperties
     }
   }
@@ -3830,7 +3842,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
+      headerName: PRODUCT_PERMISSION_L3,
       ...extraProperties
     }
   }
@@ -3838,7 +3850,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_LOCATION_PERMISSION_L1,
+      headerName: LOCATION_PERMISSION_L1,
       ...extraProperties
     }
   }
@@ -3846,7 +3858,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_LOCATION_PERMISSION_L2,
+      headerName: LOCATION_PERMISSION_L2,
       ...extraProperties
     }
   }
@@ -3855,7 +3867,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_LOCATION_PERMISSION_L3,
+      headerName: LOCATION_PERMISSION_L3,
       ...extraProperties
     }
   }
@@ -4386,7 +4398,8 @@ export function getColumnDefinations(
 ) {
  
   const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => {
-
+    // const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    // const NUMBER_FORMAT = EnvConfig['NUMBER_FORMAT'];   
     let filterType = 'agMultiColumnFilter'; 
 
     if (data.dt === 'date') {
@@ -4986,6 +4999,8 @@ export function getColumnDefinationsMTA(
   extraFields: any = [],
   removeCols: any = [],
 ) {
+  // const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  // const NUMBER_FORMAT = EnvConfig['NUMBER_FORMAT'];   
   const columnDefs = fields?.map((data: any) => {
     const columnDef = {
       colId: data.Col_Code || data.colCode,

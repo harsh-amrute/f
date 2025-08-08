@@ -12,6 +12,8 @@ import { defaultAgGridSideBarForBPR } from '../../../../../helpers/BPRConstants'
 import { GridRef } from '../../../../../VectorFlow/types/MDM';
 import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig';
 import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../redux/store/store';
 
 const useSupplierDispatchReport= ()=>{
 
@@ -39,8 +41,14 @@ const useSupplierDispatchReport= ()=>{
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const [VDRColumns,setVDRColumns] = useState<any[]>([])
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];  
+    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];  
+    const GUIDEDINSIGHT_ROWS_PER_PAGE = EnvConfig['GUIDEDINSIGHT_ROWS_PER_PAGE'];  
+    const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE || '100');
 
-    const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+     
+ 
 
     const customCellRenderers = useMemo(() => (
         {
@@ -186,7 +194,7 @@ const useSupplierDispatchReport= ()=>{
     const agGridProps: AgGridReactProps = useMemo(() => {
         return {
             paginationPageSize: parseInt(
-                process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
+                GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
             ),
     
             suppressRowTransform: true,
@@ -265,7 +273,7 @@ const useSupplierDispatchReport= ()=>{
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:parseInt(RRR_ROWS_PER_PAGE || '100')
                 }
             })
             setSDRCount(DataCount.data.data[0].count);
@@ -274,7 +282,7 @@ const useSupplierDispatchReport= ()=>{
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:parseInt(RRR_ROWS_PER_PAGE || '100')
                 }
             })
             

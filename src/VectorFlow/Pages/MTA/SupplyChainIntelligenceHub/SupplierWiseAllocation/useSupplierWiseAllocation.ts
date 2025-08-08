@@ -102,7 +102,8 @@ export const useSupplierWiseAllocation =()=>{
   const onCloseRemarkHistory = () => setIsRemarkHistoryToolTipOpen(false)
   const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState()
   const [gridState, setGridState] = useState<any>()
-
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];  
 
      const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,
@@ -257,7 +258,7 @@ export const useSupplierWiseAllocation =()=>{
           filters:filter || {},
           paginationParameter: {
             pageNumber: currentPage,
-            recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+            recordsPerPage: parseInt(BOR_ROWS_PER_PAGE || '100')
           }
         }
         const resultCount=await getDataCount(payload);
@@ -386,7 +387,7 @@ export const useSupplierWiseAllocation =()=>{
         components:customCellRenderers,
         enableBrowserTooltips:true,
         getMainMenuItems: MainMenuItemsCustomization,
-        paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
+        paginationPageSize:parseInt(BOR_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {

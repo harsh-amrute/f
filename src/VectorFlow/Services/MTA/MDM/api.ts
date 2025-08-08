@@ -194,6 +194,12 @@ export namespace MDMService {
     })
   }
 
+  export const getAllEnvironmentConfiguration = async()=>{
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/EnvironmentConfiguration',{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   /**This get the  MTO Masters Data*/
   export const getMTOMastersData = async () => {
     return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetMasterManagementData/', {

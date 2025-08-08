@@ -15,8 +15,11 @@ import { GridRef } from "../../../../../VectorFlow/types/MDM"
 import useGetLastRunData from "../../../../../hooks/useGetLastRunData"
 import { useGetUIConfigData } from "../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../helpers/Enum"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../../redux/store/store"
 
-
+ 
+  
 const useRRR =()=>{
 
     const [internalRef,setInternalRef] = useState<any>()
@@ -62,8 +65,11 @@ const useRRR =()=>{
 
 
     // const [rowData,setRowData] = useState([]);
-
-    const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+     
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
+    const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
+    const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE || '100');
 
     const {date:lastRunDate} = useGetLastRunData()
   
@@ -185,7 +191,7 @@ const useRRR =()=>{
                 filters:currFilter,
                 paginationParameter:{
                     pageNumber:pageNo,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:parseInt(RRR_ROWS_PER_PAGE || '100')
                 }
             })
             
@@ -209,7 +215,7 @@ const useRRR =()=>{
             paginationParameter: {
               pageNumber: 1,
               recordsPerPage: parseInt(
-                process.env.REACT_APP_RRR_ROWS_PER_PAGE || "100"
+                RRR_ROWS_PER_PAGE || "100"
               ),
             },
           });
@@ -288,7 +294,7 @@ const useRRR =()=>{
             pagination:false,
             sideBar:defaultAgGridSideBarForBPR,       
             getMainMenuItems: MainMenuItemsCustomization,
-            paginationPageSize:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '200'),
+            paginationPageSize:parseInt(RRR_ROWS_PER_PAGE|| '200'),
             suppressRowClickSelection:true,
             components:customCellRenderers,
             enableBrowserTooltips:true,

@@ -1,6 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import LocationFilter from './index'
 import { ISTService } from '../../../services/ist/api'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../redux/store/store'
 
 interface ProductProps {
   endpoint: {
@@ -47,7 +49,11 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
   const [receiverLocationName, setReceiverLocationName] = useState<any>([])
   const [receiverLocationSubType, setReceiverLocationSubType] = useState<any>(
     []
-  )
+  );
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+  const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+  const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
 
   useEffect(() => {
     async function initLocationFilter () {
@@ -111,19 +117,19 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
 
   const locationFilter = [
     {
-      placeholder: process.env.REACT_APP_LOCATION_PERMISSION_L1,
+      placeholder: LOCATION_PERMISSION_L1,
       options: listMapIstLocGrp,
       value: istLocGrp,
       onChange: setIstLocGrp
     },
     {
-      placeholder:process.env.REACT_APP_LOCATION_PERMISSION_L2,
+      placeholder:LOCATION_PERMISSION_L2,
       options: listMapDonorLocationRegion,
       value: donorLocationRegion,
       onChange: setDonorLocationRegion
     },
     {
-      placeholder: process.env.REACT_APP_LOCATION_PERMISSION_L3,
+      placeholder: LOCATION_PERMISSION_L3,
       options: listMapdonorLocationName,
       value: donorLocationName,
       onChange: setDonorLocationName

@@ -38,7 +38,8 @@ const mtaState: MTAStore = {
         currentTab: '',
         currentCategory: '',
         currentView: ''
-    }
+    },
+    EnvConfig:[],
 
 }
 

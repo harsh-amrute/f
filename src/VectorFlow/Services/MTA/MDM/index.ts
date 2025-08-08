@@ -22,6 +22,7 @@ export const QUERY_KEYS = {
   usegetTaskMastersHistory: ['MDMService.useGetTaskMastersHistory'],
   useGetUploadProgress: ['MDMService.useGetUploadProgress'],
   useGetAllReports: ['MDMService.useGetAllReports'],
+  useGetAllEnvironmentConfiguration: ['MDMService.useGetAllEnvironmentConfiguration'],
   useGetMTOPendingTask: ['MDMService.useGetMTOPendingTask']
 }
 
@@ -235,6 +236,12 @@ export const useGetUploadProgress = () => {
 export const useGetAllReports = () => {
   return useMutation(QUERY_KEYS.useGetAllReports, async () => {
     return await MDMService.getAllReports()
+  })
+}
+
+export const useGetAllEnvironmentConfiguration = () => {
+  return useMutation(QUERY_KEYS.useGetAllEnvironmentConfiguration, async () => {
+    return await MDMService.getAllEnvironmentConfiguration()
   })
 }
 

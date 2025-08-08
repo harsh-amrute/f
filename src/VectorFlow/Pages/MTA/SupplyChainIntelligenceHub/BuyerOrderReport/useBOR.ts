@@ -82,7 +82,9 @@ export const useBOR =()=>{
      const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     //  const rowsPerPage=50;
-     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
+     const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE || '100');
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
@@ -410,7 +412,7 @@ export const useBOR =()=>{
              paginationParameter: {
         pageNumber: currentPage,
         // recordPerPage:20
-    recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+    recordsPerPage: parseInt(BOR_ROWS_PER_PAGE || '100')
     }
         }
         const resultCount=await getBorDataCount(payload);
@@ -476,7 +478,7 @@ export const useBOR =()=>{
         enableBrowserTooltips:true,
         enableFillHandle: true,
         getMainMenuItems: MainMenuItemsCustomization,
-        paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
+        paginationPageSize:parseInt(BOR_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {
