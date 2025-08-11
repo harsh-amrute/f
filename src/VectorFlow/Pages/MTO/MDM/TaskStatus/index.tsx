@@ -138,12 +138,9 @@ const MTOTaskStatus = ()=>{
     const getMTOTaskData = async()=>{
         try{
             const response = await getMTOTaskStatusData();
-            console.log("response data", response.data.data);
             const allApproverIds = getUniqueAppIds(response.data.data);
             const approverNames = await getApproverNames({approver_ids: allApproverIds })
-            console.log("approver names response", approverNames.data);
             const allUsersData = approverNames.data || [];
-            console.log("all users data", allUsersData);
 
             setAllUsers(allUsersData);
 
