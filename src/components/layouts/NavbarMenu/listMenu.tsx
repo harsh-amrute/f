@@ -248,7 +248,7 @@ export const listMenuParent: any = [
     id: 9,
     name: "Replenishment and Replacement",
     img: "/assets/img/VectorFLOW/BPR/replacement",
-    url: "/supply-chain-intelligence-hub/planning",
+    url: "/mta/supply-chain-intelligence-hub/planning",
     status: false,
     lp_img : "/assets/img/Replacement.svg",
     app_id : 2,
@@ -267,13 +267,13 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             lp_img : "/assets/img/planning.svg",
             rp_img : "/assets/img/planning1.svg",
-            url: "/supply-chain-intelligence-hub/planning",
+            url: "/mta/supply-chain-intelligence-hub/planning",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           {
             name: "BPR",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/bpr",
+            url: "/mta/supply-chain-intelligence-hub/bpr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           // {
@@ -285,7 +285,7 @@ export const listMenuParent: any = [
           {
             name: "Open Expediting Requests",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/open-expediting-requests",
+            url: "/mta/supply-chain-intelligence-hub/open-expediting-requests",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
  
@@ -298,34 +298,34 @@ export const listMenuParent: any = [
           {
             name: "Rationed Requirement Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/rrr",
+            url: "/mta/supply-chain-intelligence-hub/rrr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
  
           },
           {
             name: "Rationed Requirement Report - Color Bandwise",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/rrr-color-bandwise",
+            url: "/mta/supply-chain-intelligence-hub/rrr-color-bandwise",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
           },
           {
             name: "Buyer Order Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/bor",
+            url: "/mta/supply-chain-intelligence-hub/bor",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
  
           },
           {
             name: "Buyer Order Report - Color Bandwise",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/bor-color-bandwise",
+            url: "/mta/supply-chain-intelligence-hub/bor-color-bandwise",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
  
           },
           {
             name: "Supplier Wise Allocation Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/SupplierWiseAllocation",
+            url: "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
  
           },
@@ -346,14 +346,14 @@ export const listMenuParent: any = [
           {
             name: "Supplier Dispatch Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/sdr",
+            url: "/mta/supply-chain-intelligence-hub/sdr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
  
           },
           {
             name: "Elephant Order",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/eo",
+            url: "/mta/supply-chain-intelligence-hub/eo",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
  
           },
@@ -391,7 +391,7 @@ export const listMenuParent: any = [
           {
             name: "Buffer Trend Report (BTR)",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/insights-and-trends/buffer-trend-report",
+            url: "/mta/insights-and-trends/buffer-trend-report",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           {

@@ -152,7 +152,7 @@ const ActionToolBar = ({
 
   const handleExportToExcel = () => {
     if (
-      pathname === "/supply-chain-intelligence-hub/open-expediting-requests"
+      pathname === "/mta/supply-chain-intelligence-hub/open-expediting-requests"
     ) {
       ref.current.api.exportDataAsExcel({
         fileName: "OpenExpeditingRequests",
@@ -167,7 +167,7 @@ const ActionToolBar = ({
     //     filters:multiFilter
     //   });
     // }
-    else if(pathname==="/insights-and-trends/buffer-trend-report" || pathname=== "/supply-chain-intelligence-hub/bpr"){
+    else if(pathname==="/mta/insights-and-trends/buffer-trend-report" || pathname=== "/mta/supply-chain-intelligence-hub/bpr"){
       onExportToExcelCallBack();
     }
     else{
@@ -181,9 +181,9 @@ const ActionToolBar = ({
 
   useEffect(() => {
     if (
-      pathname !== "/supply-chain-intelligence-hub/SupplierWiseAllocation" &&
-      pathname !== "/supply-chain-intelligence-hub/sdr" &&
-      pathname !== "/supply-chain-intelligence-hub/eo" &&
+      pathname !== "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation" &&
+      pathname !== "/mta/supply-chain-intelligence-hub/sdr" &&
+      pathname !== "/mta/supply-chain-intelligence-hub/eo" &&
       pathname !== "/supply-chain-intelligence-hub/total-requirement-report"
     ) {
       setIsFilterButtonVisible(true);
@@ -313,7 +313,7 @@ const ActionToolBar = ({
           />
         );
       case "BPR":
-        if (pathname === "/supply-chain-intelligence-hub/bpr") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/bpr") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -340,7 +340,7 @@ const ActionToolBar = ({
         }
         break;
       case "RRR":
-        if (pathname === "/supply-chain-intelligence-hub/rrr") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/rrr") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -367,7 +367,7 @@ const ActionToolBar = ({
         }
         break;
       case "RRRColorBandwise":
-        if (pathname === "/supply-chain-intelligence-hub/rrr-color-bandwise") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/rrr-color-bandwise") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -419,7 +419,7 @@ const ActionToolBar = ({
       //   }
       //   break;
       case "BOR":
-        if (pathname === "/supply-chain-intelligence-hub/bor") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/bor") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -446,7 +446,7 @@ const ActionToolBar = ({
         }
         break;
       case "BORColorBandwise":
-        if (pathname === "/supply-chain-intelligence-hub/bor-color-bandwise") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -501,7 +501,7 @@ const ActionToolBar = ({
         }
         break;
       case "BTR":
-        if (pathname === "/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
+        if (pathname === "/mta/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -616,7 +616,7 @@ const ActionToolBar = ({
         break;
       case "OpenExpeditingRequests":
         if (
-          pathname === "/supply-chain-intelligence-hub/open-expediting-requests"
+          pathname === "/mta/supply-chain-intelligence-hub/open-expediting-requests"
         ) {
           return (
             <VFMultiFilter
@@ -1025,7 +1025,7 @@ const ActionToolBar = ({
           )} */}
           <SCCustomActionsContainer>
 
-          {( pathname != "/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/supply-chain-intelligence-hub/sdr" && pathname !== "/supply-chain-intelligence-hub/total-requirement-report" && pathname != "/supply-chain-intelligence-hub/eo" ) && currentTab !== "custom" &&
+          {( pathname != "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/mta/supply-chain-intelligence-hub/sdr" && pathname !== "/supply-chain-intelligence-hub/total-requirement-report" && pathname != "/mta/supply-chain-intelligence-hub/eo" ) && currentTab !== "custom" &&
                <>
                     <VFButton
                     onClick={() => toggleFilter(true)}
