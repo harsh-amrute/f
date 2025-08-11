@@ -74,6 +74,7 @@ function UploadWrapperSection({
   }, [isSuccess]);
 
   const handleUploadClick = async () => {
+    console.log("also here");
     setProgress(0);
 
     if (!file) {
@@ -115,14 +116,15 @@ function UploadWrapperSection({
       };
     });
 
-    console.log("userData", userData);
 
     userData.shift();
-
+    console.log("also also here");
     // @TODO: commented for testing needs to be uncommented for api call
     try {
       const response = await postUsersDataForValidation({ userData });
       console.log("response", response);
+      console.log("also also her.....e");
+
       setNoData(false);
       if (response?.data?.ec && response?.data?.ec > 0) {
         if (response?.data.inv_ent) {

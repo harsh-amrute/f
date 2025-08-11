@@ -17,7 +17,7 @@ interface LeftCommonComProps {
 }
 
 
-function UploadLeftSection({setNoData, setErrorCount, setErrorData, setValidData, handleFileChange, handleUploadClick,file}: LeftCommonComProps) {
+function UploadLeftSection({setNoData,setErrorCount, setErrorData, setValidData, handleFileChange, handleUploadClick,file}: LeftCommonComProps) {
 
  
 
@@ -39,8 +39,8 @@ function UploadLeftSection({setNoData, setErrorCount, setErrorData, setValidData
         subText="You can download attached sample templates"
         btnText="Download"
         btnImg="/assets/img/VectorFLOW/NMS/download.svg"
-        btnStyles={{width:"14rem", height:"4rem" , fontSize:"1.3rem",boxShadow:"0px 6px 10px rgba(33, 33, 33, 0.5)"}}
-        imgStyles={{width:"6.5rem"}}
+        btnStyles={{width:"12rem", height:"3rem" , fontSize:"1rem",boxShadow:"0px 6px 10px rgba(33, 33, 33, 0.5)"}}
+        imgStyles={{width:"4.5rem"}}
         handleClick={onDownloadClick}
       />
       <FileUploadTile setNoData={setNoData} setErrorCount={setErrorCount}  setErrorData={setErrorData} setValidData={setValidData} handleUploadClick={handleUploadClick} handleFileChange={handleFileChange} file={file}/>

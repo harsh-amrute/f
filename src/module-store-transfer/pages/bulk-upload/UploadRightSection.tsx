@@ -14,7 +14,6 @@ interface UploadRightSectionProps {
 }
 
 function UploadRightSection({
-  errorCount,
   errorData,
   validData,
   setIsAssignPageOpen,
@@ -37,27 +36,37 @@ function UploadRightSection({
   };
   return (
     <RightSectionWrapper>
-      <ProgressBox label={"Uploaded Succesfully"}  progress={progress}/>
-      <HeaderText>
-        {errorCount ? `${errorCount} rows contain errors` : "No errors found"}
+      <ProgressBox label={progress===100?"Uploaded Succesfully":"Uploading file..."}  progress={progress}/>
+      {(progress===100) &&
+        <HeaderText>
+        {(errorData?.length && errorData.length>0) ? `${errorData.length} rows contain errors` : "No errors found"}
       </HeaderText>
+      }
       <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
-        <RightSectionFilePanel
+        {
+          !!(errorData?.length && (errorData?.length>0) && (progress===100)) &&
+          <RightSectionFilePanel
           onClick={onErrorFileDownload}
           text={"Error File"}
           img="/assets/img/excel.svg"
-          iconStyles={{ width: "2rem", padding: "0px" }}
-          imgStyles={{ width: "3.5rem" }}
+          iconStyles={{ width: "1.6rem", padding: "0px" }}
+          imgStyles={{ width: "2.5rem", height: "2.5rem"}}
+          disabled = {!(progress==100) && !errorData?.length}
           btnIcon="/assets/img/VectorFLOW/NMS/download.svg"
-        />
-        <RightSectionFilePanel
+          />
+        }
+        {
+          !!(validData && validData.length && (validData?.length>0) && (progress===100)) &&
+          <RightSectionFilePanel
           onClick={onValidDataClick}
           text={"Assign Roles & Permission"}
           img="/assets/img/excel.svg"
-          iconStyles={{ width: "1.7rem", padding: "0px" }}
-          imgStyles={{ width: "3.5rem" }}
+          iconStyles={{ width: "1.6rem", padding: "0px" }}
+          disabled={!(progress===100) && !validData?.length}
+          imgStyles={{width: "2.5rem", height: "2.5rem" }}
           btnIcon="/assets/img/Open new link icon.svg"
-        />
+          />
+        }
       </div>
       <div style={{ display: "none" }}>
         <VFTable

@@ -11,6 +11,8 @@ import PermissionHeirarchyCanvas from "../manage-users/PermissioinHeirarchyCanva
 import PermissionForm from "./PermissionForm";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutline";
+import { GridRef } from "../../../VectorFlow/types/MDM";
+import { IRowNode } from "ag-grid-enterprise";
 
 const ToggleContainer = styled.div`
   display: flex;
@@ -89,18 +91,29 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
 };
 
 // @TODO: add type definations
-const PermissionSelectionModal = ({ dataAllPermissions,closeModal, updatePermissions }: any) => {
+const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,closeModal, updatePermissions }: {gridRef?: GridRef| any, selectedIndex?: any, dataAllPermissions: any, closeModal: any, updatePermissions: any}) => {
   const [isChartView, setIsChartView] = React.useState(false);
-  console.log("DataAllPermissions", dataAllPermissions);
   const allApplications = dataAllPermissions?.map(
     (ele: any) => ele.application_name
   );
-  console.log("all Applications", allApplications);
   const [selectedApplication, setSelectedApplication] = React.useState<
     string[]
   >(allApplications[0]);
 
   const [selectedPermissions, setSelectedPermissions] = useState<any>({});
+  useEffect(()=>{
+    console.log("selectedIndex", selectedIndex);
+    if(!isNaN(selectedIndex)){
+        console.log("selectedIndex", selectedIndex);
+      gridRef && gridRef?.api && gridRef.api?.forEachNode((node: IRowNode)=>{
+        console.log("here")
+        if(node.rowIndex===selectedIndex){
+          console.log("here and")
+          setSelectedPermissions(node.data.permissions);
+        }
+      })
+    }
+  },[selectedIndex, gridRef])
 
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
@@ -130,30 +143,35 @@ const PermissionSelectionModal = ({ dataAllPermissions,closeModal, updatePermiss
             setIsChartView={setIsChartView}
           />
         </div>
+        <div style={{height: '80%'}}>
+
         {isChartView ? (
           <PermissionHeirarchyCanvas
-            dataAllPermissions={dataAllPermissions}
-            selectedApplication={selectedApplication}
-            selectedPermissions={selectedPermissions}
-            setSelectedPermissions={setSelectedPermissions}
+          dataAllPermissions={dataAllPermissions}
+          selectedApplication={selectedApplication}
+          selectedPermissions={selectedPermissions}
+          setSelectedPermissions={setSelectedPermissions}
           />
         ) : (
           <PermissionForm
-            currentAppAllPermissions={dataAllPermissions.find(
+          currentAppAllPermissions={dataAllPermissions.find(
               (ele: any) => ele.application_name === selectedApplication
             )}
             selectedApplication={selectedApplication}
             selectedPermissions={selectedPermissions}
             setSelectedPermissions={setSelectedPermissions}
-          />
-        )}
+            />
+          )}
+          </div>
         <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '20px', gap: '10px'}}>
           <VFButtonOutline
+            style={{height: '3.5rem', fontSize: '1.2rem'}}
             themeUi={themeUi}
             onClick={() => {closeModal()}}
 
           >Cancel</VFButtonOutline>
           <VFButton
+          style={{height: '3.5rem', fontSize: '1.2rem'}}
           themeUi={themeUi}
           onClick={() => {updatePermissions(selectedPermissions); closeModal()}}
           >Apply</VFButton>

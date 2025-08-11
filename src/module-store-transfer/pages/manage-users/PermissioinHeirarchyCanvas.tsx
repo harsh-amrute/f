@@ -553,7 +553,7 @@ export default function PermissionHeirarchyCanvas({
       <div
         style={{
           width: "100%",
-          height: "84%",
+          height: "94%",
           margin: "8px auto 0 auto",
           border: "1.5px dashed #cecece",
           borderRadius: "10px",
@@ -569,7 +569,7 @@ export default function PermissionHeirarchyCanvas({
           style={{
             position: "relative",
             width: "100%",
-            height: "94%",
+            height: "90%",
             borderRadius: "10px",
           }}
         >

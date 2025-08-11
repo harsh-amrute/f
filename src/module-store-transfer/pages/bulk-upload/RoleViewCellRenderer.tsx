@@ -79,7 +79,7 @@ export const RoleTile = styled.div`
 
 const ContainerDrop = styled.div`
   width: 240px;
-  font-size: 13px;
+  font-size: 11px;
   border: 1px solid #ccc;
   padding: 8px;
   background: white;
@@ -93,8 +93,8 @@ const CheckboxRow = styled.div`
   font-weight: 420;
 
   &:hover{
-    font-size: 14px;
-    font-weight: 450;
+    font-size: 12px;
+    font-weight: 400;
   }
 `;
 
@@ -107,7 +107,7 @@ const CategoryHeader = styled.div`
   cursor: pointer;
   &:hover {
     background: #f0f0f0;
-    font-size: 16px;
+    font-size: 12.5px;
   }
 `;
 
@@ -119,7 +119,7 @@ const SubItem = styled.div`
   margin: 4px 0;
   &:hover {
     background: #f0f0f0;
-    font-size: 15px;
+    font-size: 12px;
 
     }
 `;
@@ -145,11 +145,7 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
   const [selected, setSelected] = useState<Set<string>>(new Set(currentRoles));
-  const allIds = allRoles;
 
-  console.log("allRoles .. in drops", allRoles);
-
-  console.log("currentRoles", currentRoles);
   const [selectedRoles, setSelectedRoles] = useState<Set<any>>(
     currentRoles ? currentRoles : new Set()
   );
@@ -186,7 +182,7 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
       <CheckboxRow style={{ width: "100%", cursor: 'pointer' }} onClick={handleSelectAll}>
         <Checkbox
           type="checkbox"
-          style={{ zoom: 0.6 }}
+          style={{ zoom: 0.5 }}
           theme={themeUi}
           checked={
             allRoles.length > 0 && selectedRoles?.size>0 &&
@@ -224,7 +220,7 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
                   }}
                 >
                   <Checkbox
-                    style={{ zoom: 0.6 }}
+                    style={{ zoom: 0.5 }}
                     theme={themeUi}
                     type="checkbox"
                     checked={selectedRoles?.size>0 && selectedRoles?.has(role)}
@@ -242,17 +238,16 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
 
       <BottomButtons>
         <VFButtonOutline
-          style={{ fontSize: "12px", height: "28px", width: "64px" }}
+          style={{ fontSize: "10px", height: "22px", width: "60px" }}
           themeUi={themeUi}
           onClick={() => setSelectedRoles(new Set())}
         >
           Clear
         </VFButtonOutline>
         <VFButton
-          style={{ fontSize: "12px", height: "28px", width: "64px" }}
+          style={{ fontSize: "10px", height: "22px", width: "60px" }}
           themeUi={themeUi}
           onClick={() => {
-            console.log("selected Roles", selectedRoles);
             onApplyRole(selectedRoles);
           }}
         >

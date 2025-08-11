@@ -8,6 +8,7 @@ interface RightSectionFilePanelProps {
   iconStyles: React.CSSProperties;
   text: string;
   onClick: () => void;
+  disabled?: boolean;
 }
 
 function RightSectionFilePanel({
@@ -19,7 +20,7 @@ function RightSectionFilePanel({
   onClick
 }: RightSectionFilePanelProps) {
   return (
-    <FilePanel>
+    <FilePanel onClick={onClick}>
       <FileName>
         <img src={img} alt="file" style={imgStyles} />
         <HeaderText fontSize="1.6rem" fontWeight="500">
@@ -31,12 +32,11 @@ function RightSectionFilePanel({
         text=""
         onClick={onClick}
         styles={{
-          width: "6rem",
-          padding: "0.5rem 1rem",
+          width: "5rem",
+          padding: "0.4rem 0.8rem",
           display: "grid",
           placeItems: "center",
         }}
-
         iconStyles={iconStyles}
       />
     </FilePanel>

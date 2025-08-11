@@ -49,7 +49,7 @@ function LeftCommonCom({
           <img src={img} alt="" style={imgStyles} />
           <HeaderSection>
             <HeaderText>{headerText}</HeaderText>
-            <SubText fontSize="1.4rem" >{subText}</SubText>
+            <SubText fontSize="1.15rem" >{subText}</SubText>
           </HeaderSection>
         </div>
         <ButtonFloat

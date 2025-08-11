@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import { TableWrapper } from "../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage/styles";
-import { ColDef, FillOperationParams } from "ag-grid-enterprise";
+import { CellStyle, ColDef, FillOperationParams, RowStyle } from "ag-grid-enterprise";
 import { AgGridReactProps } from "ag-grid-react";
 import BulkUploadHeader from "./BulkUploadHeader";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
@@ -16,7 +16,7 @@ import { GridRef } from "../../../VectorFlow/types/MDM";
 import PermissionSelectionModal from "./PermissionSelectionModal";
 import PermissionViewCellRenderer from "./PermissionViewCellRenderer";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
-import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
+import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
 
 type Role = {
   id: number;
@@ -27,10 +27,14 @@ type Role = {
 const PermissionSelectionPage = ({
   validUserData,
   themeUi,
+  setValidUsersData
 }: {
   validUserData: any;
+  setValidUsersData: any
   themeUi: any;
 }) => {
+
+  const [isFinalView, setIsFinalView] = useState(false);
   const [isPermissionModalOpen, setIsPermissionModalOpen] =
     React.useState(false);
   const [isPermissionModalOpenForRow, setIsPermissionModalOpenForRow] =
@@ -46,7 +50,6 @@ const PermissionSelectionPage = ({
     gridRef.current?.api.forEachNode((node: any) => {
       if (node.isSelected()) {
         const userData = node.data;
-
         userData.roles = selectedRoles;
         node.setData(userData);
        
@@ -168,20 +171,42 @@ const PermissionSelectionPage = ({
       };
       return appMap[appName] || 1;
     }
-    
 
-    const createUsers = ()=>{
+
+    const [errorRes, setErrorRes] = useState(0);
+
+    const createUsers = async()=>{
       const userDataAll: string[] = [];
       gridRef &&  gridRef.current && gridRef?.current.api.forEachNode((node: any)=>{
         console.log("node", node);
-        userDataAll.push(node.data)
+        userDataAll.push(node.data);
         
       })
       console.log("userData", userDataAll);
       // return;
       try{
         const finalData = transformUserData(userDataAll);
-        const response = postPostBulkUploadUsers({...finalData})
+        const response = await postPostBulkUploadUsers({...finalData})
+        if(response.status===200){
+          // setIsFinalView(true);
+          const errorUserData = response?.data?.failed_users || [];
+          const updatedUserData:any = userDataAll;
+          errorUserData.forEach((ele:any)=>{
+            const index = updatedUserData.findIndex((user:any)=>user.id === ele.id);
+            if(index !== -1){
+              updatedUserData[index].error = ele.error;
+            }
+          })
+          setErrorRes(errorUserData.length);
+          setIsFinalView(true);
+          console.log("errorUserData", errorUserData);
+          setValidUsersData(validUserData)
+        }
+        else{
+          setIsFinalView(false);
+          console.error("Failed to register Users! Please try again!", response);
+        }
+        
         console.log("response", response);
       }catch(e){
         console.error("Error updating roles for selected users", e);
@@ -190,17 +215,32 @@ const PermissionSelectionPage = ({
 
     }
 
-    console.log("dataAllPermissions", dataAllPermissions);
 
     const columnDefs: ColDef[] = [
       {
-        headerName: "",
-        field: "checkbox",
-        checkboxSelection: true,
-        headerCheckboxSelection: true,
-        maxWidth: 50,
+        headerName: isFinalView?"Error":"",
+        field: isFinalView?"error":"checkbox",
+        checkboxSelection: isFinalView?false:true,
+        headerCheckboxSelection: isFinalView?false:true,
+        width: isFinalView?200: 50,
+        pinned: isFinalView?'left':undefined,
         suppressFloatingFilterButton: true,
         filter: false,
+        valueFormatter: (params) => {
+          if (isFinalView) {
+            if (!params.value){
+              return "";
+            }
+            else{
+              let error  = "";
+              params.value.forEach((ele:string)=>{
+                error+= ele;
+              })
+              return error;
+            }
+          }
+          return "";
+        },
         suppressFillHandle: true,
       },
       {
@@ -215,15 +255,28 @@ const PermissionSelectionPage = ({
       {
         headerName: "Role",
         field: "roles",
-        cellRenderer: RoleViewCellRenderer,
+        cellRenderer: isFinalView?()=>{return <VFButton onClick={()=>{return;}}  disabled={true}
+        style={{ width: "90px", height: "25px", fontSize: "1rem" }}
+        themeUi={themeUi} >Edit Role</VFButton>}: RoleViewCellRenderer,
         cellRendererParams: {
           allRoles: listRoles,
         },
+        cellStyle: (props:any)=>{
+          if (isFinalView && props.data.error) {
+            return { cursor: "not-allowed"  }as CellStyle;
+          }
+          else if(isFinalView){
+            return { cursor: "not-allowed" } as CellStyle;
+          }
+          return {};
+        }
       },
       {
         headerName: "Permissions",
         field: "permissions",
-        cellRenderer: PermissionViewCellRenderer,
+        cellRenderer:isFinalView?()=>{return <VFButton onClick={()=>{return;}}  disabled={true}
+        style={{ width: "120px", height: "25px", fontSize: "1rem" }}
+        themeUi={themeUi} >Edit Permission</VFButton>}: PermissionViewCellRenderer,
         cellRendererParams: {
           allPermissions: dataAllPermissions,
           setIsPermissionModalOpen: setIsPermissionModalOpenForRow,
@@ -233,10 +286,18 @@ const PermissionSelectionPage = ({
     ];
     const [isBulkActionEnabled, setIsBulkActionEnabled] = useState(false);
 
-    console.log("ValidUserData", validUserData)
-
     const agGridProps: AgGridReactProps = {
       rowSelection: "multiple",
+    
+      getRowStyle: (params)=>{
+        if (isFinalView && params.data.error) {
+          return { backgroundColor: "rgb(242, 75, 75,0.3)",  } as RowStyle;
+        }
+        else if(isFinalView){
+          return { backgroundColor: "rgb(103, 242, 75,0.4)", } as RowStyle;
+        }
+    
+      },
       enableFillHandle: true,
       defaultColDef: {
         flex: 1,
@@ -258,14 +319,23 @@ const PermissionSelectionPage = ({
     };
 
     return (
+        
       <TableWrapper style={{ paddingBottom: "50px" }}>
-        { isLoading && <VFLoader/>}
-        <BulkUploadHeader
+        { isLoading && <OverlayLoader message="Creating Users..."/>}
+        {
+          !isFinalView &&
+          <BulkUploadHeader
           themeUi={themeUi}
           isBulkActionEnabled={isBulkActionEnabled}
           setIsPermissionModalOpen={setIsPermissionModalOpen}
           setIsRoleModalOpen={setIsRoleModalOpen}
-        />
+          />
+        }
+          {isFinalView && (
+            <div style={{fontSize: '1.4rem', padding: '12px 0 18px 20px', fontWeight: "bold"}}>
+              { errorRes? ("* "+errorRes+" of the following users failed to created."): "All users created successfully!" }
+              </div>
+            )}
         <VFTable
           ref={gridRef}
           {...agGridProps}
@@ -305,11 +375,11 @@ const PermissionSelectionPage = ({
           }}
           maintainColumnOrder
         />
-        <div style={{display: 'flex', width:'100%', justifyContent:'flex-end'}}>
-          <VFButton onClick={()=>{createUsers()}} themeUi={themeUi}>
+        {!isFinalView && <div style={{display: 'flex', width:'100%', justifyContent:'flex-end', marginTop: '1.2rem'}}>
+          <VFButton  style={{height:'3.5rem', fontSize: '1.2rem'}} onClick={()=>{createUsers()}} themeUi={themeUi}>
             Create Users
           </VFButton>
-        </div>
+        </div>}
         {
           <VFModalCard
             openModal={isPermissionModalOpen}
@@ -338,6 +408,8 @@ const PermissionSelectionPage = ({
           >
             {/* <PermissionHeirarchyCanvas  allPermissions={dataAllPermissions}/> */}
             <PermissionSelectionModal
+              selectedIndex = {rowIndex}
+              gridRef = {gridRef}
               dataAllPermissions={dataAllPermissions}
               updatePermissions={(selectedPermissions:any)=>{updatePermissionsForTheRow(selectedPermissions)}}
               closeModal={() => {
@@ -365,6 +437,7 @@ const PermissionSelectionPage = ({
           </VFModalCard>
         }
       </TableWrapper>
+      
     );
   };
 export default PermissionSelectionPage;

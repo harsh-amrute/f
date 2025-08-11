@@ -8,6 +8,7 @@ const SectionContainer = styled.div`
   border-radius: 6px;
   padding: 12px 16px;
   margin-bottom: 16px;
+  zoom: 0.85;
 `;
 
 const SectionTitle = styled.h4`
@@ -39,7 +40,6 @@ const PermissionForm = ({
   setSelectedPermissions,
   selectedApplication,
 }: any) => {
-  console.log("current App all permissions", currentAppAllPermissions);
 
   const [LL1, setLL1] = useState<any>(
     Object.keys(currentAppAllPermissions.location_permission)
@@ -143,18 +143,14 @@ const PermissionForm = ({
       selectedPermissions[selectedApplication]?.location_permission || [];
     const newLL2Opts: any[] = [];
 
-    console.log("selectedPermisssions",  selectedPermissions[selectedApplication])
-    console.log("selectedLocPerms", selectedLocPerms);
     const selectedL1Keys = selectedLocPerms.map((e:any)=>e[0])
 
-    console.log("selectedKes", selectedL1Keys);
 
     LL2.forEach((ele:any)=>{
       if(selectedL1Keys.some((val:any)=> val===ele.split('>')[0])){
         newLL2Opts.push(ele);
       }
     })
-    console.log("the newLL2Opts", newLL2Opts);
     setLL2Opts(newLL2Opts.map((e:any) => ({ label: e, value: e })));
   }, [LL2,selectedPermissions, selectedApplication]);
 
@@ -193,7 +189,6 @@ const PermissionForm = ({
       }
     });
 
-    console.log("here pl2Opts", newPL2Opts);
   
     setPL2Opts(newPL2Opts.map(e => ({ label: e, value: e })));
   }, [PL2,selectedPermissions, selectedApplication]);
@@ -210,14 +205,12 @@ const PermissionForm = ({
     .filter((e: any) => e.length >= 2)
     .map((e: any) => `${e[0]}>${e[1]}`);
     
-    console.log("selectedP2Keys", selectedP2Keys);
     PL3.forEach((ele: any) => {
       if (selectedP2Keys.some((val: any) => val === ele.split('>').slice(0, 2).join('>'))) {
         newPL3Opts.push(ele);
       }
     });
 
-    console.log("newPL3Opts", newPL3Opts);
   
     setPL3Opts(newPL3Opts.map(e => ({ label: e, value: e })));
   }, [PL3,selectedPermissions, selectedApplication]);
@@ -278,7 +271,6 @@ const PermissionForm = ({
         });
     }
 
-    console.log("val the perm", val);
     return getUniqueObjects(val, "value");
   };
 
@@ -290,11 +282,14 @@ const PermissionForm = ({
     level,
   }: any) => {
     if (!val || !Array.isArray(val)) return;
-  
+
+    
     const prevPerms =
-      selectedPermissions?.[selectedApplication]?.[permissionType] || [];
-  
+    selectedPermissions?.[selectedApplication]?.[permissionType] || [];
+    
     const selectPermissions = Array.isArray(prevPerms) ? prevPerms : [];
+    console.log("val", val);
+    console.log("selectedPermissions", prevPerms);
   
     let newPerm: any[] = [];
   
@@ -311,7 +306,6 @@ const PermissionForm = ({
         .map((ele: any) => [ele.value]);
   
       newPerm = [...filteredNewPermissions, ...filteredPermissions];
-      console.log("newPerm (level 0):", newPerm);
     }
   
     if (level === 1) {
@@ -331,9 +325,8 @@ const PermissionForm = ({
         .map((ele: any) => ele.value.split(">"));
   
       newPerm = [...filteredNewPermissions, ...filteredPermissions];
-      console.log("newPerm (level 1):", newPerm);
     }
-  
+    
     if (level === 2) {
       const filteredPermissions = selectPermissions.filter(
         (ele: any) =>
@@ -351,7 +344,6 @@ const PermissionForm = ({
         .map((ele: any) => ele.value.split(">"));
   
       newPerm = [...filteredNewPermissions, ...filteredPermissions];
-      console.log("newPerm (level 2):", newPerm);
     }
   
     setSelectedPermissions((prev: any) => ({

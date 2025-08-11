@@ -6,7 +6,7 @@ flex-direction:row;
 justify-content:space-between;
 align-items:center;
 width:100%;
-height:40px;
+height:30px;
 border-radius:0px 0px 12px 12px;
 background-color:${props => props.headerBgColor ? props.headerBgColor : '#FFFFFF'}
 `;
@@ -31,7 +31,7 @@ export const SCTextTitle = styled.span<{headerTextColor:string | undefined}>`
   font-style:normal;
   font-variant:normal;
   font-weight:500;
-  font-size:18px;
+  font-size:14px;
   line-height:21px;
   font-family:Roboto;
   letter-spacing: 0px;

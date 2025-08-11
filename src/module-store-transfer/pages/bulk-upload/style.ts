@@ -25,9 +25,9 @@ export const LeftSectionWrapper = styled.div`
     justify-content: center;
     align-items: center;
     gap: 6rem;
+    margin-top: 5rem;
     padding-left: 5rem;
     padding-bottom: 10rem;
-    background-color:rgb(245, 245, 245);
 `
 
 
@@ -36,7 +36,7 @@ export const LeftCommonComWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 1.7rem;
+    gap: 1.2rem;
 `
 
 export const LeftStep = styled.div`
@@ -46,7 +46,7 @@ export const LeftStep = styled.div`
   padding: 8px 25px 8px 15px;
   font-weight: bold;
   border-radius: 6px 0 0 6px;
-  font-size: 1.3rem;
+  font-size: 0.8rem;
   clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%, 0% 50%);
 `
 
@@ -56,10 +56,10 @@ export const LeftCommonComUploadWrapper = styled.div`
     align-items: center;
     width: 90%;
     background-color: #fff;
-    border: 3px dashed rgba(249, 28, 28, 0.5);
+    border: 1.8px dashed rgba(249, 28, 28, 0.5);
     border-radius: 2px;
-    padding: 1rem;
-    height:10rem;
+    padding: 1rem 3rem;
+    height:8rem;
 `
 export const HeaderSection = styled.div`
     display: flex;
@@ -79,16 +79,16 @@ type SubTextProps = {
     fontWeight?: string;
 }
 
+
 export const HeaderText = styled.div<HeaderTextProps>`
-    font-size: ${props => props.fontSize || '1.9rem'};
+    font-size: ${props => props.fontSize || '1.35rem'};
     font-weight: ${props => props.fontWeight || '600'};
 `
 export const SubText = styled.div<SubTextProps>`
-    font-size: ${props => props.fontSize || '1.2rem'};
+    font-size: ${props => props.fontSize || '1.15rem'};
     font-weight:  ${props => props.fontWeight || '300'};
     color: #666;
 `
-
 // Right section styles
 export const RightSectionWrapper = styled.div`
     width: 50%;
@@ -146,7 +146,6 @@ export const FilePanel = styled.div`
     border-radius: 0.5rem;
     background-color:rgb(239, 239, 239);
     width:50rem;
-
     &:hover{
         background-color:rgb(215, 211, 211);
         cursor: pointer;

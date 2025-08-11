@@ -48,8 +48,8 @@ const Section = styled.div`
 `;
 
 const SectionHeader = styled.div`
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 500;
+  font-size: 14px;
   margin-bottom: 8px;
   display: flex;
   padding-bottom: 4px;
@@ -69,7 +69,7 @@ const CheckboxLabel = styled.label`
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: 12px;
 `;
 
 const ButtonSection = styled.div`
@@ -149,7 +149,7 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
                       }}
                     >
                       <Checkbox
-                        style={{ zoom: 0.6 }}
+                        style={{ zoom: 0.5 }}
                         key={role.id}
                         theme={themeUi}
                         checked={selectedRoles.has(role)}

@@ -10,7 +10,7 @@ interface ProgressBoxProps {
 function ProgressBox({label, progress} : ProgressBoxProps) {
   return (
     <ProgressBoxWrapper>
-        <CircularProgress size={130} progress={progress} />
+        <CircularProgress size={120} progress={progress} />
         <LabelText>{label}</LabelText>
     </ProgressBoxWrapper>
   )
