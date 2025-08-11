@@ -71,8 +71,9 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
             }
         }
     }, [currentGridRef, columnState]);
-    const ExcelExportData = () =>{
-        if(data?.length> 0){
+
+    const ExcelExportData = () => {
+        if(rowData?.length > 0){
             
             getGridData(true)
         }
@@ -80,7 +81,6 @@ const GridView = forwardRef(({ colDef, setCurrentGridRef, currentGridRef, column
             notifyError("There is no data that can be exported to Excel!")
         }
     }
-
 
     return (
 

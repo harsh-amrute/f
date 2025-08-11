@@ -411,7 +411,7 @@ const RMPMOrderwiseCoverage = () => {
 
                 <ActionToolBar 
                     comp={"rmpm"} 
-                    isGoBackButton={isGridView} 
+                    // isGoBackButton={isGridView} 
                     handleGoBack={() => { (setIsGridView(false)) }} 
                     isAddFilterButton={isGridView ? true : false}
                     isChartGridToggle
