@@ -195,7 +195,13 @@ export namespace MDMService {
   }
 
   export const getAllEnvironmentConfiguration = async()=>{
-    return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/EnvironmentConfiguration',{
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/GetEnvironmentConfiguration',{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const editEnvironmentConfiguration = async(body:any)=>{
+    return await axios.put(process.env.REACT_APP_API_HOST + 'api/mta/EditEnvironmentConfiguration',body,{
       headers: { 'Content-Type': 'application/json' }
     })
   }

@@ -29,7 +29,7 @@ console.log("WAGGGGGGGG");
     const [currRole,setCurrRole] = useState<any>(null)
 
     const onEditRole = (row:any)=>{
-        setCurrTab(3)
+        setCurrTab(3); 
         setCurrRole(row)
     }
 

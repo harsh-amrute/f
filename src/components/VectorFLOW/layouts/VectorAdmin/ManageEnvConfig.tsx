@@ -3,7 +3,6 @@ import EnvConfigDrawer from "../../../../components/layouts/EnvConfigDrawer"
 
 const ManageEnvConfig = () => {
   const navigate = useNavigate()
-console.log("HIIIIII");
 
   return(
       <EnvConfigDrawer
