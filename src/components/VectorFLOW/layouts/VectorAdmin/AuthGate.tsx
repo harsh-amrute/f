@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { MainService } from "../../../../module-main/services/api"
 import { notifyError } from "../../../../helpers/notify"
 import Spinner from "../../../../components/commons/Spinner"
+import PageNotFound from "../../../../module-store-transfer/pages/notFound"
 
 
 
@@ -57,12 +58,28 @@ export const AuthGate = ()=>{
 
 export const UnAuthGate = ()=>{
 
-
-    const isLoggedIn =  localStorage.getItem('isAdmin')?true:false
-
-    if(isLoggedIn){
-        return <Navigate to={'/vector-admin'}/>
+  const token = localStorage.getItem('token');
+  const [userData, setUserData] = useState<any>({});
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    if(token){
+      MainService.getProfile()
+      .then((res) => {
+        setUserData(res.data.data)
+      setLoading(false)
+      })
+      .catch((err) => {
+        notifyError(err)
+        setLoading(false)
+      })
     }
+    else{
+    setLoading(false)
+    }
+  }, []);
+
+  if (loading)  return <Spinner/>
+  if(!token || (userData && !userData?.user?.is_admin))    return < PageNotFound /> 
 
     return (
         <>
