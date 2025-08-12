@@ -470,8 +470,8 @@ const DptWiseBMReport = () => {
                         }
                   
                         if (child.dt === 'decimal') {
-                            const fixedValue = params.value.toFixed(2).toLocaleString();
-                            return locale ? fixedValue.toLocaleString(locale) : fixedValue;
+                            const fixedValue = parseFloat(params.value.toFixed(2)); 
+                            return locale ? fixedValue.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :fixedValue;
                         }
                   
                         return params.value;
