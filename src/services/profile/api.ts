@@ -18,6 +18,10 @@ export namespace MainService {
     return await axios.get(`${API_USER}/all-role/`)
   }
 
+  export const getUserPermissions = async (payload:any) => {
+    return await axios.get(`${API_USER}/get-user-permissions/?id=${payload}`)
+   }
+
   export const getAllUsers = async () => {
     return await axios.get(`${API_USER}/all-users/`)
   }
