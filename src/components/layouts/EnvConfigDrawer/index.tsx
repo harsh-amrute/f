@@ -13,7 +13,6 @@ interface UserRolesDrawerProps{
 }
 
 const EnvConfigDrawer = (props:UserRolesDrawerProps)=>{
-console.log("WAGGGGGGGG");
 
     const {
         onClose

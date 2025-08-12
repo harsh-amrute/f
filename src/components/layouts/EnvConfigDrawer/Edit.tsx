@@ -42,18 +42,13 @@ const EditRole = (props: { data: any; cb: () => void }) => {
 
   const themeUi = user.user.theme_ui;
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  
 
   const [formData, setFormData] = useState<FormDataType>({ ...data });
 
   const {mutateAsync : editEnvConfiguration} = useEditEnvironmentConfiguration();
 
-  useEffect(() => {
-   
-    setIsLoading(false);
-  }, []);
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

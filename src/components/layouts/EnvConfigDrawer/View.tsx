@@ -6,7 +6,6 @@ import { TableWrapper } from "../UserURLsDrawer/styles"
 
 import { useUserData } from "../../../context"
 import { SecondaryButton, Skeleton } from "../../commons/styled"
-import axios from 'axios'
 import { notifyError } from '../../../helpers/notify'
 import { useGetAllEnvironmentConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
 
