@@ -76,7 +76,6 @@ function UploadRightSection({
               headerName: "Error",
               field: "error",
               valueFormatter: (params: any) => {
-                console.log("Params: ", params);
                 return (params?.value || []).map((e: any) => `${e}`).join('\n');
               }
             },
