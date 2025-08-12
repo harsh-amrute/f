@@ -153,8 +153,6 @@ const MTOTaskStatus = ()=>{
         }
     }
 
-    React.useEffect(() => {
-    }, [finalData])
 
     const [allUsers, setAllUsers] = useState<any>([])
 
