@@ -19,7 +19,6 @@ interface ProductProps {
 const ProductFilter = ({ ...props }: ProductProps) => {
   const { t } = useTranslation()
   const { productFilter, loading } = props
-console.log("PRODUCT FILTER",productFilter);
 
   return (
     <SCProductFilter>
