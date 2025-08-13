@@ -1199,9 +1199,12 @@ const useViewModify = (pageType:string) => {
         const selectedRows = ref.current?.api.getSelectedRows();
         if(selectedRows && selectedRows.length > 0){
           dispatch(REMOVE_ROW_DATA(selectedRows));
-          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           notifySuccess(`${selectedRows?.length} records deleted successfully`);
           setSelectedRowsCount(0);
+          if(recordCount - selectedRows?.length === 0){
+            dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          }
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           if(recordCount===selectedRows.length){
             if(draftID.length===0){
               dispatch(UPDATE_PROGRESS_STATE('Discard'))
