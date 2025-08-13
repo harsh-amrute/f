@@ -4397,9 +4397,7 @@ export function getColumnDefinations(
   removeCols: any = [],
 ) {
  
-  const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => {
-    // const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    // const NUMBER_FORMAT = EnvConfig['NUMBER_FORMAT'];   
+  const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => { 
     let filterType = 'agMultiColumnFilter'; 
 
     if (data.dt === 'date') {
@@ -4999,8 +4997,6 @@ export function getColumnDefinationsMTA(
   extraFields: any = [],
   removeCols: any = [],
 ) {
-  // const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-  // const NUMBER_FORMAT = EnvConfig['NUMBER_FORMAT'];   
   const columnDefs = fields?.map((data: any) => {
     const columnDef = {
       colId: data.Col_Code || data.colCode,
