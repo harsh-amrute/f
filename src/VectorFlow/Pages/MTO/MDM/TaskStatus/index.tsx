@@ -4,7 +4,7 @@ import VFTable from "../../Common/VFTable"
 
 import {  getActionName, mapTaskStatusToColDefs,getExistingColumns,getExistingColumnFields, mapMasterToTaskStatusColumnGroupDefs, mapTaskStatusDataToRowData } from "../../../../../helpers/utils"
 import TaskStatusMasterDetail from "./TaskStatusMasterDetail"
-import { useGetTaskDetailDownloadData,useGetMasterUIConfiguration, useGetMTOTaskStatusData, useGetAllUsers } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useGetTaskDetailDownloadData,useGetMasterUIConfiguration, useGetMTOTaskStatusData, useGetAllUsers, useGetApproverName } from "../../../../../VectorFlow/Services/MTA/MDM"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import { AgGridReactProps } from "ag-grid-react"
@@ -26,6 +26,7 @@ const MTOTaskStatus = ()=>{
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
 
     const {mutateAsync: getAllUsers} = useGetAllUsers();
+    const {mutateAsync:getApproverNames} = useGetApproverName();
 
     const {user} = useUserData()
 
@@ -75,13 +76,7 @@ const MTOTaskStatus = ()=>{
     }
 
     const [finalData, setFinalData] = useState<any>(undefined);
-    // rowData = rowData.map((row:any)=>{
-    //     return {
-    //         ...row,
-    //         PendingSince:formatMDMDate(row.PendingSince),
-           
-    //     }
-    // })
+
     const mapIdsToNames = (idString: string, data: any): any => {
         // Parse the comma-separated string into an array of numbers
         const ids = idString.split(",").map(id => parseInt(id.trim(), 10));
@@ -120,10 +115,35 @@ const MTOTaskStatus = ()=>{
 
         return newData;
     }
+    const getUniqueAppIds = (taskData: any[]): any[] => {
+        const allIds: number[] = [];
+        
+        taskData.forEach(task => {
+          if (task.a_ids) {
+            const ids = task.a_ids.split(',').map((id: string) => parseInt(id.trim(), 10));
+            allIds.push(...ids);
+          }
+        });
+      
+        const uniqueIds: number[] = [];
+        allIds.filter(id => !isNaN(id)).forEach(id => {
+          if (!uniqueIds.includes(id)) {
+            uniqueIds.push(id);
+          }
+        });
+        
+        return uniqueIds;
+      };
 
     const getMTOTaskData = async()=>{
         try{
             const response = await getMTOTaskStatusData();
+            const allApproverIds = getUniqueAppIds(response.data.data);
+            const approverNames = await getApproverNames({approver_ids: allApproverIds })
+            const allUsersData = approverNames.data || [];
+
+            setAllUsers(allUsersData);
+
             const transformedData = MTOToMTAFormat(response.data.data);
             setFinalData(transformedData)
            
@@ -133,44 +153,13 @@ const MTOTaskStatus = ()=>{
         }
     }
 
-    React.useEffect(() => {
-        console.log("Final data/////",finalData);
-    }, [finalData])
 
     const [allUsers, setAllUsers] = useState<any>([])
 
-    const GetAllUsersData = async()=>{
-        try{
-
-            const response = await getAllUsers();
-            console.log("response.....", response.data);
-            setAllUsers(response.data);
-        }
-        catch(e){
-            console.log(e)
-        }
-    }
-    
 
     React.useEffect(()=>{
-
-
-            // const newRowData = [...rowData];
-
-            // newRowData.sort((a:any,b:any)=>{
-            //     return differenceInSeconds(formatDate(b.PendingSince),formatDate(a.PendingSince)) 
-            // })
-            // setRowData(newRowData)
-            GetAllUsersData();
-            
-        
-    },[])
-
-    React.useEffect(()=>{
-        if(allUsers.length>0){
             getMTOTaskData();
-        }
-    },[allUsers])
+    },[])
         
                 
                 if(isLoading){

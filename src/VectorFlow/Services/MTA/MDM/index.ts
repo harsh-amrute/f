@@ -384,3 +384,10 @@ export const useGetAllUsers = ()=>{
   })
 }
 
+export const useGetApproverName = () => { 
+  return useMutation(
+    async (params: { approver_ids: any[] }) => {
+      return await MDMService.getApproverNames(params);
+    }
+  );
+};

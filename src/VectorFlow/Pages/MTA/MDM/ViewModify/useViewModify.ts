@@ -1636,6 +1636,12 @@ const useViewModify = (pageType:string) => {
 
       const onPIPOStatusUpdate = async () => {
         const selectedRows = ref.current?.api.getSelectedRows();
+
+        if(selectedRows?.length === 0)  {
+          notifyError("Please select atleast 1 row");
+          return;
+        }
+        
         await postMasterDataChunks(selectedRows,false,'stop');
         onWarningModalSuccess(true)
         notifySuccess("Status Updated Successfully");
