@@ -31,7 +31,7 @@ const ExcessInventoryTrend = ({
   const [options2, setOptions2] = useState({});
   const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
   const CURRENCY = EnvConfig?.CURRENCY; 
-  const chartParams1 = useMemo(() => createChartParams('locationCount' , CURRENCY), []);
+  const chartParams1 = useMemo(() => createChartParams('skuCount'), []);
     const chartParams2 = useMemo(() => createChartParams('value', CURRENCY), [CURRENCY]);
 
   const greyShades = [

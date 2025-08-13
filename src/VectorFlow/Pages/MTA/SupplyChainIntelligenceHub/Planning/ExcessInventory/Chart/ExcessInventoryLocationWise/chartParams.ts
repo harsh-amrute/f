@@ -77,10 +77,10 @@
 
 
 export const createChartParams = (type: any, currency: any) => {
-    // Determine if the chart is for SKU counts or monetary value
+
     const isSku = type === 'sku';
 
-    // Define the parameters that change based on the type
+
     const yKey = isSku ? 'SKUCounts' : 'SumOfAmount';
     const yAxisLabel = isSku ? 'Count Of SKUs' : 'Value In Lakhs';
     const yName = isSku ? 'Count of SKUs' : 'Value In Lakhs';
@@ -99,7 +99,7 @@ export const createChartParams = (type: any, currency: any) => {
             : 'This graph highlights the top 10 locations with the highest excess inventory (On Hand), assessed in terms of monetary value.'
     ];
 
-    // Return the combined chart configuration object
+
     return {
         title,
         downloadName,

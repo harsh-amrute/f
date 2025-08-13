@@ -84,33 +84,43 @@
 //     }
 // }
 
-// A single function to generate chart parameters dynamically
-export const createChartParams = (type:any, CURRENCY:any) => {
-    // Define parameters that change based on the type
-    const isSku = type === 'sku';
-    const currency = CURRENCY || 'Rupee';
+export const createChartParams = (type:any, currency = 'Rupee') => {
 
-    const title = isSku
-        ? 'Excess Inventory Trend (Count Of SKU) - Last 90 Days'
-        : `Top 10 Products with Excess Inventory: In Value (${currency} Lakhs)`;
+    const isValueType = type === 'value';
 
-    const yAxisLabel = isSku ? 'Count Of SKUs' : 'Value In Lakhs';
-    const yKey = isSku ? 'countSku' : 'value';
-    
-    const graphInfo = [
-        `This graph highlights the date-wise trend of excess inventory (On Hand) in ${isSku ? 'quantity' : 'value'} across various locations and products over the past 7 days`,
-        'Excess Inventory = Quantity > Norm'
-    ];
 
-    // Return the complete chart configuration object
+    const config = isValueType
+
+        ? {
+
+            title: `Top 10 Products with Excess Inventory: In Value (${currency} Lakhs)`,
+            yAxisLabel: 'Value In Lakhs',
+            yKey: 'value',
+            graphInfo: [
+                'This graph highlights the date-wise trend of excess inventory (On Hand) in value across various locations and products over the past 7 days',
+                'Excess Inventory = Quantity > Norm'
+            ]
+          }
+
+        : {
+            title: 'Excess Inventory Trend (Count Of SKU)-Last 90 Days',
+            yAxisLabel: 'Count Of SKUs',
+            yKey: 'countSku',
+            graphInfo: [
+                'This graph highlights the date-wise trend of excess inventory (On Hand) across various locations and products over the past 7 days',
+                'Excess Inventory = Quantity > Norm'
+            ]
+          };
+
+
     return {
-        title,
-        downloadName: title,
+        title: config.title,
+        downloadName: config.title, 
         chartType: 'line',
         LabelPosition: 'bottom',
         Labels: {
             Xaxis: 'Date',
-            Yaxis: yAxisLabel
+            Yaxis: config.yAxisLabel,
         },
         palette: {},
         legend: {
@@ -124,15 +134,15 @@ export const createChartParams = (type:any, CURRENCY:any) => {
         },
         chartKey: {
             Xaxis: ['date'],
-            Yaxis: [] // dynamic from backend
+            Yaxis: []
         },
         series: [{
             type: 'line',
             xKey: 'date',
-            yKey: yKey, // Dynamic yKey
+            yKey: config.yKey,
             strokeWidth: 3,
         }],
-        graphInfo,
+        graphInfo: config.graphInfo,
         customizedStyles: {
             headerZoom: 0.7,
             headerContainerHeight: '30px',
