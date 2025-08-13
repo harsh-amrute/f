@@ -2,7 +2,6 @@ import Drawer from "../../commons/Drawer"
 import { Content,DrawerHeader} from "../UserURLsDrawer/styles"
 import { useUserData } from "../../../context"
 import { useState } from "react"
-import AddRole from "./Add"
 import NavigationTab from "../NavigationTab"
 import ViewURLs from "./View"
 import EditRole from "./Edit"
@@ -56,11 +55,7 @@ const EnvConfigDrawer = (props:UserRolesDrawerProps)=>{
         >
             
             
-            {currTab === 1 && (
-                <Content>
-                    <AddRole cb={resetTab}/>
-                </Content>
-            )}
+       
             {currTab === 0 && (
                 <Content>
                     <ViewURLs
@@ -103,7 +98,7 @@ const Header = (props:{
             <p>Env Config</p>
             <div style={{flex:4}}>
                 <NavigationTab 
-                    listTabs={['View' , 'Add']} 
+                    listTabs={['View']} 
                     onClick={(item:number)=>(handleAction(item))}
                     activeTab ={activeTab}
                     setActiveTab={setActiveTab}

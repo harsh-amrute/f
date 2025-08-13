@@ -253,11 +253,7 @@ export const useEditEnvironmentConfiguration = () => {
   })
 }
 
-export const useAddEnvironmentConfiguration = () => {
-  return useMutation(QUERY_KEYS.useAddEnvironmentConfiguration, async (body:any) => {
-    return await MDMService.addEnvironmentConfiguration(body)
-  })
-}
+
 
 /**Adding the MTO Masters related calls */
 export const useGetMTOMasterUIConfiguration = () => {

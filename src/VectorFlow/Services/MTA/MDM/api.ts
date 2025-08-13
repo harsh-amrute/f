@@ -206,11 +206,7 @@ export namespace MDMService {
     })
   }
 
-  export const addEnvironmentConfiguration = async(body:any)=>{
-    return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/AddEnvironmentConfiguration',body,{
-      headers: { 'Content-Type': 'application/json' }
-    })
-  }
+
 
   /**This get the  MTO Masters Data*/
   export const getMTOMastersData = async () => {
