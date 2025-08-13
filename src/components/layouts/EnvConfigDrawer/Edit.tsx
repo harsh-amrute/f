@@ -131,6 +131,7 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
             themeUi={themeUi}
             value={formData.ConfigValue}
             onChange={handleChange}
+            maxLength={50}
           />
         </InputWrapper>
       </div>
