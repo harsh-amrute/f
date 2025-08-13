@@ -74,15 +74,14 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const changedData = getChangedFields(data ,formData , ['Id']) as any;
+    const changedData = getChangedFields(data ,formData , ['Id', 'ConfigKey']) as any;
     changedData.LastModifiedByUserEmail = user?.user?.email;
-    console.log("CHANGED DATA",changedData);
     try {
       const response = await editEnvConfiguration(changedData);
       console.log("RESPONSE",response);
       
       if (response.status !== 200) notifyError("Server Went Unresponsive");
-      else notifySuccess("Updated Role Successfully");
+      else notifySuccess(response?.data?.data);
       cb();
     } catch (error) {
       console.error(error);
@@ -119,6 +118,7 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
             placeholder="Any Config Key"
             themeUi={themeUi}
             onChange={handleChange}
+            readOnly 
           />
         </InputWrapper>
         <InputWrapper style={{ marginLeft: "10px" }}>
@@ -130,18 +130,6 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
             placeholder="Any Config Value"
             themeUi={themeUi}
             value={formData.ConfigValue}
-            onChange={handleChange}
-          />
-        </InputWrapper>
-        <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="Category"> Category</Label>
-          <Input
-            type={"text"}
-            required
-            name="Category"
-            placeholder="Any Category Value"
-            themeUi={themeUi}
-            value={formData.Category}
             onChange={handleChange}
           />
         </InputWrapper>
