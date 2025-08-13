@@ -3821,7 +3821,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
   const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
   const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
   const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
-  console.log("HI VAIBHAV",column ,LOCATION_PERMISSION_L1, LOCATION_PERMISSION_L3);
+
   if (column.colCode === 'sl1') {
     return {
       field: column['colCode'],
