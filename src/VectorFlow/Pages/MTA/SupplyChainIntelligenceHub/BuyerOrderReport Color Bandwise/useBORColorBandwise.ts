@@ -69,8 +69,10 @@ export const useBORColorBandwise =()=>{
      const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
-    //  const rowsPerPage=50;
-     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
+     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+     const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
+     const BOR_COLORBANDWISE_ROWS_PER_PAGE = EnvConfig['BOR_COLORBANDWISE_ROWS_PER_PAGE'];   
+     const rowsPerPage = parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
 
      const {date:lastRunDate} = useGetLastRunData()
 
@@ -101,8 +103,7 @@ export const useBORColorBandwise =()=>{
   const onCloseRemarkHistory = () => setIsRemarkHistoryToolTipOpen(false)
   const { mutateAsync: getState, isLoading: isSavedDataLoading } = useGetState()
   const [gridState, setGridState] = useState<any>()
-  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-  const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
+
 
      const customCellRenderers = useMemo(() => ({
         grapCellRenderer:BPRGraphCellRenderer,

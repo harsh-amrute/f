@@ -72,8 +72,8 @@ const useTotalRequirementReport =()=>{
  
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
-
-    const rowsPerPage = parseInt(process.env.REACT_APP_TOTAL_REQUIREMENT_ROWS_PER_PAGE || '100');
+    const TOTAL_REQUIREMENT_ROWS_PER_PAGE = EnvConfig['TOTAL_REQUIREMENT_ROWS_PER_PAGE']; 
+    const rowsPerPage = parseInt(TOTAL_REQUIREMENT_ROWS_PER_PAGE || '100');
 
     // const RRRColorBandWiseColumns = useMemo(()=>mapRRRColorBandWiseFieldsToColDefs(data?.data.data),[data])
 

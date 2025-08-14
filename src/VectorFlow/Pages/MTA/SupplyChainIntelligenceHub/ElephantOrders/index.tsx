@@ -114,7 +114,7 @@ const ElephantOrder = () => {
               totalRows={EOCount}
               currentPage={currentPage}
               rowsPerPage={parseInt(
-                process.env.REACT_APP_RRR_ROWS_PER_PAGE || "100"
+                RRR_ROWS_PER_PAGE || "100"
               )}
               handleChangePage={(e) => GetEOData(e)}
               resetGridRef={ref}

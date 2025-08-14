@@ -91,7 +91,7 @@ const useRRRColorBandwise = () => {
   const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
   const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
   const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
-
+  const RRR_COLORBANDWISE_ROWS_PER_PAGE = EnvConfig['RRR_COLORBANDWISE_ROWS_PER_PAGE']
   const rowsPerPage = parseInt(
     BOR_ROWS_PER_PAGE || "100"
   );
@@ -190,9 +190,7 @@ const useRRRColorBandwise = () => {
       paginationParameter: {
         pageNumber: currentPage,
         // recordPerPage:20
-        recordsPerPage: parseInt(
-          process.env.REACT_APP_RRR_COLORBANDWISE_ROWS_PER_PAGE || "100"
-        ),
+        recordsPerPage: parseInt( RRR_COLORBANDWISE_ROWS_PER_PAGE || "100" ),
       },
     };
     const resultCount = await getDataCount(payload);
