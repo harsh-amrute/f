@@ -17,7 +17,7 @@ function BulkUploadPage() {
     <div style={{overflow:'hidden',width:'100%', height: "100%"}}>
       {
         isAssignPageOpen?
-        <PermissionSelectionPage validUserData={validUserData} setValidUsersData={setValidUserData} themeUi={themeUi}/>
+        <PermissionSelectionPage validUserData={validUserData} setValidUsersData={setValidUserData} themeUi={themeUi} setIsAssignPage={setIsAssignPage}/>
         :
         <UploadWrapperSection setIsAssignPageOpen={setIsAssignPage} setValidUserData={setValidUserData} validUserData={validUserData}/>
       }

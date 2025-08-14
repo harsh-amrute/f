@@ -17,6 +17,7 @@ import PermissionSelectionModal from "./PermissionSelectionModal";
 import PermissionViewCellRenderer from "./PermissionViewCellRenderer";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
+import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 
 type Role = {
   id: number;
@@ -27,11 +28,13 @@ type Role = {
 const PermissionSelectionPage = ({
   validUserData,
   themeUi,
-  setValidUsersData
+  setValidUsersData,
+  setIsAssignPage
 }: {
   validUserData: any;
   setValidUsersData: any
   themeUi: any;
+  setIsAssignPage: any
 }) => {
 
   const [isFinalView, setIsFinalView] = useState(false);
@@ -330,12 +333,28 @@ const PermissionSelectionPage = ({
           isBulkActionEnabled={isBulkActionEnabled}
           setIsPermissionModalOpen={setIsPermissionModalOpen}
           setIsRoleModalOpen={setIsRoleModalOpen}
+          resetState={()=>{setIsFinalView(false); setIsAssignPage(false)}}
           />
         }
           {isFinalView && (
-            <div style={{fontSize: '1.4rem', padding: '12px 0 18px 20px', fontWeight: "bold"}}>
+            <div>
+
+            <div>
+                      <SCGoBackContainer style={{paddingLeft: '10px'}} onClick={()=>{setIsFinalView(false); setIsAssignPage(false)}}>
+                                                <img
+                                                    src="/assets/img/VectorFLOW/BPR/goback.svg"
+                                                    alt=""
+                                                    style={{height: '20px'}}
+                                                />
+                                                <SCGoBackText style={{fontSize: '1.5rem'}} ><b>Reupload</b></SCGoBackText>
+                                            </SCGoBackContainer>
+            
+                  </div>
+            <div style={{fontSize: '1.4rem', padding: '34px 0 8px 20px', fontWeight: "bold"}}>
               { errorRes? ("* "+errorRes+" of the following users failed to created."): "All users created successfully!" }
               </div>
+            </div>
+
             )}
         <VFTable
           ref={gridRef}

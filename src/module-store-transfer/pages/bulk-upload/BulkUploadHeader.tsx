@@ -3,12 +3,14 @@ import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import styled, { CSSProperties } from "styled-components";
 import Portal from "../../../components/VectorFLOW/layouts/Portal";
 import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
+import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 
 type BulkUploadHeaderParams = {
   themeUi: any;
   setIsPermissionModalOpen: (e: boolean) => void;
   setIsRoleModalOpen: (e: boolean) => void;
   isBulkActionEnabled: boolean | undefined;
+  resetState: ()=>void;
 };
 const ActionButton = styled.div`
   width: 100px;
@@ -27,6 +29,7 @@ const BulkUploadHeader = ({
   setIsPermissionModalOpen,
   setIsRoleModalOpen,
   isBulkActionEnabled,
+  resetState
 }: BulkUploadHeaderParams) => {
   const [selected, setSelected] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
@@ -79,11 +82,24 @@ const BulkUploadHeader = ({
         width: "100%",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "end",
+        justifyContent: "space-between",
         gap: "20px",
         marginBottom: "20px",
       }}
     >
+      <div>
+          <SCGoBackContainer style={{paddingLeft: '10px'}} onClick={resetState}>
+                                    <img
+                                        src="/assets/img/VectorFLOW/BPR/goback.svg"
+                                        alt=""
+                                        style={{height: '20px'}}
+                                    />
+                                    <SCGoBackText style={{fontSize: '1.5rem'}} ><b>Reupload</b></SCGoBackText>
+                                </SCGoBackContainer>
+
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
       <VFButton
         disabled={!isBulkActionEnabled}
         style={{ width: "100px", height: "35px", fontSize: "1rem" }}
@@ -101,9 +117,10 @@ const BulkUploadHeader = ({
           console.log("Export clicked");
           // Add export functionality here
         }}
-      >
+        >
         {"Export"}
       </VFButton>
+        </div>
 
       {open && (
         <Portal wrapperId="checkbox-dropdown">
