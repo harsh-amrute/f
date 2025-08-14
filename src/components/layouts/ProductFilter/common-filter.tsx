@@ -33,6 +33,9 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
   const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];   
   const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2'];   
   const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3'];   
+  const PRODUCT_FILTER_4 = EnvConfig['PRODUCT_FILTER_4'];   
+  const PRODUCT_FILTER_5 = EnvConfig['PRODUCT_FILTER_5'];   
+  const PRODUCT_FILTER_6 = EnvConfig['PRODUCT_FILTER_6'];   
   
 
   useEffect(() => {
@@ -87,21 +90,21 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
     },
     {
       icon: '/assets/img/ist/option.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_FILTER_4,
+      placeholder: PRODUCT_FILTER_4,
       options: listStyle,
       value: style,
       onChange: setStyle
     },
     {
       icon: '/assets/img/ist/margin.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_FILTER_5,
+      placeholder: PRODUCT_FILTER_5,
       options: listFit,
       value: fit,
       onChange: setFit
     },
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_FILTER_6,
+      placeholder: PRODUCT_FILTER_6,
       options: listLaunchPeriod,
       value: launchPeriod,
       onChange: setLaunchPeriod,

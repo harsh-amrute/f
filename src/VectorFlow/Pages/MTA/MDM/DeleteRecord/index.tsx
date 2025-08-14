@@ -109,7 +109,8 @@ const DeleteRecord = () => {
         errorCount
     } = useDelete();
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const DELETERECORD_PAGE = EnvConfig['DELETERECORD_PAGE'];   
+    const DELETERECORD_PAGE = EnvConfig['DELETERECORD_PAGE'];  
+    const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT']; 
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -283,7 +284,7 @@ const DeleteRecord = () => {
             onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
             onDownload={() => exportToExcel(true)} 
             onUpload={()=>{
-              onUploadMaster()
+              onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}

@@ -54,7 +54,11 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
   const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
   const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
   const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
-
+  const LOCATION_FILTER_4 = EnvConfig['LOCATION_FILTER_4'];
+  const LOCATION_FILTER_5 = EnvConfig['LOCATION_FILTER_5'];
+  const LOCATION_FILTER_6 = EnvConfig['LOCATION_FILTER_6'];
+  const LOCATION_FILTER_7 = EnvConfig['LOCATION_FILTER_7'];
+  const LOCATION_FILTER_8 = EnvConfig['LOCATION_FILTER_8'];
   useEffect(() => {
     async function initLocationFilter () {
       setLocationFilterLoading(true)
@@ -135,31 +139,31 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
       onChange: setDonorLocationName
     },
     {
-      placeholder: process.env.REACT_APP_LOCATION_FILTER_4,
+      placeholder: LOCATION_FILTER_4,
       options: listMapDonorLocationSubType,
       value: donorLocationSubType,
       onChange: setDonorLocationSubType
     },
     {
-      placeholder: process.env.REACT_APP_LOCATION_FILTER_5,
+      placeholder: LOCATION_FILTER_5,
       options: listMapTransferPref,
       value: transferPref,
       onChange: setTransferPref
     },
     {
-      placeholder: process.env.REACT_APP_LOCATION_FILTER_6,
+      placeholder: LOCATION_FILTER_6,
       options: listMapDonorReceiverLocationRegion,
       value: receiverLocationRegion,
       onChange: setReceiverLocationRegion
     },
     {
-      placeholder: process.env.REACT_APP_LOCATION_FILTER_7,
+      placeholder: LOCATION_FILTER_7,
       options: listMapDonorReceiverLocationName,
       value: receiverLocationName,
       onChange: setReceiverLocationName
     },
     {
-      placeholder: process.env.REACT_APP_LOCATION_FILTER_8,
+      placeholder: LOCATION_FILTER_8,
       options: listMapDonorReceiverLocationSubType,
       value: receiverLocationSubType,
       onChange: setReceiverLocationSubType

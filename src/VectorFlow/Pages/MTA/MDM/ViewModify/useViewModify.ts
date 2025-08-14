@@ -1022,7 +1022,7 @@ const useViewModify = (pageType:string) => {
     };
 
 
-      const onUploadMaster = async () => {
+      const onUploadMaster = async (RECORD_UPLOAD_LIMIT:any) => {
         // let intervalID:any;
         try {
           if(!file){
@@ -1034,7 +1034,7 @@ const useViewModify = (pageType:string) => {
           setIsOverlayVisible(true)
   
           if(activeMaster.id < 14){
-            await parseExcelData(file,activeMaster,pageType,selectedColumns);
+            await parseExcelData(file,activeMaster,pageType,selectedColumns,RECORD_UPLOAD_LIMIT);
           }
           
           const formData = new FormData();

@@ -831,7 +831,7 @@ export const checkError = (row: any, master: MDMMasterState, pageType: string) =
   return { error, warning };
 }
 
-export const parseExcelData = async (file: any, master: MDMMasterState, pageType: string, selectedColumns: any) => {
+export const parseExcelData = async (file: any, master: MDMMasterState, pageType: string, selectedColumns: any,RECORD_UPLOAD_LIMIT?:any) => {
 
   const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
   const result: object[] = [];
@@ -864,8 +864,8 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   //Check if File Contains a Column that is Duplicate
   const isDuplicateHeader = data[0].some((header:any,index:number)=>data[0].indexOf(header)!==index);
 
-  if (data.length > parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT || "50000")) {
-    throw new Error(`Number of rows should not exceed ${process.env.REACT_APP_RECORD_UPLOAD_LIMIT || '50000'}`);
+  if (data.length > parseInt(RECORD_UPLOAD_LIMIT || "50000")) {
+    throw new Error(`Number of rows should not exceed ${RECORD_UPLOAD_LIMIT || '50000'}`);
   }
   
   if(isDuplicateHeader){

@@ -92,6 +92,7 @@ const AddRecord = () => {
     
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig); 
     const ADDRECORD_PAGE = EnvConfig['ADDRECORD_PAGE'];  
+    const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT']; 
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -230,7 +231,7 @@ const AddRecord = () => {
               }
             }}
             onUpload={()=>{
-              onUploadMaster()
+              onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
