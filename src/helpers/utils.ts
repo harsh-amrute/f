@@ -2727,7 +2727,7 @@ export const generateGridSpecificChartFromChartProps = (options:any,downloadName
     return null
   }
   return {
-    palette:options.theme.palette,
+    palette:options?.theme?.palette,
     common: {
       legend: {
         position: "bottom",
