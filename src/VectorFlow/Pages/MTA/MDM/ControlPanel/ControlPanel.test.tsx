@@ -46,7 +46,7 @@ describe('Control Component', () => {
         // const viewModifyCard = screen.getAllByTestId('icon-card')[0];
         // expect(viewModifyCard).toBeInTheDocument();
         // fireEvent.click(viewModifyCard);
-        // expect(global.window.location.pathname).toContain('/master-data-management/control-panel/view-modify');
+        // expect(global.window.location.pathname).toContain('/mta/master-data-management/control-panel/view-modify');
         // fireEvent.click(screen.getAllByTestId('icon-card')[1]);
         // fireEvent.click(screen.getAllByTestId('icon-card')[2]);
 
@@ -59,7 +59,7 @@ describe('Control Component', () => {
             const viewModifyCard = screen.getAllByTestId('icon-card')[0];
             expect(viewModifyCard).toBeInTheDocument();
             fireEvent.click(viewModifyCard);
-            expect(global.window.location.pathname).toContain('/master-data-management/control-panel/view-modify');
+            expect(global.window.location.pathname).toContain('/mta/master-data-management/control-panel/view-modify');
             fireEvent.click(screen.getAllByTestId('icon-card')[1]);
             fireEvent.click(screen.getAllByTestId('icon-card')[2]);
         

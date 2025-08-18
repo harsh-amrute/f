@@ -271,7 +271,7 @@ const useViewModify = (pageType:string) => {
             if(masters?.length)return;
             const matchedItems = allMasterData.filter((item:any) => masterIdsArray.includes(String(item.id)));
             if (matchedItems.length != masterIdsArray.length) {
-               window.location.href = "/master-data-management/control-panel";
+               window.location.href = "/mta/master-data-management/control-panel";
           }
           
             matchedItems.forEach((item:any)=>{
