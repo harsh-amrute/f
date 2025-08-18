@@ -20,7 +20,7 @@ export const useAuth = () => {
                 setUserData(res.data.data);
             })
             .catch((err) => {
-                console.error("Token not valid",err)
+                console.error("Your session has expired",err)
                 notifyError("Your session has expired. Please log in again.");
                 localStorage.removeItem('token');
                 localStorage.removeItem('isAdmin');
