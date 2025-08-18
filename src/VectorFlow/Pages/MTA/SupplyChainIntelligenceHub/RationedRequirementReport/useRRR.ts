@@ -67,9 +67,8 @@ const useRRR =()=>{
     // const [rowData,setRowData] = useState([]);
      
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
     const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
-    const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE || '100');
+    const rowsPerPage = parseInt(RRR_ROWS_PER_PAGE || '100');
 
     const {date:lastRunDate} = useGetLastRunData()
   
