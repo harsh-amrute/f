@@ -117,13 +117,13 @@ const lazyLoad = (children: React.ReactNode) => {
     '/availability-comparison',
     '/ist-status',
     '/permission-forbidden',
-    '/master-data-management/control-panel',
-    '/master-data-management/control-panel/view-modify',
+    '/mta/master-data-management/control-panel',
+    '/mta/master-data-management/control-panel/view-modify',
     '/master-data-management/saved-drafts',
     '/master-data-management/task-status',
     '/master-data-management/task-pending',
-    '/master-data-management/control-panel/add',
-    '/master-data-management/control-panel/delete',
+    '/mta/master-data-management/control-panel/add',
+    '/mta/master-data-management/control-panel/delete',
     // mto mdm pages
     '/master-data-management/mto-control-panel',
     '/master-data-management/mto-control-panel/view-modify',
@@ -351,7 +351,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/control-panel',
+      path: '/mta/master-data-management/control-panel',
       element: <AppLayout />,
       children: [
         {
@@ -400,7 +400,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/control-panel/add',
+      path: '/mta/master-data-management/control-panel/add',
       element: <AppLayout />,
       children: [
         {
@@ -411,7 +411,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/control-panel/delete',
+      path: '/mta/master-data-management/control-panel/delete',
       element: <AppLayout />,
       children: [
         {
