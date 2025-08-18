@@ -13,6 +13,7 @@ import { getNestedChildren } from "../../../helpers/utils";
 import { Tooltip } from 'react-tooltip';
 import { useDispatch } from "react-redux";
 import { UPDATE_ENV_CONFIG } from "../../../redux/actions/MTA/index";
+import { notifyError } from "../../../helpers/notify";
 
 const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
   const { mutateAsync: getAllReports } = useGetAllReports();
@@ -106,7 +107,8 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
       dispatch(UPDATE_ENV_CONFIG(configMap))
     }
     catch (err) {
-      console.error("Unexpected error in getReportFields:", err);
+      console.error("Unexpected error in get Environment configuration:", err);
+      notifyError("Unexpected error in get Environment configuration:");
     }
   };
 
