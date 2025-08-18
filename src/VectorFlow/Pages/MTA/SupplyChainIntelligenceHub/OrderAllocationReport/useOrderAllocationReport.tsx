@@ -41,6 +41,9 @@ const useOrderAllocation =()=>{
 
      const dispatch = useDispatch();
    
+ 
+     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+     const ORDER_ALLOCATION_ROWS_PER_PAGE = EnvConfig['ORDER_ALLOCATION_ROWS_PER_PAGE'];   
 
      const [rowData,setRowData] = useState<Array<any>>([]);
 
@@ -63,16 +66,13 @@ const useOrderAllocation =()=>{
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
 
-     const rowsPerPage = parseInt( '100');
+     const rowsPerPage = parseInt(ORDER_ALLOCATION_ROWS_PER_PAGE|| '100');
 
      const handleChangePage = async (pageNo:any) => {
          setCurrentPage(pageNo);
          loadGridData(pageNo,currFilter);
       }
 
- 
-      const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-      const ORDER_ALLOCATION_ROWS_PER_PAGE = EnvConfig['ORDER_ALLOCATION_ROWS_PER_PAGE'];   
      const {mutateAsync:getData, isLoading: isRowDataLoading} = useGetOrderAllocationReportData();
 
      const {mutateAsync:getRecordsCount, isLoading: isRecordsCountLoading} = useGetOrderAllocationReportRecordsCount();
