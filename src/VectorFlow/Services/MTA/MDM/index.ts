@@ -24,7 +24,6 @@ export const QUERY_KEYS = {
   useGetAllReports: ['MDMService.useGetAllReports'],
   useGetAllEnvironmentConfiguration: ['MDMService.useGetAllEnvironmentConfiguration'],
   useEditEnvironmentConfiguration: ['MDMService.useEditEnvironmentConfiguration'],
-  useAddEnvironmentConfiguration: ['MDMService.useAddEnvironmentConfiguration'],
   useGetMTOPendingTask: ['MDMService.useGetMTOPendingTask']
 }
 
