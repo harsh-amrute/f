@@ -78,7 +78,6 @@ const useResearchInsights = () => {
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const BPR_ROWS_PER_PAGE = EnvConfig['BPR_ROWS_PER_PAGE'];   
     const RESEARCHINSIGHT_ROWS_PER_PAGE = EnvConfig['RESEARCHINSIGHT_ROWS_PER_PAGE'];
     const [graphs, setGraphs] = useState<Array<ReseachInsightsGraphState>>([
         {
@@ -257,7 +256,7 @@ const useResearchInsights = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: 1,
-                recordsPerPage: parseInt(BPR_ROWS_PER_PAGE || '50')
+                recordsPerPage: parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE || '50')
             }
         })
 
@@ -273,7 +272,7 @@ const useResearchInsights = () => {
             filters: filter,
             paginationParameter: {
                 pageNumber: pageNo,
-                recordsPerPage: parseInt(BPR_ROWS_PER_PAGE || '50')
+                recordsPerPage: parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE || '50')
             }
         })
         toast.dismiss()
@@ -690,7 +689,7 @@ const useResearchInsights = () => {
         }
     }
 
-    const rowsPerPage = useMemo(() => parseInt(BPR_ROWS_PER_PAGE|| '50'), [])
+    const rowsPerPage = useMemo(() => parseInt(RESEARCHINSIGHT_ROWS_PER_PAGE|| '50'), [])
 
     return {
         ref,
