@@ -375,7 +375,7 @@ export const listMenuParent: any = [
           {
             name: "InTransit Whereabouts",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/logistics/intransit-whereabouts",
+            url: "/mta/logistics/intransit-whereabouts",
             // role: ["IST Admin", "IST Requestor"],
             role: ["Admin", "VectorConsultant", "BPRManager"],
  
@@ -397,7 +397,7 @@ export const listMenuParent: any = [
           {
             name: "Buffer Trends",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/insights-and-trends/buffer-trends",
+            url: "/mta/insights-and-trends/buffer-trends",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           // {
@@ -410,7 +410,7 @@ export const listMenuParent: any = [
             name: "Guided Insights",
             img: "/assets/img/nav/arrow_down.svg",
             lp_attr : true,
-            url: "/insights-and-trends/guided-insights",
+            url: "/mta/insights-and-trends/guided-insights",
             lp_img : "/assets/img/Guided-In.svg",
             rp_img : "/assets/img/Guided-In1.svg",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
@@ -419,7 +419,7 @@ export const listMenuParent: any = [
             name: "Research Insights",
             img: "/assets/img/nav/arrow_down.svg",
             lp_attr : true,
-            url: "/insights-and-trends/research-insights",
+            url: "/mta/insights-and-trends/research-insights",
             lp_img : "/assets/img/Reasearch-in.svg",
             rp_img : "/assets/img/Reasearch-in1.svg",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
@@ -435,7 +435,7 @@ export const listMenuParent: any = [
           {
             name: "DBM Norm Suggestions",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/dbm/dbm-norm-suggestions",
+            url: "/mta/dbm/dbm-norm-suggestions",
             role: ["Admin", "VectorConsultant", "DBMManager"],
           }
         ]

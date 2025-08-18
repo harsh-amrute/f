@@ -18,7 +18,7 @@ const useViewPort = ()=>{
 
     const location = window.location
 
-    const urlDisableZoomScaling = ['/mta/supply-chain-intelligence-hub/planning','/insights-and-trends/research-insights','/insights-and-trends/buffer-trends','/mta/insights-and-trends/buffer-trend-report'];
+    const urlDisableZoomScaling = ['/mta/supply-chain-intelligence-hub/planning','/mta/insights-and-trends/research-insights','/mta/insights-and-trends/buffer-trends','/mta/insights-and-trends/buffer-trend-report'];
 
     const getScreenZoomValue = useCallback(():number=>{
         if(screenWidth >size.laptop && screenWidth<size.desktop && !urlDisableZoomScaling.includes(location.pathname)){

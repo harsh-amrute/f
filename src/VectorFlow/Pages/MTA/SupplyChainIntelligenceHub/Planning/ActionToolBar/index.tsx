@@ -528,7 +528,7 @@ const ActionToolBar = ({
         }
         break;
       case "BufferTrend":
-        if (pathname === "/insights-and-trends/buffer-trends") {
+        if (pathname === "/mta/insights-and-trends/buffer-trends") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -548,7 +548,7 @@ const ActionToolBar = ({
         }
         break;
       case "ResearchInsight":
-        if (pathname === "/insights-and-trends/research-insights") {
+        if (pathname === "/mta/insights-and-trends/research-insights") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -573,7 +573,7 @@ const ActionToolBar = ({
         }
         break;
       case "GuidedInsight":
-        if (pathname === "/insights-and-trends/guided-insights") {
+        if (pathname === "/mta/insights-and-trends/guided-insights") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -593,7 +593,7 @@ const ActionToolBar = ({
         }
         break;
       case "DBMNorm":
-        if (pathname === "/dbm/dbm-norm-suggestions") {
+        if (pathname === "/mta/dbm/dbm-norm-suggestions") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -639,7 +639,7 @@ const ActionToolBar = ({
         }
         break;
       case "InTransitWhereabouts":
-        if (pathname === "/logistics/intransit-whereabouts") {
+        if (pathname === "/mta/logistics/intransit-whereabouts") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -750,7 +750,7 @@ const ActionToolBar = ({
             {currentTab === "dbmnormsuggestions" && (
               <>
                 <Link
-                  to="/dbm/dbm-norm-suggestions"
+                  to="/mta/dbm/dbm-norm-suggestions"
                   style={{ textDecoration: "none" }}
                 >
                   <VFButtonOutline

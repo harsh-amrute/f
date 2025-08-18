@@ -40,7 +40,7 @@ const NavbarItem = ({
   const { user, isSideBarOpen, toggleSideBar } = useUserData();
   const permission: any = user?.roles?.permission;
   const { currentView, currentCategory } = useSelector((state: RootState) => state.mta.planning)
-  const analyticsPaths: Array<string> = ["/mta/supply-chain-intelligence-hub/bpr", "/insights-and-trends/research-insights", "/mta/insights-and-trends/buffer-trend-report", "/insights-and-trends/buffer-trends"]
+  const analyticsPaths: Array<string> = ["/mta/supply-chain-intelligence-hub/bpr", "/mta/insights-and-trends/research-insights", "/mta/insights-and-trends/buffer-trend-report", "/mta/insights-and-trends/buffer-trends"]
   const themeUi = user?.user?.theme_ui;
   const navigate = useNavigate();
   const location = useLocation();
@@ -253,7 +253,7 @@ const NavbarItem = ({
           />
         )}
 
-        {isHide && pathname === '/logistics/intransit-whereabouts' && menuItem.id === 9 && (
+        {isHide && pathname === '/mta/logistics/intransit-whereabouts' && menuItem.id === 9 && (
           <InTransitAnalytics />
         )}
 
@@ -302,7 +302,7 @@ const NavbarItem = ({
           <BORAnalytics />
         )}
 
-        {isHide && pathname === "/dbm/dbm-norm-suggestions" && menuItem.id === 9 && (
+        {isHide && pathname === "/mta/dbm/dbm-norm-suggestions" && menuItem.id === 9 && (
           <DBMAnalytics />
         )}
 
