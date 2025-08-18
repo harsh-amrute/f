@@ -42,7 +42,7 @@ const OrderAllocationReport = () => {
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
   const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-  const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
+  const ORDER_ALLOCATION_ROWS_PER_PAGE = EnvConfig['ORDER_ALLOCATION_ROWS_PER_PAGE'];   
   
   return (
   <GridStateContext.Provider
@@ -135,7 +135,7 @@ const OrderAllocationReport = () => {
                 selectedRows={0} 
                 totalRows={recordCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(RRR_ROWS_PER_PAGE|| '100')}
+                rowsPerPage={parseInt(ORDER_ALLOCATION_ROWS_PER_PAGE|| '100')}
                 handleChangePage={handleChangePage}
                 resetGridRef={ref} 
                 isDisabled={isDisabled}  

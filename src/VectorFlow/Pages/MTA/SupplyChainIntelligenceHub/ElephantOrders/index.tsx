@@ -42,7 +42,7 @@ const ElephantOrder = () => {
       const [isDisabled, setIsDisabled]= useState<boolean>(true)
   
       const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-      const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
+      const ELEPHANT_ORDER_ROWS_PER_PAGE = EnvConfig['ELEPHANT_ORDER_ROWS_PER_PAGE'];   
 
   return (
     <GridStateContext.Provider
@@ -114,7 +114,7 @@ const ElephantOrder = () => {
               totalRows={EOCount}
               currentPage={currentPage}
               rowsPerPage={parseInt(
-                RRR_ROWS_PER_PAGE || "100"
+                ELEPHANT_ORDER_ROWS_PER_PAGE || "100"
               )}
               handleChangePage={(e) => GetEOData(e)}
               resetGridRef={ref}

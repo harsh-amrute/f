@@ -43,7 +43,7 @@ const SupplierDispatchReport = () => {
   
    
       const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-      const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
+      const SUPPLIER_DISPATCH_REPORT_PER_PAGE = EnvConfig['SUPPLIER_DISPATCH_REPORT_PER_PAGE'];   
 
   
   return (
@@ -104,7 +104,7 @@ const SupplierDispatchReport = () => {
                 selectedRows={0} 
                 totalRows={SDRCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(RRR_ROWS_PER_PAGE || '100')}
+                rowsPerPage={parseInt(SUPPLIER_DISPATCH_REPORT_PER_PAGE || '100')}
                 handleChangePage={(e)=>GetSDRData(e)} 
 
                 resetGridRef={ref} 

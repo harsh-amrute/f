@@ -442,13 +442,13 @@ const useElephantOrders= ()=>{
     const onApplyFilter = async(filter:any)=>{
          
       const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-      const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
+      const ELEPHANT_ORDER_ROWS_PER_PAGE = EnvConfig['ELEPHANT_ORDER_ROWS_PER_PAGE'];   
         try{
             const DataCount = await getEODataCount({
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(RRR_ROWS_PER_PAGE|| '100')
+                    recordsPerPage:parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE|| '100')
                 }
             })
             setEOCount(DataCount.data.data[0].count);
@@ -457,7 +457,7 @@ const useElephantOrders= ()=>{
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE || '100')
                 }
             })
             

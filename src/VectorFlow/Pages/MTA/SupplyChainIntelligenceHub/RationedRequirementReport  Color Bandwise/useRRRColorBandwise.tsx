@@ -89,11 +89,9 @@ const useRRRColorBandwise = () => {
   const { mutateAsync: getDataCount , isLoading: isCountDataLoading} = useGetRRRColorBandWiseRecordCount();
 
   const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-  const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
-  const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
   const RRR_COLORBANDWISE_ROWS_PER_PAGE = EnvConfig['RRR_COLORBANDWISE_ROWS_PER_PAGE']
   const rowsPerPage = parseInt(
-    BOR_ROWS_PER_PAGE || "100"
+    RRR_COLORBANDWISE_ROWS_PER_PAGE || "100"
   );
 
    
@@ -287,7 +285,7 @@ const useRRRColorBandwise = () => {
       // overlayLoadingTemplate:'<object style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%) scale(2)" type="image/svg+xml" data="/assets/img/VectorFLOW/loaderMedium.svg" aria-label="loading"></object>',
       // rowSelection:'multiple',
       paginationPageSize: parseInt(
-        RRR_ROWS_PER_PAGE || "200"
+        RRR_COLORBANDWISE_ROWS_PER_PAGE || "200"
       ),
       suppressRowClickSelection: true,
       components: customCellRenderers,
