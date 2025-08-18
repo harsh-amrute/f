@@ -42,7 +42,7 @@ const useElephantOrders= ()=>{
  
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
-    const GUIDEDINSIGHT_ROWS_PER_PAGE = EnvConfig['GUIDEDINSIGHT_ROWS_PER_PAGE'];   
+    const ELEPHANT_ORDER_ROWS_PER_PAGE = EnvConfig['ELEPHANT_ORDER_ROWS_PER_PAGE'];   
     const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE|| '100');
     const {mutateAsync:submitDueDates} = useSubmitDueDates();
     const [editedDueDateRows, setEditedDueDateRows] = useState<any[]>([]);
@@ -366,7 +366,7 @@ const useElephantOrders= ()=>{
     const agGridProps: AgGridReactProps = useMemo(() => {
         return {
             paginationPageSize: parseInt(
-                GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
+                ELEPHANT_ORDER_ROWS_PER_PAGE || "50"
             ),
     
             suppressRowTransform: true,
