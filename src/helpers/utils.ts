@@ -3811,16 +3811,9 @@ export const getMCGridStoreIconColor = (status: string): string => {
 }
 
 
-export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProperties: any) => {
+export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProperties: any , PRODUCT_PERMISSION_L1:any ,PRODUCT_PERMISSION_L2:any ,PRODUCT_PERMISSION_L3:any , LOCATION_PERMISSION_L1:any , LOCATION_PERMISSION_L2 :any, LOCATION_PERMISSION_L3:any  ) => {
   
-  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-  const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1']; 
-  const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2']; 
-  const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
-  
-  const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
-  const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
-  const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
+
 
   if (column.colCode === 'sl1') {
     return {

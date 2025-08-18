@@ -25,6 +25,13 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
     const CURRENCY = EnvConfig?.CURRENCY; 
     const chartParams1 = useMemo(() => createChartParams('sku', CURRENCY), [EnvConfig]);
     const chartParams2 = useMemo(() => createChartParams('value', CURRENCY), [EnvConfig]);
+    const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1']; 
+    const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2']; 
+    const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
+    
+    const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+    const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+    const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
 
     const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
@@ -45,7 +52,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3); 
             if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
@@ -77,7 +84,7 @@ const ExcessInventoryProductWise = ({data}:ExcessInventoryProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3); 
             if(customColdef) return customColdef;
             return {
                 field:column['colCode'],
