@@ -57,7 +57,7 @@ const BuyerOrderReportColorBandwise = ()=>{
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
      
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
+    const BOR_COLORBANDWISE_ROWS_PER_PAGE = EnvConfig['BOR_COLORBANDWISE_ROWS_PER_PAGE'];   
 
     return(
       <GridStateContext.Provider
@@ -149,7 +149,7 @@ const BuyerOrderReportColorBandwise = ()=>{
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
-                  rowsPerPage={parseInt(BOR_ROWS_PER_PAGE || '100')}
+                  rowsPerPage={parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100')}
                   handleChangePage={handleChangePage}
                   resetGridRef={ref} 
                   isDisabled={isDisabled}  />

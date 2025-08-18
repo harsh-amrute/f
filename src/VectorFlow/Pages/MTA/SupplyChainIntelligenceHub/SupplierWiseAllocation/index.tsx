@@ -56,7 +56,7 @@ const SupplierWiseAllocation = ()=>{
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];  
+    const SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE = EnvConfig['SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE'];  
 
     return(
       <GridStateContext.Provider
@@ -148,7 +148,7 @@ const SupplierWiseAllocation = ()=>{
                   selectedRows={0}
                   totalRows={recordCount}
                   currentPage={currentPage}
-                  rowsPerPage={parseInt(BOR_ROWS_PER_PAGE || '100')}
+                  rowsPerPage={parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE || '100')}
                   handleChangePage={handleChangePage}
                   resetGridRef={ref} 
                   isDisabled={isDisabled}  />

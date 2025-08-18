@@ -70,7 +70,6 @@ export const useBORColorBandwise =()=>{
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
      const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-     const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
      const BOR_COLORBANDWISE_ROWS_PER_PAGE = EnvConfig['BOR_COLORBANDWISE_ROWS_PER_PAGE'];   
      const rowsPerPage = parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100');
 
@@ -258,7 +257,7 @@ export const useBORColorBandwise =()=>{
           filters:filter || {},
           paginationParameter: {
             pageNumber: currentPage,
-            recordsPerPage: parseInt(BOR_ROWS_PER_PAGE || '100')
+            recordsPerPage: parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100')
           }
         }
         const resultCount=await getDataCount(payload);
@@ -388,7 +387,7 @@ export const useBORColorBandwise =()=>{
         components:customCellRenderers,
         enableBrowserTooltips:true,
         getMainMenuItems: MainMenuItemsCustomization,
-        paginationPageSize:parseInt(BOR_ROWS_PER_PAGE || '100'),
+        paginationPageSize:parseInt(BOR_COLORBANDWISE_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {

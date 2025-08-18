@@ -41,9 +41,8 @@ const useElephantOrders= ()=>{
     const [VDRColumns,setVDRColumns] = useState<any[]>([])
  
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
     const ELEPHANT_ORDER_ROWS_PER_PAGE = EnvConfig['ELEPHANT_ORDER_ROWS_PER_PAGE'];   
-    const rowsPerPage = parseInt(BOR_ROWS_PER_PAGE|| '100');
+    const rowsPerPage = parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE|| '100');
     const {mutateAsync:submitDueDates} = useSubmitDueDates();
     const [editedDueDateRows, setEditedDueDateRows] = useState<any[]>([]);
 

@@ -72,7 +72,7 @@ const useOrderAllocation =()=>{
 
  
       const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-      const BOR_ROWS_PER_PAGE = EnvConfig['BOR_ROWS_PER_PAGE'];   
+      const ORDER_ALLOCATION_ROWS_PER_PAGE = EnvConfig['ORDER_ALLOCATION_ROWS_PER_PAGE'];   
      const {mutateAsync:getData, isLoading: isRowDataLoading} = useGetOrderAllocationReportData();
 
      const {mutateAsync:getRecordsCount, isLoading: isRecordsCountLoading} = useGetOrderAllocationReportRecordsCount();
@@ -239,7 +239,7 @@ const useOrderAllocation =()=>{
         components:customCellRenderers,
         enableBrowserTooltips:true,
         getMainMenuItems: MainMenuItemsCustomization,
-        paginationPageSize:parseInt(BOR_ROWS_PER_PAGE || '100'),
+        paginationPageSize:parseInt(ORDER_ALLOCATION_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {
