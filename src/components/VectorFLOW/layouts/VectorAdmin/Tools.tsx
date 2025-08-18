@@ -7,6 +7,7 @@ import {  ToolsWrapper } from "./styles"
 const Tools = ()=>{
 
     const navigate = useNavigate()
+    
     return(
         <ToolsWrapper>
             <PanelGrid style={{gap:0,display:'flex',maxWidth:800}}>
