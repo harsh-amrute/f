@@ -167,7 +167,7 @@ const ActionToolBar = ({
     //     filters:multiFilter
     //   });
     // }
-    else if(pathname==="/insights-and-trends/buffer-trend-report" || pathname=== "/supply-chain-intelligence-hub/bpr"){
+    else if(pathname==="/insights-and-trends/buffer-trend-report" || pathname=== "/supply-chain-intelligence-hub/bpr" || pathname=== "/supply-chain-intelligence-hub/rrr" || pathname==="/supply-chain-intelligence-hub/bor"){
       onExportToExcelCallBack();
     }
     else{
@@ -1058,7 +1058,7 @@ const ActionToolBar = ({
                           }
                           alt=""
                         />
-                         <p>{(currCategory === "BTR" || currCategory === "BPR") ? "CSV Export" : "Excel Export"}</p>
+                         <p>{(currCategory === "BTR" || currCategory === "BPR" || currCategory === "RRR" ||  currCategory === "BOR") ? "CSV Export" : "Excel Export"}</p>
                       </>
                       {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
                                     <p>Excel Export</p> */}
