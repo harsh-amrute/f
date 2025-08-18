@@ -101,7 +101,7 @@ const BPRDailyAnalytics = (props:BPRDailyAnalyticsProps)=>{
     const onGetAnalyticsData = async()=>{
         const pathname:string = location.pathname
         let payloadString = ""
-        if(location.pathname==='/supply-chain-intelligence-hub/planning'){
+        if(location.pathname==='/mta/supply-chain-intelligence-hub/planning'){
             if(currentCategory!==""){
                 switch(currentCategory){
                     case "GITFromParent":

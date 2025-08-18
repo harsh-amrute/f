@@ -145,13 +145,13 @@ export interface RouterToAnalyticsStringMap {
 
 export const routerToAnalyticsStringMap:RouterToAnalyticsStringMap = {
     // "/supply-chain-intelligence-hub/planning": "planning",
-    "/supply-chain-intelligence-hub/bpr": "bpr",
-    "/supply-chain-intelligence-hub/rrr": "rrr",
-    "/supply-chain-intelligence-hub/bor": "bor",
+    "/mta/supply-chain-intelligence-hub/bpr": "bpr",
+    "/mta/supply-chain-intelligence-hub/rrr": "rrr",
+    "/mta/supply-chain-intelligence-hub/bor": "bor",
     "/dbm/dbm-norm-suggestions": "dbm",
     "/insights-and-trends/research-insights": "ri",
     "/insights-and-trends/buffer-trends":'btr',
-    "/insights-and-trends/buffer-trend-report":'btr'
+    "/mta/insights-and-trends/buffer-trend-report":'btr'
   };
   
 

@@ -133,22 +133,22 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/mto-control-panel/add',
     '/master-data-management/mto-control-panel/delete',
     //
-    '/supply-chain-intelligence-hub/bor',
-    '/supply-chain-intelligence-hub/bpr',
-    '/supply-chain-intelligence-hub/planning',
-    '/supply-chain-intelligence-hub/rrr',
-    "/supply-chain-intelligence-hub/open-expediting-requests",
+    '/mta/supply-chain-intelligence-hub/bor',
+    '/mta/supply-chain-intelligence-hub/bpr',
+    '/mta/supply-chain-intelligence-hub/planning',
+    '/mta/supply-chain-intelligence-hub/rrr',
+    "/mta/supply-chain-intelligence-hub/open-expediting-requests",
 
-    '/supply-chain-intelligence-hub/rrr-color-bandwise',
-    '/supply-chain-intelligence-hub/bor-color-bandwise',
-    '/supply-chain-intelligence-hub/SupplierWiseAllocation',
-    '/supply-chain-intelligence-hub/order-allocation-report',
-    '/supply-chain-intelligence-hub/total-requirement-report',
+    '/mta/supply-chain-intelligence-hub/rrr-color-bandwise',
+    '/mta/supply-chain-intelligence-hub/bor-color-bandwise',
+    '/mta/supply-chain-intelligence-hub/SupplierWiseAllocation',
+    '/mta/supply-chain-intelligence-hub/order-allocation-report',
+    '/mta/supply-chain-intelligence-hub/total-requirement-report',
 
     '/insights-and-trends/buffer-trends',
     '/insights-and-trends/guided-insights',
     '/insights-and-trends/research-insights',
-    '/insights-and-trends/buffer-trend-report',
+    '/mta/insights-and-trends/buffer-trend-report',
     '/dbm/dbm-norm-suggestions',
     '/logistics/intransit-whereabouts',
     '/procurement/material-coverage-open-sales',
@@ -167,8 +167,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/deptwise-bm-report',
     '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
     '/production-planning-scheduling/full-kit-assignment',
-    '/supply-chain-intelligence-hub/sdr',
-    '/supply-chain-intelligence-hub/eo',
+    '/mta/supply-chain-intelligence-hub/sdr',
+    '/mta/supply-chain-intelligence-hub/eo',
     '/master-data-management/data-modification-history',
     '/supply-chain-intelligence-hub/merchandising-grid',
     '/production-planning-and-scheduling/due-date-quotation',
@@ -586,7 +586,7 @@ export const initRoutes = (): RouteObject[] => {
     //
 
     {
-      path: '/supply-chain-intelligence-hub/planning',
+      path: '/mta/supply-chain-intelligence-hub/planning',
       element: <AppLayout />,
       children: [
         {
@@ -597,7 +597,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/planning',
+      path: '/mta/supply-chain-intelligence-hub/planning',
       element: <AppLayout />,
       children: [
         {
@@ -608,7 +608,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/bpr',
+      path: '/mta/supply-chain-intelligence-hub/bpr',
       element: <AppLayout />,
       children: [
         {
@@ -619,7 +619,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/open-expediting-requests',
+      path: '/mta/supply-chain-intelligence-hub/open-expediting-requests',
       element: <AppLayout />,
       children: [
         {
@@ -674,7 +674,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/bor',
+      path: '/mta/supply-chain-intelligence-hub/bor',
       element: <AppLayout />,
       children: [
         {
@@ -696,7 +696,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/rrr-color-bandwise',
+      path: '/mta/supply-chain-intelligence-hub/rrr-color-bandwise',
       element:<AppLayout/>,
       children:[
         {
@@ -707,7 +707,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/bor-color-bandwise',
+      path: '/mta/supply-chain-intelligence-hub/bor-color-bandwise',
       element:<AppLayout/>,
       children:[
         {
@@ -718,7 +718,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/SupplierWiseAllocation',
+      path: '/mta/supply-chain-intelligence-hub/SupplierWiseAllocation',
       element:<AppLayout/>,
       children:[
         {
@@ -729,7 +729,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/order-allocation-report',
+      path: '/mta/supply-chain-intelligence-hub/order-allocation-report',
       element:<AppLayout/>,
       children:[
         {
@@ -740,7 +740,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/total-requirement-report',
+      path: '/mta/supply-chain-intelligence-hub/total-requirement-report',
       element:<AppLayout/>,
       children:[
         {
@@ -762,7 +762,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/insights-and-trends/buffer-trend-report',
+      path: '/mta/insights-and-trends/buffer-trend-report',
       element: <AppLayout />,
       children: [
         {
@@ -773,7 +773,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/rrr',
+      path: '/mta/supply-chain-intelligence-hub/rrr',
       element: <AppLayout />,
       children: [
         {
@@ -984,7 +984,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/sdr',
+      path: '/mta/supply-chain-intelligence-hub/sdr',
       element: <AppLayout />,
       children: [
         {
@@ -995,7 +995,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/eo',
+      path: '/mta/supply-chain-intelligence-hub/eo',
       element: <AppLayout />,
       children: [
         {
