@@ -184,7 +184,7 @@ const ActionToolBar = ({
       pathname !== "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation" &&
       pathname !== "/mta/supply-chain-intelligence-hub/sdr" &&
       pathname !== "/mta/supply-chain-intelligence-hub/eo" &&
-      pathname !== "/supply-chain-intelligence-hub/total-requirement-report"
+      pathname !== "/mta/supply-chain-intelligence-hub/total-requirement-report"
     ) {
       setIsFilterButtonVisible(true);
     }
@@ -474,7 +474,7 @@ const ActionToolBar = ({
         break;
         
       case "OrderAllocationReport":
-        if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/order-allocation-report") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -1025,7 +1025,7 @@ const ActionToolBar = ({
           )} */}
           <SCCustomActionsContainer>
 
-          {( pathname != "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/mta/supply-chain-intelligence-hub/sdr" && pathname !== "/supply-chain-intelligence-hub/total-requirement-report" && pathname != "/mta/supply-chain-intelligence-hub/eo" ) && currentTab !== "custom" &&
+          {( pathname != "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/mta/supply-chain-intelligence-hub/sdr" && pathname !== "/mta/supply-chain-intelligence-hub/total-requirement-report" && pathname != "/mta/supply-chain-intelligence-hub/eo" ) && currentTab !== "custom" &&
                <>
                     <VFButton
                     onClick={() => toggleFilter(true)}

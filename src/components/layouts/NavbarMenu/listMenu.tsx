@@ -332,14 +332,14 @@ export const listMenuParent: any = [
           {
             name: "Order Allocation Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/order-allocation-report",
+            url: "/mta/supply-chain-intelligence-hub/order-allocation-report",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
  
           },
           {
             name: "Total Requirement Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/total-requirement-report",
+            url: "/mta/supply-chain-intelligence-hub/total-requirement-report",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
  
           },

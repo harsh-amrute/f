@@ -142,8 +142,8 @@ const lazyLoad = (children: React.ReactNode) => {
     '/mta/supply-chain-intelligence-hub/rrr-color-bandwise',
     '/mta/supply-chain-intelligence-hub/bor-color-bandwise',
     '/mta/supply-chain-intelligence-hub/SupplierWiseAllocation',
-    '/supply-chain-intelligence-hub/order-allocation-report',
-    '/supply-chain-intelligence-hub/total-requirement-report',
+    '/mta/supply-chain-intelligence-hub/order-allocation-report',
+    '/mta/supply-chain-intelligence-hub/total-requirement-report',
 
     '/insights-and-trends/buffer-trends',
     '/insights-and-trends/guided-insights',
@@ -729,7 +729,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/order-allocation-report',
+      path: '/mta/supply-chain-intelligence-hub/order-allocation-report',
       element:<AppLayout/>,
       children:[
         {
@@ -740,7 +740,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/total-requirement-report',
+      path: '/mta/supply-chain-intelligence-hub/total-requirement-report',
       element:<AppLayout/>,
       children:[
         {
