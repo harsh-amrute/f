@@ -491,7 +491,7 @@ const useSavedDrafts = ()=>{
           dispatch(UPDATE_DATA_AVAILABILITY_STATUS(true));
         }
         navigate(
-          `/mta/master-data-management/control-panel/${
+          `/master-data-management/control-panel/${
             getActionName(draftDetails.ActionType).label
           }`
         );
