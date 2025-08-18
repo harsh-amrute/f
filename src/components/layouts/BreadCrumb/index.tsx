@@ -7,12 +7,12 @@ const BreadCrumb = () => {
   const { user } = useUserData();
   if (location.pathname === '/mta/master-data-management/control-panel' || location.pathname === '/mto/master-data-management/control-panel') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Control Panel</BoldSpan></span>
   if (location.pathname === '/mta/master-data-management/control-panel/view-modify' || location.pathname === '/mto/master-data-management/control-panel/view-modify') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> View / Modify</BoldSpan></span>
-  if (location.pathname === '/master-data-management/saved-drafts' || location.pathname === '/mto/master-data-management/saved-drafts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Saved Drafts </BoldSpan></span>
-  if (location.pathname === '/master-data-management/task-status' || location.pathname === '/mto/master-data-management/task-status') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Task Status </BoldSpan></span>
-  if (location.pathname === '/master-data-management/task-pending' || location.pathname === '/mto/master-data-management/task-pending') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Task Pending For Review </BoldSpan></span>
+  if (location.pathname === '/mta/master-data-management/saved-drafts' || location.pathname === '/mto/master-data-management/saved-drafts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Saved Drafts </BoldSpan></span>
+  if (location.pathname === '/mta/master-data-management/task-status' || location.pathname === '/mto/master-data-management/task-status') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Task Status </BoldSpan></span>
+  if (location.pathname === '/mta/master-data-management/task-pending' || location.pathname === '/mto/master-data-management/task-pending') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Task Pending For Review </BoldSpan></span>
   if (location.pathname === '/mta/master-data-management/control-panel/add' || location.pathname === '/mto/master-data-management/control-panel/add') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Add Records </BoldSpan></span>
   if (location.pathname === '/mta/master-data-management/control-panel/delete' || location.pathname === '/mto/master-data-management/control-panel/delete') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Delete Records </BoldSpan></span>
-  if (location.pathname === '/master-data-management/data-modification-history' || location.pathname === '/mto/master-data-management/data-modification-history') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>Data Modification History</BoldSpan></span>
+  if (location.pathname === '/mta/master-data-management/data-modification-history' || location.pathname === '/mto/master-data-management/data-modification-history') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>Data Modification History</BoldSpan></span>
   
   if (location.pathname === '/masters-interceptor/control-panel') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Control Panel <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan> Module Selection </BoldSpan></span>
   if (location.pathname === '/masters-interceptor/saved-drafts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> Saved Drafts <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>  Module Selection </BoldSpan></span>
@@ -40,32 +40,32 @@ const BreadCrumb = () => {
   if (location.pathname === '/mta/supply-chain-intelligence-hub/eo') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>EO</BoldSpan></span>
   if (location.pathname === '/mta/supply-chain-intelligence-hub/total-requirement-report') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Total Requirement Report</BoldSpan></span>
 
-  if (location.pathname === '/logistics/intransit-whereabouts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>In Transit whereabouts</BoldSpan></span>
+  if (location.pathname === '/mta/logistics/intransit-whereabouts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>In Transit whereabouts</BoldSpan></span>
   if (location.pathname === '/mta/supply-chain-intelligence-hub/bor-color-bandwise') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> BOR - Color Bandwise</BoldSpan></span>
   if (location.pathname === '/mta/supply-chain-intelligence-hub/SupplierWiseAllocation') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> Supplier Wise Allocation</BoldSpan></span>
   if (location.pathname === '/mta/supply-chain-intelligence-hub/rrr-color-bandwise') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> RRR - Color Bandwise</BoldSpan></span>
   if (location.pathname === '/mta/supply-chain-intelligence-hub/order-allocation-report') return <span>SCIH <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>Order Allocation Report</BoldSpan></span>
-  if (location.pathname === '/logistics/intransit-whereabouts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>In Transit whereabouts</BoldSpan></span>
+  if (location.pathname === '/mta/logistics/intransit-whereabouts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>In Transit whereabouts</BoldSpan></span>
 
 
 
   if (location.pathname === '/mta/insights-and-trends/buffer-trend-report') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>BTR</BoldSpan></span>
-  if (location.pathname === '/insights-and-trends/buffer-trends') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> BT</BoldSpan></span>
-  if (location.pathname === '/insights-and-trends/guided-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> GI</BoldSpan></span>
-  if (location.pathname === '/insights-and-trends/research-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>RI</BoldSpan></span>
+  if (location.pathname === '/mta/insights-and-trends/buffer-trends') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> BT</BoldSpan></span>
+  if (location.pathname === '/mta/insights-and-trends/guided-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> GI</BoldSpan></span>
+  if (location.pathname === '/mta/insights-and-trends/research-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>RI</BoldSpan></span>
 
-  if (location.pathname === '/dbm/dbm-norm-suggestions') return <span>DBM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>DBM Norm Suggestion</BoldSpan></span>
+  if (location.pathname === '/mta/dbm/dbm-norm-suggestions') return <span>DBM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>DBM Norm Suggestion</BoldSpan></span>
 
 
 
 
 
   if (location.pathname === '/mta/insights-and-trends/buffer-trend-report') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> BTR</BoldSpan></span>
-  if (location.pathname === '/insights-and-trends/buffer-trends') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> BT</BoldSpan></span>
-  if (location.pathname === '/insights-and-trends/guided-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> GI</BoldSpan></span>
-  if (location.pathname === '/insights-and-trends/research-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> RI</BoldSpan></span>
+  if (location.pathname === '/mta/insights-and-trends/buffer-trends') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> BT</BoldSpan></span>
+  if (location.pathname === '/mta/insights-and-trends/guided-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> GI</BoldSpan></span>
+  if (location.pathname === '/mta/insights-and-trends/research-insights') return <span>Insights & Trends <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan> RI</BoldSpan></span>
 
-  if (location.pathname === '/dbm/dbm-norm-suggestions') return <span>DBM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>DBM Norm Suggestion</BoldSpan></span>
+  if (location.pathname === '/mta/dbm/dbm-norm-suggestions') return <span>DBM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /> <BoldSpan>DBM Norm Suggestion</BoldSpan></span>
   if (location.pathname === '/production-planning-scheduling/enquiry-response') return <span><span style={{ fontWeight: 'normal' }}>Production Planning & Scheduling </span><img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>Enquiry Response</BoldSpan></span>
   if (location.pathname === '/production-planning-scheduling/insight-and-trends/bm-trends') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>Insight & Trends / BM Trends</BoldSpan></span>
   if (location.pathname === '/production-planning-scheduling/insight-and-trends/stpl-full-kits') return <span>Production Planning & Scheduling <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} /><BoldSpan>Insight & Trends / STPL & Full Kits</BoldSpan></span>
@@ -152,7 +152,7 @@ const BreadCrumb = () => {
 
 
   if (location.pathname === '/manufacturing-intelligence-hub/delivery-performance/lead-time') return <span>Manufacturing Intelligence Hub <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={8} width={8} /><BoldSpan>Delivery Performance / Lead Time</BoldSpan></span>
-  if (location.pathname === '/logistics/intransit-whereabouts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />In Transit whereabouts</span>
+  if (location.pathname === '/mta/logistics/intransit-whereabouts') return <span>MDM <img src={"/assets/img/VectorFLOW/arrowbreadcrumb.svg"} alt="Arrow" height={11} width={11} />In Transit whereabouts</span>
 
 
 

@@ -1667,7 +1667,7 @@ const useViewModify = (pageType:string) => {
           dispatch(FILL_MASTERS([]));
           setFilterButtonStatus([]);
           dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-          navigate('/master-data-management/saved-drafts')
+          navigate('/mta/master-data-management/saved-drafts')
           return
         }
       }
