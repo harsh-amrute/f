@@ -69,15 +69,12 @@ const SelectMaster = (
     
         if (isAlreadySelected) {
             setFilterButtonStatus([]);
-            console.log("im hereeeee")
             dispatch(REMOVE_MASTER(currMaster.id));
         } else {
             setFilterButtonStatus([currMaster.id]);
-            console.log("im againnnnn")
     
             masters.forEach((m: MDMMasterState) => {
                 dispatch(REMOVE_MASTER(m.id));
-                console.log("removing masterrrrrr")
             }); 
     
             dispatch(ADD_MASTER(currMaster));
