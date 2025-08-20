@@ -2,7 +2,12 @@
 import { ICellRendererParams } from "ag-grid-enterprise"
 import { AvailabiltyCellRenderer, AvailabiltyCellRendererWrapper } from './styles';
 import { useUserData } from "../../../../../context";
+import _ from "lodash";
 const FullkitCellRenderer = (props: ICellRendererParams) => {
+
+    if (_.isEmpty(props.data)) {
+        return <></>
+    }
 
     const { user } = useUserData();
     const themeUi = user?.user?.theme_ui;

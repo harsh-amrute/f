@@ -18,7 +18,8 @@ import {
   useGetAllRoles,
   useGetAllUsers,
   useGetAllPermissions,
-  useGetHeadersData
+  useGetHeadersData,
+  useGetUserPermissions
 } from "../../../services/profile";
 import Spinner from "../../../components/commons/Spinner";
 import { useTranslation } from "react-i18next";
@@ -70,6 +71,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const [headers , setHeaders] = useState<any>();
 
   const [searchUserBasedOn, setSearchUserBasedOn] = useState("");
+  const { mutateAsync: getUserPermissions } = useGetUserPermissions();
   
   useGetAllRoles((data:any)=>{
     const dataAllRoles = data.data ? generateRolesObject(data.data) : [];
@@ -350,12 +352,14 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   }
 
 
-  const handleClickEdit = (item: any) => {
+  const handleClickEdit = async(initialItem: any) => {
     const applicationIds = getApplicationIds();
     if (!applicationIds.length) {
       notifyError(t("profile.tabContent.manageUsers.notifyError.RoleMismatch"));
       return;
     }
+    const response = await getUserPermissions(initialItem.id);
+    const item = {...initialItem, ...response.data? response.data: {}}
     setCurrentItem(item)
     setIsEditUser(true)
     const roles = item.role_id.map((role: any) => role.id);

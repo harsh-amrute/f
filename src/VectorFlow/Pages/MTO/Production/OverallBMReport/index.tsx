@@ -552,7 +552,9 @@ const OverallBmReport = () => {
 
           const newGridData = [...gridData];
           newGridData.forEach((ele: any) => {
-            if (ele.ok === orderId) ele.ct = actionText;
+            if (!_.isEmpty(ele)) {
+              if (ele.ok === orderId) ele.ct = actionText;
+            }
           });
           setGridData(newGridData);
         } else {
@@ -568,8 +570,10 @@ const OverallBmReport = () => {
         if (response?.status === 200) {
           const newGridData = [...gridData];
           newGridData.forEach((ele: any) => {
-            if (okValues.includes(ele.ok)) {
-              ele.ct = actionText;
+            if (!_.isEmpty(ele)) {
+              if (okValues.includes(ele.ok)) {
+                ele.ct = actionText;
+              }
             }
           });
           setGridData(newGridData);
@@ -596,8 +600,10 @@ const OverallBmReport = () => {
         });
 
         newGridData?.forEach((ele: any) => {
-          if (ele.ok === orderId) ele.ct = null;
-          ele.oca = null;
+          if (!_.isEmpty(ele)) {            
+            if (ele.ok === orderId) ele.ct = null;
+            ele.oca = null;
+          }
         });
         setGridData(newGridData);
       } else {
@@ -938,11 +944,6 @@ const OverallBmReport = () => {
       }));
 
     };
-
-    const res1 = apiResponse.map((section) => {
-      console.log(section,"section")
-
-    });
 
     const res = apiResponse.map((section) => (
       {
@@ -1494,7 +1495,6 @@ const OverallBmReport = () => {
         setIsPivot(false);
       } else if (page_size) {
         const config = columnState;
-        const isPivot = refGraph2?.current?.api.isPivotMode();
         const fullConfig = { pivot: isPivot, cs: config, pageSize: page_size };
 
         const payload = {
