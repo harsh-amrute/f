@@ -288,10 +288,11 @@ const PermissionForm = ({
     selectedPermissions?.[selectedApplication]?.[permissionType] || [];
     
     const selectPermissions = Array.isArray(prevPerms) ? prevPerms : [];
-    console.log("val", val);
-    console.log("selectedPermissions", prevPerms);
   
     let newPerm: any[] = [];
+    
+          console.log("val",val);
+          console.log("selectedPerissions", selectPermissions)
   
     if (level === 0) {
       const filteredPermissions = selectPermissions.filter((ele: any) =>
@@ -311,10 +312,12 @@ const PermissionForm = ({
     if (level === 1) {
       const filteredPermissions = selectPermissions.filter(
         (ele: any) =>
-          ele.length >= 2 &&
-          val.some(({ value }: any) => value === ele.slice(0, 2).join(">"))
+          val.some(({ value }: any) =>{ 
+            return (ele.length>=1 && (value.split(">")?.[0]=== ele?.[0]) && (value.split(">")?.[1] === ele?.[1]))
+          })
       );
   
+      console.log("filtered permissions", filteredPermissions);
       const filteredNewPermissions = val
         .filter(
           (ele: any) =>
