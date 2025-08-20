@@ -183,6 +183,12 @@ function LoginContainer() {
   placeholder="Enter the text here"
   value={captchaInput}
   onChange={(e: any) => setCaptchaInput(e.target.value)}
+  onKeyDown={(e:any) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); 
+      handleSubmit(onSave)();
+    }
+  }}
 />
 
 
