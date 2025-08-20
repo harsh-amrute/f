@@ -195,7 +195,7 @@ const useDelete=()=>{
 
     const onCancel=()=>{
         dispatch(RESET_STATE());
-        navigate('/master-data-management/control-panel');
+        navigate('/mta/master-data-management/control-panel');
     }
 
     const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 

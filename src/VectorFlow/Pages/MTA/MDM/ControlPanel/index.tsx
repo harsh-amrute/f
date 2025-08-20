@@ -34,7 +34,7 @@ const ControlPanel = ()=>{
             dispatch(UPDATE_ACTIVE_MASTER(0))     
             }
             dispatch(TOGGLE_UPLOAD_MODAL(false))
-            navigate('/master-data-management/control-panel/view-modify') 
+            navigate('/mta/master-data-management/control-panel/view-modify') 
             toast.dismiss()
         } catch(err:any){
             console.error(err)
@@ -49,16 +49,16 @@ const ControlPanel = ()=>{
                     <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/edit.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/edit-hover.svg'} text={'View / Modify Records '}  onClick={()=>{
                         dispatch(TOGGLE_UPLOAD_MODAL(false))
                         dispatch(RESET_STATE())
-                        navigate('/master-data-management/control-panel/view-modify')
+                        navigate('/mta/master-data-management/control-panel/view-modify')
                     }} themeUi={themeUi}/>
                     <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/add.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/add-hover.svg'} text={'Add Records '} onClick={()=>{
                         dispatch(TOGGLE_UPLOAD_MODAL(false))
                         dispatch(RESET_STATE())
-                        navigate('/master-data-management/control-panel/add')
+                        navigate('/mta/master-data-management/control-panel/add')
                     }} themeUi={themeUi}/>
                     <IconCard iconOnMouseOut={'/assets/img/VectorFLOW/NMS/delete.svg'} iconOnMouseIn={'/assets/img/VectorFLOW/NMS/delete-hover.svg'} text={'Delete Records '} onClick={()=>{
                         dispatch(RESET_STATE())
-                        navigate('/master-data-management/control-panel/delete')
+                        navigate('/mta/master-data-management/control-panel/delete')
                     }} themeUi={themeUi}/>
                 </PanelGrid>
             </PanelGridWrapper>
