@@ -58,24 +58,33 @@ const SelectMaster = (
     }
 
     const onClickFilterButton = (currMaster: MDMMasterState) => {
-
         if (getFilterButtonStatus(currMaster.id) && toggledFromAddMaster()) {
-            notifyError('You can only add new master')
-            return
+            notifyError('You can only add new master');
+            return;
         }
-
+    
         dispatch(FILL_SELECTED_OPTIONS([]));
-
-        if (getFilterButtonStatus(currMaster.id) || masters.find((selectedMaster: MDMMasterState) => selectedMaster.id === currMaster.id)) {
-            setFilterButtonStatus(filterButtonStatus.filter((masterId: number) => masterId !== currMaster.id));
-            dispatch(REMOVE_MASTER(currMaster.id))
-        }
-        else {
-            setFilterButtonStatus([...filterButtonStatus, currMaster.id]);
+    
+        const isAlreadySelected = filterButtonStatus.includes(currMaster.id);
+    
+        if (isAlreadySelected) {
+            setFilterButtonStatus([]);
+            console.log("im hereeeee")
+            dispatch(REMOVE_MASTER(currMaster.id));
+        } else {
+            setFilterButtonStatus([currMaster.id]);
+            console.log("im againnnnn")
+    
+            masters.forEach((m: MDMMasterState) => {
+                dispatch(REMOVE_MASTER(m.id));
+                console.log("removing masterrrrrr")
+            }); 
+    
             dispatch(ADD_MASTER(currMaster));
-
         }
-    }
+    };
+    
+    
 
     const getFilterButtonStatus = (masterId: number) => {
         return (filterButtonStatus.find((id: number) => id === masterId) || masters.find((master: MDMMasterState) => master.id === masterId)) ? true : false;

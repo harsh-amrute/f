@@ -453,12 +453,12 @@ const OverallBmReport = () => {
   const debouncedRef = useRef<any>(null);
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
-  
+    
+    setIsCheckboxChecked(isChecked);
     if (debouncedRef.current) {
       debouncedRef.current.cancel();
     }
    debouncedRef.current = _.debounce(() => {
-      setIsCheckboxChecked(isChecked);
       if (refGraph2.current?.api) {
         refGraph2.current.api.deselectAll();
   
