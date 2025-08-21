@@ -925,7 +925,7 @@ const ActionToolBar = ({
            {currCategory === "DBMNorm" ? (
   <Tooltip
     content={
-      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>{"Sleep"}</div>
+      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>{"Apply Selected Norm Changes"}</div>
     }
     tooltipZoom={1}
   >
