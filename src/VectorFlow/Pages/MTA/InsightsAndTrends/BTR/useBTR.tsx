@@ -308,10 +308,13 @@ const useBTR = () => {
         if (doesCategoryExist) {
 
             tempFilter.availabilityFilter.filters = tempFilter.availabilityFilter.filters.map((f) => {
-                return {
-                    ...f,
-                    value: BTRCategoryTextToNumberMapper[f.value]
+                if (f.name === "AF8") {
+                    return {
+                        ...f,
+                        value: BTRCategoryTextToNumberMapper[f.value] ?? f.value
+                    };
                 }
+                return f; 
             })
         }
         return tempFilter

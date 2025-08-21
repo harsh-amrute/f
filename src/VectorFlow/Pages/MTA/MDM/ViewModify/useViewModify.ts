@@ -275,7 +275,7 @@ const useViewModify = (pageType:string) => {
             if(masters?.length)return;
             const matchedItems = allMasterData.filter((item:any) => masterIdsArray.includes(String(item.id)));
             if (matchedItems.length != masterIdsArray.length) {
-               window.location.href = "/master-data-management/control-panel";
+               window.location.href = "/mta/master-data-management/control-panel";
           }
           
             matchedItems.forEach((item:any)=>{
@@ -1671,7 +1671,7 @@ const useViewModify = (pageType:string) => {
           dispatch(FILL_MASTERS([]));
           setFilterButtonStatus([]);
           dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-          navigate('/master-data-management/saved-drafts')
+          navigate('/mta/master-data-management/saved-drafts')
           return
         }
       }

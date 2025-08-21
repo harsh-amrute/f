@@ -314,9 +314,9 @@ export const customKeys = [
 ]
 
 export const mdmRoutes = [
-    '/master-data-management/control-panel/view-modify',
-    '/master-data-management/control-panel/add',
-    '/master-data-management/control-panel/delete'
+    '/mta/master-data-management/control-panel/view-modify',
+    '/mta/master-data-management/control-panel/add',
+    '/mta/master-data-management/control-panel/delete'
 ]
 
 export const TaskPendingStopPIPOCustomColumns:Array<ColDef | ColGroupDef> = [

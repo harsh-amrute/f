@@ -1203,7 +1203,7 @@ const VFMultiFilter=(props:VFMultiFilterProps)=>{
                                 onChange={(e:any,key:string)=>onFilterChange('AF7',e,'4',key)} filterId={'AF7'}/> 
                             </FilterCheckboxAccordian>
                         </FilterComponent> */}
-                       {location.pathname==='/insights-and-trends/buffer-trend-report' && (
+                       {location.pathname==='/mta/insights-and-trends/buffer-trend-report' && (
                             <FilterComponent style={{borderTop:'0.5px solid #B7B7B7',height: openStatus.btrCategory?'unset' : '50px'}}>
                             <FilterCheckboxAccordian filterType="Category" filterKey="btrCategory" isOpen={openStatus.btrCategory} setOpenStatus={setOpenStatus}>
                             <FilterMultiSelectCheckbox header={'Category'} filterOptions={Object.keys(BTRCategoryNumberToTextMapper).map((key:string)=>{
