@@ -9,8 +9,9 @@ import {
 import {
   convertUiConfigToOptions,
   getColumnDefinationsMTA,
+  CsvExportMTA,
 } from "../../../../../helpers/utils";
-import { notifyError } from "../../../../../helpers/notify";
+import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
 // import { toast } from "react-toastify";
 
 import useBPRFilter from "../../../../../hooks/useBPRFilter";
@@ -332,16 +333,32 @@ const useRRRColorBandwise = () => {
   }
 }, [tempDownloadData]);
 
-  const onExportToExcelCallBack = async (pageNumber: number) => {
-    const data = await getData({
+const onExportToExcelCallBack=async(pageNumber:number)=>{
+  const payload = {
+      id: 1,
+      name: '',
+      fields: [],
       filters: currFilter,
       paginationParameter: {
-        pageNumber: pageNumber,
-        recordsPerPage: 5000,
+          pageNumber: pageNumber,
+          recordsPerPage: 5000
       },
-    });
-    return data.data.data;
-  };
+      ISExport:"1",
+      reportName:"RRROA",
+      stream:1,
+      responseType: `arraybuffer`
+  }
+  notifyLoader("Downloading Data...")
+  try {
+      await CsvExportMTA(payload, "RRRColorBandwiseReport");
+      notifySuccess(`Data Exported Successfully`);
+  }
+  catch(error) {
+      console.log(error);
+      notifyError("Error Exporting Excel")
+      throw error;
+  }
+}
 
   const generalFilterOptions = useMemo(() => {
     return convertUiConfigToOptions(RRRColorBandWiseColumns);
