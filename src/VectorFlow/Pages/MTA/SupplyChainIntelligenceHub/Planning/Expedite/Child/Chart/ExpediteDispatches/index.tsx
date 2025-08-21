@@ -191,7 +191,7 @@ const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) =>
     overridenChartparams.series = customizedSeriesData
     return overridenChartparams
   }
- console.log("HIIIIIIIIIII");
+
  
   return (
     <>

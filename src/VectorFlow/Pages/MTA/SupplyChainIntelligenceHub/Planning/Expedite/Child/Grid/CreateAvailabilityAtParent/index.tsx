@@ -21,7 +21,6 @@ const ExpediteChildCreateAvailabilityAtParentGrid = ({data,paginationProps,onOpe
     const [isSubGridOpen,toggleSubGrid] = useState<any>(true);
     const [colDefs, setColDefs] = useState<any>([]);
     const {gridColDefs, setGlobalColDef} = useContext(GridStateContext);
-console.log("HEEEEELLLLLLLLLO");
 
     const {mutateAsync:submitRemark} = useSubmitOpenExpediteRequest()
     const submitOpenExpediteRemark = async(remark:string)=>{
