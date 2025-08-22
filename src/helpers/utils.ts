@@ -4675,37 +4675,33 @@ export const getBodyForExcelExport = ({
   try {
     // Grouped data
     if (groupedColDefsRef?.current) {
-      const colOrder = filteredHeadersData.reduce((map: any, col: any, index: number) => {
-        map[col.colId] = index;
-        return map;
-      }, {});
 
-      const headers = groupedColDefsRef.current
-        .map((group: any) => {
-          const filteredChildren = group.ch
-            .filter((child: any) =>  colOrder[child.groupHeaderKey] !== undefined) 
-            .sort((a: any, b: any) => {
-              const aColId = a.groupHeaderKey;
-              const bColId = b.groupHeaderKey; 
-              return (colOrder[aColId] ?? Infinity) - (colOrder[bColId] ?? Infinity); //infinty so that even if data comes undefined/nully it wil be handled
-            })
-          if (filteredChildren.length > 0) {
-            return {
-              cc: group.cc,
-              ch: filteredChildren,
-            };
+      const groupedColumnData: any = [];
+    
+      filteredHeadersData.forEach((headerItem: any) => {
+        groupedColDefsRef?.current.forEach((groupDef: any) => {
+          const header = groupDef.ch.find((subHeader: any) => subHeader.groupHeaderKey === headerItem.colId);
+    
+          if (!header) return;
+
+          const last = groupedColumnData[groupedColumnData.length - 1];
+
+          if (last && last.cc === groupDef.cc) {
+            last.ch.push(header);
+          } else {
+            groupedColumnData.push({ cc: groupDef.cc, ch: [header] });
           }
-          return null;
-        })
-        .filter(Boolean);
+
+        });
+      });
 
       return {
-        headers,
+        headers: groupedColumnData,
         isGrouped: true,
         ...filterData,
       };
+      
     }
-
     // Flat data
     else {
       const headers = filteredHeadersData
