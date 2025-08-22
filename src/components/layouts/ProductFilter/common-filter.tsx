@@ -2,6 +2,9 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import ProductFilter from './index'
 import { MainService } from '../../../module-main/services/api'
 import { handleDataProductFilter } from '../../../helpers/utils'
+import { log } from 'console'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../redux/store/store'
 
 interface ProductProps {
   endpoint: string
@@ -26,6 +29,14 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
   const [style, setStyle] = useState<any>([])
   // const [mrp, setMrp] = useState<any>([])
   const [launchPeriod, setLaunchPeriod] = useState<any>([])
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];   
+  const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2'];   
+  const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3'];   
+  const PRODUCT_FILTER_4 = EnvConfig['PRODUCT_FILTER_4'];   
+  const PRODUCT_FILTER_5 = EnvConfig['PRODUCT_FILTER_5'];   
+  const PRODUCT_FILTER_6 = EnvConfig['PRODUCT_FILTER_6'];   
+  
 
   useEffect(() => {
     async function initProductFilter () {
@@ -56,7 +67,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
   const productFilter = [
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
+      placeholder: PRODUCT_PERMISSION_L1,
       options: listBrand,
       value: brand,
       onChange: setBrand,
@@ -64,7 +75,7 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
     },
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
+      placeholder: PRODUCT_PERMISSION_L2,
       options: listSubBrand,
       value: subBrand,
       onChange: setSubBrand,
@@ -72,28 +83,28 @@ export default forwardRef(({ ...props }: ProductProps, ref) => {
     },
     {
       icon: '/assets/img/ist/option.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
+      placeholder: PRODUCT_PERMISSION_L3,
       options: listCategory,
       value: category,
       onChange: setCategory
     },
     {
       icon: '/assets/img/ist/option.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_FILTER_4,
+      placeholder: PRODUCT_FILTER_4,
       options: listStyle,
       value: style,
       onChange: setStyle
     },
     {
       icon: '/assets/img/ist/margin.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_FILTER_5,
+      placeholder: PRODUCT_FILTER_5,
       options: listFit,
       value: fit,
       onChange: setFit
     },
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_FILTER_6,
+      placeholder: PRODUCT_FILTER_6,
       options: listLaunchPeriod,
       value: launchPeriod,
       onChange: setLaunchPeriod,

@@ -28,6 +28,8 @@ const UserURLsDrawer = (props:UserURLsDrawerProps)=>{
 
     const [currURL,setCurrUrl] = useState<any>(null)
 
+    const [activeTab, setActiveTab] = useState(0);
+
     const onCellClicked = (row:any)=>{
         setCurrTab(2)
         setCurrUrl(row)
@@ -54,6 +56,8 @@ const UserURLsDrawer = (props:UserURLsDrawerProps)=>{
                     themeUi={themeUi}
                     handleAction={setCurrTab}
                     handleClose={onClose}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
                 />
             )}
             onClose={onClose}
@@ -62,7 +66,7 @@ const UserURLsDrawer = (props:UserURLsDrawerProps)=>{
             
             {currTab === 1 && (
                 <Content>
-                    <AddURL cb={()=>setCurrTab(0)}/>
+                    <AddURL cb={()=>{setCurrTab(0); setActiveTab(0);}}/>
                 </Content>
             )}
             {currTab === 0 && (
@@ -92,7 +96,9 @@ const UserURLsDrawer = (props:UserURLsDrawerProps)=>{
 interface HeaderProps{
     themeUi:string,
     handleAction:(item:number)=>void,
-    handleClose:()=>void
+    handleClose:()=>void,
+    activeTab: any;
+    setActiveTab:any;
 }
 
 const Header = (props:HeaderProps)=>{
@@ -100,7 +106,9 @@ const Header = (props:HeaderProps)=>{
     const {
         themeUi,
         handleAction,
-        handleClose
+        handleClose,
+        activeTab,
+        setActiveTab
     } = props
 
 
@@ -113,6 +121,8 @@ const Header = (props:HeaderProps)=>{
                 <NavigationTab 
                     listTabs={['View' , 'Add']} 
                     onClick={(item:number)=>(handleAction(item))}
+                    activeTab ={activeTab}
+                    setActiveTab={setActiveTab}
                 />
             </div>
             <img 

@@ -6,6 +6,8 @@ import { GridStateContext } from '../../../../../context/GridStateContext';
 import OverlayLoader from '../../../../..//VectorFlow/Pages/MTO/Common/Loader';
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../redux/store/store';
 
 
 const RRRColorBandwise = () => {
@@ -38,7 +40,9 @@ const RRRColorBandwise = () => {
 } = useRRRColorBandwise();
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
- 
+  
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
   return (
   <GridStateContext.Provider
   value={{
@@ -128,7 +132,7 @@ const RRRColorBandwise = () => {
                 selectedRows={0} 
                 totalRows={recordsCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
+                rowsPerPage={parseInt(RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>console.log(e)} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}

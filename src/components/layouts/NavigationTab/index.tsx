@@ -6,12 +6,16 @@ import { useUserData } from "../../../context";
 interface Tab {
   listTabs: any;
   onClick: any;
+  activeTab?:any;
+  setActiveTab?:any
 }
 
-const NavigationTab = ({ listTabs, onClick }: Tab) => {
+const NavigationTab = ({ listTabs, onClick,activeTab:propActiveTab ,setActiveTab:propSetActiveTab  }: Tab) => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui;
-  const [activeTab, setActiveTab] = useState(0);
+  const [localActiveTab, localSetActiveTab] = useState(0);
+  const activeTab = propActiveTab ?? localActiveTab;
+  const setActiveTab = propSetActiveTab ?? localSetActiveTab;
 
   const onClickTabItem = (index: number) => {
     setActiveTab(index);

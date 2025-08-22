@@ -71,7 +71,9 @@ export const useSupplierWiseAllocation =()=>{
 
      const dailyData = useSelector((state:RootState) => state.mta.dailyData);
     //  const rowsPerPage=50;
-     const rowsPerPage = parseInt(process.env.REACT_APP_BOR_COLORBANDWISE_ROWS_PER_PAGE || '5000');
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE = EnvConfig['SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE'];   
+     const rowsPerPage = parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE || '5000');
 
      const {date:lastRunDate} = useGetLastRunData()
 
@@ -257,7 +259,7 @@ export const useSupplierWiseAllocation =()=>{
           filters:filter || {},
           paginationParameter: {
             pageNumber: currentPage,
-            recordsPerPage: parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100')
+            recordsPerPage: parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE || '100')
           }
         }
         const resultCount=await getDataCount(payload);
@@ -386,7 +388,7 @@ export const useSupplierWiseAllocation =()=>{
         components:customCellRenderers,
         enableBrowserTooltips:true,
         getMainMenuItems: MainMenuItemsCustomization,
-        paginationPageSize:parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100'),
+        paginationPageSize:parseInt(SUPPLY_WISE_ALLOCATION_HUB_ROWS_PER_PAGE || '100'),
         gridOptions:{
             rowHeight:50,
             getRowStyle: (params: any) => {
