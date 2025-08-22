@@ -1,30 +1,17 @@
-import React,{ useState, useEffect, useMemo, useCallback } from "react";
-
-import Select from "react-select";
+import React,{ useState, useMemo } from "react";
 
 import {
   InputWrapper,
   URLsForm,
   Label,
-  ButtonsWrapper,
-  CheckBoxesWrapper,
-  CheckBoxesHeader,
-  CheckBoxesContainer,
-  CheckBoxWrapper,
-  CheckBoxesHeaderContainer,
-  SearchWrapper,
-  CheckBoxLabel,
-  URLSearch,
 } from "../UserURLsDrawer/styles";
 import {
   Input,
   PrimaryButton,
   SecondaryButton,
-  Skeleton,
   TextArea,
 } from "../../commons/styled";
 import { useUserData } from "../../../context";
-import axios from "axios";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useEditEnvironmentConfiguration } from "../../../VectorFlow/Services/MTA/MDM/index";
 
