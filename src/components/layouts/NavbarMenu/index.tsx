@@ -108,7 +108,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     }
     catch (err) {
       console.error("Unexpected error in get Environment configuration:", err);
-      notifyError("Unexpected error in get Environment configuration:");
     }
   };
 
