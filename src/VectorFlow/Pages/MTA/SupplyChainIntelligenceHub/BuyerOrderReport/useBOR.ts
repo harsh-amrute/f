@@ -1,6 +1,6 @@
 import { useBORData, useBORDataCount,useSubmitBORRemark,useGetBORRemarkHistory } from "../../../../Services/MTA/SupplyChainIntelligenceHub/BuyerOrderReport"
 import {useGetDailyData} from '../../../../Services/MTA/SupplyChainIntelligenceHub/BPR'
-import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA , CsvExportMTA } from "../../../../../helpers/utils"
 import { useState,useMemo, useEffect,useRef, CSSProperties } from "react"
 import { AgGridReactProps } from "ag-grid-react"
 import {DispatchColorCellRenderer} from "./CellRenderer"
@@ -538,15 +538,30 @@ export const useBOR =()=>{
     },[ref,tempDownloadData])
 
       const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const data =  await getBorData({
-            filters:currFilter,
-            paginationParameter:{
-                pageNumber:pageNumber,
-                recordsPerPage:5000
-            }
-        })
-        
-        return data.data.data
+        const payload = {
+          id: 1,
+          name: '',
+          fields: [],
+          filters: currFilter,
+          paginationParameter: {
+              pageNumber: pageNumber,
+              recordsPerPage: 5000
+          },
+          ISExport:"1",
+          reportName:"BOR",
+          stream:1,
+          responseType: `arraybuffer`
+      }
+      notifyLoader("Downloading Data...")
+      try {
+          await CsvExportMTA(payload, "BuyerOrderReport");
+          notifySuccess(`Data Exported Successfully`);
+      }
+      catch(error) {
+          console.log(error);
+          notifyError("Error Exporting Excel")
+          throw error;
+      }
     }
 
 

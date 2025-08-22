@@ -4,7 +4,7 @@ import { AgGridReactProps } from "ag-grid-react"
 import { useGetRRRData,useGetRRRDataCount } from "../../../../Services/MTA/SupplyChainIntelligenceHub/RRR"
 import { useUserData } from "../../../../../context"
 import { RRREcoColorCellRenderer,RRRTechColorCellRenderer,RRRDispatchColorCellRenderer } from "./RRRCellRenderers"
-import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA} from "../../../../../helpers/utils"
+import { convertUiConfigToOptions, MainMenuItemsCustomization, getColumnDefinationsMTA, CsvExportMTA} from "../../../../../helpers/utils"
 import { notifyError, notifyLoader, notifySuccess} from "../../../../../helpers/notify"
 import { toast } from "react-toastify";
 
@@ -330,15 +330,30 @@ const useRRR =()=>{
       
 
     const onExportToExcelCallBack=async(pageNumber:number)=>{
-        const data =  await getRRRData({
-            filters:currFilter,
-            paginationParameter:{
-                pageNumber:pageNumber,
-                recordsPerPage:5000
-            }
-        })
-        
-        return data.data.data
+        const payload = {
+            id: 1,
+            name: '',
+            fields: [],
+            filters: currFilter,
+            paginationParameter: {
+                pageNumber: pageNumber,
+                recordsPerPage: 5000
+            },
+            ISExport:"1",
+            reportName:"RRR",
+            stream:1,
+            responseType: `arraybuffer`
+        }
+        notifyLoader("Downloading Data...")
+        try {
+            await CsvExportMTA(payload, "RationedRequirementReport");
+            notifySuccess(`Data Exported Successfully`);
+        }
+        catch(error) {
+            console.log(error);
+            notifyError("Error Exporting Excel")
+            throw error;
+        }
     }
 
     return {
