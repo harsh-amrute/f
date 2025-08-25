@@ -230,7 +230,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
     }
 
 
-    const [chartData, setChartData] = useState<any>([])
+    const [chartData, setChartData] = useState<any>([]);
     const [maxFolinDays, setMaxFolInDays] = useState(1);
 
     const interval = useMemo(() => {
@@ -255,6 +255,15 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 // tooltip: {
                 //   renderer: TooltipRenderer,
                 // },
+            },
+            {
+                type: "bar",
+                direction: "horizontal",
+                xKey: "ccr_name",
+                yKey: "fol_gap",
+                yName: "FOL Gap",
+                stacked: true,
+                fill: "#FF8A00",
             },
             {
                 type: "bar",
@@ -766,26 +775,28 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                     // TODO: Check if plant id is also to be matched
                     const latestWorkingDayLno = masters.WorkingCalender.find((data: any) => {
-                        return new Date(data.wd) >= today && data.ccrId == ccrId
+                        return new Date(data.wd) >= today && data.ccrId == ccrId && data.PlId == order.plid
+                        // return new Date(data.wd) >= today && data.ccrId == ccrId
                     })?.lno;
 
                     const folIndex = latestWorkingDayLno + ccrFolInDays - 1;
 
                     const folDD: any = masters.WorkingCalender.find((data: any) => {
-                        return data.lno == folIndex && data.ccrId == ccrId
+                        return data.lno == folIndex && data.ccrId == ccrId && data.PlId == order.plid
+                        // return data.lno == folIndex && data.ccrId == ccrId
                     })?.wd;
-
-
 
                     const diffDays: any = dateDiffInDays(today, new Date(folDD));
 
                     maxFol = Math.max(diffDays, maxFol);
+                    const FOLGap = masters.FOL[ccrId]?.fol_gap;
 
                     orderLoadOfCCRs[ccrId] = {
                         ccrId,
                         ccr_name: ccr.ccr_name,
                         orderLoad: orderLoadInDays,
-                        ccrFolInDays: diffDays
+                        ccrFolInDays: isNaN(diffDays) ? 0 : diffDays,
+                        fol_gap: FOLGap
                     }
                 })
             });
@@ -797,6 +808,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
             setChartData(Object.values(orderLoadOfCCRs).map((order: any) => {
                 return { ...order, orderLoad: Math.ceil(order.orderLoad) }
             }))
+
         }
         catch (err) {
             console.error(err);
@@ -1205,6 +1217,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                                             ccrGroupMaster={ccrGroups}
                                             selectedRoutes={selectedRoute}
                                             setSelectedRoutes={setSelectedRoute}
+                                            isCCRGroupEditable = {true}
                                         />
                                     </div>
                                     <div style={{ flex: "1" }}>

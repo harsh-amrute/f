@@ -10,9 +10,8 @@ import ColorCellRenderer from '../../Common/ColorCellRenderer/ColorCellRenderer'
 import { Button, Wrapper } from './FullKitAssignment.styled';
 import { useUserData } from '../../../../../context';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
-import EditRouteModal from './EditRouteModal';
+import EditRouteModal from '../../Common/EditRouteModal';
 import * as globalStyles from "../../../../../styles/global";
-import { Rectangle } from './RectangleMarker';
 import { useGetUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UIConfig';
 import Checkbox from '../../../../../components/VectorFLOW/commons/MTO/Checkbox';
 import { useGetFullKitAssignmentDataWithGraphData, useGetFullkitAssignmentExcelData, useUpdateExcludedOrdersForFullkitAssignment, useUpdateFullkitOnSimulation, useUpdateOrSimulateStockAllocation } from '../../../../../VectorFlow/Services/MTO/Production/FullKitAssignment';
@@ -21,7 +20,6 @@ import VFButtonOutline from '../../../../../components/VectorFLOW/commons/VFButt
 import VFPagination from '../../Common/VFPagination';
 import _ from 'lodash';
 import { notifyError, notifySuccess } from '../../../../../helpers/notify';
-import { useGetCCRGroupMaster, useGetCCRItemTypeMappingMaster, useGetFOLData } from '../../../../../VectorFlow/Services/MTO/Production/DueDateQuotation';
 import AvailabilityCellRenderer from './AvailabilityCellRenderer';
 import useFilter from "../../../../../hooks/useFilter";
 import { useGetFilterData } from '../../../../../VectorFlow/Services/MTO/Common/CommonFilter';
@@ -29,6 +27,7 @@ import { AvailabilityToolTipWrapper } from '../../../../../VectorFlow/Pages/MTA/
 import { FilterPageName, pagination, UIGridCode } from '../../Common/Enum';
 import { useGetUserUIConfigData, useUpdateUserUIConfigData } from '../../../../../VectorFlow/Services/MTO/Common/UserUIConfig'
 import useColDef from '../../../../../hooks/useColDef';
+import CustomLegend from '../../Common/CustomLegend';
 
 const APIFilterConfig = {
   filSecVisConfig: {
@@ -60,14 +59,8 @@ const FullKitAssignment = () => {
   // const [loadGraph, setLoadGraph] = useState(false);
   // const [loadDataAfterSimulation, setLoadDataAfterSimulation] = useState(false)
 
-  const [selectedPlantId, setSelectedPlantId] = useState(null);
-  const [selectedRouteId, setSelectedRouteId] = useState(null);
-  const [orderKey, setOrderKey] = useState(null);
-  const [itemTypeId, setItemTypeId] = useState<any>();
-
-
+  const [orderDetails, setOrderDetails] = useState<any>({});
   const [orders, setOrders] = useState([]);
-  const [masters, setMasters] = useState<any>();
   const [totalRows, setTotalRows]: any = useState(0)
   const [currentPage, setCurrentPage]: any = useState(1)
   const [loadDataParams, setLoadDataParams] = useState<any>({
@@ -77,7 +70,6 @@ const FullKitAssignment = () => {
     page: 1
   });
   const [selectedRows, setSelectedRows] = useState<any>(new Map());
-  const [graphData, setGraphData] = useState([]);
   const [currentGridRef, setCurrentGridRef] = useState<any>(null);
   const [columnState, setColumnState] = useState<any>([]);
   const [isReset, setIsReset] = useState<any>(undefined);
@@ -95,10 +87,7 @@ const FullKitAssignment = () => {
   const { mutateAsync: updateExcludedOrdersForFullkitAssignment, isLoading: excludeOrdersLoading } = useUpdateExcludedOrdersForFullkitAssignment();
   const { mutateAsync: updateOrSimulateStockAllocation, isLoading: simulationLoading } = useUpdateOrSimulateStockAllocation();
   const { mutateAsync: updateFullkitOnSimulation, isLoading: isSimulationResultsUpdating } = useUpdateFullkitOnSimulation();
-  const { mutateAsync: getCCRGroupMaster, } = useGetCCRGroupMaster();
-  const { mutateAsync: getFOLData, } = useGetFOLData();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
-  const {mutateAsync: getCCRItemTypeMappingMaster} = useGetCCRItemTypeMappingMaster();
   const { 
     state: currFilter, 
     setState: setCurrFilter, 
@@ -125,11 +114,12 @@ const FullKitAssignment = () => {
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
             <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }}
               onClick={() => {
+                if (params.data.r === null) {
+                  notifyError("No Route assigned to this order!");
+                  return;
+                }
+                setOrderDetails({ itemTypeId: params.data?.itid, plantId: params.data?.plid, routeNum: params.data?.r, orderKey: params.data?.ok });
                 setShowModal(true);
-                setItemTypeId(params.data?.itid);
-                setSelectedPlantId(params.data?.plid);
-                setSelectedRouteId(params.data?.r);
-                setOrderKey(params.data?.ok);
               }}
             />
           </div>
@@ -273,23 +263,44 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
       if (newGraphdata) {
         //underload
         newGraphdata["underloaded"].forEach((row: any) => {
-          graph.push({ ...row })
-          graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
-        })
+          const data = {
+            category: ["underloaded", row.ccr_name],
+            "CCR Name": row.ccr_name,
+            "Released WIP": row.stpl_in_days,
+            "Allocated Full Kits": row.allowed_full_kits,
+            "Limit": row.cumulative_wip_limit,
+            "FOL Gap":row.fol_gap
+          }
+          graph.push(data)
+        });
         //overload
         newGraphdata["overloaded"].forEach((row: any) => {
-          graph.push(row)
-          graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
+          const data = {
+            category: ["overloaded", row.ccr_name],
+            "CCR Name": row.ccr_name,
+            "Released WIP": row.stpl_in_days,
+            "Allocated Full Kits": row.allowed_full_kits,
+            "Limit": row.cumulative_wip_limit,
+            "FOL Gap":row.fol_gap
+          }
+          graph.push(data)
         })
         //balanced
         newGraphdata["balanced"].forEach((row: any) => {
-          graph.push(row)
-          graph.push(_.cloneDeep({ ccr_name: " ".repeat(graph.length - 1), allowed_full_kits: 0, stpl_in_days: 0, }))
+          const data = {
+            category: ["balanced", row.ccr_name],
+            "CCR Name": row.ccr_name,
+            "Released WIP": row.stpl_in_days,
+            "Allocated Full Kits": row.allowed_full_kits,
+            "Limit": row.cumulative_wip_limit,
+            "FOL Gap":row.fol_gap
+          }
+          graph.push(data);
         })
         //modify griddata for adding tags
         const newRows = calculateTagsAndOrderinFullkitToday(griddata, newGraphdata)
         setOrders(newRows);
-        setGraphData(graph)
+        setChartOptions({ ...chartoptions, data: graph });
         graphDataOgFormat.current = newGraphdata;
       }
      
@@ -343,36 +354,6 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
       return false
     }
 
-  }
-
-  const getMasterData = async () => {
-    const ccrGroupMaster = await getCCRGroupMaster();
-    const ccrGroupData = Object.values(ccrGroupMaster?.data?.data);
-    const ccrGroups: any = [];
-
-    const FOLData = await getFOLData();
-    const FOL = FOLData?.data?.data;
-    
-    const CCRItemTypeMappingMaster = await getCCRItemTypeMappingMaster();
-
-    ccrGroupData.forEach((group: any) => {
-      const obj: any = { label: group.ccr_group_code, value: group.ccr_group_id, ccrs: [] }
-      // let minFOL = Infinity
-      let minFol = Infinity;
-      let maxFol = -Infinity;
-      group.ccrs.forEach((ccr: any) => {
-        minFol = Math.min(minFol, FOL[ccr.ccr_id]?.fol || 0);
-        maxFol = Math.max(maxFol, FOL[ccr.ccr_id]?.fol || 0)
-      })
-      group.ccrs.forEach((ccr: any) => {
-        obj.ccrs.push({ label: ccr.ccr_name, value: ccr.ccr_id, minFol, maxFol, fol: FOL[ccr.ccr_id]?.fol || 0, plant_id: ccr.plant });
-      })
-      ccrGroups.push(obj);
-    })
-
-    const CCRItemTypeMappingMasterData = Object.values(CCRItemTypeMappingMaster?.data?.data);
-
-    setMasters({ ccrGroups, CCRItemTypeMappingMaster: CCRItemTypeMappingMasterData })
   }
 
   const renderUtilityBtns = useMemo(() => {
@@ -508,7 +489,6 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
   }
 
   useEffect(() => {
-    getMasterData();
     setColumnDef();
   }, [])
 
@@ -647,117 +627,134 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
     // },
   };
 
-  const chartoptions: any = {
-    data: graphData,
+  const barColors = {
+    "Released WIP": "#191919",
+    "Allocated Full Kits": "#EBBF2C",
+    "Limit": "#E53F3F",
+  }
+
+  function TooltipRenderer({ datum, xKey }: any) {
+    return `
+    <div style="background:#6C696A; style="transform: translateX(120px)" >
+    <div  style=" color: white; padding: 10px 10px 4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center; border-bottom: 1px dashed white">
+        ${datum[xKey]}
+    </div>
+    <div style="color: white; background-color: #6C696A; padding: 10px;">
+      <div style="display: flex; align-items: center;">
+        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Released WIP"]}"></div>
+        Released WIP:  ${datum["Released WIP"]}
+      </div>
+      <div style="display: flex; align-items: center;">
+        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Allocated Full Kits"]}"></div>
+        Allocated Full Kits:  ${datum["Allocated Full Kits"]}
+      </div>
+      <div style="display: flex; align-items: center;">
+        <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["Limit"]}"></div>
+        Limit:  ${datum["Limit"]}
+      </div>
+      <div style="display: flex; align-items: center;">
+        FOL Gap:  ${datum["FOL Gap"]}
+      </div>
+    </div>
+    </div>`;
+  }
+
+  const [chartoptions, setChartOptions] = useState<any>({
+    // data: graphData,
     series: [
       {
         type: 'bar',
-        xKey: 'ccr_name',
-        yKey: "stpl_in_days",
+        xKey: 'category',
+        yKey: "Released WIP",
         stacked: true,
         strokeWidth: 0,
-        fill: "#191919",
-        // formatter: (params) => {
-        //   return {
-        //     fillOpacity: params.datum.selected ? 1 : 0.5,
-        //     fill: params.datum.selected ? params.fill : "#191919"
-        //   }
-        // }
+        visible: true,
+        fill: barColors["Released WIP"],
+        formatter: (params: any) => {
+          return {
+            fillOpacity: params.datum.selected ? 1 : 0.5,
+            fill: params.datum.selected ? params.fill : barColors["Released WIP"]
+          }
+        },
+        tooltip: {
+          position: { placement: "right" },  // anchor to bar
+          renderer: TooltipRenderer
+        },
       },
       {
         type: 'bar',
-        xKey: 'ccr_name',
-        yKey: "allowed_full_kits",
+        xKey: 'category',
+        yKey: "Incremental WIP",
         stacked: true,
         strokeWidth: 0,
-        fill: "#EBBF2C",
-        // formatter: (params) => {
-        //   return {
-        //     fill: params.datum.selected ? params.fill : "#A8A8A8"
-        //   }
-        // },
-        // label: {
-        //   enabled: true,
-        //   formatter: (params: any) => {
-        //     return params.datum.groupName
-        //   },
-        //   placement: "outside",
-        //   color: "black",
-
-        // }
-      },
-      {
-        type: 'scatter',
-        xKey: 'ccr_name',
-        xName:'CCR name',
-        yKey: 'cumulative_wip_limit',
-        yName: 'Cumulative wip limit',
-        marker: {
-          size: 10,
-          fill: '#E53F3F',
-          shape: Rectangle,
-          strokeWidth: 0
-        }, 
-        tooltip: {
-          renderer: (params:any) => {
-            const xVal = params.datum[params.xKey];
-            const yVal = params.datum[params.yKey];
-            return {
-              title: '',
-              content: `${params.xName}: ${xVal} <br>
-                        ${params.yName}: ${yVal}`,
-            };
-          },
+        visible: true,
+        fill: barColors["Allocated Full Kits"],
+        formatter: (params: any) => {
+          return {
+            fill: params.datum.selected ? params.fill : barColors["Allocated Full Kits"]
+          }
         },
-      },
-    ],
-    axes: [
-      {
-        type: 'category',
-        position: 'bottom',
-        gridLine: {
-          enabled: false
+        tooltip: {
+          position: { placement: "right" },  // anchor to bar
+          renderer: TooltipRenderer
         }
       },
       {
-        type: 'number',
-        position: 'left',
+        type: "scatter",
+        xKey: "category",
+        yKey: "Limit",
+        // shape: Rectangle,
+        size: 5,
+        strokeWidth: 0,
+        visible: true,
+        fill: barColors["Limit"],
+        tooltip: {
+          position: { placement: "right" },  // anchor to bar
+          renderer: TooltipRenderer
+        },
+      }
+    ],
+    axes: [
+      {
+        type: "grouped-category",
+        position: "bottom",
+        paddingInner: 0.5,       // Gap between categories
+        paddingOuter: 0.2,       // Gap before first and after last category
+        // groupPaddingInner: 0.6,  // Gap between bars in the same category group
+        gridLine: {
+          enabled: false
+        },
+        depthOptions: [
+          {
+            label: {
+              fontSize: 10,
+              rotation: -10,
+              avoidCollision: true,
+              autoRotate: true,
+            }
+          },
+          {
+            tick: { enabled: true, stroke: 'black', interval: 1 },
+            label: { fontWeight: "bold" }
+          },
+        ],
+      },
+      {
+        type: "number",
+        position: "left",
         title: {
           text: "Days"
         },
         gridLine: {
           enabled: false
-        }
+        },
       },
-
     ],
     legend: {
-      position: "top",
-      item: {
-        label: {
-          formatter: (props: any) => {
-            if (props.value === "stpl_in_days") {
-              return "Released WIP in Days"
-
-            }
-            else if (props.value === 'allowed_full_kits') {
-              return 'Allocated Full Kits'
-            }
-            else if (props.value === 'Cumulative wip limit') { 
-              return 'cumulative wip limit' 
-          }
-          }
-        },
-        showSeriesStroke: true,
-        marker: {
-          size: 15,
-          strokeWidth: 0,
-          shape: 'square', // 'circle', 'square', 'cross', 'plus', 'triangle'
-        },
-      },
+      enabled: false,
     },
 
-  }
+  })
 
   useEffect(() => {
     if (isReset) {
@@ -788,6 +785,11 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
   const ExcelData = ()=>{
     fetchOrders(true);
   }
+
+  const onRouteDataUpdate = () => {
+    setLoadDataParams({ ...loadDataParams, load_graph_data: true })
+  }
+
   return (
     <Wrapper>
       <MTOActionToolBar
@@ -871,23 +873,23 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
  selectedRows={1} totalRows={totalRows || 0} handleChangePage={handlePageChange} resetGridRef={currentGridRef} isDisabled={isDisabled} customPageSizeEnabled={true}  savePageSize={savePageSize}
             userPageSize = {userPageSize}/>
       <Button arrowName={!hide ? "bg_arrow_down" : "bg_arrow_up"} themeUi={themeUi} onClick={() => { setHide(!hide) }}> {hide ? "Show" : "Hide"} Load Chart</Button>
-      <div className='chart-wrapper' style={{ width: "100%", flex: !hide ? 1 : 0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129" }}>
-        <AgCharts ref={graph} options={chartoptions} />
+      <div className='chart-wrapper' style={{ flex: !hide ? 1 : 0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129" }}>
+        <CustomLegend chartOptions={chartoptions} setChartOptions={ setChartOptions } />
+        <div className='chart-scroll' style={{overflowX:chartoptions?.data?.length > 15 ? "scroll" : "hidden"}}>
+          <AgCharts ref={graph} style={{ height: "100%", width: chartoptions?.data?.length > 15 ? `${80*chartoptions?.data?.length + "px"}` : "100%" }} options={chartoptions} /> 
+        </div>
       </div>
-      <EditRouteModal
-        orderKey={orderKey}
-        plantId={selectedPlantId}
-        routeId={selectedRouteId}
-        graphData={graphData}
-        showModal={showModal}
-        master={masters}
-        setShowModal={setShowModal}
-        theme={themeUi}
-        setOrderKey={setOrderKey}
-        loadDataParams={loadDataParams}
-        setLoadDataParams={setLoadDataParams}
-        itemTypeId={itemTypeId}
-      />
+      {showModal &&
+        <EditRouteModal
+          orderDetails={orderDetails}
+          chartoptions={chartoptions}
+          setChartOptions={setChartOptions}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          theme={themeUi}
+          onDataUpdateCallback={onRouteDataUpdate}
+        />
+      }
       
     </Wrapper >
   )

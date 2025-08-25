@@ -81,6 +81,7 @@ const useFilter=(filterData: any, page: any)=>{
     useEffect(()=>{
 
         if(filterData && Object.keys(filterData)?.length){
+        setIsMfgSelected(false); //to reset manufaturing strategy filter
 
         const updatedFilterAttributes: any = {
             customer: [...filterAttributes.customer, ...getDynamicAttributes( filterData?.hdrkeymap?.cattr)],

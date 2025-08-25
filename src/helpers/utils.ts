@@ -17,7 +17,7 @@ import TaskPendingActionRenderer from '../VectorFlow/Pages/MTA/MDM/TaskPendingFo
 import { UiConfigField } from '../VectorFlow/types/UIConfigFields';
 import { BPRField, BPRViewTableFilterNumericalOperator, BPRViewTableFilterStringOperator } from '../VectorFlow/types/BPR';
 import { RRRField } from '../VectorFlow/types/RRR'
-import _, { filter } from 'lodash'
+import _ from 'lodash';
 import { DBMField } from '../VectorFlow/types/DBM';
 import { BPRViewTableHeaderFilterNumberoptions, BPRViewTableHeaderFilterStringoptions } from './BPRConstants';
 import { BPRViewTableColDef } from '../VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/BPR/BPRViewTable';
@@ -1030,7 +1030,6 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       floatingFilter: true,
       filter: cellFilter,
       cellDataType: cellDataType,
-      onCellClicked:(params:any)=>console.log(),
       tooltipComponent: 'conflictErrorToolTip',
       suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
@@ -4628,8 +4627,7 @@ export const getBodyForExcelExport = ({
 }: any) => {
   const filteredHeadersData = headersdata?.filter(
     (col: any) =>
-      (col.colId !== "DropDown" || col.colId !== "Action") &&
-      col.hide !== true
+      col.colId !== "DropDown" && col.colId !== "Action" && col.hide !== true
   );
 
   try {

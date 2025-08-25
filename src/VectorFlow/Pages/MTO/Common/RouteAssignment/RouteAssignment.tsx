@@ -9,10 +9,11 @@ interface IRouteAssignmentProps {
     selectedRoutes?: any,
     setSelectedRoutes?: any,
     isEditable?: boolean,
-    onChange?: (route:any) => void
+    onChange?: (route:any) => void,
+    isCCRGroupEditable?: boolean,
 }
 
-const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedRoutes, isEditable = true}: IRouteAssignmentProps) => {
+const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedRoutes, isEditable = true, isCCRGroupEditable= false}: IRouteAssignmentProps) => {
   const [sortedSelectedRoutes, setSortedSelectedRoutes] = useState<any>([]);
   useEffect(() => {
         const adjustLayout = (containerWidth: number, items: any) => {
@@ -178,7 +179,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
               <StepGroup $step={true} key={`route-assignment-${index}`}>
                 <RadioSelect
                   key={`route-assignment-${index}-${1}`}
-                  isDisabled={!isEditable}
+                  isDisabled={!isCCRGroupEditable}
                   theme={theme}
                   color="lightgrey"
                   options={updateOption(ccrGroupMaster,sortedSelectedRoutes?.[index]?.[0])}
