@@ -590,6 +590,7 @@ const OverallBmReport = () => {
   };
 
   const undoClicked = async (props: any, orderId: string) => {
+    console.log(props)
     try {
       const response = await updateActionAPI("undo", [orderId]);
       if (response?.status === 200) {
@@ -601,8 +602,10 @@ const OverallBmReport = () => {
 
         newGridData?.forEach((ele: any) => {
           if (!_.isEmpty(ele)) {            
-            if (ele.ok === orderId) ele.ct = null;
-            ele.oca = null;
+            if (ele.ok === orderId) {
+              ele.ct = null;
+              ele.oca = null;
+            }
           }
         });
         setGridData(newGridData);
