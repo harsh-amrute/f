@@ -142,8 +142,11 @@ const DateCellRenderer = (props: AGGridProps) => {
               value={value ? new Date(value) : new Date()}
               minDate={undefined}
               tileDisabled={({ date }) => {
-                const epdDate = props.data?.EPD ? new Date(props.data.EPD) : null;
-                return epdDate ? date < epdDate : false;
+                if (!props.data?.EPD) return false;
+                const epdDate = new Date(props.data.EPD);
+                const epdOnly = new Date(epdDate.getFullYear(), epdDate.getMonth(), epdDate.getDate());
+                const current = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                return current < epdOnly; 
               }}
             />
           </div>,
