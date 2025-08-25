@@ -13,14 +13,17 @@ const CustomCellEditor = (props: any) => {
 
   const initialData = useMemo(() => {
     if (props.reasonData && Object.entries(props.reasonData.data.data).length) {
-      const result = getOuterObjectByKey(props.reasonData?.data?.data, props.data.pid);
-      const selectedVal = Object.values(result).map((item: any) => {
-        return { 'des': item.majd, 'id': item.majid, 'min': item.min }
-      })
-      return selectedVal;
+      const result = getOuterObjectByKey(props.reasonData?.data?.data, props.data.pid);  
+      if (result) {
+        const selectedVal = Object.values(result).map((item: any) => {
+          return { 'des': item.majd, 'id': item.majid, 'min': item.min };
+        });
+        return selectedVal;
+      } 
     }
     return undefined;
   }, [props.reasonData]);
+  
 
   const extractMinDetails = (data: any, keyId: string) => {
     const item = data.find((d: any) => d.id == keyId);
@@ -144,7 +147,10 @@ const CustomCellEditor = (props: any) => {
   }
 
   return (
-    <div style={{ height: '100%', width: "100%", display: 'flex', border: '1px solid #707070', borderRadius: '4px', marginRight: "20px" }}>
+    <div style={{
+      height: '100%', width: "100%", display: 'flex', border: '1px solid #707070', borderRadius: '4px',
+      // marginRight: "20px"
+    }}>
       <div style={{ width: '100%', height: "100%", paddingLeft: "2px", paddingRight: "2px" }} >
         {props.colDef.colId === 'MajorReason' ? renderMajorSelect() : renderMinorSelect()}
       </div>

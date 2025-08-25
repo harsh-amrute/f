@@ -70,6 +70,7 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import BomExcelModal from "../../Common/BomExcelModal";
 import useColDef from "../../../../../hooks/useColDef";
 
+
 interface ApiResponse {
   cc: string;
   cp: number;
@@ -126,6 +127,7 @@ interface ApiResponseItem {
   scc: string; // Sub-channel code (will be set to the name of cc)
   ch?: ApiResponse[]; // Array of channel items
   pinned?: string; // Pin property
+  dt?: string;
 }
 
 const APIFilterConfig = {
@@ -375,7 +377,7 @@ const OverallBmReport = () => {
     };
 
     // Prepend the default outer object
-    modifiedResponse.unshift(defaultOuterObject, defaultSecondObject);
+    modifiedResponse.unshift(defaultOuterObject);
 
     // Calculate cp for the additional object based on existing cp values
     const maxCp = Math.max(...modifiedResponse.map((item) => item.cp || 0));
@@ -448,22 +450,28 @@ const OverallBmReport = () => {
   const [totalOrderCount, setTotalOrderCount] = useState<any>(0);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
+  const debouncedRef = useRef<any>(null);
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
-    setIsCheckboxChecked(isChecked); // Update state based on checkbox
-  
-    if (refGraph2.current?.api) {
-      refGraph2.current.api.deselectAll();
-      
-      if (isChecked) {
-        refGraph2.current.api.forEachNodeAfterFilterAndSort((node:any) => {
-          node.setSelected(true);
-        });
-      }
+    
+    if (debouncedRef.current) {
+      debouncedRef.current.cancel();
     }
-    getSelectedRow();
+    debouncedRef.current = _.debounce(() => {
+     setIsCheckboxChecked(isChecked);
+      if (refGraph2.current?.api) {
+        refGraph2.current.api.deselectAll();
+  
+        if (isChecked) {
+          refGraph2.current.api.forEachNodeAfterFilterAndSort((node: any) => {
+            node.setSelected(true);
+          });
+        }
+      }
+      getSelectedRow();
+    }, 300); 
+    debouncedRef.current();
   };
-
   
 
   const toggleCheckBox = () => {
@@ -477,7 +485,7 @@ const OverallBmReport = () => {
     setSelectedAction(option);
     // const mySelectedNodes = refGraph2.current.api.getSelectedRows();
     const newData: any = [];
-    gridData.forEach((ele: any) => {
+    gridData?.forEach((ele: any) => {
       const newEle = _.cloneDeep(ele);
       newEle.oca = option.value;
       newData.push(newEle);
@@ -544,7 +552,9 @@ const OverallBmReport = () => {
 
           const newGridData = [...gridData];
           newGridData.forEach((ele: any) => {
-            if (ele.ok === orderId) ele.ct = actionText;
+            if (!_.isEmpty(ele)) {
+              if (ele.ok === orderId) ele.ct = actionText;
+            }
           });
           setGridData(newGridData);
         } else {
@@ -560,8 +570,10 @@ const OverallBmReport = () => {
         if (response?.status === 200) {
           const newGridData = [...gridData];
           newGridData.forEach((ele: any) => {
-            if (okValues.includes(ele.ok)) {
-              ele.ct = actionText;
+            if (!_.isEmpty(ele)) {
+              if (okValues.includes(ele.ok)) {
+                ele.ct = actionText;
+              }
             }
           });
           setGridData(newGridData);
@@ -588,8 +600,10 @@ const OverallBmReport = () => {
         });
 
         newGridData?.forEach((ele: any) => {
-          if (ele.ok === orderId) ele.ct = null;
-          ele.oca = null;
+          if (!_.isEmpty(ele)) {            
+            if (ele.ok === orderId) ele.ct = null;
+            ele.oca = null;
+          }
         });
         setGridData(newGridData);
       } else {
@@ -698,17 +712,12 @@ const OverallBmReport = () => {
   );
 
   const onSelectChange = (props: any, option: any, index: number) => {
-    const newGridData: any = [];
-    props.api.forEachNode((node: any) => {
-      newGridData.push(node.data);
-    });
+  
+    const updatedData = { ...props.data, oca: option.value };
+    props.node.setData(updatedData); 
+    props.api.refreshCells({ rowNodes: [props.node], columns: ['oca'], force: true });
 
-    if (Array.isArray(newGridData)) {
-      const dup_gridData = [...newGridData];
-      dup_gridData[index].oca = option.value;
-      setGridData(dup_gridData);
-    }
-  };
+};
 
   const DropDownCellRenderer = (props: any) => {
     return (
@@ -716,21 +725,22 @@ const OverallBmReport = () => {
         
         {!_.isEmpty(props.data) && props.data?.ct === null ? (
           <>
-            <VFSelect
+          <VFSelect
               options={actionOptions}
               themeUi={themeUi}
               icon={DropdownArrowIcon}
               placeholder="Select Action"
               disabled={!props.node.selected}
               value={
-                props.node.selected
-                  ? actionOptions.find((opt) => opt.value === props.data?.oca)
-                  : null
-              }
+                props.node.selected ? 
+                  actionOptions.find((opt) => opt.value === props.data?.oca) :
+                  null}
               onChange={(option: any) => {
-                onSelectChange(props, option, props.node.rowIndex);
-              }}
-            />
+              if (option) {
+              onSelectChange(props, option, props.node.rowIndex);
+              }
+            }}
+          />
 
             <div
               style={{
@@ -836,14 +846,13 @@ const OverallBmReport = () => {
         colId: `${parent}-${child.cc}`,
         initialHide: !child.v,
         suppressHeaderFilterButton: true,
-        filterParams: {
-          buttons: ['reset']
-        },
         filter:
-        child.dt === "number"
+        (child.dt === "number" || child.dt === "decimal")
           ? "agNumberColumnFilter"
-          : "agMultiColumnFilter",
-
+          : child.dt === "date"
+            ? "agDateColumnFilter"
+              : "agMultiColumnFilter",
+        
         pinned: child.cc === "ct" ? "right" : null,
         cellRenderer:
           child.cc === "ec" && bomActive
@@ -864,11 +873,42 @@ const OverallBmReport = () => {
         // columnGroupShow: index > 2 ? "open" : undefined,
         floatingFilter:
           child.cc === "ec" ? false : child.cc === "ic" ? false : true,
-        valueFormatter: (props: any) => {
-          if (typeof props.value === "number") {
-            return props.value.toFixed(2);
+        valueFormatter: (params: any) => {
+          if (params.value) {
+              const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+              const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+        
+              if (child.dt === 'number') {
+                  return locale ? params.value.toLocaleString(locale) : params.value;
+              }
+        
+              if (child.dt === 'decimal') {
+                const fixedValue = parseFloat(params.value.toFixed(2)); 
+                return locale ? fixedValue.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :fixedValue;
+              }
+        
+              return params.value;
           }
-          return props.value;
+        }, 
+        filterParams: {
+          buttons: ['reset'], 
+          comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
+            if (!cellValue) return -1;
+          
+            const cellDate = new Date(cellValue);
+            if (isNaN(cellDate.getTime())) return -1;
+          
+            const cellDateOnly = new Date(
+              cellDate.getFullYear(),
+              cellDate.getMonth(),
+              cellDate.getDate()
+            );
+          
+            if (cellDateOnly < filterLocalDateAtMidnight) return -1;
+            if (cellDateOnly > filterLocalDateAtMidnight) return 1;
+            return 0;
+          }
+          
         },
         cellRendererParams: child?.hd.includes("Remark") ? {
           onClick: child?.cc === 'RemarkHistory' ? (data: string) => onOpenRemarkHistory(data) : undefined
@@ -905,7 +945,8 @@ const OverallBmReport = () => {
 
     };
 
-    const res = apiResponse.map((section) => ({
+    const res = apiResponse.map((section) => (
+      {
       headerCheckboxSelection: (params:any) => {
         // Only show if no grouping is applied
         return section.scc === "chckbx" && params.api.getRowGroupColumns().length === 0;
@@ -933,13 +974,6 @@ const OverallBmReport = () => {
       headerName: section.hd,
       suppressStickyLabel: section.scc === "chckbx" ? undefined : true,
       colId: section.cc,
-      valueFormatter: (props: any) => {
-        if (typeof props.value === "number") {
-          return props.value.toFixed(2);
-        }
-        return props.value;
-      },
-
       // pinned: section.scc==="scos"?'right':"",
 
       cellRenderer:
@@ -1191,7 +1225,7 @@ const OverallBmReport = () => {
   useEffect(() => {
     if (masterSelectedRowData.length > 0) {
       const selectedOrderKeys: orderkeyObj[] = [];
-      masterSelectedRowData.map((ele: any) => {
+      masterSelectedRowData?.map((ele: any) => {
         selectedOrderKeys.push(ele.ok);
       });
 
@@ -1461,7 +1495,6 @@ const OverallBmReport = () => {
         setIsPivot(false);
       } else if (page_size) {
         const config = columnState;
-        const isPivot = refGraph2?.current?.api.isPivotMode();
         const fullConfig = { pivot: isPivot, cs: config, pageSize: page_size };
 
         const payload = {

@@ -6,8 +6,10 @@ import ActionToolBar from "../Planning/ActionToolBar"
 import { GridStateContext } from '../../../../../context/GridStateContext';
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../redux/store/store';
 
-
+ 
 
 const OrderAllocationReport = () => {
 
@@ -39,7 +41,9 @@ const OrderAllocationReport = () => {
 } = useOrderAllocation();
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
- 
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const ORDER_ALLOCATION_ROWS_PER_PAGE = EnvConfig['ORDER_ALLOCATION_ROWS_PER_PAGE'];   
+  
   return (
   <GridStateContext.Provider
   value={{
@@ -131,7 +135,7 @@ const OrderAllocationReport = () => {
                 selectedRows={0} 
                 totalRows={recordCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
+                rowsPerPage={parseInt(ORDER_ALLOCATION_ROWS_PER_PAGE|| '100')}
                 handleChangePage={handleChangePage}
                 resetGridRef={ref} 
                 isDisabled={isDisabled}  

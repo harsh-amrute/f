@@ -194,6 +194,20 @@ export namespace MDMService {
     })
   }
 
+  export const getAllEnvironmentConfiguration = async()=>{
+    return await axios.get(process.env.REACT_APP_API_HOST + 'api/mta/GetEnvironmentConfiguration',{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  export const editEnvironmentConfiguration = async(body:any)=>{
+    return await axios.put(process.env.REACT_APP_API_HOST + 'api/mta/EditEnvironmentConfiguration',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+
+
   /**This get the  MTO Masters Data*/
   export const getMTOMastersData = async () => {
     return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetMasterManagementData/', {
@@ -313,6 +327,10 @@ export namespace MDMService {
 
   export const getAllUsers = async()=>{
     return await axios.get(process.env.REACT_APP_API_HOST + `/api/user/all-users/`)
+  }
+  
+  export const getApproverNames = async (params:any) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + `api/user/get-approver-names/`,{...params})
   }
 }
 

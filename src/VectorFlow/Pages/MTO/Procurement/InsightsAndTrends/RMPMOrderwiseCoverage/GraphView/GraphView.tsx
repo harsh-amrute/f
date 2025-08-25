@@ -187,7 +187,7 @@ const GraphView = ({ shortageData }: any) => {
     });
 
     const TableData = _.cloneDeep(shortageData);
-    TableData.forEach((e: any) => {
+    TableData?.forEach((e: any) => {
         if (e.start_date === '1') {
             e.start_date = '0-7 Days';
         }

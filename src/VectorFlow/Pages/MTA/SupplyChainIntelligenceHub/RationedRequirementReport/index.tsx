@@ -7,6 +7,8 @@ import LastRunDateComponent from "../../../../../components/commons/lastRundate"
 import OverlayLoader from '../../../../../VectorFlow/Pages/MTO/Common/Loader';
 import { useState } from 'react';
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../redux/store/store';
 
 
 
@@ -42,7 +44,9 @@ const RRR = () => {
 } = useRRR();
 
   const [isDisabled, setIsDisabled]= useState<boolean>(true)
-
+ 
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const RRR_ROWS_PER_PAGE = EnvConfig['RRR_ROWS_PER_PAGE'];   
  
   return (
   <GridStateContext.Provider
@@ -135,7 +139,7 @@ const RRR = () => {
                 selectedRows={0} 
                 totalRows={RRRDataCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
+                rowsPerPage={parseInt(RRR_ROWS_PER_PAGE || '100')}
                 handleChangePage={(e)=>getRRRRowData(e)} 
                 resetGridRef={ref} 
                 isDisabled={isDisabled}

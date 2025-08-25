@@ -195,7 +195,7 @@ const useDelete=()=>{
 
     const onCancel=()=>{
         dispatch(RESET_STATE());
-        navigate('/master-data-management/control-panel');
+        navigate('/mta/master-data-management/control-panel');
     }
 
     const postMasterDataChunks = async (rowData:any,isOverWrite?:boolean) => { 
@@ -376,8 +376,8 @@ const useDelete=()=>{
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
               }
               if(draftID.length > 0){
-                dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
+                dispatch(SET_DRAFT_ID(''));
               }
               dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
@@ -417,8 +417,8 @@ const useDelete=()=>{
               
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());          
               if(draftID.length > 0){
-                dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
+                dispatch(SET_DRAFT_ID(''));
               }
               if(activeMaster.rowData.length === 0) 
               {
