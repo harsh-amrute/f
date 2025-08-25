@@ -140,6 +140,7 @@ const DateCellRenderer = (props: AGGridProps) => {
               themeUi={themeUi}
               onChange={handleCalendarChange}
               value={value ? new Date(value) : new Date()}
+              minDate={props.data?.EPD ? new Date(props.data.EPD) : undefined} 
             />
           </div>,
           document.body
