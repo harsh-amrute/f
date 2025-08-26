@@ -142,7 +142,7 @@ const useDelete=()=>{
 
     const handleSubmitSelectMaster = ()=>{
       updateUrlIsModalOpen();
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         // dispatch(UPDATE_ACTIVE_MASTER(0));
         const firstDefaultIndex = selectedMasters.findIndex(
           (item) => item.progress !== 'submitted'
