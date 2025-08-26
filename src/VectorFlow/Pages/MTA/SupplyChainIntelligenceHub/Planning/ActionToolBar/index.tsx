@@ -167,7 +167,7 @@ const ActionToolBar = ({
     //     filters:multiFilter
     //   });
     // }
-    else if(pathname==="/mta/insights-and-trends/buffer-trend-report" || pathname=== "/mta/supply-chain-intelligence-hub/bpr"){
+    else if(pathname==="/mta/insights-and-trends/buffer-trend-report" || pathname=== "/mta/supply-chain-intelligence-hub/bpr" || pathname=== "/mta/supply-chain-intelligence-hub/rrr" || pathname==="/mta/supply-chain-intelligence-hub/bor" || pathname==="/mta/supply-chain-intelligence-hub/bor-color-bandwise" || pathname==="/mta/supply-chain-intelligence-hub/rrr-color-bandwise"){
       onExportToExcelCallBack();
     }
     else{
@@ -925,7 +925,7 @@ const ActionToolBar = ({
            {currCategory === "DBMNorm" ? (
   <Tooltip
     content={
-      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>{"Sleep"}</div>
+      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>{"Apply Selected Norm Changes"}</div>
     }
     tooltipZoom={1}
   >
@@ -1058,7 +1058,7 @@ const ActionToolBar = ({
                           }
                           alt=""
                         />
-                         <p>{(currCategory === "BTR" || currCategory === "BPR") ? "CSV Export" : "Excel Export"}</p>
+                         <p>{(currCategory === "BTR" || currCategory === "BPR" || currCategory === "RRR" ||  currCategory === "BOR" || currCategory === "BORColorBandwise" || currCategory === "RRRColorBandwise") ? "CSV Export" : "Excel Export"}</p>
                       </>
                       {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
                                     <p>Excel Export</p> */}

@@ -14,7 +14,7 @@ import { Tooltip } from 'react-tooltip';
 
 const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
   const { mutateAsync: getAllReports } = useGetAllReports();
-  const {mutateAsync: getAllMTOReports} = useGetAllMTOReports()
+  const {mutateAsync: getAllMTOReports} = useGetAllMTOReports();
   const [listMenu, setListMenu] = useState(listMenuParent);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
@@ -24,7 +24,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   const [isLoading, setIsLoading] = useState(false);
   const [tempUrls, setTempUrls] = useState([]); //temp url is used to show downloading
   const [reportUrls, setReportUrls] = useState<string[]>([]);
-
   const getReportFields = async () => {
     try {
       const [reportsResponse, mtoReportsResponse] = await Promise.allSettled([
@@ -91,6 +90,8 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
       console.error("Unexpected error in getReportFields:", err);
     }
   };
+
+
 
   // const getReportFields = async () => {
   //   let transformedData: any = undefined;
@@ -170,7 +171,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
 
   useEffect(() => {
     getReportFields();
-  
     if (localStorage.getItem("ListItem")) {
       setMenuItem(JSON.parse(localStorage.getItem("ListItem") || ""))
     }

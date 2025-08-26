@@ -81,8 +81,9 @@ const usePlanning = ()=>{
 
     const [globalColDef, setGlobalColDef] = useState<any>();
 
-
-    const rowsPerPage = parseInt(process.env.REACT_APP_PLANNING_ROWS_PER_PAGE || '50');
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const PLANNING_ROWS_PER_PAGE = EnvConfig['PLANNING_ROWS_PER_PAGE'];  
+    const rowsPerPage = parseInt(PLANNING_ROWS_PER_PAGE || '50');
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
     const showNormChangeHistoryTable = useSelector((state:RootState) => state.mta.showNormChangeHistoryTable);

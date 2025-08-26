@@ -1,6 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import ProductPermission from "./index";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
 
 type Option = {
   label: string;
@@ -28,7 +30,10 @@ export default forwardRef(({ ...props }: any, ref) => {
   const [subBrand, setSubBrand] = useState<Option[]>([]);
   const [category, setCategory] = useState<Option[]>([]);
 
-
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1']; 
+  const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2']; 
+  const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
   // Update the lists whenever the product data or initial values change
   useEffect(() => {
     const newListBrand: Option[] = [];
@@ -176,7 +181,7 @@ export default forwardRef(({ ...props }: any, ref) => {
 
   const prdPermissions = [
     {
-      title: process.env.REACT_APP_PRODUCT_PERMISSION_L1 || '',
+      title: PRODUCT_PERMISSION_L1 || '',
       placeholder: "", 
       options: listBrand,
       value: brand,
@@ -188,7 +193,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       isCheckBoxRef,
     },
     {
-      title: process.env.REACT_APP_PRODUCT_PERMISSION_L2 || '',
+      title: PRODUCT_PERMISSION_L2 || '',
       placeholder:"", 
       options: brand.length === 0 ? [] : listSubBrand.filter((sub: Option) =>
         brand.some((b) => sub.value.split(" > ")[0] == b.value)  // Filter based on selected brand
@@ -202,7 +207,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       isCheckBoxRef,
     },
     {
-      title: process.env.REACT_APP_PRODUCT_PERMISSION_L3 || '',
+      title: PRODUCT_PERMISSION_L3 || '',
       placeholder: "", 
       options: subBrand.length === 0 ? [] : (() => {
         const currentSubBrandValues = subBrand.map(sub => sub.value);

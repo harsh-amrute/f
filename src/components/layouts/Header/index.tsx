@@ -3,6 +3,8 @@ import { useUserData } from '../../../context'
 import * as HeaderStyled from './style'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../redux/store/store'
 
 interface HeaderProps{
   urlExcludeHeader:Array<string>
@@ -61,7 +63,9 @@ const Header = (props:HeaderProps) => {
       hideLogo()
     }, 300);
   }
-
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const CLIENT_LOGO = EnvConfig['CLIENT_LOGO'];    
+  const CLIENT_NAME = EnvConfig['CLIENT_NAME'];    
   const renderHeader = () => {
     if (location.pathname === '/ist-status') {
       return (
@@ -156,7 +160,7 @@ const Header = (props:HeaderProps) => {
         }
         
         <HeaderStyled.SCWrapperImg isHideLogo={isHideLogo} onMouseEnter={onMouseEnterLogo} onMouseLeave={onMouseLeaveLogo} style={{ display: 'flex', alignItems: 'center' }}>
-          {!process.env.REACT_APP_CLIENT_LOGO && !process.env.REACT_APP_CLIENT_NAME &&
+          {!CLIENT_LOGO && !CLIENT_NAME &&
             <HeaderStyled.SCImg
               marginLeft={"20px"}
               src="/assets/img/header/VectorFlowLogoBlackNew.svg"
@@ -164,16 +168,16 @@ const Header = (props:HeaderProps) => {
               isHideLogo={isHideLogo}
             />
           }
-          {process.env.REACT_APP_CLIENT_LOGO && (
+          {CLIENT_LOGO && (
             <HeaderStyled.SCImg
-              src={process.env.REACT_APP_CLIENT_LOGO.toString()}
+              src={CLIENT_LOGO.toString()}
               alt="logo"
               isHideLogo={isHideLogo}
             />
           )}
-          {process.env.REACT_APP_CLIENT_NAME && (
-            <HeaderStyled.ClientNameText marginLeft={!process.env.REACT_APP_CLIENT_LOGO && "15px"} isHideLogo={isHideLogo}>
-              {process.env.REACT_APP_CLIENT_NAME}
+          {CLIENT_NAME && (
+            <HeaderStyled.ClientNameText marginLeft={!CLIENT_LOGO && "15px"} isHideLogo={isHideLogo}>
+              {CLIENT_NAME}
             </HeaderStyled.ClientNameText>
           )}
         </HeaderStyled.SCWrapperImg>

@@ -606,8 +606,10 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
 
         newGridData?.forEach((ele: any) => {
           if (!_.isEmpty(ele)) {            
-            if (ele.ok === orderId) ele.ct = null;
-            ele.oca = null;
+            if (ele.ok === orderId) {
+              ele.ct = null;
+              ele.oca = null;
+            }
           }
         });
         setGridData(newGridData);

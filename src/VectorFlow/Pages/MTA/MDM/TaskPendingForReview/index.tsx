@@ -8,6 +8,8 @@ import ApproveAllModal from "./ApproveAllModal"
 import RejectAllModal from "./RejectAllModal"
 import { useUserData } from "../../../../../context"
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../../redux/store/store"
 
 
 const TaskPendingForReview = ()=>{
@@ -34,6 +36,9 @@ const TaskPendingForReview = ()=>{
         setSelectionType,
         noDataMessage
     } = useTaskPendingForReview()
+
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const TASKPENDINGFORREVIEW_PAGE = EnvConfig['TASKPENDINGFORREVIEW_PAGE'];  
 
     if(showLoader) return <VFLoader/>
     const suppressMovable = true;
@@ -66,7 +71,7 @@ const TaskPendingForReview = ()=>{
                     rowData={mapRowDataWithSrNo(viewTableRowData)}
                     localeText={{ noRowsToShow: noDataMessage?.length>0?noDataMessage:"No data to approve."}}
                     pagination={true}
-                    paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
+                    paginationPageSize={parseInt(TASKPENDINGFORREVIEW_PAGE || '100')}  
                 />
                 </TaskPendingWrapper>
           ): (
@@ -107,7 +112,7 @@ const TaskPendingForReview = ()=>{
     
                     }}
                     pagination={true}
-                    paginationPageSize={parseInt(process.env.REACT_APP_TASKPENDINGFORREVIEW_PAGE || '100')}  
+                    paginationPageSize={parseInt(TASKPENDINGFORREVIEW_PAGE || '100')}  
                     // paginationPageSize={50}
                     // suppressPaginationPanel={true}
                 />
