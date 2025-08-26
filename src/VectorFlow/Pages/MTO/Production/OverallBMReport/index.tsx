@@ -1069,7 +1069,10 @@ const OverallBmReport = () => {
     if (isExcelExport) {
       const headersdata = refGraph2?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
-      const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
+      const filterHeadersData = headersdata.filter(((e:any) => {
+        return (e.colId!== 'Default Attribute-RemarkHistory')
+      }))
+      const body = getBodyForExcelExport({headersdata:filterHeadersData,filterData: formatedFilters,groupedColDefsRef})
           try{
               const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
               if(response.status == 200){//1,userpage,true,0
