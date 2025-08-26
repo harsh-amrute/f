@@ -15,6 +15,9 @@ import WelcomeBoard from "./welcome-board";
 import { hashPassword } from '../../../helpers/utils'
 import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
 import { loadCaptchaEnginge, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
+import { useGetAllEnvironmentConfiguration } from "../../../VectorFlow/Services/MTA/MDM";
+import { useDispatch } from "react-redux";
+import { UPDATE_ENV_CONFIG } from "../../../redux/actions/MTA";
 
 function LoginContainer() {
   const { t } = useTranslation();
@@ -58,7 +61,21 @@ function LoginContainer() {
   // const [remember, setRemember] = useState(true);
   const recaptchaRef: any = useRef();
   const [captchaInput, setCaptchaInput] = useState("");
-
+  const dispatch = useDispatch();
+  const {mutateAsync : getAllEnvConfiguration} = useGetAllEnvironmentConfiguration();
+  const getAllEnvironmentConfiguration = async () => {
+    try {
+      const response = await getAllEnvConfiguration();
+      const configMap = response?.data?.data.reduce((map:any, item:any) => {
+        map[item.ConfigKey] = item.ConfigValue;
+        return map;
+      }, {});
+      dispatch(UPDATE_ENV_CONFIG(configMap))
+    }
+    catch (err) {
+      console.error("Unexpected error in get Environment configuration:", err);
+    }
+  };
 
   const onSave = async () => {
     if (!captchaInput || !validateCaptcha(captchaInput)) {
@@ -86,6 +103,7 @@ function LoginContainer() {
         } else {
           const url = "/landing-page";
           navigate(url, { replace: true });
+          getAllEnvironmentConfiguration();
           notifySuccess(t("loginPage.notify.success"));
         }
       },

@@ -6,19 +6,15 @@ import { MenuToolTip } from "../../../components/index";
 import { useState, useEffect } from "react";
 import { useUserData } from "../../../context";
 import { useNavigate } from "react-router";
-import { useGetAllReports,useGetAllEnvironmentConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
+import { useGetAllReports } from '../../../VectorFlow/Services/MTA/MDM'
 import _ from 'lodash'
 import { useGetAllMTOReports } from "../../../VectorFlow/Services/MTO/Common/DownloadReports";
 import { getNestedChildren } from "../../../helpers/utils";
 import { Tooltip } from 'react-tooltip';
-import { useDispatch } from "react-redux";
-import { UPDATE_ENV_CONFIG } from "../../../redux/actions/MTA/index";
-import { notifyError } from "../../../helpers/notify";
 
 const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any) => {
   const { mutateAsync: getAllReports } = useGetAllReports();
   const {mutateAsync: getAllMTOReports} = useGetAllMTOReports();
-  const {mutateAsync : getAllEnvConfiguration} = useGetAllEnvironmentConfiguration();
   const [listMenu, setListMenu] = useState(listMenuParent);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const queryClient = useQueryClient();
@@ -28,7 +24,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
   const [isLoading, setIsLoading] = useState(false);
   const [tempUrls, setTempUrls] = useState([]); //temp url is used to show downloading
   const [reportUrls, setReportUrls] = useState<string[]>([]);
-  const dispatch = useDispatch();
   const getReportFields = async () => {
     try {
       const [reportsResponse, mtoReportsResponse] = await Promise.allSettled([
@@ -96,20 +91,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
     }
   };
 
-  const getAllEnvironmentConfiguration = async () => {
-    try {
-      const response = await getAllEnvConfiguration();
-      const configMap = response?.data?.data.reduce((map:any, item:any) => {
-        map[item.ConfigKey] = item.ConfigValue;
-        return map;
-      }, {});
-      
-      dispatch(UPDATE_ENV_CONFIG(configMap))
-    }
-    catch (err) {
-      console.error("Unexpected error in get Environment configuration:", err);
-    }
-  };
 
 
   // const getReportFields = async () => {
@@ -190,7 +171,6 @@ const NavbarMenu = ({ setMenuItem, isHide, setIsHide, setWidthResponsive }: any)
 
   useEffect(() => {
     getReportFields();
-    getAllEnvironmentConfiguration();
     if (localStorage.getItem("ListItem")) {
       setMenuItem(JSON.parse(localStorage.getItem("ListItem") || ""))
     }
