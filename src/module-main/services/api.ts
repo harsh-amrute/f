@@ -5,7 +5,6 @@ import { type RegisterRequest, type LoginRequest } from '../types'
 import { LOCAL_STORAGE_KEY } from '../../helpers/constants'
 import { type QueryClient } from '@tanstack/react-query'
 import { isEmpty } from 'lodash'
-import storage from 'redux-persist/lib/storage';
 import { persistor } from '../../redux/store/store'
 
 const API_USER = 'api/user'
