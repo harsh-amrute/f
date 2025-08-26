@@ -235,7 +235,7 @@ const useDelete=()=>{
             id:activeMaster.id,
             action:"",
             TaskId:'',
-            IsOverWrite:isOverWrite===true?true:false,
+            IsOverWrite:true,
             data:[],
             uiconfig:activeMaster.fields
           }
