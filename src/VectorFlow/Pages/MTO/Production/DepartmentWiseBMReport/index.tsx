@@ -921,10 +921,7 @@ const DptWiseBMReport = () => {
 
             const headersdata = refGraph1?.current?.api?.getColumnState();
             const formatedFilters = formatFilterJSON(appliedFilters);
-            const filterHeadersData = headersdata.filter(((e:any) => {
-                return (e.colId!== 'Default Attribute-Remark History')
-            }))
-            const body = getBodyForExcelExport({ headersdata:filterHeadersData, filterData: formatedFilters, groupedColDefsRef })
+            const body = getBodyForExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
             try {
                 const response = await getFilteredDeptWiseBMReportData({ body, page: currentPage, appliedFilters: formatedFilters,report_name:FilterPageName.Prod_Dept_Wise_BM_Report, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
                 if (response.status == 200) {
