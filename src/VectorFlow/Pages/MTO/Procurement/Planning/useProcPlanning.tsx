@@ -31,7 +31,6 @@ import moment from "moment";
 import _ from "lodash";
 
 
-
 const getRows = (params: ProcessRowGroupForExportParams) => {
     const rows: ExcelRow[] = [
         {
@@ -226,7 +225,6 @@ const useProcPlanning = ( appliedFilters: any) => {
     const { user } = useUserData();
 
 
-
     const dispatch = useDispatch()
 
     dispatch(PROCPLANNING_ANALYTICS({ date:selectedDate }));
@@ -242,6 +240,8 @@ const useProcPlanning = ( appliedFilters: any) => {
     const { mutateAsync : GetProcPlanningDataForExcelData, isLoading: isProcurementPlanningDataForExcelExport} = useGetProcurementPlanningDataForExcelExport()
     const { mutateAsync: getDBRsettingsData, isLoading: isGetDBRsettingsData } = useGetDBRsettingsData();
     const [simulationEnable, setSimulationEnable] = useState<any>();
+    const feature_permission = user?.feature_permission || [];
+    const simulatation = feature_permission.includes("Simulation_Enable");
     const [showExcelModal, setShowExcelModal] = useState(false);
     const tempGridRef = useRef<any>(null);
     const [tempGridData, setTempGridData] = useState<any>(undefined);
@@ -451,19 +451,11 @@ const useProcPlanning = ( appliedFilters: any) => {
         }
     ]
 
-    const getSimulationEnable = async () => {
-        const DBRSettingsData = await getDBRsettingsData();
-        const DBRSettings = DBRSettingsData.data?.data;
-        const simulation = DBRSettings?.find((data: any) => {
-            return data.flag == "simulationEnable";
-          });
-
-          setSimulationEnable(simulation?.value || "disabled");
-    }
-
-    useEffect(() => {  
-        getSimulationEnable();
-    },[])
+ 
+    useEffect(() => {
+        const feature_permission = user?.feature_permission || [];
+        setSimulationEnable(feature_permission.includes("Simulation_Enable"));
+      }, [user]);
 
     const childCustomHeaders = {
         clr:{
@@ -472,21 +464,14 @@ const useProcPlanning = ( appliedFilters: any) => {
     }
 
     useEffect(() => {
-        if(HeaderData && HeaderData.length>0 && simulationEnable){
-            if (currentTab?.label === 'Shortage') {
-                if(simulationEnable === "enabled"){
-
-                    setColDef(getColumnDefinations(HeaderData, customHeader, extras))
-                }
-                else{
-                    setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
-                }
-            }
-            else {
-                setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
-            }
+        if (HeaderData && HeaderData.length > 0 && simulationEnable) {
+          if (currentTab?.label === 'Shortage') {
+            setColDef(getColumnDefinations(HeaderData, customHeader, extras));
+          } else {
+            setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
+          }
         }
-    }, [HeaderData,simulationEnable])
+      }, [HeaderData, simulationEnable]);
 
     useEffect(()=>{
         if(childHeaderData && childHeaderData.length>0){
@@ -508,24 +493,21 @@ const useProcPlanning = ( appliedFilters: any) => {
 
     useEffect(() => {
         if (currentTab && userConfigFetched) {
-            if (currentTab.label === 'Shortage') {
-                if(simulationEnable === "enabled"){
-                    
-                    setColDef(getColumnDefinations(HeaderData, customHeader, extras))
-                }
-                else{
-                    setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
-                }
-                setCurrentPage(1);
-                fetchData(selectedDate, 1, '0', false, userPageSize);
+          if (currentTab.label === 'Shortage') {
+            if (simulationEnable) {
+              setColDef(getColumnDefinations(HeaderData, customHeader, extras));
+            } else {
+              setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
             }
-            else {
-                setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]))
-                setCurrentPage(1);
-                fetchData(selectedDate, 1, '1', false, userPageSize);
-            }
+            setCurrentPage(1);
+            fetchData(selectedDate, 1, '0', false, userPageSize);
+          } else {
+            setColDef(getColumnDefinations(HeaderData, customHeader, extras, ["ExpAdd.StockToday"]));
+            setCurrentPage(1);
+            fetchData(selectedDate, 1, '1', false, userPageSize);
+          }
         }
-    }, [currentTab])
+      }, [currentTab]);
 
 
     const toggleCurrentTab = useCallback((tab: VFFloatingTabItemProps) => setCurrentTab(tab), []);
@@ -760,7 +742,7 @@ const useProcPlanning = ( appliedFilters: any) => {
 
 
                         />
-                   { simulationEnable ==='enabled'  && (
+                   { simulationEnable && (
                     <div style={{ width: "100%",display: 'flex', alignItems: 'center', justifyContent: 'right', textAlign: 'right', marginRight: '14px', flexDirection: 'row', marginTop: '15px' }}>
 
                             <VFButtonOutline

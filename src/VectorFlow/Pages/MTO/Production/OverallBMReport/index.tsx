@@ -223,7 +223,12 @@ const OverallBmReport = () => {
   } = useShortOrderCompleteOrder();
 
   const { user } = useUserData();
+  console.log("user dataaaa", user);
   const themeUi = user?.user?.theme_ui; 
+
+const feature_permission = user?.feature_permission || [];
+const canShowOrderClosing = feature_permission.includes("Order_Closing");
+
 
    
   const dispatch = useDispatch();
@@ -286,11 +291,11 @@ const OverallBmReport = () => {
     else {
       setBomActive(false)
     }
-    const orderClosingEnable = DBRSettings?.find((data: any) => {
-      return data.flag == "CloseOrdersFromUI";
-    });
+    // const orderClosingEnable = DBRSettings?.find((data: any) => {
+    //   return data.flag == "CloseOrdersFromUI";
+    // });
     
-    setorderClosingEnable(orderClosingEnable?.value);
+    setorderClosingEnable(canShowOrderClosing);
     setSystemType(Number(systemType?.value || 0));
   };
 

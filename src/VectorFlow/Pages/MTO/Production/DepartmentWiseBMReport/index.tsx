@@ -157,6 +157,7 @@ const DptWiseBMReport = () => {
     // const { screenHeight } = useViewPort();
     const { user } = useUserData();
     const UserAllRoles = user?.roles?.permission;
+    const isRemarkAvailable = user?.feature_permission?.includes("Deselect_Orders");
     const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
     const [deptName, setDeptName] = useState<any>([]);
@@ -343,6 +344,9 @@ const DptWiseBMReport = () => {
         const modifiedResponse: ApiResponseItem[] = [];
         const cpMap: { [key: string]: number } = {};
 
+        const feature_permission = user?.feature_permission || [];
+        const canAddComments = feature_permission?.includes("Add_Comments");
+        
         const defaultSecondObject: any = {
             cc: 'ic',
             cp: 1,
@@ -351,16 +355,16 @@ const DptWiseBMReport = () => {
             cla: 'centre',
             scc: 'ic'
         };
-
+        
         apiResponse.forEach((item) => {
             const modifiedItem = { ...item };
 
-
+            
             // Initialize cp for this cc if not already done
             if (!(item.cc in cpMap)) {
                 cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
             }
-
+            
             // Add new properties to the outer object
             modifiedItem.cp = cpMap[item.cc]++;
             modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
@@ -376,6 +380,11 @@ const DptWiseBMReport = () => {
 
                 if (item.cc.includes('Default Attribute') && modifiedItem.ch) {
                     modifiedItem.ch = item.ch?.filter((child)=>{
+
+                        if (child.cc === 'Remark' && !canAddComments) {
+                            return false;
+                        }
+                        
                         if (isBMReportViewer) {
                             return child.cc !== 'Remark'  
                         }
@@ -410,6 +419,7 @@ const DptWiseBMReport = () => {
 
 
         // Create the additional object to be added at the end
+        if (canAddComments) {
         const additionalObject: ApiResponseItem = {
             cc: "",
             cp: maxCp + 1, // Set cp based on the maximum cp value
@@ -422,6 +432,7 @@ const DptWiseBMReport = () => {
 
         // Add the additional object to the end of the modified response
         modifiedResponse.push(additionalObject);
+    }
 
         return modifiedResponse;
     };
