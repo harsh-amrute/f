@@ -134,7 +134,13 @@ export const BPRTechColorCellRenderer = (params:any)=>{
             </BPRColorCellRendererWrapper>        
             )
     }
-
+    if(params.data.TechPen == "") {
+        return(
+            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
+                {params.data.TechPen}
+            </BPRColorCellRendererWrapper>
+        )
+    }
     return(
         <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
             {params.data.TechPen}%
