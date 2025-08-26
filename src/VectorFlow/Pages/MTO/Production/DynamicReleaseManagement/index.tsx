@@ -185,7 +185,6 @@ const DynamicReleaseManagement = () => {
   }, [isSuccess, isError])
 
   useEffect(() => {
-    const cloneGraphData: InputData = _.cloneDeep(graphData);
     
     if (selectedRows.length) {
       setIsReleaseButtonDisabled(false);
@@ -194,9 +193,26 @@ const DynamicReleaseManagement = () => {
       setIsReleaseButtonDisabled(true);
     }
 
-    const selectedOrdersWIP: any = getWIPData(selectedRows.map((item: any) => item.ok));
+    handleWIPData();
+    
+  }, [selectedRows]);
 
-    const newSelectedRows = Object.keys(selectedOrdersWIP).map((ok) => ({
+  const handleWIPData = async () => {
+
+    const selectedOrdersWIP = await getWIPData(selectedRows.map((item: any) => item.ok));
+
+    const cloneGraphData: InputData = _.cloneDeep(graphData);
+
+    Object.entries(selectedOrdersWIP).forEach((element: any) => {
+      if (cloneGraphData[element[0]]) {
+        cloneGraphData[element[0]]['Incremental WIP'] = element[1];
+        cloneGraphData[element[0]]['selected'] = true;
+      }
+    });
+
+    {/*
+      // previous code not working as per api response data
+      const newSelectedRows = Object.keys(selectedOrdersWIP).map((ok) => ({
       ok,
       wips: selectedOrdersWIP[ok],
     }));
@@ -213,9 +229,10 @@ const DynamicReleaseManagement = () => {
         });
       }
     });
+    */}
 
     setFinalGraphData(convertData(cloneGraphData));
-  }, [selectedRows]);
+  };
 
   useEffect(() => {
     setFinalGraphData(convertData(graphData));

@@ -179,7 +179,7 @@ const RouteAssignment = ({theme, ccrGroupMaster=[], selectedRoutes, setSelectedR
               <StepGroup $step={true} key={`route-assignment-${index}`}>
                 <RadioSelect
                   key={`route-assignment-${index}-${1}`}
-                  isDisabled={!isCCRGroupEditable}
+                  isDisabled={!isCCRGroupEditable || !isEditable}
                   theme={theme}
                   color="lightgrey"
                   options={updateOption(ccrGroupMaster,sortedSelectedRoutes?.[index]?.[0])}

@@ -684,7 +684,7 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
       {
         type: 'bar',
         xKey: 'category',
-        yKey: "Incremental WIP",
+        yKey: "Allocated Full Kits",
         stacked: true,
         strokeWidth: 0,
         visible: true,
