@@ -590,7 +590,6 @@ const OverallBmReport = () => {
   };
 
   const undoClicked = async (props: any, orderId: string) => {
-    console.log(props)
     try {
       const response = await updateActionAPI("undo", [orderId]);
       if (response?.status === 200) {

@@ -4678,7 +4678,7 @@ export const getBodyForExcelExport = ({
 
       const groupedColumnData: any = [];
     
-      filteredHeadersData?.forEach((headerItem: any) => {
+      filteredHeadersData.forEach((headerItem: any) => {
         groupedColDefsRef?.current.forEach((groupDef: any) => {
           const header = groupDef.ch.find((subHeader: any) => subHeader.groupHeaderKey === headerItem.colId);
     
