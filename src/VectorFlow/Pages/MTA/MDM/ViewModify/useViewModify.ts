@@ -800,6 +800,7 @@ const useViewModify = (pageType:string) => {
             return
           }
         }
+
 }
 }
     // const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
