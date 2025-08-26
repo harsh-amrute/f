@@ -157,7 +157,6 @@ const DptWiseBMReport = () => {
     // const { screenHeight } = useViewPort();
     const { user } = useUserData();
     const UserAllRoles = user?.roles?.permission;
-    const isRemarkAvailable = user?.feature_permission?.includes("Deselect_Orders");
     const themeUi = user?.user?.theme_ui;
     const refGraph1 = useRef<any>(null);
     const [deptName, setDeptName] = useState<any>([]);
