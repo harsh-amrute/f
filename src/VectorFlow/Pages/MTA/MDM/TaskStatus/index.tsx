@@ -90,7 +90,7 @@ const TaskStatus = ()=>{
           const existingColumns = getExistingColumns(payload.Actiontype==2?JSON.parse(currentTaskMaster.data[0].new):currentTaskMaster.data[0])
           let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields.fields)
           if(actionName === "remove") {
-            existingColumnFields = existingColumnFields.filter(field => field.isDelete);
+            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
           }
           setTempAgGridColDefs(mapMasterToTaskStatusColumnGroupDefs(existingColumnFields,currentTaskMasterId,actionName))
           setTempAgridRowData(mapTaskStatusDataToRowData(currentTaskMaster.data,existingColumnFields,actionName))
