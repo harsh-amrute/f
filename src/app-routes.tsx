@@ -87,6 +87,7 @@ import OrderAllocationReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenc
 import TotalRequirementReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/TotalRequirementReport'
 import BulkUploadPage from './module-store-transfer/pages/bulk-upload'
 import ElephantOrder from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/ElephantOrders'
+import Scheduling from './VectorFlow/Pages/MTO/Scheduling'
 import ManageEnvConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageEnvConfig'
 
 // to show loading state for desired page only instead of the entire screen
@@ -221,6 +222,7 @@ const lazyLoad = (children: React.ReactNode) => {
     "/mto/master-data-management/task-status",
     "/mto/master-data-management/task-pending",
     "/mto/master-data-management/data-modification-history",
+    "/scheduling"
   
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -1307,6 +1309,16 @@ export const initRoutes = (): RouteObject[] => {
         {
           index: true,
           element: lazyLoad(<ResourceUtilization />)
+        }
+      ]
+    },
+    {
+      path: '/scheduling',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<Scheduling/>)
         }
       ]
     },

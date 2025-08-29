@@ -4669,7 +4669,7 @@ export const getBodyForExcelExport = ({
 }: any) => {
   const filteredHeadersData = headersdata?.filter(
     (col: any) =>
-      col.colId !== "DropDown" && col.colId !== "Action" && col.hide !== true && !col.colId.includes('History')
+      col.colId !== "DropDown" && col.colId !== "Action" && col.hide !== true && !col.colId.includes('History') && (col.colId!=="Default Attribute-Remark")
 
   );
 
