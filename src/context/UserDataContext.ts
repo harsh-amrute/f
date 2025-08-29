@@ -27,6 +27,7 @@ export const UserDataContext = React.createContext<UserData>({
     name: '',
     is_admin: false,
     role: ''
+    
   },
   changeColorTheme: (color) => {return color},
   isSideBarOpen:false,
