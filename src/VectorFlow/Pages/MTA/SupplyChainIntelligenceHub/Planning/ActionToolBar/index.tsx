@@ -152,7 +152,7 @@ const ActionToolBar = ({
 
   const handleExportToExcel = () => {
     if (
-      pathname === "/supply-chain-intelligence-hub/open-expediting-requests"
+      pathname === "/mta/supply-chain-intelligence-hub/open-expediting-requests"
     ) {
       ref.current.api.exportDataAsExcel({
         fileName: "OpenExpeditingRequests",
@@ -167,7 +167,7 @@ const ActionToolBar = ({
     //     filters:multiFilter
     //   });
     // }
-    else if(pathname==="/insights-and-trends/buffer-trend-report" || pathname=== "/supply-chain-intelligence-hub/bpr"){
+    else if(pathname==="/mta/insights-and-trends/buffer-trend-report" || pathname=== "/mta/supply-chain-intelligence-hub/bpr" || pathname=== "/mta/supply-chain-intelligence-hub/rrr" || pathname==="/mta/supply-chain-intelligence-hub/bor" || pathname==="/mta/supply-chain-intelligence-hub/bor-color-bandwise" || pathname==="/mta/supply-chain-intelligence-hub/rrr-color-bandwise"){
       onExportToExcelCallBack();
     }
     else{
@@ -181,10 +181,10 @@ const ActionToolBar = ({
 
   useEffect(() => {
     if (
-      pathname !== "/supply-chain-intelligence-hub/SupplierWiseAllocation" &&
-      pathname !== "/supply-chain-intelligence-hub/sdr" &&
-      pathname !== "/supply-chain-intelligence-hub/eo" &&
-      pathname !== "/supply-chain-intelligence-hub/total-requirement-report"
+      pathname !== "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation" &&
+      pathname !== "/mta/supply-chain-intelligence-hub/sdr" &&
+      pathname !== "/mta/supply-chain-intelligence-hub/eo" &&
+      pathname !== "/mta/supply-chain-intelligence-hub/total-requirement-report"
     ) {
       setIsFilterButtonVisible(true);
     }
@@ -313,7 +313,7 @@ const ActionToolBar = ({
           />
         );
       case "BPR":
-        if (pathname === "/supply-chain-intelligence-hub/bpr") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/bpr") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -340,7 +340,7 @@ const ActionToolBar = ({
         }
         break;
       case "RRR":
-        if (pathname === "/supply-chain-intelligence-hub/rrr") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/rrr") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -367,7 +367,7 @@ const ActionToolBar = ({
         }
         break;
       case "RRRColorBandwise":
-        if (pathname === "/supply-chain-intelligence-hub/rrr-color-bandwise") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/rrr-color-bandwise") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -419,7 +419,7 @@ const ActionToolBar = ({
       //   }
       //   break;
       case "BOR":
-        if (pathname === "/supply-chain-intelligence-hub/bor") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/bor") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -446,7 +446,7 @@ const ActionToolBar = ({
         }
         break;
       case "BORColorBandwise":
-        if (pathname === "/supply-chain-intelligence-hub/bor-color-bandwise") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/bor-color-bandwise") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -474,7 +474,7 @@ const ActionToolBar = ({
         break;
         
       case "OrderAllocationReport":
-        if (pathname === "/supply-chain-intelligence-hub/order-allocation-report") {
+        if (pathname === "/mta/supply-chain-intelligence-hub/order-allocation-report") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -501,7 +501,7 @@ const ActionToolBar = ({
         }
         break;
       case "BTR":
-        if (pathname === "/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
+        if (pathname === "/mta/insights-and-trends/buffer-trend-report" && onChangeHorizon) {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -528,7 +528,7 @@ const ActionToolBar = ({
         }
         break;
       case "BufferTrend":
-        if (pathname === "/insights-and-trends/buffer-trends") {
+        if (pathname === "/mta/insights-and-trends/buffer-trends") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -548,7 +548,7 @@ const ActionToolBar = ({
         }
         break;
       case "ResearchInsight":
-        if (pathname === "/insights-and-trends/research-insights") {
+        if (pathname === "/mta/insights-and-trends/research-insights") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -573,7 +573,7 @@ const ActionToolBar = ({
         }
         break;
       case "GuidedInsight":
-        if (pathname === "/insights-and-trends/guided-insights") {
+        if (pathname === "/mta/insights-and-trends/guided-insights") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -593,7 +593,7 @@ const ActionToolBar = ({
         }
         break;
       case "DBMNorm":
-        if (pathname === "/dbm/dbm-norm-suggestions") {
+        if (pathname === "/mta/dbm/dbm-norm-suggestions") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -616,7 +616,7 @@ const ActionToolBar = ({
         break;
       case "OpenExpeditingRequests":
         if (
-          pathname === "/supply-chain-intelligence-hub/open-expediting-requests"
+          pathname === "/mta/supply-chain-intelligence-hub/open-expediting-requests"
         ) {
           return (
             <VFMultiFilter
@@ -639,7 +639,7 @@ const ActionToolBar = ({
         }
         break;
       case "InTransitWhereabouts":
-        if (pathname === "/logistics/intransit-whereabouts") {
+        if (pathname === "/mta/logistics/intransit-whereabouts") {
           return (
             <VFMultiFilter
             isFilterOpen={isFilterOpen}
@@ -750,7 +750,7 @@ const ActionToolBar = ({
             {currentTab === "dbmnormsuggestions" && (
               <>
                 <Link
-                  to="/dbm/dbm-norm-suggestions"
+                  to="/mta/dbm/dbm-norm-suggestions"
                   style={{ textDecoration: "none" }}
                 >
                   <VFButtonOutline
@@ -925,7 +925,7 @@ const ActionToolBar = ({
            {currCategory === "DBMNorm" ? (
   <Tooltip
     content={
-      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>{"Sleep"}</div>
+      <div style={{ padding: "0.5rem 1rem", fontSize: "12px" }}>{"Apply Selected Norm Changes"}</div>
     }
     tooltipZoom={1}
   >
@@ -1025,7 +1025,7 @@ const ActionToolBar = ({
           )} */}
           <SCCustomActionsContainer>
 
-          {( pathname != "/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/supply-chain-intelligence-hub/sdr" && pathname !== "/supply-chain-intelligence-hub/total-requirement-report" && pathname != "/supply-chain-intelligence-hub/eo" ) && currentTab !== "custom" &&
+          {( pathname != "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation" && pathname != "/mta/supply-chain-intelligence-hub/sdr" && pathname !== "/mta/supply-chain-intelligence-hub/total-requirement-report" && pathname != "/mta/supply-chain-intelligence-hub/eo" ) && currentTab !== "custom" &&
                <>
                     <VFButton
                     onClick={() => toggleFilter(true)}
@@ -1058,7 +1058,7 @@ const ActionToolBar = ({
                           }
                           alt=""
                         />
-                         <p>{(currCategory === "BTR" || currCategory === "BPR") ? "CSV Export" : "Excel Export"}</p>
+                         <p>{(currCategory === "BTR" || currCategory === "BPR" || currCategory === "RRR" ||  currCategory === "BOR" || currCategory === "BORColorBandwise" || currCategory === "RRRColorBandwise") ? "CSV Export" : "Excel Export"}</p>
                       </>
                       {/* <SCViewImage src={"/assets/img/VectorFLOW/BPR/excel.svg"} alt="" onClick={onGoBack} />
                                     <p>Excel Export</p> */}

@@ -9,6 +9,8 @@ import { useGetUIConfigData } from "../../../../../Services/MTA/Common/UIConfig"
 import { UIColumnConfigName, UserUIColumnConfigName } from "../../../../../../helpers/Enum";
 import { notifyError } from "../../../../../../helpers/notify";
 import { ColDef } from "ag-grid-enterprise";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../redux/store/store";
 
 
 
@@ -25,6 +27,9 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
   useEffect(() => {
     getMasterUiConfig();
   }, []);
+
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const GUIDEDINSIGHT_ROWS_PER_PAGE = EnvConfig['GUIDEDINSIGHT_ROWS_PER_PAGE']; 
 
   const getMasterUiConfig = async () => {
     try {
@@ -85,7 +90,7 @@ const ChronicGridView = ({ currentGridData }: ChronicGridViewProps) => {
 
   const agGridProps: AgGridReactProps = {
     paginationPageSize: parseInt(
-      process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
+      GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
     ),
 
     suppressRowTransform: true,

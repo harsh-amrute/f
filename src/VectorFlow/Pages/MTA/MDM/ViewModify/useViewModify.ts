@@ -73,10 +73,14 @@ const useViewModify = (pageType:string) => {
     const [editOnline,toggleEditOnline] = useState(false);
     const [selectedRowsCount,setSelectedRowsCount] = useState(0);
     const [currentPage,setCurrentPage] = useState(1);
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const VIEWRECORD_PAGE = EnvConfig['VIEWRECORD_PAGE'];  
+    const ADDRECORD_PAGE = EnvConfig['ADDRECORD_PAGE'];  
+    const DELETERECORD_PAGE = EnvConfig['DELETERECORD_PAGE'];  
     const rowsPerPage = useMemo(()=>{
-      if(pageType === 'add') return parseInt(process.env.REACT_APP_ADDRECORD_PAGE || '50')
-      else if(pageType === 'remove') return parseInt(process.env.REACT_APP_DELETERECORD_PAGE || '50');
-      else return parseInt(process.env.REACT_APP_VIEWRECORD_PAGE || '50');
+      if(pageType === 'add') return parseInt(ADDRECORD_PAGE || '50')
+      else if(pageType === 'remove') return parseInt(DELETERECORD_PAGE || '50');
+      else return parseInt(VIEWRECORD_PAGE || '50');
     },[]);
     const [isSubmitDisabled,setIsSubmitDisabled] = useState(false);
 
@@ -271,7 +275,7 @@ const useViewModify = (pageType:string) => {
             if(masters?.length)return;
             const matchedItems = allMasterData.filter((item:any) => masterIdsArray.includes(String(item.id)));
             if (matchedItems.length != masterIdsArray.length) {
-               window.location.href = "/master-data-management/control-panel";
+               window.location.href = "/mta/master-data-management/control-panel";
           }
           
             matchedItems.forEach((item:any)=>{
@@ -298,7 +302,7 @@ const useViewModify = (pageType:string) => {
           "ForceNormChange",
           "MOQ",
           "SOB",
-          "phaseInPhaseOut",
+         "StopPIPO",
           "SeasonalityStatus"
         ]),
       };
@@ -761,46 +765,74 @@ const useViewModify = (pageType:string) => {
           console.log('No "selectedMaster" parameter found in the URL.');
       }
   }
-  function checkMasterProgress(masterArray: any) {
-    let defaultProgressCount = 0; 
-    for (const master of masterArray) {
-        if (master.progress === "default" || master.progress === "view") {
-            defaultProgressCount++; 
-        }
-    }
-    return defaultProgressCount === 1;
-}
+//   function checkMasterProgress(masterArray: any) {
+//     let defaultProgressCount = 0; 
+//     for (const master of masterArray) {
+//         if (master.progress === "default" || master.progress === "view") {
+//             defaultProgressCount++; 
+//         }
+//     }
+//     return defaultProgressCount === 1;
+// }
 
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
       e.stopPropagation();
-      const incompleteMastersCount = masters.filter((master: MDMMasterState) => 
-        master.progress !== 'submitted' && master.progress !== 'editOnlineSubmitted'
-      ).length;
-    
-      if (incompleteMastersCount === 1 && currMaster.progress !== 'submitted' && currMaster.progress !== 'editOnlineSubmitted') {
+      const nonClosableStates = ['default', 'view','phaseInPhaseOut' , 'seasonality'];
+      const incompleteMastersCount = masters.filter((master: MDMMasterState) => master.progress !== 'submitted').length;
+      if (incompleteMastersCount === 1 && currMaster.progress !== 'submitted') {
         return notifyError('Cannot close the tab as it is the only incomplete master'); // Notify if this is the only incomplete master
       }
-      if(checkMasterProgress(masters)) {return notifyError(`Please Complete the ${currMaster.name}`)}
-      const nextMasterIndex = masters?.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
-      if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
-      if(masters.length === 1){
-        return notifyError("There Should be atleast one selected Master")
-      }
-      dispatch(REMOVE_MASTER(currMaster.id));
-      setDownloadData(false);
-      if(currMaster.id === activeMaster.id){
-          removeSelectedMasterValue(String(currMaster.id));
-          const mastersLength = masters.length
-          for (let index = 0; index < mastersLength; index++) {
-            
-            if(masters[index].progress!=='submitted'){
-              dispatch(UPDATE_ACTIVE_MASTER(index))
-              return
-            }
+    if (!nonClosableStates.includes(currMaster.progress)) {
+      return notifyError(`Please Complete the ${currMaster.name}`);
+    }
+    if(masters?.length === 1){
+      return notifyError("There Should be atleast one selected Master")
+    }
+    dispatch(REMOVE_MASTER(currMaster.id));
+    setDownloadData(false);
+    if(currMaster.id === activeMaster.id){
+        removeSelectedMasterValue(String(currMaster.id));
+        const mastersLength = masters.length
+        for (let index = 0; index < mastersLength; index++) {
+          
+          if(masters[index].progress!=='submitted'){
+            dispatch(UPDATE_ACTIVE_MASTER(index))
+            return
           }
-        
         }
-      }
+
+}
+}
+    // const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
+    //   e.stopPropagation();
+    //   const incompleteMastersCount = masters.filter((master: MDMMasterState) => 
+    //     master.progress !== 'submitted' && master.progress !== 'editOnlineSubmitted'
+    //   ).length;
+    
+    //   if (incompleteMastersCount === 1 && currMaster.progress !== 'submitted' && currMaster.progress !== 'editOnlineSubmitted') {
+    //     return notifyError('Cannot close the tab as it is the only incomplete master'); // Notify if this is the only incomplete master
+    //   }
+    //   if(checkMasterProgress(masters)) {return notifyError(`Please Complete the ${currMaster.name}`)}
+    //   const nextMasterIndex = masters?.findIndex((master:MDMMasterState)=>(master.progress !== 'submitted' && master.progress !=='editOnlineSubmitted'));
+    //   if(currMaster.id !== masters[nextMasterIndex].id)  return notifyError(`Please Complete the ${masters[nextMasterIndex].name}`);  
+    //   if(masters.length === 1){
+    //     return notifyError("There Should be atleast one selected Master")
+    //   }
+    //   dispatch(REMOVE_MASTER(currMaster.id));
+    //   setDownloadData(false);
+    //   if(currMaster.id === activeMaster.id){
+    //       removeSelectedMasterValue(String(currMaster.id));
+    //       const mastersLength = masters.length
+    //       for (let index = 0; index < mastersLength; index++) {
+            
+    //         if(masters[index].progress!=='submitted'){
+    //           dispatch(UPDATE_ACTIVE_MASTER(index))
+    //           return
+    //         }
+    //       }
+        
+    //     }
+    //   }
     
 
       
@@ -1018,7 +1050,7 @@ const useViewModify = (pageType:string) => {
     };
 
 
-      const onUploadMaster = async () => {
+      const onUploadMaster = async (RECORD_UPLOAD_LIMIT:any) => {
         // let intervalID:any;
         try {
           if(!file){
@@ -1030,7 +1062,7 @@ const useViewModify = (pageType:string) => {
           setIsOverlayVisible(true)
   
           if(activeMaster.id < 14){
-            await parseExcelData(file,activeMaster,pageType,selectedColumns);
+            await parseExcelData(file,activeMaster,pageType,selectedColumns,RECORD_UPLOAD_LIMIT);
           }
           
           const formData = new FormData();
@@ -1199,9 +1231,12 @@ const useViewModify = (pageType:string) => {
         const selectedRows = ref.current?.api.getSelectedRows();
         if(selectedRows && selectedRows.length > 0){
           dispatch(REMOVE_ROW_DATA(selectedRows));
-          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           notifySuccess(`${selectedRows?.length} records deleted successfully`);
           setSelectedRowsCount(0);
+          if(recordCount - selectedRows?.length === 0){
+            dispatch(UPDATE_PROGRESS_STATE('submitted'));
+          }
+          dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           if(recordCount===selectedRows.length){
             if(draftID.length===0){
               dispatch(UPDATE_PROGRESS_STATE('Discard'))
@@ -1664,7 +1699,7 @@ const useViewModify = (pageType:string) => {
           dispatch(FILL_MASTERS([]));
           setFilterButtonStatus([]);
           dispatch(TOGGLE_SELECT_MASTER_SCREEN(true));
-          navigate('/master-data-management/saved-drafts')
+          navigate('/mta/master-data-management/saved-drafts')
           return
         }
       }

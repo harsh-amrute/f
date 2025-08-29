@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { ContainerRight, ChangePassText, CircleLogin, IputLogin, KeepSingIn, KeepMe, LinkRouter, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, CheckboxButton, InputGroup, LogoAreaLogin, ContainerLeft } from "./styles";
+import { ContainerRight, ChangePassText, CircleLogin, IputLogin, KeepSingIn, KeepMe, LinkRouter, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, CheckboxButton, InputGroup, LogoAreaLogin, ContainerLeft, RecaptchaInput, CaptchaContainer, CaptchaReload } from "./styles";
 import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
 import { LoginRequest } from "../../../module-main/types";
@@ -14,6 +14,10 @@ import { SITE_KEY} from "../../../helpers/constants";
 import WelcomeBoard from "./welcome-board";
 import { hashPassword } from '../../../helpers/utils'
 import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
+import { loadCaptchaEnginge, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
+import { useGetAllEnvironmentConfiguration } from "../../../VectorFlow/Services/MTA/MDM";
+import { useDispatch } from "react-redux";
+import { UPDATE_ENV_CONFIG } from "../../../redux/actions/MTA";
 
 function LoginContainer() {
   const { t } = useTranslation();
@@ -30,6 +34,13 @@ function LoginContainer() {
     } else {
       localStorage.clear();
     }
+    loadCaptchaEnginge(6);
+
+    const interval = setInterval(() => {
+      loadCaptchaEnginge(6);
+    }, 120000);
+  
+    return () => clearInterval(interval);
   },[])
 
   const form = useForm<LoginRequest>({
@@ -49,55 +60,65 @@ function LoginContainer() {
   const { mutate: mutateLogin,isLoading } = useLoginAccount();
   // const [remember, setRemember] = useState(true);
   const recaptchaRef: any = useRef();
-
-  const onSave = async () => {
-    const recaptchaValue = recaptchaRef.current.getValue();
-    const recaptcha = localStorage.getItem("_grecaptcha");
-
-    if (recaptchaValue || recaptcha) {
-
-      const formData = getValues();  
-      formData.password = await hashPassword(formData.password)
-      mutateLogin(formData, {
-        onSuccess: (data: any) => {
-          if (data?.status !== 200) {
-            if(data.response.msg==='User is inactive please contact admin'){
-              notifyError("User is inactive please contact admin")
-            }
-            else if(data?.status === 400){
-              notifyError(data?.error?.non_field_errors[0] )
-            }else{
-              notifyError("Something went wrong")
-            }
-            recaptchaRef.current?.reset();
-            localStorage.removeItem("token")
-            localStorage.removeItem("url_permission")
-          } else {
-            // const urlPermission = data?.data?.data.url_permission;
-            // const rolePermission = data?.data?.data.roles.permission;
-            // const isRolePresent =  rolePermission.some((permission:any) => !permission.name.startsWith("IST"));
-            // const url = urlPermission.includes("/") && isRolePresent ? "/" : !urlPermission.includes("/") && isRolePresent ? '/master-data-management/control-panel' : urlPermission[0];
-            // const url = urlPermission.includes("/") && isRolePresent ? "/" : urlPermission.includes('/supply-chain-intelligence-hub/planning') ? '/supply-chain-intelligence-hub/planning' : urlPermission[0];
-            // const url = data.data.data.landing_page
-            const url = "/landing-page";
-            console.log(url);
-            navigate(url, { replace: true });
-            notifySuccess(t("loginPage.notify.success"));
-          }
-        },
-        onError(error: any) {
-          if (error?.code === "ERR_NETWORK") {
-            notifyError(t("loginPage.notify.networkError"));
-          } else {
-            notifyError(error?.error?.non_field_errors[0]);
-          }
-        },
-      });
-    } else {
-      // recaptchaRef.current?.reload();
-      notifyError(t("loginPage.notify.completeReCaptcha"));
+  const [captchaInput, setCaptchaInput] = useState("");
+  const dispatch = useDispatch();
+  const {mutateAsync : getAllEnvConfiguration} = useGetAllEnvironmentConfiguration();
+  const getAllEnvironmentConfiguration = async () => {
+    try {
+      const response = await getAllEnvConfiguration();
+      const configMap = response?.data?.data.reduce((map:any, item:any) => {
+        map[item.ConfigKey] = item.ConfigValue;
+        return map;
+      }, {});
+      dispatch(UPDATE_ENV_CONFIG(configMap))
+    }
+    catch (err) {
+      console.error("Unexpected error in get Environment configuration:", err);
     }
   };
+
+  const onSave = async () => {
+    if (!captchaInput || !validateCaptcha(captchaInput)) {
+      notifyError("Invalid Captcha. Please try again.");
+      return;
+    }
+  
+    const formData = getValues();  
+    formData.password = await hashPassword(formData.password);
+  
+    mutateLogin(formData, {
+      onSuccess: (data: any) => {
+        if (data?.status !== 200) {
+          if (data.response.msg === 'User is inactive please contact admin') {
+            notifyError("User is inactive please contact admin");
+          } else if (data?.status === 400) {
+            notifyError(data?.error?.non_field_errors[0]);
+          } else {
+            notifyError("Something went wrong");
+          }
+          localStorage.removeItem("token");
+          localStorage.removeItem("url_permission");
+          // Reload captcha
+          loadCaptchaEnginge(6);
+        } else {
+          const url = "/landing-page";
+          navigate(url, { replace: true });
+          getAllEnvironmentConfiguration();
+          notifySuccess(t("loginPage.notify.success"));
+        }
+      },
+      onError(error: any) {
+        if (error?.code === "ERR_NETWORK") {
+          notifyError(t("loginPage.notify.networkError"));
+        } else {
+          notifyError(error?.error?.non_field_errors[0]);
+        }
+        loadCaptchaEnginge(6);
+        setCaptchaInput("");
+      },
+    }); 
+  };
+  
 
   return (
     <SignInArea>
@@ -157,18 +178,38 @@ function LoginContainer() {
               <Errors style={{ marginLeft: "30px" }} errors={errors} name="password" />
             </InputArea>
             <ChangePassText>
-              <LinkRouter to={"/forgot-password"}>
+              <LinkRouter style={{textAlign:'center'}} to={"/forgot-password"}>
                 {t("loginPage.forgotPassword")}
               </LinkRouter>
             </ChangePassText>
             
 
-            <ReCAPTCHA
-              className="recaptcha"
-              ref={recaptchaRef}
-              // sitekey={process.env.REACT_APP_ENV === 'test' ? TEST_SITE_KEY : SITE_KEY}
-              sitekey={SITE_KEY}
-            />
+            <CaptchaContainer>
+  <LoadCanvasTemplateNoReload/>
+  <CaptchaReload
+  onClick={() => {
+    loadCaptchaEnginge(6);
+    setCaptchaInput("");   
+  }}
+>
+  <img src="/assets/img/reload.svg" alt="Reload" />
+</CaptchaReload>
+</CaptchaContainer>
+
+<RecaptchaInput
+  type="text"
+  placeholder="Enter the text here"
+  value={captchaInput}
+  onChange={(e: any) => setCaptchaInput(e.target.value)}
+  onKeyDown={(e:any) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); 
+      handleSubmit(onSave)();
+    }
+  }}
+/>
+
+
 
             {/* <KeepSingIn>
               <div>

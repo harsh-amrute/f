@@ -13,6 +13,8 @@ import Chart from 'react-apexcharts';
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv,downloadBase64Image, generateChartOptions} from '../../../../../../../../../helpers/utils';
 import { chartParams1 } from "./chartParams";
 import VFCharts from "../../../../../../../../..//components/VectorFLOW/commons/VFCharts";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../../../../redux/store/store";
 
 interface MonitorGITChildTransporterWiseProps{
     data:any
@@ -36,6 +38,15 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
 
     const [chartId1, setChartId1] = useState<any>("");
     // let chartRef2:ChartRef | undefined; 
+
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1']; 
+    const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2']; 
+    const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
+    
+    const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+    const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+    const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
 
 
     const seriesData = useMemo(()=>{
@@ -91,7 +102,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3); 
 
             if(customColdef) return customColdef;
 
@@ -156,7 +167,7 @@ const MonitorGITChildTransporterWiseCharts = ({data}:MonitorGITChildTransporterW
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3); 
 
             if(customColdef) return customColdef;
 

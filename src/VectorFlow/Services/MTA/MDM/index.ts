@@ -22,6 +22,8 @@ export const QUERY_KEYS = {
   usegetTaskMastersHistory: ['MDMService.useGetTaskMastersHistory'],
   useGetUploadProgress: ['MDMService.useGetUploadProgress'],
   useGetAllReports: ['MDMService.useGetAllReports'],
+  useGetAllEnvironmentConfiguration: ['MDMService.useGetAllEnvironmentConfiguration'],
+  useEditEnvironmentConfiguration: ['MDMService.useEditEnvironmentConfiguration'],
   useGetMTOPendingTask: ['MDMService.useGetMTOPendingTask']
 }
 
@@ -237,6 +239,20 @@ export const useGetAllReports = () => {
     return await MDMService.getAllReports()
   })
 }
+
+export const useGetAllEnvironmentConfiguration = () => {
+  return useMutation(QUERY_KEYS.useGetAllEnvironmentConfiguration, async () => {
+    return await MDMService.getAllEnvironmentConfiguration()
+  })
+}
+
+export const useEditEnvironmentConfiguration = () => {
+  return useMutation(QUERY_KEYS.useEditEnvironmentConfiguration, async (body:any) => {
+    return await MDMService.editEnvironmentConfiguration(body)
+  })
+}
+
+
 
 /**Adding the MTO Masters related calls */
 export const useGetMTOMasterUIConfiguration = () => {

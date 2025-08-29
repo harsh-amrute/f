@@ -1,6 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import LocationPermission from "./index";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
 
 export default forwardRef(({ ...props }: any, ref) => {
   const { t } = useTranslation();
@@ -22,7 +24,10 @@ export default forwardRef(({ ...props }: any, ref) => {
   const [lcRegion, setLcRegion] = useState<any>([]); 
   const [lcType, setLcType] = useState<any>([]);
   const [lcCluster, setLcCluster] = useState<any>([]);
-
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+  const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+  const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
 
   useEffect(() => {
     const newListLcRegion: any = [];
@@ -148,7 +153,7 @@ export default forwardRef(({ ...props }: any, ref) => {
  
   const prdPermissions = [
     {
-      title: process.env.REACT_APP_LOCATION_PERMISSION_L1 || '',
+      title: LOCATION_PERMISSION_L1 || '',
       placeholder: "",
       options: listLcRegion,
       value: lcRegion,
@@ -160,7 +165,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       activeApplicationId,
     },
     {
-      title: process.env.REACT_APP_LOCATION_PERMISSION_L2 || '',
+      title: LOCATION_PERMISSION_L2 || '',
       placeholder: "",
       options: lcRegion.length === 0 ? [] : listLcType.filter((type: any) =>
         lcRegion.some((region: any) => type.value.split(" > ")[0] == region.value) // Filter lcType based on selected lcRegion
@@ -174,7 +179,7 @@ export default forwardRef(({ ...props }: any, ref) => {
       activeApplicationId,
     },
     {
-      title: process.env.REACT_APP_LOCATION_PERMISSION_L3 || '',
+      title: LOCATION_PERMISSION_L3 || '',
       placeholder: "", 
       options: lcType.length === 0 ? [] : (() => {    
         const currentLcTypeValues = lcType.map((type:any) => type.value); 

@@ -5,6 +5,10 @@ import mdmReducer from '../reducers/MDM';
 import mtaReducer from '../reducers/MTA';
 import mtoReducer from '../reducers/MTO/index';
 import { MTOStore } from '../../VectorFlow/types/MTO';
+import { createTransform } from 'redux-persist';
+import persistReducer from 'redux-persist/es/persistReducer';
+import persistStore from 'redux-persist/es/persistStore';
+import storage from 'redux-persist/lib/storage';
 
 const mdmState:MDMStore = {
     allMasters:[],
@@ -38,7 +42,8 @@ const mtaState: MTAStore = {
         currentTab: '',
         currentCategory: '',
         currentView: ''
-    }
+    },
+    EnvConfig:[],
 
 }
 
@@ -46,14 +51,38 @@ const mtoState: MTOStore = {
     AnalyticsData:{}
 }
 
+const MTATransform = createTransform(
+  (inboundState: MTAStore) => {
+    return { EnvConfig: inboundState.EnvConfig };
+  },
+  (outboundState: { EnvConfig: any[] }) => {
+    return { ...mtaState, EnvConfig: outboundState.EnvConfig };
+  },
+  { whitelist: ['mta'] }
+);
+
+const mtaPersistConfig = {
+  key: 'mtaEnvConfig',
+  storage,
+  whitelist: ['EnvConfig'], 
+  transforms: [MTATransform],
+};
+
+const persistedMtaReducer = persistReducer(mtaPersistConfig, mtaReducer(mtaState));
+
 export const createStore = (mdmState: MDMStore) => configureStore({
     reducer: {
-        mdm: mdmReducer(mdmState),
-        mta: mtaReducer(mtaState),
-        mto: mtoReducer(mtoState)
+      mdm: mdmReducer(mdmState),
+      mta: persistedMtaReducer, 
+      mto: mtoReducer(mtoState),
     },
-});
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false, 
+      }),
+  });
 
 export const store = createStore(mdmState);
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>

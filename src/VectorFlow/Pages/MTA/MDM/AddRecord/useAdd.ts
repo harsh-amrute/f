@@ -74,7 +74,7 @@ const useAdd=()=>{
 
     const onCancel=()=>{
         dispatch(RESET_STATE());
-        navigate('/master-data-management/control-panel');
+        navigate('/mta/master-data-management/control-panel');
     }
 
     const handleOnClickMaster=(master:MDMMasterState)=>{
@@ -188,7 +188,7 @@ const useAdd=()=>{
             id:activeMaster.id,
             action:"",
             TaskId:'',
-            IsOverWrite:isOverWrite===true?true:false,
+            IsOverWrite:true,
             data:[],
             uiconfig:activeMaster.fields
           }
@@ -343,6 +343,7 @@ const useAdd=()=>{
           dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
           if(draftID.length > 0){
             await deleteDraft(draftID);
+            dispatch(SET_DRAFT_ID(''));
           }
       }catch(err){
         notifyError("Something went wrong")

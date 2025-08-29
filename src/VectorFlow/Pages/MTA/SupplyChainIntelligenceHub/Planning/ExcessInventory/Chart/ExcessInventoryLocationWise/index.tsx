@@ -1,11 +1,13 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useMemo} from "react";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import "../../styles.css";
 import {SCDynamicContainer} from '../../styles';
 import {convertToInt, getProductAndLocationHeirarchiesFromEnv, generateChartOptions} from '../../../../../../../../helpers/utils';
 import VFCharts from "../../../../../../../../components/VectorFLOW/commons/VFCharts";
-import {chartParams1 , chartParams2} from './chartParams'
+import {createChartParams} from './chartParams'
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../../../../redux/store/store";
 interface ExcessInventoryProps{
     data:any
 }
@@ -17,6 +19,19 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
 
     const [rowData1,setRowData1] = useState<any>([])
     const [rowData2,setRowData2] = useState<any>([])
+
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const currency = EnvConfig?.CURRENCY || 'Rupee';
+    const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1']; 
+    const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2']; 
+    const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3']; 
+    
+    const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
+    const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
+    const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
+    // Generate the two different chart parameter objects from the single function
+    const chartParams1 = useMemo(() => createChartParams('sku', currency), [currency]);
+    const chartParams2 = useMemo(() => createChartParams('value', currency), [currency]);
 
     const mapUIConfigToColdefs1 = (columns:Array<{header:string,colCode:string}>) => {
         let colDefs = [];
@@ -38,7 +53,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
 
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3); 
             if(customColdef) return customColdef;
 
             return {
@@ -70,7 +85,7 @@ const ExcessInventoryLocationWise = ({data}:ExcessInventoryProps) => {
         ]
         
         colDefs = columns.map((column:{header:string,colCode:string})=>{
-            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{}); 
+            const customColdef = getProductAndLocationHeirarchiesFromEnv(column,{} , PRODUCT_PERMISSION_L1 , PRODUCT_PERMISSION_L2 , PRODUCT_PERMISSION_L3 , LOCATION_PERMISSION_L1 , LOCATION_PERMISSION_L2 , LOCATION_PERMISSION_L3); 
             if(customColdef) return customColdef;
             return {
                 field:column['colCode'],

@@ -28,7 +28,7 @@ const ConfirmationDataModal=(props:ConfirmationDataModalProps)=>{
             <ConfirmationDataTextContainer>
             {SKUCode && WHCode 
                     ? `Entry with SKU Code: ${SKUCode} and Location Code: ${WHCode} will be in sleep, Are you sure?`
-                    : "Selected rows will go to sleep, Are you sure?"}
+                    : "Selected norms will be accepted. Are you sure?"}
             </ConfirmationDataTextContainer>
             <ConfirmationDataButtonWrapper>
                 <VFButtonOutline themeUi={user.user.theme_ui} onClick={onFailure} onHoverChild={
