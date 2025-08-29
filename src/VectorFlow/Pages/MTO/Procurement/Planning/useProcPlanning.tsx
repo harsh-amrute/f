@@ -240,8 +240,6 @@ const useProcPlanning = ( appliedFilters: any) => {
     const { mutateAsync : GetProcPlanningDataForExcelData, isLoading: isProcurementPlanningDataForExcelExport} = useGetProcurementPlanningDataForExcelExport()
     const { mutateAsync: getDBRsettingsData, isLoading: isGetDBRsettingsData } = useGetDBRsettingsData();
     const [simulationEnable, setSimulationEnable] = useState<any>();
-    const feature_permission = user?.feature_permission || [];
-    const simulatation = feature_permission.includes("Simulation_Enable");
     const [showExcelModal, setShowExcelModal] = useState(false);
     const tempGridRef = useRef<any>(null);
     const [tempGridData, setTempGridData] = useState<any>(undefined);

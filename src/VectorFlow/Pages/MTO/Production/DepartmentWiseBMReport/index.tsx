@@ -178,7 +178,6 @@ const DptWiseBMReport = () => {
     const [bomActive, setBomActive] = useState<any>(undefined);
     const { getGroupedColDef, groupedColDefsRef } = useColDef();
     const [showExcelModal, setShowExcelModal] = useState(false);
-    const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
@@ -382,10 +381,6 @@ const DptWiseBMReport = () => {
 
                         if (child.cc === 'Remark' && !canAddComments) {
                             return false;
-                        }
-                        
-                        if (isBMReportViewer) {
-                            return child.cc !== 'Remark'  
                         }
                         else {
                             return true;
@@ -1231,7 +1226,6 @@ const DptWiseBMReport = () => {
                                             totalRow={gridDataCount}
                                             savePageSize={savePageSize}
                                             customPageSize={true}
-                                            saveBtn={!isBMReportViewer}
                                             userPageSize={userPageSize}
                                                 // onGridReady={() => {applyColumnState()}}
                                                 />
