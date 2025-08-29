@@ -955,6 +955,35 @@ export const listMenuParent: any = [
       }
     ],
   },
+  // {
+  //   id: 111,
+  //   name: "Scheduling",
+  //   img: "/assets/img/nav/poogi-module1",
+  //   lp_attr : true ,
+  //   app_id : 3,
+  //   lp_img :"/assets/img/Poogi 3.svg",
+  //   rp_img :"/assets/img/Poogi 4.svg",
+  //   url: "/scheduling",
+  //   status: false,
+  //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+  //   avoidHeader: true,
+  //   child: [
+  //     {
+  //       name: "Scheduling",
+  //       img: "/assets/img/nav/poogi-module1",
+  //       url: "/scheduling",
+  //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+  //       child: [
+  //         {
+  //           name: "Scheduling",
+  //           img: "/assets/img/nav/arrow_down.svg",
+  //           url: "/scheduling",
+  //           role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+  //         },
+  //       ]
+  //     }
+  //   ],
+  // },
 
 ];
 
