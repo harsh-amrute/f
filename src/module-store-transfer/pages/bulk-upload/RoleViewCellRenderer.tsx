@@ -83,6 +83,11 @@ const ContainerDrop = styled.div`
   border: 1px solid #ccc;
   padding: 8px;
   background: white;
+
+  
+  max-height: 300px;  
+  overflow-y: auto;   
+  overflow-x: hidden; 
 `;
 
 const CheckboxRow = styled.div`
@@ -202,7 +207,7 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
           <div key={appName}>
             <CategoryHeader onClick={() => toggleExpand(appName)}>
               <span>{appName}</span>
-              <span>{expanded[appName] ? "⌄" : ">"}</span>
+              <span>{expanded[appName] ? <img src="\assets\img\nav\arrow_down.svg"></img> : <img src="\assets\img\mto\dayWiseCoverage\arrow_right.svg"></img>}</span>
             </CategoryHeader>
             {expanded[appName] &&
               roles.map((role: any) => (

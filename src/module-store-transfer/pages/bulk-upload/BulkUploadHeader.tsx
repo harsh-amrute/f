@@ -4,13 +4,14 @@ import styled, { CSSProperties } from "styled-components";
 import Portal from "../../../components/VectorFLOW/layouts/Portal";
 import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
 import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
-
+import { GridRef } from "../../../VectorFlow/types/MDM";
 type BulkUploadHeaderParams = {
   themeUi: any;
   setIsPermissionModalOpen: (e: boolean) => void;
   setIsRoleModalOpen: (e: boolean) => void;
   isBulkActionEnabled: boolean | undefined;
   resetState: ()=>void;
+  gridRef?: GridRef | any;
 };
 const ActionButton = styled.div`
   width: 100px;
@@ -29,7 +30,8 @@ const BulkUploadHeader = ({
   setIsPermissionModalOpen,
   setIsRoleModalOpen,
   isBulkActionEnabled,
-  resetState
+  resetState,
+  gridRef
 }: BulkUploadHeaderParams) => {
   const [selected, setSelected] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
@@ -114,8 +116,13 @@ const BulkUploadHeader = ({
         style={{ width: "100px", height: "35px", fontSize: "1rem" }}
         themeUi={themeUi}
         onClick={() => {
-          console.log("Export clicked");
-          // Add export functionality here
+
+
+          gridRef.current.api.exportDataAsExcel({
+            fileName: "UserData.xlsx",
+            sheetName: "User Data",
+            columnKeys: ['id', 'username', 'email ', 'pwd']
+        });
         }}
         >
         {"Export"}

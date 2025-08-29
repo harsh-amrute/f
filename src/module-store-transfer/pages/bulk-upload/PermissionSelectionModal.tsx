@@ -6,7 +6,7 @@ import {
   SCViewContainerWithBgToggle,
 } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 import { useUserData } from "../../../context";
-import { ChartView, GridView } from "../../../helpers/SvgRenderer";
+import { NewChartView, NewGridIcon } from "../../../helpers/SvgRenderer";
 import PermissionHeirarchyCanvas from "../manage-users/PermissioinHeirarchyCanvas";
 import PermissionForm from "./PermissionForm";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
@@ -73,7 +73,7 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
           isChartView && setIsChartView && setIsChartView(!isChartView);
         }}
       >
-        <ChartView theme={themeUi} view={!isChartView} />
+        <NewChartView theme={themeUi} view={!isChartView} />
       </SCViewContainer>
 
       <SCHorizontalDivison />
@@ -84,7 +84,7 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
         }}
         style={{ paddingTop: "7px" }}
       >
-        <GridView theme={themeUi} view={isChartView} />
+        <NewGridIcon theme={themeUi} view={isChartView} />
       </SCViewContainer>
     </SCViewContainerWithBgToggle>
   );
@@ -130,7 +130,7 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
             width: "100%",
             height: "28px",
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "space-between",  
           }}
         >
           <ViewToggle
@@ -146,12 +146,14 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
         <div style={{height: '80%'}}>
 
         {isChartView ? (
+        
           <PermissionHeirarchyCanvas
           dataAllPermissions={dataAllPermissions}
           selectedApplication={selectedApplication}
           selectedPermissions={selectedPermissions}
           setSelectedPermissions={setSelectedPermissions}
           />
+
         ) : (
           <PermissionForm
           currentAppAllPermissions={dataAllPermissions.find(
