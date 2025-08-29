@@ -107,21 +107,21 @@ const PermissionSelectionPage = ({
     
       for (const user of inputUsers) {
         const currentPermId = permIdCounter++;
-        const currentRoleId = currentPermId; // Linking role ID to perm ID (can be adjusted if needed)
+        const currentRoleId = currentPermId;// Linking role ID to perm ID (can be adjusted if needed)
     
-        // Push to users array
+        // Push to users array 
         output.users.push({
-          id: user.id,
-          email: user.email,
-          name: user.username,
-          pwd: user.pwd,
+          id: user.id || "",
+          email: user.email || "",
+          name: user.username || "",
+          pwd: user.pwd || "",
           tc: true,
           rid: currentRoleId,
           perm_id: currentPermId
         });
     
         // Set roles
-        const roleIds = [...user.roles]?.map((r: any) => r.id) || [];
+        const roleIds = [...(user.roles || [])]?.map((r: any) => r.id || "") || [];
         output.roles[currentRoleId] = { roles: roleIds };
     
         // Set permissions
@@ -133,26 +133,26 @@ const PermissionSelectionPage = ({
     
         for (const [appName, perms] of Object.entries(userPerms) as [string, any][]) {
           const application_id = getAppId(appName); // You can customize this mapping
-          if (perms.location_permission) {
+          if (perms?.location_permission) {
             formattedPerms.location_permissions.push({
               application_id,
               permissions: perms.location_permission.map((locPath: string[]) => {
                 const obj: any = {};
                 locPath.forEach((lvl, i) => {
-                  obj[`location_heirarchy_${i + 1}`] = lvl;
+                  obj[`location_heirarchy_${i + 1}`] = lvl || "";
                 });
                 return obj;
               })
             });
           }
     
-          if (perms.product_permission) {
+          if (perms?.product_permission) {
             formattedPerms.product_permissions.push({
               application_id,
               permissions: perms.product_permission.map((prodPath: string[]) => {
                 const obj: any = {};
                 prodPath.forEach((lvl, i) => {
-                  obj[`product_hierarchy_${i + 1}`] = lvl;
+                  obj[`product_hierarchy_${i + 1}`] = lvl || "";
                 });
                 return obj;
               })
@@ -323,39 +323,80 @@ const PermissionSelectionPage = ({
     };
 
     return (
-        
       <TableWrapper style={{ paddingBottom: "50px" }}>
-        { isLoading && <OverlayLoader message="Creating Users..."/>}
-        {
-          !isFinalView &&
+        {isLoading && <OverlayLoader message="Creating Users..." />}
+        {!isFinalView && (
           <BulkUploadHeader
-          themeUi={themeUi}
-          isBulkActionEnabled={isBulkActionEnabled}
-          setIsPermissionModalOpen={setIsPermissionModalOpen}
-          setIsRoleModalOpen={setIsRoleModalOpen}
-          resetState={()=>{setIsFinalView(false); setIsAssignPage(false)}}
+            gridRef={gridRef}
+            themeUi={themeUi}
+            isBulkActionEnabled={isBulkActionEnabled}
+            setIsPermissionModalOpen={setIsPermissionModalOpen}
+            setIsRoleModalOpen={setIsRoleModalOpen}
+            resetState={() => {
+              setIsFinalView(false);
+              setIsAssignPage(false);
+            }}
           />
-        }
-          {isFinalView && (
-            <div>
+        )}
+        {isFinalView && (
+          <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <SCGoBackContainer
+                  style={{ paddingLeft: "10px" }}
+                  onClick={() => {
+                    setIsFinalView(false);
+                    setIsAssignPage(false);
+                  }}
+                >
+                  <img
+                    src="/assets/img/VectorFLOW/BPR/goback.svg"
+                    alt=""
+                    style={{ height: "20px" }}
+                  />
+                  <SCGoBackText style={{ fontSize: "1.5rem" }}>
+                    <b>Reupload</b>
+                  </SCGoBackText>
+                </SCGoBackContainer>
+              </div>
 
-            <div>
-                      <SCGoBackContainer style={{paddingLeft: '10px'}} onClick={()=>{setIsFinalView(false); setIsAssignPage(false)}}>
-                                                <img
-                                                    src="/assets/img/VectorFLOW/BPR/goback.svg"
-                                                    alt=""
-                                                    style={{height: '20px'}}
-                                                />
-                                                <SCGoBackText style={{fontSize: '1.5rem'}} ><b>Reupload</b></SCGoBackText>
-                                            </SCGoBackContainer>
-            
-                  </div>
-            <div style={{fontSize: '1.4rem', padding: '34px 0 8px 20px', fontWeight: "bold"}}>
-              { errorRes? ("* "+errorRes+" of the following users failed to created."): "All users created successfully!" }
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <VFButton
+                  disabled={false}
+                  style={{ width: "100px", height: "35px", fontSize: "1rem" }}
+                  themeUi={themeUi}
+                  onClick={() => {
+                    gridRef.current?.api.exportDataAsExcel({
+                      fileName: "UserData.xlsx",
+                      sheetName: "User Data",
+                      columnKeys: ["id", "username", "email ", "pwd"],
+                    });
+                  }}
+                >
+                  {"Export"}
+                </VFButton>
               </div>
             </div>
 
-            )}
+            <div
+              style={{
+                fontSize: "1.4rem",
+                padding: "34px 0 8px 20px",
+                fontWeight: "bold",
+              }}
+            >
+              {errorRes
+                ? "* " + errorRes + " of the following users failed to created."
+                : "All users created successfully!"}
+            </div>
+          </div>
+        )}
         <VFTable
           ref={gridRef}
           {...agGridProps}
@@ -364,9 +405,7 @@ const PermissionSelectionPage = ({
           tooltipHideDelay={100000}
           tooltipShowDelay={0}
           tooltipMouseTrack={true}
-          enableFillHandle={
-            true
-          }
+          enableFillHandle={true}
           fillHandleDirection={"y"}
           fillOperation={(params: FillOperationParams) => {
             if (params.column.getColId() === "roles") {
@@ -378,7 +417,7 @@ const PermissionSelectionPage = ({
                 }
               });
             }
-            if(params.column.getColId() === 'permissions') {
+            if (params.column.getColId() === "permissions") {
               params.api.forEachNode((node: any, index: number) => {
                 if (params.rowNode.rowIndex === index) {
                   const userData = node.data;
@@ -395,15 +434,31 @@ const PermissionSelectionPage = ({
           }}
           maintainColumnOrder
         />
-        {!isFinalView && <div style={{display: 'flex', width:'100%', justifyContent:'flex-end', marginTop: '1.2rem'}}>
-          <VFButton  style={{height:'3.5rem', fontSize: '1.2rem'}} onClick={()=>{createUsers()}} themeUi={themeUi}>
-            Create Users
-          </VFButton>
-        </div>}
+        {!isFinalView && (
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "flex-end",
+              marginTop: "1.2rem",
+            }}
+          >
+            <VFButton
+              style={{ height: "3.5rem", fontSize: "1.2rem" }}
+              onClick={() => {
+                createUsers();
+              }}
+              themeUi={themeUi}
+            >
+              Create Users
+            </VFButton>
+          </div>
+        )}
         {
           <VFModalCard
             openModal={isPermissionModalOpen}
             headerIcon={"/assets/img/profile/icon_upload.svg"}
+            closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
             closeModal={() => {
               setIsPermissionModalOpen(false);
             }}
@@ -422,16 +477,19 @@ const PermissionSelectionPage = ({
           <VFModalCard
             openModal={isPermissionModalOpenForRow}
             headerIcon={"/assets/img/profile/icon_upload.svg"}
+            closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
             closeModal={() => {
               setIsPermissionModalOpenForRow(false);
             }}
           >
             {/* <PermissionHeirarchyCanvas  allPermissions={dataAllPermissions}/> */}
             <PermissionSelectionModal
-              selectedIndex = {rowIndex}
-              gridRef = {gridRef}
+              selectedIndex={rowIndex}
+              gridRef={gridRef}
               dataAllPermissions={dataAllPermissions}
-              updatePermissions={(selectedPermissions:any)=>{updatePermissionsForTheRow(selectedPermissions)}}
+              updatePermissions={(selectedPermissions: any) => {
+                updatePermissionsForTheRow(selectedPermissions);
+              }}
               closeModal={() => {
                 setIsPermissionModalOpenForRow(false);
               }}
@@ -443,6 +501,7 @@ const PermissionSelectionPage = ({
             headerText={"Select User Roles"}
             openModal={isRoleModalOpen}
             headerIcon={"/assets/img/profile/icon_upload.svg"}
+            closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
             closeModal={() => {
               setIsRoleModalOpen(false);
             }}
@@ -457,7 +516,6 @@ const PermissionSelectionPage = ({
           </VFModalCard>
         }
       </TableWrapper>
-      
     );
   };
 export default PermissionSelectionPage;

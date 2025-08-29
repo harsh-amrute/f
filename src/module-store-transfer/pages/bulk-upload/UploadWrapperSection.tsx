@@ -107,12 +107,17 @@ function UploadWrapperSection({
       }
     }
 
+    if (data.length - 1 > 1000) {
+      notifyError("You can only upload a maximum of 1000 records at a time.");
+      return;
+    }
+
     const userData = data.map((row: any, index: number) => {
       return {
         id: index,
-        username: row[0],
-        email: row[1],
-        pwd: row[2],
+        username: row[0] ?? "",
+        email: row[1] ?? "",
+        pwd: row[2] ?? "",
       };
     });
 
