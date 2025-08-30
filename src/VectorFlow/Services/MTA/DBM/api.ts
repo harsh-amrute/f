@@ -31,7 +31,7 @@ export namespace DBMServices {
       //   });
       // }
 
-      export const getDBMUpdateSleepTbl = async (body:{data:{SKUCode:string,WHCode:string}}) => {
+      export const getDBMUpdateSleepTbl = async (body:{data: Array<{SKUCode:string,WHCode:string}>}) => {
         return await axios.post(process.env.REACT_APP_API_HOST+ `api/mta/DBMUpdateSleepTbl`,body,{
           headers:{ 'Content-Type': 'application/json' }
         });

@@ -1,9 +1,9 @@
 import { useState,useMemo,useEffect,useRef } from "react"
 import { AgGridReactProps } from "ag-grid-react"
-import { useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm} from "../../../../Services/MTA/DBM"
+import { useGetDBMData,useGetDBMDataCount,useGetDBMApplySelectedNorm, useGetDBMUpdateSleepTbl} from "../../../../Services/MTA/DBM"
 import { convertUiConfigToOptions, getColumnDefinationsMTA  } from "../../../../../helpers/utils"
 //import { useRef } from "react"
-import {DBMSleepCellRenderer} from "./Sleep"
+// import {DBMSleepCellRenderer} from "./Sleep"
 import BPRGraphCellRenderer from "../../SupplyChainIntelligenceHub/BPR/BPRGraphCellRenderer"
 import {DBMTickCellRenderer} from "./dbmTick"
 import { GridRef } from "../../../../../VectorFlow/types/MDM"
@@ -49,6 +49,7 @@ const useDBM =()=>{
     
     const {mutateAsync:getDBMData, isLoading: isDBMDataLoading} =useGetDBMData();
     const {mutateAsync:getDBMApplySelectedNorm} =useGetDBMApplySelectedNorm();
+    const {mutateAsync: getDBMUpdateSleepTbl} = useGetDBMUpdateSleepTbl();
     const {mutateAsync:getDBMDataCount, isLoading: isDBMDataCountLoading}=useGetDBMDataCount();
 
     const showDailyDataGraphModal = useSelector((state:RootState) => state.mta.showDailyDataGraphModal);
@@ -75,7 +76,6 @@ const useDBM =()=>{
     const customCellRenderers = useMemo(() => ({
         tickCellRenderer:DBMTickCellRenderer,
         grapCellRenderer:BPRGraphCellRenderer,
-        sleepCellRenderer:DBMSleepCellRenderer,
         suggestionCategoryCellRenderer:SuggestionCategoryCellRenderer
       }), []);
 
@@ -238,18 +238,18 @@ const useDBM =()=>{
             headerTooltip: "Daily Data Graph",
 
         },
-        Sleep: {
-            lockPosition: true,
-            cellRenderer: 'sleepCellRenderer',
-            cellRendererParams: {
-                callBack: refetchAfter
-            },
-            floatingFilter: false,
-            minWidth: 100,
-            maxWidth: 100,
-            pinned: 'left',
-            suppressMenu: true
-        },
+        // Sleep: {
+        //     lockPosition: true,
+        //     cellRenderer: 'sleepCellRenderer',
+        //     cellRendererParams: {
+        //         callBack: refetchAfter
+        //     },
+        //     floatingFilter: false,
+        //     minWidth: 100,
+        //     maxWidth: 100,
+        //     pinned: 'left',
+        //     suppressMenu: true
+        // },
         Suggestions: {
             lockPosition: true,
             cellRenderer: 'suggestionCategoryCellRenderer',
@@ -274,7 +274,10 @@ const useDBM =()=>{
         // const handleGoButton =  ()=>{
         const selectedRows = gridRef.current?.api.getSelectedRows();
         //console.log(selectedRows)
-        if (!selectedRows || selectedRows.length === 0) { toast.dismiss();return;}
+        if (!selectedRows || selectedRows.length === 0) { 
+            notifyError("No Rows Selected.");
+            return;
+        }
         const extractedData:any = selectedRows?.map (items => ({
             SKUCode:items.SKUCode,
             WHCode:items.LocCode
@@ -295,6 +298,27 @@ const useDBM =()=>{
         //console.log(rowData)
    }
 
+   const handleGoButtonForSleep =  async(pageNo:any)=>{
+        notifyLoader("Submitting Norms")
+        console.debug(pageNo)
+        const selectedRows = gridRef.current?.api.getSelectedRows();
+        if (!selectedRows || selectedRows.length === 0) { 
+            notifyError("No Rows Selected.");
+            return;
+        }
+        const extractedDataForSleep:any = selectedRows?.map (items => ({
+            SKUCode:items.SKUCode,
+            WHCode:items.LocCode
+        }));
+
+            await getDBMUpdateSleepTbl({
+                data:extractedDataForSleep,
+            });
+
+        toast.dismiss();
+        notifySuccess("Submitted Successfully");
+        refetchAfter();
+   }
 
     useEffect(()=>{       
         getDataCount(currentFilter);
@@ -436,6 +460,7 @@ const useDBM =()=>{
         DBMDataCount,
         currentPage,
         handleGoButton,
+        handleGoButtonForSleep,
         showDailyDataGraphModal,
         showNormChangeHistoryTable,
         dailyData,

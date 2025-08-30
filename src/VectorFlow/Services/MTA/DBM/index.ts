@@ -38,7 +38,7 @@ export const useGetDBMUIConfiguration =  () => {
   // }
 
   export const useGetDBMUpdateSleepTbl  = ()=>{
-    return useMutation(QUERY_KEYS.useGetDBMUpdateSleepTbl,async (body:{data:{SKUCode:string,WHCode:string}})=>{
+    return useMutation(QUERY_KEYS.useGetDBMUpdateSleepTbl,async (body:{data:Array<{SKUCode:string,WHCode:string}>})=>{
       return await DBMServices.getDBMUpdateSleepTbl(body);
     })
   }
