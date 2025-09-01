@@ -314,5 +314,13 @@ export namespace MDMService {
   export const getAllUsers = async()=>{
     return await axios.get(process.env.REACT_APP_API_HOST + `/api/user/all-users/`)
   }
+
+
+  export const getMaxFolDate = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaxFolDateForCcr/`,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
 }
 

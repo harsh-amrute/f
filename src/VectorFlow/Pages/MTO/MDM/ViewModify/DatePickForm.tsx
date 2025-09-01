@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { useUserData } from '../../../../../context'
-import { ReactHTMLElement, useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import CalenderMonthlySelect from "./CalenderMonthlySelect";
-import _, { set } from "lodash";
-import { SCFlexCenter, SCItemMulSelect, SCItemTitle, SCSwapItem } from "../../../../../components/layouts/ProductPermission/styles";
+import _ from "lodash"
+import { SCFlexCenter, SCItemMulSelect, SCSwapItem } from "../../../../../components/layouts/ProductPermission/styles";
 import { SearchInputMultiple } from "../../../../../components";
 import moment from "moment";
+import { useGetMaxFolDate } from "../../../../../VectorFlow/Services/MTA/MDM";
 
 
 
@@ -79,7 +80,7 @@ cursor: pointer;
 margin-right: 4px;
 
 &.selected{
-background: ${(props)=>props.theme==="REGALBLAZE"?"#C7810E":"#82104C"};
+background: ${(props) => props.theme === "REGALBLAZE" ? "#C7810E" : "#82104C"};
 color:white;
 } 
 
@@ -102,21 +103,23 @@ text-align: left;
 margin-top: -10px;
 `;
 
-
-
-
-
 const DatePickForm=({ plantNames, calendarFormData, ccrNames, formData, setFormData,setIsModalOpen,onSaveHandler,maxFol,setMaxFol}: any)=>{
 
   const {user} = useUserData()
   const themeUi = user.user.theme_ui
   const isDisabled =  formData.sd === '' || formData.ed === ''
-  const [ccrNameOptFromPlant,setCcrNameOptFromPlant] = useState<any>(ccrNames) 
+  const [ccrNameOptFromPlant, setCcrNameOptFromPlant] = useState<any>(ccrNames) 
 
+  const { mutateAsync: GetMaxFolDate } = useGetMaxFolDate();
   
-useEffect(()=>{
-  setFormData(calendarFormData);
-}, [calendarFormData]);
+  useEffect(() => {
+    setFormData((prev: any) => ({
+      ...prev,
+      ...calendarFormData,
+      rb: calendarFormData?.rb || "Once",   
+    }));
+  }, [calendarFormData]);
+  
 
 
 const onHandleChange=(e:any)=>{
@@ -133,10 +136,10 @@ const onHandleTitleChange = (e:any)=>{
   })
 }
 
-const onHandleOptionChange = (e:any)=>{
-  setFormData((prevFormData:any)=> ({...prevFormData, dow :[{id:0,mn:"",md:""}], rd:null, rb: e.target.value}))
-}
-
+  const onHandleOptionChange = (e: any) => {
+  setFormData((prevFormData: any) => ({ ...prevFormData, dow: [{ id: 0, mn: "", md: "" }], rd: null, rb: e.target.value || 'Once' }))
+    } 
+  
 const onHandlePlantChange = (e:any)=>{
   const selectedPlantId = Number(e.target.value);
   const filteredCcrNames = ccrNames
@@ -152,36 +155,30 @@ const onHandlePlantChange = (e:any)=>{
     ccr_id: [],
     ccr:"",
   }))
-}
-
-const ccrMapFol :any = {
-  "1": {
-    "1": "28/07/2025",
-    "2": "29/07/2025",
-    "3": "30/07/2025",
-    "4": "31/07/2025",
-    "5": "01/08/2025",
-    "6": "02/08/2025",
-    "7": "03/08/2025",
-    '8': "12/08/2025",
-    "38": "04/08/2025"
-  },
-  "2": {
-    "9": "28/07/2025",
-    "10": "29/07/2025",
-    "11": "30/07/2025",
-    "12": "31/07/2025",
-    "13": "01/08/2025",
-    "14": "02/08/2025",
-    "15": "03/08/2025",
-    "16": "04/08/2025"
-  },
-  "3": {
-    "17": "28/07/2025",
-    "18": "29/07/2025"
   }
-}
+  
+const [ccrMapFol, setccrMapFol]=useState<any>()
 
+  const fetchccrMapFol:any = async () => {
+    try {
+      const FOLData = await GetMaxFolDate();  
+      if (FOLData?.data) {
+        setccrMapFol( FOLData.data.data)
+      }
+    } catch (error) {
+      console.error("Error fetching FOL date", error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchccrMapFol();
+  }, [formData?.ccr_id]);
+  
+  useEffect(() => {
+    (ccrMapFol || formData.ccr_id ) 
+      setMaxFolFn(formData.ccr_id );    
+  },[formData.ccr_id,ccrMapFol])
 
 
 const onHandleCCRChange = (e:any)=>{
@@ -189,36 +186,40 @@ const onHandleCCRChange = (e:any)=>{
   const ccrNames = e.map((ccr:any)=> ccr.label).join(",")
   setFormData({
     ...formData,
-    ccr_id: ccrIds,
+    ccr_id: ccrIds ,
     ccr: ccrNames,
   })
   setMaxFolFn(ccrIds)
 }
 
-const setMaxFolFn = (ccrs:any)=>{
+  const setMaxFolFn = (ccrs: any) => {
+    if (!ccrMapFol) {
+      return   
+    } 
   const dates = []
-  const plant = formData.plid
+    const plant = formData.plid
   if(plant in ccrMapFol){
     for(const ccr of ccrs){
       if(ccr in ccrMapFol[plant]){
         dates.push(ccrMapFol[plant][ccr])
       }
     }
-    const momentDates = dates.map(date => moment(date, 'DD/MM/YYYY'));
+    // const momentDates = dates.map(date => moment(date, 'DD/MM/YYYY'));
+    const momentDates = dates.map(date => moment(date, ['DD/MM/YYYY', 'YYYY-MM-DD'], true));
 
     const maxDate = moment.max(momentDates);
     setMaxFol(maxDate.format('YYYY-MM-DD'))
   }
-}
+  }
 
-const onHandleEndDateChange = (e:any) =>{
-setFormData({
-  ...formData,
-    ed:e.target.value
+  const onHandleEndDateChange = (e:any) =>{
+  setFormData({
+    ...formData,
+      ed:e.target.value
 
-  })
+    })
 
-}
+  }
 
 const onHandleStartDateChange = (e:any) =>{
   setFormData({
@@ -235,7 +236,6 @@ const onHandleEVeryChange = (e:any)=>{
     rd: Number(e.target.value)
 
   })
-
 }
 
 
@@ -277,7 +277,7 @@ useEffect(() => {
 }, [formData.dow]);
 
 
-useEffect(()=>{
+  useEffect(() => {
   if(formData.rb !== "Weekly"){
     if(formData?.dow?.length===0){
       setFormData((prevFormData:any)=> ({...prevFormData, dow :[{id:0,mn:"",md:""}], rd:null}))
@@ -327,10 +327,42 @@ const onRemoveclick = (id: number) => {
   const newFormData = _.cloneDeep(formData);
   newFormData.dow = newFormData.dow.filter((val:any) => val.id !== id);
   setFormData(newFormData)
-}
+  }
 
 
-    return (
+  
+  const [isFieldDisabled, setIsFieldDisabled] = useState(false);
+
+  useEffect(() => {
+    if (!formData.sd) {
+      setIsFieldDisabled(false); 
+      return;
+    }
+  
+    const today = moment().startOf("day");
+    const selectedStart = moment(formData.sd, "YYYY-MM-DD");
+  
+    if (selectedStart.isBefore(today)) {
+      setIsFieldDisabled(true); 
+    } else {
+      setIsFieldDisabled(false); 
+    }
+  }, [formData.sd]);
+
+  
+
+  return (
+    <>
+      <fieldset
+    disabled={isFieldDisabled}
+    style={{
+      border: "none",
+      padding: 0,
+      margin: 0,
+      opacity: isFieldDisabled ? 0.6 : 1,
+      pointerEvents: isFieldDisabled ? "none" : "auto"
+    }}
+  >
       <FormContainer>
         <RadioGroup>
           <RadioLabel theme={themeUi}>
@@ -367,7 +399,7 @@ const onRemoveclick = (id: number) => {
 
         <InputWrapper>
           <Label>Plant</Label>
-          <Select value={formData.plid} onChange={onHandlePlantChange}>
+          <Select value={formData.plant__plant_name || formData.plnm} onChange={onHandlePlantChange}>
             <option value="" selected disabled hidden>
               Select a Plant
             </option>
@@ -388,7 +420,7 @@ const onRemoveclick = (id: number) => {
                 <SearchInputMultiple
                   placeholder={"Select CCR"}
                   options={formData.plid ? ccrNameOptFromPlant : []}
-                  value={formData?.ccr_id?.map((ccr: any) => ({
+                    value={(formData?.ccr_id)?.map((ccr: any) => ({
                     value: ccr,
                     label: ccrNames
                       .find((ccrName: any) => ccrName.ccr_id == ccr)?.ccr_name || "",
@@ -407,7 +439,7 @@ const onRemoveclick = (id: number) => {
 
         <InputWrapper>
           <Label>Repeat</Label>
-          <Select value={formData.rb} onChange={onHandleOptionChange}>
+          <Select value={formData?.rb || "Once"} onChange={onHandleOptionChange}>
             {["Once", "Weekly", "Monthly"].map((option, index) => (
               <option key={index} value={option}>
                 {option}
@@ -488,7 +520,6 @@ const onRemoveclick = (id: number) => {
           />
         </InputWrapper>
 
-        <FooterText>*Holiday starting from Monday, 01 January 2024</FooterText>
         <div style={{ zoom: "0.8", marginTop: "10px" }}>
           <div
             key={"1"}
@@ -543,7 +574,11 @@ const onRemoveclick = (id: number) => {
             </div>
           </div>
         </div>
-      </FormContainer>
+        </FormContainer>
+        </fieldset>
+      </>
+    
+
     );
 }
 

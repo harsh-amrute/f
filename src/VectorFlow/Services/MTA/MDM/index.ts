@@ -363,3 +363,9 @@ export const useGetAllUsers = ()=>{
   })
 }
 
+export const useGetMaxFolDate = () => {
+  return useMutation(async () => {
+    return await MDMService.getMaxFolDate()
+  })
+}
+
