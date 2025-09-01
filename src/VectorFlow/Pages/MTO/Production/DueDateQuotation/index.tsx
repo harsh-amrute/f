@@ -187,8 +187,8 @@ const DueDateQuotation = () => {
     const detailCellRendererParamsConfig= useMemo(()=> {
 
       const itemNameColumnDef = columnBomDefs.find((a: any) => a.colId === 'ItemName');
-      
-      const config= {
+     
+     const config= {
       masterDetail:bomActive?true:false,
       detailRowHeight: 320,  
       detailCellRendererParams:{
@@ -199,12 +199,13 @@ const DueDateQuotation = () => {
         // domLayout: "autoHeight",
         // style: { height: '300px', width: '100%', border:'1px solid red' },
         autoGroupColumnDef: {
-          headerName:itemNameColumnDef?.headerName,
+          headerName: itemNameColumnDef?.headerName,
+          filter:'agMultiColumnFilter',
           cellRendererParams: {
           suppressCount: true
           }
         },
-        columnDefs:columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
+        columnDefs: columnBomDefs.filter((col: any) => col.colId !== "ItemName"),
         defaultColDef: {
           flex: 1,
           suppressMenu: true,
@@ -508,7 +509,7 @@ const DueDateQuotation = () => {
       const formatedFilters = formatFilterJSON(appliedFilters);
 
 
-      const body = getBodyForExcelExport({headersdata , filterData : formatedFilters, colDefMap});
+      const body = getBodyForExcelExport({ headersdata,filterData: formatedFilters, colDefMap });
       try{
         const response = await getFilteredOrdersForExcelDDQ({body,isExcelExport : 1,report_name : FilterPageName.Prod_DDQ,unSch : unScheduled, page_size: pageSize || userPageSize,isBomExplosion})
         if(response.status == 200){

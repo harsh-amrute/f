@@ -26,6 +26,8 @@ import { getUploadModalRadioButtons,generateOptions, getMDMTableHeight } from ".
 import { Filter } from "../../../../../VectorFlow/types/MDM";
 import { operators } from "../../../../../helpers/MDMConstants";
 import { useLocation } from "react-router";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 
 
@@ -106,7 +108,9 @@ const DeleteRecord = () => {
         isSubmitDisabled,
         errorCount
     } = useDelete();
-
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const DELETERECORD_PAGE = EnvConfig['DELETERECORD_PAGE'];  
+    const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT']; 
     useEffect(()=>{
       if(ref.current && ref.current.api){
         if(isTableDataLoading){
@@ -246,7 +250,7 @@ const DeleteRecord = () => {
                     selectedRows={selectedRowsCount} 
                     totalRows={recordCount} 
                     currentPage={currentPage} 
-                    rowsPerPage={parseInt(process.env.REACT_APP_DELETERECORD_PAGE || '100')}
+                    rowsPerPage={parseInt(DELETERECORD_PAGE || '100')}
                     handleChangePage={(e)=>handleChangePage(e)} 
                     isDisabled={isDisabled}
                   />
@@ -280,7 +284,7 @@ const DeleteRecord = () => {
             onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
             onDownload={() => exportToExcel(true)} 
             onUpload={()=>{
-              onUploadMaster()
+              onUploadMaster(RECORD_UPLOAD_LIMIT)
             }}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}

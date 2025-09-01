@@ -26,6 +26,8 @@ import { AgChartOptions } from "ag-charts-community";
 // clear cached token and redirect to sso login
 import CryptoJS from 'crypto-js';
 import MTOActionRenderer from '../VectorFlow/Pages/MTO/MDM/SavedDrafts/MTOActionRenderer';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store/store';
 
 const keyboardCharacters = [
   // '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -829,7 +831,7 @@ export const checkError = (row: any, master: MDMMasterState, pageType: string) =
   return { error, warning };
 }
 
-export const parseExcelData = async (file: any, master: MDMMasterState, pageType: string, selectedColumns: any) => {
+export const parseExcelData = async (file: any, master: MDMMasterState, pageType: string, selectedColumns: any,RECORD_UPLOAD_LIMIT?:any) => {
 
   const currMasterKeys = master.fields.map((field: Field) => field.key); //array containing keys of current master fields
   const result: object[] = [];
@@ -862,8 +864,8 @@ export const parseExcelData = async (file: any, master: MDMMasterState, pageType
   //Check if File Contains a Column that is Duplicate
   const isDuplicateHeader = data[0].some((header:any,index:number)=>data[0].indexOf(header)!==index);
 
-  if (data.length > parseInt(process.env.REACT_APP_RECORD_UPLOAD_LIMIT || "50000")) {
-    throw new Error(`Number of rows should not exceed ${process.env.REACT_APP_RECORD_UPLOAD_LIMIT || '50000'}`);
+  if (data.length > parseInt(RECORD_UPLOAD_LIMIT || "50000")) {
+    throw new Error(`Number of rows should not exceed ${RECORD_UPLOAD_LIMIT || '50000'}`);
   }
   
   if(isDuplicateHeader){
@@ -1034,7 +1036,15 @@ export const mapMasterToColumnDefs = (fields: Field[], masterId?: number, onShow
       tooltipComponent: 'conflictErrorToolTip',
       suppressColumnsToolPanel: !f.isApplicable,
       valueFormatter: (params: any) => {
-        return (params.value === null || params.value === undefined) ? '' : params.value.toString();
+        if(params.value == null || params.value === undefined)  return ''
+        else if (cellDataType === 'number') {
+          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+          if(locale) return params.value.toLocaleString(locale)
+          else       return params.value.toString()
+        }
+        else return params.value.toString()
+        // return (params.value === null || params.value === undefined) ? '' : params.value.toString();
       },
       valueGetter: (params: any) => {
         if (f.key === 'sts') {
@@ -1283,14 +1293,27 @@ export const getExistingColumnFields = (columns: string[], fields: Field[]): Fie
   return updatedFields
 }
 
+// export const areValuesEqual = (a: any, b: any): boolean => {
+//   if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
+//     // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
+//     return parseFloat(a) === parseFloat(b) 
+//   }  
+//   return a === b
+// }
 export const areValuesEqual = (a: any, b: any): boolean => {
-  if (!Number.isNaN(parseInt(a)) && !Number.isNaN(parseInt(b))) {
-    // return parseFloat(a).toFixed(0) === parseFloat(b).toFixed(0)
-    return parseFloat(a) === parseFloat(b) 
-  }  
-  return a === b
-}
 
+  const numA = Number(a);
+  const numB = Number(b);
+
+  const isAValidNumber = a !== '' && a !== null && !Number.isNaN(numA) && Number.isFinite(numA);
+  const isBValidNumber = b !== '' && b !== null && !Number.isNaN(numB) && Number.isFinite(numB);
+
+  if (isAValidNumber && isBValidNumber) {
+    return numA === numB;
+  }
+
+  return a === b;
+};
 export const mapMasterToColumnGroupDefs = (existingColumnsFields: Field[], masterId: number, themeUi: string, tasktype?: string, showApproveAllModal?: any, showRejectAllModal?: any, actionStatus?: string , isDisabled?:boolean): ColGroupDef[] | ColDef[] | Array<any> => {
 
   const textColor = themeUi === "REGALBLAZE" ? "#FCA311" : "#BC3D81"
@@ -2434,7 +2457,7 @@ export const getRemarkRelatedColumns = (onOpenRemarkHistory: (params: any, e: an
   ]
 }
 
-const filterParams =  {
+export const filterParams =  {
   filters: [
     {
       filter: 'agTextColumnFilter',
@@ -2453,7 +2476,7 @@ const filterParams =  {
 
 
 
-const CellRenderersMapping:any = {
+export const CellRenderersMapping:any = {
   'DispatchPen':'colorDispatchRender',
   'TechPen':'colorTechCellRenderer',
   'EcoPen':'colorEcoCellRenderer',
@@ -2706,7 +2729,7 @@ export const generateGridSpecificChartFromChartProps = (options:any,downloadName
     return null
   }
   return {
-    palette:options.theme.palette,
+    palette:options?.theme?.palette,
     common: {
       legend: {
         position: "bottom",
@@ -3806,12 +3829,15 @@ export const getMCGridStoreIconColor = (status: string): string => {
 }
 
 
-export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProperties: any) => {
+export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProperties: any , PRODUCT_PERMISSION_L1:any ,PRODUCT_PERMISSION_L2:any ,PRODUCT_PERMISSION_L3:any , LOCATION_PERMISSION_L1:any , LOCATION_PERMISSION_L2 :any, LOCATION_PERMISSION_L3:any  ) => {
+  
+
+
   if (column.colCode === 'sl1') {
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
+      headerName: PRODUCT_PERMISSION_L1,
       ...extraProperties
     }
   }
@@ -3819,7 +3845,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
+      headerName: PRODUCT_PERMISSION_L2,
       ...extraProperties
     }
   }
@@ -3827,7 +3853,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
+      headerName: PRODUCT_PERMISSION_L3,
       ...extraProperties
     }
   }
@@ -3835,7 +3861,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_LOCATION_PERMISSION_L1,
+      headerName: LOCATION_PERMISSION_L1,
       ...extraProperties
     }
   }
@@ -3843,7 +3869,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_LOCATION_PERMISSION_L2,
+      headerName: LOCATION_PERMISSION_L2,
       ...extraProperties
     }
   }
@@ -3852,7 +3878,7 @@ export const getProductAndLocationHeirarchiesFromEnv = (column: any, extraProper
     return {
       field: column['colCode'],
       colId: column['colCode'],
-      headerName: process.env.REACT_APP_LOCATION_PERMISSION_L3,
+      headerName: LOCATION_PERMISSION_L3,
       ...extraProperties
     }
   }
@@ -4382,13 +4408,12 @@ export function getColumnDefinations(
   removeCols: any = [],
 ) {
  
-  const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => {
-
+  const columnDefs = fields?.sort((a: any, b: any) => a.cp - b.cp)?.map((data: any) => { 
     let filterType = 'agMultiColumnFilter'; 
 
     if (data.dt === 'date') {
       filterType = 'agDateColumnFilter';
-    } else if (data.dt === 'number') {
+    } else if (data.dt === 'number' || data.dt ==='decimal') {
       filterType = 'agNumberColumnFilter';
     }
 
@@ -4402,6 +4427,23 @@ export function getColumnDefinations(
       enablePivot: true,
       flex: 1,
       minWidth: 150,
+      valueFormatter: (params: any) => {
+        if (params.value) {
+          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+      
+          if (data.dt === 'number') {
+            return locale ? params.value.toLocaleString(locale) : params.value;
+          }
+      
+          if (data.dt === 'decimal') {
+            const fixedValue = parseFloat(params.value.toFixed(2)); 
+            return locale ? fixedValue.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :fixedValue;
+          }
+      
+          return params.value;
+        }
+      }, 
       filterParams: {
         buttons: ['reset'], 
         comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
@@ -4637,7 +4679,6 @@ export const getSelectedFilters = (filter: any, isMfgStrgyIncluded: any) => {
   return selectedFilter;
 }
 
-
 export const getBodyForExcelExport = ({
   headersdata,
   filterData = {},
@@ -4646,39 +4687,41 @@ export const getBodyForExcelExport = ({
 }: any) => {
   const filteredHeadersData = headersdata?.filter(
     (col: any) =>
-      (col.colId !== "DropDown" || col.colId !== "Action") &&
-      col.hide !== true
+      col.colId !== "DropDown" && col.colId !== "Action" && col.hide !== true && !col.colId.includes('History') && (col.colId!=="Default Attribute-Remark")
+
   );
 
   try {
-    //grouped data
+    // Grouped data
     if (groupedColDefsRef?.current) {
-      const headers = filteredHeadersData?.map((col: any) => col.colId);
 
-      const filteredGroupedColDefs = groupedColDefsRef.current
-        .map((group: any) => {
-          const filteredChildren = group.ch.filter((child: any) =>
-            headers.includes(child.groupHeaderKey)
-          );
+      const groupedColumnData: any = [];
+    
+      filteredHeadersData.forEach((headerItem: any) => {
+        groupedColDefsRef?.current.forEach((groupDef: any) => {
+          const header = groupDef.ch.find((subHeader: any) => subHeader.groupHeaderKey === headerItem.colId);
+    
+          if (!header) return;
 
-          if (filteredChildren.length > 0) {
-            return {
-              cc: group.cc,
-              ch: filteredChildren,
-            };
+          const last = groupedColumnData[groupedColumnData.length - 1];
+
+          if (last && last.cc === groupDef.cc) {
+            last.ch.push(header);
+          } else {
+            groupedColumnData.push({ cc: groupDef.cc, ch: [header] });
           }
 
-          return null;
-        })
-        .filter(Boolean);
+        });
+      });
 
       return {
-        headers: filteredGroupedColDefs,
+        headers: groupedColumnData,
         isGrouped: true,
         ...filterData,
       };
+      
     }
-    //flat data
+    // Flat data
     else {
       const headers = filteredHeadersData
         ?.map((col: any) => {
@@ -4700,8 +4743,6 @@ export const getBodyForExcelExport = ({
     console.log(e);
   }
 };
-
-
 
 export const DownloadExcel = (response : any,filename = "ReportFile") => {
   try {
@@ -4981,6 +5022,7 @@ export function getColumnDefinationsMTA(
       enableRowGroup:false,
       enableValue:true,
       pivotIndex: null,
+     
       flex: 1,
       minWidth: 180,
       cellStyle: {
@@ -4994,7 +5036,12 @@ export function getColumnDefinationsMTA(
 
       ...(getCellDataType(data.DataType) === 'number' && {
         valueFormatter: (params: any) => {
-          return params.value == null || isNaN(params.value) ? '' : params.value;
+          const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+          const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+          if(params.value == null || isNaN(params.value)) return ''
+          else if(locale)  return params.value.toLocaleString(locale);
+          return params.value;
+          // return params.value == null || isNaN(params.value) ? '' : params.value;
         }
       })
     };

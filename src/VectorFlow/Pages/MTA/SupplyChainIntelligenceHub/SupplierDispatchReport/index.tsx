@@ -6,6 +6,8 @@ import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import VFPagination from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination"
 import ActionToolBar from "../Planning/ActionToolBar";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 
 const SupplierDispatchReport = () => {
@@ -39,7 +41,9 @@ const SupplierDispatchReport = () => {
 
       const [isDisabled, setIsDisabled]= useState<boolean>(true)
   
-  
+   
+      const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+      const SUPPLIER_DISPATCH_REPORT_PER_PAGE = EnvConfig['SUPPLIER_DISPATCH_REPORT_PER_PAGE'];   
 
   
   return (
@@ -100,7 +104,7 @@ const SupplierDispatchReport = () => {
                 selectedRows={0} 
                 totalRows={SDRCount} 
                 currentPage={currentPage} 
-                rowsPerPage={parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')}
+                rowsPerPage={parseInt(SUPPLIER_DISPATCH_REPORT_PER_PAGE || '100')}
                 handleChangePage={(e)=>GetSDRData(e)} 
 
                 resetGridRef={ref} 

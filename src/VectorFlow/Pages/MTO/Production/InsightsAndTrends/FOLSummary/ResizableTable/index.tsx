@@ -19,12 +19,13 @@ interface IResizeTableProps {
   gridRef: any;
   userPageSize: number;
   savePageSize: any;
+  isPivot?: boolean;
 }
 
 const ResizableTable = (props: IResizeTableProps) => {
   const {
     data, colDef, setCurrentGridRef, currentGridRef, columnState,
-    userPageSize, savePageSize
+    userPageSize, savePageSize, isPivot
   } = props;
 
     const gridRef = props.gridRef;
@@ -58,11 +59,15 @@ const ResizableTable = (props: IResizeTableProps) => {
 
   useEffect(() => {
     if (currentGridRef?.current && columnState?.length) {
+      const applyPivot = currentGridRef.current?.api.setGridOption(
+        "pivotMode",
+        isPivot
+      );
       const result = currentGridRef.current.api.applyColumnState({
         state: columnState,
         applyOrder: true
       });
-      if (!result) console.error('Failed to apply column state');
+      if (!result || !applyPivot) console.error('Failed to apply column state');
     }
   }, [columnState]);
 

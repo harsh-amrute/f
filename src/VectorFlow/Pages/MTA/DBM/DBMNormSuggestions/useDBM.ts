@@ -62,8 +62,10 @@ const useDBM =()=>{
 
 
     const dispatch = useDispatch();
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const DBM_ROWS_PER_PAGE = EnvConfig['DBM_ROWS_PER_PAGE']; 
 
-    const recordsPerPage = parseInt(process.env.REACT_APP_DBM_ROWS_PER_PAGE || '50');
+    const recordsPerPage = parseInt(DBM_ROWS_PER_PAGE || '50');
     const columnsToBeExcluded = ['checkbox', 'dailydatagraph', '0', 'Sleep']
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
@@ -359,6 +361,7 @@ const useDBM =()=>{
         setCurrentFilter(filter)
         await getDataCount(filter)
         await getDBMRowData(filter,1)
+        getDBMUiConfig()
     }
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
@@ -374,6 +377,8 @@ const useDBM =()=>{
                 recordsPerPage:5000
             }
         })
+
+        getDBMUiConfig()
         // console.log(rowData.data.data)
         return rowData.data.data
     }

@@ -117,6 +117,7 @@ interface ApiResponseItem {
     scc: string;      // Sub-channel code (will be set to the name of cc)
     ch?: ApiResponse[]; // Array of channel items
     pinned?:string;
+    
 }
 
 
@@ -177,7 +178,6 @@ const DptWiseBMReport = () => {
     const [bomActive, setBomActive] = useState<any>(undefined);
     const { getGroupedColDef, groupedColDefsRef } = useColDef();
     const [showExcelModal, setShowExcelModal] = useState(false);
-    const isBMReportViewer = UserAllRoles?.includes("BMReportViewer");
 
   const excelColorArr = ["Black", "Red", "White", "Green", "Yellow", "Blue"]
 
@@ -342,6 +342,9 @@ const DptWiseBMReport = () => {
         const modifiedResponse: ApiResponseItem[] = [];
         const cpMap: { [key: string]: number } = {};
 
+        const feature_permission = user?.feature_permission || [];
+        const canAddComments = feature_permission?.includes("Add_Comments");
+        
         const defaultSecondObject: any = {
             cc: 'ic',
             cp: 1,
@@ -350,16 +353,16 @@ const DptWiseBMReport = () => {
             cla: 'centre',
             scc: 'ic'
         };
-
+        
         apiResponse.forEach((item) => {
             const modifiedItem = { ...item };
 
-
+            
             // Initialize cp for this cc if not already done
             if (!(item.cc in cpMap)) {
                 cpMap[item.cc] = 3; // Start from 3 since 1 and 2 are taken by default objects
             }
-
+            
             // Add new properties to the outer object
             modifiedItem.cp = cpMap[item.cc]++;
             modifiedItem.hd = item.hd || item.cc; // Set hd to the name of cc
@@ -375,8 +378,9 @@ const DptWiseBMReport = () => {
 
                 if (item.cc.includes('Default Attribute') && modifiedItem.ch) {
                     modifiedItem.ch = item.ch?.filter((child)=>{
-                        if (isBMReportViewer) {
-                            return child.cc !== 'Remark'  
+
+                        if (child.cc === 'Remark' && !canAddComments) {
+                            return false;
                         }
                         else {
                             return true;
@@ -409,6 +413,7 @@ const DptWiseBMReport = () => {
 
 
         // Create the additional object to be added at the end
+        if (canAddComments) {
         const additionalObject: ApiResponseItem = {
             cc: "",
             cp: maxCp + 1, // Set cp based on the maximum cp value
@@ -421,6 +426,7 @@ const DptWiseBMReport = () => {
 
         // Add the additional object to the end of the modified response
         modifiedResponse.push(additionalObject);
+    }
 
         return modifiedResponse;
     };
@@ -435,9 +441,6 @@ const DptWiseBMReport = () => {
             return children.map((child) => ({
                 field: child.scc.trim(),
                 suppressHeaderFilterButton: true,
-                filterParams: {
-                    buttons: ['reset']
-                },
                 headerName: child.hd,
                 colId: `${parent}-${child.cc}`,
                 initialHide: !child.v,
@@ -454,18 +457,51 @@ const DptWiseBMReport = () => {
                 minWidth: child.cc === 'ec' || child.cc === 'ic' ? 80 : 150,
                 // columnGroupShow: index > 2 ? "closed" : undefined,
                 filter:
-                child.dt === "number"
-                ? "agNumberColumnFilter"
-                : "agMultiColumnFilter",
+                (child.dt === "number" || child.dt === "decimal")
+                  ? "agNumberColumnFilter"
+                        : child.dt === "date"      
+                    ? "agDateColumnFilter"
+                    : "agMultiColumnFilter",
                 pinned: child.cc === 'Remark' || child.cc === 'Remark History' || child.cc === 'lr' ? 'right' : undefined,
                 editable: (params: any) => !_.isEmpty(params.data) && child.cc === 'Remark' ? true : false ,
                 floatingFilter: child.cc === 'ec' ? false : child.cc === 'ic' ? false : true,
                 valueFormatter: (params: any) => {
-                    if (params.value && typeof params.value === 'number') {
-                        return params.value.toFixed(2).toLocaleString();
+                    if (params.value) {
+                        const format = (process.env.REACT_APP_NUMBER_FORMAT || '').toUpperCase();
+                        const locale = format === 'USA' ? 'en-US' : format === 'IND' ? 'hi-IN' : undefined;
+                  
+                        if (child.dt === 'number') {
+                            return locale ? params.value.toLocaleString(locale) : params.value;
+                        }
+                  
+                        if (child.dt === 'decimal') {
+                            const fixedValue = parseFloat(params.value.toFixed(2)); 
+                            return locale ? fixedValue.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :fixedValue;
+                        }
+                  
+                        return params.value;
                     }
-                    return params.value;
-                },
+                }, 
+                filterParams: {
+                    buttons: ['reset'], 
+                    comparator: (filterLocalDateAtMidnight: Date, cellValue: any) => {
+                      if (!cellValue) return -1;
+                    
+                      const cellDate = new Date(cellValue);
+                      if (isNaN(cellDate.getTime())) return -1;
+                    
+                      const cellDateOnly = new Date(
+                        cellDate.getFullYear(),
+                        cellDate.getMonth(),
+                        cellDate.getDate()
+                      );
+                    
+                      if (cellDateOnly < filterLocalDateAtMidnight) return -1;
+                      if (cellDateOnly > filterLocalDateAtMidnight) return 1;
+                      return 0;
+                    }
+                    
+                  },
                 cellRendererParams: child?.hd.includes("Remark") ? {
                     onClick: child?.cc === 'Remark History' ? (data: string) => onOpenRemarkHistory(data) : undefined
                   } : undefined,
@@ -1190,7 +1226,6 @@ const DptWiseBMReport = () => {
                                             totalRow={gridDataCount}
                                             savePageSize={savePageSize}
                                             customPageSize={true}
-                                            saveBtn={!isBMReportViewer}
                                             userPageSize={userPageSize}
                                                 // onGridReady={() => {applyColumnState()}}
                                                 />

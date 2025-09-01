@@ -7,7 +7,7 @@ import {  ToolsWrapper } from "./styles"
 const Tools = ()=>{
 
     const navigate = useNavigate()
-
+    
     return(
         <ToolsWrapper>
             <PanelGrid style={{gap:0,display:'flex',maxWidth:800}}>
@@ -26,6 +26,15 @@ const Tools = ()=>{
                     iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
                     iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
                     onClick={()=>navigate('/vector-admin/manage-urls')}
+                    themeUi="NOIRFUSION"
+                />
+                </div>
+                <div style={{flex:1,margin:'20px'}}>
+               <IconCard
+                    text="Manage Configuration"
+                    iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
+                    iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
+                    onClick={()=>navigate('/vector-admin/manage-env-configuration')}
                     themeUi="NOIRFUSION"
                 />
                 </div>

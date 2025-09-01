@@ -248,7 +248,7 @@ export const listMenuParent: any = [
     id: 9,
     name: "Replenishment and Replacement",
     img: "/assets/img/VectorFLOW/BPR/replacement",
-    url: "/supply-chain-intelligence-hub/planning",
+    url: "/mta/supply-chain-intelligence-hub/planning",
     status: false,
     lp_img : "/assets/img/Replacement.svg",
     app_id : 2,
@@ -267,13 +267,13 @@ export const listMenuParent: any = [
             img: "/assets/img/nav/arrow_down.svg",
             lp_img : "/assets/img/planning.svg",
             rp_img : "/assets/img/planning1.svg",
-            url: "/supply-chain-intelligence-hub/planning",
+            url: "/mta/supply-chain-intelligence-hub/planning",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           {
             name: "BPR",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/bpr",
+            url: "/mta/supply-chain-intelligence-hub/bpr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           // {
@@ -285,7 +285,7 @@ export const listMenuParent: any = [
           {
             name: "Open Expediting Requests",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/open-expediting-requests",
+            url: "/mta/supply-chain-intelligence-hub/open-expediting-requests",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
  
@@ -298,62 +298,62 @@ export const listMenuParent: any = [
           {
             name: "Rationed Requirement Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/rrr",
+            url: "/mta/supply-chain-intelligence-hub/rrr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
  
           },
           {
             name: "Rationed Requirement Report - Color Bandwise",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/rrr-color-bandwise",
+            url: "/mta/supply-chain-intelligence-hub/rrr-color-bandwise",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
           },
           {
             name: "Buyer Order Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/bor",
+            url: "/mta/supply-chain-intelligence-hub/bor",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
  
           },
           {
             name: "Buyer Order Report - Color Bandwise",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/bor-color-bandwise",
+            url: "/mta/supply-chain-intelligence-hub/bor-color-bandwise",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
  
           },
           {
             name: "Supplier Wise Allocation Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/SupplierWiseAllocation",
+            url: "/mta/supply-chain-intelligence-hub/SupplierWiseAllocation",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
  
           },
           {
             name: "Order Allocation Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/order-allocation-report",
+            url: "/mta/supply-chain-intelligence-hub/order-allocation-report",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
  
           },
           {
             name: "Total Requirement Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/total-requirement-report",
+            url: "/mta/supply-chain-intelligence-hub/total-requirement-report",
             role: ["Admin","VectorConsultant","DBMManager","BPRManager"],
  
           },
           {
             name: "Supplier Dispatch Report",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/sdr",
+            url: "/mta/supply-chain-intelligence-hub/sdr",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
  
           },
           {
             name: "Elephant Order",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/supply-chain-intelligence-hub/eo",
+            url: "/mta/supply-chain-intelligence-hub/eo",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
  
           },
@@ -375,7 +375,7 @@ export const listMenuParent: any = [
           {
             name: "InTransit Whereabouts",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/logistics/intransit-whereabouts",
+            url: "/mta/logistics/intransit-whereabouts",
             // role: ["IST Admin", "IST Requestor"],
             role: ["Admin", "VectorConsultant", "BPRManager"],
  
@@ -391,13 +391,13 @@ export const listMenuParent: any = [
           {
             name: "Buffer Trend Report (BTR)",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/insights-and-trends/buffer-trend-report",
+            url: "/mta/insights-and-trends/buffer-trend-report",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           {
             name: "Buffer Trends",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/insights-and-trends/buffer-trends",
+            url: "/mta/insights-and-trends/buffer-trends",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
           },
           // {
@@ -410,7 +410,7 @@ export const listMenuParent: any = [
             name: "Guided Insights",
             img: "/assets/img/nav/arrow_down.svg",
             lp_attr : true,
-            url: "/insights-and-trends/guided-insights",
+            url: "/mta/insights-and-trends/guided-insights",
             lp_img : "/assets/img/Guided-In.svg",
             rp_img : "/assets/img/Guided-In1.svg",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
@@ -419,7 +419,7 @@ export const listMenuParent: any = [
             name: "Research Insights",
             img: "/assets/img/nav/arrow_down.svg",
             lp_attr : true,
-            url: "/insights-and-trends/research-insights",
+            url: "/mta/insights-and-trends/research-insights",
             lp_img : "/assets/img/Reasearch-in.svg",
             rp_img : "/assets/img/Reasearch-in1.svg",
             role: ["Admin", "VectorConsultant", "DBMManager", "BPRManager"],
@@ -435,7 +435,7 @@ export const listMenuParent: any = [
           {
             name: "DBM Norm Suggestions",
             img: "/assets/img/nav/arrow_down.svg",
-            url: "/dbm/dbm-norm-suggestions",
+            url: "/mta/dbm/dbm-norm-suggestions",
             role: ["Admin", "VectorConsultant", "DBMManager"],
           }
         ]
@@ -955,6 +955,35 @@ export const listMenuParent: any = [
       }
     ],
   },
+  // {
+  //   id: 111,
+  //   name: "Scheduling",
+  //   img: "/assets/img/nav/poogi-module1",
+  //   lp_attr : true ,
+  //   app_id : 3,
+  //   lp_img :"/assets/img/Poogi 3.svg",
+  //   rp_img :"/assets/img/Poogi 4.svg",
+  //   url: "/scheduling",
+  //   status: false,
+  //   role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+  //   avoidHeader: true,
+  //   child: [
+  //     {
+  //       name: "Scheduling",
+  //       img: "/assets/img/nav/poogi-module1",
+  //       url: "/scheduling",
+  //       role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison", "Admin", "VectorConsultant", "MasterUpdater"],
+  //       child: [
+  //         {
+  //           name: "Scheduling",
+  //           img: "/assets/img/nav/arrow_down.svg",
+  //           url: "/scheduling",
+  //           role: ["IST Admin", "IST Requestor", "IST Governor", "IST Liaison"],
+  //         },
+  //       ]
+  //     }
+  //   ],
+  // },
 
 ];
 

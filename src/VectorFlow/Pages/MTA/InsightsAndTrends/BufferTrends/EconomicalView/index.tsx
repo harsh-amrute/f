@@ -54,7 +54,7 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,h
     function TooltipRenderer({ datum }: any) {
     
         return `
-            <div style="background:#6C696A; color:white; padding:10px;">
+            <div style="background:#6C696A; color:white; padding:10px;transform: translateY(-200px)">
                 <div style="color: white; padding: 5px; text-align: center;">
                     <b>${datum.dt || "No Date"}</b>
                 </div>
@@ -88,8 +88,19 @@ const EconomicalWise = ({data,isLoading,graphs,updateGraphState,setHorizondays,h
                                     </td>
                                     <td style="padding: 5px; background-color: #6C696A; text-align: right;">
                                         ${graphs[0].pen.label === 'Percentage' 
-                                            ? Math.round((datum[key] / datum.total) * 100) + '%'
-                                            : datum[key]}
+                                        ? (() => {
+                                            const value = parseFloat(datum[key]);
+                                            const total = parseFloat(datum.total);
+                                            return !isNaN(value) && !isNaN(total) && total > 0
+                                            ? Math.round((value / total) * 100) + '%'
+                                            : '0%';
+                                        })()
+                                        : (() => {
+                                            const val = parseFloat(datum[key]);
+                                            if (isNaN(val)) return '0';
+                                            return Number.isInteger(val) ? val : val.toFixed(2);
+                                        })()
+                                        }
                                     </td>
                                 </tr>
                             `;

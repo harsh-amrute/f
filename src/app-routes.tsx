@@ -87,6 +87,8 @@ import OrderAllocationReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenc
 import TotalRequirementReport from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/TotalRequirementReport'
 import BulkUploadPage from './module-store-transfer/pages/bulk-upload'
 import ElephantOrder from './VectorFlow/Pages/MTA/SupplyChainIntelligenceHub/ElephantOrders'
+import Scheduling from './VectorFlow/Pages/MTO/Scheduling'
+import ManageEnvConfig from './components/VectorFLOW/layouts/VectorAdmin/ManageEnvConfig'
 
 // to show loading state for desired page only instead of the entire screen
 const lazyLoad = (children: React.ReactNode) => {
@@ -117,13 +119,13 @@ const lazyLoad = (children: React.ReactNode) => {
     '/availability-comparison',
     '/ist-status',
     '/permission-forbidden',
-    '/master-data-management/control-panel',
-    '/master-data-management/control-panel/view-modify',
-    '/master-data-management/saved-drafts',
-    '/master-data-management/task-status',
-    '/master-data-management/task-pending',
-    '/master-data-management/control-panel/add',
-    '/master-data-management/control-panel/delete',
+    '/mta/master-data-management/control-panel',
+    '/mta/master-data-management/control-panel/view-modify',
+    '/mta/master-data-management/saved-drafts',
+    '/mta/master-data-management/task-status',
+    '/mta/master-data-management/task-pending',
+    '/mta/master-data-management/control-panel/add',
+    '/mta/master-data-management/control-panel/delete',
     // mto mdm pages
     '/master-data-management/mto-control-panel',
     '/master-data-management/mto-control-panel/view-modify',
@@ -133,29 +135,29 @@ const lazyLoad = (children: React.ReactNode) => {
     '/master-data-management/mto-control-panel/add',
     '/master-data-management/mto-control-panel/delete',
     //
-    '/supply-chain-intelligence-hub/bor',
-    '/supply-chain-intelligence-hub/bpr',
-    '/supply-chain-intelligence-hub/planning',
-    '/supply-chain-intelligence-hub/rrr',
-    "/supply-chain-intelligence-hub/open-expediting-requests",
+    '/mta/supply-chain-intelligence-hub/bor',
+    '/mta/supply-chain-intelligence-hub/bpr',
+    '/mta/supply-chain-intelligence-hub/planning',
+    '/mta/supply-chain-intelligence-hub/rrr',
+    "/mta/supply-chain-intelligence-hub/open-expediting-requests",
 
-    '/supply-chain-intelligence-hub/rrr-color-bandwise',
-    '/supply-chain-intelligence-hub/bor-color-bandwise',
-    '/supply-chain-intelligence-hub/SupplierWiseAllocation',
-    '/supply-chain-intelligence-hub/order-allocation-report',
-    '/supply-chain-intelligence-hub/total-requirement-report',
+    '/mta/supply-chain-intelligence-hub/rrr-color-bandwise',
+    '/mta/supply-chain-intelligence-hub/bor-color-bandwise',
+    '/mta/supply-chain-intelligence-hub/SupplierWiseAllocation',
+    '/mta/supply-chain-intelligence-hub/order-allocation-report',
+    '/mta/supply-chain-intelligence-hub/total-requirement-report',
 
-    '/insights-and-trends/buffer-trends',
-    '/insights-and-trends/guided-insights',
-    '/insights-and-trends/research-insights',
-    '/insights-and-trends/buffer-trend-report',
-    '/dbm/dbm-norm-suggestions',
-    '/logistics/intransit-whereabouts',
+    '/mta/insights-and-trends/buffer-trends',
+    '/mta/insights-and-trends/guided-insights',
+    '/mta/insights-and-trends/research-insights',
+    '/mta/insights-and-trends/buffer-trend-report',
+    '/mta/dbm/dbm-norm-suggestions',
+    '/mta/logistics/intransit-whereabouts',
     '/procurement/material-coverage-open-sales',
     '/procurement-planning/planning',
     "/procurement/insights-and-trends/day-wise-coverage",
     '/planning/simulative-fullkit',
-    '/logistics/intransit-whereabouts',
+    '/mta/logistics/intransit-whereabouts',
     '/procurement/material-requirement',
     '/procurement/insights-and-trends/rmpm',
     '/procurement/insights-and-trends/rmpm-buffer-trends',
@@ -167,9 +169,9 @@ const lazyLoad = (children: React.ReactNode) => {
     '/production-planning-scheduling/deptwise-bm-report',
     '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
     '/production-planning-scheduling/full-kit-assignment',
-    '/supply-chain-intelligence-hub/sdr',
-    '/supply-chain-intelligence-hub/eo',
-    '/master-data-management/data-modification-history',
+    '/mta/supply-chain-intelligence-hub/sdr',
+    '/mta/supply-chain-intelligence-hub/eo',
+    '/mta/master-data-management/data-modification-history',
     '/supply-chain-intelligence-hub/merchandising-grid',
     '/production-planning-and-scheduling/due-date-quotation',
     '/production-planning-scheduling/insight-and-trends/order-at-risk',
@@ -220,6 +222,7 @@ const lazyLoad = (children: React.ReactNode) => {
     "/mto/master-data-management/task-status",
     "/mto/master-data-management/task-pending",
     "/mto/master-data-management/data-modification-history",
+    "/scheduling"
   
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
@@ -351,7 +354,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/control-panel',
+      path: '/mta/master-data-management/control-panel',
       element: <AppLayout />,
       children: [
         {
@@ -367,7 +370,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/saved-drafts',
+      path: '/mta/master-data-management/saved-drafts',
       element: <AppLayout />,
       children: [
         {
@@ -378,7 +381,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/task-status',
+      path: '/mta/master-data-management/task-status',
       element: <AppLayout />,
       children: [
         {
@@ -389,7 +392,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/task-pending',
+      path: '/mta/master-data-management/task-pending',
       element: <AppLayout />,
       children: [
         {
@@ -400,7 +403,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/control-panel/add',
+      path: '/mta/master-data-management/control-panel/add',
       element: <AppLayout />,
       children: [
         {
@@ -411,7 +414,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/control-panel/delete',
+      path: '/mta/master-data-management/control-panel/delete',
       element: <AppLayout />,
       children: [
         {
@@ -422,7 +425,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/master-data-management/data-modification-history',
+      path: '/mta/master-data-management/data-modification-history',
       element: <AppLayout />,
       children: [
         {
@@ -586,7 +589,7 @@ export const initRoutes = (): RouteObject[] => {
     //
 
     {
-      path: '/supply-chain-intelligence-hub/planning',
+      path: '/mta/supply-chain-intelligence-hub/planning',
       element: <AppLayout />,
       children: [
         {
@@ -597,7 +600,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/planning',
+      path: '/mta/supply-chain-intelligence-hub/planning',
       element: <AppLayout />,
       children: [
         {
@@ -608,7 +611,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/bpr',
+      path: '/mta/supply-chain-intelligence-hub/bpr',
       element: <AppLayout />,
       children: [
         {
@@ -619,7 +622,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/open-expediting-requests',
+      path: '/mta/supply-chain-intelligence-hub/open-expediting-requests',
       element: <AppLayout />,
       children: [
         {
@@ -641,7 +644,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/logistics/intransit-whereabouts',
+      path: '/mta/logistics/intransit-whereabouts',
       element: <AppLayout />,
       children: [
         {
@@ -674,7 +677,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/bor',
+      path: '/mta/supply-chain-intelligence-hub/bor',
       element: <AppLayout />,
       children: [
         {
@@ -685,7 +688,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/insights-and-trends/research-insights',
+      path: '/mta/insights-and-trends/research-insights',
       element: <AppLayout />,
       children: [
         {
@@ -696,7 +699,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/rrr-color-bandwise',
+      path: '/mta/supply-chain-intelligence-hub/rrr-color-bandwise',
       element:<AppLayout/>,
       children:[
         {
@@ -707,7 +710,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/bor-color-bandwise',
+      path: '/mta/supply-chain-intelligence-hub/bor-color-bandwise',
       element:<AppLayout/>,
       children:[
         {
@@ -718,7 +721,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/SupplierWiseAllocation',
+      path: '/mta/supply-chain-intelligence-hub/SupplierWiseAllocation',
       element:<AppLayout/>,
       children:[
         {
@@ -729,7 +732,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/order-allocation-report',
+      path: '/mta/supply-chain-intelligence-hub/order-allocation-report',
       element:<AppLayout/>,
       children:[
         {
@@ -740,7 +743,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/total-requirement-report',
+      path: '/mta/supply-chain-intelligence-hub/total-requirement-report',
       element:<AppLayout/>,
       children:[
         {
@@ -751,7 +754,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/insights-and-trends/guided-insights',
+      path: '/mta/insights-and-trends/guided-insights',
       element: <AppLayout />,
       children: [
         {
@@ -762,7 +765,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/insights-and-trends/buffer-trend-report',
+      path: '/mta/insights-and-trends/buffer-trend-report',
       element: <AppLayout />,
       children: [
         {
@@ -773,7 +776,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/rrr',
+      path: '/mta/supply-chain-intelligence-hub/rrr',
       element: <AppLayout />,
       children: [
         {
@@ -784,7 +787,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/insights-and-trends/buffer-trends',
+      path: '/mta/insights-and-trends/buffer-trends',
       element: <AppLayout />,
       children: [
         {
@@ -795,7 +798,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/dbm/dbm-norm-suggestions',
+      path: '/mta/dbm/dbm-norm-suggestions',
       element: <AppLayout />,
       children: [
         {
@@ -861,7 +864,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/dbm/dbm-norm-suggestions',
+      path: '/mta/dbm/dbm-norm-suggestions',
       element: <AppLayout />,
       children: [
         {
@@ -984,7 +987,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/sdr',
+      path: '/mta/supply-chain-intelligence-hub/sdr',
       element: <AppLayout />,
       children: [
         {
@@ -995,7 +998,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/supply-chain-intelligence-hub/eo',
+      path: '/mta/supply-chain-intelligence-hub/eo',
       element: <AppLayout />,
       children: [
         {
@@ -1310,6 +1313,16 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
+      path: '/scheduling',
+      element: <AppLayout />,
+      children: [
+        {
+          index: true,
+          element: lazyLoad(<Scheduling/>)
+        }
+      ]
+    },
+    {
       path: '/landing-page',
       element: <AppLayout />,
       children: [
@@ -1337,6 +1350,11 @@ export const initRoutes = (): RouteObject[] => {
           index: true,
           element: <ManageURLs/>,
           path:'/vector-admin/manage-urls'
+        },
+        {
+          index: true,
+          element: <ManageEnvConfig/>,
+          path:'/vector-admin/manage-env-configuration'
         }
       ]
     },

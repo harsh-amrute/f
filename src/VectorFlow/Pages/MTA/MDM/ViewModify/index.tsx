@@ -22,6 +22,8 @@ import _ from "lodash";
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader";
 import { useLocation } from "react-router";
 import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store/store";
 
 
 
@@ -116,7 +118,8 @@ import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/
     } = useViewModify('modify');
 
     const [isDisabled, setIsDisabled]= useState<boolean>(true)
-    
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT']; 
 
     useEffect(()=>{
       if(ref.current && ref.current.api){
@@ -329,7 +332,7 @@ import { GridFilterWrapper, TextBtn } from "../../../../../VectorFlow/Pages/MTO/
             openModal={isUploadModalOpen} 
             onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
             onDownload={()=>exportToExcel(true)} 
-            onUpload={onUploadMaster}
+            onUpload={()=>onUploadMaster(RECORD_UPLOAD_LIMIT)}
             inputText={downloadFileName}
             setInputText={setDownloadFileName}
             file={file}

@@ -387,6 +387,7 @@ const ElapsedTime = () => {
                         columnState={columnState}
                         appliedFilters={null}
                         colDefMap={colDefMap}
+                        getGridData={getGridData}
 
                         userPageSize={userPageSize}
                         handlePageChange={handlePageChange}

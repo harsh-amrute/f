@@ -141,7 +141,7 @@ const OTIFTrendsGraph = (props: any) => {
           <div style={{ marginLeft: 30, marginBottom: "-5px" }}>
             <VFInfoToolTip
               infoList={[
-                "The graph highlights the On-Time In-Full (OTIF) trend of complted orders.",
+                "The graph highlights the On-Time In-Full (OTIF) trend of completed orders.",
                 "Orders are plotted based on their respective completion dates."
               ]}
             />
