@@ -13,6 +13,7 @@ export const ColumnSection = styled.table`
   flex-direction: column;
   border-collapse: collapse;
   min-width: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 `;
 
 export const CalendarSection = styled.div`
@@ -101,13 +102,19 @@ export const CalendarCell = styled.th<{ span?: number }>`
   white-space: nowrap;
 `;
 
+export const TaskContainer = styled.div`
+   position: relative;   /* ✅ bars align to this */
+   width: 100%;
+   height: 100%;
+`;
+
 export const TaskBar = styled.div<{left: number, width: number, backgroundColor?: string}>`
     position: absolute;
     background: ${props => props.backgroundColor || 'green'};
     height: 20px;
     border-radius: 2px;
     top:4px;
-    border: 0.5px solid #333;
+    // border: 0.5px solid #333;
     text-align: center;
     color: white;
     left: ${props => props.left}px;

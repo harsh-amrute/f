@@ -7,7 +7,7 @@ import { notifyError } from "../../../../../helpers/notify";
 
 type ReportActionCardProps = {
   title: string;
-  onDownload: () => void;
+  onDownload: (file_name: string) => void;
   onUpload: () => void;
   lastUpdateStatus: any;
   fileUploadType: 'UI'|'FTP'|'DB'|any
@@ -114,7 +114,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
         
         <VFButton
           themeUi={themeUi}
-          onClick={onDownload}
+          onClick={()=>onDownload(title)}
           style={{ fontSize: "0.9rem", height: "32px", width: '100px' }}
           disabled={!lastUpdateStatus}
         >

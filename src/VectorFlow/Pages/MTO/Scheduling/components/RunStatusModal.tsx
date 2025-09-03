@@ -3,6 +3,8 @@ import { useUserData } from "../../../../../context";
 import styled from "styled-components";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
+import moment from "moment";
+import { format } from "date-fns";
 
 const ModalWrapper = styled.div`
   height: fit-content;
@@ -38,6 +40,7 @@ const FooterWrapper = styled.div`
   padding: 12px;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 `;
 const ProgressWrapper = styled.div`
   width: 80%;
@@ -88,6 +91,7 @@ const DateTimeWrapper = styled.span`
 `;
 
 const RunStatusModal = ({
+  runStatus,
   closeModal,
   progress = 50,
   message = "Run Failed",
@@ -100,14 +104,61 @@ const RunStatusModal = ({
   const themeUi = useUserData().user.user.themeUi;
 
   const progressModal = () => {
+    const [isAbortConfirm, setIsAbortConfirm] = React.useState(false);
+
+    if (isAbortConfirm) {
+      return (
+        <ModalWrapper style={{ width: "40vw" }}>
+          <ModalHeader>
+            <CloseButton
+              onClick={() => {
+                setIsAbortConfirm(false);
+              }}
+            >
+              ✕
+            </CloseButton>
+          </ModalHeader>
+          <p style={{ padding: "30px 20px 30px 20px", fontSize: "1.4rem" }}>
+            Are you sure you want to abort the process? The run process will
+            stop and the file execution will be terminated.
+          </p>
+          <FooterWrapper style={{justifyContent: 'center', gap: '12px'}}>
+            <VFButtonOutline
+              style={{
+                height: "3.2rem",
+                fontSize: "1.25rem",
+                borderColor: "#b52670",
+                color: "#b52670"
+              }}
+              themeUi={themeUi}
+              onClick={() => {
+                setIsAbortConfirm(false);
+              }}
+            >
+              No
+            </VFButtonOutline>
+            <VFButton
+              style={{ height: "3.2rem", fontSize: "1.25rem" }}
+              themeUi={themeUi}
+              onClick={() => {
+                setIsAbortConfirm(false);
+                closeModal(true);
+              }}
+            >
+              Yes
+            </VFButton>
+          </FooterWrapper>
+        </ModalWrapper>
+      );
+    }
     return (
       <ModalWrapper>
         <ImageWrapper src={"/assets/img/scheduling/run-in-progress.svg"} />
         <ProgressWrapper>
           <ProgressContainer>
-            <ProgressFill value={progress}>{progress} %</ProgressFill>
+            <ProgressFill value={progress}>{runStatus.progress}</ProgressFill>
           </ProgressContainer>
-          <ProgressMessage>{message}</ProgressMessage>
+          <ProgressMessage>{runStatus.current_step}...</ProgressMessage>
         </ProgressWrapper>
         <FooterWrapper>
           <DateTimeWrapper>
@@ -116,7 +167,16 @@ const RunStatusModal = ({
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
-            <p>Run Start Time: {startTime}</p>
+            <p>
+              <strong>
+
+              Run Start Time:{" "}
+              </strong>
+              {format(
+                new Date(runStatus.started_at).toString(),
+                "dd MMM yyyy, hh:mm a"
+              )}  by {runStatus.triggered_by_username}
+            </p>
           </DateTimeWrapper>
 
           <VFButton
@@ -130,7 +190,9 @@ const RunStatusModal = ({
               padding: "8px 18px",
               width: "fit-content",
             }}
-            onClick={openAbortModal}
+            onClick={() => {
+              setIsAbortConfirm(true);
+            }}
             themeUi={themeUi}
           >
             <img
@@ -147,13 +209,13 @@ const RunStatusModal = ({
 
   const progressCompletedModal = () => {
     return (
-      <ModalWrapper>
+      <ModalWrapper style={{width: '58vw'}}>
         <ModalHeader>
           <CloseButton onClick={closeModal}>✕</CloseButton>
         </ModalHeader>
         <ImageWrapper src={"/assets/img/scheduling/run-complete.svg"} />
         <ProgressMessage style={{ fontSize: "1.3rem", paddingBottom: "15px" }}>
-          {message}
+          {"Run Completed Successfully"}
         </ProgressMessage>
         <FooterWrapper>
           <DateTimeWrapper>
@@ -162,7 +224,10 @@ const RunStatusModal = ({
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
-            <p>Run Start Time: {startTime}</p>
+            <p><strong>
+              Run Start Time: &nbsp;
+              </strong>
+               {format(new Date(runStatus.started_at), "dd MMM yyyy, hh:mm a")} by {runStatus.triggered_by_username}</p>
           </DateTimeWrapper>
           <DateTimeWrapper>
             <img
@@ -170,7 +235,11 @@ const RunStatusModal = ({
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
-            <p>Run End Time: {endTime}</p>
+            <p>
+              <strong>
+              Run End Time: &nbsp;
+              </strong>
+              {format(new Date(runStatus.ended_at), "dd MMM yyyy, hh:mm a")}</p>
           </DateTimeWrapper>
           <VFButton
             style={{
@@ -183,7 +252,7 @@ const RunStatusModal = ({
               padding: "8px 18px",
               width: "fit-content",
             }}
-            onClick={goTofinalResult}
+            onClick={()=>{goTofinalResult();closeModal();}}
             themeUi={themeUi}
           >
             <p>Go To Final Result</p>
@@ -195,7 +264,7 @@ const RunStatusModal = ({
 
   const progressAbortedModal = () => {
     return (
-      <ModalWrapper>
+      <ModalWrapper style={{width: '55vw'}}>
         <ModalHeader>
           <CloseButton onClick={closeModal}>✕</CloseButton>
         </ModalHeader>
@@ -210,7 +279,10 @@ const RunStatusModal = ({
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
-            <p>Run Start Time: {startTime}</p>
+            <p><strong>
+              Run Start Time: &nbsp;
+              </strong>
+               {format(new Date(runStatus.started_at), "dd MMM yyyy, hh:mm a")}</p>
           </DateTimeWrapper>
           <DateTimeWrapper>
             <img
@@ -218,7 +290,12 @@ const RunStatusModal = ({
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
-            <p>Run Abort Time: {endTime}</p>
+            <p>
+              <strong>
+                Run Abort Time: &nbsp;
+                </strong>
+                 {format(new Date(runStatus.ended_at), "dd MMM yyyy, hh:mm a")} by {runStatus.triggered_by_username}</p>
+
           </DateTimeWrapper>
           <VFButton
             style={{
@@ -231,7 +308,7 @@ const RunStatusModal = ({
               padding: "8px 18px",
               width: "fit-content",
             }}
-            onClick={goBack}
+            onClick={()=>{closeModal();}}
             themeUi={themeUi}
           >
             <p>Go Back</p>
@@ -242,7 +319,7 @@ const RunStatusModal = ({
   };
   const progressFailedModal = () => {
     return (
-      <ModalWrapper>
+      <ModalWrapper style={{width: "65vw"}}>
         <ModalHeader>
           <CloseButton onClick={closeModal}>✕</CloseButton>
         </ModalHeader>
@@ -257,7 +334,10 @@ const RunStatusModal = ({
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
-            <p>Run Start Time: {startTime}</p>
+            <p><strong>
+              Run Start Time:  
+              </strong>&nbsp;
+              {format(new Date(runStatus.started_at), "dd MMM yyyy, hh:mm a")}  by {runStatus.triggered_by_username}</p>
           </DateTimeWrapper>
           <DateTimeWrapper>
             <img
@@ -265,7 +345,13 @@ const RunStatusModal = ({
               alt="Calendar Icon"
               style={{ width: "16px", height: "16px" }}
             />
-            <p>Run Failed Time: {endTime}</p>
+            <p>
+              <strong>
+
+              Run Failed Time:
+              &nbsp;
+              </strong>
+               {format(new Date(runStatus.ended_at), "dd MMM yyyy, hh:mm a")}</p>
           </DateTimeWrapper>
           <VFButtonOutline
             style={{
@@ -277,8 +363,8 @@ const RunStatusModal = ({
               height: "fit-content",
               padding: "8px 18px",
               width: "fit-content",
-              borderColor: '#b52670',
-              color: '#b52670',
+              borderColor: "#b52670",
+              color: "#b52670",
             }}
             onClick={goTofinalResult}
             themeUi={themeUi}
@@ -296,7 +382,7 @@ const RunStatusModal = ({
               padding: "8px 18px",
               width: "fit-content",
             }}
-            onClick={goBack}
+            onClick={()=>{closeModal();}}
             themeUi={themeUi}
           >
             <p>Go Back</p>
@@ -306,7 +392,20 @@ const RunStatusModal = ({
     );
   };
 
-  return <>{progressFailedModal()}</>;
+  switch (runStatus?.status) {
+    case "RUNNING":
+      return progressModal();
+    case "SUCCESS":
+      return progressCompletedModal();
+    case "FAILED":
+      return progressFailedModal();
+    case "ABORT":
+      return progressAbortedModal();
+    case "PENDING":
+      return null;
+    default:
+      return null;
+  }
 };
 
 export default RunStatusModal;

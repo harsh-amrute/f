@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useGetRunState } from '../../../../VectorFlow/Services/MTO/Scheduling';
 import VFOverlayModal from '../../../../components/VectorFLOW/commons/VFOverlayModal';
 import FileUploadSection from './FileUploadSection';
@@ -22,37 +22,28 @@ const Scheduling = () => {
 
     const {mutateAsync: getRunState} = useGetRunState();
 
-    const parentRef = React.useRef<HTMLDivElement>(null);
+    const GetRunStatus = async()=>{ 
+         const result = await getRunState();
+         console.log('result', result);
+         setRunStatus(result.data.data);
+    }
+
+    
+
+    useEffect(()=>{ 
+        GetRunStatus();
+    },[])
 
 
     const getRunProgressStatus = async()=>{
         try{
-            // const response = await getRunState();
-            const runObj1 = {
-                status: "Progress",
-                startTime: "2023-10-01T10:00:00Z",
-                endTime: null,
-                message: "Uploading data",
-            }
-            const runObj2 = {
-                status: "Success",
-                startTime: "2023-10-01T10:00:00Z",
-                endTime: "2023-10-01T10:05:00Z",
-                message: "Run success",
-            }
-            const runObj3 = {
-                status: "Failed",
-                startTime: "2023-10-01T10:00:00Z",
-                endTime: "2023-10-01T10:05:00Z",
-                message: "Failed to process input file",
-            }
-            setRunStatus
+            const response = await getRunState();
+            setRunStatus(response.data.data);
         }
         catch{
             console.error("Error fetching run progress status");
         }
     }
-  
 
     const getStep = ()=>{
         switch (step) {
@@ -67,21 +58,13 @@ const Scheduling = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(true);
 
-    const getRunStatusModal = (runStatus: any) => {
-        switch (runStatus.status) {
-            case "Progress":
-                return(
-
-                    <VFOverlayModal parentSelector="#main-content" openModal={isModalOpen}  >
-                <RunStatusModal closeModal={()=>setIsModalOpen(false)}/>
-                </VFOverlayModal>
-                )
-            case "Completed":
-                return <div>Run Completed</div>;
-            case "Failed":
-                return <div>Run Failed</div>;
-            default:
-                return <div>Run Status Unknown</div>;
+    const getRunStatusModal = (runStatus:any) => {
+        if(["SUCCESS", "FAILED", "ABORT", "RUNNING"].includes(runStatus.status)){
+            return(
+            <VFOverlayModal parentSelector="#main-content" openModal={isModalOpen}  >
+            <RunStatusModal runStatus={runStatus} closeModal={()=>setIsModalOpen(false)} goTofinalResult={()=>setStep("Final Result")}/>
+            </VFOverlayModal>
+            )        
         }
     }
 
@@ -109,7 +92,6 @@ const Scheduling = () => {
                         <button onClick={() => setStep("Upload")}>Start New Run</button>
                     </div>
                 );
-
     }}
 
     return (

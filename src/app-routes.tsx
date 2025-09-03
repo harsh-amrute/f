@@ -108,6 +108,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/profile',
     '/',
     '/landing-page',
+    '/scheduling'
   ]
   const urlAllPage = [
     ...authenPage,

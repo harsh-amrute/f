@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+import response from "./data";
 
 const MyChart = lazy(() => import("./MyChart")); // still code-split
 
@@ -20,35 +21,120 @@ const ChartWrapper = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 `;
 
-const Loader = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  font-size: 1.2rem;
+const shimmer = keyframes`
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
 `;
 
-const ResourceViewChart = () => {
+const SkeletonBlock = styled.div<{ width?: string; height?: string }>`
+  background: #eee;
+  background-image: linear-gradient(
+    90deg,
+    #eee 0px,
+  #f5f5f5 40px,
+    #eee 80px
+  );
+  background-size: 200px 100%;
+  animation: ${shimmer} 1.5s infinite linear;
+  border-radius: 4px;
+  margin: 6px 0;
+  width: ${(p) => p.width || "100%"};
+  height: ${(p) => p.height || "20px"};
+`;
 
+const GanttSkeleton = () => {
+  return (
+    <div>
+      <SkeletonBlock height="30px" width="40%" />
+      <SkeletonBlock height="30px" width="60%" />
+
+      {[...Array(6)].map((_, i) => (
+        <SkeletonBlock
+          key={i}
+          height="20px"
+          width={`${50 + Math.random() * 40}%`}
+        />
+      ))}
+    </div>
+  );
+};
+
+const ResourceViewChart = () => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => setReady(true)); 
+    const id = requestAnimationFrame(() => setReady(true));
     return () => cancelAnimationFrame(id);
   }, []);
+
+  const data: any = response.Resource_Data;
+
+
+  const allResources: { id: string; stage: string, work_station: string }[] = [];
+
+
+  const allResourceIds= Object.keys(data);
+  allResourceIds.forEach((key:string, index)=>{
+    const val = {id: key, stage: data[key]?.stage, work_station: data[key]?.work_station};
+    allResources.push(val);
+  });
+
+  const ColDef = [
+    { title: "Stage", key: "stage" },
+    { title: "Work Station", key: "work_station" },
+  ];
+
+
+  const RowData = allResources;
+
+    const TaskData: {jobId: any, task_type: string, work_station: string, start: EpochTimeStamp, end:EpochTimeStamp }[] = [];
+
+  allResourceIds.forEach((resId:string)=>{
+    const tasks = data[resId]?.task_list || [];
+    const work_st = data[resId]?.work_station || "";
+    tasks.forEach((task:any)=>{
+      const taskEntry = {
+        jobId: task.Job_id || null,
+        task_type: task.task_type,
+        work_station: work_st,
+        start: task.start_time,
+        end: task.end_time,
+      };
+      TaskData.push(taskEntry);
+    });
+  });
+
+
+  const colors = 
+     {
+        "free": "#A8D5BA",          // Light green
+        "holiday": "#FFD166",       // Warm yellow
+        "OT": "#EF476F",            // Reddish pink
+        "non_working": "#8D99AE",   // Grey
+        "job": "#06D6A0",           // Teal/green
+        "typeA": "#118AB2",         // Blue
+        "typeB": "#073B4C",         // Dark blue/blackish
+        "unknown": "#FF6F61"        // Coral red
+      }
+
+
+
+
   return (
     <SectionWrapper>
       <ChartWrapper>
-        { 
-        ready? 
-
-          <Suspense fallback={<Loader>Loading chart...</Loader>}>
-          <MyChart />
-        </Suspense> 
-        :
-        <Loader>Loading chart...</Loader>
-        }
-
+        {
+        ready ? (
+          <Suspense fallback={<GanttSkeleton />}>
+            <MyChart RowData={RowData} ColDef={ColDef} TaskData={TaskData}  colors={colors}/>
+          </Suspense>
+        ) : (
+        <GanttSkeleton />
+        )}
       </ChartWrapper>
     </SectionWrapper>
   );
