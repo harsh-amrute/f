@@ -19,7 +19,7 @@ const initialGraphData  ={
 const useBufferTrends = () => {
     const {state:multiFilterState,setState:setMultiFilterState,onDelete} = useBPRFilter()
     const [currentTab,setCurrentTab]=useState<string>('tech')
-    const [currentPageTab,setCurrentPageTab]=useState<string>('absolute')
+    const [currentPageTab,setCurrentPageTab]=useState<string>('Absolute')
     const [currentView,setCurrentView] = useState<string>('chart');
     const [currentGraphData,setCurrentGraphData] = useState([]);
     const [graphData,setGraphData] = useState(initialGraphData);
@@ -109,7 +109,7 @@ const useBufferTrends = () => {
 
     useEffect(() => {
         const { absolute, percentage, summary, avail } = graphData.data;
-        if (currentPageTab === 'absolute' && absolute.length !== 0) {
+        if (currentPageTab === 'Absolute' && absolute.length !== 0) {
             setCurrentGraphData(absolute);
         } else if (currentPageTab === 'percentage' && percentage.length !== 0) {
             setCurrentGraphData(percentage);
@@ -123,7 +123,7 @@ const useBufferTrends = () => {
    const onFloatingTabChange = (tab:any) =>{
 
      setCurrentTab(tab.value);
-     updateGraphState(1, 'pen', { label: currentPageTab === 'absolute' ? 'Absolute' : 'Percentage', value: currentPageTab });
+     updateGraphState(1, 'pen', { label: currentPageTab, value: currentPageTab });
     //  setHorizondays(30);
     
    } 
