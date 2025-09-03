@@ -19,6 +19,7 @@ import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
 import VFPagination from "../../../../../components/VectorFLOW/commons/VFPagination";
 import VFOverlay from "../../../../../components/VectorFLOW/commons/VFOverlay";
+import { GridFilterWrapper ,TextBtn} from "../../../MTO/Common/VFPagination/styles";
 
 
 
@@ -37,6 +38,7 @@ const DeleteRecord = () => {
   const {user} = useUserData()
   const themeUi = user?.user?.theme_ui;
   const location = useLocation();
+  const [disabled,setDisabled]=useState(true);
  
 
     const {
@@ -121,13 +123,28 @@ const DeleteRecord = () => {
         }
       }
     },[isTableDataLoading])
-    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+   // const [isDisabled, setIsDisabled]= useState<boolean>(true)
     
 
     if(isLoading){
         return <VFLoader/>
     }
 
+    const clearGridFilter = () =>{
+      ref?.current?.api.setFilterModel(null);
+      setDisabled(true)
+  }
+
+ 
+  const CustomStatusPanel = () => {
+      return (
+          <GridFilterWrapper style={{marginTop:'25px'}}>
+              <TextBtn onClick={clearGridFilter} disabled={disabled} themeUi={themeUi}>
+                  Clear All Grid Filters
+              </TextBtn>  
+          </GridFilterWrapper>           
+      );
+  };
     if(isSelectMasterOpen){
       return(
           <SelectGroupedMasters  
@@ -226,9 +243,9 @@ const DeleteRecord = () => {
                     onFilterChanged={() => {
                       const filterModel = ref?.current?.api?.getFilterModel();
                       if (filterModel && Object.keys(filterModel).length > 0) {
-                        setIsDisabled(false);
+                        setDisabled(false);
                       } else {
-                        setIsDisabled(true);
+                        setDisabled(true);
                       }
                     }}
                   statusBar={{
@@ -238,6 +255,7 @@ const DeleteRecord = () => {
                       { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
                       { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
                       { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
                     ]:
                     [],
                   }}
@@ -252,7 +270,7 @@ const DeleteRecord = () => {
                     currentPage={currentPage} 
                     rowsPerPage={parseInt(DELETERECORD_PAGE || '100')}
                     handleChangePage={(e)=>handleChangePage(e)} 
-                    isDisabled={isDisabled}
+                    isDisabled={disabled}
                   />
               }
                   <div style={{display:'none'}}>                
