@@ -270,11 +270,8 @@ const useDBM =()=>{
 
      const handleGoButton =  async(pageNo:any)=>{
         notifyLoader("Submitting Norms")
-        console.debug(pageNo)
-        // const handleGoButton =  ()=>{
         const selectedRows = gridRef.current?.api.getSelectedRows();
-        //console.log(selectedRows)
-        if (!selectedRows || selectedRows.length === 0) { 
+        if (!selectedRows || selectedRows?.length === 0) { 
             notifyError("No Rows Selected.");
             return;
         }
@@ -283,7 +280,6 @@ const useDBM =()=>{
             WHCode:items.LocCode
         }));
 
-        //const rowData:any =await getDBMApplySelectedNorm({
             await getDBMApplySelectedNorm({
                 data:extractedData,
                 filters:[],
@@ -295,14 +291,12 @@ const useDBM =()=>{
         toast.dismiss()
         notifySuccess("Submitted Successfully")
         refetchAfter()
-        //console.log(rowData)
    }
 
    const handleGoButtonForSleep =  async(pageNo:any)=>{
         notifyLoader("Submitting Norms")
-        console.debug(pageNo)
         const selectedRows = gridRef.current?.api.getSelectedRows();
-        if (!selectedRows || selectedRows.length === 0) { 
+        if (!selectedRows || selectedRows?.length === 0) { 
             notifyError("No Rows Selected.");
             return;
         }
