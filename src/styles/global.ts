@@ -13,6 +13,7 @@ export const Green = '#418D18';
 export const White = '#FFFFFF';
 export const Orange = '#CB830E';
 export const Blue = '#355FD3';
+export const Grey = "#D3D3D3"
 
 export const NOIRFUSION = {
   color1: "#000000",
