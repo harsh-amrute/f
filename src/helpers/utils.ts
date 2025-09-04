@@ -3252,17 +3252,16 @@ export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => 
     const tempRow = { ...transformedRow, Category: NewCategoryString };
     let tempAvailabilty = 0;
     let nonBlackCount = 0;
+    let EmptyCount = 0;
     for (let index = 90; index > 90 - horizon; index--) {
       if (tempRow[`D${index}`]!== "" && parseInt(tempRow[`D${index}`]) < 100) {
         nonBlackCount = nonBlackCount + 1;
       }
-    }
-    let EmptyCount = 0;
-    for (let index = 90; index > 90 - horizon; index--) {
       if (tempRow[`D${index}`]=== "") {
         EmptyCount = EmptyCount + 1;
       }
     }
+
     tempAvailabilty = parseFloat(((nonBlackCount / (horizon-EmptyCount)) * 100).toFixed(2))
     return {
       ...tempRow,
