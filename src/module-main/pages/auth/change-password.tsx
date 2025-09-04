@@ -1,27 +1,6 @@
 import { useTranslation } from "react-i18next";
-import {
-  ContainerRight,
-  CircleForgotPassword,
-  IputLogin,
-  SCButtonLogin,
-  SignInArea,
-  SignInContainer,
-  Tittle,
-  FormArea,
-  ButtonSubmit,
-  ButtonSubmitText,
-  ArrowArea,
-  InputArea,
-  InputGroup,
-  LogoAreaForgotPsw,
-  ContainerLeft,
-  SuccessArea,
-  SuccessIcon,
-  SuccessText,
-  CaptchaContainer,
-  CaptchaReload,
-  RecaptchaInput,
-} from "./styles";
+
+import { ContainerRight, CircleForgotPassword, IputLogin, SCButtonLogin, SignInArea, SignInContainer, Tittle, FormArea, ButtonSubmit, ButtonSubmitText, ArrowArea, InputArea, InputGroup, LogoAreaForgotPsw, ContainerLeft, SuccessArea, SuccessIcon, SuccessText,CaptchaContainer,CaptchaReload,RecaptchaInput, } from "./styles";
 
 import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
