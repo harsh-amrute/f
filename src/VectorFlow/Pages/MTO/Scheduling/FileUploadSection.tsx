@@ -120,7 +120,7 @@ const FileUploadSection = () => {
         link.click();
         URL.revokeObjectURL(url);
         document.body.removeChild(link);
-        notifySuccess("File downloaded successfully! check your downloads!");
+        notifySuccess("File downloaded successfully! Check your downloads!");
     } catch (e:any) {
       console.log("error", e);
       notifyError(e?.message || "Failed to download file");

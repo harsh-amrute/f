@@ -50,7 +50,7 @@ export const HeaderCell = styled.th<{ width: number }>`
   color: white;
   text-align: center;
   width: ${({ width }) => width}px;
-  min-width: 30px;
+  min-width: ${({ width }) => width}px;
 `;
 
 export const ResizeHandle = styled.div`
@@ -68,8 +68,8 @@ export const ContentCell = styled.td<{ width: number }>`
   text-align: center;
   font-size: 0.9rem;
   font-weight: 300;
+  min-width: ${({ width }) => width}px;
   width: ${({ width }) => width}px;
-  min-width: 30px;
 `;
 
 
@@ -96,16 +96,17 @@ export const CalendarCell = styled.th<{ span?: number }>`
   font-weight: 500;
   color: white;
   background: black;
-  min-width: 60px;
+  min-width: 100px;
   height: 20px;          /* ✅ Fix: bound height */
   line-height: 22px;     /* ✅ vertically center */
   white-space: nowrap;
 `;
 
-export const TaskContainer = styled.div`
-   position: relative;   /* ✅ bars align to this */
-   width: 100%;
-   height: 100%;
+export const TaskContainer = styled.td`
+  position: relative;   /* ✅ anchor absolute TaskBars here */
+  height: 30px;
+  padding: 0;
+  border-left: 1px solid #ccc;
 `;
 
 export const TaskBar = styled.div<{left: number, width: number, backgroundColor?: string}>`
@@ -114,7 +115,7 @@ export const TaskBar = styled.div<{left: number, width: number, backgroundColor?
     height: 20px;
     border-radius: 2px;
     top:4px;
-    // border: 0.5px solid #333;
+    border: 0.5px solid #333;
     text-align: center;
     color: white;
     left: ${props => props.left}px;

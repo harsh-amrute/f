@@ -28,7 +28,6 @@ import {
   ColorPallete,
   Label,
   ContentCell,
-  TaskContainer,
 } from "./MyChartStyles";
 import Tooltip from "../../Common/Tooltip";
 import styled from "styled-components";
@@ -66,7 +65,7 @@ const MyChart = ({
   TaskData: any[];
   colors: { [key: string]: string };
 }) => {
-  const [colWidths, setColWidths] = useState([120, 140]);
+  const [colWidths, setColWidths] = useState([140, 140]);
 
   const handleResize = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
@@ -224,7 +223,7 @@ const MyChart = ({
                 </CalendarCell>
               ))}
             </CalendarHeaderRow>
-
+  
             {/* Sub Header Row */}
             <CalendarHeaderRow>
               {calendarHeaders.flatMap((header: any, idx: any) =>
@@ -236,71 +235,68 @@ const MyChart = ({
             <tbody>
               {RowData.map((row, rowIndex) => (
                 <ContentRow key={rowIndex}>
-                  {/* <TaskContainer> */}
-                    {TaskData.map((task, taskIdx) => {
-                      if (task.work_station === row.work_station) {
-                        // Calculate left and width based on date range and zoom level
-
-                        const myStartDate = new Date(startDate.getTime());
-
-                        console.log(
-                          "myStartDate",
-                          myStartDate,
-                          "\ntask",
-                          new Date(task.start * 1000)
-                        );
-
-                        const cellWidth = 100; // fixed
-                        const slotDuration =
-                          zoom === "week"
-                            ? 24 * 60 * 60 * 1000 // 1 day
-                            : (24 / 3) * 60 * 60 * 1000; // 1 shift = 8 hours
-
-                        // task start offset in ms from chart start
-                        const taskStartOffset =
-                          task.start * 1000 - startDate.getTime();
-                        const taskEndOffset =
-                          task.end * 1000 - startDate.getTime();
-                        // position in px
-                        const left =
-                          (taskStartOffset * cellWidth) / slotDuration;
-                        const width =
-                          ((taskEndOffset - taskStartOffset) * cellWidth) /
-                          slotDuration;
-
-                        return (
-                          <Tooltip
-                            content={ToolTipContent(
-                              task,
-                              taskStartOffset,
-                              taskEndOffset
-                            )}
+                  {TaskData.map((task, taskIdx) => {
+                    if (task.work_station === row.work_station) {
+                      // Align startDate to start of day
+                      const chartStart = new Date(startDate);
+                      chartStart.setHours(0, 0, 0, 0);
+  
+                      const slotDuration =
+                        zoom === "week"
+                          ? 24 * 60 * 60 * 1000 // 1 day
+                          : 8 * 60 * 60 * 1000; // 1 shift = 8 hours
+  
+                      // Normalize task start/end to ms
+                      const taskStart = new Date(task.start * 1000);
+                      taskStart.setSeconds(0, 0); // snap to minute
+                      const taskEnd = new Date(task.end * 1000);
+                      taskEnd.setSeconds(0, 0);
+  
+                      // Calculate offsets
+                      const taskStartOffset =
+                        taskStart.getTime() - chartStart.getTime();
+                      const taskEndOffset =
+                        taskEnd.getTime() - chartStart.getTime();
+                      const taskDuration = taskEndOffset - taskStartOffset;
+  
+                      // convert offset → slots
+                      const startSlots = taskStartOffset / slotDuration;
+                      const durationSlots = taskDuration / slotDuration;
+  
+                      // finally convert slots → px
+                      const left = startSlots * cellWidth;
+                      const width = durationSlots * cellWidth;
+  
+                      return (
+                        <Tooltip
+                          content={ToolTipContent(
+                            task,
+                            taskStartOffset,
+                            taskEndOffset
+                          )}
+                          key={taskIdx}
+                        >
+                          <TaskBar
                             key={taskIdx}
+                            left={left}
+                            width={width}
+                            backgroundColor={colors[task.task_type] ?? "#cecece"}
                           >
-                            <TaskBar
-                              key={taskIdx}
-                              left={left}
-                              width={width}
-                              backgroundColor={
-                                colors[task.task_type] ?? "#cecece"
-                              }
-                            >
-                              {task.jobId ? task.jobId : task.task_type}
-                            </TaskBar>
-                          </Tooltip>
-                        );
-                      }
-                      return null;
-                    })}
-                    {calendarHeaders.flatMap((header: any, headerIdx: number) =>
-                      header.subHeaders.map((sub: any, subIdx: any) => (
-                        <ContentCell
-                          key={`${rowIndex}-${headerIdx}-${subIdx}`}
-                          width={100}
-                        ></ContentCell>
-                      ))
-                    )}
-                  {/* </TaskContainer> */}
+                            {task.jobId ? task.jobId : task.task_type}
+                          </TaskBar>
+                        </Tooltip>
+                      );
+                    }
+                    return null;
+                  })}
+                  {calendarHeaders.flatMap((header: any, headerIdx: number) =>
+                    header.subHeaders.map((sub: any, subIdx: any) => (
+                      <ContentCell
+                        key={`${rowIndex}-${headerIdx}-${subIdx}`}
+                        width={cellWidth}
+                      ></ContentCell>
+                    ))
+                  )}
                 </ContentRow>
               ))}
             </tbody>
@@ -316,7 +312,6 @@ const MyChart = ({
           >
             -
           </ZoomButton>
-          {/* <p style={{padding: '0 3px'}}>zoom</p> */}
           <ZoomButton
             disabled={zoom === "day"}
             active={zoom === "day"}
@@ -327,13 +322,6 @@ const MyChart = ({
         </ZoomButtonWrapper>
       </ZoomSection>
       <LegendWrapper>
-        {/* {colorObj.map((colorItem, colorIdx) => (
-          <React.Fragment key={colorIdx}>
-            <ColorPallete color={colorItem.color} />
-            <Label>{colorItem.label}</Label>
-          </React.Fragment>
-        ))} */}
-
         {colors &&
           Object.keys(colors).map((key, index) => (
             <React.Fragment key={index}>
@@ -344,6 +332,7 @@ const MyChart = ({
       </LegendWrapper>
     </SectionWrapper>
   );
+  
 };
 
 export default MyChart;

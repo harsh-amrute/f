@@ -109,18 +109,17 @@ const ResourceViewChart = () => {
   });
 
 
-  const colors = 
-     {
-        "free": "#A8D5BA",          // Light green
-        "holiday": "#FFD166",       // Warm yellow
-        "OT": "#EF476F",            // Reddish pink
-        "non_working": "#8D99AE",   // Grey
-        "job": "#06D6A0",           // Teal/green
-        "typeA": "#118AB2",         // Blue
-        "typeB": "#073B4C",         // Dark blue/blackish
-        "unknown": "#FF6F61"        // Coral red
-      }
-
+  const colors = {
+    free: "#6FCF97",        
+    holiday: "#F2C94C",     
+    OT: "#EB5757",          
+    non_working: "#BDBDBD", 
+    job: "#56CCF2",         
+    typeA: "#2F80ED",       
+    typeB: "#1C3D5A",       
+    unknown: "#BB6BD9"      
+  };
+  
 
 
 
