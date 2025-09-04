@@ -225,6 +225,10 @@ const OverallBmReport = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui; 
 
+const feature_permission = user?.feature_permission || [];
+const canShowOrderClosing = feature_permission.includes("Order_Closing");
+
+
    
   const dispatch = useDispatch();
   const [userPageSize, setUserPageSize] = useState<any>();
@@ -286,11 +290,8 @@ const OverallBmReport = () => {
     else {
       setBomActive(false)
     }
-    const orderClosingEnable = DBRSettings?.find((data: any) => {
-      return data.flag == "CloseOrdersFromUI";
-    });
     
-    setorderClosingEnable(orderClosingEnable?.value);
+    setorderClosingEnable(canShowOrderClosing);
     setSystemType(Number(systemType?.value || 0));
   };
 

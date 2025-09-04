@@ -3252,12 +3252,17 @@ export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => 
     let tempAvailabilty = 0;
     let nonBlackCount = 0;
     for (let index = 90; index > 90 - horizon; index--) {
-      if (tempRow[`D${index}`] && tempRow[`D${index}`] < 100) {
+      if (tempRow[`D${index}`]!= "" && tempRow[`D${index}`] < 100) {
         nonBlackCount = nonBlackCount + 1;
       }
     }
- 
-    tempAvailabilty = parseFloat(((nonBlackCount / horizon) * 100).toFixed(2))
+    let EmptyCount = 0;
+    for (let index = 90; index > 90 - horizon; index--) {
+      if (tempRow[`D${index}`]== "") {
+        EmptyCount = EmptyCount + 1;
+      }
+    }
+    tempAvailabilty = parseFloat(((nonBlackCount / (horizon-EmptyCount)) * 100).toFixed(2))
     return {
       ...tempRow,
       Availability: tempAvailabilty
@@ -4668,7 +4673,7 @@ export const getBodyForExcelExport = ({
 }: any) => {
   const filteredHeadersData = headersdata?.filter(
     (col: any) =>
-      col.colId !== "DropDown" && col.colId !== "Action" && col.hide !== true && !col.colId.includes('History')
+      col.colId !== "DropDown" && col.colId !== "Action" && col.hide !== true && !col.colId.includes('History') && (col.colId!=="Default Attribute-Remark")
 
   );
 

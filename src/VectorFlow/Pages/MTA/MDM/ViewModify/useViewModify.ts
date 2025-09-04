@@ -777,7 +777,7 @@ const useViewModify = (pageType:string) => {
 
     const handleTabClose = (e:React.MouseEvent<HTMLElement>,currMaster:MDMMasterState) => {
       e.stopPropagation();
-      const nonClosableStates = ['default', 'view','phaseInPhaseOut' , 'seasonality'];
+      const nonClosableStates = ['default', 'view','phaseInPhaseOut' , 'seasonality', 'deleteView'];
       const incompleteMastersCount = masters.filter((master: MDMMasterState) => master.progress !== 'submitted').length;
       if (incompleteMastersCount === 1 && currMaster.progress !== 'submitted') {
         return notifyError('Cannot close the tab as it is the only incomplete master'); // Notify if this is the only incomplete master

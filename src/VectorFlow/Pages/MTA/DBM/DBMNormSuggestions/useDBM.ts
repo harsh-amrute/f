@@ -361,6 +361,7 @@ const useDBM =()=>{
         setCurrentFilter(filter)
         await getDataCount(filter)
         await getDBMRowData(filter,1)
+        getDBMUiConfig()
     }
 
     const onDeleteFilter = async(parentId:any, filterId:any, value:any)=>{
@@ -376,6 +377,8 @@ const useDBM =()=>{
                 recordsPerPage:5000
             }
         })
+
+        getDBMUiConfig()
         // console.log(rowData.data.data)
         return rowData.data.data
     }

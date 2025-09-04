@@ -95,7 +95,7 @@ const colorMapper =(color:string)=> {
             }
         case "Grey":{
             return {
-                "bg":"grey",
+                "bg":"#D3D3D3",
                 "text":"black"
             }
         }
@@ -130,11 +130,17 @@ export const BPRTechColorCellRenderer = (params:any)=>{
 
     if(params.data.TechPen== null){
         return (
-            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:"white",maxWidth:90}}>
+            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,maxWidth:90}}>
             </BPRColorCellRendererWrapper>        
             )
     }
-
+    if(params.data.TechPen == "") {
+        return(
+            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
+                {params.data.TechPen}
+            </BPRColorCellRendererWrapper>
+        )
+    }
     return(
         <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,color:cellColor.text,maxWidth:90}}>
             {params.data.TechPen}%
@@ -170,7 +176,7 @@ export const BPREcoColorCellRenderer = (params:any)=>{
 
     if(params.data.EcoPen == null){
         return (
-            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:"white",maxWidth:90}}>
+            <BPRColorCellRendererWrapper onClick={()=>console.log(params)} style={{backgroundColor:cellColor.bg,maxWidth:90}}>
             </BPRColorCellRendererWrapper>        
             )
     }

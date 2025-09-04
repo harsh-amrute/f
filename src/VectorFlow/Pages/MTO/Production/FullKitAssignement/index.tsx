@@ -43,6 +43,8 @@ const APIFilterConfig = {
 const FullKitAssignment = () => {
 
   const { user } = useUserData();
+  const hasChangeRoute = user?.feature_permission?.includes("Change_Route");
+  const hasDeselectOrder = user?.feature_permission?.includes("Deselect_Orders");
   const themeUi = user?.user?.theme_ui;
   const { mutateAsync: getPageWiseFilterData, /*isLoading*/ } = useGetFilterData()
   const [filterData, setFilterData] = useState({});
@@ -112,6 +114,7 @@ const FullKitAssignment = () => {
         return (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "end", gap: "1rem", width: "100%", height: "100%" }}>
             <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{params.value}</div>
+            {hasChangeRoute && (
             <img height={12} width={12} alt="edit icon" src={"/assets/img/mto/fullKitAssignment/edit_icon.svg"} style={{ color: globalStyles.chooseThemeColor[themeUi]?.color4, cursor: "pointer" }}
               onClick={() => {
                 if (params.data.r === null) {
@@ -121,7 +124,7 @@ const FullKitAssignment = () => {
                 setOrderDetails({ itemTypeId: params.data?.itid, plantId: params.data?.plid, routeNum: params.data?.r, orderKey: params.data?.ok });
                 setShowModal(true);
               }}
-            />
+            />)}
           </div>
         )
       }
@@ -360,11 +363,16 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
 
     switch (editMode) {
       case "View": {
-        return <VFButtonOutline themeUi={themeUi}
-          onClick={() => {
-            setEditMode("Deselect")
-          }}>Deselect Order</VFButtonOutline>
+        return hasDeselectOrder ? (
+          <VFButtonOutline themeUi={themeUi}
+            onClick={() => {
+              setEditMode("Deselect")
+            }}>
+            Deselect Order
+          </VFButtonOutline>
+        ) : null;
       }
+  
       case "Deselect": {
         return <>
           <strong style={{ marginRight: "1rem", cursor: "pointer", color: globalStyles.chooseThemeColor[themeUi].color4 }} onClick={() => {
