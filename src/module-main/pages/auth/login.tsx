@@ -7,9 +7,6 @@ import { useLoginAccount } from "../../../module-main/services";
 import {  useNavigate } from "react-router";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useEffect, useRef, useState } from "react";
-// eslint-disable-next-line import/no-named-as-default
-// import { SITE_KEY,TEST_SITE_KEY } from "../../../helpers/constants";
-import { SITE_KEY} from "../../../helpers/constants";
 import WelcomeBoard from "./welcome-board";
 import { hashPassword } from '../../../helpers/utils'
 import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
