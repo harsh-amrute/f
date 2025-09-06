@@ -100,11 +100,9 @@ const FileUploadSection = () => {
 
   const GetFileConfiguration = async () => {
     const result = await getFileConfiguration();
-    console.log("result", result);
     setFileObjects(result.data.data);
     setLastRefreshTime(new Date().toString());
   };
-
 
 
   const DownloadExcel = async(filename: string) => {

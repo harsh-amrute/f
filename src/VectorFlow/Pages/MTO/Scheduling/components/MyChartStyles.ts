@@ -16,12 +16,21 @@ export const ColumnSection = styled.table`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 `;
 
+export const CalendarBodyWrapper = styled.div`
+  flex: 1;
+  max-height: 500px;   /* adjust as needed */
+  overflow-y: auto;
+  overflow-x: hidden;
+`;
 export const CalendarSection = styled.div`
   border: 1px solid #ccc;
   border-radius: 0 8px 0 0;
   background: black;
   flex: 1 1 0;
   overflow-x: auto;
+  overflow-y: hidden;
+  // display: flex;
+  // flex-direction: column;
 `;
 
 export const ColumnHeaderRow = styled.tr`
@@ -186,3 +195,24 @@ export const Label = styled.span`
     color: #333;
     margin-right: 16px;
 `
+export const TooltipWrapper = styled.div`
+  padding: 8px;
+  background: rgba(60, 59, 59, 0.88);
+  border: 0.7px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-size: 0.9rem;
+  color: rgba(197, 195, 195, 0.88);
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+export const TooltipRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+`;

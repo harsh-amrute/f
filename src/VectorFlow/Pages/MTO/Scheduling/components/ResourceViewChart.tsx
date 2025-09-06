@@ -84,14 +84,14 @@ const ResourceViewChart = () => {
   });
 
   const ColDef = [
-    { title: "Stage", key: "stage" },
-    { title: "Work Station", key: "work_station" },
+    { title: "Stage", key: "stage", width: 150 },
+    { title: "Work Station", key: "work_station", width: 150 },
   ];
 
 
   const RowData = allResources;
 
-    const TaskData: {jobId: any, task_type: string, work_station: string, start: EpochTimeStamp, end:EpochTimeStamp }[] = [];
+  const TaskData: {jobId: any, task_type: string, work_station: string, start: EpochTimeStamp, end:EpochTimeStamp }[] = [];
 
   allResourceIds.forEach((resId:string)=>{
     const tasks = data[resId]?.task_list || [];
@@ -129,7 +129,7 @@ const ResourceViewChart = () => {
         {
         ready ? (
           <Suspense fallback={<GanttSkeleton />}>
-            <MyChart RowData={RowData} ColDef={ColDef} TaskData={TaskData}  colors={colors}/>
+            <MyChart RowData={RowData} ColDef={ColDef} TaskData={TaskData} primary_key={"work_station"} colors={colors}/>
           </Suspense>
         ) : (
         <GanttSkeleton />

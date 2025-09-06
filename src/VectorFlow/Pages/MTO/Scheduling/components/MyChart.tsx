@@ -28,44 +28,34 @@ import {
   ColorPallete,
   Label,
   ContentCell,
+  TooltipWrapper,
+  TooltipRow,
 } from "./MyChartStyles";
 import Tooltip from "../../Common/Tooltip";
 import styled from "styled-components";
 
-const TooltipWrapper = styled.div`
-  padding: 8px;
-  background: rgba(60, 59, 59, 0.88);
-  border: 0.7px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  font-size: 0.9rem;
-  color: rgba(197, 195, 195, 0.88);
-  width: fit-content;
-  height: fit-content;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
 
-const TooltipRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-`;
 
 const MyChart = ({
   RowData,
   ColDef,
   TaskData,
   colors,
+  primary_key,
+  CustomTaskBar,
+  CustomTooltip
 }: {
   RowData: any[];
   ColDef: any[];
   TaskData: any[];
   colors: { [key: string]: string };
+  primary_key: string;
+  CustomTaskBar?: ({props}:any) => React.ReactNode;
+  CustomTooltip?: any;
 }) => {
-  const [colWidths, setColWidths] = useState([140, 140]);
+
+  const initialColWidths: any = ColDef.map((ele:any) => ele.width); // default width 150px
+  const [colWidths, setColWidths] = useState<any>(initialColWidths);
 
   const handleResize = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
@@ -135,12 +125,6 @@ const MyChart = ({
     [zoom, startDate, endDate]
   );
 
-  const colorObj = [
-    { color: "#BC3D81", label: "Assigned Job" },
-    { color: "#cecece", label: "Free Slot" },
-    { color: "grey", label: "Type A" },
-    { color: "slate-grey", label: "Type B" },
-  ];
 
   const ToolTipContent = (
     task: any,
@@ -151,7 +135,7 @@ const MyChart = ({
       <TooltipWrapper>
         <TooltipRow>
           <div>
-            <strong>{task.work_station}</strong>
+            <strong>{task[primary_key]}</strong>
           </div>
           <div style={{ color: "#cecece" }}>
             {task.jobId ? task.jobId : task.task_type}
@@ -190,8 +174,8 @@ const MyChart = ({
   return (
     <SectionWrapper>
       <ChartWrapper>
-        <ColumnSection>
-          <thead>
+        <ColumnSection style={{position: 'relative'}}>
+          <thead style={{position: "sticky", top: 0}}>
             <ColumnHeaderRow>
               {ColDef.map((col, index) => (
                 <HeaderCell key={index} width={colWidths[index]}>
@@ -236,17 +220,16 @@ const MyChart = ({
               {RowData.map((row, rowIndex) => (
                 <ContentRow key={rowIndex}>
                   {TaskData.map((task, taskIdx) => {
-                    if (task.work_station === row.work_station) {
+                    if (task[primary_key] === row[primary_key]) {
                       // Align startDate to start of day
                       const chartStart = new Date(startDate);
                       chartStart.setHours(0, 0, 0, 0);
   
                       const slotDuration =
                         zoom === "week"
-                          ? 24 * 60 * 60 * 1000 // 1 day
-                          : 8 * 60 * 60 * 1000; // 1 shift = 8 hours
+                          ? 24 * 60 * 60 * 1000
+                          : 8 * 60 * 60 * 1000; 
   
-                      // Normalize task start/end to ms
                       const taskStart = new Date(task.start * 1000);
                       taskStart.setSeconds(0, 0); // snap to minute
                       const taskEnd = new Date(task.end * 1000);
@@ -269,21 +252,24 @@ const MyChart = ({
   
                       return (
                         <Tooltip
-                          content={ToolTipContent(
+                          content={CustomTooltip? CustomTooltip(task,taskStartOffset, taskEndOffset, startDate): ToolTipContent(
                             task,
                             taskStartOffset,
                             taskEndOffset
                           )}
                           key={taskIdx}
                         >
-                          <TaskBar
+                          {
+                            CustomTaskBar? CustomTaskBar({taskIdx, left, width, task}):
+                            <TaskBar
                             key={taskIdx}
                             left={left}
                             width={width}
                             backgroundColor={colors[task.task_type] ?? "#cecece"}
-                          >
+                            >
                             {task.jobId ? task.jobId : task.task_type}
                           </TaskBar>
+                          }
                         </Tooltip>
                       );
                     }
