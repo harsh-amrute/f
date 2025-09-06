@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { SearchInputMultiple } from "../../../components";
-import { get } from "lodash";
+import {  SearchInputMultiple } from "../../../components";
+import { useUserData } from "../../../context";
+import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
+import { set } from "lodash";
 
 const SectionContainer = styled.div`
   border: 1px dotted #ccc;
@@ -32,6 +34,14 @@ const Label = styled.label`
   font-size: 12px;
   color: #333;
   margin-bottom: 6px;
+`;
+
+const SelectAllWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  gap: 6px;
 `;
 
 const PermissionForm = ({
@@ -235,9 +245,9 @@ const PermissionForm = ({
     permissionType,
     level,
   }: any) => {
-    const currentPermissions = selectedPermissions[selectedApplication] || {};
+    const currentPermissions =  (selectedPermissions && selectedPermissions?.[selectedApplication]) || {};
 
-    const permissionSet = currentPermissions[permissionType] || [];
+    const permissionSet = currentPermissions?.[permissionType] || [];
 
     let val: { value: string; label: string }[] = [];
 
@@ -282,73 +292,85 @@ const PermissionForm = ({
     level,
   }: any) => {
     if (!val || !Array.isArray(val)) return;
-
-    
+  
+    // Get the previous permissions for the selected application and permission type
     const prevPerms =
-    selectedPermissions?.[selectedApplication]?.[permissionType] || [];
-    
+      selectedPermissions?.[selectedApplication]?.[permissionType] || [];
+  
     const selectPermissions = Array.isArray(prevPerms) ? prevPerms : [];
   
     let newPerm: any[] = [];
-    
-          console.log("val",val);
-          console.log("selectedPerissions", selectPermissions)
   
     if (level === 0) {
-      const filteredPermissions = selectPermissions.filter((ele: any) =>
-        val.some(({ value }: any) => value === ele[0])
-      );
-  
-      const filteredNewPermissions = val
-        .filter(
-          (ele: any) =>
-            !selectPermissions.some((e: any) => e[0] === ele.value)
-        )
-        .map((ele: any) => [ele.value]);
-  
-      newPerm = [...filteredNewPermissions, ...filteredPermissions];
+      // Level 0: Update top-level permissions
+      newPerm = val.map((item: string) => [item]);
     }
   
     if (level === 1) {
-      const filteredPermissions = selectPermissions.filter(
-        (ele: any) =>
-          val.some(({ value }: any) =>{ 
-            return (ele.length>=1 && (value.split(">")?.[0]=== ele?.[0]) && (value.split(">")?.[1] === ele?.[1]))
-          })
+      // Level 1: Update second-level permissions
+      const valMap = val.map((item: string) => item.split(">"));
+  
+      // Remove any existing permissions that do not match the current level structure
+      const filteredPermissions = selectPermissions.filter((perm: any) =>
+        valMap.some(([parent, child]) => perm[0] === parent && perm[1] === child)
       );
   
-      console.log("filtered permissions", filteredPermissions);
-      const filteredNewPermissions = val
-        .filter(
-          (ele: any) =>
-            !selectPermissions.some(
-              (e: any) => e.slice(0, 2).join(">") === ele.value
-            )
-        )
-        .map((ele: any) => ele.value.split(">"));
+      // Add new permissions from val
+      const filteredNewPermissions = valMap.filter(
+        ([parent, child]) =>
+          !selectPermissions.some(
+            (perm: any) => perm[0] === parent && perm[1] === child
+          )
+      );
   
-      newPerm = [...filteredNewPermissions, ...filteredPermissions];
+      // Replace single-level parents with parent-child structure
+      const updatedPermissions = filteredPermissions.filter(
+        (perm: any) =>
+          !valMap.some(([parent]) => perm[0] === parent && perm.length === 1)
+      );
+  
+      newPerm = [
+        ...updatedPermissions,
+        ...filteredNewPermissions.map(([parent, child]) => [parent, child]),
+      ];
     }
-    
+  
     if (level === 2) {
-      const filteredPermissions = selectPermissions.filter(
-        (ele: any) =>
-          ele.length >= 3 &&
-          val.some(({ value }: any) => value === ele.slice(0, 3).join(">"))
+      // Level 2: Update third-level permissions
+      const valMap = val.map((item: string) => item.split(">"));
+  
+      // Remove any existing permissions that do not match the current level structure
+      const filteredPermissions = selectPermissions.filter((perm: any) =>
+        valMap.some(
+          ([parent, child, subChild]) =>
+            perm[0] === parent &&
+            perm[1] === child &&
+            perm[2] === subChild
+        )
       );
   
-      const filteredNewPermissions = val
-        .filter(
-          (ele: any) =>
-            !selectPermissions.some(
-              (e: any) => e.slice(0, 3).join(">") === ele.value
-            )
-        )
-        .map((ele: any) => ele.value.split(">"));
+      // Add new permissions from val
+      const filteredNewPermissions = valMap.filter(
+        ([parent, child, subChild]) =>
+          !selectPermissions.some(
+            (perm: any) =>
+              perm[0] === parent &&
+              perm[1] === child &&
+              perm[2] === subChild
+          )
+      );
   
-      newPerm = [...filteredNewPermissions, ...filteredPermissions];
+      newPerm = [
+        ...filteredPermissions,
+        ...filteredNewPermissions.map(([parent, child, subChild]) => [
+          parent,
+          child,
+          subChild,
+        ]),
+      ];
     }
   
+    // Update the selected permissions state
     setSelectedPermissions((prev: any) => ({
       ...prev,
       [selectedApplication]: {
@@ -357,10 +379,67 @@ const PermissionForm = ({
       },
     }));
   };
-  
+
+  const themeUi= useUserData().user.user.theme_ui
+
+  const isSelectAll = (selectedPermissions: any) => {
+    if (!selectedApplication) return false;
+
+    const currentPermissions = selectedPermissions[selectedApplication] || {};
+    const locPerms = currentPermissions["location_permission"] || [];
+    const prodPerms = currentPermissions["product_permission"] || [];
+
+    const totalLocPerms = LL3.length;
+    const totalProdPerms = PL3.length;
+
+    const selectedLocPermsCount = locPerms.filter((e: any) => e.length === 3).length;
+    const selectedProdPermsCount = prodPerms.filter((e: any) => e.length === 3).length;
+
+    return selectedLocPermsCount === totalLocPerms && selectedProdPermsCount === totalProdPerms;
+  };
+  const setAllPermissions = () => {
+    if (!selectedApplication) return;
+
+    if (isSelectAll(selectedPermissions)) {
+      // Deselect all
+      setSelectedPermissions((prev: any) => ({
+        ...prev,
+        [selectedApplication]: {
+          location_permission: [],
+          product_permission: [],
+        },
+      }));
+    } else {
+      // Select all
+      const allLocPerms = LL3.map((e: any) => e.split(">"));
+      const allProdPerms = PL3.map((e: any) => e.split(">"));
+
+      setSelectedPermissions((prev: any) => ({
+        ...prev,
+        [selectedApplication]: {
+          location_permission: allLocPerms,
+          product_permission: allProdPerms,
+        },
+      }));
+    }
+  }
 
   return (
     <div style={{ padding: "40px 20px 20px 20px" }}>
+      <div style={{ marginBottom: "20px", fontSize: "14px", fontWeight: 600, display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
+        <SelectAllWrapper>
+        <Checkbox
+                    style={{ zoom: 0.5 }}
+                    theme={themeUi}
+                    type="checkbox"
+                    checked={isSelectAll(selectedPermissions)}
+                    onClick={(e) => e.stopPropagation()} // prevent double trigger
+                    onChange={(e: any) => {setAllPermissions()}}
+                    />
+                  <label style={{ cursor: "pointer" }}>Select All</label>
+
+        </SelectAllWrapper>
+      </div>
       <SectionContainer>
         <SectionTitle>Product Permission</SectionTitle>
         <Grid>

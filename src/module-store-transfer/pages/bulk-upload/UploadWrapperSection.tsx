@@ -107,8 +107,8 @@ function UploadWrapperSection({
       }
     }
 
-    if (data.length - 1 > 1000) {
-      notifyError("You can only upload a maximum of 1000 records at a time.");
+    if (data.length - 1 > 500) {
+      notifyError("You can only upload a maximum of 500 records at a time.");
       return;
     }
 

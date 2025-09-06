@@ -83,11 +83,6 @@ const ContainerDrop = styled.div`
   border: 1px solid #ccc;
   padding: 8px;
   background: white;
-
-  
-  max-height: 300px;  
-  overflow-y: auto;   
-  overflow-x: hidden; 
 `;
 
 const CheckboxRow = styled.div`
@@ -117,14 +112,13 @@ const CategoryHeader = styled.div`
 `;
 
 const SubItem = styled.div`
-  padding-left: 20px;
+  padding-left: 10px;
   display: flex;
   align-items: center;
   gap: 6px;
   margin: 4px 0;
   &:hover {
     background: #f0f0f0;
-    font-size: 12px;
 
     }
 `;
@@ -134,6 +128,14 @@ const BottomButtons = styled.div`
   justify-content: space-between;
   margin-top: 16px;
 `;
+
+const OptionsSection = styled.div`
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+`
 
 
 type RoleItem = {
@@ -199,6 +201,9 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
         <label style={{cursor: 'pointer'}}>Select all</label>
       </CheckboxRow>
 
+      <OptionsSection>
+
+
       {applicationGroups.map((appName: any) => {
         const roles = allRoles.filter(
           (role: any) => role.application_name === appName
@@ -224,6 +229,8 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
                    selectedRoles?.size>0 &&  selectedRoles?.has(role) ? removeRole(role) : addRole(role);
                   }}
                 >
+                  <div style={{width:'22px', height: '22px', display: 'flex', alignItems: 'center'}}>
+
                   <Checkbox
                     style={{ zoom: 0.5 }}
                     theme={themeUi}
@@ -233,13 +240,16 @@ const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
                     onChange={(e) =>
                       e.target.checked ? addRole(role) : removeRole(role)
                     }
-                  />
+                    />
+                    </div>
                   <label style={{ cursor: "pointer" }}>{role.name}</label>
                 </SubItem>
               ))}
           </div>
         );
       })}
+      </OptionsSection>
+
 
       <BottomButtons>
         <VFButtonOutline

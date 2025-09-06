@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import { TableWrapper } from "../../../VectorFlow/Pages/MTO/Procurement/InsightsAndTrends/RMPMOrderwiseCoverage/styles";
 import { CellStyle, ColDef, FillOperationParams, RowStyle } from "ag-grid-enterprise";
@@ -181,11 +181,9 @@ const PermissionSelectionPage = ({
     const createUsers = async()=>{
       const userDataAll: string[] = [];
       gridRef &&  gridRef.current && gridRef?.current.api.forEachNode((node: any)=>{
-        console.log("node", node);
         userDataAll.push(node.data);
         
       })
-      console.log("userData", userDataAll);
       // return;
       try{
         const finalData = transformUserData(userDataAll);
@@ -202,7 +200,6 @@ const PermissionSelectionPage = ({
           })
           setErrorRes(errorUserData.length);
           setIsFinalView(true);
-          console.log("errorUserData", errorUserData);
           setValidUsersData(validUserData)
         }
         else{
@@ -210,11 +207,9 @@ const PermissionSelectionPage = ({
           console.error("Failed to register Users! Please try again!", response);
         }
         
-        console.log("response", response);
       }catch(e){
         console.error("Error updating roles for selected users", e);
       }
-      console.log("userData", userDataAll);
 
     }
 
@@ -288,6 +283,7 @@ const PermissionSelectionPage = ({
         },
       },
     ];
+
     const [isBulkActionEnabled, setIsBulkActionEnabled] = useState(false);
 
     const agGridProps: AgGridReactProps = {
@@ -375,7 +371,7 @@ const PermissionSelectionPage = ({
                     gridRef.current?.api.exportDataAsExcel({
                       fileName: "UserData.xlsx",
                       sheetName: "User Data",
-                      columnKeys: ["id", "username", "email ", "pwd"],
+                      columnKeys: ["id", "username", "email", "pwd"],
                     });
                   }}
                 >

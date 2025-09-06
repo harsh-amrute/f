@@ -91,7 +91,7 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
 };
 
 // @TODO: add type definations
-const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,closeModal, updatePermissions }: {gridRef?: GridRef| any, selectedIndex?: any, dataAllPermissions: any, closeModal: any, updatePermissions: any}) => {
+const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,closeModal, updatePermissions, defaultPermissions }: {gridRef?: GridRef| any, selectedIndex?: any, dataAllPermissions: any, closeModal: any, updatePermissions: any, defaultPermissions?: any}) => {
   const [isChartView, setIsChartView] = React.useState(false);
   const allApplications = dataAllPermissions?.map(
     (ele: any) => ele.application_name
@@ -100,30 +100,34 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
     string[]
   >(allApplications[0]);
 
-  const [selectedPermissions, setSelectedPermissions] = useState<any>({});
+
   useEffect(()=>{
-    console.log("selectedIndex", selectedIndex);
-    if(!isNaN(selectedIndex)){
-        console.log("selectedIndex", selectedIndex);
-      gridRef && gridRef?.api && gridRef.api?.forEachNode((node: IRowNode)=>{
-        console.log("here")
-        if(node.rowIndex===selectedIndex){
-          console.log("here and")
-          setSelectedPermissions(node.data.permissions);
-        }
-      })
-    }
+    console.log("defaultPermission", defaultPermissions)
+  },[defaultPermissions]);
+
+  const [selectedPermissions, setSelectedPermissions] = useState<any>({});
+
+  const ResetPermissions = ()=>{
+    gridRef?.current?.api?.forEachNode((node: IRowNode, index: number)=>{
+      if(selectedIndex===index){
+        setSelectedPermissions(node.data.permissions || {});
+      }
+    })
+  }
+  useEffect(()=>{
+    //  if(selectedIndex && gridRef?.current?.api){
+      ResetPermissions();
+    //  }
   },[selectedIndex, gridRef])
 
   const user = useUserData();
   const themeUi = user.user.user.theme_ui;
 
-  useEffect(()=>{
-    console.log("this are the selectedPermissions", selectedPermissions);
-  },[selectedPermissions])
+  const clearAllPermissions = () => {
+    setSelectedPermissions({});
+  }
 
   return (
-    <>
       <div style={{ width: "80vw", height: "80vh", padding: "25px" }}>
         <div
           style={{
@@ -145,7 +149,7 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
         </div>
         <div style={{height: '80%'}}>
 
-        {isChartView ? (
+        {(!isChartView) ? (
         
           <PermissionHeirarchyCanvas
           dataAllPermissions={dataAllPermissions}
@@ -165,22 +169,32 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
             />
           )}
           </div>
-        <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '20px', gap: '10px'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '20px', gap: '10px'}}>
+          <div>
           <VFButtonOutline
             style={{height: '3.5rem', fontSize: '1.2rem'}}
             themeUi={themeUi}
-            onClick={() => {closeModal()}}
+            onClick={() => {ResetPermissions()}}
+            
+            >Reset</VFButtonOutline>
+            </div>
+          <div style={{display: 'flex', gap: '20px'}}>
 
-          >Cancel</VFButtonOutline>
+          <VFButtonOutline
+            style={{height: '3.5rem', fontSize: '1.2rem'}}
+            themeUi={themeUi}
+            onClick={() => {clearAllPermissions()}}
+            
+            >Clear All</VFButtonOutline>
           <VFButton
           style={{height: '3.5rem', fontSize: '1.2rem'}}
           themeUi={themeUi}
           onClick={() => {updatePermissions(selectedPermissions); closeModal()}}
           >Apply</VFButton>
           
+          </div>
         </div>
       </div>
-    </>
   );
 };
 

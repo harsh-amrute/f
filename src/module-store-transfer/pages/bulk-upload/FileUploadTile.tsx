@@ -39,7 +39,7 @@ const FileUploadTile = ({ handleFileChange, handleUploadClick, file}: any) => {
           >
             <img src={"/assets/img/download.svg"} alt="" style={{width:"4.5rem"}} />
             <HeaderSection style={{cursor: 'pointer'}} >
-              <HeaderText>{"Upload File"}</HeaderText>
+              <HeaderText>{"Upload File"}<p style={{fontSize: '0.9rem', fontWeight: 'normal'}}>{" (upto 500 users only)"}</p></HeaderText>
               {file?.name &&
               <SubText>{`Selected file :  ${file.name}`}</SubText>
 

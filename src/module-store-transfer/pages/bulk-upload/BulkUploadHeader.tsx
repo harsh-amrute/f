@@ -121,7 +121,7 @@ const BulkUploadHeader = ({
           gridRef.current.api.exportDataAsExcel({
             fileName: "UserData.xlsx",
             sheetName: "User Data",
-            columnKeys: ['id', 'username', 'email ', 'pwd']
+            columnKeys: ['id', 'username', 'email', 'pwd']
         });
         }}
         >

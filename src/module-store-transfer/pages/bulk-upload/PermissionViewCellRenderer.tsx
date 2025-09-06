@@ -29,6 +29,7 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
           style={{ width: "140px", height: "25px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={() => {
+            params.setRowIndex(params.node.rowIndex || 0);
             params.setIsPermissionModalOpen?.(true);
           }}
         >
@@ -40,6 +41,7 @@ const PermissionViewCellRenderer = (params: MyCellRendererProps) => {
           style={{ width: "140px", height: "25px", fontSize: "1rem" }}
           themeUi={themeUi}
           onClick={() => {
+            console.log("it is going to be set to ", params.node.rowIndex)
             params.setRowIndex(params.node.rowIndex || 0);
             params.setIsPermissionModalOpen?.(true);
           }}

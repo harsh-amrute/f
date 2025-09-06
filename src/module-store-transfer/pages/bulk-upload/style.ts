@@ -83,6 +83,9 @@ type SubTextProps = {
 export const HeaderText = styled.div<HeaderTextProps>`
     font-size: ${props => props.fontSize || '1.35rem'};
     font-weight: ${props => props.fontWeight || '600'};
+    display: flex;
+    align-items: center;
+    gap: 8px;
 `
 export const SubText = styled.div<SubTextProps>`
     font-size: ${props => props.fontSize || '1.15rem'};
