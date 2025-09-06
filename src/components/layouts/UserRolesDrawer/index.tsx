@@ -28,6 +28,8 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
 
     const [currRole,setCurrRole] = useState<any>(null)
 
+    const [activeTab, setActiveTab] = useState(0);
+
     const onEditRole = (row:any)=>{
         setCurrTab(3)
         setCurrRole(row)
@@ -41,6 +43,7 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
     const resetTab = ()=>{
         setCurrTab(0)
         setCurrRole(null)
+        setActiveTab(0);
     }
 
     const handleDelete = async()=>{
@@ -65,6 +68,8 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
                 themeUi={themeUi}
                 handleAction={setCurrTab}
                 handleClose={onClose}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
             />}
             onClose={onClose}
         >
@@ -106,12 +111,16 @@ const Header = (props:{
     themeUi:string,
     handleAction:(item:number)=>void,
     handleClose:()=>void
+    activeTab: any;
+    setActiveTab:any;
 })=>{
     
     const {
         themeUi,
         handleAction,
-        handleClose
+        handleClose,
+        activeTab,
+        setActiveTab
     } = props
 
 
@@ -124,6 +133,8 @@ const Header = (props:{
                 <NavigationTab 
                     listTabs={['View' , 'Add']} 
                     onClick={(item:number)=>(handleAction(item))}
+                    activeTab ={activeTab}
+                    setActiveTab={setActiveTab}
                 />
             </div>
             <img 

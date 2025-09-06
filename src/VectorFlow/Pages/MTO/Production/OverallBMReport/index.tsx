@@ -225,6 +225,10 @@ const OverallBmReport = () => {
   const { user } = useUserData();
   const themeUi = user?.user?.theme_ui; 
 
+const feature_permission = user?.feature_permission || [];
+const canShowOrderClosing = feature_permission.includes("Order_Closing");
+
+
    
   const dispatch = useDispatch();
   const [userPageSize, setUserPageSize] = useState<any>();
@@ -286,11 +290,8 @@ const OverallBmReport = () => {
     else {
       setBomActive(false)
     }
-    const orderClosingEnable = DBRSettings?.find((data: any) => {
-      return data.flag == "CloseOrdersFromUI";
-    });
     
-    setorderClosingEnable(orderClosingEnable?.value);
+    setorderClosingEnable(canShowOrderClosing);
     setSystemType(Number(systemType?.value || 0));
   };
 
@@ -453,12 +454,12 @@ const OverallBmReport = () => {
   const debouncedRef = useRef<any>(null);
   const onCheckBoxToggle = (e: any) => {
     const isChecked = e.target.checked;
-  
+    
     if (debouncedRef.current) {
       debouncedRef.current.cancel();
     }
-   debouncedRef.current = _.debounce(() => {
-      setIsCheckboxChecked(isChecked);
+    debouncedRef.current = _.debounce(() => {
+     setIsCheckboxChecked(isChecked);
       if (refGraph2.current?.api) {
         refGraph2.current.api.deselectAll();
   
@@ -601,8 +602,10 @@ const OverallBmReport = () => {
 
         newGridData?.forEach((ele: any) => {
           if (!_.isEmpty(ele)) {            
-            if (ele.ok === orderId) ele.ct = null;
-            ele.oca = null;
+            if (ele.ok === orderId) {
+              ele.ct = null;
+              ele.oca = null;
+            }
           }
         });
         setGridData(newGridData);

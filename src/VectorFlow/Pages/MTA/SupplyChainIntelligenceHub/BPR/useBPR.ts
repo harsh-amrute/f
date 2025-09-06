@@ -94,7 +94,8 @@ const useBPR =()=>{
     const columnsNotToBeIncluded = ['remarks','rh','dailydatagraph']
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
-
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const BPR_ROWS_PER_PAGE = EnvConfig['BPR_ROWS_PER_PAGE'];    
     useEffect(() => {   
         getInitialBPRRowData()
         getBPRUiConfig();
@@ -268,7 +269,7 @@ const useBPR =()=>{
             getMainMenuItems: MainMenuItemsCustomization,
             enableFillHandle: true,
             rowSelection:"single",
-            paginationPageSize:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),
+            paginationPageSize:parseInt(BPR_ROWS_PER_PAGE || '50'),
             onRowSelected:(params:any)=>{
                 if(params.data.intransit && params.data.intransit.length>0){
                     setActiveRow(params.data.intransit)
@@ -330,7 +331,7 @@ const useBPR =()=>{
             filters:filter,
             paginationParameter:{
                 pageNumber:currGridPage,
-                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                recordsPerPage:parseInt(BPR_ROWS_PER_PAGE || '50') 
             }
         })
 
@@ -367,7 +368,7 @@ const useBPR =()=>{
             filters:filter,
             paginationParameter:{
                 pageNumber:pageNo,
-                recordsPerPage:parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50') 
+                recordsPerPage:parseInt(BPR_ROWS_PER_PAGE || '50') 
             }
         })
         toast.dismiss()
@@ -627,7 +628,7 @@ const useBPR =()=>{
         onApplyFilter(updatedFilter)
     }
 
-    const rowsPerPage = useMemo(()=>parseInt(process.env.REACT_APP_BPR_ROWS_PER_PAGE || '50'),[]) 
+    const rowsPerPage = useMemo(()=>parseInt(BPR_ROWS_PER_PAGE || '50'),[]) 
     
     // const BPRColumnData = useMemo(() => {
     //     return mapBPRFieldsToColDefs(

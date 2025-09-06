@@ -50,6 +50,7 @@ const GridView = memo(({
     const themeUi = user?.user?.theme_ui;
         
     const [isDisabled, setIsDisabled]= useState<boolean>(true);
+     const canAddComments = user.feature_permission.includes("Add_Comments");
 
 
     return (
@@ -93,7 +94,7 @@ const GridView = memo(({
             />
             </VFWrapper>
             {
-                saveBtn && (
+                saveBtn && canAddComments && (
                     <SaveBtnWrapper style={{ margin: '1rem 0', padding: 0, cursor: 'pointer' }}>
                         <SaveBtn onClick={updateReason} theme={themeUi}>
                             Save Remark

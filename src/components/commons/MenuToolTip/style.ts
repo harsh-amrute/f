@@ -9,6 +9,7 @@ export const WrapToolTip = styled.div<{left?: number}>`
     top: 0 !important;
     left: ${props => props?.left}px !important;
     opacity: 1;
+    z-index: 900000;
     // visibility: hidden;
     // transition: 100ms visibility ease-in;
     &.react-tooltip__show {

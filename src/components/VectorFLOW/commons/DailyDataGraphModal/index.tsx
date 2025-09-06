@@ -755,10 +755,10 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{masterData?.['gcp'] !== undefined && masterData?.['gcp'] !== null ? masterData['gcp'] : ""}</SCText>
                       </SCDataNode>
                     </SCDataRow>
-                    <SCHorizontalDivider/>
-                    <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
-                      <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
-                      <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{getMonitoringDate()}</SCText>
+                    {/* <SCHorizontalDivider/>
+                    <div style={{display:'flex',alignItems:'center',gap:'5px'}}> */}
+                      {/* <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText> */}
+                      {/* <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{getMonitoringDate()}</SCText> */}
                       {/* <SCDataNode>
                         <SCText fontWeight={300} fontSize={16}>Monitoring Date :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{'5'}</SCText>
@@ -768,7 +768,7 @@ const DailyDataGraphModal = ({rowData,chartData,normChangeData,suggestionData,ma
                         <SCText fontWeight={300} fontSize={16}>Total Receipt :</SCText>
                         <SCText fontWeight={500} fontSize={18} hideDefaultMargin>{3}</SCText>
                       </SCDataNode> */}
-                    </div>
+                    {/* </div> */}
                   </SCSeasonalityDetailsBody>           
                 </SCSeasonalityStatusDetails>
             </SCSeasonalityContainer>

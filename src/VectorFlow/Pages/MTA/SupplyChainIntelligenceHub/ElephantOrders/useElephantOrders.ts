@@ -12,6 +12,8 @@ import { GridRef } from '../../../../types/MDM';
 import { useGetUIConfigData } from '../../../../Services/MTA/Common/UIConfig';
 import { UIColumnConfigName, UserUIColumnConfigName } from '../../../../../helpers/Enum';
 import DateCellRenderer from './DateCellRenderer';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../redux/store/store';
 
 const useElephantOrders= ()=>{
 
@@ -37,10 +39,14 @@ const useElephantOrders= ()=>{
     const [initialColumnState, setInitialColumnState] = useState<any>(undefined);
     const [masterUIConfig, setMasterUIConfig] = useState<any>([]);
     const [VDRColumns,setVDRColumns] = useState<any[]>([])
-
-    const rowsPerPage = parseInt(process.env.REACT_APP_BOR_ROWS_PER_PAGE || '100');
+ 
+    const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+    const ELEPHANT_ORDER_ROWS_PER_PAGE = EnvConfig['ELEPHANT_ORDER_ROWS_PER_PAGE'];   
+    const rowsPerPage = parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE|| '100');
     const {mutateAsync:submitDueDates} = useSubmitDueDates();
     const [editedDueDateRows, setEditedDueDateRows] = useState<any[]>([]);
+
+
 
     const handleDueDateChange = (
         newDate: string,
@@ -359,7 +365,7 @@ const useElephantOrders= ()=>{
     const agGridProps: AgGridReactProps = useMemo(() => {
         return {
             paginationPageSize: parseInt(
-                process.env.REACT_APP_GUIDEDINSIGHT_ROWS_PER_PAGE || "50"
+                ELEPHANT_ORDER_ROWS_PER_PAGE || "50"
             ),
     
             suppressRowTransform: true,
@@ -433,12 +439,15 @@ const useElephantOrders= ()=>{
     }
 
     const onApplyFilter = async(filter:any)=>{
+         
+      const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+      const ELEPHANT_ORDER_ROWS_PER_PAGE = EnvConfig['ELEPHANT_ORDER_ROWS_PER_PAGE'];   
         try{
             const DataCount = await getEODataCount({
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE|| '100')
                 }
             })
             setEOCount(DataCount.data.data[0].count);
@@ -447,7 +456,7 @@ const useElephantOrders= ()=>{
                 filters:filter ,
                 paginationParameter:{
                     pageNumber:1,
-                    recordsPerPage:parseInt(process.env.REACT_APP_RRR_ROWS_PER_PAGE || '100')
+                    recordsPerPage:parseInt(ELEPHANT_ORDER_ROWS_PER_PAGE || '100')
                 }
             })
             

@@ -142,7 +142,7 @@ const useDelete=()=>{
 
     const handleSubmitSelectMaster = ()=>{
       updateUrlIsModalOpen();
-        dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
+        // dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
         // dispatch(UPDATE_ACTIVE_MASTER(0));
         const firstDefaultIndex = selectedMasters.findIndex(
           (item) => item.progress !== 'submitted'
@@ -235,7 +235,7 @@ const useDelete=()=>{
             id:activeMaster.id,
             action:"",
             TaskId:'',
-            IsOverWrite:isOverWrite===true?true:false,
+            IsOverWrite:true,
             data:[],
             uiconfig:activeMaster.fields
           }
@@ -376,8 +376,8 @@ const useDelete=()=>{
                 dispatch(SET_RECORD_COUNT(errorRowData.length))
               }
               if(draftID.length > 0){
-                dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
+                dispatch(SET_DRAFT_ID(''));
               }
               dispatch(UPDATE_PROGRESS_STATE('deleteOnlineSubmitted'));
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());
@@ -417,8 +417,8 @@ const useDelete=()=>{
               
               dispatch(SYNC_ACTIVE_MASTER_TO_MASTER());          
               if(draftID.length > 0){
-                dispatch(SET_DRAFT_ID(''));
                 await deleteDraft(draftID);
+                dispatch(SET_DRAFT_ID(''));
               }
               if(activeMaster.rowData.length === 0) 
               {

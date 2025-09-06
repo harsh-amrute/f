@@ -1,6 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { ProductFilter } from '../../../components'
 import { AvailabilityComparisonService } from '../../../module-store-transfer/services/AvailabilityComparison/api'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../redux/store/store'
 
 export default forwardRef((props, ref) => {
   // const { t } = useTranslation()
@@ -13,6 +15,10 @@ export default forwardRef((props, ref) => {
   const [brand, setBrand] = useState<any>([])
   const [subBrand, setSubBrand] = useState<any>([])
   const [category, setCategory] = useState<any>([])
+  const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
+  const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];   
+  const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2'];   
+  const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3'];   
 
   const handleProductData = (data: any) => {
     setListBrand(
@@ -42,7 +48,7 @@ export default forwardRef((props, ref) => {
   const productFilter = [
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L1,
+      placeholder: PRODUCT_PERMISSION_L1,
       options: listBrand,
       value: brand,
       onChange: setBrand,
@@ -50,7 +56,7 @@ export default forwardRef((props, ref) => {
     },
     {
       icon: '/assets/img/ist/target.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L2,
+      placeholder: PRODUCT_PERMISSION_L2,
       options: listSubBrand,
       value: subBrand,
       onChange: setSubBrand,
@@ -58,7 +64,7 @@ export default forwardRef((props, ref) => {
     },
     {
       icon: '/assets/img/ist/option.svg',
-      placeholder: process.env.REACT_APP_PRODUCT_PERMISSION_L3,
+      placeholder: PRODUCT_PERMISSION_L3,
       options: listCategory,
       value: category,
       onChange: setCategory

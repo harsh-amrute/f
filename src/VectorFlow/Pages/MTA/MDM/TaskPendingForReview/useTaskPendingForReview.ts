@@ -169,7 +169,7 @@ useEffect(() => {
                                        
                         let existingColumnFields = getExistingColumnFields(existingColumns,currentMasterFields);
                         if(taskData.Actiontype === 3){
-                            existingColumnFields = existingColumnFields.filter(field => field.isDelete);
+                            existingColumnFields = existingColumnFields.filter(field => field?.isDelete);
                         }
                         // setDetailTableColDefs(mapMasterToColumnGroupDefs(existingColumnFields,currentTaskMasterId,themeUi,getActionName(taskData.Actiontype).value,toggleApproveAllModal,toggleRejectAllModal,actionStatus,isDisabled))
                         setColGenArgs({
