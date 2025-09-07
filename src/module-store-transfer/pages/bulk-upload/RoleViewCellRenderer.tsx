@@ -3,8 +3,6 @@ import styled, { css, CSSProperties, keyframes } from "styled-components";
 import { CustomCellRendererProps } from "ag-grid-react";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import { useUserData } from "../../../context";
-import Tooltip from "../../../VectorFlow/Pages/MTO/Common/Tooltip";
-import { TooltipContainer } from "../../../VectorFlow/Pages/MTO/Common/Tooltip/styles";
 import Portal from "../../../components/VectorFLOW/layouts/Portal";
 import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
