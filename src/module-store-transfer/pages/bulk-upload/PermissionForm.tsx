@@ -293,81 +293,140 @@ const PermissionForm = ({
   }: any) => {
     if (!val || !Array.isArray(val)) return;
   
-    // Get the previous permissions for the selected application and permission type
+    // Extract the `value` property from each object in `val`
+    const values = val.map((item: any) => item.value);
+  
     const prevPerms =
       selectedPermissions?.[selectedApplication]?.[permissionType] || [];
   
     const selectPermissions = Array.isArray(prevPerms) ? prevPerms : [];
   
     let newPerm: any[] = [];
-  
+
     if (level === 0) {
       // Level 0: Update top-level permissions
-      newPerm = val.map((item: string) => [item]);
+      // Keep all permissions that don't start with any of the current level 0 values
+      const existingLevel0Values = Array.from(
+        new Set(selectPermissions.map((perm: any) => perm[0]))
+      );
+      // Remove permissions that start with deselected level 0 values
+      const permissionsToKeep = selectPermissions.filter((perm: any) => 
+        values.includes(perm[0])
+      );
+      
+      // Add new level 0 permissions that don't exist
+      const newLevel0Permissions = values
+        .filter((value: string) => !existingLevel0Values.includes(value))
+        .map((value: string) => [value]);
+      
+      newPerm = [...permissionsToKeep, ...newLevel0Permissions];
     }
   
     if (level === 1) {
       // Level 1: Update second-level permissions
-      const valMap = val.map((item: string) => item.split(">"));
-  
-      // Remove any existing permissions that do not match the current level structure
-      const filteredPermissions = selectPermissions.filter((perm: any) =>
-        valMap.some(([parent, child]) => perm[0] === parent && perm[1] === child)
+      const valMap = values.map((item: string) => item.split(">"));
+      
+      // Get all existing level 1 combinations (parent>child)
+      const existingLevel1Combinations = selectPermissions
+        .filter((perm: any) => perm.length >= 2)
+        .map((perm: any) => `${perm[0]}>${perm[1]}`);
+      
+      // Keep permissions that match selected level 1 values OR are deeper levels of selected values
+      const permissionsToKeep = selectPermissions.filter((perm: any) => {
+        if (perm.length === 1) {
+          // Keep level 0 permissions that don't have any level 1 selections
+          return !valMap.some(([parent]) => parent === perm[0]);
+        } else if (perm.length >= 2) {
+          // Keep level 1+ permissions that are in the selected values
+          const permLevel1Key = `${perm[0]}>${perm[1]}`;
+          return values.includes(permLevel1Key);
+        }
+        return false;
+      });
+      
+      // Add new level 1 permissions
+      const newLevel1Permissions = valMap
+        .filter(([parent, child]) => {
+          const key = `${parent}>${child}`;
+          return !existingLevel1Combinations.includes(key);
+        })
+        .map(([parent, child]) => [parent, child]);
+      
+      // Add back level 0 permissions for parents that have level 1 selections
+      const parentsWithLevel1 = Array.from(
+        new Set(valMap.map(([parent]) => parent))
       );
-  
-      // Add new permissions from val
-      const filteredNewPermissions = valMap.filter(
-        ([parent, child]) =>
-          !selectPermissions.some(
-            (perm: any) => perm[0] === parent && perm[1] === child
+      const level0ToAdd = parentsWithLevel1
+        .filter((parent: string) => 
+          !selectPermissions.some((perm: any) => 
+            perm.length === 1 && perm[0] === parent
+          ) && 
+          !permissionsToKeep.some((perm: any) => 
+            perm.length === 1 && perm[0] === parent
           )
-      );
-  
-      // Replace single-level parents with parent-child structure
-      const updatedPermissions = filteredPermissions.filter(
-        (perm: any) =>
-          !valMap.some(([parent]) => perm[0] === parent && perm.length === 1)
-      );
-  
-      newPerm = [
-        ...updatedPermissions,
-        ...filteredNewPermissions.map(([parent, child]) => [parent, child]),
-      ];
+        )
+        .map((parent: string) => [parent]);
+      
+      newPerm = [...permissionsToKeep, ...newLevel1Permissions, ...level0ToAdd];
     }
   
     if (level === 2) {
       // Level 2: Update third-level permissions
-      const valMap = val.map((item: string) => item.split(">"));
-  
-      // Remove any existing permissions that do not match the current level structure
-      const filteredPermissions = selectPermissions.filter((perm: any) =>
-        valMap.some(
-          ([parent, child, subChild]) =>
-            perm[0] === parent &&
-            perm[1] === child &&
-            perm[2] === subChild
-        )
-      );
-  
-      // Add new permissions from val
-      const filteredNewPermissions = valMap.filter(
-        ([parent, child, subChild]) =>
-          !selectPermissions.some(
-            (perm: any) =>
-              perm[0] === parent &&
-              perm[1] === child &&
-              perm[2] === subChild
+      const valMap = values.map((item: string) => item.split(">"));
+      
+      // Get all existing level 2 combinations
+      const existingLevel2Combinations = selectPermissions
+        .filter((perm: any) => perm.length >= 3)
+        .map((perm: any) => `${perm[0]}>${perm[1]}>${perm[2]}`);
+      
+      // Keep permissions that match selected level 2 values OR are not affected by this level
+      const permissionsToKeep = selectPermissions.filter((perm: any) => {
+        if (perm.length === 1) {
+          // Keep level 0 permissions that don't have any level 2 selections affecting them
+          return !valMap.some(([parent]) => parent === perm[0]);
+        } else if (perm.length === 2) {
+          // Keep level 1 permissions that don't have any level 2 selections affecting them
+          return !valMap.some(([parent, child]) => 
+            parent === perm[0] && child === perm[1]
+          );
+        } else if (perm.length >= 3) {
+          // Keep level 2+ permissions that are in the selected values
+          const permLevel2Key = `${perm[0]}>${perm[1]}>${perm[2]}`;
+          return values.includes(permLevel2Key);
+        }
+        return false;
+      });
+      
+      // Add new level 2 permissions
+      const newLevel2Permissions = valMap
+        .filter(([parent, child, subChild]) => {
+          const key = `${parent}>${child}>${subChild}`;
+          return !existingLevel2Combinations.includes(key);
+        })
+        .map(([parent, child, subChild]) => [parent, child, subChild]);
+      
+      // Add back level 0 and level 1 permissions for hierarchy
+      const parentsWithLevel2 = Array.from(new Set(valMap.map(([parent]) => parent)));
+      const level1WithLevel2 = Array.from(new Set(valMap.map(([parent, child]) => `${parent}>${child}`)));
+      
+      const level0ToAdd = parentsWithLevel2
+        .filter((parent: string) => 
+          !permissionsToKeep.some((perm: any) => 
+            perm.length === 1 && perm[0] === parent
           )
-      );
-  
-      newPerm = [
-        ...filteredPermissions,
-        ...filteredNewPermissions.map(([parent, child, subChild]) => [
-          parent,
-          child,
-          subChild,
-        ]),
-      ];
+        )
+        .map((parent: string) => [parent]);
+      
+      const level1ToAdd = level1WithLevel2
+        .filter((parentChild: string) => {
+          const [parent, child] = parentChild.split('>');
+          return !permissionsToKeep.some((perm: any) => 
+            perm.length === 2 && perm[0] === parent && perm[1] === child
+          );
+        })
+        .map((parentChild: string) => parentChild.split('>'));
+      
+      newPerm = [...permissionsToKeep, ...newLevel2Permissions, ...level0ToAdd, ...level1ToAdd];
     }
   
     // Update the selected permissions state

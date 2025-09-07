@@ -101,9 +101,6 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
   >(allApplications[0]);
 
 
-  useEffect(()=>{
-    console.log("defaultPermission", defaultPermissions)
-  },[defaultPermissions]);
 
   const [selectedPermissions, setSelectedPermissions] = useState<any>({});
 
@@ -115,9 +112,7 @@ const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,clo
     })
   }
   useEffect(()=>{
-    //  if(selectedIndex && gridRef?.current?.api){
       ResetPermissions();
-    //  }
   },[selectedIndex, gridRef])
 
   const user = useUserData();

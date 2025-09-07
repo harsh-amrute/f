@@ -104,16 +104,14 @@ const CustomNode = ({
     (selectedPermissions?.[selectedApplication]?.[permissionType] ??
       []) as string[][];
 
-    
-      const isPermissionChecked = (key: string) => {
-        const path = getPathArray(key); // e.g., ['Vendor', 'P001']
-        const permissionList = getPermissionList(); // e.g., [['Vendor', 'P001', 'WSO'], ...]
-      
-        return permissionList.some((perm) =>
-          path.every((val, idx) => perm[idx] === val)
-        );
-      };
-      
+  const isPermissionChecked = (key: string) => {
+    const path = getPathArray(key); // e.g., ['Vendor', 'P001']
+    const permissionList = getPermissionList(); // e.g., [['Vendor', 'P001', 'WSO'], ...]
+
+    return permissionList.some((perm) =>
+      path.every((val, idx) => perm[idx] === val)
+    );
+  };
 
   const getAllChildrenPaths = (pathArray: string[]) => {
     const currentPath = pathArray.join("/");
@@ -123,7 +121,10 @@ const CustomNode = ({
         index: node.data.index,
         arrPath: getPathArray(node.data.key),
       }))
-      .filter(({ path }: {path: any}) => path.startsWith(currentPath) && path !== currentPath);
+      .filter(
+        ({ path }: { path: any }) =>
+          path.startsWith(currentPath) && path !== currentPath
+      );
   };
 
   const getAllParentPaths = (pathArray: string[]) => {
@@ -134,66 +135,66 @@ const CustomNode = ({
     return parents;
   };
 
-
   function getUpdatedPermissionsOnDeselect(
     currentPath: string[],
     existingPermissions: string[][]
   ): string[][] {
     // Remove all permissions that are same as or deeper than currentPath
-    const updatedPermissions = existingPermissions.filter(perm =>
-      !currentPath.every((val, idx) => perm[idx] === val)
+    const updatedPermissions = existingPermissions.filter(
+      (perm) => !currentPath.every((val, idx) => perm[idx] === val)
     );
-  
+
     const parentPath = currentPath.slice(0, -1); // e.g. ['A','B']
-  
+
     // Count how many remaining permissions still share the same parent path
-    const stillHasChildren = updatedPermissions.some(perm =>
-      parentPath.every((val, idx) => perm[idx] === val)
-      && perm.length > parentPath.length
+    const stillHasChildren = updatedPermissions.some(
+      (perm) =>
+        parentPath.every((val, idx) => perm[idx] === val) &&
+        perm.length > parentPath.length
     );
-  
-    const parentExists = updatedPermissions.some(perm =>
-      JSON.stringify(perm) === JSON.stringify(parentPath)
+
+    const parentExists = updatedPermissions.some(
+      (perm) => JSON.stringify(perm) === JSON.stringify(parentPath)
     );
-  
+
     // Only add back the parentPath if it has no children left
     if (!stillHasChildren && parentPath.length > 0 && !parentExists) {
       updatedPermissions.push(parentPath);
     }
-  
+
     return updatedPermissions;
   }
-  
+
   const setTheChecked = () => {
     const newChecked = [...checked];
     const isCurrentlyChecked = isPermissionChecked(data.key);
     const currentPath = pathArray;
     const currentPathStr = JSON.stringify(currentPath);
-    
-    console.log("currentPath", currentPath);
+
     // Get all children
     const children = getAllChildrenPaths(pathArray);
-    console.log("children", children);
-    const childrenPaths = children.map((c:any) => c.arrPath);
-    console.log("childrenPaths", childrenPaths);
-  
+    const childrenPaths = children.map((c: any) => c.arrPath);
+
     const allPathsToToggle = [currentPath, ...childrenPaths];
     const allPathsStr = allPathsToToggle.map((p) => JSON.stringify(p));
-  
+
     // Get existing permissions
     const existingPermissions = getPermissionList();
-  
+
     if (isCurrentlyChecked) {
       //  Uncheck: remove this path and all children
 
-      const updatedPermissions = getUpdatedPermissionsOnDeselect(currentPath, existingPermissions);
-  
+      const updatedPermissions = getUpdatedPermissionsOnDeselect(
+        currentPath,
+        existingPermissions
+      );
+
       // Update visual check state
       newChecked[data.index] = 0;
-      children.forEach(({ index }:any) => {
+      children.forEach(({ index }: any) => {
         newChecked[index] = 0;
       });
-  
+
       setChecked(newChecked);
       setSelectedPermissions((prev: any) => ({
         ...prev,
@@ -206,28 +207,26 @@ const CustomNode = ({
       // ✅ Check: add current and parent paths if not present
       const parentPaths = getAllParentPaths(pathArray);
       const pathsToAdd = [currentPath];
-  
-      const updatedPermissions = existingPermissions.filter(existingPath => {
+
+      const updatedPermissions = existingPermissions.filter((existingPath) => {
         // Remove if existing path is a prefix of any new path
-        return !pathsToAdd.some(newPath =>
+        return !pathsToAdd.some((newPath) =>
           existingPath.every((val, idx) => newPath[idx] === val)
         );
       });
-      
+
       const finalPermissions = [...updatedPermissions, ...pathsToAdd];
 
-    
-  
       pathsToAdd.forEach((p) => {
         const pStr = JSON.stringify(p);
         if (!finalPermissions.some((perm) => JSON.stringify(perm) === pStr)) {
           finalPermissions.push(p);
         }
       });
-  
+
       // Update visual check state
       newChecked[data.index] = 1;
-  
+
       setChecked(newChecked);
       setSelectedPermissions((prev: any) => ({
         ...prev,
@@ -238,7 +237,6 @@ const CustomNode = ({
       }));
     }
   };
-  
 
   const setTheIndex = () => {
     const newArr = [...opened];
@@ -259,15 +257,21 @@ const CustomNode = ({
         background: "#cecece",
       }}
     >
-      <Checkbox
-        checked={isPermissionChecked(data.key)}
-        onChange={setTheChecked}
-        theme={user.user.theme_ui}
-        style={{ zoom: 0.5 }}
-      />
-      <span style={{ padding: "10px", fontSize: "11px", fontFamily: "roboto" }}>
-        {data.label}
-      </span>
+      <label
+        style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+      >
+        <Checkbox
+          checked={isPermissionChecked(data.key)}
+          onChange={setTheChecked}
+          theme={user.user.theme_ui}
+          style={{ zoom: 0.5 }}
+        />
+        <span
+          style={{ padding: "10px", fontSize: "11px", fontFamily: "roboto" }}
+        >
+          {data.label}
+        </span>
+      </label>
       {!(data?.level === 2) && (
         <div
           onClick={setTheIndex}
@@ -278,19 +282,37 @@ const CustomNode = ({
             cursor: "pointer",
           }}
         >
-          {opened?.[data?.index] !== 1 ? `<` : `>`}
+          {opened?.[data?.index] !== 1 ? (
+            <img
+              alt="arrow-right"
+              src="\assets\img\mto\dayWiseCoverage\arrow_right.svg"
+            ></img>
+          ) : (
+            <img
+              style={{ rotate: "90deg" }}
+              alt="arrow-left"
+              src="\assets\img\nav\arrow_down.svg"
+            ></img>
+          )}
         </div>
       )}
       {data.level !== 0 && (
-        <Handle type="target" position={Position.Left} style={{ background: "#555" }} />
+        <Handle
+          type="target"
+          position={Position.Left}
+          style={{ background: "#555" }}
+        />
       )}
       {data.level !== 2 && (
-        <Handle type="source" position={Position.Right} style={{ background: "#555" }} />
+        <Handle
+          type="source"
+          position={Position.Right}
+          style={{ background: "#555" }}
+        />
       )}
     </div>
   );
 };
-
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -477,13 +499,6 @@ export default function PermissionHeirarchyCanvas({
   // @TODO: tell backend to fix the spelling of heirarchy and hierarychy
 
   React.useEffect(() => {
-    console.log(
-      "selectedAppAllPermissions",
-      selectedAppAllPermissions,
-      "\n permissionType",
-      permissionType,
-      selectedAppAllPermissions[permissionType]
-    );
     if (
       selectedAppAllPermissions &&
       selectedAppAllPermissions[permissionType]

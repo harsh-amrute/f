@@ -18,6 +18,8 @@ import PermissionViewCellRenderer from "./PermissionViewCellRenderer";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import OverlayLoader from "../../../VectorFlow/Pages/MTO/Common/Loader";
 import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
+import _ from "lodash";
+import { notifyError, notifySuccess } from "../../../helpers/notify";
 
 type Role = {
   id: number;
@@ -178,6 +180,97 @@ const PermissionSelectionPage = ({
 
     const [errorRes, setErrorRes] = useState(0);
 
+    const optimizePermissionsAndRoles = (data:any) => {
+      const { users, permissions, roles } = data;
+      
+      // Import lodash for deep comparison (assuming it's available)
+      // const _ = require('lodash'); // for Node.js
+      // or use the imported lodash from your environment
+      
+      // Arrays to store unique permissions and roles with their objects and new IDs
+      const uniquePermissions:any = []; // [{obj, newId}]
+      const uniqueRoles:any = []; // [{obj, newId}]
+      const permissionIdMapping = new Map(); // old_id -> new_id
+      const roleIdMapping = new Map(); // old_id -> new_id
+      
+      let nextPermId = 1;
+      let nextRoleId = 1;
+      
+      // Process permissions using lodash isEqual for deep comparison
+      Object.entries(permissions).forEach(([oldPermId, permissionObj]) => {
+        // Check if this permission object already exists
+        const existingPermission = uniquePermissions.find((item:any) => 
+          _.isEqual(item.obj, permissionObj)
+        );
+        
+        if (existingPermission) {
+          // Permission already exists, map old ID to existing new ID
+          permissionIdMapping.set(oldPermId, existingPermission.newId);
+        } else {
+          // New unique permission, create new ID and store
+          const newPermId = nextPermId++;
+          uniquePermissions.push({ obj: permissionObj, newId: newPermId });
+          permissionIdMapping.set(oldPermId, newPermId);
+        }
+      });
+      
+      // Process roles using lodash isEqual for deep comparison
+      Object.entries(roles).forEach(([oldRoleId, roleObj]) => {
+        // Check if this role object already exists
+        const existingRole = uniqueRoles.find((item:any) => 
+          _.isEqual(item.obj, roleObj)
+        );
+        
+        if (existingRole) {
+          // Role already exists, map old ID to existing new ID
+          roleIdMapping.set(oldRoleId, existingRole.newId);
+        } else {
+          // New unique role, create new ID and store
+          const newRoleId = nextRoleId++;
+          uniqueRoles.push({ obj: roleObj, newId: newRoleId });
+          roleIdMapping.set(oldRoleId, newRoleId);
+        }
+      });
+      
+      // Create optimized permissions object
+      const optimizedPermissions:any = {};
+      uniquePermissions.forEach(({ obj, newId }:any) => {
+        optimizedPermissions[newId] = obj;
+      });
+      
+      // Create optimized roles object
+      const optimizedRoles:any = {};
+      uniqueRoles.forEach(({ obj, newId }:any) => {
+        optimizedRoles[newId] = obj;
+      });
+      
+      // Update users with new permission and role IDs
+      const optimizedUsers = users.map((user:any) => ({
+        ...user,
+        perm_id: permissionIdMapping.get(user.perm_id.toString()),
+        rid: roleIdMapping.get(user.rid.toString())
+      }));
+      
+      // Return optimized data structure
+      const optimizedData = {
+        users: optimizedUsers,
+        permissions: optimizedPermissions,
+        roles: optimizedRoles
+      };
+      
+      // Log optimization results
+      console.log('Optimization Results:');
+      console.log(`Original permissions: ${Object.keys(permissions).length} -> Optimized: ${Object.keys(optimizedPermissions).length}`);
+      console.log(`Original roles: ${Object.keys(roles).length} -> Optimized: ${Object.keys(optimizedRoles).length}`);
+      console.log('Permission ID mapping:', Object.fromEntries(permissionIdMapping));
+      console.log('Role ID mapping:', Object.fromEntries(roleIdMapping));
+      
+      return optimizedData;
+    };
+    
+    // Example usage:
+    // const optimizedData = optimizePermissionsAndRoles(yourDataObject);
+
     const createUsers = async()=>{
       const userDataAll: string[] = [];
       gridRef &&  gridRef.current && gridRef?.current.api.forEachNode((node: any)=>{
@@ -186,7 +279,7 @@ const PermissionSelectionPage = ({
       })
       // return;
       try{
-        const finalData = transformUserData(userDataAll);
+        const finalData = optimizePermissionsAndRoles(transformUserData(userDataAll));
         const response = await postPostBulkUploadUsers({...finalData})
         if(response.status===200){
           // setIsFinalView(true);
@@ -198,16 +291,19 @@ const PermissionSelectionPage = ({
               updatedUserData[index].error = ele.error;
             }
           })
+          notifySuccess("Following users created successfully!")
           setErrorRes(errorUserData.length);
           setIsFinalView(true);
           setValidUsersData(validUserData)
         }
         else{
           setIsFinalView(false);
+          notifyError("Failed to register Users! Please try again!")
           console.error("Failed to register Users! Please try again!", response);
         }
         
       }catch(e){
+        notifyError("Failed to register Users! Please try again!")
         console.error("Error updating roles for selected users", e);
       }
 
@@ -224,7 +320,8 @@ const PermissionSelectionPage = ({
         maxWidth: isFinalView? 200: 50,
         pinned: isFinalView?'left':undefined,
         suppressFloatingFilterButton: true,
-        filter: false,
+        filter: isFinalView?"agMultiColumnFilter": false,
+        enablePivot: true,
         valueFormatter: (params) => {
           if (isFinalView) {
             if (!params.value){
@@ -246,14 +343,18 @@ const PermissionSelectionPage = ({
         headerName: "Sr.No",
         field: "id",
         maxWidth: 80,
+        enablePivot: true,
+        filter: 'agNumberColumnFilter',
         suppressFillHandle: true,
       },
-      { headerName: "Username", field: "username", suppressFillHandle: true },
-      { headerName: "Email ID", field: "email", suppressFillHandle: true },
-      { headerName: "Password", field: "pwd", suppressFillHandle: true },
+      { headerName: "Username", field: "username", suppressFillHandle: true, filter: 'agMultiColumnFilter' },
+      { headerName: "Email ID", field: "email", suppressFillHandle: true, filter: 'agMultiColumnFilter' },
+      { headerName: "Password", field: "pwd", suppressFillHandle: true, filter: 'agMultiColumnFilter'},
       {
         headerName: "Role",
         field: "roles",
+        suppressHeaderFilterButton: true,
+        floatingFilter: false,
         cellRenderer: isFinalView?()=>{return <VFButton onClick={()=>{return;}}  disabled={true}
         style={{ width: "90px", height: "25px", fontSize: "1rem" }}
         themeUi={themeUi} >Edit Role</VFButton>}: RoleViewCellRenderer,
@@ -273,6 +374,8 @@ const PermissionSelectionPage = ({
       {
         headerName: "Permissions",
         field: "permissions",
+        floatingFilter: false,
+        suppressHeaderFilterButton: true,
         cellRenderer:isFinalView?()=>{return <VFButton onClick={()=>{return;}}  disabled={true}
         style={{ width: "120px", height: "25px", fontSize: "1rem" }}
         themeUi={themeUi} >Edit Permission</VFButton>}: PermissionViewCellRenderer,
@@ -329,6 +432,8 @@ const PermissionSelectionPage = ({
             setIsPermissionModalOpen={setIsPermissionModalOpen}
             setIsRoleModalOpen={setIsRoleModalOpen}
             resetState={() => {
+              const result = confirm("Are you sure you want to reupload? All the progress will be lost.");
+              if (!result) return;
               setIsFinalView(false);
               setIsAssignPage(false);
             }}
@@ -347,6 +452,8 @@ const PermissionSelectionPage = ({
                 <SCGoBackContainer
                   style={{ paddingLeft: "10px" }}
                   onClick={() => {
+                    const result = confirm("Are you sure you want to reupload? All the progress will be lost.");
+                    if (!result) return;
                     setIsFinalView(false);
                     setIsAssignPage(false);
                   }}
@@ -458,6 +565,7 @@ const PermissionSelectionPage = ({
             closeModal={() => {
               setIsPermissionModalOpen(false);
             }}
+            headerText={"Set Permissions"}
           >
             {/* <PermissionHeirarchyCanvas  allPermissions={dataAllPermissions}/> */}
             <PermissionSelectionModal
@@ -472,11 +580,12 @@ const PermissionSelectionPage = ({
         {
           <VFModalCard
             openModal={isPermissionModalOpenForRow}
-            headerIcon={"/assets/img/profile/icon_upload.svg"}
+            headerIcon={""}
             closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
             closeModal={() => {
               setIsPermissionModalOpenForRow(false);
             }}
+            headerText={"Set Permissions"}
           >
             {/* <PermissionHeirarchyCanvas  allPermissions={dataAllPermissions}/> */}
             <PermissionSelectionModal
@@ -494,9 +603,9 @@ const PermissionSelectionPage = ({
         }
         {
           <VFModalCard
-            headerText={"Select User Roles"}
+            headerText={"Set Roles"}
             openModal={isRoleModalOpen}
-            headerIcon={"/assets/img/profile/icon_upload.svg"}
+            headerIcon={""}
             closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"}
             closeModal={() => {
               setIsRoleModalOpen(false);
