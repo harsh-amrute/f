@@ -95,7 +95,7 @@ const DynamicReleaseManagement = () => {
   const { mutateAsync: getUIConfigData, isLoading: isGetUIConfigData } = useGetUIConfigData();
   const [rowDataCount, setRowDataCount] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
-  const [graphData, setGraphData] = useState<any>([]);
+  const [graphData, setGraphData] = useState<any>({});
   const [hide, setHide] = useState(false);
   const [showModal, setShowModal] = useState(false)
   const graph = useRef<any>();
@@ -199,43 +199,41 @@ const DynamicReleaseManagement = () => {
 
   const handleWIPData = async () => {
 
-    const selectedOrdersWIP = await getWIPData(selectedRows.map((item: any) => item.ok));
-
     const cloneGraphData: InputData = _.cloneDeep(graphData);
 
-    Object.entries(selectedOrdersWIP).forEach((element: any) => {
-      if (cloneGraphData[element[0]]) {
-        cloneGraphData[element[0]]['Incremental WIP'] = element[1];
-        cloneGraphData[element[0]]['selected'] = true;
-      }
-    });
-
-    {/*
-      // previous code not working as per api response data
-      const newSelectedRows = Object.keys(selectedOrdersWIP).map((ok) => ({
-      ok,
-      wips: selectedOrdersWIP[ok],
-    }));
-
-    newSelectedRows.forEach((element: any) => {
-      // Use Object.entries to iterate over the key-value pairs of the wips object
-      if (element.wips) {
-
-        Object.entries(element?.['wips']).forEach(([ccrCode, value]: [string, any]) => {
-          if (cloneGraphData[ccrCode]) {
-            cloneGraphData[ccrCode]['Incremental WIP'] = value;
-            cloneGraphData[ccrCode]['selected'] = true; 
+    // Update cloneGraphData with existing WIP data
+    selectedRows.forEach((rows:any) => {
+      const existingWIPData = wipDataGlobal[rows.ok];
+      if (existingWIPData) {
+        Object.entries(existingWIPData).forEach(([key, value]:any) => {
+          if (cloneGraphData[key]) {
+            cloneGraphData[key]['Incremental WIP'] = (cloneGraphData[key]['Incremental WIP'] ?? 0) + value;
+            cloneGraphData[key]['selected'] = true;
           }
         });
       }
     });
-    */}
+
+    const selectedOrdersWIP = await getWIPData(selectedRows.map((item: any) => item.ok));
+
+    // Update cloneGraphData with newly fetched WIP data
+    Object.values(selectedOrdersWIP).forEach((orderData:any) => {
+      Object.entries(orderData).forEach(([key, value]:any) => {
+        if (cloneGraphData[key]) {
+          cloneGraphData[key]['Incremental WIP'] = (cloneGraphData[key]['Incremental WIP'] ?? 0) + value;
+          cloneGraphData[key]['selected'] = true;
+        }
+      });
+    });
 
     setFinalGraphData(convertData(cloneGraphData));
   };
 
   useEffect(() => {
-    setFinalGraphData(convertData(graphData));
+    if (Object.entries(graphData).length) {
+      // initially set selected true for all CCRS
+      setFinalGraphData(convertData(graphData, true));
+    }
 
   }, [graphData])
 
@@ -510,14 +508,9 @@ const DynamicReleaseManagement = () => {
         // Update the global WIP data state
         setWipDataGlobal((prev: any) => ({
           ...prev,
-          ...newOrders.reduce((acc: any, orderId: string) => {
-          
-            acc[orderId] = selectedOrders[orderId] || {};
-            return acc;
-          }, {}),
           ...response?.data?.data,
         }));
-  
+
         return response.data.data;
       }
     } catch (e) {
@@ -528,12 +521,6 @@ const DynamicReleaseManagement = () => {
 
   const updateGraphOnSelect = async () => {
     const selectedData = refGrid.current?.api.getSelectedRows();
-
-    const wipData: any = [];
-    selectedData.forEach((item: any) => {
-      wipData.push(item.ok);
-    });
-    
     
     if (selectedData) {
       let mergedData: any = [...selectedRows]; // Start with the existing selected data
@@ -630,7 +617,7 @@ const DynamicReleaseManagement = () => {
     },
   };
 
-  function convertData(input: InputData): OutputData[] {
+  function convertData(input: InputData, selected = false): OutputData[] {
     const result: OutputData[] = [];
     // Convert the input object to an array of keys for iteration
     const keys = Object.keys(input);
@@ -656,7 +643,7 @@ const DynamicReleaseManagement = () => {
         Limit: actualLimit,
         // "Incremental WIP": index % 2 === 0 ? 20 : "", // Just as an example
         "Incremental WIP": incrementalWIP, // Just as an example
-        selected: item.selected ?? false,
+        selected: item.selected ?? selected,
         "CCR Name": item.ccr_name,
         "FOL Gap": item.fol_gap ?? 0,
       });
@@ -731,11 +718,10 @@ const DynamicReleaseManagement = () => {
         strokeWidth: 0,
         visible: true,
         fill: barColors["Released WIP"],
-        formatter: (params: any) => {
+        itemStyler: ({ datum }:any) => {
           return {
-            fillOpacity: params.datum.selected ? 1 : 0.5,
-            fill: params.datum.selected ? params.fill : barColors["Released WIP"]
-          }
+            fillOpacity: datum.selected == true ? 1 : 0.5,
+          };
         },
         tooltip: {
           position: { placement: "right" },  // anchor to bar
@@ -750,11 +736,6 @@ const DynamicReleaseManagement = () => {
         strokeWidth: 0,
         visible: true,
         fill: barColors["Incremental WIP"],
-        formatter: (params: any) => {
-          return {
-            fill: params.datum.selected ? params.fill : barColors["Incremental WIP"]
-          }
-        },
         tooltip: {
           position: { placement: "right" },  // anchor to bar
           renderer: TooltipRenderer
@@ -780,7 +761,7 @@ const DynamicReleaseManagement = () => {
         type: "grouped-category",
         position: "bottom",
         paddingInner: 0.5,       // Gap between categories
-        paddingOuter: 0.2,       // Gap before first and after last category
+        // paddingOuter: 0.2,       // Gap before first and after last category
         // groupPaddingInner: 0.6,  // Gap between bars in the same category group
         gridLine: {
           enabled: false
@@ -790,12 +771,11 @@ const DynamicReleaseManagement = () => {
             label: {
               fontSize: 10,
               rotation: -10,
-              avoidCollision: true,
-              autoRotate: true,
+              avoidCollisions: true,
             }
           },
           {
-            tick: { enabled: true, stroke: 'black', interval: 1 },
+            tick: { enabled: true, stroke: 'black' },
             label: { fontWeight: "bold" }
           },
         ],
