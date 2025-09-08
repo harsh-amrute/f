@@ -109,16 +109,7 @@ const ResourceViewChart = () => {
   });
 
 
-  const colors = {
-    free: "#6FCF97",        
-    holiday: "#F2C94C",     
-    OT: "#EB5757",          
-    non_working: "#BDBDBD", 
-    job: "#56CCF2",         
-    typeA: "#2F80ED",       
-    typeB: "#1C3D5A",       
-    unknown: "#BB6BD9"      
-  };
+  const colors = response.Task_master;
   
 
 

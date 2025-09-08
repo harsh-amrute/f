@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import ResourceViewChart from '../components/ResourceViewChart'
 import ResourceViewSummary from '../components/ResourceViewSummary'
+import response from '../components/data'
 
 const ResourceViewWrapper  = styled.div`
     display: flex;
@@ -24,7 +25,7 @@ const ResourceView = () => {
   return (
     <ResourceViewWrapper>
       <ResourceViewChart/>
-      <ResourceViewSummary TaskTypeMaster={TaskTypeMaster}/>
+      <ResourceViewSummary ResourceData={response}/>
 
     </ResourceViewWrapper>
   )

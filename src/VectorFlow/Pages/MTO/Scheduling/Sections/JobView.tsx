@@ -127,9 +127,7 @@ const JobView = () => {
 
   console.log("TaskData", TaskData);
 
-  const colors:any = {
-    packing: "#6FCF97",
-  };
+  const colors:any = response.Workstation_master;
 
   const CustomTaskBar = ({ taskIdx, left, width, task }:any) => {
 

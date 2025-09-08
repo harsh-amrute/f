@@ -3,6 +3,7 @@ import styled from "styled-components";
 import VFTable from "../../Common/VFTable";
 import { AgGridReactProps } from "ag-grid-react";
 import "../gridStyles.css";
+import response from "./data";
 const SectionWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -101,11 +102,12 @@ const ToggleButton = styled.button<{ active?: boolean }>`
 
 
 
-const ResourceViewSummary = ({TaskTypeMaster}: any) => {
-
-    const [workStation, setWorkStation] = useState("");
+const ResourceViewSummary = ({ ResourceData}: any) => {    
 
     const [active, setActive] = useState("Percentage Wise");
+    const allWorkStations:any = new Set(Object.values(ResourceData.Resource_Data || {}).map((r: any) => r.work_station));
+
+    const [activeWorkStation, setActiveWorkStation] = useState<any>(Array.from(allWorkStations)[0]);
 
   const options = ["Percentage Wise", "Day Wise", "Hrs Wise", "Count Wise"];
 
@@ -119,16 +121,17 @@ const ResourceViewSummary = ({TaskTypeMaster}: any) => {
             flex: 1,
         },
         rowClass: 'my-row-class',
-
+      
         // all even rows assigned 'my-shaded-effect'
         getRowClass: params => {
             if (params && params.node && params.node.rowIndex &&  params?.node?.rowIndex % 2 === 0) {
                 return 'my-shaded-effect';
             }
         },
+        suppressRowClickSelection: true,
         animateRows: true,
         rowSelection: "single",
-        pagination: true,
+        pagination: false,
         paginationPageSize: 10,
 
     }
@@ -142,7 +145,7 @@ const ResourceViewSummary = ({TaskTypeMaster}: any) => {
             { headerName: 'Workstation', colId: 'work_station', field: 'work_station', width: 120, flex: 1, position: 1 },
         ];
     
-        const TaskTypes = Object.keys(TaskTypeMaster);
+        const TaskTypes = Object.keys(ResourceData.Task_master || {});
     
         TaskTypes.forEach((type: any, index: number) => {
             ColDef.push({ headerName: type, colId: type, field: type, width: 120, flex: 1, position: index + 2 });
@@ -155,8 +158,112 @@ const ResourceViewSummary = ({TaskTypeMaster}: any) => {
         setColDef(ColDef);
 
 
-    },[TaskTypeMaster,active])
+    },[response.Task_master,active])
 
+
+    const setCountWiseData = () => {
+      const data: any = ResourceData.Resource_Data || {};
+    
+      const allResources: { id: string; stage: string; work_station: string }[] = [];
+    
+      const allResourceIds = Object.keys(data);
+      allResourceIds.forEach((key: string) => {
+        const val = {
+          id: key,
+          stage: data[key]?.stage,
+          work_station: data[key]?.work_station,
+        };
+        allResources.push(val);
+      });
+    
+      const workStationSet = new Set(allResources.map((r) => r.work_station));
+      const filteredWorkStations =
+        activeWorkStation === "All Work Stations" || !activeWorkStation
+          ? Array.from(workStationSet) // Include all workstations
+          : Array.from(workStationSet).filter((ws) => ws === activeWorkStation);
+
+
+      const summaryData: any[] = [];
+    
+      filteredWorkStations.forEach((ws) => {
+        const resourcesInWS = allResources.filter((r) => r.work_station === ws);
+        const taskTypeCount: { [key: string]: number } = {};
+        const taskTypeDuration: { [key: string]: number } = {};
+        let totalDuration = 0; // Total duration of the machine active time
+        let totalCount = 0;
+    
+        let minStartDate = Infinity;
+        let maxEndDate = -Infinity;
+    
+        resourcesInWS.forEach((res) => {
+          const tasks = data[res.id]?.task_list || [];
+          tasks.forEach((task: any) => {
+            const type = task.task_type || "unknown";
+            const startDate = new Date(task.start).getTime();
+            const endDate = new Date(task.end).getTime();
+    
+            // Update min and max dates
+            minStartDate = Math.min(minStartDate, startDate);
+            maxEndDate = Math.max(maxEndDate, endDate);
+    
+            // Calculate task duration in hours
+            const taskDuration = (endDate - startDate) / (1000 * 60 * 60); // Convert milliseconds to hours
+            taskTypeDuration[type] = (taskTypeDuration[type] || 0) + taskDuration;
+    
+            taskTypeCount[type] = (taskTypeCount[type] || 0) + 1;
+            totalCount += 1;
+          });
+        });
+    
+        // Calculate total duration of the machine active time in hours
+        totalDuration = (maxEndDate - minStartDate) / (1000 * 60 * 60); // Convert milliseconds to hours
+    
+        const entry: any = { work_station: ws };
+        Object.keys(ResourceData.Task_master || {}).forEach((type) => {
+          if (active === "Percentage Wise") {
+            entry[type] =
+              totalDuration > 0
+                ? ((taskTypeDuration[type] || 0) / totalDuration * 100).toFixed(2) +
+                  "%"
+                : "0%";
+          } else if (active === "Day Wise") {
+            // Total hours divided by 24 to get days
+            entry[type] = ((taskTypeDuration[type] || 0) / 24).toFixed(2) + " days";
+          } else if (active === "Hrs Wise") {
+            // Total hours for each task type
+            entry[type] = (taskTypeDuration[type] || 0).toFixed(2) + " hrs";
+          } else if (active === "Count Wise") {
+            // Total occurrences of each task type
+            entry[type] = taskTypeCount[type] || 0;
+          }
+        });
+    
+        if (active !== "Percentage Wise") {
+          entry["total"] = totalCount;
+        }
+    
+        summaryData.push(entry);
+      });
+    
+      return summaryData;
+    };
+
+
+
+    useEffect(() => {
+       
+      if(active === "Count Wise"){
+        
+        console.log("active", active);
+        setRowData(setCountWiseData());
+      }
+      else{
+        setRowData([])
+      }
+      }, [active, activeWorkStation]);
+
+
+    
 
    
 
@@ -169,10 +276,17 @@ const ResourceViewSummary = ({TaskTypeMaster}: any) => {
 
       <FilterSection>
 
-        <WorkStationDropDown placeholder="Select Work Station" value={workStation} onChange={(e) => {setWorkStation(e.target.value)}}>
-          <option value="ws1">Work Station 1</option>
-          <option value="ws2">Work Station 2</option>
-          <option value="ws3">Work Station 3</option>
+        <WorkStationDropDown placeholder="Select Work Station" value={activeWorkStation ||"" } onChange={(e) => {setActiveWorkStation(e.target.value)}}>
+          <option key={"All Work Stations"} value={"All Work Stations"}>
+            {"All Work Stations"}
+          </option>
+         {
+           Array.from(allWorkStations).map((ws:any) => (
+            <option key={ws} value={ws}>
+              {ws}
+            </option>
+          ))
+         }
         </WorkStationDropDown>
 
         <ToggleWrapper>
@@ -188,7 +302,7 @@ const ResourceViewSummary = ({TaskTypeMaster}: any) => {
     </ToggleWrapper>
       </FilterSection>
 
-        <VFTable {...agGridProps} columnDefs={colDef} rowData={[]} />
+        <VFTable {...agGridProps}  columnDefs={colDef} rowData={rowData} />
 
       </GridWrapper>
     </SectionWrapper>
