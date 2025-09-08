@@ -235,6 +235,19 @@ export namespace MDMService {
     })
   }
 
+  export const useEditReportConfiguration = async(body:any)=>{
+    return await axios.put(process.env.REACT_APP_API_HOST + 'api/mta/UpdateUIReportConfig',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  
+  export const useEditMDMConfiguration = async(body:any)=>{
+    return await axios.put(process.env.REACT_APP_API_HOST + 'api/mta/UpdateUIMDMConfig',body,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  
+
   /**This get the  MTO Masters Data*/
   export const getMTOMastersData = async () => {
     return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + '/GetMasterManagementData/', {

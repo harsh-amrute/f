@@ -15,9 +15,9 @@ import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useAddLocationPermissions } from "../../../VectorFlow/Services/MTA/MDM";
 
 interface FormDataType {
-  location_heirarchy_1: string;
-  location_heirarchy_2: string;
-  location_heirarchy_3: string;
+  locationHierarchy1: string;
+  locationHierarchy2: string;
+  locationHierarchy3: string;
   
 }
 
@@ -33,9 +33,9 @@ const AddLocationPermission = (props: { cb: () => void }) => {
 
 
   const [formData, setFormData] = useState<FormDataType>({
-    location_heirarchy_1: "",
-    location_heirarchy_2: "",
-    location_heirarchy_3: "",
+    locationHierarchy1: "",
+    locationHierarchy2: "",
+    locationHierarchy3: "",
   });
 
   const {mutateAsync : addLocationPermission} = useAddLocationPermissions();
@@ -110,11 +110,11 @@ const AddLocationPermission = (props: { cb: () => void }) => {
       <div style={{ display: "flex" }}>
        
         <InputWrapper >
-          <Label htmlFor="location_heirarchy_1"> Location Heirarchy 1</Label>
+          <Label htmlFor="locationHierarchy1"> Location Heirarchy 1</Label>
           <Input
             type={"text"}
             required
-            name="location_heirarchy_1"
+            name="locationHierarchy1"
             placeholder="Any location heirarchy 1"
             themeUi={themeUi}
             onChange={handleChange}
@@ -122,11 +122,11 @@ const AddLocationPermission = (props: { cb: () => void }) => {
         </InputWrapper>
 
         <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="location_heirarchy_2"> Location Heirarchy 2</Label>
+          <Label htmlFor="locationHierarchy2"> Location Heirarchy 2</Label>
           <Input
             type={"text"}
             required
-            name="location_heirarchy_2"
+            name="locationHierarchy2"
             placeholder="Any location heirarchy 2"
             themeUi={themeUi}
             onChange={handleChange}
@@ -136,11 +136,11 @@ const AddLocationPermission = (props: { cb: () => void }) => {
       <div style={{ display: "flex" }}>
        
         <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="location_heirarchy_3"> Location Heirarchy 3</Label>
+          <Label htmlFor="locationHierarchy3"> Location Heirarchy 3</Label>
           <Input
             type={"text"}
             required
-            name="location_heirarchy_3"
+            name="locationHierarchy3"
             placeholder="Any location heirarchy 3"
             themeUi={themeUi}
             onChange={handleChange}

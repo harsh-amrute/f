@@ -13,7 +13,7 @@ import {
 } from "../../commons/styled";
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
-import { useEditEnvironmentConfiguration } from "../../../VectorFlow/Services/MTA/MDM/index";
+import {  useEditMDMConfiguration } from "../../../VectorFlow/Services/MTA/MDM/index";
 
 import Select from "react-select";
 
@@ -47,7 +47,7 @@ const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
 
   const [formData, setFormData] = useState<FormDataType>({ ...data });
 
-  const {mutateAsync : editEnvConfiguration} = useEditEnvironmentConfiguration();
+  const {mutateAsync : editEnvConfiguration} = useEditMDMConfiguration();
 
 
 
@@ -58,27 +58,17 @@ const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-
 const isChanged = useMemo((): boolean => {
   return JSON.stringify(formData) !== JSON.stringify(data);
 }, [formData, data]);
 
 
-const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []): any => {
-  const payload:any = {};
-  for (const key in current) {
-    if (keysToIgnore.includes(key) || original[key] !== current[key]) payload[key] = current[key];
-  }
-  return payload;
-};
-
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const changedData = getChangedFields(data ,formData , ['Id', 'ConfigKey']) as any;
-    changedData.LastModifiedByUserEmail = user?.user?.email;
+    const data =  {...formData }  as any;
     try {
-      const response = await editEnvConfiguration(changedData);
+      const response = await editEnvConfiguration(data);
       console.log("RESPONSE",response);
       
       if (response.status !== 200) notifyError("Server Went Unresponsive");
@@ -104,13 +94,14 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
   }, [formData]);
 
   const handleSelectChange = (name:any ,value:any) => {
-    setFormData({ ...formData, [name]: value });
+    if(name === "CellAlignment")   return     setFormData({ ...formData, [name]: value });
+    else setFormData({ ...formData, [name]: value ? 1 : 0 });
   };
 
-  const flagOptions: any = [
-    { label: "true", value: "true" },
-    { label: "false", value: "false" },
-];
+  const flagOptions = [
+    { value: true, label: 'Yes' },
+    { value: false, label: 'No' },
+  ];
 
 const alignmentOptions: any = [
   { label: "left", value: "left" },
@@ -251,7 +242,8 @@ const alignmentOptions: any = [
               },
             }),
           }}
-          // value={formData.IsEdit ? flagOptions[0] : flagOptions[1]}
+            // value={formData.IsEdit ? flagOptions[0] : flagOptions[1]}
+      value={flagOptions.find((option: any) => option.value === formData.IsEdit)}
         />
 
       </InputWrapper>
@@ -293,7 +285,7 @@ const alignmentOptions: any = [
               },
             }),
           }}
-          // value={formData.IsAdd ? flagOptions[0] : flagOptions[1]}
+      value={flagOptions.find((option: any) => option.value === formData.IsAdd)}
         />
 
       </InputWrapper>
@@ -336,7 +328,7 @@ const alignmentOptions: any = [
               },
             }),
           }}
-          // value={formData.IsDownload ? flagOptions[0] : flagOptions[1]}
+          value={flagOptions.find((option: any) => option.value === formData.IsDownload)}
         />
 
       </InputWrapper>
@@ -376,7 +368,7 @@ const alignmentOptions: any = [
               },
             }),
           }}
-          // value={formData.IsFilter ? flagOptions[0] : flagOptions[1]}
+          value={flagOptions.find((option: any) => option.value === formData.IsFilter)}
         />
 
       </InputWrapper>
@@ -420,7 +412,7 @@ const alignmentOptions: any = [
               },
             }),
           }}
-          // value={formData.IsApplicable ? flagOptions[0] : flagOptions[1]}
+          value={flagOptions.find((option: any) => option.value === formData.IsApplicable)}
         />
       </InputWrapper>
       <InputWrapper style={{ marginLeft: "10px" }}>
@@ -460,7 +452,7 @@ const alignmentOptions: any = [
               },
             }),
           }}
-          // value={formData.IsDelete ? flagOptions[0] : flagOptions[1]}
+          value={flagOptions.find((option: any) => option.value === formData.IsDelete)}
         />
       </InputWrapper>
       </div>
@@ -469,7 +461,7 @@ const alignmentOptions: any = [
       <InputWrapper >
         <Label htmlFor="Visible"> Visible</Label>
 
-<Select
+      <Select
          options={flagOptions}
           placeholder={"Select Visible"}
           onChange={(data: any) => handleSelectChange("Visible" ,data.value)}
@@ -503,7 +495,7 @@ const alignmentOptions: any = [
               },
             }),
           }}
-          // value={formData.Visible ? flagOptions[0] : flagOptions[1]}
+          value={flagOptions.find((option: any) => option.value === formData.Visible)}
         />
         
       </InputWrapper>
@@ -511,42 +503,42 @@ const alignmentOptions: any = [
       <Label htmlFor="CellAlignment"> Cell Alignment</Label>
   
 
-  <Select
-           options={alignmentOptions}
-            placeholder={"Select Cell Alignment"}
-            onChange={(data: any) => handleSelectChange("CellAlignment" ,data.value)}
-            styles={{
-              option: (baseStyles, { isSelected }) => ({
-                ...baseStyles,
-                fontSize: 11,
-                backgroundColor: isSelected
-                  ? themeUi === "REGALBLAZE"
-                    ? "#FCA311"
-                    : "#BC3D80"
-                  : "white",
-  
-                "&:hover": {
-                  backgroundColor:
-                    themeUi === "REGALBLAZE"
-                      ? "rgb(252, 163, 17,0.3) "
-                      : "#bc3d814d",
-                  color: "black",
-                },
-              }),
-              control: (baseStyles, { isFocused }) => ({
-                ...baseStyles,
-                fontSize: 12,
-                borderColor: !isFocused ? "transparent" : "#BC3D80",
-                borderWidth: 2,
-                boxShadow: "none",
-                backgroundColor: "rgb(247, 247, 247)",
-                "&:hover": {
-                  borderColor: "#BC3D80",
-                },
-              }),
-            }}
-            // value={formData.CellAlignment ? flagOptions[0] : flagOptions[1]}
-          />
+      <Select
+              options={alignmentOptions}
+                placeholder={"Select Cell Alignment"}
+                onChange={(data: any) => handleSelectChange("CellAlignment" ,data.value)}
+                styles={{
+                  option: (baseStyles, { isSelected }) => ({
+                    ...baseStyles,
+                    fontSize: 11,
+                    backgroundColor: isSelected
+                      ? themeUi === "REGALBLAZE"
+                        ? "#FCA311"
+                        : "#BC3D80"
+                      : "white",
+      
+                    "&:hover": {
+                      backgroundColor:
+                        themeUi === "REGALBLAZE"
+                          ? "rgb(252, 163, 17,0.3) "
+                          : "#bc3d814d",
+                      color: "black",
+                    },
+                  }),
+                  control: (baseStyles, { isFocused }) => ({
+                    ...baseStyles,
+                    fontSize: 12,
+                    borderColor: !isFocused ? "transparent" : "#BC3D80",
+                    borderWidth: 2,
+                    boxShadow: "none",
+                    backgroundColor: "rgb(247, 247, 247)",
+                    "&:hover": {
+                      borderColor: "#BC3D80",
+                    },
+                  }),
+                }}
+                value={alignmentOptions.find((option: any) => String(formData.CellAlignment || '').trim() === option.value?.trim())}
+              />
 
       </InputWrapper>
       </div>

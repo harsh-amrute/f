@@ -29,6 +29,8 @@ export const QUERY_KEYS = {
   useGetAllAdminPermissions:['useGetAllAdminPermissions'],
   useAddProductPermissions:['useAddProductPermissions'],
   useAddLocationPermissions:['useAddLocationPermissions'],
+  useEditReportConfiguration:['useEditReportConfiguration'],
+  useEditMDMConfiguration:['useEditMDMConfiguration'],
   useGetMTOPendingTask: ['MDMService.useGetMTOPendingTask']
 }
 
@@ -284,6 +286,18 @@ export const useAddProductPermissions = () => {
 export const useAddLocationPermissions = () => {
   return useMutation(QUERY_KEYS.useAddLocationPermissions, async (body:any) => {
     return await MDMService.useAddLocationPermissions(body)
+  })
+}
+
+export const useEditReportConfiguration = () => {
+  return useMutation(QUERY_KEYS.useEditReportConfiguration, async (body:any) => {
+    return await MDMService.useEditReportConfiguration(body)
+  })
+}
+
+export const useEditMDMConfiguration = () => {
+  return useMutation(QUERY_KEYS.useEditMDMConfiguration, async (body:any) => {
+    return await MDMService.useEditMDMConfiguration(body)
   })
 }
 

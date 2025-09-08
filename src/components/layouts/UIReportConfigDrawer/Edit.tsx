@@ -13,7 +13,8 @@ import {
 } from "../../commons/styled";
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
-import { useEditEnvironmentConfiguration } from "../../../VectorFlow/Services/MTA/MDM/index";
+import {  useEditReportConfiguration } from "../../../VectorFlow/Services/MTA/MDM/index";
+import Select from "react-select";
 
 interface FormDataType {
   ReportName: string;
@@ -38,9 +39,21 @@ const EditRole = (props: { data: any; cb: () => void }) => {
 
   const [formData, setFormData] = useState<FormDataType>({ ...data });
 
-  const {mutateAsync : editEnvConfiguration} = useEditEnvironmentConfiguration();
+  const {mutateAsync : editReportConfiguration} = useEditReportConfiguration();
+  
+  const handleSelectChange = (name:any ,value:any) => {
+    if(name === "CellAlignment")   return     setFormData({ ...formData, [name]: value });
+    else setFormData({ ...formData, [name]: value ? 1 : 0 });
+  };
+  const flagOptions= [
+    { value: true, label: 'Yes' },
+    { value: false, label: 'No' },
+  ];
 
-
+const alignmentOptions: any = [
+  { label: "left", value: "left" },
+  { label: "right", value: "right" },
+];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -55,21 +68,12 @@ const isChanged = useMemo((): boolean => {
 }, [formData, data]);
 
 
-const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []): any => {
-  const payload:any = {};
-  for (const key in current) {
-    if (keysToIgnore.includes(key) || original[key] !== current[key]) payload[key] = current[key];
-  }
-  return payload;
-};
-
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const changedData = getChangedFields(data ,formData , ['Id', 'ConfigKey']) as any;
-    changedData.LastModifiedByUserEmail = user?.user?.email;
+    const data =  {...formData }  as any;
     try {
-      const response = await editEnvConfiguration(changedData);
+      const response = await editReportConfiguration(data);
       console.log("RESPONSE",response);
       
       if (response.status !== 200) notifyError("Server Went Unresponsive");
@@ -144,35 +148,87 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
           />
       </InputWrapper>
     
+      </div>
+      <div style={{ display: "flex" }}>
       <InputWrapper style={{ marginLeft: "10px" }}>
         <Label htmlFor="CellAlignment"> Cell Alignment</Label>
-        <Input
-            type={"text"}
-            required
-            name="CellAlignment"
-            placeholder="Any Cell Alignment : left or right"
-            themeUi={themeUi}
-            value={formData.CellAlignment}
-            onChange={handleChange}
-            maxLength={50}
-            readOnly
-          />
+        <Select
+              options={alignmentOptions}
+                placeholder={"Select Cell Alignment"}
+                onChange={(data: any) => handleSelectChange("CellAlignment" ,data.value)}
+                styles={{
+                  option: (baseStyles, { isSelected }) => ({
+                    ...baseStyles,
+                    fontSize: 11,
+                    backgroundColor: isSelected
+                      ? themeUi === "REGALBLAZE"
+                        ? "#FCA311"
+                        : "#BC3D80"
+                      : "white",
+      
+                    "&:hover": {
+                      backgroundColor:
+                        themeUi === "REGALBLAZE"
+                          ? "rgb(252, 163, 17,0.3) "
+                          : "#bc3d814d",
+                      color: "black",
+                    },
+                  }),
+                  control: (baseStyles, { isFocused }) => ({
+                    ...baseStyles,
+                    fontSize: 12,
+                    borderColor: !isFocused ? "transparent" : "#BC3D80",
+                    borderWidth: 2,
+                    boxShadow: "none",
+                    backgroundColor: "rgb(247, 247, 247)",
+                    "&:hover": {
+                      borderColor: "#BC3D80",
+                    },
+                  }),
+                }}
+              value={alignmentOptions.find((option: any) => option.value.trim() === formData.CellAlignment.trim())}
+              />
       </InputWrapper>
-      </div>
-     
       <InputWrapper>
         <Label htmlFor="Visible"> Visible</Label>
-        <TextArea
-          name="Visible"
-          value={formData.Visible}
-          style={{ minHeight: 50 }}
-          required
-          placeholder="Visiblity : 0 or 1"
-          themeUi={themeUi}
-          onChange={handleChange}
+        <Select
+         options={flagOptions}
+          placeholder={"Select Visible"}
+          onChange={(data: any) => handleSelectChange("Visible" ,data.value)}
+          styles={{
+            option: (baseStyles, { isSelected }) => ({
+              ...baseStyles,
+              fontSize: 11,
+              backgroundColor: isSelected
+                ? themeUi === "REGALBLAZE"
+                  ? "#FCA311"
+                  : "#BC3D80"
+                : "white",
+
+              "&:hover": {
+                backgroundColor:
+                  themeUi === "REGALBLAZE"
+                    ? "rgb(252, 163, 17,0.3) "
+                    : "#bc3d814d",
+                color: "black",
+              },
+            }),
+            control: (baseStyles, { isFocused }) => ({
+              ...baseStyles,
+              fontSize: 12,
+              borderColor: !isFocused ? "transparent" : "#BC3D80",
+              borderWidth: 2,
+              boxShadow: "none",
+              backgroundColor: "rgb(247, 247, 247)",
+              "&:hover": {
+                borderColor: "#BC3D80",
+              },
+            }),
+          }}
+          value={flagOptions.find((option: any) => option.value === formData.Visible)}
         />
-        
       </InputWrapper>
+      </div>
       <InputWrapper>
         <Label htmlFor="Header"> Header</Label>
         <TextArea
