@@ -1,16 +1,15 @@
 import { AgCharts } from 'ag-charts-react';
 import { GridOptions, IRowNode } from 'ag-grid-enterprise';
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import VFTable from '../../Common/VFTable';
 import { DownloadExcel, formatFilterJSON, getBodyForExcelExport, getColumnDefinations } from '../../../../../helpers/utils';
 import AvailabilityCellRenderer from '../../../MTA/InsightsAndTrends/BTR/AvailabilityCellRenderer';
 import ColorCellRenderer from '../../Common/ColorCellRenderer/ColorCellRenderer';
-import { Button, Wrapper } from './DynamicReleaseManagement.styled';
+import { Button, Wrapper, BPRViewTableHeaderTab, InputCheckBox, SCTabHeader } from './DynamicReleaseManagement.styled';
 import { useUserData } from '../../../../../context';
 import MTOActionToolBar from '../../../../../components/VectorFLOW/commons/MTO/ActionToolBar/MTOActionToolBar';
 import EditRouteModal from '../../Common/EditRouteModal';
 import * as globalStyles from "../../../../../styles/global";
-import { BPRViewTableHeaderTab, InputCheckBox, SCTabHeader } from './DynamicReleaseManagement.styled';
 import ReleaseModal from './ReleaseModal';
 import './styles.css'
 import { useGetDynamicReleaseData, useGetDynamicReleaseExcelData } from '../../../../../VectorFlow/Services/MTO/Production/DynamicReleaseManagement';
@@ -162,6 +161,8 @@ const DynamicReleaseManagement = () => {
 
   useEffect(() => {
     if (table1 !== undefined) {
+      setSelectedRows([]);
+      setIsCheckboxChecked(false);
       getFilterData();
     }
   }, [table1])
@@ -653,27 +654,28 @@ const DynamicReleaseManagement = () => {
     return result;
   }
 
-  const Rectangle = useMemo(() => {
-    return ({
-      x,
-      y,
-      size,
-      path,
-    }: {
-      x: number;
-      y: number;
-      size: number;
-      path: any;
-    }) => {
+  //phase 2
+  // const Rectangle = useMemo(() => {
+  //   return ({
+  //     x,
+  //     y,
+  //     size,
+  //     path,
+  //   }: {
+  //     x: number;
+  //     y: number;
+  //     size: number;
+  //     path: any;
+  //   }) => {
       
-      const width = size * 4;
-      const height = size / 6;
+  //     const width = size * 4;
+  //     const height = size / 6;
 
-      path.clear();
-      path.rect(x - width / 2, y - height / 2, width, height);
-      path.closePath();
-    };
-  }, []);
+  //     path.clear();
+  //     path.rect(x - width / 2, y - height / 2, width, height);
+  //     path.closePath();
+  //   };
+  // }, []);
 
   function TooltipRenderer({ datum, xKey }: any) {
     return `
