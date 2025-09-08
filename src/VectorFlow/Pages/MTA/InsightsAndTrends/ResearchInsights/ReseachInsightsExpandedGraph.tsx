@@ -1,4 +1,5 @@
 import { AgCharts } from "ag-charts-react"
+import { AgCartesianChartOptions } from 'ag-charts-community'; 
 import VFModalCard from "../../../../../components/VectorFLOW/commons/VFModalCard"
 import { ExpandedChartFilterWrapper, ExpandedChartSelectWrapper, ExpandedChartSelectLabel, ExpandedChartCapsuleWrapper } from "./styles"
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline" 
@@ -26,9 +27,15 @@ interface ExpandedGraphProps {
     horizon:any,
     setGraphs: any
 }
- 
-
-
+type ColorKey = "Red" | "Green" | "Yellow" | "Black" | "Blue" | "White";
+const colorMap: Record<ColorKey, string> = {
+  Red: 'red',
+  Green: 'green',
+  Yellow: '#FFBF00',
+  Black: 'black',
+  Blue: 'blue',
+  White: 'gray',
+};
 
 const ExpandedGraph = (props: ExpandedGraphProps) => {
  
@@ -78,6 +85,86 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
     const {user} = useUserData();
     const themeUi = user?.user?.theme_ui;
 
+    const yKeys = data && data.length > 0
+        ? (Object.keys(data[0]).filter(key => key in colorMap) as ColorKey[])
+        : [];
+
+    const series = yKeys.map(key => ({
+        type: "line",
+        xKey: "date",
+        yKey: key,
+        yName: key,
+        marker: {
+            fill: colorMap[key],
+            size: 2,
+            shape: 'square',
+            stroke: colorMap[key]
+        },
+        stroke: colorMap[key],
+        tooltip: {
+            renderer: (params: any) => {
+                const { datum } = params;
+                const tooltipItems = Object.entries(datum)
+                    .filter(([k]) => k in colorMap) 
+                    .map(([k, v]) => {
+                        const color = colorMap[k as ColorKey];
+                        return `<div style="color:${color};">${k}: ${v}</div>`;
+                    });
+                
+                return {
+                    title: datum.date,
+                    content: tooltipItems.join('')
+                };
+            }
+        }
+    }));
+    
+
+    const whiteSeriesConfig = series.find(s => s.yKey === 'White');
+    if (whiteSeriesConfig) {
+        whiteSeriesConfig.tooltip.renderer = (params: any) => {
+            const { datum } = params;
+            const tooltipItems = Object.entries(datum)
+                .filter(([k]) => k in colorMap)
+                .map(([k, v]) => {
+                    const color = k === 'White' ? 'gray' : colorMap[k as ColorKey];
+                    return `<div style="color:${color};">${k}: ${v}</div>`;
+                });
+            return {
+                title: datum.date,
+                content: tooltipItems.join('')
+            };
+        };
+    }
+
+    const chartOptions: AgCartesianChartOptions = {
+        height: 400,
+        width: 1000,
+        data: data,
+        series: series as any, 
+        axes: [
+            {
+                type: "category",
+                position: 'bottom',
+                label: {
+                    fontSize: 8
+                }
+            },
+            {
+                type: "number",
+                position: 'left',
+                label: {
+                    fontSize: 8
+                },
+                title: {
+                    text: "Count of Item",
+                    enabled: true,
+                    fontSize: 10,
+                    fontFamily: "Roboto",
+                }
+            }
+        ]
+    };
 
     return (
         <VFModalCard
@@ -223,280 +310,9 @@ const ExpandedGraph = (props: ExpandedGraphProps) => {
                     />
                 </ExpandedChartCapsuleWrapper>
             </ExpandedChartFilterWrapper>
-            {/* <AgCharts
-                options={{
-                    height: 400,
-                    width: 1000,
-                    data: data,
-                    series: [
-                        {
-                            type: "line",
-                            xKey: "date",
-                            yKey: "Red",
-                            yName: "Red",
- 
-                            marker: {
-                                fill: 'red',
-                                size: 2,
-                                shape: 'square',
-                                stroke: "red"
-                            },
-                            stroke: 'red'
-                        },
-                        {
-                            type: "line",
-                            xKey: "date",
-                            yKey: "Green",
-                            yName: "Green",
-                            marker: {
-                                fill: 'green',
-                                size: 2,
-                                shape: 'square',
-                                stroke: "green"
-                            },
-                            stroke: 'green'
-                        },
-                        {
-                            type: "line",
-                            xKey: "date",
-                            yKey: "Yellow",
-                            yName: "Yellow",
-                            marker: {
-                                fill: '#FFBF00',
-                                size: 2,
-                                shape: 'square',
-                                stroke: "#FFBF00"
-                            },
-                            stroke: '#FFBF00'
-                        },
-                        {
-                            type: "line",
-                            xKey: "date",
-                            yKey: "Black",
-                            yName: "Black",
-                            marker: {
-                                fill: 'black',
-                                size: 2,
-                                shape: 'square',
-                                stroke: "black"
-                            },
-                            stroke: 'black'
-                        },
-                        {
-                            type: "line",
-                            xKey: "date",
-                            yKey: "Blue",
-                            yName: "Blue",
-                            marker: {
-                                fill: 'blue',
-                                size: 2,
-                                shape: 'square',
-                                stroke: "blue"
-                            },
-                            stroke: 'blue'
-                        },
-                        {
-                            type: "line",
-                            xKey: "date",
-                            yKey: "White",
-                            yName: "White",
-                            marker: {
-                                fill: 'gray',
-                                size: 2,
-                                shape: 'square',
-                                stroke: "gray"
-                            },
-                            stroke: 'gray',
-                        }
-                    ]
-                }}
-            /> */}
- 
-<AgCharts
-    options={{
-        height: 400,
-        width: 1000,
-        data: data,
-        series: [
-
-            {
-                type: "line",
-                xKey: "date",
-                yKey: "Red",
-                marker: {
-                    fill: 'red',
-                    size: 2,
-                    shape: 'square',
-                    stroke: "red"
-                },
-                stroke: 'red',
-                tooltip: {
-                    renderer: (params: any) => {
-                        const { datum, xKey } = params;
-                        const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey && key !== "undefined")
-                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
-                        
-                        return {
-                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
-                        };
-                    }
-                }
-            },
-            {
-                type: "line",
-                xKey: "date",
-                yKey: "Green",
-                marker: {
-                    fill: 'green',
-                    size: 2,
-                    shape: 'square',
-                    stroke: "green"
-                },
-                stroke: 'green',
-                tooltip: {
-                   renderer: (params: any) => {
-                        const { datum, xKey } = params;
-                        const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey && key !== "undefined")
-                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
-                        
-                        return {
-                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
-                        };
-                    }
-                }
-            },
-            {
-                type: "line",
-                xKey: "date",
-                yKey: "Yellow",
-                marker: {
-                    fill: '#FFBF00',
-                    size: 2,
-                    shape: 'square',
-                    stroke: "#FFBF00"
-                },
-                stroke: '#FFBF00',
-                tooltip: {
-                    renderer: (params: any) => {
-                        const { datum, xKey } = params;
-                        const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey && key !== "undefined")
-                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
-                        
-                        return {
-                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
-                        };
-                    }
-                }
-            },
-            {
-                type: "line",
-                xKey: "date",
-                yKey: "Black",
-                marker: {
-                    fill: 'black',
-                    size: 2,
-                    shape: 'square',
-                    stroke: "black"
-                },
-                stroke: 'black',
-                tooltip: {
-                    renderer: (params: any) => {
-                        const { datum, xKey } = params;
-                        const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey && key !== "undefined")
-                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
-                        
-                        return {
-                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
-                        };
-                    }
-                }
-            },
-            {
-                type: "line",
-                xKey: "date",
-                yKey: "Blue",
-                marker: {
-                    fill: 'blue',
-                    size: 2,
-                    shape: 'square',
-                    stroke: "date"
-                },
-                stroke: 'blue',
-                tooltip: {
-                    renderer: (params: any) => {
-                        const { datum, xKey } = params;
-                        const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey  && key !== "undefined")
-                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
-                        
-                        return {
-                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
-                        };
-                    }
-                }
-            },
-            {
-                type: "line",
-                xKey: "date",
-                yKey: "White",
-                marker: {
-                    fill: 'gray',
-                    size: 2,
-                    shape: 'square',
-                    stroke: "gray"
-                },
-                stroke: 'gray',
-                tooltip: {
-                    renderer: (params: any) => {
-                        const { datum, xKey } = params;
-                        const tooltipItems = Object.entries(datum)
-                            .filter(([key]) => key !== xKey && key !== "undefined")
-                            .map(([key, value]) => `<div style="color:${key.toLowerCase()};">${key}: ${value}</div>`);
-                        
-                        return {
-                            content: `<div><strong>${datum[xKey]}</strong></div>${tooltipItems.join('')}`
-                        };
-                    }
-                }
-            }
-        ],
-        axes: [
-            {
-                                   
-                type:"category",
-                position:'bottom',
-                label:{
-                    fontSize:8
-                }
-            },
-            {
-                type:"number",
-                position:'left',
-                label:{
-                    fontSize:8
-                }
-            },
-            {
-                type: "number",
-                position: 'left',
-                label: {
-                    fontSize: 8
-                },
-                title: {
-                    text: "Count of Item",
-                    enabled: true,        
-                    fontSize: 10,    
-                    fontFamily: "Roboto",
-                }
-            }
-        ]
-    }}
-/>
- 
+            <AgCharts
+                options={chartOptions}
+            />
         </VFModalCard>
     )
 }

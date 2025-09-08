@@ -10,33 +10,65 @@ const Tools = ()=>{
     
     return(
         <ToolsWrapper>
-            <PanelGrid style={{gap:0,display:'flex',maxWidth:800}}>
-                <div style={{flex:1,margin:'20px'}}>
-                <IconCard
-                    text="Manage Roles"
-                    iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
-                    iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
-                    onClick={()=>navigate('/vector-admin/manage-roles')}
-                    themeUi="NOIRFUSION"
-                />
+            <PanelGrid style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)', 
+                gap: '20px', 
+                maxWidth: 900 
+            }}>
+                <div>
+                    <IconCard
+                        text="Manage Roles"
+                        iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
+                        iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
+                        onClick={()=>navigate('/vector-admin/manage-roles')}
+                        themeUi="NOIRFUSION"
+                    />
                 </div>
-                <div style={{flex:1,margin:'20px'}}>
-                <IconCard
-                    text="Manage URLs"
-                    iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
-                    iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
-                    onClick={()=>navigate('/vector-admin/manage-urls')}
-                    themeUi="NOIRFUSION"
-                />
+                <div>
+                    <IconCard
+                        text="Manage URLs"
+                        iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
+                        iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
+                        onClick={()=>navigate('/vector-admin/manage-urls')}
+                        themeUi="NOIRFUSION"
+                    />
                 </div>
-                <div style={{flex:1,margin:'20px'}}>
-               <IconCard
-                    text="Manage Configuration"
-                    iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
-                    iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
-                    onClick={()=>navigate('/vector-admin/manage-env-configuration')}
-                    themeUi="NOIRFUSION"
-                />
+                <div>
+                    <IconCard
+                        text="Manage Configuration"
+                        iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
+                        iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
+                        onClick={()=>navigate('/vector-admin/manage-env-configuration')}
+                        themeUi="NOIRFUSION"
+                    />
+                </div>
+                <div>
+                    <IconCard
+                        text="Manage Permissions"
+                        iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
+                        iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
+                        onClick={()=>navigate('/vector-admin/manage-permissions')}
+                        themeUi="NOIRFUSION"
+                    />
+                </div>
+                <div>
+                    <IconCard
+                        text="Manage UI Report Configuration"
+                        iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
+                        iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
+                        onClick={()=>navigate('/vector-admin/manage-ui-report-configuration')}
+                        themeUi="NOIRFUSION"
+                    />
+                </div>
+                <div>
+                    <IconCard
+                        text="Manage UI MDM Configuration"
+                        iconOnMouseIn="/assets/img/VectorFLOW/NMS/edit.svg"
+                        iconOnMouseOut="/assets/img/VectorFLOW/NMS/edit.svg"
+                        onClick={()=>navigate('/vector-admin/manage-ui-mdm-configuration')}
+                        themeUi="NOIRFUSION"
+                    />
                 </div>
             </PanelGrid>
         </ToolsWrapper>

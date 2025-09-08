@@ -24,6 +24,11 @@ export const QUERY_KEYS = {
   useGetAllReports: ['MDMService.useGetAllReports'],
   useGetAllEnvironmentConfiguration: ['MDMService.useGetAllEnvironmentConfiguration'],
   useEditEnvironmentConfiguration: ['MDMService.useEditEnvironmentConfiguration'],
+  useGetAllUIReportConfiguration:['MDMService.useGetAllUIReportConfiguration'],
+  useGetAllUIMDMConfiguration:['MDMService.useGetAllUIMDMConfiguration'],
+  useGetAllAdminPermissions:['useGetAllAdminPermissions'],
+  useAddProductPermissions:['useAddProductPermissions'],
+  useAddLocationPermissions:['useAddLocationPermissions'],
   useGetMTOPendingTask: ['MDMService.useGetMTOPendingTask']
 }
 
@@ -252,6 +257,35 @@ export const useEditEnvironmentConfiguration = () => {
   })
 }
 
+export const useGetAllUIReportConfiguration = () => {
+  return useMutation(QUERY_KEYS.useGetAllUIReportConfiguration, async () => {
+    return await MDMService.getAllUIReportConfiguration()
+  })
+}
+
+export const useGetAllUIMDMConfiguration = () => {
+  return useMutation(QUERY_KEYS.useGetAllUIMDMConfiguration, async () => {
+    return await MDMService.getAllUIMDMConfiguration()
+  })
+}
+
+export const useGetAdminPermissions = () => {
+  return useMutation(QUERY_KEYS.useGetAllAdminPermissions, async () => {
+    return await MDMService.useGetAllAdminPermissions()
+  })
+}
+
+export const useAddProductPermissions = () => {
+  return useMutation(QUERY_KEYS.useAddProductPermissions, async (body:any) => {
+    return await MDMService.useAddProductPermissions(body)
+  })
+}
+
+export const useAddLocationPermissions = () => {
+  return useMutation(QUERY_KEYS.useAddLocationPermissions, async (body:any) => {
+    return await MDMService.useAddLocationPermissions(body)
+  })
+}
 
 
 /**Adding the MTO Masters related calls */
