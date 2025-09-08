@@ -56,17 +56,36 @@ const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    console.log("VAOOOOOO",name,value
+    );
+    
+
   };
 
 const isChanged = useMemo((): boolean => {
   return JSON.stringify(formData) !== JSON.stringify(data);
 }, [formData, data]);
 
+const formatData = (data: any) => {
+  const formatted: any = {};
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      const value = data[key];
+      if (typeof value === 'boolean') {
+        formatted[key] = value ? 1 : 0;
+      } else {
+        formatted[key] = value;
+      }
+    }
+  }
+  return formatted;
+};
 
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const data =  {...formData }  as any;
+    const formattedData = formatData(formData);
+    const data =  {...formattedData }  as any;
     try {
       const response = await editEnvConfiguration(data);
       console.log("RESPONSE",response);
