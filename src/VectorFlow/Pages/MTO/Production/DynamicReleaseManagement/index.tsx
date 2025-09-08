@@ -157,7 +157,7 @@ const DynamicReleaseManagement = () => {
     setSelectedRows([]);
     setIsCheckboxChecked(false);
     setWipDataGlobal({});
-    GetData(table1 ? 0 : 1, 1, 0);
+    GetData(table1 ? 0 : 1, 1, 1);
   }
 
   useEffect(() => {
