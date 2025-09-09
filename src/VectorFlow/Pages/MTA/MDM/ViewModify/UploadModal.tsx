@@ -56,7 +56,9 @@ const UploadModal = (props:UploadModalProps)=>{
   
       const file = e.target.files[0];
       switch (file.type) {
-        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+      case "text/csv": 
+      case "application/csv": 
           setFile(file);
           break;
         default:
@@ -154,7 +156,7 @@ const UploadModal = (props:UploadModalProps)=>{
                   <img src="/assets/img/manual/plus.png" width={19} height={19} />
                   <ManualStyle.SCManualUploadInput
                      type="file"
-                     accept=".xlsx"
+                     accept=".xlsx,.csv"
                      onChange={handleFileChange}
                      ref={inputRef}
                      value=""

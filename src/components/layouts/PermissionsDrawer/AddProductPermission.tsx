@@ -10,6 +10,11 @@ import { Input, PrimaryButton, Skeleton } from "../../commons/styled";
 import { useUserData } from "../../../context";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useAddProductPermissions } from "../../../VectorFlow/Services/MTA/MDM";
+import  UploadModal  from "../../../VectorFlow/Pages/MTA/MDM/ViewModify/UploadModal";
+import useView from "./useView";
+import { getProductColumns } from './View';
+import { useSelector } from "react-redux";
+import { RootState } from '../../../redux/store/store'
 
 interface FormDataType {
   productHierarchy1: string;
@@ -30,7 +35,21 @@ const AddProductPermission = (props: { cb: () => void }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const {mutateAsync : addProductPermissions} = useAddProductPermissions();
+  const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+  const productColumns = getProductColumns(EnvConfig);
 
+  const {
+    downloadFileName,
+    setDownloadFileName,
+    file,
+    setFile,
+    isUploadModalOpen,
+    setUploadCallback,
+    toggleUploadModal,
+    onUpload,
+    exportToExcel,
+    RECORD_UPLOAD_LIMIT,
+    } = useView(productColumns);
 
   const [formData, setFormData] = useState<FormDataType>({
     productHierarchy1: "",
@@ -66,6 +85,10 @@ const AddProductPermission = (props: { cb: () => void }) => {
     }
   };
 
+  const handleUpload = () => {  
+    onUpload(RECORD_UPLOAD_LIMIT);
+    setUploadCallback(cb);
+  }
   
   const isFormValid = useMemo((): boolean => {
     return !Object.keys(formData).every((k) => {
@@ -105,7 +128,8 @@ const AddProductPermission = (props: { cb: () => void }) => {
   }
 
   return (
-    <URLsForm onSubmit={handleSubmit}>
+    <>
+      <URLsForm onSubmit={handleSubmit}>
       <div style={{ display: "flex" }}>
       <InputWrapper>
           <Label htmlFor="productHierarchy1"> Product Heirarchy 1</Label>
@@ -151,13 +175,36 @@ const AddProductPermission = (props: { cb: () => void }) => {
           alignItems: "flex-end",
           justifyContent: "flex-end",
           flex: 10,
+          gap: 20
         }}
       >
+        <PrimaryButton
+          type="button" 
+          themeUi={themeUi}
+          onClick={() => toggleUploadModal(true)}
+        >
+          Bulk Upload
+        </PrimaryButton>
         <PrimaryButton disabled={isFormValid || isSubmitting} themeUi={themeUi}>
           Add Permission
         </PrimaryButton>
       </div>
     </URLsForm>
+    {isUploadModalOpen && (
+      <UploadModal 
+        header={"Upload Product Permissions"}
+        openModal={isUploadModalOpen} 
+        onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
+        onDownload={()=>exportToExcel(true)} 
+        onUpload={handleUpload}
+        inputText={downloadFileName}
+        setInputText={setDownloadFileName}
+        file={file}
+        setFile={setFile}
+        uploadButtonStatus={false}
+      />
+    )}
+    </>
   );
 };
 

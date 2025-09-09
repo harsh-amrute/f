@@ -289,6 +289,12 @@ export const useAddLocationPermissions = () => {
   })
 }
 
+export const useGetPermissionsPayload = () => {
+  return useMutation(async (body: any) => {
+    return await MDMService.useGetPermissionsPayload(body)
+  })
+}
+
 export const useEditReportConfiguration = () => {
   return useMutation(QUERY_KEYS.useEditReportConfiguration, async (body:any) => {
     return await MDMService.useEditReportConfiguration(body)

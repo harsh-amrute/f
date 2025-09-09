@@ -13,6 +13,11 @@ import { useUserData } from "../../../context";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useAddLocationPermissions } from "../../../VectorFlow/Services/MTA/MDM";
+import  UploadModal  from "../../../VectorFlow/Pages/MTA/MDM/ViewModify/UploadModal";
+import useView from "./useView";
+import { getLocationColumns } from './View';
+import { useSelector } from "react-redux";
+import { RootState } from '../../../redux/store/store'
 
 interface FormDataType {
   locationHierarchy1: string;
@@ -30,13 +35,28 @@ const AddLocationPermission = (props: { cb: () => void }) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
+  const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
+  const locationColumns = getLocationColumns(EnvConfig);
 
   const [formData, setFormData] = useState<FormDataType>({
     locationHierarchy1: "",
     locationHierarchy2: "",
     locationHierarchy3: "",
   });
+
+   const {
+    downloadFileName,
+    setDownloadFileName,
+    file,
+    setFile,
+    isUploadModalOpen,
+    toggleUploadModal,
+    onUpload,
+    setUploadCallback,
+    exportToExcel,
+    RECORD_UPLOAD_LIMIT,
+    ref
+  } = useView(locationColumns);
 
   const {mutateAsync : addLocationPermission} = useAddLocationPermissions();
 
@@ -67,6 +87,10 @@ const AddLocationPermission = (props: { cb: () => void }) => {
     }
   };
 
+  const handleUpload = () => {  
+    onUpload(RECORD_UPLOAD_LIMIT);
+    setUploadCallback(cb);
+  }
   
   const isFormValid = useMemo((): boolean => {
     return !Object.keys(formData).every((k) => {
@@ -102,11 +126,13 @@ const AddLocationPermission = (props: { cb: () => void }) => {
           <Skeleton style={{ height: 30, width: "100px" }} />
         </ButtonsWrapper>
       </URLsForm>
+
     );
   }
 
   return (
-    <URLsForm onSubmit={handleSubmit}>
+    <>
+       <URLsForm onSubmit={handleSubmit}>
       <div style={{ display: "flex" }}>
        
         <InputWrapper >
@@ -154,13 +180,36 @@ const AddLocationPermission = (props: { cb: () => void }) => {
           alignItems: "flex-end",
           justifyContent: "flex-end",
           flex: 10,
+          gap: 20
         }}
       >
+        <PrimaryButton
+          type="button" 
+          themeUi={themeUi}
+          onClick={() => toggleUploadModal(true)}
+        >
+          Bulk Upload
+        </PrimaryButton>
         <PrimaryButton disabled={isFormValid || isSubmitting} themeUi={themeUi}>
           Add Permission
         </PrimaryButton>
       </div>
     </URLsForm>
+    {isUploadModalOpen && (
+      <UploadModal 
+        header={"Upload Location Permissions"}
+        openModal={isUploadModalOpen} 
+        onCloseModal={()=>{setFile(undefined);toggleUploadModal(false)}} 
+        onDownload={()=>exportToExcel(true)} 
+        onUpload={handleUpload}
+        inputText={downloadFileName}
+        setInputText={setDownloadFileName}
+        file={file}
+        setFile={setFile}
+        uploadButtonStatus={false}
+      />
+    )}
+    </>
   );
 };
 

@@ -235,6 +235,14 @@ export namespace MDMService {
     })
   }
 
+  export const useGetPermissionsPayload = async (formData: FormData) => {
+    return await axios.post(process.env.REACT_APP_API_HOST + 'api/validate-master/get-permissions-payload', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+  };
+
   export const useEditReportConfiguration = async(body:any)=>{
     return await axios.put(process.env.REACT_APP_API_HOST + 'api/mta/UpdateUIReportConfig',body,{
       headers: { 'Content-Type': 'application/json' }
