@@ -60,9 +60,7 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
             />
         )
     }
-console.log(
-    "ROW DATA",rowData
-);
+
 
     return(
         <TableWrapper>
