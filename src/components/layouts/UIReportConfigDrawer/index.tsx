@@ -23,19 +23,19 @@ const UIReportConfigDrawer = (props:UserRolesDrawerProps)=>{
 
     const [currTab,setCurrTab] = useState<number>(0)
 
-    const [currRole,setCurrRole] = useState<any>(null)
+    const [currUIReportConfig,setCurrUIReportConfig] = useState<any>(null)
 
     const [activeTab, setActiveTab] = useState(0);
 
     const onEditRole = (row:any)=>{
         setCurrTab(3); 
-        setCurrRole(row)
+        setCurrUIReportConfig(row)
     }
 
 
     const resetTab = ()=>{
         setCurrTab(0)
-        setCurrRole(null)
+        setCurrUIReportConfig(null)
         setActiveTab(0);
     }
 
@@ -65,7 +65,7 @@ const UIReportConfigDrawer = (props:UserRolesDrawerProps)=>{
             )}          
             {currTab === 3 && (
                 <Content>
-                    <EditRole data={currRole} cb={resetTab}/>
+                    <EditRole data={currUIReportConfig} cb={resetTab}/>
                 </Content>
             )}
             

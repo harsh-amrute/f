@@ -1,25 +1,20 @@
 import {useState,useEffect,useCallback} from 'react'
 import VFTable from "../../VectorFLOW/commons/VFTable"
 import { TableWrapper } from "../UserURLsDrawer/styles"
-import { useUserData } from "../../../context"
-import { SecondaryButton, Skeleton } from "../../commons/styled"
+import {  Skeleton } from "../../commons/styled"
 import { notifyError } from '../../../helpers/notify'
-// Import the necessary permission hook
 import { useGetAdminPermissions } from '../../../VectorFlow/Services/MTA/MDM'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../redux/store/store'
 
 
-const ViewURLs = (props:{onEdit:(data:any)=>void, permissionType: string})=>{
-    const { onEdit, permissionType } = props
-    const {user} = useUserData()
-    const themeUi = user.user.theme_ui
+const ViewURLs = (props:{permissionType: string})=>{
+    const {  permissionType } = props
     const [rowData,setRowData] = useState<Array<any>>([])
     const [isLoading,setIsLoading] = useState<boolean>(true)
     const [hasData, setHasData] = useState<boolean>(true);
 
 
-    // Use a single hook and handle the data fetching logic dynamically.
     const { mutateAsync: getPermissions } = useGetAdminPermissions();
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
     const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];   
@@ -49,7 +44,7 @@ const ViewURLs = (props:{onEdit:(data:any)=>void, permissionType: string})=>{
         }catch(error:any){
             console.error(error);
             notifyError("Server Went Unresponsive");
-            setRowData([]); // Clear data on error
+            setRowData([]);
             setHasData(false);
         }finally{
             setIsLoading(false);
@@ -70,13 +65,12 @@ const ViewURLs = (props:{onEdit:(data:any)=>void, permissionType: string})=>{
 
     const locationColumns = [
         { colId: "id", field: "id" ,headerName:"id"},
-        // Corrected typo in field names to match server response
         { colId: "location_heirarchy_1", field: "location_heirarchy_1", headerName:LOCATION_PERMISSION_L1},
         { colId: "location_heirarchy_2", field: "location_heirarchy_2", headerName:LOCATION_PERMISSION_L2},
         { colId: "location_heirarchy_3", field: "location_heirarchy_3", headerName:LOCATION_PERMISSION_L3},
     ];
     const columnDefs = permissionType === 'Product_Permissions' ? productColumns : locationColumns;
-console.log("COLDEF",columnDefs);
+
 
     if(isLoading){
         return (
@@ -84,7 +78,6 @@ console.log("COLDEF",columnDefs);
         )
     }
 
-    // New conditional rendering logic
     if (!hasData) {
         return (
             <div style={{height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
@@ -92,7 +85,6 @@ console.log("COLDEF",columnDefs);
             </div>
         )
     }
-console.log("ROW DATA",rowData);
 
     return(
         <TableWrapper>

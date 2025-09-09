@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-
-import Select from "react-select";
+import React, { useState, useEffect, useMemo } from "react";
 
 import {
   InputWrapper,
@@ -10,7 +8,6 @@ import {
 } from "../UserURLsDrawer/styles";
 import { Input, PrimaryButton, Skeleton } from "../../commons/styled";
 import { useUserData } from "../../../context";
-import axios from "axios";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useAddProductPermissions } from "../../../VectorFlow/Services/MTA/MDM";
 
@@ -157,7 +154,7 @@ const AddProductPermission = (props: { cb: () => void }) => {
         }}
       >
         <PrimaryButton disabled={isFormValid || isSubmitting} themeUi={themeUi}>
-          Add Role
+          Add Permission
         </PrimaryButton>
       </div>
     </URLsForm>

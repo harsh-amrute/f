@@ -18,22 +18,14 @@ const PermissionsDrawer = (props:UserRolesDrawerProps)=>{
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
     const [currTab,setCurrTab] = useState<number>(0)
-    const [currRole,setCurrRole] = useState<any>(null)
     const [activeTab, setActiveTab] = useState(0);
-    // Add new state for permission type
-    const [permissionType, setPermissionType] = useState('Product_Permissions');
 
-    const onEditRole = (row:any)=>{
-        setCurrTab(3); 
-        setCurrRole(row)
-    }
+    const [permissionType, setPermissionType] = useState('Product_Permissions');
 
     const resetTab = ()=>{
         setCurrTab(0)
-        setCurrRole(null)
         setActiveTab(0);
-        // Reset permission type as well if needed
-        setPermissionType('Product_Permissions');
+
     }
 
     return(
@@ -60,7 +52,6 @@ const PermissionsDrawer = (props:UserRolesDrawerProps)=>{
                 <Content>
                     {/* Pass the permissionType to ViewURLs */}
                     <ViewURLs
-                        onEdit={onEditRole}
                         permissionType={permissionType}
                     />
                 </Content>
@@ -75,7 +66,6 @@ const Header = (props:{
     handleClose:()=>void
     activeTab: any;
     setActiveTab:any;
-    // New prop to set permission type
     setPermissionType:(type:string)=>void;
 })=>{
     const {
@@ -96,8 +86,6 @@ const Header = (props:{
 
     const handlePermissionChange = (selectedOption: any) => {
         setSelectedPermission(selectedOption);
-        // Call the new setter to update state in the parent component
-        
         setPermissionType(selectedOption.value);
     };
 

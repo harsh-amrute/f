@@ -37,16 +37,6 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
         }
     },[])
 
-    // const allUrls = [
-    //     {
-    //         "id": 1,
-    //         "name": "VectorFlow. Master Data Management. Control Panel",
-    //         "code": "MDM-CP",
-    //         "description": "VectorFlow. Master Data Management. Control Panel",
-    //         "url": "/master-data-management/control-panel"
-    //     }
-    // ]
-
     const [isLoading,setIsLoading] = useState<boolean>(true)
     
     useEffect(()=>{

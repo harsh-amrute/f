@@ -56,10 +56,6 @@ const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    console.log("VAOOOOOO",name,value
-    );
-    
-
   };
 
 const isChanged = useMemo((): boolean => {
@@ -88,8 +84,6 @@ const formatData = (data: any) => {
     const data =  {...formattedData }  as any;
     try {
       const response = await editEnvConfiguration(data);
-      console.log("RESPONSE",response);
-      
       if (response.status !== 200) notifyError("Server Went Unresponsive");
       else notifySuccess(response?.data?.data);
       cb();
@@ -261,7 +255,6 @@ const alignmentOptions: any = [
               },
             }),
           }}
-            // value={formData.IsEdit ? flagOptions[0] : flagOptions[1]}
       value={flagOptions.find((option: any) => option.value === formData.IsEdit)}
         />
 

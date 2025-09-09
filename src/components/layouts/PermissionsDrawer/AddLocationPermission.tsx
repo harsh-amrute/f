@@ -157,7 +157,7 @@ const AddLocationPermission = (props: { cb: () => void }) => {
         }}
       >
         <PrimaryButton disabled={isFormValid || isSubmitting} themeUi={themeUi}>
-          Add Role
+          Add Permission
         </PrimaryButton>
       </div>
     </URLsForm>

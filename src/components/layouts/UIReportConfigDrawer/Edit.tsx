@@ -89,8 +89,6 @@ const formatData = (data: any) => {
     const data =  {...formattedData }  as any;
     try {
       const response = await editReportConfiguration(data);
-      console.log("RESPONSE",response);
-      
       if (response.status !== 200) notifyError("Server Went Unresponsive");
       else notifySuccess(response?.data?.data);
       cb();

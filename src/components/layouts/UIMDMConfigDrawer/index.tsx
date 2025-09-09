@@ -23,19 +23,19 @@ const UIMDMConfigDrawer = (props:UserRolesDrawerProps)=>{
 
     const [currTab,setCurrTab] = useState<number>(0)
 
-    const [currRole,setCurrRole] = useState<any>(null)
+    const [currUIMDMConfig,setCurrUIMDMConfig] = useState<any>(null)
 
     const [activeTab, setActiveTab] = useState(0);
 
     const onEditRole = (row:any)=>{
         setCurrTab(3); 
-        setCurrRole(row)
+        setCurrUIMDMConfig(row)
     }
 
 
     const resetTab = ()=>{
         setCurrTab(0)
-        setCurrRole(null)
+        setCurrUIMDMConfig(null)
         setActiveTab(0);
     }
 
@@ -65,7 +65,7 @@ const UIMDMConfigDrawer = (props:UserRolesDrawerProps)=>{
             )}          
             {currTab === 3 && (
                 <Content>
-                    <EditUIMDMConfig data={currRole} cb={resetTab}/>
+                    <EditUIMDMConfig data={currUIMDMConfig} cb={resetTab}/>
                 </Content>
             )}
             
