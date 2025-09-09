@@ -26,8 +26,6 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
         try{
             const response = await getAllUIReportConfiguration();
             const data = response?.data?.data;
-            console.log("DATA",data);
-            
             setRowData(data)
         }catch(error:any){
             console.error(error)

@@ -26,8 +26,6 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
         try{
             const response = await getAllEnvConfiguration();
             const data = response?.data?.data;
-            console.log("DATA",data);
-            
             setRowData(data.sort((row1:any,row2:any)=>row1.id - row2.id))
         }catch(error:any){
             console.error(error)
