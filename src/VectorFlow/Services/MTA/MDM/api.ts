@@ -235,7 +235,7 @@ export namespace MDMService {
     })
   }
 
-  export const useGetPermissionsPayload = async (formData: FormData) => {
+  export const useBulkUploadPermission = async (formData: FormData) => {
     return await axios.post(process.env.REACT_APP_API_HOST + 'api/mta/BulkUploadPermissions', formData, {
         headers: {
             'Content-Type': 'multipart/form-data'

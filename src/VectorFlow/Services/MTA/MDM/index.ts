@@ -289,9 +289,9 @@ export const useAddLocationPermissions = () => {
   })
 }
 
-export const useGetPermissionsPayload = () => {
+export const useBulkUploadPermissions= () => {
   return useMutation(async (body: any) => {
-    return await MDMService.useGetPermissionsPayload(body)
+    return await MDMService.useBulkUploadPermission(body)
   })
 }
 

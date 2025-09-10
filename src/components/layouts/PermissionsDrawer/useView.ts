@@ -4,8 +4,7 @@ import { RootState } from '../../../redux/store/store';
 import { notifyError, notifySuccess } from '../../../helpers/notify';
 import { type GridRef } from '../../../VectorFlow/types/MDM'
 import { Dispatch, SetStateAction } from 'react';
-import { useAddProductPermissions } from "../../../VectorFlow/Services/MTA/MDM";
-import { useGetPermissionsPayload } from "../../../VectorFlow/Services/MTA/MDM";
+import {  useBulkUploadPermissions } from "../../../VectorFlow/Services/MTA/MDM";
 import { getLocationColumns, getProductColumns } from './View';
 
 interface UseViewProps {
@@ -32,8 +31,7 @@ const useView = (columnDefs?: any[]): UseViewProps => {
     const ref = useRef<GridRef>();
     const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
     const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT'];
-    const {mutateAsync : addProductPermissions} = useAddProductPermissions();
-    const {mutateAsync : getPermissionPayload} = useGetPermissionsPayload();
+    const {mutateAsync : bulkUploadPermission} = useBulkUploadPermissions();
     const uploadCallbackRef = useRef<(() => void) | null>(null);
 
     const permissionType = columnDefs?.some(col => col.colId.includes('product')) ? 'Product' : 'Location';
@@ -70,28 +68,21 @@ const useView = (columnDefs?: any[]): UseViewProps => {
             formData.append('headers', JSON.stringify(headersList)); 
             formData.append("permissionType", permissionType);
             
-            const payload = await getPermissionPayload(formData);
-            if (payload?.data?.errors?.length > 0) {
-                const allErrors = payload.data.errors
+            const response = await bulkUploadPermission(formData);
+            if (response?.data?.errors?.length > 0) {
+                const allErrors = response.data.errors
                     .map((err: string) => formatErrorMessage(err))
                     .join("  |  ");
 
                 notifyError(allErrors);
                 return;
             }
-            console.log("Get Permission Payload Response", payload.data.data);
-
-            const response = await addProductPermissions({
-                permissionType: permissionType,
-                data: payload.data.data
-            });
+            else{
             notifySuccess(response?.data?.data);
             toggleUploadModal(false)
             setFile(undefined);
-            if (uploadCallbackRef.current) {
-                uploadCallbackRef.current();
-                uploadCallbackRef.current = null;
             }
+
         } catch (error: any) {
             console.error(error);
             notifyError(error.message);
