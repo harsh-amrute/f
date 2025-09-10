@@ -34,3 +34,16 @@ export const getFileDownload = async (file_name: string) => {
     }
   );
 }
+
+export const postUploadSchedulerFile = async (formData: FormData) => {
+  console.log("formData", formData);
+  return await axios.post(
+    process.env.REACT_APP_VF_API_HOST_MTO + `/SaveSchedulerInputFileOnUpload/`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+}

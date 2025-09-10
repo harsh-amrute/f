@@ -1,8 +1,6 @@
-import React from 'react'
-import { VFTableWrapper } from '../../../../../components/VectorFLOW/commons/VFTable/styles'
+import React, { useState, useEffect } from 'react'
 import VFTable from '../../Common/VFTable'
 import styled from 'styled-components';
-
 
 const GridWrapper = styled.div`
   position: relative; /* important for absolute positioning of the tab */
@@ -17,39 +15,144 @@ const GridWrapper = styled.div`
   & > .ag-theme-alpine {
     flex: 1;
     }
+
+   & .ag-theme-alpine .ag-header-row:nth-child(2){
+    background-color: black;
+    color: white;
+  }
+  & .ag-theme-alpine .ag-header-row:nth-child(1):hover{
+    background-color: black;
+    color: white;
+  }
+  & .ag-theme-alpine .ag-header-row:nth-child(3), & .ag-theme-alpine .ag-header-row-column-filter{
+    background-color: #f7f7f7 !important;
+    color: black !important;
+  }
 `;
 
-const GridViewJob = () => {
+const GridViewJob = ({ResourceData}: any) => {
+  const [columnDefs, setColumnDefs] = useState<any>([]);
+  const [rowData, setRowData] = useState<any>([]);
 
-  const columns = [
-    { headerName: "" },
-    { headerName: "Resource Name" },
-    { headerName: "Task Name", field: "taskName", width: 200 },
-    { headerName: "Start Time", field: "startTime", width: 150 },
-    { headerName: "End Time", field: "endTime", width: 150 },
-    { headerName: "Duration", field: "duration", width: 100 },
-    { headerName: "Status", field: "status", width: 100 },
-  ]
+  useEffect(() => {
+    if (!ResourceData?.Resource_Data) return;
 
-  const rowData = [
-    { id: 1, resourceName: 'Resource 1', taskName: 'Task A', startTime: '08:00', endTime: '10:00', duration: '2h', status: 'Completed' },
-    { id: 2, resourceName: 'Resource 2', taskName: 'Task B', startTime: '10:30', endTime: '12:00', duration: '1.5h', status: 'In Progress' },
-    { id: 3, resourceName: 'Resource 1', taskName: 'Task C', startTime: '13:00', endTime: '15:00', duration: '2h', status: 'Pending' },
-    { id: 4, resourceName: 'Resource 3', taskName: 'Task D', startTime: '15:30', endTime: '17:00', duration: '1.5h', status: 'Completed' },
-    { id: 5, resourceName: 'Resource 2', taskName: 'Task E', startTime: '17:30', endTime: '19:00', duration: '1.5h', status: 'In Progress' },
-  ]
+    // Extract unique stages and their associated work stations
+    const stageWorkStationMap = new Map<string, Set<string>>();
+    
+    Object.values(ResourceData.Resource_Data).forEach((resource: any) => {
+      const stage = resource.stage;
+      const workStation = resource.work_station;
+      
+      if (!stageWorkStationMap.has(stage)) {
+        stageWorkStationMap.set(stage, new Set());
+      }
+      stageWorkStationMap.get(stage)?.add(workStation);
+    });
+
+    // Build dynamic column definitions
+    const dynamicColumns: any[] = [
+      {
+        headerName: "Job List",
+        field: "jobId",
+        width: 120,
+        pinned: 'left'
+      }
+    ];
+
+    // Create grouped columns for each stage
+    Array.from(stageWorkStationMap.entries()).forEach(([stage, workStations]) => {
+      const stageChildren: any[] = [];
+      
+      // Array.from(workStations).forEach((workStation) => {
+        // Machine Name column
+        stageChildren.push({
+          headerName: "Machine Name",
+          field: `machine_name_${stage}`,
+          width: 200
+        });
+        
+        // Start Time column
+        stageChildren.push({
+          headerName: "Start Time", 
+          field: `start_${stage}`,
+          width: 200
+        });
+        
+        // End Time column
+        stageChildren.push({
+          headerName: "End Time",
+          field: `end_${stage}`, 
+          width: 200
+        });
+      // });
+
+      // Add the parent column with children
+      dynamicColumns.push({
+        headerName: stage,
+        children: stageChildren
+      });
+    });
+
+    setColumnDefs(dynamicColumns);
+  }, [ResourceData]);
+
+  useEffect(() => {
+    if (!ResourceData?.Resource_Data) return;
+
+    // Generate row data based on jobs
+    const jobMap = new Map<string, any>();
+    
+    // Collect all job information
+    Object.entries(ResourceData.Resource_Data).forEach(([resourceId, resource]: [string, any]) => {
+      const stage = resource.stage;
+      const workStation = resource.work_station;
+      
+      resource.task_list?.forEach((task: any) => {
+        if (task.Job_id) {
+          const jobId = task.Job_id;
+          
+          if (!jobMap.has(jobId)) {
+            jobMap.set(jobId, { jobId });
+          }
+          
+          const jobData = jobMap.get(jobId);
+          
+          // Convert Unix timestamp to readable format
+          const formatTime = (timestamp: number) => {
+            return new Date(timestamp * 1000).toLocaleString('en-GB', {
+              day: '2-digit',
+              month: '2-digit', 
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            }).replace(/\//g, "-");
+          };
+          
+          // Set machine name, start time, and end time for this stage/workstation
+          jobData[`machine_name_${stage}`] = workStation;
+          jobData[`start_${stage}`] = formatTime(task.start_time);
+          jobData[`end_${stage}`] = formatTime(task.end_time);
+        }
+      });
+    });
+
+    setRowData(Array.from(jobMap.values()));
+  }, [ResourceData]);
+
   return (
     <GridWrapper>
       <VFTable
-        columnDefs={columns}
+        key={"job-grid"}
+        columnDefs={columnDefs}
         rowData={rowData}
+        suppressRowClickSelection={true}
         defaultColDef={{
           sortable: true,
           filter: true,
           resizable: true,
           floatingFilter: true,
-          flex: 1,
-          
         }}
         
         rowClass='my-row-class'
@@ -60,9 +163,8 @@ const GridViewJob = () => {
         }}
         animateRows={true}
         rowSelection="single"
-        pagination={true}
+        pagination={false}
         paginationPageSize={10}
-      
       />
     </GridWrapper>
   )

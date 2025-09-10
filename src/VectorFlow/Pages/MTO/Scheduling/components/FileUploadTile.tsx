@@ -8,9 +8,10 @@ import { notifyError } from "../../../../../helpers/notify";
 type ReportActionCardProps = {
   title: string;
   onDownload: (file_name: string) => void;
-  onUpload: () => void;
+  onUpload: (props: any) => void;
   lastUpdateStatus: any;
-  fileUploadType: 'UI'|'FTP'|'DB'|any
+  fileUploadType: 'UI'|'FTP'|'DB'|any;
+  expected_extension: string;
 };
 
 const Container = styled.div`
@@ -53,7 +54,8 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
   onDownload,
   onUpload,
   lastUpdateStatus,
-  fileUploadType
+  fileUploadType,
+  expected_extension
 }) => {
   const themeUi = useUserData().user.user.themeUi;
 
@@ -74,13 +76,13 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
     }
 
     const file = e?.target?.files?.[0];
-    switch (file?.type) {
-      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+    // switch (file?.type) {
+    //   case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
         setFile(file);
-        break;
-      default:
-        notifyError("Only xlsx files are accepted");
-    }
+      //   break;
+      // default:
+      //   notifyError("Only xlsx files are accepted");
+    // }
   };
 
   return (
@@ -129,7 +131,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
         </VFButton>
         <VFButton
           themeUi={themeUi}
-          onClick={onUpload}
+          onClick={()=>{onUpload({file, file_type: expected_extension}); setFile(null)}}
           style={{ fontSize: "0.9rem", height: "32px", width: '100px' }}
           >
                    <ButtonContentWrapper>

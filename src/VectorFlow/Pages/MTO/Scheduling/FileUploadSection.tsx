@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import FileUploadTile from "../Scheduling/components/FileUploadTile";
-import fileData from "./data";
 import styled from "styled-components";
 import { useUserData } from "../../../../context";
 import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
-import { useGetFileConfiguration, useGetFileDownloadForSchedular } from "../../../../VectorFlow/Services/MTO/Scheduling";
+import { useGetFileConfiguration, useGetFileDownloadForSchedular, usePostFileUploadForSchedular } from "../../../../VectorFlow/Services/MTO/Scheduling";
 import { format } from "date-fns";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../helpers/notify";
-import { toast } from "react-toastify";
+
 const Wrapper = styled.div`
   position: relative;
   margin: 20px 100px;
@@ -94,6 +93,8 @@ const FileUploadSection = () => {
   const { mutateAsync: getFileConfiguration, isLoading } =
     useGetFileConfiguration();
 
+  const {mutateAsync: postUploadSchedulerFile} = usePostFileUploadForSchedular();
+
   const {mutateAsync: getFileDownload} = useGetFileDownloadForSchedular();
 
   const [lastRefreshTime ,setLastRefreshTime] = useState<string>(new Date().toString());
@@ -103,6 +104,34 @@ const FileUploadSection = () => {
     setFileObjects(result.data.data);
     setLastRefreshTime(new Date().toString());
   };
+
+  const user = useUserData().user.user;
+
+  const UploadFile = async ({file, file_type}: {file: File, file_type: string}) => {
+    if(file===null) {
+      notifyError("Select a file to upload!");
+      return;
+    }
+    try {
+      notifyLoader("Uploading file...");
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("userid", user.id);
+      formData.append("username", user.name);
+      formData.append("day", "0");
+      formData.append("file_type", "I")
+      formData.append("is_critical", "True")
+      
+      const response = await postUploadSchedulerFile(formData);
+      console.log("Response", response);
+      notifySuccess("File uploaded successfully!");
+      GetFileConfiguration(); // Refresh the file list
+    } catch (e:any) {
+      console.log("error", e);
+      notifyError(e?.message || "Failed to upload file");
+      console.log(e);
+    }
+  }
 
 
   const DownloadExcel = async(filename: string) => {
@@ -149,9 +178,11 @@ const FileUploadSection = () => {
   }, [lastRefreshTime]);
   
 
+
+  
   
 
-  React.useEffect(() => {
+  useEffect(() => {
     GetFileConfiguration();
   }, []);
 
@@ -207,6 +238,7 @@ const FileUploadSection = () => {
                 file.file_from === "UI" && (
                   <FileUploadTile
                     key={index}
+                    expected_extension={file.expected_extension}
                     fileUploadType={file.file_from}
                     lastUpdateStatus={
                       file.last_updated
@@ -222,7 +254,7 @@ const FileUploadSection = () => {
                     }
                     title={file.file_name}
                     onDownload={DownloadExcel}
-                    onUpload={() => console.log(`Uploading ${file.file_name}`)}
+                    onUpload={UploadFile}
                   />
                 )
             )}
@@ -236,6 +268,7 @@ const FileUploadSection = () => {
                 file.file_from === "FTP" && (
                   <FileUploadTile
                     key={index}
+                    expected_extension={file.expected_extension}
                     fileUploadType={file.file_from}
                     lastUpdateStatus={
                       file.last_updated
@@ -247,7 +280,7 @@ const FileUploadSection = () => {
                     }
                     title={file.file_name}
                     onDownload={DownloadExcel}
-                    onUpload={() => console.log(`Uploading ${file.file_name}`)}
+                    onUpload={UploadFile}
                   />
                 )
             )}

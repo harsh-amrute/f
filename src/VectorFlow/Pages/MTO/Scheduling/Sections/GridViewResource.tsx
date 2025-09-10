@@ -1,8 +1,6 @@
-import React from 'react'
-import { VFTableWrapper } from '../../../../../components/VectorFLOW/commons/VFTable/styles'
+import React, { useState, useEffect } from 'react'
 import VFTable from '../../Common/VFTable'
 import styled from 'styled-components';
-
 
 const GridWrapper = styled.div`
   position: relative; /* important for absolute positioning of the tab */
@@ -17,27 +15,210 @@ const GridWrapper = styled.div`
   & > .ag-theme-alpine {
     flex: 1;
     }
+
+   & .ag-theme-alpine .ag-header-row:nth-child(2){
+    background-color: black;
+    color: white;
+  }
+  & .ag-theme-alpine .ag-header-row:nth-child(1):hover{
+    background-color: black;
+    color: white;
+  }
+  & .ag-theme-alpine .ag-header-row:nth-child(3), & .ag-theme-alpine .ag-header-row-column-filter{
+    background-color: #f7f7f7 !important;
+    color: black !important;
+  }
 `;
 
-const GridViewResource = () => {
 
-  const columns = [
-    { headerName: "" },
-    { headerName: "Resource Name" },
-    { headerName: "Task Name", field: "taskName", width: 200 },
-    { headerName: "Start Time", field: "startTime", width: 150 },
-    { headerName: "End Time", field: "endTime", width: 150 },
-    { headerName: "Duration", field: "duration", width: 100 },
-    { headerName: "Status", field: "status", width: 100 },
-  ]
+const GridViewResource = ({ResourceData}: any) => {
+  const [columns, setColumns] = useState<any>([]);
+  const [rowData, setRowData] = useState<any>([]);
 
-  const rowData = [
-    { id: 1, resourceName: 'Resource 1', taskName: 'Task A', startTime: '08:00', endTime: '10:00', duration: '2h', status: 'Completed' },
-    { id: 2, resourceName: 'Resource 2', taskName: 'Task B', startTime: '10:30', endTime: '12:00', duration: '1.5h', status: 'In Progress' },
-    { id: 3, resourceName: 'Resource 1', taskName: 'Task C', startTime: '13:00', endTime: '15:00', duration: '2h', status: 'Pending' },
-    { id: 4, resourceName: 'Resource 3', taskName: 'Task D', startTime: '15:30', endTime: '17:00', duration: '1.5h', status: 'Completed' },
-    { id: 5, resourceName: 'Resource 2', taskName: 'Task E', startTime: '17:30', endTime: '19:00', duration: '1.5h', status: 'In Progress' },
-  ]
+  useEffect(() => {
+    // Define column structure
+    const columnDefs = [
+      {
+        headerName: "Stage",
+        field: "stage",
+        width: 120,
+        pinned: 'left'
+      },
+      {
+        headerName: "Machine Name", 
+        field: "machineName",
+        width: 200,
+        pinned: 'left'
+      },
+      {
+        headerName: "Min",
+        children: [
+          {
+            headerName: "Start",
+            field: "minStart",
+            width: 150
+          },
+          {
+            headerName: "End", 
+            field: "minEnd",
+            width: 150
+          }
+        ]
+      },
+      {
+        headerName: "Max",
+        children: [
+          {
+            headerName: "Start",
+            field: "maxStart", 
+            width: 150
+          },
+          {
+            headerName: "End",
+            field: "maxEnd",
+            width: 150
+          }
+        ]
+      },
+      {
+        headerName: "Elapsed Time",
+        field: "elapsedTime",
+        width: 120
+      }
+    ];
+
+    const Task_types = Object.keys(ResourceData?.Task_master || {});
+    Task_types.forEach((taskType) => {
+      columnDefs.push(
+        {
+          headerName: taskType,
+          children: [
+            {
+              headerName: "Count",
+              field: taskType + "_count",
+              width: 120
+            },
+            {
+              headerName: "Hrs", 
+              field: taskType + "_hrs",
+              width: 120
+            }
+          ]
+        },
+      )
+    });
+    
+    
+    setColumns(columnDefs);
+  }, []);
+
+  useEffect(() => {
+    if (!ResourceData?.Resource_Data) return;
+
+    // Process resource data to generate row data
+    const resourceRows: any[] = [];
+    
+    // Extract unique task types for consistent field naming
+    const taskTypes = new Set<string>();
+    Object.values(ResourceData.Resource_Data).forEach((resource: any) => {
+      resource.task_list?.forEach((task: any) => {
+        if (task.task_type) {
+          taskTypes.add(task.task_type);
+        }
+      });
+    });
+    
+    Object.entries(ResourceData.Resource_Data).forEach(([resourceId, resource]: [string, any]) => {
+      const stage = resource.stage;
+      const machineName = resource.work_station;
+      const taskList = resource.task_list || [];
+      
+      if (taskList.length === 0) return;
+
+      // Find min and max times for this resource
+      let minStartTime = Infinity;
+      let minEndTime = Infinity;
+      let maxStartTime = -Infinity;
+      let maxEndTime = -Infinity;
+      let totalTaskDuration = 0;
+      
+      // Initialize task type counters
+      const taskTypeData: { [key: string]: { count: number; hours: number } } = {};
+      Array.from(taskTypes).forEach(type => {
+        taskTypeData[type] = { count: 0, hours: 0 };
+      });
+
+      taskList.forEach((task: any) => {
+        const startTime = task.start_time;
+        const endTime = task.end_time;
+        const taskType = task.task_type;
+        
+        // Update min times (earliest task)
+        if (startTime < minStartTime) {
+          minStartTime = startTime;
+          minEndTime = endTime;
+        }
+        
+        // Update max times (latest task)  
+        if (endTime > maxEndTime) {
+          maxEndTime = endTime;
+          maxStartTime = startTime;
+        }
+        
+        // Calculate task duration and add to total
+        const taskDuration = (endTime - startTime) / 3600; // Convert seconds to hours
+        totalTaskDuration += taskDuration;
+        
+        // Update task type counters
+        if (taskType && taskTypeData[taskType]) {
+          taskTypeData[taskType].count += 1;
+          taskTypeData[taskType].hours += taskDuration;
+        }
+      });
+
+      // Format time function
+      const formatTime = (timestamp: number) => {
+        return new Date(timestamp * 1000).toLocaleString('en-GB', {
+          day: '2-digit',
+          month: '2-digit', 
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        }).replace(/\//g, "-");
+      };
+
+      // Create base row data
+      const rowData: any = {
+        stage,
+        machineName,
+        minStart: minStartTime !== Infinity ? formatTime(minStartTime) : '-',
+        minEnd: minEndTime !== Infinity ? formatTime(minEndTime) : '-',
+        maxStart: maxStartTime !== -Infinity ? formatTime(maxStartTime) : '-', 
+        maxEnd: maxEndTime !== -Infinity ? formatTime(maxEndTime) : '-',
+        elapsedTime: Math.round(totalTaskDuration) // Round to nearest hour
+      };
+      
+      // Add task type data to row
+      Array.from(taskTypes).forEach(taskType => {
+        rowData[`${taskType}_count`] = taskTypeData[taskType].count;
+        rowData[`${taskType}_hrs`] = Math.round(taskTypeData[taskType].hours * 10) / 10; // Round to 1 decimal place
+      });
+
+      resourceRows.push(rowData);
+    });
+
+    // Sort by stage and then by machine name
+    resourceRows.sort((a, b) => {
+      if (a.stage !== b.stage) {
+        return a.stage.localeCompare(b.stage);
+      }
+      return a.machineName.localeCompare(b.machineName);
+    });
+
+    setRowData(resourceRows);
+  }, [ResourceData]);
+
   return (
     <GridWrapper>
       <VFTable
@@ -48,8 +229,6 @@ const GridViewResource = () => {
           filter: true,
           resizable: true,
           floatingFilter: true,
-          flex: 1,
-          
         }}
         
         rowClass='my-row-class'
@@ -58,11 +237,9 @@ const GridViewResource = () => {
             return 'my-shaded-effect';
           }
         }}
+        suppressRowClickSelection={true}
         animateRows={true}
         rowSelection="single"
-        pagination={true}
-        paginationPageSize={10}
-      
       />
     </GridWrapper>
   )

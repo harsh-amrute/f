@@ -8,6 +8,7 @@ import GridViewResource from './Sections/GridViewResource';
 import GridViewJob from './Sections/GridViewJob';
 import VFOverlayModal from '../../../../components/VectorFLOW/commons/VFOverlayModal';
 import FilterModal from './components/FilterModal';
+import response from './components/data';
 
 
 const FinalResultSectionWrapper = styled.div`
@@ -24,9 +25,9 @@ const FinalResultSection = ({setStep}:any) => {
       case "JobView":
         return <JobView/>
       case "GridViewR":
-        return <GridViewResource/>
+        return <GridViewResource ResourceData={response}/>
       case "GridViewJ":
-        return <GridViewJob/>
+        return <GridViewJob ResourceData={response}/>
       default:
         return <ResourceView/>;
     }
