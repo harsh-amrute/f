@@ -41,7 +41,10 @@ const SearchInputMultiple = ({
 
   const handleSelect = (e: any) => {
     setValue(e);
-    handleListChild(e);
+
+    if (handleListChild) {
+      handleListChild(e);
+    }
 
     if (isCheckBoxRef?.current?.isPrdCheck && from && activeApplicationId) {
       isCheckBoxRef.current[from][activeApplicationId] = false;

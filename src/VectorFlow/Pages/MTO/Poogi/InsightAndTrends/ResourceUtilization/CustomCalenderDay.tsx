@@ -6,6 +6,7 @@ import { CustomCalenderDayWrapper } from './styles'
 
 interface CustomCalenderDayProps extends DayProps {
     color: string
+    opacity?:string
 }
 
 
@@ -17,6 +18,8 @@ const CustomCalenderDay = (props: CustomCalenderDayProps) => {
 
     const isDateValid = isSameMonth(currentMonth, props.date)
     const currColors = BPRColorMapper(props.color)
+    const opacity = props?.opacity
+
 
     if (isDateValid) {
         return (
@@ -24,7 +27,8 @@ const CustomCalenderDay = (props: CustomCalenderDayProps) => {
                 data-testid="custom-calender-day"
                 style={{
                 backgroundColor: currColors.bg,
-                color: currColors.text
+                color: currColors.text,
+                opacity: opacity ? opacity : '1'
             }}>
                 {format(props.date, 'dd')}
             </CustomCalenderDayWrapper>
