@@ -157,7 +157,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/mto/procurement/material-coverage-open-sales',
     '/mto/procurement-planning/planning',
     "/mto/procurement/insights-and-trends/day-wise-coverage",
-    '/planning/simulative-fullkit',
+    '/mto/planning/simulative-fullkit',
     '/mta/logistics/intransit-whereabouts',
     '/mto/procurement/material-requirement',
     '/mto/procurement/insights-and-trends/rmpm',
