@@ -95,15 +95,10 @@ const AddProductPermission = (props: { cb: () => void }) => {
     const filledValues = [productHierarchy1, productHierarchy2, productHierarchy3].filter(v => v !== '');
     const lowerCaseFilledValues = filledValues.map(v => v.toLowerCase());
 
-    if (new Set(lowerCaseFilledValues).size < filledValues.length) {
-      return true;
-    }
-    if (!productHierarchy1 && productHierarchy2) {
-      return true;
-    }
-    if (!productHierarchy2 && productHierarchy3) {
-      return true;
-    }
+    if (new Set(lowerCaseFilledValues).size < filledValues.length)  return true;
+    if(!productHierarchy1 && !productHierarchy2 && !productHierarchy3 )  return true
+    if (!productHierarchy1 && productHierarchy2) return true;
+    if (!productHierarchy2 && productHierarchy3)  return true;
     return false;
   }, [formData]);
 

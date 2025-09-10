@@ -98,15 +98,10 @@ const AddLocationPermission = (props: { cb: () => void }) => {
     const filledValues = [locationHierarchy1, locationHierarchy2, locationHierarchy3].filter(v => v !== '');
     const lowerCaseFilledValues = filledValues.map(v => v.toLowerCase());
 
-    if (new Set(lowerCaseFilledValues).size < filledValues.length) {
-      return true;
-    }
-    if (!locationHierarchy1 && locationHierarchy2) {
-      return true;
-    }
-    if (!locationHierarchy2 && locationHierarchy3) {
-      return true;
-    }
+    if (new Set(lowerCaseFilledValues).size < filledValues.length)   return true;
+    if(!locationHierarchy1 && !locationHierarchy2 && !locationHierarchy3 )  return true
+    if (!locationHierarchy1 && locationHierarchy2) return true;
+    if (!locationHierarchy2 && locationHierarchy3) return true;
     return false;
   }, [formData]);
 

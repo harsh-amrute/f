@@ -68,7 +68,7 @@ const useView = (columnDefs?: any[]): UseViewProps => {
 
             const headersList = columnDefs?.filter(col => col.colId !== 'id').map(col => col.colId);
             formData.append('headers', JSON.stringify(headersList)); 
-            console.log("FormData", formData);
+            formData.append("permissionType", permissionType);
             
             const payload = await getPermissionPayload(formData);
             if (payload?.data?.errors?.length > 0) {
