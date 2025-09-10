@@ -92,17 +92,22 @@ const AddLocationPermission = (props: { cb: () => void }) => {
     setUploadCallback(cb);
   }
   
-  const isFormValid = useMemo((): boolean => {
-    return !Object.keys(formData).every((k) => {
-      const key = k as keyof FormDataType;
-      const value = formData[key];
-      return (
-        value !== null &&
-        value !== undefined &&
-        value !== "" &&
-        (!Array.isArray(value) || value.length > 0)
-      );
-    });
+  const isFormInvalid = useMemo((): boolean => {
+    const { locationHierarchy1, locationHierarchy2, locationHierarchy3 } = formData;
+
+    const filledValues = [locationHierarchy1, locationHierarchy2, locationHierarchy3].filter(v => v !== '');
+    const lowerCaseFilledValues = filledValues.map(v => v.toLowerCase());
+
+    if (new Set(lowerCaseFilledValues).size < filledValues.length) {
+      return true;
+    }
+    if (!locationHierarchy1 && locationHierarchy2) {
+      return true;
+    }
+    if (!locationHierarchy2 && locationHierarchy3) {
+      return true;
+    }
+    return false;
   }, [formData]);
 
   if (isLoading) {
@@ -151,7 +156,6 @@ const AddLocationPermission = (props: { cb: () => void }) => {
           <Label htmlFor="locationHierarchy2"> Location Heirarchy 2</Label>
           <Input
             type={"text"}
-            required
             name="locationHierarchy2"
             placeholder="Any location heirarchy 2"
             themeUi={themeUi}
@@ -165,7 +169,6 @@ const AddLocationPermission = (props: { cb: () => void }) => {
           <Label htmlFor="locationHierarchy3"> Location Heirarchy 3</Label>
           <Input
             type={"text"}
-            required
             name="locationHierarchy3"
             placeholder="Any location heirarchy 3"
             themeUi={themeUi}
@@ -190,7 +193,7 @@ const AddLocationPermission = (props: { cb: () => void }) => {
         >
           Bulk Upload
         </PrimaryButton>
-        <PrimaryButton disabled={isFormValid || isSubmitting} themeUi={themeUi}>
+        <PrimaryButton disabled={isFormInvalid || isSubmitting} themeUi={themeUi}>
           Add Permission
         </PrimaryButton>
       </div>

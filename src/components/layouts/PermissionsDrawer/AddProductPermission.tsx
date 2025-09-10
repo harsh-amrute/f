@@ -89,18 +89,22 @@ const AddProductPermission = (props: { cb: () => void }) => {
     onUpload(RECORD_UPLOAD_LIMIT);
     setUploadCallback(cb);
   }
-  
-  const isFormValid = useMemo((): boolean => {
-    return !Object.keys(formData).every((k) => {
-      const key = k as keyof FormDataType;
-      const value = formData[key];
-      return (
-        value !== null &&
-        value !== undefined &&
-        value !== "" &&
-        (!Array.isArray(value) || value.length > 0)
-      );
-    });
+
+  const isFormInvalid = useMemo((): boolean => {
+    const { productHierarchy1, productHierarchy2, productHierarchy3 } = formData;
+    const filledValues = [productHierarchy1, productHierarchy2, productHierarchy3].filter(v => v !== '');
+    const lowerCaseFilledValues = filledValues.map(v => v.toLowerCase());
+
+    if (new Set(lowerCaseFilledValues).size < filledValues.length) {
+      return true;
+    }
+    if (!productHierarchy1 && productHierarchy2) {
+      return true;
+    }
+    if (!productHierarchy2 && productHierarchy3) {
+      return true;
+    }
+    return false;
   }, [formData]);
 
   if (isLoading) {
@@ -146,7 +150,6 @@ const AddProductPermission = (props: { cb: () => void }) => {
           <Label htmlFor="productHierarchy2"> Product Heirarchy 2</Label>
           <Input
             type={"text"}
-            required
             name="productHierarchy2"
             placeholder="Any Product heirarchy 2"
             themeUi={themeUi}
@@ -160,7 +163,6 @@ const AddProductPermission = (props: { cb: () => void }) => {
           <Label htmlFor="productHierarchy3"> Product Heirarchy 3</Label>
           <Input
             type={"text"}
-            required
             name="productHierarchy3"
             placeholder="Any Product heirarchy 3"
             themeUi={themeUi}
@@ -185,7 +187,7 @@ const AddProductPermission = (props: { cb: () => void }) => {
         >
           Bulk Upload
         </PrimaryButton>
-        <PrimaryButton disabled={isFormValid || isSubmitting} themeUi={themeUi}>
+        <PrimaryButton disabled={isFormInvalid || isSubmitting} themeUi={themeUi}>
           Add Permission
         </PrimaryButton>
       </div>
