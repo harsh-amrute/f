@@ -62,7 +62,7 @@ export const CaptchaContainer = styled.div`
   background: #ffffff;
   border-radius: 8px;
   border: 1px solid #ccc;
-  width: 50%;
+  width: fit-content;
   margin-top: 20px;
 `;
 
