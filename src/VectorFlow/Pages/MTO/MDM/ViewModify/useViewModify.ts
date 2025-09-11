@@ -1457,19 +1457,24 @@ const useViewModify = (pageType: string) => {
         const rowData = _.cloneDeep(activeMaster.rowData || []);
         let newData = _.cloneDeep(selectedData);
         const {error} = CALENDAR_VALIDATION_SCHEMA.validate(selectedData,{abortEarly:false})
+
         if(error){
           const fieldOrders = activeMaster.colDefs.filter((item:any)=> item.headerName !== "Action").map((item:any)=> item.field);
 
-          const orderedErrors = fieldOrders.flatMap((key:any)=>(
-            error.details.filter((err:any)=> err.path[0] === key)
-          ))
+          const orderedErrors = fieldOrders.flatMap((key: any) => (
+            error.details.filter((err: any) => err.path[0] === key)
+            
+          ));
 
-          return notifyError(orderedErrors[0]?.message)
+          notifyError(orderedErrors[0]?.message);
+
+
+          // return notifyError(orderedErrors[0]?.message)
           
         }
 
         // edit calendar 
-        if(index != -1){
+      if (index!=-1) { 
           if(newData.ia !== true){
             newData = {...newData,iu:true,id:false}
           }
@@ -1485,8 +1490,9 @@ const useViewModify = (pageType: string) => {
         dispatch(UPDATE_ROW_DATA(rowData))
         setIsModalOpen(false)
     }
+  
 
-    // on deleating a calendar from action
+    // on deleting a calendar from action
     const onDeleteHandler = (index: any, rowData:any) => {
       const newData = _.cloneDeep([...rowData])
       const currDeleteObj = {...newData[index]}

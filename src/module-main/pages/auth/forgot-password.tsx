@@ -1,4 +1,4 @@
-import { useRef,useState } from "react";
+import { useEffect, useRef,useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ContainerRight,
@@ -20,16 +20,19 @@ import {
   SuccessIcon,
   SuccessText,
   SuccessArea,
+  CaptchaContainer,
+  CaptchaReload,
+  RecaptchaInput,
 } from "./styles";
 import { Errors } from "../../../components";
 import { useForm } from "react-hook-form";
 import { LoginRequest } from "../../types";
 import { useForgotPassword } from "../../services";
-import { notifyError } from "../../../helpers/notify";
+import { notifyError, notifySuccess } from "../../../helpers/notify";
 import WelcomeBoard from "./welcome-board";
 import LoadingSpinner from "../../../components/commons/LoadingSpinner";
 // eslint-disable-next-line import/no-named-as-default
-import ReCAPTCHA from "react-google-recaptcha";
+import { loadCaptchaEnginge, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
 import { SITE_KEY } from "../../../helpers/constants";
 
 function ForgotPasswordContainer() {
@@ -37,7 +40,6 @@ function ForgotPasswordContainer() {
   localStorage.clear();
   const [requestSend, setRequestSend] = useState(false);
   const [loading, setLoading] = useState(false);
-  const recaptchaRefFP: any = useRef();
 
   const form = useForm<LoginRequest>({
     mode : "onChange",
@@ -55,41 +57,54 @@ function ForgotPasswordContainer() {
   const { mutateAsync: mutateForgotPassword } = useForgotPassword();
 
   const [message, setMessage] = useState("");
+  const [captchaInput, setCaptchaInput] = useState("");
 
-  const onSave = () => {
-    const recaptchaValue = recaptchaRefFP.current.getValue();
+ const onSave = () => {
+    if (!captchaInput || !validateCaptcha(captchaInput)) {
+      notifyError("Invalid Captcha. Please try again.");
+      setCaptchaInput("");
+      return;
+    }
+      
+
     setLoading(true);
     const formData = getValues();
     const data = { email: formData.email.trim() };
 
-    
-    if (recaptchaValue) {
-      mutateForgotPassword(data, {
-        onSuccess: (data: any) => {
-          setMessage(data?.data?.msg);
-          if (data?.status === 400) {
-            recaptchaRefFP.current?.reset();
-            notifyError(data?.response?.msg[0]);
-          } else {
-            setRequestSend(true);
-          }
-          setLoading(false);
-        },
-        onError: (data: any) => {
-          setMessage(data.data.msg);
-
-          recaptchaRefFP.current?.reset();
-          notifyError(data.error);
-          setLoading(false);
-        },
-      });
-    } else {
-      // recaptchaRef.current?.reload();
-      setLoading(false);
-      notifyError(t("loginPage.notify.completeReCaptcha"));
-    }
+    mutateForgotPassword(data, {
+      onSuccess: (data: any) => {
+        setMessage(data?.data?.msg);
+        if (data?.status === 400) {
+          notifyError(data?.response?.msg[0]);
+          loadCaptchaEnginge(6);
+          setCaptchaInput("");
+        } else {
+          setRequestSend(true);
+          notifySuccess("Password reset link sent to your email.");
+        }
+        setLoading(false);
+      },
+      onError: (error: any) => {
+        setMessage(error?.data?.msg);
+        notifyError(error?.error || "Something went wrong");
+        setLoading(false);
+        loadCaptchaEnginge(6);
+        setCaptchaInput("");
+      },
+    });
   };
 
+
+  useEffect(() => {
+    loadCaptchaEnginge(6);
+    const interval = setInterval(() => {
+      loadCaptchaEnginge(6);
+    }, 120000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  
   return (
     <SignInArea>
       {loading && <LoadingSpinner />}
@@ -98,17 +113,10 @@ function ForgotPasswordContainer() {
           {requestSend ? (
             <SuccessArea>
               <SuccessIcon src="/assets/img/auth/tick-circle.svg" />
-              <SuccessText>
-               {message}
-              </SuccessText>
+              <SuccessText>{message}</SuccessText>
             </SuccessArea>
           ) : (
             <>
-            {
-              /* 
-              <LogoArvind src="/assets/img/logoArvind.png" alt="logo" />          
-              */
-            }
               <Tittle>{t("forgotPasswordPage.title")}</Tittle>
               <FormArea onSubmit={handleSubmit(onSave)}>
                 <InputArea error={errors.email}>
@@ -130,14 +138,33 @@ function ForgotPasswordContainer() {
                   <Errors errors={errors} name="email" />
                 </InputArea>
 
-                <ReCAPTCHA
-                  className="recaptcha"
-                  ref={recaptchaRefFP}
-                  // sitekey={process.env.REACT_APP_ENV === 'test' ? TEST_SITE_KEY : SITE_KEY}
-                  sitekey={SITE_KEY}
+                <CaptchaContainer>
+                  <LoadCanvasTemplateNoReload/>
+                  <CaptchaReload
+                    type="button"
+                    onClick={() => {
+                      loadCaptchaEnginge(6);
+                      setCaptchaInput("");
+                    }}
+                  >
+                    <img src="/assets/img/reload.svg" alt="Reload" />
+                  </CaptchaReload>
+                </CaptchaContainer>
+
+                <RecaptchaInput
+                  type="text"
+                  placeholder="Enter the text here"
+                  value={captchaInput}
+                  onChange={(e: any) => setCaptchaInput(e.target.value)}
+                  onKeyDown={(e: any) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSubmit(onSave)();
+                    }
+                  }}
                 />
 
-                <SCButtonLogin>
+                <SCButtonLogin disabled={loading}>
                   <ButtonSubmit>
                     <ButtonSubmitText>
                       {t("forgotPasswordPage.submitBtn")}
