@@ -7,7 +7,6 @@ import { useUserData } from '../../../../../context'
 const StatusBarWrapper = styled.div`
     position: fixed;
     bottom: 0;
-    left: 0;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -17,15 +16,13 @@ const StatusBarWrapper = styled.div`
     background: white;
     shadow: 0px -2px 6px rgba(0, 0, 0, 0.4);
     border-top: 1px solid #E0E0E0;
-    
-
 `
 
 const LeftSection = styled.span`
     display: flex;
     align-items: center;
     gap: 24px;
-    margin-left: 60px;
+    margin-left: 20px;
 `
 
 const StatusBarBottom = ({isRunEnabled=true, isGoToFinalResult=true, onGoToFinalResult}: any) => {

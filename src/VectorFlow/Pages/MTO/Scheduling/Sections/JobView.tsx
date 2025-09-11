@@ -1,6 +1,5 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import response from "../components/data";
 import { TaskBar, TooltipRow, TooltipWrapper } from "../components/MyChartStyles";
 import { format } from "date-fns";
 
@@ -60,7 +59,7 @@ const GanttSkeleton = () => {
   );
 };
 
-const JobView = () => {
+const JobView = ({ResourceData}: any) => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -68,7 +67,7 @@ const JobView = () => {
     return () => cancelAnimationFrame(id);
   }, []);
 
-  const data: any = response.Resource_Data;
+  const data: any = ResourceData.Resource_Data;
 
   const allResources: { id: string; stage: string; work_station: string }[] =
     [];
@@ -127,7 +126,7 @@ const JobView = () => {
 
   console.log("TaskData", TaskData);
 
-  const colors:any = response.Workstation_master;
+  const colors:any = ResourceData.Workstation_master;
 
   const CustomTaskBar = ({ taskIdx, left, width, task }:any) => {
 

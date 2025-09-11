@@ -1,6 +1,5 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import response from "./data";
 
 const MyChart = lazy(() => import("./MyChart")); // still code-split
 
@@ -63,7 +62,7 @@ const GanttSkeleton = () => {
   );
 };
 
-const ResourceViewChart = () => {
+const ResourceViewChart = ({ResourceData}:any) => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -71,7 +70,7 @@ const ResourceViewChart = () => {
     return () => cancelAnimationFrame(id);
   }, []);
 
-  const data: any = response.Resource_Data;
+  const data: any = ResourceData.Resource_Data;
 
 
   const allResources: { id: string; stage: string, work_station: string }[] = [];
@@ -109,7 +108,7 @@ const ResourceViewChart = () => {
   });
 
 
-  const colors = response.Task_master;
+  const colors = ResourceData.Task_master;
   
 
 

@@ -250,7 +250,7 @@ const JobViewIcon = (isSelected: boolean) => {
 
   
 
-const SchedulingActionToolbar = ({currentView, setCurrentView, setIsFilterModalOpen, onGoBack}:any) => {
+const SchedulingActionToolbar = ({currentView, setCurrentView, setIsFilterModalOpen, onGoBack, appliedFilters, setAppliedFilters}:any) => {
 
     const themeUi = useUserData().user.user.themeUi;
 
@@ -271,6 +271,15 @@ const SchedulingActionToolbar = ({currentView, setCurrentView, setIsFilterModalO
       console.log("no ref found");
     }
   };
+
+  const isAnyFilterApplied = (appliedFilters:any)=>{
+    return Object.values(appliedFilters).some((filter) => {
+      if (Array.isArray(filter)) {
+        return filter.length > 0;
+      }
+      return filter !== null && filter !== undefined && filter !== '';
+    });
+  }
 
   useEffect(() => {
     if (open) {
@@ -313,7 +322,7 @@ const SchedulingActionToolbar = ({currentView, setCurrentView, setIsFilterModalO
             Export Excel
         </VFButtonOutline>
         <VFButtonOutline style={{border: '1px solid rgb(188, 61, 129)', color: 'rgb(188, 61, 129)',fontSize: '1.1rem',height: '3.4rem'}} themeUi={themeUi} onClick={()=>{setIsFilterModalOpen(true)}}>
-            Add Filter
+            {isAnyFilterApplied(appliedFilters)?"Edit Filter": "Apply Filter"}
         </VFButtonOutline>
         <ToggleButtonWrapper>
           <ToggleButton onClick={()=>{setCurrentView("ResourceView")}}>

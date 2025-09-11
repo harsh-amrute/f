@@ -87,7 +87,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
 
   return (
     <Container style={{border: `1.5px dashed ${lastUpdateStatus ? '#d17ca0' : '#cecece'}`}}>
-      <LeftSection onClick={handleClick}>
+      <LeftSection onClick={handleClick} style={{cursor: fileUploadType==='UI' ? 'pointer' : 'default'}}>
         <img
           src="/assets/img/scheduling/Folder-icon.svg"
           style={{ height: "40px", width: "40px" }}
@@ -131,7 +131,8 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
         </VFButton>
         <VFButton
           themeUi={themeUi}
-          onClick={()=>{onUpload({file, file_type: expected_extension}); setFile(null)}}
+          disabled={!file}
+          onClick={()=>{onUpload({file, file_type: expected_extension, file_name: title}); setFile(null)}}
           style={{ fontSize: "0.9rem", height: "32px", width: '100px' }}
           >
                    <ButtonContentWrapper>
@@ -146,7 +147,7 @@ const FileUploadTile: React.FC<ReportActionCardProps> = ({
 
         <ManualStyle.SCManualUploadInput
               type="file"
-              accept=".xlsx"
+              accept={"."+expected_extension}
               onChange={handleFileChange}
               ref={inputRef}
               value=""

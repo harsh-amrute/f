@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { useGetRunState } from '../../../../VectorFlow/Services/MTO/Scheduling';
 import VFOverlayModal from '../../../../components/VectorFLOW/commons/VFOverlayModal';
 import FileUploadSection from './FileUploadSection';
-import styled from 'styled-components';
 import StatusBarBottom from './components/StatusBarBottom';
 import RunStatusModal from './components/RunStatusModal';
 import FinalResultSection from './FinalResultSection';
+import { notifyError } from '../../../../helpers/notify';
 
 
 
@@ -14,18 +14,25 @@ const Scheduling = () => {
     const [step, setStep] = useState("Upload");
     
     const [runStatus, setRunStatus] = useState( {
-        status: "Progress",
-        startTime: "2023-10-01T10:00:00Z",
+        status: null,
+        startTime: null,
         endTime: null,
-        message: "Uploading data",
+        message: null,
     });
 
     const {mutateAsync: getRunState} = useGetRunState();
 
     const GetRunStatus = async()=>{ 
-         const result = await getRunState();
-         console.log('result', result);
-         setRunStatus(result.data.data);
+        try{
+
+            const result = await getRunState();
+            setRunStatus(result.data.data);
+        }
+        catch(e:any){
+            notifyError("Failed to fetch run status");
+            console.log('error', e);
+        }
+
     }
 
     
@@ -34,16 +41,6 @@ const Scheduling = () => {
         GetRunStatus();
     },[])
 
-
-    const getRunProgressStatus = async()=>{
-        try{
-            const response = await getRunState();
-            setRunStatus(response.data.data);
-        }
-        catch{
-            console.error("Error fetching run progress status");
-        }
-    }
 
     const getStep = ()=>{
         switch (step) {
@@ -79,23 +76,12 @@ const Scheduling = () => {
                 );
             case "Final Result":
                 return null;
-            case "Failed":
-                return (
-                    <div className='run-action-bar'>
-                        <button onClick={() => getRunProgressStatus()}>Retry Run</button>
-                        <button onClick={() => setStep("Upload")}>Upload New Data</button>
-                    </div>
-                );
             default:
-                return (
-                    <div className='run-action-bar'>
-                        <button onClick={() => setStep("Upload")}>Start New Run</button>
-                    </div>
-                );
+                return null;
     }}
 
     return (
-        <div style={{position: 'relative'}} id='main-content' >
+        <div style={{display: 'flex',height: '100%', flexDirection: 'column', justifyContent: 'space-between'}} id='main-content' >
             {
                 getRunStatusModal(runStatus)
             }

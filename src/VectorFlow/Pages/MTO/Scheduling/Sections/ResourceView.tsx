@@ -8,7 +8,7 @@ const ResourceViewWrapper  = styled.div`
     display: flex;
     flex-direction: column;
 `
-const ResourceView = () => {
+const ResourceView = ({ResourceData}: any) => {
 
   const TaskTypeMaster = 
     {
@@ -24,8 +24,8 @@ const ResourceView = () => {
   
   return (
     <ResourceViewWrapper>
-      <ResourceViewChart/>
-      <ResourceViewSummary ResourceData={response}/>
+      <ResourceViewChart ResourceData={ResourceData}/>
+      <ResourceViewSummary ResourceData={ResourceData}/>
 
     </ResourceViewWrapper>
   )

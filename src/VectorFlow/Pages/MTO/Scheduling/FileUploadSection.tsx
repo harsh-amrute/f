@@ -6,10 +6,12 @@ import VFButton from "../../../../components/VectorFLOW/commons/VFButton";
 import { useGetFileConfiguration, useGetFileDownloadForSchedular, usePostFileUploadForSchedular } from "../../../../VectorFlow/Services/MTO/Scheduling";
 import { format } from "date-fns";
 import { notifyError, notifyLoader, notifySuccess } from "../../../../helpers/notify";
+import Websocket from "./Websocket";
 
 const Wrapper = styled.div`
   position: relative;
-  margin: 20px 100px;
+  margin: 0 100px;
+  padding-bottom: 55px;
 `;
 
 const GridContainer = styled.div`
@@ -86,6 +88,8 @@ const SkeletonTile = styled.div`
   }
 `;
 
+
+
 const FileUploadSection = () => {
   const [fileObjects, setFileObjects] = useState<any>([]);
   const themeUi = useUserData().user.user.themeUi;
@@ -107,7 +111,13 @@ const FileUploadSection = () => {
 
   const user = useUserData().user.user;
 
-  const UploadFile = async ({file, file_type}: {file: File, file_type: string}) => {
+  const UploadFile = async ({file, file_type, file_name}: {file: File, file_type: string, file_name: string}) => {
+    console.log("file to upload", file.name);
+    console.log("mera file_name", file_name)
+    if(file.name!==file_name){
+      notifyError(`Please upload a file with the correct name and extension: ${file_name}`);
+      return;
+    }
     if(file===null) {
       notifyError("Select a file to upload!");
       return;
@@ -123,9 +133,13 @@ const FileUploadSection = () => {
       formData.append("is_critical", "True")
       
       const response = await postUploadSchedulerFile(formData);
-      console.log("Response", response);
-      notifySuccess("File uploaded successfully!");
-      GetFileConfiguration(); // Refresh the file list
+      if(response.status!==200) {
+        throw new Error("Failed to upload file");
+      }
+      else{
+        notifySuccess("File uploaded successfully!");
+        GetFileConfiguration(); // Refresh the file list
+      }
     } catch (e:any) {
       console.log("error", e);
       notifyError(e?.message || "Failed to upload file");
@@ -207,7 +221,7 @@ const FileUploadSection = () => {
             <LastUpdateStatus>
               Last Updated: {timeAgo}
             </LastUpdateStatus>
-
+        <Websocket/>
             <VFButton
               style={{
                 fontSize: "1rem",
@@ -229,6 +243,7 @@ const FileUploadSection = () => {
               <p>Check for Updates</p>
             </VFButton>
           </CheckUpdatesWrapper>
+
 
           <GridContainer>
             <SideTab>UI Generated Files</SideTab>
@@ -267,7 +282,132 @@ const FileUploadSection = () => {
               (file: any, index: number) =>
                 file.file_from === "FTP" && (
                   <FileUploadTile
-                    key={index}
+                  key={index}
+                    expected_extension={file.expected_extension}
+                    fileUploadType={file.file_from}
+                    lastUpdateStatus={
+                      file.last_updated
+                        ? format(
+                            new Date(file.last_updated),
+                            "dd MMM yyyy, hh:mm a"
+                          )
+                        : null
+                    }
+                    title={file.file_name}
+                    onDownload={DownloadExcel}
+                    onUpload={UploadFile}
+                  />
+                )
+            )}
+          </GridContainer>
+          <GridContainer>
+            <SideTab>Automated Files</SideTab>
+
+            {fileObjects.map(
+              (file: any, index: number) =>
+                file.file_from === "FTP" && (
+                  <FileUploadTile
+                  key={index}
+                    expected_extension={file.expected_extension}
+                    fileUploadType={file.file_from}
+                    lastUpdateStatus={
+                      file.last_updated
+                        ? format(
+                            new Date(file.last_updated),
+                            "dd MMM yyyy, hh:mm a"
+                          )
+                        : null
+                    }
+                    title={file.file_name}
+                    onDownload={DownloadExcel}
+                    onUpload={UploadFile}
+                  />
+                )
+            )}
+          </GridContainer>
+          <GridContainer>
+            <SideTab>Automated Files</SideTab>
+
+            {fileObjects.map(
+              (file: any, index: number) =>
+                file.file_from === "FTP" && (
+                  <FileUploadTile
+                  key={index}
+                    expected_extension={file.expected_extension}
+                    fileUploadType={file.file_from}
+                    lastUpdateStatus={
+                      file.last_updated
+                        ? format(
+                            new Date(file.last_updated),
+                            "dd MMM yyyy, hh:mm a"
+                          )
+                        : null
+                    }
+                    title={file.file_name}
+                    onDownload={DownloadExcel}
+                    onUpload={UploadFile}
+                  />
+                )
+            )}
+          </GridContainer>
+          <GridContainer>
+            <SideTab>Automated Files</SideTab>
+
+            {fileObjects.map(
+              (file: any, index: number) =>
+                file.file_from === "FTP" && (
+                  <FileUploadTile
+                  key={index}
+                    expected_extension={file.expected_extension}
+                    fileUploadType={file.file_from}
+                    lastUpdateStatus={
+                      file.last_updated
+                        ? format(
+                            new Date(file.last_updated),
+                            "dd MMM yyyy, hh:mm a"
+                          )
+                        : null
+                    }
+                    title={file.file_name}
+                    onDownload={DownloadExcel}
+                    onUpload={UploadFile}
+                  />
+                )
+            )}
+          </GridContainer>
+          <GridContainer>
+            <SideTab>Automated Files</SideTab>
+
+            {fileObjects.map(
+              (file: any, index: number) =>
+                file.file_from === "FTP" && (
+                  <FileUploadTile
+                  key={index}
+                    expected_extension={file.expected_extension}
+                    fileUploadType={file.file_from}
+                    lastUpdateStatus={
+                      file.last_updated
+                        ? format(
+                            new Date(file.last_updated),
+                            "dd MMM yyyy, hh:mm a"
+                          )
+                        : null
+                    }
+                    title={file.file_name}
+                    onDownload={DownloadExcel}
+                    onUpload={UploadFile}
+                  />
+                )
+            )}
+          </GridContainer>
+          <GridContainer>
+            <SideTab>Automated Files</SideTab>
+
+            {fileObjects.map(
+              (file: any, index: number) =>
+                file.file_from === "FTP" && (
+                  <FileUploadTile
+                  key={index}
                     expected_extension={file.expected_extension}
                     fileUploadType={file.file_from}
                     lastUpdateStatus={
