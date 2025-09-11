@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useGetRunState } from '../../../../VectorFlow/Services/MTO/Scheduling';
+import { useGetRunState, usePostStartSchedulingRun } from '../../../../VectorFlow/Services/MTO/Scheduling';
 import VFOverlayModal from '../../../../components/VectorFLOW/commons/VFOverlayModal';
 import FileUploadSection from './FileUploadSection';
 import StatusBarBottom from './components/StatusBarBottom';
@@ -21,6 +21,8 @@ const Scheduling = () => {
     });
 
     const {mutateAsync: getRunState} = useGetRunState();
+
+    const {mutateAsync: postStartSchedulingRun} = usePostStartSchedulingRun();
 
     const GetRunStatus = async()=>{ 
         try{
@@ -65,6 +67,13 @@ const Scheduling = () => {
         }
     }
 
+    const StartRun = async()=>{
+        const response = postStartSchedulingRun({user_id: "1", user_name: "Admin"});
+        console.log("response", response);
+
+        
+    }
+
     const getRunActionBar = () => {
         const onGoToFinalResult = () => {
             setStep("Final Result");
@@ -72,13 +81,15 @@ const Scheduling = () => {
         switch (step) {
             case "Upload":
                 return (
-                    <StatusBarBottom onGoToFinalResult={onGoToFinalResult}/>
+                    <StatusBarBottom onGoToFinalResult={onGoToFinalResult} StartRun={StartRun}/>
                 );
             case "Final Result":
                 return null;
             default:
                 return null;
     }}
+
+    
 
     return (
         <div style={{display: 'flex',height: '100%', flexDirection: 'column', justifyContent: 'space-between'}} id='main-content' >
