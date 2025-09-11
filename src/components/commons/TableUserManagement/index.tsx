@@ -301,14 +301,14 @@ const TableUserManagement = ({
 
   return (
     <>
-       <VFTable
+      <VFTable
       rowData={rowData}
       columnDefs={columnDefs}
       domLayout="normal"
       rowHeight={45}
       pagination={false}
       height="450px"    
-
+      sideBar={false} 
     />
     </>
   );
