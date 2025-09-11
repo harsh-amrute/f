@@ -140,10 +140,11 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
     isCheckBoxRef.current.isPrdCheck = {},
     isCheckBoxRef.current.isLcCheck = {}
   };
-
+  
   const onCloseModal = () => {
     setIsOpenUser(false);
   };
+  console.log("modal is closed",storePermission);
 
   const onCloseModalAdvanced = () => {
     setIsOpenAdvanced(false);
@@ -426,9 +427,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             <SCSubTitleSpan>
               {t("profile.tabContent.manageUsers.title")}
             </SCSubTitleSpan>
-            <SCSubTitlePadItem>
-                <SearchInputManageUser searchUserBasedOn={searchUserBasedOn} setSearchUserBasedOn={setSearchUserBasedOn} />
-              
+            <SCSubTitlePadItem>              
               <SCItemBtn>
                 <ButtonFloat
                   text={t("profile.tabContent.manageUsers.button.addNewUser")}

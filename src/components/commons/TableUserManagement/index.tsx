@@ -7,9 +7,11 @@ import {
 } from "../../../services/profile";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import LoadingSpinner from "../LoadingSpinner";
 import { Tooltip } from 'react-tooltip';
+import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
+import { filter } from "lodash";
 
 interface TableUser {
   handleClickEdit: any;
@@ -207,61 +209,107 @@ const TableUserManagement = ({
     );
   };
 
+  const columnDefs = useMemo(
+    () => [
+      {
+        headerName: "User ID",
+        field: "name",
+        flex: 1,
+      },
+      {
+        headerName: "Email ID",
+        field: "email",
+        flex: 1,
+      },
+      {
+        headerName: "Roles",
+        field: "role_id",
+        flex: 1.5,
+        cellRenderer: (params: any) => {
+          const roles = params.value?.map((r: any) => r.name).join(" | ");
+          return <span>{roles}</span>;
+        },
+      },
+      {
+        headerName: "Actions",
+        field: "actions",
+        height: 550,
+        filter: false,
+        cellRenderer: (params: any) => {
+          const item = params.data;
+          return (
+            <div style={{ display: "flex", gap: "8px" }}>
+              <img
+                src="/assets/img/profile/icon_edit.svg"
+                style={{ cursor: "pointer" }}
+                data-tooltip-id="edit"
+                onClick={() => handleClickEdit(item)}
+              />
+              <img
+                src="/assets/img/profile/icon_delete.svg"
+                style={{ cursor: "pointer" }}
+                data-tooltip-id="delete"
+                onClick={() => {
+                  handleOpenDelete(item.id);
+                }}
+              />
+              <img
+                src="/assets/img/profile/icon_lock.svg"
+                style={{ cursor: "pointer" }}
+                data-tooltip-id="reset"
+                onClick={() => {
+                  handleResetPwd(item.id);
+                }}
+              />
+            </div>
+          );
+        },
+      },
+      {
+        headerName: "Active",
+        field: "is_active",
+        flex: 1,
+        filter: false,
+        
+        cellRenderer: (params: any) => {
+          const item = params.data;
+          return (
+            <ButtonOutlineStoreStatus
+              labelOn="Active"
+              labelOff="Inactive"
+              toggled={item?.is_active}
+              onClick={(val: boolean) => {
+                changeStatus(item.id, val);
+              }}
+            />
+          );
+        },
+      },
+    ],
+    [handleClickEdit]
+  );
+
+  const rowData = useMemo(() => {
+    return (
+      dataAllUsers?.filter((userData: any) =>
+        userData.name
+          ?.toLowerCase()
+          .includes(searchUserBasedOn.toLowerCase())
+      ) || []
+    );
+  }, [dataAllUsers, searchUserBasedOn]);
+
   return (
     <>
-      <Tab.SCTableBox
-        style={{ marginBottom: 30 }}
-        className="list-roles-per--content"
-      >
-        <Tab.SCTableTab width="100%">
-          <Tab.SCTableTbody>
-            <Tab.SCTableTr>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.userID")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.emailID")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.roles")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.actions")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh style={{ textAlign: "center" }}>
-                {t("profile.tabContent.manageUsers.table.active")}
-              </Tab.SCTableTh>
-            </Tab.SCTableTr>
-          </Tab.SCTableTbody>
+       <VFTable
+      rowData={rowData}
+      columnDefs={columnDefs}
+      domLayout="normal"
+      rowHeight={45}
+      pagination={false}
+      height="450px"    
 
-          {dataAllUsers &&
-            dataAllUsers?.filter((userData:any)=> userData.name.toLowerCase().includes(searchUserBasedOn.toLocaleLowerCase())).map((item: any) => (
-              <Tab.SCTableTbody key={item?.id}>
-                <Tab.SCTableTrValue>
-                  <Tab.SCTableTd>{item?.name}</Tab.SCTableTd>
-                  <Tab.SCTableTd>{item?.email}</Tab.SCTableTd>
-                  {renderAction(item, is_admin)}
-                </Tab.SCTableTrValue>
-              </Tab.SCTableTbody>
-            ))}
-        </Tab.SCTableTab>
-      </Tab.SCTableBox>
-
-      <Modal
-        fileJson=""
-        modalTitle={t("profile.tabContent.manageUsers.modal.titleDelete")}
-        modalContent={t("profile.tabContent.manageUsers.modal.contentDelete")}
-        openModal={isOpenDelete}
-        closeModal={() => {
-          setIsOpenDelete(false);
-        }}
-        onClickModal={() => {
-          handleDeleteUser();
-        }}
-        text={t("profile.tabContent.manageUsers.button.delete")}
-      />
-      
-      {isLoading && <LoadingSpinner />}
+    />
     </>
   );
 };
