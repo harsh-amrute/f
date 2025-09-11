@@ -13,21 +13,22 @@ interface UseViewProps {
     file: File | undefined;
     setFile: Dispatch<SetStateAction<File | undefined>>;   
     isUploadModalOpen: boolean;
-    isOverlayVisible: boolean;
-    setIsOverlayVisible: Dispatch<SetStateAction<boolean>>;
     toggleUploadModal: (value: boolean) => void;
     onUpload: (RECORD_UPLOAD_LIMIT: any) => Promise<void>;
     setUploadCallback: (cb: () => void) => void; 
     exportToExcel: (fromUploadModal?: boolean) => Promise<void>;
     RECORD_UPLOAD_LIMIT: any;
     ref: React.MutableRefObject<GridRef | undefined>;
+    showErrorRows:boolean;
+    setShowErrorRows: Dispatch<SetStateAction<boolean>>;
+    errorRowData: any[];   
+    setErrorRowData: Dispatch<SetStateAction<any[]>>;
 }
 
 const useView = (columnDefs?: any[]): UseViewProps => {
     const [downloadFileName, setDownloadFileName] = useState('');
     const [file, setFile] = useState<File>();
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-    const [isOverlayVisible,setIsOverlayVisible] = useState<boolean>(false)
     const ref = useRef<GridRef>();
     const EnvConfig = useSelector((state: RootState) => state.mta.EnvConfig);
     const RECORD_UPLOAD_LIMIT = EnvConfig['RECORD_UPLOAD_LIMIT'];
@@ -37,6 +38,9 @@ const useView = (columnDefs?: any[]): UseViewProps => {
     const permissionType = columnDefs?.some(col => col.colId.includes('product')) ? 'Product' : 'Location';
     const columns = permissionType === "Product" ? getProductColumns(EnvConfig) : getLocationColumns(EnvConfig);
     const headerNameMap: Record<string, string> = {};
+    const [showErrorRows,setShowErrorRows] = useState<boolean>(false);
+    const [errorRowData, setErrorRowData] = useState<any[]>([]);
+
     columns.forEach(col => {
         headerNameMap[col.colId] = col.headerName;
     });
@@ -59,26 +63,24 @@ const useView = (columnDefs?: any[]): UseViewProps => {
                 notifyError('Please select a file to upload.');
                 return;
             }
-            setIsOverlayVisible(true);
-
             const formData = new FormData();
             formData.append('file', file);  
 
-            const headersList = columnDefs?.filter(col => col.colId !== 'id').map(col => col.colId);
+            const headersList = columns?.filter(col => col.colId !== 'id').map(col => col.headerName);
             formData.append('headers', JSON.stringify(headersList)); 
             formData.append("permissionType", permissionType);
             
             const response = await bulkUploadPermission(formData);
-            if (response?.data?.errors?.length > 0) {
-                const allErrors = response.data.errors
-                    .map((err: string) => formatErrorMessage(err))
-                    .join("  |  ");
-
-                notifyError(allErrors);
+            if (response?.data?.data?.errorCount > 0) {
+                notifyError(`Submitted ${response?.data?.data?.inserted} records out of ${response?.data?.data?.totalRows}. ${response?.data?.data?.errorCount} records have error. `)
+                setShowErrorRows(true);
+                setIsUploadModalOpen(false);
+                const onlyRowData = (response?.data?.data?.errors || []).map((err: any) => err.rowData);
+                setErrorRowData(onlyRowData);
                 return;
             }
             else{
-            notifySuccess(response?.data?.data);
+            notifySuccess(`Submitted ${response?.data?.data?.inserted} inserted successfully`);
             toggleUploadModal(false)
             setFile(undefined);
             }
@@ -86,9 +88,7 @@ const useView = (columnDefs?: any[]): UseViewProps => {
         } catch (error: any) {
             console.error(error);
             notifyError(error.message);
-        } finally {
-            setIsOverlayVisible(false);
-        }
+        } 
     };
 
 
@@ -134,14 +134,16 @@ const useView = (columnDefs?: any[]): UseViewProps => {
         file,
         setFile,
         isUploadModalOpen,
-        isOverlayVisible,
-        setIsOverlayVisible,
         toggleUploadModal,
         onUpload,
         setUploadCallback: (cb: () => void) => { uploadCallbackRef.current = cb; },
         exportToExcel,
         RECORD_UPLOAD_LIMIT,
-        ref
+        ref,
+        showErrorRows,
+        setShowErrorRows,
+        errorRowData,
+        setErrorRowData
     };
 };
 

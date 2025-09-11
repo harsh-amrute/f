@@ -10,7 +10,7 @@ import { notifyError } from '../../../helpers/notify'
 import {  useGetAllUIReportConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
 
 
-const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
+const ViewUiReportConfig = (props:{onEdit:(data:any)=>void})=>{
 
     const {
         onEdit
@@ -114,4 +114,4 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
     )
 }
 
-export default ViewURLs
+export default ViewUiReportConfig

@@ -15,6 +15,7 @@ import useView from "./useView";
 import { getProductColumns } from './View';
 import { useSelector } from "react-redux";
 import { RootState } from '../../../redux/store/store'
+import ErrorPermissions from "./ErrorPermissions";
 
 interface FormDataType {
   productHierarchy1: string;
@@ -49,6 +50,9 @@ const AddProductPermission = (props: { cb: () => void }) => {
     onUpload,
     exportToExcel,
     RECORD_UPLOAD_LIMIT,
+    showErrorRows,
+    setShowErrorRows,
+    errorRowData
     } = useView(productColumns);
 
   const [formData, setFormData] = useState<FormDataType>({
@@ -101,6 +105,13 @@ const AddProductPermission = (props: { cb: () => void }) => {
     if (!productHierarchy2 && productHierarchy3)  return true;
     return false;
   }, [formData]);
+
+  const productColumns1 =[
+{colId: 'error', field: 'error', headerName: 'Error'},
+{colId: 'Business', field: 'Business', headerName: 'Business'},
+{colId: 'Category', field: 'Category', headerName: 'Category'},
+{colId: 'Family', field: 'Family', headerName: 'Family'}
+  ]
 
   if (isLoading) {
     return (
@@ -187,6 +198,9 @@ const AddProductPermission = (props: { cb: () => void }) => {
         </PrimaryButton>
       </div>
     </URLsForm>
+   {showErrorRows && (
+ <ErrorPermissions columnDefs={productColumns1} rowData={errorRowData} showErrorRows={showErrorRows}/>
+)}
     {isUploadModalOpen && (
       <UploadModal 
         header={"Upload Product Permissions"}

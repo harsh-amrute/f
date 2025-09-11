@@ -10,7 +10,7 @@ import { notifyError } from '../../../helpers/notify'
 import {  useGetAllUIMDMConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
 
 
-const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
+const ViewUiMDMConfig = (props:{onEdit:(data:any)=>void})=>{
 
     const {
         onEdit
@@ -114,4 +114,4 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
     )
 }
 
-export default ViewURLs
+export default ViewUiMDMConfig

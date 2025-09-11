@@ -4,7 +4,7 @@ import { Content,DrawerHeader} from "../UserURLsDrawer/styles"
 import { useUserData } from "../../../context"
 import { useState } from "react"
 import NavigationTab from "../NavigationTab"
-import ViewURLs from "./View"
+import ViewPermissions from "./View"
 import AddProductPermission from "./AddProductPermission"
 import Select from 'react-select'
 import AddLocationPermission from "./AddLocationPermission"
@@ -51,7 +51,7 @@ const PermissionsDrawer = (props:UserRolesDrawerProps)=>{
             {currTab === 0 && (
                 <Content>
                     {/* Pass the permissionType to ViewURLs */}
-                    <ViewURLs
+                    <ViewPermissions
                         permissionType={permissionType}
                     />
                 </Content>

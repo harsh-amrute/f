@@ -18,6 +18,7 @@ import useView from "./useView";
 import { getLocationColumns } from './View';
 import { useSelector } from "react-redux";
 import { RootState } from '../../../redux/store/store'
+import VFTaskBar from "../../../VectorFlow/Pages/MTA/MDM/ViewModify/VFTaskbar";
 
 interface FormDataType {
   locationHierarchy1: string;
@@ -55,7 +56,8 @@ const AddLocationPermission = (props: { cb: () => void }) => {
     setUploadCallback,
     exportToExcel,
     RECORD_UPLOAD_LIMIT,
-    ref
+    ref,
+    setShowErrorRows
   } = useView(locationColumns);
 
   const {mutateAsync : addLocationPermission} = useAddLocationPermissions();

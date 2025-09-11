@@ -22,7 +22,7 @@ export const getLocationColumns = (envConfig: any) => [
 ];
 
 
-const ViewURLs = (props:{permissionType: string})=>{
+const ViewPermissions = (props:{permissionType: string})=>{
     const {  permissionType } = props
     const [rowData,setRowData] = useState<Array<any>>([])
     const [isLoading,setIsLoading] = useState<boolean>(true)
@@ -116,4 +116,4 @@ const ViewURLs = (props:{permissionType: string})=>{
     )
 }
 
-export default ViewURLs
+export default ViewPermissions

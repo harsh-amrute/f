@@ -3,7 +3,7 @@ import { Content,DrawerHeader} from "../UserURLsDrawer/styles"
 import { useUserData } from "../../../context"
 import { useState } from "react"
 import NavigationTab from "../NavigationTab"
-import ViewURLs from "./View"
+import ViewUiReportConfig from "./View"
 import EditRole from "./Edit"
 
 interface UserRolesDrawerProps{
@@ -58,7 +58,7 @@ const UIReportConfigDrawer = (props:UserRolesDrawerProps)=>{
        
             {currTab === 0 && (
                 <Content>
-                    <ViewURLs
+                    <ViewUiReportConfig
                         onEdit={onEditRole}
                     />
                 </Content>
