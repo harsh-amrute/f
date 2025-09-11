@@ -15,10 +15,10 @@ import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useAddLocationPermissions } from "../../../VectorFlow/Services/MTA/MDM";
 import  UploadModal  from "../../../VectorFlow/Pages/MTA/MDM/ViewModify/UploadModal";
 import useView from "./useView";
-import { getLocationColumns } from './View';
+import { getErrorLocationColumns, getLocationColumns } from './View';
 import { useSelector } from "react-redux";
 import { RootState } from '../../../redux/store/store'
-import VFTaskBar from "../../../VectorFlow/Pages/MTA/MDM/ViewModify/VFTaskbar";
+import ErrorPermissions from "./ErrorPermissions";
 
 interface FormDataType {
   locationHierarchy1: string;
@@ -56,11 +56,13 @@ const AddLocationPermission = (props: { cb: () => void }) => {
     setUploadCallback,
     exportToExcel,
     RECORD_UPLOAD_LIMIT,
-    ref,
-    setShowErrorRows
+    showErrorRows,
+    errorRowData
   } = useView(locationColumns);
 
   const {mutateAsync : addLocationPermission} = useAddLocationPermissions();
+  
+  const errorLocationcolumn = getErrorLocationColumns(EnvConfig)
 
   useEffect(() => {
     setIsLoading(false);
@@ -131,30 +133,31 @@ const AddLocationPermission = (props: { cb: () => void }) => {
 
     );
   }
-
+  if(showErrorRows ) return <ErrorPermissions columnDefs={errorLocationcolumn} rowData={errorRowData}/>
+  
   return (
     <>
        <URLsForm onSubmit={handleSubmit}>
       <div style={{ display: "flex" }}>
        
         <InputWrapper >
-          <Label htmlFor="locationHierarchy1"> Location Heirarchy 1</Label>
+          <Label htmlFor="locationHierarchy1">{locationColumns[1]?.headerName}</Label>
           <Input
             type={"text"}
             required
             name="locationHierarchy1"
-            placeholder="Any location heirarchy 1"
+            placeholder={`Any ${locationColumns[1]?.headerName}`}
             themeUi={themeUi}
             onChange={handleChange}
           />
         </InputWrapper>
 
         <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="locationHierarchy2"> Location Heirarchy 2</Label>
+          <Label htmlFor="locationHierarchy2">{locationColumns[2]?.headerName}</Label>
           <Input
             type={"text"}
             name="locationHierarchy2"
-            placeholder="Any location heirarchy 2"
+            placeholder={`Any ${locationColumns[2]?.headerName}`}
             themeUi={themeUi}
             onChange={handleChange}
           />
@@ -163,11 +166,11 @@ const AddLocationPermission = (props: { cb: () => void }) => {
       <div style={{ display: "flex" }}>
        
         <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="locationHierarchy3"> Location Heirarchy 3</Label>
+          <Label htmlFor="locationHierarchy3">{locationColumns[3]?.headerName}</Label>
           <Input
             type={"text"}
             name="locationHierarchy3"
-            placeholder="Any location heirarchy 3"
+            placeholder={`Any ${locationColumns[3]?.headerName}`}
             themeUi={themeUi}
             onChange={handleChange}
           />

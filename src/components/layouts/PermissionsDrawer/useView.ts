@@ -45,14 +45,6 @@ const useView = (columnDefs?: any[]): UseViewProps => {
         headerNameMap[col.colId] = col.headerName;
     });
 
-    const formatErrorMessage = (errorMsg: string) => {
-        let formattedMsg = errorMsg;
-        Object.keys(headerNameMap).forEach(colId => {
-            formattedMsg = formattedMsg.replaceAll(colId, headerNameMap[colId]);
-        });
-        return formattedMsg;
-    };
-
     const toggleUploadModal = (value: boolean) => {
         setIsUploadModalOpen(value);
     };
@@ -71,6 +63,12 @@ const useView = (columnDefs?: any[]): UseViewProps => {
             formData.append("permissionType", permissionType);
             
             const response = await bulkUploadPermission(formData);
+
+            if(response?.data?.status !== 200)    {
+                notifyError("Server Went Unresponsive");
+                setIsUploadModalOpen(false);
+                return;
+            }
             if (response?.data?.data?.errorCount > 0) {
                 notifyError(`Submitted ${response?.data?.data?.inserted} records out of ${response?.data?.data?.totalRows}. ${response?.data?.data?.errorCount} records have error. `)
                 setShowErrorRows(true);

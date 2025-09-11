@@ -21,7 +21,19 @@ export const getLocationColumns = (envConfig: any) => [
     { colId: "locationHierarchy3", field: "location_heirarchy_3", headerName: envConfig['LOCATION_PERMISSION_L3'] },
 ];
 
+export const getErrorProductColumns = (envConfig: any) => [
+    { colId: "error", field: "error", headerName: "error" },
+    { colId: envConfig['PRODUCT_PERMISSION_L1'], field: envConfig['PRODUCT_PERMISSION_L1'], headerName: envConfig['PRODUCT_PERMISSION_L1'] },
+    { colId: envConfig['PRODUCT_PERMISSION_L2'], field: envConfig['PRODUCT_PERMISSION_L2'], headerName: envConfig['PRODUCT_PERMISSION_L2'] },
+    { colId: envConfig['PRODUCT_PERMISSION_L3'], field: envConfig['PRODUCT_PERMISSION_L3'], headerName: envConfig['PRODUCT_PERMISSION_L3'] },
+];
 
+export const getErrorLocationColumns = (envConfig: any) => [
+    { colId: "error", field: "error", headerName: "error" },
+    { colId: envConfig['LOCATION_PERMISSION_L1'], field: envConfig['LOCATION_PERMISSION_L1'], headerName: envConfig['LOCATION_PERMISSION_L1'] },
+    { colId: envConfig['LOCATION_PERMISSION_L2'], field: envConfig['LOCATION_PERMISSION_L2'], headerName: envConfig['LOCATION_PERMISSION_L2'] },
+    { colId: envConfig['LOCATION_PERMISSION_L3'], field: envConfig['LOCATION_PERMISSION_L3'], headerName: envConfig['LOCATION_PERMISSION_L3'] },
+];
 const ViewPermissions = (props:{permissionType: string})=>{
     const {  permissionType } = props
     const [rowData,setRowData] = useState<Array<any>>([])

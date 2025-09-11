@@ -12,7 +12,7 @@ import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useAddProductPermissions } from "../../../VectorFlow/Services/MTA/MDM";
 import  UploadModal  from "../../../VectorFlow/Pages/MTA/MDM/ViewModify/UploadModal";
 import useView from "./useView";
-import { getProductColumns } from './View';
+import { getErrorProductColumns, getProductColumns } from './View';
 import { useSelector } from "react-redux";
 import { RootState } from '../../../redux/store/store'
 import ErrorPermissions from "./ErrorPermissions";
@@ -61,6 +61,7 @@ const AddProductPermission = (props: { cb: () => void }) => {
     productHierarchy3: ""
   });
 
+  const errorProductcolumn = getErrorProductColumns(EnvConfig)
 
   useEffect(() => {
 
@@ -106,12 +107,6 @@ const AddProductPermission = (props: { cb: () => void }) => {
     return false;
   }, [formData]);
 
-  const productColumns1 =[
-{colId: 'error', field: 'error', headerName: 'Error'},
-{colId: 'Business', field: 'Business', headerName: 'Business'},
-{colId: 'Category', field: 'Category', headerName: 'Category'},
-{colId: 'Family', field: 'Family', headerName: 'Family'}
-  ]
 
   if (isLoading) {
     return (
@@ -136,28 +131,29 @@ const AddProductPermission = (props: { cb: () => void }) => {
       </URLsForm>
     );
   }
-
+  if(showErrorRows ) return <ErrorPermissions columnDefs={errorProductcolumn} rowData={errorRowData} />
+  
   return (
     <>
       <URLsForm onSubmit={handleSubmit}>
       <div style={{ display: "flex" }}>
       <InputWrapper>
-          <Label htmlFor="productHierarchy1"> Product Heirarchy 1</Label>
+          <Label htmlFor="productHierarchy1">{productColumns[1]?.headerName}</Label>
           <Input
             type={"text"}
             required
             name="productHierarchy1"
-            placeholder="Any Product heirarchy 1"
+            placeholder={`Any ${productColumns[1]?.headerName} value`}
             themeUi={themeUi}
             onChange={handleChange}
           />
         </InputWrapper>
         <InputWrapper style={{ marginLeft: "10px" }}>
-          <Label htmlFor="productHierarchy2"> Product Heirarchy 2</Label>
+          <Label htmlFor="productHierarchy2"> {productColumns[2]?.headerName}</Label>
           <Input
             type={"text"}
             name="productHierarchy2"
-            placeholder="Any Product heirarchy 2"
+            placeholder={`Any ${productColumns[2]?.headerName} value`}
             themeUi={themeUi}
             onChange={handleChange}
           />
@@ -166,11 +162,11 @@ const AddProductPermission = (props: { cb: () => void }) => {
       <div style={{ display: "flex" }}>
        
         <InputWrapper >
-          <Label htmlFor="productHierarchy3"> Product Heirarchy 3</Label>
+          <Label htmlFor="productHierarchy3"> {productColumns[3]?.headerName}</Label>
           <Input
             type={"text"}
             name="productHierarchy3"
-            placeholder="Any Product heirarchy 3"
+            placeholder={`Any ${productColumns[3]?.headerName} value`}
             themeUi={themeUi}
             onChange={handleChange}
           />
@@ -198,9 +194,6 @@ const AddProductPermission = (props: { cb: () => void }) => {
         </PrimaryButton>
       </div>
     </URLsForm>
-   {showErrorRows && (
- <ErrorPermissions columnDefs={productColumns1} rowData={errorRowData} showErrorRows={showErrorRows}/>
-)}
     {isUploadModalOpen && (
       <UploadModal 
         header={"Upload Product Permissions"}
