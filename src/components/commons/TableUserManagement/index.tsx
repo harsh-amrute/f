@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
 import { Tooltip } from 'react-tooltip';
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface TableUser {
   handleClickEdit: any;
@@ -32,9 +33,12 @@ const TableUserManagement = ({
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [idUser, setIdUser] = useState<string>("");
   
-  const { mutateAsync: usePutDeleteUser } = UsePutDeleteUser();
-  const { mutateAsync: mutateChangeStatus } = useChangeStatus();
-  const { mutateAsync: mutateResetPwd, isLoading } = useResetPwd();
+  const { mutateAsync: usePutDeleteUser, isLoading: isDeleting } = UsePutDeleteUser();
+  const { mutateAsync: mutateChangeStatus, isLoading: isChangingStatus } = useChangeStatus();
+  const { mutateAsync: mutateResetPwd, isLoading: isResettingPwd } = useResetPwd();
+  
+  const isLoading = isDeleting || isChangingStatus || isResettingPwd;
+
 
   const changeStatus = (id: number, status: boolean) => {
     const data = {
@@ -299,15 +303,35 @@ const TableUserManagement = ({
 
   return (
     <>
-      <VFTable
+     
+     {isLoading && <LoadingSpinner/>}
+    <VFTable
       rowData={rowData}
       columnDefs={columnDefs}
       domLayout="normal"
       rowHeight={45}
       pagination={false}
-      height="450px"    
-      sideBar={false} 
+      height="450px"
+      sideBar={false}
+      getRowStyle={(params: any) => {
+        if (params.node.rowIndex % 2 === 0) {
+          return { background: "#F4F4F4" }; 
+        }
+        return { background: "#ffffff" }; 
+      }}
     />
+    {isOpenDelete && (
+      <Modal
+      fileJson=""
+      modalTitle="Do you want to delete this user?"
+      modalContent="This user will not be able to log back into the system after being deleted"
+      openModal={isOpenDelete}
+      closeModal={() => setIsOpenDelete(false)}
+      onClickModal={handleDeleteUser}
+      text="Delete"
+    />
+    )}
+
     </>
   );
 };

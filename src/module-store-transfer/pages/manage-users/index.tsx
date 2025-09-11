@@ -72,7 +72,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const [headers , setHeaders] = useState<any>();
 
   const [searchUserBasedOn, setSearchUserBasedOn] = useState("");
-  const { mutateAsync: getUserPermissions } = useGetUserPermissions();
+  const { mutateAsync: getUserPermissions,isLoading:edit } = useGetUserPermissions();
   
   
   useGetAllRoles((data:any)=>{
@@ -420,6 +420,25 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
   return (
     <>
+    {edit && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "rgba(255, 255, 255, 0.6)", 
+      backdropFilter: "blur(3px)",            
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 2000,                           
+    }}
+  >
+    <Spinner />
+  </div>
+)}
       <SCProfileOverView>
         <SCSubTitleBox>
           <SCSubTitlePad>
@@ -466,14 +485,14 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
 
       {/* {isURLsDrawerOpen && (
         <UserURLsDrawer
-          onClose={()=>toggleURLsDrawer(false)}
+        onClose={()=>toggleURLsDrawer(false)}
         />
         )}
-
-      {isRolesDrawerOpen && (
-        <UserRolesDrawer
+        
+        {isRolesDrawerOpen && (
+          <UserRolesDrawer
           onClose={()=>toggleRolesDrawer(false)}
-        />
+          />
         )} */}
 
 
@@ -490,7 +509,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         currentItem={currentItem}
         isEditUser={isEditUser}
         setIsEditUser={setIsEditUser}
-      />
+        />
 
       <ModalAdvanedPermissions
         contentModal={contentModal}
@@ -514,7 +533,7 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
         setStepperDetails={setStepperDetails}
         headers = {headers}
         isCheckBoxRef={isCheckBoxRef}
-      />
+        />
 
 
         <VFModalCard
