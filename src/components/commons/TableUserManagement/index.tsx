@@ -8,10 +8,8 @@ import {
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
-import LoadingSpinner from "../LoadingSpinner";
 import { Tooltip } from 'react-tooltip';
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
-import { filter } from "lodash";
 
 interface TableUser {
   handleClickEdit: any;

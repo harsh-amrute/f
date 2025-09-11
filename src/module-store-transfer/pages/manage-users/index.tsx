@@ -144,7 +144,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const onCloseModal = () => {
     setIsOpenUser(false);
   };
-  console.log("modal is closed",storePermission);
 
   const onCloseModalAdvanced = () => {
     setIsOpenAdvanced(false);
