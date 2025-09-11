@@ -34,10 +34,11 @@ const TableUserManagement = ({
   const [idUser, setIdUser] = useState<string>("");
   
   const { mutateAsync: usePutDeleteUser, isLoading: isDeleting } = UsePutDeleteUser();
-  const { mutateAsync: mutateChangeStatus, isLoading: isChangingStatus } = useChangeStatus();
+  const { mutateAsync: mutateChangeStatus } = useChangeStatus();
   const { mutateAsync: mutateResetPwd, isLoading: isResettingPwd } = useResetPwd();
+
   
-  const isLoading = isDeleting || isChangingStatus || isResettingPwd;
+  const isLoading = isDeleting  || isResettingPwd;
 
 
   const changeStatus = (id: number, status: boolean) => {
@@ -45,13 +46,15 @@ const TableUserManagement = ({
       user_id: id,
       is_active: status,
     };
-
+  
     mutateChangeStatus(data, {
       onSuccess: (res: any) => {
-        if(res?.status === 400) {
-          notifyError(res?.response?.msg)
+        if (res?.status === 400) {
+          notifyError(res?.response?.msg);
         } else {
           notifySuccess(res?.data?.msg);
+          const userIndex = dataAllUsers.findIndex((u: any) => u.id === id);
+          if (userIndex !== -1) dataAllUsers[userIndex].is_active = status;
         }
       },
       onError: (error: any) => {
@@ -60,6 +63,9 @@ const TableUserManagement = ({
       },
     });
   };
+
+  console.log("change statusssss",changeStatus)
+  
 
   const handleDeleteUser = () => {
     setTimeout(() => {
