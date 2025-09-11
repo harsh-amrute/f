@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
-import { getFileConfiguration, getFileDownload, getRunState, postUploadSchedulerFile } from "./api";
+import { getFileConfiguration, getFileDownload, getRunState, postStartSchedulingRun, postUploadSchedulerFile } from "./api";
 
 export const useGetRunState = () => {
     return useMutation(async () => {
@@ -22,5 +22,11 @@ export const useGetFileDownloadForSchedular = () => {
 export const usePostFileUploadForSchedular = () => {
     return useMutation(async (formData: FormData) => {
       return postUploadSchedulerFile(formData);
+    })
+}
+
+export const usePostStartSchedulingRun = () => {
+    return useMutation(async (userdata: {user_id: string, user_name: string}) => {
+        return postStartSchedulingRun(userdata);
     })
 }

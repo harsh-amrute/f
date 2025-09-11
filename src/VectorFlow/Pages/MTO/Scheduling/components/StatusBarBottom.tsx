@@ -25,13 +25,13 @@ const LeftSection = styled.span`
     margin-left: 20px;
 `
 
-const StatusBarBottom = ({isRunEnabled=true, isGoToFinalResult=true, onGoToFinalResult}: any) => {
+const StatusBarBottom = ({isRunEnabled=true, isGoToFinalResult=true, onGoToFinalResult, StartRun}: any) => {
     const themeUi = useUserData().user.user.themeUi;
   return (
     <StatusBarWrapper>
         <LeftSection>
 
-        <VFButton style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={() => console.log('Back clicked')} disabled={!isRunEnabled}>
+        <VFButton style={{fontSize: '1.1rem', height: '3.2rem', width: 'fit-content', padding: '4px 16px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent:'center'}} themeUi={themeUi} onClick={() => {StartRun()}} disabled={!isRunEnabled}>
             <span>
                 Run Now
             </span>

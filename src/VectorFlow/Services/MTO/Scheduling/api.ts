@@ -47,3 +47,16 @@ export const postUploadSchedulerFile = async (formData: FormData) => {
     }
   );
 }
+
+export const postStartSchedulingRun = async (userdata: {user_id: string, user_name: string}) => {
+  return await axios.post(
+    process.env.REACT_APP_VF_API_HOST_MTO + `/startSchedulerRun/`,
+    userdata
+    ,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
+}
