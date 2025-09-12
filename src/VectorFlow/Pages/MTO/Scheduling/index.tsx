@@ -13,7 +13,7 @@ const Scheduling = () => {
 
     const [step, setStep] = useState("Upload");
     
-    const [runStatus, setRunStatus] = useState( {
+    const [runStatus, setRunStatus] = useState<any>( {
         status: null,
         startTime: null,
         endTime: null,
@@ -28,16 +28,18 @@ const Scheduling = () => {
         try{
 
             const result = await getRunState();
-            setRunStatus(result.data.data);
+            if(result.status===200){
+                setRunStatus(result.data.data);
+            }else{
+                setRunStatus({status: 'FAILED_TO_FETCH', startTime: null, endTime: null, message: null});
+            }
         }
         catch(e:any){
+            setRunStatus({status: 'Failed to fetch', startTime: null, endTime: null, message: null});
             notifyError("Failed to fetch run status");
             console.log('error', e);
         }
-
     }
-
-    
 
     useEffect(()=>{ 
         GetRunStatus();
@@ -58,7 +60,7 @@ const Scheduling = () => {
     const [isModalOpen, setIsModalOpen] = useState(true);
 
     const getRunStatusModal = (runStatus:any) => {
-        if(["SUCCESS", "FAILED", "ABORT", "RUNNING"].includes(runStatus.status)){
+        if(["SUCCESS", "FAILED", "ABORT", "RUNNING", 'FAILED_TO_FETCH'].includes(runStatus.status)){
             return(
             <VFOverlayModal parentSelector="#main-content" openModal={isModalOpen}  >
             <RunStatusModal runStatus={runStatus} closeModal={()=>setIsModalOpen(false)} goTofinalResult={()=>setStep("Final Result")}/>
@@ -68,10 +70,20 @@ const Scheduling = () => {
     }
 
     const StartRun = async()=>{
-        const response = postStartSchedulingRun({user_id: "1", user_name: "Admin"});
-        console.log("response", response);
+        try{
 
-        
+            const response = await postStartSchedulingRun({user_id: "1", user_name: "Admin"});
+            if(response.status === 200){
+                notifyError("Run started successfully");
+                setTimeout(()=>{
+                    GetRunStatus();
+                },3000)
+            }
+        }
+        catch(e){
+            notifyError("Failed to start the run");
+            console.log('error', e);
+        }
     }
 
     const getRunActionBar = () => {

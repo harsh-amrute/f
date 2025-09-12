@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useUserData } from "../../../../../context";
 import styled from "styled-components";
 import VFButton from "../../../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../../../components/VectorFLOW/commons/VFButtonOutline";
-import moment from "moment";
 import { format } from "date-fns";
 
 const ModalWrapper = styled.div`
@@ -95,16 +94,12 @@ const RunStatusModal = ({
   closeModal,
   progress = 50,
   message = "Run Failed",
-  startTime = "8:00 am",
-  endTime = "9:00 am",
-  openAbortModal,
   goTofinalResult,
-  goBack,
 }: any) => {
   const themeUi = useUserData().user.user.themeUi;
-
+  
+  const [isAbortConfirm, setIsAbortConfirm] = useState(false);
   const progressModal = () => {
-    const [isAbortConfirm, setIsAbortConfirm] = React.useState(false);
 
     if (isAbortConfirm) {
       return (
@@ -391,6 +386,34 @@ const RunStatusModal = ({
       </ModalWrapper>
     );
   };
+  const progressFailedToFetch = () => {
+    return (
+      <ModalWrapper style={{width: "50vw"}}>
+        <ImageWrapper src={"/assets/img/scheduling/run-failed.svg"} />
+        <ProgressMessage style={{ fontSize: "1.3rem", paddingBottom: "15px" }}>
+          {"Failed to fetch the run status. Please refresh to try again."}
+        </ProgressMessage>
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', paddingBottom: '20px'}}>
+          <VFButton
+            style={{
+              display: "flex",
+              gap: "8px",
+              fontSize: "1.2rem",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "fit-content",
+              padding: "8px 18px",
+              width: "fit-content",
+            }}
+            onClick={()=>{window.location.reload()}}
+            themeUi={themeUi}
+          >
+            <p>Refresh</p>
+          </VFButton>
+        </div>
+      </ModalWrapper>
+    );
+  };
 
   switch (runStatus?.status) {
     case "RUNNING":
@@ -403,6 +426,8 @@ const RunStatusModal = ({
       return progressAbortedModal();
     case "PENDING":
       return null;
+    case "FAILED_TO_FETCH":
+      return progressFailedToFetch();
     default:
       return null;
   }
