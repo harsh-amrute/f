@@ -75,7 +75,7 @@ const VFFilter = (props:VFFilterProps)=>{
                 placeholder="Select" 
                 onChange={(e:any)=>handleOnChange(e.value,'operator')} 
                 options={validOperators}
-                value={validOperators.find((field)=>field.value === currFilter.operator)}
+                value={validOperators.find((field) => field.value === currFilter.operator) ?? 0}
                 isDisabled={isDisabled}
             />
             <VFFilterSeperator/>
