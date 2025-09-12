@@ -457,34 +457,23 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   const [totalOrderCount, setTotalOrderCount] = useState<any>(0);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
-  const debouncedRef = useRef<any>(null);
-
   const onCheckBoxToggle = (e: any) => {
     setIsGridLoading(true);
     
     const isChecked = e.target.checked;
-    
-    // if (debouncedRef.current) {
-    //   debouncedRef.current.cancel();
-    // }
-    // debouncedRef.current = _.debounce(() => {
+
      setIsCheckboxChecked(isChecked);
       if (refGraph2.current?.api) {
         
         if (isChecked) {
-          // refGraph2.current.api.forEachNodeAfterFilterAndSort((node: any) => {
-          //   node.setSelected(true);
-          // });
-          refGraph2.current.api.selectAllFiltered();  // Selects all filtered rows
-          // refGraph2.current.api.selectAll();  // Selects all filtered rows
+          refGraph2.current.api.selectAll();
+          // refGraph2.current.api.selectAllFiltered();          // Selects all filtered rows
 
         } else {
           refGraph2.current.api.deselectAll();
         }
     }
     
-    // }, 100); 
-    // debouncedRef.current();
   };
   
 
@@ -683,7 +672,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
             options={actionOptions}
             themeUi={themeUi}
             icon={DropdownArrowIcon}
-            disabled={!(refGraph2.current?.api?.getSelectedRows()?.length > 0)}
+            disabled={!isCheckboxChecked}
             placeholder="Select Action"
             value={selectedAction}
             onChange={handleActionChange}
