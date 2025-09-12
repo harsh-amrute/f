@@ -64,9 +64,6 @@ const TableUserManagement = ({
     });
   };
 
-  console.log("change statusssss",changeStatus)
-  
-
   const handleDeleteUser = () => {
     setTimeout(() => {
       usePutDeleteUser(idUser, {
