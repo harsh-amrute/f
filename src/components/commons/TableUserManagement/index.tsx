@@ -131,7 +131,8 @@ const TableUserManagement = ({
     }
   };
 
-  const buttonToggle = (item: any) => {
+  const actionToggle = ({ item }: any) => {
+    
     return (
       <Tab.SCTableTdCenter>
         <ButtonOutlineStoreStatus
@@ -144,6 +145,32 @@ const TableUserManagement = ({
         />
       </Tab.SCTableTdCenter>
     );
+  };
+
+  const buttonToggle = (item: any, is_admin: any) => {
+    const permissionUser = item.role_id.map((item: any) => item.name);
+    
+    if (is_admin) {
+      if (item.is_admin) {
+        return <NoAction />;
+      } else {
+        return <>{actionToggle({ item })}</>;
+      }
+    } else {
+      if (permission?.includes("IST Admin") || permission?.includes("Admin")) {
+        if (item.is_admin) {
+          return <NoAction />;
+        } else {
+          if (permissionUser?.includes("IST Admin") || permissionUser?.includes("Admin")) {
+            return <NoAction rolesMap={permissionUser} />;
+          } else {
+            return <>{actionToggle({ item })}</>;
+          }
+        }
+      } else {
+        return <NoAction />;
+      }
+    }
   };
 
   const ListAction = ({ item }: any) => {
@@ -193,11 +220,7 @@ const TableUserManagement = ({
     
     return (
       <>
-        <Tab.SCTableTd>
-          {permissionUser.toString().replace(/,/g, " | ")}
-        </Tab.SCTableTd>
         <ListAction item={item} />
-        {buttonToggle(item)}
       </>
     );
   };
@@ -205,11 +228,6 @@ const TableUserManagement = ({
   const NoAction = ({ rolesMap }: any) => {
     return (
       <>
-        <Tab.SCTableTd>
-          {rolesMap.toString().replace(/,/g, " | ")}
-        </Tab.SCTableTd>
-        <Tab.SCTableTd style={{ padding: "20px" }}></Tab.SCTableTd>
-        <Tab.SCTableTdCenter></Tab.SCTableTdCenter>
       </>
     );
   };
@@ -238,61 +256,28 @@ const TableUserManagement = ({
       {
         headerName: "Actions",
         field: "actions",
-        height: 550,
+        flex: 1,
         filter: false,
         cellRenderer: (params: any) => {
-          const item = params.data;
-          return (
-            <div style={{ display: "flex", gap: "8px" }}>
-              <img
-                src="/assets/img/profile/icon_edit.svg"
-                style={{ cursor: "pointer" }}
-                data-tooltip-id="edit"
-                onClick={() => handleClickEdit(item)}
-              />
-              <img
-                src="/assets/img/profile/icon_delete.svg"
-                style={{ cursor: "pointer" }}
-                data-tooltip-id="delete"
-                onClick={() => {
-                  handleOpenDelete(item.id);
-                }}
-              />
-              <img
-                src="/assets/img/profile/icon_lock.svg"
-                style={{ cursor: "pointer" }}
-                data-tooltip-id="reset"
-                onClick={() => {
-                  handleResetPwd(item.id);
-                }}
-              />
-            </div>
-          );
+            return renderAction(params.data, params.data.is_admin);
         },
       },
       {
         headerName: "Active",
-        field: "is_active",
+        field: "active",
         flex: 1,
         filter: false,
-        
         cellRenderer: (params: any) => {
-          const item = params.data;
-          return (
-            <ButtonOutlineStoreStatus
-              labelOn="Active"
-              labelOff="Inactive"
-              toggled={item?.is_active}
-              onClick={(val: boolean) => {
-                changeStatus(item.id, val);
-              }}
-            />
-          );
+
+            return buttonToggle(params.data, params.data.is_admin);
+
         },
       },
     ],
-    [handleClickEdit]
+    [is_admin, permission]
   );
+  
+  
 
   const rowData = useMemo(() => {
     return (
