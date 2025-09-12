@@ -64,8 +64,8 @@ const useView = (columnDefs?: any[]): UseViewProps => {
             
             const response = await bulkUploadPermission(formData);
 
-            if(response?.data?.status !== 200)    {
-                notifyError("Server Went Unresponsive");
+            if(response?.data?.errorCount === "1")    {
+                notifyError(response?.data?.msg);
                 setIsUploadModalOpen(false);
                 return;
             }

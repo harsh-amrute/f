@@ -6,6 +6,7 @@ import { notifyError } from '../../../helpers/notify'
 import { useGetAdminPermissions } from '../../../VectorFlow/Services/MTA/MDM'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../redux/store/store'
+import ErrorCell from '../../../components/VectorFLOW/commons/ErrorCell';
 
 export const getProductColumns = (envConfig: any) => [
     { colId: "id", field: "id", headerName: "ID" },
@@ -22,14 +23,14 @@ export const getLocationColumns = (envConfig: any) => [
 ];
 
 export const getErrorProductColumns = (envConfig: any) => [
-    { colId: "error", field: "error", headerName: "error" },
+    { colId: "errors", field: "errors", headerName: "Errors" ,cellRenderer:ErrorCell ,  suppressColumnsToolPanel:true,wrapText:true, autoHeight:true},
     { colId: envConfig['PRODUCT_PERMISSION_L1'], field: envConfig['PRODUCT_PERMISSION_L1'], headerName: envConfig['PRODUCT_PERMISSION_L1'] },
     { colId: envConfig['PRODUCT_PERMISSION_L2'], field: envConfig['PRODUCT_PERMISSION_L2'], headerName: envConfig['PRODUCT_PERMISSION_L2'] },
     { colId: envConfig['PRODUCT_PERMISSION_L3'], field: envConfig['PRODUCT_PERMISSION_L3'], headerName: envConfig['PRODUCT_PERMISSION_L3'] },
 ];
 
 export const getErrorLocationColumns = (envConfig: any) => [
-    { colId: "error", field: "error", headerName: "error" },
+    { colId: "errors", field: "errors", headerName: "Errors" ,cellRenderer:ErrorCell ,  suppressColumnsToolPanel:true,wrapText:true, autoHeight:true},
     { colId: envConfig['LOCATION_PERMISSION_L1'], field: envConfig['LOCATION_PERMISSION_L1'], headerName: envConfig['LOCATION_PERMISSION_L1'] },
     { colId: envConfig['LOCATION_PERMISSION_L2'], field: envConfig['LOCATION_PERMISSION_L2'], headerName: envConfig['LOCATION_PERMISSION_L2'] },
     { colId: envConfig['LOCATION_PERMISSION_L3'], field: envConfig['LOCATION_PERMISSION_L3'], headerName: envConfig['LOCATION_PERMISSION_L3'] },

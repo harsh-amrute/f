@@ -1,10 +1,15 @@
 import { TableWrapper } from "../UserURLsDrawer/styles"
 import VFTable from "../../VectorFLOW/commons/VFTable"
+import { AgGridReactProps } from 'ag-grid-react';
 
 const ErrorPermissions = (props: any) => {
 
     const {rowData , columnDefs} = props;
 
+const agGridProps:AgGridReactProps = {
+  tooltipShowDelay:0,
+  tooltipTrigger:'hover',
+}
     return (
       <>
          <TableWrapper>
@@ -17,6 +22,7 @@ const ErrorPermissions = (props: any) => {
                 height="600px"
                 rowData={rowData}
                 columnDefs={columnDefs}
+                {...agGridProps}
             />
         </TableWrapper>
       </>
