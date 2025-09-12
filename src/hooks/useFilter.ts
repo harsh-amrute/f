@@ -13,8 +13,6 @@ const useFilter=(filterData: any, page: any)=>{
     
     const onFilterRemove = (parentId: string, filterId: any, value: any) => {
          const updatedMultiFilter = { ...multiFilter };
-      
-
         const filters = updatedMultiFilter[parentId as keyof FilterState]?.filters || [];
       
         for (let i = 0; i < filters.length; i++) {
