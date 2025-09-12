@@ -146,8 +146,8 @@ const OverallBmReport = () => {
   const { mutateAsync: getBOMExplosionData /*isLoading :BombDataLoading*/ } =
     useGetBOMExplosionData();
   const { mutateAsync: getDBRsettingsData} = useGetDBRsettingsData();
-  const { mutateAsync: getHighAgeingData } = useGetHighAgeingData();
-  const { mutateAsync: getDeptWiseWipData } = useGetDeptWiseWipData();
+  const { mutateAsync: getHighAgeingData, isLoading: isHighAgeingData } = useGetHighAgeingData();
+  const { mutateAsync: getDeptWiseWipData, isLoading: isDeptWiseWipData} = useGetDeptWiseWipData();
   const { mutateAsync: getPoogIRemarks } = useGetPoogiRemarks();
   const { mutateAsync: getUIConfigData } = useGetUIConfigData();
   // const { screenHeight } = useViewPort();
@@ -182,7 +182,6 @@ const OverallBmReport = () => {
   const [deptName, setDeptName] = useState<any>([]);
   const [isOrderElapsedGrid, setIsOrderElapsedGrid] = useState<boolean>(false);
   const [filterData, setFilterData] = useState({});
-  const [systemType, setSystemType] = useState<any>();
   const [isGridLoading, setIsGridLoading] = useState(false);
   const [showExcelModal, setShowExcelModal] = useState(false);
   
@@ -281,18 +280,25 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   };
 
   const getSystemType = async () => {
-    const DBRSettingsData: any = await getDBRsettingsData();
-    const DBRSettings = DBRSettingsData.data?.data;
-    const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value==1);
-    if(BomFlag){
-        setBomActive(true)
+    try {
+      const DBRSettingsData: any = await getDBRsettingsData();
+      const DBRSettings = DBRSettingsData.data?.data;
+      if (DBRSettings && DBRSettings.length) {
+        const BomFlag = DBRSettings?.find((data: any) => data.flag === "BOMActive" && data.value == 1);
+        if (BomFlag) {
+          setBomActive(true)
+        }
+        else {
+          setBomActive(false)
+        }
+        setorderClosingEnable(canShowOrderClosing);
+        getFilterData();
+      } else {
+        getFilterData();
+      }
+    } catch (e) {
+      console.error(e);
     }
-    else {
-      setBomActive(false)
-    }
-    
-    setorderClosingEnable(canShowOrderClosing);
-    setSystemType(Number(systemType?.value || 0));
   };
 
    useEffect(()=>{
@@ -452,26 +458,33 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   const debouncedRef = useRef<any>(null);
+
   const onCheckBoxToggle = (e: any) => {
+    setIsGridLoading(true);
+    
     const isChecked = e.target.checked;
     
-    if (debouncedRef.current) {
-      debouncedRef.current.cancel();
-    }
-    debouncedRef.current = _.debounce(() => {
+    // if (debouncedRef.current) {
+    //   debouncedRef.current.cancel();
+    // }
+    // debouncedRef.current = _.debounce(() => {
      setIsCheckboxChecked(isChecked);
       if (refGraph2.current?.api) {
-        refGraph2.current.api.deselectAll();
-  
+        
         if (isChecked) {
-          refGraph2.current.api.forEachNodeAfterFilterAndSort((node: any) => {
-            node.setSelected(true);
-          });
+          // refGraph2.current.api.forEachNodeAfterFilterAndSort((node: any) => {
+          //   node.setSelected(true);
+          // });
+          refGraph2.current.api.selectAllFiltered();  // Selects all filtered rows
+          // refGraph2.current.api.selectAll();  // Selects all filtered rows
+
+        } else {
+          refGraph2.current.api.deselectAll();
         }
-      }
-      getSelectedRow();
-    }, 300); 
-    debouncedRef.current();
+    }
+    
+    // }, 100); 
+    // debouncedRef.current();
   };
   
 
@@ -1022,10 +1035,6 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     getSystemType();
   }, []);
 
-  useEffect(()=>{
-    getFilterData();
-  },[systemType])
-
   const customCellRenderers = useMemo(
     () => ({
       colorCellRenderer: BPPRenderer,
@@ -1126,6 +1135,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
   const handlePageChange = useCallback((currPage: number) => {
     setCurrentPage(currPage);
     setIsCheckboxChecked(false);
+    getInitialGridData(currPage);
   }, []);
 
   const savePageSize = (pageSize: any) => {
@@ -1182,49 +1192,40 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
 
   const getSelectedRow = () => {
     const selectedData = refGraph2.current?.api.getSelectedRows();
-    if (selectedData.length == 0) {
-      rowsSelected.current = false;
-    } else {
-      rowsSelected.current = true;
+    rowsSelected.current = selectedData.length > 0;
+    
+    // Use efficient data structures
+    const selectedKeys = new Set(selectedData.map((item: any) => item.ok));
+    let updated = false;
+  
+    // Create a map for quick access to mergedData items
+    const mergedDataMap = new Map(masterSelectedRowData.map((item: any) => [item.ok, item]));
+  
+    selectedData.forEach((newItem: any) => {
+      if (!mergedDataMap.has(newItem.ok)) {
+        mergedDataMap.set(newItem.ok, newItem);
+        updated = true;
+      }
+    });
+  
+    // Filter out unselected items
+    gridData?.forEach((item: any) => {
+      if (item && item.ok && !selectedKeys.has(item.ok) && mergedDataMap.has(item.ok)) {
+        mergedDataMap.delete(item.ok);
+        updated = true;
+      }
+    });
+  
+    // Only update state if there's a change
+    if (updated) {
+      setMasterSelectedRowData(Array.from(mergedDataMap.values()));
     }
-    /* To persist the state*/
-    if (selectedData && selectedData.length >= 0) {
-      let mergedData: any = [...masterSelectedRowData]; // Start with the existing selected data
-      selectedData.forEach((newItem: any) => {
-        const index = mergedData.findIndex(
-          (item: any) => item.ok === newItem.ok
-        );
-        if (index !== -1) {
-          // If the item exists, replace it
-          // mergedData[index] = newItem;
-        } else {
-          // Otherwise, add the new item
-          mergedData.push(newItem);
-        }
-      });
-
-      gridData?.forEach((item: any) => {
-        if (item && item.ok) {
-          let isThere = 0;
-          selectedData.forEach((selectedD: any) => {
-            if (selectedD.ok === item.ok) {
-              isThere = 1;
-            }
-          });
-          if (isThere == 0) {
-            mergedData = mergedData.filter((e: any) => e.ok !== item.ok);
-          }
-        }
-      });
-      // if (!_.isEqual(mergedData, masterSelectedRowData)) {
-      setMasterSelectedRowData(mergedData);
-      // }
-      /*persist data finised*/
-    }
-    toggleCheckBox();
-    refGraph2.current.api.refreshCells();
+  
+    toggleCheckBox();  // Ensure checkboxes are correctly toggled
+    refGraph2.current.api.refreshCells();  // Refresh cells in the grid
+    setIsGridLoading(false);
   };
-
+  
   useEffect(() => {
     if (masterSelectedRowData.length > 0) {
       const selectedOrderKeys: orderkeyObj[] = [];
@@ -1330,8 +1331,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
           return config;
         }, [columnBomDefs, bomHeader]);
 
-  const agGridProps: AgGridReactProps = useMemo(() => {
-    return {
+  const agGridProps: AgGridReactProps = {
       tooltipShowDelay: 0,
       tooltipTrigger: "focus",
       gridOptions: {
@@ -1382,13 +1382,6 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
       onRowDataUpdated: onFirstDataRendered,
       onColumnPivotModeChanged: onPivotModeChanged,
     };
-  }, [masterSelectedRowData, gridData]);
-
-  useEffect(() => {
-    if (Object.keys(appliedFilters).length) {
-      getInitialGridData(currentPage);
-    }
-  }, [currentPage]);
 
   useEffect(() => {
     if (Object.keys(appliedFilters).length && userConfigFetched) {
@@ -1643,7 +1636,9 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
         isExcelLoading ||
         isGetStateLoading ||
         isShortOrderCompleteOrder ||
-        isUpdateUserConfig) && <OverlayLoader />}
+        isUpdateUserConfig ||
+        isDeptWiseWipData || 
+        isHighAgeingData) && <OverlayLoader />}
 
       <HorizontalViewWrapper style={{ marginTop: "0", paddingLeft:"25px" }}>
         <BTRTableWrapper
