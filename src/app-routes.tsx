@@ -898,7 +898,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/planning/simulative-fullkit',
+      path: '/mto/planning/simulative-fullkit',
       element: <AppLayout />,
       children: [
         {
