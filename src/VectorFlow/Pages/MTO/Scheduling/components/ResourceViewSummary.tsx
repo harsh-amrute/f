@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import VFTable from "../../Common/VFTable";
 import { AgGridReactProps } from "ag-grid-react";
@@ -102,7 +102,7 @@ const ToggleButton = styled.button<{ active?: boolean }>`
 
 
 
-const ResourceViewSummary = ({ ResourceData}: any) => {    
+const ResourceViewSummary = ({ ResourceData, setExcelGridRef}: any) => {    
 
   const [active, setActive] = useState("Percentage Wise");
   const allWorkStations:any = new Set(Object.values(ResourceData.Resource_Data || {}).map((r: any) => r.work_station));
@@ -264,6 +264,9 @@ const options = ["Percentage Wise", "Day Wise", "Hrs Wise", "Count Wise"];
     setRowData(generateSummaryData());
   }, [active, activeWorkStation, ResourceData]);
 
+
+  const gridRef = useRef<any>(null);
+
 return (
   <SectionWrapper>
       <Tab>Summary</Tab>
@@ -298,7 +301,9 @@ return (
   </ToggleWrapper>
     </FilterSection>
 
-      <VFTable {...agGridProps}  columnDefs={colDef} rowData={rowData} />
+      <VFTable ref={gridRef} {...agGridProps}  columnDefs={colDef} rowData={rowData} onGridReady={()=>{
+        setExcelGridRef(gridRef)
+      }} />
 
     </GridWrapper>
   </SectionWrapper>

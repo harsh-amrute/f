@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import VFTable from '../../Common/VFTable'
 import styled from 'styled-components';
 
@@ -30,9 +30,11 @@ const GridWrapper = styled.div`
   }
 `;
 
-const GridViewJob = ({ResourceData}: any) => {
+const GridViewJob = ({ResourceData, setExcelGridRef}: any) => {
   const [columnDefs, setColumnDefs] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
+
+  const gridRef = useRef<any>(null)
 
   useEffect(() => {
     if (!ResourceData?.Resource_Data) return;
@@ -145,6 +147,7 @@ const GridViewJob = ({ResourceData}: any) => {
     <GridWrapper>
       <VFTable
         key={"job-grid"}
+        ref={gridRef}
         columnDefs={columnDefs}
         rowData={rowData}
         suppressRowClickSelection={true}
@@ -160,6 +163,9 @@ const GridViewJob = ({ResourceData}: any) => {
           if (params && params.node && params.node.rowIndex && params?.node?.rowIndex % 2 === 0) {
             return 'my-shaded-effect';
           }
+        }}
+        onGridReady={()=>{
+          setExcelGridRef(gridRef)
         }}
         animateRows={true}
         rowSelection="single"

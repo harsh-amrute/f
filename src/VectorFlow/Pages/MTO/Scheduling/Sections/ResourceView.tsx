@@ -8,7 +8,7 @@ const ResourceViewWrapper  = styled.div`
     display: flex;
     flex-direction: column;
 `
-const ResourceView = ({ResourceData}: any) => {
+const ResourceView = ({ResourceData, setExcelGridRef}: any) => {
 
   const TaskTypeMaster = 
     {
@@ -25,7 +25,7 @@ const ResourceView = ({ResourceData}: any) => {
   return (
     <ResourceViewWrapper>
       <ResourceViewChart ResourceData={ResourceData}/>
-      <ResourceViewSummary ResourceData={ResourceData}/>
+      <ResourceViewSummary ResourceData={ResourceData} setExcelGridRef={setExcelGridRef}/>
 
     </ResourceViewWrapper>
   )

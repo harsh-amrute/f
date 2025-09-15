@@ -18,19 +18,20 @@ postion: relative;
 `
 
 const FinalResultSection = ({setStep}:any) => {
+  const [excelGridRef, setExcelGridRef] = useState<any>(null);
   const [currentView, setCurrentView] = useState("ResourceView");
-
+  
   const [data, setData] = useState(response)
   const getCurrentView = ()=>{
     switch(currentView){
       case "ResourceView":
-        return <ResourceView ResourceData={data}/>
+        return <ResourceView ResourceData={data} setExcelGridRef={setExcelGridRef}/>
       case "JobView":
         return <JobView ResourceData={data}/>
       case "GridViewR":
-        return <GridViewResource ResourceData={data}/>
+        return <GridViewResource ResourceData={data} setExcelGridRef={setExcelGridRef}/>
       case "GridViewJ":
-        return <GridViewJob ResourceData={data}/>
+        return <GridViewJob ResourceData={data} setExcelGridRef={setExcelGridRef}/>
       default:
         return <ResourceView/>;
     }
@@ -74,7 +75,7 @@ const FinalResultSection = ({setStep}:any) => {
 
   return (
     <FinalResultSectionWrapper>
-      <SchedulingActionToolbar onGoBack={()=>{setStep("Upload")}} on currentView={currentView} setCurrentView={setCurrentView} setIsFilterModalOpen={setIsFilterModalOpen} appliedFilters={appliedFilters} setAppliedFilters={setAppliedFilters}/>
+      <SchedulingActionToolbar onGoBack={()=>{setStep("Upload")}} on currentView={currentView} setCurrentView={setCurrentView} setIsFilterModalOpen={setIsFilterModalOpen} appliedFilters={appliedFilters} setAppliedFilters={setAppliedFilters} gridRef={excelGridRef}/>
         {getCurrentView()}
       {
         isFilterModalOpen && 

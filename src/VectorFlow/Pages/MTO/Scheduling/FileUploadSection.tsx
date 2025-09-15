@@ -112,9 +112,21 @@ const FileUploadSection = () => {
   );
 
   const GetFileConfiguration = async () => {
-    const result = await getFileConfiguration();
-    setFileObjects(result.data.data);
-    setLastRefreshTime(new Date().toString());
+    try{
+
+      const result = await getFileConfiguration();
+      if(result.status !== 200){
+        notifyError("Failed to fetch file configuration")
+      }
+      else{
+        setFileObjects(result.data.data);
+        setLastRefreshTime(new Date().toString());
+      }
+    }
+    catch(e){
+      notifyError("Failed to fetch file configuration");
+      console.log(e);
+    }
   };
 
   const user = useUserData().user.user;
@@ -128,8 +140,7 @@ const FileUploadSection = () => {
     file_type: string;
     file_name: string;
   }) => {
-    console.log("file to upload", file.name);
-    console.log("mera file_name", file_name);
+
     if (file.name !== file_name) {
       notifyError(
         `Please upload a file with the correct name and extension: ${file_name}`
@@ -252,6 +263,9 @@ const FileUploadSection = () => {
             </VFButton>
           </CheckUpdatesWrapper>
 
+{
+  fileObjects.some((file: any) => file.file_from === "UI") && (
+
           <GridContainer>
             <SideTab>UI Generated Files</SideTab>
 
@@ -265,13 +279,13 @@ const FileUploadSection = () => {
                     lastUpdateStatus={
                       file.last_updated
                         ? format(
-                            new Date(file.last_updated),
+                          new Date(file.last_updated),
                             "dd MMM yyyy, hh:mm a"
                           ) +
                           " " +
                           "by " +
                           file.uploaded_by
-                        : null
+                          : null
                     }
                     title={file.file_name}
                     onDownload={DownloadExcel}
@@ -280,6 +294,12 @@ const FileUploadSection = () => {
                 )
             )}
           </GridContainer>
+  )
+
+          }
+
+{
+  fileObjects.some((file: any) => file.file_from === "UI") && (
 
           <GridContainer>
             <SideTab>Automated Files</SideTab>
@@ -306,6 +326,12 @@ const FileUploadSection = () => {
                 )
             )}
           </GridContainer>
+)}
+
+{fileObjects.length === 0 && (
+  <div style={{fontSize: "1.2rem", color: "rgb(96, 93, 93)", marginTop: "80px", textAlign: "center"}}>
+            No files configured. Please contact administrator.
+  </div>)}
         </>
       )}
     </Wrapper>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import VFTable from '../../Common/VFTable'
 import styled from 'styled-components';
 
@@ -31,9 +31,11 @@ const GridWrapper = styled.div`
 `;
 
 
-const GridViewResource = ({ResourceData}: any) => {
+const GridViewResource = ({ResourceData, setExcelGridRef}: any) => {
   const [columns, setColumns] = useState<any>([]);
   const [rowData, setRowData] = useState<any>([]);
+
+  const gridRef = useRef<any>(null)
 
   useEffect(() => {
     // Define column structure
@@ -222,6 +224,8 @@ const GridViewResource = ({ResourceData}: any) => {
   return (
     <GridWrapper>
       <VFTable
+        key={"resource-grid"}
+        ref={gridRef}
         columnDefs={columns}
         rowData={rowData}
         defaultColDef={{
@@ -236,6 +240,9 @@ const GridViewResource = ({ResourceData}: any) => {
           if (params && params.node && params.node.rowIndex && params?.node?.rowIndex % 2 === 0) {
             return 'my-shaded-effect';
           }
+        }}
+        onGridReady={()=>{
+          setExcelGridRef(gridRef)
         }}
         suppressRowClickSelection={true}
         animateRows={true}
