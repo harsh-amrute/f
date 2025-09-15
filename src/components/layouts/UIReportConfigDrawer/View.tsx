@@ -104,7 +104,7 @@ const ViewUiReportConfig = (props:{onEdit:(data:any)=>void})=>{
                     },
                     {
                         colId:"Visible",
-                        field:"Visible", cellStyle:{ display:'flex', justifyContent:'center', alignItems:'center' }
+                        field:"Visible"
                     },
                     {
                         colId:"CellAlignment",
