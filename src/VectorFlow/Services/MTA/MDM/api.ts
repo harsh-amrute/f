@@ -328,6 +328,14 @@ export namespace MDMService {
   export const getAllUsers = async()=>{
     return await axios.get(process.env.REACT_APP_API_HOST + `/api/user/all-users/`)
   }
+
+
+  export const getMaxFolDate = async()=>{
+    return await axios.get(process.env.REACT_APP_VF_API_HOST_MTO + `/getMaxFolDateForCcr/`,{
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   
   export const getApproverNames = async (params:any) => {
     return await axios.post(process.env.REACT_APP_API_HOST + `api/user/get-approver-names/`,{...params})

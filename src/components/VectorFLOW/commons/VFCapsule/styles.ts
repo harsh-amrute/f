@@ -4,6 +4,7 @@ import * as globalStyles from '../../../../styles/global'
 
 export const VFCapsuleWrapper = styled.div<{themeUi:string}>`
     display:inline-flex;
+    align-items:center;
     width:100%;
     height: 25px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
@@ -12,6 +13,7 @@ export const VFCapsuleWrapper = styled.div<{themeUi:string}>`
     border-radius: 21px;
     opacity: 1;
     overflow:hidden;
+
 `
 
 export const VFCapsuleButton = styled.button<{isActive:boolean,themeUi:string}>`

@@ -3218,8 +3218,26 @@ export const BPRColorMapper = (color: string): { bg: string, text: string } => {
     case "Blue":
       return {
         "bg": "blue",
-        "text": 'white'
+        "text": "white"
       }
+    case "default":
+      return {
+        'bg':"#9c9ce7",
+        "text": "white"
+      }
+    
+    case "disabled":
+      return{
+        "bg":"#88888a",
+        "text": "white"
+      }
+
+    case "selected":
+     return{
+      "bg":"#d45293",
+      "text": "white"
+     }
+    
     default:
       return {
         "bg": "#B2B2B2",
@@ -4838,7 +4856,7 @@ export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) 
       },
       flex: 1,
       cellRenderer: f.key === "action" && MTOActionRenderer,
-      filter: "agMultiColumnFilter",
+      filter: f.key !== "action" && "agMultiColumnFilter",
       ...customParams
     }
   })

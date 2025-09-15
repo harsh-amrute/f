@@ -64,8 +64,13 @@ const Header = (props:HeaderProps) => {
     }, 300);
   }
   const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-  const CLIENT_LOGO = EnvConfig['CLIENT_LOGO'];    
-  const CLIENT_NAME = EnvConfig['CLIENT_NAME'];    
+  const getValidValue = (val?: string) =>
+    val && val.trim() !== "" ? val : undefined;
+
+  const CLIENT_LOGO = getValidValue(EnvConfig['CLIENT_LOGO']) ?? process.env.REACT_APP_CLIENT_LOGO;
+  
+  const CLIENT_NAME = getValidValue(EnvConfig['CLIENT_NAME']) ?? process.env.REACT_APP_CLIENT_NAME;
+
   const renderHeader = () => {
     if (location.pathname === '/ist-status') {
       return (
