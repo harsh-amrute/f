@@ -151,9 +151,7 @@ const DueDateQuotation = () => {
 
   useEffect(() => {
     const fetchDBRSettings = async () => {
-      try {
-        
-      
+      try {      
         const DBRSettingsData = await getDBRsettingsData();
         const DBRSettings = DBRSettingsData.data?.data;
         if (DBRSettings && DBRSettings.length) {

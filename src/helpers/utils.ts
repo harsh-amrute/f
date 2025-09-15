@@ -4857,7 +4857,7 @@ export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) 
       },
       flex: 1,
       cellRenderer: f.key === "action" && MTOActionRenderer,
-      filter: "agMultiColumnFilter",
+      filter: f.key !== "action" && "agMultiColumnFilter",
       ...customParams
     }
   })

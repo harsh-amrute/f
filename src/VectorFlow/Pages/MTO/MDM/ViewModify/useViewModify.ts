@@ -79,7 +79,7 @@ import {
   type QueryFilteredDataConfigs,
 } from "../../../../types/MDM";
 
-import _ from "lodash";
+import _, { filter } from "lodash";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
@@ -466,6 +466,7 @@ const useViewModify = (pageType: string) => {
           if (col.colId === "iv") {
             col.cellRenderer = ToggleButton;
             col.pinned = 'right';
+            col.filter = false;
           }
         });
         newColDef.forEach((ele: any) => {
@@ -500,6 +501,7 @@ const useViewModify = (pageType: string) => {
         if (col.colId === "iv") {
           col.cellRenderer = ToggleButton;
           col.pinned = 'right';
+          col.filter = false;
           col.floatingFilter = false
         }
         if(col.colId === "bt"){
@@ -595,6 +597,7 @@ const useViewModify = (pageType: string) => {
           pinned: "left",
           width: 100,
           editable:false,
+          filter: false,
           floatingFilter: false,
           suppressExcelExport: true,
           cellRenderer: AddRemoveCellRenderer,
@@ -898,7 +901,7 @@ const useViewModify = (pageType: string) => {
         const newVal = _.cloneDeep(e);
         
         if (
-          plantMaster &&
+          plantMaster.length &&
           !plantMaster.some(
             (plant: any) =>
               plant.plant_name === e.plnm || plant.plant_id === e.plnm
@@ -1614,6 +1617,7 @@ const useViewModify = (pageType: string) => {
                 onDeleteUndoHandler,
                 onDeleteHandler,
               },
+              filter: false,
             },
           ];
           
@@ -2049,7 +2053,7 @@ const useViewModify = (pageType: string) => {
       /////
       const updatedColdefs:any = activeMaster?.colDefs?.map((col: ColDef) => {
         // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-        if (col.field === "iv") return { ...col, cellRenderer: ToggleButton, pinned: 'right' };
+        if (col.field === "iv") return { ...col, cellRenderer: ToggleButton, pinned: 'right', filter: false };
         if (col.field === "bt")
           return {
             ...col,
@@ -3234,7 +3238,8 @@ const useViewModify = (pageType: string) => {
       if(colDef.field === 'actions' || colDef.field === 'iv' ){
         return {
           ...colDef,
-          editable:false,
+          editable: false,
+          filter:false,
           floatingFilter: false,
         }
       }
@@ -3306,7 +3311,8 @@ const useViewModify = (pageType: string) => {
         if(colDef.field === 'actions' || colDef.field === 'iv'){
           return {
             ...colDef,
-            editable:false,
+            editable: false,
+            filter: false,
             floatingFilter: false,
             
           }
@@ -3987,6 +3993,17 @@ const useViewModify = (pageType: string) => {
   }
 
   const onMTOSaveBufferData = async () => {
+    
+    if(location?.state?.draftId){
+      try{
+        await deleteDraft(location?.state?.draftId)
+      }
+      catch(e){
+        toast.dismiss();
+        notifyError("Failed to save Draft!")
+        return;
+      }
+    }
 
     // on MDM add records
     if (pageType === "add") {
@@ -4222,9 +4239,9 @@ const useViewModify = (pageType: string) => {
               e.bt = elm.id;
             }
           });
-          // e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
-          // e.mlt = parseInt(e.mlt);
-          // e.slt = parseInt(e.slt);
+          e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
+          e.mlt = parseInt(e.mlt);
+          e.slt = parseInt(e.slt);
           e.err = "";
           e.iv = true;
           if (!e.bid) e.bid = null;
@@ -4695,9 +4712,10 @@ const useViewModify = (pageType: string) => {
           return col;
         }),
       {
-        headerName: "",
+        headerName: "Action",
         cellRenderer: "poogiEditDeleteCellRenderer",
         maxWidth: 100,
+        filter: false
       },
     ],
     MTOPoogiMajorColdef: [
@@ -4736,9 +4754,10 @@ const useViewModify = (pageType: string) => {
           return col;
         }),
       {
-        headerName: "",
+        headerName: "Action",
         cellRenderer: "poogiEditDeleteCellRenderer",
         maxWidth: 100,
+        filter: false
       },
     ],
 

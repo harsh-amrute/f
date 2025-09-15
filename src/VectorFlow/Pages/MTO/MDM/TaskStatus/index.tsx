@@ -4,7 +4,7 @@ import VFTable from "../../Common/VFTable"
 
 import {  getActionName, mapTaskStatusToColDefs,getExistingColumns,getExistingColumnFields, mapMasterToTaskStatusColumnGroupDefs, mapTaskStatusDataToRowData } from "../../../../../helpers/utils"
 import TaskStatusMasterDetail from "./TaskStatusMasterDetail"
-import { useGetTaskDetailDownloadData,useGetMasterUIConfiguration, useGetMTOTaskStatusData, useGetAllUsers, useGetApproverName } from "../../../../../VectorFlow/Services/MTA/MDM"
+import { useGetTaskDetailDownloadData,useGetMasterUIConfiguration, useGetMTOTaskStatusData, useGetApproverName } from "../../../../../VectorFlow/Services/MTA/MDM"
 import VFLoader from "../../../../../components/VectorFLOW/commons/VFLoader"
 import { GridRef, Master } from "../../../../../VectorFlow/types/MDM"
 import { AgGridReactProps } from "ag-grid-react"
@@ -25,7 +25,6 @@ const MTOTaskStatus = ()=>{
     const {mutateAsync:getTaskDetailDownloadData} = useGetTaskDetailDownloadData()
     const {mutateAsync:getMasterUIConfiguration} = useGetMasterUIConfiguration()
 
-    const {mutateAsync: getAllUsers} = useGetAllUsers();
     const {mutateAsync:getApproverNames} = useGetApproverName();
 
     const {user} = useUserData()
@@ -94,10 +93,10 @@ const MTOTaskStatus = ()=>{
     };
 
 
-    const MTOToMTAFormat=(inData: any)=>{
+    const MTOToMTAFormat = (taskData: any, allUsers: any) => {
 
         const newData:any = [];
-        inData.forEach((val:any)=>{
+        taskData.forEach((val:any)=>{
             const newVal:any = {}
             newVal.TaskID = val.tid;
             newVal.PendingSince = val.co;
@@ -142,9 +141,7 @@ const MTOTaskStatus = ()=>{
             const approverNames = await getApproverNames({approver_ids: allApproverIds })
             const allUsersData = approverNames.data || [];
 
-            setAllUsers(allUsersData);
-
-            const transformedData = MTOToMTAFormat(response.data.data);
+            const transformedData = MTOToMTAFormat(response.data.data, allUsersData);
             setFinalData(transformedData)
            
         }
@@ -152,9 +149,6 @@ const MTOTaskStatus = ()=>{
             console.log(error)
         }
     }
-
-
-    const [allUsers, setAllUsers] = useState<any>([])
 
 
     React.useEffect(()=>{
