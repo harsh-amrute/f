@@ -63,7 +63,6 @@ const ErrorCell = (props: ICellRendererParams) => {
 
         let tooltipTop = (bottom) + 10;
 
-        // Check if tooltip overflows on the bottom side
         if (tooltipTop + tooltipHeight > viewportHeight) {
             tooltipTop = (top) - tooltipHeight;
         }
@@ -119,8 +118,6 @@ const ErrorCell = (props: ICellRendererParams) => {
             return () => clearTimeout(timeout); 
         }
     }, [isMouseOverTooltip]);
-
-    // console.log('Tooltips State:', tooltipsState);
 
     const imageSrc = themeUi === "REGALBLAZE"
         ? "/assets/img/VectorFLOW/NMS/error1.svg"
