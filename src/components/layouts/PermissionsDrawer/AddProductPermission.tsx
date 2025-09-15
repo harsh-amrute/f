@@ -146,6 +146,7 @@ const AddProductPermission = (props: { cb: () => void }) => {
             placeholder={`Any ${productColumns[1]?.headerName} value`}
             themeUi={themeUi}
             onChange={handleChange}
+            maxLength={190}
           />
         </InputWrapper>
         <InputWrapper style={{ marginLeft: "10px" }}>
@@ -156,6 +157,7 @@ const AddProductPermission = (props: { cb: () => void }) => {
             placeholder={`Any ${productColumns[2]?.headerName} value`}
             themeUi={themeUi}
             onChange={handleChange}
+            maxLength={190}
           />
         </InputWrapper>
       </div>
@@ -169,6 +171,7 @@ const AddProductPermission = (props: { cb: () => void }) => {
             placeholder={`Any ${productColumns[3]?.headerName} value`}
             themeUi={themeUi}
             onChange={handleChange}
+            maxLength={190}
           />
         </InputWrapper>
       </div>

@@ -149,6 +149,7 @@ const AddLocationPermission = (props: { cb: () => void }) => {
             placeholder={`Any ${locationColumns[1]?.headerName}`}
             themeUi={themeUi}
             onChange={handleChange}
+            maxLength={190}
           />
         </InputWrapper>
 
@@ -160,6 +161,7 @@ const AddLocationPermission = (props: { cb: () => void }) => {
             placeholder={`Any ${locationColumns[2]?.headerName}`}
             themeUi={themeUi}
             onChange={handleChange}
+            maxLength={190}
           />
         </InputWrapper>
       </div>
@@ -173,6 +175,7 @@ const AddLocationPermission = (props: { cb: () => void }) => {
             placeholder={`Any ${locationColumns[3]?.headerName}`}
             themeUi={themeUi}
             onChange={handleChange}
+            maxLength={190}
           />
         </InputWrapper>
       </div>
