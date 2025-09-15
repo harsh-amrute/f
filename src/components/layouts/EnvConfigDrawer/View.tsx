@@ -121,6 +121,7 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
                         colId:'edit',
                         field:'edit',
                         headerName:'',
+                        floatingFilter:false,
                         maxWidth:80,
                         cellStyle:{
                             display:'flex',
