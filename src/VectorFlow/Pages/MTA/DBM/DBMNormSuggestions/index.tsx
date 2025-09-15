@@ -23,6 +23,7 @@ const DBM = () => {
   gridRef,
   showAllCheckbox,
   handleGoButton,
+  handleGoButtonForSleep,
   showDailyDataGraphModal,
   showNormChangeHistoryTable,
   dailyData,
@@ -82,6 +83,7 @@ const [isDisabled, setIsDisabled]= useState<boolean>(true)
           onViewChange={() => console.log("")}
           showAllTick={showAllCheckbox}
           handleGoButton={handleGoButton}
+          handleGoButtonForSleep={handleGoButtonForSleep}
           genericRecordCount={DBMDataCount}
           onExportToExcelCallBack={onExportToExcelCallBack}
           onApplyFilter={handleApplyFilter}
