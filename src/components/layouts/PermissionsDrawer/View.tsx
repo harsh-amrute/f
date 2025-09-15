@@ -77,19 +77,6 @@ const ViewPermissions = (props:{permissionType: string})=>{
         getPermissionsData(permissionType);
     },[permissionType, getPermissionsData])
 
-    // const productColumns = [
-    //     { colId: "id", field: "id" },
-    //     { colId: "product_hierarchy_1", field: "product_hierarchy_1", headerName:PRODUCT_PERMISSION_L1 },
-    //     { colId: "product_hierarchy_2", field: "product_hierarchy_2", headerName:PRODUCT_PERMISSION_L2 },
-    //     { colId: "product_hierarchy_3", field: "product_hierarchy_3", headerName:PRODUCT_PERMISSION_L3 },
-    // ];
-
-    // const locationColumns = [
-    //     { colId: "id", field: "id" ,headerName:"id"},
-    //     { colId: "location_heirarchy_1", field: "location_heirarchy_1", headerName:LOCATION_PERMISSION_L1},
-    //     { colId: "location_heirarchy_2", field: "location_heirarchy_2", headerName:LOCATION_PERMISSION_L2},
-    //     { colId: "location_heirarchy_3", field: "location_heirarchy_3", headerName:LOCATION_PERMISSION_L3},
-    // ];
     const productColumns = getProductColumns(EnvConfig);
     const locationColumns = getLocationColumns(EnvConfig);
     const columnDefs = permissionType === 'Product_Permissions' ? productColumns : locationColumns;
