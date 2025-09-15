@@ -1,4 +1,4 @@
-import {useState,useEffect,useCallback} from 'react'
+import {useState,useEffect,useCallback, useRef} from 'react'
 
 import VFTable from "../../VectorFLOW/commons/VFTable"
 
@@ -8,7 +8,8 @@ import { useUserData } from "../../../context"
 import { SecondaryButton, Skeleton } from "../../commons/styled"
 import { notifyError } from '../../../helpers/notify'
 import {  useGetAllUIMDMConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
-
+import { GridRef } from '../../../VectorFlow/types/MDM'
+import { GridFilterWrapper, TextBtn } from '../../../VectorFlow/Pages/MTO/Common/VFPagination/styles'
 
 const ViewUiMDMConfig = (props:{onEdit:(data:any)=>void})=>{
 
@@ -41,6 +42,24 @@ const ViewUiMDMConfig = (props:{onEdit:(data:any)=>void})=>{
         getAllUIMDMConfig()
     },[])
 
+    const ref = useRef<GridRef>();
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+
+    const clearGridFilter = () =>{   
+        ref?.current?.api.setFilterModel(null);
+          setIsDisabled(true);
+    }
+
+    const CustomStatusPanel = () => {
+        return (
+            <GridFilterWrapper style={{marginTop:'25px'}}>
+                <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>
+                    Clear All Grid Filters
+                </TextBtn>  
+            </GridFilterWrapper>           
+        );
+    };
+
     if(isLoading){
         return (
             <Skeleton
@@ -52,12 +71,16 @@ const ViewUiMDMConfig = (props:{onEdit:(data:any)=>void})=>{
     return(
         <TableWrapper>
             <VFTable 
+                ref={ref}
                 defaultColDef={{
                     minWidth: 200,
                     cellStyle:{
                          'text-align':'center',
-                      'justify-content':'center'
-                    }
+                      'justify-content':'center',
+                     
+                    },
+                    floatingFilter: true,
+                    filter: "agMultiColumnFilter"
                 }}
                 rowHeight={50}
                 height="600px"
@@ -109,6 +132,27 @@ const ViewUiMDMConfig = (props:{onEdit:(data:any)=>void})=>{
                         )
                     },                  
                 ]}
+                onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();   
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                  }}
+
+                  statusBar={{
+                    statusPanels: !isLoading?[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
+
+                    ]:
+                    [],
+                  }}
             />
             </TableWrapper>
     )

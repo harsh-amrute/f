@@ -1,4 +1,4 @@
-import {useState,useEffect,useCallback} from 'react'
+import {useState,useEffect,useCallback, useRef} from 'react'
 import VFTable from "../../VectorFLOW/commons/VFTable"
 import { TableWrapper } from "../UserURLsDrawer/styles"
 import {  Skeleton } from "../../commons/styled"
@@ -7,6 +7,9 @@ import { useGetAdminPermissions } from '../../../VectorFlow/Services/MTA/MDM'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../redux/store/store'
 import ErrorCell from './ErrorCell';
+import { GridRef } from '../../../VectorFlow/types/MDM'
+import { GridFilterWrapper, TextBtn } from '../../../VectorFlow/Pages/MTO/Common/VFPagination/styles'
+import { useUserData } from '../../../context'
 
 export const getProductColumns = (envConfig: any) => [
     { colId: "id", field: "id", headerName: "ID" },
@@ -97,7 +100,24 @@ const ViewPermissions = (props:{permissionType: string})=>{
     const productColumns = getProductColumns(EnvConfig);
     const locationColumns = getLocationColumns(EnvConfig);
     const columnDefs = permissionType === 'Product_Permissions' ? productColumns : locationColumns;
+    const ref = useRef<GridRef>();
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+    const {user} = useUserData()
+    const themeUi = user.user.theme_ui
+    const clearGridFilter = () =>{   
+        ref?.current?.api.setFilterModel(null);
+          setIsDisabled(true);
+    }
 
+    const CustomStatusPanel = () => {
+        return (
+            <GridFilterWrapper style={{marginTop:'25px'}}>
+                <TextBtn onClick={clearGridFilter} disabled={isDisabled} themeUi={themeUi}>
+                    Clear All Grid Filters
+                </TextBtn>  
+            </GridFilterWrapper>           
+        );
+    };
 
     if(isLoading){
         return (
@@ -116,14 +136,38 @@ const ViewPermissions = (props:{permissionType: string})=>{
     return(
         <TableWrapper>
             <VFTable 
+                ref={ref}
                 defaultColDef={{
                     flex:1,
-                    cellStyle:{ 'text-align':'center' }
+                    cellStyle:{ 'text-align':'center' },
+                    floatingFilter: true,
+                    filter: "agMultiColumnFilter"
                 }}
                 rowHeight={50}
                 height="600px"
                 rowData={rowData}
                 columnDefs={columnDefs}
+                onFilterChanged={() => {
+                    const filterModel = ref?.current?.api?.getFilterModel();
+                    if (filterModel && Object.keys(filterModel).length > 0) {
+                      setIsDisabled(false);
+                    } else {
+                      setIsDisabled(true);
+                    }
+                  }}
+
+                  statusBar={{
+                    statusPanels: !isLoading?[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
+
+                    ]:
+                    [],
+                  }}
             />
         </TableWrapper>
     )

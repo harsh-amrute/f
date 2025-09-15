@@ -49,7 +49,7 @@ const EditUIMDMConfig = (props: { data: any; cb: () => void }) => {
 
   const {mutateAsync : editEnvConfiguration} = useEditMDMConfiguration();
 
-
+const [isDisableOptions , setIsDisabledOptions] = useState(true);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -255,6 +255,7 @@ const alignmentOptions: any = [
               },
             }),
           }}
+          isDisabled={isDisableOptions}  
       value={flagOptions.find((option: any) => option.value === formData.IsEdit)}
         />
 
@@ -298,6 +299,7 @@ const alignmentOptions: any = [
             }),
           }}
       value={flagOptions.find((option: any) => option.value === formData.IsAdd)}
+      isDisabled={isDisableOptions}
         />
 
       </InputWrapper>
@@ -341,7 +343,8 @@ const alignmentOptions: any = [
             }),
           }}
           value={flagOptions.find((option: any) => option.value === formData.IsDownload)}
-        />
+          isDisabled={isDisableOptions}
+       />
 
       </InputWrapper>
       <InputWrapper style={{ marginLeft: "10px" }}>
@@ -381,6 +384,7 @@ const alignmentOptions: any = [
             }),
           }}
           value={flagOptions.find((option: any) => option.value === formData.IsFilter)}
+          isDisabled={isDisableOptions}
         />
 
       </InputWrapper>
@@ -425,6 +429,7 @@ const alignmentOptions: any = [
             }),
           }}
           value={flagOptions.find((option: any) => option.value === formData.IsApplicable)}
+          isDisabled={isDisableOptions}
         />
       </InputWrapper>
       <InputWrapper style={{ marginLeft: "10px" }}>
@@ -465,6 +470,7 @@ const alignmentOptions: any = [
             }),
           }}
           value={flagOptions.find((option: any) => option.value === formData.IsDelete)}
+          isDisabled={isDisableOptions}
         />
       </InputWrapper>
       </div>
@@ -508,6 +514,7 @@ const alignmentOptions: any = [
             }),
           }}
           value={flagOptions.find((option: any) => option.value === formData.Visible)}
+          isDisabled={isDisableOptions}
         />
         
       </InputWrapper>
@@ -550,6 +557,7 @@ const alignmentOptions: any = [
                   }),
                 }}
                 value={alignmentOptions.find((option: any) => String(formData.CellAlignment || '').trim() === option.value?.trim())}
+                isDisabled={isDisableOptions}
               />
 
       </InputWrapper>
