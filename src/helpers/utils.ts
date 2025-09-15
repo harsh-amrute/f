@@ -3219,8 +3219,26 @@ export const BPRColorMapper = (color: string): { bg: string, text: string } => {
     case "Blue":
       return {
         "bg": "blue",
-        "text": 'white'
+        "text": "white"
       }
+    case "default":
+      return {
+        'bg':"#9c9ce7",
+        "text": "white"
+      }
+    
+    case "disabled":
+      return{
+        "bg":"#88888a",
+        "text": "white"
+      }
+
+    case "selected":
+     return{
+      "bg":"#d45293",
+      "text": "white"
+     }
+    
     default:
       return {
         "bg": "#B2B2B2",
@@ -3252,17 +3270,16 @@ export const mapBTRRowData = (rows: Array<any>, horizon: number): Array<any> => 
     const tempRow = { ...transformedRow, Category: NewCategoryString };
     let tempAvailabilty = 0;
     let nonBlackCount = 0;
-    for (let index = 90; index > 90 - horizon; index--) {
-      if (tempRow[`D${index}`]!= "" && tempRow[`D${index}`] < 100) {
-        nonBlackCount = nonBlackCount + 1;
-      }
-    }
     let EmptyCount = 0;
     for (let index = 90; index > 90 - horizon; index--) {
-      if (tempRow[`D${index}`]== "") {
+      if (tempRow[`D${index}`]!== "" && parseInt(tempRow[`D${index}`]) < 100) {
+        nonBlackCount = nonBlackCount + 1;
+      }
+      if (tempRow[`D${index}`]=== "") {
         EmptyCount = EmptyCount + 1;
       }
     }
+
     tempAvailabilty = parseFloat(((nonBlackCount / (horizon-EmptyCount)) * 100).toFixed(2))
     return {
       ...tempRow,
@@ -4840,7 +4857,7 @@ export const mapDraftToMTOColumnDefs = (fields: Field[], customParams?: ColDef) 
       },
       flex: 1,
       cellRenderer: f.key === "action" && MTOActionRenderer,
-      filter: "agMultiColumnFilter",
+      filter: f.key !== "action" && "agMultiColumnFilter",
       ...customParams
     }
   })

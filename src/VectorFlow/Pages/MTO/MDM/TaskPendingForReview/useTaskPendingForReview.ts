@@ -349,12 +349,11 @@ const useTaskPendingForReview = ()=>{
                 setTaskId(taskData.TaskID)
                 
                 setTaskActionType(1)
-                const res: any = await getMTOTAskById({taskId: taskData.TaskID, mmid: taskData.mid});
-
-                const taskCount = res.data.data.count;
+                const res: any = await getMTOTAskById({ taskId: taskData.TaskID, mmid: taskData.mid });
+                const taskCount = res.data.data.length;
                 dispatch(SET_RECORD_COUNT(taskCount));
 
-                const taskDataStore = res.data.data.results;
+                const taskDataStore = res.data.data;
                 toast.dismiss(toastId)
                 const currentTaskMaster = taskDataStore[0];
                 // TODO: get the 
@@ -413,7 +412,8 @@ const useTaskPendingForReview = ()=>{
                                 cellStyle: {
                                   "border-left": "solid 1px #B9B9B9"
                                 },
-                                pinned: 'right'
+                                pinned: 'right',
+                                filter: false
                               }  
                         )
 

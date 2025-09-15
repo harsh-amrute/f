@@ -4,7 +4,6 @@ import { VFTaskStatusWrapper,VFTaskStatusContentWrapper, VFTaskStatusStepperWrap
 import { useUserData } from "../../../../../context"
 import StepperPrefix from "./StepperPrefix"
 import { useEffect } from "react"
-import { useGetMTOTaskById } from "../../../../../VectorFlow/Services/MTA/MDM"
 
 
 
@@ -212,24 +211,6 @@ const TaskStatusMasterDetail = (props:TaskStatusMasterDetailProps)=>{
     const {user} = useUserData()
     const {Approvers} = data;
 
-
-    const {mutateAsync: getTaskById} = useGetMTOTaskById();
-
-    const GetTaskDetails = async()=>{
-        try{
-            const result = await getTaskById(data.TaskID);
-            console.log("Taks details. resultu", result.data.data.results);
-        }
-        catch(e){
-            console.log(e)
-        }
-    }
-
-    useEffect(()=>{
-        if(data.TaskID){
-            GetTaskDetails();
-        }
-    },[data.TaskID]);
     
 
     const showDisplayDownloadButton = (status:string):boolean=>{
