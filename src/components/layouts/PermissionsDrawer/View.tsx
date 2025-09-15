@@ -47,13 +47,6 @@ const ViewPermissions = (props:{permissionType: string})=>{
 
     const { mutateAsync: getPermissions } = useGetAdminPermissions();
     const EnvConfig = useSelector((state:RootState) =>state.mta.EnvConfig);
-    // const PRODUCT_PERMISSION_L1 = EnvConfig['PRODUCT_PERMISSION_L1'];   
-    // const PRODUCT_PERMISSION_L2 = EnvConfig['PRODUCT_PERMISSION_L2'];   
-    // const PRODUCT_PERMISSION_L3 = EnvConfig['PRODUCT_PERMISSION_L3'];
-    
-    // const LOCATION_PERMISSION_L1 = EnvConfig['LOCATION_PERMISSION_L1']; 
-    // const LOCATION_PERMISSION_L2 = EnvConfig['LOCATION_PERMISSION_L2']; 
-    // const LOCATION_PERMISSION_L3 = EnvConfig['LOCATION_PERMISSION_L3']; 
 
     const getPermissionsData = useCallback(async(type: string)=>{
         setIsLoading(true);
