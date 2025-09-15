@@ -150,7 +150,7 @@ const getChangedFields = (original: any,current: any,keysToIgnore: string[] = []
           Cancel
         </SecondaryButton>
         <PrimaryButton disabled={!isFormValid ||  !isChanged} themeUi={themeUi}>
-          Update Role
+          Update Env Config
         </PrimaryButton>
       </div>
     </URLsForm>

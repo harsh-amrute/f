@@ -10,7 +10,7 @@ import axios from 'axios'
 import { notifyError } from '../../../helpers/notify'
 
 
-const ViewUserRole = (props:{onDelete:(data:any)=>void,onEdit:(data:any)=>void})=>{
+const ViewURLs = (props:{onDelete:(data:any)=>void,onEdit:(data:any)=>void})=>{
 
     const {
         onDelete,
@@ -133,4 +133,4 @@ const ViewUserRole = (props:{onDelete:(data:any)=>void,onEdit:(data:any)=>void})
     )
 }
 
-export default ViewUserRole
+export default ViewURLs

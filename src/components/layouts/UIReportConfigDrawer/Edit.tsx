@@ -268,7 +268,7 @@ const formatData = (data: any) => {
           Cancel
         </SecondaryButton>
         <PrimaryButton disabled={!isFormValid ||  !isChanged} themeUi={themeUi}>
-          Update Role
+          Update UI Report Config
         </PrimaryButton>
       </div>
     </URLsForm>

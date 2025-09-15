@@ -4,7 +4,7 @@ import { useUserData } from "../../../context"
 import { useState } from "react"
 import AddRole from "./Add"
 import NavigationTab from "../NavigationTab"
-import ViewUserRole from "./View"
+import ViewURLs from "./View"
 import DeleteUrl from "./Delete"
 import { notifySuccess,notifyError } from "../../../helpers/notify"
 import EditRole from "./Edit"
@@ -82,7 +82,7 @@ const UserRolesDrawer = (props:UserRolesDrawerProps)=>{
             )}
             {currTab === 0 && (
                 <Content>
-                    <ViewUserRole
+                    <ViewURLs
                         onEdit={onEditRole}
                         onDelete={onDeleteRole}
                     />
