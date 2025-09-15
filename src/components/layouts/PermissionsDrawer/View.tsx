@@ -6,7 +6,7 @@ import { notifyError } from '../../../helpers/notify'
 import { useGetAdminPermissions } from '../../../VectorFlow/Services/MTA/MDM'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../redux/store/store'
-import ErrorCell from '../../../components/VectorFLOW/commons/ErrorCell';
+import ErrorCell from './ErrorCell';
 
 export const getProductColumns = (envConfig: any) => [
     { colId: "id", field: "id", headerName: "ID" },
