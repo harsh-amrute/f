@@ -6,28 +6,50 @@ import { DropdownWrapper } from "../../../components/commons/CustomDropdown/styl
 import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 import { GridRef } from "../../../VectorFlow/types/MDM";
 import { ActionButton } from "./style";
+
+/**
+ * Props for the BulkUploadHeader component.
+ * @typedef {Object} BulkUploadHeaderParams
+ * @property {any} themeUi - The theme configuration for the UI.
+ * @property {function(boolean): void} setIsPermissionModalOpen - Function to toggle the permission modal.
+ * @property {function(boolean): void} setIsRoleModalOpen - Function to toggle the role modal.
+ * @property {boolean | undefined} isBulkActionEnabled - Indicates if the bulk action button is enabled.
+ * @property {function(): void} resetState - Function to reset the state.
+ * @property {GridRef | any} gridRef - Reference to the grid for exporting data.
+ */
 type BulkUploadHeaderParams = {
   themeUi: any;
   setIsPermissionModalOpen: (e: boolean) => void;
   setIsRoleModalOpen: (e: boolean) => void;
   isBulkActionEnabled: boolean | undefined;
-  resetState: ()=>void;
+  resetState: () => void;
   gridRef?: GridRef | any;
 };
 
+/**
+ * BulkUploadHeader component for managing bulk upload actions.
+ * 
+ * @param {BulkUploadHeaderParams} props - The props for the component.
+ * @returns {JSX.Element} The rendered BulkUploadHeader component.
+ */
 const BulkUploadHeader = ({
   themeUi,
   setIsPermissionModalOpen,
   setIsRoleModalOpen,
   isBulkActionEnabled,
   resetState,
-  gridRef
-}: BulkUploadHeaderParams) => {
+  gridRef,
+}: BulkUploadHeaderParams): JSX.Element => {
   const [open, setOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState<CSSProperties>({});
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  /**
+   * Handles clicks outside the dropdown to close it.
+   * 
+   * @param {MouseEvent} e - The mouse event.
+   */
   const handleClickOutside = (e: MouseEvent) => {
     if (
       dropdownRef.current &&
@@ -35,12 +57,12 @@ const BulkUploadHeader = ({
       !buttonRef.current?.contains(e.target as Node)
     ) {
       setOpen(false);
-      
     } else {
       console.log("no ref found");
     }
   };
 
+  // Add or remove event listener for handling clicks outside the dropdown
   useEffect(() => {
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
@@ -51,6 +73,11 @@ const BulkUploadHeader = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
+  /**
+   * Handles the click event for the "Bulk Action" button.
+   * 
+   * @param {React.MouseEvent<HTMLElement>} e - The mouse event.
+   */
   const onSelectClick = (e: React.MouseEvent<HTMLElement>) => {
     const { bottom, left } = e.currentTarget.getBoundingClientRect();
     setDropdownPosition({
@@ -73,46 +100,50 @@ const BulkUploadHeader = ({
         marginBottom: "20px",
       }}
     >
+      {/* Go Back Section */}
       <div>
-          <SCGoBackContainer style={{paddingLeft: '10px'}} onClick={resetState}>
-                                    <img
-                                        src="/assets/img/VectorFLOW/BPR/goback.svg"
-                                        alt=""
-                                        style={{height: '20px'}}
-                                    />
-                                    <SCGoBackText style={{fontSize: '1.5rem'}} ><b>Reupload</b></SCGoBackText>
-                                </SCGoBackContainer>
-
+        <SCGoBackContainer style={{ paddingLeft: "10px" }} onClick={resetState}>
+          <img
+            src="/assets/img/VectorFLOW/BPR/goback.svg"
+            alt=""
+            style={{ height: "20px" }}
+          />
+          <SCGoBackText style={{ fontSize: "1.5rem" }}>
+            <b>Reupload</b>
+          </SCGoBackText>
+        </SCGoBackContainer>
       </div>
+
+      {/* Action Buttons */}
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-
-      <VFButton
-        disabled={!isBulkActionEnabled}
-        style={{ width: "100px", height: "35px", fontSize: "1rem" }}
-        themeUi={themeUi}
-        onClick={onSelectClick}
-      >
-        {"Bulk Action"}
-      </VFButton>
-
-      <VFButton
-        disabled={false}
-        style={{ width: "100px", height: "35px", fontSize: "1rem" }}
-        themeUi={themeUi}
-        onClick={() => {
-
-
-          gridRef.current.api.exportDataAsExcel({
-            fileName: "UserData.xlsx",
-            sheetName: "User Data",
-            columnKeys: ['id', 'username', 'email', 'pwd']
-        });
-        }}
+        {/* Bulk Action Button */}
+        <VFButton
+          disabled={!isBulkActionEnabled}
+          style={{ width: "100px", height: "35px", fontSize: "1rem" }}
+          themeUi={themeUi}
+          onClick={onSelectClick}
         >
-        {"Export"}
-      </VFButton>
-        </div>
+          {"Bulk Action"}
+        </VFButton>
 
+        {/* Export Button */}
+        <VFButton
+          disabled={false}
+          style={{ width: "100px", height: "35px", fontSize: "1rem" }}
+          themeUi={themeUi}
+          onClick={() => {
+            gridRef.current.api.exportDataAsExcel({
+              fileName: "UserData.xlsx",
+              sheetName: "User Data",
+              columnKeys: ["id", "username", "email", "pwd"],
+            });
+          }}
+        >
+          {"Export"}
+        </VFButton>
+      </div>
+
+      {/* Dropdown Menu */}
       {open && (
         <Portal wrapperId="checkbox-dropdown">
           <DropdownWrapper
@@ -128,6 +159,7 @@ const BulkUploadHeader = ({
                 flexDirection: "column",
               }}
             >
+              {/* Roles Action */}
               <ActionButton
                 onClick={() => {
                   setIsRoleModalOpen(true);
@@ -136,6 +168,8 @@ const BulkUploadHeader = ({
               >
                 Roles
               </ActionButton>
+
+              {/* Permissions Action */}
               <ActionButton
                 onClick={() => {
                   setIsPermissionModalOpen(true);
