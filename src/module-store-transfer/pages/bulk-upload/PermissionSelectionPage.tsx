@@ -445,8 +445,6 @@ const PermissionSelectionPage = ({
                 <SCGoBackContainer
                   style={{ paddingLeft: "10px" }}
                   onClick={() => {
-                    const result = confirm("Are you sure you want to reupload? All the progress will be lost.");
-                    if (!result) return;
                     setIsFinalView(false);
                     setIsAssignPage(false);
                   }}
