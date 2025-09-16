@@ -52,14 +52,17 @@ const FileUploadTile = ({ handleFileChange, handleUploadClick, file}: any) => {
             onClick={handleClick}
             data-testid="view-modify-manual-upload-btn"
           > */}
+          <div style={{opacity: file?"1":"0.5", cursor: file?"pointer": "default"}}>
             <ButtonFloat
               onClick={(e: any) => {
+                if(!file) return;
                 handleUploadClick(e);
               }}
               text={"Upload"}
               icon={"/assets/img/VectorFLOW/NMS/upload.svg"}
               styles={{width:"12rem", height:"3rem" , fontSize:"1rem",boxShadow:"0px 6px 10px rgba(33, 33, 33, 0.5)"}}
-            ></ButtonFloat>
+              ></ButtonFloat>
+          </div>
             <ManualStyle.SCManualUploadInput
               type="file"
               accept=".xlsx"
