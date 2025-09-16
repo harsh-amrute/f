@@ -123,12 +123,9 @@ function UploadWrapperSection({
 
 
     userData.shift();
-    console.log("also also here");
-    // @TODO: commented for testing needs to be uncommented for api call
+
     try {
       const response = await postUsersDataForValidation({ userData });
-      console.log("response", response);
-      console.log("also also her.....e");
 
       setNoData(false);
       if (response?.data?.ec && response?.data?.ec > 0) {

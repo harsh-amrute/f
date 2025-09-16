@@ -13,35 +13,9 @@ import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutline";
 import { GridRef } from "../../../VectorFlow/types/MDM";
 import { IRowNode } from "ag-grid-enterprise";
+import { ToggleButton, ToggleContainer } from "./style";
 
-const ToggleContainer = styled.div`
-  display: flex;
-  background-color: #fff;
-  border: 1.5px solid #d08ba5;
-  border-radius: 999px;
-  overflow: hidden;
-  width: fit-content;
-  padding: 2px;
-  gap: 12px;
-  font-size: 8px;
-`;
 
-const ToggleButton = styled.button<{ active: boolean }>`
-  padding: 3px 14px;
-  border: none;
-  background-color: ${({ active }) => (active ? "#f1d2e0" : "transparent")};
-  color: ${({ active }) => (active ? "#c72e64" : "#000")};
-  font-weight: ${({ active }) => (active ? "bold" : "normal")};
-  border-radius: 999px;
-  cursor: pointer;
-  font-size: 10px;
-  transition: background 0.3s ease, color 0.3s ease;
-
-  &:hover {
-    background-color: ${({ active }) => (active ? "#f1d2e0" : "#f5f5f5")};
-  }
-`;
-//@TODO: add type definations later
 const ViewToggle = ({
   allApplications,
   selectedApplication,
@@ -90,7 +64,7 @@ const ChartViewToggle = ({ isChartView, setIsChartView }: any) => {
   );
 };
 
-// @TODO: add type definations
+
 const PermissionSelectionModal = ({selectedIndex, gridRef,dataAllPermissions,closeModal, updatePermissions, defaultPermissions }: {gridRef?: GridRef| any, selectedIndex?: any, dataAllPermissions: any, closeModal: any, updatePermissions: any, defaultPermissions?: any}) => {
   const [isChartView, setIsChartView] = React.useState(false);
   const allApplications = dataAllPermissions?.map(

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import { useUserData } from "../../../context";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
 import VFButtonOutline from "../../../components/VectorFLOW/commons/VFButtonOutline";
+import { ModalContainer, ModalContent, Section, SectionHeader, RolesGrid, CheckboxLabel, ButtonSection } from "./style";
 
 interface Role {
   id: number;
@@ -17,68 +17,7 @@ interface RoleSelectionModalProps {
   closeModal: () => void;
 }
 
-const ModalContainer = styled.div`
-  width: 45vw;
-  height: fit-content;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px 0;
-  max-height: 90vh;
-  flex-direction: column;
-`;
 
-const ModalContent = styled.div`
-  width: 95%;
-  height: 80%;
-  background-color: #fff;
-  padding: 20px;
-  //   border-radius: 8px;
-  //   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
-`;
-
-const Section = styled.div`
-  margin-bottom: 20px;
-  border-top: 1px solid #e0e0e0;
-  padding: 12px;
-  border-radius: 8px;
-  overflow-y: auto;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-`;
-
-const SectionHeader = styled.div`
-  font-weight: 500;
-  font-size: 14px;
-  margin-bottom: 8px;
-  display: flex;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #e0e0e0;
-  justify-content: space-between;
-  cursor: pointer;
-`;
-
-const RolesGrid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 5px 20px;
-`;
-
-const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-`;
-
-const ButtonSection = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-  gap: 20px;
-  width: 100%;
-`;
 
 const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
   listRoles,

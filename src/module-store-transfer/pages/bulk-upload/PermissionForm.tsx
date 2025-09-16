@@ -4,45 +4,8 @@ import {  SearchInputMultiple } from "../../../components";
 import { useUserData } from "../../../context";
 import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 import { set } from "lodash";
+import { SelectAllWrapper, SectionContainer, SectionTitle, SelectContainer, Label, Grid } from "./style";
 
-const SectionContainer = styled.div`
-  border: 1px dotted #ccc;
-  border-radius: 6px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  zoom: 0.85;
-`;
-
-const SectionTitle = styled.h4`
-  margin: 0 0 12px 0;
-  font-size: 14px;
-  font-weight: 600;
-`;
-
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-`;
-
-const SelectContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Label = styled.label`
-  font-size: 12px;
-  color: #333;
-  margin-bottom: 6px;
-`;
-
-const SelectAllWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-  font-size: 12px;
-  gap: 6px;
-`;
 
 const PermissionForm = ({
   currentAppAllPermissions,

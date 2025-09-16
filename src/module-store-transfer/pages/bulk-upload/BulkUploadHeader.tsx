@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import VFButton from "../../../components/VectorFLOW/commons/VFButton";
-import styled, { CSSProperties } from "styled-components";
+import { CSSProperties } from "styled-components";
 import Portal from "../../../components/VectorFLOW/layouts/Portal";
 import { DropdownWrapper } from "../../../components/commons/CustomDropdown/style";
 import { SCGoBackContainer, SCGoBackText } from "../../../components/VectorFLOW/commons/MTO/ActionToolBar/styles";
 import { GridRef } from "../../../VectorFlow/types/MDM";
+import { ActionButton } from "./style";
 type BulkUploadHeaderParams = {
   themeUi: any;
   setIsPermissionModalOpen: (e: boolean) => void;
@@ -13,18 +14,7 @@ type BulkUploadHeaderParams = {
   resetState: ()=>void;
   gridRef?: GridRef | any;
 };
-const ActionButton = styled.div`
-  width: 100px;
-  height: 27px;
-  padding-left: 10px;
-  border: 1px solidrgba(206, 206, 206, 0.5);
-  cursor: pointer;
-  align-content: center;
 
-  &:hover {
-    background-color: #cecece;
-  }
-`;
 const BulkUploadHeader = ({
   themeUi,
   setIsPermissionModalOpen,

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 
 export const UploadSectionWrapper = styled.div`
     width: 100%;
@@ -162,3 +162,273 @@ export const FileName = styled.div`
 
 
     `
+
+export const ActionButton = styled.div`
+  width: 100px;
+  height: 27px;
+  padding-left: 10px;
+  border: 1px solidrgba(206, 206, 206, 0.5);
+  cursor: pointer;
+  align-content: center;
+
+  &:hover {
+    background-color: #cecece;
+  }
+`;
+
+export const SectionContainer = styled.div`
+  border: 1px dotted #ccc;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  zoom: 0.85;
+`;
+
+export const SectionTitle = styled.h4`
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+`;
+
+export const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+`;
+
+export const SelectContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const Label = styled.label`
+  font-size: 12px;
+  color: #333;
+  margin-bottom: 6px;
+`;
+
+export const SelectAllWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  gap: 6px;
+`;
+
+export const ToggleContainer = styled.div`
+  display: flex;
+  background-color: #fff;
+  border: 1.5px solid #d08ba5;
+  border-radius: 999px;
+  overflow: hidden;
+  width: fit-content;
+  padding: 2px;
+  gap: 12px;
+  font-size: 8px;
+`;
+
+export const ToggleButton = styled.button<{ active: boolean }>`
+  padding: 3px 14px;
+  border: none;
+  background-color: ${({ active }) => (active ? "#f1d2e0" : "transparent")};
+  color: ${({ active }) => (active ? "#c72e64" : "#000")};
+  font-weight: ${({ active }) => (active ? "bold" : "normal")};
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 10px;
+  transition: background 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: ${({ active }) => (active ? "#f1d2e0" : "#f5f5f5")};
+  }
+`;
+
+export const ModalContainer = styled.div`
+  width: 45vw;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  max-height: 90vh;
+  flex-direction: column;
+`;
+
+export const ModalContent = styled.div`
+  width: 95%;
+  height: 80%;
+  background-color: #fff;
+  padding: 20px;
+  //   border-radius: 8px;
+  //   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+`;
+
+export const Section = styled.div`
+  margin-bottom: 20px;
+  border-top: 1px solid #e0e0e0;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-y: auto;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+`;
+
+export const SectionHeader = styled.div`
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e0e0e0;
+  justify-content: space-between;
+  cursor: pointer;
+`;
+
+export const RolesGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 5px 20px;
+`;
+
+export const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+`;
+
+export const ButtonSection = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  gap: 20px;
+  width: 100%;
+`;
+
+type ScrollContainerProps = {
+    isScroll: boolean;
+  };
+  
+  export const Container = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px;
+    overflow: hidden;
+    width: 100%;
+  `;
+  export const scrollAnimation = keyframes`
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  `;
+  
+  export const ScrollWrapper = styled.div`
+    overflow: hidden;
+    width: 100%;
+  `;
+  
+  export const ScrollContainer = styled.div<ScrollContainerProps>`
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    will-change: transform;
+  
+    ${({ isScroll }) =>
+      isScroll &&
+      css`
+        animation: ${scrollAnimation} 30s linear infinite;
+  
+        &:hover {
+          animation-play-state: paused;
+        }
+      `}
+  `;
+  
+  export const RoleTab = styled.div`
+    padding: 2px 6px;
+    background-color: rgb(44, 43, 43);
+    color: white;
+    border-radius: 12px;
+    white-space: nowrap;
+    font-size: 8px;
+  `;
+  export const ButtonGroup = styled.span`
+    gap: 6px;
+    background: transparent;
+  `;
+  
+  export const RoleTile = styled.div`
+    background-color: rgb(44, 43, 43);
+    color: white;
+    padding: 4px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    text-align: center;
+    white-space: nowrap;
+  `;
+  
+  export const ContainerDrop = styled.div`
+    width: 240px;
+    font-size: 11px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    background: white;
+  `;
+  
+  export const CheckboxRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-weight: 420;
+  
+    &:hover{
+      font-size: 12px;
+      font-weight: 400;
+    }
+  `;
+  
+  export const CategoryHeader = styled.div`
+    font-weight: bold;
+    padding: 6px;
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    &:hover {
+      background: #f0f0f0;
+      font-size: 12.5px;
+    }
+  `;
+  
+  export const SubItem = styled.div`
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0;
+    &:hover {
+      background: #f0f0f0;
+  
+      }
+  `;
+  
+  export const BottomButtons = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+  `;
+  
+  export const OptionsSection = styled.div`
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 8px;
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+  `
+  

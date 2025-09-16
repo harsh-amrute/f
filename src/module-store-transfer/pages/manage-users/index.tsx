@@ -448,18 +448,20 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
                   icon="/assets/img/profile/icon_plus.svg"
                 />
               </SCItemBtn>
-              <SCItemBtn>
-                <ButtonOutlineIcon
-                  text={t("profile.tabContent.manageUsers.button.bulkUpload")}
-                  icon={`/assets/img/profile/${
-                    themeUi === "REGALBLAZE"
-                      ? "icon_upload_yellow"
-                      : "icon_upload"
-                  }.svg`}
-                  disabled={false}
-                  onClick={handleClickBulkUpload}
-                />
-              </SCItemBtn>
+              {process.env.REACT_APP_ENABLE_BULK_UPLOAD === "true" && (
+                <SCItemBtn>
+                  <ButtonOutlineIcon
+                    text={t("profile.tabContent.manageUsers.button.bulkUpload")}
+                    icon={`/assets/img/profile/${
+                      themeUi === "REGALBLAZE"
+                        ? "icon_upload_yellow"
+                        : "icon_upload"
+                    }.svg`}
+                    disabled={false}
+                    onClick={handleClickBulkUpload}
+                  />
+                </SCItemBtn>
+              )}
             </SCSubTitlePadItem>
           </SCSubTitlePad>
         </SCSubTitleBox>
