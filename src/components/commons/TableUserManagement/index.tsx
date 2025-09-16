@@ -7,9 +7,10 @@ import {
 } from "../../../services/profile";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import LoadingSpinner from "../LoadingSpinner";
+import { useMemo, useState } from "react";
 import { Tooltip } from 'react-tooltip';
+import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface TableUser {
   handleClickEdit: any;
@@ -32,22 +33,28 @@ const TableUserManagement = ({
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [idUser, setIdUser] = useState<string>("");
   
-  const { mutateAsync: usePutDeleteUser } = UsePutDeleteUser();
+  const { mutateAsync: usePutDeleteUser, isLoading: isDeleting } = UsePutDeleteUser();
   const { mutateAsync: mutateChangeStatus } = useChangeStatus();
-  const { mutateAsync: mutateResetPwd, isLoading } = useResetPwd();
+  const { mutateAsync: mutateResetPwd, isLoading: isResettingPwd } = useResetPwd();
+
+  
+  const isLoading = isDeleting  || isResettingPwd;
+
 
   const changeStatus = (id: number, status: boolean) => {
     const data = {
       user_id: id,
       is_active: status,
     };
-
+  
     mutateChangeStatus(data, {
       onSuccess: (res: any) => {
-        if(res?.status === 400) {
-          notifyError(res?.response?.msg)
+        if (res?.status === 400) {
+          notifyError(res?.response?.msg);
         } else {
           notifySuccess(res?.data?.msg);
+          const userIndex = dataAllUsers.findIndex((u: any) => u.id === id);
+          if (userIndex !== -1) dataAllUsers[userIndex].is_active = status;
         }
       },
       onError: (error: any) => {
@@ -124,7 +131,8 @@ const TableUserManagement = ({
     }
   };
 
-  const buttonToggle = (item: any) => {
+  const actionToggle = ({ item }: any) => {
+    
     return (
       <Tab.SCTableTdCenter>
         <ButtonOutlineStoreStatus
@@ -137,6 +145,32 @@ const TableUserManagement = ({
         />
       </Tab.SCTableTdCenter>
     );
+  };
+
+  const buttonToggle = (item: any, is_admin: any) => {
+    const permissionUser = item.role_id.map((item: any) => item.name);
+    
+    if (is_admin) {
+      if (item.is_admin) {
+        return <NoAction />;
+      } else {
+        return <>{actionToggle({ item })}</>;
+      }
+    } else {
+      if (permission?.includes("IST Admin") || permission?.includes("Admin")) {
+        if (item.is_admin) {
+          return <NoAction />;
+        } else {
+          if (permissionUser?.includes("IST Admin") || permissionUser?.includes("Admin")) {
+            return <NoAction rolesMap={permissionUser} />;
+          } else {
+            return <>{actionToggle({ item })}</>;
+          }
+        }
+      } else {
+        return <NoAction />;
+      }
+    }
   };
 
   const ListAction = ({ item }: any) => {
@@ -186,11 +220,7 @@ const TableUserManagement = ({
     
     return (
       <>
-        <Tab.SCTableTd>
-          {permissionUser.toString().replace(/,/g, " | ")}
-        </Tab.SCTableTd>
         <ListAction item={item} />
-        {buttonToggle(item)}
       </>
     );
   };
@@ -198,70 +228,98 @@ const TableUserManagement = ({
   const NoAction = ({ rolesMap }: any) => {
     return (
       <>
-        <Tab.SCTableTd>
-          {rolesMap.toString().replace(/,/g, " | ")}
-        </Tab.SCTableTd>
-        <Tab.SCTableTd style={{ padding: "20px" }}></Tab.SCTableTd>
-        <Tab.SCTableTdCenter></Tab.SCTableTdCenter>
       </>
     );
   };
 
+  const columnDefs = useMemo(
+    () => [
+      {
+        headerName: "User ID",
+        field: "name",
+        flex: 1,
+      },
+      {
+        headerName: "Email ID",
+        field: "email",
+        flex: 1,
+      },
+      {
+        headerName: "Roles",
+        field: "role_id",
+        flex: 1.5,
+        cellRenderer: (params: any) => {
+          const roles = params.value?.map((r: any) => r.name).join(" | ");
+          return <span>{roles}</span>;
+        },
+      },
+      {
+        headerName: "Actions",
+        field: "actions",
+        flex: 1,
+        filter: false,
+        cellRenderer: (params: any) => {
+            return renderAction(params.data, params.data.is_admin);
+        },
+      },
+      {
+        headerName: "Active",
+        field: "active",
+        flex: 1,
+        filter: false,
+        cellRenderer: (params: any) => {
+
+            return buttonToggle(params.data, params.data.is_admin);
+
+        },
+      },
+    ],
+    [is_admin, permission]
+  );
+  
+  
+
+  const rowData = useMemo(() => {
+    return (
+      dataAllUsers?.filter((userData: any) =>
+        userData.name
+          ?.toLowerCase()
+          .includes(searchUserBasedOn.toLowerCase())
+      ) || []
+    );
+  }, [dataAllUsers, searchUserBasedOn]);
+
   return (
     <>
-      <Tab.SCTableBox
-        style={{ marginBottom: 30 }}
-        className="list-roles-per--content"
-      >
-        <Tab.SCTableTab width="100%">
-          <Tab.SCTableTbody>
-            <Tab.SCTableTr>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.userID")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.emailID")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.roles")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh>
-                {t("profile.tabContent.manageUsers.table.actions")}
-              </Tab.SCTableTh>
-              <Tab.SCTableTh style={{ textAlign: "center" }}>
-                {t("profile.tabContent.manageUsers.table.active")}
-              </Tab.SCTableTh>
-            </Tab.SCTableTr>
-          </Tab.SCTableTbody>
-
-          {dataAllUsers &&
-            dataAllUsers?.filter((userData:any)=> userData.name.toLowerCase().includes(searchUserBasedOn.toLocaleLowerCase())).map((item: any) => (
-              <Tab.SCTableTbody key={item?.id}>
-                <Tab.SCTableTrValue>
-                  <Tab.SCTableTd>{item?.name}</Tab.SCTableTd>
-                  <Tab.SCTableTd>{item?.email}</Tab.SCTableTd>
-                  {renderAction(item, is_admin)}
-                </Tab.SCTableTrValue>
-              </Tab.SCTableTbody>
-            ))}
-        </Tab.SCTableTab>
-      </Tab.SCTableBox>
-
+     
+     {isLoading && <LoadingSpinner/>}
+    <VFTable
+      rowData={rowData}
+      columnDefs={columnDefs}
+      domLayout="normal"
+      rowHeight={45}
+      pagination={false}
+      height="450px"
+      sideBar={false}
+      getRowStyle={(params: any) => {
+        if (params.node.rowIndex % 2 === 0) {
+          return { background: "#F4F4F4" }; 
+        }
+        return { background: "#ffffff" }; 
+      }}
+    />
+    {isOpenDelete && (
       <Modal
-        fileJson=""
-        modalTitle={t("profile.tabContent.manageUsers.modal.titleDelete")}
-        modalContent={t("profile.tabContent.manageUsers.modal.contentDelete")}
-        openModal={isOpenDelete}
-        closeModal={() => {
-          setIsOpenDelete(false);
-        }}
-        onClickModal={() => {
-          handleDeleteUser();
-        }}
-        text={t("profile.tabContent.manageUsers.button.delete")}
-      />
-      
-      {isLoading && <LoadingSpinner />}
+      fileJson=""
+      modalTitle="Do you want to delete this user?"
+      modalContent="This user will not be able to log back into the system after being deleted"
+      openModal={isOpenDelete}
+      closeModal={() => setIsOpenDelete(false)}
+      onClickModal={handleDeleteUser}
+      text="Delete"
+    />
+    )}
+
     </>
   );
 };

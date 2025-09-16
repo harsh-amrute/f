@@ -257,40 +257,40 @@ const NavbarItem = ({
           <InTransitAnalytics />
         )}
 
-        {isHide && pathname === '/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
+        {isHide && pathname === '/mto/procurement/material-coverage-open-sales' && menuItem.id === 19 && (
           <AnalyticalScreen pageName="MaterialSO" />
         )}
 
-        {isHide && pathname === '/production-planning-and-scheduling/due-date-quotation' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-and-scheduling/due-date-quotation' && menuItem.id === 10 && (
           <DDQAnalytics />
         )}
 
-        {isHide && pathname === '/production-planning-scheduling/overall-bm-report' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-scheduling/overall-bm-report' && menuItem.id === 10 && (
           <DeptWiseAnalytics />
         )}
 
-        {isHide && pathname === '/production-planning-scheduling/full-kit-assignment' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-scheduling/full-kit-assignment' && menuItem.id === 10 && (
           <AnalyticalScreen pageName="Fullkit assignment" />
         )}
-        {isHide && pathname === '/production-planning-scheduling/dynamic-release-mangement' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-scheduling/dynamic-release-mangement' && menuItem.id === 10 && (
           <DRMAnalytics />
         )}
 
-        {isHide && pathname === '/production-planning-scheduling/deptwise-bm-report' && menuItem.id === 10 && (
+        {isHide && pathname === '/mto/production-planning-scheduling/deptwise-bm-report' && menuItem.id === 10 && (
           <DeptWiseAnalytics />
         )}
 
-        {isHide && pathname === '/planning/simulative-fullkit' && menuItem.id === 19 && (
+        {isHide && pathname === '/mto/planning/simulative-fullkit' && menuItem.id === 19 && (
           <SimAnalyticalScreen />
         )}
 
-        {isHide && pathname === '/procurement-planning/planning' && menuItem.id === 19 && (
+        {isHide && pathname === '/mto/procurement-planning/planning' && menuItem.id === 19 && (
           <ProcAnalytics />
         )}
 
 
 
-        {isHide && pathname === '/procurement/insights-and-trends/day-wise-coverage' && menuItem.id === 19 && (
+        {isHide && pathname === '/mto/procurement/insights-and-trends/day-wise-coverage' && menuItem.id === 19 && (
           <DaywiseCoverageAnalytics />
         )}
 
@@ -326,10 +326,10 @@ const NavbarItem = ({
           <ParticularAvai themeUi={themeUi} />
         )}
 
-        {isHide && pathname === '/poogi/reasons-for-delayed-orders' && menuItem.id === 11 && (
+        {isHide && pathname === '/mto/poogi/reasons-for-delayed-orders' && menuItem.id === 11 && (
           <ReasonsOrderAnalyticalScreen />
         )}
-        {isHide && pathname === '/poogi/insight-and-trends/resource-utilization-wip-profile' && menuItem.id === 11 && (
+        {isHide && pathname === '/mto/poogi/insight-and-trends/resource-utilization-wip-profile' && menuItem.id === 11 && (
           <ResourceUtilAnalytics />
         )}
 

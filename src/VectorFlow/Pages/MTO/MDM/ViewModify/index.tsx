@@ -48,6 +48,7 @@ import useViewModify from "./useViewModify";
 import VFTaskBar from "./VFTaskbar";
 import WarningModal from "./WarningModal";
 import useSimpleBlocker from "./UseSimpleBlocker";
+import OverlayLoader from "../../Common/Loader";
 
 
 const MTOViewModify = () => {
@@ -162,10 +163,10 @@ const MTOViewModify = () => {
       setCalendarFormData({
         iwd: true,
         dsc: "",
-        rb: "",
+        rb: "Once",
         sd: "",
         dow: [{id: 0, mn: "", md: ""}],
-        ccr_id: [],
+        ccr_id : [],
         plid: "",
         rd: null,
         plnm:"",
@@ -323,16 +324,21 @@ const MTOViewModify = () => {
                     >
                       Apply Filter
                     </VFButton>
+                  <>
+                    {isTableDataLoading && (
+                      <div>
+                          <OverlayLoader></OverlayLoader>
+                      </div>
+                    )}
                     <VFButtonOutline
-                      onClick={() => {
-                        handleApplyFilter(true);
-                      }}
+                      onClick={() => handleApplyFilter(true)}
                       themeUi={themeUi}
                     >
                       {areMasterFiltersValid(activeMaster.filters)
                         ? "Clear Filters"
                         : "Show All"}
                     </VFButtonOutline>
+                  </>
                   </SCFilterButtonGroup>
                 </SCFilterContainer>
               )}

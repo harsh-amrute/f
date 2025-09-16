@@ -247,10 +247,12 @@ export const CALENDAR_VALIDATION_SCHEMA = Joi.object({
 
   sd: Joi.date()
     .required()
+    .min(new Date()) // start date should be greater than today or equal to today's date
     .messages({
       "date.base": "Start date cannot be empty!",
       "any.required": "Start date cannot be empty!",
       "date.less": "Start date must be less than End date!",
+      "date.min": "start date must be equal to or greater then Today"
     }),
   
   ed: Joi.date()

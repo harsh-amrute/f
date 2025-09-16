@@ -7,10 +7,6 @@ import { useLoginAccount } from "../../../module-main/services";
 import {  useNavigate } from "react-router";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useEffect, useRef, useState } from "react";
-// eslint-disable-next-line import/no-named-as-default
-import ReCAPTCHA from "react-google-recaptcha";
-// import { SITE_KEY,TEST_SITE_KEY } from "../../../helpers/constants";
-import { SITE_KEY} from "../../../helpers/constants";
 import WelcomeBoard from "./welcome-board";
 import { hashPassword } from '../../../helpers/utils'
 import VFLoader from "../../../components/VectorFLOW/commons/VFLoader";
@@ -80,6 +76,7 @@ function LoginContainer() {
   const onSave = async () => {
     if (!captchaInput || !validateCaptcha(captchaInput)) {
       notifyError("Invalid Captcha. Please try again.");
+      setCaptchaInput("");
       return;
     }
   
@@ -187,6 +184,7 @@ function LoginContainer() {
             <CaptchaContainer>
   <LoadCanvasTemplateNoReload/>
   <CaptchaReload
+  type="button"
   onClick={() => {
     loadCaptchaEnginge(6);
     setCaptchaInput("");   

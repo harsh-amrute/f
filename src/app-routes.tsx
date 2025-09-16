@@ -154,61 +154,62 @@ const lazyLoad = (children: React.ReactNode) => {
     '/mta/insights-and-trends/buffer-trend-report',
     '/mta/dbm/dbm-norm-suggestions',
     '/mta/logistics/intransit-whereabouts',
-    '/procurement/material-coverage-open-sales',
-    '/procurement-planning/planning',
-    "/procurement/insights-and-trends/day-wise-coverage",
-    '/planning/simulative-fullkit',
+
+    '/mto/procurement/material-coverage-open-sales',
+    '/mto/procurement-planning/planning',
+    "/mto/procurement/insights-and-trends/day-wise-coverage",
+    '/mto/planning/simulative-fullkit',
     '/mta/logistics/intransit-whereabouts',
-    '/procurement/material-requirement',
-    '/procurement/insights-and-trends/rmpm',
-    '/procurement/insights-and-trends/rmpm-buffer-trends',
-    '/procurement/insights-and-trends/rmpm-orderwise-coverage',
-    '/production-planning-and-scheduling/order-rescheduling',
-    '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
-    '/production-planning-scheduling/enquiry-response',
-    '/production-planning-scheduling/insight-and-trends/bm-trends',
-    '/production-planning-scheduling/deptwise-bm-report',
-    '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
-    '/production-planning-scheduling/full-kit-assignment',
+    '/mto/procurement/material-requirement',
+    '/mto/procurement/insights-and-trends/rmpm',
+    '/mto/procurement/insights-and-trends/rmpm-buffer-trends',
+    '/mto/procurement/insights-and-trends/rmpm-orderwise-coverage',
+    '/mto/production-planning-and-scheduling/order-rescheduling',
+    '/mto/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
+    '/mto/production-planning-scheduling/enquiry-response',
+    '/mto/production-planning-scheduling/insight-and-trends/bm-trends',
+    '/mto/production-planning-scheduling/deptwise-bm-report',
+    '/mto/production-planning-scheduling/insight-and-trends/stpl-full-kits',
+    '/mto/production-planning-scheduling/full-kit-assignment',
     '/mta/supply-chain-intelligence-hub/sdr',
     '/mta/supply-chain-intelligence-hub/eo',
     '/mta/master-data-management/data-modification-history',
     '/supply-chain-intelligence-hub/merchandising-grid',
-    '/production-planning-and-scheduling/due-date-quotation',
-    '/production-planning-scheduling/insight-and-trends/order-at-risk',
-    '/production-planning-scheduling/insight-and-trends/order-balance',
-    '/poogi/insight-and-trends/resource-utilization-wip-profile',
-    '/poogi/insight-and-trends/otif-analysis',
-    '/production-planning-scheduling/insights-and-trends/fol-summary',
-    '/production-planning-scheduling/dynamic-release-mangement',
-    '/poogi/insight-and-trends/ot-and-if-analysis',
-    '/production-planning-scheduling/insights-and-trends/elapsed-time',
-    '/poogi/reasons-for-delayed-orders',
-    '/poogi/insight-and-trends/ot-and-if-analysis',
-    '/poogi/insight-and-trends/top-failure-reasons',
-    '/poogi/insight-and-trends/trend-of-failure-reason',
-    '/poogi/insight-and-trends/lead-time',
-    '/production-planning-scheduling/overall-bm-report',
+    '/mto/production-planning-and-scheduling/due-date-quotation',
+    '/mto/production-planning-scheduling/insight-and-trends/order-at-risk',
+    '/mto/production-planning-scheduling/insight-and-trends/order-balance',
+    '/mto/poogi/insight-and-trends/resource-utilization-wip-profile',
+    '/mto/poogi/insight-and-trends/otif-analysis',
+    '/mto/production-planning-scheduling/insights-and-trends/fol-summary',
+    '/mto/production-planning-scheduling/dynamic-release-mangement',
+    '/mto/poogi/insight-and-trends/ot-and-if-analysis',
+    '/mto/production-planning-scheduling/insights-and-trends/elapsed-time',
+    '/mto/poogi/reasons-for-delayed-orders',
+    '/mto/poogi/insight-and-trends/ot-and-if-analysis',
+    '/mto/poogi/insight-and-trends/top-failure-reasons',
+    '/mto/poogi/insight-and-trends/trend-of-failure-reason',
+    '/mto/poogi/insight-and-trends/lead-time',
+    '/mto/production-planning-scheduling/overall-bm-report',
     /**Delivery and Intelligence hub */
-    '/manufacturing-intelligence-hub/delivery-performance/bm-trends',
-    '/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
-    '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
-    '/manufacturing-intelligence-hub/delivery-performance/lead-time',
+    '/mto/manufacturing-intelligence-hub/delivery-performance/bm-trends',
+    '/mto/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
+    '/mto/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
+    '/mto/manufacturing-intelligence-hub/delivery-performance/lead-time',
 
-    '/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
-    '/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
-    '/manufacturing-intelligence-hub/congestion-analysis/order-balance',
+    '/mto/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
+    '/mto/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
+    '/mto/manufacturing-intelligence-hub/congestion-analysis/order-balance',
 
-    '/manufacturing-intelligence-hub/forward-exceution/fol-summary',
-    '/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit',
-    '/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage',
-    '/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage',
-    '/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier',
-    '/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend',
+    '/mto/manufacturing-intelligence-hub/forward-exceution/fol-summary',
+    '/mto/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit',
+    '/mto/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage',
+    '/mto/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage',
+    '/mto/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier',
+    '/mto/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend',
 
-    '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
-    '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
-    '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
+    '/mto/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+    '/mto/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
+    '/mto/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
     '/landing-page',
 
     '/masters-interceptor/control-panel',
@@ -810,7 +811,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/enquiry-response',
+      path: '/mto/production-planning-scheduling/enquiry-response',
       element: <AppLayout />,
       children: [
         {
@@ -821,7 +822,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/insight-and-trends/bm-trends',
+      path: '/mto/production-planning-scheduling/insight-and-trends/bm-trends',
       element: <AppLayout />,
       children: [
         {
@@ -832,7 +833,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/insight-and-trends/stpl-full-kits',
+      path: '/mto/production-planning-scheduling/insight-and-trends/stpl-full-kits',
       element: <AppLayout />,
       children: [
         {
@@ -843,7 +844,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/insight-and-trends/order-at-risk',
+      path: '/mto/production-planning-scheduling/insight-and-trends/order-at-risk',
       element: <AppLayout />,
       children: [
         {
@@ -854,7 +855,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/insight-and-trends/order-balance',
+      path: '/mto/production-planning-scheduling/insight-and-trends/order-balance',
       element: <AppLayout />,
       children: [
         {
@@ -876,7 +877,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/procurement/material-coverage-open-sales',
+      path: '/mto/procurement/material-coverage-open-sales',
       element: <AppLayout />,
       children: [
         {
@@ -887,7 +888,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/procurement-planning/planning',
+      path: '/mto/procurement-planning/planning',
       element: <AppLayout />,
       children: [
         {
@@ -898,7 +899,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/planning/simulative-fullkit',
+      path: '/mto/planning/simulative-fullkit',
       element: <AppLayout />,
       children: [
         {
@@ -909,7 +910,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/procurement/insights-and-trends/day-wise-coverage',
+      path: '/mto/procurement/insights-and-trends/day-wise-coverage',
       element: <AppLayout />,
       children: [
         {
@@ -921,7 +922,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/procurement/insights-and-trends/rmpm-orderwise-coverage',
+      path: '/mto/procurement/insights-and-trends/rmpm-orderwise-coverage',
       element: <AppLayout />,
       children: [
         {
@@ -932,7 +933,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/procurement/material-requirement',
+      path: '/mto/procurement/material-requirement',
       element: <AppLayout />,
       children: [
         {
@@ -944,7 +945,7 @@ export const initRoutes = (): RouteObject[] => {
     },
 
     {
-      path: '/production-planning-scheduling/full-kit-assignment',
+      path: '/mto/production-planning-scheduling/full-kit-assignment',
       element: <AppLayout />,
       children: [
         {
@@ -955,7 +956,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/procurement/insights-and-trends/rmpm-buffer-trends',
+      path: '/mto/procurement/insights-and-trends/rmpm-buffer-trends',
       element: <AppLayout />,
       children: [
         {
@@ -966,7 +967,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/deptwise-bm-report',
+      path: '/mto/production-planning-scheduling/deptwise-bm-report',
       element: <AppLayout />,
       children: [
         {
@@ -977,7 +978,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
+      path: '/mto/procurement/insights-and-trends/rmpm-expediting-rm-suppliers',
       element: <AppLayout />,
       children: [
         {
@@ -1011,7 +1012,7 @@ export const initRoutes = (): RouteObject[] => {
     }
     ,
     {
-      path: '/production-planning-and-scheduling/order-rescheduling',
+      path: '/mto/production-planning-and-scheduling/order-rescheduling',
       element: <AppLayout />,
       children: [
         {
@@ -1022,7 +1023,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/poogi/insight-and-trends/resource-utilization-wip-profile',
+      path: '/mto/poogi/insight-and-trends/resource-utilization-wip-profile',
       element: <AppLayout />,
       children: [
         {
@@ -1033,7 +1034,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/poogi/insight-and-trends/otif-analysis',
+      path: '/mto/poogi/insight-and-trends/otif-analysis',
       element: <AppLayout />,
       children: [
         {
@@ -1044,7 +1045,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/insights-and-trends/fol-summary',
+      path: '/mto/production-planning-scheduling/insights-and-trends/fol-summary',
       element: <AppLayout />,
       children: [
         {
@@ -1055,7 +1056,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/dynamic-release-mangement',
+      path: '/mto/production-planning-scheduling/dynamic-release-mangement',
       element: <AppLayout />,
       children: [
         {
@@ -1066,7 +1067,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/poogi/reasons-for-delayed-orders',
+      path: '/mto/poogi/reasons-for-delayed-orders',
       element: <AppLayout />,
       children: [
         {
@@ -1077,7 +1078,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-and-scheduling/due-date-quotation',
+      path: '/mto/production-planning-and-scheduling/due-date-quotation',
       element: <AppLayout />,
       children: [
         {
@@ -1088,7 +1089,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/insights-and-trends/elapsed-time',
+      path: '/mto/production-planning-scheduling/insights-and-trends/elapsed-time',
       element: <AppLayout />,
       children: [
         {
@@ -1099,7 +1100,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/poogi/insight-and-trends/ot-and-if-analysis',
+      path: '/mto/poogi/insight-and-trends/ot-and-if-analysis',
       element: <AppLayout />,
       children: [
         {
@@ -1110,7 +1111,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/poogi/insight-and-trends/top-failure-reasons',
+      path: '/mto/poogi/insight-and-trends/top-failure-reasons',
       element: <AppLayout />,
       children: [
         {
@@ -1121,7 +1122,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/poogi/insight-and-trends/trend-of-failure-reason',
+      path: '/mto/poogi/insight-and-trends/trend-of-failure-reason',
       element: <AppLayout />,
       children: [
         {
@@ -1132,7 +1133,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/poogi/insight-and-trends/lead-time',
+      path: '/mto/poogi/insight-and-trends/lead-time',
       element: <AppLayout />,
       children: [
         {
@@ -1143,7 +1144,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/production-planning-scheduling/overall-bm-report',
+      path: '/mto/production-planning-scheduling/overall-bm-report',
       element: <AppLayout />,
       children: [
         {
@@ -1154,7 +1155,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/delivery-performance/bm-trends',
+      path: '/mto/manufacturing-intelligence-hub/delivery-performance/bm-trends',
       element: <AppLayout />,
       children: [
         {
@@ -1164,7 +1165,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
+      path: '/mto/manufacturing-intelligence-hub/delivery-performance/otif-analysis',
       element: <AppLayout />,
       children: [
         {
@@ -1174,7 +1175,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
+      path: '/mto/manufacturing-intelligence-hub/delivery-performance/ot-and-if-analysis',
       element: <AppLayout />,
       children: [
         {
@@ -1184,7 +1185,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/delivery-performance/lead-time',
+      path: '/mto/manufacturing-intelligence-hub/delivery-performance/lead-time',
       element: <AppLayout />,
       children: [
         {
@@ -1194,7 +1195,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
+      path: '/mto/manufacturing-intelligence-hub/congestion-analysis/elapsed-time',
       element: <AppLayout />,
       children: [
         {
@@ -1204,7 +1205,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
+      path: '/mto/manufacturing-intelligence-hub/congestion-analysis/orders-at-risk',
       element: <AppLayout />,
       children: [
         {
@@ -1214,7 +1215,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/congestion-analysis/order-balance',
+      path: '/mto/manufacturing-intelligence-hub/congestion-analysis/order-balance',
       element: <AppLayout />,
       children: [
         {
@@ -1224,7 +1225,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/forward-exceution/fol-summary',
+      path: '/mto/manufacturing-intelligence-hub/forward-exceution/fol-summary',
       element: <AppLayout />,
       children: [
         {
@@ -1234,7 +1235,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit',
+      path: '/mto/manufacturing-intelligence-hub/forward-exceution/stpl-and-fullkit',
       element: <AppLayout />,
       children: [
         {
@@ -1244,7 +1245,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage',
+      path: '/mto/manufacturing-intelligence-hub/forward-exceution/day-wise-coverage',
       element: <AppLayout />,
       children: [
         {
@@ -1254,7 +1255,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage',
+      path: '/mto/manufacturing-intelligence-hub/forward-exceution/rm-pm-order-wise-coverage',
       element: <AppLayout />,
       children: [
         {
@@ -1264,7 +1265,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier',
+      path: '/mto/manufacturing-intelligence-hub/forward-exceution/expetiting-rm-supplier',
       element: <AppLayout />,
       children: [
         {
@@ -1274,7 +1275,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend',
+      path: '/mto/manufacturing-intelligence-hub/forward-exceution/rm-pm-buffer-trend',
       element: <AppLayout />,
       children: [
         {
@@ -1284,7 +1285,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
+      path: '/mto/manufacturing-intelligence-hub/improvement-areas/top-failure-reasons',
       element: <AppLayout />,
       children: [
         {
@@ -1294,7 +1295,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
+      path: '/mto/manufacturing-intelligence-hub/improvement-areas/trends-failure-reasons',
       element: <AppLayout />,
       children: [
         {
@@ -1304,7 +1305,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
+      path: '/mto/manufacturing-intelligence-hub/improvement-areas/resource-wip-profile',
       element: <AppLayout />,
       children: [
         {

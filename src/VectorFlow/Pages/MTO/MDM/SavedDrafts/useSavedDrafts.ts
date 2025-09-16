@@ -29,11 +29,10 @@ const useSavedDrafts = ()=>{
     const {mutateAsync:deleteDraft} = useDeleteMTODraft()
     const [isDeleteModalOpen,toggleDeleteModal] = useState<boolean>(false)
     const [deleteDraftId,setDeleteDraftId] = useState<string>("");
-    const {data,isLoading} = useGetAllDrafts();
     const {mutateAsync:getDraftCount} = useGetDraftCount();
     const chunkSize = useSelector((state:RootState) => state.mdm.chunkSize)
-    const [allDrafts, setAllDrafts] = useState<any>(data?.data?.data);
-    const {mutateAsync: getMtoDrafts} = useGetMTODrafts();
+    const [allDrafts, setAllDrafts] = useState<any>([]);
+    const {mutateAsync: getMtoDrafts, isLoading} = useGetMTODrafts();
     const {mutateAsync: getDraftByIdMTO} = useGetMTODraftById();
     const {mutateAsync: getMTOMasterUIConfiguration} = useGetMTOMasterUIConfiguration();
     const closeDeleteModal =()=>toggleDeleteModal(false)
@@ -68,10 +67,7 @@ const useSavedDrafts = ()=>{
         try{
             // TODO: change the data to userid later now data is available for this
             const response:any = await getMtoDrafts(user.user.user.id);
-            let concatedData:any = [];
-            if(data && data.data && data.data.data){
-                concatedData = [...data.data.data];
-            }
+            const draftData:any = [];
             response.data.data.forEach((draft: any)=>{
                 // const date = new Date(draft.co);
                 const newData = {
@@ -85,10 +81,10 @@ const useSavedDrafts = ()=>{
                     mid: draft.mid,
                     dnm: draft.dnm
                 }
-                concatedData.push(newData);
+                draftData.push(newData);
             })
             
-            setAllDrafts(concatedData);
+            setAllDrafts(draftData);
             
         }
         catch(error){
@@ -100,7 +96,7 @@ const useSavedDrafts = ()=>{
     
     useEffect(() => {
       getCombinedMTOData();
-    }, [data]);
+    }, []);
     
     const openDeleteModal = (draftId:string)=>{
         setDeleteDraftId(draftId)
@@ -166,9 +162,9 @@ const useSavedDrafts = ()=>{
             if(col.field === 'actions' || col.field === 'iv'){
               return {
                 ...col,
-                editable:false,
+                editable: false,
+                filter: false,
                 floatingFilter: false,
-
               }
             }
 
@@ -288,7 +284,7 @@ const useSavedDrafts = ()=>{
             draftId: draftDetails.DraftId,
             mid: draftDetails.mid,
           });
-          let draftData: any = res.data.data.results;
+          let draftData: any = res.data.data;
           if(draftDetails.mid !== 503 && draftDetails.mid !== 504){
               draftData = draftData.map((item:any)=> {
                 // this is for ccr and buffer that are already added and that dont required action buttons 
@@ -299,7 +295,7 @@ const useSavedDrafts = ()=>{
                 }
               });
           }
-          dispatch(SET_RECORD_COUNT(res.data.data.results.length));
+          dispatch(SET_RECORD_COUNT(draftData.length));
 
           const mastersDataRes = await getMTOMasterUIConfiguration();
           const mastersData = mastersDataRes?.data?.data?.find(

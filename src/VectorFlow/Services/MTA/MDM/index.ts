@@ -379,6 +379,12 @@ export const useGetAllUsers = ()=>{
   })
 }
 
+export const useGetMaxFolDate = () => {
+  return useMutation(async () => {
+    return await MDMService.getMaxFolDate()
+  })
+}
+
 export const useGetApproverName = () => { 
   return useMutation(
     async (params: { approver_ids: any[] }) => {

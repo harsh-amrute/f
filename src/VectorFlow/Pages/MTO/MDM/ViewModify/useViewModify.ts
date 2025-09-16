@@ -79,7 +79,7 @@ import {
   type QueryFilteredDataConfigs,
 } from "../../../../types/MDM";
 
-import _ from "lodash";
+import _, { filter } from "lodash";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
@@ -466,6 +466,7 @@ const useViewModify = (pageType: string) => {
           if (col.colId === "iv") {
             col.cellRenderer = ToggleButton;
             col.pinned = 'right';
+            col.filter = false;
           }
         });
         newColDef.forEach((ele: any) => {
@@ -500,6 +501,7 @@ const useViewModify = (pageType: string) => {
         if (col.colId === "iv") {
           col.cellRenderer = ToggleButton;
           col.pinned = 'right';
+          col.filter = false;
           col.floatingFilter = false
         }
         if(col.colId === "bt"){
@@ -595,6 +597,7 @@ const useViewModify = (pageType: string) => {
           pinned: "left",
           width: 100,
           editable:false,
+          filter: false,
           floatingFilter: false,
           suppressExcelExport: true,
           cellRenderer: AddRemoveCellRenderer,
@@ -898,7 +901,7 @@ const useViewModify = (pageType: string) => {
         const newVal = _.cloneDeep(e);
         
         if (
-          plantMaster &&
+          plantMaster.length &&
           !plantMaster.some(
             (plant: any) =>
               plant.plant_name === e.plnm || plant.plant_id === e.plnm
@@ -1454,19 +1457,24 @@ const useViewModify = (pageType: string) => {
         const rowData = _.cloneDeep(activeMaster.rowData || []);
         let newData = _.cloneDeep(selectedData);
         const {error} = CALENDAR_VALIDATION_SCHEMA.validate(selectedData,{abortEarly:false})
+
         if(error){
           const fieldOrders = activeMaster.colDefs.filter((item:any)=> item.headerName !== "Action").map((item:any)=> item.field);
 
-          const orderedErrors = fieldOrders.flatMap((key:any)=>(
-            error.details.filter((err:any)=> err.path[0] === key)
-          ))
+          const orderedErrors = fieldOrders.flatMap((key: any) => (
+            error.details.filter((err: any) => err.path[0] === key)
+            
+          ));
 
-          return notifyError(orderedErrors[0]?.message)
+          notifyError(orderedErrors[0]?.message);
+
+
+          // return notifyError(orderedErrors[0]?.message)
           
         }
 
         // edit calendar 
-        if(index != -1){
+      if (index!=-1) { 
           if(newData.ia !== true){
             newData = {...newData,iu:true,id:false}
           }
@@ -1482,8 +1490,9 @@ const useViewModify = (pageType: string) => {
         dispatch(UPDATE_ROW_DATA(rowData))
         setIsModalOpen(false)
     }
+  
 
-    // on deleating a calendar from action
+    // on deleting a calendar from action
     const onDeleteHandler = (index: any, rowData:any) => {
       const newData = _.cloneDeep([...rowData])
       const currDeleteObj = {...newData[index]}
@@ -1608,6 +1617,7 @@ const useViewModify = (pageType: string) => {
                 onDeleteUndoHandler,
                 onDeleteHandler,
               },
+              filter: false,
             },
           ];
           
@@ -2043,7 +2053,7 @@ const useViewModify = (pageType: string) => {
       /////
       const updatedColdefs:any = activeMaster?.colDefs?.map((col: ColDef) => {
         // const isEditable = activeMaster.fields.find((field: Field) => field.key === col.colId)?.isEdit;
-        if (col.field === "iv") return { ...col, cellRenderer: ToggleButton, pinned: 'right' };
+        if (col.field === "iv") return { ...col, cellRenderer: ToggleButton, pinned: 'right', filter: false };
         if (col.field === "bt")
           return {
             ...col,
@@ -3228,7 +3238,8 @@ const useViewModify = (pageType: string) => {
       if(colDef.field === 'actions' || colDef.field === 'iv' ){
         return {
           ...colDef,
-          editable:false,
+          editable: false,
+          filter:false,
           floatingFilter: false,
         }
       }
@@ -3300,7 +3311,8 @@ const useViewModify = (pageType: string) => {
         if(colDef.field === 'actions' || colDef.field === 'iv'){
           return {
             ...colDef,
-            editable:false,
+            editable: false,
+            filter: false,
             floatingFilter: false,
             
           }
@@ -3981,6 +3993,17 @@ const useViewModify = (pageType: string) => {
   }
 
   const onMTOSaveBufferData = async () => {
+    
+    if(location?.state?.draftId){
+      try{
+        await deleteDraft(location?.state?.draftId)
+      }
+      catch(e){
+        toast.dismiss();
+        notifyError("Failed to save Draft!")
+        return;
+      }
+    }
 
     // on MDM add records
     if (pageType === "add") {
@@ -4216,9 +4239,9 @@ const useViewModify = (pageType: string) => {
               e.bt = elm.id;
             }
           });
-          // e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
-          // e.mlt = parseInt(e.mlt);
-          // e.slt = parseInt(e.slt);
+          e.ib = (e.ib === "false"|| e.ib===false) ? false : true;
+          e.mlt = parseInt(e.mlt);
+          e.slt = parseInt(e.slt);
           e.err = "";
           e.iv = true;
           if (!e.bid) e.bid = null;
@@ -4689,9 +4712,10 @@ const useViewModify = (pageType: string) => {
           return col;
         }),
       {
-        headerName: "",
+        headerName: "Action",
         cellRenderer: "poogiEditDeleteCellRenderer",
         maxWidth: 100,
+        filter: false
       },
     ],
     MTOPoogiMajorColdef: [
@@ -4730,9 +4754,10 @@ const useViewModify = (pageType: string) => {
           return col;
         }),
       {
-        headerName: "",
+        headerName: "Action",
         cellRenderer: "poogiEditDeleteCellRenderer",
         maxWidth: 100,
+        filter: false
       },
     ],
 
