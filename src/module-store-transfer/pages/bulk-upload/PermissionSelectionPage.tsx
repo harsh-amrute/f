@@ -258,13 +258,6 @@ const PermissionSelectionPage = ({
         roles: optimizedRoles
       };
       
-      // Log optimization results
-      console.log('Optimization Results:');
-      console.log(`Original permissions: ${Object.keys(permissions).length} -> Optimized: ${Object.keys(optimizedPermissions).length}`);
-      console.log(`Original roles: ${Object.keys(roles).length} -> Optimized: ${Object.keys(optimizedRoles).length}`);
-      console.log('Permission ID mapping:', Object.fromEntries(permissionIdMapping));
-      console.log('Role ID mapping:', Object.fromEntries(roleIdMapping));
-      
       return optimizedData;
     };
     

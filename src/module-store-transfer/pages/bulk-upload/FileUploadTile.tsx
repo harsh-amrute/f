@@ -23,7 +23,7 @@ const FileUploadTile = ({ handleFileChange, handleUploadClick, file}: any) => {
 
 
   return (
-    <>
+    
       <LeftCommonComWrapper>
         <LeftStep>Step 2</LeftStep>
         <LeftCommonComUploadWrapper >
@@ -54,7 +54,6 @@ const FileUploadTile = ({ handleFileChange, handleUploadClick, file}: any) => {
           > */}
             <ButtonFloat
               onClick={(e: any) => {
-                console.log("here");
                 handleUploadClick(e);
               }}
               text={"Upload"}
@@ -73,7 +72,7 @@ const FileUploadTile = ({ handleFileChange, handleUploadClick, file}: any) => {
           {/* </SCManualUploadButton> */}
         </LeftCommonComUploadWrapper>
       </LeftCommonComWrapper>
-    </>
+
   );
 };
 
