@@ -15,10 +15,6 @@ type RoleItem = {
   label: string;
 };
 
-type RoleGroup = {
-  name: string;
-  roles: RoleItem[];
-};
 
 const RoleDropdown = ({ allRoles, width, onApplyRole, currentRoles }: any) => {
   const user = useUserData();
@@ -157,10 +153,7 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
     ? [...params.data.roles].map((role) => role.name)
     : [];
   const allRoles = params.allRoles || [];
-  const [isSelectAll, setIsSelectAll] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [selectedView, setSelectedView] = useState<null | string>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [open, setOpen] = useState(false);
@@ -172,10 +165,6 @@ const RoleViewCellRenderer = (params: MyCellRendererProps) => {
       !buttonRef.current?.contains(e.target as Node)
     ) {
       setOpen(false);
-      if (!selectedView) {
-        setSelected([]);
-        setIsSelectAll(false);
-      }
     } else {
       console.log("no ref found");
     }

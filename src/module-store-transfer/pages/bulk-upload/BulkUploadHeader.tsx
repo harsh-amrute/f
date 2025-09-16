@@ -23,13 +23,10 @@ const BulkUploadHeader = ({
   resetState,
   gridRef
 }: BulkUploadHeaderParams) => {
-  const [selected, setSelected] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState<CSSProperties>({});
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [selectedView, setSelectedView] = useState<null | string>(null);
-  const [isSelectAll, setIsSelectAll] = useState(false);
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -38,10 +35,7 @@ const BulkUploadHeader = ({
       !buttonRef.current?.contains(e.target as Node)
     ) {
       setOpen(false);
-      if (!selectedView) {
-        setSelected([]);
-        setIsSelectAll(false);
-      }
+      
     } else {
       console.log("no ref found");
     }
