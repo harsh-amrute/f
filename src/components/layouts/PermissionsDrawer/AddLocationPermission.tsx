@@ -1,7 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-
-import Select from "react-select";
-
+import React, { useState, useEffect, useMemo } from "react";
 import {
   InputWrapper,
   URLsForm,
@@ -10,7 +7,6 @@ import {
 } from "../UserURLsDrawer/styles";
 import { Input, PrimaryButton, Skeleton } from "../../commons/styled";
 import { useUserData } from "../../../context";
-import axios from "axios";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useAddLocationPermissions } from "../../../VectorFlow/Services/MTA/MDM";
 import  UploadModal  from "../../../VectorFlow/Pages/MTA/MDM/ViewModify/UploadModal";

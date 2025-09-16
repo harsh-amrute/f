@@ -6,11 +6,11 @@ import NavigationTab from "../NavigationTab"
 import ViewURLs from "./View"
 import EditRole from "./Edit"
 
-interface UserRolesDrawerProps{
+interface EnvConfigDrawerProps{
     onClose:()=>void
 }
 
-const EnvConfigDrawer = (props:UserRolesDrawerProps)=>{
+const EnvConfigDrawer = (props:EnvConfigDrawerProps)=>{
 
     const {
         onClose

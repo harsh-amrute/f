@@ -6,11 +6,11 @@ import NavigationTab from "../NavigationTab"
 import ViewUiReportConfig from "./View"
 import EditRole from "./Edit"
 
-interface UserRolesDrawerProps{
+interface UIReportConfigDrawerProps{
     onClose:()=>void
 }
 
-const UIReportConfigDrawer = (props:UserRolesDrawerProps)=>{
+const UIReportConfigDrawer = (props:UIReportConfigDrawerProps)=>{
 
     const {
         onClose

@@ -9,11 +9,11 @@ import AddProductPermission from "./AddProductPermission"
 import Select from 'react-select'
 import AddLocationPermission from "./AddLocationPermission"
 
-interface UserRolesDrawerProps{
+interface PermissionsDrawerProps{
     onClose:()=>void
 }
 
-const PermissionsDrawer = (props:UserRolesDrawerProps)=>{
+const PermissionsDrawer = (props:PermissionsDrawerProps)=>{
     const { onClose } = props
     const {user} = useUserData()
     const themeUi = user.user.theme_ui
@@ -50,7 +50,6 @@ const PermissionsDrawer = (props:UserRolesDrawerProps)=>{
         
             {currTab === 0 && (
                 <Content>
-                    {/* Pass the permissionType to ViewURLs */}
                     <ViewPermissions
                         permissionType={permissionType}
                     />

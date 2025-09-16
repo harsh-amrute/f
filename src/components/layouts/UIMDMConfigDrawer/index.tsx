@@ -6,11 +6,11 @@ import NavigationTab from "../NavigationTab"
 import ViewUiMDMConfig from "./View"
 import EditUIMDMConfig from "./Edit"
 
-interface UserRolesDrawerProps{
+interface UIMDMConfigDrawerProps{
     onClose:()=>void
 }
 
-const UIMDMConfigDrawer = (props:UserRolesDrawerProps)=>{
+const UIMDMConfigDrawer = (props:UIMDMConfigDrawerProps)=>{
 
     const {
         onClose
