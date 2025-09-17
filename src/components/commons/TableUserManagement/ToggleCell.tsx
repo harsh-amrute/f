@@ -1,4 +1,3 @@
-// ToggleCell.tsx
 import * as Tab from "./style";
 import { ButtonOutlineStoreStatus } from "../../index";
 import { useChangeStatus } from "../../../services/profile";

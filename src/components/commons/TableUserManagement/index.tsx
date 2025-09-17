@@ -1,4 +1,3 @@
-// TableUserManagement.tsx
 import * as Tab from "./style";
 import { ButtonOutlineStoreStatus, Modal } from "../../index";
 import {
@@ -9,12 +8,11 @@ import {
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useRef, useState } from "react";
-// import { Tooltip } from "react-tooltip";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import LoadingSpinner from "../LoadingSpinner";
 import { GridFilterWrapper, TextBtn } from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
 import { useUserData } from "../../../context";
-import ToggleCell from "./ToggleCell"; // Import the new component
+import ToggleCell from "./ToggleCell"; 
 import Tooltip from "../../../VectorFlow/Pages/MTO/Common/Tooltip";
 
 interface TableUser {
