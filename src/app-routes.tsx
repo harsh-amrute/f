@@ -107,8 +107,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/change-password',
     '/profile',
     '/',
-    '/landing-page',
-    '/profile/bulk-upload'
+    '/landing-page'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -224,7 +223,8 @@ const lazyLoad = (children: React.ReactNode) => {
     "/mto/master-data-management/task-status",
     "/mto/master-data-management/task-pending",
     "/mto/master-data-management/data-modification-history",
-    "/scheduling"
+    "/scheduling",
+    '/profile/bulk-upload'
   
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
