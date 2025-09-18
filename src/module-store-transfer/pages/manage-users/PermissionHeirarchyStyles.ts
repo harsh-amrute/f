@@ -27,3 +27,9 @@ export const ToggleButton = styled.button<{ active: boolean }>`
     background-color: ${({ active }) => (active ? "#f1d2e0" : "#f5f5f5")};
   }
 `;
+
+export const ChartWrapper = styled.div`
+  & .react-flow__attribution {
+    display: none;
+  }
+`

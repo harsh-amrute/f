@@ -6,7 +6,8 @@ import Checkbox from "../../../components/VectorFLOW/commons/MTO/Checkbox";
 
 import { useUserData } from "../../../context";
 
-import { ToggleContainer, ToggleButton } from "./PermissionHeirarchyStyles";
+import { ToggleContainer, ToggleButton, ChartWrapper } from "./PermissionHeirarchyStyles";
+import styled from "styled-components";
 
 const NodeDataContext = createContext<any>(undefined);
 
@@ -288,6 +289,8 @@ const nodeTypes = {
   customNode: CustomNode,
 };
 
+
+
 export default function PermissionHeirarchyCanvas({
   dataAllPermissions,
   selectedApplication,
@@ -408,7 +411,8 @@ export default function PermissionHeirarchyCanvas({
         id: `${parentId}-${key}`,
         source: key.split(">")[0],
         target: key,
-        style: { stroke: "#676565", strokeDasharray: "5 5" },
+        selectable: false,
+        style: { stroke: "#676565", strokeDasharray: "5 5", PointerEvents: 'none' , cursor: 'grab'},
       });
       index++;
       indexY++;
@@ -443,7 +447,8 @@ export default function PermissionHeirarchyCanvas({
         id: `${parentId}-${key}`,
         source: key.split(">")[0] + ">" + key.split(">")[1],
         target: key,
-        style: { stroke: "#676565", strokeDasharray: "5 5" },
+        selectable: false,
+        style: { stroke: "#676565", strokeDasharray: "5 5", PointerEvents: 'none' , cursor: 'grab'},
       });
       index++;
       indexY++;
@@ -548,7 +553,7 @@ export default function PermissionHeirarchyCanvas({
           selectedApplication={permissionType}
           setSelectedApplication={setPermissionType}
         />
-        <div
+        <ChartWrapper
           style={{
             position: "relative",
             width: "100%",
@@ -557,7 +562,7 @@ export default function PermissionHeirarchyCanvas({
           }}
         >
           <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} />
-        </div>
+        </ChartWrapper>
       </div>
     </NodeDataContext.Provider>
   );
