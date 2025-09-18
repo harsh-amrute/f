@@ -43,7 +43,7 @@ export const chartParams1 = {
         end:9
     },
     graphInfo:[
-        'This graph highlights the top 10 parent locations with max SKUs in Pipeline black/red/yellow with insufficient/nil rationed stock available for receiving locations',
+        'This graph highlights the top 10 parent locations with max SKUs in Pipeline Black/Red with insufficient/nil rationed stock available for receiving locations',
         'To improve availability, expedite production/sourcing at these parent locations.'
     ],
     customizedStyles:{
@@ -95,7 +95,7 @@ export const chartParams2 = {
         end:9
     },
     graphInfo:[
-        'This graph highlights the top 10 parent locations with max number of SKUs in continuous Pipeline Black/Red/Yellow > RLT and have nil rationed stock available for receiving locations.',
+        'This graph highlights the top 10 parent locations with max number of SKUs in continuous Pipeline Black/Red > RLT and have insufficient/nil rationed stock available for receiving locations.',
         'To improve availability, expedite production/sourcing at these parent locations.'
     ],
     customizedStyles:{
