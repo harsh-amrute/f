@@ -171,7 +171,6 @@ const OverallBmReport = () => {
   const [userConfigFetched, setUserConfigFetched] = useState<any>(false);
   const [orderClosingEnable, setorderClosingEnable] = useState<any>();
   const { getGroupedColDef, groupedColDefsRef } = useColDef();
-  const [isExcelExportLoading, setIsExcelExportLoading] = useState(false);
 
   const [masterSelectedRowData, setMasterSelectedRowData] = useState<any>(
     () => {
@@ -1065,7 +1064,9 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
 
   const getInitialGridData = async (currentPage: number, pageSize?: any, isExcelExport = false, isBomExplosion=0) => {
     //excellll
+
     if (isExcelExport) {
+      notifyLoader("Preparing data for export...");
       const headersdata = refGraph2?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
       const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
@@ -1073,6 +1074,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
               const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
               if(response.status == 200){//1,userpage,true,0
                 DownloadExcel(response,FilterPageName.Prod_OverAll_BMReport)
+                notifySuccess("Excel exported successfully!");
               }else{
                 notifyError("Error exporting Excel!");
               }
@@ -1405,24 +1407,15 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     }
   };
 
-  const onExcelExport = async () => {
-    setIsExcelExportLoading(true);
-    
-    try {
-      if (isPivot) {
-        getTempGridData(); 
+  const onExcelExport = () => {
+    if (isPivot) {
+      getTempGridData(); 
+    } else {
+      if (bomActive) {
+        setShowExcelModal(true)
       } else {
-        if (bomActive) {
-          setShowExcelModal(true);
-        } else {
-          await getInitialGridData(1, userPageSize, true, 0);
-        }
+        getInitialGridData(1, userPageSize, true, 0);
       }
-    } catch (error) {
-      console.error("Excel export error:", error);
-      notifyError("Error exporting Excel!");
-    } finally {
-      setIsExcelExportLoading(false);
     }
   };
   
@@ -1573,30 +1566,14 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
     }))
   , []);
 
-  const handleExcelConfirm = async () => {
-    setShowExcelModal(false);
-    setIsExcelExportLoading(true);
-    try {
-      await getInitialGridData(1, userPageSize, true, 1);
-    } catch (error) {
-      console.error("BOM Excel export error:", error);
-      notifyError("Error exporting Excel with BOM data!");
-    } finally {
-      setIsExcelExportLoading(false);
-    }
+  const handleExcelConfirm = () => {
+    setShowExcelModal(false);   
+    getInitialGridData(1, userPageSize, true, 1);
   };
 
-  const handleExcelCancel = async () => {
+  const handleExcelCancel = () => {
     setShowExcelModal(false);
-    setIsExcelExportLoading(true);
-    try {
-      await getInitialGridData(1, userPageSize, true, 0);
-    } catch (error) {
-      console.error("Excel export error:", error);
-      notifyError("Error exporting Excel!");
-    } finally {
-      setIsExcelExportLoading(false);
-    }
+    getInitialGridData(1, userPageSize, true, 0);
   };
   
 
@@ -1653,9 +1630,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
         isShortOrderCompleteOrder ||
         isUpdateUserConfig ||
         isDeptWiseWipData || 
-        isHighAgeingData ||
-        isExcelExportLoading
-        ) && <OverlayLoader />}
+        isHighAgeingData) && <OverlayLoader />}
 
       <HorizontalViewWrapper style={{ marginTop: "0", paddingLeft:"25px" }}>
         <BTRTableWrapper
