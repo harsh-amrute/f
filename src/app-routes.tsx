@@ -107,8 +107,7 @@ const lazyLoad = (children: React.ReactNode) => {
     '/change-password',
     '/profile',
     '/',
-    '/landing-page',
-    '/scheduling'
+    '/landing-page'
   ]
   const urlAllPage = [
     ...authenPage,
@@ -223,8 +222,7 @@ const lazyLoad = (children: React.ReactNode) => {
     "/mto/master-data-management/task-status",
     "/mto/master-data-management/task-pending",
     "/mto/master-data-management/data-modification-history",
-    "/scheduling"
-  
+    "/mto/production/scheduling"
   ]
   const urlPermissionStr: any = localStorage.getItem('url_permission')
   const urlPermissionArr = JSON?.parse(urlPermissionStr) || []
@@ -1314,7 +1312,7 @@ export const initRoutes = (): RouteObject[] => {
       ]
     },
     {
-      path: '/scheduling',
+      path: '/mto/production/scheduling',
       element: <AppLayout />,
       children: [
         {

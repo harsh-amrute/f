@@ -8,7 +8,6 @@ import GridViewResource from './Sections/GridViewResource';
 import GridViewJob from './Sections/GridViewJob';
 import VFOverlayModal from '../../../../components/VectorFLOW/commons/VFOverlayModal';
 import FilterModal from './components/FilterModal';
-import response from './components/data';
 import _ from 'lodash';
 
 
@@ -17,11 +16,11 @@ height: fit-content;
 postion: relative;
 `
 
-const FinalResultSection = ({setStep}:any) => {
+const FinalResultSection = ({setStep, finalResult}:any) => {
   const [excelGridRef, setExcelGridRef] = useState<any>(null);
   const [currentView, setCurrentView] = useState("ResourceView");
   
-  const [data, setData] = useState(response)
+  const [data, setData] = useState(finalResult)
   const getCurrentView = ()=>{
     switch(currentView){
       case "ResourceView":
@@ -47,7 +46,7 @@ const FinalResultSection = ({setStep}:any) => {
 
   useEffect(()=>{
     // Here you can add logic to filter 'data' based on 'appliedFilters'
-    const FilteredResourceData: any = _.cloneDeep(response); // Start with the original data
+    const FilteredResourceData: any = _.cloneDeep(finalResult); // Start with the original data
     const { stages, workStations, jobs, actionPreferences } = appliedFilters;
     // Filter resources based on stages and workStations
     Object.keys(FilteredResourceData.Resource_Data).forEach((resourceId) => {
@@ -68,7 +67,6 @@ const FinalResultSection = ({setStep}:any) => {
       }
     });
     setData(FilteredResourceData);
-    console.log("this")
   },[appliedFilters])
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -80,7 +78,7 @@ const FinalResultSection = ({setStep}:any) => {
       {
         isFilterModalOpen && 
           <VFOverlayModal parentSelector="#main-content" openModal={isFilterModalOpen}  >
-            <FilterModal setIsFilterModalOpen={setIsFilterModalOpen} ResourceData={response} appliedFilters={appliedFilters} setAppliedFilters={setAppliedFilters}/>
+            <FilterModal setIsFilterModalOpen={setIsFilterModalOpen} ResourceData={finalResult} appliedFilters={appliedFilters} setAppliedFilters={setAppliedFilters}/>
           </VFOverlayModal>
       }
     </FinalResultSectionWrapper>

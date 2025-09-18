@@ -60,3 +60,14 @@ export const postStartSchedulingRun = async (userdata: {user_id: string, user_na
     }
   )
 }
+
+export const getFinalResultData = async ()=>{
+  return await axios.get(
+    process.env.REACT_APP_VF_API_HOST_MTO + `/getSchedulerRunResultJson/`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
+}
