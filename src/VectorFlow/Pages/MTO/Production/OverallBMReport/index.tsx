@@ -1064,7 +1064,9 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
 
   const getInitialGridData = async (currentPage: number, pageSize?: any, isExcelExport = false, isBomExplosion=0) => {
     //excellll
+
     if (isExcelExport) {
+      notifyLoader("Preparing data for export...");
       const headersdata = refGraph2?.current?.api?.getColumnState();
       const formatedFilters = formatFilterJSON(appliedFilters);
       const body = getBodyForExcelExport({headersdata,filterData: formatedFilters,groupedColDefsRef})
@@ -1072,6 +1074,7 @@ const canShowOrderClosing = feature_permission.includes("Order_Closing");
               const response = await getOverallBMReportData({body,isExcelExport : 1,page:currentPage,report_name : FilterPageName.Prod_OverAll_BMReport, page_size: pageSize || userPageSize,isBomExplosion})
               if(response.status == 200){//1,userpage,true,0
                 DownloadExcel(response,FilterPageName.Prod_OverAll_BMReport)
+                notifySuccess("Excel exported successfully!");
               }else{
                 notifyError("Error exporting Excel!");
               }

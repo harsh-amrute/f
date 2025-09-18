@@ -26,7 +26,6 @@ import { useTranslation } from "react-i18next";
 // import { dataListRoles } from "./listRoles";
 import { generateRolesObject } from '../../../helpers/utils';
 import _ from 'lodash'
-import SearchInputManageUser from "../../../components/commons/SearchInputManageUser";
 import VFModalCard from "../../../components/VectorFLOW/commons/VFModalCard";
 import PermissionHeirarchyCanvas from "./ModalBulkUpload";
 import { useNavigate } from "react-router";
@@ -71,7 +70,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
   const { mutateAsync : usegetHeaderData } = useGetHeadersData();
   const [headers , setHeaders] = useState<any>();
 
-  const [searchUserBasedOn, setSearchUserBasedOn] = useState("");
   const { mutateAsync: getUserPermissions,isLoading:edit } = useGetUserPermissions();
   
   
@@ -478,7 +476,6 @@ const ManageUsers = ({ is_admin, permission, themeUi }: ManageUsersProps) => {
             refetch={refetch}
             is_admin={is_admin}
             permission={permission}
-            searchUserBasedOn={searchUserBasedOn}
           />
         )}
       </SCProfileOverView>

@@ -151,7 +151,7 @@ const useFilter=(filterData: any, page: any)=>{
                     name: staticHeaderConfig[key]?.name || (getKeyName(filterData?.hdrkeymap?.lattr, key) || getKeyName(filterData?.hdrkeymap?.oattr, key)),
                     attributeName: key,
                     operator: '',
-                    value: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ value: type, label: type })) : [],
+                    value: [],
                     options: key === 'ms' ?  filterData?.system_type?.map((type: any) => ({ value: type, label: type })): filterOptionsConfig[key]
                 })
             ).filter((fil: any) => filterAttributes.order.includes(fil.attributeName) || ((getKeyName(filterData?.hdrkeymap.lattr, fil.attributeName) === fil.name) || (getKeyName(filterData?.hdrkeymap.oattr, fil.attributeName) === fil.name)))
