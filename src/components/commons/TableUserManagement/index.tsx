@@ -1,13 +1,12 @@
 import * as Tab from "./style";
-import { ButtonOutlineStoreStatus, Modal } from "../../index";
+import {  Modal } from "../../index";
 import {
   UsePutDeleteUser,
-  useChangeStatus,
   useResetPwd,
 } from "../../../services/profile";
 import { notifyError, notifySuccess } from "../../../helpers/notify";
 import { useTranslation } from "react-i18next";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {  useMemo, useRef, useState } from "react";
 import VFTable from "../../../VectorFlow/Pages/MTO/Common/VFTable";
 import LoadingSpinner from "../LoadingSpinner";
 import { GridFilterWrapper, TextBtn } from "../../../VectorFlow/Pages/MTO/Common/VFPagination/styles";
@@ -21,7 +20,6 @@ interface TableUser {
   refetch: any;
   is_admin: boolean;
   permission: any;
-  searchUserBasedOn: string;
 }
 
 const TableUserManagement = ({
@@ -30,7 +28,6 @@ const TableUserManagement = ({
   refetch,
   is_admin,
   permission,
-  searchUserBasedOn,
 }: TableUser) => {
   const { t } = useTranslation();
   const [isOpenDelete, setIsOpenDelete] = useState(false);
@@ -272,20 +269,14 @@ const TableUserManagement = ({
     [is_admin, permission]
   );
 
-  const rowData = useMemo(() => {
-    return (
-      dataAllUsers?.filter((userData: any) =>
-        userData.name?.toLowerCase().includes(searchUserBasedOn.toLowerCase())
-      ) || []
-    );
-  }, [dataAllUsers, searchUserBasedOn]);
+ 
 
   return (
     <>
       {isLoading && <LoadingSpinner />}
       <VFTable
         ref={gridRef}
-        rowData={rowData}
+        rowData={dataAllUsers}
         columnDefs={columnDefs}
         domLayout="normal"
         rowHeight={55}
