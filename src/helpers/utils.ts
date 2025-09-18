@@ -2593,7 +2593,7 @@ const pieTooltip={
   renderer:(params:any)=>{
       const datum = params.datum
       return {
-      title: `${params.title}`,
+      title: `${datum.color}`,
       content: `${datum[params.angleKey]}%`,
       }
   },
