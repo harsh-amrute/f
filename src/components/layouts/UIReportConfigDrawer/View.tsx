@@ -7,29 +7,28 @@ import { TableWrapper } from "../UserURLsDrawer/styles"
 import { useUserData } from "../../../context"
 import { SecondaryButton, Skeleton } from "../../commons/styled"
 import { notifyError } from '../../../helpers/notify'
-import { useGetAllEnvironmentConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
+import {  useGetAllUIReportConfiguration } from '../../../VectorFlow/Services/MTA/MDM'
 import { GridRef } from '../../../VectorFlow/types/MDM'
 import { GridFilterWrapper, TextBtn } from '../../../VectorFlow/Pages/MTO/Common/VFPagination/styles'
 
 
-const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
+const ViewUiReportConfig = (props:{onEdit:(data:any)=>void})=>{
 
     const {
         onEdit
     } = props
 
     const {user} = useUserData()
-    const ref = useRef<GridRef>();
-    const [isDisabled, setIsDisabled]= useState<boolean>(true)
+
     const themeUi = user.user.theme_ui
 
     const [rowData,setRowData] = useState<Array<any>>([])
-    const {mutateAsync : getAllEnvConfiguration} = useGetAllEnvironmentConfiguration();
-    const getAllEnvConfig = useCallback(async()=>{
+    const {mutateAsync : getAllUIReportConfiguration} = useGetAllUIReportConfiguration();
+    const getAllUIReportConfig = useCallback(async()=>{
         try{
-            const response = await getAllEnvConfiguration();
+            const response = await getAllUIReportConfiguration();
             const data = response?.data?.data;
-            setRowData(data.sort((row1:any,row2:any)=>row1.id - row2.id))
+            setRowData(data)
         }catch(error:any){
             console.error(error)
             notifyError("Server Went Unresponsive")
@@ -38,29 +37,14 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
         }
     },[])
 
-    // const allUrls = [
-    //     {
-    //         "id": 1,
-    //         "name": "VectorFlow. Master Data Management. Control Panel",
-    //         "code": "MDM-CP",
-    //         "description": "VectorFlow. Master Data Management. Control Panel",
-    //         "url": "/master-data-management/control-panel"
-    //     }
-    // ]
-
     const [isLoading,setIsLoading] = useState<boolean>(true)
     
     useEffect(()=>{
-        getAllEnvConfig()
+        getAllUIReportConfig()
     },[])
 
-    if(isLoading){
-        return (
-            <Skeleton
-                style={{height:400,width:'100%'}}
-            />
-        )
-    }
+    const ref = useRef<GridRef>();
+    const [isDisabled, setIsDisabled]= useState<boolean>(true)
 
     const clearGridFilter = () =>{   
         ref?.current?.api.setFilterModel(null);
@@ -77,14 +61,23 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
         );
     };
 
+    if(isLoading){
+        return (
+            <Skeleton
+                style={{height:400,width:'100%'}}
+            />
+        )
+    }
+
     return(
         <TableWrapper>
             <VFTable 
-                ref={ref}
-                defaultColDef={{
-                    flex:1,
+               ref={ref}
+                  defaultColDef={{
+                    minWidth: 200,
                     cellStyle:{
-                        'text-align':'center'
+                         'text-align':'center',
+                      'justify-content':'center'
                     },
                     floatingFilter: true,
                     filter: "agMultiColumnFilter"
@@ -92,31 +85,32 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
                 rowHeight={50}
                 height="600px"
                 rowData={rowData}
-                statusBar={{
-                    statusPanels: !isLoading?[
-                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
-                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
-                      { statusPanel: 'agAggregationComponent', align: 'left' },
-                      { statusPanel: CustomStatusPanel, align: "right" },
-
-                    ]:
-                    [],
-                  }}
                 columnDefs={[
                     {
-                        colId:"ConfigKey",
-                        field:"ConfigKey"
+                        colId:"ReportName",
+                        field:"ReportName"
                     },
                     {
-                        colId:"ConfigValue",
-                        field:"ConfigValue"
+                        colId:"Col_Code",
+                        field:"Col_Code"
                     },
                     {
-                        colId:"Description",
-                        field:"Description"
+                        colId:"Col_Position",
+                        field:"Col_Position"
                     },
+                    {
+                        colId:"Header",
+                        field:"Header"
+                    },
+                    {
+                        colId:"Visible",
+                        field:"Visible"
+                    },
+                    {
+                        colId:"CellAlignment",
+                        field:"CellAlignment"
+                    },
+                 
                     {
                         colId:'edit',
                         field:'edit',
@@ -140,16 +134,29 @@ const ViewURLs = (props:{onEdit:(data:any)=>void})=>{
                     },                  
                 ]}
                 onFilterChanged={() => {
-                    const filterModel = ref?.current?.api?.getFilterModel();
+                    const filterModel = ref?.current?.api?.getFilterModel();   
                     if (filterModel && Object.keys(filterModel).length > 0) {
                       setIsDisabled(false);
                     } else {
                       setIsDisabled(true);
                     }
                   }}
+
+                  statusBar={{
+                    statusPanels: !isLoading?[
+                      { statusPanel: 'agTotalAndFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+                      { statusPanel: 'agFilteredRowCountComponent', align: 'left' },
+                      { statusPanel: 'agSelectedRowCountComponent', align: 'left' },
+                      { statusPanel: 'agAggregationComponent', align: 'left' },
+                      { statusPanel: CustomStatusPanel, align: "right" },
+
+                    ]:
+                    [],
+                  }}
             />
             </TableWrapper>
     )
 }
 
-export default ViewURLs
+export default ViewUiReportConfig
