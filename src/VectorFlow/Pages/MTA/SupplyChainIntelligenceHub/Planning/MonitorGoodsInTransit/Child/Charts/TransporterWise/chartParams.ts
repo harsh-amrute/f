@@ -1,7 +1,7 @@
 export const chartParams1 = {
-    title:'Top 10 Locations: Max On-Hand Black/Red SKUs Along With High Transport Ageing',
+    title:'Top 10 Transporters: Max LRs With On-Hand Black/Red SKUs Along With High Transport Ageing',
     chartType:'stackedColumn',
-    downloadName:'Top 10 Loc- Max On-Hand B/R SKUs Along With High Transport Ageing',
+    downloadName:'Top 10 Transporters - Max LRs With On-Hand B/R SKUs Along With High Transport Ageing',
     LabelPosition:'bottom',
     Labels:{
         Xaxis:'Transporter Name',
