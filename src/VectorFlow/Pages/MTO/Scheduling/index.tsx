@@ -41,7 +41,7 @@ const Scheduling = () => {
             }
         }
         catch(e:any){
-            setRunStatus({status: 'FAILED_TO_FETH', startTime: null, endTime: null, message: null});
+            setRunStatus({status: 'FAILED_TO_FETCH', startTime: null, endTime: null, message: null});
             notifyError("Failed to fetch run status");
             console.log('error', e);
         }
@@ -109,9 +109,7 @@ const Scheduling = () => {
     const getRunActionBar = () => {
         const onGoToFinalResult = async() => {
 
-            setSearchParams({ page: "result" });
-                    setStep("Final Result");
-            return
+            
             try{
                 const result = await getFinalRunResult();
                 if(result.status===200){
