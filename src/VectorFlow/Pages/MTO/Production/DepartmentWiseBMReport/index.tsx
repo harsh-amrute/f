@@ -923,7 +923,7 @@ const DptWiseBMReport = () => {
 
     const getUpdatedFilteredData = async (page: any, pageSize?: any, isExcelExport=false, isBomExplosion=0) => {
         if (isExcelExport) {
-
+            notifyLoader("Preparing data for export...");    
             const headersdata = refGraph1?.current?.api?.getColumnState();
             const formatedFilters = formatFilterJSON(appliedFilters);
             const body = getBodyForExcelExport({ headersdata, filterData: formatedFilters, groupedColDefsRef })
@@ -931,6 +931,7 @@ const DptWiseBMReport = () => {
                 const response = await getFilteredDeptWiseBMReportData({ body, page: currentPage, appliedFilters: formatedFilters,report_name:FilterPageName.Prod_Dept_Wise_BM_Report, page_size: gridDataCount, isExcelExport: 1, isBomExplosion })
                 if (response.status == 200) {
                     DownloadExcel(response, FilterPageName.Prod_Dept_Wise_BM_Report)
+                    notifySuccess("Excel exported successfully!");
                 } else {
                     notifyError("Error exporting Excel!");
                 }

@@ -3,14 +3,14 @@ import { Content,DrawerHeader} from "../UserURLsDrawer/styles"
 import { useUserData } from "../../../context"
 import { useState } from "react"
 import NavigationTab from "../NavigationTab"
-import ViewURLs from "./View"
-import EditRole from "./Edit"
+import ViewUiMDMConfig from "./View"
+import EditUIMDMConfig from "./Edit"
 
-interface EnvConfigDrawerProps{
+interface UIMDMConfigDrawerProps{
     onClose:()=>void
 }
 
-const EnvConfigDrawer = (props:EnvConfigDrawerProps)=>{
+const UIMDMConfigDrawer = (props:UIMDMConfigDrawerProps)=>{
 
     const {
         onClose
@@ -23,19 +23,19 @@ const EnvConfigDrawer = (props:EnvConfigDrawerProps)=>{
 
     const [currTab,setCurrTab] = useState<number>(0)
 
-    const [currRole,setCurrRole] = useState<any>(null)
+    const [currUIMDMConfig,setCurrUIMDMConfig] = useState<any>(null)
 
     const [activeTab, setActiveTab] = useState(0);
 
     const onEditRole = (row:any)=>{
         setCurrTab(3); 
-        setCurrRole(row)
+        setCurrUIMDMConfig(row)
     }
 
 
     const resetTab = ()=>{
         setCurrTab(0)
-        setCurrRole(null)
+        setCurrUIMDMConfig(null)
         setActiveTab(0);
     }
 
@@ -58,14 +58,14 @@ const EnvConfigDrawer = (props:EnvConfigDrawerProps)=>{
        
             {currTab === 0 && (
                 <Content>
-                    <ViewURLs
+                    <ViewUiMDMConfig
                         onEdit={onEditRole}
                     />
                 </Content>
             )}          
             {currTab === 3 && (
                 <Content>
-                    <EditRole data={currRole} cb={resetTab}/>
+                    <EditUIMDMConfig data={currUIMDMConfig} cb={resetTab}/>
                 </Content>
             )}
             
@@ -95,7 +95,7 @@ const Header = (props:{
         <DrawerHeader 
             themeUi={themeUi}
         >
-            <p>Env Config</p>
+            <p>UI MDM Config</p>
             <div style={{flex:4}}>
                 <NavigationTab 
                     listTabs={['View']} 
@@ -115,4 +115,4 @@ const Header = (props:{
     )
 }
 
-export default EnvConfigDrawer
+export default UIMDMConfigDrawer
