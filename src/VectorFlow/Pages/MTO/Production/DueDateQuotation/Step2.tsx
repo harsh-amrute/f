@@ -241,8 +241,44 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
         return i
     }, [maxFolinDays])
 
+    const barColors = {
+        "ccrFolInDays": "black",
+        "orderLoad": "#3874FF",
+        "fol_gap": "#FF8A00"
+    }
+
+    const tooltipValues = (value: any) => {
+        return `${value} ${value == 1 ? " day" : " days"}`
+    }
+
+    function TooltipRenderer({ datum, xKey }: any) {
+        return `
+        <div style="background:#6C696A; style="transform: translateX(120px)" >
+        <div  style=" color: white; padding: 10px 10px 4px;background-color: #6C696A; display: flex; justify-content: center; align-items: center; border-bottom: 1px dashed white">
+            ${datum[xKey]}
+        </div>
+        <div style="color: white; background-color: #6C696A; padding: 10px;">
+          <div style="display: flex; align-items: center;">
+            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["ccrFolInDays"]}"></div>
+            FOL: ${tooltipValues(datum["ccrFolInDays"])}
+          </div>
+          <div style="display: flex; align-items: center;">
+            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["orderLoad"]}"></div>
+            SOL: ${tooltipValues(datum["orderLoad"])}
+          </div>
+          <div style="display: flex; align-items: center;">
+            <div style="margin-right: 10px; height: 3px; width: 15px; background-color: ${barColors["fol_gap"]}"></div>
+            FOL Gap: ${tooltipValues(datum["fol_gap"])}
+          </div>
+        </div>
+        </div>`;
+      }
+
     const chartOptions: any = {
         data: chartData,
+        tooltip: {
+            mode: "single",
+        },
         series: [
             {
                 type: "bar",
@@ -251,10 +287,11 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 yKey: "ccrFolInDays",
                 yName: "FOL",
                 stacked: true,
-                fill: "black",
-                // tooltip: {
-                //   renderer: TooltipRenderer,
-                // },
+                fill: barColors["ccrFolInDays"],
+                tooltip: {
+                    position: { placement: "right" },  // anchor to bar
+                    renderer: TooltipRenderer
+                }
             },
             {
                 type: "bar",
@@ -263,7 +300,11 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 yKey: "fol_gap",
                 yName: "FOL Gap",
                 stacked: true,
-                fill: "#FF8A00",
+                fill: barColors["fol_gap"],
+                tooltip: {
+                    position: { placement: "right" },  // anchor to bar
+                    renderer: TooltipRenderer
+                }
             },
             {
                 type: "bar",
@@ -272,10 +313,13 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 yKey: "orderLoad",
                 yName: "SOL",
                 stacked: true,
-                fill: "#3874FF",
+                fill: barColors["orderLoad"],
+                tooltip: {
+                    position: { placement: "right" },  // anchor to bar
+                    renderer: TooltipRenderer
+                }
             },
         ],
-
         axes: [
             {
                 type: "category",
@@ -293,21 +337,20 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
                 type: "number",
                 position: "bottom",
                 line: { enabled: true },
-                // interval: 1,
+                interval: { step: interval },
                 tick: {
-                    interval: interval,
+                    enabled: true,
                 },
                 label: {
                     fontSize: 10,
                     color: "black",
                     formatter: labelFormatter,
                     rotation: -45,
-                    //   avoidCollisions: true
+                    avoidCollisions: true
                 },
                 gridLine: {
                     enabled: false,
                 },
-
             },
         ],
 
@@ -788,14 +831,15 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
                     const diffDays: any = dateDiffInDays(today, new Date(folDD));
 
-                    maxFol = Math.max(diffDays, maxFol);
                     const FOLGap = masters.FOL[ccrId]?.fol_gap;
+
+                    maxFol = Math.max(diffDays, maxFol, FOLGap);
 
                     orderLoadOfCCRs[ccrId] = {
                         ccrId,
                         ccr_name: ccr.ccr_name,
                         orderLoad: orderLoadInDays,
-                        ccrFolInDays: isNaN(diffDays) ? 0 : diffDays,
+                        ccrFolInDays: diffDays,
                         fol_gap: FOLGap
                     }
                 })
@@ -823,7 +867,7 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
     // Label formatter function
     function labelFormatter(params: any) {
-        try {
+        try {            
             const today = new Date();
             const value = parseInt(params.value);
 
@@ -848,6 +892,12 @@ const Step2 = forwardRef(({ gridOptions, columnData, selectedRows, theme, master
 
 
     function dateDiffInDays(date1: any, date2: any) {
+        //if fol date is not valid then return date diff as 0
+        if (!(date1 instanceof Date) || isNaN(date1.getTime()) ||
+            !(date2 instanceof Date) || isNaN(date2.getTime())) {
+            return 0;
+        }
+
         // One day in milliseconds
         const oneDay = 1000 * 60 * 60 * 24;
 

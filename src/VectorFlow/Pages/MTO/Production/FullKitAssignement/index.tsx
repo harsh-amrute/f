@@ -726,8 +726,8 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
       {
         type: "grouped-category",
         position: "bottom",
-        paddingInner: 0.5,       // Gap between categories
-        paddingOuter: 0.2,       // Gap before first and after last category
+        // paddingInner: 0.5,       // Gap between categories
+        // paddingOuter: 0.2,       // Gap before first and after last category
         // groupPaddingInner: 0.6,  // Gap between bars in the same category group
         gridLine: {
           enabled: false
@@ -736,14 +736,14 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
           {
             label: {
               fontSize: 10,
-              rotation: -10,
-              avoidCollision: true,
-              autoRotate: true,
+              rotation: -20,
+              avoidCollisions: true,
+              wrapping: "hyphenate",
             }
           },
           {
             tick: { enabled: true, stroke: 'black', interval: 1 },
-            label: { fontWeight: "bold" }
+            label: { fontWeight: "bold", avoidCollisions: true }
           },
         ],
       },
@@ -884,7 +884,7 @@ const fetchOrders = async (isExcelExport = false, page?:number, pageSize?:number
       <div className='chart-wrapper' style={{ flex: !hide ? 1 : 0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129" }}>
         <CustomLegend chartOptions={chartoptions} setChartOptions={ setChartOptions } />
         <div className='chart-scroll' style={{overflowX:chartoptions?.data?.length > 15 ? "scroll" : "hidden"}}>
-          <AgCharts ref={graph} style={{ height: "100%", width: chartoptions?.data?.length > 15 ? `${80*chartoptions?.data?.length + "px"}` : "100%" }} options={chartoptions} /> 
+          <AgCharts ref={graph} style={{ height: "100%", width: chartoptions?.data?.length > 15 ? `${100*chartoptions?.data?.length + "px"}` : "100%" }} options={chartoptions} /> 
         </div>
       </div>
       {showModal &&

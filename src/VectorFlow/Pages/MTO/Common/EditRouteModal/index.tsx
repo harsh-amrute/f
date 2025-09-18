@@ -518,7 +518,8 @@ const EditRouteModal = ({orderDetails, chartoptions, setChartOptions, onDataUpda
 
     return (
         <VFModalCard openModal={showModal} closeModal={() => { setShowModal((false)) }} headerText={'Edit Route'} headerIcon={''} closeIcon={"/assets/img/VectorFLOW/NMS/close-dark.svg"} paddingLeftAndRight={0} headerTextColor={'black'} backgroundColor={'f4f4f4'} data-testid="vfmultifilter-img" >
-            {(isLoading || isFetchFolGapData || isGetRouteDetails || isGetFOLData || isGetLineCCRDetails || isGetCCRGroupMaster || isGetgetCCRItemTypeMappingMaster) && <OverlayLoader message='Saving route data' />}
+            {isLoading && <OverlayLoader message='Saving route data' />}
+            {(isFetchFolGapData || isGetRouteDetails || isGetFOLData || isGetLineCCRDetails || isGetCCRGroupMaster || isGetgetCCRItemTypeMappingMaster) && <OverlayLoader message='Loading, please wait ...' />}
             {showFOLGapDetails ?
                 <FolGapContentWrapper>
                     <FolGapDetailHeader>
@@ -604,10 +605,10 @@ const EditRouteModal = ({orderDetails, chartoptions, setChartOptions, onDataUpda
                     <strong style={{ fontSize: "14px" }}>Route Load</strong>
                     <div className='chart-wrapper'>
                         <CustomLegend chartOptions={chartoptions} setChartOptions={setChartOptions} />
-                        <div className='chart-scroll' style={{ overflowX: chartoptions?.data?.length > 15 ? "scroll" : "hidden" }}>
+                        <div className='chart-scroll' style={{ overflowX: chartoptions?.data?.length > 10 ? "scroll" : "hidden" }}>
                             <AgCharts
                                 options={chartoptions}
-                                style={{ height:"100%", width: chartoptions?.data?.length > 15 ? `${80*chartoptions?.data?.length + "px"}` : "100%"}}
+                                style={{ height:"100%", width: chartoptions?.data?.length > 10 ? `${100*chartoptions?.data?.length + "px"}` : "100%"}}
                                 />
                         </div>
                     </div>

@@ -762,7 +762,7 @@ const DynamicReleaseManagement = () => {
       {
         type: "grouped-category",
         position: "bottom",
-        paddingInner: 0.5,       // Gap between categories
+        // paddingInner: 0.5,       // Gap between categories
         // paddingOuter: 0.2,       // Gap before first and after last category
         // groupPaddingInner: 0.6,  // Gap between bars in the same category group
         gridLine: {
@@ -772,13 +772,14 @@ const DynamicReleaseManagement = () => {
           {
             label: {
               fontSize: 10,
-              rotation: -10,
+              rotation: -20,
               avoidCollisions: true,
+              wrapping: "hyphenate",
             }
           },
           {
             tick: { enabled: true, stroke: 'black' },
-            label: { fontWeight: "bold" }
+            label: { fontWeight: "bold", avoidCollisions: true }
           },
         ],
       },
@@ -1038,7 +1039,7 @@ const DynamicReleaseManagement = () => {
          <div className='chart-wrapper' style={{ flex: !hide ? 1:0, overflow: hide ? "hidden":"unset", minHeight: 0, marginBottom: hide ? "0" : "10px", boxShadow: "0px 6px 12px #81818129"}}>
             <CustomLegend chartOptions={chartoptions} setChartOptions={ setChartOptions } />
             <div className='chart-scroll' style={{overflowX:chartoptions?.data?.length > 15 ? "scroll" : "hidden"}}>
-              <AgCharts ref={graph} style={{ height: "100%", width: chartoptions?.data?.length > 15 ? `${80*chartoptions?.data?.length + "px"}` : "100%" }} options={chartoptions} /> 
+              <AgCharts ref={graph} style={{ height: "100%", width: chartoptions?.data?.length > 15 ? `${100*chartoptions?.data?.length + "px"}` : "100%" }} options={chartoptions} /> 
             </div>
         </div>
         {showModal && <EditRouteModal orderDetails={orderDetails} chartoptions={chartoptions} setChartOptions={setChartOptions} onDataUpdateCallback={onDataUpdate} showModal={showModal} setShowModal={setShowModal} themeUi={themeUi} />}
